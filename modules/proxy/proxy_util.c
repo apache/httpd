@@ -15,6 +15,7 @@
 
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
+#include "ap_mpm.h"
 
 #if (APR_MAJOR_VERSION < 1)
 #undef apr_socket_create
@@ -984,6 +985,210 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
         count++;
     }
     apr_table_add(t, key, value + offset);
+}
+
+PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
+                                                             proxy_server_conf *conf,
+                                                             const char *url)
+{
+    struct proxy_balancer *balancers;
+    char *c, *uri = apr_pstrdup(p, url);
+    int i;
+    
+    c = strchr(url, ':');   
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+       return NULL;
+    /* remove path from uri */
+    if ((c = strchr(c + 3, '/')))
+        *c = '\0';
+    balancers = (struct proxy_balancer *)conf->balancers;
+    for (i = 0; i < conf->balancers->nelts; i++) {
+        if (strcasecmp(balancers[i].name, uri) == 0)
+            return &balancers[i];
+    }
+    return NULL;
+}
+
+PROXY_DECLARE(const char *) ap_proxy_add_balancer(struct proxy_balancer **balancer,
+                                                  apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  const char *url)
+{
+    char *c, *q, *uri = apr_pstrdup(p, url);
+    int port;
+    apr_status_t rc = 0;
+
+    c = strchr(url, ':');   
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+       return "Bad syntax for a remote proxy server";
+    /* remove path from uri */
+    if ((q = strchr(c + 3, '/')))
+        *q = '\0';
+
+    q = strchr(c + 3, ':');
+    if (q != NULL) {
+        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
+            return "Bad syntax for a remote proxy server (bad port number)";
+        }
+        *q = '\0';
+    }
+    else
+        port = -1;
+    ap_str_tolower(uri);
+    *balancer = apr_array_push(conf->balancers);
+    (*balancer)->name = apr_pstrdup(p, uri);
+    *c = '\0';
+    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
+    /* XXX Is this a right place to create mutex */
+#if APR_HAS_THREADS
+    if ((rc = apr_thread_mutex_create(&((*balancer)->mutex),
+                APR_THREAD_MUTEX_DEFAULT, p)) != APR_SUCCESS) {
+            /* XXX: Do we need to log something here */
+            return "can not create thread mutex";
+    }
+#endif
+    
+    return NULL;
+}
+
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  const char *url)
+{
+    proxy_worker *workers;
+    char *c, *uri = apr_pstrdup(p, url);
+    int i;
+    
+    c = strchr(url, ':');   
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+       return NULL;
+    /* remove path from uri */
+    if ((c = strchr(c + 3, '/')))
+        *c = '\0';
+    workers = (proxy_worker *)conf->workers;
+    for (i = 0; i < conf->workers->nelts; i++) {
+        if (strcasecmp(workers[i].name, uri) == 0)
+            return &workers[i];
+    }
+    return NULL;
+}
+
+static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
+{
+    apr_pool_t *pool;
+    proxy_conn_pool *cp;
+    
+    /* Create a connection pool's subpool */
+    apr_pool_create(&pool, p);
+    cp = (proxy_conn_pool *)apr_pcalloc(pool, sizeof(proxy_conn_pool));
+    cp->pool = pool;
+#if APR_HAS_THREADS
+    {
+        int mpm_threads;
+        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
+        if (mpm_threads > 1) {
+            /* Set hard max to no more then mpm_threads */
+            if (worker->hmax == 0 || worker->hmax > mpm_threads)
+                 worker->hmax = mpm_threads;
+            if (worker->smax == 0 || worker->smax > worker->hmax)
+                 worker->smax = worker->hmax;
+            /* Set min to be lower then smax */
+            if (worker->min > worker->smax)
+                 worker->min = worker->smax; 
+        }
+        else {
+            /* This will supress the apr_reslist creation */
+            worker->min = worker->smax = worker->hmax = 0;
+        }
+    }
+#endif
+    
+    worker->cp = cp;
+}
+
+PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
+                                                apr_pool_t *p,
+                                                proxy_server_conf *conf,
+                                                const char *url)
+{
+    char *c, *q, *uri = apr_pstrdup(p, url);
+    int port;
+    
+    c = strchr(url, ':');   
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+       return "Bad syntax for a remote proxy server";
+    /* remove path from uri */
+    if ((q = strchr(c + 3, '/')))
+        *q = '\0';
+
+    q = strchr(c + 3, ':');
+    if (q != NULL) {
+        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
+            return "Bad syntax for a remote proxy server (bad port number)";
+        }
+        *q = '\0';
+    }
+    else
+        port = -1;
+    ap_str_tolower(uri);
+    *worker = apr_array_push(conf->workers);
+    (*worker)->name = apr_pstrdup(p, uri);
+    *c = '\0';
+    (*worker)->scheme = uri;
+    if (port == -1)
+        port = apr_uri_port_of_scheme((*worker)->scheme);
+    (*worker)->port = port;
+
+    init_conn_pool(p, *worker);
+
+    return NULL;
+}
+
+PROXY_DECLARE(void) 
+ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *worker)
+{
+    int i;
+    double median, ffactor = 0.0;
+    proxy_runtime_worker *runtime, *workers;
+
+    runtime = apr_array_push(balancer->workers);
+    runtime->w = worker;
+
+    /* Recalculate lbfactors */
+    workers = (proxy_runtime_worker *)balancer->workers->elts;
+
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* Set to the original configuration */
+        workers[i].lbfactor = workers[i].w->lbfactor;
+        ffactor += workers[i].lbfactor;
+    }
+    if (ffactor < 100.0) {
+        int z = 0;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (workers[i].lbfactor == 0.0) 
+                ++z;
+        }
+        if (z) {
+            median = (100.0 - ffactor) / z;
+            for (i = 0; i < balancer->workers->nelts; i++) {
+                if (workers[i].lbfactor == 0.0) 
+                    workers[i].lbfactor = median;
+            }
+        }
+        else {
+            median = (100.0 - ffactor) / balancer->workers->nelts;
+            for (i = 0; i < balancer->workers->nelts; i++)
+                workers[i].lbfactor += median;
+        }
+    }
+    else if (ffactor > 100.0) {
+        median = (ffactor - 100.0) / balancer->workers->nelts;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (workers[i].lbfactor > median)
+                workers[i].lbfactor -= median;
+        }
+    } 
+
 }
 
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
