@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/10 12:27:22 $]
+  Last modified at [$Date: 1999/02/10 13:33:31 $]
 
 Release:
 
@@ -64,7 +64,13 @@ Available Patches:
 
     * Ralf's [PATCH] Shared Memory Pools
         Message-ID: <19990124134912.A29193@engelschall.com>
-        Status: Not sure if this is intended for 1.3.x or just feedback
+        Status: Roy?: Not sure if this is intended for 1.3.x or just feedback
+                Ralf: The stuff in general _IS_ for 1.3.x but the posted
+                      patch was just a first cut to get feedback. An updated
+                      one is posted in a few days. And I'm actually still
+                      waiting for a review from Dean for the shared memory
+                      hard-core stuff. When someone else is also interested
+                      please review the shared memory deep-level code.
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
