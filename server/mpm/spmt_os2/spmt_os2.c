@@ -104,10 +104,10 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 server_rec *ap_server_conf;
 
-/* one_process --- debugging mode variable; can be set from the command line
- * with the -X flag.  If set, this gets you the child_main loop running
- * in the process which originally started up (no detach, no make_child),
- * which is a pretty nice debugging environment.  (You'll get a SIGHUP
+/* The spmt_os2 MPM respects a runtime flag that can aid
+ * in debugging. Setting the -DONE_PROCESS flag will get you the
+ * child_main loop running in the process which originally started up.
+ * This gives you a pretty nice debugging environment.  (You'll get a SIGHUP
  * early in standalone_main; just continue through.  This is the server
  * trying to kill off any child processes which it might have lying
  * around --- Apache doesn't keep track of their pids, it just sends
