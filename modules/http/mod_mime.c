@@ -110,6 +110,12 @@ typedef struct extension_info {
     char *output_filters;             /* Added with AddOutputFilter... */
 } extension_info;
 
+#define MULTIMATCH_UNSET      0
+#define MULTIMATCH_ANY        1
+#define MULTIMATCH_NEGOTIATED 2
+#define MULTIMATCH_HANDLERS   4
+#define MULTIMATCH_FILTERS    8
+
 typedef struct {
     apr_hash_t  *extension_mappings;  /* Map from extension name to
                                        * extension_info structure */
@@ -117,8 +123,10 @@ typedef struct {
     apr_array_header_t *remove_mappings; /* A simple list, walked once */
 
     char *default_language;     /* Language if no AddLanguage ext found */
-	                        /* Due to the FUD about JS and charsets 
-                                 * default_charset is actually in src/main */
+
+    int multimatch;       /* Extensions to include in multiview matching
+                           * for filenames, e.g. Filters and Handlers 
+                           */
 } mime_dir_config;
 
 typedef struct param_s {
@@ -150,6 +158,8 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->remove_mappings = NULL;
 
     new->default_language = NULL;
+
+    new->multimatch = MULTIMATCH_UNSET;
 
     return new;
 }
@@ -267,6 +277,9 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->default_language = add->default_language ?
         add->default_language : base->default_language;
 
+    new->multimatch = (add->multimatch != MULTIMATCH_UNSET) ?
+        add->multimatch : base->multimatch;
+
     return new;
 }
 
@@ -337,6 +350,41 @@ static const char *set_types_config(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *multiviews_match(cmd_parms *cmd, void *m_, 
+                                    const char *include)
+{
+    mime_dir_config *m = (mime_dir_config *) m_;
+
+    if (strcasecmp(include, "Any") == 0) {
+        if (m->multimatch && (m->multimatch & ~MULTIMATCH_ANY))
+            return "Any is incompatible with NegotiatedOnly, "
+                   "Filters and Handlers";
+        m->multimatch |= MULTIMATCH_ANY;
+    }
+    else if (strcasecmp(include, "NegotiatedOnly") == 0) {
+        if (m->multimatch && (m->multimatch & ~MULTIMATCH_NEGOTIATED))
+            return "Any is incompatible with NegotiatedOnly, "
+                   "Filters and Handlers";
+        m->multimatch |= MULTIMATCH_NEGOTIATED;
+    }
+    else if (strcasecmp(include, "Filters") == 0) {
+        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
+                                             | MULTIMATCH_ANY)))
+            return "Filters is incompatible with Any and NegotiatedOnly";
+        m->multimatch |= MULTIMATCH_FILTERS;
+    }
+    else if (strcasecmp(include, "Handlers") == 0) {
+        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
+                                             | MULTIMATCH_ANY)))
+            return "Handlers is incompatible with Any and NegotiatedOnly";
+        m->multimatch |= MULTIMATCH_HANDLERS;
+    }
+    else 
+        return "Unrecognized option";
+
+    return NULL;
+}
+
 static const command_rec mime_cmds[] =
 {
 AP_INIT_ITERATE2("AddCharset", add_extension_info, 
@@ -363,6 +411,8 @@ AP_INIT_ITERATE2("AddType", add_extension_info,
 AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
        (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
      "language to use for documents with no other language file extension"),
+AP_INIT_ITERATE("MultiviewsMatch", multiviews_match, NULL, OR_FILEINFO,
+     "Handlers and/or Filters, or NegotiatedOnly (neither)"),
 AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
      "one or more file extensions"),
@@ -780,6 +830,8 @@ static int find_ct(request_rec *r)
              */
             if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {
                 r->handler = exinfo->handler;
+                if (conf->multimatch & MULTIMATCH_HANDLERS)
+                    found = 1;
             }
             /* XXX Two significant problems; 1, we don't check to see if we are
              * setting redundant filters.    2, we insert these in the types config
@@ -791,6 +843,8 @@ static int find_ct(request_rec *r)
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_input_filter(filter, NULL, r, r->connection);
                 }
+                if (conf->multimatch & MULTIMATCH_FILTERS)
+                    found = 1;
             }
             if (exinfo->output_filters && r->proxyreq == PROXYREQ_NONE) {
                 const char *filter, *filters = exinfo->output_filters;
@@ -798,10 +852,12 @@ static int find_ct(request_rec *r)
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_output_filter(filter, NULL, r, r->connection);
                 }
+                if (conf->multimatch & MULTIMATCH_FILTERS)
+                    found = 1;
             }
         }
 
-        if (found)
+        if (found || (conf->multimatch & MULTIMATCH_ANY))
             found_metadata = 1;
         else
             *((const char **) apr_array_push(exception_list)) = ext;

@@ -1,8 +1,16 @@
 Changes with Apache 2.0.26-dev
 
+  *) Introduce the MultiviewsMatch directive, to allow the operator
+     to be flexible in recognizing Handlers and Filters filename
+     extensions as part of the Multiviews matching logic, strict with
+     MultiviewsMatch NegotiatedOnly to accept only filename extentions 
+     that designate negotiated parameters, (content type, charset, etc.)
+     or MultiviewsAll for the 1.3 behavior of matching any files, even
+     if they have unregistered extensions.  [William Rowe]
+
   *) Fixed the configure script to add a LoadModule directive to
      the default httpd.conf for any module that was compiled
-     as a DSO.       [Aaron Bannert <aaron@clove.org>]
+     as a DSO.  [Aaron Bannert <aaron@clove.org>]
 
   *) rewrite mod_ssl input filtering to work with the new input filtering
      system.  [Justin Erenkrantz]
