@@ -746,6 +746,8 @@ API_EXPORT(void) unblock_alarms() {
     if (alarms_blocked == 0) {
 	if (exit_after_unblock) {
 	    child_exit_modules(pconf, server_conf);
+	    destroy_pool(pconf);
+	    exit(0);
 	}
 	if (alarm_pending) {
 	    alarm_pending = 0;
@@ -1591,7 +1593,7 @@ static int find_child_by_pid (int pid)
     return -1;
 }
 
-static void reclaim_child_processes (void)
+static void reclaim_child_processes (int start_tries)
 {
 #ifndef MULTITHREAD
     int i, status;
@@ -1602,7 +1604,7 @@ static void reclaim_child_processes (void)
 
 	if (pid != my_pid && pid != 0) { 
 	    int waitret = 0,
-		tries = 1;
+		tries = start_tries;
 
 	    while (waitret == 0 && tries <= 4) {
 		long int waittime = 4096; /* in usecs */
@@ -1745,17 +1747,6 @@ static int wait_or_timeout (void)
 }
 
 
-void sig_term(int sig) {
-    log_error("httpd: caught SIGTERM, shutting down", server_conf);
-    cleanup_scoreboard();
-    accept_mutex_cleanup();
-#ifdef SIGKILL
-    ap_killpg (pgrp, SIGKILL);
-#endif /* SIGKILL */
-    close(sd);
-    exit(1);
-}
-
 void bus_error(int sig) {
     char emsg[256];
 
@@ -1790,6 +1781,8 @@ void just_die(int sig)			/* SIGHUP to child process??? */
 	exit_after_unblock = 1;
     } else {
 	child_exit_modules(pconf, server_conf);
+	destroy_pool(pconf);
+	exit(0);
     }
 }
 
@@ -1805,9 +1798,14 @@ static void usr1_handler (int sig)
 }
 
 /* volatile just in case */
+static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
 static int volatile generation;
+
+static void sig_term(int sig) {
+    shutdown_pending = 1;
+}
 
 static void restart (int sig)
 {
@@ -2642,13 +2640,18 @@ void child_main(int child_num_arg)
 	clear_pool (ptrans);
 	
 	sync_scoreboard_image();
-	if (scoreboard_image->global.exit_generation >= generation)
+	if (scoreboard_image->global.exit_generation >= generation) {
 	    child_exit_modules(pconf, server_conf);
+	    destroy_pool(pconf);
+	    exit(0);
+	}
 	
 	if ((max_requests_per_child > 0
 	        && ++requests_this_child >= max_requests_per_child))
 	{
 	    child_exit_modules(pconf, server_conf);
+	    destroy_pool(pconf);
+	    exit(0);
 	}
 
 	(void)update_child_status(my_child_num, SERVER_READY, (request_rec*)NULL);
@@ -2692,6 +2695,8 @@ void child_main(int child_num_arg)
 		if (deferred_die) {
 		    /* we didn't get a socket, and we were told to die */
 		    child_exit_modules(pconf, server_conf);
+		    destroy_pool(pconf);
+		    exit(0);
 		}
 	    }
 
@@ -2714,13 +2719,18 @@ void child_main(int child_num_arg)
 	    if (deferred_die) {
 		/* ok maybe not, see ya later */
 		child_exit_modules(pconf, server_conf);
+		destroy_pool(pconf);
+		exit(0);
 	    }
 	    /* or maybe we missed a signal, you never know on systems
 	     * without reliable signals
 	     */
 	    sync_scoreboard_image();
-	    if (scoreboard_image->global.exit_generation >= generation)
+	    if (scoreboard_image->global.exit_generation >= generation) {
 		child_exit_modules(pconf, server_conf);
+		destroy_pool(pconf);
+		exit(0);
+	    }
         }
 
         SAFE_ACCEPT(accept_mutex_off()); /* unlock after "accept" */
@@ -2805,6 +2815,8 @@ void child_main(int child_num_arg)
             if (scoreboard_image->global.exit_generation >= generation) {
                 bclose(conn_io);
 		child_exit_modules(pconf, server_conf);
+		destroy_pool(pconf);
+		exit(0);
             }
 
 	    /* In case we get a graceful restart while we're blocked
@@ -3129,9 +3141,9 @@ void standalone_main(int argc, char **argv)
 	log_printf (server_conf, "Server built: %s", SERVER_BUILT);
 	log_error ("Server configured -- resuming normal operations",
 	           server_conf);
-	restart_pending = 0;
+	restart_pending = shutdown_pending = 0;
 
-	while (!restart_pending) {
+	while (!restart_pending && !shutdown_pending) {
 	    int child_slot;
 	    int pid = wait_or_timeout ();
 
@@ -3182,6 +3194,24 @@ void standalone_main(int argc, char **argv)
 	    perform_idle_server_maintenance();
 	}
 
+	if (shutdown_pending) {
+	    /* Time to gracefully shut down:
+	     * Kill child processes, tell them to call child_exit, etc...
+	     */
+	    if (ap_killpg (pgrp, SIGTERM) < 0) {
+		log_unixerr ("killpg SIGTERM", NULL, NULL, server_conf);
+	    }
+	    reclaim_child_processes(2); /* Start with SIGTERM */
+	    log_error("httpd: caught SIGTERM, shutting down", server_conf);
+
+	    /* Clear the pool - including any registered cleanups */
+	    destroy_pool(pconf);
+	    cleanup_scoreboard();
+	    accept_mutex_cleanup();
+	    
+	    exit(0);
+	}
+
 	/* we've been told to restart */
 	signal (SIGHUP, SIG_IGN);
 	signal (SIGUSR1, SIG_IGN);
@@ -3225,7 +3255,7 @@ void standalone_main(int argc, char **argv)
 	    if (ap_killpg (pgrp, SIGHUP) < 0) {
 		log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
 	    }
-	    reclaim_child_processes(); /* Not when just starting up */
+	    reclaim_child_processes(1); /* Not when just starting up */
 	    log_error ("SIGHUP received.  Attempting to restart", server_conf);
 	}
 	++generation;

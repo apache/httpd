@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Apache now gracefully shuts down when it receives a SIGTERM, instead
+     of forcibly killing off all its processes and exiting without
+     cleaning up. [Alexei Kosut]
+
   *) API: A new field in the request_rec, r->mtime, has been added to
      avoid gratuitous parsing of date strings.  It is intended to hold
      the last-modified date of the resource (if applicable).  An

@@ -1293,7 +1293,6 @@ void child_exit_modules(pool *p, server_rec *s)
         if (m->child_exit)
 	    (*m->child_exit) (s, p);
 
-    exit(0);
 }
 
 /********************************************************************
