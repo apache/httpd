@@ -337,7 +337,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 static const command_rec so_cmds[] = {
     AP_INIT_TAKE2("LoadModule", load_module, NULL, RSRC_CONF | EXEC_ON_READ,
       "a module name and the name of a shared object file to load it from"),
-    AP_INIT_ITERATE("LoadFile", load_file, NULL, RSRC_CONF,
+    AP_INIT_ITERATE("LoadFile", load_file, NULL, RSRC_CONF  | EXEC_ON_READ,
       "shared object file or library to load into the server at runtime"),
     { NULL }
 };
