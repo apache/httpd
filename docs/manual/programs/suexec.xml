@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="suexec.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>suexec - Switch user before executing external programs</title>
+
+<summary>
+     <p><code>suexec</code> is used by the Apache HTTP Server to switch
+     to another user before executing CGI programs. In order to achieve this,
+     it must run as <code>root</code>. Since the HTTP daemon normally doesn't
+     run as <code>root</code>, the <code>suexec</code> executable needs the
+     setuid bit set and must be owned by <code>root</code>. It should never be
+     writable for any other person than <code>root</code>.</p>
+
+     <p>For further information about the concepts and and the security model
+     of suexec please refer to the suexec documentation (<a
+     href="http://httpd.apache.org/docs-2.1/suexec.html"
+     >http://httpd.apache.org/docs-2.1/suexec.html</a>).</p>
+</summary>
+
+<section id="synopsis"><title>Synopsis</title>
+     <p><code><strong>suexec</strong> -<strong>V</strong></code></p>
+</section>
+
+<section id="options"><title>Options</title>
+
+<dl>
+<dt><code>-V</code></dt>
+
+<dd>If you are <code>root</code>, this option displays the compile options of
+<code>suexec</code>. For security reasons all configuration options are
+changable only at compile time.</dd>
+
+</dl>
+</section>
+
+</manualpage>
