@@ -79,7 +79,9 @@ Body:----------nl--
 Content-language: pl
 Content-type: text/html; charset=ISO-8859-2
 Body:----------pl--
-<!--#set var="TITLE" value="Nieprawid³owe ¿±danie!"
+<!--#set var="CONTENT_LANGUAGE" value="pl"
+--><!--#set var="TITLE" value="Nieprawid³owe ¿±danie!"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#include virtual="include/top.html" -->
 
     Twoja przegl±darka (lub serwer po¶rednicz±cy) wys³a³ ¿±danie,
