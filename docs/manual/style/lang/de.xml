@@ -59,6 +59,9 @@
  <!-- Used in summaries -->
  <message name="summary">Zusammenfassung</message>
 
+ <!-- Used for translation notes -->
+ <message name="transnote">Anm.d.&#220;.:</message>
+
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Apache HTTP Server</message>
  <message name="apachehttpserver">Apache HTTP Server Version 2.1</message>
