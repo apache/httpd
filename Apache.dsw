@@ -528,6 +528,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_ssl"=".\modules\ssl\mod_ssl.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_status"=".\modules\generators\mod_status.dsp" - Package Owner=<4>
 
 Package=<5>
