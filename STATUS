@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/01 13:52:43 $]
+Last modified at [$Date: 2003/05/01 20:43:49 $]
 
 Release:
 
@@ -163,6 +163,11 @@ PATCHES TO PORT FROM 2.1
                         of confused on the interaction.  subreq_core_filter
                         should probably be the top-most output filter and it
                         will have to eat the EOS (then return).  Is it?
+      nd replies: Yes, otherwise we still inject EOS buckets for every
+                  subrequest into the filter stream. But in fact it should be
+                  the bottom-most of the subreq filters, so that these filters
+                  may init and exit correctly. See also:
+                  <n2m-g.1kawv9rc0uyar$ndparker@news.perlig.de>
 
     * Keep the same SSLMutex for the lifetime of the parent process
       (instead of having children using different mutexes and failing
@@ -214,15 +219,17 @@ PATCHES TO PORT FROM 2.1
       docs/manual/mod/mpm_common.xml  r1.23
       include/mpm_common.h            r1.41
       server/mpm_common.c             r1.104
-      +1: gregames, trawick, jim
+      +1: gregames, trawick, jim, nd
       (trawick volunteers to regenerate/commit/site-update the html
       corresponding to mpm_common.xml if that isn't something you're
       comfortable with doing)
+      (the docs should explain the thing better. Currently it's not
+       really understandable for users. If nobody else does, nd tries to.)
 
     * By default, use the same CC and CPP with which APR was built.
       The user can override with CC and CPP environment variables.
       configure.in              r1.249
-      +1: trawick
+      +1: trawick, nd
 
     * Fix a problem that caused httpd to be linked with incorrect flags
       on some platforms when mod_so was enabled by default, breaking 
@@ -231,17 +238,17 @@ PATCHES TO PORT FROM 2.1
       handful of vocal people, but there is an easy work-around 
       (explicitly add --enable-so).
       modules/mappers/config9.m4 r1.16
-      +1: trawick
+      +1: trawick, nd
 
     * Fix ap_construct_url() so that it surrounds IPv6 literal address
       strings with [].  This fixes certain types of redirection.
       PR 19207.
       server/core.c r1.232
-      +1: trawick
+      +1: trawick, nd
 
     * Fix for a pair of potential buffer overflows in htdigest.
       support/htdigest.c r1.36
-      +1: thommay
+      +1: thommay, nd
 
 CURRENT RELEASE NOTES:
 
