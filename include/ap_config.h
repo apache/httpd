@@ -232,22 +232,7 @@
 #define NO_LINGCLOSE
 #endif
 
-/* XXX - The PHP4 comments say -D_HPUX_SOURCE is obsolete. */
-
-/* TODO - none of the dynamic linking defines are in yet, but that's because
- * Manoj needs to learn what the exact ramifications of libtool on DSOs are */
-
-#undef PACKAGE
-#undef VERSION
-
-#if APR_FILE_BASED_SHM
-#define AP_USE_FILE_BASED_SCOREBOARD
-#else
-#define AP_USE_MEM_BASED_SCOREBOARD
-#endif
-
-/* If APR has OTHER_CHILD logic, use reliable piped logs.
- */
+/* If APR has OTHER_CHILD logic, use reliable piped logs. */
 #if APR_HAS_OTHER_CHILD
 #define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif

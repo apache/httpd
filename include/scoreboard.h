@@ -74,8 +74,8 @@ extern "C" {
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
 
-/*The optimized timeout code only works if we're not using a scoreboard file*/
-#if defined(AP_USE_MEM_BASED_SCOREBOARD)
+/* The optimized timeouts only work if we're not using a scoreboard file */
+#if !APR_FILE_BASED_SHM
 #define OPTIMIZE_TIMEOUTS
 #endif
 
