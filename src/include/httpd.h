@@ -830,6 +830,12 @@ API_EXPORT(gid_t) gname2id(const char *name);
 API_EXPORT(int) is_directory(const char *name);
 API_EXPORT(int) can_exec(const struct stat *);     
 API_EXPORT(void) chdir_file(const char *file);
+
+#ifndef HAVE_CANONICAL_FILENAME
+#define os_canonical_filename(p,f)  pstrdup(p,f)
+#endif
+
+API_EXPORT(char *)os_canonical_filename(pool *p,const char *file);
      
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);

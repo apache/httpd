@@ -253,6 +253,10 @@ SOURCE=.\core\util_md5.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\os\win32\util_nt.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\core\util_script.c
 # End Source File
 # Begin Source File

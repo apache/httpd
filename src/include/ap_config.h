@@ -574,6 +574,7 @@ typedef int mode_t;
 #define USE_LONGJMP
 #define HAVE_MMAP
 #define MULTITHREAD
+#define HAVE_CANONICAL_FILENAME
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;

@@ -249,7 +249,7 @@ int directory_walk (request_rec *r)
     void *per_dir_defaults = r->server->lookup_defaults;
     void **sec = (void **)sconf->sec->elts;
     int num_sec = sconf->sec->nelts;
-    char *test_filename = pstrdup (r->pool, r->filename);
+    char *test_filename;
     char *test_dirname;
     int res;
     unsigned i,num_dirs;
@@ -268,6 +268,10 @@ int directory_walk (request_rec *r)
 
         return OK;
     }
+
+    /* FIX ME: this is disgusting - Ben */
+    r->filename = os_canonical_filename(r->pool, r->filename);
+    test_filename = pstrdup(r->pool, r->filename);
 
     /* Go down the directory hierarchy.  Where we have to check for symlinks,
      * do so.  Where a .htaccess file has permission to override anything,
