@@ -352,23 +352,23 @@ static int status_handler(request_rec *r)
 
     if (!short_report) {
 	ap_rputs(DOCTYPE_HTML_3_2
-		 "<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n",
+		 "<html><head>\n<title>Apache Status</title>\n</head><body>\n",
 		 r);
-	ap_rputs("<H1>Apache Server Status for ", r);
-	ap_rvputs(r, ap_get_server_name(r), "</H1>\n\n", NULL);
-	ap_rvputs(r, "Server Version: ",
-	  ap_get_server_version(), "<br>\n", NULL);
-	ap_rvputs(r, "Server Built: ",
-	  ap_get_server_built(), "<br>\n<hr>\n", NULL);
-	ap_rvputs(r, "Current Time: ",
-	  ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
-	ap_rvputs(r, "Restart Time: ",
+	ap_rputs("<h1>Apache Server Status for ", r);
+	ap_rvputs(r, ap_get_server_name(r), "</h1>\n\n", NULL);
+	ap_rvputs(r, "<dl><dt>Server Version: ",
+	  ap_get_server_version(), "</dt>\n", NULL);
+	ap_rvputs(r, "<dt>Server Built: ",
+	  ap_get_server_built(), "\n</dt></dl><hr /><dl>\n", NULL);
+	ap_rvputs(r, "<dt>Current Time: ",
+	  ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "</dt>\n", NULL);
+	ap_rvputs(r, "<dt>Restart Time: ",
 	  ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
-	  "<br>\n", NULL);
-	ap_rprintf(r, "Parent Server Generation: %d <br>\n", (int) ap_my_generation);
-	ap_rputs("Server uptime: ", r);
+	  "</dt>\n", NULL);
+	ap_rprintf(r, "<dt>Parent Server Generation: %d</dt>\n", (int) ap_my_generation);
+	ap_rputs("<dt>Server uptime: ", r);
 	show_time(r, up_time);
-	ap_rputs("<br>\n", r);
+	ap_rputs("</dt>\n", r);
     }
 
     if (ap_extended_status) {
@@ -397,24 +397,22 @@ static int status_handler(request_rec *r)
 		    KBYTE * (float) kbcount / (float) count);
 	}
 	else {			/* !short_report */
-	    ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
+	    ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
 	    format_kbyte_out(r, kbcount);
+	    ap_rputs("</dt>\n", r);
 
 #ifdef HAVE_TIMES
 	    /* Allow for OS/2 not having CPU stats */
-	    ap_rputs("<br>\n", r);
-	    ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
+	    ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
 		    tu / tick, ts / tick, tcu / tick, tcs / tick);
 
 	    if (ts || tu || tcu || tcs)
-		ap_rprintf(r, " - %.3g%% CPU load",
+		ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
 		    (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
-	    ap_rputs("<br>\n", r);
-
 	    if (up_time > 0)
-		ap_rprintf(r, "%.3g requests/sec - ",
+		ap_rprintf(r, "<dt>%.3g requests/sec - ",
 			(float) count / (float) up_time);
 
 	    if (up_time > 0) {
@@ -429,12 +427,12 @@ static int status_handler(request_rec *r)
 		ap_rputs("/request", r);
 	    }
 
-	    ap_rputs("<br>\n", r);
+	    ap_rputs("</dt>\n", r);
 	}				/* short_report */
     }					/* ap_extended_status */
 
     if (!short_report)
-	ap_rprintf(r, "\n%d requests currently being processed, %d idle servers\n"
+	ap_rprintf(r, "<dt>%d requests currently being processed, %d idle servers</dt>\n"
 		,busy, ready);
     else
 	ap_rprintf(r, "BusyServers: %d\nIdleServers: %d\n", busy, ready);
@@ -442,7 +440,7 @@ static int status_handler(request_rec *r)
     /* send the scoreboard 'table' out */
 
     if (!short_report)
-	ap_rputs("<PRE>", r);
+	ap_rputs("</dl><pre>", r);
     else
 	ap_rputs("Scoreboard: ", r);
 
@@ -458,25 +456,25 @@ static int status_handler(request_rec *r)
     if (short_report)
 	ap_rputs("\n", r);
     else {
-	ap_rputs("</PRE>\n", r);
-	ap_rputs("Scoreboard Key: <br>\n", r);
-	ap_rputs("\"<B><code>_</code></B>\" Waiting for Connection, \n", r);
-	ap_rputs("\"<B><code>S</code></B>\" Starting up, \n", r);
-	ap_rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n", r);
-	ap_rputs("\"<B><code>W</code></B>\" Sending Reply, \n", r);
-	ap_rputs("\"<B><code>K</code></B>\" Keepalive (read), \n", r);
-	ap_rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
-	ap_rputs("\"<B><code>C</code></B>\" Closing connection, \n", r);
-	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
-	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing,<BR> \n", r);
-        ap_rputs("\"<B><code>I</code></B>\" Idle cleanup of worker, \n", r);
-	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
-	ap_rputs("<P>\n", r);
+	ap_rputs("</pre>\n", r);
+	ap_rputs("<p>Scoreboard Key:<br />\n", r);
+	ap_rputs("\"<b><code>_</code></b>\" Waiting for Connection, \n", r);
+	ap_rputs("\"<b><code>S</code></b>\" Starting up, \n", r);
+	ap_rputs("\"<b><code>R</code></b>\" Reading Request,<br />\n", r);
+	ap_rputs("\"<b><code>W</code></b>\" Sending Reply, \n", r);
+	ap_rputs("\"<b><code>K</code></b>\" Keepalive (read), \n", r);
+	ap_rputs("\"<b><code>D</code></b>\" DNS Lookup,<br />\n", r);
+	ap_rputs("\"<b><code>C</code></b>\" Closing connection, \n", r);
+	ap_rputs("\"<b><code>L</code></b>\" Logging, \n", r);
+	ap_rputs("\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n", r);
+        ap_rputs("\"<b><code>I</code></b>\" Idle cleanup of worker, \n", r);
+	ap_rputs("\"<b><code>.</code></b>\" Open slot with no current process</p>\n", r);
+	ap_rputs("<p />\n", r);
 	if (!ap_extended_status) {
 	    int j;
             int k = 0;
-	    ap_rputs("PID Key: <br>\n", r);
-	    ap_rputs("<PRE>\n", r);
+	    ap_rputs("PID Key: <br />\n", r);
+	    ap_rputs("<pre>\n", r);
 	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
                 for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
                     int indx = (i * HARD_THREAD_LIMIT) + j;
@@ -494,20 +492,20 @@ static int status_handler(request_rec *r)
                 }
 	    }
 	    ap_rputs("\n", r);
-	    ap_rputs("</PRE>\n", r);
+	    ap_rputs("</pre>\n", r);
 	}
     }
 
     if (ap_extended_status) {
 	if (!short_report) {
 	    if (no_table_report)
-		ap_rputs("<p><hr><h2>Server Details</h2>\n\n", r);
+		ap_rputs("<hr /><h2>Server Details</h2>\n\n", r);
 	    else
 #ifndef HAVE_TIMES
 		/* Allow for OS/2 not having CPU stats */
-		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
+		ap_rputs("\n\n<table border=\"0\"><tr><th>Srv</th><th>PID</th><th>Acc</th><th>M\n</th><th>SS</th><th>Req</th><th>Conn</th><th>Child</th><th>Slot</th><th>Client</th><th>VHost</th><th>Request</th></tr>\n\n", r);
 #else
-		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
+		ap_rputs("\n\n<table border=\"0\"><tr><th>Srv</th><th>PID</th><th>Acc</th><th>M</th><th>CPU\n</th><th>SS</th><th>Req</th><th>Conn</th><th>Child</th><th>Slot</th><th>Client</th><th>VHost</th><th>Request</th></tr>\n\n", r);
 #endif
 	}
 
@@ -623,7 +621,7 @@ static int status_handler(request_rec *r)
 			ap_rputs("|", r);
 			format_byte_out(r, bytes);
 			ap_rputs(")\n", r);
-			ap_rprintf(r, " <i>%s {%s}</i> <b>[%s]</b><br>\n\n",
+			ap_rprintf(r, " <i>%s {%s}</i> <b>[%s]</b><br />\n\n",
 			    ap_escape_html(r->pool, ws_record.client),
 			    ap_escape_html(r->pool, ws_record.request),
 			    vhost ? ap_escape_html(r->pool, 
@@ -632,60 +630,60 @@ static int status_handler(request_rec *r)
 		    else {		/* !no_table_report */
 			if (ws_record.status == SERVER_DEAD)
 			    ap_rprintf(r,
-				"<tr><td><b>%d-%d</b><td>-<td>%d/%lu/%lu",
+				"<tr><td><b>%d-%d</b></td><td>-</td><td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
 				(int) conn_lres, my_lres, lres);
 			else
 			    ap_rprintf(r,
-				"<tr><td><b>%d-%d</b><td>%" APR_OS_PROC_T_FMT 
-                                "<td>%d/%lu/%lu",
+				"<tr><td><b>%d-%d</b></td><td>%" APR_OS_PROC_T_FMT 
+                                "</td><td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
 				ps_record.pid, (int) conn_lres,
 				my_lres, lres);
 
 			switch (ws_record.status) {
 			case SERVER_READY:
-			    ap_rputs("<td>_", r);
+			    ap_rputs("</td><td>_", r);
 			    break;
 			case SERVER_STARTING:
-			    ap_rputs("<td><b>S</b>", r);
+			    ap_rputs("</td><td><b>S</b>", r);
 			    break;
 			case SERVER_BUSY_READ:
-			    ap_rputs("<td><b>R</b>", r);
+			    ap_rputs("</td><td><b>R</b>", r);
 			    break;
 			case SERVER_BUSY_WRITE:
-			    ap_rputs("<td><b>W</b>", r);
+			    ap_rputs("</td><td><b>W</b>", r);
 			    break;
 			case SERVER_BUSY_KEEPALIVE:
-			    ap_rputs("<td><b>K</b>", r);
+			    ap_rputs("</td><td><b>K</b>", r);
 			    break;
 			case SERVER_BUSY_LOG:
-			    ap_rputs("<td><b>L</b>", r);
+			    ap_rputs("</td><td><b>L</b>", r);
 			    break;
 			case SERVER_BUSY_DNS:
-			    ap_rputs("<td><b>D</b>", r);
+			    ap_rputs("</td><td><b>D</b>", r);
 			    break;
 			case SERVER_CLOSING:
-			    ap_rputs("<td><b>C</b>", r);
+			    ap_rputs("</td><td><b>C</b>", r);
 			    break;
 			case SERVER_DEAD:
-			    ap_rputs("<td>.", r);
+			    ap_rputs("</td><td>.", r);
 			    break;
 			case SERVER_GRACEFUL:
-			    ap_rputs("<td>G", r);
+			    ap_rputs("</td><td>G", r);
 			    break;
                         case SERVER_IDLE_KILL:
-                            ap_rputs("<td>I", r);
+                            ap_rputs("</td><td>I", r);
                             break;
 			default:
-			    ap_rputs("<td>?", r);
+			    ap_rputs("</td><td>?", r);
 			    break;
 			}
 #ifndef HAVE_TIMES
 			/* Allow for OS/2 not having CPU stats */
-			ap_rprintf(r, "\n<td>%.0f<td>%ld",
+			ap_rprintf(r, "\n</td><td>%.0f</td><td>%ld",
 #else
-			ap_rprintf(r, "\n<td>%.2f<td>%ld<td>%ld",
+			ap_rprintf(r, "\n</td><td>%.2f</td><td>%ld</td><td>%ld",
 			    (ws_record.times.tms_utime +
 			     ws_record.times.tms_stime +
 			     ws_record.times.tms_cutime +
@@ -693,15 +691,15 @@ static int status_handler(request_rec *r)
 #endif
 			    (long)((nowtime - ws_record.last_used) / APR_USEC_PER_SEC),
 			    (long) req_time);
-			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
+			ap_rprintf(r, "</td><td>%-1.1f</td><td>%-2.2f</td><td>%-2.2f\n",
 			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
 			    (float) bytes / MBYTE);
 			if (ws_record.status == SERVER_BUSY_READ)
 			    ap_rprintf(r,
-			     "<td>?<td nowrap>?<td nowrap>..reading.. </tr>\n\n");
+			     "</td><td>?</td><td nowrap>?</td><td nowrap>..reading.. </td></tr>\n\n");
 			else
 			    ap_rprintf(r,
-			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
+			     "</td><td>%s</td><td nowrap>%s</td><td nowrap>%s</td></tr>\n\n",
 			     ap_escape_html(r->pool, ws_record.client),
 			     vhost ? ap_escape_html(r->pool, 
 				vhost->server_hostname) : "(unavailable)",
@@ -715,32 +713,32 @@ static int status_handler(request_rec *r)
 	if (!(short_report || no_table_report)) {
 #ifndef HAVE_TIMES
 	    ap_rputs("</table>\n \
-<hr> \
+<hr /> \
 <table>\n \
-<tr><th>Srv<td>Child Server number - generation\n \
-<tr><th>PID<td>OS process ID\n \
-<tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
-<tr><th>M<td>Mode of operation\n \
-<tr><th>SS<td>Seconds since beginning of most recent request\n \
-<tr><th>Req<td>Milliseconds required to process most recent request\n \
-<tr><th>Conn<td>Kilobytes transferred this connection\n \
-<tr><th>Child<td>Megabytes transferred this child\n \
-<tr><th>Slot<td>Total megabytes transferred this slot\n \
+<tr><th>Srv</th><td>Child Server number - generation</td></tr>\n \
+<tr><th>PID</th><td>OS process ID</td></tr>\n \
+<tr><th>Acc</th><td>Number of accesses this connection / this child / this slot</td></tr>\n \
+<tr><th>M</th><td>Mode of operation</td></tr>\n \
+<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
+<tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
+<tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
+<tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
+<tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
 </table>\n", r);
 #else
 	    ap_rputs("</table>\n \
-<hr> \
+<hr /> \
 <table>\n \
-<tr><th>Srv<td>Child Server number - generation\n \
-<tr><th>PID<td>OS process ID\n \
-<tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
-<tr><th>M<td>Mode of operation\n \
-<tr><th>CPU<td>CPU usage, number of seconds\n \
-<tr><th>SS<td>Seconds since beginning of most recent request\n \
-<tr><th>Req<td>Milliseconds required to process most recent request\n \
-<tr><th>Conn<td>Kilobytes transferred this connection\n \
-<tr><th>Child<td>Megabytes transferred this child\n \
-<tr><th>Slot<td>Total megabytes transferred this slot\n \
+<tr><th>Srv</th><td>Child Server number - generation</td></tr>\n \
+<tr><th>PID</th><td>OS process ID</td></tr>\n \
+<tr><th>Acc</th><td>Number of accesses this connection / this child / this slot</td></tr>\n \
+<tr><th>M</th><td>Mode of operation</td></tr>\n \
+<tr><th>CPU</th><td>CPU usage, number of seconds</td></tr>\n \
+<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
+<tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
+<tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
+<tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
+<tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
 </table>\n", r);
 #endif
 	}
@@ -748,15 +746,15 @@ static int status_handler(request_rec *r)
     } else {
 
 	if (!short_report) {
-	    ap_rputs("<hr>To obtain a full report with current status information ", r);
+	    ap_rputs("<hr />To obtain a full report with current status information ", r);
 	    ap_rputs("you need to use the <code>ExtendedStatus On</code> directive. \n", r);
 	}
 
     }
 
     if (!short_report) {
-	ap_rputs(ap_psignature("<HR>\n",r), r);
-	ap_rputs("</BODY></HTML>\n", r);
+	ap_rputs(ap_psignature("<hr />\n",r), r);
+	ap_rputs("</body></html>\n", r);
     }
 
     return 0;
