@@ -1359,6 +1359,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
         }
         else {
             ap_getparents(tag_val);    /* get rid of any nasties */
+
+            /* note: it is okay to pass NULL for the "next filter" since
+               we never attempt to "run" this sub request. */
             rr = ap_sub_req_lookup_file(tag_val, r, NULL);
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
@@ -1387,6 +1390,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
         return ret;
     }
     else if (!strcmp(tag, "virtual")) {
+        /* note: it is okay to pass NULL for the "next filter" since
+           we never attempt to "run" this sub request. */
         rr = ap_sub_req_lookup_uri(tag_val, r, NULL);
 
         if (rr->status == HTTP_OK && rr->finfo.protection != 0) {

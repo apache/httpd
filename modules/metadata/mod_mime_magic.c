@@ -2347,7 +2347,7 @@ static int revision_suffix(request_rec *r)
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, r,
 		MODNAME ": subrequest lookup for %s", sub_filename);
 #endif /* MIME_MAGIC_DEBUG */
-    sub = ap_sub_req_lookup_file(sub_filename, r);
+    sub = ap_sub_req_lookup_file(sub_filename, r, NULL);
 
     /* extract content type/encoding/language from sub-request */
     if (sub->content_type) {
