@@ -543,11 +543,16 @@ static void winnt_accept(void *lr_)
             while (1) {
                 rv = WaitForSingleObject(context->Overlapped.hEvent, 1000);
                 if (rv == WAIT_OBJECT_0) {
-                    if (!GetOverlappedResult(context->accept_socket, 
+                    if (context->accept_socket == -1) {
+                        /* socket already closed */
+                        break;
+                    }
+                    if (!GetOverlappedResult((HANDLE)context->accept_socket, 
                                              &context->Overlapped, 
                                              &BytesRead, FALSE)) {
-                        ap_log_error(APLOG_MARK,APLOG_WARNING, GetLastError(), ap_server_conf,
-                                     "winnt_accept: Asynchronous AcceptEx failed.");
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 
+                                     apr_get_os_error(), ap_server_conf,
+                             "winnt_accept: Asynchronous AcceptEx failed.");
                         closesocket(context->accept_socket);
                         context->accept_socket = INVALID_SOCKET;
                     }
