@@ -1,4 +1,8 @@
 Changes with Apache 1.3b4
+
+  *) ap_snprintf() with a len of 0 behaved like sprintf().  This is not
+     useful, and isn't what the standards require.  Now it returns 0
+     and writes nothing.  [Dean Gaudet]
   
   *) When an error occurs in fcntl() locking suggest the user look up
      the docs for LockFile.  [Dean Gaudet]

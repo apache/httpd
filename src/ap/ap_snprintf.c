@@ -903,20 +903,15 @@ static void strx_printv(int *ccp, char *buf, size_t len, const char *format,
     buffy od;
     int cc;
 
-    /*
-     * First initialize the descriptor
-     * Notice that if no length is given, we initialize buf_end to the
-     * highest possible address.
-     */
-    od.buf_end = len ? &buf[len] : (char *) ~0;
+    /* save 1 byte for nul terminator, we assume len > 0 */
+    od.buf_end = &buf[len - 1];
     od.nextb = buf;
 
     /*
      * Do the conversion
      */
     cc = format_converter(&od, format, ap);
-    if (len == 0 || od.nextb <= od.buf_end)
-	*(od.nextb) = '\0';
+    *(od.nextb) = '\0';
     if (ccp)
 	*ccp = cc;
 }
@@ -927,8 +922,11 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
     int cc;
     va_list ap;
 
+    if (len == 0)
+	return 0;
+
     va_start(ap, format);
-    strx_printv(&cc, buf, (len - 1), format, ap);
+    strx_printv(&cc, buf, len, format, ap);
     va_end(ap);
     return (cc);
 }
@@ -939,7 +937,10 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 {
     int cc;
 
-    strx_printv(&cc, buf, (len - 1), format, ap);
+    if (len == 0)
+	return 0;
+
+    strx_printv(&cc, buf, len, format, ap);
     return (cc);
 }
 
