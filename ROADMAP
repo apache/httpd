@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/18 16:58:14 $]
+Last modified at [$Date: 2002/10/19 17:30:15 $]
 
 
 INTRODUCTION
@@ -76,6 +76,16 @@ keeping the stable tree as safe as possible:
     tree, there is really no reason for this tree to be broken for more than 
     a few minutes during a lengthy commit.
 
+In order to avoid 'skipped' release numbers in the stable releases, the
+Release Manager will generally roll a release candidate (APACHE_#_#_#_RC#)
+tag.  Release Candidate tarballs will be announced to the
+stable-testers@httpd.apache.org for the stable tree.  Then, the participants
+will vote on the quality of the proposed release tarball.
+
+The final APACHE_#_#_# tag will not exist until the APACHE_#_#_#_RC# candidate
+has passed the usual votes to release that version.  Only then is the final
+tarball packaged, removing all -rc# designations from the version number, and
+tagging the tree with the release number.
 
 DEVELOPMENT RELEASES, 2.{odd}.{revision}
 -----------------------------------------
@@ -123,19 +133,17 @@ begun, that API will be present for the lifetime of the stable release.  Any
 desired changes in the stable versions must wait for inclusion into the next
 release cycle.
 
+In order to ease the burden of creating development releases, the process
+for packaging a development releases is less formal than for the stable
+release.  This strategy reflects the fact that while in development, versions
+are cheap.  Development releases may be classified as alpha, beta, or GA
+to reflect the group's perceived stability of the tree.  Development releases
+may be made at any time by any committer.
 
-ALL RELEASES
-------------
-In order to avoid 'skipped' release numbers, the Release Manager will generally
-roll a release candidate (APACHE_#_#_#_RC#) tag.  This is true of both the
-stable as well as the development tree.  Release Candidate tarballs will be
-announced to the stable-testers@httpd.apache.org for the stable tree, or to
-the current-testers@httpd.apache.org list for the development tree.
+Please read the following link for a more detailed description of the
+development release strategy:
 
-The final APACHE_#_#_# tag will not exist until the APACHE_#_#_#_RC# candidate
-has passed the usual votes to release that version.  Only then is the final
-tarball packaged, removing all -rc# designations from the version number, and
-tagging the tree with the release number.
+http://httpd.apache.org/dev/release.html
 
 
 WORKS IN PROGRESS
