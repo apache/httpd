@@ -105,7 +105,7 @@
 <div class="section"><h2><a name="howto" id="howto">지침서, 투토리얼, HowTo</a></h2>
 <ul><li class="separate"><a href="howto/">개요</a></li>
 <li><a href="howto/auth.html">인증</a></li>
-<li><a href="howto/cgi.html">CGI로 동적 내용</a></li>
+<li><a href="howto/cgi.html">CGI로 동적 페이지 생성</a></li>
 <li><a href="howto/ssi.html">Server Side Includes 소개</a></li>
 <li><a href="howto/htaccess.html">.htaccess 파일</a></li>
 <li><a href="howto/public_html.html">사용자별 웹디렉토리</a></li>

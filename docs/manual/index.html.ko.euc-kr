@@ -66,7 +66,7 @@
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / 투토리얼</a></h2>
 <ul><li><a href="howto/auth.html">인증, 권한부여,
     접근제어</a></li>
-<li><a href="howto/cgi.html">CGI: 동적 내용 생성</a></li>
+<li><a href="howto/cgi.html">CGI: 동적 페이지 생성</a></li>
 <li><a href="howto/htaccess.html">.htaccess 파일</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
 <li><a href="howto/public_html.html">사용자별 웹디렉토리

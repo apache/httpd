@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>내용을 클라이언트로 보내기 전에 압축한다</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>deflate_module</td></tr>
@@ -158,15 +156,40 @@
         필터 뒤에 들어간다. 또, 내부 하위요청(subrequest)에 영향을
         주지 않는다.
       </div>
-    
+      <div class="note"><h3>주의</h3>
+        <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>로
+        <code>force-gzip</code> 환경변수를 설정하면 브라우저의
+        accept-encoding 설정을 무시하고 압축된 결과를 보낸다.
+      </div>
 
+    
+    <h3><a name="inflate" id="inflate">출력 압축풀기</a></h3>
+      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> 모듈은 gzip으로 압축된
+      응답 내용을 푸는 필터도 제공한다. 이 기능을 사용하려면
+      다음과 같이 <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>나 <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>를 사용하여
+      출력필터순서에 <code>INFLATE</code> 필터를 추가한다.</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;<br />
+        <span class="indent">
+          ProxyPass http://example.com/<br />
+          SetOutputFilter INFLATE<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+      <p>이 예제는 example.com이 보낸 gzip으로 압축된 결과의
+      압축을 풀어서, 다른 필터가 더 처리할 수 있도록 한다.
+      </p>
+
+    
     <h3><a name="input" id="input">입력 압축풀기</a></h3>
-      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> 모듈은 요청의 gzip 압축된
+      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> 모듈은 gzip으로 압축된 요청
       내용을 푸는 필터도 제공한다. 이 기능을 사용하려면 다음과
       같이 <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>나
       <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>를
       사용하여 입력필터순서에 <code>DEFLATE</code> 필터를
-      추가해야한다:</p>
+      추가한다.</p>
 
       <div class="example"><p><code>
         &lt;Location /dav-area&gt;<br />

@@ -46,7 +46,7 @@
         <directive module="core">SetOutputFilter</directive>
       </directivelist>
     </related>
-    
+
     <p><em>필터(filter)</em>는 서버가 보내거나 받는 자료에
     적용되는 작업이다. 클라이언트가 서버에게 보내는 자료는
     <em>입력필터(input filter)</em>가 처리하고, 서버가

@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>ユーザ毎のウェブディレクトリ</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 <p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
@@ -146,7 +147,8 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

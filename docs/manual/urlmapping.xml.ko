@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.13) -->
+<!-- English Revision: 1.13 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -48,6 +48,8 @@
 <directive module="core">Options</directive>
 <directive module="mod_proxy">ProxyPass</directive>
 <directive module="mod_proxy">ProxyPassReverse</directive>
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+<directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
@@ -204,10 +206,16 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
 module="mod_proxy">ProxyPassReverse</directive> 지시어는
 <code>internal.example.com</code>이 보내는 리다이렉션을 재작성하여
 리다이렉션이 현재 서버의 적절한 디렉토리를 가리키도록 한다.
-그러나 문서 안에 있는 링크는 재작성하지 않음을 주의하라.
+또, <directive
+module="mod_proxy">ProxyPassReverseCookieDomain</directive>과
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>은
+같은 방법으로 원래 서버가 보낸 쿠키를 재작성한다.</p>
+<p>그러나 문서 안에 있는 링크는 재작성하지 않음을 주의하라.
 <code>internal.example.com</code>에 대한 절대링크는 클라이언트가
 프록시서버가 아니라 <code>internal.example.com</code>으로 직접
-요청하게 한다.</p>
+요청하게 한다. 제삼자가 만든 <a
+href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
+모듈을 사용하여 HTML과 XHTML에 있는 링크를 재작성할 수 있다.</p>
 </section>
 
 <section id="rewrite"><title>재작성 엔진 (Rewriting Engine)</title>

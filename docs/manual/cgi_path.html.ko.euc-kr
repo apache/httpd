@@ -47,7 +47,7 @@
     <div class="example"><p><code>
       Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
     </code></p></div>    
-    
+
     <p>이 경우 <code>user.cgi</code>는 CGI 스크립트이고, "/ralph"는
     CGI에 넘겨지는 정보다. 이 경우
     "<code>/cgi-ralph/script/</code>"로 요청이 들어오면 PATH는

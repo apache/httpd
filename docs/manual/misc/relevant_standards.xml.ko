@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.8 (outdated: 1.9) -->
+<!-- English Revision: 1.9 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -109,7 +109,7 @@
       HTML)는 플래폼과 무관한 하이퍼텍스트 문서를 위한 간단한
       마크업 언어이다. HTML 문서는 SGML 문서이기도 하다.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML&trade; 1.1 -
+      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
       모듈기반 XHTML</a>
       (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20010410-errata">정오표</a>)
       </dt>
@@ -118,7 +118,7 @@
       플레임워크와 모듈들을 기반으로 새로운 XHTML document type을
       정의한다.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML&trade; 1.0
+      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0
       확장 하이퍼텍스트 마크업 언어 (Extensible HyperText Markup
       Language) (Second Edition)</a>
       (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata">정오표</a>)

@@ -23,8 +23,6 @@
 <p><span>가능한 언어: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
      <p><code>rotatelogs</code>는 아파치의 파이프 로그파일 기능을
      위한 간단한 프로그램이다. 예를 들어:</p>
@@ -45,6 +43,13 @@
      <p>이 설정은 로그파일 크기가 5 메가바이트가 될때마다
      순환한다.</p>
 	 
+<div class="example"><p><code>
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</code></p></div>
+     <p>이 설정은 오류로그 파일 크기가 5 메가바이트가 될때마다
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>와 같은 파일을
+     만들어서 오류로그 파일을 순환한다.</p>
+
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">개요</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">옵션</a></li>
@@ -54,7 +59,9 @@
 <div class="section">
 <h2><a name="synopsis" id="synopsis">개요</a></h2>
 
-     <p><code><strong>rotatelogs</strong> <var>logfile</var>
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+     <var>logfile</var>
      [ <var>rotationtime</var> [ <var>offset</var> ]] |
      [ <var>filesize</var>M ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -62,6 +69,11 @@
 <h2><a name="options" id="options">옵션</a></h2>
 
 <dl>
+
+<dt><code>-l</code></dt>
+<dd>순환주기로 GMT 대신 지역시간을 사용한다. (BST나 DST와 같이)
+GMT 시간차가 변하는 환경에서 <code>-l</code>을 사용하면 예기치
+않은 결과가 발생할 수 있다!</dd>
 
 <dt><code><var>logfile</var></code></dt>
 
