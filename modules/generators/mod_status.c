@@ -85,7 +85,7 @@ static int status_handler(request_rec *r)
     ap_time_t *nowtime = NULL;
 
     ap_make_time(&nowtime, r->pool);
-    ap_curtime(nowtime);
+    ap_current_time(nowtime);
 
     r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)

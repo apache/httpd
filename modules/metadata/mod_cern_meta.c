@@ -229,7 +229,7 @@ static const command_rec cern_meta_cmds[] =
 /* XXX: this is very similar to ap_scan_script_header_err_core...
  * are the differences deliberate, or just a result of bit rot?
  */
-static int scan_meta_file(request_rec *r, FILE *f)
+static int scan_meta_file(request_rec *r, ap_file_t *f)
 {
     char w[MAX_STRING_LEN];
     char *l;
@@ -237,7 +237,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
     ap_table_t *tmp_headers;
 
     tmp_headers = ap_make_table(r->pool, 5);
-    while (fgets(w, MAX_STRING_LEN - 1, f) != NULL) {
+    while (ap_fgets(w, MAX_STRING_LEN - 1, f) != APR_SUCCESS) {
 
 	/* Delete terminal (CR?)LF */
 
@@ -295,7 +295,8 @@ static int add_cern_meta_data(request_rec *r)
     char *last_slash;
     char *real_file;
     char *scrap_book;
-    FILE *f;
+    ap_file_t *f = NULL;
+    ap_status_t retcode;
     cern_meta_dir_config *dconf;
     int rv;
     request_rec *rr;
@@ -354,8 +355,8 @@ static int add_cern_meta_data(request_rec *r)
     }
     ap_destroy_sub_req(rr);
 
-    f = ap_pfopen(r->pool, metafilename, "r");
-    if (f == NULL) {
+    retcode = ap_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
+    if (retcode != APR_SUCCESS) {
 	if (errno == ENOENT) {
 	    return DECLINED;
 	}
@@ -366,7 +367,7 @@ static int add_cern_meta_data(request_rec *r)
 
     /* read the headers in */
     rv = scan_meta_file(r, f);
-    ap_pfclose(r->pool, f);
+    ap_close(f);
 
     return rv;
 }

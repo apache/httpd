@@ -184,11 +184,11 @@ static void make_cookie(request_rec *r)
         struct tm *tms;
         ap_time_t *when = NULL;
         ap_int64_t req_time;
+        char *temp_cookie = NULL;
+        ap_size_t retsize;
         
         ap_make_time(&when, r->pool);
         ap_get_curtime(when, &req_time);
-        ap_set_curtime(when,  req_time + cls->expires);
-
 #ifndef MILLENIAL_COOKIES
         /*
          * Only two-digit date string, so we can't trust "00" or more.
@@ -196,18 +196,17 @@ static void make_cookie(request_rec *r)
          * 1/1/2000 (which is 946684799)
          */
 
-        if (when > 946684799)
-            when = 946684799;
+        if (req_time + cls->expires > 946684799) {
+            ap_set_curtime(when, 946684799);
+        }
+        else
 #endif
-        tms = gmtime(&when);
+            ap_set_curtime(when,  req_time + cls->expires);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        new_cookie = ap_psprintf(r->pool,
-                "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    dcfg->cookie_name, cookiebuf, ap_day_snames[tms->tm_wday],
-                    tms->tm_mday, ap_month_snames[tms->tm_mon],
-		    tms->tm_year % 100,
-                    tms->tm_hour, tms->tm_min, tms->tm_sec);
+        ap_strftime(temp_cookie, &retsize, MAX_STRING_LEN, "%a, %d-%h-%y %H:%M:%S GMT", when); 
+        new_cookie = ap_psprintf(r->pool, "%s=%s; path=/; expires=%s", 
+                                 dcfg->cookie_name, cookiebuf, temp_cookie);
     }
     else {
 	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",

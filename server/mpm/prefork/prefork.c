@@ -2985,6 +2985,12 @@ API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
     /* NOP */
 }
 
+ap_array_header_t *ap_get_status_table(ap_context_t *p)
+{
+    /* NOP */
+    return NULL;
+}
+
 API_EXPORT(void) ap_reset_connection_status(long conn_id)
 {
     /* NOP */
