@@ -277,8 +277,8 @@ Negotiation</a></li>
       <tr valign="top">
         <td>Media Type</td>
 
-        <td>Browser indicates preferences with the Accept header
-        field. Each item can have an associated quality factor.
+        <td>Browser indicates preferences with the <code>Accept</code>
+	header field. Each item can have an associated quality factor.
         Variant description can also have a quality factor (the
         "qs" parameter).</td>
       </tr>
@@ -286,26 +286,27 @@ Negotiation</a></li>
       <tr valign="top">
         <td>Language</td>
 
-        <td>Browser indicates preferences with the Accept-Language
-        header field. Each item can have a quality factor. Variants
-        can be associated with none, one or more than one
-        language.</td>
+        <td>Browser indicates preferences with the
+	<code>Accept-Language</code> header field. Each item can
+	have a quality factor. Variants can be associated with none,
+	one or more than one language.</td>
       </tr>
 
       <tr valign="top">
         <td>Encoding</td>
 
-        <td>Browser indicates preference with the Accept-Encoding
-        header field. Each item can have a quality factor.</td>
+        <td>Browser indicates preference with the
+	<code>Accept-Encoding</code> header field. Each item can have
+	a quality factor.</td>
       </tr>
 
       <tr valign="top">
         <td>Charset</td>
 
-        <td>Browser indicates preference with the Accept-Charset
-        header field. Each item can have a quality factor. Variants
-        can indicate a charset as a parameter of the media
-        type.</td>
+        <td>Browser indicates preference with the
+	<code>Accept-Charset</code> header field. Each item can have a
+	quality factor. Variants can indicate a charset as a parameter
+	of the media type.</td>
       </tr>
     </table>
 
@@ -332,30 +333,30 @@ Negotiation</a></li>
         move on to the next test. 
 
         <ol>
-          <li>Multiply the quality factor from the Accept header
-          with the quality-of-source factor for this variant's
-          media type, and select the variants with the highest
-          value.</li>
+          <li>Multiply the quality factor from the <code>Accept</code>
+	  header with the quality-of-source factor for this variants
+	  media type, and select the variants with the highest
+	  value.</li>
 
           <li>Select the variants with the highest language quality
           factor.</li>
 
           <li>Select the variants with the best language match,
           using either the order of languages in the
-          Accept-Language header (if present), or else the order of
-          languages in the <code>LanguagePriority</code> directive
-          (if present).</li>
+          <code>Accept-Language</code> header (if present), or else
+	  the order of languages in the <code>LanguagePriority</code>
+	  directive (if present).</li>
 
           <li>Select the variants with the highest 'level' media
           parameter (used to give the version of text/html media
           types).</li>
 
           <li>Select variants with the best charset media
-          parameters, as given on the Accept-Charset header line.
-          Charset ISO-8859-1 is acceptable unless explicitly
-          excluded. Variants with a <code>text/*</code> media type
-          but not explicitly associated with a particular charset
-          are assumed to be in ISO-8859-1.</li>
+	  parameters, as given on the <code>Accept-Charset</code>
+	  header line.  Charset ISO-8859-1 is acceptable unless
+	  explicitly excluded. Variants with a <code>text/*</code>
+	  media type but not explicitly associated with a particular
+	  charset are assumed to be in ISO-8859-1.</li>
 
           <li>Select those variants which have associated charset
           media parameters that are <em>not</em> ISO-8859-1. If
@@ -382,17 +383,17 @@ Negotiation</a></li>
       </li>
 
       <li>The algorithm has now selected one 'best' variant, so
-      return it as the response. The HTTP response header Vary is
-      set to indicate the dimensions of negotiation (browsers and
-      caches can use this information when caching the resource).
-      End.</li>
+      return it as the response. The HTTP response header
+      <code>Vary</code> is set to indicate the dimensions of
+      negotiation (browsers and caches can use this information when
+      caching the resource).  End.</li>
 
       <li>To get here means no variant was selected (because none
       are acceptable to the browser). Return a 406 status (meaning
       "No acceptable representation") with a response body
       consisting of an HTML document listing the available
-      variants. Also set the HTTP Vary header to indicate the
-      dimensions of variance.</li>
+      variants. Also set the HTTP <code>Vary</code> header to
+      indicate the dimensions of variance.</li>
     </ol>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -405,16 +406,16 @@ Negotiation</a></li>
     negotiation algorithm above. This is to get a better result
     from the algorithm for browsers which do not send full or
     accurate information. Some of the most popular browsers send
-    Accept header information which would otherwise result in the
-    selection of the wrong variant in many cases. If a browser
-    sends full and correct information these fiddles will not be
-    applied.</p>
+    <code>Accept</code> header information which would otherwise
+    result in the selection of the wrong variant in many cases. If a
+    browser sends full and correct information these fiddles will not
+    be applied.</p>
 
 <h3><a name="wildcards" id="wildcards">Media Types and Wildcards</a></h3>
 
-    <p>The Accept: request header indicates preferences for media
-    types. It can also include 'wildcard' media types, such as
-    "image/*" or "*/*" where the * matches any string. So a request
+    <p>The <code>Accept:</code> request header indicates preferences
+    for media types. It can also include 'wildcard' media types, such
+    as "image/*" or "*/*" where the * matches any string. So a request
     including:</p>
 
 <div class="example"><p><code>Accept: image/*, */*</code></p></div>
@@ -439,14 +440,14 @@ Negotiation</a></li>
     low preference of 0.01, so other types will only be returned if
     no variant matches an explicitly listed type.</p>
 
-    <p>If the Accept: header contains <em>no</em> q factors at all,
-    Apache sets the q value of "*/*", if present, to 0.01 to
-    emulate the desired behavior. It also sets the q value of
-    wildcards of the format "type/*" to 0.02 (so these are
-    preferred over matches against "*/*". If any media type on the
-    Accept: header contains a q factor, these special values are
-    <em>not</em> applied, so requests from browsers which send the
-    explicit information to start with work as expected.</p>
+    <p>If the <code>Accept:</code> header contains <em>no</em> q
+    factors at all, Apache sets the q value of "*/*", if present, to
+    0.01 to emulate the desired behavior. It also sets the q value of
+    wildcards of the format "type/*" to 0.02 (so these are preferred
+    over matches against "*/*". If any media type on the
+    <code>Accept:</code> header contains a q factor, these special
+    values are <em>not</em> applied, so requests from browsers which
+    send the explicit information to start with work as expected.</p>
 
 
 <h3><a name="exceptions" id="exceptions">Language Negotiation Exceptions</a></h3>
@@ -456,14 +457,16 @@ Negotiation</a></li>
     negotiation fails to find a match.</p>
 
     <p>When a client requests a page on your server, but the server
-    cannot find a single page that matches the Accept-language sent by
+    cannot find a single page that matches the
+    <code>Accept-language</code> sent by
     the browser, the server will return either a "No Acceptable
     Variant" or "Multiple Choices" response to the client.  To avoid
     these error messages, it is possible to configure Apache to ignore
-    the Accept-language in these cases and provide a document that
-    does not explicitly match the client's request.  The <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
+    the <code>Accept-language</code> in these cases and provide a
+    document that does not explicitly match the client's request.  The
+    <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     directive can be used to override one or both of these error
-    messages and substitute the servers judgement in the form of the 
+    messages and substitute the servers judgement in the form of the
     <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     directive.</p>
 
@@ -474,11 +477,11 @@ Negotiation</a></li>
     standard to match that against a document that is marked as simply
     <code>en</code>.  (Note that it is almost surely a configuration
     error to include <code>en-GB</code> and not <code>en</code> in the
-    Accept-Language header, since it is very unlikely that a reader
-    understands British English, but doesn't understand English in
-    general.  Unfortunately, many current clients have default
-    configurations that resemble this.)  However, if no other language
-    match is possible and the server is about to return a "No
+    <code>Accept-Language</code> header, since it is very unlikely
+    that a reader understands British English, but doesn't understand
+    English in general.  Unfortunately, many current clients have
+    default configurations that resemble this.)  However, if no other
+    language match is possible and the server is about to return a "No
     Acceptable Variants" error or fallback to the <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, the server
     will ignore the subset specification and match <code>en-GB</code>
     against <code>en</code> documents.  Implicitly, Apache will add
@@ -490,7 +493,7 @@ Negotiation</a></li>
     specification and to work effectively with properly configured
     clients.</p>
 
-    <p>In order to support advanced techniques (such as Cookies or
+    <p>In order to support advanced techniques (such as cookies or
     special URL-paths) to determine the user's preferred language,
     since Apache 2.0.47 <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> recognizes
     the <a href="env.html">environment variable</a>
@@ -514,9 +517,9 @@ variant lists to label variants which are available with a specific
 content-encoding only. The implementation of the RVSA/1.0 algorithm
 (RFC 2296) is extended to recognize encoded variants in the list, and
 to use them as candidate variants whenever their encodings are
-acceptable according to the Accept-Encoding request header. The
-RVSA/1.0 implementation does not round computed quality factors to 5
-decimal places before choosing the best variant.</p>
+acceptable according to the <code>Accept-Encoding</code> request
+header. The RVSA/1.0 implementation does not round computed quality
+factors to 5 decimal places before choosing the best variant.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a></h2>
