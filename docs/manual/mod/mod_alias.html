@@ -39,6 +39,12 @@ Example:
 <blockquote><code>Alias /image /ftp/pub/image</code></blockquote>
 A request for http://myserver/image/foo.gif would cause the server to
 return the file /ftp/pub/image/foo.gif.<p>
+
+Note that if you include a trailing / on the <em>url-path</em> then the
+server will require a trailing / in order to expand the alias.  That is,
+if you use <code>Alias /icons/ /usr/local/etc/httpd/icons/</code> then
+the url <code>/icons</code> will not be aliased.<p>
+
 See also <A HREF="#scriptalias">ScriptAlias</A>.<p><hr>
 
 <A name="redirect"><h2>Redirect</h2></A>
