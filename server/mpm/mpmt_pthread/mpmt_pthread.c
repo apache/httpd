@@ -1407,7 +1407,6 @@ module AP_MODULE_DECLARE_DATA mpm_mpmt_pthread_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     mpmt_pthread_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     mpmt_pthread_hooks		/* register_hooks */
 };
 

@@ -401,6 +401,5 @@ module userdir_module = {
     create_userdir_config,      /* server config */
     NULL,                       /* merge server config */
     userdir_cmds,               /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

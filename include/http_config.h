@@ -317,20 +317,6 @@ struct cmd_parms_struct {
     const ap_directive_t *err_directive;
 };
 
-typedef struct handler_rec handler_rec;
-
-/** This structure records the existence of handlers in a module... */
-struct handler_rec {
-    /** The type of content this handler function will handle.  
-     *  MUST be all lower case 
-     */
-    const char *content_type;
-    /** The function to call when this context-type is requested. 
-     *  @deffunc int handler(request_rec *)
-     */
-    int (*handler) (request_rec *);
-};
-
 typedef struct module_struct module;
 /**
  * Module structures.  Just about everything is dispatched through
@@ -405,9 +391,6 @@ struct module_struct {
     /** A command_rec table that describes all of the directives this module
      * defines. */
     const command_rec *cmds;
-    /** A handler_rec table that describes all of the mime-types this module
-     *  will server responses for. */
-    const handler_rec *handlers;
 
     /** A hook to allow modules to hook other points in the request processing.
      *  In this function, modules should call the ap_hook_*() functions to
@@ -1007,6 +990,15 @@ AP_DECLARE_HOOK(void,open_logs,
  * @deffunc void ap_run_child_init(apr_pool_t *pchild, server_rec *s)
  */
 AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
+
+/**
+ * Run the handler functions for each module
+ * @param handler The handler string (a MIME type or a handler)
+ * @param r The request_rec
+ * @deffunc void ap_run_handler(const char *handler,request_rec *r)
+ * @tip non-wildcard handlers should HOOK_MIDDLE, wildcard HOOK_LAST
+ */
+AP_DECLARE_HOOK(int,handler,(const char *handler,request_rec *r))
 
 #ifdef __cplusplus
 }

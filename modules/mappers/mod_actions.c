@@ -158,7 +158,7 @@ static const command_rec action_cmds[] =
     {NULL}
 };
 
-static int action_handler(request_rec *r)
+static int action_handler(const char *handler,request_rec *r)
 {
     action_dir_config *conf = (action_dir_config *)
         ap_get_module_config(r->per_dir_config, &action_module);
@@ -166,6 +166,8 @@ static int action_handler(request_rec *r)
 	ap_field_noparam(r->pool, r->content_type);
     const char *script;
     int i;
+
+    /* Note that this handler handles _all_ types, so handler is unchecked */
 
     /* Set allowed stuff */
     for (i = 0; i < METHODS; ++i) {
@@ -207,11 +209,10 @@ static int action_handler(request_rec *r)
     return OK;
 }
 
-static const handler_rec action_handlers[] =
+static void register_hooks(void)
 {
-    {"*/*", action_handler},
-    {NULL}
-};
+    ap_hook_handler(action_handler,NULL,NULL,AP_HOOK_LAST);
+}
 
 module action_module =
 {
@@ -221,6 +222,5 @@ module action_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     action_cmds,		/* command apr_table_t */
-    action_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };

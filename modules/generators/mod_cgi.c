@@ -498,7 +498,7 @@ static apr_status_t build_command_line(const char **cmd, request_rec *r,
     return APR_SUCCESS;
 }
 
-static int cgi_handler(request_rec *r)
+static int cgi_handler(const char *handler, request_rec *r)
 {
     int retval, nph, dbpos = 0;
     const char *argv0;
@@ -513,6 +513,9 @@ static int cgi_handler(request_rec *r)
     apr_pool_t *p;
     cgi_server_conf *conf;
     apr_status_t rv;
+
+    if(strcmp(handler,CGI_MAGIC_TYPE) && strcmp(handler,"cgi-script"))
+	return DECLINED;
 
     p = r->main ? r->main->pool : r->pool;
 
@@ -717,12 +720,10 @@ static int cgi_handler(request_rec *r)
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
-static const handler_rec cgi_handlers[] =
+static void register_hooks(void)
 {
-    {CGI_MAGIC_TYPE, cgi_handler},
-    {"cgi-script", cgi_handler},
-    {NULL}
-};
+    ap_hook_handler(cgi_handler, NULL, NULL, AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA cgi_module =
 {
@@ -732,6 +733,5 @@ module AP_MODULE_DECLARE_DATA cgi_module =
     create_cgi_config,		/* server config */
     merge_cgi_config,		/* merge server config */
     cgi_cmds,			/* command apr_table_t */
-    cgi_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };

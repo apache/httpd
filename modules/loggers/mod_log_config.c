@@ -1256,6 +1256,5 @@ module AP_MODULE_DECLARE_DATA config_log_module =
     make_config_log_state,      /* server config */
     merge_config_log_state,     /* merge server config */
     config_log_cmds,            /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

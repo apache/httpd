@@ -79,6 +79,5 @@ module generic_hook_import_module=
     NULL,
     NULL,
     NULL,
-    NULL,
     ImportRegisterHooks
 };
