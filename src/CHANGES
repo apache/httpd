@@ -1,5 +1,7 @@
 Changes with Apache 1.2
 
+  *) Fixed open timestamp fd in proxy_cache.c [Chuck Murcko]
+
   *) Added undocumented perl SSI mechanism for -DUSE_PERL_SSI and mod_perl.
      [Rob Hartill]
 
