@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/29 08:49:44 $]
+Last modified at [$Date: 2003/01/29 17:30:25 $]
 
 Release:
 
@@ -95,7 +95,11 @@ PATCHES TO PORT FROM 2.1
       +1: nd, jerenkrantz
 
     * Fix If header handling to ignore non-mod_dav locks. (PR 16452)
-      modules/dav/main/util.c: r1.43
+      modules/dav/main/util.c: r1.44
+      +1: jerenkrantz
+
+    * Allow mod_dav to do weak entity comparison functions.
+      modules/dav/main/util.c: r1.45
       +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
