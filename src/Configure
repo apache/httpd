@@ -173,6 +173,8 @@ case "$PLAT" in
 	;;
     *-sgi-irix64)
 # Note: We'd like to see patches to compile 64-bit, but for now...
+	echo "You are running 64-bit Irix. For now, we will compile 32-bit"
+	echo "but if you would care to port to 64-bit, send us the patches."
 	CFLAGS="$CFLAGS -n32"
 	LFLAGS="$LFLAGS -n32"
 	DEF_WANTHSREGEX=yes
@@ -300,7 +302,9 @@ case "$PLAT" in
 	uname -v
 	echo uname -X
 	uname -X
-	echo Please Email this output to apache-bugs@apache.org
+	echo Ideally, read the file PORTING, do what it says and send the
+	echo resulting patches to apache-bugs@apache.org. Otherwise, email
+	echo this output to apache-bugs@apache.org.
 	echo Thank you
 	exit 1
 	;;
