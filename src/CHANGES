@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Correct some filename case assumptions from WIN32 to
+     CASE_BLIND_FILESYSTEM.  [Brian Havard <brianh@kheldar.apana.org.au>]
+
   *) For %v log ServerName regardless of the UseCanonicalName
      setting (similarly for %p).  [Dean Gaudet]
 

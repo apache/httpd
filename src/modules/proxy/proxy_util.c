@@ -674,10 +674,10 @@ int ap_proxy_liststr(const char *list, const char *val)
     return 0;
 }
 
-#ifdef WIN32
+#ifdef CASE_BLIND_FILESYSTEM
 
 /*
- * On NT, the file system is NOT case sensitive. So, a == A
+ * On some platforms, the file system is NOT case sensitive. So, a == A
  * need to map to smaller set of characters
  */
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
@@ -775,7 +775,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-#endif /* WIN32 */
+#endif /* CASE_BLIND_FILESYSTEM */
 
 /*
  * Converts 8 hex digits to a time integer
