@@ -75,6 +75,7 @@ module AP_MODULE_DECLARE_DATA bucketeer_module;
 typedef struct bucketeer_filter_config_t
 {
     char bucketdelimter;
+    char passdelimiter;
     char flushdelimiter;
 
 } bucketeer_filter_config_t;
@@ -85,6 +86,7 @@ static void *create_bucketeer_server_config(apr_pool_t *p, server_rec *s)
     bucketeer_filter_config_t *c = apr_pcalloc(p, sizeof *c);
 
     c->bucketdelimter = 0x02; /* ^B */
+    c->passdelimiter = 0x10; /* ^P */
     c->flushdelimiter = 0x06; /* ^F */
 
     return c;
@@ -121,6 +123,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(f->r->pool); 
+        apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
     APR_BRIGADE_FOREACH(e, bb) {
@@ -155,7 +158,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         if (len>0) {
             lastpos=0;
             for (i=0; i<len;i++) {
-                if ( data[i] == c->flushdelimiter ) {
+                if ( data[i] == c->flushdelimiter ||data[i] == c->bucketdelimter || data[i] == c->passdelimiter) {
                     apr_bucket *p;
                     if ( i-lastpos>0) {
                         p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,
@@ -166,26 +169,15 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                         APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
                     }
                     lastpos=i+1;
-
-                    p = apr_bucket_flush_create();
-                    APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
-
-                } 
-                else {
-                    if (data[i] == c->bucketdelimter) {
-                        apr_bucket *p;
-                        if ( i-lastpos>0) {
-                            p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,
-                                                                &data[lastpos],
-                                                                i-lastpos),
-                                                       i-lastpos,
-                                                       f->r->pool);
-
-                            APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
-                        }
-                        lastpos=i+1;
+                    if ( data[i] == c->flushdelimiter) {
+                        p = apr_bucket_flush_create();
+                        APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
                     }
-                }
+                    if ( data[i] == c->flushdelimiter || data[i] == c->passdelimiter ) {
+                        ap_pass_brigade(f->next, ctx->bb);
+                       /* apr_brigade_cleanup(ctx->bb);*/
+                    }
+                }                       
             }
             /* XXX: really should append this to the next 'real' bucket */
             if ( lastpos < i ) {
