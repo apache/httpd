@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add support for "streamy" PROPFIND responses.
+     [Ben Collins-Sussman <sussman@collab.net>]
+
   *) Add support for IMT minor-type wildcards (e.g., text/*) to
      ExpiresByType.  PR#7991  [Ken Coar]
 
