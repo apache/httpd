@@ -15,32 +15,57 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_auth_db</H1>
 
-This module is contained in the <CODE>mod_auth_db.c</CODE> file, and
-is not compiled in by default. It provides for user authentication using
-Berkeley DB files. It is an alternative to <A HREF="mod_auth_dbm.html">DBM</A>
-files for those systems which support DB and not DBM. It is only
-available in Apache 1.1 and later.
+<p>This module provides for user authentication using Berkeley DB
+files. </p>
 
-<P>
-On some BSD systems (<EM>e.g.</EM>, FreeBSD and NetBSD) dbm is automatically mapped to
-Berkeley DB. You can use either <A HREF="mod_auth_dbm.html">mod_auth_dbm</A>
-or mod_auth_db. The latter makes it more obvious that it's Berkeley DB.  On
-other platforms where you want to use the DB library you usually have to
-install it first. See 
-<A HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
-distribution. The interface this module uses is the one from DB version 1.85
-and 1.86, but DB version 2.x can also be used when compatibility mode is
-enabled.
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_auth_db.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> db_auth_module
+</P>
 
-<MENU>
+<h2>Summary</h2>
+
+<p>This module provides an alternative to <A
+HREF="mod_auth_dbm.html">DBM</A> files for those systems which support
+DB and not DBM. It is only available in Apache 1.1 and later.</p>
+
+<p>On some BSD systems (<EM>e.g.</EM>, FreeBSD and NetBSD) dbm is
+automatically mapped to Berkeley DB. You can use either <A
+HREF="mod_auth_dbm.html">mod_auth_dbm</A> or mod_auth_db. The latter
+makes it more obvious that it's Berkeley DB.  On other platforms where
+you want to use the DB library you usually have to install it
+first. See <A
+HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
+distribution. The interface this module uses is the one from DB
+version 1.85 and 1.86, but DB version 2.x can also be used when
+compatibility mode is enabled.</p>
+
+<h2>Directives</h2>
+
+<UL>
 <LI><A HREF="#authdbgroupfile">AuthDBGroupFile</A>
 <LI><A HREF="#authdbuserfile">AuthDBUserFile</A>
 <LI><A HREF="#authdbauthoritative">AuthDBAuthoritative</A>
-</MENU>
+</UL>
+
+<p>See also: <a href="core.html#satisfy">satisfy</a> and 
+<a href="core.html#require">require</a>.</p>
+
 <HR>
 
 
-<H2><A NAME="authdbgroupfile">AuthDBGroupFile</A></H2>
+<H2><A NAME="authdbgroupfile">AuthDBGroupFile directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AuthDBGroupFile} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -103,7 +128,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
 <A HREF="#authdbuserfile">AuthDBUserFile</A>.<P><HR>
 
-<H2><A NAME="authdbuserfile">AuthDBUserFile</A></H2>
+<H2><A NAME="authdbuserfile">AuthDBUserFile</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt AuthDBUserFile} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -152,13 +177,17 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
 <A HREF="#authdbgroupfile">AuthDBGroupFile</A>.<P>
 <HR>
-<H2><A NAME="authdbauthoritative">AuthDBAuthoritative</A></H2>
+<H2><A NAME="authdbauthoritative">AuthDBAuthoritative</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt AuthDBAuthoritative} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> AuthDBAuthoritative &lt;
- <STRONG> on</STRONG>(default) | off &gt; <BR>
+ <STRONG> on</STRONG>| off &gt; <BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDBAuthoritative on</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -195,13 +224,10 @@ Whereas this DB module supplies the bulk of the user credential
 checking; a few (administrator) related accesses fall through to
 a lower level with a well protected .htpasswd file.  <P>
 
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> By default; control is not passed on; and an
-unknown
+
+By default, control is not passed on and an unknown
 userID or rule will result in an Authorization Required reply. Not
-setting it thus keeps the system secure; and forces an NCSA compliant
+setting it thus keeps the system secure and forces an NCSA compliant
 behaviour.  <P>
 Security: Do consider the implications of allowing a user to allow
 fall-through in his .htaccess file; and verify that this is really

@@ -16,16 +16,42 @@
 
 <H1 ALIGN="CENTER">Module mod_auth_dbm</H1>
 
-This module is contained in the <CODE>mod_auth_dbm.c</CODE> file, and
-is not compiled in by default. It provides for user authentication using
-DBM files.
+<p>This module provides for user authentication using DBM files.</p>
 
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_auth_dbm.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> dbm_auth_module
+</P>
 
-<MENU>
+<h2>Summary</h2>
+
+<p>This module provides for HTTP Basic Authentication, where the
+usernames and passwords are stored in DBM type database files.  It is
+an alternative to the plain text password files provided by <a
+href="mod_auth.html">mod_auth</A> and the Berkely DB password files
+provided by <a href="mod_auth_db.html">mod_auth_db</a>.</p>
+
+<h2>Directives</h2>
+
+<ul>
 <LI><A HREF="#authdbmgroupfile">AuthDBMGroupFile</A>
 <LI><A HREF="#authdbmuserfile">AuthDBMUserFile</A>
 <LI><A HREF="#authdbmauthoritative">AuthDBMAuthoritative</A>
-</MENU>
+</ul>
+
+<p>See also: <a href="core.html#satisfy">Satisfy</a> and 
+<a href="core.html#require">Require</a>.
 <HR>
 
 
@@ -148,7 +174,11 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBMAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
+><STRONG>Syntax:</STRONG></A> AuthDBMAuthoritative &lt; <STRONG> on</STRONG> | off &gt; <BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <code>AuthDBMAuthoritative on</code><br>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -160,11 +190,11 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
+><STRONG>Status:</STRONG></A> Extension<BR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth<P>
+><STRONG>Module:</STRONG></A> mod_auth_dbm<P>
 
 Setting the AuthDBMAuthoritative directive explicitly to <STRONG>'off'</STRONG>
 allows for both authentication and authorization to be passed on
@@ -185,13 +215,10 @@ Whereas this DBM module supplies the bulk of the user credential
 checking; a few (administrator) related accesses fall through to
 a lower level with a well protected .htpasswd file.  <P>
 
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> By default; control is not passed on; and an unknown
-userID or rule will result in an Authorization Required reply. Not
-setting it thus keeps the system secure; and forces an NCSA compliant
-behaviour.  <P>
+
+By default, control is not passed on and an unknown userID or rule
+will result in an Authorization Required reply. Not setting it thus
+keeps the system secure and forces an NCSA compliant behaviour.  <P>
 
 Security: Do consider the implications of allowing a user to allow
 fall-through in his .htaccess file; and verify that this is really
