@@ -460,7 +460,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     while (1) {
 
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Premature end of script headers: %s", r->filename);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
@@ -543,7 +543,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 		}
 	    }
 
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "%s: %s", malformed, r->filename);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}

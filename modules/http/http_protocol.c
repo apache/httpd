@@ -971,7 +971,7 @@ request_rec *ap_read_request(conn_rec *conn)
     /* Get the request... */
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                          "request failed: URI too long");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
@@ -986,7 +986,7 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!r->assbackwards) {
         get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                          "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
@@ -1000,7 +1000,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * headers! Have to dink things just to make sure the error message
              * comes through...
              */
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "client sent invalid HTTP/0.9 request: HEAD %s",
                           r->uri);
             r->header_only = 0;
@@ -1034,7 +1034,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
         r->status = HTTP_BAD_REQUEST;
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2068 section 9, and 14.23): %s", r->uri);
         ap_send_error_response(r, 0);
@@ -1054,7 +1054,7 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         else {
             r->status = HTTP_EXPECTATION_FAILED;
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
@@ -1154,7 +1154,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-		    r, "need AuthName: %s", r->uri);
+		    0, r, "need AuthName: %s", r->uri);
         return SERVER_ERROR;
     }
 
@@ -1165,7 +1165,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
         return AUTH_REQUIRED;
@@ -1715,12 +1715,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
@@ -1733,7 +1733,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         while (ap_isdigit(*pos) || ap_isspace(*pos))
             ++pos;
         if (*pos != '\0') {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
@@ -1743,14 +1743,14 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if ((r->read_body == REQUEST_NO_BODY) &&
         (r->read_chunked || (r->remaining > 0))) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
     max_body = ap_get_limit_req_body(r);
     if (max_body && (r->remaining > max_body)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
           "Request content-length of %s is larger than the configured "
           "limit of %lu", lenp, max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
@@ -1847,7 +1847,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
      */
     max_body = ap_get_limit_req_body(r);
     if (max_body && (r->read_length > max_body)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
             "Chunked request body is larger than the configured limit of %lu",
             max_body);
         r->connection->keepalive = -1;
@@ -2045,7 +2045,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
             }
             else if (w < 0) {
                 if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                      "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2120,7 +2120,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             }
             else if (w < 0) {
                 if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                         "client stopped connection before rflush completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2179,7 +2179,7 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                      "client stopped connection before send mmap completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2200,7 +2200,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 
     if (ap_bputc(c, r->connection->client) < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before rputc completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2221,7 +2221,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
     rcode = ap_bputs(str, r->connection->client);
     if (rcode < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before rputs completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2242,7 +2242,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     n = ap_bwrite(r->connection->client, buf, nbyte);
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before rwrite completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2264,7 +2264,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
 
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before vrprintf completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2289,7 +2289,7 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before rprintf completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2320,7 +2320,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
         if (i != j) {
             va_end(args);
             if (!r->connection->aborted) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                     "client stopped connection before rvputs completed");
                 ap_bsetflag(r->connection->client, B_EOUT, 1);
                 r->connection->aborted = 1;
@@ -2339,7 +2339,7 @@ API_EXPORT(int) ap_rflush(request_rec *r)
 {
     if (ap_bflush(r->connection->client) < 0) {
         if (!ap_is_aborted(r->connection)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
                 "client stopped connection before rflush completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;

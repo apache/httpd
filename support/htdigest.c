@@ -66,6 +66,7 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
+#include "apr_lib.h"
 #include "ap_config.h"
 #include <sys/types.h>
 #include "ap.h"
@@ -145,12 +146,15 @@ static void add_password(char *user, char *realm, FILE *f)
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
+    size_t bufsize;
 
-    if (ap_getpass("New password: ", pwin, sizeof(pwin)) != 0) {
+    bufsize = sizeof(pwin);
+    if (ap_getpass("New password: ", pwin, &bufsize) != 0) {
 	fprintf(stderr, "password too long");
 	exit(5);
     }
-    ap_getpass("Re-type new password: ", pwv, sizeof(pwv));
+    bufsize = sizeof(pwv);
+    ap_getpass("Re-type new password: ", pwv, &bufsize);
     if (strcmp(pwin, pwv) != 0) {
 	fprintf(stderr, "They don't match, sorry.\n");
 	if (tn) {

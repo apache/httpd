@@ -252,7 +252,7 @@ static void mime_post_config(ap_context_t *p, ap_context_t *plog, ap_context_t *
     types_confname = ap_server_root_relative(p, types_confname);
 
     if (!(f = ap_pcfg_openfile(p, types_confname))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s,
 		     "could not open mime types log file %s.", types_confname);
         exit(1);
     }

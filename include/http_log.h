@@ -114,12 +114,14 @@ void ap_open_logs (server_rec *, ap_context_t *p);
  * attack and other messy behavior.  Instead, use a simple format string
  * like "%s", followed by the string containing the untrusted data.
  */
-API_EXPORT(void) ap_log_error(const char *file, int line, int level,
-			     const server_rec *s, const char *fmt, ...)
-			    __attribute__((format(printf,5,6)));
-API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
-			     const request_rec *s, const char *fmt, ...)
-			    __attribute__((format(printf,5,6)));
+API_EXPORT(void) ap_log_error(const char *file, int line, int level, 
+                             ap_status_t status, const server_rec *s, 
+                             const char *fmt, ...)
+			    __attribute__((format(printf,6,7)));
+API_EXPORT(void) ap_log_rerror(const char *file, int line, int level, 
+                               ap_status_t status, const request_rec *s, 
+                               const char *fmt, ...)
+			    __attribute__((format(printf,6,7)));
 API_EXPORT(void) ap_error_log2stderr (server_rec *);     
 
 void ap_log_pid (ap_context_t *p, const char *fname);
