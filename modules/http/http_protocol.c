@@ -2394,16 +2394,20 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         b = AP_BRIGADE_FIRST(r->connection->input_data);
         len_read = len_to_read;
         rv = b->read(b, &tempbuf, &len_read, 0);
-        if (len_read < b->length) {
-            b->split(b, len_read);
+        if (len_to_read < b->length) {
+            b->split(b, len_to_read);
         }
-        memcpy(buffer, tempbuf, len_read);
+        else {
+            len_to_read = len_read;
+        }
+
+        memcpy(buffer, tempbuf, len_to_read);
         AP_BUCKET_REMOVE(b);
         b->destroy(b);
 
-        r->read_length += len_read;
-        r->remaining -= len_read;
-        return len_read;
+        r->read_length += len_to_read;
+        r->remaining -= len_to_read;
+        return len_to_read;
     }
 
     /*
