@@ -2238,13 +2238,11 @@
     The Port directive in Apache-1.3, which used to perform this role, has also
     been removed, easing configuration for all users.</p>
 
-    <p>If the port has been specified, then automatic redirections
-    (e.g., by the <a href="mod_dir.html">mod_dir</a> module) will
-    <em>always</em> use the given port, no matter what the actual
-    request's port number was. If no port number was specified, however,
-    the setting of <a href="#usecanonicalname">UseCanonicalName</a>
-    decides whether the default port (80 for http://, 443 for https://),
-    or the actual port the request came in on, will be used in redirections.
+    <p>See the description of the
+    <a href="#usecanonicalname">UseCanonicalName</a> directive for
+    settings which determine whether self-referential URL's (e.g., by the
+    <a href="mod_dir.html">mod_dir</a> module) will use the specified
+    port, or the port to which the client connected.
     </p>
 
     <p><strong>See Also</strong>:<br />
