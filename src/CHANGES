@@ -1,4 +1,6 @@
-Changes with Apache 1.3b8
+Changes with Apache 1.3.1
+
+Changes with Apache 1.3.0
 
   *) Using a type map file as a custom error document was not possible.
      [Lars Eilebrecht] PR#1031
