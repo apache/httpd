@@ -112,6 +112,7 @@ my @opt_D = ();
 my @opt_I = ();
 my @opt_L = ();
 my @opt_l = ();
+my @opt_W = ();
 my $opt_i = 0;
 my $opt_a = 0;
 my $opt_A = 0;
@@ -186,14 +187,15 @@ sub usage {
     print STDERR "Usage: apxs -g -n <modname>\n";
     print STDERR "       apxs -q <query> ...\n";
     print STDERR "       apxs -c [-o <dsofile>] [-D <name>[=<value>]] [-I <incdir>]\n";
-    print STDERR "               [-L <libdir>] [-l <libname>] <files> ...\n";
+    print STDERR "               [-L <libdir>] [-l <libname>] [-Wc,<flags>] [-Wl,<flags>]\n";
+    print STDERR "               <files> ...\n";
     print STDERR "       apxs -i [-a] [-n <modname>] <dsofile> ...\n";
     exit(1);
 }
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+iaA", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+iaA", @ARGV);
 &usage if ($rc == 0);
 &usage if ($#ARGV == -1 and not $opt_g);
 &usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c);
@@ -324,7 +326,10 @@ if ($opt_c) {
     #   create compilation commands
     my @cmds = ();
     my $opt = '';
-    my ($opt_I, $opt_D);
+    my ($opt_Wc, $opt_I, $opt_D);
+    foreach $opt_Wc (@opt_W) {
+        $opt .= "$1 " if ($opt_Wc =~ m|^\s*c,(.*)$|);
+    }
     foreach $opt_I (@opt_I) {
         $opt .= "-I$opt_I ";
     }
@@ -347,7 +352,10 @@ if ($opt_c) {
         $cmd .= " $o";
     }
     $opt = '';
-    my ($opt_L, $opt_l);
+    my ($opt_Wl, $opt_L, $opt_l);
+    foreach $opt_Wl (@opt_W) {
+        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
+    }
     foreach $opt_L (@opt_L) {
         $opt .= " -L$opt_L";
     }

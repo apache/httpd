@@ -79,6 +79,12 @@ apxs \- APache eXtenSion tool
 [
 .BI \-l " libname"
 ]
+[
+.BI \-Wc, "compiler-flags"
+]
+[
+.BI \-Wl, "linker-flags"
+]
 .IR files " ..."
 
 .B apxs
@@ -269,6 +275,18 @@ Use this to add your own library directories to search to the build process.
 .BI \-l " libname"
 This option is directly passed through to the linker command.
 Use this to add your own libraries to search to the build process.
+.TP 12
+.BI \-Wc, "compiler-flags"
+This option passes 
+.I compiler-flags
+as additional flags to the compiler command.
+Use this to add local compiler-specific options.
+.TP 12
+.BI \-Wl, "linker-flags"
+This option passes 
+.I linker-flags
+as additional flags to the linker command.
+Use this to add local linker-specific options.
 .PP
 DSO installation options:
 .TP 12

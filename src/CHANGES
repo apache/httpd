@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Allow special options -Wc,xxx and -Wl,xxx on APXS compile/link command.
+     They can occur multiple times and their arguments (`xxx') are passed AS
+     IS to the compiler/linker command.  [Ralf S. Engelschall]
+
   *) Fixed possible (but harmless in practice) bug in the DBM lookup
      procedure of mod_rewrite: very long keys were truncated.
      [Ralf S. Engelschall]
