@@ -1,5 +1,8 @@
 Changes with Apache 2.0.25-dev
 
+  *) Added documentation for mod_ldap and mod_auth_ldap.
+     [Graham Leggett]
+
   *) Enabled negative caching on attribute comparisons in the LDAP cache.
      Fixed a problem where the default cache TTL was set in milliseconds
      not microseconds causing the cache to time out almost immediately.
