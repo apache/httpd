@@ -85,7 +85,7 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
     }
 
     if (szPath[0] == '/' && szPath[1] == '/') {
-	char buf[_MAX_PATH];
+	char buf[MAX_PATH];
 	char *s;
 	int nSlashes = 0;
 

@@ -69,9 +69,17 @@
  */
 #define _WIN32_WINNT 0x0400
 
+/* If it isn't too late, prevent windows.h from including the original
+ * winsock.h header, so that we can still include winsock2.h
+ */
+#if !defined(_WINSOCKAPI_) || !defined(_WINDOWS_)
+#define _WINSOCKAPI_
 #include <windows.h>
 #include <winsock2.h>
 #include <mswsock.h>
+#else
+#include <windows.h>
+#endif
 #include <process.h>
 #include <malloc.h>
 #include <io.h>
