@@ -9,15 +9,6 @@
 
   <summary>
 
-    <note type="warning"><title>Warning:</title>
-      <p>This document has not been fully updated
-      to take into account changes made in the 2.0 version of the
-      Apache HTTP Server. Some of the information may still be
-      relevant, but please use it with care.</p>
-    </note>
-
-    <p>Orignally written by Dean Gaudet.</p>
-
     <p>Apache 2.0 is a general-purpose webserver, designed to
     provide a balance of flexibility, portability, and performance.
     Although it has not been designed specifically to set benchmark
@@ -557,6 +548,13 @@
 
       <title>accept Serialization - multiple sockets</title>
 
+    <note type="warning"><title>Warning:</title>
+      <p>This section has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </note>
+
       <p>This discusses a shortcoming in the Unix socket API. Suppose
       your web server uses multiple <directive module="mpm_common"
       >Listen</directive> statements to listen on either multiple
@@ -688,6 +686,10 @@
       architectures it is unsafe to use multiple
       <directive module="mpm_common">Listen</directive>
       directives.</p>
+
+      <p>The directive <directive
+      module="mpm_common">AcceptMutex</directive> can be used to
+      change the selected mutuex implimentation at run-time.</p>
 
       <dl>
         <dt><code>USE_FLOCK_SERIALIZED_ACCEPT</code></dt>

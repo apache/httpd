@@ -22,15 +22,6 @@
 </div>
 
 
-    <div class="warning"><h3>Warning:</h3>
-      <p>This document has not been fully updated
-      to take into account changes made in the 2.0 version of the
-      Apache HTTP Server. Some of the information may still be
-      relevant, but please use it with care.</p>
-    </div>
-
-    <p>Orignally written by Dean Gaudet.</p>
-
     <p>Apache 2.0 is a general-purpose webserver, designed to
     provide a balance of flexibility, portability, and performance.
     Although it has not been designed specifically to set benchmark
@@ -544,6 +535,13 @@
 
       
 
+    <div class="warning"><h3>Warning:</h3>
+      <p>This section has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </div>
+
       <p>This discusses a shortcoming in the Unix socket API. Suppose
       your web server uses multiple <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> statements to listen on either multiple
       ports or multiple addresses. In order to test each socket
@@ -673,6 +671,9 @@
       architectures it is unsafe to use multiple
       <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
       directives.</p>
+
+      <p>The directive <code class="directive"><a href="../mod/mpm_common.html#acceptmutex">AcceptMutex</a></code> can be used to
+      change the selected mutuex implimentation at run-time.</p>
 
       <dl>
         <dt><code>USE_FLOCK_SERIALIZED_ACCEPT</code></dt>
