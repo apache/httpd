@@ -1352,7 +1352,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     fsctx->res2.collection = 0;
 
     /* open and scan the directory */
-    if ((apr_opendir(&dirp, fsctx->path1.buf, pool)) != APR_SUCCESS) {
+    if ((apr_dir_open(&dirp, fsctx->path1.buf, pool)) != APR_SUCCESS) {
 	/* ### need a better error */
 	return dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
     }
