@@ -828,6 +828,7 @@ char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC)
 static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, char *arg,
 		       int type)
 {
@@ -873,6 +874,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, char *arg,
 	    limit->rlim_max = max;
     }
 }
+#endif
 
 static char *no_set_limit (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
