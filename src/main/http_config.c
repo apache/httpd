@@ -209,7 +209,7 @@ void *create_request_config(pool *p)
     return create_empty_config(p);
 }
 
-API_EXPORT(void *) create_per_dir_config(pool *p)
+CORE_EXPORT(void *) create_per_dir_config(pool *p)
 {
     return create_empty_config(p);
 }
