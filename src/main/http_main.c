@@ -999,6 +999,10 @@ static void usage(char *bin)
     fprintf(stderr, "  -l               : list compiled-in modules\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
     fprintf(stderr, "  -t               : run syntax test for configuration files only\n");
+#ifdef WIN32
+    fprintf(stderr, "  -k shutdown      : tell running Apache to shutdown\n");
+    fprintf(stderr, "  -k restart       : tell running Apache to do a graceful restart\n");
+#endif
     exit(1);
 }
 
@@ -2542,17 +2546,41 @@ static int volatile generation;
 
 #ifdef WIN32
 /*
- * signal_parent() tells the parent process to wake up and do something.
- * Once woken it will look at shutdown_pending and restart_pending to decide
- * what to do. If neither variable is set, it will do a shutdown. This function
- * if called by start_shutdown() or start_restart() in the parent's process
- * space, so that the variables get set. However it can also be called 
- * by child processes to force the parent to exit in an emergency.
+ * Signalling Apache on NT.
+ *
+ * Under Unix, Apache can be told to shutdown or restart by sending various
+ * signals (HUP, USR, TERM). On NT we don't have easy access to signals, so
+ * we use "events" instead. The parent apache process goes into a loop
+ * where it waits forever for a set of events. Two of those events are
+ * called
+ *
+ *    apPID_shutdown
+ *    apPID_restart
+ *
+ * (where PID is the PID of the apache parent process). When one of these
+ * is signalled, the Apache parent performs the appropriate action. The events
+ * can become signalled through internal Apache methods (e.g. if the child
+ * finds a fatal error and needs to kill its parent), via the service
+ * control manager (the control thread will signal the shutdown event when
+ * requested to stop the Apache service), from the -k Apache command line,
+ * or from any external program which finds the Apache PID from the
+ * httpd.pid file.
+ *
+ * The signal_parent() function, below, is used to signal one of these events.
+ * It can be called by any child or parent process, since it does not
+ * rely on global variables.
+ *
+ * On entry, type gives the event to signal. 0 means shutdown, 1 means 
+ * graceful restart.
  */
 
-static void signal_parent(void)
+static void signal_parent(int type)
 {
     HANDLE e;
+    char *signal_name;
+    extern char signal_shutdown_name[];
+    extern char signal_restart_name[];
+
     /* after updating the shutdown_pending or restart flags, we need
      * to wake up the parent process so it can see the changes. The
      * parent will normally be waiting for either a child process
@@ -2564,21 +2592,28 @@ static void signal_parent(void)
 	return;
     }
 
-    APD1("*** SIGNAL_PARENT SET ***");
+    switch(type) {
+    case 0: signal_name = signal_shutdown_name; break;
+    case 1: signal_name = signal_restart_name; break;
+    default: return;
+    }
 
-    e = OpenEvent(EVENT_ALL_ACCESS, FALSE, "apache-signal");
+    APD2("signal_parent signalling event \"%s\"", signal_name);
+
+    e = OpenEvent(EVENT_ALL_ACCESS, FALSE, signal_name);
     if (!e) {
-	/* Um, problem, can't signal the main loop, which means we can't
+	/* Um, problem, can't signal the parent, which means we can't
 	 * signal ourselves to die. Ignore for now...
 	 */
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
-	    "OpenEvent on apache-signal event");
+	    "OpenEvent on %s event", signal_name);
 	return;
     }
     if (SetEvent(e) == 0) {
 	/* Same problem as above */
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
-	    "SetEvent on apache-signal event");
+	    "SetEvent on %s event", signal_name);
+	CloseHandle(e);
 	return;
     }
     CloseHandle(e);
@@ -2586,24 +2621,19 @@ static void signal_parent(void)
 #endif
 
 /*
- * start_shutdown() and start_restart(), below, are a first stab at
+ * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
  * functions to initiate shutdown or restart without relying on signals. 
  * Previously this was initiated in sig_term() and restart() signal handlers, 
  * but we want to be able to start a shutdown/restart from other sources --
  * e.g. on Win32, from the service manager. Now the service manager can
- * call start_shutdown() or start_restart() as appropiate. 
- *
- * These should only be called from the parent process itself, since the
- * parent process will use the shutdown_pending and restart_pending variables
- * to determine whether to shutdown or restart. The child process should
- * call signal_parent() directly to tell the parent to die -- this will
- * cause neither of those variable to be set, which the parent will
- * assume means something serious is wrong (which it will be, for the
- * child to force an exit) and so do an exit anyway.
+ * call ap_start_shutdown() or ap_start_restart() as appropiate.  Note that
+ * these functions can also be called by the child processes, since global
+ * variables are no longer used to pass on the required action to the parent.
  */
 
 void ap_start_shutdown(void)
 {
+#ifndef WIN32
     if (shutdown_pending == 1) {
 	/* Um, is this _probably_ not an error, if the user has
 	 * tried to do a shutdown twice quickly, so we won't
@@ -2612,24 +2642,23 @@ void ap_start_shutdown(void)
 	return;
     }
     shutdown_pending = 1;
-
-#ifdef WIN32
-    signal_parent();	    /* get the parent process to wake up */
+#else
+    signal_parent(0);	    /* get the parent process to wake up */
 #endif
 }
 
 /* do a graceful restart if graceful == 1 */
 void ap_start_restart(int graceful)
 {
+#ifndef WIN32
     if (restart_pending == 1) {
 	/* Probably not an error - don't bother reporting it */
 	return;
     }
     restart_pending = 1;
     is_graceful = graceful;
-
-#ifdef WIN32
-    signal_parent();	    /* get the parent process to wake up */
+#else
+    signal_parent(1);	    /* get the parent process to wake up */
 #endif /* WIN32 */
 }
 
@@ -4633,11 +4662,13 @@ int REALMAIN(int argc, char *argv[])
  *
  * Signalling between the parent and working process uses a Win32
  * event. Each child has a unique name for the event, which is
- * passed to it with the -c argument when the child is spawned. The
+ * passed to it with the -Z argument when the child is spawned. The
  * parent sets (signals) this event to tell the child to die.
  * At present all children do a graceful die - they finish all
  * current jobs _and_ empty the listen queue before they exit.
- * A non-graceful die would need a second event.
+ * A non-graceful die would need a second event. The -Z argument in
+ * the child is also used to create the shutdown and restart events,
+ * since the prefix (apPID) contains the parent process PID.
  *
  * The code below starts with functions at the lowest level -
  * worker threads, and works up to the top level - the main()
@@ -5001,17 +5032,37 @@ extern void main_control_server(void *); /* in hellop.c */
 event *exit_event;
 mutex *start_mutex;
 
+#define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
+char signal_name_prefix[MAX_SIGNAL_NAME];
+char signal_restart_name[MAX_SIGNAL_NAME]; 
+char signal_shutdown_name[MAX_SIGNAL_NAME];
+
 #define MAX_SELECT_ERRORS 100
+
+/*
+ * Initialise the signal names, in the global variables signal_name_prefix, 
+ * signal_restart_name and signal_shutdown_name.
+ */
+
+void setup_signal_names(char *prefix)
+{
+    ap_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);    
+    ap_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name), 
+	"%s_shutdown", signal_name_prefix);    
+    ap_snprintf(signal_restart_name, sizeof(signal_restart_name), 
+	"%s_restart", signal_name_prefix);    
+
+    APD2("signal prefix %s", signal_name_prefix);
+}
+
+/*
+ * worker_main() is main loop for the child process. The loop in
+ * this function becomes the controlling thread for the actually working
+ * threads (which run in a loop in child_sub_main()).
+ */
 
 void worker_main(void)
 {
-    /*
-     * I am writing this stuff specifically for NT.
-     * have pulled out a lot of the restart and
-     * graceful restart stuff, because that is only
-     * useful on Unix (not sure it even makes sense
-     * in a multi-threaded env.
-     */
     int nthreads;
     fd_set main_fds;
     int srv;
@@ -5059,7 +5110,13 @@ void worker_main(void)
 
     reinit_scoreboard(pconf);
 
-    //ap_acquire_mutex(start_mutex);
+    /*
+     * Wait until we have permission to start accepting connections.
+     * start_mutex is used to ensure that only one child ever
+     * goes into the listen/accept loop at once. Also wait on exit_event,
+     * in case we (this child) is told to die before we get a chance to
+     * serve any requests.
+     */
     hObjects[0] = (HANDLE)start_mutex;
     hObjects[1] = (HANDLE)exit_event;
     rv = WaitForMultipleObjects(2, hObjects, FALSE, INFINITE);
@@ -5085,7 +5142,7 @@ void worker_main(void)
 	ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, NULL,
 		    "No sockets were created for listening");
 
-	signal_parent();	/* tell parent to die */
+	signal_parent(0);	/* tell parent to die */
 
 	ap_destroy_pool(pchild);
 	cleanup_scoreboard();
@@ -5114,15 +5171,11 @@ void worker_main(void)
 
     /* spawn off the threads */
     child_handles = (thread *) alloca(nthreads * sizeof(int));
-    {
-	int i;
-
-	for (i = 0; i < nthreads; i++) {
-	    child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
-	}
-	if (nthreads > max_daemons_limit) {
-	    max_daemons_limit = nthreads;
-	}
+    for (i = 0; i < nthreads; i++) {
+	child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
+    }
+    if (nthreads > max_daemons_limit) {
+	max_daemons_limit = nthreads;
     }
 
     while (1) {
@@ -5288,22 +5341,21 @@ void worker_main(void)
     clean_parent_exit(0);
 }				/* standalone_main */
 
-/* Spawn a child Apache process. The child process has the command
- * line arguments from argc and argv[], plus a -Z argument giving the
- * name of an event. The child should open and poll or wait on this
- * event. When it is signalled, the child should die.  prefix is a
- * prefix string for the event name.
+/*
+ * Spawn a child Apache process. The child process has the command line arguments from
+ * argc and argv[], plus a -Z argument giving the name of an event. The child should
+ * open and poll or wait on this event. When it is signalled, the child should die.
+ * prefix is a prefix string for the event name.
  * 
- * The child_num argument on entry contains a serial number for this
- * child (used to create a unique event name). On exit, this number
- * will have been incremented by one, ready for the next call.
+ * The child_num argument on entry contains a serial number for this child (used to create
+ * a unique event name). On exit, this number will have been incremented by one, ready
+ * for the next call. 
  *
  * On exit, the value pointed to be *ev will contain the event created
  * to signal the new child process.
  *
- * The return value is the handle to the child process if successful,
- * else -1. If -1 is returned the error will already have been logged
- * by ap_log_error(). 
+ * The return value is the handle to the child process if successful, else -1. If -1 is
+ * returned the error will already have been logged by ap_log_error().
  */
 
 int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, char *prefix)
@@ -5311,8 +5363,15 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
     char buf[40], mod[200];
     int i, rv;
     char **pass_argv = (char **) alloca(sizeof(char *) * (argc + 3));
-
-    ap_snprintf(buf, sizeof(buf), "%s_%d", prefix, ++(*child_num));
+    
+    /* We need an event to tell the child process to kill itself when
+     * the parent is doing a shutdown/restart. This will be named
+     * apPID_CN where PID is the parent Apache process PID and 
+     * N is a unique child serial number. prefix contains
+     * the "apPID" part. The child will get the name of this
+     * event as its -Z command line argument.
+     */
+    ap_snprintf(buf, sizeof(buf), "%s_C%d", prefix, ++(*child_num));
     _flushall();
     *ev = CreateEvent(NULL, TRUE, FALSE, buf);
     if (!*ev) {
@@ -5409,10 +5468,11 @@ int master_main(int argc, char **argv)
     int *child;
     int child_num = 0;
     int rv, cld;
-    char buf[100];
+    char signal_prefix_string[100];
     int i;
     time_t tmstart;
-    HANDLE signal_event;	/* used to signal shutdown/restart to parent */
+    HANDLE signal_shutdown_event;	/* used to signal shutdown to parent */
+    HANDLE signal_restart_event;	/* used to signal a restart to parent */
     HANDLE process_handles[MAX_PROCESSES];
     HANDLE process_kill_events[MAX_PROCESSES];
     int current_live_processes = 0; /* number of child process we know about */
@@ -5425,22 +5485,34 @@ int master_main(int argc, char **argv)
     is_graceful = 0;
     ++generation;
 
-    signal_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, "apache-signal");
-    if (!signal_event) {
+    ap_snprintf(signal_prefix_string, sizeof(signal_prefix_string),
+	        "ap%d", getpid());
+    setup_signal_names(signal_prefix_string);
+
+    signal_shutdown_event = CreateEvent(NULL, TRUE, FALSE, signal_shutdown_name);
+    if (!signal_shutdown_event) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
-		    "Cannot open apache-signal event");
+		    "Cannot create shutdown event %s", signal_shutdown_name);
 	exit(1);
     }
+    APD2("master_main: created event %s", signal_shutdown_name);
+    signal_restart_event = CreateEvent(NULL, TRUE, FALSE, signal_restart_name);
+    if (!signal_restart_event) {
+	CloseHandle(signal_shutdown_event);
+	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+		    "Cannot create restart event %s", signal_restart_name);
+	exit(1);
+    }
+    APD2("master_main: created event %s", signal_restart_name);
 
-    sprintf(buf, "Apache%d", getpid());
-    start_mutex = ap_create_mutex(buf);
+    start_mutex = ap_create_mutex(signal_prefix_string);
     ev = (event **) alloca(sizeof(event *) * nchild);
     child = (int *) alloca(sizeof(int) * (nchild+1));
 
     while (processes_to_create--) {
 	service_set_status(SERVICE_START_PENDING);
 	if (create_process(process_handles, process_kill_events, 
-	    &current_live_processes, &child_num, buf, argc, argv) < 0) {
+	    &current_live_processes, &child_num, signal_prefix_string, argc, argv) < 0) {
 	    goto die_now;
 	}
     }
@@ -5461,8 +5533,6 @@ int master_main(int argc, char **argv)
 	ap_set_version();
 	ap_init_modules(pconf, server_conf);
 	version_locked++;
-	if (!is_graceful)
-	    reinit_scoreboard(pconf);
 
 	restart_pending = shutdown_pending = 0;
 
@@ -5478,15 +5548,17 @@ int master_main(int argc, char **argv)
 		ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
  			"master_main: no child processes alive! creating one");
 		if (create_process(process_handles, process_kill_events, 
-		    &current_live_processes, &child_num, buf, argc, argv) < 0) {
+		    &current_live_processes, &child_num, signal_prefix_string, 
+		    argc, argv) < 0) {
 		    goto die_now;
 		}
 		if (processes_to_create) {
 		    processes_to_create--;
 		}
 	    }
-	    process_handles[current_live_processes] = signal_event;
-	    rv = WaitForMultipleObjects(current_live_processes+1, (HANDLE *)process_handles, 
+	    process_handles[current_live_processes] = signal_shutdown_event;
+	    process_handles[current_live_processes+1] = signal_restart_event;
+	    rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
 			FALSE, INFINITE);
 	    if (rv == WAIT_FAILED) {
 		/* Something serious is wrong */
@@ -5495,13 +5567,35 @@ int master_main(int argc, char **argv)
 		shutdown_pending = 1;
 		break;
 	    }
-	    ap_assert(rv != WAIT_TIMEOUT);
+	    if (rv == WAIT_TIMEOUT) {
+		/* Hey, this cannot happen */
+		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
+		shutdown_pending = 1;
+	    }
+
 	    cld = rv - WAIT_OBJECT_0;
 	    APD4("main process: wait finished, cld=%d handle %d (max=%d)", cld, process_handles[cld], current_live_processes);
 	    if (cld == current_live_processes) {
-		/* stop_event is signalled, we should exit now */
-		if (ResetEvent(signal_event) == 0)
-		    APD1("main process: *** ERROR: ResetEvent(stop_event) failed ***");
+		/* shutdown event signalled, we should exit now */
+		if (ResetEvent(signal_shutdown_event) == 0) {
+		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+			"ResetEvent(signal_shutdown_event)");
+		    /* Continue -- since we are doing a shutdown anyway */
+		}
+		shutdown_pending = 1;
+		APD3("main process: stop_event signalled: shutdown_pending=%d, restart_pending=%d",
+		    shutdown_pending, restart_pending);
+		break;
+	    }
+	    if (cld == current_live_processes+1) {
+		/* restart event signalled, we should exit now */
+		if (ResetEvent(signal_restart_event) == 0) {
+		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+			"ResetEvent(signal_restart_event)");
+		    /* Continue -- hopefully the restart will fix the problem */
+		}
+		restart_pending = 1;
 		APD3("main process: stop_event signalled: shutdown_pending=%d, restart_pending=%d",
 		    shutdown_pending, restart_pending);
 		break;
@@ -5510,7 +5604,8 @@ int master_main(int argc, char **argv)
 	    cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
 	    APD2("main_process: child in slot %d died", rv);
 	    if (processes_to_create) {
-		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		create_process(process_handles, process_kill_events, &current_live_processes, 
+			&child_num, signal_prefix_string, argc, argv);
 		processes_to_create--;
 	    }
 	}
@@ -5527,7 +5622,6 @@ int master_main(int argc, char **argv)
 		    ap_log_error(APLOG_MARK,APLOG_WIN32ERROR, server_conf,
 			"SetEvent for child process in slot #%d", i);
 	    }
-
 	    break;
 	}
 	if (restart_pending) {
@@ -5539,7 +5633,8 @@ int master_main(int argc, char **argv)
 	    for (i = 0; i < nchild; ++i) {
 		if (current_live_processes >= MAX_PROCESSES)
 		    break;
-		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		create_process(process_handles, process_kill_events, &current_live_processes, 
+		    &child_num, signal_prefix_string, argc, argv);
 		processes_to_create--;
 	    }
 	    for (i = 0; i < children_to_kill; i++) {
@@ -5559,7 +5654,8 @@ int master_main(int argc, char **argv)
     APD2("*** main process shutdown, processes=%d ***", current_live_processes);
 
 die_now:
-    CloseHandle(signal_event);
+    CloseHandle(signal_restart_event);
+    CloseHandle(signal_shutdown_event);
 
     tmstart = time(NULL);
     while (current_live_processes && ((tmstart+60) > time(NULL))) {
@@ -5596,8 +5692,59 @@ die_now:
     }
 
     ap_destroy_mutex(start_mutex);
+
     service_set_status(SERVICE_STOPPED);
     return (0);
+}
+
+/*
+ * Send signal to a running Apache. On entry signal should contain
+ * either "shutdown" or "restart"
+ */
+
+void send_signal(pool *p, char *signal)
+{
+    char prefix[20];
+    FILE *fp;
+    int nread;
+    char *fname;
+    int end;
+
+    fname = ap_server_root_relative (p, ap_pid_fname);
+
+    fp = fopen(fname, "r");
+    if (!fp) {
+	printf("Cannot read apache PID file %s\n", fname);
+	return;
+    }
+    prefix[0] = 'a';
+    prefix[1] = 'p';
+
+    nread = fread(prefix+2, 1, sizeof(prefix)-3, fp);
+    if (nread == 0) {
+	fclose(fp);
+	printf("PID file %s was empty\n", fname);
+	return;
+    }
+    fclose(fp);
+
+    /* Terminate the prefix string */
+    end = 2 + nread - 1;
+    while (end > 0 && (prefix[end] == '\r' || prefix[end] == '\n'))
+	end--;
+    prefix[end + 1] = '\0';
+
+    setup_signal_names(prefix);
+
+    if (!strcasecmp(signal, "shutdown"))
+	ap_start_shutdown();
+    else if (!strcasecmp(signal, "restart"))
+	ap_start_restart(1);
+    else
+	printf("Unknown signal name \"%s\". Use either shutdown or restart.\n",
+	    signal);
+
+    return;
 }
 
 #ifdef WIN32
@@ -5613,6 +5760,7 @@ int REALMAIN(int argc, char *argv[])
     int run_as_service = 1;
     int install = 0;
     int configtestonly = 0;
+    char *signal_to_send = NULL;
     
     common_init();
 
@@ -5637,7 +5785,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlZ:iusSt")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlZ:iusStk:")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5659,7 +5807,9 @@ int REALMAIN(int argc, char *argv[])
 	    cp = strchr(optarg, '_');
 	    ap_assert(cp);
 	    *cp = 0;
-	    start_mutex = ap_open_mutex(optarg);
+	    setup_signal_names(optarg);
+	    start_mutex = ap_open_mutex(signal_name_prefix);
+	    ap_assert(start_mutex);
 	    child = 1;
 	    break;
 	case 'i':
@@ -5673,6 +5823,9 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 'S':
 	    ap_dump_settings = 1;
+	    break;
+	case 'k':
+	    signal_to_send = optarg;
 	    break;
 #endif /* WIN32 */
 	case 'd':
@@ -5716,6 +5869,11 @@ int REALMAIN(int argc, char *argv[])
     if (configtestonly) {
         fprintf(stderr, "Syntax OK\n");
         exit(0);
+    }
+
+    if (signal_to_send) {
+	send_signal(pconf, signal_to_send);
+	exit(0);
     }
 
     if (!child && !ap_dump_settings && !install) {
