@@ -816,18 +816,22 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     const char *userdata_key = "cgid_init";
     module **m;
     int ret = OK;
+    void *data;
 
     root_server = main_server;
     root_pool = p;
 
-    apr_pool_userdata_get((void **)&procnew, userdata_key, main_server->process->pool);
-    if (!procnew) {
+    apr_pool_userdata_get(&data, userdata_key, main_server->process->pool);
+    if (!data) {
         first_time = 1;
         procnew = apr_pcalloc(main_server->process->pool, sizeof(*procnew));
         procnew->pid = -1;
         procnew->err = procnew->in = procnew->out = NULL;
         apr_pool_userdata_set((const void *)procnew, userdata_key,
                      apr_pool_cleanup_null, main_server->process->pool);
+    }
+    else {
+        procnew = data;
     }
 
     if (!first_time) {
