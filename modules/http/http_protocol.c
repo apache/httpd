@@ -2237,16 +2237,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
          * . body already chunked
          * Much of this should correspond to checks in ap_set_keepalive().
          */
-        if (r->assbackwards 
+        if ((r->assbackwards 
             || r->status == HTTP_NOT_MODIFIED 
             || r->status == HTTP_NO_CONTENT
             || r->header_only
-            || apr_table_get(r->headers_out, "Content-Length")
             || r->proto_num == HTTP_VERSION(1,1)
             || ap_find_last_token(f->r->pool,
                                   apr_table_get(r->headers_out,
                                                 "Transfer-Encoding"),
-                                                "chunked")) {
+                                                "chunked"))
+            && (!AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b)))) {
             ctx->hold_data = 0;
         }
         else {
