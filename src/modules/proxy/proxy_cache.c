@@ -60,7 +60,7 @@
 #include "util_date.h"
 #ifdef WIN32
 #include <sys/utime.h>
-#include "nt/dirent.h"
+#include "../../nt/readdir.h"
 #else
 #include <utime.h>
 #endif /* WIN32 */

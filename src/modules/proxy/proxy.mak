@@ -211,20 +211,11 @@ SOURCE=.\proxy_util.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\md5.h"\
 	".\../..\multithread.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
@@ -233,17 +224,15 @@ DEP_CPP_PROXY=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_PROXY=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	".\../../regex\regex.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\md5.h"\
 	".\../..\multithread.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
@@ -262,23 +251,14 @@ SOURCE=.\proxy_cache.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY_=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	"..\..\nt\readdir.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\md5.h"\
 	".\../..\multithread.h"\
-	".\../..\nt/dirent.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	{$(INCLUDE)}"\sys\UTIME.H"\
 	
 
@@ -288,20 +268,18 @@ DEP_CPP_PROXY_=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_PROXY_=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	"..\..\nt\readdir.h"\
+	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\md5.h"\
 	".\../..\multithread.h"\
-	".\../..\nt/dirent.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	{$(INCLUDE)}"\sys\UTIME.H"\
 	
 
@@ -321,19 +299,10 @@ SOURCE=.\proxy_connect.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY_C=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_C) "$(INTDIR)"
@@ -342,16 +311,14 @@ DEP_CPP_PROXY_C=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_PROXY_C=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_C) "$(INTDIR)"
@@ -370,18 +337,9 @@ SOURCE=.\proxy_ftp.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY_F=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
@@ -390,15 +348,13 @@ DEP_CPP_PROXY_F=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_PROXY_F=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	".\../../regex\regex.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
@@ -417,20 +373,11 @@ SOURCE=.\proxy_http.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY_H=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
@@ -439,17 +386,15 @@ DEP_CPP_PROXY_H=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_PROXY_H=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
+	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
@@ -468,17 +413,8 @@ SOURCE=.\mod_proxy.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_MOD_P=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
-	"..\..\conf.h"\
-	".\../../regex\regex.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
-	".\../..\http_protocol.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"
@@ -487,14 +423,12 @@ DEP_CPP_MOD_P=\
 !ELSEIF  "$(CFG)" == "proxy - Win32 Debug"
 
 DEP_CPP_MOD_P=\
-	"..\..\alloc.h"\
-	"..\..\buff.h"\
 	"..\..\conf.h"\
-	".\../..\explain.h"\
-	".\../..\http_config.h"\
-	".\../..\http_protocol.h"\
+	".\../../regex\regex.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"

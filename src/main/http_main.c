@@ -3110,6 +3110,8 @@ void worker_main()
 		
 		for (lr=listeners; lr != NULL; lr=lr->next)
 		{
+		/* to prove a point - Ben */
+		    assert(!lr->used);
 		    if(lr->used)
 		    {
 			listen(lr->fd, 1);
@@ -3124,6 +3126,7 @@ void worker_main()
             if(rv == WAIT_OBJECT_0)
                 break;
             rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
+	    assert(rv != WAIT_FAILED);
             if(rv != WAIT_TIMEOUT)
             {
                 rv = rv - WAIT_OBJECT_0;
@@ -3167,13 +3170,15 @@ void worker_main()
 	    
 	    for (lr=listeners; lr != NULL; lr=lr->next)
 	    {
-	        if(!lr->used)
-                    continue;
+/*	        if(!lr->used)
+                    continue;*/
                 fd=lr->fd;
 	        
-	        FD_ISSET(fd, &listenfds);
-	        sd = fd;
-                break;
+	        if(FD_ISSET(fd, &listenfds))
+		    {
+		    sd = fd;
+		    break;
+		    }
 	    }
         }
 
@@ -3219,6 +3224,8 @@ void worker_main()
 	
 	for (lr=listeners; lr != NULL; lr=lr->next)
 	{
+	/* prove the point again */
+	    assert(!lr->used);
 	    if(lr->used)
 	    {
 		closesocket(lr->fd);
@@ -3322,7 +3329,7 @@ master_main(int argc, char **argv)
     {
         service_set_status(SERVICE_START_PENDING);
         child[i] = create_event_and_spawn(argc, argv, &ev[i], &child_num, buf);
-        assert(child[i]);
+        assert(child[i] >= 0);
     }
     service_set_status(SERVICE_RUNNING);
 

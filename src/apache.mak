@@ -33,9 +33,9 @@ NULL=nul
 !ENDIF 
 ################################################################################
 # Begin Project
-# PROP Target_Last_Scanned "apache - Win32 Profile"
-CPP=cl.exe
+# PROP Target_Last_Scanned "apache - Win32 Debug"
 RSC=rc.exe
+CPP=cl.exe
 
 !IF  "$(CFG)" == "apache - Win32 Release"
 
@@ -78,14 +78,14 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_env.obj"
 	-@erase "$(INTDIR)\mod_imap.obj"
 	-@erase "$(INTDIR)\mod_include.obj"
+	-@erase "$(INTDIR)\mod_info.obj"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_mime.obj"
 	-@erase "$(INTDIR)\mod_negotiation.obj"
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\multithread.obj"
-	-@erase "$(INTDIR)\nt.obj"
-	-@erase "$(INTDIR)\ntcrypt.obj"
+	-@erase "$(INTDIR)\readdir.obj"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\service.obj"
 	-@erase "$(INTDIR)\util.obj"
@@ -144,14 +144,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_info.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
-	"$(INTDIR)\nt.obj" \
-	"$(INTDIR)\ntcrypt.obj" \
+	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -229,6 +229,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_imap.sbr"
 	-@erase "$(INTDIR)\mod_include.obj"
 	-@erase "$(INTDIR)\mod_include.sbr"
+	-@erase "$(INTDIR)\mod_info.obj"
+	-@erase "$(INTDIR)\mod_info.sbr"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_log_config.sbr"
 	-@erase "$(INTDIR)\mod_mime.obj"
@@ -241,10 +243,8 @@ CLEAN :
 	-@erase "$(INTDIR)\modules.sbr"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\multithread.sbr"
-	-@erase "$(INTDIR)\nt.obj"
-	-@erase "$(INTDIR)\nt.sbr"
-	-@erase "$(INTDIR)\ntcrypt.obj"
-	-@erase "$(INTDIR)\ntcrypt.sbr"
+	-@erase "$(INTDIR)\readdir.obj"
+	-@erase "$(INTDIR)\readdir.sbr"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\rfc1413.sbr"
 	-@erase "$(INTDIR)\service.obj"
@@ -306,14 +306,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_env.sbr" \
 	"$(INTDIR)\mod_imap.sbr" \
 	"$(INTDIR)\mod_include.sbr" \
+	"$(INTDIR)\mod_info.sbr" \
 	"$(INTDIR)\mod_log_config.sbr" \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
 	"$(INTDIR)\mod_userdir.sbr" \
 	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
-	"$(INTDIR)\nt.sbr" \
-	"$(INTDIR)\ntcrypt.sbr" \
+	"$(INTDIR)\readdir.sbr" \
 	"$(INTDIR)\rfc1413.sbr" \
 	"$(INTDIR)\service.sbr" \
 	"$(INTDIR)\util.sbr" \
@@ -329,12 +329,12 @@ BSC32_SBRS= \
 
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
-# ADD LINK32 modules/proxy/Debug/proxy.lib regex/Debug/regex.lib nt/Debug/nt.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
-LINK32_FLAGS=modules/proxy/Debug/proxy.lib regex/Debug/regex.lib\
- nt/Debug/nt.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
- comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib\
- odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes\
- /pdb:"$(OUTDIR)/apache.pdb" /debug /machine:I386 /out:"$(OUTDIR)/apache.exe" 
+# ADD LINK32 modules/proxy/Debug/proxy.lib regex/Debug/regex.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386
+LINK32_FLAGS=modules/proxy/Debug/proxy.lib regex/Debug/regex.lib wsock32.lib\
+ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib\
+ shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo\
+ /subsystem:console /incremental:yes /pdb:"$(OUTDIR)/apache.pdb" /debug\
+ /machine:I386 /out:"$(OUTDIR)/apache.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
 	"$(INTDIR)\buff.obj" \
@@ -359,14 +359,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_info.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
-	"$(INTDIR)\nt.obj" \
-	"$(INTDIR)\ntcrypt.obj" \
+	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -444,6 +444,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_imap.sbr"
 	-@erase "$(INTDIR)\mod_include.obj"
 	-@erase "$(INTDIR)\mod_include.sbr"
+	-@erase "$(INTDIR)\mod_info.obj"
+	-@erase "$(INTDIR)\mod_info.sbr"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_log_config.sbr"
 	-@erase "$(INTDIR)\mod_mime.obj"
@@ -456,10 +458,8 @@ CLEAN :
 	-@erase "$(INTDIR)\modules.sbr"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\multithread.sbr"
-	-@erase "$(INTDIR)\nt.obj"
-	-@erase "$(INTDIR)\nt.sbr"
-	-@erase "$(INTDIR)\ntcrypt.obj"
-	-@erase "$(INTDIR)\ntcrypt.sbr"
+	-@erase "$(INTDIR)\readdir.obj"
+	-@erase "$(INTDIR)\readdir.sbr"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\rfc1413.sbr"
 	-@erase "$(INTDIR)\service.obj"
@@ -521,14 +521,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_env.sbr" \
 	"$(INTDIR)\mod_imap.sbr" \
 	"$(INTDIR)\mod_include.sbr" \
+	"$(INTDIR)\mod_info.sbr" \
 	"$(INTDIR)\mod_log_config.sbr" \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
 	"$(INTDIR)\mod_userdir.sbr" \
 	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
-	"$(INTDIR)\nt.sbr" \
-	"$(INTDIR)\ntcrypt.sbr" \
+	"$(INTDIR)\readdir.sbr" \
 	"$(INTDIR)\rfc1413.sbr" \
 	"$(INTDIR)\service.sbr" \
 	"$(INTDIR)\util.sbr" \
@@ -574,14 +574,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_info.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
-	"$(INTDIR)\nt.obj" \
-	"$(INTDIR)\ntcrypt.obj" \
+	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -659,6 +659,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_imap.sbr"
 	-@erase "$(INTDIR)\mod_include.obj"
 	-@erase "$(INTDIR)\mod_include.sbr"
+	-@erase "$(INTDIR)\mod_info.obj"
+	-@erase "$(INTDIR)\mod_info.sbr"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_log_config.sbr"
 	-@erase "$(INTDIR)\mod_mime.obj"
@@ -671,10 +673,8 @@ CLEAN :
 	-@erase "$(INTDIR)\modules.sbr"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\multithread.sbr"
-	-@erase "$(INTDIR)\nt.obj"
-	-@erase "$(INTDIR)\nt.sbr"
-	-@erase "$(INTDIR)\ntcrypt.obj"
-	-@erase "$(INTDIR)\ntcrypt.sbr"
+	-@erase "$(INTDIR)\readdir.obj"
+	-@erase "$(INTDIR)\readdir.sbr"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\rfc1413.sbr"
 	-@erase "$(INTDIR)\service.obj"
@@ -734,14 +734,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_env.sbr" \
 	"$(INTDIR)\mod_imap.sbr" \
 	"$(INTDIR)\mod_include.sbr" \
+	"$(INTDIR)\mod_info.sbr" \
 	"$(INTDIR)\mod_log_config.sbr" \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
 	"$(INTDIR)\mod_userdir.sbr" \
 	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
-	"$(INTDIR)\nt.sbr" \
-	"$(INTDIR)\ntcrypt.sbr" \
+	"$(INTDIR)\readdir.sbr" \
 	"$(INTDIR)\rfc1413.sbr" \
 	"$(INTDIR)\service.sbr" \
 	"$(INTDIR)\util.sbr" \
@@ -787,14 +787,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_info.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
-	"$(INTDIR)\nt.obj" \
-	"$(INTDIR)\ntcrypt.obj" \
+	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -850,21 +850,25 @@ LINK32_OBJS= \
 # Begin Source File
 
 SOURCE=.\util_snprintf.c
-DEP_CPP_UTIL_=\
-	".\./regex\regex.h"\
-	".\conf.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
-	
 
 !IF  "$(CFG)" == "apache - Win32 Release"
 
+DEP_CPP_UTIL_=\
+	".\conf.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_snprintf.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_UTIL_=\
+	".\./regex\regex.h"\
+	".\conf.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_snprintf.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
 
@@ -873,6 +877,10 @@ DEP_CPP_UTIL_=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_UTIL_=\
+	".\conf.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_snprintf.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
 
@@ -881,6 +889,12 @@ DEP_CPP_UTIL_=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_UTIL_=\
+	".\./regex\regex.h"\
+	".\conf.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_snprintf.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
 
@@ -902,6 +916,8 @@ DEP_CPP_BUFF_=\
 	".\alloc.h"\
 	".\buff.h"\
 	".\conf.h"\
+	".\http_main.h"\
+	".\httpd.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -912,9 +928,13 @@ DEP_CPP_BUFF_=\
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
 DEP_CPP_BUFF_=\
+	".\./regex\regex.h"\
 	".\alloc.h"\
 	".\buff.h"\
 	".\conf.h"\
+	".\http_main.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
@@ -930,6 +950,8 @@ DEP_CPP_BUFF_=\
 	".\alloc.h"\
 	".\buff.h"\
 	".\conf.h"\
+	".\http_main.h"\
+	".\httpd.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -942,9 +964,13 @@ DEP_CPP_BUFF_=\
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
 DEP_CPP_BUFF_=\
+	".\./regex\regex.h"\
 	".\alloc.h"\
 	".\buff.h"\
 	".\conf.h"\
+	".\http_main.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
@@ -1001,6 +1027,20 @@ DEP_CPP_EXPLA=\
 # Begin Source File
 
 SOURCE=.\http_bprintf.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
+DEP_CPP_HTTP_=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	
+
+"$(INTDIR)\http_bprintf.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Debug"
+
 DEP_CPP_HTTP_=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1010,15 +1050,6 @@ DEP_CPP_HTTP_=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
-"$(INTDIR)\http_bprintf.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "apache - Win32 Debug"
-
-
 "$(INTDIR)\http_bprintf.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
 
 "$(INTDIR)\http_bprintf.sbr" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
@@ -1026,6 +1057,11 @@ DEP_CPP_HTTP_=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	
 
 "$(INTDIR)\http_bprintf.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
 
@@ -1034,6 +1070,14 @@ DEP_CPP_HTTP_=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_bprintf.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
 
@@ -1047,6 +1091,9 @@ DEP_CPP_HTTP_=\
 # Begin Source File
 
 SOURCE=.\http_config.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_C=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1063,14 +1110,26 @@ DEP_CPP_HTTP_C=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\http_config.obj" : $(SOURCE) $(DEP_CPP_HTTP_C) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_config.obj" : $(SOURCE) $(DEP_CPP_HTTP_C) "$(INTDIR)"
 
@@ -1079,6 +1138,21 @@ DEP_CPP_HTTP_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_config.obj" : $(SOURCE) $(DEP_CPP_HTTP_C) "$(INTDIR)"
 
@@ -1087,6 +1161,21 @@ DEP_CPP_HTTP_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_config.obj" : $(SOURCE) $(DEP_CPP_HTTP_C) "$(INTDIR)"
 
@@ -1100,6 +1189,9 @@ DEP_CPP_HTTP_C=\
 # Begin Source File
 
 SOURCE=.\http_core.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_CO=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1120,14 +1212,30 @@ DEP_CPP_HTTP_CO=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\http_core.obj" : $(SOURCE) $(DEP_CPP_HTTP_CO) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_CO=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\rfc1413.h"\
+	".\scoreboard.h"\
+	".\util_md5.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_core.obj" : $(SOURCE) $(DEP_CPP_HTTP_CO) "$(INTDIR)"
 
@@ -1136,6 +1244,25 @@ DEP_CPP_HTTP_CO=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_CO=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\rfc1413.h"\
+	".\scoreboard.h"\
+	".\util_md5.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_core.obj" : $(SOURCE) $(DEP_CPP_HTTP_CO) "$(INTDIR)"
 
@@ -1144,6 +1271,25 @@ DEP_CPP_HTTP_CO=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_CO=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\rfc1413.h"\
+	".\scoreboard.h"\
+	".\util_md5.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_core.obj" : $(SOURCE) $(DEP_CPP_HTTP_CO) "$(INTDIR)"
 
@@ -1157,6 +1303,9 @@ DEP_CPP_HTTP_CO=\
 # Begin Source File
 
 SOURCE=.\http_log.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_L=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1170,14 +1319,20 @@ DEP_CPP_HTTP_L=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\http_log.obj" : $(SOURCE) $(DEP_CPP_HTTP_L) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_L=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\http_log.obj" : $(SOURCE) $(DEP_CPP_HTTP_L) "$(INTDIR)"
 
@@ -1186,6 +1341,15 @@ DEP_CPP_HTTP_L=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_L=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\http_log.obj" : $(SOURCE) $(DEP_CPP_HTTP_L) "$(INTDIR)"
 
@@ -1194,6 +1358,18 @@ DEP_CPP_HTTP_L=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_L=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_log.obj" : $(SOURCE) $(DEP_CPP_HTTP_L) "$(INTDIR)"
 
@@ -1207,6 +1383,9 @@ DEP_CPP_HTTP_L=\
 # Begin Source File
 
 SOURCE=.\http_main.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_M=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1223,20 +1402,38 @@ DEP_CPP_HTTP_M=\
 	".\httpd.h"\
 	".\multithread.h"\
 	".\nt\getopt.h"\
-	".\NT\service.h"\
+	".\nt\service.h"\
 	".\scoreboard.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
-
-!IF  "$(CFG)" == "apache - Win32 Release"
-
 
 "$(INTDIR)\http_main.obj" : $(SOURCE) $(DEP_CPP_HTTP_M) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_M=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\multithread.h"\
+	".\nt\getopt.h"\
+	".\nt\service.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_main.obj" : $(SOURCE) $(DEP_CPP_HTTP_M) "$(INTDIR)"
 
@@ -1245,6 +1442,27 @@ DEP_CPP_HTTP_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_M=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\multithread.h"\
+	".\nt\getopt.h"\
+	".\nt\service.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_main.obj" : $(SOURCE) $(DEP_CPP_HTTP_M) "$(INTDIR)"
 
@@ -1253,6 +1471,31 @@ DEP_CPP_HTTP_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_M=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\explain.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\multithread.h"\
+	".\nt\getopt.h"\
+	".\nt\service.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_HTTP_M=\
+	".\B_SOCKET"\
+	".\bcreate"\
+	
 
 "$(INTDIR)\http_main.obj" : $(SOURCE) $(DEP_CPP_HTTP_M) "$(INTDIR)"
 
@@ -1266,6 +1509,9 @@ DEP_CPP_HTTP_M=\
 # Begin Source File
 
 SOURCE=.\http_protocol.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_P=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1282,14 +1528,23 @@ DEP_CPP_HTTP_P=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\http_protocol.obj" : $(SOURCE) $(DEP_CPP_HTTP_P) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_P=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_date.h"\
+	
 
 "$(INTDIR)\http_protocol.obj" : $(SOURCE) $(DEP_CPP_HTTP_P) "$(INTDIR)"
 
@@ -1298,6 +1553,18 @@ DEP_CPP_HTTP_P=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_P=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_date.h"\
+	
 
 "$(INTDIR)\http_protocol.obj" : $(SOURCE) $(DEP_CPP_HTTP_P) "$(INTDIR)"
 
@@ -1306,6 +1573,21 @@ DEP_CPP_HTTP_P=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_P=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_date.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_protocol.obj" : $(SOURCE) $(DEP_CPP_HTTP_P) "$(INTDIR)"
 
@@ -1319,6 +1601,9 @@ DEP_CPP_HTTP_P=\
 # Begin Source File
 
 SOURCE=.\http_request.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_HTTP_R=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1336,14 +1621,27 @@ DEP_CPP_HTTP_R=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\http_request.obj" : $(SOURCE) $(DEP_CPP_HTTP_R) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_HTTP_R=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_request.obj" : $(SOURCE) $(DEP_CPP_HTTP_R) "$(INTDIR)"
 
@@ -1352,6 +1650,22 @@ DEP_CPP_HTTP_R=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_HTTP_R=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_request.obj" : $(SOURCE) $(DEP_CPP_HTTP_R) "$(INTDIR)"
 
@@ -1360,6 +1674,22 @@ DEP_CPP_HTTP_R=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_HTTP_R=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\scoreboard.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\http_request.obj" : $(SOURCE) $(DEP_CPP_HTTP_R) "$(INTDIR)"
 
@@ -1414,6 +1744,9 @@ DEP_CPP_MD5C_=\
 # Begin Source File
 
 SOURCE=.\mod_access.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_A=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1428,14 +1761,21 @@ DEP_CPP_MOD_A=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_access.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_A=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_access.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
 
@@ -1444,6 +1784,16 @@ DEP_CPP_MOD_A=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_A=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_access.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
 
@@ -1452,6 +1802,19 @@ DEP_CPP_MOD_A=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_A=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_access.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
 
@@ -1465,6 +1828,9 @@ DEP_CPP_MOD_A=\
 # Begin Source File
 
 SOURCE=.\mod_actions.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_AC=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1482,14 +1848,24 @@ DEP_CPP_MOD_AC=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_actions.obj" : $(SOURCE) $(DEP_CPP_MOD_AC) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_AC=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_actions.obj" : $(SOURCE) $(DEP_CPP_MOD_AC) "$(INTDIR)"
 
@@ -1498,6 +1874,19 @@ DEP_CPP_MOD_AC=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_AC=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_actions.obj" : $(SOURCE) $(DEP_CPP_MOD_AC) "$(INTDIR)"
 
@@ -1506,6 +1895,22 @@ DEP_CPP_MOD_AC=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_AC=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_actions.obj" : $(SOURCE) $(DEP_CPP_MOD_AC) "$(INTDIR)"
 
@@ -1519,6 +1924,9 @@ DEP_CPP_MOD_AC=\
 # Begin Source File
 
 SOURCE=.\mod_alias.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_AL=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1530,14 +1938,18 @@ DEP_CPP_MOD_AL=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_alias.obj" : $(SOURCE) $(DEP_CPP_MOD_AL) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_AL=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_alias.obj" : $(SOURCE) $(DEP_CPP_MOD_AL) "$(INTDIR)"
 
@@ -1546,6 +1958,13 @@ DEP_CPP_MOD_AL=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_AL=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_alias.obj" : $(SOURCE) $(DEP_CPP_MOD_AL) "$(INTDIR)"
 
@@ -1554,6 +1973,16 @@ DEP_CPP_MOD_AL=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_AL=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_alias.obj" : $(SOURCE) $(DEP_CPP_MOD_AL) "$(INTDIR)"
 
@@ -1567,6 +1996,9 @@ DEP_CPP_MOD_AL=\
 # Begin Source File
 
 SOURCE=.\mod_asis.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_AS=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1583,14 +2015,23 @@ DEP_CPP_MOD_AS=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_asis.obj" : $(SOURCE) $(DEP_CPP_MOD_AS) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_AS=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_asis.obj" : $(SOURCE) $(DEP_CPP_MOD_AS) "$(INTDIR)"
 
@@ -1599,6 +2040,18 @@ DEP_CPP_MOD_AS=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_AS=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_asis.obj" : $(SOURCE) $(DEP_CPP_MOD_AS) "$(INTDIR)"
 
@@ -1607,6 +2060,21 @@ DEP_CPP_MOD_AS=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_AS=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_asis.obj" : $(SOURCE) $(DEP_CPP_MOD_AS) "$(INTDIR)"
 
@@ -1620,6 +2088,9 @@ DEP_CPP_MOD_AS=\
 # Begin Source File
 
 SOURCE=.\mod_auth.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_AU=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1634,14 +2105,24 @@ DEP_CPP_MOD_AU=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_auth.obj" : $(SOURCE) $(DEP_CPP_MOD_AU) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_AU=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_auth.obj" : $(SOURCE) $(DEP_CPP_MOD_AU) "$(INTDIR)"
 
@@ -1650,6 +2131,19 @@ DEP_CPP_MOD_AU=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_AU=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_auth.obj" : $(SOURCE) $(DEP_CPP_MOD_AU) "$(INTDIR)"
 
@@ -1658,6 +2152,19 @@ DEP_CPP_MOD_AU=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_AU=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_auth.obj" : $(SOURCE) $(DEP_CPP_MOD_AU) "$(INTDIR)"
 
@@ -1677,7 +2184,9 @@ SOURCE=.\alloc.c
 DEP_CPP_ALLOC=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
+	".\buff.h"\
 	".\conf.h"\
+	".\httpd.h"\
 	".\multithread.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
@@ -1689,9 +2198,14 @@ DEP_CPP_ALLOC=\
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
 DEP_CPP_ALLOC=\
+	".\./regex\regex.h"\
 	".\alloc.h"\
+	".\buff.h"\
 	".\conf.h"\
+	".\httpd.h"\
 	".\multithread.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\alloc.obj" : $(SOURCE) $(DEP_CPP_ALLOC) "$(INTDIR)"
@@ -1704,7 +2218,9 @@ DEP_CPP_ALLOC=\
 DEP_CPP_ALLOC=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
+	".\buff.h"\
 	".\conf.h"\
+	".\httpd.h"\
 	".\multithread.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
@@ -1720,7 +2236,9 @@ DEP_CPP_ALLOC=\
 DEP_CPP_ALLOC=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
+	".\buff.h"\
 	".\conf.h"\
+	".\httpd.h"\
 	".\multithread.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
@@ -1738,6 +2256,9 @@ DEP_CPP_ALLOC=\
 # Begin Source File
 
 SOURCE=.\util_script.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_UTIL_S=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1756,14 +2277,25 @@ DEP_CPP_UTIL_S=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\util_script.obj" : $(SOURCE) $(DEP_CPP_UTIL_S) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_UTIL_S=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\util_script.obj" : $(SOURCE) $(DEP_CPP_UTIL_S) "$(INTDIR)"
 
@@ -1772,6 +2304,20 @@ DEP_CPP_UTIL_S=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_UTIL_S=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\util_script.obj" : $(SOURCE) $(DEP_CPP_UTIL_S) "$(INTDIR)"
 
@@ -1780,6 +2326,23 @@ DEP_CPP_UTIL_S=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_UTIL_S=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_script.obj" : $(SOURCE) $(DEP_CPP_UTIL_S) "$(INTDIR)"
 
@@ -1793,6 +2356,9 @@ DEP_CPP_UTIL_S=\
 # Begin Source File
 
 SOURCE=.\mod_cgi.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_C=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1811,14 +2377,25 @@ DEP_CPP_MOD_C=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_cgi.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_C=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_cgi.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
 
@@ -1827,6 +2404,20 @@ DEP_CPP_MOD_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_C=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_cgi.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
 
@@ -1835,6 +2426,23 @@ DEP_CPP_MOD_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_cgi.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
 
@@ -1848,6 +2456,9 @@ DEP_CPP_MOD_C=\
 # Begin Source File
 
 SOURCE=.\mod_dir.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_D=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1860,20 +2471,32 @@ DEP_CPP_MOD_D=\
 	".\http_protocol.h"\
 	".\http_request.h"\
 	".\httpd.h"\
-	".\nt\dirent.h"\
+	".\nt\readdir.h"\
 	".\util_script.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
-
-!IF  "$(CFG)" == "apache - Win32 Release"
-
 
 "$(INTDIR)\mod_dir.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_D=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_dir.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 
@@ -1882,6 +2505,21 @@ DEP_CPP_MOD_D=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_D=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_dir.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 
@@ -1890,6 +2528,23 @@ DEP_CPP_MOD_D=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_D=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_dir.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 
@@ -1903,6 +2558,9 @@ DEP_CPP_MOD_D=\
 # Begin Source File
 
 SOURCE=.\mod_env.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_E=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1914,14 +2572,18 @@ DEP_CPP_MOD_E=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_env.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_E=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_env.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
 
@@ -1930,6 +2592,13 @@ DEP_CPP_MOD_E=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_E=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_env.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
 
@@ -1938,6 +2607,16 @@ DEP_CPP_MOD_E=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_E=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_env.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
 
@@ -1951,6 +2630,9 @@ DEP_CPP_MOD_E=\
 # Begin Source File
 
 SOURCE=.\mod_imap.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_I=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -1968,14 +2650,24 @@ DEP_CPP_MOD_I=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_imap.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_I=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_imap.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
 
@@ -1984,6 +2676,19 @@ DEP_CPP_MOD_I=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_I=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	
 
 "$(INTDIR)\mod_imap.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
 
@@ -1992,6 +2697,22 @@ DEP_CPP_MOD_I=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_I=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_imap.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
 
@@ -2005,6 +2726,9 @@ DEP_CPP_MOD_I=\
 # Begin Source File
 
 SOURCE=.\mod_include.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_IN=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2026,14 +2750,31 @@ NODEP_CPP_MOD_IN=\
 	".\modules\perl\mod_perl.h"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_include.obj" : $(SOURCE) $(DEP_CPP_MOD_IN) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_IN=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_IN=\
+	".\config.h"\
+	".\modules\perl\mod_perl.h"\
+	
 
 "$(INTDIR)\mod_include.obj" : $(SOURCE) $(DEP_CPP_MOD_IN) "$(INTDIR)"
 
@@ -2042,6 +2783,26 @@ NODEP_CPP_MOD_IN=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_IN=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_IN=\
+	".\config.h"\
+	".\modules\perl\mod_perl.h"\
+	
 
 "$(INTDIR)\mod_include.obj" : $(SOURCE) $(DEP_CPP_MOD_IN) "$(INTDIR)"
 
@@ -2050,6 +2811,26 @@ NODEP_CPP_MOD_IN=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_IN=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_IN=\
+	".\config.h"\
+	".\modules\perl\mod_perl.h"\
+	
 
 "$(INTDIR)\mod_include.obj" : $(SOURCE) $(DEP_CPP_MOD_IN) "$(INTDIR)"
 
@@ -2063,6 +2844,9 @@ NODEP_CPP_MOD_IN=\
 # Begin Source File
 
 SOURCE=.\mod_log_config.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_L=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2075,14 +2859,19 @@ DEP_CPP_MOD_L=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_log_config.obj" : $(SOURCE) $(DEP_CPP_MOD_L) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_L=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_log_config.obj" : $(SOURCE) $(DEP_CPP_MOD_L) "$(INTDIR)"
 
@@ -2091,6 +2880,14 @@ DEP_CPP_MOD_L=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_L=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_log_config.obj" : $(SOURCE) $(DEP_CPP_MOD_L) "$(INTDIR)"
 
@@ -2099,6 +2896,17 @@ DEP_CPP_MOD_L=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_L=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_log_config.obj" : $(SOURCE) $(DEP_CPP_MOD_L) "$(INTDIR)"
 
@@ -2112,6 +2920,9 @@ DEP_CPP_MOD_L=\
 # Begin Source File
 
 SOURCE=.\mod_mime.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_M=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2123,14 +2934,18 @@ DEP_CPP_MOD_M=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_mime.obj" : $(SOURCE) $(DEP_CPP_MOD_M) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_M=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_mime.obj" : $(SOURCE) $(DEP_CPP_MOD_M) "$(INTDIR)"
 
@@ -2139,6 +2954,13 @@ DEP_CPP_MOD_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_M=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_mime.obj" : $(SOURCE) $(DEP_CPP_MOD_M) "$(INTDIR)"
 
@@ -2147,6 +2969,16 @@ DEP_CPP_MOD_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_M=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_mime.obj" : $(SOURCE) $(DEP_CPP_MOD_M) "$(INTDIR)"
 
@@ -2160,6 +2992,9 @@ DEP_CPP_MOD_M=\
 # Begin Source File
 
 SOURCE=.\mod_negotiation.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_N=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2170,20 +3005,30 @@ DEP_CPP_MOD_N=\
 	".\http_log.h"\
 	".\http_request.h"\
 	".\httpd.h"\
-	".\nt\dirent.h"\
+	".\nt\readdir.h"\
 	".\util_script.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
-
-!IF  "$(CFG)" == "apache - Win32 Release"
-
 
 "$(INTDIR)\mod_negotiation.obj" : $(SOURCE) $(DEP_CPP_MOD_N) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_N=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_negotiation.obj" : $(SOURCE) $(DEP_CPP_MOD_N) "$(INTDIR)"
 
@@ -2192,6 +3037,19 @@ DEP_CPP_MOD_N=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_N=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_negotiation.obj" : $(SOURCE) $(DEP_CPP_MOD_N) "$(INTDIR)"
 
@@ -2200,6 +3058,21 @@ DEP_CPP_MOD_N=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_N=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_negotiation.obj" : $(SOURCE) $(DEP_CPP_MOD_N) "$(INTDIR)"
 
@@ -2213,6 +3086,9 @@ DEP_CPP_MOD_N=\
 # Begin Source File
 
 SOURCE=.\mod_userdir.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_U=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2224,14 +3100,18 @@ DEP_CPP_MOD_U=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_userdir.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_U=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_userdir.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
 
@@ -2240,6 +3120,13 @@ DEP_CPP_MOD_U=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_U=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_userdir.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
 
@@ -2248,6 +3135,16 @@ DEP_CPP_MOD_U=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_U=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_userdir.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
 
@@ -2261,6 +3158,9 @@ DEP_CPP_MOD_U=\
 # Begin Source File
 
 SOURCE=.\rfc1413.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_RFC14=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2274,14 +3174,20 @@ DEP_CPP_RFC14=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\rfc1413.obj" : $(SOURCE) $(DEP_CPP_RFC14) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_RFC14=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\httpd.h"\
+	".\rfc1413.h"\
+	
 
 "$(INTDIR)\rfc1413.obj" : $(SOURCE) $(DEP_CPP_RFC14) "$(INTDIR)"
 
@@ -2290,6 +3196,15 @@ DEP_CPP_RFC14=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_RFC14=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\httpd.h"\
+	".\rfc1413.h"\
+	
 
 "$(INTDIR)\rfc1413.obj" : $(SOURCE) $(DEP_CPP_RFC14) "$(INTDIR)"
 
@@ -2298,6 +3213,18 @@ DEP_CPP_RFC14=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_RFC14=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\httpd.h"\
+	".\rfc1413.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\rfc1413.obj" : $(SOURCE) $(DEP_CPP_RFC14) "$(INTDIR)"
 
@@ -2311,6 +3238,9 @@ DEP_CPP_RFC14=\
 # Begin Source File
 
 SOURCE=.\util.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_UTIL_C=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2322,14 +3252,21 @@ DEP_CPP_UTIL_C=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_C) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_UTIL_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_C) "$(INTDIR)"
 
@@ -2338,6 +3275,16 @@ DEP_CPP_UTIL_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_UTIL_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_C) "$(INTDIR)"
 
@@ -2346,6 +3293,16 @@ DEP_CPP_UTIL_C=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_UTIL_C=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_C) "$(INTDIR)"
 
@@ -2400,6 +3357,9 @@ DEP_CPP_UTIL_D=\
 # Begin Source File
 
 SOURCE=.\util_md5.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_UTIL_M=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2412,14 +3372,19 @@ DEP_CPP_UTIL_M=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\util_md5.obj" : $(SOURCE) $(DEP_CPP_UTIL_M) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_UTIL_M=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\util_md5.h"\
+	
 
 "$(INTDIR)\util_md5.obj" : $(SOURCE) $(DEP_CPP_UTIL_M) "$(INTDIR)"
 
@@ -2428,6 +3393,14 @@ DEP_CPP_UTIL_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_UTIL_M=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\util_md5.h"\
+	
 
 "$(INTDIR)\util_md5.obj" : $(SOURCE) $(DEP_CPP_UTIL_M) "$(INTDIR)"
 
@@ -2436,6 +3409,17 @@ DEP_CPP_UTIL_M=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_UTIL_M=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\httpd.h"\
+	".\md5.h"\
+	".\util_md5.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\util_md5.obj" : $(SOURCE) $(DEP_CPP_UTIL_M) "$(INTDIR)"
 
@@ -2449,6 +3433,9 @@ DEP_CPP_UTIL_M=\
 # Begin Source File
 
 SOURCE=.\mod_browser.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
 DEP_CPP_MOD_B=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2460,14 +3447,18 @@ DEP_CPP_MOD_B=\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
 "$(INTDIR)\mod_browser.obj" : $(SOURCE) $(DEP_CPP_MOD_B) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MOD_B=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_browser.obj" : $(SOURCE) $(DEP_CPP_MOD_B) "$(INTDIR)"
 
@@ -2476,6 +3467,13 @@ DEP_CPP_MOD_B=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MOD_B=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 "$(INTDIR)\mod_browser.obj" : $(SOURCE) $(DEP_CPP_MOD_B) "$(INTDIR)"
 
@@ -2484,6 +3482,16 @@ DEP_CPP_MOD_B=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MOD_B=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\mod_browser.obj" : $(SOURCE) $(DEP_CPP_MOD_B) "$(INTDIR)"
 
@@ -2497,55 +3505,85 @@ DEP_CPP_MOD_B=\
 # Begin Source File
 
 SOURCE=.\NT\modules.c
-NODEP_CPP_MODUL=\
-	".\NT\http_config.h"\
-	".\NT\httpd.h"\
-	
 
 !IF  "$(CFG)" == "apache - Win32 Release"
 
+DEP_CPP_MODUL=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
-"$(INTDIR)\modules.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MODUL=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\modules.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\modules.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MODUL=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\modules.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\modules.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MODUL=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\modules.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\modules.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
 !ENDIF 
@@ -2555,16 +3593,13 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\NT\multithread.c
-DEP_CPP_MULTI=\
-	".\./regex\regex.h"\
-	".\conf.h"\
-	".\multithread.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
-	
 
 !IF  "$(CFG)" == "apache - Win32 Release"
 
+DEP_CPP_MULTI=\
+	".\conf.h"\
+	".\multithread.h"\
+	
 
 "$(INTDIR)\multithread.obj" : $(SOURCE) $(DEP_CPP_MULTI) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
@@ -2572,6 +3607,13 @@ DEP_CPP_MULTI=\
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
+DEP_CPP_MULTI=\
+	".\./regex\regex.h"\
+	".\conf.h"\
+	".\multithread.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
@@ -2585,6 +3627,10 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
+DEP_CPP_MULTI=\
+	".\conf.h"\
+	".\multithread.h"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
@@ -2598,6 +3644,13 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
+DEP_CPP_MULTI=\
+	".\./regex\regex.h"\
+	".\conf.h"\
+	".\multithread.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
@@ -2617,12 +3670,8 @@ BuildCmds= \
 
 SOURCE=.\NT\service.c
 DEP_CPP_SERVI=\
-	".\./regex\regex.h"\
-	".\conf.h"\
 	".\multithread.h"\
-	".\NT\service.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	".\nt\service.h"\
 	
 
 !IF  "$(CFG)" == "apache - Win32 Release"
@@ -2731,58 +3780,95 @@ BuildCmds= \
 ################################################################################
 # Begin Source File
 
-SOURCE=.\nt\nt.c
-DEP_CPP_NT_C46=\
-	".\nt\dirent.h"\
+SOURCE=.\mod_info.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
+DEP_CPP_MOD_INF=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_script.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
-"$(INTDIR)\nt.obj" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
+"$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Debug"
 
-
-BuildCmds= \
-	$(CPP) $(CPP_PROJ) $(SOURCE) \
+DEP_CPP_MOD_INF=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_script.h"\
 	
 
-"$(INTDIR)\nt.obj" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
 
-"$(INTDIR)\nt.sbr" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.sbr" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
+
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
 
-
-BuildCmds= \
-	$(CPP) $(CPP_PROJ) $(SOURCE) \
+DEP_CPP_MOD_INF=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_script.h"\
 	
 
-"$(INTDIR)\nt.obj" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
 
-"$(INTDIR)\nt.sbr" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.sbr" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
+
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
 
-
-BuildCmds= \
-	$(CPP) $(CPP_PROJ) $(SOURCE) \
+DEP_CPP_MOD_INF=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_conf_globals.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\httpd.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
-"$(INTDIR)\nt.obj" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.obj" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
 
-"$(INTDIR)\nt.sbr" : $(SOURCE) $(DEP_CPP_NT_C46) "$(INTDIR)"
-   $(BuildCmds)
+"$(INTDIR)\mod_info.sbr" : $(SOURCE) $(DEP_CPP_MOD_INF) "$(INTDIR)"
+
 
 !ENDIF 
 
@@ -2790,12 +3876,16 @@ BuildCmds= \
 ################################################################################
 # Begin Source File
 
-SOURCE=.\nt\ntcrypt.c
+SOURCE=.\nt\readdir.c
+DEP_CPP_READD=\
+	".\nt\readdir.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 !IF  "$(CFG)" == "apache - Win32 Release"
 
 
-"$(INTDIR)\ntcrypt.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.obj" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2806,10 +3896,10 @@ BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\ntcrypt.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.obj" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\ntcrypt.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Pre"
@@ -2819,10 +3909,10 @@ BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\ntcrypt.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.obj" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\ntcrypt.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
 !ELSEIF  "$(CFG)" == "apache - Win32 Profile"
@@ -2832,10 +3922,10 @@ BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\ntcrypt.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.obj" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\ntcrypt.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
 
 !ENDIF 

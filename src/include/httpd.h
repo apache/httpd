@@ -743,6 +743,16 @@ extern time_t restart_time;
  * never fails.  If the high line was requested and it fails it will also try
  * the low line.
  */
+#ifdef LESS_SLACK_JACK
+#define ap_slack(fd,line)   (fd)
+#else
 int ap_slack (int fd, int line);
 #define AP_SLACK_LOW	1
 #define AP_SLACK_HIGH	2
+#endif
+
+/*
+ * Redefine assert() to something more useful for an Apache...
+ */
+void log_assert(const char *szExp,const char *szFile,int nLine);
+#define assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )

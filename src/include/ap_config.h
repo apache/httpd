@@ -547,6 +547,8 @@ typedef char * caddr_t;
 #define O_CREAT _O_CREAT
 #define O_RDWR _O_RDWR
 #define SIGPIPE 17
+/* Seems Windows is not a subgenius */
+#define LESS_SLACK_JACK
 #include <stddef.h>
 /* Unknown system - Edit these to match */
 #else

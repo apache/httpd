@@ -168,17 +168,18 @@ log_unixerr(const char *routine, const char *file, const char *msg,
 	    server_rec *s)
 {
     const char *p, *q;
+    FILE *err=s ? s->error_log : stderr;
 
     p = strerror(errno);
     q = get_time();
 
     if (file != NULL)
-	fprintf(s->error_log, "[%s] %s: %s: %s\n", q, routine, file, p);
+	fprintf(err, "[%s] %s: %s: %s\n", q, routine, file, p);
     else
-	fprintf(s->error_log, "[%s] %s: %s\n", q, routine, p);
+	fprintf(err, "[%s] %s: %s\n", q, routine, p);
     if (msg != NULL) fprintf(s->error_log, "[%s] - %s\n", q, msg);
 
-    fflush(s->error_log);
+    fflush(err);
 }
 
 void
@@ -204,3 +205,10 @@ void log_reason(const char *reason, const char *file, request_rec *r) {
     fflush (r->server->error_log);
 }
 
+void log_assert(const char *szExp,const char *szFile,int nLine)
+    {
+    char buf[1000];
+
+    sprintf(buf,"line %d, assertion \"%s\" failed",nLine,szExp);
+    log_unixerr("assert",szFile,buf,NULL);
+    }

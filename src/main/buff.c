@@ -259,7 +259,7 @@ bcreate(pool *p, int flags)
     fb = palloc(p, sizeof(BUFF));
     fb->pool=p;
     fb->bufsiz = DEFAULT_BUFSIZE;
-    fb->flags = flags & B_RDWR;
+    fb->flags = flags & (B_RDWR|B_SOCKET);
 
     if (flags & B_RD) fb->inbase = palloc(p, fb->bufsiz);
     else fb->inbase = NULL;
