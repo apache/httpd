@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
@@ -235,10 +235,6 @@ SOURCE=.\server\vhost.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\modules\http\error_bucket.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
@@ -291,6 +287,10 @@ SOURCE=.\modules\generators\mod_cgi.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\http\mod_core.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\mappers\mod_dir.c
 # End Source File
 # Begin Source File
@@ -304,6 +304,10 @@ SOURCE=.\modules\mappers\mod_imap.c
 # Begin Source File
 
 SOURCE=.\modules\filters\mod_include.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\filters\mod_include.h
 # End Source File
 # Begin Source File
 
@@ -337,6 +341,10 @@ SOURCE=.\modules\mappers\mod_userdir.c
 # Begin Group "util"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\modules\http\error_bucket.c
+# End Source File
 # Begin Source File
 
 SOURCE=.\server\rfc1413.c
