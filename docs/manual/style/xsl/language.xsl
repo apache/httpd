@@ -200,13 +200,16 @@
                 &lf;
             </xsl:if>
 
-            <xsl:if test=". = 'en'">
-                <target name="man-en"
-                        description="- builds the English nroff files">&lf;
+            <xsl:if test="$file/man">
+                <target name="man-{.}"
+                        description="- builds the {$file/name} nroff files">&lf;
                     <xsl:text>    </xsl:text>
-                    <nroff.generic lang="en" />&lf;
+                    <nroff.generic lang="{.}" />&lf;
                 </target>
                 &lf;
+            </xsl:if>
+
+            <xsl:if test=". = 'en'">
                 <target name="latex-en"
                         description="- builds the English latex file">&lf;
                     <xsl:text>    </xsl:text>
@@ -342,7 +345,8 @@ Some targets have additional requirements:
                 <xsl:text>xml</xsl:text>
             </xsl:when>
             <xsl:when test="$type = 'hhc' or
-                            $type = 'hhp'">
+                            $type = 'hhp' or
+                            $type = 'man'">
                 <xsl:text>text</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -360,6 +364,9 @@ Some targets have additional requirements:
                             $type = 'hhc' or
                             $type = 'hhp'">
                 <xsl:value-of select="chm/charset" />
+            </xsl:when>
+            <xsl:when test="$type = 'man'">
+                <xsl:value-of select="man/charset" />
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="charset" />
@@ -405,17 +412,22 @@ Some targets have additional requirements:
     </xsl:element>
     &lf;
 
-    <xsl:element name="xsl:variable">
-        <xsl:attribute name="name">doclang</xsl:attribute>
-        <xsl:value-of select="@id" />
-    </xsl:element>
-    &lf;&lf;
-
-    <xsl:comment>
-        <xsl:text> some meta information have to be passed to the </xsl:text>
-        <xsl:text>transformation </xsl:text>
-    </xsl:comment>
+    <xsl:if test="$type != 'man'">
+        <xsl:element name="xsl:variable">
+            <xsl:attribute name="name">doclang</xsl:attribute>
+            <xsl:value-of select="@id" />
+        </xsl:element>
+        &lf;
+    </xsl:if>
     &lf;
+
+    <xsl:if test="$type != 'man'">
+        <xsl:comment>
+            <xsl:text> some meta information have to be passed to </xsl:text>
+            <xsl:text>the transformation </xsl:text>
+        </xsl:comment>
+        &lf;
+    </xsl:if>
 
     <xsl:if test="$type = 'manual' or
                   $type = 'chm' or
@@ -507,6 +519,9 @@ Some targets have additional requirements:
             </xsl:when>
             <xsl:when test="$type = 'hhp'">
                 <xsl:text>../xsl/hhp.xsl</xsl:text>
+            </xsl:when>
+            <xsl:when test="$type = 'man'">
+                <xsl:text>../xsl/nroff.xsl</xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>xsl/common.xsl</xsl:text>

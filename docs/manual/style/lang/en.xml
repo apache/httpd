@@ -30,6 +30,10 @@
         <settings>English (USA)</settings>
     </chm>
 
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
+
     <!-- Some strings might be used in other contexts, than stated in the -->
     <!-- comments...                                                      -->
     <messages>
