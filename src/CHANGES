@@ -1,5 +1,20 @@
 Changes with Apache 1.2b2:
 
+  *) mod_include.c bugfixes:
+	1) Fixed an ommission that caused include variables to not 
+	   be parsed in config errmsg directives [Howard Fear]
+	2) Remove HAVE_POSIX_REGEX cruft [Alexei Kosut]
+	3) Patch to fix compiler warnings [perrot@lal.in2p3.fr]
+	4) Allow backslash-escaping to all quoted text
+	   [Ben Yoshino <ben@wiliki.eng.hawaii.edu>]
+	5) Pass variable to command line if not set in XSSI's env
+	   [Howard Fear]
+
+  *) Fix infinite loop when processing Content-language lines in
+     type-map files. [Alexei Kosut]
+
+  *) Closed file-globbing hole in test-cgi script. [Brian Behlendorf]
+
   *) Fixed problem in set_[user|group] that prevented CGI execution
      for non-virtualhosts when suEXEC was enabled.
 
@@ -22,10 +37,12 @@ Changes with Apache 1.2b2:
      and portable isdigit() test.  [Ben Laurie]
   
   *) Updated Configure for ... 
+	OS/2	      (DEF_WANTHSREGEX=yes, other code changes)
         *-dg-dgux*    (bad pattern match)
         QNX           (DEF_WANTHSREGEX=yes)
         *-sunos4*     (DEF_WANTHSREGEX=yes, -DUSEBCOPY)
         *-ultrix      (new)
+	*-unixware211 (new)
      and added some user diagnostic info.  [Ben Laurie]
 
   *) In helpers/CutRule, replaced "cut" invocation with "awk" invocation
@@ -34,6 +51,7 @@ Changes with Apache 1.2b2:
   *) Updated helpers/GuessOS for ... 
         SCO 5            (recognize minor releases)
         SCO Unixware     (braindamaged uname, whatever-whatever-unixware2)
+	SCO UnixWare 2.1.1	(requires a separate set of #defines in conf.h)
         IRIX64           (-sgi-irix64)
         ULTRIX           (-unknown-ultrix)
         SINIX            (-whatever-sysv4)
