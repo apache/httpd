@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/02 15:49:35 $]
+Last modified at [$Date: 2004/10/02 19:33:29 $]
 
 Release:
 
@@ -104,6 +104,10 @@ PATCHES TO BACKPORT FROM 2.1
         modules/experimental/mod_disk_cache.c?r1=1.64&r2=1.65
         modules/experimental/mod_mem_cache.c?r1=1.117&r2=1.118
        +1: stoddard, jerenkrantz
+
+    *) mod_disk_cache: Do not store hop-by-hop headers.
+        modules/experimental/mod_disk_cache.c?r1=1.65&r2=1.66
+       +1: jerenkrantz, jwoolley
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
