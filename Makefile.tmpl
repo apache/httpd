@@ -373,6 +373,46 @@ install-support:
 	fi
 	@echo "<=== [support]"
 
+#   install the support programs and scripts for binary distribution
+install-binsupport:
+	@echo "===> [support: Installing Apache support programs and scripts for binary distribution]"
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/ab $(root)$(sbindir)/ab
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/ab.8 $(root)$(mandir)/man8/ab.8
+	@if [ ".$(TARGET)" = .httpd ]; then \
+		apachectl='apachectl'; \
+	else \
+		apachectl="$(TARGET)ctl"; \
+	fi; \
+	echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apachectl[*] $(root)$(sbindir)/$${apachectl}"; \
+	$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apachectl $(root)$(sbindir)/$${apachectl}; \
+	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8"; \
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htpasswd $(root)$(bindir)/htpasswd
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htpasswd.1 $(root)$(mandir)/man1/htpasswd.1
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htdigest $(root)$(bindir)/htdigest
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htdigest.1 $(root)$(mandir)/man1/htdigest.1
+	@echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/dbmmanage[*] $(root)$(bindir)/dbmmanage"; \
+	$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/dbmmanage $(root)$(bindir)/dbmmanage
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/dbmmanage.1 $(root)$(mandir)/man1/dbmmanage.1
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/logresolve $(root)$(sbindir)/logresolve
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/logresolve.8 $(root)$(mandir)/man8/logresolve.8
+	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/rotatelogs $(root)$(sbindir)/rotatelogs
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/rotatelogs.8 $(root)$(mandir)/man8/rotatelogs.8
+	@echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apxs[*] $(root)$(sbindir)/apxs"; \
+	$(INSTALL_SCRIPT) $(TOP)/$(SRC)/support/apxs $(root)$(sbindir)/apxs
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apxs.8 $(root)$(mandir)/man8/apxs.8
+	-@if [ ".$(suexec)" = .1 ]; then \
+	    echo "$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/suexec $(root)$(sbindir)/suexec"; \
+	    $(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/suexec $(root)$(sbindir)/suexec; \
+	    echo "chown root $(root)$(sbindir)/suexec"; \
+	    chown root $(root)$(sbindir)/suexec; \
+	    echo "chmod 4711 $(root)$(sbindir)/suexec"; \
+	    chmod 4711 $(root)$(sbindir)/suexec; \
+	    echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/suexec.8 $(root)$(mandir)/man8/suexec.8"; \
+	    $(INSTALL_DATA) $(TOP)/$(SRC)/support/suexec.8 $(root)$(mandir)/man8/suexec.8; \
+	fi
+	@echo "<=== [support]"
+
 #   install the Apache C header files
 install-include:
 	@echo "===> [include: Installing Apache C header files]"

@@ -460,6 +460,7 @@ do
             if [ "x$quiet" = "xno" ]; then
                 echo " + using installation path layout: $name ($file)"
             fi
+            name_layout=$name
             with_layout=1
             ;;
         *)
@@ -1034,7 +1035,11 @@ IFS="$OIFS"
 ##
 if [ "x$support" = "x1" ]; then
     build_support='build-support'
-    install_support='install-support'
+    if [ "x$name_layout" = "xBinaryDistribution" ]; then
+        install_support='install-binsupport'
+    else
+        install_support='install-support'
+    fi
     clean_support='clean-support'
     distclean_support='distclean-support'
 else
