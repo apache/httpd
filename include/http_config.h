@@ -780,6 +780,13 @@ AP_DECLARE(void) ap_show_directives(void);
  */
 AP_DECLARE(void) ap_show_modules(void);
 
+/** 
+ * Show the MPM name.  Used in reporting modules such as mod_info to
+ * provide extra information to the user
+ * @deffunc const char *ap_show_mpm(void)
+ */
+AP_DECLARE(const char *) ap_show_mpm(void);
+
 /**
  * Read all config files and setup the server
  * @param process The process running the server
