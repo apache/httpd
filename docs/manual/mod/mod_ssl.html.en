@@ -71,6 +71,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslusername">SSLUserName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
 </ul>
@@ -1433,6 +1434,29 @@ It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLSessionCacheTimeout 600
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLUserName" id="SSLUserName">SSLUserName</a> <a name="sslusername" id="sslusername">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Variable name to determine user name</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLUserName <em>varname</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
+</table>
+<p>
+
+This directive sets the "user" field in the Apache request object.
+This is used by lower modules to identify the user with a character
+string. In particular, this may cause the environment variable
+<code>REMOTE_USER</code> to be set.  The <code>varname</code> can be
+any of the <a href="#envvars">SSL environment variables</a>.</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLUserName SSL_CLIENT_S_DN_CN
 </code></p></div>
 
 </div>
