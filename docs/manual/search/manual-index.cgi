@@ -223,9 +223,9 @@ QUERY:
 #
 $HTML = <<EOHT;
   <A
-   HREF="./"
+   HREF="/"
   ><IMG
-    SRC="images/apache_home.gif"
+    SRC="/images/apache_home.gif"
     ALT="Home"
    ></A>
   <HR>
