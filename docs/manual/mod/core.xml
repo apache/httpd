@@ -1970,6 +1970,13 @@ matching URLs</description>
     <example>
       LogLevel notice
     </example>
+
+    <note><title>Note</title>
+      <p>When logging to a regular file messages of the level
+      <code>notice</code> cannot be suppressed and thus are always
+      logged. However, this doesn't apply when logging is done
+      using <code>syslog</code>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
