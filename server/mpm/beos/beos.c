@@ -128,7 +128,7 @@ struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 int ap_max_child_assigned = -1;
 int ap_max_threads_limit = -1;
 char ap_coredump_dir[MAX_STRING_LEN];
-static port_id port_of_death;
+static volatile bool flag_of_death;
 
 /* shared http_main globals... */
 
@@ -211,7 +211,7 @@ static void ap_start_shutdown(void)
 }
 
 /* do a graceful restart if graceful == 1 */
-void ap_start_restart(int graceful)
+static void ap_start_restart(int graceful)
 {
 
     if (restart_pending == 1) {
@@ -234,12 +234,7 @@ static void restart(int sig)
 
 static void tell_workers_to_exit(void)
 {
-    int i, code = 99;
-
-    for (i=0;i<ap_max_child_assigned;i++) {
-        if (ap_child_table[i].pid)
-            write_port(port_of_death, code, NULL, 0);
-    }
+    flag_of_death = true;
 }
 
 static void push_workers_off_cliff(int sig)
@@ -327,21 +322,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
     ap_lingering_close(current_conn);
 }
 
-/* call_samaritans checks to see if there's a message waiting on the
- * port_of_death.  If there is then it return 1 and the worker thread
- * should consider itself told to die.  I use the _etc call to stop this
- * from blocking the calling thread.  As we've already checked I just use
- * the basic read_port to actually remove the message from the queue.
- */
-static int call_samaritans(port_id port) {
-    if (port_buffer_size_etc(port, B_TIMEOUT, 0) != B_WOULD_BLOCK) {
-        int32 code;
-        read_port(port, &code, NULL, 0);
-        return 1;
-    }
-    return 0;
-}
-
 static int32 worker_thread(void * dummy)
 {
     proc_info * ti = dummy;
@@ -358,7 +338,6 @@ static int32 worker_thread(void * dummy)
     apr_pollfd_t *pollset;
     /* each worker thread is in control of it's own destiny...*/
     int this_worker_should_exit = 0; 
-    port_id chk = find_port("the_samaritans");    
     free(ti);
 
     /* block the signals for this thread */
@@ -371,7 +350,6 @@ static int32 worker_thread(void * dummy)
     worker_thread_count++;
     apr_unlock(worker_thread_count_mutex);
 
-    /* now setup our own pollset...this will use APR woohoo! */
     apr_setup_poll(&pollset, num_listening_sockets, tpool);
     for(n=0 ; n < num_listening_sockets ; ++n)
 	    apr_add_poll_socket(pollset, listening_sockets[n], APR_POLLIN);
@@ -386,7 +364,7 @@ static int32 worker_thread(void * dummy)
             apr_int16_t event;
             apr_status_t ret = apr_poll(pollset, &srv, -1);
             
-            if (call_samaritans(chk))
+            if (flag_of_death)
                 this_worker_should_exit = 1;
 
             if (ret != APR_SUCCESS) {
@@ -659,12 +637,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     pconf = _pconf;
     ap_server_conf = s;
     
-    if ((port_of_death = create_port(ap_thread_limit, "the_samaritans")) < 0){
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s, 
-          "couldn't create a port_of_death, shutting down");
-        return 1;
-    }
-       
     if ((num_listening_sockets = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
@@ -672,7 +644,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     ap_log_pid(pconf, ap_pid_fname);
-    
+
+    flag_of_death = false;
+        
     /*
      * Create our locks... 
      */
@@ -830,7 +804,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * potential leak of semaphores... */
     apr_destroy_lock(worker_thread_count_mutex);
     apr_destroy_lock(accept_mutex);
-    delete_port(port_of_death);
     
     return 0;
 }
@@ -1040,7 +1013,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
 }
 
 static const command_rec beos_cmds[] = {
-UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
 AP_INIT_TAKE1( "PidFile", set_pidfile, NULL, RSRC_CONF,
     "A file for logging the server process ID"),
@@ -1073,7 +1045,6 @@ module AP_MODULE_DECLARE_DATA mpm_beos_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     beos_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     beos_hooks		/* register_hooks */
 };
 
