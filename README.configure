@@ -172,10 +172,10 @@
 
   For Apache there are a lot of modules flying around on the net which solve
   particular problems. For a good reference see the Apache Module Registory at
-  http://www.covalent.net/module_registry/ and the Apache Group's contribution
-  directory at http://www.apache.org/dist/contrib/modules/. These modules
-  usually come in a file named mod_foo.c. APACI supports adding these sources
-  on-the-fly to the build process:
+  http://modules.apache.org/ and the Apache Group's contribution directory at
+  http://www.apache.org/dist/contrib/modules/. These modules usually come in a
+  file named mod_foo.c. APACI supports adding these sources on-the-fly to the
+  build process:
 
     $ ./configure --prefix=/path/to/apache \
                   --add-module=/path/to/mod_foo.c
