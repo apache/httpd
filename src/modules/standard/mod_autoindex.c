@@ -136,6 +136,37 @@ static char c_by_encoding, c_by_type, c_by_path;
 #define BY_PATH &c_by_path
 
 /*
+ * Return true if the specified string refers to the parent directory (i.e.,
+ * matches ".." or "../").  Hopefully this one call is significantly less
+ * expensive than multiple strcmp() calls.
+ */
+static int is_parent(const char *name)
+{
+    /*
+     * If it's no name at all, it isn't our parent.
+     */
+    if (name == NULL) {
+        return 0;
+    }
+    /*
+     * Nor is it if the name isn't long enough.
+     */
+    if ((name[0] == '\0') || (name[1] == '\0')) {
+        return 0;
+    }
+    /*
+     * Now, IFF the first two bytes are dots, and the third byte is either
+     * EOS (\0) or a slash followed by EOS, we have a match.
+     */
+    if (((name[0] == '.') && (name[1] == '.'))
+	&& ((name[2] == '\0')
+	    || ((name[2] == '/') && (name[3] == '\0')))) {
+        return 1;
+    }
+    return 0;
+}
+
+/*
  * This routine puts the standard HTML header at the top of the index page.
  * We include the DOCTYPE because we may be using features therefrom (i.e.,
  * HEIGHT and WIDTH attributes on the icons if we're FancyIndexing).
@@ -417,9 +448,7 @@ struct ent {
     char *alt;
     char *desc;
     size_t size;
-    char *size_cmp;
     time_t lm;
-    char *lm_cmp;
     struct ent *next;
     int ascending;
     char key;
@@ -751,19 +780,14 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 
 	ap_destroy_sub_req(rr);
     }
-    if (keyid == K_SIZE) {
-	p->size_cmp = ap_palloc(r->pool, 14);
-	ap_snprintf(p->size_cmp, 14, "%013d", p->size);
-    }
+    /*
+     * We don't need to take any special action for the file size key.  If
+     * we did, it would go here.
+     */
     if (keyid == K_LAST_MOD) {
-	struct tm *ts = localtime(&p->lm);
-
-	if(ts) {
-	    p->lm_cmp = ap_palloc(r->pool, 15);
-	    strftime(p->lm_cmp, 15, "%Y%m%d%H%M%S", ts);
+        if (p->lm < 0) {
+	    p->lm = 0;
 	}
-	else
-	    p->lm_cmp=NULL;
     }
     return (p);
 }
@@ -892,7 +916,7 @@ static void output_directories(struct ent **ar, int n,
 
 	ap_clear_pool(scratch);
 
-	if ((!strcmp(ar[x]->name, "../")) || (!strcmp(ar[x]->name, ".."))) {
+	if (is_parent(ar[x]->name)) {
 	    t = ap_make_full_path(scratch, name, "../");
 	    ap_getparents(t);
 	    if (t[0] == '\0') {
@@ -986,73 +1010,108 @@ static void output_directories(struct ent **ar, int n,
     }
 }
 
+/*
+ * Compare two file entries according to the sort criteria.  The return
+ * is essentially a signum function value.
+ */
 
 static int dsortf(struct ent **e1, struct ent **e2)
 {
     char *s1;
     char *s2;
-    char *s3;
+    struct ent *c1;
+    struct ent *c2;
     int result;
+    int compare_by_string = 1;
 
+    /*
+     * First, see if either of the entries is for the parent directory.
+     * If so, that *always* sorts lower than anything else.
+     */
+    if (is_parent((*e1)->name)) {
+        return -1;
+    }
+    if (is_parent((*e2)->name)) {
+        return 1;
+    }
+    /*
+     * All of our comparisons will be of the c1 entry against the c2 one,
+     * so assign them appropriately to take care of the ordering.
+     */
+    if ((*e1)->ascending) {
+        c1 = *e1;
+	c2 = *e2;
+    }
+    else {
+        c1 = *e2;
+        c2 = *e1;
+    }
     /*
      * Choose the right values for the sort keys.
      */
-    switch ((*e1)->key) {
+    switch (c1->key) {
     case K_LAST_MOD:
-	s1 = (*e1)->lm_cmp;
-	s2 = (*e2)->lm_cmp;
+        /*
+	 * Since the last-modified time is a monotonically increasing integer,
+	 * we can short-circuit this process with a simple comparison.
+	 */
+        result = c1->lm - c2->lm;
+	if (result != 0) {
+	    result = (result > 0) ? 1 : -1;
+	}
+	compare_by_string = 0;
 	break;
     case K_SIZE:
-	s1 = (*e1)->size_cmp;
-	s2 = (*e2)->size_cmp;
+        /*
+	 * We can pull the same trick with the size as with the mtime.
+	 */
+        result = c1->size - c2->size;
+	if (result != 0) {
+	    result = (result > 0) ? 1 : -1;
+	}
+	compare_by_string = 0;
 	break;
     case K_DESC:
-	s1 = (*e1)->desc;
-	s2 = (*e2)->desc;
+	s1 = c1->desc;
+	s2 = c2->desc;
 	break;
     case K_NAME:
     default:
-	s1 = (*e1)->name;
-	s2 = (*e2)->name;
+	s1 = c1->name;
+	s2 = c2->name;
 	break;
     }
-    /*
-     * If we're supposed to sort in DEscending order, reverse the arguments.
-     */
-    if (!(*e1)->ascending) {
-	s3 = s1;
-	s1 = s2;
-	s2 = s3;
-    }
 
-    /*
-     * Take some care, here, in case one string or the other (or both) is
-     * NULL.
-     */
+    if (compare_by_string) {
+        /*
+	 * Take some care, here, in case one string or the other (or both) is
+	 * NULL.
+	 */
 
-    /*
-     * Two valid strings, compare normally.
-     */
-    if ((s1 != NULL) && (s2 != NULL)) {
-	result = strcmp(s1, s2);
-    }
-    /*
-     * Two NULL strings - primary keys are equal (fake it).
-     */
-    else if ((s1 == NULL) && (s2 == NULL)) {
-	result = 0;
-    }
-    /*
-     * s1 is NULL, but s2 is a string - so s2 wins.
-     */
-    else if (s1 == NULL) {
-	result = -1;
-    }
-    /*
-     * Last case: s1 is a string and s2 is NULL, so s1 wins.
-     */
-    else {
-	result = 1;
+        /*
+	 * Two valid strings, compare normally.
+	 */
+        if ((s1 != NULL) && (s2 != NULL)) {
+	    result = strcmp(s1, s2);
+	}
+	/*
+	 * Two NULL strings - primary keys are equal (fake it).
+	 */
+	else if ((s1 == NULL) && (s2 == NULL)) {
+	    result = 0;
+	}
+	/*
+	 * s1 is NULL, but s2 is a string - so s2 wins.
+	 */
+	else if (s1 == NULL) {
+	    result = -1;
+	}
+	/*
+	 * Last case: s1 is a string and s2 is NULL, so s1 wins.
+	 */
+	else {
+	    result = 1;
+	}
     }
     /*
      * If the keys were equal, the file name is *always* the secondary key -

@@ -1,5 +1,14 @@
 Changes with Apache 1.3.1
 
+  *) Improve performance of directory listings (mod_autoindex) by comparing
+     integer keys (last-modified and size) as integers rather than converting
+     them to strings first.  Also use a set of explicit byte tests rather
+     than strcmp() to check for parent directory-ness of an entry.  Oh, and
+     make sure the parent directory (if displayed) is *always* listed first
+     regardless of the sort key.  Overall performance winnage should be good
+     in CPU time, instruction cache, and memory usage, particularly for large
+     directories.  [Ken Coar]
+
   *) Add httpd -t (test) option for running configuration syntax tests only.
      If something is broken it complains and exits with a return code
      non-equal to 0. This can be used manually by the user to check the Apache
