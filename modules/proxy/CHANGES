@@ -1,3 +1,6 @@
+mod_proxy changes for httpd 2.0.23-dev
+  *) Change 'readbytes' from apr_size_t to apr_off_t due to change
+     in ap_get_brigade's parameters [Barbee barbee@veribox.nbet]
 
 mod_proxy changes for httpd 2.0.20-dev
   *) Timeout added for backend connections.
