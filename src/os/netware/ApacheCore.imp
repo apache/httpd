@@ -359,3 +359,4 @@ ap_start_shutdown
 ap_start_restart
 ap_stripprefix
 ap_send_error_response
+ap_os_canonical_filename
