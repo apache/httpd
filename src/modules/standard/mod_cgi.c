@@ -155,7 +155,7 @@ command_rec cgi_cmds[] = {
 { NULL}
 };
 
-int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
+static int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
 		    char *error)
 {
     FILE *f;
@@ -182,7 +182,7 @@ int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
     return ret;
 }
 
-int log_script(request_rec *r, cgi_server_conf *conf, int ret,
+static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
 	       char *dbuf, char *sbuf, FILE *script_in, FILE *script_err)
 {
     table *hdrs_arr = r->headers_in;
@@ -252,8 +252,8 @@ int log_script(request_rec *r, cgi_server_conf *conf, int ret,
       fputs("\n", f);
     }
 
-    pfclose(r->pool, script_in);
-    pfclose(r->pool, script_err);
+    pfclose(r->main ? r->main->pool : r->pool, script_in);
+    pfclose(r->main ? r->main->pool : r->pool, script_err);
 
     pfclose(r->pool, f);
     return ret;
@@ -406,7 +406,13 @@ int cgi_handler (request_rec *r)
     cld.debug = conf->logname ? 1 : 0;
     
     if (!(child_pid =
-	  spawn_child_err (r->pool, cgi_child, (void *)&cld,
+	  /*
+	   * we spawn out of r->main if it's there so that we can avoid
+	   * waiting for free_proc_chain to cleanup in the middle of an
+	   * SSI request -djg
+	   */
+	  spawn_child_err (r->main ? r->main->pool : r->pool, cgi_child,
+			    (void *)&cld,
 			   nph ? just_wait : kill_after_timeout,
 #ifdef __EMX__
 			   &script_out, &script_in, &script_err))) {
@@ -467,7 +473,7 @@ int cgi_handler (request_rec *r)
 	kill_timeout (r);
     }
     
-    pfclose (r->pool, script_out);
+    pfclose (r->main ? r->main->pool : r->pool, script_out);
     
     /* Handle script return... */
     if (script_in && !nph) {
@@ -519,8 +525,8 @@ int cgi_handler (request_rec *r)
 	while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
 	  continue;
 	kill_timeout (r);
-	pfclose (r->pool, script_in);
-	pfclose (r->pool, script_err);
+	pfclose (r->main ? r->main->pool : r->pool, script_in);
+	pfclose (r->main ? r->main->pool : r->pool, script_err);
     }
 
     if (nph) {

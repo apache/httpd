@@ -1,5 +1,10 @@
 Changes with Apache 1.2b8
 
+  *) Stopgap solution for CGI 3-second delay with server-side includes: if
+     processing a subrequest, allocate memory from r->main->pool instead
+     of r->pool so that we can avoid waiting for free_proc_chain to cleanup
+     in the middle of an SSI request.  [Dean Gaudet] PR #122
+
   *) Fixed status of response when POST is received for a nonexistant URL
      (was sending 405, now 404) and when any method is sent with a
      full-URI that doesn't match the server and the server is not acting
