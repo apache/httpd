@@ -236,7 +236,7 @@ typedef struct digest_header_struct {
     apr_time_t             nonce_time;
     enum hdr_sts          auth_hdr_sts;
     const char           *raw_request_uri;
-    apr_uri_components    *psd_request_uri;
+    apr_uri_t    *psd_request_uri;
     int                   needed_auth;
     client_entry         *client;
 } digest_header_rec;
@@ -1514,8 +1514,8 @@ static const char *new_digest(const request_rec *r,
 }
 
 
-static void copy_uri_components(apr_uri_components *dst, 
-                                apr_uri_components *src, request_rec *r) {
+static void copy_uri_components(apr_uri_t *dst, 
+                                apr_uri_t *src, request_rec *r) {
     if (src->scheme && src->scheme[0] != '\0')
 	dst->scheme = src->scheme;
     else
@@ -1624,10 +1624,10 @@ static int authenticate_digest_user(request_rec *r)
 	/* Hmm, the simple match didn't work (probably a proxy modified the
 	 * request-uri), so lets do a more sophisticated match
 	 */
-	apr_uri_components r_uri, d_uri;
+	apr_uri_t r_uri, d_uri;
 
 	copy_uri_components(&r_uri, resp->psd_request_uri, r);
-	if (apr_uri_parse_components(r->pool, resp->uri, &d_uri) != APR_SUCCESS) {
+	if (apr_uri_parse(r->pool, resp->uri, &d_uri) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid uri <%s> in Authorization header",
 			  resp->uri);

@@ -321,7 +321,7 @@ AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status
 	    } else {
 		/* Don't reveal the password in the server-status view */
 		    apr_cpystrn(ws->request, apr_pstrcat(r->pool, r->method, " ",
-					       apr_uri_unparse_components(r->pool, &r->parsed_uri, APR_URI_UNP_OMITPASSWORD),
+					       apr_uri_unparse(r->pool, &r->parsed_uri, APR_URI_UNP_OMITPASSWORD),
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
 				       sizeof(ws->request));
 	    }

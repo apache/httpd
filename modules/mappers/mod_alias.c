@@ -335,8 +335,8 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
 		    found = ap_pregsub(r->pool, p->real, r->uri,
 				    p->regexp->re_nsub + 1, regm);
 		    if (found && doesc) {
-                        apr_uri_components uri;
-                        apr_uri_parse_components(r->pool, found, &uri);
+                        apr_uri_t uri;
+                        apr_uri_parse(r->pool, found, &uri);
 			found = ap_escape_uri(r->pool, uri.path);
                         if (uri.query) {
                             found = apr_pstrcat(r->pool, found, "?", uri.query, NULL);
