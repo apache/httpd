@@ -298,6 +298,24 @@ and Access Control</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CGIMapExtension</name>
+<description>Technique for locating the interpreter for CGI 
+scripts</description>
+<syntax>CGIMapExtension cgi-path .extension</syntax>
+<default>None</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>NetWare only</compatibility>
+
+<usage>
+    <p>This directive is used to control how Apache finds the
+    interpreter used to run CGI scripts. For example, setting <code>CGIMapExtension sys:\foo.nlm .foo</code> will
+    cause all CGI script files with a .foo extension to be passed to the FOO interpreter.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ContentDigest</name>
 <description>Enables the generation of Content-MD5 HTTP Response
 headers</description> 
