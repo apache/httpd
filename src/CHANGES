@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) Fix the generated mod_xxx.c from "apxs -g -f xxx" after the
+     Big Symbol Renaming. [Ralf S. Engelschall]
+
   *) Add a comment to mod_example.c showing the format of a FLAG command
      handler.  [Ken Coar]
 
