@@ -28,7 +28,7 @@ Here we talk about backward compatibility to other SSL solutions. As you
 perhaps know, mod_ssl is not the only existing SSL solution for Apache.
 Actually there are four additional major products available on the market: Ben
 Laurie's freely available <a href="http://www.apache-ssl.org/">Apache-SSL</a>
-(from where mod_ssl were originally derived in 1998), RedHat's commercial <a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure Web
+(from where mod_ssl were originally derived in 1998), Red Hat's commercial <a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure Web
 Server</a> (which is based on mod_ssl), Covalent's commercial <a href="http://raven.covalent.net/">Raven SSL Module</a> (also based on mod_ssl)
 and finally C2Net's commercial product <a href="http://www.c2.net/products/stronghold/">Stronghold</a> (based on a
 different evolution branch named Sioux up to Stronghold 2.x and based on
@@ -53,7 +53,7 @@ solutions we do an on-the-fly mapping: directives which have a direct
 counterpart in mod_ssl are mapped silently while other directives lead to a
 warning message in the logfiles. The currently implemented directive mapping
 is listed in <a href="#table1">Table 1</a>. Currently full backward
-compatibilty is provided only for Apache-SSL 1.x and mod_ssl 2.0.x.
+compatibility is provided only for Apache-SSL 1.x and mod_ssl 2.0.x.
 Compatibility to Sioux 1.x and Stronghold 2.x is only partial because of
 special functionality in these interfaces which mod_ssl (still) doesn't
 provide.</p>

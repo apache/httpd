@@ -33,7 +33,7 @@ href="http://home.earthlink.net/~fjhirsch/">Frederick J. Hirsch</a>, of The
 Open Group Research Institute, which was published in <a
 href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
 Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997.
-Please send any postive feedback to <a
+Please send any positive feedback to <a
 href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> (the original
 article author) and all negative feedback to <a
 href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (the
@@ -111,7 +111,7 @@ messages which create the same digest -- thus eliminating the possibility of
 substituting one message for another while maintaining the same digest.</p>
 <p>Another challenge that Alice faces is finding a way to send the digest to the
 bank securely; when this is achieved, the integrity of the associated message
-is assured. One way to to this is to include the digest in a digital
+is assured. One way to do this is to include the digest in a digital
 signature.</p>
 </section>
 
@@ -175,7 +175,7 @@ certificates are used for authentication.</p>
     <tr><th>Administrative Information</th>
         <td>Version, Serial Number</td></tr>
     <tr><th>Extended Information</th>
-        <td>Basic Contraints, Netscape Flags, etc.</td></tr>
+        <td>Basic Constraints, Netscape Flags, etc.</td></tr>
     </table>
     </section>
 

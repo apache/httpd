@@ -25,7 +25,7 @@ he poses the right questions.</p>
 </blockquote>
 <p>This chapter is a collection of frequently asked questions (FAQ) and
 corresponding answers following the popular USENET tradition. Most of these
-questions occured on the Newsgroup <code><a href="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</a></code> or the mod_ssl Support
+questions occurred on the Newsgroup <code><a href="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</a></code> or the mod_ssl Support
 Mailing List <code><a href="mailto:modssl-users@modssl.org">modssl-users@modssl.org</a></code>. They are collected at this place
 to avoid answering the same questions over and over.</p>
 
@@ -55,7 +55,7 @@ author.</p>
     Laurie's development cycle it then was re-assembled from scratch for
     Apache 1.3.0 by merging the old mod_ssl 1.x with the newer Apache-SSL
     1.18. From this point on mod_ssl lived its own life as mod_ssl v2. The
-    first publically released version was mod_ssl 2.0.0 from August 10th,
+    first publicly released version was mod_ssl 2.0.0 from August 10th,
     1998. As of this writing (August 1999) the current mod_ssl version 
     is 2.4.0.</p>
 
@@ -87,7 +87,7 @@ author.</p>
     
     <p>Additionally according to a <a href="http://www.apache.org/docs/misc/FAQ.html#year2000">Year 2000
     statement</a> from the Apache Group, the Apache webserver is Year 2000
-    compliant, too. But whether OpenSSL or the underlaying Operating System
+    compliant, too. But whether OpenSSL or the underlying Operating System
     (either a Unix or Win32 platform) is Year 2000 compliant is a different
     question which cannot be answered here.</p>
 
@@ -100,9 +100,9 @@ author.</p>
     replaced the previous <dfn>CoCom</dfn> regime. 33 countries are signatories:
     Argentina, Australia, Austria, Belgium, Bulgaria, Canada, Czech Republic,
     Denmark, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Japan,
-    Luxembourg, Netherlands, New Zealand, Norway, Poland, Portugal, Republic
+    Luxembourg, the Netherlands, New Zealand, Norway, Poland, Portugal, Republic
     of Korea, Romania, Russian Federation, Slovak Republic, Spain, Sweden,
-    Switzerland, Turkey, Ukraine, United Kingdom and United States. For more
+    Switzerland, Turkey, Ukraine, the United Kingdom and the United States. For more
     details look at <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>.</p>
 
     
@@ -683,7 +683,7 @@ Hosting to identify different SSL virtual hosts?</a></li>
 <h3><a name="load" id="load">Why has my webserver a higher load now that I run SSL there?</a></h3>
 <p>Because SSL uses strong cryptographic encryption and this needs a lot of
     number crunching. And because when you request a webpage via HTTPS even
-    the images are transfered encrypted. So, when you have a lot of HTTPS
+    the images are transferred encrypted. So, when you have a lot of HTTPS
     traffic the load increases.</p>
 
 
@@ -691,7 +691,7 @@ Hosting to identify different SSL virtual hosts?</a></li>
 the connection, although sometimes it works faster?</a></h3>
 <p>Usually this is caused by using a <code>/dev/random</code> device for
     <code>SSLRandomSeed</code> which is blocking in read(2) calls if not
-    enough entropy is available. Read more about this problem in the refernce
+    enough entropy is available. Read more about this problem in the reference
     chapter under <code>SSLRandomSeed</code>.</p>
 
 
@@ -731,9 +731,9 @@ shared cipher'' errors?</a></h3>
 I try to connect to my freshly installed server?</a></h3>
 <p>Either you have messed up your <code>SSLCipherSuite</code>
     directive (compare it with the pre-configured example in
-    <code>httpd.conf-dist</code>) or you have choosen the DSA/DH
+    <code>httpd.conf-dist</code>) or you have chosen the DSA/DH
     algorithms instead of RSA when you generated your private key
-    and ignored or overlooked the warnings.  If you have choosen
+    and ignored or overlooked the warnings.  If you have chosen
     DSA/DH, then your server no longer speaks RSA-based SSL ciphers
     (at least not until you also configure an additional RSA-based
     certificate/key pair). But current browsers like NS or IE only speak
