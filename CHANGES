@@ -2,11 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Win32: apache -k start|restart|install|config can leave stranded
-     piped logger processes (eg, rotatelogs.exe) due to improper
-     server shutdown on these code paths.
-     [Bill Stoddard]
-
   *) Restructured mod_auth_ldap to fit the new authentication model.
      The module is now called authnz_ldap and has been moved out of
      the modules/experimental area and into modules/aaa with the other
@@ -395,6 +390,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Win32: apache -k start|restart|install|config can leave stranded
+     piped logger processes (eg, rotatelogs.exe) due to improper
+     server shutdown on these code paths.
+     [Bill Stoddard]
 
   *) SECURITY: CAN-2004-0751 (cve.mitre.org)
      mod_ssl: Fix a segfault in the SSL input filter which could be
