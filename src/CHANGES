@@ -17,7 +17,8 @@ Changes with Apache 1.3b6
      `toupper' which can be used to map URL parts to a fixed case (this is an
      essential feature to fix the case of server names when doing mass
      virtual-hosting with the help of mod_rewrite instead of using
-     <VirtualHost> sections). [Ralf S. Engelschall]
+     <VirtualHost> sections). [Ralf S. Engelschall, parts based on code from
+     Jay Soffian <jay@cimedia.com>, PR#1631]
 
   *) Add a new directive to mod_proxy similar to ProxyPass: `ProxyPassReverse'.
      This directive lets Apache adjust the URL in Location-headers on HTTP
