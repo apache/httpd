@@ -16,7 +16,7 @@ TARGETS=htpasswd htdigest httpd_monitor rotatelogs logresolve
 all: $(TARGETS)
 
 htpasswd: htpasswd.c
-	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(EXTRA_LIBS)
+	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(LIBS)
 
 htdigest: htdigest.c
 	$(CC) $(CFLAGS) htdigest.c -o htdigest
@@ -28,7 +28,7 @@ rotatelogs: rotatelogs.c
 	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
 
 logresolve: logresolve.c
-	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(EXTRA_LIBS)
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(LIBS)
 
 clean:
 	rm -f $(TARGETS)
