@@ -483,6 +483,18 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd, void *struct_
 						   const char *arg);
 
 /**
+ * Generic command handling function for integers
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive
+ * @return An error string or NULL on success
+ * @deffunc const char *ap_set_int_slot(cmd_parms *cmd, void *struct_ptr, const char *arg)
+ */
+AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd, 
+                                                void *struct_ptr,
+                                                const char *arg);
+
+/**
  * Return true if the specified method is limited by being listed in
  * a <Limit> container, or by *not* being listed in a <LimiteExcept>
  * container.

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Add ap_set_int_slot() function
+     [John K. Sterling <sterling@covalent.net>]
+
   *) Under certain circumstances, Apache did not supply the
      right response headers when requiring authentication.
      [Gertjan van Wingerde <Gertjan.van.Wingerde@cmg.nl>] PR#7114

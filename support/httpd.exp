@@ -319,6 +319,7 @@ ap_set_content_length
 ap_set_etag
 ap_set_file_slot
 ap_set_flag_slot
+ap_set_int_slot
 ap_set_keepalive
 ap_set_last_modified
 ap_set_listenbacklog

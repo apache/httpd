@@ -1061,6 +1061,25 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
     return NULL;
 }
 
+AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd,
+                                                void *struct_ptr,
+                                                const char *arg)
+{
+    char *endptr;
+    char *error_str = NULL;
+    int offset = (int) (long) cmd->info;
+
+    *(int *) (struct_ptr + offset) = strtol(arg, &endptr, 10);
+
+    if ((*arg == '\0') || (*endptr != '\0')) {
+        error_str = apr_psprintf(cmd->pool, 
+                     "Invalid value for directive %s, expected integer",
+                     cmd->directive->directive);
+    }
+
+    return error_str;
+}
+
 AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 							 void *struct_ptr,
 							 const char *arg_)
