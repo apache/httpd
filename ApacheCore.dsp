@@ -275,10 +275,6 @@ SOURCE=.\modules\mpm\winnt\winnt.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\include\ap.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\ap_hooks.h
 # End Source File
 # Begin Source File
