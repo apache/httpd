@@ -214,7 +214,6 @@ static apr_status_t ap_queue_destroy(void *data)
      * XXX: We should at least try to signal an error here, it is
      * indicative of a programmer error. -aaron */
     apr_thread_cond_destroy(queue->not_empty);
-    apr_thread_cond_destroy(queue->not_full);
     apr_thread_mutex_destroy(queue->one_big_mutex);
 
     return APR_SUCCESS;
@@ -235,11 +234,7 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
     if ((rv = apr_thread_cond_create(&queue->not_empty, a)) != APR_SUCCESS) {
         return rv;
     }
-    if ((rv = apr_thread_cond_create(&queue->not_full, a)) != APR_SUCCESS) {
-        return rv;
-    }
 
-    queue->head = queue->tail = 0;
     queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
     queue->bounds = queue_capacity;
     queue->nelts = 0;
@@ -268,13 +263,9 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
     }
 
     AP_DEBUG_ASSERT(!queue->terminated);
-    
-    while (ap_queue_full(queue)) {
-        apr_thread_cond_wait(queue->not_full, queue->one_big_mutex);
-    }
+    AP_DEBUG_ASSERT(!ap_queue_full(queue));
 
-    elem = &queue->data[queue->tail];
-    queue->tail = (queue->tail + 1) % queue->bounds;
+    elem = &queue->data[queue->nelts];
     elem->sd = sd;
     elem->p = p;
     queue->nelts++;
@@ -323,18 +314,11 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
         }
     } 
 
-    elem = &queue->data[queue->head];
-    queue->head = (queue->head + 1) % queue->bounds;
+    elem = &queue->data[--queue->nelts];
     *sd = elem->sd;
     *p = elem->p;
     elem->sd = NULL;
     elem->p = NULL;
-    queue->nelts--;
-
-    /* signal not_full if we were full before this pop */
-    if (queue->nelts == queue->bounds - 1) {
-        apr_thread_cond_signal(queue->not_full);
-    }
 
     rv = apr_thread_mutex_unlock(queue->one_big_mutex);
     return rv;
@@ -348,9 +332,6 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
         return rv;
     }
     apr_thread_cond_broadcast(queue->not_empty);
-    /* We shouldn't have multiple threads sitting in not_full, but
-     * broadcast just in case. */
-    apr_thread_cond_broadcast(queue->not_full);
     if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
