@@ -2,4 +2,5 @@
 
 <categories>
   <categoryfile>support.xml</categoryfile>
+  <categoryfile>error.xml</categoryfile>
 </categories>
