@@ -95,7 +95,6 @@ char *ap_os_canonical_filename(ap_context_t *pPool, const char *szFile)
 {
     char *szCanonicalFile = ap_os_systemcase_canonical_filename(pPool, szFile);
     strlwr(szCanonicalFile);
-printf("ap_os_canonical_filename(%s) = %s\n", szFile, szCanonicalFile);
     return szCanonicalFile;
 }
 
