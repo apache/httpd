@@ -240,10 +240,25 @@ void SSLStateMachine_write_inject(SSLStateMachine *pMachine,
 				  const unsigned char *aucBuf,int nBuf)
     {
     int n=SSL_write(pMachine->pSSL,aucBuf,nBuf);
+    if(n < 0)
+        {
+	if(ERR_peek_error() == ERR_PACK(ERR_LIB_SSL,SSL_F_SSL_WRITE,
+					SSL_R_PROTOCOL_IS_SHUTDOWN))
+	    {
+	    SSLStateMachine_print_error(pMachine,"SSL_write error (someone wrote after shutdown)");
+	    return;
+	    }
+	SSLStateMachine_print_error(pMachine,"SSL_write error");
+	}
     /* If it turns out this assert fails, then buffer the data here
      * and just feed it in in churn instead. Seems to me that it
      * should be guaranteed to succeed, though.
      */
     assert(n == nBuf);
     fprintf(stderr,"%d bytes of unencrypted data fed to state machine\n",n);
+    }
+
+void SSLStateMachine_write_close(SSLStateMachine *pMachine)
+    {
+    SSL_shutdown(pMachine->pSSL);
     }
