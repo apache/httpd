@@ -255,6 +255,13 @@
         <dd>By default enabled modules are linked statically. You can force 
           this explicitly.</dd>
       </dl>
+
+      <note><title>Note</title>
+        <code>configure</code> will not complain about
+        <code>--enable-<var>foo</var></code> even if <var>foo</var> doesn't
+        exist, so you need to type carefully.
+      </note>
+
     </section>
 
     <section id="modules"><title>Enable or disable discrete modules</title>
