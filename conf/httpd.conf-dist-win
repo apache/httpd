@@ -270,7 +270,7 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 # Note that "MultiViews" must be named *explicitly* --- "Options All"
 # doesn't give it to you.
 #
-    Options Indexes FollowSymLinks
+    Options Indexes FollowSymLinks MultiViews
 
 #
 # This controls which options the .htaccess files in directories can
