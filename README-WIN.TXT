@@ -16,7 +16,7 @@
   ------------------
 
   Details of the latest version can be found on the Apache HTTP
-  server project page under http://www.apache.org/.
+  server project page under http://httpd.apache.org/.
 
   Documentation
   -------------
@@ -24,45 +24,45 @@
   The documentation available as of the date of this release is
   also included, in HTML format, in the htdocs/manual/ directory.
   For the most up-to-date documentation can be found on
-  http://www.apache.org/docs/. For Windows specific information, see
-  http://www.apache.org/docs/windows.html.
+  http://httpd.apache.org/docs/. For Windows specific information, see
+  http://httpd.apache.org/docs/windows.html.
 
   WARNING
   -------
 
-  Apache on Win32 has not yet been optimized for performance.  Apache
-  still performs best, and is most reliable on Unix platforms.  Over
-  time we will improve performance for Windows NT. Folks doing
-  comparative reviews of webserver performance are asked to compare
-  against Apache on a Unix platform such as Solaris, FreeBSD, or
-  Linux.
+  Apache should never be used as a production server under any 
+  consumer operating system such as Windows 95, 98, or ME (Millenium 
+  Edition).  Only Windows NT 4.0 or 2000 should be considered, and only
+  with appropriate NTFS file system and user security administration.
+  Apache runs on these consumer Windows environments only to 
+  provide test, development or trusted intranet server platforms.
 
-  Apache on Win32 should still be considered beta quality code.  It
-  does not meet the normal standards of stability and security that
-  Unix releases do.  The Win32 code for Apache 2.0 was entirely 
-  revised and large segments have been rewritten.  When Apache 2.0
-  is released, we strongly encourage all Win32 users to move to
-  that platform to reduce these risks.
+  Apache on Win32 should be considered initial-release quality code.  
+  It has not been subjected to the same stresses on its stability and 
+  security that the Unix releases have enjoyed, so there is a greater 
+  possibility of undiscovered vulnerabilities to stability or security
+  of the Win32 port.  
+
+  Apache performs best, and is still most reliable on Unix platforms.
+  Over time the performance, reliability and security for the Apache
+  Win32 port has improved, and continues to improve.  Folks doing 
+  comparative reviews of webserver performance are still asked to 
+  compare against Apache running on a Unix platform such as 
+  Solaris, FreeBSD, or Linux.
+
+  The Win32 code for Apache 2.0 has been entirely revised and large 
+  segments have been rewritten from scratch.  Once the Apache 2.0 
+  server is released, we strongly encourage all Win32 users to move to 
+  that platform for increased stability and security.
 
   Installation
   ------------
 
-  If you have installed Apache as a pre-compiled binary, you can
-  now run the server by selecting "Start Apache as console app"
-  from the Start menu. You can configure Apache for your system
-  by editing the file conf/httpd.conf in the directory where you
-  installed Apache.
-
   See the http://www.apache.org/docs/windows.html for details of how
-  to run and configure Apache, or select the "Apache Documentation"
-  icon read the local copy installed with Apache.
-
-  If you have downloaded a tar.gz file, extract it to your hard drive
-  using WinZip or similar and look in the apache-1.3\htdocs\manual
-  folder of the archive for windows.html for instructions on using 
-  Apache with Windows, win_service.html for instructions on using the
-  Apache server as a Windows 'service', and win_compiling.html for
-  help with compiling Apache.
+  to install, configure and run Apache.  These documents are also 
+  accessable from the "Documentation" program group listed within the 
+  "Apache Web Server" Start Menu programs group created by the full 
+  Apache Win32 program installer.
 
   Known Problems
   --------------
@@ -74,6 +74,11 @@
 
   Bugs which affect Apache on Windows and not Apache on Unix can be 
   found under the category "os-windows".
+
+  Do not report configuration problems to this database.  Please first
+  research the problem you are experiencing on the newsgroup
+  news:comp.infosystems.www.servers.ms-windows and search the bugs
+  database before posting a bug report.
 
   Licensing
   ---------
