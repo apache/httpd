@@ -28,8 +28,9 @@
 <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
     <p>The second method of signaling the <code>httpd</code> processes
-    is to use the <code>-k</code> command line options: stop, restart,
-    and graceful, as described below.  These are arguments to the <a href="programs/httpd.html">httpd</a> binary, but we recommend that
+    is to use the <code>-k</code> command line options: <code>stop</code>,
+    <code>restart</code>, and <code>graceful</code>,
+    as described below.  These are arguments to the <a href="programs/httpd.html">httpd</a> binary, but we recommend that
     you send them using the <a href="programs/apachectl.html">apachectl</a> control script, which
     will pass them through to <code>httpd</code>.</p>
 
