@@ -2158,8 +2158,6 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
     ap_file_t *file = NULL;
     ap_iol *iol;
 
-    ap_block_alarms();
-
     env = ap_create_environment(child_context, r->subprocess_env);
 
     if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
@@ -2203,7 +2201,6 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
             ap_bpush_iol(*script_in, iol);
         }
     }
-    ap_unblock_alarms();
 
     return (rc);
 }

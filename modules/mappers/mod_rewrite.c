@@ -3413,8 +3413,6 @@ static int rewritemap_program_child(ap_pool_t *p, char *progname,
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
 
-    ap_block_alarms();
-
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
 #endif
@@ -3449,8 +3447,6 @@ static int rewritemap_program_child(ap_pool_t *p, char *progname,
             }
         }
     }
-
-    ap_unblock_alarms();
 
     return (rc);
 }
