@@ -17,7 +17,7 @@
  * htcacheclean.c: simple program for cleaning of
  * the disk cache of the Apache HTTP server
  *
- * Contributed by Andreas Steinmetz <ast@domdv.de>
+ * Contributed by Andreas Steinmetz <ast domdv.de>
  * 8 Oct 2004
  */
 
@@ -148,6 +148,8 @@ static apr_off_t unsolicited; /* file size summary for deleted unsolicited
                                  files */
 static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
 
+/* short program name as called */
+static const char *shortname = "htcacheclean";
 
 #ifdef DEBUG
 /*
@@ -683,46 +685,44 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
 /*
  * usage info
  */
+#define NL APR_EOL_STR
 static void usage(void)
 {
-    apr_file_printf(errfile, "htcacheclean -- program for cleaning the "
-                             "disk cache.\n");
-    apr_file_printf(errfile, "Usage: htcacheclean [-Dvrn] -pPATH -lLIMIT\n");
-    apr_file_printf(errfile, "       htcacheclean [-Dvrn] -pPATH -LLIMIT\n");
-    apr_file_printf(errfile, "       htcacheclean [-ni] -dINTERVAL -pPATH "
-                             "-lLIMIT\n");
-    apr_file_printf(errfile, "       htcacheclean [-ni] -dINTERVAL -pPATH "
-                             "-LLIMIT\n");
-    apr_file_printf(errfile, "Options:\n");
-    apr_file_printf(errfile, "   -d   Daemonize and repeat cache cleaning "
-                             "every INTERVAL minutes. This\n"
-                             "        option is mutually exclusive with "
-                             "the -D, -v and -r options.\n");
-    apr_file_printf(errfile, "   -D   Do a dry run and don't delete anything. "
-                             "This option is mutually\n"
-                             "        exclusive with the -d option.\n");
-    apr_file_printf(errfile, "   -v   Be verbose and print statistics. "
-                             "This option is mutually exclusive\n"
-                             "        with the -d option.\n");
-    apr_file_printf(errfile, "   -r   Clean thoroughly. This assumes that "
-                             "the Apache web server\n"
-                             "        is not running. This option is "
-                             "mutually exclusive with the -d option.\n");
-    apr_file_printf(errfile, "   -n   Be nice. This causes slower processing "
-                             "in favour of other processes.\n");
-    apr_file_printf(errfile, "   -p   Specify PATH as the root directory of "
-                             "the disk cache.\n");
-    apr_file_printf(errfile, "   -l   Specify LIMIT as the total disk cache "
-                             "size limit in KBytes.\n");
-    apr_file_printf(errfile, "   -L   Specify LIMIT as the total disk cache "
-                             "size limit in MBytes.\n");
-    apr_file_printf(errfile, "   -i   Be intelligent and run only when there "
-                             "was a modification\n"
-                             "        of the disk cache. This option is only "
-                             "possible together with\n"
-                             "        the -d option.\n");
+    apr_file_printf(errfile,
+    "%s -- program for cleaning the disk cache."                             NL
+    "Usage: %s [-Dvrn] -pPATH -lLIMIT"                                       NL
+    "       %s [-Dvrn] -pPATH -LLIMIT"                                       NL
+    "       %s [-ni] -dINTERVAL -pPATH -lLIMIT"                              NL
+    "       %s [-ni] -dINTERVAL -pPATH -LLIMIT"                              NL
+    "Options:"                                                               NL
+    "  -d   Daemonize and repeat cache cleaning every INTERVAL minutes."     NL
+    "       This option is mutually exclusive with the -D, -v and -r"        NL
+    "       options."                                                        NL
+    "  -D   Do a dry run and don't delete anything. This option is mutually" NL
+    "       exclusive with the -d option."                                   NL
+    "  -v   Be verbose and print statistics. This option is mutually"        NL
+    "       exclusive with the -d option."                                   NL
+    "  -r   Clean thoroughly. This assumes that the Apache web server is "   NL
+    "       not running. This option is mutually exclusive with the -d"      NL
+    "       option."                                                         NL
+    "  -n   Be nice. This causes slower processing in favour of other"       NL
+    "       processes."                                                      NL
+    "  -p   Specify PATH as the root directory of the disk cache."           NL
+    "  -l   Specify LIMIT as the total disk cache size limit in KBytes."     NL
+    "  -L   Specify LIMIT as the total disk cache size limit in MBytes."     NL
+    "  -i   Be intelligent and run only when there was a modification of"    NL
+    "       the disk cache. This option is only possible together with the"  NL
+    "       -d option."                                                      NL,
+    shortname,
+    shortname,
+    shortname,
+    shortname,
+    shortname
+    );
+
     exit(1);
 }
+#undef NL
 
 /*
  * main
@@ -757,6 +757,10 @@ int main(int argc, const char * const argv[])
         return 1;
     }
     atexit(apr_terminate);
+
+    if (argc) {
+        shortname = apr_filepath_name_get(argv[0]);
+    }
 
     if (apr_pool_create(&pool, NULL) != APR_SUCCESS) {
         return 1;
