@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/07 22:03:15 $]
+Last modified at [$Date: 2004/03/08 16:40:42 $]
 
 Release:
 
@@ -66,16 +66,6 @@ Contributors looking for a mission:
     * Open bugs in the bug database.
 
 RELEASE SHOWSTOPPERS:
-
-  PR 24469, broken reverse lookups with IPv4-mapped addrs on old OS X
-    The autoconf check added between 2.0.47 and 2.0.48 isn't
-    sufficient for catching the OS X problem, because building the
-    IPv4 numeric address string from IPv4-mapped address would work
-    but actually resolving the host would not.  To catch the check
-    via retcode, you have to specify the NI_NAMEREQD flag.
-    jerenkrantz: This was fixed in APR 1.0, but not backported to 0.9.
-                 Backported in r1.23.2.2 of srclib/apr/build/apr_network.m4
-                 in APR_0_9_BRANCH.
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
