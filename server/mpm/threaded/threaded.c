@@ -200,6 +200,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
+    if (ap_scoreboard_image->global.quiescing_pid == ap_my_pid) {
+        ap_scoreboard_image->global.quiescing_pid = 0;
+    }
     if (pchild) {
 	apr_pool_destroy(pchild);
     }
@@ -211,6 +214,12 @@ static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
     apr_signal(sig, SIG_DFL);
+    
+    /* clean up so that other processes can quiesce */
+    if (ap_scoreboard_image->global.quiescing_pid == ap_my_pid) {
+        ap_scoreboard_image->global.quiescing_pid = 0;
+    }
+    
     kill(ap_my_pid, sig);
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
@@ -487,7 +496,9 @@ static void * worker_thread(void * dummy)
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
     while (1) {
-        workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
+        workers_may_exit |= (ap_max_requests_per_child != 0) 
+                             && (requests_this_child <= 0)
+                             && (ap_scoreboard_image->global.quiescing_pid == 0);
         if (workers_may_exit) break;
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
@@ -581,14 +592,22 @@ static void * worker_thread(void * dummy)
         apr_pool_clear(ptrans);
     }
 
+    if (ap_scoreboard_image->global.quiescing_pid == 0) {
+        /* yeah, I realize there's a race condition here, but it works 
+         * out OK without serialization                               */ 
+        ap_scoreboard_image->global.quiescing_pid = ap_my_pid;   
+    }
     apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
         (request_rec *) NULL);
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
-        /* All the threads have exited, now finish the shutdown process
-         * by signalling the sigwait thread */
+        /* All the threads have exited, now finish the shutdown process */
+        if (ap_scoreboard_image->global.quiescing_pid == ap_my_pid) {
+            ap_scoreboard_image->global.quiescing_pid = 0;
+        }
+        /* signal the sigwait thread */
         kill(ap_my_pid, SIGTERM);
     }
     apr_lock_release(worker_thread_count_mutex);
@@ -858,11 +877,18 @@ static void perform_idle_server_maintenance(void)
 	        ++idle_thread_addition;
 	    }
 	}
-	if (all_dead_threads && free_length < idle_spawn_rate) {
-	    free_slots[free_length] = i;
-	    ++free_length;
+	if (all_dead_threads) {
+            pid_t dead_pid = ap_scoreboard_image->parent[i].pid; 
+            if (ap_scoreboard_image->global.quiescing_pid == dead_pid) {
+                /* shouldn't happen, but just in case... */
+                ap_scoreboard_image->global.quiescing_pid = 0;
+            }
+            if (free_length < idle_spawn_rate) {
+	        free_slots[free_length] = i;
+	        ++free_length;
+            }
 	}
-	if (!all_dead_threads) {
+	else {                       /* ! all_dead_threads */
             last_non_dead = i;
 	}
         if (!any_dying_threads) {
@@ -872,7 +898,8 @@ static void perform_idle_server_maintenance(void)
     }
     ap_max_daemons_limit = last_non_dead + 1;
 
-    if (idle_thread_count > max_spare_threads) {
+    if (idle_thread_count > max_spare_threads 
+        &&  ap_scoreboard_image->global.quiescing_pid == 0) {
         /* Kill off one child */
         char char_of_death = '!';
         if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
@@ -1114,6 +1141,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      */
     ++ap_my_generation;
     ap_scoreboard_image->global.running_generation = ap_my_generation;
+    ap_scoreboard_image->global.quiescing_pid = 0;
     update_scoreboard_global();
 
     if (is_graceful) {

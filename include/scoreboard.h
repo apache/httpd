@@ -189,6 +189,11 @@ typedef struct {
     ap_scoreboard_e sb_type;
     ap_generation_t running_generation;	/* the generation of children which
                                          * should still be serving requests. */
+#if APR_HAS_THREADS
+    pid_t quiescing_pid;                /* pid of process which is going down
+                                         * due to MaxRequestsPerChild or
+                                         * perform_idle_server_maintanence   */
+#endif 
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
