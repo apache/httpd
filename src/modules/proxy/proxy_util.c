@@ -1607,6 +1607,12 @@ int ap_proxy_read_response_line(BUFF *f, request_rec *r, char *buffer, int size,
         }
         *backasswards = 0;
 
+        /* there need not be a reason phrase in the response,
+	 * and ap_getline() already deleted trailing whitespace.
+	 * But RFC2616 requires a SP after the Status-Code. Add one:
+	 */
+	if (strlen(buffer) < sizeof("HTTP/1.x 200 ")-1)
+	  buffer = ap_pstrcat(r->pool, buffer, " ", NULL);
         buffer[12] = '\0';
         r->status = atoi(&buffer[9]);
         buffer[12] = ' ';
