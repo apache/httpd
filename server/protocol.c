@@ -861,8 +861,8 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_bucket_brigade *tmp_bb;
 
     apr_pool_create(&p, conn->pool);
-    r = apr_pcalloc(p, sizeof(request_rec));
     apr_pool_tag(p, "request");
+    r = apr_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;
     r->server          = conn->base_server;
