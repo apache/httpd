@@ -1073,7 +1073,8 @@ void winnt_rewrite_args(process_rec *process)
     /* Handle the following SCM aspects in this phase:
      *
      *   -k runservice [transition for WinNT, nothing for Win9x]
-     *   -k (!)install [error out if name is not installed]
+     *   -k install
+     *   -k config
      *   -k uninstall
      *   -k stop
      *   -k shutdown (same as -k stop). Maintained for backward compatability.
@@ -1282,6 +1283,15 @@ void winnt_rewrite_args(process_rec *process)
                  "%s: Service is already installed.", service_name);
             exit(APEXIT_INIT);
         }
+        else
+        {
+            /* Install the service */
+            rv = mpm_service_install(process->pool, inst_argc, inst_argv, 0);
+            if (rv != APR_SUCCESS) {
+                exit(rv);
+            }
+            /* Proceed to post_config in order to test the installed configuration */
+        }
     }
     else if (running_as_service)
     {
@@ -1326,6 +1336,15 @@ void winnt_rewrite_args(process_rec *process)
         ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
              "No installed service named \"%s\".", service_name);
         exit(APEXIT_INIT);
+    }
+    else if (!strcasecmp(signal_arg, "config")) 
+    {
+        /* Reconfigure the service */
+        rv = mpm_service_install(process->pool, inst_argc, inst_argv, 1);
+        if (rv != APR_SUCCESS) {
+            exit(rv);
+        }
+        /* Proceed to post_config in order to test the installed configuration */
     }
     
     /* Track the args actually entered by the user.
@@ -1395,8 +1414,8 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
 
     /* Handle the following SCM aspects in this phase:
      *
-     *   -k install
-     *   -k config
+     *   -k install (catch and exit as install was handled in rewrite_args)
+     *   -k config  (catch and exit as config was handled in rewrite_args)
      *   -k start
      *   -k restart
      *   -k runservice [Win95, only once - after we parsed the config]
@@ -1409,16 +1428,22 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
      */
 
     if (!strcasecmp(signal_arg, "install")) {
-        rv = mpm_service_install(ptemp, inst_argc, inst_argv, 0);
+        /* Service install happens in the rewrite_args hooks. If we 
+         * made it this far, the server configuration is clean and the
+         * service will successfully start.
+         */
         apr_pool_destroy(s->process->pool);
         apr_terminate();
-        exit (rv);
+        exit(0);
     }
     if (!strcasecmp(signal_arg, "config")) {
-        rv = mpm_service_install(ptemp, inst_argc, inst_argv, 1);
+        /* Service reconfiguration happens in the rewrite_args hooks. If we 
+         * made it this far, the server configuration is clean and the
+         * service will successfully start.
+         */
         apr_pool_destroy(s->process->pool);
         apr_terminate();
-        exit (rv);
+        exit(0);
     }
 
     if (!strcasecmp(signal_arg, "start")) {
