@@ -130,9 +130,6 @@ Needs patch:
 	In particular this affects the correctness of the proxy and the
 	vhost mechanism.
 
-    * Lynx OS re-port
-	<Pine.BSD.3.96.980209120938.85I-100000@mag.devdep.sysgo.de>
-
     * PR#1799: we need to add a "default" or "none" handler to deal with
 	filenames such as foo.map.gif which aren't image maps, and shouldn't
 	be considered such.  See discussion in
