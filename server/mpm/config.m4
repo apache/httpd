@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 [  --with-mpm=MPM          Choose the process model for Apache to use.
-                          MPM={beos,threaded,prefork,spmt_os2,perchild}],[
+                          MPM={beos,worker,threaded,prefork,spmt_os2,perchild}],[
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
@@ -12,7 +12,7 @@ AC_MSG_RESULT($APACHE_MPM)
 
 apache_cv_mpm=$APACHE_MPM
 	
-if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
+if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "perchild"; then
   APR_CHECK_APR_DEFINE(APR_HAS_THREADS, srclib/apr)
 
   if test "x$ac_cv_define_APR_HAS_THREADS" = "xno"; then
