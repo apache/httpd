@@ -184,17 +184,17 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 	 * a HTTP/1.0 request to keep things simple.
 	 */
 	Explain0("Sending the CONNECT request to the remote proxy");
-	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0\015\012",
+	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF,
 		    r->uri);
 	write(sock, buffer, strlen(buffer));
 	ap_snprintf(buffer, sizeof(buffer),
-		    "Proxy-agent: %s\015\012\015\012", SERVER_VERSION);
+		    "Proxy-agent: %s" CRLF CRLF, SERVER_VERSION);
 	write(sock, buffer, strlen(buffer));
     }
     else {
 	Explain0("Returning 200 OK Status");
-	rvputs(r, "HTTP/1.0 200 Connection established\015\012", NULL);
-	rvputs(r, "Proxy-agent: ", SERVER_VERSION, "\015\012\015\012", NULL);
+	rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
+	rvputs(r, "Proxy-agent: ", SERVER_VERSION, CRLF CRLF, NULL);
 	bflush(r->connection->client);
     }
 

@@ -566,6 +566,10 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
+#ifdef CHARSET_EBCDIC
+    bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
+#endif /*CHARSET_EBCDIC*/
+
 /* possible results: 120, 220, 421 */
     hard_timeout("proxy ftp", r);
     i = ftp_getrc(f);
@@ -583,7 +587,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     bputs("USER ", f);
     bwrite(f, user, userlen);
-    bputs("\015\012", f);
+    bputs(CRLF, f);
     bflush(f);			/* capture any errors */
     Explain1("FTP: USER %s", user);
 
@@ -609,7 +613,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    return FORBIDDEN;
 	bputs("PASS ", f);
 	bwrite(f, password, passlen);
-	bputs("\015\012", f);
+	bputs(CRLF, f);
 	bflush(f);
 	Explain1("FTP: PASS %s", password);
 /* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
@@ -646,7 +650,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	len = decodeenc(path);
 	bputs("CWD ", f);
 	bwrite(f, path, len);
-	bputs("\015\012", f);
+	bputs(CRLF, f);
 	bflush(f);
 	Explain1("FTP: CWD %s", path);
 /* responses: 250, 421, 500, 501, 502, 530, 550 */
@@ -684,7 +688,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	/* set type to image */
 	/* TM - Added \015\012 to the end of TYPE I, otherwise it hangs the
 	   connection */
-	bputs("TYPE I\015\012", f);
+	bputs("TYPE I" CRLF, f);
 	bflush(f);
 	Explain0("FTP: TYPE I");
 /* responses: 200, 421, 500, 501, 504, 530 */
@@ -721,7 +725,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
     }
 
-    bputs("PASV\015\012", f);
+    bputs("PASV" CRLF, f);
     bflush(f);
     Explain0("FTP: PASV command issued");
 /* possible results: 227, 421, 500, 501, 502, 530 */
@@ -827,7 +831,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     else {
 	bputs("SIZE ", f);
 	bwrite(f, path, len);
-	bputs("\015\012", f);
+	bputs(CRLF, f);
 	bflush(f);
 	Explain1("FTP: SIZE %s", path);
 	i = ftp_getrc(f);
@@ -838,7 +842,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		parms = "d";
 		bputs("CWD ", f);
 		bwrite(f, path, len);
-		bputs("\015\012", f);
+		bputs(CRLF, f);
 		bflush(f);
 		Explain1("FTP: CWD %s", path);
 		i = ftp_getrc(f);
@@ -873,7 +877,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	Explain1("FTP: RETR %s", path);
     }
     bwrite(f, path, len);
-    bputs("\015\012", f);
+    bputs(CRLF, f);
     bflush(f);
 /* RETR: 110, 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 530, 550
    NLST: 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 502, 530 */
@@ -888,7 +892,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	parms = "d";
 	bputs("CWD ", f);
 	bwrite(f, path, len);
-	bputs("\015\012", f);
+	bputs(CRLF, f);
 	bflush(f);
 	Explain1("FTP: CWD %s", path);
 	rc = ftp_getrc(f);
@@ -906,7 +910,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    return BAD_GATEWAY;
 	}
 
-	bputs("LIST -lag\015\012", f);
+	bputs("LIST -lag" CRLF, f);
 	bflush(f);
 	Explain0("FTP: LIST -lag");
 	rc = ftp_getrc(f);
@@ -977,13 +981,17 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	bpushfd(data, dsock, dsock);
     }
 
+#ifdef CHARSET_EBCDIC
+/*    bsetflag(data, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);*/
+#endif /*CHARSET_EBCDIC*/
+
     hard_timeout("proxy receive", r);
 /* send response */
 /* write status line */
     if (!r->assbackwards)
-	rvputs(r, "HTTP/1.0 ", r->status_line, "\015\012", NULL);
+	rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
     if (cache != NULL)
-	if (bvputs(cache, "HTTP/1.0 ", r->status_line, "\015\012",
+	if (bvputs(cache, "HTTP/1.0 ", r->status_line, CRLF,
 		   NULL) == -1)
 	    cache = proxy_cache_error(c);
 
@@ -995,17 +1003,17 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    hdr[i].value[0] == '\0')
 	    continue;
 	if (!r->assbackwards)
-	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
+	    rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
 	if (cache != NULL)
-	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
+	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
 		       NULL) == -1)
 		cache = proxy_cache_error(c);
     }
 
     if (!r->assbackwards)
-	rputs("\015\012", r);
+	rputs(CRLF, r);
     if (cache != NULL)
-	if (bputs("\015\012", cache) == -1)
+	if (bputs(CRLF, cache) == -1)
 	    cache = proxy_cache_error(c);
 
     bsetopt(r->connection->client, BO_BYTECT, &zero);
@@ -1024,7 +1032,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     else {
 /* abort the transfer */
-	bputs("ABOR\015\012", f);
+	bputs("ABOR" CRLF, f);
 	bflush(f);
 	if (!pasvmode)
 	    bclose(data);
@@ -1038,7 +1046,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     proxy_cache_tidy(c);
 
 /* finish */
-    bputs("QUIT\015\012", f);
+    bputs("QUIT" CRLF, f);
     bflush(f);
     Explain0("FTP: QUIT");
 /* responses: 221, 500 */

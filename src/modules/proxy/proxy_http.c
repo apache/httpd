@@ -277,13 +277,13 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     bpushfd(f, sock, sock);
 
     hard_timeout("proxy send", r);
-    bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0\015\012",
+    bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
 	   NULL);
     bvputs(f, "Host: ", desthost, NULL);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT)
-	bvputs(f, ":", destportstr, "\015\012", NULL);
+	bvputs(f, ":", destportstr, CRLF, NULL);
     else
-	bputs("\015\012", f);
+	bputs(CRLF, f);
 
     reqhdrs_arr = table_elts(r->headers_in);
     reqhdrs = (table_entry *) reqhdrs_arr->elts;
@@ -293,10 +293,10 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    || !strcasecmp(reqhdrs[i].key, "Host")	/* Already sent */
 	    ||!strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
-	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
+	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
     }
 
-    bputs("\015\012", f);
+    bputs(CRLF, f);
 /* send the request data, if any. N.B. should we trap SIGPIPE ? */
 
     if (should_client_block(r)) {
@@ -386,9 +386,9 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* write status line */
     if (!r->assbackwards)
-	rvputs(r, "HTTP/1.0 ", r->status_line, "\015\012", NULL);
+	rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
     if (cache != NULL)
-	if (bvputs(cache, "HTTP/1.0 ", r->status_line, "\015\012", NULL) == -1)
+	if (bvputs(cache, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1)
 	    cache = proxy_cache_error(c);
 
 /* send headers */
@@ -397,19 +397,19 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    hdr[i].value[0] == '\0')
 	    continue;
 	if (!r->assbackwards) {
-	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
+	    rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
 	    table_set(r->headers_out, hdr[i].field, hdr[i].value);
 	}
 	if (cache != NULL)
-	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
+	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
 		       NULL) == -1)
 		cache = proxy_cache_error(c);
     }
 
     if (!r->assbackwards)
-	rputs("\015\012", r);
+	rputs(CRLF, r);
     if (cache != NULL)
-	if (bputs("\015\012", cache) == -1)
+	if (bputs(CRLF, cache) == -1)
 	    cache = proxy_cache_error(c);
 
     bsetopt(r->connection->client, BO_BYTECT, &zero);

@@ -22,8 +22,13 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifndef CHARSET_EBCDIC
 #define LF 10
 #define CR 13
+#else /*CHARSET_EBCDIC*/
+#define LF '\n'
+#define CR '\r'
+#endif /*CHARSET_EBCDIC*/
 
 #define MAX_STRING_LEN 256
 
