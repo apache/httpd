@@ -1,5 +1,8 @@
 Changes with Apache 1.3.29
 
+  *) Prevent creation of subprocess Zombies when using CGI wrappers
+     such as suExec and cgiwrap. PR 21737. [Numerous]
+
   *) ab: Overlong credentials given via command line no longer clobber
      the buffer.  [André Malo]
 
