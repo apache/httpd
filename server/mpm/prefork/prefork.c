@@ -624,8 +624,8 @@ static void accept_mutex_init(ap_context_t *p)
 
     expand_lock_fname(p);
     unlink(ap_lock_fname);
-    ap_open(p, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
-	    APR_UREAD|APR_UWRITE, &tempfile);
+    ap_open(&tempfile, p, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
+	    APR_UREAD|APR_UWRITE);
     if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Parent cannot open lock file: %s", ap_lock_fname);
