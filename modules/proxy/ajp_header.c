@@ -203,14 +203,14 @@ AJPV13_REQUEST/AJPV14_REQUEST=
 
  */
 
-static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
-                                 request_rec *r)
+static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
+                                          request_rec *r,
+                                          apr_uri_t *uri)
 {
     int method;
     apr_uint32_t i, num_headers = 0;
     apr_byte_t is_ssl;
     char *remote_host;
-    char *uri;
     const char *session_route, *envvar;
     const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
     const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
@@ -235,21 +235,12 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
 
     remote_host = (char *)ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_HOST, NULL);
 
-    uri = apr_pstrdup(r->pool, r->uri);
-    if (uri != NULL) {
-        char *query_str = strchr(uri, '?');
-        if (query_str != NULL) {
-            *query_str = 0;
-        }
-    }
-    
-
     ajp_msg_reset(msg);
 
     if (ajp_msg_append_uint8(msg, CMD_AJP13_FORWARD_REQUEST)     ||
         ajp_msg_append_uint8(msg, method)                        ||
         ajp_msg_append_string(msg, r->protocol)                  ||
-        ajp_msg_append_string(msg, uri)                          ||
+        ajp_msg_append_string(msg, uri->path)                    ||
         ajp_msg_append_string(msg, r->connection->remote_ip)     ||
         ajp_msg_append_string(msg, remote_host)                  ||
         ajp_msg_append_string(msg, ap_get_server_name(r))        ||
@@ -327,9 +318,9 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
         }
     }
     /* XXXX  ebcdic (args converted?) */
-    if (r->args) {
+    if (uri->query) {
         if (ajp_msg_append_uint8(msg, SC_A_QUERY_STRING) ||
-            ajp_msg_append_string(msg, r->args)) {
+            ajp_msg_append_string(msg, uri->query)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "Error ajp_marshal_into_msgb - "
                    "Error appending the query string");
@@ -563,7 +554,8 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t   *msg,
  * Build the ajp header message and send it
  */
 apr_status_t ajp_send_header(apr_socket_t *sock,
-                                  request_rec  *r)
+                             request_rec *r,
+                             apr_uri_t *uri)
 {
     ajp_msg_t *msg;
     apr_status_t rc;
@@ -575,7 +567,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
         return rc;
     }
 
-    rc = ajp_marshal_into_msgb(msg, r);    
+    rc = ajp_marshal_into_msgb(msg, r, uri);    
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_send_header: ajp_marshal_into_msgb failed");
