@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/19 15:14:54 $]
+Last modified at [$Date: 2003/05/20 18:50:19 $]
 
 Release:
 
@@ -240,6 +240,11 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_kernel.c 1.93
       modules/ssl/ssl_toolkit_compat.c 1.34
       +1: wrowe
+
+    * Allow httpd's configure to recognize libtool 1.5 as capable of
+      producing DSOs.
+      configure.in: r1.252
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
