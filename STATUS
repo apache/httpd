@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/19 01:59:53 $]
+Last modified at [$Date: 2000/12/19 03:43:15 $]
 
 Release:
 
@@ -181,6 +181,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       added multiple times during the config process. The -export-dynamic
       should probably move into build/special.mk (the make file used for
       building Apache modules).
+
+    * toss the AddModule directive. we add all prelinked modules
+      automatically, and the LoadModule directive now implies
+      AddModule. so... there is no point to it any more.
+
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
