@@ -144,7 +144,62 @@ typedef struct {
 
 static unsigned global_in_addr;
 
-static APACHE_TLS unique_id_rec cur_unique_id;
+#ifdef WIN32
+
+static DWORD tls_index;
+
+BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
+{
+    LPVOID memptr;
+
+    switch (reason) {
+    case DLL_PROCESS_ATTACH:
+	tls_index = TlsAlloc();
+    case DLL_THREAD_ATTACH: /* intentional no break */
+	TlsSetValue(tls_index, calloc(sizeof(unique_id_rec), 1));
+	break;
+    case DLL_THREAD_DETACH:
+	memptr = TlsGetValue(tls_index);
+	if (memptr) {
+	    free (memptr);
+	    TlsSetValue (tls_index, 0);
+	}
+	break;
+    }
+
+    return TRUE;
+}
+
+static unique_id_rec* get_cur_unique_id(int parent)
+{
+    /* Apache initializes the child process, not the individual child threads.
+     * Copy the original parent record if this->pid is not yet initialized.
+     */
+    static unique_id_rec *parent_id;
+    unique_id_rec *cur_unique_id = (unique_id_rec *) TlsGetValue(tls_index);
+
+    if (parent) {
+        parent_id = cur_unique_id;
+    }
+    else if (!cur_unique_id->pid) {
+        memcpy(cur_unique_id, parent_id, sizeof(*parent_id));
+    }
+    return cur_unique_id;
+}
+
+#else /* !WIN32 */
+
+/* Even when not MULTITHREAD, this will return a single structure, since
+ * APACHE_TLS should be defined as empty on single-threaded platforms.
+ */
+static unique_id_rec* get_cur_unique_id(int parent)
+{
+    static APACHE_TLS unique_id_rec spcid;
+    return &spcid;
+}
+
+#endif /* !WIN32 */
+
 
 /*
  * Number of elements in the structure unique_id_rec.
@@ -170,27 +225,28 @@ static void unique_id_global_init(server_rec *s, pool *p)
 #ifndef NO_GETTIMEOFDAY
     struct timeval tv;
 #endif
+    unique_id_rec *cur_unique_id = get_cur_unique_id(1);
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
      */
     unique_id_rec_offset[0] = XtOffsetOf(unique_id_rec, stamp);
-    unique_id_rec_size[0] = sizeof(cur_unique_id.stamp);
+    unique_id_rec_size[0] = sizeof(cur_unique_id->stamp);
     unique_id_rec_offset[1] = XtOffsetOf(unique_id_rec, in_addr);
-    unique_id_rec_size[1] = sizeof(cur_unique_id.in_addr);
+    unique_id_rec_size[1] = sizeof(cur_unique_id->in_addr);
     unique_id_rec_offset[2] = XtOffsetOf(unique_id_rec, pid);
-    unique_id_rec_size[2] = sizeof(cur_unique_id.pid);
+    unique_id_rec_size[2] = sizeof(cur_unique_id->pid);
 #ifdef MULTITHREAD
     unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, tid);
-    unique_id_rec_size[3] = sizeof(cur_unique_id.tid);
+    unique_id_rec_size[3] = sizeof(cur_unique_id->tid);
     unique_id_rec_offset[4] = XtOffsetOf(unique_id_rec, counter);
-    unique_id_rec_size[4] = sizeof(cur_unique_id.counter);
+    unique_id_rec_size[4] = sizeof(cur_unique_id->counter);
     unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1]
                              + unique_id_rec_size[2] + unique_id_rec_size[3]
                              + unique_id_rec_size[4];
 #else
     unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, counter);
-    unique_id_rec_size[3] = sizeof(cur_unique_id.counter);
+    unique_id_rec_size[3] = sizeof(cur_unique_id->counter);
     unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1]
                              + unique_id_rec_size[2] + unique_id_rec_size[3];
 #endif
@@ -255,12 +311,10 @@ static void unique_id_global_init(server_rec *s, pool *p)
 static void unique_id_child_init(server_rec *s, pool *p)
 {
     pid_t pid;
-#ifdef MULTITHREAD
-    tid_t tid;
-#endif
 #ifndef NO_GETTIMEOFDAY
     struct timeval tv;
 #endif
+    unique_id_rec *cur_unique_id = get_cur_unique_id(1);
 
     /*
      * Note that we use the pid because it's possible that on the same
@@ -269,7 +323,7 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * children.
      */
     pid = getpid();
-    cur_unique_id.pid = pid;
+    cur_unique_id->pid = pid;
 
     /*
      * Test our assumption that the pid is 32-bits.  It's possible that
@@ -277,23 +331,12 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * of them.  It would have been really nice to test this during
      * global_init ... but oh well.
      */
-    if ((pid_t)cur_unique_id.pid != pid) {
+    if ((pid_t)cur_unique_id->pid != pid) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
 		     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 
-#ifdef MULTITHREAD
-    /*
-     * Note that we use the pid because it's possible that on the same
-     * physical machine there are multiple servers (i.e. using Listen). But
-     * it's guaranteed that none of them will share the same pid+tids between
-     * children.
-     */
-    tid = gettid();
-    cur_unique_id.tid = tid;
-#endif
-
-    cur_unique_id.in_addr = global_in_addr;
+    cur_unique_id->in_addr = global_in_addr;
 
     /*
      * If we use 0 as the initial counter we have a little less protection
@@ -302,16 +345,16 @@ static void unique_id_child_init(server_rec *s, pool *p)
      */
 #ifndef NO_GETTIMEOFDAY
     if (gettimeofday(&tv, NULL) == -1) {
-        cur_unique_id.counter = 0;
+        cur_unique_id->counter = 0;
     }
     else {
 	/* Some systems have very low variance on the low end of their
 	 * system counter, defend against that.
 	 */
-        cur_unique_id.counter = tv.tv_usec / 10;
+        cur_unique_id->counter = tv.tv_usec / 10;
     }
 #else
-    cur_unique_id.counter = 0;
+    cur_unique_id->counter = 0;
 #endif
 
     /*
@@ -319,11 +362,8 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * identifiers are comparable between machines of different byte
      * orderings.  Note in_addr is already in network order.
      */
-    cur_unique_id.pid = htonl(cur_unique_id.pid);
-#ifdef MULTITHREAD
-    cur_unique_id.tid = htonl(cur_unique_id.tid);
-#endif
-    cur_unique_id.counter = htons(cur_unique_id.counter);
+    cur_unique_id->pid = htonl(cur_unique_id->pid);
+    cur_unique_id->counter = htons(cur_unique_id->counter);
 }
 
 /* NOTE: This is *NOT* the same encoding used by base64encode ... the last two
@@ -354,6 +394,7 @@ static int gen_unique_id(request_rec *r)
     unsigned short counter;
     const char *e;
     int i,j,k;
+    unique_id_rec *cur_unique_id = get_cur_unique_id(0);
 
     /* copy the unique_id if this is an internal redirect (we're never
      * actually called for sub requests, so we don't need to test for
@@ -364,16 +405,27 @@ static int gen_unique_id(request_rec *r)
 	return DECLINED;
     }
 
-    cur_unique_id.stamp = htonl((unsigned int)r->request_time);
+    cur_unique_id->stamp = htonl((unsigned int)r->request_time);
+
+#ifdef MULTITHREAD
+    /*
+     * Note that we use the pid because it's possible that on the same
+     * physical machine there are multiple servers (i.e. using Listen). But
+     * it's guaranteed that none of them will share the same pid+tids between
+     * children.
+     */
+    cur_unique_id->tid = gettid();
+    cur_unique_id->tid = htonl(cur_unique_id->tid);
+#endif
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure
      */
     x = (unsigned char *) &paddedbuf;
-    y = (unsigned char *) &cur_unique_id;
+    y = (unsigned char *) cur_unique_id;
     k = 0;
     for (i = 0; i < UNIQUE_ID_REC_MAX; i++) {
-        y = ((unsigned char *) &cur_unique_id) + unique_id_rec_offset[i];
+        y = ((unsigned char *) cur_unique_id) + unique_id_rec_offset[i];
         for (j = 0; j < unique_id_rec_size[i]; j++, k++) {
             x[k] = y[j];
         }
@@ -407,8 +459,8 @@ static int gen_unique_id(request_rec *r)
     ap_table_setn(r->subprocess_env, "UNIQUE_ID", str);
 
     /* and increment the identifier for the next call */
-    counter = ntohs(cur_unique_id.counter) + 1;
-    cur_unique_id.counter = htons(counter);
+    counter = ntohs(cur_unique_id->counter) + 1;
+    cur_unique_id->counter = htons(counter);
 
     return DECLINED;
 }

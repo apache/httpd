@@ -184,9 +184,9 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, char *map)
 	return "INTERNAL ERROR: unknown command info";
     }
 
-    if (*map != '/') {
+    if (!(ap_os_is_path_absolute(map))) {
 	if (strcasecmp(map, "none")) {
-	    return "format string must start with '/' or be 'none'";
+	    return "format string must be an absolute file path or 'none'";
 	}
 	*pmap = NULL;
 	*pmode = VHOST_ALIAS_NONE;
@@ -420,7 +420,7 @@ static int mva_translate(request_rec *r)
     cgi = NULL;
     if (conf->cgi_root) {
 	cgi = strstr(r->uri, "cgi-bin/");
-	if (cgi && cgi - r->uri != strspn(r->uri, "/")) {
+	if (cgi && (cgi != r->uri + strspn(r->uri, "/"))) {
 	    cgi = NULL;
 	}
     }
