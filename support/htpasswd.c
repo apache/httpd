@@ -134,9 +134,9 @@
 #define ERR_OVERFLOW 5
 #define ERR_BADUSER 6
 
-#define NEWFILE        1
-#define NOFILE         2
-#define NONINTERACTIVE 4
+#define APHTP_NEWFILE        1
+#define APHTP_NOFILE         2
+#define APHTP_NONINTERACTIVE 4
 
 apr_file_t *errfile;
 apr_file_t *ftemp = NULL;
@@ -347,10 +347,10 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         }
         while (*++arg != '\0') {
             if (*arg == 'c') {
-                *mask |= NEWFILE;
+                *mask |= APHTP_NEWFILE;
             }
             else if (*arg == 'n') {
-                *mask |= NOFILE;
+                *mask |= APHTP_NOFILE;
                 args_left--;
             }
             else if (*arg == 'm') {
@@ -366,7 +366,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
                 *alg = ALG_CRYPT;
             }
             else if (*arg == 'b') {
-                *mask |= NONINTERACTIVE;
+                *mask |= APHTP_NONINTERACTIVE;
                 args_left++;
             }
             else {
@@ -375,7 +375,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         }
     }
 
-    if (*mask & (NEWFILE & NOFILE)) {
+    if (*mask & (APHTP_NEWFILE | APHTP_NOFILE)) {
         apr_file_printf(errfile, "%s: -c and -n options conflict\n", argv[0]);
         exit(ERR_SYNTAX);
     }
@@ -388,7 +388,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         usage();
     }
 
-    if (*mask & NOFILE) {
+    if (*mask & APHTP_NOFILE) {
         i--;
     }
     else {
@@ -409,7 +409,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
                 argv[0], *arg);
         exit(ERR_BADUSER);
     }
-    if (*mask & NONINTERACTIVE) {
+    if (*mask & APHTP_NONINTERACTIVE) {
         if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
             apr_file_printf(errfile, "%s: password too long (> %d)\n",
                 argv[0], MAX_STRING_LEN);
@@ -486,14 +486,14 @@ int main(int argc, const char * const argv[])
                 "just not work on this platform.\n");
     }
 #endif
-    if (! mask & NOFILE) {
+    if (! mask & APHTP_NOFILE) {
         /*
          * Only do the file checks if we're supposed to frob it.
          *
          * Verify that the file exists if -c was omitted.  We give a special
          * message if it doesn't.
          */
-        if ((! mask & NEWFILE) && (! exists(pwfilename, pool))) {
+        if ((! mask & APHTP_NEWFILE) && (! exists(pwfilename, pool))) {
             apr_file_printf(errfile,
                     "%s: cannot modify file %s; use '-c' to create it\n",
                     argv[0], pwfilename);
@@ -504,7 +504,7 @@ int main(int argc, const char * const argv[])
          * Verify that we can read the existing file in the case of an update
          * to it (rather than creation of a new one).
          */
-        if ((! mask & NEWFILE) && (! readable(pool, pwfilename))) {
+        if ((! mask & APHTP_NEWFILE) && (! readable(pool, pwfilename))) {
             apr_file_printf(errfile, "%s: cannot open file %s for read access\n",
                     argv[0], pwfilename);
             perror("apr_file_open");
@@ -514,7 +514,7 @@ int main(int argc, const char * const argv[])
          * Now check to see if we can preserve an existing file in case
          * of password verification errors on a -c operation.
          */
-        if ((mask & NEWFILE) && exists(pwfilename, pool) && 
+        if ((mask & APHTP_NEWFILE) && exists(pwfilename, pool) && 
             (! readable(pool, pwfilename))) {
             apr_file_printf(errfile, "%s: cannot open file %s for read access\n"
                     "%s: existing auth data would be lost on "
@@ -547,7 +547,7 @@ int main(int argc, const char * const argv[])
         apr_file_printf(errfile, "%s: %s\n", argv[0], record);
         exit(i);
     }
-    if (mask & NOFILE) {
+    if (mask & APHTP_NOFILE) {
         printf("%s\n", record);
         exit(0);
     }
