@@ -276,6 +276,12 @@ listens to</td></tr>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
+    <div class="warning"><h3>Error condition</h3>
+      Multiple <code>Listen</code> directives for the same ip address and
+      port will result in an 'Address already in use' error message.
+    </div>
+
+
 <h3>See also</h3>
 <ul>
 <li><a href="../dns-caveats.html">DNS Issues</a></li>
