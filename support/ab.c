@@ -327,7 +327,6 @@ apr_xlate_t *from_ascii, *to_ascii;
 static void close_connection(struct connection * c);
 
 static void close_connection(struct connection * c);
-static void s_write(struct connection * c, char *buff, int len);
 /* --------------------------------------------------------- */
 
 /* simple little function to write an error string and exit */
@@ -412,7 +411,7 @@ static void write_request(struct connection * c)
 
 /* calculate and output results */
 
-int compradre(struct data * a, struct data * b)
+static int compradre(struct data * a, struct data * b)
 {
     if ((a->ctime) < (b->ctime))
 	return -1;
@@ -421,7 +420,7 @@ int compradre(struct data * a, struct data * b)
     return 0;
 }
 
-int comprando(struct data * a, struct data * b)
+static int comprando(struct data * a, struct data * b)
 {
     if ((a->time) < (b->time))
 	return -1;
@@ -430,7 +429,7 @@ int comprando(struct data * a, struct data * b)
     return 0;
 }
 
-int compri(struct data * a, struct data * b)
+static int compri(struct data * a, struct data * b)
 {
     int p = a->time - a->ctime;
     int q = b->time - b->ctime;
@@ -441,7 +440,7 @@ int compri(struct data * a, struct data * b)
     return 0;
 }
 
-int compwait(struct data * a, struct data * b)
+static int compwait(struct data * a, struct data * b)
 {
     if ((a->waittime) < (b->waittime))
 	return -1;
@@ -466,22 +465,22 @@ static void output_results(void)
     printf("Document Length:        %d bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
-    printf("Time taken for tests:   %d.%03d seconds\n",
-	   timetaken / 1000, timetaken % 1000);
-    printf("Complete requests:      %d\n", done);
-    printf("Failed requests:        %d\n", bad);
+    printf("Time taken for tests:   %qd.%03qd seconds\n",
+	   timetaken / APR_USEC_PER_SEC, timetaken % APR_USEC_PER_SEC);
+    printf("Complete requests:      %ld\n", done);
+    printf("Failed requests:        %ld\n", bad);
     if (bad)
 	printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
 	       err_conn, err_length, err_except);
-    printf("Write errors:           %d\n", epipe);
+    printf("Write errors:           %ld\n", epipe);
     if (err_response)
 	printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
-	printf("Keep-Alive requests:    %d\n", doneka);
-    printf("Total transferred:      %d bytes\n", totalread);
+	printf("Keep-Alive requests:    %ld\n", doneka);
+    printf("Total transferred:      %ld bytes\n", totalread);
     if (posting > 0)
-	printf("Total POSTed:           %d\n", totalposted);
-    printf("HTML transferred:       %d bytes\n", totalbread);
+	printf("Total POSTed:           %ld\n", totalposted);
+    printf("HTML transferred:       %ld bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
@@ -565,7 +564,7 @@ static void output_results(void)
 		tmstring[strlen(tmstring) - 1] = '\0';	/* ctime returns a
 							 * string with a
 							 * trailing newline */
-		fprintf(out, "%s\t%d\t%d\t%d\t%d\t%d\n",
+		fprintf(out, "%s\t%ld\t%ld\t%ld\t%ld\t%ld\n",
 			tmstring,
 			sttime,
 			stats[i].ctime,
@@ -614,13 +613,13 @@ static void output_results(void)
 
 	if (confidence) {
 	    printf("              min  mean[+/-sd] median   max\n");
-	    printf("Connect:    %5d %5d %6.1f  %5d %5d\n",
+	    printf("Connect:    %5ld %5d %6.1f  %5ld %5ld\n",
 		   mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
-	    printf("Processing: %5d %5d %6.1f  %5d %5d\n",
+	    printf("Processing: %5ld %5d %6.1f  %5ld %5ld\n",
 		   mind, (int) (totald + 0.5), sdd, meand, maxd);
-	    printf("Waiting:    %5d %5d %6.1f  %5d %5d\n",
+	    printf("Waiting:    %5ld %5d %6.1f  %5ld %5ld\n",
 	       minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
-	    printf("Total:      %5d %5d %6.1f  %5d %5d\n",
+	    printf("Total:      %5ld %5d %6.1f  %5ld %5ld\n",
 		   mintot, (int) (total + 0.5), sdtot, meantot, maxtot);
 
 #define     SANE(what,avg,mean,sd) \
@@ -641,11 +640,11 @@ static void output_results(void)
 	}
 	else {
 	    printf("              min   avg   max\n");
-	    printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
-	    printf("Processing: %5d %5d %5d\n",
+	    printf("Connect:    %5ld %5e %5ld\n", mincon, totalcon / requests, maxcon);
+	    printf("Processing: %5ld %5e %5ld\n",
 		mintot - mincon, (total / requests) - (totalcon / requests),
 		   maxtot - maxcon);
-	    printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
+	    printf("Total:      %5ld %5e %5ld\n", mintot, total / requests, maxtot);
 	}
 
 
@@ -656,16 +655,14 @@ static void output_results(void)
 		if (percs[i] <= 0)
 		    printf(" 0%%  <0> (never)\n");
 		else if (percs[i] >= 100)
-		    printf(" 100%%  %5d (last request)\n", stats[(int) (requests - 1)].time);
+		    printf(" 100%%  %5ld (last request)\n", stats[(int) (requests - 1)].time);
 		else
-		    printf("  %d%%  %5d\n",
+		    printf("  %d%%  %5ld\n",
 		    percs[i], stats[(int) (requests * percs[i] / 100)].time);
 	};
 	if (csvperc) {
 	    FILE *out = fopen(csvperc, "w");
-	    long i;
-	    time_t sttime;
-	    char *tmstring;
+	    int i;
 	    if (!out) {
 		perror("Cannot open CSV output file");
 		exit(1);
@@ -679,7 +676,7 @@ static void output_results(void)
 		    d = stats[requests - 1].time;
 		else
 		    d = stats[(int) (0.5 + requests * i / 100.0)].time;
-		fprintf(out, "%d,%d\n", i, d);
+		fprintf(out, "%d,%e\n", i, d);
 	    }
 	    fclose(out);
 	};
@@ -718,13 +715,13 @@ static void output_html_results(void)
 	   "<td colspan=2 %s>%d</td></tr>\n",
 	   trstring, tdstring, tdstring, concurrency);
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
-	   "<td colspan=2 %s>%d.%03d seconds</td></tr>\n",
-	   trstring, tdstring, tdstring, timetaken / 1000, timetaken % 1000);
+	   "<td colspan=2 %s>%qd.%03qd seconds</td></tr>\n",
+	   trstring, tdstring, tdstring, timetaken / APR_USEC_PER_SEC, timetaken % APR_USEC_PER_SEC);
     printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
-	   "<td colspan=2 %s>%d</td></tr>\n",
+	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, done);
     printf("<tr %s><th colspan=2 %s>Failed requests:</th>"
-	   "<td colspan=2 %s>%d</td></tr>\n",
+	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, bad);
     if (bad)
 	printf("<tr %s><td colspan=4 %s >   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
@@ -735,17 +732,17 @@ static void output_html_results(void)
 	       trstring, tdstring, tdstring, err_response);
     if (keepalive)
 	printf("<tr %s><th colspan=2 %s>Keep-Alive requests:</th>"
-	       "<td colspan=2 %s>%d</td></tr>\n",
+	       "<td colspan=2 %s>%ld</td></tr>\n",
 	       trstring, tdstring, tdstring, doneka);
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
-	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   "<td colspan=2 %s>%ld bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, totalread);
     if (posting > 0)
 	printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
-	       "<td colspan=2 %s>%d</td></tr>\n",
+	       "<td colspan=2 %s>%ld</td></tr>\n",
 	       trstring, tdstring, tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
-	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   "<td colspan=2 %s>%ld bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, totalbread);
 
     /* avoid divide by zero */
@@ -789,20 +786,20 @@ static void output_html_results(void)
 	    printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
 		   trstring, tdstring, tdstring, tdstring, tdstring);
 	    printf("<tr %s><th %s>Connect:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
 	    printf("<tr %s><th %s>Processing:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mintot - mincon, tdstring,
 		   (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
 	    printf("<tr %s><th %s>Total:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
 	}
 	printf("</table>\n");
@@ -893,7 +890,7 @@ static void close_connection(struct connection * c)
 	if (done < requests) {
 	    struct data s;
 	    if ((done) && (!(done % heartbeatres))) {
-		fprintf(stderr, "Completed %d requests\n", done);
+		fprintf(stderr, "Completed %ld requests\n", done);
 		fflush(stderr);
 	    }
 	    c->done = apr_time_now();
@@ -1072,7 +1069,7 @@ static void read_connection(struct connection * c)
 	if (done < requests) {
 	    struct data s;
 	    if ((done) && (!(done % heartbeatres))) {
-		fprintf(stderr, "Completed %d requests\n", done);
+		fprintf(stderr, "Completed %ld requests\n", done);
 		fflush(stderr);
 	    }
 	    c->done = apr_time_now();
@@ -1096,26 +1093,6 @@ static void read_connection(struct connection * c)
 /* --------------------------------------------------------- */
 
 /* run the tests */
-
-#ifdef SIGPIPE
-void pipehandler(int signal)
-{
-    int i;			/* loop variable */
-
-    printf("Caught broken pipe signal after %d requests. ", done);
-
-    /* This means one of my connections is broken, but which one? */
-    /* The safe route: close all our connections. */
-    for (i = 0; i < concurrency; i++)
-	close_connection(&con[i]);
-
-    /* And start them back up */
-    for (i = 0; i < concurrency; i++)
-	start_connect(&con[i]);
-
-    printf("Continuing...\n");
-}
-#endif
 
 static void test(void)
 {
@@ -1285,7 +1262,7 @@ static void test(void)
     }
 
     if (heartbeatres)
-	fprintf(stderr, "Finished %d requests\n", done);
+	fprintf(stderr, "Finished %ld requests\n", done);
     else
 	printf("..done\n");
 
@@ -1301,14 +1278,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.61 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.62 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.61 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.62 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1620,7 +1597,7 @@ int main(int argc, const char *const argv[])
 		/*
                  * assume proxy-name[:port]
                  */
-		if (p = index(optarg, ':')) {
+		if ((p = index(optarg, ':'))) {
 		    *p = '\0';
 		    p++;
 		    proxyport = atoi(p);
