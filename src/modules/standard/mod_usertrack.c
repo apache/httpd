@@ -111,7 +111,12 @@ module MODULE_VAR_EXPORT usertrack_module;
 typedef struct {
     int always;
     time_t expires;
-}      cookie_log_state;
+} cookie_log_state;
+
+typedef struct {
+    int enabled;
+    char *cookie_name;
+} cookie_dir_rec;
 
 /* Define this to allow post-2000 cookies. Cookies use two-digit dates,
  * so it might be dicey. (Netscape does it correctly, but others may not)
@@ -121,12 +126,12 @@ typedef struct {
 /* Make Cookie: Now we have to generate something that is going to be
  * pretty unique.  We can base it on the pid, time, hostip */
 
-#define COOKIE_NAME "Apache="
+#define COOKIE_NAME "Apache"
 
 static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = ap_get_module_config(r->server->module_config,
-                                              &usertrack_module);
+						 &usertrack_module);
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
     clock_t mpe_times;
     struct tms mpe_tms;
@@ -138,7 +143,10 @@ static void make_cookie(request_rec *r)
     char cookiebuf[1024];
     char *new_cookie;
     const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
-					REMOTE_NAME);
+					   REMOTE_NAME);
+    cookie_dir_rec *dcfg;
+
+    dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
 /* We lack gettimeofday(), so we must use time() to obtain the epoch
@@ -147,7 +155,8 @@ static void make_cookie(request_rec *r)
 
     mpe_times = times(&mpe_tms);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
+		(int) getpid(),
                 (long) r->request_time, (long) mpe_tms.tms_utime);
 #elif defined(WIN32)
     /*
@@ -156,13 +165,15 @@ static void make_cookie(request_rec *r)
      * was started. It should be relatively unique.
      */
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
+		(int) getpid(),
                 (long) r->request_time, (long) GetTickCount());
 
 #else
     gettimeofday(&tv, &tz);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%d", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%d", rname,
+		(int) getpid(),
                 (long) tv.tv_sec, (int) tv.tv_usec / 1000);
 #endif
 
@@ -184,14 +195,16 @@ static void make_cookie(request_rec *r)
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         new_cookie = ap_psprintf(r->pool,
-                "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    COOKIE_NAME, cookiebuf, ap_day_snames[tms->tm_wday],
+                "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
+                    dcfg->cookie_name, cookiebuf, ap_day_snames[tms->tm_wday],
                     tms->tm_mday, ap_month_snames[tms->tm_mon],
 		    tms->tm_year % 100,
                     tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
-    else
-	new_cookie = ap_psprintf(r->pool, "%s%s; path=/", COOKIE_NAME, cookiebuf);
+    else {
+	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",
+				 dcfg->cookie_name, cookiebuf);
+    }
 
     ap_table_setn(r->headers_out, "Set-Cookie", new_cookie);
     ap_table_setn(r->notes, "cookie", ap_pstrdup(r->pool, cookiebuf));   /* log first time */
@@ -200,19 +213,20 @@ static void make_cookie(request_rec *r)
 
 static int spot_cookie(request_rec *r)
 {
-    int *enable = (int *) ap_get_module_config(r->per_dir_config,
-                                            &usertrack_module);
+    cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
+						&usertrack_module);
     const char *cookie;
     char *value;
 
-    if (!*enable)
+    if (!dcfg->enabled) {
         return DECLINED;
+    }
 
     if ((cookie = ap_table_get(r->headers_in, "Cookie")))
-        if ((value = strstr(cookie, COOKIE_NAME))) {
+        if ((value = strstr(cookie, dcfg->cookie_name))) {
             char *cookiebuf, *cookieend;
 
-            value += strlen(COOKIE_NAME);
+            value += strlen(dcfg->cookie_name) + 1;  /* Skip over the '=' */
             cookiebuf = ap_pstrdup(r->pool, value);
             cookieend = strchr(cookiebuf, ';');
             if (cookieend)
@@ -221,7 +235,7 @@ static int spot_cookie(request_rec *r)
             /* Set the cookie in a note, for logging */
             ap_table_setn(r->notes, "cookie", cookiebuf);
 
-            return DECLINED;    /* Theres already a cookie, no new one */
+            return DECLINED;    /* There's already a cookie, no new one */
         }
     make_cookie(r);
     return OK;                  /* We set our cookie */
@@ -239,12 +253,19 @@ static void *make_cookie_log_state(pool *p, server_rec *s)
 
 static void *make_cookie_dir(pool *p, char *d)
 {
-    return (void *) ap_pcalloc(p, sizeof(int));
+    cookie_dir_rec *dcfg;
+
+    dcfg = (cookie_dir_rec *) ap_pcalloc(p, sizeof(cookie_dir_rec));
+    dcfg->cookie_name = COOKIE_NAME;
+    dcfg->enabled = 0;
+    return dcfg;
 }
 
-static const char *set_cookie_enable(cmd_parms *cmd, int *c, int arg)
+static const char *set_cookie_enable(cmd_parms *cmd, void *mconfig, int arg)
 {
-    *c = arg;
+    cookie_dir_rec *dcfg = mconfig;
+
+    dcfg->enabled = arg;
     return NULL;
 }
 
@@ -315,11 +336,21 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     return NULL;
 }
 
+static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
+{
+    cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
+
+    dcfg->cookie_name = ap_pstrdup(cmd->pool, name);
+    return NULL;
+}
+
 static const command_rec cookie_log_cmds[] = {
     {"CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
-    "an expiry date code"},
+     "an expiry date code"},
     {"CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,
-    "whether or not to enable cookies"},
+     "whether or not to enable cookies"},
+    {"CookieName", set_cookie_name, NULL, OR_FILEINFO, TAKE1,
+     "name of the tracking cookie"},
     {NULL}
 };
 
