@@ -109,18 +109,6 @@
 #define ap_sigwait(a,b) sigwait((a),(b))
 #endif
 
-/*
- * String and memory functions
- */
-
-#ifndef HAVE_MEMMOVE
-#define memmove(a,b,c) bcopy(b,a,c)
-#endif
-
-#ifndef HAVE_BZERO
-#define bzero(a,b) memset(a,0,b)
-#endif
-
 /* TODO - We need to put OS detection back to make all the following work */
 
 #if defined(SUNOS4) || defined(IRIX) || defined(NEXT) || defined(AUX3) \

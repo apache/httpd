@@ -95,8 +95,6 @@ dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
 initgroups \
-memmove \
-bzero \
 )
 
 AC_CHECK_LIB(nsl, gethostbyname)
