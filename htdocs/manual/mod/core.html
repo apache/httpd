@@ -29,6 +29,7 @@ always available.
 <li><A HREF="#authtype">AuthType</A>
 <li><A HREF="#bindaddress">BindAddress</A>
 <li><A HREF="#clearmodulelist">ClearModuleList</A>
+<li><A HREF="#contentdigest">ContentDigest</A>
 <li><A HREF="#coredumpdirectory">CoreDumpDirectory</A>
 <li><A HREF="#defaulttype">DefaultType</A>
 <li><A HREF="#directory">&lt;Directory&gt;</A>
@@ -272,6 +273,36 @@ HREF="#virtualhost">&lt;VirtualHost&gt;</A></code> sections.
 The server comes with a built-in list of active modules.  This
 directive clears the list.  It is assumed that the list will then be
 re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
+
+<h2><A name="contentdigest">ContentDigest directive</A></h2>
+<!--%plaintext &lt;?INDEX {\tt ContentDigest} directive&gt; -->
+<strong>Syntax:</strong> ContentDigest <em>on|off</em><br>
+<strong>Default:</strong> <code>ContentDigest off</code><br>
+<strong>Context:</strong> any<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> experimental<p>
+<strong>Compatibility:</strong> ContentDigest is only available in Apache 1.1 and later<p>
+
+This directive enables the generation of <code>Content-MD5</code> headers
+as defined in RFC1864 respectively RFC2068.<P>
+
+MD5 is an algorithm for computing a "message digest" (sometimes called
+"fingerprint") of arbitrary-length data, with a high degree of confidence
+that any alterations in the data will be reflected in alterations in the
+message digest.<P>
+
+The <code>Content-MD5</code> header provides an end-to-end message
+integrity check (MIC) of the entity-body. A proxy or client may check this
+header for detecting accidental modification of the entity-body
+in transit.
+Example header:
+<pre>   Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==</pre><P>
+
+Note that this can cause performance problems on your server
+since the message digest is computed on every request
+(the values are not cached).
+
+<hr>
 
 <h2><A name="coredumpdirectory">CoreDumpDirectory directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt CoreDumpDirectory} directive&gt; -->
