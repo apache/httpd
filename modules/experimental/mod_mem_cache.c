@@ -60,6 +60,8 @@
 
 #include "mod_cache.h"
 #include "ap_mpm.h"
+#include "apr_thread_mutex.h"
+
 #define MAX_CACHE 5000
 module AP_MODULE_DECLARE_DATA mem_cache_module;
 
@@ -94,7 +96,7 @@ typedef struct mem_cache_object {
 } mem_cache_object_t;
 
 typedef struct {
-    apr_lock_t *lock;
+    apr_thread_mutex_t *lock;
     apr_hash_t *cacheht;
     int space;
     apr_time_t maxexpire;
@@ -200,7 +202,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
     if (threaded_mpm) {
-        apr_lock_create(&sconf->lock, APR_MUTEX, APR_INTRAPROCESS, "foo", p);
+        apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
     sconf->cacheht = apr_hash_make(p);
     apr_pool_cleanup_register(p, NULL, cleanup_cache_mem, apr_pool_cleanup_null);
@@ -260,14 +262,14 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
      * views of the same content) under a single search key
      */
     if (sconf->lock) {
-        apr_lock_acquire(sconf->lock);
+        apr_thread_mutex_lock(sconf->lock);
     }
     tmp_obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
     if (!tmp_obj) {
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
     }
     if (sconf->lock) {
-        apr_lock_release(sconf->lock);
+        apr_thread_mutex_unlock(sconf->lock);
     }
 
     if (tmp_obj) {
@@ -298,11 +300,11 @@ static int open_entity(cache_handle_t *h, const char *type, char *key)
         return DECLINED;
     }
     if (sconf->lock) {
-        apr_lock_acquire(sconf->lock);
+        apr_thread_mutex_lock(sconf->lock);
     }
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
     if (sconf->lock) {
-        apr_lock_release(sconf->lock);
+        apr_thread_mutex_unlock(sconf->lock);
     }
 
     if (!obj || !(obj->complete)) {
@@ -324,11 +326,11 @@ static int remove_entity(cache_handle_t *h)
     cache_object_t *obj = h->cache_obj;
 
     if (sconf->lock) {
-        apr_lock_acquire(sconf->lock);
+        apr_thread_mutex_lock(sconf->lock);
     }
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
     if (sconf->lock) {
-        apr_lock_release(sconf->lock);
+        apr_thread_mutex_unlock(sconf->lock);
     }
 
     cleanup_cache_object(obj);
@@ -353,11 +355,11 @@ static int remove_url(const char *type, char *key)
 
     /* First, find the object in the cache */
     if (sconf->lock) {
-        apr_lock_acquire(sconf->lock);
+        apr_thread_mutex_lock(sconf->lock);
     }
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
     if (sconf->lock) {
-        apr_lock_release(sconf->lock);
+        apr_thread_mutex_unlock(sconf->lock);
     }
 
     if (!obj) {
@@ -366,11 +368,11 @@ static int remove_url(const char *type, char *key)
 
     /* Found it. Now take it out of the cache and free it. */
     if (sconf->lock) {
-        apr_lock_acquire(sconf->lock);
+        apr_thread_mutex_lock(sconf->lock);
     }
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
     if (sconf->lock) {
-        apr_lock_release(sconf->lock);
+        apr_thread_mutex_unlock(sconf->lock);
     }
 
     cleanup_cache_object(obj);
@@ -523,8 +525,9 @@ static const char
 {
     int val;
 
-    if (sscanf(arg, "%d", &val) != 1)
-    return "CacheSize value must be an integer (kBytes)";
+    if (sscanf(arg, "%d", &val) != 1) {
+        return "CacheSize value must be an integer (kBytes)";
+    }
     sconf->space = val;
     return NULL;
 }
