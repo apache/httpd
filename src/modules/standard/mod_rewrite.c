@@ -217,7 +217,7 @@ module rewrite_module = {
 };
 
     /* the cache */
-cache *cachep;
+static cache *cachep;
 
     /* whether proxy module is available or not */
 static int proxy_available;
