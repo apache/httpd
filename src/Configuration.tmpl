@@ -181,6 +181,7 @@ Module dir_module          mod_dir.o
 Module cgi_module          mod_cgi.o
 Module userdir_module      mod_userdir.o
 Module alias_module        mod_alias.o
+Module env_module          mod_env.o
 Module common_log_module   mod_log_common.o
 
 ## The asis module implemented ".asis" file types, which allow the embedding
@@ -189,9 +190,9 @@ Module common_log_module   mod_log_common.o
 ## CGI scripts which act as "handlers" for particular files, for example to
 ## automatically convert every GIF to another file type.
 
-Module asis_module        mod_asis.o
-Module imap_module        mod_imap.o
-Module action_module      mod_actions.o
+Module asis_module         mod_asis.o
+Module imap_module         mod_imap.o
+Module action_module       mod_actions.o
 
 ## Optional modules for NCSA user-agent/referer logging compatibility
 ## We recommend, however, that you migrate to the configurable logging
@@ -208,41 +209,48 @@ Module action_module      mod_actions.o
 ## mod_log_common --- a server with both will work, but you'll get
 ## very confused trying to figure out what's going on...
 
-# Module config_log_module mod_log_config.o
+# Module config_log_module   mod_log_config.o
 
 ## cern_meta mimicks the behavior of the CERN web server with regards to 
-## metainformation files.  mod_env allows the setting of extra CGI environment
-## variables.  The anon_auth module allows for anonymous-FTP-style username/
-## password authentication.
+## metainformation files.  
 
-# Module cern_meta_module   mod_cern_meta.o
-# Module env_module         mod_env.o
-# Module anon_auth_module   mod_auth_anon.o
+# Module cern_meta_module    mod_cern_meta.o
 
 ## The status module allows the server to display current details about 
 ## how well it is performing and what it is doing.  Consider also enabling 
 ## -DSTATUS (see the CFLAGS section near the start of the file) to allow
 ## full status information.  Check conf/access.conf on how to enable this.
 
-# Module status_module	mod_status.o
+# Module status_module	     mod_status.o
 
 ## The Info module displays configuration information for the server and 
 ## all included modules. It's very useful for debugging.
 
-# Module info_module    mod_info.o
+# Module info_module         mod_info.o
 
-## Optional authentication modules, which should only be
-## uncommented out if you have the neccessary system support.
-## (if you don't have the decade-old "new" DBM libs, for example)
-## db_auth works with Berkeley DB files, and msql_auth checks 
-## against an MSQL database.  Finally, mod_digest implements HTTP 
-## Digest Authentication rather than the less secure Basic Auth
-## used by the other modules.
+## Optional authentication modules. 
+##
+## The anon_auth module allows for anonymous-FTP-style username/ 
+## password authentication.
 
-# Module dbm_auth_module  mod_auth_dbm.o
-# Module db_auth_module   mod_auth_db.o
-# Module msql_auth_module mod_auth_msql.o
-# Module digest_module    mod_digest.o
+# Module anon_auth_module    mod_auth_anon.o
+
+## db_auth and dbm_auth work with Berkeley DB files - make sure there
+## is support for DBM files on your system.  You may need to grab the GNU
+## "gdbm" package if not.
+
+# Module db_auth_module      mod_auth_db.o
+# Module dbm_auth_module     mod_auth_dbm.o
+
+## msql_auth checks against an MSQL database.  You must have MSQL installed
+## and an "msql.h" available for this to even compile.
+
+# Module msql_auth_module    mod_auth_msql.o
+
+## "digest" implements HTTP Digest Authentication rather than the less 
+## secure Basic Auth used by the other modules.
+
+# Module digest_module       mod_digest.o
 
 ## Outright experiments --- mod_dld defines commands which
 ## allows other modules to be loaded in at runtime, and mod_cookies
@@ -250,13 +258,10 @@ Module action_module      mod_actions.o
 ## click-trails from Netscape cookies, for Netscape-using clients who
 ## aren't coming in via proxy.   
 
-# Module dld_module     mod_dld.o
-# Module cookies_module mod_cookies.o
+# Module dld_module	     mod_dld.o
+# Module cookies_module      mod_cookies.o
 
 ## Finally, the proxy module.  It's not as complete as it could
 ## be yet, so use at your own risk.
 
-# Module proxy_module       mod_proxy.o
-
-
-
+# Module proxy_module        mod_proxy.o
