@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix handling of %Z in timefmt strings for those platforms with no time
+     zone information in their tm struct. [Paul Eggert <eggert@twinsun.com>]
+     PR #754
+
   *) Makes mod_rewrite, mod_log_config, mod_status and the ServerSignature 
      feature compatible with 'UseCanonicalName off' by changing  
      r->server->server_hostname to ap_get_server_name().  And I changed some 
