@@ -16,14 +16,8 @@ Changes with Apache 2.1.3
   *) mod_proxy: Fix incorrect decoding/unescaping for reverse proxies.
      PR 32459, 15207. [Jim Jagielski]
 
-  *) Start keeping track of time-taken-to-process-request again for
-     mod_status if ExtendedStatus is enabled. [Jim Jagielski]
-
   *) mod_cache: Add CacheStorePrivate and CacheStoreNoStore directive.
      [Justin Erenkrantz]
-
-  *) Remove compiled-in upper limit on LimitRequestFieldSize.
-     [Bill Stoddard]
 
   *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
      the ldap socket connection timeout value.  
@@ -46,9 +40,6 @@ Changes with Apache 2.1.3
      (CA certs / Netware client certs) and per connection client certs
      as supported by Netware, OpenLDAP and Netscape/Mozilla.
      [Graham Leggett]
-
-  *) mod_proxy: Handle client-aborted connections correctly.  PR 32443.
-     [Janne Hietamäki, Joe Orton]
 
   *) mod_cache: Remove unimplemented CacheForceCompletion directive.
      [Justin Erenkrantz]
@@ -94,10 +85,6 @@ Changes with Apache 2.1.3
   *) core: Add support for APR_TCP_DEFER_ACCEPT to defer accepting
      of a connection until data is available.
      [Paul Querna]
-
-  *) conf: Remove AddDefaultCharset from the default configuration because
-     setting a site-wide default does more harm than good. PR 23421.
-     [Roy Fielding]
 
 Changes with Apache 2.1.2
 
@@ -576,6 +563,26 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) Win32 MPM: Correct typo in debugging output.  [William Rowe]
+
+  *) conf: Remove AddDefaultCharset from the default configuration because
+     setting a site-wide default does more harm than good. PR 23421.
+     [Roy Fielding]
+
+  *) Add charset to example CGI scripts.  [Roy Fielding]
+ 
+  *) mod_ssl: fail quickly if SSL connection is aborted rather than
+     making many doomed ap_pass_brigade calls.  PR 32699.  [Joe Orton]
+ 
+  *) Remove compiled-in upper limit on LimitRequestFieldSize.
+     [Bill Stoddard]
+
+  *) Start keeping track of time-taken-to-process-request again for
+     mod_status if ExtendedStatus is enabled. [Jim Jagielski]
+
+  *) mod_proxy: Handle client-aborted connections correctly.  PR 32443.
+     [Janne Hietamäki, Joe Orton]
 
   *) Fix handling of files >2Gb on all platforms (or builds) where
      apr_off_t is larger than apr_size_t.  PR 28898.  [Joe Orton]
