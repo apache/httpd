@@ -74,8 +74,7 @@ static apr_status_t dav_cleanup_liveprops(void *ctx)
     return APR_SUCCESS;
 }
 
-DAV_DECLARE(void) dav_register_liveprop_namespace(apr_pool_t *p, 
-                                                  const char *uri)
+static void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
 {
     int value;
 
@@ -121,5 +120,64 @@ void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
 
         s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, key);
         ap_text_append(p, phdr, s);
+    }
+}
+
+DAV_DECLARE(int) dav_do_find_liveprop(const char *ns_uri, const char *name,
+                                      const dav_liveprop_group *group,
+                                      const dav_hooks_liveprop **hooks)
+{
+    const char * const *uris = group->namespace_uris;
+    const dav_liveprop_spec *scan;
+    int ns;
+
+    /* first: locate the namespace in the namespace table */
+    for (ns = 0; uris[ns] != NULL; ++ns)
+        if (strcmp(ns_uri, uris[ns]) == 0)
+            break;
+    if (uris[ns] == NULL) {
+	/* not our property (the namespace matched none of ours) */
+	return 0;
+    }
+
+    /* second: look for the property in the liveprop specs */
+    for (scan = group->specs; scan->name != NULL; ++scan)
+	if (ns == scan->ns && strcmp(name, scan->name) == 0) {
+            *hooks = group->hooks;
+	    return scan->propid;
+        }
+
+    /* not our property (same namespace, but no matching prop name) */
+    return 0;
+}
+
+DAV_DECLARE(int) dav_get_liveprop_info(int propid,
+                                       const dav_liveprop_group *group,
+                                       const dav_liveprop_spec **info)
+{
+    const dav_liveprop_spec *scan;
+
+    for (scan = group->specs; scan->name != NULL; ++scan) {
+        if (scan->propid == propid) {
+            *info = scan;
+
+            /* map the provider-local NS into a global NS index */
+            return dav_get_liveprop_ns_index(group->namespace_uris[scan->ns]);
+        }
+    }
+
+    /* assert: should not reach this point */
+    *info = NULL;
+    return 0;
+}
+
+DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *p, 
+                                              const dav_liveprop_group *group)
+{
+    /* register the namespace URIs */
+    const char * const * uris = group->namespace_uris;
+
+    for ( ; *uris != NULL; ++uris) {
+        dav_register_liveprop_namespace(p, *uris);
     }
 }

@@ -271,6 +271,7 @@ struct dav_propdb {
 
 };
 
+/* NOTE: dav_core_props[] and the following enum must stay in sync. */
 /* ### move these into a "core" liveprop provider? */
 static const char * const dav_core_props[] =
 {
@@ -297,8 +298,6 @@ enum {
 
     DAV_PROPID_CORE_UNKNOWN
 };
-#define DAV_IS_CORE_PROP(propid)	((propid) >= DAV_PROPID_CORE && \
-					 (propid) <= DAV_PROPID_CORE_UNKNOWN)
 
 /*
 ** This structure is used to track information needed for a rollback.
@@ -341,6 +340,7 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 	for (propid = DAV_PROPID_CORE; *p != NULL; ++p, ++propid)
 	    if (strcmp(elem->name, *p) == 0) {
 		priv->propid = propid;
+                /* priv->provider == NULL */
 		return;
 	    }
 
@@ -349,6 +349,7 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
     else if (elem->ns == AP_XML_NS_NONE) {
 	/* policy: liveprop providers cannot define no-namespace properties */
 	priv->propid = DAV_PROPID_CORE_UNKNOWN;
+        /* priv->provider == NULL */
 	return;
     }
 
@@ -364,12 +365,20 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
     }
 
     priv->propid = DAV_PROPID_CORE_UNKNOWN;
+    /* priv->provider == NULL */
 }
 
 /* is the live property read/write? */
 static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
 {
     int propid = priv->propid;
+
+    /*
+    ** Check the liveprop provider (if this is a provider-defined prop)
+    */
+    if (priv->provider != NULL) {
+        return (*priv->provider->is_writeable)(propdb->resource, propid);
+    }
 
     /* these are defined as read-only */
     if (propid == DAV_PROPID_CORE_lockdiscovery
@@ -395,20 +404,7 @@ static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
     }
 
     /*
-    ** Check the liveprop providers
-    */
-    if (priv->provider != NULL) {
-        dav_prop_rw rw;
-
-        rw = (*priv->provider->is_writeable)(propdb->resource, propid);
-        if (rw == DAV_PROP_RW_YES)
-            return 1;
-        if (rw == DAV_PROP_RW_NO)
-            return 0;
-    }
-
-    /*
-    ** No provider recognized the property, so it must be dead (and writable)
+    ** We don't recognize the property, so it must be dead (and writable)
     */
     return 1;
 }
@@ -418,7 +414,8 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 {
     /* perform a "GET" on the resource's URI (note that the resource
        may not correspond to the current request!). */
-    propdb->subreq = ap_sub_req_lookup_uri(propdb->resource->uri, propdb->r);
+    propdb->subreq = ap_sub_req_lookup_uri(propdb->resource->uri, propdb->r,
+                                           NULL);
 }
 
 static dav_error * dav_insert_coreprop(dav_propdb *propdb,
@@ -608,23 +605,15 @@ static dav_error * dav_insert_liveprop(dav_propdb *propdb,
 
     *inserted = 0;
 
-    if (DAV_IS_CORE_PROP(priv->propid))
+    if (priv->provider == NULL) {
+        /* this is a "core" property that we define */
 	return dav_insert_coreprop(propdb, priv->propid, elem->name,
 				   getvals, phdr, inserted);
+    }
 
     /* ask the provider (that defined this prop) to insert the prop */
     pi = (*priv->provider->insert_prop)(propdb->resource, priv->propid,
 					getvals, phdr);
-#if DAV_DEBUG
-    if (pi == DAV_PROP_INSERT_NOTME) {
-	/* ### the provider should have returned NOTDEF, at least */
-	return dav_new_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     "DESIGN ERROR: a liveprop provider defined "
-			     "a property, but did not respond to the "
-			     "insert_prop hook for it.");
-    }
-#endif
-
     if (pi != DAV_PROP_INSERT_NOTDEF)
 	*inserted = 1;
 
