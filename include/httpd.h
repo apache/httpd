@@ -821,12 +821,6 @@ struct request_rec {
  */
     const struct htaccess_result *htaccess;
 
-#ifdef APACHE_XLATE
-    /** The translation headers for dealing with this request 
-     *  @defvar ap_rr_xlate *rrx */
-    struct ap_rr_xlate *rrx;
-#endif /*APACHE_XLATE*/
-
     /** A list of output filters to be used for this request 
      *  @defvar ap_filter_t *output_filters */
     struct ap_filter_t *output_filters;

@@ -328,15 +328,6 @@ static int find_code_page(request_rec *r)
                           dc->charset_default, dc->charset_source);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-
-/* Can't delete this yet :( #ifdef OLD */
-        rv = ap_set_content_xlate(r, 0, input_ctx->xlate);
-        if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "can't set content input translation");
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-/* #endif */
     }
 
     return DECLINED;

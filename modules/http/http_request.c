@@ -1451,11 +1451,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
         return NULL;
     }
 
-#ifdef APACHE_XLATE
-    new->rrx = apr_pcalloc(new->pool, sizeof(struct ap_rr_xlate));
-    ap_set_content_xlate(new, 0, ap_locale_from_ascii);
-#endif /*APACHE_XLATE*/
-
     return new;
 }
 

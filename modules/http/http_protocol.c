@@ -346,14 +346,6 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 {
     long range_start, range_end;
     char *range;
-#ifdef APACHE_XLATE
-    /* determine current translation handle, set to the one for
-     * protocol strings, and reset to original setting before
-     * returning
-     */
-    AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
-                                   ap_hdrs_to_ascii);
-#endif /*APACHE_XLATE*/
 
     if (!**r_range) {
         if (r->byterange > 1) {
@@ -370,17 +362,11 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
                 *tlength += 4 + strlen(r->boundary) + 4;
             }
         }
-#ifdef APACHE_XLATE
-        AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*APACHE_XLATE*/
         return 0;
     }
 
     range = ap_getword(r->pool, r_range, ',');
     if (!parse_byterange(range, r->clength, &range_start, &range_end))
-#ifdef APACHE_XLATE
-        AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*APACHE_XLATE*/
         /* Skip this one */
         return internal_byterange(realreq, tlength, r, r_range, offset,
                                   length);
@@ -408,9 +394,6 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     else {
         *tlength += range_end - range_start + 1;
     }
-#ifdef APACHE_XLATE
-    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*APACHE_XLATE*/
     return 1;
 }
 
@@ -1306,11 +1289,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r->output_filters  = conn->output_filters;
     r->input_filters   = conn->input_filters;
 
-#ifdef APACHE_XLATE
-    r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
-    ap_set_content_xlate(r, 0, ap_locale_from_ascii);
-#endif /*APACHE_XLATE*/
-
     ap_bsetopt(conn->client, BO_TIMEOUT,
                conn->keptalive
                ? &r->server->keep_alive_timeout
@@ -1704,11 +1682,6 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r)
         protocol = AP_SERVER_PROTOCOL;
     }
 
-#ifdef APACHE_XLATE
-    { AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
-                                     ap_hdrs_to_ascii);
-#endif /*APACHE_XLATE*/
-
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
     (void) checked_bputstrs(r, protocol, " ", r->status_line, CRLF, NULL);
@@ -1720,9 +1693,6 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r)
 
     apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     apr_table_unset(r->headers_out, "Server");
-#ifdef APACHE_XLATE
-    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
-#endif /*APACHE_XLATE*/
 }
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
@@ -2145,11 +2115,6 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
 
     ap_basic_http_header(r);
 
-#ifdef APACHE_XLATE
-    { AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
-                                     ap_hdrs_to_ascii);
-#endif /*APACHE_XLATE*/
-
     ap_set_keepalive(r);
 
     if (r->chunked) {
@@ -2211,9 +2176,6 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
     }
-#ifdef APACHE_XLATE
-    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
-#endif /*APACHE_XLATE*/
 }
 
 /* finalize_request_protocol is called at completion of sending the
@@ -2321,28 +2283,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 		      "the configured limit of %lu", lenp, max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
-
-#ifdef CHARSET_EBCDIC
-    {
-        /* @@@ Temporary kludge for guessing the conversion @@@
-         * from looking at the MIME header. 
-         * If no Content-Type header is found, text conversion is assumed.
-         */
-        const char *typep = apr_table_get(r->headers_in, "Content-Type");
-        int convert_in = (typep == NULL ||
-                          strncasecmp(typep, "text/", 5) == 0 ||
-                          strncasecmp(typep, "message/", 8) == 0 ||
-                          strncasecmp(typep, "multipart/", 10) == 0 ||
-                          strcasecmp (typep, "application/x-www-form-urlencoded") == 0
-                         );
-        /* By default, we translate content on input.  Turn off translation
-         * if it isn't text.
-         */
-        if (!convert_in) {
-            ap_set_content_xlate(r, 0, NULL);
-        }
-    }
-#endif /*CHARSET_EBCDIC*/
 
     return OK;
 }
