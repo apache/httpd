@@ -220,11 +220,13 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                         APR_BLOCK_READ, 0);
 
     if (rv != APR_SUCCESS) {
+        apr_brigade_destroy(b);
         return rv;
     }
 
     /* Something horribly wrong happened.  Someone didn't block! */
     if (APR_BRIGADE_EMPTY(b)) {
+        apr_brigade_destroy(b);
         return APR_EGENERAL; 
     }
 
@@ -289,6 +291,9 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
         bytes_handled += len;
     }
 
+    /* We no longer need the returned brigade. */
+    apr_brigade_destroy(b);
+
     /* We likely aborted early before reading anything or we read no 
      * data.  Technically, this might be success condition.  But,
      * probably means something is horribly wrong.  For now, we'll
@@ -296,7 +301,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      */
     if (bytes_handled == 0) {
         *read = 0;
-        apr_brigade_destroy(b);
         return APR_SUCCESS; 
     }
 
@@ -322,7 +326,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
             rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
 
             if (rv != APR_SUCCESS) {
-                apr_brigade_destroy(b);
                 return rv;
             }
 
@@ -342,7 +345,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
             last_char = *s + bytes_handled - 1;
         }
         else {
-            apr_brigade_destroy(b);
             return APR_ENOSPC;
         }
     }
@@ -383,32 +385,46 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      */
     if (fold && bytes_handled && !saw_eos) {
         const char *str;
+        apr_bucket_brigade *bb;
         apr_size_t len;
+        const char c;
+
+        /* Create a brigade for this filter read. */
+        bb = apr_brigade_create(r->pool);
 
         /* We only care about the first byte. */
-        rv = ap_get_brigade(r->input_filters, b, AP_MODE_SPECULATIVE,
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_SPECULATIVE,
                             APR_BLOCK_READ, 1);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(b);
+            apr_brigade_destroy(bb);
             return rv;
         }
 
-        e = APR_BRIGADE_FIRST(b);
+        e = APR_BRIGADE_FIRST(bb);
 
         /* If we see an EOS, don't bother doing anything more. */
         if (APR_BUCKET_IS_EOS(e)) {
             *read = bytes_handled;
-            apr_brigade_destroy(b);
+            apr_brigade_destroy(bb);
             return APR_SUCCESS;
         }
 
         rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(b);
+            apr_brigade_destroy(bb);
             return rv;
         }
+
+        /* When we call destroy, the buckets are deleted, so save that
+         * one character we need.  This simplifies our execution paths
+         * at the cost of one character read.
+         */
+        c = *str;
+
+        /* We no longer need the returned brigade. */
+        apr_brigade_destroy(bb);
 
         /* Found one, so call ourselves again to get the next line. 
          *
@@ -416,7 +432,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
          * stop folding?  Does that require also looking at the next
          * char?
          */
-        if (*str == APR_ASCII_BLANK || *str == APR_ASCII_TAB) {
+        if (c == APR_ASCII_BLANK || c == APR_ASCII_TAB) {
             /* Do we have enough space? We may be full now. */
             if (bytes_handled < n) {
                 apr_size_t next_size, next_len;
@@ -437,7 +453,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                 rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
 
                 if (rv != APR_SUCCESS) {
-                    apr_brigade_destroy(b);
                     return rv;
                 }
 
@@ -454,11 +469,9 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                 }
 
                 *read = bytes_handled + next_len;
-                apr_brigade_destroy(b);
                 return APR_SUCCESS;
             }
             else {
-                apr_brigade_destroy(b);
                 return APR_ENOSPC;
             }
         }
@@ -467,7 +480,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
     /* FIXME: Can we optimize this at all by placing it a different layer? */
     ap_xlate_proto_from_ascii(*s, bytes_handled);
     *read = bytes_handled;
-    apr_brigade_destroy(b);
     return APR_SUCCESS;
 }
 
