@@ -58,7 +58,7 @@
 #include "http_protocol.h"
 
 /* The alert will note a strange mirror-image style resemblance to
- * mod_generic_hook_export.c. Yes, I _did_ mean export. Think about it.
+ * mod_optional_hook_export.c. Yes, I _did_ mean export. Think about it.
  */
 
 static APR_OPTIONAL_FN_TYPE(TestOptionalFn) *pfn;
