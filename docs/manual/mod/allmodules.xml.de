@@ -66,7 +66,7 @@
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>beos.xml.de</modulefile>
   <modulefile>mpm_common.xml.de</modulefile>
-  <modulefile>leader.xml</modulefile>
+  <modulefile>leader.xml.de</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>

@@ -86,7 +86,7 @@
 
     <dt><code>-e <var>csv-file</var></code></dt>
     <dd>Write a Comma separated value (CSV) file which contains for each
-    percentage (from 1% to 100%) the time (in milli seconds) it took to serve
+    percentage (from 1% to 100%) the time (in milliseconds) it took to serve
     that percentage of the requests. This is usually more useful than the
     'gnuplot' file; as the results are already 'binned'.</dd>
 
