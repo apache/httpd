@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 20:06:27 $]
+Last modified at [$Date: 2004/08/26 20:25:54 $]
 
 Release:
 
@@ -75,7 +75,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Win32: Orderly shutdown of the command process after apache -k start,restart,config,
        install to prevent stranded piped logger processes.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/mpm_winnt.c?r1=1.311&r2=1.312
-       +1: stoddard, trawick
+       +1: stoddard, trawick, nd
 
     *) Escape errfn strings before sending them to the log file (and
        analogus patch to mod_cgid)
@@ -98,16 +98,16 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
-       +1: jorton, trawick
+       +1: jorton, trawick, nd
 
     *) mod_ssl: Add ssl_is_https optional hook.
        http://www.apache.org/~jorton/mod_ssl-2.0-ishttps.diff
-       +1: jorton, stoddard, trawick
+       +1: jorton, stoddard, trawick, nd
 
     *) mod_rewrite: Add %{SSL:...} and %{HTTPS} support (regression from 1.3/mod_ssl).
        http://www.apache.org/~jorton/mod_rewrite-2.0-sslvar.diff
        PR: 30464
-       +1: jorton, stoddard
+       +1: jorton, stoddard, nd
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
