@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Increase the limit on file descriptors per process in apachectl.
+     [Brian Pane]
+
   *) Fix a dependency error when building ApacheMonitor, so that Win32
      and MSVC now trust that the project is current (when it is).
      [James Cox <imajes@php.net>]

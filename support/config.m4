@@ -81,3 +81,9 @@ fi
 ])
 APACHE_SUBST(checkgid_LTFLAGS)
 
+if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
+  APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
+else
+  APACHECTL_ULIMIT=""
+fi
+APACHE_SUBST(APACHECTL_ULIMIT)
