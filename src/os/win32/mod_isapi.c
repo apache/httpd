@@ -316,6 +316,7 @@ int isapi_handler (request_rec *r) {
     ap_os_dso_unload(isapi_handle);
 
     switch(retval) {
+    case 0:  /* Strange, but MS isapi accepts this as success */
     case HSE_STATUS_SUCCESS:
     case HSE_STATUS_SUCCESS_AND_KEEP_CONN:
         /* Ignore the keepalive stuff; Apache handles it just fine without
