@@ -110,6 +110,8 @@ typedef int gid_t;
 #define crypt(buf,salt)	    (buf)
 #define sleep(t) delay(t*1000)
 #define getpid GetThreadID
+/* Netware doesn't have symlinks so S_ISLNK is always false */
+#define S_ISLNK(m) 0
 #define lstat(x, y) stat(x, y)
 #define ap_os_is_filename_valid(f)          (1)
 #define strcasecmp(s1, s2) stricmp(s1, s2)
