@@ -2259,7 +2259,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
  * choice response or 406 status body.
  */
 
-/* XXX: this is disgusting, this has O(n^2) behavior! -djg */
+/* XXX: this is disgusting, this has O(n^2) behaviour! -djg */
 
 static char *make_variant_list(request_rec *r, negotiation_state *neg)
 {
