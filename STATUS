@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/19 23:29:40 $]
+Last modified at [$Date: 2004/08/20 18:51:01 $]
 
 Release:
 
@@ -183,8 +183,7 @@ PATCHES TO BACKPORT FROM 2.1
          ssl_engine_config.c r1.94
          ssl_engine_kernel.c r1.107
          ssl_private.h r1.7
-       +1: trawick, jorton
-        nd: Is it wise to backport XXX code into the stable?
+       +1: trawick, jorton, nd
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
