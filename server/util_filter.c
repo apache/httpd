@@ -532,7 +532,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **b, apr_pool_t *p)
 {
     apr_bucket *e;
-    apr_status_t rv;
+    apr_status_t rv, srv = APR_SUCCESS;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
@@ -561,11 +561,16 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
         }
 
         if (rv != APR_SUCCESS) {
-            return rv;
+            srv = rv;
+            /* Return an error but still save the brigade if
+             * ->setaside() is really not implemented. */
+            if (rv != APR_ENOTIMPL) {
+                return rv;
+            }
         }
     }
     APR_BRIGADE_CONCAT(*saveto, *b);
-    return APR_SUCCESS;
+    return srv;
 }
 
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, 
