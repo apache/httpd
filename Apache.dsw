@@ -114,6 +114,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "ApacheModuleFileCache"=".\os\win32\ApacheModuleFileCache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "ApacheModuleHeaders"=".\os\win32\ApacheModuleHeaders.dsp" - Package Owner=<4>
 
 Package=<5>
