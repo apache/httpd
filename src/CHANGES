@@ -6950,7 +6950,7 @@ Changes with Apache 0.8.9
      it seems to work well enough without it (even in a 10 hits/sec
      workout), and the overhead for the locking under A/UX is
      alarmingly high (though it is very low on other systems).
-     [Eric Hagberg]
+     [Eric Hagberg, Jim Jagielski]
 
   *) Fixed portability problems with mod_cookies.c [Cliff Skolnick]
 
@@ -7024,7 +7024,8 @@ Changes with Apache 0.8.5
 
   *) Added parameter to set maximum number of server processes.
 
-  *) Added patches to make it work on A/UX.  A/UX is *weird*.  [Eric Hagberg]
+  *) Added patches to make it work on A/UX.  A/UX is *weird*.  [Eric Hagberg,
+     Jim Jagielski]
 
   *) IdentityCheck bugfix [Chuck Murcko].
 
