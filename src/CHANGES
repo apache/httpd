@@ -34,7 +34,7 @@ Changes with Apache 1.3b6
      [Dmitry Khrustalev <dima@bog.msu.su>]
 
   *) Added support for building shared objects even for library-style modules
-     (which are build from more than one object file). This now provides the
+     (which are built from more than one object file). This now provides the
      ability to build mod_proxy as a shared object module. Additionally
      modules like mod_example are now also supported for shared object
      building because the generated Makefiles now no longer assume there is at
@@ -110,7 +110,7 @@ Changes with Apache 1.3b6
      any Apache header files in case they are being built separately from
      Apache.  Along with this change, a couple of minor changes were
      made to make Apache's #defines coexist peacefully with any autoconf
-     defines and external module might have. [Rasmus Lerdorf]
+     defines an external module might have. [Rasmus Lerdorf]
 
   *) Fix mod_rewrite for the ugly API case where <VirtualHost> sections exist
      but without any RewriteXXXXX directives. Here mod_rewrite is given no
