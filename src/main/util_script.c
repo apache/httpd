@@ -314,11 +314,11 @@ void send_size(size_t size, request_rec *r) {
     if(size == -1) 
         strcpy(ss, "    -");
     else if(!size) 
-        strcpy(ss, "   0K");
+        strcpy(ss, "   0k");
     else if(size < 1024) 
-        strcpy(ss, "   1K");
+        strcpy(ss, "   1k");
     else if(size < 1048576)
-        sprintf(ss, "%4dK", size / 1024);
+        sprintf(ss, "%4dk", size / 1024);
     else
         sprintf(ss, "%4dM", size / 1048576);
     rputs(ss, r);
