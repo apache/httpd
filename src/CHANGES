@@ -1,5 +1,9 @@
 Changes with Apache 1.3.25
 
+  *) Fix a problem in mod_rewrite which would lead to 400 Bad Request
+     responses for rewriting rules which resulted in a local path.
+     [Martin Kraemer]
+
   *) Disallow anything but whitespace on the request line after the
      HTTP/x.y protocol string. That prevents arbitrary user input
      from ending up in the access_log and error_log. Also, special

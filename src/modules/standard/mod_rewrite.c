@@ -1220,7 +1220,7 @@ static int hook_uri2file(request_rec *r)
             rewritelog(r, 2, "local path result: %s", r->filename);
 
             /* the filename has to start with a slash! */
-            if (ap_os_is_path_absolute(r->filename)) {
+            if (!ap_os_is_path_absolute(r->filename)) {
                 return BAD_REQUEST;
             }
 
@@ -1505,7 +1505,7 @@ static int hook_fixup(request_rec *r)
             }
 
             /* the filename has to start with a slash! */
-            if (ap_os_is_path_absolute(r->filename)) {
+            if (!ap_os_is_path_absolute(r->filename)) {
                 return BAD_REQUEST;
             }
 
