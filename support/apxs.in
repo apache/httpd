@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!@perlbin@
 # ====================================================================
 # The Apache Software License, Version 1.1
 #
@@ -65,18 +65,19 @@ package apxs;
 ##  Configuration
 ##
 
-my $CFG_TARGET        = '@TARGET@';            # substituted via Makefile.tmpl 
-my $CFG_CC            = '@CC@';                # substituted via Makefile.tmpl
-my $CFG_CFLAGS        = '@CFLAGS@';            # substituted via Makefile.tmpl
-my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';      # substituted via Makefile.tmpl
-my $CFG_LD_SHLIB      = '@LD_SHLIB@';          # substituted via Makefile.tmpl
-my $CFG_LDFLAGS_SHLIB = '@LDFLAGS_MOD_SHLIB@'; # substituted via Makefile.tmpl 
-my $CFG_LIBS_SHLIB    = '@LIBS_SHLIB@';        # substituted via Makefile.tmpl 
-my $CFG_PREFIX        = '@prefix@';            # substituted via APACI install
-my $CFG_SBINDIR       = '@sbindir@';           # substituted via APACI install
-my $CFG_INCLUDEDIR    = '@includedir@';        # substituted via APACI install
-my $CFG_LIBEXECDIR    = '@libexecdir@';        # substituted via APACI install
-my $CFG_SYSCONFDIR    = '@sysconfdir@';        # substituted via APACI install
+my $CFG_TARGET        = '@progname@';
+my $CFG_CC            = '@CC@';
+my $CFG_DEFS          = '@DEFS@';
+my $CFG_CFLAGS        = '@CFLAGS@ @EXTRA_CFLAGS@';
+my $CFG_PREFIX        = "/home/rbb/apachebin";
+my $prefix            = "$CFG_PREFIX";
+my $CFG_EXEC_PREFIX   = "@exec_prefix@";
+my $exec_prefix       = "$CFG_EXEC_PREFIX";
+my $CFG_SBINDIR       = "@bindir@";
+my $CFG_INCLUDEDIR    = "@includedir@";
+my $CFG_LIBEXECDIR    = "@libexecdir@";
+my $CFG_SYSCONFDIR    = "@sysconfdir@";
+
 
 ##
 ##  Cleanup the above stuff
@@ -334,11 +335,11 @@ if ($opt_c) {
     if ($opt_o eq '') {
         if ($#srcs > -1) {
             $dso_file = $srcs[0];
-            $dso_file =~ s|\.[^.]+$|.so|;
+            $dso_file =~ s|\.[^.]+$|.la|;
         }
         elsif ($#objs > -1) {
             $dso_file = $objs[0];
-            $dso_file =~ s|\.[^.]+$|.so|;
+            $dso_file =~ s|\.[^.]+$|.la|;
         }
         else {
             $dso_file = "mod_unknown.so";
@@ -361,39 +362,19 @@ if ($opt_c) {
     foreach $opt_D (@opt_D) {
         $opt .= "-D$opt_D ";
     }
-    my $cflags = "$CFG_CFLAGS $CFG_CFLAGS_SHLIB";
+    my $cflags = "$CFG_CFLAGS";
     my $s;
     foreach $s (@srcs) {
-        my $o = $s;
-        $o =~ s|\.c$|.o|;
-        push(@cmds, "$CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c $s");
-        unshift(@objs, $o);
-    }
+        my $slo = $s;
+        $slo =~ s|\.c$|.slo|;
+        my $lo = $s;
+        $lo =~ s|\.c$|.lo|;
+        my $la = $s;
+        $la =~ s|\.c$|.la|;
+        push(@cmds, "libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR -I$CFG_INCLUDEDIR/apr $opt -c $s && touch $slo");
+        push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $la -rpath $CFG_LIBEXECDIR -module -avoid-version $lo");
 
-    #   create link command
-    my $cmd = "$CFG_LD_SHLIB $CFG_LDFLAGS_SHLIB -o $dso_file";
-    my $o;
-    foreach $o (@objs) {
-        $cmd .= " $o";
     }
-    $opt = '';
-    my ($opt_Wl, $opt_L, $opt_l);
-    foreach $opt_Wl (@opt_W) {
-		if($CFG_LD_SHLIB ne "gcc") {
-	        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
-		} else {
-	        $opt .= " -W$opt_Wl";
-		}
-    }
-    foreach $opt_L (@opt_L) {
-        $opt .= " -L$opt_L";
-    }
-    foreach $opt_l (@opt_l) {
-        $opt .= " -l$opt_l";
-    }
-    $cmd .= $opt;
-    $cmd .= " $CFG_LIBS_SHLIB";
-    push(@cmds, $cmd);
 
     #   execute the commands
     &execute_cmds(@cmds);
@@ -416,14 +397,14 @@ if ($opt_i or $opt_e) {
     my @cmds = ();
     my $f;
     foreach $f (@args) {
-        if ($f !~ m|\.so$|) {
+        if ($f !~ m|\.la$|) {
             print STDERR "apxs:Error: file $f is not a shared object\n";
             exit(1);
         }
         my $t = $f;
         $t =~ s|^.+/([^/]+)$|$1|;
         if ($opt_i) {
-	    push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
+	    push(@cmds, "libtool --mode=install cp $f $CFG_LIBEXECDIR/$t");
 	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
 
@@ -538,19 +519,19 @@ APACHECTL=apachectl
 #LIB=-Lmy/lib/dir -lmylib
 
 #   the default target
-all: mod_%NAME%.so
+all: mod_%NAME%.la
 
 #   compile the shared object file
-mod_%NAME%.so: mod_%NAME%.c
+mod_%NAME%.la: mod_%NAME%.c
 	$(APXS) -c $(DEF) $(INC) $(LIB) mod_%NAME%.c
 
 #   install the shared object file into Apache 
 install: all
-	$(APXS) -i -a -n '%NAME%' mod_%NAME%.so
+	$(APXS) -i -a -n '%NAME%' mod_%NAME%.la
 
 #   cleanup
 clean:
-	-rm -f mod_%NAME%.o mod_%NAME%.so
+	-rm -f mod_%NAME%.o mod_%NAME%.lo mod_%NAME%.slo mod_%NAME%.la 
 
 #   simple test
 test: reload
@@ -632,24 +613,13 @@ static const handler_rec %NAME%_handlers[] = {
 
 /* Dispatch list for API hooks */
 module MODULE_VAR_EXPORT %NAME%_module = {
-    STANDARD_MODULE_STUFF, 
-    NULL,                  /* module initializer                  */
+    STANDARD20_MODULE_STUFF, 
     NULL,                  /* create per-dir    config structures */
     NULL,                  /* merge  per-dir    config structures */
     NULL,                  /* create per-server config structures */
     NULL,                  /* merge  per-server config structures */
     NULL,                  /* table of config file commands       */
     %NAME%_handlers,       /* [#8] MIME-typed-dispatched handlers */
-    NULL,                  /* [#1] URI to filename translation    */
-    NULL,                  /* [#4] validate user id from request  */
-    NULL,                  /* [#5] check if the user is ok _here_ */
-    NULL,                  /* [#3] check access by host address   */
-    NULL,                  /* [#6] determine MIME type            */
-    NULL,                  /* [#7] pre-run fixups                 */
-    NULL,                  /* [#9] log a transaction              */
-    NULL,                  /* [#2] header parser                  */
-    NULL,                  /* child_init                          */
-    NULL,                  /* child_exit                          */
-    NULL                   /* [#0] post read-request              */
+    NULL                   /* register hooks                      */
 };
 

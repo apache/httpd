@@ -221,6 +221,9 @@ bindir=$bindir
 progname=$progname
 ])
 
-AC_OUTPUT($APACHE_OUTPUT_FILES)
+perlbin=`which perl`
+AC_SUBST(perlbin)
+
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs)
 
 
