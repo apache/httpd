@@ -1,5 +1,7 @@
 Changes with Apache 2.0.40
 
+  *) Get proxy ftp to work over IPv6.  [Shoichi Sakane <sakane@kame.net>]
+
   *) Look for OpenSSL libraries in /usr/lib64.  [Peter Poeml <poeml@suse.de>]
 
   *) Update SuSE layout.  [Peter Poeml <poeml@suse.de>]
