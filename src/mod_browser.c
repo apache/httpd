@@ -82,6 +82,16 @@ void *create_browser_config (pool *p, server_rec *dummy)
     return (void *)new;
 }
 
+void *merge_browser_config (pool *p, void *basev, void *overridesv)
+{
+    browser_server_config_rec *a =
+	pcalloc(p, sizeof(browser_server_config_rec));
+    browser_server_config_rec *base = basev, *overrides = overridesv;
+
+    a->browsers = append_arrays(p, base->browsers, overrides->browsers);
+    return a;
+}
+
 char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
 {
     browser_server_config_rec *sconf =
@@ -97,6 +107,7 @@ char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
 	if (!strcmp(b->name, name)) {
 	    var = getword(cmd->pool, &feature, '=');
 	    if (*feature) table_set(b->features, var, feature);
+	    else if (*var == '!') table_set(b->features, var + 1, "!");
 	    else table_set(b->features, var, "1");
 	    return NULL;
 	}
@@ -113,6 +124,7 @@ char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
 
     var = getword(cmd->pool, &feature, '=');
     if (*feature) table_set(new->features, var, feature);
+    else if (*var == '!') table_set(new->features, var + 1, "!");
     else table_set(new->features, var, "1");
 
     return NULL;
@@ -121,7 +133,7 @@ char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
 command_rec browser_module_cmds[] = {
 { "BrowserMatch", add_browser, (void*)0,
     RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
-{ "BrowserCase", add_browser, (void*)REG_ICASE,
+{ "BrowserNoCase", add_browser, (void*)REG_ICASE,
     RSRC_CONF, ITERATE2, "a browser regex and a list of variables." },
 { NULL },
 };
@@ -132,8 +144,9 @@ int fixup_browser_module(request_rec *r)
     browser_server_config_rec *sconf = get_module_config (s->module_config,
 							  &browser_module);
     browser_entry *entries = (browser_entry *)sconf->browsers->elts;
+    table_entry *elts;
     char *ua = table_get(r->headers_in, "User-Agent");
-    int i;
+    int i, j;
 
     if (!ua) return DECLINED;
 
@@ -141,8 +154,14 @@ int fixup_browser_module(request_rec *r)
 	browser_entry *b = &entries[i];
 
 	if (!regexec(b->preg, ua, 0, NULL, 0)) {
-	    r->subprocess_env = overlay_tables(r->pool, r->subprocess_env,
-					       b->features);
+	    elts = (table_entry *)b->features->elts;
+
+	    for (j = 0; j < b->features->nelts; ++j) {
+		if (!strcmp(elts[j].val, "!"))
+		    table_unset(r->subprocess_env, elts[j].key);
+		else
+		    table_set(r->subprocess_env, elts[j].key, elts[j].val);
+	    }
 	}
     }
 
@@ -155,7 +174,7 @@ module browser_module = {
    NULL,			/* dir config creater */
    NULL,			/* dir merger --- default is to override */
    create_browser_config,	/* server config */
-   NULL,			/* merge server configs */
+   merge_browser_config,     	/* merge server configs */
    browser_module_cmds,		/* command table */
    NULL,			/* handlers */
    NULL,			/* filename translation */
