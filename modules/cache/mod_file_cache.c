@@ -333,8 +333,20 @@ static int mmap_handler(request_rec *r, a_file *file)
 #if APR_HAS_MMAP
     apr_bucket *b;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+    apr_mmap_t *mm;
 
-    b = apr_bucket_mmap_create(file->mm, 0, (apr_size_t)file->finfo.size);
+    /* Create a copy of the apr_mmap_t that's marked as
+     * a "non-owner."  The reason for this is that the
+     * mmap bucket setaside function might later try to
+     * transfer ownership of the mmap from a request
+     * pool to a parent pool.  For this particular mmap,
+     * though, we want the cache to retain ownership so
+     * that it never gets munmapped.  Thus we give the
+     * bucket code a non-owner copy to work with.
+     */
+    apr_mmap_dup(&mm, file->mm, r->pool, 0);
+
+    b = apr_bucket_mmap_create(mm, 0, (apr_size_t)file->finfo.size);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
