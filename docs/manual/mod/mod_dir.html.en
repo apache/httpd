@@ -36,7 +36,7 @@
               </a></th><td>List of resources to look for when the client requests
 a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DirectoryIndex index.html</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -45,7 +45,7 @@ a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The <code class="directive">DirectoryIndex</code> directive sets the
     list of resources to look for, when the client requests an index
     of the directory by specifying a / at the end of the a directory
-    name.  <em>Local-url</em> is the (%-encoded) URL of a document on
+    name.  <var>Local-url</var> is the (%-encoded) URL of a document on
     the server relative to the requested directory; it is usually the
     name of a file in the directory. Several URLs may be given, in
     which case the server will return the first one that it finds.  If
@@ -53,9 +53,9 @@ a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     set, the server will generate its own listing of the
     directory.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-DirectoryIndex index.html
-</code></p></div>
+    <div class="example"><h3>Example</h3><p><code>
+      DirectoryIndex index.html
+    </code></p></div>
 
     <p>then a request for <code>http://myserver/docs/</code> would
     return <code>http://myserver/docs/index.html</code> if it
@@ -64,8 +64,11 @@ DirectoryIndex index.html
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-<div class="example"><p><code>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</code></p></div>
+    <div class="example"><p><code>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </code></p></div>
+
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
-    executed if neither <code>index.html</code> or
-    <code>index.txt</code> existed in a directory.</p>
+    executed if neither <code>index.html</code> or <code>index.txt</code>
+    existed in a directory.</p>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
