@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/14 01:30:42 $]
+Last modified at [$Date: 2002/01/15 19:16:01 $]
 
 Release:
 
@@ -114,6 +114,11 @@ RELEASE SHOWSTOPPERS:
       mod_cgid's daemon process stranded.  Either ap_create_scoreboard()
       needs to be called at a different time or the pre-mpm hook needs
       to be able to return an error code.
+
+    * A binbuild installation picks up the right libraries when
+      running apachectl because we set the appropriate environment
+      variable, but ab, htpasswd, etc. don't know how to pick up apr,
+      apr-util, etc.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
