@@ -347,6 +347,7 @@
 #define limit_section                  AP_limit_section
 #define location_walk                  AP_location_walk
 #define log_assert                     AP_log_assert
+#define log_error                      AP_log_error
 #define log_pid                        AP_log_pid
 #define log_printf                     AP_log_printf
 #define log_reason                     AP_log_reason

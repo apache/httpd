@@ -141,7 +141,7 @@ foreach $l (@L) {
         #   skip any compiler- or system-private symbols
         next if ($name !~ m|^[a-zA-Z]+|);
         #   skip any symbols in our exclusion list
-        next if (grep(/$name/, @excluded));
+        next if (grep(/^$name$/, @excluded));
 
         #   insert the symbol into our lists
         $SB{$name}++ if $type eq 'B';
