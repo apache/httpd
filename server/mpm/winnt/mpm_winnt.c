@@ -779,6 +779,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      */
     waitlist[waitlist_term] = new_child.hproc;
     rv = WaitForMultipleObjects(2, waitlist, FALSE, INFINITE);
+    CloseHandle(waitlist[waitlist_ready]);
     if (rv != WAIT_OBJECT_0) {
         /* 
          * Outch... that isn't a ready signal. It's dead, Jim!
@@ -786,11 +787,9 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         SetEvent(hExitEvent);
         apr_pool_destroy(ptemp);
         CloseHandle(hExitEvent);
-        CloseHandle(waitlist[waitlist_ready]);
         CloseHandle(new_child.hproc);
         return -1;
     }
-    CloseHandle(waitlist[waitlist_ready]);
 
     if (send_listeners_to_child(ptemp, new_child.pid, new_child.in)) {
         /*
