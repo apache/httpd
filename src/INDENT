@@ -57,10 +57,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    proxy_util.c			DONE by Dean
 
 ./modules/standard:
-   mod_access.c			RESERVED by Dean
-   mod_actions.c		RESERVED by Dean
-   mod_alias.c			RESERVED by Dean
-   mod_asis.c			RESERVED by Dean
+   mod_access.c			DONE by Dean
+   mod_actions.c		DONE by Dean
+   mod_alias.c			DONE by Dean
+   mod_asis.c			DONE by Dean
    mod_auth.c
    mod_auth_anon.c
    mod_auth_db.c

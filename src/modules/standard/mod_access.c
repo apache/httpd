@@ -96,101 +96,110 @@ typedef struct {
 
 module MODULE_VAR_EXPORT access_module;
 
-static void *create_access_dir_config (pool *p, char *dummy)
+static void *create_access_dir_config(pool *p, char *dummy)
 {
     access_dir_conf *conf =
-        (access_dir_conf *)pcalloc(p, sizeof(access_dir_conf));
+    (access_dir_conf *) pcalloc(p, sizeof(access_dir_conf));
     int i;
-    
-    for (i = 0; i < METHODS; ++i) conf->order[i] = DENY_THEN_ALLOW;
-    conf->allows = make_array (p, 1, sizeof (allowdeny));
-    conf->denys = make_array (p, 1, sizeof (allowdeny));
-    
-    return (void *)conf;
+
+    for (i = 0; i < METHODS; ++i)
+	conf->order[i] = DENY_THEN_ALLOW;
+    conf->allows = make_array(p, 1, sizeof(allowdeny));
+    conf->denys = make_array(p, 1, sizeof(allowdeny));
+
+    return (void *) conf;
 }
 
-static const char *order (cmd_parms *cmd, void *dv, char *arg)
+static const char *order(cmd_parms *cmd, void *dv, char *arg)
 {
-    access_dir_conf *d = (access_dir_conf *)dv;
+    access_dir_conf *d = (access_dir_conf *) dv;
     int i, o;
-  
-    if (!strcasecmp (arg, "allow,deny")) o = ALLOW_THEN_DENY;
-    else if (!strcasecmp (arg, "deny,allow")) o = DENY_THEN_ALLOW;
-    else if (!strcasecmp (arg, "mutual-failure")) o = MUTUAL_FAILURE;
-    else return "unknown order";
 
-    for (i = 0; i < METHODS; ++i) 
-        if (cmd->limited & (1 << i))
+    if (!strcasecmp(arg, "allow,deny"))
+	o = ALLOW_THEN_DENY;
+    else if (!strcasecmp(arg, "deny,allow"))
+	o = DENY_THEN_ALLOW;
+    else if (!strcasecmp(arg, "mutual-failure"))
+	o = MUTUAL_FAILURE;
+    else
+	return "unknown order";
+
+    for (i = 0; i < METHODS; ++i)
+	if (cmd->limited & (1 << i))
 	    d->order[i] = o;
-    
+
     return NULL;
 }
 
 static int is_ip(const char *host)
 {
     while ((*host == '.') || isdigit(*host))
-        host++;
+	host++;
     return (*host == '\0');
 }
 
-static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
+static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 {
-    access_dir_conf *d = (access_dir_conf *)dv;
+    access_dir_conf *d = (access_dir_conf *) dv;
     allowdeny *a;
     char *s;
-  
-    if (strcasecmp (from, "from"))
-        return "allow and deny must be followed by 'from'";
-    
-    a = (allowdeny *)push_array (cmd->info ? d->allows : d->denys);
-    a->x.from = where = pstrdup (cmd->pool, where);
+
+    if (strcasecmp(from, "from"))
+	return "allow and deny must be followed by 'from'";
+
+    a = (allowdeny *) push_array(cmd->info ? d->allows : d->denys);
+    a->x.from = where = pstrdup(cmd->pool, where);
     a->limited = cmd->limited;
-    
-    if (!strncmp (where, "env=", 4)) {
+
+    if (!strncmp(where, "env=", 4)) {
 	a->type = T_ENV;
 	a->x.from += 4;
 
-    } else if (!strcmp (where, "all")) {
+    }
+    else if (!strcmp(where, "all")) {
 	a->type = T_ALL;
 
-    } else if ((s = strchr (where, '/'))) {
+    }
+    else if ((s = strchr(where, '/'))) {
 	unsigned long mask;
 
 	a->type = T_IP;
 	/* trample on where, we won't be using it any more */
 	*s++ = '\0';
 
-	if (!is_ip (where)
-	    || (a->x.ip.net = ap_inet_addr (where)) == INADDR_NONE) {
+	if (!is_ip(where)
+	    || (a->x.ip.net = ap_inet_addr(where)) == INADDR_NONE) {
 	    a->type = T_FAIL;
 	    return "syntax error in network portion of network/netmask";
 	}
 
 	/* is_ip just tests if it matches [\d.]+ */
-	if (!is_ip (s)) {
+	if (!is_ip(s)) {
 	    a->type = T_FAIL;
 	    return "syntax error in mask portion of network/netmask";
 	}
 	/* is it in /a.b.c.d form? */
-	if (strchr (s, '.')) {
-	    mask = ap_inet_addr (s);
+	if (strchr(s, '.')) {
+	    mask = ap_inet_addr(s);
 	    if (mask == INADDR_NONE) {
 		a->type = T_FAIL;
 		return "syntax error in mask portion of network/netmask";
 	    }
-	} else {
+	}
+	else {
 	    /* assume it's in /nnn form */
-	    mask = atoi (s);
+	    mask = atoi(s);
 	    if (mask > 32 || mask <= 0) {
 		a->type = T_FAIL;
 		return "invalid mask in network/netmask";
 	    }
 	    mask = 0xFFFFFFFFUL << (32 - mask);
-	    mask = htonl (mask);
+	    mask = htonl(mask);
 	}
 	a->x.ip.mask = mask;
 
-    } else if (isdigit (*where) && is_ip (where)) {
+    }
+    else if (isdigit(*where) && is_ip(where)) {
 	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
 	int shift;
 	char *t;
@@ -202,16 +211,17 @@ static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 	shift = 0;
 	while (*s) {
 	    t = s;
-	    if (!isdigit (*t)) {
+	    if (!isdigit(*t)) {
 		a->type = T_FAIL;
 		return "invalid ip address";
 	    }
-	    while (isdigit (*t)) {
+	    while (isdigit(*t)) {
 		++t;
 	    }
 	    if (*t == '.') {
 		*t++ = 0;
-	    } else if (*t) {
+	    }
+	    else if (*t) {
 		a->type = T_FAIL;
 		return "invalid ip address";
 	    }
@@ -220,7 +230,8 @@ static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 	    shift += 8;
 	    s = t;
 	}
-    } else {
+    }
+    else {
 	a->type = T_HOST;
     }
 
@@ -229,49 +240,55 @@ static const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 
 static char its_an_allow;
 
-static command_rec access_cmds[] = {
-{ "order", order, NULL, OR_LIMIT, TAKE1,
-    "'allow,deny', 'deny,allow', or 'mutual-failure'" },
-{ "allow", allow_cmd, &its_an_allow, OR_LIMIT, ITERATE2,
-    "'from' followed by hostnames or IP-address wildcards" },
-{ "deny", allow_cmd, NULL, OR_LIMIT, ITERATE2,
-    "'from' followed by hostnames or IP-address wildcards" },
-{NULL}
+static command_rec access_cmds[] =
+{
+    {"order", order, NULL, OR_LIMIT, TAKE1,
+     "'allow,deny', 'deny,allow', or 'mutual-failure'"},
+    {"allow", allow_cmd, &its_an_allow, OR_LIMIT, ITERATE2,
+     "'from' followed by hostnames or IP-address wildcards"},
+    {"deny", allow_cmd, NULL, OR_LIMIT, ITERATE2,
+     "'from' followed by hostnames or IP-address wildcards"},
+    {NULL}
 };
 
-static int in_domain(const char *domain, const char *what) {
-    int dl=strlen(domain);
-    int wl=strlen(what);
+static int in_domain(const char *domain, const char *what)
+{
+    int dl = strlen(domain);
+    int wl = strlen(what);
 
-    if((wl-dl) >= 0) {
-        if (strcasecmp(domain,&what[wl-dl]) != 0) return 0;
+    if ((wl - dl) >= 0) {
+	if (strcasecmp(domain, &what[wl - dl]) != 0)
+	    return 0;
 
 	/* Make sure we matched an *entire* subdomain --- if the user
 	 * said 'allow from good.com', we don't want people from nogood.com
 	 * to be able to get in.
 	 */
-	
-	if (wl == dl) return 1;	/* matched whole thing */
-	else return (domain[0] == '.' || what[wl - dl - 1] == '.');
-    } else
-        return 0;
+
+	if (wl == dl)
+	    return 1;		/* matched whole thing */
+	else
+	    return (domain[0] == '.' || what[wl - dl - 1] == '.');
+    }
+    else
+	return 0;
 }
 
-static int find_allowdeny (request_rec *r, array_header *a, int method)
+static int find_allowdeny(request_rec *r, array_header *a, int method)
 {
-    allowdeny *ap = (allowdeny *)a->elts;
+    allowdeny *ap = (allowdeny *) a->elts;
     int mmask = (1 << method);
     int i;
     int gothost = 0;
     const char *remotehost = NULL;
 
     for (i = 0; i < a->nelts; ++i) {
-        if (!(mmask & ap[i].limited))
+	if (!(mmask & ap[i].limited))
 	    continue;
 
 	switch (ap[i].type) {
 	case T_ENV:
-	    if (table_get (r->subprocess_env, ap[i].x.from)) {
+	    if (table_get(r->subprocess_env, ap[i].x.from)) {
 		return 1;
 	    }
 	    break;
@@ -286,7 +303,7 @@ static int find_allowdeny (request_rec *r, array_header *a, int method)
 		return 1;
 	    }
 	    break;
-	
+
 	case T_HOST:
 	    if (!gothost) {
 		remotehost = get_remote_host(r->connection, r->per_dir_config,
@@ -311,39 +328,39 @@ static int find_allowdeny (request_rec *r, array_header *a, int method)
     return 0;
 }
 
-static int check_dir_access (request_rec *r)
+static int check_dir_access(request_rec *r)
 {
     int method = r->method_number;
     access_dir_conf *a =
-        (access_dir_conf *)
-	   get_module_config (r->per_dir_config, &access_module);
+    (access_dir_conf *)
+    get_module_config(r->per_dir_config, &access_module);
     int ret = OK;
-						
+
     if (a->order[method] == ALLOW_THEN_DENY) {
-        ret = FORBIDDEN;
-        if (find_allowdeny (r, a->allows, method))
-            ret = OK;
-        if (find_allowdeny (r, a->denys, method))
-            ret = FORBIDDEN;
-    } else if (a->order[method] == DENY_THEN_ALLOW) {
-        if (find_allowdeny (r, a->denys, method))
-            ret = FORBIDDEN;
-        if (find_allowdeny (r, a->allows, method))
-            ret = OK;
+	ret = FORBIDDEN;
+	if (find_allowdeny(r, a->allows, method))
+	    ret = OK;
+	if (find_allowdeny(r, a->denys, method))
+	    ret = FORBIDDEN;
+    }
+    else if (a->order[method] == DENY_THEN_ALLOW) {
+	if (find_allowdeny(r, a->denys, method))
+	    ret = FORBIDDEN;
+	if (find_allowdeny(r, a->allows, method))
+	    ret = OK;
     }
     else {
-        if (find_allowdeny(r, a->allows, method) 
+	if (find_allowdeny(r, a->allows, method)
 	    && !find_allowdeny(r, a->denys, method))
 	    ret = OK;
 	else
 	    ret = FORBIDDEN;
     }
 
-    if (ret == FORBIDDEN && (
-        satisfies(r) != SATISFY_ANY || !some_auth_required(r)
-    )) {
+    if (ret == FORBIDDEN
+	&& (satisfies(r) != SATISFY_ANY || !some_auth_required(r))) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		    "Client denied by server configuration: %s", r->filename);
+		  "Client denied by server configuration: %s", r->filename);
     }
 
     return ret;
@@ -351,24 +368,25 @@ static int check_dir_access (request_rec *r)
 
 
 
-module MODULE_VAR_EXPORT access_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_access_dir_config,	/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   access_cmds,
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   check_dir_access,		/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT access_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_access_dir_config,	/* dir config creater */
+    NULL,			/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server config */
+    access_cmds,
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    check_dir_access,		/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };

@@ -85,29 +85,29 @@ typedef struct {
 
 module action_module;
 
-static void *create_action_dir_config (pool *p, char *dummy)
+static void *create_action_dir_config(pool *p, char *dummy)
 {
     action_dir_config *new =
-      (action_dir_config *) palloc (p, sizeof(action_dir_config));
+    (action_dir_config *) palloc(p, sizeof(action_dir_config));
 
-    new->action_types = make_table (p, 4);
+    new->action_types = make_table(p, 4);
     new->get = NULL;
     new->post = NULL;
     new->put = NULL;
     new->delete = NULL;
-    
+
     return new;
 }
 
-static void *merge_action_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
 {
-    action_dir_config *base = (action_dir_config *)basev;
-    action_dir_config *add = (action_dir_config *)addv;
+    action_dir_config *base = (action_dir_config *) basev;
+    action_dir_config *add = (action_dir_config *) addv;
     action_dir_config *new =
-      (action_dir_config *)palloc (p, sizeof(action_dir_config));
+    (action_dir_config *) palloc(p, sizeof(action_dir_config));
 
-    new->action_types = overlay_tables (p, add->action_types,
-					  base->action_types);
+    new->action_types = overlay_tables(p, add->action_types,
+				       base->action_types);
 
     new->get = add->get ? add->get : base->get;
     new->post = add->post ? add->post : base->post;
@@ -117,107 +117,114 @@ static void *merge_action_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_action(cmd_parms *cmd, action_dir_config *m, char *type,
-		       char *script)
+static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
+			      char *script)
 {
-    table_set (m->action_types, type, script);
+    table_set(m->action_types, type, script);
     return NULL;
 }
 
-static const char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
-			char *script)
+static const char *set_script(cmd_parms *cmd, action_dir_config * m, char *method,
+			      char *script)
 {
     if (!strcmp(method, "GET"))
-        m->get = pstrdup(cmd->pool, script);
+	m->get = pstrdup(cmd->pool, script);
     else if (!strcmp(method, "POST"))
-        m->post = pstrdup(cmd->pool, script);
+	m->post = pstrdup(cmd->pool, script);
     else if (!strcmp(method, "PUT"))
-        m->put = pstrdup(cmd->pool, script);
+	m->put = pstrdup(cmd->pool, script);
     else if (!strcmp(method, "DELETE"))
-        m->delete = pstrdup(cmd->pool, script);
+	m->delete = pstrdup(cmd->pool, script);
     else
-        return "Unknown method type for Script";
+	return "Unknown method type for Script";
 
     return NULL;
 }
 
-static command_rec action_cmds[] = {
-{ "Action", add_action, NULL, OR_FILEINFO, TAKE2, 
-    "a media type followed by a script name" },
-{ "Script", set_script, NULL, ACCESS_CONF|RSRC_CONF, TAKE2,
-    "a method followed by a script name" },
-{ NULL }
+static command_rec action_cmds[] =
+{
+    {"Action", add_action, NULL, OR_FILEINFO, TAKE2,
+     "a media type followed by a script name"},
+    {"Script", set_script, NULL, ACCESS_CONF | RSRC_CONF, TAKE2,
+     "a method followed by a script name"},
+    {NULL}
 };
 
-static int action_handler (request_rec *r)
+static int action_handler(request_rec *r)
 {
     action_dir_config *conf =
-      (action_dir_config *)get_module_config(r->per_dir_config,&action_module);
+    (action_dir_config *) get_module_config(r->per_dir_config, &action_module);
     char *t, *action = r->handler ? r->handler : r->content_type;
     char *script = NULL;
 
     /* Set allowed stuff */
-    if (conf->get) r->allowed |= (1 << M_GET);
-    if (conf->post) r->allowed |= (1 << M_POST);
-    if (conf->put) r->allowed |= (1 << M_PUT);
-    if (conf->delete) r->allowed |= (1 << M_DELETE);
+    if (conf->get)
+	r->allowed |= (1 << M_GET);
+    if (conf->post)
+	r->allowed |= (1 << M_POST);
+    if (conf->put)
+	r->allowed |= (1 << M_PUT);
+    if (conf->delete)
+	r->allowed |= (1 << M_DELETE);
 
     /* First, check for the method-handling scripts */
     if ((r->method_number == M_GET) && r->args && conf->get)
-        script = conf->get;
+	script = conf->get;
     else if ((r->method_number == M_POST) && conf->post)
-        script = conf->post;
+	script = conf->post;
     else if ((r->method_number == M_PUT) && conf->put)
-        script = conf->put;
+	script = conf->put;
     else if ((r->method_number == M_DELETE) && conf->delete)
-        script = conf->delete;
+	script = conf->delete;
 
     /* Check for looping, which can happen if the CGI script isn't */
     if (script && r->prev && r->prev->prev)
-        return DECLINED;
+	return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
     if ((t = table_get(conf->action_types,
-					action ? action : default_type(r)))) {
-        script = t;
+		       action ? action : default_type(r)))) {
+	script = t;
 	if (r->finfo.st_mode == 0) {
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 			"File does not exist: %s", r->filename);
 	    return NOT_FOUND;
 	}
     }
-  
+
     if (script == NULL)
-        return DECLINED;
+	return DECLINED;
 
     internal_redirect_handler(pstrcat(r->pool, script, escape_uri(r->pool,
-			r->uri), r->args ? "?" : NULL, r->args, NULL), r);
+			  r->uri), r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }
 
-static handler_rec action_handlers[] = {
-{ "*/*", action_handler },
-{ NULL }
+static handler_rec action_handlers[] =
+{
+    {"*/*", action_handler},
+    {NULL}
 };
 
-module action_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_action_dir_config,	/* dir config creater */
-   merge_action_dir_configs,	/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   action_cmds,			/* command table */
-   action_handlers,		/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module action_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_action_dir_config,	/* dir config creater */
+    merge_action_dir_configs,	/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server config */
+    action_cmds,		/* command table */
+    action_handlers,		/* handlers */
+    NULL,			/* filename translation */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };

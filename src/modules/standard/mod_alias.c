@@ -80,84 +80,86 @@ typedef struct {
 
 module MODULE_VAR_EXPORT alias_module;
 
-static void *create_alias_config (pool *p, server_rec *s)
+static void *create_alias_config(pool *p, server_rec *s)
 {
     alias_server_conf *a =
-      (alias_server_conf *)pcalloc (p, sizeof(alias_server_conf));
+    (alias_server_conf *) pcalloc(p, sizeof(alias_server_conf));
 
-    a->aliases = make_array (p, 20, sizeof(alias_entry));
-    a->redirects = make_array (p, 20, sizeof(alias_entry));
+    a->aliases = make_array(p, 20, sizeof(alias_entry));
+    a->redirects = make_array(p, 20, sizeof(alias_entry));
     return a;
 }
 
-static void *create_alias_dir_config (pool *p, char *d)
+static void *create_alias_dir_config(pool *p, char *d)
 {
     alias_dir_conf *a =
-      (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
-    a->redirects = make_array (p, 2, sizeof(alias_entry));
+    (alias_dir_conf *) pcalloc(p, sizeof(alias_dir_conf));
+    a->redirects = make_array(p, 2, sizeof(alias_entry));
     return a;
 }
 
-static void *merge_alias_config (pool *p, void *basev, void *overridesv)
+static void *merge_alias_config(pool *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
-	(alias_server_conf *)pcalloc (p, sizeof(alias_server_conf));
-    alias_server_conf *base = (alias_server_conf *)basev,
-	*overrides = (alias_server_conf *)overridesv;
+    (alias_server_conf *) pcalloc(p, sizeof(alias_server_conf));
+    alias_server_conf *base = (alias_server_conf *) basev, *overrides = (alias_server_conf *) overridesv;
 
-    a->aliases = append_arrays (p, overrides->aliases, base->aliases);
-    a->redirects = append_arrays (p, overrides->redirects, base->redirects);
+    a->aliases = append_arrays(p, overrides->aliases, base->aliases);
+    a->redirects = append_arrays(p, overrides->redirects, base->redirects);
     return a;
 }
 
-static void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
+static void *merge_alias_dir_config(pool *p, void *basev, void *overridesv)
 {
     alias_dir_conf *a =
-      (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
-    alias_dir_conf *base = (alias_dir_conf *)basev,
-      *overrides = (alias_dir_conf *)overridesv;
-    a->redirects = append_arrays (p, overrides->redirects, base->redirects);
+    (alias_dir_conf *) pcalloc(p, sizeof(alias_dir_conf));
+    alias_dir_conf *base = (alias_dir_conf *) basev, *overrides = (alias_dir_conf *) overridesv;
+    a->redirects = append_arrays(p, overrides->redirects, base->redirects);
     return a;
 }
 
 static const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
-			       int use_regex)
+				      int use_regex)
 {
     server_rec *s = cmd->server;
     alias_server_conf *conf =
-        (alias_server_conf *)get_module_config(s->module_config,&alias_module);
-    alias_entry *new = push_array (conf->aliases);
+    (alias_server_conf *) get_module_config(s->module_config, &alias_module);
+    alias_entry *new = push_array(conf->aliases);
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
-    
+
     if (use_regex) {
 	new->regexp = pregcomp(cmd->pool, f, REG_EXTENDED);
 	if (new->regexp == NULL)
 	    return "Regular expression could not be compiled.";
     }
 
-    new->fake = f; new->real = r; new->handler = cmd->info;
+    new->fake = f;
+    new->real = r;
+    new->handler = cmd->info;
 
     return NULL;
 }
 
-static const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r) {
+static const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
+{
     return add_alias_internal(cmd, dummy, f, r, 0);
 }
 
-static const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r) {
+static const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r)
+{
     return add_alias_internal(cmd, dummy, f, r, 1);
 }
 
-static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf, 
-				  char *arg1, char *arg2, char *arg3,
-				  int use_regex)
+static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dirconf,
+					 char *arg1, char *arg2, char *arg3,
+					 int use_regex)
 {
     alias_entry *new;
     server_rec *s = cmd->server;
     alias_server_conf *serverconf =
-        (alias_server_conf *)get_module_config(s->module_config,&alias_module);
-    int status = (int)(long)cmd->info;
+    (alias_server_conf *) get_module_config(s->module_config, &alias_module);
+    int status = (int) (long) cmd->info;
     regex_t *r = NULL;
     char *f = arg2;
     char *url = arg3;
@@ -178,66 +180,74 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf
     }
 
     if (use_regex) {
-        r = pregcomp(cmd->pool, f, REG_EXTENDED);
-        if (r == NULL)
-            return "Regular expression could not be compiled.";
+	r = pregcomp(cmd->pool, f, REG_EXTENDED);
+	if (r == NULL)
+	    return "Regular expression could not be compiled.";
     }
 
     if (is_HTTP_REDIRECT(status)) {
-	if (!url) return "URL to redirect to is missing";
-	if (!is_url (url)) return "Redirect to non-URL";
+	if (!url)
+	    return "URL to redirect to is missing";
+	if (!is_url(url))
+	    return "Redirect to non-URL";
     }
     else {
-	if (url) return "Redirect URL not valid for this status";
+	if (url)
+	    return "Redirect URL not valid for this status";
     }
 
-    if ( cmd->path )
-        new = push_array (dirconf->redirects);
+    if (cmd->path)
+	new = push_array(dirconf->redirects);
     else
-        new = push_array (serverconf->redirects);
+	new = push_array(serverconf->redirects);
 
-    new->fake = f; new->real = url; new->regexp = r;
+    new->fake = f;
+    new->real = url;
+    new->regexp = r;
     new->redir_status = status;
     return NULL;
 }
 
-static const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
-			 char *arg2, char *arg3) {
+static const char *add_redirect(cmd_parms *cmd, alias_dir_conf * dirconf, char *arg1,
+				char *arg2, char *arg3)
+{
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
 }
 
-static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf *dirconf,
-			       char *arg1, char *arg2, char *arg3) {
+static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf * dirconf,
+				      char *arg1, char *arg2, char *arg3)
+{
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
 
-static command_rec alias_cmds[] = {
-{ "Alias", add_alias, NULL, RSRC_CONF, TAKE2, 
-    "a fakename and a realname"},
-{ "ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2, 
-    "a fakename and a realname"},
-{ "Redirect", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
-    OR_FILEINFO, TAKE23, 
-    "an optional status, then document to be redirected and destination URL" },
-{ "AliasMatch", add_alias_regex, NULL, RSRC_CONF, TAKE2, 
-    "a regular expression and a filename"},
-{ "ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF, TAKE2, 
-    "a regular expression and a filename"},
-{ "RedirectMatch", add_redirect_regex, (void*)HTTP_MOVED_TEMPORARILY, 
-    OR_FILEINFO, TAKE23, 
-    "an optional status, then a regular expression and destination URL" },
-{ "RedirectTemp", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
-    OR_FILEINFO, TAKE2, 
-    "a document to be redirected, then the destination URL" },
-{ "RedirectPermanent", add_redirect, (void*)HTTP_MOVED_PERMANENTLY, 
-    OR_FILEINFO, TAKE2, 
-      "a document to be redirected, then the destination URL" },
-{ NULL }
+static command_rec alias_cmds[] =
+{
+    {"Alias", add_alias, NULL, RSRC_CONF, TAKE2,
+     "a fakename and a realname"},
+    {"ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2,
+     "a fakename and a realname"},
+    {"Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
+     OR_FILEINFO, TAKE23,
+  "an optional status, then document to be redirected and destination URL"},
+    {"AliasMatch", add_alias_regex, NULL, RSRC_CONF, TAKE2,
+     "a regular expression and a filename"},
+    {"ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF, TAKE2,
+     "a regular expression and a filename"},
+    {"RedirectMatch", add_redirect_regex, (void *) HTTP_MOVED_TEMPORARILY,
+     OR_FILEINFO, TAKE23,
+     "an optional status, then a regular expression and destination URL"},
+    {"RedirectTemp", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
+     OR_FILEINFO, TAKE2,
+     "a document to be redirected, then the destination URL"},
+    {"RedirectPermanent", add_redirect, (void *) HTTP_MOVED_PERMANENTLY,
+     OR_FILEINFO, TAKE2,
+     "a document to be redirected, then the destination URL"},
+    {NULL}
 };
 
-static int alias_matches (char *uri, char *alias_fakename)
+static int alias_matches(char *uri, char *alias_fakename)
 {
-    char *end_fakename = alias_fakename + strlen (alias_fakename);
+    char *end_fakename = alias_fakename + strlen(alias_fakename);
     char *aliasp = alias_fakename, *urip = uri;
 
     while (aliasp < end_fakename) {
@@ -245,14 +255,18 @@ static int alias_matches (char *uri, char *alias_fakename)
 	    /* any number of '/' in the alias matches any number in
 	     * the supplied URI, but there must be at least one...
 	     */
-	    if (*urip != '/') return 0;
-	    
-	    while (*aliasp == '/') ++ aliasp;
-	    while (*urip == '/') ++ urip;
+	    if (*urip != '/')
+		return 0;
+
+	    while (*aliasp == '/')
+		++aliasp;
+	    while (*urip == '/')
+		++urip;
 	}
 	else {
 	    /* Other characters are compared literally */
-	    if (*urip++ != *aliasp++) return 0;
+	    if (*urip++ != *aliasp++)
+		return 0;
 	}
     }
 
@@ -269,47 +283,48 @@ static int alias_matches (char *uri, char *alias_fakename)
     return urip - uri;
 }
 
-static char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *status)
+static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, int *status)
 {
-    alias_entry *entries = (alias_entry *)aliases->elts;
+    alias_entry *entries = (alias_entry *) aliases->elts;
     regmatch_t regm[10];
     char *found = NULL;
     int i;
-    
+
     for (i = 0; i < aliases->nelts; ++i) {
-        alias_entry *p = &entries[i];
+	alias_entry *p = &entries[i];
 	int l;
 
 	if (p->regexp) {
-	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub+1, regm, 0))
+	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0))
 		found = pregsub(r->pool, p->real, r->uri,
-				p->regexp->re_nsub+1, regm);
+				p->regexp->re_nsub + 1, regm);
 	}
 	else {
-	    l = alias_matches (r->uri, p->fake);
+	    l = alias_matches(r->uri, p->fake);
 
 	    if (l > 0) {
 		if (doesc) {
 		    char *escurl;
 		    escurl = os_escape_path(r->pool, r->uri + l, 1);
-		    
+
 		    found = pstrcat(r->pool, p->real, escurl, NULL);
-		} else
+		}
+		else
 		    found = pstrcat(r->pool, p->real, r->uri + l, NULL);
 	    }
 	}
 
 	if (found) {
-	    if (p->handler) { /* Set handler, and leave a note for mod_cgi */
+	    if (p->handler) {	/* Set handler, and leave a note for mod_cgi */
 		r->handler = pstrdup(r->pool, p->handler);
-		table_set (r->notes, "alias-forced-type", p->handler);
+		table_set(r->notes, "alias-forced-type", p->handler);
 	    }
-	    
+
 	    *status = p->redir_status;
 
 	    return found;
 	}
-	
+
     }
 
     return NULL;
@@ -319,34 +334,34 @@ static int translate_alias_redir(request_rec *r)
 {
     void *sconf = r->server->module_config;
     alias_server_conf *serverconf =
-        (alias_server_conf *)get_module_config(sconf, &alias_module);
+    (alias_server_conf *) get_module_config(sconf, &alias_module);
     char *ret;
     int status;
 
 #if defined(__EMX__) || defined(WIN32)
     /* Add support for OS/2 drive names */
     if ((r->uri[0] != '/' && r->uri[0] != '\0') && r->uri[1] != ':')
-#else    
-    if (r->uri[0] != '/' && r->uri[0] != '\0') 
-#endif    
-        return DECLINED;
+#else
+    if (r->uri[0] != '/' && r->uri[0] != '\0')
+#endif
+	return DECLINED;
 
-    if ((ret = try_alias_list (r, serverconf->redirects, 1, &status)) != NULL) {
+    if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
 	if (is_HTTP_REDIRECT(status)) {
 	    /* include QUERY_STRING if any */
 	    if (r->args) {
-		ret = pstrcat (r->pool, ret, "?", r->args, NULL);
+		ret = pstrcat(r->pool, ret, "?", r->args, NULL);
 	    }
-	    table_set (r->headers_out, "Location", ret);
+	    table_set(r->headers_out, "Location", ret);
 	}
-        return status;
+	return status;
     }
-    
-    if ((ret = try_alias_list (r, serverconf->aliases, 0, &status)) != NULL) {
-        r->filename = ret;
-        return OK;
+
+    if ((ret = try_alias_list(r, serverconf->aliases, 0, &status)) != NULL) {
+	r->filename = ret;
+	return OK;
     }
-    
+
     return DECLINED;
 }
 
@@ -354,39 +369,40 @@ static int fixup_redir(request_rec *r)
 {
     void *dconf = r->per_dir_config;
     alias_dir_conf *dirconf =
-        (alias_dir_conf *)get_module_config(dconf, &alias_module);
+    (alias_dir_conf *) get_module_config(dconf, &alias_module);
     char *ret;
     int status;
 
     /* It may have changed since last time, so try again */
 
-    if ((ret = try_alias_list (r, dirconf->redirects, 1, &status)) != NULL) {
+    if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
 	if (is_HTTP_REDIRECT(status))
-	    table_set (r->headers_out, "Location", ret);
-        return status;
+	    table_set(r->headers_out, "Location", ret);
+	return status;
     }
 
     return DECLINED;
 }
 
-module MODULE_VAR_EXPORT alias_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_alias_dir_config,	/* dir config creater */
-   merge_alias_dir_config,	/* dir merger --- default is to override */
-   create_alias_config,		/* server config */
-   merge_alias_config,		/* merge server configs */
-   alias_cmds,			/* command table */
-   NULL,			/* handlers */
-   translate_alias_redir,	/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   fixup_redir,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT alias_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_alias_dir_config,	/* dir config creater */
+    merge_alias_dir_config,	/* dir merger --- default is to override */
+    create_alias_config,	/* server config */
+    merge_alias_config,		/* merge server configs */
+    alias_cmds,			/* command table */
+    NULL,			/* handlers */
+    translate_alias_redir,	/* filename translation */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    fixup_redir,		/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };

@@ -58,78 +58,82 @@
 #include "http_main.h"
 #include "http_request.h"
 
-static int asis_handler (request_rec *r)
+static int asis_handler(request_rec *r)
 {
     FILE *f;
     char *location;
-    
-    if (r->method_number != M_GET) return DECLINED;
+
+    if (r->method_number != M_GET)
+	return DECLINED;
     if (r->finfo.st_mode == 0) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "File does not exist", r->filename);
 	return NOT_FOUND;
     }
-	
+
     f = pfopen(r->pool, r->filename, "r");
 
     if (f == NULL) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "file permissions deny server access: %s", r->filename);
-        return FORBIDDEN;
+	return FORBIDDEN;
     }
-      
+
     scan_script_header(r, f);
     location = table_get(r->headers_out, "Location");
 
-    if (location && location[0] == '/' && 
-        ((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
+    if (location && location[0] == '/' &&
+	((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
 
-        pfclose(r->pool, f);
+	pfclose(r->pool, f);
 
-        /* Internal redirect -- fake-up a pseudo-request */
-        r->status = HTTP_OK;
+	/* Internal redirect -- fake-up a pseudo-request */
+	r->status = HTTP_OK;
 
 	/* This redirect needs to be a GET no matter what the original
 	 * method was.
-	*/
+	 */
 	r->method = pstrdup(r->pool, "GET");
 	r->method_number = M_GET;
 
 	internal_redirect_handler(location, r);
 	return OK;
     }
-    
+
     send_http_header(r);
-    if (!r->header_only) send_fd (f, r);
+    if (!r->header_only)
+	send_fd(f, r);
 
     pfclose(r->pool, f);
     return OK;
 }
 
-static handler_rec asis_handlers[] = {
-{ ASIS_MAGIC_TYPE, asis_handler },
-{ "send-as-is", asis_handler },
-{ NULL }
+static handler_rec asis_handlers[] =
+{
+    {ASIS_MAGIC_TYPE, asis_handler},
+    {"send-as-is", asis_handler},
+    {NULL}
 };
 
-module MODULE_VAR_EXPORT asis_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   NULL,			/* create per-directory config structure */
-   NULL,			/* merge per-directory config structures */
-   NULL,			/* create per-server config structure */
-   NULL,			/* merge per-server config structures */
-   NULL,			/* command table */
-   asis_handlers,		/* handlers */
-   NULL,			/* translate_handler */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* pre-run fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT asis_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    NULL,			/* create per-directory config structure */
+    NULL,			/* merge per-directory config structures */
+    NULL,			/* create per-server config structure */
+    NULL,			/* merge per-server config structures */
+    NULL,			/* command table */
+    asis_handlers,		/* handlers */
+    NULL,			/* translate_handler */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* pre-run fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };
