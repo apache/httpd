@@ -1100,12 +1100,10 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
 		       direction);
     pclosedir(r->pool, d);
 
-    if (autoindex_opts & FANCY_INDEXING) {
-	if ((tmp = find_readme(autoindex_conf, r)))
-	    insert_readme(name, tmp, "", HRULE, END_MATTER, r);
-	else {
-	    rputs("</UL>", r);
-	}
+    if ((tmp = find_readme(autoindex_conf, r))) {
+	insert_readme(name, tmp, "",
+                      ((autoindex_opts & FANCY_INDEXING) ? HRULE : NO_HRULE),
+                      END_MATTER, r);
     }
     rputs("</BODY></HTML>\n", r);
 

@@ -1,5 +1,11 @@
 Changes with Apache 1.3b3
 
+  *) mod_autoindex wasn't displaying the ReadmeName file at the bottom
+     unless it was also doing FancyIndexes, but it displayed the
+     HeaderName file at the top under all circumstances.  It now shows
+     the ReadmeName file for simple indices, too, as it should.  PR#1373
+     [Ken Coar]
+
   *) http_core was mmap()ing even in cases where it wasn't going to
      read the file.  [Ben Hyde <bhyde@gensym.com>]
 
