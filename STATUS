@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/20 20:27:02 $]
+Last modified at [$Date: 2004/04/21 21:30:26 $]
 
 Release:
 
@@ -72,8 +72,14 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) allow symlinks on directories to be processed by Include directives
+       and stop possible recursion by a counter. PR 28492
+         server/config.c: r1.175
+       +1: nd
+
     *) detect Include directive recursion by counting the nesting level.
-         server/core.c: r1.1.275
+       PR 28370.
+         server/core.c: r1.275
        +1: nd
 
     *) mod_headers: don't segfault, when supplying an empty header value
