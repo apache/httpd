@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/04 23:43:00 $]
+Last modified at [$Date: 2003/05/05 15:48:35 $]
 
 Release:
 
@@ -152,7 +152,7 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-win.conf: r1.81
       docs/docroot/index.html.var: r1.11
       docs/docroot/index.html.zh -> index.html.zh-tw.big5
-      +1: nd
+      +1: nd, trawick
 
     * Do not bypass output filters when redirecting subrequests internally.
       PR 17629.
@@ -248,7 +248,7 @@ PATCHES TO PORT FROM 2.1
 
     * Fix for a pair of potential buffer overflows in htdigest.
       support/htdigest.c r1.36
-      +1: thommay, nd
+      +1: thommay, nd, trawick
 
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
