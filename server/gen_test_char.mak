@@ -28,6 +28,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 OUTDIR=.
@@ -59,44 +62,11 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\srclib\apr\include" /I\
  "..\srclib\apr-util\include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D\
  "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc" 
 BSC32_SBRS= \
@@ -146,13 +116,31 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I\
  "..\srclib\apr\include" /I "..\srclib\apr-util\include" /I "..\os\win32" /D\
  "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\gen_test_char" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\Debug\gen_test_char.pdb" /debug /machine:I386\
+ /out:"$(OUTDIR)\gen_test_char.exe" 
+LINK32_OBJS= \
+	"$(INTDIR)\gen_test_char.obj" \
+	"..\srclib\apr-util\LibD\aprutil.lib" \
+	"..\srclib\apr\LibD\apr.lib"
+
+"$(OUTDIR)\gen_test_char.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -183,27 +171,6 @@ CPP_SBRS=.
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
-
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Debug\gen_test_char.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\gen_test_char.exe" 
-LINK32_OBJS= \
-	"$(INTDIR)\gen_test_char.obj" \
-	"..\srclib\apr-util\LibD\aprutil.lib" \
-	"..\srclib\apr\LibD\apr.lib"
-
-"$(OUTDIR)\gen_test_char.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 
 !IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" ==\

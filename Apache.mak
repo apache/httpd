@@ -25,6 +25,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "Apache - Win32 Release"
 
 OUTDIR=.\Release
@@ -59,44 +62,11 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "./include" /I "./os/win32" /I\
  "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D\
  "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 RSC_PROJ=/l 0x809 /fo"$(INTDIR)\apache.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc" 
@@ -153,12 +123,33 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./os/win32" /I\
  "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D\
  "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+RSC_PROJ=/l 0x809 /fo"$(INTDIR)\apache.res" /d "_DEBUG" 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib\
+ /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Apache.pdb"\
+ /map:"$(INTDIR)\Apache.map" /debug /machine:I386 /out:"$(OUTDIR)\Apache.exe" 
+LINK32_OBJS= \
+	"$(INTDIR)\apache.res" \
+	"$(INTDIR)\main.obj" \
+	"$(OUTDIR)\libhttpd.lib" \
+	".\srclib\apr-util\Debug\libaprutil.lib" \
+	".\srclib\apr\Debug\libapr.lib"
+
+"$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -189,30 +180,6 @@ CPP_SBRS=.
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
-
-RSC=rc.exe
-RSC_PROJ=/l 0x809 /fo"$(INTDIR)\apache.res" /d "_DEBUG" 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib\
- /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Apache.pdb"\
- /map:"$(INTDIR)\Apache.map" /debug /machine:I386 /out:"$(OUTDIR)\Apache.exe" 
-LINK32_OBJS= \
-	"$(INTDIR)\apache.res" \
-	"$(INTDIR)\main.obj" \
-	"$(OUTDIR)\libhttpd.lib" \
-	".\srclib\apr-util\Debug\libaprutil.lib" \
-	".\srclib\apr\Debug\libapr.lib"
-
-"$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 
 !IF "$(CFG)" == "Apache - Win32 Release" || "$(CFG)" == "Apache - Win32 Debug"

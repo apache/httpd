@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "dftables - Win32 Release"
 
 OUTDIR=.
@@ -54,43 +57,10 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\dftables" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\dftables.bsc" 
 BSC32_SBRS= \
@@ -135,11 +105,27 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D\
  "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\dftables" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\dftables.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\Debug\dftables.pdb" /map:"$(INTDIR)\dftables.map" /debug\
+ /machine:I386 /out:"$(OUTDIR)\dftables.exe" 
+LINK32_OBJS= \
+	"$(INTDIR)\dftables.obj"
+
+"$(OUTDIR)\dftables.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -170,25 +156,6 @@ CPP_SBRS=.
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
-
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\dftables.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Debug\dftables.pdb" /map:"$(INTDIR)\dftables.map" /debug\
- /machine:I386 /out:"$(OUTDIR)\dftables.exe" 
-LINK32_OBJS= \
-	"$(INTDIR)\dftables.obj"
-
-"$(OUTDIR)\dftables.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 
 !IF "$(CFG)" == "dftables - Win32 Release" || "$(CFG)" ==\
