@@ -154,7 +154,7 @@
     </p>
 
     <example><title>Example:</title>
-      SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
+      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
       &lt;Directory /docroot&gt;<br />
       <indent>
         Order Deny,Allow<br />
