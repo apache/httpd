@@ -356,16 +356,26 @@
      http://www.apache.org/docs/ for a complete reference of available
      configuration directives.
 
-  9. Set your system time properly!
-     ------------------------------
+  8. Preparing the system
+     --------------------
 
-     Proper operation of a public web server requires accurate time
-     keeping, since elements of the HTTP protocol are expressed as the time
-     of day.  So, it's time to investigate setting up NTP or some other
-     time synchronization system on your Unix box, or whatever the
-     equivalent on NT would be.
+     Proper operation of a public HTTP server requires at least the following:
 
-  8. Contacts
+     1. A correctly working TCP/IP layer, since HTTP is implemented on top of
+        TCP/IP. Although modern Unix platforms have good networking layers,
+        always make sure you have all official vendor patches referring to the
+        network layer applied.
+
+     2. Accurate time keeping, since elements of the HTTP protocol are
+        expressed as the time of day.  So, it's time to investigate setting
+        some time synchronization facility on your system. Usually the ntpdate
+        or xntpd programs are used for this purpose which are based on the
+        Network Time Protocol (NTP). See the Usenet newsgroup
+        comp.protocols.time.ntp and the NTP homepage at
+        http://www.eecis.udel.edu/~ntp/ for more details about NTP software
+        and public time servers.
+
+  9. Contacts
      --------
 
      o If you want to be informed about new code releases, bug fixes, 
