@@ -3960,6 +3960,10 @@ int REALMAIN(int argc, char *argv[])
 {
     int c;
 
+#ifdef SOCKS
+    SOCKSinit(argv[0]);
+#endif
+
     MONCONTROL(0);
 
     common_init();
