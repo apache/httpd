@@ -91,17 +91,11 @@ typedef struct {
 
 /* This should go into APR; perhaps with some nice
  * caching/locking/flocking of the open dbm file.
- *
- * Duplicated in mod_auth_dbm.c
  */
-static apr_status_t get_dbm_entry_as_str(request_rec *r, char *user,
-                                         char *auth_dbmfile, char *dbtype,
-                                         char ** str)
+static char *get_dbm_entry_as_str(apr_pool_t *pool, apr_dbm_t *f, char *key)
 {
-    apr_dbm_t *f;
     apr_datum_t d, q;
-    apr_status_t retval;
-    q.dptr = user;
+    q.dptr = key;
 
 #ifndef NETSCAPE_DBM_COMPAT
     q.dsize = strlen(q.dptr);
@@ -109,22 +103,11 @@ static apr_status_t get_dbm_entry_as_str(request_rec *r, char *user,
     q.dsize = strlen(q.dptr) + 1;
 #endif
 
-    retval = apr_dbm_open_ex(&f, dbtype, auth_dbmfile, APR_DBM_READONLY, 
-                             APR_OS_DEFAULT, r->pool);
-
-    if (retval != APR_SUCCESS) {
-        return retval;
-    }
-
-    *str = NULL;
-
     if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS && d.dptr) {
-        *str = apr_pstrmemdup(r->pool, d.dptr, d.dsize);
+        return apr_pstrmemdup(pool, d.dptr, d.dsize);
     }
 
-    apr_dbm_close(f);
-
-    return retval;
+    return NULL;
 }
 
 static void *create_authz_dbm_dir_config(apr_pool_t *p, char *d)
@@ -167,36 +150,38 @@ module AP_MODULE_DECLARE_DATA authz_dbm_module;
  * mark@telescope.org, 22Sep95
  */
 
-static apr_status_t get_dbm_grp(request_rec *r, char *user, char *dbmgrpfile, 
-                                char *dbtype, const char ** out)
+static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
+                                char *dbmgrpfile, char *dbtype,
+                                const char ** out)
 {
-    char *grp_data;
     char *grp_colon;
-    char *grp_colon2;
+    apr_status_t retval;
+    apr_dbm_t *f;
 
-    apr_status_t status = get_dbm_entry_as_str(r, user, dbmgrpfile,
-                                               dbtype, &grp_data);
+    retval = apr_dbm_open_ex(&f, dbtype, dbmgrpfile, APR_DBM_READONLY, 
+                             APR_OS_DEFAULT, r->pool);
 
-    if (status != APR_SUCCESS) {
-        return status;
+    if (retval != APR_SUCCESS) {
+        return retval;
     }
 
-    *out = NULL;
-
-    if (grp_data == NULL) {
-        return APR_SUCCESS;
+    /* Try key2 only if key1 failed */
+    if (!(*out = get_dbm_entry_as_str(r->pool, f, key1))) {
+        *out = get_dbm_entry_as_str(r->pool, f, key2);
     }
 
-    if ((grp_colon = strchr(grp_data, ':')) != NULL) {
-        grp_colon2 = strchr(++grp_colon, ':');
+    apr_dbm_close(f);
+
+    if (*out && (grp_colon = strchr(*out, ':')) != NULL) {
+        char *grp_colon2 = strchr(++grp_colon, ':');
+
         if (grp_colon2) {
             *grp_colon2 = '\0';
         }
         *out = grp_colon;
-        return APR_SUCCESS;
     }
 
-    return APR_SUCCESS;
+    return retval;
 }
 
 /* Checking ID */
@@ -204,14 +189,12 @@ static int dbm_check_auth(request_rec *r)
 {
     authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authz_dbm_module);
-    char *user = r->user;
     int m = r->method_number;
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
     register int x;
     const char *t;
     char *w;
-    apr_status_t status;
 
     if (!conf->grpfile) {
         return DECLINED;
@@ -231,11 +214,16 @@ static int dbm_check_auth(request_rec *r)
         w = ap_getword_white(r->pool, &t);
  
         if (!strcmp(w, "group")) {
+            char *user = r->user;
+            const char *realm = ap_auth_name(r);
             const char *orig_groups, *groups;
             char *v;
+            apr_status_t status;
 
-            status = get_dbm_grp(r, user, conf->grpfile, conf->dbmtype,
-                                 &groups);
+            status = get_dbm_grp(r,
+                                 apr_pstrcat(r->pool, user, ":", realm, NULL),
+                                 user,
+                                 conf->grpfile, conf->dbmtype, &groups);
 
             if (status != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -253,7 +241,7 @@ static int dbm_check_auth(request_rec *r)
                             "user %s not in DBM group file %s: %s",
                             user, conf->grpfile, r->filename);
 
-                ap_note_basic_auth_failure(r);
+                ap_note_auth_failure(r);
                 return HTTP_UNAUTHORIZED;
             }
 
@@ -271,7 +259,7 @@ static int dbm_check_auth(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "user %s not in right group: %s",
                           user, r->filename);
-            ap_note_basic_auth_failure(r);
+            ap_note_auth_failure(r);
             return HTTP_UNAUTHORIZED;
         }
     }
