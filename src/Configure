@@ -1795,6 +1795,14 @@ if [ "x$using_shlib" = "x1" ] ; then
 fi
 
 ####################################################################
+## Don't force DL emulation, if not necessary. Currently only used
+## by os/unix/os.c. 
+##
+if [ "x$using_shlib" != "x1" ] ; then
+    CFLAGS="$CFLAGS -DNO_DL_NEEDED"
+fi
+
+####################################################################
 ## Set the value of the shared libary flags, if they aren't explicitly
 ## set in the configuration file
 ##

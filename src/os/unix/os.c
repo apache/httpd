@@ -17,7 +17,7 @@ void ap_is_not_here(void) {}
  * Insert the DSO emulation code for AIX for releases of AIX prior
  * to 4.3. Use the native DSO code for 4.3 and later.
  */
-#ifdef AIX
+#if defined(AIX) && !defined(NO_DL_NEEDED)
 #if AIX < 43
 #include "os-aix-dso.c"
 #endif
