@@ -19,7 +19,7 @@ APACHE_CHECK_THREADS('' -pthread -D_REENTRANT, '' -lpthread -lc_r)
 AC_MSG_RESULT("$threads_result")
 
 AC_MSG_CHECKING([to ensure I can compile the selected MPM]) 
-if test "$apache_threads_working" = "no" && "$apache_cv_mpm" != "prefork"; then
+if test "$apache_threads_working" = "no" && test "$apache_cv_mpm" != "prefork"; then
 AC_MSG_RESULT([can't compile selected MPM because there are no threads, defaulting to prefork])
     apache_cv_mpm="prefork"
 else
