@@ -1182,11 +1182,12 @@ static int is_only_below(const char *path)
             return 0;
 #endif
         path += dots;
-        while (*path && (*path != '/')) {
-            ++path;
-        }
-        if (*path == '/') {
-            ++path;
+        /* Advance to either the null byte at the end of the
+         * string or the character right after the next slash,
+         * whichever comes first
+         */
+        while (*path && (*path++ != '/')) {
+            continue;
         }
     }
     return 1;
