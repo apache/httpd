@@ -177,7 +177,7 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
             return;
         }
     }
-    curr->next = f->next ? f->next : NULL;
+    curr->next = f->next;
 }
 
 AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
