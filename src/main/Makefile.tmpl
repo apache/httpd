@@ -9,15 +9,16 @@ INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 INCDIR=../include
 
-OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
-  http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o \
-  md5c.o util_md5.o http_bprintf.o util_date.o util_uri.o \
-  fnmatch.o http_vhost.o
+LIB=  libmain.a
+
+OBJS= alloc.o buff.o \
+      http_bprintf.o http_config.o http_core.o http_log.o \
+      http_main.o http_protocol.o http_request.o http_vhost.o \
+      util.o util_date.o util_script.o util_uri.o util_md5.o \
+      md5c.o rfc1413.o fnmatch.o
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
-
-LIB=	libmain.a
 
 all: $(LIB)
 
