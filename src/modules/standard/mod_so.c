@@ -114,6 +114,10 @@
  * and which compiler and linker flags Perl 5 uses to create the shared object
  * files.
  *
+ * Another location where you can find useful hints is the `ltconfig' script
+ * of the GNU libtool 1.2 package. Search for your platform name inside the
+ * various "case" constructs.
+ *
  */
 
 
