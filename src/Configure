@@ -64,6 +64,7 @@
 #	fp2rp:
 #	slo.sh:
 
+LANG=C; export LANG
 exitcode=0
 trap 'rm -f $tmpfile $tmpfile2 $tmpfile3 $tmpconfig $awkfile; exit $exitcode' 0 1 2 3 15
 
