@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>leader - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Module</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache-MPM leader</h1>
+<div class="toplang">
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Eine experimentelle Variante des Standard-MPMs
+  <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>mpm_leader_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>leader.c</td></tr></table>
+<h3>Zusammenfassung</h3>
+
+    <div class="warning"><h3>Warnung</h3>
+      <p>Dieses MPM ist noch experimentell und funktioniert möglicherweise
+        nicht wie erwartet.</p>
+    </div>
+    
+    <p>Dies ist eine experimentelle Variante des Standard-MPMs
+      <code class="module"><a href="../mod/worker.html">worker</a></code>. Das Modul verwendet ein 
+      Leader/Followers-Design-Pattern, um die Arbeit zwischen Threads zu
+      koordinieren. Weitere Informationen finden Sie unter <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf">http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
+
+    <p>Um bei der Erstellung  des <code>httpd</code> das MPM
+      <code class="module"><a href="../mod/leader.html">leader</a></code> zu verwenden, fügen Sie den Argumenten
+      des <code>configure</code>-Skripts <code>--with-mpm=leader</code>
+      hinzu.</p>
+  
+    <p>Dieses MPM baut auf den atomaren APR-Vergleichs- und -Tauschoperationen
+      für die Thread-Synchronisation auf. Wenn Sie für einen
+      x86-Rechner kompilieren, ohne dass 386-Unterstützung benötigt
+      wird, oder wenn Sie für einen SPARC-Rechner kompilieren und keine
+      pre-UltraSPARC-Chips betreiben müssen, fügen Sie den Argumenten
+      des <code>configure</code>-Skripts
+      <code>--enable-nonportable-atomics=yes</code> hinzu. Dies veranlasst die
+      APR veranlasst dazu, atomare Operationen einzusetzen, welche effizienten
+      Befehlscode verwenden, der älteren CPUs nicht zur Verfügung
+      stehen.</p>
+</div>
+<div id="quickview"><h3 class="directives">Direktiven</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+</div>
+
+</div>
+<div class="bottomlang">
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
+</body></html>
