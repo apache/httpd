@@ -440,3 +440,5 @@ EXPORTS
         ap_set_callback_and_alarm @432
         ap_set_sub_req_protocol @433
         ap_update_child_status @434
+        ap_sendwithtimeout @435
+        ap_recvwithtimeout @436

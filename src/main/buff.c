@@ -128,7 +128,7 @@
   select() sometimes returns 1 even though the write will block. We must work around this.
 */
 
-int sendwithtimeout(int sock, const char *buf, int len, int flags)
+API_EXPORT(int) ap_sendwithtimeout(int sock, const char *buf, int len, int flags)
 {
     int iostate = 1;
     fd_set fdset;
@@ -195,7 +195,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 }
 
 
-int recvwithtimeout(int sock, char *buf, int len, int flags)
+API_EXPORT(int) ap_recvwithtimeout(int sock, char *buf, int len, int flags)
 {
     int iostate = 1;
     fd_set fdset;
@@ -284,7 +284,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 
 #if defined (WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
     if (fb->flags & B_SOCKET) {
-	rv = recvwithtimeout(fb->fd_in, buf, nbyte, 0);
+	rv = ap_recvwithtimeout(fb->fd_in, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
 	    errno = WSAGetLastError();
     }
@@ -361,7 +361,7 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
    
 #if defined(WIN32) || defined(NETWARE)
     if (fb->flags & B_SOCKET) {
-	rv = sendwithtimeout(fb->fd, buf, nbyte, 0);
+	rv = ap_sendwithtimeout(fb->fd, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
 	    errno = WSAGetLastError();
     }

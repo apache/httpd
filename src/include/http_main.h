@@ -125,7 +125,7 @@ API_EXPORT(void) ap_child_terminate(request_rec *r);
 API_EXPORT(void) ap_sync_scoreboard_image(void);
 API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r);
 void ap_time_process_request(int child_num, int status);
-API_EXPORT_NONSTD(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x);
+API_EXPORT(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x);
 API_EXPORT(int) ap_check_alarm(void);
 
 void setup_signal_names(char *prefix);

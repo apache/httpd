@@ -415,3 +415,5 @@
  ap_set_callback_and_alarm,
  ap_set_sub_req_protocol,
  ap_update_child_status,
+ ap_sendwithtimeout,
+ ap_recvwithtimeout,

@@ -1582,7 +1582,7 @@ static void alrm_handler(int sig)
 }
 #endif
 
-API_EXPORT_NONSTD(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x)
+API_EXPORT(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x)
 {
     unsigned int old;
 
