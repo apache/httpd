@@ -130,8 +130,8 @@ static void setup_shared(apr_pool_t *p)
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
     rv = apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE, fname, p);
     if (rv != APR_SUCCESS) {
-        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: %s",
-                    ap_server_argv0, apr_strerror(rv, errmsg, sizeof errmsg));
+        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: (%d)%s",
+                    ap_server_argv0, rv, apr_strerror(rv, errmsg, sizeof errmsg));
         fprintf(stderr, "%s\n", buf);
         exit(APEXIT_INIT);
     }
