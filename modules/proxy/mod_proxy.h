@@ -360,12 +360,12 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_worker *worker, proxy_conn_rec *conn,
                                                           apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
                                                           char *server_portstr, int server_portstr_size);
-PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn);
+PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function, proxy_conn_rec **conn, proxy_worker *worker, server_rec *s);
+PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function, proxy_conn_rec *conn, server_rec *s);
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
-PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker,
-                                            proxy_server_conf *conf, server_rec *s);
-PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn,
-                                              proxy_server_conf *conf, conn_rec *c, server_rec *s);
+PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker, server_rec *s);
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn, conn_rec *c, server_rec *s);
+
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
 
