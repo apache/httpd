@@ -36,14 +36,6 @@
 
 module AP_MODULE_DECLARE_DATA proxy_ftp_module;
 
-int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, proxy_worker *worker, proxy_server_conf *conf,
-                             char *url, const char *proxyhost,
-                             apr_port_t proxyport);
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t * f,
-                                                   apr_bucket_brigade *bb);
-
-
 /*
  * Decodes a '%' escaped string, and returns the number of characters
  */
@@ -137,7 +129,7 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-int ap_proxy_ftp_canon(request_rec *r, char *url)
+static int proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     apr_pool_t *p = r->pool;
@@ -289,7 +281,8 @@ typedef struct {
 #define LS_REG_PATTERN "^ *([0-9]+) +([^ ]+)$"
 #define LS_REG_MATCH   3
 
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
+                                          apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
@@ -758,9 +751,9 @@ int ftp_proxyerror(request_rec *r, proxy_conn_rec *conn, int statuscode, const c
  * PASV added by Chuck
  * Filters by [Graham Leggett <minfrin@sharp.fm>]
  */
-int ap_proxy_ftp_handler(request_rec *r, proxy_worker *worker, proxy_server_conf *conf,
-                             char *url, const char *proxyhost,
-                             apr_port_t proxyport)
+static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
+                             proxy_server_conf *conf, char *url,
+                             const char *proxyhost, apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     conn_rec *c = r->connection;
@@ -1851,10 +1844,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_worker *worker, proxy_server_conf
 static void ap_proxy_ftp_register_hook(apr_pool_t *p)
 {
     /* hooks */
-    proxy_hook_scheme_handler(ap_proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    proxy_hook_canon_handler(ap_proxy_ftp_canon, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_scheme_handler(proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_canon_handler(proxy_ftp_canon, NULL, NULL, APR_HOOK_MIDDLE);
     /* filters */
-    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter,
+    ap_register_output_filter("PROXY_SEND_DIR", proxy_send_dir_filter,
                               NULL, AP_FTYPE_RESOURCE);
 }
 
