@@ -136,14 +136,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 	&& ((r->status == HTTP_NOT_MODIFIED)
 	    || (r->status == HTTP_NO_CONTENT)
 	    || r->header_only
-#if 0
-            /* this was right in 1.x, but in 2.x
-             * ap_content_length_filter has already set Content-Length
-             * before this function is called
-             * XXX: should there be a different check in place of this?
-             */
 	    || apr_table_get(r->headers_out, "Content-Length")
-#endif
 	    || ap_find_last_token(r->pool,
 				  apr_table_get(r->headers_out,
 						"Transfer-Encoding"),
