@@ -19,6 +19,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -42,6 +43,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/etc+
     datadir:       $prefix/share+
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -64,6 +66,7 @@
     mandir:        man
     sysconfdir:    conf
     datadir:
+    installbuilddir: build
     errordir:      error
     iconsdir:      icons
     htdocsdir:     htdocs
@@ -86,6 +89,7 @@
     mandir:        $exec_prefix/share/man
     sysconfdir:    $prefix/Configuration
     datadir:       $prefix
+    installbuilddir: /System/Library/Apache/Build
     errordir:      /System/Library/Apache/Error
     iconsdir:      /System/Library/Apache/Icons
     manualdir:     /System/Library/Apache/Manual
@@ -108,6 +112,7 @@
     mandir:        $prefix/share/man
     datadir:       /Library/WebServer
     sysconfdir:    /etc+
+    installbuilddir: $prefix/share/httpd/build
     errordir:      $prefix/share/httpd/error
     iconsdir:      $prefix/share/httpd/icons
     htdocsdir:     $datadir/Documents
@@ -130,6 +135,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc/httpd/conf
     datadir:       /home/httpd
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/html
@@ -152,6 +158,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc$prefix
     datadir:       $prefix/share
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -174,6 +181,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -196,6 +204,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc/httpd
     datadir:       /usr/local/httpd
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -218,6 +227,7 @@
     mandir:        $exec_prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -240,6 +250,7 @@
     mandir:        $exec_prefix/man
     sysconfdir:    /etc/apache
     datadir:       /var/apache
+    installbuilddir: $datadir/build
     errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
@@ -262,6 +273,7 @@
     mandir:        $exec_prefix/share/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    installbuilddir: $prefix/build
     errordir:      $prefix/error
     iconsdir:      $prefix/icons
     htdocsdir:     $prefix/htdocs
