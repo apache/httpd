@@ -333,6 +333,8 @@ apr_signal
 apr_snprintf
 apr_socket_from_file
 apr_stat
+apr_strnatcmp
+apr_strnatcasecmp
 apr_table_add
 apr_table_addn
 apr_table_do

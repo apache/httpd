@@ -60,7 +60,7 @@
 
 STAMP = buildmk.stamp
 
-all: $(STAMP) generated_lists
+all: $(STAMP) generated_lists export_lists
 	@$(MAKE) AMFLAGS=$(AMFLAGS) -s -f build/build2.mk
 
 generated_lists:
@@ -71,6 +71,9 @@ generated_lists:
 	fi; 
 	@echo config_m4_files = `find . -name config.m4` > $@
 	@n=`helpers/PrintPath libtoolize`; echo libtool_prefix = `dirname $$n`/.. >> $@
+
+export_lists:
+	@build/buildexports.sh main/exports.c support/httpd.exp
 
 $(STAMP): build/buildcheck.sh
 	@build/buildcheck.sh && touch $(STAMP)

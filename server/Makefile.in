@@ -9,7 +9,7 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_uri.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c http_connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c
+	util_filter.c exports.c
 
 include $(top_srcdir)/build/ltlib.mk
 
