@@ -19,6 +19,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -40,6 +41,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/etc+
     datadir:       $prefix/share+
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -60,6 +62,7 @@
     mandir:        man
     sysconfdir:    conf
     datadir:
+    errordir:      error
     iconsdir:      icons
     htdocsdir:     htdocs
     cgidir:        cgi-bin
@@ -80,6 +83,7 @@
     mandir:        $exec_prefix/share/man
     sysconfdir:    $prefix/Configuration
     datadir:       $prefix
+    errordir:      /System/Library/Apache/Error
     iconsdir:      /System/Library/Apache/Icons
     htdocsdir:     $datadir/Documents
     cgidir:        $datadir/CGI-Executables
@@ -100,6 +104,7 @@
     mandir:        $prefix/share/man
     datadir:       /Library/WebServer
     sysconfdir:    /etc+
+    errordir:      $prefix/share/httpd/error
     iconsdir:      $prefix/share/httpd/icons
     htdocsdir:     $datadir/Documents
     cgidir:        $datadir/CGI-Executables
@@ -120,6 +125,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc/httpd/conf
     datadir:       /home/httpd
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/html
     cgidir:        $datadir/cgi-bin
@@ -140,6 +146,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc$prefix
     datadir:       $prefix/share
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -160,6 +167,7 @@
     mandir:        $prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -180,6 +188,7 @@
     mandir:        $prefix/man
     sysconfdir:    /etc/httpd
     datadir:       /usr/local/httpd
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -200,6 +209,7 @@
     mandir:        $exec_prefix/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -220,6 +230,7 @@
     mandir:        $exec_prefix/man
     sysconfdir:    /etc/apache
     datadir:       /var/apache
+    errordir:      $datadir/error
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
     cgidir:        $datadir/cgi-bin
@@ -240,6 +251,7 @@
     mandir:        $exec_prefix/share/man
     sysconfdir:    $prefix/conf
     datadir:       $prefix
+    errordir:      $prefix/error
     iconsdir:      $prefix/icons
     htdocsdir:     $prefix/htdocs
     cgidir:        $prefix/cgi-bin
