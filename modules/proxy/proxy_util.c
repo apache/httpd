@@ -49,20 +49,20 @@ PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 #if !APR_CHARSET_EBCDIC
     ch = x[0];
     if (apr_isdigit(ch))
-	i = ch - '0';
+    i = ch - '0';
     else if (apr_isupper(ch))
-	i = ch - ('A' - 10);
+    i = ch - ('A' - 10);
     else
-	i = ch - ('a' - 10);
+    i = ch - ('a' - 10);
     i <<= 4;
 
     ch = x[1];
     if (apr_isdigit(ch))
-	i += ch - '0';
+    i += ch - '0';
     else if (apr_isupper(ch))
-	i += ch - ('A' - 10);
+    i += ch - ('A' - 10);
     else
-	i += ch - ('a' - 10);
+    i += ch - ('a' - 10);
     return i;
 #else /*APR_CHARSET_EBCDIC*/
     /* we assume that the hex value refers to an ASCII character
@@ -97,15 +97,15 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
     x[0] = '%';
     i = (ch & 0xF0) >> 4;
     if (i >= 10)
-	x[1] = ('A' - 10) + i;
+    x[1] = ('A' - 10) + i;
     else
-	x[1] = '0' + i;
+    x[1] = '0' + i;
 
     i = ch & 0x0F;
     if (i >= 10)
-	x[2] = ('A' - 10) + i;
+    x[2] = ('A' - 10) + i;
     else
-	x[2] = '0' + i;
+    x[2] = '0' + i;
 #else /*APR_CHARSET_EBCDIC*/
     static const char ntoa[] = { "0123456789ABCDEF" };
     char buf[1];
@@ -133,12 +133,12 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
  * those which must not be touched.
  */
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
-	int isenc)
+    int isenc)
 {
     int i, j, ch;
     char *y;
-    char *allowed;	/* characters which should not be encoded */
-    char *reserved;	/* characters which much not be en/de-coded */
+    char *allowed;  /* characters which should not be encoded */
+    char *reserved; /* characters which much not be en/de-coded */
 
 /* N.B. in addition to :@&=, this allows ';' in an http path
  * and '?' in an ftp path -- this may be revised
@@ -148,51 +148,51 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
  * it only permits ; / ? : @ = & as reserved chars.)
  */
     if (t == enc_path)
-	allowed = "$-_.+!*'(),;:@&=";
+    allowed = "$-_.+!*'(),;:@&=";
     else if (t == enc_search)
-	allowed = "$-_.!*'(),;:@&=";
+    allowed = "$-_.!*'(),;:@&=";
     else if (t == enc_user)
-	allowed = "$-_.+!*'(),;@&=";
+    allowed = "$-_.+!*'(),;@&=";
     else if (t == enc_fpath)
-	allowed = "$-_.+!*'(),?:@&=";
-    else			/* if (t == enc_parm) */
-	allowed = "$-_.+!*'(),?/:@&=";
+    allowed = "$-_.+!*'(),?:@&=";
+    else            /* if (t == enc_parm) */
+    allowed = "$-_.+!*'(),?/:@&=";
 
     if (t == enc_path)
-	reserved = "/";
+    reserved = "/";
     else if (t == enc_search)
-	reserved = "+";
+    reserved = "+";
     else
-	reserved = "";
+    reserved = "";
 
     y = apr_palloc(p, 3 * len + 1);
 
     for (i = 0, j = 0; i < len; i++, j++) {
 /* always handle '/' first */
-	ch = x[i];
-	if (strchr(reserved, ch)) {
-	    y[j] = ch;
-	    continue;
-	}
+    ch = x[i];
+    if (strchr(reserved, ch)) {
+        y[j] = ch;
+        continue;
+    }
 /* decode it if not already done */
-	if (isenc && ch == '%') {
-	    if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
-		return NULL;
-	    ch = ap_proxy_hex2c(&x[i + 1]);
-	    i += 2;
-	    if (ch != 0 && strchr(reserved, ch)) {	/* keep it encoded */
-		ap_proxy_c2hex(ch, &y[j]);
-		j += 2;
-		continue;
-	    }
-	}
+    if (isenc && ch == '%') {
+        if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
+        return NULL;
+        ch = ap_proxy_hex2c(&x[i + 1]);
+        i += 2;
+        if (ch != 0 && strchr(reserved, ch)) {  /* keep it encoded */
+        ap_proxy_c2hex(ch, &y[j]);
+        j += 2;
+        continue;
+        }
+    }
 /* recode it, if necessary */
-	if (!apr_isalnum(ch) && !strchr(allowed, ch)) {
-	    ap_proxy_c2hex(ch, &y[j]);
-	    j += 2;
-	}
-	else
-	    y[j] = ch;
+    if (!apr_isalnum(ch) && !strchr(allowed, ch)) {
+        ap_proxy_c2hex(ch, &y[j]);
+        j += 2;
+    }
+    else
+        y[j] = ch;
     }
     y[j] = '\0';
     return y;
@@ -210,7 +210,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
  */
 PROXY_DECLARE(char *)
      ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
-			char **passwordp, char **hostp, apr_port_t *port)
+            char **passwordp, char **hostp, apr_port_t *port)
 {
     char *addr, *scope_id, *strp, *host, *url = *urlp;
     char *user = NULL, *password = NULL;
@@ -218,40 +218,40 @@ PROXY_DECLARE(char *)
     apr_status_t rv;
 
     if (url[0] != '/' || url[1] != '/')
-	return "Malformed URL";
+    return "Malformed URL";
     host = url + 2;
     url = strchr(host, '/');
     if (url == NULL)
-	url = "";
+    url = "";
     else
-	*(url++) = '\0';	/* skip seperating '/' */
+    *(url++) = '\0';    /* skip seperating '/' */
 
     /* find _last_ '@' since it might occur in user/password part */
     strp = strrchr(host, '@');
 
     if (strp != NULL) {
-	*strp = '\0';
-	user = host;
-	host = strp + 1;
+    *strp = '\0';
+    user = host;
+    host = strp + 1;
 
 /* find password */
-	strp = strchr(user, ':');
-	if (strp != NULL) {
-	    *strp = '\0';
-	    password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
-	    if (password == NULL)
-		return "Bad %-escape in URL (password)";
-	}
+    strp = strchr(user, ':');
+    if (strp != NULL) {
+        *strp = '\0';
+        password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+        if (password == NULL)
+        return "Bad %-escape in URL (password)";
+    }
 
-	user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
-	if (user == NULL)
-	    return "Bad %-escape in URL (username)";
+    user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
+    if (user == NULL)
+        return "Bad %-escape in URL (username)";
     }
     if (userp != NULL) {
-	*userp = user;
+    *userp = user;
     }
     if (passwordp != NULL) {
-	*passwordp = password;
+    *passwordp = password;
     }
 
     /* Parse the host string to separate host portion from optional port.
@@ -293,45 +293,45 @@ PROXY_DECLARE(const char *)
     q = strchr(x, ',');
     /* check for RFC 850 date */
     if (q != NULL && q - x > 3 && q[1] == ' ') {
-	*q = '\0';
-	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(x, lwday[wk]) == 0)
-		break;
-	*q = ',';
-	if (wk == 7)
-	    return x;		/* not a valid date */
-	if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
-	    q[17] != ':' || strcmp(&q[20], " GMT") != 0)
-	    return x;
-	if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
-		   &hour, &min, &sec, zone) != 7)
-	    return x;
-	if (year < 70)
-	    year += 2000;
-	else
-	    year += 1900;
+    *q = '\0';
+    for (wk = 0; wk < 7; wk++)
+        if (strcmp(x, lwday[wk]) == 0)
+        break;
+    *q = ',';
+    if (wk == 7)
+        return x;       /* not a valid date */
+    if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
+        q[17] != ':' || strcmp(&q[20], " GMT") != 0)
+        return x;
+    if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
+           &hour, &min, &sec, zone) != 7)
+        return x;
+    if (year < 70)
+        year += 2000;
+    else
+        year += 1900;
     }
     else {
 /* check for acstime() date */
-	if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
-	    x[16] != ':' || x[19] != ' ' || x[24] != '\0')
-	    return x;
-	if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
-		   &min, &sec, &year) != 7)
-	    return x;
-	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(week, apr_day_snames[wk]) == 0)
-		break;
-	if (wk == 7)
-	    return x;
+    if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
+        x[16] != ':' || x[19] != ' ' || x[24] != '\0')
+        return x;
+    if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
+           &min, &sec, &year) != 7)
+        return x;
+    for (wk = 0; wk < 7; wk++)
+        if (strcmp(week, apr_day_snames[wk]) == 0)
+        break;
+    if (wk == 7)
+        return x;
     }
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-	if (strcmp(month, apr_month_snames[mon]) == 0)
-	    break;
+    if (strcmp(month, apr_month_snames[mon]) == 0)
+        break;
     if (mon == 12)
-	return x;
+    return x;
 
     q = apr_palloc(p, 30);
     apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", apr_day_snames[wk],
@@ -382,21 +382,21 @@ PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val)
     len = strlen(val);
 
     while (list != NULL) {
-	p = ap_strchr_c(list, ',');
-	if (p != NULL) {
-	    i = p - list;
-	    do
-		p++;
-	    while (apr_isspace(*p));
-	}
-	else
-	    i = strlen(list);
+    p = ap_strchr_c(list, ',');
+    if (p != NULL) {
+        i = p - list;
+        do
+        p++;
+        while (apr_isspace(*p));
+    }
+    else
+        i = strlen(list);
 
-	while (i > 0 && apr_isspace(list[i - 1]))
-	    i--;
-	if (i == len && strncasecmp(list, val, len) == 0)
-	    return 1;
-	list = p;
+    while (i > 0 && apr_isspace(list[i - 1]))
+        i--;
+    if (i == len && strncasecmp(list, val, len) == 0)
+        return 1;
+    list = p;
     }
     return 0;
 }
@@ -416,28 +416,28 @@ PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, cons
     len = strlen(val);
 
     while (list != NULL) {
-	p = ap_strchr_c(list, ',');
-	if (p != NULL) {
-	    i = p - list;
-	    do
-		p++;
-	    while (apr_isspace(*p));
-	}
-	else
-	    i = strlen(list);
+    p = ap_strchr_c(list, ',');
+    if (p != NULL) {
+        i = p - list;
+        do
+        p++;
+        while (apr_isspace(*p));
+    }
+    else
+        i = strlen(list);
 
-	while (i > 0 && apr_isspace(list[i - 1]))
-	    i--;
-	if (i == len && strncasecmp(list, val, len) == 0) {
-	    /* do nothing */
-	}
-	else {
-	    if (new)
-		new = apr_pstrcat(pool, new, ",", apr_pstrndup(pool, list, i), NULL);
-	    else
-		new = apr_pstrndup(pool, list, i);
-	}
-	list = p;
+    while (i > 0 && apr_isspace(list[i - 1]))
+        i--;
+    if (i == len && strncasecmp(list, val, len) == 0) {
+        /* do nothing */
+    }
+    else {
+        if (new)
+        new = apr_pstrcat(pool, new, ",", apr_pstrndup(pool, list, i), NULL);
+        else
+        new = apr_pstrndup(pool, list, i);
+    }
+    list = p;
     }
     return new;
 }
@@ -451,19 +451,19 @@ PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x)
     unsigned int j;
 
     for (i = 0, j = 0; i < 8; i++) {
-	ch = x[i];
-	j <<= 4;
-	if (apr_isdigit(ch))
-	    j |= ch - '0';
-	else if (apr_isupper(ch))
-	    j |= ch - ('A' - 10);
-	else
-	    j |= ch - ('a' - 10);
+    ch = x[i];
+    j <<= 4;
+    if (apr_isdigit(ch))
+        j |= ch - '0';
+    else if (apr_isupper(ch))
+        j |= ch - ('A' - 10);
+    else
+        j |= ch - ('a' - 10);
     }
     if (j == 0xffffffff)
-	return -1;		/* so that it works with 8-byte ints */
+    return -1;      /* so that it works with 8-byte ints */
     else
-	return j;
+    return j;
 }
 
 /*
@@ -475,12 +475,12 @@ PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
     unsigned int j = t;
 
     for (i = 7; i >= 0; i--) {
-	ch = j & 0xF;
-	j >>= 4;
-	if (ch >= 10)
-	    y[i] = ch + ('A' - 10);
-	else
-	    y[i] = ch + '0';
+    ch = j & 0xF;
+    j >>= 4;
+    if (ch >= 10)
+        y[i] = ch + ('A' - 10);
+    else
+        y[i] = ch + '0';
     }
     y[8] = '\0';
 }
@@ -488,22 +488,22 @@ PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     apr_table_setn(r->notes, "error-notes",
-	apr_pstrcat(r->pool, 
-		"The proxy server could not handle the request "
-		"<em><a href=\"", ap_escape_uri(r->pool, r->uri),
-		"\">", ap_escape_html(r->pool, r->method),
-		"&nbsp;", 
-		ap_escape_html(r->pool, r->uri), "</a></em>.<p>\n"
-		"Reason: <strong>",
-		ap_escape_html(r->pool, message), 
-		"</strong></p>", NULL));
+    apr_pstrcat(r->pool, 
+        "The proxy server could not handle the request "
+        "<em><a href=\"", ap_escape_uri(r->pool, r->uri),
+        "\">", ap_escape_html(r->pool, r->method),
+        "&nbsp;", 
+        ap_escape_html(r->pool, r->uri), "</a></em>.<p>\n"
+        "Reason: <strong>",
+        ap_escape_html(r->pool, message), 
+        "</strong></p>", NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
     apr_table_setn(r->notes, "verbose-error-to", apr_pstrdup(r->pool, "*"));
 
     r->status_line = apr_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-			 "proxy: %s returned by %s", message, r->uri);
+             "proxy: %s returned by %s", message, r->uri);
     return statuscode;
 }
 
@@ -514,24 +514,24 @@ static const char *
     apr_port_t port;
 
     if (r->hostname != NULL)
-	return r->hostname;
+    return r->hostname;
 
     /* Set url to the first char after "scheme://" */
     if ((url = strchr(r->uri, ':')) == NULL
-	|| url[1] != '/' || url[2] != '/')
-	return NULL;
+    || url[1] != '/' || url[2] != '/')
+    return NULL;
 
-    url = apr_pstrdup(r->pool, &url[1]);	/* make it point to "//", which is what proxy_canon_netloc expects */
+    url = apr_pstrdup(r->pool, &url[1]);    /* make it point to "//", which is what proxy_canon_netloc expects */
 
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		     "%s", err);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+             "%s", err);
 
     r->hostname = host;
 
-    return host;		/* ought to return the port, too */
+    return host;        /* ought to return the port, too */
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
@@ -556,87 +556,87 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 
     /* Iterate over up to 4 (dotted) quads. */
     for (quads = 0; quads < 4 && *addr != '\0'; ++quads) {
-	char *tmp;
+    char *tmp;
 
-	if (*addr == '/' && quads > 0)	/* netmask starts here. */
-	    break;
+    if (*addr == '/' && quads > 0)  /* netmask starts here. */
+        break;
 
-	if (!apr_isdigit(*addr))
-	    return 0;		/* no digit at start of quad */
+    if (!apr_isdigit(*addr))
+        return 0;       /* no digit at start of quad */
 
-	ip_addr[quads] = strtol(addr, &tmp, 0);
+    ip_addr[quads] = strtol(addr, &tmp, 0);
 
-	if (tmp == addr)	/* expected a digit, found something else */
-	    return 0;
+    if (tmp == addr)    /* expected a digit, found something else */
+        return 0;
 
-	if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
-	    /* invalid octet */
-	    return 0;
-	}
+    if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
+        /* invalid octet */
+        return 0;
+    }
 
-	addr = tmp;
+    addr = tmp;
 
-	if (*addr == '.' && quads != 3)
-	    ++addr;		/* after the 4th quad, a dot would be illegal */
+    if (*addr == '.' && quads != 3)
+        ++addr;     /* after the 4th quad, a dot would be illegal */
     }
 
     for (This->addr.s_addr = 0, i = 0; i < quads; ++i)
-	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
+    This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-    if (addr[0] == '/' && apr_isdigit(addr[1])) {	/* net mask follows: */
-	char *tmp;
+    if (addr[0] == '/' && apr_isdigit(addr[1])) {   /* net mask follows: */
+    char *tmp;
 
-	++addr;
+    ++addr;
 
-	bits = strtol(addr, &tmp, 0);
+    bits = strtol(addr, &tmp, 0);
 
-	if (tmp == addr)	/* expected a digit, found something else */
-	    return 0;
+    if (tmp == addr)    /* expected a digit, found something else */
+        return 0;
 
-	addr = tmp;
+    addr = tmp;
 
-	if (bits < 0 || bits > 32)	/* netmask must be between 0 and 32 */
-	    return 0;
+    if (bits < 0 || bits > 32)  /* netmask must be between 0 and 32 */
+        return 0;
 
     }
     else {
-	/* Determine (i.e., "guess") netmask by counting the */
-	/* number of trailing .0's; reduce #quads appropriately */
-	/* (so that 192.168.0.0 is equivalent to 192.168.)        */
-	while (quads > 0 && ip_addr[quads - 1] == 0)
-	    --quads;
+    /* Determine (i.e., "guess") netmask by counting the */
+    /* number of trailing .0's; reduce #quads appropriately */
+    /* (so that 192.168.0.0 is equivalent to 192.168.)        */
+    while (quads > 0 && ip_addr[quads - 1] == 0)
+        --quads;
 
-	/* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
-	if (quads < 1)
-	    return 0;
+    /* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
+    if (quads < 1)
+        return 0;
 
-	/* every zero-byte counts as 8 zero-bits */
-	bits = 8 * quads;
+    /* every zero-byte counts as 8 zero-bits */
+    bits = 8 * quads;
 
-	if (bits != 32)		/* no warning for fully qualified IP address */
+    if (bits != 32)     /* no warning for fully qualified IP address */
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-	      "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld\n",
-		 inet_ntoa(This->addr), bits);
+          "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld\n",
+         inet_ntoa(This->addr), bits);
     }
 
     This->mask.s_addr = htonl(APR_INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-	    "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
-		inet_ntoa(This->addr), bits);
-	This->addr.s_addr &= This->mask.s_addr;
+        "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
+        inet_ntoa(This->addr), bits);
+    This->addr.s_addr &= This->mask.s_addr;
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-	    "         Set to %s/%ld\n",
-		inet_ntoa(This->addr), bits);
+        "         Set to %s/%ld\n",
+        inet_ntoa(This->addr), bits);
     }
 
     if (*addr == '\0') {
-	This->matcher = proxy_match_ipaddr;
-	return 1;
+    This->matcher = proxy_match_ipaddr;
+    return 1;
     }
     else
-	return (*addr == '\0');	/* okay iff we've parsed the whole string */
+    return (*addr == '\0'); /* okay iff we've parsed the whole string */
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
@@ -653,10 +653,10 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     memset(ip_addr, '\0', sizeof ip_addr);
 
     if (4 == sscanf(host, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1], &ip_addr[2], &ip_addr[3])) {
-	for (addr.s_addr = 0, i = 0; i < 4; ++i)
-	    addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
+    for (addr.s_addr = 0, i = 0; i < 4; ++i)
+        addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-	if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
+    if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
 #if DEBUGGING
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
@@ -665,61 +665,61 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s", inet_ntoa(This->mask));
 #endif
-	    return 1;
-	}
+        return 1;
+    }
 #if DEBUGGING
-	else {
+    else {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s/", inet_ntoa(This->addr));
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s", inet_ntoa(This->mask));
-	}
+    }
 #endif
     }
     else {
-	struct apr_sockaddr_t *reqaddr;
+    struct apr_sockaddr_t *reqaddr;
 
         if (apr_sockaddr_info_get(&reqaddr, host, APR_UNSPEC, 0, 0, r->pool)
-	    != APR_SUCCESS) {
+        != APR_SUCCESS) {
 #if DEBUGGING
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			 "2)IP-NoMatch: hostname=%s msg=Host not found", 
-			 host);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+             "2)IP-NoMatch: hostname=%s msg=Host not found", 
+             host);
 #endif
-	    return 0;
-	}
+        return 0;
+    }
 
-	/* Try to deal with multiple IP addr's for a host */
-	/* FIXME: This needs to be able to deal with IPv6 */
-	while (reqaddr) {
-	    ip = (struct in_addr *) reqaddr->ipaddr_ptr;
-	    if (This->addr.s_addr == (ip->s_addr & This->mask.s_addr)) {
+    /* Try to deal with multiple IP addr's for a host */
+    /* FIXME: This needs to be able to deal with IPv6 */
+    while (reqaddr) {
+        ip = (struct in_addr *) reqaddr->ipaddr_ptr;
+        if (This->addr.s_addr == (ip->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "3)IP-Match: %s[%s] <-> ", host, 
-			     inet_ntoa(*ip));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "%s/", inet_ntoa(This->addr));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "%s", inet_ntoa(This->mask));
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "3)IP-Match: %s[%s] <-> ", host, 
+                 inet_ntoa(*ip));
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "%s/", inet_ntoa(This->addr));
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "%s", inet_ntoa(This->mask));
 #endif
-		return 1;
-	    }
+        return 1;
+        }
 #if DEBUGGING
-	    else {
+        else {
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "3)IP-NoMatch: %s[%s] <-> ", host, 
-			     inet_ntoa(*ip));
+                 "3)IP-NoMatch: %s[%s] <-> ", host, 
+                 inet_ntoa(*ip));
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "%s/", inet_ntoa(This->addr));
+                 "%s/", inet_ntoa(This->addr));
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-			     "%s", inet_ntoa(This->mask));
-	    }
+                 "%s", inet_ntoa(This->mask));
+        }
 #endif
-	    reqaddr = reqaddr->next;
-	}
+        reqaddr = reqaddr->next;
+    }
     }
 
     return 0;
@@ -743,7 +743,7 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
     if (addr[i] == ':') {
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "@@@@ handle optional port in proxy_is_domainname()");
-	/* @@@@ handle optional port */
+    /* @@@@ handle optional port */
     }
 #endif
 
@@ -764,7 +764,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
     const char *host = proxy_get_host_of_request(r);
     int d_len = strlen(This->name), h_len;
 
-    if (host == NULL)		/* some error was logged already */
+    if (host == NULL)       /* some error was logged already */
         return 0;
 
     h_len = strlen(host);
@@ -1375,10 +1375,10 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
         /* Get scoreboard slot */
     if (ap_scoreboard_image) {
         score = ap_get_scoreboard_lb(worker->id);
-	if (!score)
-	    ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conf->pool,
-			  "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
-			  worker->id, worker->name);
+    if (!score)
+        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conf->pool,
+              "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
+              worker->id, worker->name);
     }
 #endif
     if (!score)
@@ -1387,11 +1387,11 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     if (worker->route)
         strcpy(worker->s->route, worker->route);
     else
-	*worker->s->route = '\0';
+    *worker->s->route = '\0';
     if (worker->redirect)
         strcpy(worker->s->redirect, worker->redirect);
     else
-	*worker->s->redirect = '\0';
+    *worker->s->redirect = '\0';
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
@@ -1429,7 +1429,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: initialized worker %d for (%s) min=%d max=%d smax=%d",
-		     worker->id, worker->hostname, worker->min, worker->hmax, worker->smax);
+             worker->id, worker->hostname, worker->min, worker->hmax, worker->smax);
 
 #if (APR_MAJOR_VERSION > 0)
         /* Set the acquire timeout */
@@ -1444,7 +1444,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: initialized single connection worker %d for (%s)",
-		     worker->id, worker->hostname);
+             worker->id, worker->hostname);
     }
     if (rv == APR_SUCCESS)
         worker->s->status |= PROXY_WORKER_INITIALIZED;
@@ -1838,6 +1838,6 @@ int ap_proxy_lb_workers(void)
      * able to reconfigure to.
      */
     if (!lb_workers_limit)
-	lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
+    lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
     return lb_workers_limit;
 }

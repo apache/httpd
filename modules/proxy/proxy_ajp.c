@@ -303,7 +303,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                          "ajp_read_header failed");
             break;
         }
-    	result = ajp_parse_type(r, conn->data);
+        result = ajp_parse_type(r, conn->data);
     }
     apr_brigade_destroy(input_brigade);
 

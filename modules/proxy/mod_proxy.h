@@ -602,7 +602,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 #define PROXY_DYNAMIC_BALANCER_LIMIT    16
 /**
  * Calculate number of maximum number of workers in scoreboard.
- * @return	number of workers to allocate in the scoreboard
+ * @return  number of workers to allocate in the scoreboard
  */
 int ap_proxy_lb_workers(void);
 

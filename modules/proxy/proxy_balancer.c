@@ -45,7 +45,7 @@ static int init_runtime_score(proxy_server_conf *conf, server_rec *s, proxy_bala
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         ap_proxy_initialize_worker_share(conf, workers);
-	ap_proxy_initialize_worker(workers, s);
+    ap_proxy_initialize_worker(workers, s);
         workers->s->status = PROXY_WORKER_INITIALIZED; 
         ++workers;
     }
@@ -284,19 +284,19 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
          * not in error state or not disabled.
          */
         if (PROXY_WORKER_IS_USABLE(worker)) {
-    	    worker->s->lbstatus += worker->s->lbfactor;
-	        total_factor += worker->s->lbfactor;
-    	    if (!candidate || worker->s->lbstatus > candidate->s->lbstatus)
-	        	candidate = worker;
-	    }
+            worker->s->lbstatus += worker->s->lbfactor;
+            total_factor += worker->s->lbfactor;
+            if (!candidate || worker->s->lbstatus > candidate->s->lbstatus)
+                candidate = worker;
+        }
         worker++;
     }
 
     if (candidate) {
-	    candidate->s->lbstatus -= total_factor;
-	    candidate->s->elected++;
+        candidate->s->lbstatus -= total_factor;
+        candidate->s->elected++;
         PROXY_BALANCER_UNLOCK(balancer);
-	    return candidate;
+        return candidate;
     }
     else {
         PROXY_BALANCER_UNLOCK(balancer);
@@ -399,13 +399,13 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
              * not in error state or not disabled.
              */
             if (PROXY_WORKER_IS_USABLE(workers)) {
-    	        workers->s->lbstatus += workers->s->lbfactor;
-	            total_factor += workers->s->lbfactor;
-    	    }
+                workers->s->lbstatus += workers->s->lbfactor;
+                total_factor += workers->s->lbfactor;
+            }
             workers++;
         }
-	    runtime->s->lbstatus -= total_factor;
-	    runtime->s->elected++;
+        runtime->s->lbstatus -= total_factor;
+        runtime->s->elected++;
 
         *worker = runtime;
     }
@@ -787,7 +787,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */ 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-	    init_runtime_score(conf, s, balancer);
+        init_runtime_score(conf, s, balancer);
             balancer++;
         }
         s = s->next;

@@ -96,7 +96,7 @@ static int ftp_check_globbingchars(const char *path)
 {
     for ( ; *path; ++path) {
         if (*path == '\\')
-	    ++path;
+        ++path;
         if (path != '\0' && strchr(FTP_GLOBBING_CHARS, *path) != NULL)
             return TRUE;
     }
@@ -1531,39 +1531,39 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_worker *worker, proxy_server_conf
                                r, origin, bb, &ftpmessage);
         /* then extract the Last-Modified time from it (YYYYMMDDhhmmss or YYYYMMDDhhmmss.xxx GMT). */
         if (rc == 213) {
-	    struct {
-	        char YYYY[4+1];
-		char MM[2+1];
-		char DD[2+1];
-		char hh[2+1];
-		char mm[2+1];
-		char ss[2+1];
-	    } time_val;
-	    if (6 == sscanf(ftpmessage, "%4[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]",
-	        time_val.YYYY, time_val.MM, time_val.DD, time_val.hh, time_val.mm, time_val.ss)) {
+        struct {
+            char YYYY[4+1];
+        char MM[2+1];
+        char DD[2+1];
+        char hh[2+1];
+        char mm[2+1];
+        char ss[2+1];
+        } time_val;
+        if (6 == sscanf(ftpmessage, "%4[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]%2[0-9]",
+            time_val.YYYY, time_val.MM, time_val.DD, time_val.hh, time_val.mm, time_val.ss)) {
                 struct tm tms;
-		memset (&tms, '\0', sizeof tms);
-		tms.tm_year = atoi(time_val.YYYY) - 1900;
-		tms.tm_mon  = atoi(time_val.MM)   - 1;
-		tms.tm_mday = atoi(time_val.DD);
-		tms.tm_hour = atoi(time_val.hh);
-		tms.tm_min  = atoi(time_val.mm);
-		tms.tm_sec  = atoi(time_val.ss);
+        memset (&tms, '\0', sizeof tms);
+        tms.tm_year = atoi(time_val.YYYY) - 1900;
+        tms.tm_mon  = atoi(time_val.MM)   - 1;
+        tms.tm_mday = atoi(time_val.DD);
+        tms.tm_hour = atoi(time_val.hh);
+        tms.tm_min  = atoi(time_val.mm);
+        tms.tm_sec  = atoi(time_val.ss);
 #ifdef HAVE_TIMEGM /* Does system have timegm()? */
-		mtime = timegm(&tms);
-		mtime *= APR_USEC_PER_SEC;
+        mtime = timegm(&tms);
+        mtime *= APR_USEC_PER_SEC;
 #elif HAVE_GMTOFF /* does struct tm have a member tm_gmtoff? */
                 /* mktime will subtract the local timezone, which is not what we want.
-		 * Add it again because the MDTM string is GMT
-		 */
-		mtime = mktime(&tms);
-		mtime += tms.tm_gmtoff;
-		mtime *= APR_USEC_PER_SEC;
+         * Add it again because the MDTM string is GMT
+         */
+        mtime = mktime(&tms);
+        mtime += tms.tm_gmtoff;
+        mtime *= APR_USEC_PER_SEC;
 #else
-		mtime = 0L;
+        mtime = 0L;
 #endif
             }
-	}
+    }
 #endif /* USE_MDTM */
 /* FIXME: Handle range requests - send REST */
         buf = apr_pstrcat(p, "RETR ", ftp_escape_globbingchars(p, path), CRLF, NULL);
