@@ -20,9 +20,9 @@ information.
 
 <H2>Version 1.2 (all)</H2>
 
-<OL>
+<OL><a name="listenbug"></a>
     <LI>On some architectures if your configuration uses multiple
-    <a href="../mod/core#listen">Listen</a> directives then it is possible
+    <a href="../mod/core.html#listen">Listen</a> directives then it is possible
     that the server will starve one of the sockets while serving hits on
     another.  The work-around is to add
     <code>-DUSE_FLOCK_SERIALIZED_ACCEPT</code> to the

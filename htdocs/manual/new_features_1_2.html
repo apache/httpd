@@ -156,9 +156,9 @@ enabled only if a given module is loaded into the server.
 <li><b><xa href="ncsa_auth.html">Authorization Directives Now Use
 NCSA-style Syntax</a></b><br>
 
-The <a href="mod/mod_auth.html#AuthUserFile">AuthUserFile</a>, <a
-href="mod/mod_auth.html#AuthGroupFile">AuthGroupFile</a> and <a
-href="mod/mod_digest.html#AuthDigestFile">AuthDigestFile</a> commands
+The <a href="mod/mod_auth.html#authuserfile">AuthUserFile</a>, <a
+href="mod/mod_auth.html#authgroupfile">AuthGroupFile</a> and <a
+href="mod/mod_digest.html#authdigestfile">AuthDigestFile</a> commands
 now have a syntax compatible with the NCSA server.
 
 <li><b><a href="mod/core.html#satisfy">NCSA Satisfy authentication
@@ -170,16 +170,16 @@ configurations.
 Apache directives are now more compatible with NCSA 1.5 to make
 moving between servers easier. In particular, Apache now implements the
 <a href="mod/core.html#satisfy"><code>Satisfy</code></a>,
-<a href="mod/core.html#MaxKeepAliveRequests">MaxKeepAliveRequests</A>,
-<a href="mod/mod_alias.html#RedirectPermanent">RedirectPermanent</A> and
-<a href="mod/mod_alias.html#RedirectTemp">RedirectTemp</A>,
+<a href="mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</A>,
+<a href="mod/mod_alias.html#redirectperm">RedirectPermanent</A> and
+<a href="mod/mod_alias.html#redirecttemp">RedirectTemp</A>,
 directives, and the following directives are now syntax-compatible with
 NCSA:
-<a href="mod/mod_auth.html#AuthUserFile">AuthUserFile</A>,
-<a href="mod/mod_auth.html#AuthGroupFile">AuthGroupFile</A>,
-<a href="mod/mod_digest.html#AuthDigestFile">AuthDigestFile</A>,
-<a href="mod/core.html#KeepAlive">KeepAlive</A> and
-<a href="mod/core.html#KeepAliveTimeout">KeepAliveTimeout</A>.
+<a href="mod/mod_auth.html#authuserfile">AuthUserFile</A>,
+<a href="mod/mod_auth.html#authgroupfile">AuthGroupFile</A>,
+<a href="mod/mod_digest.html#authdigestfile">AuthDigestFile</A>,
+<a href="mod/core.html#keepalive">KeepAlive</A> and
+<a href="mod/core.html#keepalivetimeout">KeepAliveTimeout</A>.
 
 <li><b><a href="mod/mod_proxy.html">Optional proxy module</a></b><br>
 An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
