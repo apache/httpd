@@ -128,7 +128,7 @@ is available only in Apache 2.0</compatibility>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>]</syntax>
+[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -170,6 +170,16 @@ is available only in Apache 2.0</compatibility>
     <code>set</code> a <var>value</var> is given as the third argument. If
     <var>value</var> contains spaces, it should be surrounded by double
     quotes. For unset, no <var>value</var> should be given.</p>
+
+    <p>When the <directive>RequestHeader</directive> directive is used with the
+    <code>add</code>, <code>append</code>, or <code>set</code> argument, a
+    fourth argument may be used to specify conditions under which the action
+    will be taken. If the <a href="../env.html">environment variable</a>
+    specified in the <code>env=...</code> argument exists (or if the environment
+    variable does not exist and <code>env=!...</code> is specified) then the
+    action specified by the <directive>RequestHeader</directive> directive will
+    take effect. Otherwise, the directive will have no effect on the
+    request.</p>
 
     <p>The <directive>RequestHeader</directive> directive is processed
     just before the request is run by its handler in the fixup phase.
