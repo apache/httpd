@@ -1534,7 +1534,7 @@ fi
 ####################################################################
 ## Now create modules.c
 ##
-cat $tmpfile | sed 's/_module//' | awk >modules.c '
+$CAT > $awkfile <<'EOFM'
     BEGIN {
 	modules[n++] = "core"
 	pmodules[pn++] = "core"
@@ -1582,7 +1582,9 @@ cat $tmpfile | sed 's/_module//' | awk >modules.c '
 	print "  NULL"
 	print "};"
 	print ""
-    }'
+    }
+EOFM
+$CAT $tmpfile | sed 's/_module//' | awk -f $awkfile > modules.c 
 
 ####################################################################
 ## figure out which module dir require use to autocreate a Makefile.

@@ -1,3 +1,8 @@
+Changes with Apache 1.3.3
+
+  *) Avoid possible line overflow in Configure: Use an awkfile to
+     handle the creation of modules.c [Jim Jagielski]
+
 Changes with Apache 1.3.2
 
   *) Fix bug in ap_remove_module(), which caused problems for dso's 
