@@ -1243,7 +1243,7 @@ char *ap_init_mutex_method(char *t)
                     "Requested serialization method '%s' not available",t);
         exit(APEXIT_INIT);
     } else {
-        fprintf(stderr, "Requested serialization method '%s' not available;\n", t);
+        fprintf(stderr, "Requested serialization method '%s' not available\n", t);
         exit(APEXIT_INIT);
     }
     }
