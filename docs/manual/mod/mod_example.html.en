@@ -76,7 +76,7 @@
       </li>
 
       <li>Run the <code>src/Configure</code> script
-      ("<code>cd src; ./Configure</code>"). This will
+      ("<code>cd&nbsp;src;&nbsp;./Configure</code>"). This will
       build the Makefile for the server itself, and update the
       <code>src/modules/Makefile</code> for any additional modules
       you have requested from beneath that subdirectory.</li>
