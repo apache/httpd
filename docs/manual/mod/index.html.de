@@ -38,8 +38,8 @@
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</dd>
-<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
-more than one multi-processing module (MPM)</dd>
+<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Eine Sammlung von Direktiven, die in mehr als einem
+  Multi-Processing-Modul (MPM) implementiert sind.</dd>
 <dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
 <dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
 MPM</dd>
