@@ -1497,9 +1497,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
 		}
 	    }
         }
-        else {
-            limited |= (1 << methnum);
-        }
+	limited |= (1 << methnum);
     }
 
     /* Killing two features with one function,

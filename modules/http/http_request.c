@@ -864,6 +864,9 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->htaccess       = r->htaccess;
     rnew->chunked        = r->chunked;
 
+    /* make a copy of the allowed-methods list */
+    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
+
     /* start with the same set of output filters */
     rnew->filters = r->filters;
 
@@ -1321,10 +1324,11 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
     return new;
 }
 
-static request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
-{
+static request_rec *internal_internal_redirect(const char *new_uri,
+					       request_rec *r) {
     int access_status;
-    request_rec *new = (request_rec *) apr_pcalloc(r->pool, sizeof(request_rec));
+    request_rec *new = (request_rec *) apr_pcalloc(r->pool,
+						   sizeof(request_rec));
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -1338,6 +1342,7 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 
     new->method          = r->method;
     new->method_number   = r->method_number;
+    new->allowed_methods = ap_make_method_list(new->pool, 2);
     ap_parse_uri(new, new_uri);
     new->request_config = ap_create_request_config(r->pool);
     new->per_dir_config = r->server->lookup_defaults;
@@ -1365,6 +1370,7 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
     new->notes           = apr_make_table(r->pool, 5);
+    new->allowed_methods = ap_make_method_list(new->pool, 2);
 
     new->htaccess        = r->htaccess;
     new->no_cache        = r->no_cache;
@@ -1445,51 +1451,11 @@ API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
      * well-known methods but any extensions as well.
      */
     if (reset) {
-	r->allowed = 0;
-	if (r->allowed_xmethods != NULL) {
-	    r->allowed_xmethods->nelts = 0;
-	}
+	ap_clear_method_list(r->allowed_methods);
     }
 
     va_start(methods, reset);
     while ((method = va_arg(methods, const char *)) != NULL) {
-	/*
-	 * Look up our internal number for this particular method.
-	 * Even if it isn't one of the ones we know about, the return
-	 * value is used in the same way.
-	 */
-	mnum = ap_method_number_of(method);
-	r->allowed |= (1 << mnum);
-	/*
-	 * Now, if we don't know about it, we regard it as an
-	 * extension method.  Add it to our array of such.  This means
-	 * that anything that checks for M_INVALID needs to make an
-	 * additional check of this array if it *is* invalid.
-	 */
-	if (mnum == M_INVALID) {
-	    int i;
-	    int found;
-	    char **xmethods;
-
-	    if (r->allowed_xmethods == NULL) {
-		r->allowed_xmethods = apr_make_array(r->pool, 2,
-						     sizeof(char *));
-	    }
-	    /*
-	     * Don't add it to the array if it's already listed.
-	     */
-	    xmethods = (char **) r->allowed_xmethods->elts;
-	    found = 0;
-	    for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
-		if (strcmp(method, xmethods[i]) == 0) {
-		    found++;
-		    break;
-		}
-	    }
-	    if (!found) {
-		xmethod = (const char **) apr_push_array(r->allowed_xmethods);
-		*xmethod = method;
-	    }
-	}
+	ap_method_list_add(r->allowed_methods, method);
     }
 }
