@@ -381,9 +381,9 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
         data = apr_pcalloc(r->pool, len + 1); /* last byte is '\0' */
         rc = read(fd, data, len);
         if(rc != len) {
-	    return 1;
+            return 1;
         }
-	apr_table_set(r->notes,"mod_userdir_user", data);
+        apr_table_set(r->notes,"mod_userdir_user", data);
     }
     return 0;
 } 
@@ -483,11 +483,12 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env, int req_ty
 #endif 
    /* send a minimal notes table */
    data  = (char *) apr_table_get(r->notes, "mod_userdir_user");
-   if(data != NULL) {
+   if (data != NULL) {
        len = strlen(data);
        write(fd, &len, sizeof(len));
        write(fd, data, len);
-   } else {
+   }
+   else {
        len = 0;
        write(fd, &len, sizeof(len));
    }
@@ -909,7 +910,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
             first = 0;
         }
         apr_file_write(f, buf, &len);
-	apr_file_puts("\n", f);
+        apr_file_puts("\n", f);
     }
 
     if (script_err) {
@@ -1028,7 +1029,7 @@ static int cgid_handler(request_rec *r)
     apr_size_t nbytes;
 
     if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
-	return DECLINED;
+        return DECLINED;
 
     if (r->method_number == M_OPTIONS) { 
         /* 99 out of 100 cgid scripts, this is all they support */ 
