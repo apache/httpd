@@ -123,29 +123,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     core_dir_config *conf;
 
     conf = (core_dir_config *)apr_pcalloc(a, sizeof(core_dir_config));
-    if (!dir || dir[strlen(dir) - 1] == '/') {
-        conf->d = dir;
-    }
-    else if (strncmp(dir, "proxy:", 6) == 0) {
-        conf->d = apr_pstrdup(a, dir);
-    }
-    else {
-        conf->d = apr_pstrcat(a, dir, "/", NULL);
-    }
-    conf->d_is_fnmatch = conf->d ? (apr_is_fnmatch(conf->d) != 0) : 0;
-
-    /* On all platforms, "/" is (at minimum) a faux root */
-    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(a, conf->d) 
-                                      || (strcmp(conf->d, "/") == 0)) : 0;
-
-    /* Make this explicit - the "/" root has 0 elements, that is, we
-     * will always merge it, and it will always sort and merge first.
-     * All others are sorted and tested by the number of slashes.
-     */
-    if (!conf->d || strcmp(conf->d, "/") == 0)
-        conf->d_components = 0;
-    else
-        conf->d_components = ap_count_dirs(conf->d);
+    
+    /* conf->r and conf->d[_*] are initialized in */
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
@@ -205,7 +184,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
-    conf->d_is_absolute = new->d_is_absolute;
     conf->d_components = new->d_components;
     conf->r = new->r;
     
@@ -397,37 +375,10 @@ AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
     *new_space = url_config;
 }
 
-/* core_reorder_directories reorders the directory sections such that the
- * 1-component sections come first, then the 2-component, and so on, finally
- * followed by the "special" sections.  A section is "special" if it's a regex,
- * or if it doesn't start with / -- consider proxy: matching.  All movements
- * are in-order to preserve the ordering of the sections from the config files.
- * See directory_walk().
- */
-
-#if defined(HAVE_DRIVE_LETTERS)
-#define IS_SPECIAL(entry_core)	\
-    ((entry_core)->r != NULL \
-	|| ((entry_core)->d[0] != '/' && (entry_core)->d[1] != ':'))
-#elif defined(NETWARE)
-/* XXX: Fairly certain this is correct... '/' must prefix the path
- *      or else in the case xyz:/ or abc/xyz:/, '/' must follow the ':'.
- *      If there is no leading '/' or embedded ':/', then we are special.
- */
-#define IS_SPECIAL(entry_core)	\
-    ((entry_core)->r != NULL \
-	|| ((entry_core)->d[0] != '/' \
-            && strchr((entry_core)->d, ':') \
-            && *(strchr((entry_core)->d, ':') + 1) != '/'))
-#else
-#define IS_SPECIAL(entry_core)	\
-    ((entry_core)->r != NULL || (entry_core)->d[0] != '/')
-#endif
-
 /* We need to do a stable sort, qsort isn't stable.  So to make it stable
  * we'll be maintaining the original index into the list, and using it
  * as the minor key during sorting.  The major key is the number of
- * components (where a "special" section has infinite components).
+ * components (where the root component is zero).
  */
 struct reorder_sort_rec {
     ap_conf_vector_t *elt;
@@ -443,26 +394,22 @@ static int reorder_sorter(const void *va, const void *vb)
 
     core_a = ap_get_module_config(a->elt, &core_module);
     core_b = ap_get_module_config(b->elt, &core_module);
-    if (IS_SPECIAL(core_a)) {
-	if (!IS_SPECIAL(core_b)) {
-	    return 1;
-	}
+
+    if (core_a->r < core_b->r) {
+        return -1;
     }
-    else if (IS_SPECIAL(core_b)) {
-	return -1;
+    else if (core_a->r > core_b->r) {
+        return 1;
     }
-    else {
-	/* we know they're both not special */
-	if (core_a->d_components < core_b->d_components) {
-	    return -1;
-	}
-	else if (core_a->d_components > core_b->d_components) {
-	    return 1;
-	}
+    if (core_a->d_components < core_b->d_components) {
+        return -1;
     }
-    /* Either they're both special, or they're both not special and have the
-     * same number of components.  In any event, we now have to compare
-     * the minor key. */
+    else if (core_a->d_components > core_b->d_components) {
+        return 1;
+    }
+    /* They have the same number of components, we now have to compare
+     * the minor key to maintain the original order. 
+     */
     return a->orig_index - b->orig_index;
 }
 
@@ -1571,30 +1518,29 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
-    }
-    else if (!strcmp(cmd->path, "~")) {
+    if (!strcmp(cmd->path, "~")) {
 	cmd->path = ap_getword_conf(cmd->pool, &arg);
         if (!cmd->path)
             return "<Directory ~ > block must specify a path";
+    }
+    else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
-    else if (strcmp(cmd->path, "/") == 0) {
-        /* Treat 'default' path "/" as the inalienable root */
-        cmd->path = apr_pstrdup(cmd->pool, cmd->path);
-    }
-    else {
-        char *newpath;
-	/* Ensure that the pathname is canonical */
-        if (apr_filepath_merge(&newpath, NULL, cmd->path, 
-                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
-            return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
-                               "\"> path is invalid.", NULL);
-        }
-        cmd->path = newpath;
-    }
+    else if (cmd->path[strlen(cmd->path) - 1] != '/') {
+        cmd->path = apr_pstrcat(cmd->pool, cmd->path, "/");
 
+        if (!strcmp(cmd->path, "/") == 0) 
+        {
+            char *newpath;
+	    /* Ensure that the pathname is canonical */
+            if (apr_filepath_merge(&newpath, NULL, cmd->path, 
+                                   APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
+                return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
+                                   "\"> path is invalid.", NULL);
+            }
+            cmd->path = newpath;
+        }
+    }
     /* initialize our config and fetch it */
     conf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path,
                                  &core_module, cmd->pool);
@@ -1604,6 +1550,17 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 	return errmsg;
 
     conf->r = r;
+    conf->d = cmd->path;
+    conf->d_is_fnmatch = (apr_is_fnmatch(conf->d) != 0);
+
+    /* Make this explicit - the "/" root has 0 elements, that is, we
+     * will always merge it, and it will always sort and merge first.
+     * All others are sorted and tested by the number of slashes.
+     */
+    if (strcmp(conf->d, "/") == 0)
+        conf->d_components = 0;
+    else
+        conf->d_components = ap_count_dirs(conf->d);
 
     ap_add_per_dir_conf(cmd->server, new_dir_conf);
 
@@ -1659,9 +1616,8 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     if (errmsg != NULL)
 	return errmsg;
 
-    conf->d = apr_pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
+    conf->d = apr_pstrdup(cmd->pool, cmd->path);     /* No mangling, please */
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
-    conf->d_is_absolute = (conf->d && (*conf->d == '/'));
     conf->r = r;
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -1734,7 +1690,6 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
-    conf->d_is_absolute = 0;
     conf->r = r;
 
     ap_add_file_conf(c, new_file_conf);
@@ -2910,6 +2865,9 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
   
+    /* XXX this seems too specific, this should probably become
+     * some general-case test 
+     */
     if (r->proxyreq) {
         return HTTP_FORBIDDEN;
     }

@@ -426,12 +426,6 @@ typedef struct {
      */
     unsigned d_is_fnmatch : 1;
 
-    /* since is_absolute(conf->d) was being called so frequently in
-     * directory_walk() and its relatives, this field was created and
-     * is set to the result of that call.
-     */
-    unsigned d_is_absolute : 1;
-
     /* should we force a charset on any outgoing parameterless content-type?
      * if so, which charset?
      */

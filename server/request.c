@@ -400,18 +400,16 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     core_dir_config *entry_core;
 
     /*
-     * Are we dealing with a file? If not, we can (hopefuly) safely assume we
-     * have a handler that doesn't require one, but for safety's sake, and so
-     * we have something find_types() can get something out of, fake one. But
-     * don't run through the directory entries.
+     * Are we dealing with a file? If not, the handler needed to register
+     * a hook to escape from our walking the file.  Since they haven't, we
+     * are going to assume the worst and refuse to proceed.
      */
-
-    if (r->filename == NULL) {
-        r->filename = apr_pstrdup(r->pool, r->uri);
-        r->finfo.filetype = APR_NOFILE;
-        r->per_dir_config = per_dir_defaults;
-
-        return OK;
+    if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "Module bug?  Request filename path %s is missing or "
+                      "or not absolute for uri %s", 
+                      r->filename ? r->filename : "<NULL>", r->uri);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
@@ -421,44 +419,6 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * around, see why, and adjust the lookup_rec accordingly --- this might
      * save us a call to get_path_info (with the attendant stat()s); however,
      * for the moment, that's not worth the trouble.
-     *
-     * Fake filenames (i.e. proxy:) only match Directory sections.
-     */
-
-    if (!ap_os_is_path_absolute(r->pool, r->filename))
-    {
-        const char *entry_dir;
-
-        for (j = 0; j < num_sec; ++j) {
-
-            entry_config = sec_dir[j];
-            entry_core = ap_get_module_config(entry_config, &core_module);
-            entry_dir = entry_core->d;
-
-            this_conf = NULL;
-            if (entry_core->r) {
-                if (!ap_regexec(entry_core->r, r->filename, 0, NULL, 0))
-                    this_conf = entry_config;
-            }
-            else if (entry_core->d_is_fnmatch) {
-                if (!apr_fnmatch(entry_dir, r->filename, 0))
-                    this_conf = entry_config;
-            }
-            else if (!strncmp(r->filename, entry_dir, strlen(entry_dir)))
-                this_conf = entry_config;
-
-            if (this_conf)
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            this_conf);
-        }
-
-        r->per_dir_config = per_dir_defaults;
-
-        return OK;
-    }
-
-    /* The replacement code [below] for directory_walk eliminates this issue.
      */
     res = get_path_info(r);
     if (res != OK) {
@@ -532,9 +492,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      */
     test_dirname = apr_palloc(r->pool, test_filename_len + 2);
 
-    /* XXX These exception cases go away if apr_stat() returns the
-     * APR_PATHINCOMPLETE status, so we skip hard filesystem testing
-     * of the initial 'pseudo' elements:
+    /* XXX The garbage below disappears in the new directory_walk;
      */
 
 #if defined(HAVE_UNC_PATHS)
@@ -595,8 +553,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
-            if (entry_core->r || !entry_core->d_is_absolute
-                || entry_core->d_components > i)
+            if (entry_core->r || entry_core->d_components > i)
                 break;
 
             this_conf = NULL;
@@ -647,21 +604,20 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     }
 
     /*
-     * There's two types of IS_SPECIAL sections (see http_core.c), and we've
-     * already handled the proxy:-style stuff.  Now we'll deal with the
-     * regexes.
+     * Now we'll deal with the regexes.
      */
     for (; j < num_sec; ++j) {
 
         entry_config = sec_dir[j];
         entry_core = ap_get_module_config(entry_config, &core_module);
 
-        if (entry_core->r) {
-            if (!ap_regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            entry_config);
-            }
+        if (!entry_core->r) {
+            continue;
+        }
+        if (!ap_regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
+            per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                        per_dir_defaults,
+                                                        entry_config);
         }
     }
     r->per_dir_config = per_dir_defaults;
@@ -721,18 +677,16 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     char *delim;
 
     /*
-     * Are we dealing with a file? If not, we simply assume we have a 
-     * handler that doesn't require one, but for safety's sake, and so
-     * we have something find_types() can get something out of, fake 
-     * one. But don't run through the directory entries.
+     * Are we dealing with a file? If not, the handler needed to register
+     * a hook to escape from our walking the file.  Since they haven't, we
+     * are going to assume the worst and refuse to proceed.
      */
-
-    if (r->filename == NULL) {
-        r->filename = apr_pstrdup(r->pool, r->uri);
-        r->finfo.filetype = APR_NOFILE;
-        r->per_dir_config = per_dir_defaults;
-
-        return OK;
+    if (r->filename == NULL || !ap_os_is_path_absolute(r->filename)) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "Module bug?  Request filename path %s is missing or "
+                      "or not absolute for uri %s", 
+                      r->filename ? r->filename : "<NULL>", r->uri);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
@@ -760,47 +714,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         r->filename = buf;
         r->finfo.valid = APR_FINFO_TYPE;
         r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
-    }
-    else {
-        const char *entry_dir;
-
-        /* Fake filenames (i.e. proxy:) only match Directory sections.
-         */
-        if (rv != APR_EBADPATH)
-            return HTTP_FORBIDDEN;
+    } else {
+        if (r->filename == NULL || !ap_os_is_path_absolute(r->filename)) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "Config bug?  Request filename path %s is invalid or "
+                          "or not absolute for uri %s", 
+                          r->filename, r->uri);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
-
-        for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
-
-            entry_config = sec_ent[sec_idx];
-            entry_core = ap_get_module_config(entry_config, &core_module);
-            entry_dir = entry_core->d;
-
-            this_conf = NULL;
-            if (entry_core->r) {
-                if (!ap_regexec(entry_core->r, r->filename, 0, NULL, 0))
-                    this_conf = entry_config;
-            }
-            else if (entry_core->d_is_fnmatch) {
-                /* XXX: Gut instinct tells me this could be very, very nasty,
-                 * have we thought through what 'faux' resource might be
-                 * case senstitive or not?
-                 */
-                if (!apr_fnmatch(entry_dir, r->filename, 0))
-                    this_conf = entry_config;
-            }
-            else if (!strncmp(r->filename, entry_dir, strlen(entry_dir)))
-                this_conf = entry_config;
-
-            if (this_conf)
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            this_conf);
-        }
-
-        r->per_dir_config = per_dir_defaults;
-
-        return OK;
     }
 
     /*
@@ -833,8 +754,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             /* No more possible matches for this many segments? 
              * We are done when we find relative/regex/longer components.
              */
-            if (entry_core->r || !entry_core->d_is_absolute
-                              || entry_core->d_components > seg)
+            if (entry_core->r || entry_core->d_components > seg)
                 break;
 
             /* We will never skip '0' element components, e.g. plain old
@@ -993,21 +913,20 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     } while (r->finfo.filetype == APR_DIR);
 
     /*
-     * There's two types of IS_SPECIAL sections (see http_core.c), and we've
-     * already handled the proxy:-style stuff.  Now we'll deal with the
-     * regexes.
+     * Now we'll deal with the regexes.
      */
     for (; sec_idx < num_sec; ++sec_idx) {
 
         entry_config = sec_ent[sec_idx];
         entry_core = ap_get_module_config(entry_config, &core_module);
 
-        if (entry_core->r) {
-            if (!ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL)) {
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            entry_config);
-            }
+        if (!entry_core->r) {
+            continue;
+        }
+        if (!ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL)) {
+            per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                        per_dir_defaults,
+                                                        entry_config);
         }
     }
     r->per_dir_config = per_dir_defaults;
