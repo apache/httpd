@@ -1,5 +1,10 @@
 Changes with Apache 1.3b1
 
+  *) mod_autoindex improperly counted &escapes; as more than one
+     character in the description.  It also improperly truncated
+     descriptions that were exactly the maximum length.
+     [Martin Kraemer]
+
   *) RedirectMatch was not properly escaping the result (PR#1155).  Also
      "RedirectMatch /advertiser/(.*) $1" is now permitted.
      [Dean Gaudet]

@@ -716,10 +716,20 @@ static char *terminate_description(autoindex_config_rec * d, char *desc,
 		++x;
 	    }
 	}
+ 	else if (desc[x] == '&') {
+ 	    /* entities like &auml; count as one character */
+ 	    --maxsize;
+ 	    for ( ; desc[x] != ';'; ++x) {
+ 		if (desc[x] == '\0') {
+                     maxsize = 0;
+                     break;
+		}
+	    }
+        }
 	else
 	    --maxsize;
     }
-    if (!maxsize) {
+    if (!maxsize && desc[x] != '\0') {
 	desc[x - 1] = '>';	/* Grump. */
 	desc[x] = '\0';		/* Double Grump! */
     }
