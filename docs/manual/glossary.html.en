@@ -53,10 +53,10 @@ server.<br /> See: <a href="programs/apxs.html">Manual Page: apxs</a></dd>
 <dt><a name="certificate">Certificate</a></dt>
 <dd>A data record used for authenticating network entities such
     as a server or a client. A certificate contains X.509 information pieces
-    about its owner (called the subject) and the signing <em>Certificate
-    Authority</em> (called the issuer), plus the owner's public key and the
-    signature made by the CA. Network entities verify these signatures using
-    CA certificates.<br />
+    about its owner (called the subject) and the signing <a href="#certificationauthority">Certification Authority</a> (called the
+    issuer), plus the owner's <a href="#publickey">public key</a> and the
+    signature made by the CA. Network entities verify these signatures
+    using CA certificates.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="certificationauthority">Certification Authority</a> <a name="ca">(CA)</a></dt> <dd>A trusted third party whose purpose is to
@@ -66,10 +66,10 @@ that a CA has authenticated the bearer of a certificate.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="certificatsigningrequest">Certificate Signing Request</a>
-<a name="csr">(CSR)</a></dt> <dd>An unsigned certificate for
-submission to a <em>Certification Authority</em>, which signs it with
-the <em>Private Key</em> of their CA <em>Certificate</em>. Once the
-CSR is signed, it becomes a real certificate.<br />
+<a name="csr">(CSR)</a></dt> <dd>An unsigned <a href="#certificate">certificate</a> for submission to a <a href="#certificationauthority">Certification Authority</a>, which signs it
+with the <a href="#privatekey">Private Key</a> of their CA
+<em>Certificate</em>. Once the CSR is signed, it becomes a real
+certificate.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 
@@ -107,11 +107,12 @@ Used to Describe Apache Directives</a></dd>
 
 <dt><a name="digitalsignature">Digital Signature</a></dt>
 <dd>An encrypted text block that validates a certificate or other file. A
-    <em>Certification Authority</em> creates a signature by generating a
-    hash of the <em>Public Key</em> embedded in a <em>Certificate</em>, then
-    encrypting the hash with its own <em>Private Key</em>. Only the CA's
-    public key can decrypt the signature, verifying that the CA has
-    authenticated the network entity that owns the <em>Certificate</em>.<br />
+    <a href="#certificationauthority">Certification Authority</a> creates a
+    signature by generating a hash of the <em>Public Key</em> embedded in a
+    <em>Certificate</em>, then encrypting the hash with its own <em>Private
+    Key</em>. Only the CA's public key can decrypt the signature, verifying
+    that the CA has authenticated the network entity that owns the
+    <em>Certificate</em>.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="directive">Directive</a></dt> <dd>A configuration command
