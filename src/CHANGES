@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Allow .module files to specify libraries with Lib:.
+     [Ben Laurie]
+
   *) Allow SetEnvIf[NoCase] to test environment variables as well
      as header fields and request attributes.  [Ken Coar]
 
