@@ -93,8 +93,8 @@ is generic enough that most ports are incredibly easy. No matter
 what, however, there are 2 source files that need to be updated
 for the port:
 
-   Configure
-   conf.h
+   ./Configure
+   ./include/conf.h
 
 Configure:
  ==========
