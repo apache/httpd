@@ -948,3 +948,29 @@ char *mktemp(char *);
 long vfprintf(FILE *, char *, va_list);
 
 #endif /* SUNOS_LIB_PROTOTYPES */
+
+/* The assumption is that when the functions are missing,
+ * then there's no matching prototype available either.
+ * Declare what is needed exactly as the replacement routines implement it.
+ */
+#ifdef NEED_STRDUP
+extern char *strdup (const char *str);
+#endif
+#ifdef NEED_STRCASECMP
+extern int strcasecmp (const char *a, const char *b);
+#endif
+#ifdef NEED_STRNCASECMP
+extern int strncasecmp (const char *a, const char *b, int n);
+#endif
+#ifdef NEED_INITGROUPS
+extern int initgroups(const char *name, gid_t basegid);
+#endif
+#ifdef NEED_WAITPID
+extern int waitpid(pid_t pid, int *statusp, int options);
+#endif
+#ifdef NEED_STRERROR
+extern char *strerror (int err);
+#endif
+#ifdef NEED_DIFFTIME
+extern double difftime(time_t time1, time_t time0);
+#endif
