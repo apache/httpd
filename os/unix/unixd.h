@@ -95,7 +95,7 @@ const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg);
 #elif defined(__NSIG)
 #define NumSIG __NSIG
 #else
-#define NumSIG 32   /* for 1998's unixes, this is still a good assumption */
+#define NumSIG 33   /* breaks on OS/390 with < 33; 32 is o.k. for most */
 #endif
 
 #ifdef SYS_SIGLIST /* platform has sys_siglist[] */
