@@ -57,8 +57,6 @@
  */
 
 #define CORE_PRIVATE
-/* CACHE_FD will eventually be exposed as a configuration directive */
-#define CACHE_FD 0
 #include "mod_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
@@ -306,27 +304,43 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 {
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
+    cache_type_e type_e;
 
-    if (strcasecmp(type, "mem")) {
-        return DECLINED;
+    if (!strcasecmp(type, "mem")) {
+        type_e = CACHE_TYPE_HEAP;
+    } 
+    else if (!strcasecmp(type, "fd")) {
+        type_e = CACHE_TYPE_FILE;
     }
-
-    if (len < sconf->min_cache_object_size || 
-        len > sconf->max_cache_object_size) {
+    else {
         return DECLINED;
     }
 
     /*
-     * TODO: Get smarter about managing the cache size.
-     * If the cache is full, we need to do garbage collection
-     * to weed out old/stale entries
+     * TODO: Get smarter about managing the cache size. If the cache is 
+     * full, we need to garbage collect stale/infrequently referenced
+     * objects.
      */
-    if ((sconf->cache_size + len) > sconf->max_cache_size) {
-        return DECLINED;
-    }
-
     if (sconf->object_cnt >= sconf->max_object_cnt) {
         return DECLINED;
+    }
+    if (type_e == CACHE_TYPE_HEAP) {
+        /* We can safely ignore these measures when caching open fds */
+        if (len < sconf->min_cache_object_size || 
+            len > sconf->max_cache_object_size) {
+            return DECLINED;
+        }
+        if ((sconf->cache_size + len) > sconf->max_cache_size) {
+            return DECLINED;
+        }
+    } else {
+        /* CACHE_TYPE_FILE is only valid for local content 
+         * handled by the default handler? 
+         * This is not the right check...
+         */
+        if (!r->filename) {
+            return DECLINED;
+        }
     }
 
     /* Allocate and initialize cache_object_t */
@@ -353,6 +367,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     /* Reference mem_cache_object_t out of cache_object_t */
     obj->vobj = mobj;
     mobj->m_len = len;
+    mobj->type = type_e;
     obj->complete = 0;
 #ifdef USE_ATOMICS
     apr_atomic_set(&obj->refcount, 1);
@@ -419,7 +434,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     cache_object_t *obj;
 
     /* Look up entity keyed to 'url' */
-    if (strcasecmp(type, "mem")) {
+    if (strcasecmp(type, "mem") && strcasecmp(type, "fd")) {
         return DECLINED;
     }
     if (sconf->lock) {
@@ -481,7 +496,7 @@ static int remove_entity(cache_handle_t *h)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* Set the cleanup flag. Object will be cleaned up (be decrement_refcount)
+    /* Set the cleanup flag. Object will be cleaned up (by decrement_refcount)
      * when the refcount drops to zero.
      */
     obj->cleanup = 1;
@@ -562,7 +577,7 @@ static int remove_url(const char *type, const char *key)
 {
     cache_object_t *obj;
 
-    if (strcasecmp(type, "mem")) {
+    if (strcasecmp(type, "mem") && strcasecmp(type, "fd")) {
         return DECLINED;
     }
 
@@ -714,15 +729,15 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     apr_bucket *e;
     char *cur;
 
-    if (CACHE_FD) {
+    if (mobj->type == CACHE_TYPE_FILE) {
         apr_file_t *file = NULL;
         int fd = 0;
         int other = 0;
 
         /* We can cache an open file descriptor if:
          * - the brigade contains one and only one file_bucket &&
-	 * - the brigade is complete &&
-	 * - the file_bucket is the last data bucket in the brigade
+         * - the brigade is complete &&
+         * - the file_bucket is the last data bucket in the brigade
          */
         APR_BRIGADE_FOREACH(e, b) {
             if (APR_BUCKET_IS_EOS(e)) {
@@ -739,8 +754,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         }
         if (fd == 1 && !other && obj->complete) {
             apr_file_t *tmpfile;
-
-            mobj->type = CACHE_TYPE_FILE;
             /* Open a new XTHREAD handle to the file */
             rv = apr_file_open(&tmpfile, r->filename, 
                                APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP,
@@ -763,6 +776,18 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             obj->complete = 1;
             return APR_SUCCESS;
         }
+
+        /* Content not suitable for fd caching. Cache in-memory instead. */
+        mobj->type = CACHE_TYPE_HEAP;
+        /* Check to make sure the object will not exceed configured thresholds */
+        if (mobj->m_len < sconf->min_cache_object_size || 
+            mobj->m_len > sconf->max_cache_object_size) {
+            return APR_ENOMEM; /* ?? DECLINED; */
+        }
+        if ((sconf->cache_size + mobj->m_len) > sconf->max_cache_size) {
+            return APR_ENOMEM; /* ?? DECLINED; */
+        }
+        sconf->cache_size += mobj->m_len;
     }
 
     /* 
@@ -774,7 +799,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         if (mobj->m == NULL) {
             return APR_ENOMEM;
         }
-        mobj->type = CACHE_TYPE_HEAP;
         obj->count = 0;
     }
     cur = (char*) mobj->m + obj->count;
