@@ -66,15 +66,20 @@
  */
 
 #define SSL_CMD_ALL(name, args, desc) \
-        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF|OR_AUTHCFG, desc),
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, \
+                       NULL, RSRC_CONF|OR_AUTHCFG, desc),
+
 #define SSL_CMD_SRV(name, args, desc) \
-        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, RSRC_CONF, desc),
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, \
+                       NULL, RSRC_CONF, desc),
+
 #define SSL_CMD_DIR(name, type, args, desc) \
-        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, OR_##type, desc),
+        AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, \
+                       NULL, OR_##type, desc),
+
 #define AP_END_CMD { NULL }
 
 static const command_rec ssl_config_cmds[] = {
-
     /*
      * Global (main-server) context configuration directives
      */
@@ -83,7 +88,8 @@ static const command_rec ssl_config_cmds[] = {
                 "(`none', `file:/path/to/file')")
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
-                "(`builtin', `|/path/to/pipe_program`, or `exec:/path/to/cgi_program')")
+                "(`builtin', `|/path/to/pipe_program`, "
+                "or `exec:/path/to/cgi_program')")
     SSL_CMD_SRV(SessionCache, TAKE1,
                 "SSL Session Cache storage "
                 "(`none', `dbm:/path/to/file')")
@@ -204,8 +210,9 @@ static const command_rec ssl_config_cmds[] = {
  *  the various processing hooks
  */
 
-static int ssl_hook_pre_config(
-    apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+static int ssl_hook_pre_config(apr_pool_t *pconf,
+                               apr_pool_t *plog,
+                               apr_pool_t *ptemp)
 {
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
@@ -229,8 +236,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (sc == NULL || !sc->bEnabled)
+    if (!(sc && sc->bEnabled)) {
         return DECLINED;
+    }
 
     /*
      * Create SSL context
@@ -244,9 +252,10 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * later access inside callback functions
      */
 
-    ssl_log(c->base_server, SSL_LOG_INFO, "Connection to child %d established "
+    ssl_log(c->base_server, SSL_LOG_INFO,
+            "Connection to child %d established "
             "(server %s, client %s)", c->id, sc->szVHostID, 
-            c->remote_ip != NULL ? c->remote_ip : "unknown");
+            c->remote_ip ? c->remote_ip : "unknown");
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)
@@ -258,21 +267,28 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * attach this to the socket. Additionally we register this attachment
      * so we can detach later.
      */
-    if ((ssl = SSL_new(sc->pSSLCtx)) == NULL) {
+    if (!(ssl = SSL_new(sc->pSSLCtx))) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to create a new SSL connection from the SSL context");
+
         c->aborted = 1;
+
         return DECLINED; /* XXX */
     }
 
     cpVHostMD5 = ap_md5_binary(c->pool, sc->szVHostID, sc->nVHostID_length);
+
     if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
-                                    MD5_DIGESTSIZE*2)) {
+                                    MD5_DIGESTSIZE*2))
+    {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to set session id context to `%s'", cpVHostMD5);
+
         c->aborted = 1;
+
         return DECLINED; /* XXX */
     }
+
     SSL_set_app_data(ssl, c);
     SSL_set_app_data2(ssl, NULL); /* will be request_rec */
 
@@ -305,6 +321,7 @@ static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
     SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
     SSL_smart_shutdown(pRec->pssl);
     SSL_free(pRec->pssl);
+
     pRec->pssl = NULL; /* so filters know we've been shutdown */
     sslconn->ssl = NULL;
     c->aborted = 1;
@@ -321,18 +338,18 @@ static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
  */
 int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
-    int n, err;
-    X509 *xs;
-    conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
+    conn_rec *c         = (conn_rec *)SSL_get_app_data(pRec->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    X509 *xs;
+    int n, err;
     long verify_result;
 
-    if (!SSL_is_init_finished(pRec->pssl))
-    {
+    if (!SSL_is_init_finished(pRec->pssl)) {
         if ((n = SSL_accept(pRec->pssl)) <= 0) {
+            err = SSL_get_error(pRec->pssl, n);
 
-            if ((err = SSL_get_error(pRec->pssl, n)) == SSL_ERROR_ZERO_RETURN) {
+            if (err == SSL_ERROR_ZERO_RETURN) {
                 /*
                  * The case where the connection was closed before any data
                  * was transferred. That's not a real error and can occur
@@ -359,18 +376,21 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                 ap_remove_output_filter(pRec->pOutputFilter);
                 return HTTP_BAD_REQUEST;
             }
-            else if ((SSL_get_error(pRec->pssl, n) == SSL_ERROR_SYSCALL) 
-                && (errno != EINTR)) {
-                if (errno > 0)
+            else if ((SSL_get_error(pRec->pssl, n) == SSL_ERROR_SYSCALL) &&
+                     (errno != EINTR))
+            {
+                if (errno > 0) {
                     ssl_log(c->base_server,
-                             SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                            SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
                             "SSL handshake interrupted by system "
                             "[Hint: Stop button pressed in browser?!]");
-                else
+                }
+                else {
                     ssl_log(c->base_server,
-                        SSL_LOG_INFO|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
-                        "Spurious SSL handshake interrupt [Hint: "
-                        "Usually just one of those OpenSSL confusions!?]");
+                            SSL_LOG_INFO|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                            "Spurious SSL handshake interrupt [Hint: "
+                            "Usually just one of those OpenSSL confusions!?]");
+                }
             }
             else {
                 /*
@@ -379,9 +399,10 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                 ssl_log(c->base_server,
                         SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
                         "SSL handshake failed (server %s, client %s)",
-                        ssl_util_vhostid(c->pool,c->base_server),
-                        c->remote_ip != NULL ? c->remote_ip : "unknown");
+                        ssl_util_vhostid(c->pool, c->base_server),
+                        c->remote_ip ? c->remote_ip : "unknown");
             }
+
             return ssl_abort(pRec, c);
         }
 
@@ -390,8 +411,8 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          */
         verify_result = SSL_get_verify_result(pRec->pssl);
 
-        if (verify_result != X509_V_OK ||
-            sslconn->verify_error != NULL)
+        if ((verify_result != X509_V_OK) ||
+            sslconn->verify_error)
         {
             if (ssl_verify_error_is_optional(verify_result) &&
                 (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
@@ -408,15 +429,16 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                         "SSL client authentication failed, "
                         "accepting certificate based on "
                         "\"SSLVerifyClient optional_no_ca\" configuration");
-
             }
             else {
                 const char *error = sslconn->verify_error ?
                     sslconn->verify_error :
                     X509_verify_cert_error_string(verify_result);
+
                 ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                         "SSL client authentication failed: %s",
                         error ? error : "unknown");
+
                 return ssl_abort(pRec, c);
             }
         }
@@ -424,7 +446,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
         /*
          * Remember the peer certificate's DN
          */
-        if ((xs = SSL_get_peer_certificate(pRec->pssl)) != NULL) {
+        if ((xs = SSL_get_peer_certificate(pRec->pssl))) {
             sslconn->client_cert = xs;
             sslconn->client_dn = NULL;
         }
@@ -433,32 +455,38 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          * Make really sure that when a peer certificate
          * is required we really got one... (be paranoid)
          */
-        if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE
-            && sslconn->client_cert == NULL) {
+        if ((sc->nVerifyClient == SSL_CVERIFY_REQUIRE) &&
+            !sslconn->client_cert)
+        {
             ssl_log(c->base_server, SSL_LOG_ERROR,
                     "No acceptable peer certificate available");
+
             return ssl_abort(pRec, c);
         }
     }
+
     return APR_SUCCESS;
 }
 
-static const char *ssl_hook_http_method (const request_rec *r)
+static const char *ssl_hook_http_method(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->bEnabled == FALSE)
+    if (sc->bEnabled == FALSE) {
         return NULL;
+    }
 
     return "https";
 }
 
-static apr_port_t ssl_hook_default_port (const request_rec *r)
+static apr_port_t ssl_hook_default_port(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->bEnabled == FALSE)
+    if (sc->bEnabled == FALSE) {
         return 0;
+    }
+
     return 443;
 }
 
