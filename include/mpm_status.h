@@ -62,65 +62,74 @@
 
 #include "apr_lib.h"
 
-typedef struct {
+/**
+ * @package MPM Status API
+ */
+
+typedef struct ap_status_table_row_t ap_status_table_row_t;
+/** 
+ * The MPM status table row structure.  MPMs should use this structure in
+ * a table to store the status for the requests.  This structure stores the
+ * status for one connection 
+ */ 
+struct ap_status_table_row_t {
+    /** The connection id.  This is used as a key for the status table */
     long conn_id;
+    /** The actual status.  This is a table of key-value pairs */
     apr_table_t *data;
-} ap_status_table_row_t;
+};
 
 /**
- *
  * Get a cell from the status table. Don't mess with the string you get.
- *
- * conn_id = Connection ID
- * key = key
- *
+ * @param conn_id Connection ID of the current connection
+ * @param key The key to determine which status value should be retrieved
+ *            for the connection.
+ * @deffunc const char *ap_get_connection_status(long conn_id, const char *key)
  */
 API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key);
 
 /**
  * Get an array of current connection IDs.
- *
+ * @param p The pool to allocate the array out of
+ * @return An array of all the current connection IDs
+ * @deffunc apr_array_header_t *ap_get_connections(apr_pool_t *p)
  */
 API_EXPORT(apr_array_header_t *) ap_get_connections(apr_pool_t *p);
 
 /**
  * Get an array of keys from a given connection.
- *
- * conn_id = Connection ID
- *
+ * @param p Pool to allocate out of
+ * @param conn_id Connection ID to get the keys for
+ * @return an array of keys from a given connection
+ * @deffunc apr_array_header_t *ap_get_connection_keys(apr_pool_t *p, long conn_id)
  */
 API_EXPORT(apr_array_header_t *) ap_get_connection_keys(apr_pool_t *p,
                                                        long conn_id);
 
 /**
- *
  * Set a cell in the status table. No guarantees are made that long strings
  * won't be truncated.
- *
- * conn_id = Connection ID
- * key = key
- * value = value
- *
+ * @param conn_id Connection ID to update
+ * @param key key to update
+ * @param value value to set for the key
+ * @deffunc void ap_update_connection_status(long conn_id, const char *key, const char *value)
  */
 API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, const char *value);
 
 /**
- *
  * Clear out this connection's status values. Normally called when a
  * connection is closed
- *
- * conn_id = Connection ID
- *
+ * @param conn_id The connection ID to clear
+ * @deffunc void ap_reset_connection_status(long conn_id)
  */
 API_EXPORT(void) ap_reset_connection_status(long conn_id);
 
 /**
- *
  * Returns the most up-to-date status table available, in the form of an array
  * of ap_status_row_t's.
- *
- * p = context, generally of the request
- *
+ * @param p pool to allocate the array out of, generally from the request_rec
+ * @return The table of statuses for all connections
+ * @deffunc apr_array_header_t *ap_get_status_table(apr_pool_t *p)
  */
 API_EXPORT(apr_array_header_t *) ap_get_status_table(apr_pool_t *p);
 
