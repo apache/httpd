@@ -151,7 +151,7 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <a href="http://www.apache.org/dist/httpd/><code>KEYS</code></a>
+    まず <a href="http://www.apache.org/dist/httpd/"><code>KEYS</code></a>
     ファイルも Apache 配布サイト
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 

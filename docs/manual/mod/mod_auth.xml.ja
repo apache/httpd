@@ -94,7 +94,7 @@
     あるいは <code>src/support</code> にある
     <a href="../programs/htpasswd.html">htpasswd</a>
     ユーティリティで、このパスワードファイルをメインテナンスします。
-    詳細は <a href="../programs/htpasswd.html">man<</a> ページをご覧頂くとして、
+    詳細は <a href="../programs/htpasswd.html">man</a> ページをご覧頂くとして、
     簡単には:</p>
 
     <p>初期 ID <code>username</code> で、<code>Filename</code>
