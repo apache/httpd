@@ -1,26 +1,29 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2002/12/16 03:13:36 $
-
-If you are interested in helping accomplish some of the tasks on this
-list or otherwise improving the documentation, please join the
-apache-docs mailing list by mailing to docs-subscribe@httpd.apache.org
+Last modified: $Date: 2003/01/09 20:15:04 $
 
 For more information on how to contribute to the Apache Documentation
-Project, please see http://httpd.apache.org/docs-project/, and
-http://apache-server.com/tutorials/ATdocs-project.html for an excellent
-tutorial on how to get started with making your contribution.
+Project, please see http://httpd.apache.org/docs-project/
 
               ------------------------------
 
+Decisions pending
+=================
+
+- Where to put docs checkout on website
+     - Leave it at /docs-x.y/
+       +1: Joshua
+     - /manual/x.y/
+     - /x.y/manual
+
+- Figure out what to do about the 2.0 FAQ
+    - Copy important stuff from 1.3?
+    - Some kind of XML?
+    - Something that allows dynamic contributions from users a la
+      FAQ-O-Matic?  (I don't think any really good software exists 
+      for this.)
+
 Things That Need Fixing
 =======================
-
-- Website
-    - decide, whether to stick with httpd.apache.org/docs-x.y/
-      scheme or choose another
-      - /manual/x.y/
-      - /x.y/manual/
-      - ?
 
 - XML
     - Rewriting of the remainder of the manual into xml is in
@@ -35,13 +38,6 @@ Things That Need Fixing
 - New Auth system
     - Much clean-up and enhancement of aaa howto
     - Independent note on how to upgrade to new auth system
-
-- Figure out what to do about the 2.0 FAQ
-    - Copy important stuff from 1.3?
-    - Some kind of XML?
-    - Something that allows dynamic contributions from users a la
-      FAQ-O-Matic?  (I don't think any really good software exists 
-      for this.)
 
 - modules docs
     - mod_suexec: very little documentation
@@ -58,10 +54,6 @@ Things That Need Fixing
         I'm not sure what the license is.
 
 - MPM documentation
-     - Non unix/windows MPMs still need to be completed.
-     - the perchild directives in threaded/worker need docs
-       - both in progress --nd
-
      - explain what the following command line options do
        (perhaps in the developer/debugging docs):
         -D DEBUG
@@ -86,7 +78,8 @@ Things That Need Fixing
 
 - New build process.
     - install.html has had a first-pass rewrite, it is basically
-      accurate, but very incomplete.
+      accurate, but very incomplete: many configure options are missing,
+      especially those inherited from apr.
 
 - API documentation
     Status: Ben Laurie has written some hooks documentation
@@ -97,13 +90,8 @@ Things That Need Fixing
     suggest the use of directory like /usr/local/apache2/var/ that is
     httpd-writable.
 
-- Translations
-    There are several efforts underway to translate the documentation
-    into other languages. A detailed list of the currently known
-    translators (and the corresponding websites) can be found at
-
-    http://httpd.apache.org/docs-project/translations.html
-
+- SSL docs are generally good, but they need a refreshing by someone
+  familiar with mod_ssl and openssl.
 
 Documentation improvements
 ==========================
@@ -148,9 +136,6 @@ Documentation improvements
 
 * Making the directive definitions "less terse" (i.e., adding more
   examples and details to the definitions of the directives)
-
-  - We'll need to audit these and find out which ones need munging, as
-    some of it looks ok.  --jsl
 
 * Making site-specific enhancements easier, including a documented
   and robust way for 3P module docco to be added -- and have it
