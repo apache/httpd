@@ -99,11 +99,6 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef WIN32
-#include "../../os/win32/passwd.h"
-#else
-#include <netinet/in.h>
-#endif
 
     /* Include from the Apache server ... */
 #include "httpd.h"

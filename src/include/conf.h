@@ -836,7 +836,6 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <arpa/inet.h>		/* for inet_ntoa */
 #endif
 #include <sys/wait.h>
-#include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -850,7 +849,17 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <malloc.h>
 #include <io.h>
 #include <fcntl.h>
-#endif /* ndef WIN32 */
+#endif /* WIN32 */
+
+/* 
+ * Under Unix we have <pwd.h> for getpwnam() and friends,
+ * under WIN32 this is emulated by our os/win32/passwd.h
+ */
+#ifdef WIN32
+#include "../os/win32/passwd.h"
+#else
+#include <pwd.h>
+#endif
 
 #include <time.h>		/* for ctime */
 #include <signal.h>
