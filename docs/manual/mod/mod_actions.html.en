@@ -61,7 +61,7 @@ method.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>This directive adds an action, which will activate
     <var>cgi-script</var> when a file is requested using the method of
     <var>method</var>. The <var>cgi-script</var> is the URL-path to a
-    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptaliase">ScriptAliase</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The URL and
+    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The URL and
     file path of the requested document is sent using the standard CGI
     PATH_INFO and PATH_TRANSLATED environment variables.</p>
 
