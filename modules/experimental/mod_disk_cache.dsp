@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_disk_cache.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_disk_cache.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_disk_cache.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_disk_cache.dbgmark"
+	echo rebased > ".\Release\mod_disk_cache.dbr"
 
 # End Custom Build
 

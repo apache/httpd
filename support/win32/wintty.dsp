@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\wintty.so
 SOURCE="$(InputPath)"
 
-".\Release\wintty.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\wintty.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\wintty.dbgmark"
+	echo rebased > ".\Release\wintty.dbr"
 
 # End Custom Build
 

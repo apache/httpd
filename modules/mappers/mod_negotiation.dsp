@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_negotiation.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_negotiation.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_negotiation.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_negotiation.dbgmark"
+	echo rebased > ".\Release\mod_negotiation.dbr"
 
 # End Custom Build
 

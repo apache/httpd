@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_proxy_ftp.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_proxy_ftp.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_proxy_ftp.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_proxy_ftp.dbgmark"
+	echo rebased > ".\Release\mod_proxy_ftp.dbr"
 
 # End Custom Build
 

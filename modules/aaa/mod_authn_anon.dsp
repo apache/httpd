@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_authn_anon.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_authn_anon.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_authn_anon.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_authn_anon.dbgmark"
+	echo rebased > ".\Release\mod_authn_anon.dbr"
 
 # End Custom Build
 

@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\htpasswd.so
 SOURCE="$(InputPath)"
 
-".\Release\htpasswd.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\htpasswd.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\htpasswd.dbgmark"
+	echo rebased > ".\Release\htpasswd.dbr"
 
 # End Custom Build
 

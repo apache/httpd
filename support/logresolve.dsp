@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\logresolve.so
 SOURCE="$(InputPath)"
 
-".\Release\logresolve.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\logresolve.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\logresolve.dbgmark"
+	echo rebased > ".\Release\logresolve.dbr"
 
 # End Custom Build
 

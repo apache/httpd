@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_cgi.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_cgi.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_cgi.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_cgi.dbgmark"
+	echo rebased > ".\Release\mod_cgi.dbr"
 
 # End Custom Build
 

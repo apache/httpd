@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_ssl.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_ssl.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_ssl.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_ssl.dbgmark"
+	echo rebased > ".\Release\mod_ssl.dbr"
 
 # End Custom Build
 

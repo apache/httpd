@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_isapi.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_isapi.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_isapi.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_isapi.dbgmark"
+	echo rebased > ".\Release\mod_isapi.dbr"
 
 # End Custom Build
 

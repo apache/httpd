@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_ident.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_ident.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_ident.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_ident.dbgmark"
+	echo rebased > ".\Release\mod_ident.dbr"
 
 # End Custom Build
 
