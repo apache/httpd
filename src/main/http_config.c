@@ -479,7 +479,7 @@ int ap_invoke_handler(request_rec *r)
     const char *handler;
     char *p;
     size_t handler_len;
-    int result = NOT_IMPLEMENTED;
+    int result = HTTP_INTERNAL_SERVER_ERROR;
 
     if (r->handler) {
 	handler = r->handler;
@@ -509,7 +509,7 @@ int ap_invoke_handler(request_rec *r)
         }
     }
 
-    if (result == NOT_IMPLEMENTED && r->handler) {
+    if (result == HTTP_INTERNAL_SERVER_ERROR && r->handler) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
@@ -526,7 +526,7 @@ int ap_invoke_handler(request_rec *r)
          }
     }
 
-    return NOT_IMPLEMENTED;
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */

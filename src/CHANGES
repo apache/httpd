@@ -1,5 +1,15 @@
 Changes with Apache 1.3.4
 
+  *) Disable sending of error-notes on a 500 (Internal Server Error) response
+     since it often includes file path info.  Enable sending of error-notes
+     on a 501 (Method Not Implemented).  [Roy Fielding] PR#3173
+
+  *) http_config.c would respond with 501 (Method Not Implemented) if a
+     content type handler was specified but could not be found, which
+     should have been a 500 response.  Likewise, mod_proxy.c would responsd
+     with a 501 if the URI scheme is unrecognized instead of the correct
+     response of 403 (Forbidden).  [Roy Fielding]
+
   *) SECURITY: Eliminate DoS attack when a bad URI path contains what
      looks like a printf format escape.  [Marc Slemko, Studenten Net Twente]
 

@@ -397,7 +397,7 @@ static int proxy_handler(request_rec *r)
     if (strcasecmp(scheme, "ftp") == 0)
 	return ap_proxy_ftp_handler(r, cr, url);
     else
-	return NOT_IMPLEMENTED;
+	return HTTP_FORBIDDEN;
 }
 
 /* -------------------------------------------------------------- */

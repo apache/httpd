@@ -2297,10 +2297,13 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 		      ap_escape_html(r->pool, r->uri),
 		      " evaluated to false.<P>\n", NULL);
 	    break;
-	case NOT_IMPLEMENTED:
+	case HTTP_NOT_IMPLEMENTED:
 	    ap_bvputs(fd, ap_escape_html(r->pool, r->method), " to ",
 		      ap_escape_html(r->pool, r->uri),
 		      " not supported.<P>\n", NULL);
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	    }
 	    break;
 	case BAD_GATEWAY:
 	    ap_bputs("The proxy server received an invalid\015\012", fd);
@@ -2387,9 +2390,19 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	             "caused the error.<P>\n"
 		     "More information about this error may be available\n"
 		     "in the server error log.<P>\n", NULL);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
-		ap_bvputs(fd, error_notes, "<P>\n", NULL);
-	    }
+	 /*
+	  * It would be nice to give the user the information they need to
+	  * fix the problem directly since many users don't have access to
+	  * the error_log (think University sites) even though they can easily
+	  * get this error by misconfiguring an htaccess file.  However, the
+	  * error notes tend to include the real file pathname in this case,
+	  * which some people consider to be a breach of privacy.  Until we
+	  * can figure out a way to remove the pathname, leave this commented.
+	  *
+	  * if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	  *     ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	  * }
+	  */
 	    break;
 	}
 
