@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) fix ProxyPass when frontend is https and backend is http
+     [Doug MacEachern]
+
 Changes with Apache 2.0.35
 
   *) mod_rewrite: updated to use the new APR global mutex type.
