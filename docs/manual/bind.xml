@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.12 $ -->
+<!-- $Revision: 1.13 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -61,7 +61,8 @@
     directive, the server
     listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
-    port and interface. Multiple Listen directives may be used to
+    port and interface. Multiple <directive 
+    module="mpm_common">Listen</directive> directives may be used to
     specify a number of addresses and ports to listen on. The
     server will respond to requests from any of the listed
     addresses and ports.</p>
@@ -110,8 +111,8 @@
     <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
     mapped addresses. If you want Apache to handle IPv4 and IPv6 connections 
     with a minimum of sockets, which requires using IPv4-mapped IPv6 
-    addresses, specify the <code>--enable-v4-mapped</code> configure 
-    option.</p>
+    addresses, specify the <code>--enable-v4-mapped</code> <a
+      href="programs/configure.html">configure</a> option.</p>
 
     <p><code>--enable-v4-mapped</code> is the default on all platforms but 
     FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
@@ -119,7 +120,8 @@
 
     <p>If you want Apache to handle IPv4 connections only, regardless of 
     what your platform and APR will support, specify an IPv4 address on all 
-    Listen directives, as in the following examples:</p>
+    <directive module="mpm_common">Listen</directive> directives, as in the
+    following examples:</p>
 
     <example>
       Listen 0.0.0.0:80<br />
@@ -128,15 +130,18 @@
 
     <p>If your platform supports it and you want Apache to handle IPv4 and 
     IPv6  connections on separate sockets (i.e., to disable IPv4-mapped 
-    addresses), specify the <code>--disable-v4-mapped</code> configure 
-    option. <code>--disable-v4-mapped</code> is the default on FreeBSD, 
+    addresses), specify the <code>--disable-v4-mapped</code> <a
+      href="programs/configure.html">configure</a> option. 
+    <code>--disable-v4-mapped</code> is the default on FreeBSD, 
     NetBSD, and OpenBSD.</p>
   </section>
 
   <section id="virtualhost">
     <title>How This Works With Virtual Hosts</title>
 
-    <p>Listen does not implement Virtual Hosts. It only tells the
+    <p> <directive
+    module="mpm_common">Listen</directive> does not implement 
+    Virtual Hosts. It only tells the
     main server what addresses and ports to listen to. If no
     <directive module="core" type="section">VirtualHost</directive>
     directives are used, the server will behave
