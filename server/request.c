@@ -962,7 +962,6 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
-    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
     ap_conf_vector_t *per_uri_defaults = NULL;
     ap_conf_vector_t **locations = (ap_conf_vector_t **) sconf->sec_url->elts;
     ap_conf_vector_t **loc_done = NULL;
@@ -1060,21 +1059,31 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                               apr_pool_cleanup_null, r->pool);
     }
     else {
-        /* Well this looks familiar!  Get back our per_uri_defaults
-         * from the last location walk.
+        /* Well this looks familiar!  If our end-result (dir_merged) hasn't
+         * changed, we have nothing to do :)
+         */
+        apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_merged",
+                              r->pool);
+        if (per_uri_defaults == r->per_dir_config)
+            return OK;
+
+        /* Well, we will need our per_uri_defaults from the last location walk. 
+         * after all.
          */
         apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_conf",
                               r->pool);
     }
 
-    /* We might be able to optimize further, if r->per_dir_config never changed. 
-     * In any case, merge our per_uri_defaults onto 
+    /* Merge our per_uri_defaults preconstruct onto the r->per_dir_configs,
+     * and note the end result for later optimization.
      */
     if (per_uri_defaults)
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
                                                      per_uri_defaults);
 
+    apr_pool_userdata_set(r->per_dir_config, "ap_location_walk::dir_merged", 
+                          apr_pool_cleanup_null, r->pool);
     return OK;
 }
 
