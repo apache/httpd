@@ -22,21 +22,20 @@
     the base Apache distribution:</p>
     <dl>
     <dt><module>mod_disk_cache</module></dt>
-    <dd>implements a disk based storage manager for use with
-    <module>mod_proxy</module></dd>
+    <dd>implements a disk based storage manager.</dd>
 
     <dt><module>mod_mem_cache</module></dt>
-    <dd>implements an in-memory based storage manager.
+    <dd>implements a memory based storage manager. 
     <module>mod_mem_cache</module> can be configured to operate in two
     modes: caching open file descriptors or caching objects in heap storage.
-    <module>mod_mem_cache</module> is most useful when used to cache
-    locally generated content or to cache backend server content for
-    <module>mod_proxy</module> configured for <directive module="mod_proxy"
-    >ProxyPass</directive> (aka <dfn>reverse proxy</dfn>)</dd>
+    <module>mod_mem_cache</module> can be used to cache locally generated content
+    or to cache backend server content for <module>mod_proxy</module> when
+    configured using <directive module="mod_proxy">ProxyPass</directive>
+    (aka <dfn>reverse proxy</dfn>)</dd>
     </dl>
 
-    <p>Content stored and retrived keyed to the URL. Content with
-    access protections is not cached.</p>
+    <p>Content is stored in and retrieved from the cache using URI based keys. Content with
+    access protection is not cached.</p>
 </summary>
 
 <section id="related"><title>Related Modules and Directives</title>
@@ -91,7 +90,7 @@
         LoadModule mem_cache_module modules/mod_mem_cache.so<br />
         &lt;IfModule mod_mem_cache.c&gt;<br />
         <indent>
-          MCacheEnable mem  /<br />
+          CacheEnable mem  /<br />
           MCacheSize 4096<br />
           MCacheMaxObjectCount 100<br />
           MCacheMinObjectSize 1<br />
@@ -105,7 +104,7 @@
 
 <directivesynopsis>
 <name>CacheEnable</name>
-<description>Enable caching specified URLs in a specified storage
+<description>Enable caching of specified URLs using a specified storage
 manager</description>
 <syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -114,27 +113,35 @@ manager</description>
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
     <module>mod_cache</module> to cache urls at or below
-    <var>url-string</var>. The cache store is specified with the
-    <var>cache_type</var> argument. <var>cache_type</var> <code>mem</code>
-    instructs <module>mod_cache</module> to use the in-memory cache storage
-    manager implemented by <module>mod_mem_cache</module>.
+    <var>url-string</var>. The cache storage manager is specified with the
+    <var>cache_type</var> argument. <var>cache_type</var> <code> mem</code>
+    instructs <module>mod_cache</module> to use the memory based storage
+    manager implemented by <module>mod_mem_cache</module>. 
     <var>cache_type</var> <code>disk</code> instructs
-    <module>mod_cache</module> to use the cache storage manager implemented
-    by <module>mod_disk_cache</module>.</p>
+    <module>mod_cache</module> to use the disk based storage manager
+    implemented by <module>mod_disk_cache</module>.
+    <var>cache_type</var> <code>fd</code> instructs
+    <module>mod_cache</module> to use the file descriptor cache implemented
+    by <module>mod_mem_cache</module>.</p>
+    <p>In the event that the URL space overlaps between different
+    <directive>CacheEnable</directive> directives (as in the example below),
+    each possible storage manager will be run until the first one that
+    actually processes the request. The order in which the storage managers are
+    run is determined by the order of the <directive>CacheEnable</directive>
+    directives in the configuration file.</p>
 
     <example>
-      CacheEnable  disk  /<br />
       CacheEnable  mem   /manual<br />
       CacheEnable  fd    /images<br />
+      CacheEnable  disk  /<br />
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheDisable</name>
-<description>Disable caching of specified URLs by specified storage
-manager</description>
-<syntax>CacheDisable <var>cache_type</var> <var>url-string</var></syntax>
+<description>Disable caching of specified URLs</description>
+<syntax>CacheDisable <var> url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -144,7 +151,7 @@ manager</description>
     <var>url-string</var>.</p>
 
     <example><title>Example</title>
-      CacheDisable disk /local_files
+      CacheDisable /local_files
     </example>
 </usage>
 
@@ -158,9 +165,10 @@ manager</description>
 </contextlist>
 
 <usage>
-    <p>The maximum time in seconds to cache a document. The
-    <directive>CacheMaxExpire</directive> takes precedence over the
-    <code>Expires</code> field from the header.</p>
+    <p>The <directive>CacheMaxExpire</directive> directive specifies the maximum number of
+    seconds for which cachable HTTP documents will be retained without checking the origin
+    server. Thus, documents will be out of date at most this number of seconds. This maximum
+    value is enforced even if an expiry date was supplied with the document.</p>
 
     <example>
       CacheMaxExpire 604800
@@ -170,15 +178,17 @@ manager</description>
 
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
-<description>The default time in seconds to cache a document</description>
+<description>The default duration to cache a document when no expiry date is specified.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (one hour)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The default time in seconds to cache a document if the page does not have
-    an expiry date in the <code>Expires</code> field.</p>
+    <p>The <directive>CacheDefaultExpire</directive> directive specifies a default time,
+    in seconds, to cache a document if neither an expiry date nor last-modified date are provided
+    with the document. The value specified with the <directive>CacheMaxExpire</directive>
+    directive does <em>not</em> override this setting.</p>
 
     <example>
       CacheDefaultExpire 86400
@@ -188,15 +198,24 @@ manager</description>
 
 <directivesynopsis>
 <name>CacheIgnoreNoLastMod</name>
-<description>Ignore responses where there is no Last Modified
-Header</description>
+<description>Ignore the fact that a response has no Last Modified
+header.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Ignore responses where there is no Last Modified Header.</p>
+    <p>Ordinarily, documents without a last-modified date are not cached.
+    Under some circumstances the last-modified date is removed (during
+    <module>mod_include</module> processing for example) or not provided
+    at all. The <directive>CacheIgnoreNoLastMod</directive> directive
+    provides a way to specify that documents without last-modified dates
+    should be considered for caching, even without a last-modified date.
+    If neither a last-modified date nor an expiry date are provided with
+    the document then the value specified by the
+    <directive>CacheDefaultExpire</directive> directive will be used to
+    generate an expiration date.</p>
 
     <example>
       CacheIgnoreNoLastMod On
@@ -206,15 +225,19 @@ Header</description>
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>Ignore requests from the client for uncached
-content</description>
+<description>Ignore the fact that the client requested the content not be
+cached.</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
 <default>CacheIgnoreCacheControl Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Ignore requests from the client for uncached content</p>
+    <p>Ordinarily, documents with no-cache or no-store header values will not be stored in the cache.
+    The <directive>CacheIgnoreCacheControl</directive> directive allows this behavior to be overridden.
+    <directive>CacheIgnoreCacheControl</directive> On tells the server to attempt to cache the document
+    even if it contains no-cache or no-store header values. Documents requiring authorization will
+    <em>never</em> be cached.</p>
 
     <example>
       CacheIgnoreCacheControl On
@@ -224,15 +247,32 @@ content</description>
 
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
-<description>The factor used to estimate the Expires date from the
-LastModified date</description>
+<description>The factor used to compute an expiry date based on the
+LastModified date.</description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The factor used to estimate the Expires date from the LastModified date.</p>
+    <p>In the event that a document does not provide an expiry date but does
+    provide a last-modified date, an expiry date can be calculated based on
+    the time since the document was last modified. The
+    <directive>CacheLastModifiedFactor</directive> directive specifies a
+    <var>factor</var> to be used in the generation of this expiry date
+    according to the following formula:
+
+    <code>expiry-period = time-since-last-modified-date * <var>factor</var>
+    expiry-date = current-date + expiry-period</code>
+
+    For example, if the document was last modified 10 hours ago, and
+    <var>factor</var> is 0.1 then the expiry-period will be set to
+    10*0.1 = 1 hour. If the current time was 3:00pm then the computed
+    expiry-date would be 3:00pm + 1hour = 4:00pm.
+
+    If the expiry-period would be longer than that set by
+    <directive>CacheMaxExpire</directive>, then the latter takes
+    precedence.</p>
 
     <example>
       CacheLastModifiedFactor 0.5
@@ -242,21 +282,32 @@ LastModified date</description>
 
 <directivesynopsis>
 <name>CacheForceCompletion</name>
-<description>Percentage of download to arrive for the cache to force
-complete transfer</description>
+<description>Percentage of document served, after which the server
+will complete caching the file even if the request is cancelled.</description>
 <syntax>CacheForceCompletion <var>Percentage</var></syntax>
 <default>CacheForceCompletion 60</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Percentage of download to arrive for the cache to force complete transfer.</p>
+    <p>Ordinarily, if a request is cancelled while the response is being
+    cached and delivered to the client the processing of the response will
+    stop and the cache entry will be removed. The
+    <directive>CacheForceCompletion</directive> directive specifies a
+    threshold beyond which the document will continue to be cached to
+    completion, even if the request is cancelled.</p>
+
+    <p>The threshold is a percentage specified as a value between
+    <code>1</code> and <code>100</code>. A value of <code>0</code>
+    specifies that the default be used. A value of <code>100</code>
+    will only cache documents that are served in their entirety. A value
+    between 60 and 90 is recommended.</p>
 
     <example>
       CacheForceCompletion 80
     </example>
 
-    <note type="warning">
+    <note type="warning"><title>Note:</title>
       This feature is currently <em>not</em> implemented.
     </note>
 </usage>
@@ -272,16 +323,22 @@ before declaring the response uncacheable</description>
 </contextlist>
 
 <usage>
-    <p>Maximum number of bytes of a streamed response (<em>i.e.</em>, a
-    response where the entire content is not available all at once, such
-    as a proxy or CGI response) to buffer before deciding if the response
-    is cacheable. By default, a streamed response will <em>not</em> be
-    cached unless it has a <code>Content-Length</code> header. The reason
-    for this is to avoid using a large amount of memory to buffer a partial
-    response that might end up being too large to fit in the cache anyway.
-    To enable caching of streamed responses, use <directive
-    >CacheMaxStreamingBuffer</directive> to specify the maximum amount of
-    buffer space to use per request.</p>
+    <p>The <directive>CacheMaxStreamingBuffer</directive> directive
+    specifies the maximum number of bytes of a streamed response to
+    buffer before deciding that the response is too big to cache.
+    A streamed response is one in which the entire content is not
+    immediately available and in which the <code>Content-Length</code>
+    may not be known. Sources of streaming responses include proxied
+    responses and the output of CGI scripts. By default, a streamed
+    response will <em>not</em> be cached unless it has a
+    <code>Content-Length</code> header. The reason for this is to
+    avoid using a large amount of memory to buffer a partial response
+    that might end up being too large to fit in the cache.
+    The <directive>CacheMaxStreamingBuffer</directive> directive allows
+    buffering of streamed responses that don't contain a
+    <code>Content-Length</code> up to the specified maximum amount of
+    space. If the maximum buffer space is reached, the buffered
+    content is discarded and the attempt to cache is abandoned.</p>
 
     <note><title>Note:</title>
       <p>Using a nonzero value for <directive
