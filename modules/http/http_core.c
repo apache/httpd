@@ -3305,37 +3305,15 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
-    char *buff;
-    apr_ssize_t length = HUGE_STRING_LEN;
     apr_socket_t *csock = NULL;
-    apr_status_t rv;
     ap_bucket *e;
 
-    /* As soon as we have pool buckets, this should become a palloc. */
-    buff = apr_palloc(f->c->pool, HUGE_STRING_LEN);
     ap_bpop_socket(&csock, f->c->client);
-
-    rv = apr_recv(csock, buff, &length);
-    if (rv == APR_SUCCESS) {
-        if (length > 0) {
-            /* This should probably be a pool bucket, but using a transient is 
-             * actually okay here too.  We know the pool we are using will always 
-             * be available as long as the connection is open.
-             */
-            e = ap_bucket_create_transient(buff, length);
-            AP_BRIGADE_INSERT_TAIL(b, e);
-        }
-        else {
-            /* XXX need to trigger EOS/EOF processing;
-             * for now, return empty brigade because that is what
-             * getline() looks for */
-        }
-    }
-    else {
-        return rv;
-    }
+    e = ap_bucket_create_socket(csock);
+    AP_BRIGADE_INSERT_TAIL(b, e);
     return APR_SUCCESS;
 }
+
 /* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.
