@@ -8,7 +8,7 @@
   <!--#include virtual="header.html" -->
   <H1>Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.42 $ ($Date: 1997/04/26 05:13:50 $)
+  $Revision: 1.43 $ ($Date: 1997/04/26 06:58:39 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -350,17 +350,19 @@
     <P>
     Apache tries to be helpful when it encounters a problem.  In many
     cases, it will provide some details by writing one or messages to
-    the server error log (see the
+    the server error log.  Sometimes this is enough for you to diagnose 
+    &amp; fix the problem yourself (such as file permissions or the like).
+    The default location of the error log is 
+    <CODE>/usr/local/etc/httpd/logs/error_log</CODE>, but see the 
     <A
      HREF="http:../mod/core.html#errorlog"
     ><SAMP>ErrorLog</SAMP></A>
-    directive).  Somethimes this is enough for you to diagnose &amp;
-    fix the problem yourself (such as file permissions or the like).
+    directive in your config files for the location on your server.
     </P>
    </LI>
    <LI><STRONG>Check the
     <A
-     HREF="http://www.apache.org/docs/misc/FAQ"
+     HREF="http://www.apache.org/docs/misc/FAQ.html"
     >FAQ</A>!</STRONG>
     <P>
     The latest version of the Apache Frequently-Asked Questions list can
@@ -379,7 +381,7 @@
     that your issue has already been reported, please <EM>don't</EM> add
     a &quot;me, too&quot; report.  If the original report isn't closed
     yet, we suggest that you check it periodically.  You might also
-    consider contacting the original submittor, because there may be an
+    consider contacting the original submitter, because there may be an
     email exchange going on about the issue that isn't getting recorded
     in the database.
     </P>
@@ -426,7 +428,7 @@
     </CODE>
     </P>
     <P>
-    (Substitute the appropiate locations for your
+    (Substitute the appropriate locations for your
     <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
     <SAMP>core</SAMP> files.  You may have to use <CODE>gdb</CODE>
     instead of <CODE>dbx</CODE>.)
@@ -452,7 +454,7 @@
   </P>
   <P>
   Friendly interaction between Apache and NCSA developers should ensure
-  that fundamental feature enhancments stay consistent between the two
+  that fundamental feature enhancements stay consistent between the two
   servers for the foreseeable future.
   </P>
   <HR>
@@ -462,7 +464,7 @@
       the ScriptAlias?</STRONG>
      </A>
   <P>
-  Apache recognises all files in a directory named as a
+  Apache recognizes all files in a directory named as a
   <A
    HREF="../mod/mod_alias.html#scriptalias"
   ><SAMP>ScriptAlias</SAMP></A>
@@ -476,7 +478,7 @@
   <P>
   To persuade Apache to execute scripts in other locations, such as in
   directories where normal documents may also live, you must tell it how
-  to recognise them - and also that it's okey to execute them.  For
+  to recognize them - and also that it's okay to execute them.  For
   this, you need to use something like the
   <A
    HREF="../mod/mod_mime.html#addhandler"
@@ -492,7 +494,7 @@
      </DD>
     </DL>
     </P>
-    The server will then recognise that all files in that location (and
+    The server will then recognize that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
     are script files, not documents.
    </LI>
@@ -512,9 +514,11 @@
   <P>
   It means just what it says: the server was expecting a complete set of
   HTTP headers (one or more followed by a blank line), and didn't get
-  them.  The most common cause of this is Perl scripts which haven't
-  disabled buffering; if you insert the following statements before your
-  first <CODE>print</CODE> statement, this will probably go away.
+  them.  The most common cause of this (aside from people not
+  outputting the required headers at all) a result of an interaction
+  with perl's output buffering.  To make perl flush its buffers 
+  after each output statement, insert the following statements before your
+  first <CODE>print</CODE> or <CODE>write</CODE> statement:
   </P>
   <P>
   <CODE>
@@ -529,6 +533,9 @@
   </CODE>
   </P>
   <P>
+  This is generally only necessary when you are calling external 
+  programs from your script that send output to stdout.  
+  <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
   <CODE>fflush()</CODE> after writing the headers).
@@ -542,7 +549,8 @@
   SSI (an acronym for Server-Side Include) directives allow static HTML
   documents to be enhanced at run-time (<EM>e.g.</EM>, when delivered to
   a client by Apache).  The format of SSI directives is covered
-  elsewhere; suffice it to say that Apache supports not only SSI but
+  in the <A HREF="../mod/mod_include.html">mod_include manual</A>; 
+  suffice it to say that Apache supports not only SSI but
   xSSI (eXtended SSI) directives.
   </P>
   <P>
@@ -622,7 +630,8 @@
   <SAMP>Last-Modified</SAMP> header based upon the last modification
   time of the file being parsed.  Note that this may actually be lying
   to the client if the parsed file doesn't change but the SSI-inserted
-  content does.
+  content does; if the included content changes often, this can result
+  in stale copies being cached.
   </P>
   <HR>
  </LI>
@@ -632,10 +641,11 @@
   <P>
   So you want to include SSI directives in the output from your CGI
   script, but can't figure out how to do it?
-  The short answer is &quot;you can't.&quot;  This has been regarded as a
-  security liability, and the basic solution is for your script itself to do
-  what the SSIs would be doing.  After all, it's generating the
-  rest of the content.
+  The short answer is &quot;you can't.&quot;  This is potentially
+  a security liability and, more importantly, it can not be cleanly
+  implemented under the current server API.  The best workaround
+  is for your script itself to do what the SSIs would be doing.
+  After all, it's generating the rest of the content.
   </P>
   <P>
   This is a feature The Apache Group hopes to add in the next major
@@ -648,7 +658,7 @@
      </A>
   <P>
   Apache version 1.1 and above comes with a proxy module. If compiled
-  in, this will make Apache act as a caching-proxy server.
+  in, this will make Apache act as a caching-proxy server.  
   </P>
   <HR>
  </LI>
@@ -672,19 +682,19 @@
       virtual hosts?</STRONG>
      </A>
   <P>
-  The Apache server can behave unpredictably when it encounters some
-  resource limitations.  One of these is the <EM>per</EM>-process limit
-  on <STRONG>file descriptors</STRONG>, and that's almost always the
-  cause of problems seen when adding virtual hosts.  In this
-  case, it is often not actually Apache that's encountering the problem, but 
-  some library routine (such as <CODE>gethostbyname()</CODE>)
-  which needs file descriptors and doesn't complain intelligibly when it
-  can't get them.
+  You are probably running into resource limitations in your 
+  operating system.  The most common limitation is the 
+  <EM>per</EM>-process limit on <STRONG>file descriptors</STRONG>, 
+  which is almost always the cause of problems seen when adding 
+  virtual hosts.  Apache often does not give an intuitive error 
+  message because it is normally some library routine (such as 
+  <CODE>gethostbyname()</CODE>) which needs file descriptors and 
+  doesn't complain intelligibly when it can't get them.  
   </P>
   <P>
   Each log file requires a file descriptor, which means that if you are
-  using seperate access and error logs for each virtual host each
-  virtual host  needs two file descriptors.  Each 
+  using separate access and error logs for each virtual host, each
+  virtual host needs two file descriptors.  Each 
   <A
    HREF="../mod/core.html#listen"
   ><SAMP>Listen</SAMP></A>
@@ -692,12 +702,12 @@
   </P>
   <P>
   Typical values for &lt;<EM>n</EM>&gt; that we've seen are in
-  the neighbourhoods of 128 or 250.  When the server bumps into the file
-  descriptor limit, it may dump core with a SIGSEGV, or it might just
+  the neighborhood of 128 or 250.  When the server bumps into the file
+  descriptor limit, it may dump core with a SIGSEGV, it might just
   hang, or it may limp along and you'll see (possibly meaningful) errors
   in the error log.  One common problem that occurs when you run into
   a file descriptor limit is that CGI scripts stop being executed
-  properly at times.
+  properly.
   </P>
   <P>
   As to what you can do about this:
@@ -716,7 +726,9 @@
         HREF="../mod/mod_log_config.html"
        ><SAMP>mod_log_config</SAMP></A>
        to log all requests to a single log file while including the name
-       of the virtual host in the log file.
+       of the virtual host in the log file.  You can then write a 
+       script to split the logfile into separate files later if
+       necessary.
    </LI>
    <LI>Increase the number of file descriptors available to the server
        (see your system's documentation on the <CODE>limit</CODE> or
@@ -810,8 +822,8 @@
     subsequent requests to the same server.
    </LI>
    <LI>It's relatively trivial for someone on your system to put up a
-    page that will steal the cached password from a client's cache.  Can
-    you say &quot;password grabber&quot;?
+    page that will steal the cached password from a client's cache
+    without them knowing.  Can you say &quot;password grabber&quot;?
    </LI>
   </UL>
   <P>
@@ -942,7 +954,7 @@
      </A>
   <P>
   The simple answer is that it was becoming too difficult to keep the
-  version being included with Apache synchronised with the master copy
+  version being included with Apache synchronized with the master copy
   at the
   <A
    HREF="http://www.fastcgi.com/servers/apache/"
@@ -979,7 +991,7 @@
   the output as the script is generating it.
   </P>
   <P>
-  To avoid this, Apache recognises scripts whose names begin with
+  To avoid this, Apache recognizes scripts whose names begin with
   &quot;<SAMP>nph-</SAMP>&quot; as <EM>non-parsed-header</EM> scripts.
   That is, Apache won't buffer their output, but connect it directly to
   the socket going back to the client.
@@ -1032,14 +1044,16 @@
   <P>
   This is a conflict between your C library includes and your kernel
   includes.  You need to make sure that the versions of both are matched
-  properly.  There are two workarounds:
+  properly.  There are two workarounds, either one will solve the problem:
   </P>
   <UL>
    <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
-    library includes.  Or,
+    library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.  
+    <STRONG>Or,</STRONG>
    </LI>
    <LI>Add  <CODE>-DNO_WRITEV</CODE> to the <CODE>EXTRA_CFLAGS</CODE>
     line in your <SAMP>Configuration</SAMP> and reconfigure/rebuild.
+    This hurts performance and should only be used as a last resort.
    </LI>
   </UL>
   </P>
@@ -1052,11 +1066,11 @@
   <P>
   In Apache version 1.2 (beginning with 1.2b8), the error log message
   about dumped core includes the directory where the dump file should be
-  located.  However, some operating systems regard the dumping of core
-  by processes with superuser authority as a potential security issue,
-  and short-circuit the dump code, leaving no file.  Since most Web
-  servers listen on port 80 (a privileged port), they need to run with
-  superuser authority, and so this short-circuit will apply to them.
+  located.  However, many Unixes do not allow a process that has
+  called <CODE>setuid()</CODE> to dump core for security reasons; 
+  the typical Apache setup has the server started as root to bind to 
+  port 80, after which it changes UIDs to a non-privileged user to 
+  serve requests.
   </P>
   <P>
   Dealing with this is extremely operating system-specific, and may
@@ -1083,7 +1097,10 @@
   governments have restrictions upon the import, export, and use of
   encryption technology.  If Apache included SSL in the base package,
   its distribution would involve all sorts of legal and bureaucratic
-  issues., and it would no longer be freely available.
+  issues., and it would no longer be freely available.  Also, some of
+  the technology required to talk to current clients using SSL is 
+  patented by <A HREF="http://www.rsa.com/">RSA Data Security</A>, 
+  who restricts its use without a license.
   </P>
   <P>
   Some SSL implementations of Apache are available, however; see the
