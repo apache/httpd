@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.10 -->
+<!-- English revision: 1.14 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -76,7 +76,7 @@
     <li>Einige Betriebssysteme und Netzwerkanlagen setzen Techniken zum 
       Bandbreiten-Management ein, die nicht zwischen Hosts unterscheiden
       k&ouml;nnen, wenn diese nicht auf verschiedenen IP-Adressen liegen.</li>
-	</ul>
+    </ul>
 
 </section>
 
@@ -84,15 +84,15 @@
 
   <related>
     <modulelist>
-    <module>core</module>
+      <module>core</module>
     </modulelist>
 
     <directivelist>
       <directive module="core">DocumentRoot</directive>
-    	<directive module="core">NameVirtualHost</directive>
-    	<directive module="core">ServerAlias</directive>
-    	<directive module="core">ServerName</directive>
-    	<directive module="core">ServerPath</directive>
+      <directive module="core">NameVirtualHost</directive>
+      <directive module="core">ServerAlias</directive>
+      <directive module="core">ServerName</directive>
+      <directive module="core">ServerPath</directive>
       <directive module="core" type="section">VirtualHost</directive>
     </directivelist>
   </related>
@@ -103,7 +103,10 @@
     der Direktive <directive module="core">NameVirtualHost</directive>
     eingestellt. Im Normalfall, wenn alle IP-Adressen des Server verwendet
     werden sollen, k&ouml;nnen Sie <code>*</code> als Argument f&uuml;r
-    <directive module="core">NameVirtualHost</directive> verwenden. Beachten Sie,
+    <directive module="core">NameVirtualHost</directive> verwenden. Wenn Sie
+    vorhaben, mehrere Ports zu nutzen (etwa wenn SSL l&auml;uft), sollten
+    Sie dem Argument einen Port hinzuf&uuml;gen, wie zum Beispiel
+    <code>*:80</code>. Beachten Sie,
     dass die Angabe einer IP-Adresse in einer <directive
     module="core">NameVirtualHost</directive>-Anweisung den Server nicht
     automatisch an dieser Adresse lauschen l&auml;&szlig;t. Lesen Sie bitte "<a
@@ -118,16 +121,16 @@
     sein wie das Argument der <directive
     module="core">NameVirtualHost</directive>-Anweisung (d.h. eine IP-Adresse
     oder <code>*</code> f&uuml;r alle Adressen). Innerhalb jedes <directive
-    type="section"	module="core">VirtualHost</directive>-Blocks ben&ouml;tigen
+    type="section"  module="core">VirtualHost</directive>-Blocks ben&ouml;tigen
     Sie zumindestens eine <directive
     module="core">ServerName</directive>-Anweisung, um zu bestimmen, welcher
     Host bedient wird, und eine <directive
-  	module="core">DocumentRoot</directive>-Anweisung, um anzugeben, wo im
+    module="core">DocumentRoot</directive>-Anweisung, um anzugeben, wo im
     Dateisystem der Inhalt des Hosts abgelegt ist.</p>
 
   <note><title>Der Hauptserver verschwindet</title>
     Wenn Sie virtuelle Hosts zu einem bestehenden Webserver hinzuf&uuml;gen,
-    m&uuml;ssen Sie auch einen <directive type="section"	
+    m&uuml;ssen Sie auch einen <directive type="section"    
     module="core">VirtualHost</directive>-Block f&uuml;r den bestehenden Host
     <transnote>und bisherigen Hauptserver</transnote> erstellen. 
     Die <directive module="core">ServerName</directive>- und
@@ -145,10 +148,10 @@
     die gleiche IP-Adresse zeigt. Dann f&uuml;gen Sie einfach Folgendes der
     <code>httpd.conf</code> hinzu:</p>
 
-	<example>
-    NameVirtualHost *<br />
+    <example>
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <indent>
     ServerName www.domain.tld<br />
     ServerAlias domain.tld *.domain.tld<br />
@@ -156,12 +159,12 @@
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <indent>ServerName www.otherdomain.tld<br />
     DocumentRoot /www/otherdomain<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-	</example>
+    </example>
 
   <p>Sie k&ouml;nnen anstelle des <code>*</code> bei den beiden Anweisungen 
     <directive module="core">NameVirtualHost</directive> und <directive 
@@ -181,9 +184,9 @@
     aufgef&uuml;hrten Namen alternative Namen sind, die man verwenden kann, um
     das gleiche Webangebot zu erreichen:</p>
 
-	<example>
+    <example>
     ServerAlias domain.tld *.domain.tld
-	</example>
+    </example>
 
   <p>Anfragen f&uuml;r alle Hosts der Domain <code>domain.tld</code> werden
     von dem virtuellen Host <code>www.domain.tld</code> bedient. Die
@@ -201,7 +204,7 @@
     feineinstellen. Die meisten Direktiven k&ouml;nnen in diesen Containern
     angegeben werden und ver&auml;ndern dann ausschlie&szlig;lich die
     Konfiguration des entsprechenden virtuellen Hosts. Pr&uuml;fen Sie den <a
-  	href="../mod/directive-dict.html#Context">Kontext</a> einer Direktive, um
+    href="../mod/directive-dict.html#Context">Kontext</a> einer Direktive, um
     herauszufinden, ob eine bestimmte Direktive zul&auml;ssig ist.
     Im <em>Hauptserver-Kontext</em> (au&szlig;erhalb der <directive 
     type="section" module="core">VirtualHost</directive>-Container) definierte
@@ -292,5 +295,3 @@
 
 </section>
 </manualpage>
-
-

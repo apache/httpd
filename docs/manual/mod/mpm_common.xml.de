@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.32 -->
+<!-- English revision: 1.40 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -873,6 +873,56 @@ entgegengenommenen Anfragen</description>
     <p>Die Voreinstellung f&uuml;r <directive>ThreadsPerChild</directive> ist
     <code>64</code>, wenn <module>mpm_winnt</module> verwendet wird, und
     <code>25</code> bei der Verwendung der anderen MPMs.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadStackSize</name>
+<description>Die Gr&ouml;&szlig;e des Stacks in Bytes, der von Threads
+verwendet wird, die Client-Verbindungen bearbeiten.</description>
+<syntax>ThreadStackSize <var>size</var></syntax>
+<default>65536 unter NetWare; variiert bei anderen Betriebssystemen.</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>perchild</module>
+<module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Verf&uuml;gbar seit Version 2.1</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>ThreadStackSize</directive> legt die
+    Gr&ouml;&szlig;e des Stacks (f&uuml;r Autodaten) der Threads fest, die
+    Client-Verbindungen bearbeiten und Module aufrufen, welche bei der
+    Verarbeitung dieser Verbindungen helfen. In den meisten F&auml;llen ist die
+    Voreinstellung des Betriebssystems angemessen, doch unter bestimmten
+    Umst&auml;nden kann es sinnvoll sein, den Wert anzupassen:</p>
+
+    <ul>
+      <li>Auf Plattformen mit einer relativ kleinen Voreingestellung f&uuml;r
+      die Gr&ouml;&szlig;e des Thread-Stacks (z.B. HP-UX) kann der Apache bei
+      der Verwendung einiger Drittanbietermodule, die einen relativ hohen Bedarf
+      an Speicherplatz haben, abst&uuml;rzen. Ebendiese Module arbeiten
+      m&ouml;glicherweise problemlos auf anderen Plattformen, wo der
+      voreingestellte Thread-Stack gr&ouml;&szlig;er ist. Derartige
+      Abst&uuml;rze k&ouml;nnen Sie vermeiden, indem Sie
+      <directive>ThreadStackSize</directive> auf einen h&ouml;heren Wert als die
+      Betriebssystemvoreinstellung setzen.  Eine solche Anpassung ist nur
+      notwendig, wenn es vom Anbieter des Moduls so spezifiziert wurde oder die
+      Diagnose eines Apache-Absturzes ergeben hat, das die
+      Thread-Stackgr&ouml;&szlig;e zu klein war.</li>
+
+      <li>Auf Plattformen, wo die voreingestellte Thread-Stackgr&ouml;&szlig;e
+      f&uuml;r die Webserverkonfiguration deutlich gr&ouml;&szlig;er als
+      notwendig ist, kann eine gr&ouml;&szlig;ere Anzahl von Threads pro
+      Kindprozess erreicht werden, wenn <directive>ThreadStackSize</directive>
+      auf einen Wert kleiner als die Betriebssystemvoreinstellung gesetzt wird.
+      Da es einzelne Anfragen geben kann, die mehr Stack zur Verarbeitung
+      ben&ouml;tigen, sollte eine derartige Korrektur ausschlie&szlig;lich in
+      Testumgebungen zum Einsatz kommen, auf denen die gesamte
+      Webserververarbeitung ausprobiert werden kann. Eine &Auml;nderung der
+      Webserverkonfiguration kann den aktuellen Wert der
+      <directive>ThreadStackSize</directive> ung&uuml;ltig machen.</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
