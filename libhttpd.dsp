@@ -128,11 +128,27 @@ SOURCE=.\include\http_connection.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_core.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_log.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\http_main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_protocol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_request.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_vhost.h
 # End Source File
 # Begin Source File
 
@@ -217,15 +233,7 @@ SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\http_core.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\http\http_protocol.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_protocol.h
 # End Source File
 # Begin Source File
 
@@ -233,11 +241,7 @@ SOURCE=.\modules\http\http_request.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\http_request.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_vhost.h
+SOURCE=.\modules\http\mod_core.h
 # End Source File
 # End Group
 # Begin Group "modules"
