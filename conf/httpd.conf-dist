@@ -143,7 +143,7 @@ MaxRequestsPerChild 30
 #CacheMaxExpire 24
 #CacheLastModifiedFactor 0.1
 #CacheDefaultExpire 1
-#NoCache adomain.com anotherdomain.edu joes.garage.com
+#NoCache a_domain.com another_domain.edu joe_smith.garage.com
 
 # Listen: Allows you to bind Apache to specific IP addresses and/or
 # ports, in addition to the default. See also the VirtualHost command
@@ -159,10 +159,10 @@ MaxRequestsPerChild 30
 # Any httpd.conf or srm.conf directive may go into a VirtualHost command.
 # See alto the BindAddress entry.
  
-#<VirtualHost host.foo.com>
-#ServerAdmin webmaster@host.foo.com
-#DocumentRoot /www/docs/host.foo.com
-#ServerName host.foo.com
-#ErrorLog logs/host.foo.com-error_log
-#TransferLog logs/host.foo.com-access_log
+#<VirtualHost host.some_domain.com>
+#ServerAdmin webmaster@host.some_domain.com
+#DocumentRoot /www/docs/host.some_domain.com
+#ServerName host.some_domain.com
+#ErrorLog logs/host.some_domain.com-error_log
+#TransferLog logs/host.some_domain.com-access_log
 #</VirtualHost>

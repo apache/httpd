@@ -206,5 +206,5 @@ LanguagePriority en fr de
 #  n.b. can redirect to a script or a document using server-side-includes.
 #
 #    3) external redirects
-#ErrorDocument 402 http://other.server.com/subscription_info.html
+#ErrorDocument 402 http://some.other_server.com/subscription_info.html
 #

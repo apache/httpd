@@ -44,14 +44,14 @@ Options None
 </Directory>
 
 # Allow server status reports, with the URL of http://servername/status
-# Change the ".nowhere.com" to match your domain to enable.
+# Change the ".your_domain.com" to match your domain to enable.
 
 #<Location /status>
 #SetHandler server-status
 
 #order deny,allow
 #deny from all
-#allow from .nowhere.com
+#allow from .your_domain.com
 #</Location>
 
 # You may place any other directories or locations you wish to have
