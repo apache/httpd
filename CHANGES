@@ -4,7 +4,7 @@ Changes with Apache 2.0.36
 
   *) Fix a case where an invalid pass phrase is entered and an
      error message is given, but the prompt is not shown again.
-     This left the user in an ambiguous state. [Paul J. Reder]
+     This left the user in an ambiguous state. PR 8320 [Paul J. Reder]
 
   *) Close sockets on worker MPM when doing a graceless restart.
      [Aaron Bannert]
