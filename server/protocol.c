@@ -676,6 +676,8 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
 
+    ap_add_input_filter("HTTP_IN", NULL, r, r->connection);
+
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
         ap_run_log_transaction(r);
