@@ -1,131 +1,130 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Converting Modules from Apache 1.3 to Apache 2.0</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">From Apache 1.3 to Apache 2.0<br />
-     Modules</h1>
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Converting Modules from Apache 1.3 to Apache 2.0 - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Converting Modules from Apache 1.3 to Apache 2.0</h1>
     <p>This is a first attempt at writing the lessons I learned
-    when trying to convert the mod_mmap_static module to Apache
+    when trying to convert the <code>mod_mmap_static</code> module to Apache
     2.0. It's by no means definitive and probably won't even be
     correct in some ways, but it's a start.</p>
-    <hr />
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#easy">The easier changes ...</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#messy">The messier changes...</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="easy" id="easy">The easier changes ...</a></h2>
 
-    <h2>The easier changes...</h2>
+    <h3><a name="cleanup" id="cleanup">Cleanup Routines</a></h3>
+      <p>These now need to be of type <code>apr_status_t</code> and return a
+      value of that type. Normally the return value will be
+      <code>APR_SUCCESS</code> unless there is some need to signal an error in
+      the cleanup. Be aware that even though you signal an error not all code
+      yet checks and acts upon the error.</p>
+    
 
-    <h3>Cleanup Routines</h3>
+    <h3><a name="init" id="init">Initialisation Routines</a></h3>
+      <p>These should now be renamed to better signify where they sit
+      in the overall process. So the name gets a small change from
+      <code>mmap_init</code> to <code>mmap_post_config</code>. The arguments
+      passed have undergone a radical change and now look like</p>
 
-    <p>These now need to be of type apr_status_t and return a value
-    of that type. Normally the return value will be APR_SUCCESS
-    unless there is some need to signal an error in the cleanup. Be
-    aware that even though you signal an error not all code yet
-    checks and acts upon the error.</p>
+      <ul>
+        <li><code>apr_pool_t *p</code></li>
+        <li><code>apr_pool_t *plog</code></li>
+        <li><code>apr_pool_t *ptemp</code></li>
+        <li><code>server_rec *s</code></li>
+      </ul>
+    
 
-    <h3>Initialisation Routines</h3>
+    <h3><a name="datatypes" id="datatypes">Data Types</a></h3>
+      <p>A lot of the data types have been moved into the <a href="http://apr.apache.org/">APR</a>. This means that some have had
+      a name change, such as the one shown above. The following is a brief
+      list of some of the changes that you are likely to have to make.</p>
 
-    <p>These should now be renamed to better signify where they sit
-    in the overall process. So the name gets a small change from
-    mmap_init to mmap_post_config. The arguments passed have
-    undergone a radical change and now look like</p>
+      <ul>
+        <li><code>pool</code> becomes <code>apr_pool_t</code></li>
+        <li><code>table</code> becomes <code>apr_table_t</code></li>
+      </ul>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="messy" id="messy">The messier changes...</a></h2>
 
-    <ul style="list-style:none">
-      <li>apr_pool_t *p,</li>
+    <h3><a name="register-hooks" id="register-hooks">Register Hooks</a></h3>
+      <p>The new architecture uses a series of hooks to provide for
+      calling your functions. These you'll need to add to your module
+      by way of a new function, <code>static void register_hooks(void)</code>.
+      The function is really reasonably straightforward once you
+      understand what needs to be done. Each function that needs
+      calling at some stage in the processing of a request needs to
+      be registered, handlers do not. There are a number of phases
+      where functions can be added, and for each you can specify with
+      a high degree of control the relative order that the function
+      will be called in.</p>
 
-      <li>apr_pool_t *plog,</li>
-
-      <li>apr_pool_t *ptemp,</li>
-
-      <li>server_rec *s</li>
-    </ul>
-
-    <h3>Data Types</h3>
-
-    <p>A lot of the data types have been moved into the APR. This
-    means that some have had a name change, such as the one shown
-    above. The following is a brief list of some of the changes
-    that you are likely to have to make.</p>
-
-    <ul style="list-style:none">
-      <li>pool becomes apr_pool_t</li>
-
-      <li>table becomes apr_table_t</li>
-    </ul>
-    <hr />
-
-    <h2>The <em>messier</em> changes...</h2>
-
-    <h3>Register Hooks</h3>
-
-    <p>The new architecture uses a series of hooks to provide for
-    calling your functions. These you'll need to add to your module
-    by way of a new function, static void register_hooks(void). The
-    function is really reasonably straightforward once you
-    understand what needs to be done. Each function that needs
-    calling at some stage in the processing of a request needs to
-    be registered, handlers do not. There are a number of phases
-    where functions can be added, and for each you can specify with
-    a high degree of control the relative order that the function
-    will be called in.</p>
-
-    <p>This is the code that was added to mod_mmap_static:</p>
-<pre>
+      <p>This is the code that was added to <code>mod_mmap_static</code>:</p>
+      <div class="example"><pre>
 static void register_hooks(void)
 {
     static const char * const aszPre[]={ "http_core.c",NULL };
     ap_hook_post_config(mmap_post_config,NULL,NULL,HOOK_MIDDLE);
     ap_hook_translate_name(mmap_static_xlat,aszPre,NULL,HOOK_LAST);
-};
-</pre>
+};</pre></div>
 
-    <p>This registers 2 functions that need to be called, one in
-    the post_config stage (virtually every module will need this
-    one) and one for the translate_name phase. note that while
-    there are different function names the format of each is
-    identical. So what is the format?</p>
+      <p>This registers 2 functions that need to be called, one in
+      the <code>post_config</code> stage (virtually every module will need this
+      one) and one for the <code>translate_name</code> phase. note that while
+      there are different function names the format of each is
+      identical. So what is the format?</p>
 
-    <p><strong>ap_hook_[phase_name](function_name, predecessors,
-    successors, position);</strong></p>
+      <div class="example"><p><code>
+        ap_hook_<var>phase_name</var>(<var>function_name</var>,
+        <var>predecessors</var>, <var>successors</var>, <var>position</var>);
+      </code></p></div>
 
-    <p>There are 3 hook positions defined...</p>
+      <p>There are 3 hook positions defined...</p>
 
-    <ul style="list-style:none">
-      <li>HOOK_FIRST</li>
+      <ul>
+        <li><code>HOOK_FIRST</code></li>
+        <li><code>HOOK_MIDDLE</code></li>
+        <li><code>HOOK_LAST</code></li>
+      </ul>
 
-      <li>HOOK_MIDDLE</li>
+      <p>To define the position you use the position and then modify
+      it with the predecessors and successors. Each of the modifiers
+      can be a list of functions that should be called, either before
+      the function is run (predecessors) or after the function has
+      run (successors).</p>
 
-      <li>HOOK_LAST</li>
-    </ul>
+      <p>In the <code>mod_mmap_static</code> case I didn't care about the
+      <code>post_config</code> stage, but the <code>mmap_static_xlat</code>
+      <strong>must</strong> be called after the core module had done it's name
+      translation, hence the use of the aszPre to define a modifier to the
+      position <code>HOOK_LAST</code>.</p>
+    
 
-    <p>To define the position you use the position and then modify
-    it with the predecessors and successors. Each of the modifiers
-    can be a list of functions that should be called, either before
-    the function is run (predecessors) or after the function has
-    run (successors).</p>
+    <h3><a name="moddef" id="moddef">Module Definition</a></h3>
+      <p>There are now a lot fewer stages to worry about when
+      creating your module definition. The old defintion looked
+      like</p>
 
-    <p>In the mod_mmap_static case I didn't care about the
-    post_config stage, but the mmap_static_xlat MUST be called
-    after the core module had done it's name translation, hence the
-    use of the aszPre to define a modifier to the position
-    HOOK_LAST.</p>
-
-    <h3>Module Definition</h3>
-
-    <p>There are now a lot fewer stages to worry about when
-    creating your module definition. The old defintion looked
-    like</p>
-<pre>
-module MODULE_VAR_EXPORT [module_name]_module =
+      <div class="example"><pre>
+module MODULE_VAR_EXPORT <var>module_name</var>_module =
 {
     STANDARD_MODULE_STUFF,
     /* initializer */
@@ -146,12 +145,11 @@ module MODULE_VAR_EXPORT [module_name]_module =
     /* child_init */
     /* child_exit */
     /* post read-request */
-};
-</pre>
+};</pre></div>
 
-    <p>The new structure is a great deal simpler...</p>
-<pre>
-module MODULE_VAR_EXPORT [module_name]_module =
+      <p>The new structure is a great deal simpler...</p>
+      <div class="example"><pre>
+module MODULE_VAR_EXPORT <var>module_name</var>_module =
 {
     STANDARD20_MODULE_STUFF,
     /* create per-directory config structures */
@@ -161,98 +159,107 @@ module MODULE_VAR_EXPORT [module_name]_module =
     /* command handlers */
     /* handlers */
     /* register hooks */
- };
-</pre>
+};</pre></div>
 
-    <p>Some of these read directly across, some don't. I'll try to
-    summarise what should be done below.</p>
+      <p>Some of these read directly across, some don't. I'll try to
+      summarise what should be done below.</p>
 
-    <p>The stages that read directly across :</p>
+      <p>The stages that read directly across :</p>
 
-    <ul style="list-style:none">
-      <li>/* dir config creater */ ==&gt; /* create per-directory
-      config structures */</li>
+      <dl>
+        <dt><code>/* dir config creater */</code></dt>
+        <dd><code>/* create per-directory config structures */</code></dd>
 
-      <li>/* server config */ ==&gt; /* create per-server config
-      structures */</li>
+        <dt><code>/* server config */</code></dt>
+        <dd><code>/* create per-server config structures */</code></dd>
 
-      <li>/* dir merger */ ==&gt; /* merge per-directory config
-      structures */</li>
+        <dt><code>/* dir merger */</code></dt>
+        <dd><code>/* merge per-directory config structures */</code></dd>
 
-      <li>/* merge server config */ ==&gt; /* merge per-server
-      config structures */</li>
+        <dt><code>/* merge server config */</code></dt>
+        <dd><code>/* merge per-server config structures */</code></dd>
 
-      <li>/* command table */ ==&gt; /* command apr_table_t */</li>
+        <dt><code>/* command table */</code></dt>
+        <dd><code>/* command apr_table_t */</code></dd>
 
-      <li>/* handlers */ ==&gt; /* handlers */</li>
-    </ul>
+        <dt><code>/* handlers */</code></dt>
+        <dd><code>/* handlers */</code></dd>
+      </dl>
 
-    <p>The remainder of the old functions should be registered as
-    hooks. There are the following hook stages defined so
-    far...</p>
+      <p>The remainder of the old functions should be registered as
+      hooks. There are the following hook stages defined so
+      far...</p>
 
-    <ul style="list-style:none">
-      <li>ap_hook_post_config <em>(this is where the old _init
-      routines get registered)</em></li>
+      <dl>
+        <dt><code>ap_hook_post_config</code></dt>
+        <dd>this is where the old <code>_init</code> routines get
+        registered</dd>
 
-      <li>ap_hook_http_method <em>(retrieve the http method from a
-      request. (legacy))</em></li>
+        <dt><code>ap_hook_http_method</code></dt>
+        <dd>retrieve the http method from a request. (legacy)</dd>
 
-      <li>ap_hook_open_logs <em>(open any specified logs)</em></li>
+        <dt><code>ap_hook_open_logs</code></dt>
+        <dd>open any specified logs</dd>
 
-      <li>ap_hook_auth_checker <em>(check if the resource requires
-      authorization)</em></li>
+        <dt><code>ap_hook_auth_checker</code></dt>
+        <dd>check if the resource requires authorization</dd>
 
-      <li>ap_hook_access_checker <em>(check for module-specific
-      restrictions)</em></li>
+        <dt><code>ap_hook_access_checker</code></dt>
+        <dd>check for module-specific restrictions</dd>
 
-      <li>ap_hook_check_user_id <em>(check the user-id and
-      password)</em></li>
+        <dt><code>ap_hook_check_user_id</code></dt>
+        <dd>check the user-id and password</dd>
 
-      <li>ap_hook_default_port <em>(retrieve the default port for
-      the server)</em></li>
+        <dt><code>ap_hook_default_port</code></dt>
+        <dd>retrieve the default port for the server</dd>
 
-      <li>ap_hook_pre_connection <em>(do any setup required just
-      before processing, but after accepting)</em></li>
+        <dt><code>ap_hook_pre_connection</code></dt>
+        <dd>do any setup required just before processing, but after
+        accepting</dd>
 
-      <li>ap_hook_process_connection <em>(run the correct
-      protocol)</em></li>
+        <dt><code>ap_hook_process_connection</code></dt>
+        <dd>run the correct protocol</dd>
 
-      <li>ap_hook_child_init <em>(call as soon as the child is
-      started)</em></li>
+        <dt><code>ap_hook_child_init</code></dt>
+        <dd>call as soon as the child is started</dd>
 
-      <li>ap_hook_create_request <em>(??)</em></li>
+        <dt><code>ap_hook_create_request</code></dt>
+        <dd>??</dd>
 
-      <li>ap_hook_fixups <em>(last chance to modify things before
-      generating content)</em></li>
+        <dt><code>ap_hook_fixups</code></dt>
+        <dd>last chance to modify things before generating content</dd>
 
-      <li>ap_hook_handler <em>(generate the content)</em></li>
+        <dt><code>ap_hook_handler</code></dt>
+        <dd>generate the content</dd>
 
-      <li>ap_hook_header_parser <em>(let's modules look at the
-      headers, not used by most modules, because they use
-      post_read_request for this.)</em></li>
+        <dt><code>ap_hook_header_parser</code></dt>
+        <dd>lets modules look at the headers, not used by most modules, because
+        they use <code>post_read_request</code> for this</dd>
 
-      <li>ap_hook_insert_filter <em>(to insert filters into the
-      filter chain)</em></li>
+        <dt><code>ap_hook_insert_filter</code></dt>
+        <dd>to insert filters into the filter chain</dd>
 
-      <li>ap_hook_log_transaction <em>(log information about the
-      request)</em></li>
+        <dt><code>ap_hook_log_transaction</code></dt>
+        <dd>log information about the request</dd>
 
-      <li>ap_hook_optional_fn_retrieve <em>(retrieve any functions
-      registered as optional)</em></li>
+        <dt><code>ap_hook_optional_fn_retrieve</code></dt>
+        <dd>retrieve any functions registered as optional</dd>
 
-      <li>ap_hook_post_read_request <em>(called after reading the
-      request, before any other phase)</em></li>
+        <dt><code>ap_hook_post_read_request</code></dt>
+        <dd>called after reading the request, before any other phase</dd>
 
-      <li>ap_hook_quick_handler <em>(??)</em></li>
+        <dt><code>ap_hook_quick_handler</code></dt>
+        <dd>called before any request processing, used by cache modules.</dd>
 
-      <li>ap_hook_translate_name <em>(translate the URI into a
-      filename)</em></li>
+        <dt><code>ap_hook_translate_name</code></dt>
+        <dd>translate the URI into a filename</dd>
 
-      <li>ap_hook_type_checker <em>(determine and/or set the doc
-      type)</em> <!--#include virtual="footer.html" -->
-      </li>
-    </ul>
-  </body>
-</html>
-
+        <dt><code>ap_hook_type_checker</code></dt>
+        <dd>determine and/or set the doc type</dd>
+      </dl>
+    
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
