@@ -19,6 +19,12 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="../">Версия 2.0</a> &gt; <a href="./">Модули</a></div>
 <div id="preamble"><h1>Краткое руководство по директивам</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../de/mod/quickreference.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/quickreference.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/quickreference.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ru/mod/quickreference.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div>
 
     <p>В кратком руководстве по директивам Вы найдете информацию
     о том, как использовать директиву, ее значение по умолчанию, статус
@@ -679,7 +685,12 @@ a given virtual host</td></tr>
 <tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
 set</td></tr>
 </table></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../de/mod/quickreference.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/quickreference.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/quickreference.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ru/mod/quickreference.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Модули</a> | <a href="../mod/directives.html">Директивы</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Глоссарий</a> | <a href="../sitemap.html">Карта сайта</a></p></div>
 </body></html>

@@ -20,6 +20,10 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_access</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_access.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントのホスト名、IP アドレス、その他のクライアント
 のリクエストの特徴に基づいたアクセス制御機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -329,7 +333,10 @@ Deny が評価される順番を制御する</td></tr>
 
 </div>
 </div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_access.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>

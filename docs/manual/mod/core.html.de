@@ -20,6 +20,10 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Module</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache-Kernfunktionen</h1>
+<div class="toplang">
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a></p>
+</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -3209,7 +3213,10 @@ IP-Adressen angewendet werden</td></tr>
 </ul>
 </div>
 </div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
 </body></html>

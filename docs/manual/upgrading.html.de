@@ -17,6 +17,15 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
+<div class="toplang">
+<p><span>Verfügbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div>
+
     <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
     enthält die entscheidenden Informationen für bisherige
     Apache-Nutzer. Diese sind als kurze Anmerkungen
@@ -192,7 +201,14 @@ in Apache 2.0</a></li></ul></div>
     entwickelt wurden, werden <strong>nicht</strong> ohne Modifikationen mit
     der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation für Entwickler</a> beschrieben.</p>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Verfügbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
 </body></html>

@@ -17,6 +17,12 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>CGI 環境での PATH_INFO の変更</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/cgi_path.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/cgi_path.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/cgi_path.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
     <p>Apache 1.1.1 およびそれ以前のバージョンで実装されていた
     CGI 環境で PATH_INFO を作成する方法は直観的でなく、
     場合によってはクラッシュすることもありました。
@@ -99,7 +105,11 @@
     CGI/1.1 をサポートするすべてのサーバで動作することができます。
     </p>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/cgi_path.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/cgi_path.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/cgi_path.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
 </body></html>
