@@ -819,6 +819,7 @@ AddCharset shift_jis   .sjis
 # file mime.types for specific file types.
 #
 AddType application/x-tar .tgz
+AddType image/x-icon .ico
 
 #
 # AddHandler allows you to map certain file extensions to "handlers":
