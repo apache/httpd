@@ -102,6 +102,7 @@
 #include "http_core.h"
 #include "http_protocol.h"
 #include "http_main.h"
+#include "ap_mpm.h"
 #include "util_script.h"
 #include <time.h>
 #include "scoreboard.h"
@@ -137,6 +138,8 @@
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
 module AP_MODULE_DECLARE_DATA status_module;
+
+int server_limit, thread_limit;
 
 /*
  *command-related code. This is here to prevent use of ExtendedStatus
@@ -251,14 +254,17 @@ static int status_handler(request_rec *r)
     int no_table_report = 0;
     worker_score ws_record;
     process_score ps_record;
-    char stat_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
-    pid_t pid_buffer[HARD_SERVER_LIMIT];
+    char *stat_buffer;
+    pid_t *pid_buffer;
     clock_t tu, ts, tcu, tcs;
     server_rec *vhost;
 
     if (strcmp(r->handler, STATUS_MAGIC_TYPE) && strcmp(r->handler, "server-status")) {
         return DECLINED;
     }
+
+    pid_buffer = apr_palloc(r->pool, server_limit * sizeof(pid_t));
+    stat_buffer = apr_palloc(r->pool, server_limit * thread_limit * sizeof(char));
 
     nowtime = apr_time_now();
     tu = ts = tcu = tcs = 0;
@@ -311,9 +317,9 @@ static int status_handler(request_rec *r)
 	return 0;
 
 /*    ap_sync_scoreboard_image(); */
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-        for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
-            int indx = (i * HARD_THREAD_LIMIT) + j;
+    for (i = 0; i < server_limit; ++i) {
+        for (j = 0; j < thread_limit; ++j) {
+            int indx = (i * thread_limit) + j;
 
 	    ws_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
@@ -450,9 +456,9 @@ static int status_handler(request_rec *r)
     else
 	ap_rputs("Scoreboard: ", r);
 
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-        for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
-            int indx = (i * HARD_THREAD_LIMIT) + j;
+    for (i = 0; i < server_limit; ++i) {
+        for (j = 0; j < thread_limit; ++j) {
+            int indx = (i * thread_limit) + j;
 	    ap_rputc(stat_buffer[indx], r);
 	    if ((indx % STATUS_MAXLINE == (STATUS_MAXLINE - 1)) && !short_report)
 	        ap_rputs("\n", r);
@@ -481,9 +487,9 @@ static int status_handler(request_rec *r)
             int k = 0;
 	    ap_rputs("PID Key: <br />\n", r);
 	    ap_rputs("<pre>\n", r);
-	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-                for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
-                    int indx = (i * HARD_THREAD_LIMIT) + j;
+	    for (i = 0; i < server_limit; ++i) {
+                for (j = 0; j < thread_limit; ++j) {
+                    int indx = (i * thread_limit) + j;
 
 		    if (stat_buffer[indx] != '.') {
 		        ap_rprintf(r, "   %" APR_OS_PROC_T_FMT 
@@ -515,8 +521,8 @@ static int status_handler(request_rec *r)
 #endif
 	}
 
-	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
+	for (i = 0; i < server_limit; ++i) {
+	for (j = 0; j < thread_limit; ++j) {
 	    ws_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
 	    vhost = ws_record.vhostrec;
@@ -780,6 +786,8 @@ static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     status_flags[SERVER_CLOSING] = 'C';
     status_flags[SERVER_GRACEFUL] = 'G';
     status_flags[SERVER_IDLE_KILL] = 'I';
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
     return OK;
 }
 
