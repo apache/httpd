@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.17 1996/10/20 18:03:30 ben Exp $ */
+/* $Id: http_config.h,v 1.18 1996/11/03 20:29:38 brian Exp $ */
 
 /*
  * The central data structures around here...
@@ -272,7 +272,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 		   char *path, char *file);
 const char *srm_command_loop (cmd_parms *parms, void *config);
 
-server_rec *init_virtual_host (pool *p, const char *hostname);
+server_rec *init_virtual_host (pool *p, const char *hostname, server_rec *main_server);
 int is_virtual_server (server_rec *);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 

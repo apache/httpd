@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.80 1996/10/31 17:51:35 brian Exp $ */
+/* $Id: http_main.c,v 1.81 1996/11/03 20:29:40 brian Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1263,7 +1263,9 @@ server_rec *find_virtual_server (struct in_addr server_ip, int port,
 
 void default_server_hostnames(server_rec *s)
 {
-    struct hostent *h, *main;
+    struct hostent *h;
+    struct in_addr *main_addr;
+    int num_addr;
     char *def_hostname;
     int n;
     server_addr_rec *sar;
@@ -1277,23 +1279,31 @@ void default_server_hostnames(server_rec *s)
     }
 
     def_hostname = s->server_hostname;
-    main = gethostbyname(def_hostname);
-    if( main == NULL ) {
+    h = gethostbyname(def_hostname);
+    if( h == NULL ) {
 	fprintf(stderr,"httpd: cannot determine local host name.\n");
 	fprintf(stderr,"Use ServerName to set it manually.\n");
 	exit(1);
     }
-
+    /* we need to use gethostbyaddr below... and since it shares a static
+    	area with gethostbyname it'd clobber the value we just got.  So
+    	we need to make a copy.  -djg */
+    for (num_addr = 0; h->h_addr_list[num_addr] != NULL; num_addr++) {
+    	/* nop */
+    }
+    main_addr = palloc( pconf, sizeof( *main_addr ) * num_addr );
+    for (n = 0; n < num_addr; n++) {
+    	main_addr[n] = *(struct in_addr *)h->h_addr_list[n];
+    }
 
     /* Then virtual hosts */
     
     for (s = s->next; s; s = s->next) {
 	/* Check to see if we might be a HTTP/1.1 virtual host - same IP */
 	has_inaddr_any = 0;
-	for (n = 0; main->h_addr_list[n] != NULL; n++) {
+	for (n = 0; n < num_addr; n++) {
 	    for(sar = s->addrs; sar; sar = sar->next) {
-		if (sar->host_addr.s_addr ==
-		    (((struct in_addr *)(main->h_addr_list[n]))->s_addr) &&
+		if (sar->host_addr.s_addr == main_addr[n].s_addr &&
 		    s->port == mainport)
 		    s->is_virtual = 2;
 		if( sar->host_addr.s_addr == htonl(INADDR_ANY) ) {

@@ -733,7 +733,7 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     if (main_server->is_virtual)
 	return "<VirtualHost> doesn't nest!";
     
-    s = init_virtual_host (p, arg);
+    s = init_virtual_host (p, arg, main_server);
     s->next = main_server->next;
     main_server->next = s;
 	

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.27 1996/10/20 18:03:29 ben Exp $ */
+/* $Id: http_config.c,v 1.28 1996/11/03 20:29:38 brian Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -757,12 +757,12 @@ int parse_htaccess(void **result, request_rec *r, int override,
  * paddr is used to create a list in the order of input
  * **paddr is the ->next pointer of the last entry (or s->addrs)
  * *paddr is the variable used to keep track of **paddr between calls
+ * port is the default port to assume
  */
-static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
+static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
 {
     struct hostent *hep;
     unsigned long my_addr;
-    int ports;
     server_addr_rec *sar;
     char *t;
     int i;
@@ -770,16 +770,23 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
     if( *w == 0 ) return;
 
     t = strchr(w, ':');
-    ports = 0;
-    if (t != NULL && strcmp(t+1, "*") != 0) ports = atoi(t+1);
+    if (t) {
+	if( strcmp(t+1,"*") == 0 ) {
+	    port = 0;
+	} else if( (i = atoi(t+1)) ) {
+	    port = i;
+	} else {
+	    fprintf( stderr, "Port must be numeric\n" );
+	}
+	*t = 0;
+    }
 
-    if (t != NULL) *t = '\0';
     if (strcmp(w, "*") == 0) {
 	sar = pcalloc( p, sizeof( server_addr_rec ) );
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr.s_addr = htonl(INADDR_ANY);
-	sar->host_port = ports;
+	sar->host_port = port;
 	sar->virthost = pstrdup(p, w);
 	if (t != NULL) *t = ':';
 	return;
@@ -795,7 +802,7 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr.s_addr = my_addr;
-	sar->host_port = ports;
+	sar->host_port = port;
 	sar->virthost = pstrdup(p, w);
 	if (t != NULL) *t = ':';
 	return;
@@ -813,14 +820,15 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr = *(struct in_addr *)hep->h_addr_list[i];
-	sar->host_port = ports;
+	sar->host_port = port;
 	sar->virthost = pstrdup(p, w);
     }
 
     if (t != NULL) *t = ':';
 }
 
-server_rec *init_virtual_host (pool *p, const char *hostname)
+server_rec *init_virtual_host (pool *p, const char *hostname,
+				server_rec *main_server)
 {
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
     server_addr_rec **addrs;
@@ -847,7 +855,8 @@ server_rec *init_virtual_host (pool *p, const char *hostname)
     /* start the list of addreses */
     addrs = &s->addrs;
     while( hostname[0] ) {
-	get_addresses( p, getword_conf( p, &hostname ), &addrs );
+	get_addresses( p, getword_conf( p, &hostname ), &addrs,
+	    main_server->port );
     }
     /* terminate the list */
     *addrs = NULL;
@@ -886,9 +895,6 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 	virt->lookup_defaults =
 	    merge_per_dir_configs (p, main_server->lookup_defaults,
 				   virt->lookup_defaults);
-
-	if (virt->port == 0)
-	    virt->port = main_server->port;
 
 	if (virt->server_admin == NULL)
 	    virt->server_admin = main_server->server_admin;
