@@ -215,6 +215,7 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
     if (context) {
         apr_pool_clear(context->ptrans);
         context->next = NULL;
+        ResetEvent(context->Overlapped.hEvent);
         apr_thread_mutex_lock(qlock);
         if (qtail)
             qtail->next = context;
@@ -261,7 +262,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
          */
         context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
 
-        context->Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL); 
+        context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (context->Overlapped.hEvent == NULL) {
             /* Hopefully this is a temporary condition ... */
             ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
@@ -926,25 +927,23 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 static void winnt_accept(void *listen_socket) 
 {
     apr_os_sock_info_t sockinfo;
-    PCOMP_CONTEXT context;
+    PCOMP_CONTEXT context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
-    int lasterror;
+    int rv;
 
     nlsd = (SOCKET) listen_socket;
 
     while (!shutdown_in_progress) {
-        context = mpm_get_completion_context();
         if (!context) {
-            /* Hopefully whatever is preventing us from getting a 
-             * completion context is a temporary resource constraint.
-             * Yield the rest of our time slice.
-             */
-            Sleep(0);
-            continue;
+            context = mpm_get_completion_context();
+            if (!context) {
+                /* Temporary resource constraint? */
+                Sleep(0);
+                continue;
+            }
         }
 
-    again:            
         /* Create and initialize the accept socket */
         if (context->accept_socket == INVALID_SOCKET) {
             context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -954,7 +953,7 @@ static void winnt_accept(void *listen_socket)
                              "winnt_accept: Failed to allocate an accept socket. "
                              "Temporary resource constraint? Try again.");
                 Sleep(100);
-                goto again;
+                continue;
             }
         }
 
@@ -968,40 +967,52 @@ static void winnt_accept(void *listen_socket)
                       PADDED_ADDR_SIZE,
                       &BytesRead,
                       &context->Overlapped)) {
-            lasterror = apr_get_netos_error();
-            if (lasterror == APR_FROM_OS_ERROR(WSAEINVAL)) {
+            rv = apr_get_netos_error();
+            if (rv == APR_FROM_OS_ERROR(WSAEINVAL)) {
                 /* Hack alert. Occasionally, TransmitFile will not recycle the 
                  * accept socket (usually when the client disconnects early). 
                  * Get a new socket and try the call again.
                  */
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, lasterror, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
                        "winnt_accept: AcceptEx failed due to early client "
                        "disconnect. Reallocate the accept socket and try again.");
-                if (shutdown_in_progress)
-                    break;
-                else
-                    goto again;
+                continue;
             }
-            else if (lasterror != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, ap_server_conf,
+            else if (rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
+                ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                              "winnt_accept: AcceptEx failed. Attempting to recover.");
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
                 Sleep(100);
-                goto again;
+                continue;
             }
 
-            /* Wait for pending i/o */
-            WaitForSingleObject(context->Overlapped.hEvent, INFINITE);
-        }
-
-        /* ### There is a race condition here.  The mainline may hit 
-         * WSATerminate before this thread reawakens.  Look First.
-         */
-        if (shutdown_in_progress) {
-            break;
+            /* Wait for pending i/o. Wake up once per second to check for shutdown */
+            while (1) {
+                rv = WaitForSingleObject(context->Overlapped.hEvent, 1000);
+                if (rv == WAIT_OBJECT_0) {
+                    if (!GetOverlappedResult(context->Overlapped.hEvent, 
+                                             &context->Overlapped, 
+                                             &BytesRead, FALSE)) {
+                        ap_log_error(APLOG_MARK,APLOG_WARNING, GetLastError(), ap_server_conf,
+                                     "winnt_accept: Asynchronous AcceptEx failed.");
+                        closesocket(context->accept_socket);
+                        context->accept_socket = INVALID_SOCKET;
+                    }
+                    break;
+                }
+                /* WAIT_TIMEOUT */
+                if (shutdown_in_progress) {
+                    closesocket(context->accept_socket);
+                    context->accept_socket = INVALID_SOCKET;
+                    break;
+                }
+            }
+            if (context->accept_socket == INVALID_SOCKET) {
+                continue;
+            }
         }
 
         /* Inherit the listen socket settings. Required for 
@@ -1038,12 +1049,14 @@ static void winnt_accept(void *listen_socket)
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &context->Overlapped);
+        context = NULL;
     }
-
     if (!shutdown_in_progress) {
         /* Yow, hit an irrecoverable error! Tell the child to die. */
         SetEvent(exit_event);
     }
+    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                 "Child %d: Accept thread exiting.", my_pid);
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
@@ -1099,6 +1112,8 @@ static void worker_main(long thread_num)
     PCOMP_CONTEXT context = NULL;
     ap_sb_handle_t *sbh;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
+                 "Child %d: Worker thread %d starting.", my_pid, thread_num);
     while (1) {
         conn_rec *c;
         apr_int32_t disconnected;
@@ -1147,8 +1162,8 @@ static void worker_main(long thread_num)
     ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, 
                                         (request_rec *) NULL);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Thread exiting.", my_pid);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
+                 "Child %d: Worker thread %d exiting.", my_pid, thread_num);
 }
 
 static void cleanup_thread(thread *handles, int *thread_cnt, int thread_to_clean)
@@ -1357,16 +1372,14 @@ static void child_main()
      */
     shutdown_in_progress = 1;
 
-    /* Tell the worker threads they may exit when done handling
-     * a connection.
-     */
-    workers_may_exit = 1;
-
     /* Close the listening sockets. */
     for (lr = ap_listeners; lr ; lr = lr->next) {
         apr_socket_close(lr->sd);
     }
     Sleep(1000);
+
+    /* Tell the worker threads to exit */
+    workers_may_exit = 1;
 
     /* Release the start_mutex to let the new process (in the restart
      * scenario) a chance to begin accepting and servicing requests 
