@@ -189,27 +189,15 @@ INSTDEVDIRS := \
 
 INSTDIRS += \
 	$(INSTALL)\Apache2 \
+	$(INSTALL)\Apache2\bin \
 	$(INSTALL)\Apache2\cgi-bin \
 	$(INSTALL)\Apache2\conf \
 	$(INSTALL)\Apache2\error \
-	$(INSTALL)\Apache2\error\include \
 	$(INSTALL)\Apache2\htdocs \
 	$(INSTALL)\Apache2\icons \
-	$(INSTALL)\Apache2\icons\small \
 	$(INSTALL)\Apache2\logs \
 	$(INSTALL)\Apache2\man \
 	$(INSTALL)\Apache2\manual \
-	$(INSTALL)\Apache2\manual\developer \
-	$(INSTALL)\Apache2\manual\faq \
-	$(INSTALL)\Apache2\manual\howto \
-	$(INSTALL)\Apache2\manual\images \
-	$(INSTALL)\Apache2\manual\misc \
-	$(INSTALL)\Apache2\manual\mod \
-	$(INSTALL)\Apache2\manual\platform \
-	$(INSTALL)\Apache2\manual\programs \
-	$(INSTALL)\Apache2\manual\search \
-	$(INSTALL)\Apache2\manual\ssl \
-	$(INSTALL)\Apache2\manual\vhosts \
 	$(INSTALL)\Apache2\modules \
 
 #

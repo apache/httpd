@@ -156,6 +156,7 @@ TARGET_nlm = \
 	$(OBJDIR)/htdigest.nlm \
 	$(OBJDIR)/htdbm.nlm \
 	$(OBJDIR)/logres.nlm \
+	$(OBJDIR)/rotlogs.nlm \
 	$(EOLIST)
 
 #
@@ -232,7 +233,7 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\*.*
+	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\bin\*.*
 
 #
 # Any specialized rules here
