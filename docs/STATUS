@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/06/22 19:54:41 $
+Last modified: $Date: 2002/07/21 21:16:40 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -13,11 +13,18 @@ tutorial on how to get started with making your contribution.
 
               ------------------------------
 
+- doc-project webpage should be updated to recommend subscription to the
+  CVS mailing list.
+
 - XML
     - The xsl transformations could be greatly improved to a) look better
       and b) use proper CSS+html rather than the horrible hack that
       Joshua did.
-    - The build system does not work very well right now.
+    - xslt code needs to be added to deal with <manualpage>; shouldn't be
+      too difficult.
+    - Build system needs to be modified to transform directories other than
+      mod/ and probably to set up some variables to get references in the
+      <directive> and <module> tags to point to the right place.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -29,7 +36,7 @@ tutorial on how to get started with making your contribution.
     - Some of the man pages need to be updated for 2.0.  At least
       the httpd man page appears to be outdated, and perhaps other.
       After this is done, the manual/programs/ versions can be
-      regenerated.
+      regenerated using the program in the site-tools repository.
 
 - MPM documentation
    - Each MPM needs to have a documentation file in manual/mod/
@@ -42,14 +49,14 @@ tutorial on how to get started with making your contribution.
 
    - Individual docs will need some cleanup. 
         Status:  What docs still need to be touched here?
+                 - misc/custom_errordocs.html needs to be updated to
+                   essentially describe how the international error
+                   docs included in 2.0 work
                  - misc/perf-tuning.html - needs major rewrite for 2.0
                  - misc/tutorials.html - mostly not relevant to 2.0
                  - misc/stopping.html
                  - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
                  - misc/known_client_problems.html - mostly ancient
-                 - content-negotiation.html - Multiviews has changed
-                   significantly since 1.3, so this needs updating
-                   Bill Rowe can probably help with any questions
 
 - New build process.
     - install.html has had a first-pass rewrite, but many things have
@@ -64,6 +71,11 @@ tutorial on how to get started with making your contribution.
     Status: Ben Laurie has written some hooks documentation
 
 - Translations
+    - We need a webpage describing the basics of how to go about translating
+      the apache docs.  Things like naming conventions, reviewing standards,
+      and perhaps some standard comments to put at the top of each doc
+      (english version, auther, reviewer).
+
     We appear to have people working on translation into the following
     languages.  These may just be the 'it worked' page, but if so
     the authors of those should perhaps be contacted to help do the
@@ -103,6 +115,9 @@ New User documentation
 * Directory Handling (mod_dir/mod_autoindex/etc)
 
 * Sections (<Directory>/<Files>/<Location>)
+  - I think this should be a priority.  A rewrite of /sections.html would
+    be a good place to start.  That document is too technical and 
+    insufficiently verbose for the average user.
 
 * public_html - tutorial covering what is involved in helping users set
   up web serving out of their home directory.
