@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/06 14:58:30 $]
+Last modified at [$Date: 2003/08/06 21:53:39 $]
 
 Release:
 
@@ -289,7 +289,7 @@ PATCHES TO PORT FROM 2.1
 
     * mod_dav: Use bucket brigades when reading PUT data. This avoids
       problems if the data stream is modified by an input filter. PR 22104.
-        modules/dav/main/mod_dav.c: r1.98
+        modules/dav/main/mod_dav.c: r1.98, r1.99
       +1: nd
 
 CURRENT RELEASE NOTES:
