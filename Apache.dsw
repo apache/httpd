@@ -84,24 +84,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ApacheModuleDigest"=".\os\win32\ApacheModuleDigest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprlibdll
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "ApacheModuleExpires"=".\os\win32\ApacheModuleExpires.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -265,9 +247,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheModuleCERNMeta
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheModuleDigest
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheModuleExpires
@@ -458,3 +437,4 @@ Package=<3>
 }}}
 
 ###############################################################################
+
