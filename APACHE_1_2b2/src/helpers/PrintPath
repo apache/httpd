@@ -1,0 +1,25 @@
+#!/bin/sh
+# Look for $1 somewhere in $PATH
+#  will print out the full pathname unless
+#  called with the '-s' option
+#
+if [ $1 = "-s" ]; then
+    shift
+else
+    echo="yes"
+fi
+
+for path in `echo $PATH |
+ sed 's/^:/.:/
+      s/::/:.:/g
+      s/:$/:./
+      s/:/ /g' `
+do
+    if [ -x $path/$1 ]; then
+        if [ "$echo" = "yes" ]; then
+	    echo $path/$1
+	fi
+	exit 0
+    fi
+done
+exit 1
