@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/10 17:12:01 $]
+Last modified at [$Date: 2000/06/10 17:21:46 $]
 
 Release:
 
@@ -159,6 +159,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       would allow mod_mmap_static to munge what the translation has
       decided to do.
         Status: Greg +1 (volunteers), Ryan +1
+
+    * Go through ap_config.h and namespace-protect the symbols (e.g. USE_*).
+      Some symbols can/should move to mpm_common.h where possible.
 
 Other bugs that need fixing:
 
