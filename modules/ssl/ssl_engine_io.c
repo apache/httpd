@@ -334,7 +334,7 @@ static apr_status_t churn (SSLFilterRec *pRec,
     return churn_output(pRec);
 }
 
-apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
+static apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 {
     SSLFilterRec *pRec=f->ctx;
     apr_bucket *pbktIn;
@@ -391,8 +391,8 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
     return APR_SUCCESS;
 }
 
-apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-                          ap_input_mode_t eMode, apr_off_t *readbytes)
+static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
+                                        ap_input_mode_t eMode, apr_off_t *readbytes)
 {
     apr_status_t ret;
     SSLFilterRec *pRec        = f->ctx;
@@ -417,7 +417,7 @@ apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
     return APR_SUCCESS;
 }
 
-apr_status_t ssl_io_filter_cleanup (void *data)
+static apr_status_t ssl_io_filter_cleanup (void *data)
 {
     apr_status_t ret;
     SSLFilterRec *pRec = (SSLFilterRec *)data;
