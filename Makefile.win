@@ -20,8 +20,8 @@
 # preferably with the drive designation!
 
 !IF "$(INSTDIR)" == ""
-INSTDIR=\Apache2.0
-!MESSAGE Using default install directory \Apache2.0
+INSTDIR=\Apache2
+!MESSAGE Using default install directory $(INSTDIR)
 !ENDIF 
 
 !IFNDEF MAKEOPT
