@@ -1,4 +1,10 @@
 Changes with Apache 2.0.45
+
+  *) Prevent endless loops of internal redirects in mod_rewrite by
+     aborting after exceeding a limit of internal redirects. The
+     limit defaults to 10 and can be changed using the RewriteOptions
+     directive. PR 17462.  [André Malo]
+
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
      all worker threads are busy. 
      [Igor Nazarenko <igor_nazarenko@hotmail.com>]
@@ -9,6 +15,10 @@ Changes with Apache 2.0.45
   *) you can now specify the compression level for mod_deflate. 
      [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
      Michael Schroepl <Michael.Schroepl@telekurs.de>]
+
+  *) mod_deflate: Extend the DeflateFilterNote directive to
+     allow accurate logging of the filter's in- and outstream.
+     [André Malo]
 
   *) Allow SSLMutex to select/use the full range of APR locking
      mechanisms available to it. Also, fix the bug that SSLMutex uses

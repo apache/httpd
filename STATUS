@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/13 19:34:14 $]
+Last modified at [$Date: 2003/03/19 12:50:56 $]
 
 Release:
 
@@ -134,14 +134,6 @@ PATCHES TO PORT FROM 2.1
       modules/mappers/mod_alias.c: r1.49
       +1: nd, trawick (this is simple...  look how query string is
           appended in the other situation)
-
-    * Prevent endless loops of internal redirects in mod_rewrite by
-      aborting after exceeding a limit of internal redirects. The
-      limit defaults to 10 and can be changed using the RewriteOptions
-      directive. PR 17462.
-      modules/mappers/mod_rewrite.c: r1.148
-      modules/mappers/mod_rewrite.h: r1.43
-      +1: nd, wrowe, ianh
 
     * mod_autoindex emits and accepts modern query string parameter
       delimiters (;). Thus column headers no longer contain unescaped

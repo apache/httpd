@@ -212,6 +212,8 @@
 
 #define MAX_NMATCH    10
 
+/* default maximum number of internal redirects */
+#define REWRITE_REDIRECT_LIMIT 10
 
 
 /*
@@ -271,6 +273,7 @@ typedef struct {
     apr_array_header_t *rewriteconds;    /* the RewriteCond entries (temporary) */
     apr_array_header_t *rewriterules;    /* the RewriteRule entries */
     server_rec   *server;          /* the corresponding server indicator */
+    int          redirect_limit;   /* maximum number of internal redirects */
 } rewrite_server_conf;
 
 
@@ -284,7 +287,16 @@ typedef struct {
     apr_array_header_t *rewriterules;    /* the RewriteRule entries */
     char         *directory;       /* the directory where it applies */
     const char   *baseurl;         /* the base-URL  where it applies */
+    int          redirect_limit;   /* maximum number of internal redirects */
 } rewrite_perdir_conf;
+
+
+    /* the per-request configuration
+     */
+typedef struct {
+    int           redirects;       /* current number of redirects */
+    int           redirect_limit;  /* maximum number of redirects */
+} rewrite_request_conf;
 
 
     /* the cache structures,
@@ -343,8 +355,6 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
                                       void *dconf,
                                       const char *option);
-static const char *cmd_rewriteoptions_setoption(apr_pool_t *p, int *options,
-                                                const char *name);
 static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, const char *a1);
 static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, const char *a1);
 static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, 
@@ -466,6 +476,7 @@ static int    prefix_stat(const char *path, apr_finfo_t *sb);
 static void   add_env_variable(request_rec *r, char *s);
 static void   add_cookie(request_rec *r, char *s);
 static int    subreq_ok(request_rec *r);
+static int    is_redirect_limit_exceeded(request_rec *r);
 
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);

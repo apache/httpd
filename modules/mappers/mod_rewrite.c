@@ -206,6 +206,7 @@ static void *config_server_create(apr_pool_t *p, server_rec *s)
     a->rewriteconds    = apr_array_make(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = apr_array_make(p, 2, sizeof(rewriterule_entry));
     a->server          = s;
+    a->redirect_limit  = 0; /* unset (use default) */
 
     return (void *)a;
 }
@@ -222,6 +223,9 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
     a->state   = overrides->state;
     a->options = overrides->options;
     a->server  = overrides->server;
+    a->redirect_limit = overrides->redirect_limit
+                          ? overrides->redirect_limit
+                          : base->redirect_limit;
 
     if (a->options & OPTION_INHERIT) {
         /*
@@ -278,6 +282,7 @@ static void *config_perdir_create(apr_pool_t *p, char *path)
     a->baseurl         = NULL;
     a->rewriteconds    = apr_array_make(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = apr_array_make(p, 2, sizeof(rewriterule_entry));
+    a->redirect_limit  = 0; /* unset (use server config) */
 
     if (path == NULL) {
         a->directory = NULL;
@@ -308,6 +313,9 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
     a->options   = overrides->options;
     a->directory = overrides->directory;
     a->baseurl   = overrides->baseurl;
+    a->redirect_limit = overrides->redirect_limit
+                          ? overrides->redirect_limit
+                          : base->redirect_limit;
 
     if (a->options & OPTION_INHERIT) {
         a->rewriteconds = apr_array_append(p, overrides->rewriteconds,
@@ -351,34 +359,48 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
                                       void *in_dconf, const char *option)
 {
-    rewrite_perdir_conf *dconf = in_dconf;
-    rewrite_server_conf *sconf;
-    const char *err;
+    int options = 0, limit = 0;
+    char *w;
 
-    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    while (*option) {
+        w = ap_getword_conf(cmd->pool, &option);
 
+        if (!strcasecmp(w, "inherit")) {
+            options |= OPTION_INHERIT;
+        }
+        else if (!strncasecmp(w, "MaxRedirects=", 13)) {
+            limit = atoi(&w[13]);
+            if (limit <= 0) {
+                return "RewriteOptions: MaxRedirects takes a number greater "
+                       "than zero.";
+            }
+        }
+        else if (!strcasecmp(w, "MaxRedirects")) { /* be nice */
+            return "RewriteOptions: MaxRedirects has the format MaxRedirects"
+                   "=n.";
+        }
+        else {
+            return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
+                               w, "'", NULL);
+        }
+    }
+
+    /* put it into the appropriate config */
     if (cmd->path == NULL) { /* is server command */
-        err = cmd_rewriteoptions_setoption(cmd->pool,
-                                           &(sconf->options), option);
+        rewrite_server_conf *conf =
+            ap_get_module_config(cmd->server->module_config,
+                                 &rewrite_module);
+
+        conf->options |= options;
+        conf->redirect_limit = limit;
     }
-    else {                 /* is per-directory command */
-        err = cmd_rewriteoptions_setoption(cmd->pool,
-                                           &(dconf->options), option);
+    else {                  /* is per-directory command */
+        rewrite_perdir_conf *conf = in_dconf;
+
+        conf->options |= options;
+        conf->redirect_limit = limit;
     }
 
-    return err;
-}
-
-static const char *cmd_rewriteoptions_setoption(apr_pool_t *p, int *options,
-                                                const char *name)
-{
-    if (strcasecmp(name, "inherit") == 0) {
-        *options |= OPTION_INHERIT;
-    }
-    else {
-        return apr_pstrcat(p, "RewriteOptions: unknown option '",
-                          name, "'", NULL);
-    }
     return NULL;
 }
 
@@ -1666,12 +1688,75 @@ static int handler_redirect(request_rec *r)
         return DECLINED;
     }
 
+    if (is_redirect_limit_exceeded(r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "mod_rewrite: maximum number of internal redirects "
+                      "reached. Assuming configuration error. Use "
+                      "'RewriteOptions MaxRedirects' to increase the limit "
+                      "if neccessary.");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     /* now do the internal redirect */
     ap_internal_redirect(apr_pstrcat(r->pool, r->filename+9,
                                      r->args ? "?" : NULL, r->args, NULL), r);
 
     /* and return gracefully */
     return OK;
+}
+
+/*
+ * check whether redirect limit is reached
+ */
+static int is_redirect_limit_exceeded(request_rec *r)
+{
+    request_rec *top = r;
+    rewrite_request_conf *reqc;
+    rewrite_perdir_conf *dconf;
+
+    /* we store it in the top request */
+    while (top->main) {
+        top = top->main;
+    }
+    while (top->prev) {
+        top = top->prev;
+    }
+
+    /* fetch our config */
+    reqc = (rewrite_request_conf *) ap_get_module_config(top->request_config,
+                                                         &rewrite_module);
+
+    /* no config there? create one. */
+    if (!reqc) {
+        rewrite_server_conf *sconf;
+
+        reqc = apr_palloc(top->pool, sizeof(rewrite_request_conf));
+        sconf = ap_get_module_config(r->server->module_config, &rewrite_module);
+
+        reqc->redirects = 0;
+        reqc->redirect_limit = sconf->redirect_limit
+                                 ? sconf->redirect_limit
+                                 : REWRITE_REDIRECT_LIMIT;
+
+        /* associate it with this request */
+        ap_set_module_config(top->request_config, &rewrite_module, reqc);
+    }
+
+    /* allow to change the limit during redirects. */
+    dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
+                                                        &rewrite_module);
+
+    /* 0 == unset; take server conf ... */
+    if (dconf->redirect_limit) {
+        reqc->redirect_limit = dconf->redirect_limit;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                  "mod_rewrite's internal redirect status: %d/%d.",
+                  reqc->redirects, reqc->redirect_limit);
+
+    /* and now give the caller a hint */
+    return (reqc->redirects++ >= reqc->redirect_limit);
 }
 
 
