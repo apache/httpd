@@ -1,5 +1,7 @@
 Changes with Apache 2.0.49
 
+  *) Improve 'configure --help' output for some modules.  [Astrid Keﬂler]
+
   *) Correct UseCanonicalName Off to properly check incoming port number.
      [Jim Jagielski]
 
