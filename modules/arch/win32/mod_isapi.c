@@ -86,7 +86,7 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "util_script.h"
-
+#include "mod_core.h"
 
 /* We use the exact same header file as the original */
 #include <HttpExt.h>
