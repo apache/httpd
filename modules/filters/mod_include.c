@@ -1020,10 +1020,10 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    if ((apr_createprocattr_init(&procattr, r->pool) != APR_SUCCESS) ||
-        (apr_setprocattr_io(procattr, APR_NO_PIPE, 
-                           APR_FULL_BLOCK, APR_NO_PIPE) != APR_SUCCESS) ||
-        (apr_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
+    if (((rc = apr_createprocattr_init(&procattr, r->pool)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_io(procattr, APR_NO_PIPE, 
+                                  APR_FULL_BLOCK, APR_NO_PIPE)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
 #ifdef RLIMIT_CPU
         ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
 #endif
@@ -1033,9 +1033,9 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
 #ifdef RLIMIT_NPROC
         ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
-        (apr_setprocattr_cmdtype(procattr, APR_SHELLCMD) != APR_SUCCESS)) {
+        ((rc = apr_setprocattr_cmdtype(procattr, APR_SHELLCMD)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
             "couldn't initialize proc attributes: %s %s", r->filename, s);
         rc = !APR_SUCCESS;
     }
@@ -1050,7 +1050,7 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
