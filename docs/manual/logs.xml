@@ -4,7 +4,8 @@
 <!-- $LastChangedRevision$ -->
 
 <!--
- Copyright 2002-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or it licensors,
+                     as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -108,7 +109,7 @@
     <p>It is not possible to customize the error log by adding or
     removing information. However, error log entries dealing with
     particular requests have corresponding entries in the <a
-    href="#accesslog">access log</a>. For example, the above example
+    href="#accesslog">access log</a>. For instance, the above example
     entry corresponds to an access log entry with status code 403.
     Since it is possible to customize the access log, you can
     obtain more information about error conditions using that log
@@ -236,7 +237,7 @@
         <dd>The "hyphen" in the output indicates that the requested
         piece of information is not available. In this case, the
         information that is not available is the RFC 1413 identity of
-        the client determined by <code>identd</code> on the clients
+        the client determined by <code>identd</code> on the client's
         machine. This information is highly unreliable and should
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
@@ -424,7 +425,7 @@
       </example>
 
       <p>Although we have just shown that conditional logging is very
-      powerful and flexibly, it is not the only way to control the
+      powerful and flexible, it is not the only way to control the
       contents of the logs. Log files are more useful when they
       contain a complete record of server activity. It is often
       easier to simply post-process the log files to remove requests
