@@ -1476,7 +1476,7 @@ fi
 ####################################################################
 ## Now create modules.c
 ##
-sed 's/_module//' $tmpfile | awk >modules.c '
+cat $tmpfile | sed 's/_module//' | awk >modules.c '
     BEGIN {
 	modules[n++] = "core"
 	pmodules[pn++] = "core"
