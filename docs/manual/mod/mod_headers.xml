@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.15 $ -->
+<!-- $Revision: 1.16 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -126,27 +126,6 @@ is available only in Apache 2.0</compatibility>
 </section>
 
 <directivesynopsis>
-<name>ErrorHeader</name>
-<description>Configure HTTP response headers also for error responses</description>
-<syntax>ErrorHeader set|append|add|unset|echo <var>header</var>
-[<var>value</var>] [env=[!]<var>variable</var>]</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<override>FileInfo</override>
-
-<usage>
-<p>This directive can replace, merge or remove HTTP response headers also during
-<code>3<var>xx</var></code>, <code>4<var>xx</var></code> and
-<code>5<var>xx</var></code> replies. For normal replies use the <directive
-module="mod_headers">Header</directive> directive.</p>
-
-<p>This directive is identical to the <directive
-module="mod_headers">Header</directive> directive in all other respects.
-Consult this directive for more information on the syntax.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
@@ -217,8 +196,8 @@ Consult this directive for more information on the syntax.</p>
 <directivesynopsis>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
-<syntax>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var>] [env=[!]<var>variable</var>]</syntax>
+<syntax>Header [<var>condition</var>] set|append|add|unset|echo
+<var>header</var> [<var>value</var>] [env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -227,7 +206,15 @@ Consult this directive for more information on the syntax.</p>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
-    modified. The action it performs is determined by the first
+    modified.</p>
+
+    <p>The optional <var>condition</var> can be either <code>onsuccess</code>
+    or <code>always</code>. It determines, when the specified action should be
+    taken. <code>onsuccess</code> stands for <code>2<var>xx</var></code> status
+    codes and <code>always</code> for all status codes (including
+    <code>2<var>xx</var></code>).</p>
+
+    <p>The action it performs is determined by the second
     argument. This can be one of the following values:</p>
 
     <dl>
