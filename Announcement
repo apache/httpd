@@ -18,8 +18,9 @@
 
  For a detailed list of changes please read the CHANGES file in the
  distribution and the "New Features with Apache 1.3" document at
- http://www.apache.org/docs/new_features_1_3.html.  For your convenience here
- is a short summary of all major changes between Apache 1.2 and 1.3.
+     http://www.apache.org/docs/new_features_1_3.html
+ For your convenience here is a short summary of all major changes between
+ Apache 1.2 and 1.3:
 
    o Ported to Windows 95/NT
        http://www.apache.org/dist/apache_1.3b7/htdocs/manual/windows
