@@ -108,8 +108,6 @@ stat() properly */
 #endif
 
 #ifdef WIN32
-/* include process.h first so we can override spawn[lv]e* properly */
-#include <process.h>
 #include "../os/win32/os.h"
 #else
 #include "os.h"
@@ -1065,13 +1063,8 @@ typedef int rlim_t;
 #ifndef O_BINARY
 #define O_BINARY (0)
 #endif
-
-#else /* WIN32 */
-#include <winsock2.h>
-#include <malloc.h>
-#include <io.h>
-#include <fcntl.h>
 #endif /* ndef WIN32 */
+
 #include <limits.h>
 #include <time.h>		/* for ctime */
 #ifdef WIN32
