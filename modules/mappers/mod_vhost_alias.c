@@ -457,26 +457,20 @@ static int mva_translate(request_rec *r)
     return OK;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_translate_name(mva_translate, NULL, NULL, HOOK_MIDDLE);
+};
 
 module MODULE_VAR_EXPORT vhost_alias_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,			/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     mva_create_server_config,	/* server config */
     mva_merge_server_config,	/* merge server configs */
     mva_commands,		/* command ap_table_t */
     NULL,			/* handlers */
-    mva_translate,		/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks              /* register hooks */
 };
+
