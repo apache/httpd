@@ -173,8 +173,8 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
-sinclude(lib/apr/apr_common.m4)
-sinclude(lib/apr/hints.m4)
+sinclude(srclib/apr/apr_common.m4)
+sinclude(srclib/apr/hints.m4)
 sinclude(hints.m4)
 
 AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
@@ -226,7 +226,7 @@ AC_DEFUN(APACHE_MODPATH_INIT,[
   modpath_current=modules/$1
   modpath_static=
   modpath_shared=
-  test -d $1 || $srcdir/helpers/mkdir.sh $modpath_current
+  test -d $1 || $srcdir/build/mkdir.sh $modpath_current
   > $modpath_current/modules.mk
 ])dnl
 dnl
