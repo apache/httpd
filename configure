@@ -263,7 +263,8 @@ done
 IFS="$OIFS"
 
 ##
-## preprocess path layout definititions so that these can be overriden
+## check for help option and preprocess path layout definititions so that
+## these can be overriden
 ##
 apc_prev=""
 OIFS1="$IFS" IFS="$DIFS"
@@ -282,6 +283,66 @@ do
     esac
 
     case "$apc_option" in
+        --help | -h | -help )
+            echo "Usage: configure [options]"
+            echo "Options: [defaults in brackets after descriptions]"
+            echo "General options:"
+            echo " --quiet, --silent      do not print messages"
+            echo " --verbose, -v          print even more messages"
+            echo " --shadow[=DIR]         switch to a shadow tree (under DIR) for building"
+            echo ""
+            echo "Stand-alone options:"
+            echo " --help, -h             print this message"
+            echo " --show-layout          print installation path layout (check and debug)"
+            echo ""
+            echo "Installation layout options:"
+            echo " --with-layout=[F:]ID   use installation path layout ID (from file F)"
+            echo " --target=TARGET        install server executable and associated files using basename TARGET"
+            echo " --prefix=PREFIX        install architecture-independent files in PREFIX"
+            echo " --exec-prefix=EPREFIX  install architecture-dependent files in EPREFIX"
+            echo " --bindir=DIR           install user     executables in DIR"
+            echo " --sbindir=DIR          install sysadmin executables in DIR"
+            echo " --libexecdir=DIR       install program  executables in DIR"
+            echo " --mandir=DIR           install manual pages in DIR"
+            echo " --sysconfdir=DIR       install configuration files in DIR"
+            echo " --datadir=DIR          install read-only  data files in DIR"
+            echo " --includedir=DIR       install includes files in DIR"
+            echo " --localstatedir=DIR    install modifiable data files in DIR"
+            echo " --runtimedir=DIR       install runtime data in DIR"
+            echo " --logfiledir=DIR       install logfile data in DIR"
+            echo " --proxycachedir=DIR    install proxy cache data in DIR"
+            echo ""
+            echo "Configuration options:"
+            echo " --enable-rule=NAME     enable  a particular Rule named 'NAME'"
+            echo " --disable-rule=NAME    disable a particular Rule named 'NAME'"
+            $aux/ppl.sh $rulelist
+            echo " --add-module=FILE      on-the-fly copy & activate a third-party Module source"
+            echo " --activate-module=FILE on-the-fly activate existing third-party Module source"
+            echo " --permute-module=N1:N2 permute module 'N1' with module 'N2' in the configuration"
+            echo " --enable-module=NAME   enable  a particular Module named 'NAME'"
+            echo " --disable-module=NAME  disable a particular Module named 'NAME'"
+            $aux/ppl.sh $modulelist
+            echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a shared object"
+            echo " --disable-shared=NAME  disable build of Module named 'NAME' as a shared object"
+            echo " --with-perl=FILE       set the path to the optional Perl interpreter to use"
+            echo " --without-support      disable the build and installation of support tools"
+            echo " --without-confadjust   disable some build user/situation adjustments to config files"
+            echo ""
+            echo "suEXEC options:"
+            echo " --enable-suexec        enable the suEXEC feature"
+            echo " --suexec-caller=NAME   set the suEXEC username of the allowed caller [$suexec_caller]"
+            echo " --suexec-docroot=DIR   set the suEXEC root directory [PREFIX/share/htdocs]"
+            echo " --suexec-logfile=FILE  set the suEXEC logfile [PREFIX/var/log/suexec_log]"
+            echo " --suexec-userdir=DIR   set the suEXEC user subdirectory [$suexec_userdir]"
+            echo " --suexec-uidmin=UID    set the suEXEC minimal allowed UID [$suexec_uidmin]"
+            echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
+            echo " --suexec-safepath=PATH set the suEXEC safe PATH [$suexec_safepath]"
+            echo ""
+            echo "Deprecated options:"
+            echo " --layout               backward compat only: use --show-layout"
+            echo " --compat               backward compat only: use --with-layout=Apache"
+            exit 0
+            ;;
         --with-layout=*|--compat)
 	    if [ ".$apc_option" = ".--compat" ]; then
                 apc_optarg="Apache"
@@ -420,66 +481,6 @@ do
             sedsubst=$shadowsedsubst
             addconf=$shadowaddconf
             tplconf=$shadowtplconf
-            ;;
-        --help | -h | -help )
-            echo "Usage: configure [options]"
-            echo "Options: [defaults in brackets after descriptions]"
-            echo "General options:"
-            echo " --quiet, --silent      do not print messages"
-            echo " --verbose, -v          print even more messages"
-            echo " --shadow[=DIR]         switch to a shadow tree (under DIR) for building"
-            echo ""
-            echo "Stand-alone options:"
-            echo " --help, -h             print this message"
-            echo " --show-layout          print installation path layout (check and debug)"
-            echo ""
-            echo "Installation layout options:"
-            echo " --with-layout=[F:]ID   use installation path layout ID (from file F)"
-            echo " --target=TARGET        install server executable and associated files using basename TARGET"
-            echo " --prefix=PREFIX        install architecture-independent files in PREFIX"
-            echo " --exec-prefix=EPREFIX  install architecture-dependent files in EPREFIX"
-            echo " --bindir=DIR           install user     executables in DIR"
-            echo " --sbindir=DIR          install sysadmin executables in DIR"
-            echo " --libexecdir=DIR       install program  executables in DIR"
-            echo " --mandir=DIR           install manual pages in DIR"
-            echo " --sysconfdir=DIR       install configuration files in DIR"
-            echo " --datadir=DIR          install read-only  data files in DIR"
-            echo " --includedir=DIR       install includes files in DIR"
-            echo " --localstatedir=DIR    install modifiable data files in DIR"
-            echo " --runtimedir=DIR       install runtime data in DIR"
-            echo " --logfiledir=DIR       install logfile data in DIR"
-            echo " --proxycachedir=DIR    install proxy cache data in DIR"
-            echo ""
-            echo "Configuration options:"
-            echo " --enable-rule=NAME     enable  a particular Rule named 'NAME'"
-            echo " --disable-rule=NAME    disable a particular Rule named 'NAME'"
-            $aux/ppl.sh $rulelist
-            echo " --add-module=FILE      on-the-fly copy & activate a third-party Module source"
-            echo " --activate-module=FILE on-the-fly activate existing third-party Module source"
-            echo " --permute-module=N1:N2 permute module 'N1' with module 'N2' in the configuration"
-            echo " --enable-module=NAME   enable  a particular Module named 'NAME'"
-            echo " --disable-module=NAME  disable a particular Module named 'NAME'"
-            $aux/ppl.sh $modulelist
-            echo " --enable-shared=NAME   enable  build of Module named 'NAME' as a shared object"
-            echo " --disable-shared=NAME  disable build of Module named 'NAME' as a shared object"
-            echo " --with-perl=FILE       set the path to the optional Perl interpreter to use"
-            echo " --without-support      disable the build and installation of support tools"
-            echo " --without-confadjust   disable some build user/situation adjustments to config files"
-            echo ""
-            echo "suEXEC options:"
-            echo " --enable-suexec        enable the suEXEC feature"
-            echo " --suexec-caller=NAME   set the suEXEC username of the allowed caller [$suexec_caller]"
-            echo " --suexec-docroot=DIR   set the suEXEC root directory [PREFIX/share/htdocs]"
-            echo " --suexec-logfile=FILE  set the suEXEC logfile [PREFIX/var/log/suexec_log]"
-            echo " --suexec-userdir=DIR   set the suEXEC user subdirectory [$suexec_userdir]"
-            echo " --suexec-uidmin=UID    set the suEXEC minimal allowed UID [$suexec_uidmin]"
-            echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
-            echo " --suexec-safepath=PATH set the suEXEC safe PATH [$suexec_safepath]"
-            echo ""
-            echo "Deprecated options:"
-            echo " --layout               backward compat only: use --show-layout"
-            echo " --compat               backward compat only: use --with-layout=Apache"
-            exit 0
             ;;
         --show-layout|--layout)
             show_layout=1
