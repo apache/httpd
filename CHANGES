@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) When a proxied site was being served, Apache was replacing
+     the original site Server header with it's own, which is not
+     allowed by RFC2616. Fixed. [Graham Leggett]
+
   *) Fix a mod_cgid problem that left daemon processes stranded
      in some server restart scenarios.  [Jeff Trawick]
 
