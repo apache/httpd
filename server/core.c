@@ -2818,10 +2818,10 @@ AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
 AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
        (void *)APR_XtOffsetOf(core_dir_config, handler), OR_FILEINFO,
    "a handler name that overrides any other configured handler"),
-AP_INIT_ITERATE("SetOutputFilter", ap_set_string_slot, 
+AP_INIT_TAKE1("SetOutputFilter", ap_set_string_slot, 
        (void *)APR_XtOffsetOf(core_dir_config, output_filters), OR_FILEINFO,
    "filter (or ; delimited list of filters) to be run on the request content"),
-AP_INIT_ITERATE("SetInputFilter", ap_set_string_slot, 
+AP_INIT_TAKE1("SetInputFilter", ap_set_string_slot, 
        (void *)APR_XtOffsetOf(core_dir_config, input_filters), OR_FILEINFO,
    "filter (or ; delimited list of filters) to be run on the request body"),
 
@@ -3359,14 +3359,14 @@ static void core_insert_filter(request_rec *r)
     const char *filter, *filters = conf->output_filters;
 
     if (filters) {
-        while ((filter = ap_getword(r->pool, &filters, ';')) && filter[0]) {
+        while (*filters && (filter = ap_getword(r->pool, &filters, ';'))) {
             ap_add_output_filter(filter, NULL, r, r->connection);
         }
     }
 
     filters = conf->input_filters;
     if (filters) {
-        while ((filter = ap_getword(r->pool, &filters, ';')) && filter[0]) {
+        while (*filters && (filter = ap_getword(r->pool, &filters, ';'))) {
             ap_add_input_filter(filter, NULL, r, r->connection);
         }
     }
