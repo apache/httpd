@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.7 -->
 <manualpage metafile="invoking.xml.meta">
 
   <title>Apache starten</title>
