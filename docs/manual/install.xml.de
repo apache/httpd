@@ -588,11 +588,12 @@
 
   <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p>Im Apache Handbuch finden Sie unter <a
-    href="./">docs/manual/</a> oder <a
-    href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
-    eine komplette Referenz der verf&#252;gbaren <a
-    href="mod/directives.html">Konfigurationsanweisungen</a>.</p>
+    <p>Werfen Sie auch einen Blick in das Apache Handbuch unter <a
+    href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
+	sowie eine komplette Referenz der verf&#252;gbaren <a
+    href="mod/directives.html">Konfigurationsanweisungen</a> finden
+	Sie unter <a href="http://httpd.apache.org/docs-2.0/"
+	>http://httpd.apache.org/docs-2.0/</a>.</p>
 </section>
 
 <section id="test"><title>Testen</title>
