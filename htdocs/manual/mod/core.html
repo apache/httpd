@@ -94,13 +94,14 @@ contain any server directive allowed in the <em>server config</em> context.
 
 <h2><A name="accessfilename">AccessFileName directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AccessFileName} directive&gt; -->
-<strong>Syntax:</strong> AccessFileName <em>filename</em><br>
+<strong>Syntax:</strong> AccessFileName <em>filename filename ...</em><br>
 <strong>Default:</strong> <code>AccessFileName .htaccess</code><br>
 <strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> AccessFileName can accept more than one filename only in Apache 1.3 and later<p>
 
-When returning a document to the client the server looks for an
-access control file with this name in every directory of the path to
+When returning a document to the client the server looks for the first existing
+access control file from this list of names in every directory of the path to
 the document, if access control files are enabled for that directory.
 
 For example:

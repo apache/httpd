@@ -417,7 +417,7 @@ const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
   
-    conf->access_name = arg;
+    conf->access_name = pstrdup(cmd->pool, arg);
     return NULL;
 }
 
@@ -1216,7 +1216,7 @@ command_rec core_cmds[] = {
 
 /* Old resource config file commands */
   
-{ "AccessFileName", set_access_name, NULL, RSRC_CONF, TAKE1, "Name of per-directory config files (default: .htaccess)" },
+{ "AccessFileName", set_access_name, NULL, RSRC_CONF, RAW_ARGS, "Name(s) of per-directory config files (default: .htaccess)" },
 { "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1, "Root directory of the document tree"  },
 { "ErrorDocument", set_error_document, NULL, OR_FILEINFO, RAW_ARGS, "Change responses for HTTP errors" },
 { "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS, "Controls what groups of directives can be configured by per-directory config files" },

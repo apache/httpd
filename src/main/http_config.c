@@ -864,11 +864,12 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 
 
 int parse_htaccess(void **result, request_rec *r, int override,
-		   char *d, char *filename)
+		   char *d, const char *access_name)
 {
-    FILE *f;
+    FILE *f = NULL;
     cmd_parms parms;
     const char *errmsg;
+    char *filename;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     void *dc;
@@ -888,7 +889,18 @@ int parse_htaccess(void **result, request_rec *r, int override,
     parms.server = r->server;
     parms.path = d;
 
-    if((f=pfopen(r->pool, filename, "r"))) {
+    if (access_name) {
+	while (!f && access_name[0]) {
+	    char *w = getword_conf(r->pool, &access_name);
+	    filename = make_full_path(r->pool, d, w);
+	    f=pfopen(r->pool, filename, "r");
+	}
+    }
+    else {
+	filename = make_full_path(r->pool, d, 0);
+	f=pfopen(r->pool, filename, "r");
+    }
+    if(f) {
         dc = create_per_dir_config (r->pool);
 	
         parms.infile = f;

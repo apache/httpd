@@ -275,7 +275,7 @@ void *merge_per_dir_configs (pool *p, void *base, void *new);
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
 int parse_htaccess(void **result, request_rec *r, int override,
-		   char *path, char *file);
+		   char *path, const char *access_name);
 const char *srm_command_loop (cmd_parms *parms, void *config);
 
 server_rec *init_virtual_host (pool *p, const char *hostname, server_rec *main_server);

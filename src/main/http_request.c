@@ -414,18 +414,8 @@ int directory_walk (request_rec *r)
 	 */
 	
 	if (overrides_here) {
-	    int len;
-
-	    if (test_htaccess == NULL) {
-		/* we delayed allocating this in case there wasn't a need */
-		test_htaccess = palloc (r->pool,
-		    test_filename_len + 1 + strlen (sconf->access_name));
-	    }
-	    len = test_dirname_tail - test_dirname;
-	    memcpy (test_htaccess, test_dirname, len);
-	    strcpy (test_htaccess + len, sconf->access_name);
-	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
-				  test_dirname, test_htaccess);
+  	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
+ 				  test_dirname, sconf->access_name);
 	    if (res) return res;
 	}
 
