@@ -100,6 +100,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "apr_strings.h"
 
 typedef struct auth_anon {
     char *password;
@@ -137,41 +138,48 @@ static void *create_anon_auth_dir_config(apr_pool_t *p, char *d)
 }
 
 static const char *anon_set_passwd_flag(cmd_parms *cmd,
-				 anon_auth_config_rec * sec, int arg)
+				 void *dummy, int arg)
 {
+    anon_auth_config_rec *sec = dummy;
     sec->auth_anon_mustemail = arg;
     return NULL;
 }
 
 static const char *anon_set_userid_flag(cmd_parms *cmd,
-				 anon_auth_config_rec * sec, int arg)
+				 void *dummy, int arg)
 {
+    anon_auth_config_rec *sec = dummy;
     sec->auth_anon_nouserid = arg;
     return NULL;
 }
+
 static const char *anon_set_logemail_flag(cmd_parms *cmd,
-				   anon_auth_config_rec * sec, int arg)
+				   void *dummy, int arg)
 {
+    anon_auth_config_rec *sec = dummy;
     sec->auth_anon_logemail = arg;
     return NULL;
 }
+
 static const char *anon_set_verifyemail_flag(cmd_parms *cmd,
-				      anon_auth_config_rec * sec, int arg)
+				      void *dummy, int arg)
 {
+    anon_auth_config_rec *sec = dummy;
     sec->auth_anon_verifyemail = arg;
     return NULL;
 }
 static const char *anon_set_authoritative_flag(cmd_parms *cmd,
-					anon_auth_config_rec * sec, int arg)
+					void *dummy, int arg)
 {
+    anon_auth_config_rec *sec = dummy;
     sec->auth_anon_authoritative = arg;
     return NULL;
 }
 
 static const char *anon_set_string_slots(cmd_parms *cmd,
-				  anon_auth_config_rec * sec, char *arg)
+				  void *dummy, const char *arg)
 {
-
+    anon_auth_config_rec *sec = dummy;
     auth_anon *first;
 
     if (!(*arg))
@@ -180,10 +188,8 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
     /* squeeze in a record */
     first = sec->auth_anon_passwords;
 
-    if (
-	   (!(sec->auth_anon_passwords = (auth_anon *) apr_palloc(cmd->pool, sizeof(auth_anon)))) ||
-           (!(sec->auth_anon_passwords->password = arg))
-    )
+    if (!(sec->auth_anon_passwords = apr_palloc(cmd->pool, sizeof(auth_anon))) ||
+       !(sec->auth_anon_passwords->password = apr_pstrdup(cmd->pool, arg)))
 	     return "Failed to claim memory for an anonymous password...";
 
     /* and repair the next */
@@ -194,19 +200,18 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
 
 static const command_rec anon_auth_cmds[] =
 {
-    {"Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, ITERATE,
-     "a space-separated list of user IDs"},
-    {"Anonymous_MustGiveEmail", anon_set_passwd_flag, NULL, OR_AUTHCFG, FLAG,
-     "Limited to 'on' or 'off'"},
-    {"Anonymous_NoUserId", anon_set_userid_flag, NULL, OR_AUTHCFG, FLAG,
-     "Limited to 'on' or 'off'"},
-{"Anonymous_VerifyEmail", anon_set_verifyemail_flag, NULL, OR_AUTHCFG, FLAG,
- "Limited to 'on' or 'off'"},
-    {"Anonymous_LogEmail", anon_set_logemail_flag, NULL, OR_AUTHCFG, FLAG,
-     "Limited to 'on' or 'off'"},
-    {"Anonymous_Authoritative", anon_set_authoritative_flag, NULL, OR_AUTHCFG, FLAG,
-     "Limited to 'on' or 'off'"},
-
+    AP_INIT_ITERATE("Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, 
+     "a space-separated list of user IDs"),
+    AP_INIT_FLAG("Anonymous_MustGiveEmail", anon_set_passwd_flag, NULL, 
+     OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_NoUserId", anon_set_userid_flag, NULL, OR_AUTHCFG, 
+     "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_VerifyEmail", anon_set_verifyemail_flag, NULL, 
+     OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_LogEmail", anon_set_logemail_flag, NULL, OR_AUTHCFG,
+     "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_Authoritative", anon_set_authoritative_flag, NULL, 
+     OR_AUTHCFG, "Limited to 'on' or 'off'"),
     {NULL}
 };
 
