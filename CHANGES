@@ -1,7 +1,12 @@
 Changes with Apache 2.0.51
 
-  *) Allow URLs for ServerAdmin. PR 28174. 
-     [Paul Querna]
+  *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
+     is set in r->subprocess_env allow mismatched query strings to pass.
+     PR 27758.  [Paul Querna, Geoffrey Young]
+
+  *) Accept URLs for the ServerAdmin directive. If the supplied
+     argument is not recognized as an URL, assume it's a mail address.
+     PR 28174.  [André Malo, Paul Querna]
 
   *) initialize server arrays prior to calling ap_setup_prelinked_modules
      so that static modules can push Defines values when registering
