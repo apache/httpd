@@ -171,7 +171,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
 
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(cache->handle, r->pool, type, key))) {
+        switch ((rv = cache_run_open_entity(cache->handle, r, type, key))) {
         case OK: {
             info = &(cache->handle->cache_obj->info);
             /* XXX:
@@ -244,8 +244,8 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity,
                                       const char *urlkey, apr_size_t len),
                                       (h, r, type,urlkey,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
-                                      (cache_handle_t *h, apr_pool_t *p, const char *type, 
-                                      const char *urlkey),(h,p,type,urlkey),
+                                      (cache_handle_t *h, request_rec *r, const char *type, 
+                                      const char *urlkey),(h,r,type,urlkey),
                                       DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
                                     (const char *type, const char *urlkey),

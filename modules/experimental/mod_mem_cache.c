@@ -311,7 +311,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, apr_pool_t *p, const char *type, const char *key) 
+static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key) 
 {
     cache_object_t *obj;
 
