@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
+     is set in r->subprocess_env allow mismatched query strings to pass.
+     PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
+
   *) logresolve: Allow size of log line buffer to be overridden at
      build time (MAXLINE).  PR 27793.  [Jeff Trawick]
 
