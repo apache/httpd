@@ -512,7 +512,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     }
 }
 
-static void *worker_thread(void *);
+static void *worker_thread(apr_thread_t *, void *);
 
 /* Starts a thread as long as we're below max_threads */
 static int start_thread(void)
@@ -579,7 +579,7 @@ static void check_pipe_of_death(void)
 
 /* idle_thread_count should be incremented before starting a worker_thread */
 
-static void *worker_thread(void *arg)
+static void *worker_thread(apr_thread_t *thd, void *arg)
 {
     apr_socket_t *csd = NULL;
     apr_pool_t *tpool;		/* Pool for this thread           */

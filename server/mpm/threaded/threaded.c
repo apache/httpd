@@ -520,7 +520,7 @@ static void check_pipe_of_death(void)
     apr_lock_release(pipe_of_death_mutex);
 }
 
-static void * worker_thread(void * dummy)
+static void * worker_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
@@ -671,7 +671,7 @@ static int check_signal(int signum)
     return 0;
 }
 
-static void *start_threads(void * dummy)
+static void *start_threads(apr_thread_t *thd, void * dummy)
 {
     thread_starter *ts = dummy;
     apr_thread_t **threads = ts->threads;
