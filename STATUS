@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/23 23:41:10 $]
+Last modified at [$Date: 2004/08/24 09:31:52 $]
 
 Release:
 
@@ -98,6 +98,15 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
+       +1: jorton
+
+    *) mod_ssl: Add ssl_is_https optional hook.
+       http://www.apache.org/~jorton/mod_ssl-2.0-ishttps.diff
+       +1: jorton
+
+    *) mod_rewrite: Add %{SSL:...} and %{HTTPS} support (regression from 1.3/mod_ssl).
+       http://www.apache.org/~jorton/mod_rewrite-2.0-sslvar.diff
+       PR: 30464
        +1: jorton
 
     *) Proposal: Several folks want to aggressively backport changes
