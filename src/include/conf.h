@@ -85,6 +85,7 @@ typedef int rlim_t;
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
 #define HAVE_CRYPT_H
+int gethostname(char *name, int namelen);
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
