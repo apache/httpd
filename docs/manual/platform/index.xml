@@ -23,16 +23,6 @@
     </dl>
 
     <dl>
-      <dt>Running Apache as a Service</dt>
-      <dd>
-        <p>Apache can be run as a service on Windows NT/2000.</p>
-
-        <p>See: <a href="win_service.html"
-        >Running Apache for Windows as a Service</a></p>
-      </dd>
-    </dl>
-
-    <dl>
       <dt>Compiling Apache</dt>
       <dd>
         <p>There are many important points before you begin compiling Apache.
