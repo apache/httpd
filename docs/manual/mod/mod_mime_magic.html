@@ -17,34 +17,56 @@
 
  <H1 align="CENTER">Module mod_mime_magic</H1>
 
-  This module is contained in the mod_mime_magic.c file, and is
-  an optional extension to the Apache HTTPD server.
-  It can be used to determine the MIME type of a file by looking at a
-  few bytes of its contents, the same way the Unix file(1) command works.
-  To use mod_mime_magic you have to enable the following line in the
-  server build <TT>Configuration</TT> file: 
+  <p>This module provides for determining the MIME type of a file by
+  looking at a few bytes of its contents.</p>
 
-  <PRE>
-      AddModule modules/standard/mod_mime_magic.o
-  </PRE>
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_mime_magic.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> mime_magic_module
+</P>
 
-  This should be listed <EM>before</EM> mod_mime in the build
-  <TT>Configuration</TT> file so that it will be used after mod_mime.
-  mod_mime_magic is intended as a "second line of defense" for cases
-  mod_mime cannot resolve.
+
 
   <H2>Summary</H2>
 
-  This module is derived from a free version of the <CODE>file(1)</CODE>
-  command for Unix,
-  which uses "magic numbers" and other hints from a file's contents to
-  figure out what the contents are.
-  In the case of this module,
-  it tries to figure out the MIME type of the file.
+  <p>This module determines the MIME type of files in the same way the
+  Unix file(1) command works: it looks at the first few bytes of
+  the file.  It is intended as a "second line of defense" for cases
+  that <a href="mod_mime.html">mod_mime</a> can't resolve.  To assure
+  that mod_mime gets first try at determining a file's MIME type,
+  be sure to list mod_mime_magic <STRONG>before</STRONG> mod_mime
+  in the configuration.
+
+  <p>This module is derived from a free version of the
+  <CODE>file(1)</CODE> command for Unix, which uses "magic numbers"
+  and other hints from a file's contents to figure out what the
+  contents are.  This module is active only if the magic file is
+  specified by the <A
+  HREF="#mimemagicfile"><CODE>MimeMagicFile</CODE></A> directive.
+  
+
+  <H2>Directives</H2>
   <P>
-  This module active only if the magic file is specified by the 
-  <A HREF="#mimemagicfile"><CODE>MimeMagicFile</CODE></A> directive.
-  <P>
+  <UL>
+   <LI><A HREF="#mimemagicfile">MimeMagicFile</A>
+   </LI>
+  </UL>
+  </P>
+
+  <h2>Format of the Magic File</h2>
+
+<P>
   The contents of the file are plain ASCII text in 4-5 columns.
   Blank lines are allowed but ignored.
   Commented lines use a hash mark "#".
@@ -135,7 +157,7 @@
 0       string          \037\213        application/octet-stream        x-gzip
 </PRE>
 
-  <H3>Performance Issues</H3>
+  <H2>Performance Issues</H2>
 
   This module is not for every system.  If your system is barely keeping
   up with its load or if you're performing a web server benchmark,
@@ -157,53 +179,6 @@
   top of the list of modules in the Configuration file.  The modules are
   listed in increasing priority so that will mean this one is used only
   as a last resort, just like it was designed to.
-
-  <H2>Directives</H2>
-  <P>
-  <UL>
-   <LI><A HREF="#mimemagicfile">MimeMagicFile</A>
-   </LI>
-  </UL>
-  </P>
-  <HR>
-  <H2><A NAME="mimemagicfile">
-   MimeMagicFile
-  </A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> MimeMagicFile <EM>magic-file-name</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> none
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> server config, virtual host
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Extension
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_mime_magic
-  <P>
-
-  The <CODE>MimeMagicFile</CODE> directive can be used to enable this module,
-  the default file is distributed at <CODE>conf/magic</CODE>.
-  Non-rooted paths are relative to the ServerRoot.  Virtual hosts
-  will use the same file as the main server unless a more specific setting
-  is used, in which case the more specific setting overrides the main server's
-  file.
-  <P>
-  <HR>
 
   <H2><A NAME="notes">Notes</A></H2>
 
@@ -270,6 +245,45 @@
  *
  */
 </PRE>
+
+  <HR>
+  <H2><A NAME="mimemagicfile">
+   MimeMagicFile
+  </A></H2>
+  <P>
+  <A
+   HREF="directive-dict.html#Syntax"
+   REL="Help"
+  ><STRONG>Syntax:</STRONG></A> MimeMagicFile <EM>magic-file-name</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Default"
+   REL="Help"
+  ><STRONG>Default:</STRONG></A> none
+  <BR>
+  <A
+   HREF="directive-dict.html#Context"
+   REL="Help"
+  ><STRONG>Context:</STRONG></A> server config, virtual host
+  <BR>
+  <A
+   HREF="directive-dict.html#Status"
+   REL="Help"
+  ><STRONG>Status:</STRONG></A> Extension
+  <BR>
+  <A
+   HREF="directive-dict.html#Module"
+   REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_mime_magic
+  <P>
+
+  The <CODE>MimeMagicFile</CODE> directive can be used to enable this module,
+  the default file is distributed at <CODE>conf/magic</CODE>.
+  Non-rooted paths are relative to the ServerRoot.  Virtual hosts
+  will use the same file as the main server unless a more specific setting
+  is used, in which case the more specific setting overrides the main server's
+  file.
+  <P>
 
  </BODY>
 </HTML>

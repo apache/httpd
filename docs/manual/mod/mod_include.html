@@ -15,12 +15,41 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_include</H1>
 
-This module is contained in the <CODE>mod_include.c</CODE> file, and
-is compiled in by default. It provides for server-parsed html
-documents. Several directives beyond the original NCSA definition were
-introduced in Apache 1.2 - these are flagged below with the phrase
-"Apache 1.2 and above".  Of particular significance are the new flow
-control directives documented at the bottom.
+<p>This module provides for server-parsed html documents.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_include.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> include_module
+</P>
+
+<h2>Summary</h2>
+
+<p>This module provides a handler which will process files before they
+are sent to the client.  The processing is controlled by specially
+formated SGML comments, referred to as <em>elements</em>.  These
+elements allow conditional text, the inclusion other files or
+programs, as well as the setting and printing of environment
+variables.</p>
+
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#xbithack">XBitHack</A>
+</UL>
+
+<p>See also: <a href="core.html#options">Options</a>
+and <a href="mod_mime.html#addhandler">AddHandler</a>.</p>
+
 
 <H2>Enabling Server-Side Includes</H2>
 
@@ -372,15 +401,16 @@ elements are:
     <EM>'string1    string2'</EM> results in <EM>string1    string2</EM>
 </PRE>
 
-<HR>
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#xbithack">XBitHack</A>
-</UL>
+<H2>Using Server Side Includes for ErrorDocuments</H2>
+
+There is <A HREF="../misc/custom_errordocs.html">a document</A> which
+describes how to use the features of mod_include to offer internationalized
+customized server error documents.
+<P>
+
 <HR>
 
-
-<H2><A NAME="xbithack">XBitHack</A></H2>
+<H2><A NAME="xbithack">XBitHack</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt XBitHack} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -429,13 +459,6 @@ the request.
 </DL>
 <P>
 
-<HR>
-<H2>Using Server Side Includes for ErrorDocuments</H2>
-
-There is <A HREF="../misc/custom_errordocs.html">a document</A> which
-describes how to use the features of mod_include to offer internationalized
-customized server error documents.
-<P>
 
 <!--#include virtual="footer.html" -->
 </BODY>
