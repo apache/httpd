@@ -166,6 +166,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_authz_default.html">Apache Module mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Apache Module mod_authz_groupfile</a></li>
 <li><a href="mod/mod_authz_host.html">Apache Module mod_authz_host</a></li>
+<li><a href="mod/mod_authz_owner.html">Apache Module mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache Module mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Module mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
