@@ -322,12 +322,12 @@ of the available directives.
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A>
-    <CODE>RewriteEngine</CODE> {<CODE>on,off</CODE>}<BR>
+    RewriteEngine on|off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
 ><STRONG>Default:</STRONG></A>
-    <STRONG><CODE>RewriteEngine off</CODE></STRONG><BR>
+    <CODE>RewriteEngine off</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -373,7 +373,7 @@ directive for each virtual host in which you wish to use it.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteOptions</CODE> <EM>Option</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteOptions <EM>Option</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -422,7 +422,7 @@ strings can be one of the following:
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteLog</CODE> <EM>Filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteLog <EM>Filename</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -496,11 +496,11 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteLogLevel</CODE> <EM>Level</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteLogLevel <EM>Level</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <STRONG><CODE>RewriteLogLevel 0</CODE></STRONG>
+><STRONG>Default:</STRONG></A> <CODE>RewriteLogLevel 0</CODE>
 <BR>
 <A
  HREF="directive-dict.html#Context"
@@ -559,7 +559,7 @@ RewriteLogLevel 3
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteLock</CODE> <EM>Filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteLock <EM>Filename</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -600,8 +600,8 @@ other types of rewriting maps.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteMap</CODE> <EM>MapName </EM>
-    <EM>MapType</EM><CODE>:</CODE><EM>MapSource</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteMap <EM>MapName </EM>
+    <EM>MapType</EM>:<EM>MapSource</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -844,7 +844,7 @@ external lookup only happens once!
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteBase</CODE> <EM>BaseURL</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteBase <EM>BaseURL</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -975,7 +975,7 @@ sure the design and implementation is correct.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteCond</CODE> <EM>TestString</EM>
+><STRONG>Syntax:</STRONG></A> RewriteCond <EM>TestString</EM>
     <EM>CondPattern</EM><BR>
 <A
  HREF="directive-dict.html#Default"
@@ -1324,7 +1324,7 @@ use any other browser you get the standard homepage.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteRule</CODE> <EM>Pattern</EM> <EM>Substitution</EM><BR>
+><STRONG>Syntax:</STRONG></A> RewriteRule <EM>Pattern</EM> <EM>Substitution</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"

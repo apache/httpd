@@ -84,7 +84,8 @@ always available.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AccessFileName <EM>filename filename ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AccessFileName <EM>filename</em>
+[<em>filename</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -119,7 +120,7 @@ AllowOverride None<BR>
 
 <H2><A NAME="adddefaultcharset">AddDefaultCharset directive</A></H2>
 <A HREF="directive-dict.html#Syntax" REL="Help"><STRONG>Syntax:</STRONG></A> 
-AddDefaultCharset <EM>Off / On / charset</EM><BR>
+AddDefaultCharset On|Off|<em>charset</em><BR>
 <A HREF="directive-dict.html#Context" REL="Help" ><STRONG>Context:</STRONG></A> 
 all<BR>
 <A HREF="directive-dict.html#Status" REL="Help" ><STRONG>Status:</STRONG></A> 
@@ -136,7 +137,7 @@ in the body of the document via a <CODE>META</CODE> tag. A setting
 of <CODE>AddDefaultCharset Off</CODE> disables this functionality.
 <CODE>AddDefaultCharset On</CODE> enables Apache's internal
 default charset of <code>iso-8859-1</code> as required by the
-directive. You can also specify an alternate charset to be used;
+directive. You can also specify an alternate <em>charset</em> to be used;
 e.g. <code>AddDefaultCharset utf-8</code>.
 <P><HR>
 
@@ -145,7 +146,7 @@ e.g. <code>AddDefaultCharset utf-8</code>.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddModule <EM>module module ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddModule <EM>module</em> [<em>module</em>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -171,7 +172,8 @@ directive.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AllowOverride <EM>override override ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AllowOverride All|None|<EM>directive-type</em>
+[<em>directive-type</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -185,13 +187,21 @@ directive.<P><HR>
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<P>
 
-When the server finds an .htaccess file (as specified by
+<p>When the server finds an .htaccess file (as specified by
 <A HREF="#accessfilename">AccessFileName</A>) it needs to know which
-directives declared in that file can override earlier access information.<P>
+directives declared in that file can override earlier access information.</p>
 
-<EM>Override</EM> can be set to <CODE>None</CODE>, in which case the server
-will not read the file, <CODE>All</CODE> in which case the server will
-allow all the directives, or one or more of the following:
+<p>When this directive is set to <code>None</code>, then
+.htaccess files are completely ignored.  In this case, the server
+will not even attempt to read .htaccess files in the filesystem.</p>
+
+<p>When this directive is set to <code>All</code>, then any directive
+which has the .htaccess <a
+href="directive-dict.html#Context">Context</a> is allowed in .htaccess
+files.</p>
+
+<p>The <em>directive-type</em> can be one of the following groupings
+of directives.</p>
 <DL>
 <DT>AuthConfig
 <DD>
@@ -273,7 +283,7 @@ It must be accompanied by <A HREF="#authtype">AuthType</A> and
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthType <EM>type</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthType Basic|Digest<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -324,7 +334,7 @@ re-populated using the <A HREF="#addmodule">AddModule</A> directive.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ContentDigest <EM>on|off</EM><BR>
+><STRONG>Syntax:</STRONG></A> ContentDigest on|off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -687,7 +697,7 @@ responses.</A><P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ErrorLog <EM>filename</EM>|<CODE>syslog[:facility]</CODE>
+><STRONG>Syntax:</STRONG></A> ErrorLog <EM>filename</EM>|syslog[:<em>facility</em>]
 <BR>
 <A
  HREF="directive-dict.html#Default"
@@ -836,7 +846,7 @@ different sections are combined when a request is received
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> HostNameLookups <EM>on | off | double</EM><BR>
+><STRONG>Syntax:</STRONG></A> HostNameLookups on|off|double<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -895,7 +905,7 @@ from logged IP addresses offline.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> IdentityCheck <EM>boolean</EM><BR>
+><STRONG>Syntax:</STRONG></A> IdentityCheck on|off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1073,7 +1083,7 @@ and parse those as configuration files.
 <P> <HR>
 
 <H2><A NAME="keepalive">KeepAlive directive</A></H2>
-<STRONG>Syntax:</STRONG> KeepAlive <EM>on/off</EM><BR>
+<STRONG>Syntax:</STRONG> KeepAlive on/off<BR>
 <STRONG>Default:</STRONG> <CODE>KeepAlive On</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
@@ -1155,7 +1165,7 @@ occupied waiting on connections with idle clients.</p>
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A>
- &lt;Limit <EM>method method</EM> ... &gt; ... &lt;/Limit&gt;<BR>
+ &lt;Limit <EM>method</em> [<em>method</EM>] ... &gt; ... &lt;/Limit&gt;<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1196,7 +1206,7 @@ requests.
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A>
- &lt;LimitExcept <EM>method method</EM> ... &gt; ... &lt;/LimitExcept&gt;<BR>
+ &lt;LimitExcept <EM>method</em> [<em>method</EM>] ... &gt; ... &lt;/LimitExcept&gt;<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1224,7 +1234,7 @@ standard and nonstandard/unrecognized methods. See the documentation for
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> LimitRequestBody <EM>number</EM><BR>
+><STRONG>Syntax:</STRONG></A> LimitRequestBody <EM>bytes</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1245,8 +1255,9 @@ standard and nonstandard/unrecognized methods. See the documentation for
 Apache 1.3.2 and later.
 <P>
 
-<EM>Number</EM> is a long integer from 0 (meaning unlimited) to 2147483647
-(2GB).  The default value is defined by the compile-time constant
+<p>This directive specifies the number of <em>bytes</em> from 0
+(meaning unlimited) to 2147483647 (2GB) that are allowed in a request
+body.  The default value is defined by the compile-time constant
 <CODE>DEFAULT_LIMIT_REQUEST_BODY</CODE> (0 as distributed).
 <P>
 
@@ -1295,7 +1306,7 @@ of denial-of-service attacks.
 Apache 1.3.2 and later.
 <P>
 
-<EM>Number</EM> is an integer from 0 (meaning unlimited) to 32767.
+<p><em>Number</em> is an integer from 0 (meaning unlimited) to 32767.
 The default value is defined by the compile-time constant
 <CODE>DEFAULT_LIMIT_REQUEST_FIELDS</CODE> (100 as distributed).
 <P>
@@ -1323,7 +1334,7 @@ fields were sent in the request.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> LimitRequestFieldsize <EM>number</EM><BR>
+><STRONG>Syntax:</STRONG></A> LimitRequestFieldsize <EM>bytes</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1343,9 +1354,10 @@ fields were sent in the request.<P>
 Apache 1.3.2 and later.
 <P>
 
-<EM>Number</EM> is an integer size in bytes from 0 to the value of the
-compile-time constant <CODE>DEFAULT_LIMIT_REQUEST_FIELDSIZE</CODE>
-(8190 as distributed).
+This directive specifies the number of <em>bytes</em> from 0 to the
+value of the compile-time constant
+<CODE>DEFAULT_LIMIT_REQUEST_FIELDSIZE</CODE> (8190 as distributed)
+that will be allowed in an HTTP request header.
 <P>
 
 The LimitRequestFieldsize directive allows the server administrator to reduce
@@ -1370,7 +1382,7 @@ not be changed from the default.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> LimitRequestLine <EM>number</EM><BR>
+><STRONG>Syntax:</STRONG></A> LimitRequestLine <EM>bytes</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1390,9 +1402,9 @@ not be changed from the default.<P>
 Apache 1.3.2 and later.
 <P>
 
-<EM>Number</EM> is an integer size in bytes from 0 to the value of the
-compile-time constant <CODE>DEFAULT_LIMIT_REQUEST_LINE</CODE>
-(8190 as distributed).
+This directive sets the number of <em>bytes</em> from 0 to the value
+of the compile-time constant <CODE>DEFAULT_LIMIT_REQUEST_LINE</CODE>
+(8190 as distributed) that will be allowed on the HTTP request-line.
 <P>
 
 The LimitRequestLine directive allows the server administrator to reduce
@@ -1726,7 +1738,7 @@ virtual hosts should be used, <EM>e.g.</EM>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Options <EM>[+|-]option [+|-]option ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> Options [+|-]<em>option</em> [[+|-]<em>option</em>] ...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1918,7 +1930,7 @@ security attack.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Require <EM>entity-name entity entity...</EM><BR>
+><STRONG>Syntax:</STRONG></A> Require <EM>entity-name</em> [<em>entity-name</em>] ...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1935,9 +1947,9 @@ security attack.<P><HR>
 This directive selects which authenticated users can access a directory.
 The allowed syntaxes are:
 <UL>
-<LI>Require user <EM>userid userid ...</EM><P>
+<LI>Require user <EM>userid</em> [<em>userid</em>] ...<P>
 Only the named users can access the directory.<P>
-<LI>Require group <EM>group-name group-name ...</EM><P>
+<LI>Require group <EM>group-name</em> [<em>group-name</em>] ...<P>
 Only users in the named groups can access the directory.<P>
 <LI>Require valid-user<P>
 All valid users can access the directory.
@@ -1970,8 +1982,8 @@ HREF="#limit">&lt;Limit&gt;</A> section<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> RLimitCPU <EM># or 'max'</EM>
- <EM>[# or 'max']</EM>
+><STRONG>Syntax:</STRONG></A> RLimitCPU <EM>number</EM>|max
+ [<em>number</em>|max]
 <BR>
 <A
  HREF="directive-dict.html#Default"
@@ -2014,8 +2026,8 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> RLimitMEM <EM># or 'max'</EM>
- <EM>[# or 'max']</EM><BR>
+><STRONG>Syntax:</STRONG></A> RLimitMEM <em>number</em>|max
+  [<em>number</em>|max]<br>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2057,8 +2069,8 @@ See also <A HREF="#rlimitcpu">RLimitCPU</A> or
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> RLimitNPROC <EM># or 'max'</EM>
- <EM>[# or 'max']</EM><BR>
+><STRONG>Syntax:</STRONG></A> RLimitNPROC <em>number</em>|max
+ [<em>number</em>|max]<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2080,7 +2092,7 @@ See also <A HREF="#rlimitcpu">RLimitCPU</A> or
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit
 for all processes and the second parameter sets the maximum resource limit.
-Either parameter can be a number, or <EM>max</EM> to indicate to the server
+Either parameter can be a number, or <code>max</code> to indicate to the server
 that the limit should be set to the maximum allowed by the operating system
 configuration. Raising the maximum resource limit requires that the server
 is running as root, or in the initial startup phase.<P>
@@ -2108,7 +2120,7 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Satisfy <EM>'any' or 'all'</EM><BR>
+><STRONG>Syntax:</STRONG></A> Satisfy any|all<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2149,7 +2161,7 @@ See also <A HREF="#require">Require</A> and
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ScriptInterpreterSource <EM>'registry' or 'script'</EM><BR>
+><STRONG>Syntax:</STRONG></A> ScriptInterpreterSource registry|script<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2197,7 +2209,7 @@ as users do not always mention that they are talking about the server!<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerAlias <EM>host1 host2 ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerAlias <EM>hostname</em> [<em>hostname</em>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -2226,7 +2238,7 @@ with
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerName <EM>fully-qualified domain name</EM>
+><STRONG>Syntax:</STRONG></A> ServerName <EM>fully-qualified-domain-name</EM>
 <BR>
 <A
  HREF="directive-dict.html#Context"
@@ -2323,7 +2335,7 @@ for information on how to properly set permissions on the ServerRoot.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerSignature <EM>Off | On | EMail</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerSignature On|Off|EMail<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2366,7 +2378,7 @@ referenced document.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerTokens <EM>Minimal|ProductOnly|OS|Full</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerTokens Minimal|ProductOnly|OS|Full<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2508,7 +2520,7 @@ a packet is sent.
 <H2><A NAME="usecanonicalname">UseCanonicalName directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt UseCanonicalName} directive&gt; -->
 <A HREF="directive-dict.html#Syntax" REL="Help">
-<STRONG>Syntax:</STRONG></A> UseCanonicalName <EM>on|off|dns</EM><BR>
+<STRONG>Syntax:</STRONG></A> UseCanonicalName on|off|dns<BR>
 <A HREF="directive-dict.html#Default" REL="Help">
 <STRONG>Default:</STRONG></A> <CODE>UseCanonicalName on</CODE><BR>
 <A HREF="directive-dict.html#Context" REL="Help">
@@ -2571,7 +2583,7 @@ self-referential URLs then it should be just fine.
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> &lt;VirtualHost <EM>addr</EM>[:<EM>port</EM>]
- ...&gt; ...
+[<EM>addr</EM>[:<EM>port</EM>]] ...&gt; ...
 &lt;/VirtualHost&gt; <BR>
 <A
  HREF="directive-dict.html#Context"

@@ -121,7 +121,8 @@ two modules into a single module for all operating systems.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> LoadFile <EM>filename filename ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> LoadFile <EM>filename</em> 
+   [<em>filename</em>]  ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -160,10 +161,12 @@ HREF="core.html#serverroot">ServerRoot</A>.<P><HR>
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_so<P>
 
-The LoadModule directive links in the object file or library <EM>filename</EM>
-and adds the module structure named <EM>module</EM> to the list of active
-modules. <EM>Module</EM> is the name of the external variable of type
-<CODE>module</CODE> in the file. Example (Unix):
+The LoadModule directive links in the object file or library
+<EM>filename</EM> and adds the module structure named <EM>module</EM>
+to the list of active modules. <EM>Module</EM> is the name of the
+external variable of type <CODE>module</CODE> in the file, and is
+listed as the <a href="module-dict.html#ModuleIdentifier">Module
+Identifier</a> in the module documentation.  Example (Unix):
 <BLOCKQUOTE><CODE>
 LoadModule status_module modules/mod_status.so
 </CODE></BLOCKQUOTE>

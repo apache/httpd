@@ -178,7 +178,7 @@ since the user's bookmark files will then contain fully qualified hosts.</P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyRequests <EM>on/off</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyRequests on|off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -215,7 +215,7 @@ HREF="#proxypass">ProxyPass</A> directive.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyRemote <EM>&lt;match&gt; &lt;remote-server&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyRemote <EM>match remote-server</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -242,17 +242,17 @@ HREF="#proxypass">ProxyPass</A> directive.
 ><STRONG>Compatibility:</STRONG></A> ProxyRemote is only available in
 Apache 1.1 and later.<P>
 
-This defines remote proxies to this proxy. &lt;match&gt; is either the
+This defines remote proxies to this proxy. <em>match</em> is either the
 name of a URL-scheme that the remote server supports, or a partial URL
 for which the remote server should be used, or '*' to indicate the
-server should be contacted for all requests. &lt;remote-server&gt; is a
+server should be contacted for all requests. <em>remote-server</em> is a
 partial URL for the remote server. Syntax:
 
 <PRE>
-  &lt;remote-server&gt; = &lt;protocol&gt;://&lt;hostname&gt;[:port]
+  remote-server = protocol://hostname[:port]
 </PRE>
 
-&lt;protocol&gt; is the protocol that should be used to communicate
+<em>protocol</em> is the protocol that should be used to communicate
 with the remote server; only "http" is supported by this module.
 <P>
 Example:
@@ -272,7 +272,7 @@ them.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyPass <EM>&lt;path&gt; &lt;url&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyPass <EM>path url</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -301,8 +301,8 @@ Apache 1.1 and later.<P>
 
 This directive allows remote servers to be mapped into the space of the local
 server; the local server does not act as a proxy in the conventional sense,
-but appears to be a mirror of the remote server. &lt;path&gt; is the name of
-a local virtual path; &lt;url&gt; is a partial URL for the remote server.
+but appears to be a mirror of the remote server. <em>path</em> is the name of
+a local virtual path; <em>url</em> is a partial URL for the remote server.
 <P>
 Suppose the local server has address <SAMP>http://wibble.org/</SAMP>; then
 <PRE>
@@ -319,7 +319,7 @@ internally converted into a proxy request to
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyPassReverse <EM>&lt;path&gt; &lt;url&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyPassReverse <EM>path url</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -351,8 +351,8 @@ HTTP redirect responses. For instance this is essential when Apache is used as
 a reverse proxy to avoid by-passing the reverse proxy because of HTTP
 redirects on the backend servers which stay behind the reverse proxy.
 <P>
-&lt;path&gt; is the name of a local virtual path.<BR>
-&lt;url&gt; is a partial URL for the remote server - the same way they are
+<em>path</em> is the name of a local virtual path.<BR>
+<em>url</em> is a partial URL for the remote server - the same way they are
 used for the <TT>ProxyPass</TT> directive.
 <P>
 Example:<BR>
@@ -384,7 +384,8 @@ conjunction with the proxy pass-through feature ("<SAMP>RewriteRule ...
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AllowCONNECT <EM>&lt;port list&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> AllowCONNECT <EM>port</EM> 
+    [<em>port</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -426,7 +427,8 @@ listed ports only.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyBlock <EM>&lt;word/host/domain list&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyBlock *|<EM>word|host|domain</EM>
+    [<em>word|host|domain</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -482,7 +484,7 @@ blocks connections to all sites.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyReceiveBufferSize <EM>&lt;bytes&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyReceiveBufferSize <EM>bytes</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -527,11 +529,15 @@ Example:
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> NoProxy { <A HREF="#domain"><EM>&lt;Domain&gt;</EM></A>
-                                 | <A HREF="#subnet"><EM>&lt;SubNet&gt;</EM></A>
-				 | <A HREF="#ipaddr"><EM>&lt;IpAddr&gt;</EM></A>
-				 | <A HREF="#hostname"><EM>&lt;Hostname&gt;</EM></A>
-				 } <BR>
+><STRONG>Syntax:</STRONG></A> NoProxy 
+ <A HREF="#domain"><EM>Domain</EM></A>|<A 
+    HREF="#subnet"><EM>SubNet</EM></A>|<A
+    HREF="#ipaddr"><EM>IpAddr</EM></A>|<A 
+    HREF="#hostname"><EM>Hostname</EM></A>
+[<A HREF="#domain"><EM>Domain</EM></A>|<A 
+    HREF="#subnet"><EM>SubNet</EM></A>|<A
+    HREF="#ipaddr"><EM>IpAddr</EM></A>|<A 
+    HREF="#hostname"><EM>Hostname</EM></A>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -664,7 +670,7 @@ The arguments to the NoProxy directive are one of the following type list:
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyDomain <EM>&lt;Domain&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyDomain <EM>Domain</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -711,11 +717,7 @@ Example:
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyVia { <EM>off</EM>
-                                       | <EM>on</EM>
-				       | <EM>full</EM>
-				       | <EM>block</EM>
-				       }<BR>
+><STRONG>Syntax:</STRONG></A> ProxyVia on|off|full|block<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -763,7 +765,7 @@ additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheForceCompletion <EM>&lt;percentage&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheForceCompletion <EM>percentage</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -804,7 +806,7 @@ was allowed to complete.  A number between 60 and 90 is recommended.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheRoot <EM>&lt;directory&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheRoot <EM>directory</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -845,7 +847,7 @@ cacheing will be available.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheSize <EM>&lt;size&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheSize <EM>kilobytes</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -884,7 +886,7 @@ use a value which is at least 20 to 40 % lower than the available space.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheGcInterval <EM>&lt;time&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheGcInterval <EM>hours</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -911,17 +913,17 @@ use a value which is at least 20 to 40 % lower than the available space.
 ><STRONG>Compatibility:</STRONG></A> CacheGcinterval is only available in
 Apache 1.1 and later.<P>
 
-Check the cache every &lt;time&gt; hours, and delete files if the space
-usage is greater than that set by CacheSize. Note that &lt;time&gt; accepts a
-float value, you could for example use <CODE>CacheGcInterval 1.5</CODE> to
-check the cache every 90 minutes. (If unset, no garbage collection will
-be performed, and the cache will grow indefinitely.)
-Note also that the larger the <CODE>CacheGcInterval</CODE>, the more
-extra space beyond the configured <CODE>CacheSize</CODE> will be
-needed for the cache between garbage collections.<BR> <!--
-Note that due to a design flaw, Apache does not automatically force a
-garbage collection when the available space on the file system where
-the cache resides is exhausted. -->
+Check the cache after the specified number of <em>hours</em>, and
+delete files if the space usage is greater than that set by
+CacheSize. Note that <em>hours</em> accepts a float value, you could for
+example use <CODE>CacheGcInterval 1.5</CODE> to check the cache every
+90 minutes. (If unset, no garbage collection will be performed, and
+the cache will grow indefinitely.)  Note also that the larger the
+<CODE>CacheGcInterval</CODE>, the more extra space beyond the
+configured <CODE>CacheSize</CODE> will be needed for the cache between
+garbage collections.<BR> <!-- Note that due to a design flaw, Apache
+does not automatically force a garbage collection when the available
+space on the file system where the cache resides is exhausted. -->
 
 <HR>
 
@@ -929,7 +931,7 @@ the cache resides is exhausted. -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheMaxExpire <EM>&lt;time&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheMaxExpire <EM>hours</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -956,10 +958,11 @@ the cache resides is exhausted. -->
 ><STRONG>Compatibility:</STRONG></A> CacheMaxExpire is only available in
 Apache 1.1 and later.<P>
 
-Cachable HTTP documents will be retained for at most &lt;time&gt; hours without
-checking the origin server. Thus documents can be at most &lt;time&gt;
-hours out of date. This restriction is enforced even if an expiry date
-was supplied with the document.
+<p>Specifies the maximum number of <em>hours</em> for which cachable HTTP
+documents will be retained without checking the origin server.  Thus,
+documents will be out of date at most this number of <em>hours</em>
+This restriction is enforced even if an expiry date was supplied with
+the document.</p>
 
 <HR>
 
@@ -967,7 +970,7 @@ was supplied with the document.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheLastModifiedFactor <EM>&lt;factor&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheLastModifiedFactor <EM>factor</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -997,10 +1000,10 @@ Apache 1.1 and later.<P>
 If the origin HTTP server did not supply an expiry date for the
 document, then estimate one using the formula
 <PRE>
-  expiry-period = time-since-last-modification * &lt;factor&gt;
+  expiry-period = time-since-last-modification * <em>factor</em>
 </PRE>
 For example, if the document was last modified 10 hours ago, and
-&lt;factor&gt; is 0.1, then the expiry period will be set to 10*0.1 = 1 hour.
+<em>factor</em> is 0.1, then the expiry period will be set to 10*0.1 = 1 hour.
 
 <P>If the expiry-period would be longer than that set by CacheMaxExpire,
 then the latter takes precedence.
@@ -1011,7 +1014,7 @@ then the latter takes precedence.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheDirLevels <EM>&lt;levels&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheDirLevels <EM>levels</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1038,8 +1041,9 @@ then the latter takes precedence.
 ><STRONG>Compatibility:</STRONG></A> CacheDirLevels is only available in
 Apache 1.1 and later.<P>
 
-CacheDirLevels sets the number of levels of subdirectories in the cache.
-Cached data will be saved this many directory levels below CacheRoot.
+CacheDirLevels sets the number of <em>levels</em> of subdirectories in
+the cache.  Cached data will be saved this many directory levels below
+CacheRoot.
 
 <HR>
 
@@ -1047,7 +1051,7 @@ Cached data will be saved this many directory levels below CacheRoot.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheDirLength <EM>&lt;length&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheDirLength <EM>length</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1082,7 +1086,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheDefaultExpire <EM>&lt;time&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheDefaultExpire <EM>hours</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -1110,7 +1114,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 Apache 1.1 and later.<P>
 
 If the document is fetched via a protocol that does not support expiry times,
-then use &lt;time&gt; hours as the expiry time.
+then use the specified number of <em>hours</em> as the expiry time.
 <A HREF="#cachemaxexpire">CacheMaxExpire</A> does <STRONG>not</STRONG>
 override this setting.
 
@@ -1120,7 +1124,8 @@ override this setting.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> NoCache <EM>&lt;word/host/domain list&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> NoCache *|<EM>word|host|domain</EM>
+   [<em>word|host|domain</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
