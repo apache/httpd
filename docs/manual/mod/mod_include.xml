@@ -573,6 +573,23 @@ include command.</description>
     <seealso>See also: <directive>SSIStartTag</directive>.</seealso>
 </usage>
 </directivesynopsis>
+<directivesynopsis>
+<name>SSIUndefinedEcho</name>
+<description>Changes the string that mod_include displays when
+a variable isn't set.</description>
+<syntax>SSIUndefinedEcho <em>tag</em></syntax>
+<default>SSIUndefinedEcho &quot;&lt;-- undef --&gt;&quot;</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in version 2.0.34 and later.
+</compatibility>
+
+<usage>
+    <p>This directive changes the string that mod_include displays
+    when a variable is not set and &quot;echoed&quot; 
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>SSIErrorMsg</name>
