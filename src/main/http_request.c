@@ -383,10 +383,11 @@ int directory_walk (request_rec *r)
 	    entry_dir = entry_core->d;
 
 	    if (entry_core->r
-/* FIXME: Temporarily removed, pending an explanation of function, in order to
-          fix Win32 [Ben]
+#if defined(__EMX__) || defined(WIN32)
+		|| (entry_core[0] != '/' && entry_core[1] != ':')
+#else
 		|| entry_dir[0] != '/'
-*/
+#endif
 		|| entry_core->d_components > i) break;
 
 	    this_conf = NULL;
