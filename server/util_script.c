@@ -595,18 +595,6 @@ API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
 
-static int getsfunc_BUFF(char *w, int len, void *fb)
-{
-    return ap_bgets(w, len, (BUFF *) fb) > 0;
-}
-
-API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
-					       char *buffer)
-{
-    return ap_scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
-}
-
-
 struct vastrs {
     va_list args;
     int arg;
