@@ -3621,7 +3621,7 @@ static void child_main(int child_num_arg)
 
 #ifndef WIN32
 	if ((ap_max_requests_per_child > 0
-	     && ++requests_this_child >= ap_max_requests_per_child)) {
+	     && requests_this_child++ >= ap_max_requests_per_child)) {
 	    clean_child_exit(0);
 	}
 #else
