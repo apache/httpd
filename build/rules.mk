@@ -59,7 +59,7 @@ include $(top_builddir)/config_vars.mk
 # Compile commands
 
 COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS)
-COMPILE      = $(CC)  $(COMMON_FLAGS) $(CFLAGS) $(EXTRA_CFLAGS) $(NONAC_CFLAGS)
+COMPILE      = $(CC)  $(COMMON_FLAGS) $(CFLAGS) $(EXTRA_CFLAGS) $(NOTEST_CFLAGS)
 CXX_COMPILE  = $(CXX) $(COMMON_FLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS)
 
 SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
@@ -70,9 +70,9 @@ LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
 
 # Link-related commands
 
-LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NONAC_LDFLAGS) -o $@
-SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NONAC_LDFLAGS) -o $@
-MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(LDFLAGS) $(NONAC_LDFLAGS) -o $@
+LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
+SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
+MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
 
 # Cross compile commands
 
