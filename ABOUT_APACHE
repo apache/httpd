@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                               June 1997
+                              January 1998
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -67,14 +67,14 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 1 November 1997:
+Current Apache Group in alphabetical order as of 1 January 1998:
 
    Brian Behlendorf       Organic Online, California 
-   Ken Coar               Process Software Corporation, New England, USA 
+   Ken Coar               MeepZor Consulting, New England, USA 
    Mark J. Cox            C2Net Europe, UK 
    Ralf S. Engelschall    Munich, Germany.
    Roy T. Fielding        UC Irvine, California 
-   Dean Gaudet            Steam Tunnel Operations, California 
+   Dean Gaudet            Transmeta Corporation, California 
    Rob Hartill            Internet Movie DB, UK 
    Jim Jagielski          jaguNET ISP, Maryland 
    Alexei Kosut           Stanford University, California 
@@ -92,8 +92,8 @@ Current Apache Group in alphabetical order as of 1 November 1997:
 
 Apache Emeritae (old group members now off doing other things)
 
-   Robert S. Thau         MIT, Massachusetts
    David Robinson         Cambridge University, UK
+   Robert S. Thau         MIT, Massachusetts
    
 Other major contributors
 
@@ -120,16 +120,18 @@ Adam Sussman, Nathan Schrenk, Matthew Gray, and John Heidemann.
 
  ============================================================================
 
-How to join the Apache Group
+How to become involved in the Apache project
 
 There are several levels of contributing.  If you just want to send
 in an occasional suggestion/fix, then you can just use the bug reporting
-form at <http://www.apache.org/bugdb.cgi>.  You can also subscribe to the
-announcements mailing list (apache-announce@apache.org) which we use to
-broadcast information about new releases, bugfixes, and upcoming events.
+form at <http://www.apache.org/bug_report.html>.  You can also subscribe
+to the announcements mailing list (apache-announce@apache.org) which we
+use to broadcast information about new releases, bugfixes, and upcoming
+events.  There's a lot of information about the development process (much
+of it in serious need of updating) to be found at <http://dev.apache.org/>.
 
-If you'd like to become an active member of the Apache Group (the group
-of volunteers who vote on changes to the distributed server), then
+If you'd like to become an active contributor to the Apache project (the
+group of volunteers who vote on changes to the distributed server), then
 you need to start by subscribing to the new-httpd@apache.org mailing list.
 One warning though: traffic is high, 1000 to 1500 messages/month.
 To subscribe to the list, send "subscribe new-httpd" in the body of
@@ -142,9 +144,17 @@ a while before trying to jump in to development.
    directions.  If you have user/configuration questions, send them
    to the USENET newsgroup "comp.infosystems.www.servers.unix".
 
-The Apache Group is a meritocracy -- the more work you have done, the more
+There is a core group of contributors (informally called the "core")
+which was formed from the project founders and is augmented from time
+to time when core members nominate outstanding contributors and the
+rest of the core members agree.  The core group focus is more on
+"business" issues and limited-circulation things like security problems
+than on mainstream code development.  The term "The Apache Group"
+technically refers to this core of project contributors.
+
+The Apache project is a meritocracy -- the more work you have done, the more
 you are allowed to do.  The group founders set the original rules, but
-they can be changed by vote of the active members.  There is a core group
+they can be changed by vote of the active members.  There is a group
 of people who have logins on our server (hyperreal.com) and access to the
 CVS repository.  Everyone has access to the CVS snapshots.  Changes to
 the code are proposed on the mailing list and usually voted on by active
@@ -157,20 +167,19 @@ messages a day flow over the list, and are typically very conversational in
 tone. We discuss new features to add, bug fixes, user problems, developments
 in the web server community, release dates, etc.  The actual code development
 takes place on the developers' local machines, with proposed changes
-communicated using a patch (output of a context "diff -c3 oldfile newfile"
+communicated using a patch (output of a context "diff -u oldfile newfile"
 command), and committed to the source repository by one of the core
-developers using remote CVS.
+developers using remote CVS.  Anyone on the mailing list can vote on a
+particular issue, but we only count those made by active members or people
+who are known to be experts on that part of the server.  Vetoes must be
+accompanied by a convincing explanation.
 
 New members of the Apache Group are added when a frequent contributor is
 nominated by one member and unanimously approved by the voting members.
 In most cases, this "new" member has been actively contributing to the
 group's work for over six months, so it's usually an easy decision.
-Anyone on the mailing list can vote on a particular issue, but we only
-count those made by active members or people who are known to be experts
-on that part of the server.  Vetoes must be accompanied by a convincing
-explanation.
 
-The above describes our past and current (as of June 1997) guidelines,
+The above describes our past and current (as of January 1998) guidelines,
 which will probably change over time as the membership of the group
 changes and our development/coordination tools improve.
 
