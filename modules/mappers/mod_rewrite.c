@@ -462,7 +462,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_INT;
         newmap->datafile  = NULL;
         newmap->checkfile = NULL;
-        newmap->func      = apr_hash_get(mapfunc_hash, a2+4, strlen(a2+4));
+        newmap->func      = (char *(*)(request_rec *,char *))
+                            apr_hash_get(mapfunc_hash, a2+4, strlen(a2+4));
         if ((sconf->state == ENGINE_ENABLED) && (newmap->func == NULL)) {
             return apr_pstrcat(cmd->pool, "RewriteMap: internal map not found:",
                               a2+4, NULL);
