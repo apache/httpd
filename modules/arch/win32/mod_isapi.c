@@ -96,7 +96,7 @@
 #include "mod_isapi.h"
 
 /* Retry frequency for a failed-to-load isapi .dll */
-#define ISAPI_RETRY ( 30 * APR_USEC_PER_SEC )
+#define ISAPI_RETRY APR_TIME_FROM_SEC(30)
 
 /**********************************************************
  *
