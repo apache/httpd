@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 14:03:48 $]
+Last modified at [$Date: 2003/05/15 14:44:18 $]
 
 Release:
 
@@ -127,7 +127,7 @@ PATCHES TO PORT FROM 2.1
     * Do not bypass output filters when redirecting subrequests internally.
       PR 17629.
       modules/http/http_request.c: r1.155
-      +1: nd
+      +1: nd, stoddard
 
       jerenkrantz asks: Do we even need subreq_core_filter anymore?  I'm sort
                         of confused on the interaction.  subreq_core_filter
@@ -219,13 +219,6 @@ PATCHES TO PORT FROM 2.1
               it's not his first one, he probably doesn't care about - IMHO :)
               An appropriate change-log entry should warn the rest of the
               people, shouldn't it?
-
-    * ap_get_mime_headers_core: allocate space for the trailing null
-      when folding is in effect.
-      PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
-      +1: 
-
-      jerenkrantz: Already applied, but we need to merge in the CHANGES.
 
     * ssl session caching(shmht) : Fix a SEGV problem with SHMHT session
       caching. PR 17864.
