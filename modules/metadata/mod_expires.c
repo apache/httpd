@@ -477,14 +477,14 @@ static int add_expires(request_rec *r)
 	    return DECLINED;
 	}
 	base = r->finfo.mtime;
-        additional = atoi(&code[1]);
+        additional = atoi(&code[1]) * APR_USEC_PER_SEC;
         break;
     case 'A':
         /* there's been some discussion and it's possible that 
          * 'access time' will be stored in request structure
          */
         base = r->request_time;
-        additional = atoi(&code[1]);
+        additional = atoi(&code[1]) * APR_USEC_PER_SEC;
         break;
     default:
         /* expecting the add_* routines to be case-hardened this 
