@@ -206,6 +206,11 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 	    "mod_file_cache: %s isn't a regular file, skipping", fspec);
 	return;
     }
+    if (tmp.finfo.size > AP_MAX_SENDFILE) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+	    "mod_file_cache: %s is too large to cache, skipping", fspec);
+	return;
+    }
 
     rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
                        APR_OS_DEFAULT, cmd->pool);
@@ -226,7 +231,8 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
          * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
          * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
          */
-        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, new_file->finfo.size,
+        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, 
+                                  (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
             ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
@@ -327,7 +333,7 @@ static int mmap_handler(request_rec *r, a_file *file)
     apr_bucket *b;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
 
-    b = apr_bucket_mmap_create(file->mm, 0, file->finfo.size);
+    b = apr_bucket_mmap_create(file->mm, 0, (apr_size_t)file->finfo.size);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -344,7 +350,8 @@ static int sendfile_handler(request_rec *r, a_file *file)
     apr_bucket *b;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
 
-    b = apr_bucket_file_create(file->file, 0, file->finfo.size, r->pool);
+    b = apr_bucket_file_create(file->file, 0, 
+                               (apr_size_t)file->finfo.size, r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
