@@ -496,6 +496,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_overlap_tables(r->err_headers_out, merge,
 		AP_OVERLAP_TABLES_MERGE);
 	    if (!ap_is_empty_table(cookie_table)) {
+		/* the cookies have already been copied to the cookie_table */
+		ap_table_unset(r->err_headers_out, "Set-Cookie");
 		r->err_headers_out = ap_overlay_tables(r->pool,
 		    r->err_headers_out, cookie_table);
 	    }
