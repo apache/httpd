@@ -59,11 +59,7 @@ typedef struct mem_cache_object {
     long priority;      /**< the priority of this entry */
     long total_refs;          /**< total number of references this entry has had */
 
-#ifdef USE_ATOMICS
     apr_uint32_t pos;   /**< the position of this entry in the cache */
-#else
-    apr_ssize_t pos;
-#endif
 
 } mem_cache_object_t;
 
@@ -122,22 +118,14 @@ static void memcache_set_pos(void *a, apr_ssize_t pos)
     cache_object_t *obj = (cache_object_t *)a;
     mem_cache_object_t *mobj = obj->vobj;
 
-#ifdef USE_ATOMICS
     apr_atomic_set32(&mobj->pos, pos);
-#else
-    mobj->pos = pos;
-#endif    
 }
 static apr_ssize_t memcache_get_pos(void *a)
 {
     cache_object_t *obj = (cache_object_t *)a;
     mem_cache_object_t *mobj = obj->vobj;
 
-#ifdef USE_ATOMICS
     return apr_atomic_read32(&mobj->pos);
-#else
-    return mobj->pos;
-#endif    
 }
 
 static apr_size_t memcache_cache_get_size(void*a)
@@ -167,24 +155,13 @@ static void memcache_cache_free(void*a)
      * now. Increment the refcount before setting cleanup to avoid a race 
      * condition. A similar pattern is used in remove_url()
      */
-#ifdef USE_ATOMICS
     apr_atomic_inc32(&obj->refcount);
-#else
-    obj->refcount++;
-#endif
 
     obj->cleanup = 1;
 
-#ifdef USE_ATOMICS
     if (!apr_atomic_dec32(&obj->refcount)) {
         cleanup_cache_object(obj);
     }
-#else
-    obj->refcount--;
-    if (!obj->refcount) {
-        cleanup_cache_object(obj);
-    }
-#endif
 }
 /*
  * functions return a 'negative' score since priority queues
@@ -310,27 +287,11 @@ static apr_status_t decrement_refcount(void *arg)
     }
 
     /* Cleanup the cache object */
-#ifdef USE_ATOMICS
     if (!apr_atomic_dec32(&obj->refcount)) {
         if (obj->cleanup) {
             cleanup_cache_object(obj);
         }
     }
-#else
-    if (sconf->lock) {
-        apr_thread_mutex_lock(sconf->lock);
-    }
-    obj->refcount--;
-    /* If the object is marked for cleanup and the refcount
-     * has dropped to zero, cleanup the object
-     */
-    if ((obj->cleanup) && (!obj->refcount)) {
-        cleanup_cache_object(obj);
-    }
-    if (sconf->lock) {
-        apr_thread_mutex_unlock(sconf->lock);
-    }
-#endif
     return APR_SUCCESS;
 }
 static apr_status_t cleanup_cache_mem(void *sconfv)
@@ -352,14 +313,9 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     while (obj) {         
     /* Iterate over the cache and clean up each entry */  
     /* Free the object if the recount == 0 */
-#ifdef USE_ATOMICS
         apr_atomic_inc32(&obj->refcount);
         obj->cleanup = 1;
         if (!apr_atomic_dec32(&obj->refcount)) {
-#else
-        obj->cleanup = 1;
-        if (!obj->refcount) {
-#endif
             cleanup_cache_object(obj);
         }
         obj = cache_pop(co->cache_cache);
@@ -468,11 +424,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     }
 
     /* Finish initing the cache object */
-#ifdef USE_ATOMICS
     apr_atomic_set32(&obj->refcount, 1);
-#else 
-    obj->refcount = 1;
-#endif
     mobj->total_refs = 1;
     obj->complete = 0;
     obj->cleanup = 0;
@@ -543,11 +495,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (obj) {
         if (obj->complete) {
             request_rec *rmain=r, *rtmp;
-#ifdef USE_ATOMICS
             apr_atomic_inc32(&obj->refcount);
-#else
-            obj->refcount++;
-#endif
             /* cache is worried about overall counts, not 'open' ones */
             cache_update(sconf->cache_cache, obj);
 
@@ -698,17 +646,10 @@ static int remove_url(const char *type, const char *key)
         cache_remove(sconf->cache_cache, obj);
         mobj = (mem_cache_object_t *) obj->vobj;
 
-#ifdef USE_ATOMICS
         /* Refcount increment in this case MUST be made under 
          * protection of the lock 
          */
         apr_atomic_inc32(&obj->refcount);
-#else
-        if (!obj->refcount) {
-            cleanup_cache_object(obj);
-            obj = NULL;
-        }
-#endif
         if (obj) {
             obj->cleanup = 1;
         }
@@ -716,13 +657,11 @@ static int remove_url(const char *type, const char *key)
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
-#ifdef USE_ATOMICS
     if (obj) {
         if (!apr_atomic_dec32(&obj->refcount)) {
             cleanup_cache_object(obj);
         }
     }
-#endif
     return OK;
 }
 
