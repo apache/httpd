@@ -907,7 +907,7 @@ fi
 ##
 TCPP=`egrep '^CPP=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TCPP" != "x" ]; then
-    CPP=`CPP=$TCPP; export CPP CC; ./helpers/findcpp.sh`
+    CPP=`CPP="$TCPP"; export CPP CC; ./helpers/findcpp.sh`
 else
     CPP=`export CC; ./helpers/findcpp.sh`
 fi
