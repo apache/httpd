@@ -6,7 +6,7 @@
     <title>名前ベースのバーチャルホスト</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-  <!-- English revision: 1.16 -->
+  <!-- English revision: 1.17 -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
     <!--#include virtual="header.html" -->
