@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) The htdocs/ tree has been moved out of the CVS source tree into
+     a separate area for easier development.  This has NO EFFECT on
+     end-users or Apache installations.  [Ken Coar]
+
   *) Fix problem matching Configure guessos on HP-UX 10.
      [Victor J. Orlikowski]  PR#6015
 
