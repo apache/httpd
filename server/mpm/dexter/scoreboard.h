@@ -100,6 +100,8 @@ typedef struct {
 
 API_VAR_EXPORT extern const char *ap_scoreboard_fname;
 
+ap_status_t ap_cleanup_shared_mem(void *d);
+
 #ifdef __cplusplus
 }
 #endif
