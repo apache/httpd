@@ -577,6 +577,32 @@ authenticating the user if this one fails</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>AuthLDAPCharsetConfig</name>
+<description>Language to charset conversion configuration file</description>
+<syntax>AuthLDAPCharsetConfig <em>file-path</em></syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>AuthLDAPCharsetConfig</directive> directive sets the location
+    of the language to charset conversion configuration file. <var>File-path</var> is relative
+    to the <directive module="core">ServerRoot</directive>. This file specifies
+    the list of language extensions to character sets.
+    Most administrators use the provided <code>charset.conv</code>
+    file, which associates common language extensions to character sets.</p>
+
+    <p>The file contains lines in the following format:</p>
+
+    <example>
+      <var>Language-Extension</var> <var>charset</var> [<var>Language-String</var>] ...
+    </example>
+
+    <p>The case of the extension does not matter. Blank lines, and lines
+    beginning with a hash character (<code>#</code>) are ignored.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AuthLDAPCompareDNOnServer</name>
 <description>Use the LDAP server to compare the DNs</description>
 <syntax>AuthLDAPCompareDNOnServer on|off</syntax>
