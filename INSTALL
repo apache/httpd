@@ -23,6 +23,9 @@
               you wish to try a threaded Apache on FreeBSD anyway, use
               "./configure --enable-threads".
 
+            * If you are building on Mac OS X (Darwin), make sure to
+              use libtool 1.4.2 or newer.
+
             * If you are a developer building Apache directly from CVS,
               you will need to run ./buildconf before running configure.
 
