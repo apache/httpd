@@ -59,6 +59,8 @@
 #ifndef BEOSD_H
 #define BEOSD_H
 
+#include "httpd.h"
+#include "ap_listen.h"
 /* common stuff that beos MPMs will want */
 
 /* Default user name and group name. These may be specified as numbers by
@@ -85,6 +87,8 @@ AP_DECLARE(const char *) beosd_set_user (cmd_parms *cmd, void *dummy,
                                          const char *arg);
 AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd, void *dummy, 
                                          const char *arg);
+AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
+                                      apr_pool_t *ptrans);
 
 #define beosd_killpg(x, y)	(kill (-(x), (y)))
 
