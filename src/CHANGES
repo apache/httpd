@@ -1,5 +1,7 @@
 Changes with Apache 1.3.18
 
+  *) Really fix mod_rewrite map lookups this time. [Tony Finch]
+
   *) Fixed a problem with file extensions being truncated during
      the call to ap_os_canonical_filename().
 	 [Brad Nicholes <BNICHOLES@novell.com>]
