@@ -57,9 +57,12 @@ APACHE_CHECK_STANDARD_MODULE(echo, ECHO server, , yes)
 
 APACHE_MODPATH_FINISH
 
+ac_cv_enable_dso="no"
 if test "$sharedobjs" = "yes"; then
     LIBS="$LIBS -ldl"
     LTFLAGS="$LTFLAGS -export-dynamic"
+    ac_cv_enable_dso="yes"
 fi
+AC_CACHE_SAVE
     
 APACHE_SUBST(STANDARD_LIBS)
