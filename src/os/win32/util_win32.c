@@ -519,11 +519,6 @@ API_EXPORT(int) os_strftime(char *s, size_t max, const char *format,
                 j = (length_written == -1) ? max : (j + length_written);
                 i += 2;
                 break;
-            /* Handle "%%" to avoid dying on strftime(out, 600, 1200 "%"'s) */
-            case '%':
-                new_format[j++] = '%';
-                i += 2;
-                break;
             default:
                 /* We know we can advance two characters forward here. */
                 new_format[j++] = format[i++];
