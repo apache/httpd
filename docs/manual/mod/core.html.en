@@ -209,7 +209,7 @@ available</td></tr>
 <div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default charset parameter to be added when a response
-content-type is text/plain or text/html</td></tr>
+content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDefaultCharset On|Off|<var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -355,7 +355,7 @@ be passed through</td></tr>
 <div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Types of directives that are allowed in
-.htaccess files</td></tr>
+<code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverride All</code></td></tr>
@@ -531,7 +531,7 @@ scripts</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the generation of Content-MD5 HTTP Response
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ContentDigest On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ContentDigest Off</code></td></tr>
@@ -2795,7 +2795,7 @@ is accessed by an incompatible browser</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the Server HTTP response
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the <code>Server</code> HTTP response
 header</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ServerTokens Full</code></td></tr>

@@ -198,7 +198,7 @@
 <div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">지시어</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>기본적으로 접근을 허용할지 거부할지 여부와
-Allow와 Deny
+<code class="directive">Allow</code>와 <code class="directive">Deny</code>
 처리순서를 정한다.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code> Order <var>ordering</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>Order Deny,Allow</code></td></tr>

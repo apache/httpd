@@ -396,7 +396,7 @@
 <div class="directive-section"><h2><a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a name="filtertrace" id="filtertrace">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Get debug/diagnostic information from
-    mod_filter</td></tr>
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterTrace <var>filter-name</var> <var>level</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>

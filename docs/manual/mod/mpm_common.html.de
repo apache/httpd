@@ -405,7 +405,7 @@ entgegengenommenen Anfragen</td></tr>
 <div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a>-<a name="maxmemfree" id="maxmemfree">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Menge des Arbeitsspeichers, den die
-  Haupt-Zuteilungsroutine verwalten darf, ohne free()
+  Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
   aufzurufen</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxMemFree <var>KBytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>MaxMemFree 0</code></td></tr>

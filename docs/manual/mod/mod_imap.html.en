@@ -288,7 +288,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default base for imagemap files</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default <code>base</code> for imagemap files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapBase http://servername/</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
