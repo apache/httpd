@@ -112,7 +112,7 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r);
  */
 AP_DECLARE(void) ap_send_http_header(request_rec *l);
 
-AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b);
+AP_CORE_DECLARE_NONSTD(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b);
 
 /* Send the response to special method requests */
 
