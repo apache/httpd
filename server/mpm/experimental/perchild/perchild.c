@@ -537,7 +537,8 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
+static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id,
+                           apr_bucket_alloc_t *bucket_alloc)
 {
     conn_rec *current_conn;
     int csd;
@@ -564,7 +565,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     }
 
     ap_create_sb_handle(&sbh, p, conn_id / thread_limit, thread_num);
-    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
+    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, 
+                                            sbh, bucket_alloc);
     if (current_conn) {
         ap_process_connection(current_conn, sock);
         ap_lingering_close(current_conn);
@@ -658,6 +660,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
     ap_listen_rec *lr;
     int n;
     apr_socket_t *childsock = NULL;
+    apr_bucket_alloc_t *bucket_alloc;
 
     apr_lock_acquire(thread_pool_parent_mutex);
     apr_pool_create(&tpool, thread_pool_parent);
@@ -667,6 +670,8 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
     (void) ap_update_child_status_from_indexes(child_num, thread_num, 
                                                SERVER_STARTING,
                                                (request_rec *) NULL);
+
+    bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
 
     apr_poll_setup(&pollset, num_listensocks + 1, tpool);
     for(lr = ap_listeners; lr != NULL; lr = lr->next) {
@@ -730,14 +735,14 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
 
 /*            apr_poll_revents_get(&event, listenfds[0], pollset);
             if (event & APR_POLLIN) {
-                /* A process got a signal on the shutdown pipe. Check if we're
+                * A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. 
                 check_pipe_of_death();
                 continue;
             }
             apr_poll_revents_get(&event, listenfds[1], pollset);
             if (event & APR_POLLIN || event & APR_POLLOUT) {
-                /* This request is from another child in our current process.
+                * This request is from another child in our current process.
                  * We should set a flag here, and then below we will read
                  * two bytes (the socket number and the NULL byte.
                 thread_socket_table[thread_num] = AP_PERCHILD_OTHERCHILD;
@@ -822,7 +827,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 apr_os_sock_put(&csd, &child_info_table[child_num].sd, ptrans);
             }
             if (setjmp(jmpbuffer) != 1) {
-                process_socket(ptrans, csd, conn_id);
+                process_socket(ptrans, csd, conn_id, bucket_alloc);
             }
             else {
                 thread_socket_table[thread_num] = AP_PERCHILD_THISCHILD;
@@ -860,6 +865,8 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
         kill(my_pid, SIGTERM);
     }
     apr_lock_release(worker_thread_count_mutex);
+
+    apr_bucket_alloc_destroy(bucket_alloc);
 
     return NULL;
 }
@@ -1867,8 +1874,13 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
                    "NumServers in your config file.";
         }
     
-        ug->uid = atoi(u);
-        ug->gid = atoi(g); 
+        ug->uid = ap_uname2id(u);
+        ug->gid = ap_uname2id(g); 
+#ifndef BIG_SECURITY_HOLE
+        if (ug->uid == 0 || ug->gid == 0) {
+            return "Assigning root user/group to a child.";
+        }
+#endif
     }
     return NULL;
 }
@@ -1877,8 +1889,9 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
                                    const char *gid)
 {
     int i;
-    int u = atoi(uid);
-    int g = atoi(gid);
+    int matching = 0;
+    int u = ap_uname2id(uid);
+    int g = ap_uname2id(gid);
     const char *errstr;
     int socks[2];
     perchild_server_conf *sconf = (perchild_server_conf *)
@@ -1898,9 +1911,13 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     for (i = 0; i < num_daemons; i++) {
         if (u == child_info_table[i].uid && g == child_info_table[i].gid) {
             child_info_table[i].sd = sconf->sd;
+            matching++;
         }
     }
 
+    if (!matching) {
+        return "Unable to find process with matching uid/gid.";
+    }
     return NULL;
 }
 
