@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fixed the behavior of the XBitHack directive.
+     [Taketo Kabe <kabe@sra-tohoku.co.jp>, Cliff Woolley] PR#8804
+
   *) The threaded MPM for Unix has been removed.  Use the worker
      MPM instead.  [various]
 
