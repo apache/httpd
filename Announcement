@@ -3,13 +3,16 @@
                                        
    The Apache Software Foundation and The Apache Server Project are
    pleased to announce the release of version 1.3.19 of the Apache HTTP
-   server.
+   server. (Version 1.3.18 was not released due to an incorrect fix
+   addressing hostnames with url-escaped characters. A corrected fix will
+   be included in the next release)
    
-   This version of Apache is primarily a bug fix release, addressing
+   This version of Apache is primarily a security fix release
+   addressing a problem which could lead to a direcvtory listing being
+   displayed in place of an error message. Also, it fixes    
    some broken functionality present in the 1.3.17 release and
-   various Win32 issues. There are, however, a few new features and
-   improvements. A summary of the new features is given at the end of
-   this document.
+   various Win32 issues.
+   A summary of the new features is given at the end of this document.
    
    We consider Apache 1.3.19 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
