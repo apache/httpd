@@ -75,6 +75,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 #if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
     && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
 #include <db1/ndbm.h>
@@ -239,8 +240,9 @@ static int dbm_authenticate_basic_user(request_rec *r)
     invalid_pw = ap_validate_password(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "DBM user %s: authentication failure for \"%s\": %s",
-		      r->user, r->uri, invalid_pw);
+		      "DBM user %s: authentication failure for \"%s\": "
+                      "Password Mismatch",
+		      r->user, r->uri);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }

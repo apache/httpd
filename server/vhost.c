@@ -70,6 +70,10 @@
 #include "http_protocol.h"
 #include "http_core.h"
 
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 /*
  * After all the definitions there's an explanation of how it's all put
  * together.

@@ -67,6 +67,9 @@
 #include "http_config.h"
 #include "http_vhost.h"
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(pre_connection)
 	    AP_HOOK_LINK(process_connection)

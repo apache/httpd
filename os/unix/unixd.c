@@ -65,6 +65,8 @@
 #include <pwd.h>
 #include <sys/resource.h>
 #include <sys/resource.h>
+#include <unistd.h>
+#include <grp.h>
 
 unixd_config_rec unixd_config;
 

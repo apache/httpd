@@ -78,6 +78,7 @@
 #include "util_charset.h"
 #include "mpm_status.h"
 #include <stdarg.h>
+#include <unistd.h>
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(post_read_request)

@@ -104,48 +104,6 @@ extern "C" {
 #include <string.h>
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-
-#ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
-#endif
-
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-
-/* The next three are for inet_*() */
-
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-
-#ifdef HAVE_PWD_H    /* XXX - For getpw*. This should be moved to unixd */
-#include <pwd.h>
-#endif
-
-#ifdef HAVE_GRP_H    /* XXX - For getgr*. This should be moved to unixd */
-#include <grp.h>
-#endif
-
 /* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
 #include "ap_ctype.h"
 
@@ -164,29 +122,6 @@ extern "C" {
 #define ap_sigwait(a,b) ((*(b)=sigwait((a)))<0?-1:0)
 #else
 #define ap_sigwait(a,b) sigwait((a),(b))
-#endif
-
-/* So that we can use inline on some critical functions, and use
- * GNUC attributes (such as to get -Wall warnings for printf-like
- * functions).  Only do this in gcc 2.7 or later ... it may work
- * on earlier stuff, but why chance it.
- *
- * We've since discovered that the gcc shipped with NeXT systems
- * as "cc" is completely broken.  It claims to be __GNUC__ and so
- * on, but it doesn't implement half of the things that __GNUC__
- * means.  In particular it's missing inline and the __attribute__
- * stuff.  So we hack around it.  PR#1613. -djg
- */
-#if !defined(__GNUC__) || __GNUC__ < 2 || \
-    (__GNUC__ == 2 && __GNUC_MINOR__ < 7) ||\
-    defined(NEXT)
-#define ap_inline
-#define __attribute__(__x)
-#define ENUM_BITFIELD(e,n,w)  signed int n : w
-#else
-#define ap_inline __inline__
-#define USE_GNU_INLINE
-#define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
 
 /* EAGAIN apparently isn't defined on some systems */
@@ -216,19 +151,10 @@ extern "C" {
 #endif
 
 #ifdef SCO5
-/* XXX - What's this for */
-#define SecureWare
-
-/* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
-   consts. Sigh. */
-extern int strcasecmp(const char *, const char *);
-extern int strncasecmp(const char *, const char *, unsigned);
-#endif /* SCO5 */
-
-/* If APR has OTHER_CHILD logic, use reliable piped logs.
+/* This allows Apache to run from a startup script on a SCO box in high
+ * security (C2) mode.  
  */
-#if (APR_HAS_OTHER_CHILD)
-#define HAVE_RELIABLE_PIPED_LOGS TRUE
+#define SecureWare
 #endif
 
 /* XXX - The PHP4 comments say -D_HPUX_SOURCE is obsolete. */
@@ -249,6 +175,12 @@ extern int strncasecmp(const char *, const char *, unsigned);
 #define USE_FILE_BASED_SCOREBOARD
 #else
 #define USE_MEM_BASED_SCOREBOARD
+#endif
+
+/* If APR has OTHER_CHILD logic, use reliable piped logs.
+ */
+#if (APR_HAS_OTHER_CHILD)
+#define HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
 #if defined(CHARSET_EBCDIC) && !defined(APACHE_XLATE)

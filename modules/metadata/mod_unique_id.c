@@ -66,6 +66,12 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_protocol.h"  /* for ap_hook_post_read_request */
+
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 typedef struct {
     unsigned int stamp;
