@@ -33,7 +33,7 @@
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="/sitemap">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head" />&lf;
 
     <body id="manual-page">&lf;
@@ -81,8 +81,8 @@
 
                     <xsl:if test="seealso">
                         <h3>
-                            <xsl:value-of select="$messages/message
-                                                  [@name='seealso']" />
+                            <xsl:value-of select="$message
+                                                  [@id='seealso']" />
                         </h3>&lf;
 
                         <ul class="seealso">&lf;
@@ -190,12 +190,12 @@
 <ul>
 <li>
     <a href="mod/core.html">
-        <xsl:value-of select="$messages/message[@name='apachecore']" />
+        <xsl:value-of select="$message[@id='apachecore']" />
     </a>
 </li>&lf;
 <li>
     <a href="mod/mpm_common.html">
-        <xsl:value-of select="$messages/message[@name='apachempmcommon']" />
+        <xsl:value-of select="$message[@id='apachempmcommon']" />
     </a>
 </li>&lf;
 
@@ -212,7 +212,7 @@
 
         <li>
             <a href="mod/{$current/name}.html">
-                <xsl:value-of select="$messages/message[@name='apachempm']" />
+                <xsl:value-of select="$message[@id='apachempm']" />
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="$name" />
             </a>
@@ -232,7 +232,7 @@
     <xsl:if test="$current/status!='MPM' and $current/status!='Core'">
         <li>
             <a href="mod/{$current/name}.html">
-                <xsl:value-of select="$messages/message[@name='apachemodule']"/>
+                <xsl:value-of select="$message[@id='apachemodule']"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="$current/name"/>
             </a>

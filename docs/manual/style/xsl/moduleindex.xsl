@@ -28,7 +28,7 @@
 <!-- Builds the moduleindex page                                          -->
 <!-- ==================================================================== -->
 <xsl:template match="moduleindex">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <body id="module-index">
@@ -53,16 +53,16 @@
                             <img src="{$path}/images/down.gif" alt="" />
                             <xsl:text> </xsl:text>
                             <a href="#core">
-                                <xsl:value-of select="$messages/message
-                                                      [@name='corefeatures']" />
+                                <xsl:value-of select="$message
+                                                      [@id='corefeatures']" />
                             </a>
                         </li>
                         <li>
                             <img src="{$path}/images/down.gif" alt="" />
                             <xsl:text> </xsl:text>
                             <a href="#other">
-                                <xsl:value-of select="$messages/message
-                                                      [@name='othermodules']" />
+                                <xsl:value-of select="$message
+                                                      [@id='othermodules']" />
                             </a>
                         </li>
                         </ul>
@@ -70,8 +70,8 @@
 
                     <xsl:if test="seealso">
                         <h3>
-                            <xsl:value-of select="$messages/message
-                                                  [@name='seealso']" />
+                            <xsl:value-of select="$message
+                                                  [@id='seealso']" />
                         </h3>&lf;            
 
                         <ul class="seealso">&lf;
@@ -90,8 +90,8 @@
             <div class="section">
                 <h2>
                     <a name="core" id="core">
-                        <xsl:value-of select="$messages/message
-                                              [@name='corefeatures']" />
+                        <xsl:value-of select="$message
+                                              [@id='corefeatures']" />
                     </a>
                 </h2>&lf;
 
@@ -165,8 +165,8 @@
             <div class="section">
                 <h2>
                     <a name="other" id="other">
-                        <xsl:value-of select="$messages/message
-                                              [@name='othermodules']" />
+                        <xsl:value-of select="$message
+                                              [@id='othermodules']" />
                     </a>
                 </h2>&lf;
             
