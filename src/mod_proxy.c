@@ -676,7 +676,7 @@ http_canon(request_rec *r, char *url, const char *scheme, int def_port)
 /* process search */
     if (p != NULL)
     {
-	search = canonenc(r->pool, p, strlen(p), enc_search, 1);
+	search = p;
 	if (search == NULL) return BAD_REQUEST;
     } else
 	search = "";
