@@ -342,8 +342,7 @@ build for your OS.
    Various other #defines used in the code.
 
       MULTITHREAD:
-       Defined if the OS is multi-threaded. Valid only on
-       Win32 at present.
+       Defined if the OS is multi-threaded. Used only on Win32 and Netware.
 
       JMP_BUF:
        The variable-type for siglongjmp() or longjmp() call.
