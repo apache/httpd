@@ -459,7 +459,10 @@ typedef struct {
     const char *verify_info;
     const char *verify_error;
     int verify_depth;
+    int log_level; /* for avoiding expensive logging */
 } SSLConnRec;
+
+#define SSLConnLogApplies(sslconn, level) (sslconn->log_level >= level)
 
 typedef struct {
     apr_pool_t     *pPool;
