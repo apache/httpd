@@ -173,6 +173,11 @@ typedef struct {
 
 } proxy_server_conf;
 
+typedef struct proxy_balancer  proxy_balancer;
+typedef struct proxy_worker    proxy_worker;
+typedef struct proxy_conn      proxy_conn;
+typedef struct proxy_conn_pool proxy_conn_pool;
+
 typedef struct {
     const char *p;            /* The path */
     int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
@@ -180,10 +185,16 @@ typedef struct {
 } proxy_dir_conf;
 
 typedef struct {
-    conn_rec *connection;
-    char *hostname;
-    apr_port_t port;
-    int is_ssl;
+    conn_rec     *connection;
+    const char   *hostname;
+    apr_port_t   port;
+    int          is_ssl;
+    apr_pool_t   *pool;     /* Subpool used for creating socket */
+    apr_socket_t *sock;     /* Connection socket */
+    apr_uint32_t flags;     /* Conection flags */
+    int          close;     /* Close 'this' connection */
+    proxy_worker *worker;   /* Connection pool this connection belogns to */
+    void         *data;     /* per scheme connection data */
 } proxy_conn_rec;
 
 typedef struct {
@@ -191,26 +202,18 @@ typedef struct {
         int content_length; /* length of the content */
 } proxy_completion;
 
-/* Physical connection to the backend server */
-typedef struct {
-    apr_pool_t   *pool; /* Subpool used for creating socket */
-    apr_socket_t *sock;
-    int          flags; /* 0: newly created 1: initialized -1: in error */
-    int          close; /* Close 'this' connection */
-} proxy_conn;
-
 /* Connection pool */
-typedef struct {
+struct proxy_conn_pool {
     apr_pool_t     *pool;   /* The pool used in constructor and destructor calls */
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
 #endif
-    proxy_conn     *conn;   /* Single connection for prefork mpm's */
-} proxy_conn_pool;
+    proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
+};
 
 /* Worker configuration */
-typedef struct {
+struct proxy_worker {
     int             status;
     apr_time_t      error_time; /* time of the last error */
     apr_interval_time_t retry;  /* retry interval */
@@ -229,10 +232,11 @@ typedef struct {
 
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
-} proxy_worker;
+};
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
+    proxy_balancer  *b;         /* balancer containing this worker */
     proxy_worker    *w;
     double          lbfactor;   /* dynamic lbfactor */
     double          lbsatus;    /* Current lbstatus */
@@ -352,9 +356,9 @@ PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker, apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(const char *) ap_proxy_add_balancer(struct proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
-PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *worker);
-PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, struct proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
+PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
+PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker);
+PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_module_conf *mconf,
                                                           apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
                                                           char *server_portstr, int server_portstr_size);

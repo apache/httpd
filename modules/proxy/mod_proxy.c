@@ -120,7 +120,7 @@ static const char *set_worker_param(proxy_worker *worker,
     return NULL;
 }
 
-static const char *set_balancer_param(struct proxy_balancer *balancer,
+static const char *set_balancer_param(proxy_balancer *balancer,
                                       const char *key,
                                       const char *val)
 {
@@ -473,7 +473,7 @@ static int proxy_handler(request_rec *r)
     int direct_connect = 0;
     const char *str;
     long maxfwd;
-    struct proxy_balancer *balancer = NULL;
+    proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
     proxy_module_conf *mconf;
 
@@ -654,7 +654,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
-    ps->balancers = apr_array_make(p, 10, sizeof(struct proxy_balancer));
+    ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -855,7 +855,7 @@ static const char *
     elts = (const apr_table_entry_t *)arr->elts;
     /* Distinguish the balancer from woker */
     if (strncasecmp(r, "balancer:", 9) == 0) {
-        struct proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
+        proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
             const char *err = ap_proxy_add_balancer(&balancer,
                                                     cmd->pool,
@@ -1203,7 +1203,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
     ap_get_module_config(s->module_config, &proxy_module);
-    struct proxy_balancer *balancer;
+    proxy_balancer *balancer;
     proxy_worker *worker;
     char *path = cmd->path;
     char *name = NULL;
@@ -1279,7 +1279,7 @@ static const char *
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
     ap_get_module_config(s->module_config, &proxy_module);
-    struct proxy_balancer *balancer;
+    proxy_balancer *balancer;
     const char *name, *sticky;
 
     if (r != NULL && cmd->path == NULL ) {
@@ -1540,14 +1540,14 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler,
                                      url),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, pre_request, (
                                       proxy_worker **worker,
-                                      struct proxy_balancer **balancer,
+                                      proxy_balancer **balancer,
                                       request_rec *r, 
                                       proxy_server_conf *conf,
                                       char **url),(worker,balancer,
                                       r,conf,url),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                       (proxy_worker *worker,
-                                       struct proxy_balancer *balancer,
+                                       proxy_balancer *balancer,
                                        request_rec *r,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)

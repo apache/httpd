@@ -988,11 +988,11 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
     apr_table_add(t, key, value + offset);
 }
 
-PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
-                                                             proxy_server_conf *conf,
-                                                             const char *url)
+PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
+                                                      proxy_server_conf *conf,
+                                                      const char *url)
 {
-    struct proxy_balancer *balancer;
+    proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
     
@@ -1002,7 +1002,7 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     /* remove path from uri */
     if ((c = strchr(c + 3, '/')))
         *c = '\0';
-    balancer = (struct proxy_balancer *)conf->balancers->elts;
+    balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
         if (strcasecmp(balancer->name, uri) == 0)
             return balancer;
@@ -1011,7 +1011,7 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     return NULL;
 }
 
-PROXY_DECLARE(const char *) ap_proxy_add_balancer(struct proxy_balancer **balancer,
+PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   apr_pool_t *p,
                                                   proxy_server_conf *conf,
                                                   const char *url)
@@ -1155,7 +1155,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
 }
 
 PROXY_DECLARE(void) 
-ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *worker)
+ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker)
 {
     int i;
     double median, ffactor = 0.0;
@@ -1202,7 +1202,7 @@ ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *w
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
-                                        struct proxy_balancer **balancer,
+                                        proxy_balancer **balancer,
                                         request_rec *r,
                                         proxy_server_conf *conf, char **url)
 {
@@ -1226,7 +1226,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 }
 
 PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
-                                         struct proxy_balancer *balancer,
+                                         proxy_balancer *balancer,
                                          request_rec *r,
                                          proxy_server_conf *conf)
 {
@@ -1315,7 +1315,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
 
 static apr_status_t proxy_conn_cleanup(void *theconn)
 {
-    proxy_conn *conn = (proxy_conn *)theconn;
+    proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     /* Close the socket */
     if (conn->sock)
         apr_socket_close(conn->sock);
@@ -1328,7 +1328,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
                                            apr_pool_t *pool)
 {
     apr_pool_t *ctx;
-    proxy_conn *conn;
+    proxy_conn_rec *conn;
     server_rec *s = (server_rec *)params;
     
     /* Create the subpool for each connection
@@ -1336,7 +1336,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * when disconnecting from backend.
      */
     apr_pool_create(&ctx, pool);
-    conn = apr_pcalloc(ctx, sizeof(proxy_conn));
+    conn = apr_pcalloc(ctx, sizeof(proxy_conn_rec));
 
     conn->pool = ctx;
     *resource = conn;
@@ -1354,7 +1354,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
 static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
 {
-    proxy_conn *conn = (proxy_conn *)resource;
+    proxy_conn_rec *conn = (proxy_conn_rec *)resource;
     server_rec *s = (server_rec *)params;
     
     apr_pool_destroy(conn->pool);
@@ -1378,7 +1378,7 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
     else
 #endif
     {
-        worker->cp->conn = apr_pcalloc(worker->cp->pool, sizeof(proxy_conn));
+        worker->cp->conn = apr_pcalloc(worker->cp->pool, sizeof(proxy_conn_rec));
         /* register the pool cleanup.
          * The cleanup is registered on conn_pool pool, so that
          * the same mechanism (apr_pool_cleanup) can be used
