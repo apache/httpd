@@ -435,7 +435,7 @@ int main(int argc, char *argv[])
     /*
      * Execute the command, replacing our image with its own.
      */
-    execv(cmd, argv);
+    execv(cmd, &argv[3]);
 
     /*
      * (I can't help myself...sorry.)
