@@ -2,7 +2,6 @@ AC_MSG_CHECKING(for target platform)
 
 #PLATFORM=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`
 PLATFORM=$host
-LIBPRE=lib
 
 case "$PLATFORM" in
 *beos*)
@@ -10,7 +9,6 @@ case "$PLATFORM" in
   OS_DIR=$OS
   ;;
 *pc-os2_emx*)
-  LIBPRE=""
   OS="os2"
   OS_DIR=$OS
   ;;

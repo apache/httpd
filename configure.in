@@ -150,7 +150,6 @@ APACHE_SUBST(MPM_LIB)
 APACHE_SUBST(OS)
 APACHE_SUBST(OS_DIR)
 APACHE_SUBST(BUILTIN_LIBS)
-APACHE_SUBST(LIBPRE)
 
 AM_DISABLE_SHARED
 AM_PROG_LIBTOOL
@@ -213,7 +212,7 @@ if test "$apache_need_expat" = "yes"; then
 fi
 
 dnl APR should go after the other libs, so the right symbols can be picked up
-AP_LIBS="$AP_LIBS srclib/apr/\$(LIBPRE)apr.la"
+AP_LIBS="$AP_LIBS srclib/apr/libapr.la"
 APACHE_SUBST(AP_LIB_DIRS)
 APACHE_SUBST(AP_LIBS)
 
