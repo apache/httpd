@@ -1422,12 +1422,6 @@ apr_status_t isapi_handler (request_rec *r)
     cid->ecb->lpszPathTranslated = (char*) apr_table_get(e, "PATH_TRANSLATED");
     cid->ecb->lpszContentType = (char*) apr_table_get(e, "CONTENT_TYPE");
     
-    /* Based on some examples I've noticed, NULL is expected here. 
-     */
-    if (!*cid->ecb->lpszQueryString) {
-        cid->ecb->lpszQueryString = NULL;
-    }
-
     /* Set up the callbacks */
     cid->ecb->GetServerVariable = GetServerVariable;
     cid->ecb->WriteClient = WriteClient;
