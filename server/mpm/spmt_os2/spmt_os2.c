@@ -55,28 +55,6 @@
  *
  */
 
-/*
- * httpd.c: simple http daemon for answering WWW file requests
- *
- * 
- * 03-21-93  Rob McCool wrote original code (up to NCSA HTTPd 1.3)
- * 
- * 03-06-95  blong
- *  changed server number for child-alone processes to 0 and changed name
- *   of processes
- *
- * 03-10-95  blong
- *      Added numerous speed hacks proposed by Robert S. Thau (rst@ai.mit.edu) 
- *      including set group before fork, and call gettime before to fork
- *      to set up libraries.
- *
- * 04-14-95  rst / rh
- *      Brandon's code snarfed from NCSA 1.4, but tinkered to work with the
- *      Apache server, and also to have child processes do accept() directly.
- *
- * April-July '95 rst
- *      Extensive rework for Apache.
- */
 
 
 #define CORE_PRIVATE
@@ -100,7 +78,6 @@
 
 static int ap_max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
-static char *ap_server_argv0=NULL;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -120,7 +97,6 @@ static char ap_coredump_dir[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 static server_rec *server_conf;
-static int sd;
 static fd_set listenfds;
 static int listenmaxfd;
 
@@ -151,17 +127,12 @@ static other_child_rec *other_children;
 #endif
 
 static pool *pconf;		/* Pool for config stuff */
-static int my_pid;	/* it seems silly to call getpid all the time */
 static scoreboard *ap_scoreboard_image = NULL;
-static int volatile exit_after_unblock = 0;
 
 struct thread_globals {
+    int child_num;
     pool *pchild;		/* Pool for httpd child stuff */
-    int srv;
-    int csd;
-    int requests_this_child;
-    fd_set main_fds;
-    ap_generation_t ap_my_generation;
+    int usr1_just_die;
 };
 
 static struct thread_globals **ppthread_globals = NULL;
@@ -171,11 +142,14 @@ static struct thread_globals **ppthread_globals = NULL;
 
 void reinit_scoreboard(pool *p)
 {
-    ap_assert(!ap_scoreboard_image);
-    ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
     if (ap_scoreboard_image == NULL) {
-        fprintf(stderr, "Ouch! Out of memory reiniting scoreboard!\n");
+        ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+
+        if (ap_scoreboard_image == NULL) {
+            fprintf(stderr, "Ouch! Out of memory reiniting scoreboard!\n");
+        }
     }
+
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }
 
@@ -191,8 +165,10 @@ void cleanup_scoreboard(void)
 static void clean_child_exit(int code)
 {
     if (THREAD_GLOBAL(pchild)) {
-	ap_destroy_pool(THREAD_GLOBAL(pchild));
+        ap_destroy_pool(THREAD_GLOBAL(pchild));
     }
+
+    ap_scoreboard_image->servers[THREAD_GLOBAL(child_num)].thread_retval = code;
     _endthread();
 }
 
@@ -435,12 +411,13 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 	    ss->vhostrec =  r->server;
 	}
     }
+
     if (status == SERVER_STARTING && r == NULL) {
 	/* clean up the slot's vhostrec pointer (maybe re-used)
 	 * and mark the slot as belonging to a new generation.
 	 */
 	ss->vhostrec = NULL;
-	ap_scoreboard_image->parent[child_num].generation = THREAD_GLOBAL(ap_my_generation);
+	ap_scoreboard_image->parent[child_num].generation = ap_scoreboard_image->global.running_generation;
     }
 
     return old_status;
@@ -487,6 +464,7 @@ void ap_time_process_request(int child_num, int status)
     }
 }
 
+/* TODO: call me some time */
 static void increment_counts(int child_num, request_rec *r)
 {
     long int bs = 0;
@@ -508,18 +486,18 @@ static void increment_counts(int child_num, request_rec *r)
     ss->conn_bytes += (unsigned long) bs;
 }
 
-static int find_child_by_pid(int pid)
+static int find_child_by_tid(int tid)
 {
     int i;
 
     for (i = 0; i < max_daemons_limit; ++i)
-	if (ap_scoreboard_image->parent[i].pid == pid)
+	if (ap_scoreboard_image->parent[i].tid == tid)
 	    return i;
 
     return -1;
 }
 
-/* Finally, this routine is used by the caretaker process to wait for
+/* Finally, this routine is used by the caretaker thread to wait for
  * a while...
  */
 
@@ -532,6 +510,7 @@ static int wait_or_timeout_counter;
 static int wait_or_timeout(ap_wait_t *status)
 {
     int ret;
+    ULONG tid;
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
@@ -540,12 +519,15 @@ static int wait_or_timeout(ap_wait_t *status)
 	probe_writable_fds();
 #endif
     }
-    ret = waitpid(-1, status, WNOHANG);
-    if (ret == -1 && errno == EINTR) {
-	return -1;
-    }
-    if (ret > 0) {
-	return ret;
+
+    tid = 0;
+    ret = DosWaitThread(&tid, DCWW_NOWAIT);
+
+    if (ret == 0) {
+        int child_num = find_child_by_tid(tid);
+        ap_assert( child_num > 0 );
+        *status = ap_scoreboard_image->servers[child_num].thread_retval;
+	return tid;
     }
     
     DosSleep(SCOREBOARD_MAINTENANCE_INTERVAL / 1000);
@@ -709,15 +691,13 @@ static void just_die(int sig)
     clean_child_exit(0);
 }
 
-static int volatile deferred_die;
-static int volatile usr1_just_die;
 
 static void usr1_handler(int sig)
 {
-    if (usr1_just_die) {
+    if (THREAD_GLOBAL(usr1_just_die)) {
 	just_die(sig);
     }
-    deferred_die = 1;
+    ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
 }
 
 /* volatile just in case */
@@ -878,20 +858,18 @@ static void sock_disable_nagle(int s)
 
 /*****************************************************************
  * Child process main loop.
- * The following vars are static to avoid getting clobbered by longjmp();
- * they are really private to child_main.
  */
 
 API_EXPORT(void) ap_child_terminate(request_rec *r)
 {
     r->connection->keepalive = 0;
-    THREAD_GLOBAL(requests_this_child) = ap_max_requests_per_child = 1;
+    ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
 }
 
 int ap_graceful_stop_signalled(void)
 {
-    if (deferred_die ||
-	ap_scoreboard_image->global.running_generation != THREAD_GLOBAL(ap_my_generation)) {
+    if (ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].generation) {
 	return 1;
     }
     return 0;
@@ -906,16 +884,18 @@ static void child_main(void *child_num_arg)
     ap_listen_rec *first_lr = NULL;
     pool *ptrans;
     conn_rec *current_conn;
-    int my_child_num = (int)child_num_arg;
     ap_iol *iol;
     pool *pchild;
-
-    my_pid = getpid();
+    parent_score *sc_parent_rec;
+    int csd = -1, requests_this_child = 0;
+    fd_set main_fds;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
      * requested there's no race condition here.
      */
+
+    set_signals(); /* signals aren't inherrited by child threads */
     signal(SIGHUP, just_die);
     signal(SIGUSR1, just_die);
     signal(SIGTERM, just_die);
@@ -925,10 +905,9 @@ static void child_main(void *child_num_arg)
      */
     pchild = ap_make_sub_pool(pconf);
     *ppthread_globals = (struct thread_globals *)ap_palloc(pchild, sizeof(struct thread_globals));
+    THREAD_GLOBAL(child_num) = (int)child_num_arg;
+    sc_parent_rec = ap_scoreboard_image->parent + THREAD_GLOBAL(child_num);
     THREAD_GLOBAL(pchild) = pchild;
-    THREAD_GLOBAL(ap_my_generation) = 0;
-    THREAD_GLOBAL(requests_this_child) = 0;
-    THREAD_GLOBAL(csd) = -1;
     ptrans = ap_make_sub_pool(pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
@@ -936,19 +915,19 @@ static void child_main(void *child_num_arg)
 
     ap_child_init_hook(pchild, server_conf);
 
-    (void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
+    (void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_READY, (request_rec *) NULL);
 
     signal(SIGHUP, just_die);
     signal(SIGTERM, just_die);
-    set_signals();
 
     while (!ap_graceful_stop_signalled()) {
-	BUFF *conn_io;
+        BUFF *conn_io;
+        int srv, sd;
 
 	/* Prepare to receive a SIGUSR1 due to graceful restart so that
 	 * we can exit cleanly.
 	 */
-	usr1_just_die = 1;
+	THREAD_GLOBAL(usr1_just_die) = 1;
 	signal(SIGUSR1, usr1_handler);
 
 	/*
@@ -960,11 +939,11 @@ static void child_main(void *child_num_arg)
 	ap_clear_pool(ptrans);
 
 	if ((ap_max_requests_per_child > 0
-	     && THREAD_GLOBAL(requests_this_child)++ >= ap_max_requests_per_child)) {
+	     && requests_this_child++ >= ap_max_requests_per_child)) {
 	    clean_child_exit(0);
 	}
 
-	(void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
+	(void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_READY, (request_rec *) NULL);
 
 	/*
 	 * Wait for an acceptable connection to arrive.
@@ -976,10 +955,10 @@ static void child_main(void *child_num_arg)
 	for (;;) {
 	    if (ap_listeners->next) {
 		/* more than one socket */
-		memcpy(&THREAD_GLOBAL(main_fds), &listenfds, sizeof(fd_set));
-		THREAD_GLOBAL(srv) = ap_select(listenmaxfd + 1, &THREAD_GLOBAL(main_fds), NULL, NULL, NULL);
+		memcpy(&main_fds, &listenfds, sizeof(fd_set));
+		srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
 
-		if (THREAD_GLOBAL(srv) < 0 && errno != EINTR) {
+		if (srv < 0 && errno != EINTR) {
 		    /* Single Unix documents select as returning errnos
 		     * EBADF, EINTR, and EINVAL... and in none of those
 		     * cases does it make sense to continue.  In fact
@@ -990,7 +969,7 @@ static void child_main(void *child_num_arg)
 		    clean_child_exit(1);
 		}
 
-		if (THREAD_GLOBAL(srv) <= 0)
+		if (srv <= 0)
 		    continue;
 
 		/* we remember the last_lr we searched last time around so that
@@ -1006,7 +985,7 @@ static void child_main(void *child_num_arg)
 			lr = ap_listeners;
 		    }
 		    
-		    if (FD_ISSET(lr->fd, &THREAD_GLOBAL(main_fds))) {
+		    if (FD_ISSET(lr->fd, &main_fds)) {
                         first_lr = lr->next;
 		        break;
 		    }
@@ -1026,19 +1005,19 @@ static void child_main(void *child_num_arg)
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
 	     */
-	    usr1_just_die = 0;
+	    THREAD_GLOBAL(usr1_just_die) = 0;
 	    for (;;) {
-		if (deferred_die) {
+		if (ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die) {
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
 		clen = sizeof(sa_client);
-		THREAD_GLOBAL(csd) = ap_accept(sd, &sa_client, &clen);
-		if (THREAD_GLOBAL(csd) >= 0 || errno != EINTR)
+		csd = ap_accept(sd, &sa_client, &clen);
+		if (csd >= 0 || errno != EINTR)
 		    break;
 	    }
 
-	    if (THREAD_GLOBAL(csd) >= 0)
+	    if (csd >= 0)
 		break;		/* We have a socket ready for reading */
 	    else {
 
@@ -1103,7 +1082,7 @@ static void child_main(void *child_num_arg)
 	    if (ap_graceful_stop_signalled()) {
 		clean_child_exit(0);
 	    }
-	    usr1_just_die = 1;
+	    THREAD_GLOBAL(usr1_just_die) = 1;
 	}
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
@@ -1121,32 +1100,32 @@ static void child_main(void *child_num_arg)
 	 */
 
 	clen = sizeof(sa_server);
-	if (getsockname(THREAD_GLOBAL(csd), &sa_server, &clen) < 0) {
+	if (getsockname(csd, &sa_server, &clen) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
-	    close(THREAD_GLOBAL(csd));
+	    close(csd);
 	    continue;
 	}
 
-	sock_disable_nagle(THREAD_GLOBAL(csd));
+	sock_disable_nagle(csd);
 
-        iol = os2_attach_socket(THREAD_GLOBAL(csd));
+        iol = os2_attach_socket(csd);
 
 	if (iol == NULL) {
 	    if (errno == EBADF) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
 		    "found, you probably need to rebuild Apache with a "
-		    "larger FD_SETSIZE", THREAD_GLOBAL(csd), FD_SETSIZE);
+		    "larger FD_SETSIZE", csd, FD_SETSIZE);
 	    }
 	    else {
 		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 		    "error attaching to socket");
 	    }
-	    close(THREAD_GLOBAL(csd));
+	    close(csd);
 	    continue;
         }
 
-	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
+	(void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
 	conn_io = ap_bcreate(ptrans, B_RDWR);
@@ -1155,10 +1134,12 @@ static void child_main(void *child_num_arg)
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
 					 (struct sockaddr_in *) &sa_client,
 					 (struct sockaddr_in *) &sa_server,
-					 my_child_num, 0);
+					 THREAD_GLOBAL(child_num), 0);
 
 	ap_process_connection(current_conn);
     }
+
+    clean_child_exit(0);
 }
 
 
@@ -1200,7 +1181,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 	return -1;
     }
 
-    ap_scoreboard_image->parent[slot].pid = tid;
+    ap_scoreboard_image->parent[slot].tid = tid;
     return 0;
 }
 
@@ -1297,7 +1278,7 @@ static void perform_idle_server_maintenance(void)
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill(ap_scoreboard_image->parent[to_kill].pid, SIGUSR1);
+	ap_scoreboard_image->parent[to_kill].deferred_die = 1;
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -1343,7 +1324,7 @@ static void perform_idle_server_maintenance(void)
 }
 
 
-static void process_child_status(int pid, ap_wait_t status)
+static void process_child_status(int tid, ap_wait_t status)
 {
     /* Child died... if it died due to a fatal error,
 	* we should simply bail out.
@@ -1353,7 +1334,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
 			"Child %d returned a Fatal error... \n"
 			"Apache is exiting!",
-			pid);
+			tid);
 	exit(APEXIT_CHILDFATAL);
     }
     if (WIFSIGNALED(status)) {
@@ -1369,9 +1350,9 @@ static void process_child_status(int pid, ap_wait_t status)
 	    if (WCOREDUMP(status)) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			     server_conf,
-			     "child pid %d exit signal %s (%d), "
+			     "child tid %d exit signal %s (%d), "
 			     "possible coredump in %s",
-			     pid, (WTERMSIG(status) >= NumSIG) ? "" : 
+			     tid, (WTERMSIG(status) >= NumSIG) ? "" :
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
 			     ap_coredump_dir);
 	    }
@@ -1379,7 +1360,7 @@ static void process_child_status(int pid, ap_wait_t status)
 #endif
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			     server_conf,
-			     "child pid %d exit signal %s (%d)", pid,
+			     "child tid %d exit signal %s (%d)", tid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
 #ifdef WCOREDUMP
 	    }
@@ -1387,8 +1368,8 @@ static void process_child_status(int pid, ap_wait_t status)
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
 			 server_conf,
-			 "child pid %d exit signal %d",
-			 pid, WTERMSIG(status));
+			 "child tid %d exit signal %d",
+			 tid, WTERMSIG(status));
 #endif
 	}
     }
@@ -1424,11 +1405,10 @@ static int setup_listeners(pool *pconf, server_rec *s)
 int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 {
     int remaining_children_to_start;
+    int i;
 
     pconf = _pconf;
-
     server_conf = s;
-
     ap_log_pid(pconf, ap_pid_fname);
 
     if (setup_listeners(pconf, s)) {
@@ -1489,16 +1469,16 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
 	ap_wait_t status;
-	int pid = wait_or_timeout(&status);
+	int tid = wait_or_timeout(&status);
 
 	/* XXX: if it takes longer than 1 second for all our children
 	 * to start up and get into IDLE state then we may spawn an
 	 * extra child
 	 */
-	if (pid >= 0) {
-	    process_child_status(pid, status);
+	if (tid >= 0) {
+	    process_child_status(tid, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
-	    child_slot = find_child_by_pid(pid);
+	    child_slot = find_child_by_tid(tid);
 	    if (child_slot >= 0) {
 		(void) ap_update_child_status(child_slot, SERVER_DEAD,
 					    (request_rec *) NULL);
@@ -1511,9 +1491,10 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 		    --remaining_children_to_start;
 		}
 #ifdef HAS_OTHER_CHILD
+/* TODO: this won't work, we waited on a thread not a process
 	    }
 	    else if (reap_other_child(pid, status) == 0) {
-		/* handled */
+*/
 #endif
 	    }
 	    else if (is_graceful) {
@@ -1522,7 +1503,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 		    * child.
 		    */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
-			    "long lost child came home! (pid %d)", pid);
+			    "long lost child came home! (tid %d)", tid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
 		* only do it when there's a timeout.  Remember only a
@@ -1550,11 +1531,8 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 
     if (shutdown_pending) {
 	/* Time to gracefully shut down:
-	 * Kill child processes, tell them to call child_exit, etc...
+	 * Don't worry about killing child threads for now, the all die when the parent exits
 	 */
-	if (ap_killpg(getpgrp(), SIGTERM) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
-	}
 
 	/* cleanup pid file on normal shutdown */
 	{
@@ -1585,21 +1563,17 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     /* XXX: we really need to make sure this new generation number isn't in
      * use by any of the children.
      */
-    ++THREAD_GLOBAL(ap_my_generation);
-    ap_scoreboard_image->global.running_generation = THREAD_GLOBAL(ap_my_generation);
+    ++ap_scoreboard_image->global.running_generation;
 
     if (is_graceful) {
-#ifndef SCOREBOARD_FILE
-	int i;
-#endif
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 		    "SIGUSR1 received.  Doing graceful restart");
 
-	/* kill off the idle ones */
-	if (ap_killpg(getpgrp(), SIGUSR1) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGUSR1");
-	}
-#ifndef SCOREBOARD_FILE
+        /* kill off the idle ones */
+        for (i = 0; i < ap_daemons_limit; ++i) {
+            ap_scoreboard_image->parent[i].deferred_die = 1;
+        }
+
 	/* This is mostly for debugging... so that we know what is still
 	    * gracefully dealing with existing request.  But we can't really
 	    * do it if we're in a SCOREBOARD_FILE because it'll cause
@@ -1610,15 +1584,14 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 		ap_scoreboard_image->servers[i].status = SERVER_GRACEFUL;
 	    }
 	}
-#endif
     }
     else {
 	/* Kill 'em off */
-	if (ap_killpg(getpgrp(), SIGHUP) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGHUP");
-	}
+        for (i = 0; i < ap_daemons_limit; ++i) {
+            DosKillThread(ap_scoreboard_image->parent[i].tid);
+        }
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
-		    "SIGHUP received.  Attempting to restart");
+                     "SIGHUP received.  Attempting to restart");
     }
 
     if (!is_graceful) {
@@ -1636,12 +1609,9 @@ static void spmt_os2_pre_command_line(pool *pcommands)
 
 static void spmt_os2_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
-    static int restart_num = 0;
-
     one_process = ap_exists_config_define("ONE_PROCESS");
 
     is_graceful = 0;
-    my_pid = getpid();
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
@@ -1831,7 +1801,6 @@ module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     NULL,			/* merge per-server config structures */
     spmt_os2_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* check_user_id */
     NULL,			/* check auth */
     NULL,			/* check access */
     NULL,			/* type_checker */
