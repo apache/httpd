@@ -130,7 +130,8 @@ switch before dumping core</description>
 
 <directivesynopsis>
 <name>EnableExceptionHook</name>
-<description>Enable the fatal exception handler after a crash</description>
+<description>Enables a hook that runs exception handlers
+after a crash</description>
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
