@@ -11,13 +11,9 @@ Release:
 
 FINAL RELEASE SHOWSTOPPERS:
 
-    * proxy security fixes from 1.2.5 need to be brought forward,
-      specifically:
-        -  if (strlen(x) < 30) {
-        +  if (strlen(x)+1 < 30) {
-	       x = ap_palloc(p, 30);
-	   }
-      in proxy_util.c.
+    * proxy security fixes from 1.2.5 need to be brought forward.
+      Note: off-by-one error in ap_proxy_date_canon() in
+            proxy_util.c was fixed.
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines

@@ -353,7 +353,7 @@ char *
     if (mon == 12)
 	return x;
 
-    if (strlen(x) < 30)
+    if (strlen(x)+1 < 30)
 	x = ap_palloc(p, 30);
     ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
 		ap_month_snames[mon], year, hour, min, sec);

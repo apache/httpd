@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) Fix off-by-one error in ap_proxy_date_canon() in proxy_util.c
+     when ensuring 'x' is at least 30-chars big.
+
   *) Fix debug log messages for BS2000/OSD: instead of logging the whole
      absolute path, only log base name of logging source as is done
      in unix. [Martin Kraemer]
