@@ -16,7 +16,7 @@ Documentation
 The documentation available as of the date of this release is also
 included, in HTML format, in the htdocs/manual/ directory. For the
 most up-to-date documentation, visit us on the WWW, at
-http://www.apache.org/. For Window's specific information, see
+http://www.apache.org/. For Windows specific information, see
 http://www.apache.org/docs/windows.html.
 
 WARNING
@@ -38,9 +38,9 @@ Changes for the Windows version
    the program to hook up to the Service Manager). On Windows 95
    it runs as a regular program.
 
-3. It executes as multiple servers (this allows for some fault tolerance -
+3. It executes as multiple processes (this allows for some fault tolerance -
    if a server dies, another one takes its place. Also after dealing
-   with a certain number of requests, a server voluntarily exits, to
+   with a certain number of requests, each process voluntarily exits, to
    clean up any resources it might have forgotten to free up).
 
 By default Apache uses the directory \Apache for the ServerRoot ON THE
@@ -87,7 +87,7 @@ in the src directory. To install Apache to the \Apache directory, run
 
    nmake -f Makefile.nt installr
 
-You cannot easily set a different installation directory. You can also
+You cannot easily use a different installation directory. You can also
 build debug versions of Apache, with the targets "_apached" and
 "installd".
 
@@ -134,9 +134,13 @@ To remove the Apache service, run
 Uninstalling Apache
 -------------------
 
-To uninstall Apache, use the normal method of removing programs (Start
-menu, Control Panel, Add/Remove Programs). You may have to remove the
-directory manually because of the configuration files.
+If you installed a binary release, you can uninstall Apache using the
+normal method of removing programs (Start menu, Control Panel,
+Add/Remove Programs). You may have to remove the directory manually
+because of the configuration files.
+
+If you installed a source release, you should delete the directory
+where you installed Apache (normally \Apache).
 
 Known Problems
 --------------
@@ -162,3 +166,28 @@ Known Problems
 - htpasswd passwords are stored in plain text because Windows lacks a
   crypt() function
 
+Licensing
+---------
+
+Please see the file called LICENSE.
+
+Acknowledgments
+----------------
+
+We wish to acknowledge the following copyrighted works that make up
+portions of the Apache software:
+
+Portions of this software were developed at the National Center for
+Supercomputing Applications at the University of Illinois at
+Urbana-Champaign.
+
+This software contains code derived from the RSA Data Security Inc. MD5
+Message-Digest Algorithm, including various modifications by Spyglass Inc.,
+Carnegie Mellon University, and Bell Communications Research, Inc.
+(Bellcore).
+
+This package contains software written and copyrighted by Henry Spencer.
+Please see the file called src/regex/COPYRIGHT.
+
+The NT port was started with code provided to the Apache Group
+by Ambarish Malpani of ValiCert, Inc. (www.valicert.com).
