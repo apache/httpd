@@ -56,7 +56,9 @@ is given a default <code>Port</code> equal to the port assigned to the
 first name in its <code>VirtualHost</code> directive.  The complete
 list of names in the <code>VirtualHost</code> directive are treated
 just like a <code>ServerAlias</code> (but are not overridden by any
-<code>ServerAlias</code> statement).
+<code>ServerAlias</code> statement).  Note that subsequent <code>Port</code>
+statements for this vhost will not affect the ports assigned in the
+address set.
 
 <p>
 All vhosts are stored in a list which is in the reverse order that
@@ -118,9 +120,11 @@ the main_server.
 
 <p> Now a pass is made through the vhosts to fill in any missing
 <code>ServerName</code> fields and to classify the vhost as either
-an <i>ip-based</i> vhost or a <i>name-based</i> vhost.  A vhost is an
-ip-based vhost if none of the vhosts address set overlaps the main_server
-address set.  Otherwise it is considered a name-based vhost.
+an <i>ip-based</i> vhost or a <i>name-based</i> vhost.  A vhost is
+considered a name-based vhost if any of its address set overlaps the
+main_server (the port associated with each address must match the
+main_server's <code>Port</code>).  Otherwise it is considered an ip-based
+vhost.
 
 <p> For any undefined <code>ServerName</code> fields, a name-based vhost
 defaults to the address given first in the <code>VirtualHost</code>
@@ -141,7 +145,7 @@ The process by which vhost a request is for is as follows:
 <p> <code>find_virtual_server</code>: When the connection is first made
 by the client, the local ip address (the ip address to which the client
 connected) is looked up in the server list.  A vhost is matched if it
-is an ip-based vhost, and the ip address matches and the port matches
+is an ip-based vhost, the ip address matches and the port matches
 (taking into account wildcards).
 
 <p> If no vhosts are matched then the last occurance, if it appears,
@@ -185,7 +189,7 @@ then an attempt is made to match for this hostname.  The first step
 of this match is to compare any port, if one was given in the request,
 against the <code>Port</code> field of the connection vhost.  If there's
 a mismatch then the vhost used for the request is the connection vhost.
-(This is probably a bug.)
+(This is a bug, see observations.)
 
 <p>
 If the port matches, then httpd scans the list of vhosts starting with
@@ -199,8 +203,7 @@ are as follows:
     <code>ServerName</code> and <code>Port</code>.
 
 <li> Compare the request hostname against any and all addresses given in
-    the <code>VirtualHost</code> directive for this vhost.  <i>(n.b. this
-    assumes Dean's "VirtualHost confusion" patch is accepted.)</i>
+    the <code>VirtualHost</code> directive for this vhost.
 
 <li> Compare the request hostname against the <code>ServerAlias</code>
     given for the vhost.
@@ -275,7 +278,24 @@ the virtual hosts).
     another <code>ServerPath</code> directive that appears later in
     the configuration file, then the former will always be matched
     and the latter will never be matched.  (That is assuming that no
-    Host header was available to disambiguate the two.)
+    Host header was available to disambiguate the two.)</p>
+
+<li> If a vhost that would otherwise be a name-vhost includes a
+    <code>Port</code> statement that doesn't match the main_server
+    <code>Port</code> then it will be considered an ip-based vhost.
+    Then <code>find_virtual_server</code> will match it (because
+    the ports associated with each address in the address set default
+    to the port of the main_server) as the connection vhost.  Then
+    <code>check_hostalias</code> will refuse to check any other name-based
+    vhost because of the port mismatch.  The result is that the vhost
+    will steal all hits going to the main_server address.</p>
+
+<li> If two ip-based vhosts have an address in common, the vhost appearing
+    later in the file is always matched.  Such a thing might happen
+    inadvertantly.  If the config has name-based vhosts and for some reason
+    the main_server <code>ServerName</code> resolves to the wrong address
+    then all the name-based vhosts will be parsed as ip-based vhosts.
+    Then the last of them will steal all the hits.</p>
 
 </ul>
 
