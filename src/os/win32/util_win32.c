@@ -3,6 +3,7 @@
 #include <stdarg.h>
 
 #include "httpd.h"
+#include "http_log.h"
 
 /* Returns TRUE if the path is real, FALSE if it is PATH_INFO */
 static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szFile)
@@ -151,7 +152,15 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 {
     int n;
 
-    ap_assert(szPath[1] == ':' || szPath[1] == '/');	// we are dealing with either UNC or a drive
+    /* be sure it is has a drive letter or is a UNC path; everything
+     * _must_ be canonicalized before getting to this point.  
+     */
+    if (szPath[1] != ':' && szPath[1] != '/') {
+	ap_log_error(APLOG_MARK, APLOG_ERR, NULL, 
+	    "Invalid path in os_stat: \"%s\", should have a drive letter "
+	    "or be a UNC path", szPath);
+	return (-1);
+    }
 
     if(szPath[0] == '/') {
 	char buf[_MAX_PATH];
