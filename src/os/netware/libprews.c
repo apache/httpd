@@ -11,10 +11,18 @@
 #include "stddef.h"
 #include "ws2nlm.h"
 
+#ifdef __GNUC__
+#include <string.h>        /* memset */
+extern char _edata, _end ; /* end of DATA (start of BSS), end of BSS */
+#endif
+
 int _lib_start_ws()
 {
     WSADATA wsaData;
     
+#ifdef __GNUC__
+    memset (&_edata, 0, &_end - &_edata);
+#endif
     return WSAStartup((WORD) MAKEWORD(2, 0), &wsaData);
 }
 

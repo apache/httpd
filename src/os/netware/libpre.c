@@ -9,8 +9,16 @@
   provide.
 ------------------------------------------------------------------*/
 
+#ifdef __GNUC__
+#include <string.h>        /* memset */
+extern char _edata, _end ; /* end of DATA (start of BSS), end of BSS */
+#endif
+
 int _lib_start()
 {
+#ifdef __GNUC__
+    memset (&_edata, 0, &_end - &_edata);
+#endif
     return 0;
 }
 
