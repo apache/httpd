@@ -1839,7 +1839,7 @@ API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
 		       "</ADDRESS>\n", NULL);
     }
     return ap_pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
-	     " Server at ", r->server->server_hostname, "</A> Port ", sport,
+	     " Server at ", r->server->server_hostname, " Port ", sport,
 		   "</ADDRESS>\n", NULL);
 }
 
