@@ -2489,7 +2489,7 @@ later</td></tr>
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>or, if perl is in <code>PATH</code>, simply:</p>
+    <p>or, if perl is in the <code>PATH</code>, simply:</p>
 
     <div class="example"><p><code>
       #!perl
@@ -2499,29 +2499,31 @@ later</td></tr>
     cause the Windows Registry tree <code>HKEY_CLASSES_ROOT</code> to be
     searched using the script file extension (e.g., <code>.pl</code>) as a
     search key. The command defined by the registry subkey
-    <code>Shell\ExecCGI\Command</code> or if not exists by the subkey
-    <code>Shell\Open\Command</code> is used to open the script file. In absence
-    of the file extension key or both subkeys Apache uses the
+    <code>Shell\ExecCGI\Command</code> or, if it does not exist, by the subkey
+    <code>Shell\Open\Command</code> is used to open the script file. If the
+    registry keys cannot be found, Apache falls back to the behavior of the
     <code>Script</code> option.</p>
 
     <div class="warning"><h3>Security</h3>
-      <p>Be careful to use <code>ScriptInterpreterSource Registry</code> with 
-      <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'ed directories,
-      because Apache is trying to execute <strong>every</strong> file within
-      this directory. The <code>Registry</code> setting may cause undesired
-      program calls on files, which are usually not executed. For example, the
-      default open command on <code>.htm</code> files on most Windows systems is
-      executing the Microsoft Internet Explorer, so any HTTP request for an
-      <code>.htm</code> file existing within the script directory would start
-      the browser in background. This is an effective method to crash your
-      system within a minute or so.</p>
+    <p>Be careful when using <code>ScriptInterpreterSource
+    Registry</code> with <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'ed directories, because
+    Apache will try to execute <strong>every</strong> file within this
+    directory. The <code>Registry</code> setting may cause undesired
+    program calls on files which are typically not executed. For
+    example, the default open command on <code>.htm</code> files on
+    most Windows systems will execute Microsoft Internet Explorer, so
+    any HTTP request for an <code>.htm</code> file existing within the
+    script directory would start the browser in the background on the
+    server. This is a good way to crash your system within a minute or
+    so.</p>
     </div>
 
-    <p>The option <code>Registry-Strict</code> which is new in Apache 2.0
-      does the same as <code>Registry</code> but uses only the subkey
-      <code>Shell\ExecCGI\Command</code>. The <code>ExecCGI</code> key
-      is not a common one. It has to be configured manually and prevents your
-      system from accidental program calls.</p>
+    <p>The option <code>Registry-Strict</code> which is new in Apache
+    2.0 does the same thing as <code>Registry</code> but uses only the
+    subkey <code>Shell\ExecCGI\Command</code>. The
+    <code>ExecCGI</code> key is not a common one. It must be
+    configured manually in the windows registry and hence prevents
+    accidental program calls on your system.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
