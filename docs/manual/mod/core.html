@@ -570,7 +570,7 @@ Example:
 <blockquote><code>ErrorLog /dev/null</code></blockquote>
 This effectively turns off error logging.<p>
 
-SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A>
+SECURITY: See the <A HREF="../misc/security_tips.html#serverroot">security tips</A>
 document for details on why your security could be compromised if
 the directory where logfiles are stored is writable by anyone other
 than the user that starts the server.
@@ -1025,9 +1025,12 @@ The LockFile directive sets the path to the lockfile used when
 Apache is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
 USE_FLOCK_SERIALIZED_ACCEPT.  This directive should normally be
 left at its default value.  The main reason for changing it is if
-the <code>logs</code> directory is NFS mounted, since the lockfile
-should be stored on a local disk if possible.  The PID of the main
-server process is automatically appended to the filename.
+the <code>logs</code> directory is NFS mounted, since <b>the lockfile
+must be stored on a local disk</b>.  The PID of the main
+server process is automatically appended to the filename. <p>
+
+The LockFile is subject to the same warnings about log file placement and
+<a href="../misc/security_tips.html#serverroot">security</a>.
 
 <P><HR>
 
@@ -1245,7 +1248,7 @@ re-reads its configuration files. This is done by sending a SIGHUP (kill -1)
 signal to the process id listed in the PidFile.<p>
 
 The PidFile is subject to the same warnings about log file placement and
-<a href="../misc/security_tips.html">security</a>.
+<a href="../misc/security_tips.html#serverroot">security</a>.
 
 <p><hr>
 
@@ -1569,8 +1572,13 @@ use with <a href="../vhosts/index.html">name-based virtual hosts</a>.
 The ServerRoot directive sets the directory in which the server lives.
 Typically it will contain the subdirectories <code>conf/</code> and
 <code>logs/</code>. Relative paths for other configuration files are taken
-as relative to this directory.<br>
-See also <a href="../invoking.html">the <code>-d</code> option to httpd</a>.<p><hr>
+as relative to this directory.<p>
+
+See also <a href="../invoking.html">the <code>-d</code> option to httpd</a>.<p>
+See also <a href="../misc/security_tips.html#serverroot">the security tips</a>
+for information on how to properly set permissions on the ServerRoot.<p>
+
+<hr>
 
 <h2><A name="servertype">ServerType directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ServerType} directive&gt; -->
