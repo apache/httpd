@@ -23,7 +23,7 @@
     <source-ext>.xml.fr</source-ext>
     <target-ext>.html.fr</target-ext>
 
-<!-- No sitemap so far
+<!-- No sitemap -> no CHM
     <chm>
         <lang>0x40c French (France)</lang>
         <toc-font>,8,0</toc-font>
@@ -31,4 +31,95 @@
         <settings>French (France)</settings>
     </chm>
 -->
+
+<!-- currently no deployment of non-english man pages
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
+-->
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Fran&#231;ais</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Fonctionalit&#233;s de Base et Modules Multi-Processus (MPM)</message>
+        <message id="othermodules">Autres Modules</message>
+        <message id="obsoletemodules">Modules D&#233;suets</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">Module Apache D&#233;suet</message>
+        <message id="apachemodule">Mudule Apache</message>
+        <message id="apachecore">Fonctionalit&#233;s de Base Apache</message>
+        <message id="apachempmcommon">Apache MPM: Directives Communes</message>
+        <message id="apachempm">Apache MPM</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Description</message>
+        <message id="seealso">Voir aussi</message>
+        <message id="topics">Sujets</message>
+        <message id="status">Status</message>
+        <message id="moduleidentifier">Identificateur&nbsp;de&nbsp;Module</message>
+        <message id="sourcefile">Fichier&nbsp;Source</message>
+        <message id="compatibility">Compatibilit&#233;</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Modules Apparent&#233;s</message>
+        <message id="relateddirectives">Directives Apparent&#233;es</message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">Syntaxe</message>
+        <message id="default">Defaut</message>
+        <message id="context">Contexte</message>
+        <message id="override">Annuler</message>
+        <message id="status">Status</message>
+        <message id="module">Module</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig">configuration du serveur</message>
+        <message id="virtualhost">serveur virtuel</message>
+        <message id="directory">r&#233;pertoire</message>
+        <message id="htaccess">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">Directives</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive">Directive</message>
+        <message id="nodirectives">Ce module ne fournit aucune directive.</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">Sommaire</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Serveur Apache HTTP</message>
+        <message id="apachehttpserver">Serveur Apache HTTP Version 2.1</message>
+        <message id="apachedocalt">[DOCUMENTATION APACHE]</message>
+        <message id="search">Recherche Google</message> <!-- search button -->
+        <message id="index">Index</message> <!-- deprecated -->
+        <message id="home">Accueil</message> <!-- deprecated -->
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">Serveur HTTP</message>
+        <message id="documentation">Documentation</message>
+        <message id="version">Version 2.1</message>
+
+        <!-- super menu -->
+        <message id="modules">Modules</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">Glossaire</message>
+        <message id="sitemap">Plan du site</message>
+
+        <!-- footer line -->
+        <message id="licensed">Authoris&#233; sous</message>
+        <message id="langavail">Langues Disponibles</message>
+ 
+        <!-- not up to date -->
+        <message id="outofdate">Cette traduction peut &#234;tre p&#233;rim&#233;e. Verifiez la version
+            Anglaise pour les changements r&#233;cents.</message>
+    </messages>
 </language>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English revision: 1.5 -->
 
 <!--
@@ -37,7 +37,7 @@
         <!-- language link titles -->
         <message id="nativename">Japanese</message>
 
-         <!-- Used for the moduleindex -->
+        <!-- Used for the moduleindex -->
         <message id="corefeatures">コア機能と MPM</message>
         <message id="othermodules">他のモジュール</message>
 
@@ -84,7 +84,7 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP サーバ</message>
-        <message id="apachehttpserver">Apache HTTP サーバ バージョン 2.0</message>
+        <message id="apachehttpserver">Apache HTTP サーバ バージョン 2.1</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
@@ -94,7 +94,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP サーバ</message>
         <message id="documentation">ドキュメンテーション</message>
-        <message id="version">バージョン 2.0</message>
+        <message id="version">バージョン 2.1</message>
 
         <!-- super menu -->
         <message id="modules">モジュール</message>

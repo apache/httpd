@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="KOI8-R"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English revision: 1.4 -->
 
 <!--
@@ -40,15 +40,15 @@
         <message id="nativename">Russian</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">Ядро и мульти-процессные модули</message>
+        <message id="corefeatures">Особенности ядра и мульти-процессные
+            модули</message>
         <message id="othermodules">Другие модули</message>
-        <message id="obsoletemodules">Устаревшие модули</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">Устаревший модуль Apache</message>
         <message id="apachemodule">Модуль Apache</message>
-        <message id="apachecore">Ядро Apache</message>
-        <message id="apachempmcommon">Общие для всех МП-модулей директивы Apache</message>
+        <message id="apachecore">Особенности ядра Apache</message>
+        <message id="apachempmcommon">Общие для всех МП-модулей директивы
+            Apache</message>
         <message id="apachempm">Мульти-процессные модули Apache</message>
 
         <!-- Used in description box for modulesynopsis -->
@@ -71,26 +71,21 @@
         <message id="override">Разрешение</message>
         <message id="status">Статус</message>
         <message id="module">Модуль</message>
- 
-        <!-- Used in directive context lists -->
-        <message id="serverconfig">server config</message>
-        <message id="virtualhost">virtual host</message>
-        <message id="directory">directory</message>
-        <message id="htaccess">.htaccess</message>
- 
+
         <!-- Used for directive lists -->
         <message id="directives">Директивы</message>
         <message id="directive">Директива</message>
-        <message id="nodirectives">Этот модуль не предоставляет никаких директив.</message>
+        <message id="nodirectives">Этот модуль не предоставляет никаких
+            директив.</message>
 
         <!-- Used in summaries -->
         <message id="summary">Резюме</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- HTTP сервер Apache</message>
-        <message id="apachehttpserver">HTTP сервер Apache версии 2.0</message>
+        <message id="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
         <message id="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
-        <message id="search">Поиск в Google</message> <!-- search button -->
+        <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Оглавление</message> <!-- deprecated -->
         <message id="home">На главную страницу</message> <!-- deprecated -->
 
@@ -98,7 +93,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP сервер</message>
         <message id="documentation">Документация</message>
-        <message id="version">Версия 2.0</message>
+        <message id="version">Версия 2.1</message>
 
         <!-- super menu -->
         <message id="modules">Модули</message>
@@ -108,7 +103,7 @@
 
         <!-- footer line -->
         <message id="licensed">Licensed under the</message>
-        <message id="langavail">Доступные языки</message>
+        <message id="langavail">Available Languages</message>
 
         <!-- not up to date -->
         <message id="outofdate">This translation may be out of date. Check the
