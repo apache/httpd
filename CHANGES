@@ -2,6 +2,9 @@ Changes with Apache 2.1.2-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) worker MPM: Fix a problem which could cause httpd processes to
+     remain active after shutdown.  [Jeff Trawick]
+
   *) core: Error out on sections that are missing an argument instead of
      silently consuming the section. PR 25460.
      [Geoffrey Young, Paul Querna]
