@@ -224,9 +224,9 @@ variable</a> FOOBAR.</td></tr>
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
     ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a value is given as the third argument. If
-    this value contains spaces, it should be surrounded by double
-    quotes. For unset, no value should be given.</p>
+    <code>set</code> a <em>value</em> is given as the third argument. If
+    <em>value</em> contains spaces, it should be surrounded by double
+    quotes. For unset, no <em>value</em> should be given.</p>
 
     <p>The <code class="directive">RequestHeader</code> directive is processed
     just before the request is run by its handler in the fixup phase.

@@ -371,7 +371,7 @@
 
       <dd>The (%-decoded) URL path of the document requested by the
       user. Note that in the case of nested include files, this is
-      <em>not</em> then URL for the current document.</dd>
+      <em>not</em> the URL for the current document.</dd>
 
       <dt>LAST_MODIFIED</dt>
 
