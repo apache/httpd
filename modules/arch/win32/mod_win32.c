@@ -396,8 +396,6 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * we will consider
      */
     ext = strrchr(apr_filename_of_pathname(r->filename), '.');
-    if (ext)
-        ++ext;
     
     /* If the file has an extension and it is not .com and not .exe and
      * we've been instructed to search the registry, then do so.
