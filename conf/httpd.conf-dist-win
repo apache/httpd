@@ -586,6 +586,11 @@ ServerSignature On
     #
     # FancyIndexing is whether you want fancy directory indexing or standard
     #
+    # Note, add the option TrackModified to the IndexOptions default list only
+    # if all indexed directories reside on NTFS volumes.  The TrackModified flag
+    # will report the Last-Modified date to assist caches and proxies to properly
+    # track directory changes, but it does _not_ work on FAT volumes.
+    #
     IndexOptions FancyIndexing
 
     #
