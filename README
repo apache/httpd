@@ -23,9 +23,7 @@
 
  Here is a short overview of the source files:
 
-   Makefile.libdir ......... dummy for Apache config mechanism
    Makefile.tmpl ........... Makefile template for Unix  platform
-   Makefile.win32 .......... Makefile template for Win32 platform
    libssl.module ........... stub called from the Apache config mechanism
    libssl.version .......... file containing the mod_ssl version information
    mod_ssl.c ............... main source file containing API structures
