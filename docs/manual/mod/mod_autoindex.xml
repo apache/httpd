@@ -239,6 +239,7 @@ icon selected by MIME content-type</description>
 
 <directivesynopsis>
 <name>AddDescription</name>
+<description>Description to display for a file</description>
 <syntax>AddDescription
     <em>string file</em> [<em>file</em>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -386,7 +387,7 @@ configured</description>
     <p>The <directive>DefaultIcon</directive> directive sets the icon
     to display for files when no specific icon is known, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Url</em> is a (%-escaped) relative URL to the icon.
+    <em>Url-path</em> is a (%-escaped) relative URL to the icon.
     Examples:</p>
 <example>DefaultIcon /icon/unknown.xbm</example>
 </usage>
