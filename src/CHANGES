@@ -1,5 +1,7 @@
 Changes with Apache 1.3.5
 
+  *) Win32: Add global symbols missing from ApacheCore.def. [Carl Olsen]
+
   *) Entity tag comparisons for If-Match and If-None-Match were not being
      performed correctly -- weak tags might cause false positives.  Also,
      strong comparison wasn't properly enforced in all cases.

@@ -329,4 +329,18 @@ EXPORTS
 	ap_validate_password   @322
 	ap_size_list_item   @323
 	ap_get_list_item   @324
+	ap_scoreboard_fname   @325
+	ap_pid_fname   @326
+	ap_excess_requests_per_child   @327
+	ap_threads_per_child   @328
+	ap_max_requests_per_child   @329
+	ap_daemons_to_start   @330
+	ap_daemons_min_free   @331
+	ap_daemons_max_free   @332
+	ap_daemons_limit   @333
+	ap_user_name   @334
+	ap_user_id   @335
+	ap_group_id   @336
+	ap_standalone   @337
+	ap_server_confname   @338
 

@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/06 14:14:35 $]
+  Last modified at [$Date: 1999/02/09 17:17:01 $]
 
 Release:
 
@@ -85,10 +85,6 @@ Available Patches:
     * Ralf's [PATCH] Shared Memory Pools
         Message-ID: <19990124134912.A29193@engelschall.com>
         Status: Not sure if this is intended for 1.3.x or just feedback
-
-    * Carl Olsen's [PATCH] Added function exports to ApacheCore.def
-        Message-ID: <01BE4668.81DE5F90@host1.colsen.dlci154.adls.cyberramp.net>
-        Status: Roy +1 [update before commit]
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
