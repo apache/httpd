@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 04:00:16 $]
+Last modified at [$Date: 2004/03/29 13:41:28 $]
 
 Release:
 
@@ -71,6 +71,9 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Backport mod_log_forensic.
+      +1: ben, stoddard
 
     *) mod_include: remove "recursive-include" check, it's no longer
        necessary and forbids legal actions.
@@ -303,9 +306,6 @@ CURRENT RELEASE NOTES:
       get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
-
-    * Backport mod_log_forensic.
-      +1: ben
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
