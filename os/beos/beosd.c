@@ -65,26 +65,10 @@ beosd_config_rec beosd_config;
 
 void beosd_detach(void)
 {
-/*    int x;  This isn't needed due to the fork() issue */
     pid_t pgrp;
 
     chdir("/");
 
-/* 
- * fork() is evil if we're also doing spawn_thread...so we don't use it.
- * This means that it won't detach properly, so we'll have to find a way
- * round this. 
- */
-/*
-    if ((x = fork()) > 0)
-	exit(0);
-    else if (x == -1) {
-	perror("fork");
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "%s: unable to fork new process", ap_server_argv0);
-	exit(1);
-    }
-*/
     RAISE_SIGSTOP(DETACH);
 
     if ((pgrp = setsid()) == -1) {
