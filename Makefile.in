@@ -109,25 +109,25 @@ install-htdocs:
 	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
 	@test -d $(manualdir) || $(MKINSTALLDIRS) $(manualdir)
 	@test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(manualdir))
-	@test "x$(htdocsdir)" != "x" && cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf {} \;
+	@test "x$(htdocsdir)" != "x" && cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf
 
 install-error:
 	@echo Installing error documents
 	@test -d $(errordir) || $(MKINSTALLDIRS) $(errordir)
 	@cd $(top_srcdir)/docs/error && cp -rp * $(errordir)
-	@test "x$(errordir)" != "x" && cd $(errordir) && find . -name "CVS" -print | xargs rm -rf {} \;
+	@test "x$(errordir)" != "x" && cd $(errordir) && find . -name "CVS" -print | xargs rm -rf
 
 install-icons:
 	@echo Installing icons
 	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
 	@cd $(top_srcdir)/docs/icons && cp -rp * $(iconsdir)
-	@test "x$(iconsdir)" != "x" && cd $(iconsdir) && find . -name "CVS" -print | xargs rm -rf {} \;
+	@test "x$(iconsdir)" != "x" && cd $(iconsdir) && find . -name "CVS" -print | xargs rm -rf
 
 install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
 	@cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(cgidir)
-	@test "x$(cgidir)" != "x" && cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf {} \;
+	@test "x$(cgidir)" != "x" && cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf
 
 install-other:
 	@test -d $(logfiledir) || $(MKINSTALLDIRS) $(logfiledir)
