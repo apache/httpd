@@ -71,7 +71,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 
     if (apr_lock_create(&mc->pMutex, APR_MUTEX, APR_LOCKALL, APR_LOCK_DEFAULT,
                         mc->szMutexFile, p) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_CRIT|SSL_ADD_ERRNO,
+        ssl_log(s, SSL_LOG_ERROR,
                    "Cannot create SSLMutex file `%s'",
                     mc->szMutexFile);
         return FALSE;
