@@ -452,7 +452,6 @@ static int remove_entity(cache_handle_t *h)
 static apr_status_t read_headers(cache_handle_t *h, request_rec *r) 
 {
     apr_status_t rv;
-    char *temp;
     char urlbuff[1034];
     int urllen = sizeof(urlbuff);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
