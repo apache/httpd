@@ -168,7 +168,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 		    if (rv == SOCKET_ERROR) {
 		        err = WSAGetLastError();
 			if(err == WSAEWOULDBLOCK) {
-			    ap_log_error(APLOG_MARK,APLOG_WARNING,NULL,
+			    ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
 				"select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
 			    retry=1;
 			    Sleep(100);
