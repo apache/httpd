@@ -254,8 +254,6 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
         newcurl = util_ald_cache_insert(st->util_ldap_cache, &curl);
 
     }
-    else
-      newcurl = NULL;
 
     return newcurl;
 }
