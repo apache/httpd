@@ -5,6 +5,12 @@ Changes with Apache 2.1.4
   *) mod_cache: Fix error where incoming Cache-Control would be ignored.
      [Justin Erenkrantz]
 
+  *) mod_cache: Correctly handle originally conditional requests.
+     [Sander Striker]
+
+  *) mod_disk_cache: Correctly update cached headers on revalidated responses.
+     [Sander Striker, Justin Erenkrantz]
+
   *) worker MPM/mod_status: Support per-worker tracking of pid and
      generation in the scoreboard so that mod_status can accurately
      represent workers in processes which are gracefully terminating.
