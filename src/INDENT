@@ -37,14 +37,14 @@ AND don't forget to run expand on the file after it has been indent'd.
    rfc1413.c
    rfc1413.h
    scoreboard.h
-   util.c			RESERVED by Randy
-   util_date.c			RESERVED by Randy
-   util_date.h			RESERVED by Randy
-   util_md5.c			RESERVED by Randy
-   util_md5.h			RESERVED by Randy
-   util_script.c		RESERVED by Randy
-   util_script.h		RESERVED by Randy
-   util_snprintf.c		RESERVED by Randy
+   util.c			DONE by Randy
+   util_date.c			DONE by Randy
+   util_date.h			DONE by Randy
+   util_md5.c			DONE by Randy
+   util_md5.h			DONE by Randy
+   util_script.c		DONE by Randy
+   util_script.h		DONE by Randy
+   util_snprintf.c		DONE by Randy
 
 ./modules/example:
    mod_example.c		RESERVED by Ken
@@ -133,10 +133,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    utils.h			DONE
 
 ./support:
-   cls.c
-   htdigest.c
-   htpasswd.c
-   logresolve.c
-   rotatelogs.c
-   suexec.c
-   suexec.h
+   cls.c			RESERVED by Randy
+   htdigest.c			RESERVED by Randy
+   htpasswd.c			RESERVED by Randy
+   logresolve.c			RESERVED by Randy
+   rotatelogs.c			RESERVED by Randy
+   suexec.c			RESERVED by Randy
+   suexec.h			RESERVED by Randy
