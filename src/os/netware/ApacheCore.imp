@@ -362,6 +362,7 @@
  ap_os_canonical_filename,
  ap_os_case_canonical_filename,
  ap_os_http_method,
+ ap_os_default_port,
  os_readdir,
  os_opendir,
  os_closedir,

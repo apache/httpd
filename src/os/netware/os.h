@@ -186,5 +186,6 @@ char *bslash2slash(char*);
 void init_name_space(void);
 int ap_os_is_filename_valid(const char *file);
 char *ap_os_http_method(void *r);
+unsigned short ap_os_default_port(void *r);
 #endif /*! APACHE_OS_H*/
 

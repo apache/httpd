@@ -502,3 +502,8 @@ char *ap_os_http_method(void *r)
         if (optParam & (SO_SSL_ENABLE | SO_SSL_SERVER)) return "https";
     return "http";
 }
+
+unsigned short ap_os_default_port(void *r)
+{
+  return ap_default_port_for_scheme(ap_os_http_method(r));
+}
