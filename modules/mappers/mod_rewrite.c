@@ -89,7 +89,17 @@
 */
 
 
+#include "httpd.h"
+#include "http_config.h"
+#include "http_request.h"
+#include "http_core.h"
+#include "http_log.h"
+#include "http_protocol.h"
 #include "mod_rewrite.h"
+
+#if !defined(OS2) && !defined(WIN32)
+#include "unixd.h"
+#endif
 
 #ifndef NO_WRITEV
 #include <sys/types.h>
@@ -183,27 +193,26 @@ static const handler_rec handler_table[] = {
     { NULL }
 };
 
+static void register_hooks(void)
+{
+    ap_hook_post_config(init_module,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_child_init(init_child,NULL,NULL,HOOK_MIDDLE);
+
+    ap_hook_fixups(hook_fixup,NULL,NULL,HOOK_FIRST);
+    ap_hook_translate_name(hook_uri2file,NULL,NULL,HOOK_FIRST);
+    ap_hook_type_checker(hook_mimetype,NULL,NULL,HOOK_MIDDLE);
+}
+
     /* the main config structure */
 module MODULE_VAR_EXPORT rewrite_module = {
-   STANDARD_MODULE_STUFF,
-   init_module,                 /* module initializer                  */
+   STANDARD20_MODULE_STUFF,
    config_perdir_create,        /* create per-dir    config structures */
    config_perdir_merge,         /* merge  per-dir    config structures */
    config_server_create,        /* create per-server config structures */
    config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* ap_table_t of config file commands       */
+   command_table,               /* ap_table_t of config file commands  */
    handler_table,               /* [#8] MIME-typed-dispatched handlers */
-   hook_uri2file,               /* [#1] URI to filename translation    */
-   NULL,                        /* [#4] validate user id from request  */
-   NULL,                        /* [#5] check if the user is ok _here_ */
-   NULL,                        /* [#3] check access by host address   */
-   hook_mimetype,               /* [#6] determine MIME type            */
-   hook_fixup,                  /* [#7] pre-run fixups                 */
-   NULL,                        /* [#9] log a transaction              */
-   NULL,                        /* [#2] header parser                  */
-   init_child,                  /* child_init                          */
-   NULL,                        /* child_exit                          */
-   NULL                         /* [#0] post read-request              */
+   register_hooks               /* register hooks                      */
 };
 
     /* the cache */
@@ -211,9 +220,10 @@ static cache *cachep;
 
     /* whether proxy module is available or not */
 static int proxy_available;
+static int once_through = 0;
 
-static char *lockname;
-static int lockfd = -1;
+static const char *lockname;
+static ap_file_t *lockfd = NULL;
 
 /*
 ** +-------------------------------------------------------+
@@ -238,7 +248,7 @@ static void *config_server_create(ap_context_t *p, server_rec *s)
     a->state           = ENGINE_DISABLED;
     a->options         = OPTION_NONE;
     a->rewritelogfile  = NULL;
-    a->rewritelogfp    = -1;
+    a->rewritelogfp    = NULL;
     a->rewriteloglevel = 0;
     a->rewritemaps     = ap_make_array(p, 2, sizeof(rewritemap_entry));
     a->rewriteconds    = ap_make_array(p, 2, sizeof(rewritecond_entry));
@@ -271,7 +281,7 @@ static void *config_server_merge(ap_context_t *p, void *basev, void *overridesv)
         a->rewritelogfile  = overrides->rewritelogfile != NULL 
                              ? overrides->rewritelogfile
                              : base->rewritelogfile;
-        a->rewritelogfp    = overrides->rewritelogfp != -1 
+        a->rewritelogfp    = overrides->rewritelogfp != NULL 
                              ? overrides->rewritelogfp 
                              : base->rewritelogfp;
         a->rewritemaps     = ap_append_arrays(p, overrides->rewritemaps,
@@ -448,56 +458,56 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
                                   char *a2)
 {
     rewrite_server_conf *sconf;
-    rewritemap_entry *new;
+    rewritemap_entry *newmap;
     struct stat st;
 
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    new = ap_push_array(sconf->rewritemaps);
+    newmap = ap_push_array(sconf->rewritemaps);
 
-    new->name = a1;
-    new->func = NULL;
+    newmap->name = a1;
+    newmap->func = NULL;
     if (strncmp(a2, "txt:", 4) == 0) {
-        new->type      = MAPTYPE_TXT;
-        new->datafile  = a2+4;
-        new->checkfile = a2+4;
+        newmap->type      = MAPTYPE_TXT;
+        newmap->datafile  = a2+4;
+        newmap->checkfile = a2+4;
     }
     else if (strncmp(a2, "rnd:", 4) == 0) {
-        new->type      = MAPTYPE_RND;
-        new->datafile  = a2+4;
-        new->checkfile = a2+4;
+        newmap->type      = MAPTYPE_RND;
+        newmap->datafile  = a2+4;
+        newmap->checkfile = a2+4;
     }
     else if (strncmp(a2, "dbm:", 4) == 0) {
 #ifndef NO_DBM_REWRITEMAP
-        new->type      = MAPTYPE_DBM;
-        new->datafile  = a2+4;
-        new->checkfile = ap_pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
+        newmap->type      = MAPTYPE_DBM;
+        newmap->datafile  = a2+4;
+        newmap->checkfile = ap_pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
 #else
         return ap_pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, "
                           "because no NDBM support is compiled in");
 #endif
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
-        new->type = MAPTYPE_PRG;
-        new->datafile = a2+4;
-        new->checkfile = a2+4;
+        newmap->type = MAPTYPE_PRG;
+        newmap->datafile = a2+4;
+        newmap->checkfile = a2+4;
     }
     else if (strncmp(a2, "int:", 4) == 0) {
-        new->type      = MAPTYPE_INT;
-        new->datafile  = NULL;
-        new->checkfile = NULL;
+        newmap->type      = MAPTYPE_INT;
+        newmap->datafile  = NULL;
+        newmap->checkfile = NULL;
         if (strcmp(a2+4, "tolower") == 0) {
-            new->func = rewrite_mapfunc_tolower;
+            newmap->func = rewrite_mapfunc_tolower;
         }
         else if (strcmp(a2+4, "toupper") == 0) {
-            new->func = rewrite_mapfunc_toupper;
+            newmap->func = rewrite_mapfunc_toupper;
         }
         else if (strcmp(a2+4, "escape") == 0) {
-            new->func = rewrite_mapfunc_escape;
+            newmap->func = rewrite_mapfunc_escape;
         }
         else if (strcmp(a2+4, "unescape") == 0) {
-            new->func = rewrite_mapfunc_unescape;
+            newmap->func = rewrite_mapfunc_unescape;
         }
         else if (sconf->state == ENGINE_ENABLED) {
             return ap_pstrcat(cmd->pool, "RewriteMap: internal map not found:",
@@ -505,18 +515,18 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         }
     }
     else {
-        new->type      = MAPTYPE_TXT;
-        new->datafile  = a2;
-        new->checkfile = a2;
+        newmap->type      = MAPTYPE_TXT;
+        newmap->datafile  = a2;
+        newmap->checkfile = a2;
     }
-    new->fpin  = -1;
-    new->fpout = -1;
+    newmap->fpin  = NULL;
+    newmap->fpout = NULL;
 
-    if (new->checkfile && (sconf->state == ENGINE_ENABLED)
-        && (stat(new->checkfile, &st) == -1)) {
+    if (newmap->checkfile && (sconf->state == ENGINE_ENABLED)
+        && (stat(newmap->checkfile, &st) == -1)) {
         return ap_pstrcat(cmd->pool,
                           "RewriteMap: map file or program not found:",
-                          new->checkfile, NULL);
+                          newmap->checkfile, NULL);
     }
 
     return NULL;
@@ -556,7 +566,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str)
 {
     rewrite_server_conf *sconf;
-    rewritecond_entry *new;
+    rewritecond_entry *newcond;
     regex_t *regexp;
     char *a1;
     char *a2;
@@ -570,10 +580,10 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
 
     /*  make a new entry in the internal temporary rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
-        new = ap_push_array(sconf->rewriteconds);
+        newcond = ap_push_array(sconf->rewriteconds);
     }
     else {                     /* is per-directory command */
-        new = ap_push_array(dconf->rewriteconds);
+        newcond = ap_push_array(dconf->rewriteconds);
     }
 
     /*  parse the argument line ourself */
@@ -583,14 +593,14 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     }
 
     /*  arg1: the input string */
-    new->input = ap_pstrdup(cmd->pool, a1);
+    newcond->input = ap_pstrdup(cmd->pool, a1);
 
     /* arg3: optional flags field
        (this have to be first parsed, because we need to
         know if the regex should be compiled with ICASE!) */
-    new->flags = CONDFLAG_NONE;
+    newcond->flags = CONDFLAG_NONE;
     if (a3 != NULL) {
-        if ((err = cmd_rewritecond_parseflagfield(cmd->pool, new,
+        if ((err = cmd_rewritecond_parseflagfield(cmd->pool, newcond,
                                                   a3)) != NULL) {
             return err;
         }
@@ -600,14 +610,14 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
         try to compile the regexp to test if is ok */
     cp = a2;
     if (cp[0] == '!') {
-        new->flags |= CONDFLAG_NOTMATCH;
+        newcond->flags |= CONDFLAG_NOTMATCH;
         cp++;
     }
 
     /* now be careful: Under the POSIX regex library
        we can compile the pattern for case insensitive matching,
        under the old V8 library we have to do it self via a hack */
-    if (new->flags & CONDFLAG_NOCASE) {
+    if (newcond->flags & CONDFLAG_NOCASE) {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
               == NULL);
     }
@@ -620,8 +630,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                           a2, "'\n", NULL);
     }
 
-    new->pattern = ap_pstrdup(cmd->pool, cp);
-    new->regexp  = regexp;
+    newcond->pattern = ap_pstrdup(cmd->pool, cp);
+    newcond->regexp  = regexp;
 
     return NULL;
 }
@@ -699,7 +709,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str)
 {
     rewrite_server_conf *sconf;
-    rewriterule_entry *new;
+    rewriterule_entry *newrule;
     regex_t *regexp;
     char *a1;
     char *a2;
@@ -713,10 +723,10 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
 
     /*  make a new entry in the internal rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
-        new = ap_push_array(sconf->rewriterules);
+        newrule = ap_push_array(sconf->rewriterules);
     }
     else {                     /* is per-directory command */
-        new = ap_push_array(dconf->rewriterules);
+        newrule = ap_push_array(dconf->rewriterules);
     }
 
     /*  parse the argument line ourself */
@@ -726,13 +736,13 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     }
 
     /* arg3: optional flags field */
-    new->forced_mimetype     = NULL;
-    new->forced_responsecode = HTTP_MOVED_TEMPORARILY;
-    new->flags  = RULEFLAG_NONE;
-    new->env[0] = NULL;
-    new->skip   = 0;
+    newrule->forced_mimetype     = NULL;
+    newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
+    newrule->flags  = RULEFLAG_NONE;
+    newrule->env[0] = NULL;
+    newrule->skip   = 0;
     if (a3 != NULL) {
-        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, new,
+        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, newrule,
                                                   a3)) != NULL) {
             return err;
         }
@@ -743,11 +753,11 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
      */
     cp = a1;
     if (cp[0] == '!') {
-        new->flags |= RULEFLAG_NOTMATCH;
+        newrule->flags |= RULEFLAG_NOTMATCH;
         cp++;
     }
     mode = REG_EXTENDED;
-    if (new->flags & RULEFLAG_NOCASE) {
+    if (newrule->flags & RULEFLAG_NOCASE) {
         mode |= REG_ICASE;
     }
     if ((regexp = ap_pregcomp(cmd->pool, cp, mode)) == NULL) {
@@ -755,26 +765,26 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                           "RewriteRule: cannot compile regular expression '",
                           a1, "'\n", NULL);
     }
-    new->pattern = ap_pstrdup(cmd->pool, cp);
-    new->regexp  = regexp;
+    newrule->pattern = ap_pstrdup(cmd->pool, cp);
+    newrule->regexp  = regexp;
 
     /*  arg2: the output string
      *  replace the $<N> by \<n> which is needed by the currently
      *  used Regular Expression library
      */
-    new->output = ap_pstrdup(cmd->pool, a2);
+    newrule->output = ap_pstrdup(cmd->pool, a2);
 
     /* now, if the server or per-dir config holds an
      * array of RewriteCond entries, we take it for us
      * and clear the array
      */
     if (cmd->path == NULL) {  /* is server command */
-        new->rewriteconds   = sconf->rewriteconds;
+        newrule->rewriteconds   = sconf->rewriteconds;
         sconf->rewriteconds = ap_make_array(cmd->pool, 2,
                                             sizeof(rewritecond_entry));
     }
     else {                    /* is per-directory command */
-        new->rewriteconds   = dconf->rewriteconds;
+        newrule->rewriteconds   = dconf->rewriteconds;
         dconf->rewriteconds = ap_make_array(cmd->pool, 2,
                                             sizeof(rewritecond_entry));
     }
@@ -939,7 +949,10 @@ static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *c
 **
 */
 
-static void init_module(server_rec *s, ap_context_t *p)
+static void init_module(ap_context_t *p,
+                        ap_context_t *plog,
+                        ap_context_t *ptemp,
+                        server_rec *s)
 {
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
@@ -954,8 +967,11 @@ static void init_module(server_rec *s, ap_context_t *p)
      */
     for (; s; s = s->next) {
         open_rewritelog(s, p);
-        run_rewritemap_programs(s, p);
+        if (once_through > 0)
+           run_rewritemap_programs(s, p);
     }
+
+    once_through++;
 }
 
 
@@ -966,7 +982,7 @@ static void init_module(server_rec *s, ap_context_t *p)
 **
 */
 
-static void init_child(server_rec *s, ap_context_t *p)
+static void init_child(ap_context_t *p, server_rec *s)
 {
      /* open the rewriting lockfile */
      rewritelock_open(s, p);
@@ -2354,7 +2370,7 @@ static void reduce_uri(request_rec *r)
     char *olduri;
     int l;
 
-    cp = ap_http_method(r);
+    cp = (char *)ap_http_method(r);
     l  = strlen(cp);
     if (   strlen(r->filename) > l+3 
         && strncasecmp(r->filename, cp, l) == 0
@@ -2840,7 +2856,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
 {
-    FILE *fp = NULL;
+    ap_file_t *fp = NULL;
+    ap_status_t rc;
     char line[1024];
     char *value = NULL;
     char *cpT;
@@ -2848,11 +2865,12 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     char *curkey;
     char *curval;
 
-    if ((fp = ap_pfopen(r->pool, file, "r")) == NULL) {
+    rc = ap_open(&fp, file, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, r->pool);
+    if (rc != APR_SUCCESS) {
        return NULL;
     }
 
-    while (fgets(line, sizeof(line), fp) != NULL) {
+    while (ap_fgets(line, sizeof(line), fp) == APR_SUCCESS) {
         if (line[0] == '#')
             continue; /* ignore comments */
         cpT = line;
@@ -2878,7 +2896,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
         value = ap_pstrdup(r->pool, curval);
         break;
     }
-    ap_pfclose(r->pool, fp);
+    ap_close(fp);
     return value;
 }
 
@@ -2908,13 +2926,16 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
 }
 #endif
 
-static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
+static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
+                                ap_file_t *fpout, char *key)
 {
     char buf[LONG_STRING_LEN];
     char c;
     int i;
+    int size_val;
 #ifndef NO_WRITEV
-    struct iovec iov[2];
+    ap_iovec_t *iov;
+    struct iovec iova[2];
 #endif
 
     /* when `RewriteEngine off' was used in the per-server
@@ -2922,7 +2943,7 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
      * In this case using such a map (usually in per-dir context)
      * is useless because it is not available.
      */
-    if (fpin == -1 || fpout == -1) {
+    if (fpin == NULL || fpout == NULL) {
         return NULL;
     }
 
@@ -2931,23 +2952,30 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
 
     /* write out the request key */
 #ifdef NO_WRITEV
-    write(fpin, key, strlen(key));
-    write(fpin, "\n", 1);
+    ap_write(fpin, key, strlen(key));
+    ap_write(fpin, "\n", 1);
 #else
-    iov[0].iov_base = key;
-    iov[0].iov_len = strlen(key);
-    iov[1].iov_base = "\n";
-    iov[1].iov_len = 1;
-    writev(fpin, iov, 2);
+    iova[0].iov_base = key;
+    iova[0].iov_len = strlen(key);
+    iova[1].iov_base = "\n";
+    iova[1].iov_len = 1;
+
+    ap_make_iov(&iov, iova, r->pool);
+    size_val = 2;
+    ap_writev(fpin, iov, &size_val);
 #endif
 
     /* read in the response value */
     i = 0;
-    while (read(fpout, &c, 1) == 1 && (i < LONG_STRING_LEN-1)) {
+    size_val = 1;
+    ap_read(fpout, &c, &size_val);
+    while (size_val == 1 && (i < LONG_STRING_LEN-1)) {
         if (c == '\n') {
             break;
         }
         buf[i++] = c;
+
+        ap_read(fpout, &c, &size_val);
     }
     buf[i] = '\0';
 
@@ -3084,14 +3112,11 @@ static char *select_random_value_part(request_rec *r, char *value)
 static void open_rewritelog(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
-    char *fname;
+    const char *fname;
+    ap_status_t rc;
     piped_log *pl;
-    int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
-#ifdef WIN32
-    mode_t rewritelog_mode  = ( _S_IREAD|_S_IWRITE );
-#else
-    mode_t rewritelog_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
-#endif
+    int    rewritelog_flags = ( APR_WRITE | APR_APPEND | APR_CREATE );
+    mode_t rewritelog_mode  = ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD );
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -3101,7 +3126,7 @@ static void open_rewritelog(server_rec *s, ap_context_t *p)
     if (*(conf->rewritelogfile) == '\0') {
         return;
     }
-    if (conf->rewritelogfp > 0) {
+    if (conf->rewritelogfp != NULL) {
         return; /* virtual log shared w/ main server */
     }
 
@@ -3109,7 +3134,7 @@ static void open_rewritelog(server_rec *s, ap_context_t *p)
 
     if (*conf->rewritelogfile == '|') {
         if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, s, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, 
                          "mod_rewrite: could not open reliable pipe "
                          "to RewriteLog filter %s", conf->rewritelogfile+1);
             exit(1);
@@ -3117,10 +3142,9 @@ static void open_rewritelog(server_rec *s, ap_context_t *p)
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
     else if (*conf->rewritelogfile != '\0') {
-        if ((conf->rewritelogfp = ap_popenf(p, fname, rewritelog_flags,
-                                            rewritelog_mode)) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, s, 
-
+        rc = ap_open(&conf->rewritelogfp, fname, rewritelog_flags, rewritelog_mode, p);
+        if (rc != APR_SUCCESS)  {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, 
                          "mod_rewrite: could not open RewriteLog "
                          "file %s", fname);
             exit(1);
@@ -3139,7 +3163,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char type[20];
     char redir[20];
     va_list ap;
-    int i;
+    int i, size_val;
     request_rec *req;
     char *ruser;
     const char *rhost;
@@ -3148,7 +3172,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
     conn = r->connection;
 
-    if (conf->rewritelogfp < 0) {
+    if (conf->rewritelogfp == NULL) {
         return;
     }
     if (conf->rewritelogfile == NULL) {
@@ -3208,7 +3232,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 type, redir, level, str2);
 
     fd_lock(r, conf->rewritelogfp);
-    write(conf->rewritelogfp, str3, strlen(str3));
+    size_val = strlen(str3);
+    ap_write(conf->rewritelogfp, str3, &size_val);
     fd_unlock(r, conf->rewritelogfp);
 
     va_end(ap);
@@ -3218,17 +3243,19 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 static char *current_logtime(request_rec *r)
 {
     int timz;
-    struct tm *t;
+    ap_time_t *t;
     char tstr[80];
     char sign;
+    ap_int32_t len;
 
-    t = ap_get_gmtoff(&timz);
+    ap_make_time(&t, r->pool);
+    ap_get_gmtoff(&timz, t, r->pool);
     sign = (timz < 0 ? '-' : '+');
     if (timz < 0) {
         timz = -timz;
     }
 
-    strftime(tstr, 80, "[%d/%b/%Y:%H:%M:%S ", t);
+    ap_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", t);
     ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
                 sign, timz/60, timz%60);
     return ap_pstrdup(r->pool, tstr);
@@ -3245,15 +3272,12 @@ static char *current_logtime(request_rec *r)
 ** +-------------------------------------------------------+
 */
 
-#ifdef WIN32
-#define REWRITELOCK_MODE ( _S_IREAD|_S_IWRITE )
-#else
-#define REWRITELOCK_MODE ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH )
-#endif
+#define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
 static void rewritelock_create(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
+    ap_status_t rc;
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -3267,9 +3291,9 @@ static void rewritelock_create(server_rec *s, ap_context_t *p)
 
     /* create the lockfile */
     unlink(lockname);
-    if ((lockfd = ap_popenf(p, lockname, O_WRONLY|O_CREAT,
-                                         REWRITELOCK_MODE)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+    rc = ap_open(&lockfd, lockname, APR_WRITE | APR_CREATE, REWRITELOCK_MODE, p);
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "mod_rewrite: Parent could not create RewriteLock "
                      "file %s", lockname);
         exit(1);
@@ -3277,7 +3301,7 @@ static void rewritelock_create(server_rec *s, ap_context_t *p)
 #if !defined(OS2) && !defined(WIN32)
     /* make sure the childs have access to this file */
     if (geteuid() == 0 /* is superuser */)
-        chown(lockname, ap_user_id, -1 /* no gid change */);
+        chown(lockname, unixd_config.user_id, -1 /* no gid change */);
 #endif
 
     return;
@@ -3286,6 +3310,7 @@ static void rewritelock_create(server_rec *s, ap_context_t *p)
 static void rewritelock_open(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
+    ap_status_t rc;
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -3295,9 +3320,9 @@ static void rewritelock_open(server_rec *s, ap_context_t *p)
     }
 
     /* open the lockfile (once per child) to get a unique fd */
-    if ((lockfd = ap_popenf(p, lockname, O_WRONLY,
-                                         REWRITELOCK_MODE)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+    rc = ap_open(&lockfd, lockname, APR_WRITE | APR_CREATE, REWRITELOCK_MODE, p);
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "mod_rewrite: Child could not open RewriteLock "
                      "file %s", lockname);
         exit(1);
@@ -3305,22 +3330,23 @@ static void rewritelock_open(server_rec *s, ap_context_t *p)
     return;
 }
 
-static void rewritelock_remove(void *data)
+static ap_status_t rewritelock_remove(void *data)
 {
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
-        return;
+        return(-1);
     }
 
     /* remove the lockfile */
     unlink(lockname);
     lockname = NULL;
-    lockfd = -1;
+    lockfd = NULL;
+    return(0);
 }
 
 static void rewritelock_alloc(request_rec *r)
 {
-    if (lockfd != -1) {
+    if (lockfd != NULL) {
         fd_lock(r, lockfd);
     }
     return;
@@ -3328,7 +3354,7 @@ static void rewritelock_alloc(request_rec *r)
 
 static void rewritelock_free(request_rec *r)
 {
-    if (lockfd != -1) {
+    if (lockfd != NULL) {
         fd_unlock(r, lockfd);
     }
     return;
@@ -3346,9 +3372,9 @@ static void rewritelock_free(request_rec *r)
 static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
-    FILE *fpin;
-    FILE *fpout;
-    FILE *fperr;
+    ap_file_t *fpin;
+    ap_file_t *fpout;
+    ap_file_t *fperr;
     ap_array_header_t *rewritemaps;
     rewritemap_entry *entries;
     rewritemap_entry *map;
@@ -3373,78 +3399,76 @@ static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
         }
         if (map->datafile == NULL
             || *(map->datafile) == '\0'
-            || map->fpin  != -1
-            || map->fpout != -1        ) {
+            || map->fpin  != NULL
+            || map->fpout != NULL        ) {
             continue;
         }
         fpin  = NULL;
         fpout = NULL;
-        rc = ap_spawn_child(p, rewritemap_program_child,
-                            (void *)map->datafile, kill_after_timeout,
-                            &fpin, &fpout, &fperr);
-        if (rc == 0 || fpin == NULL || fpout == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, s,
+        rc = rewritemap_program_child(p, map->datafile,
+                                     &fpout, &fpin, &fperr);
+        if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "mod_rewrite: could not fork child for "
-                         "RewriteMap process");
+                         "RewriteMap process. %d", rc);
             exit(1);
         }
-        map->fpin  = fileno(fpin);
-        map->fpout = fileno(fpout);
-        map->fperr = fileno(fperr);
+        map->fpin  = fpin;
+        map->fpout = fpout;
+        map->fperr = fperr;
     }
     return;
 }
 
 /* child process code */
-static int rewritemap_program_child(void *cmd, child_info *pinfo)
+static int rewritemap_program_child(ap_context_t *p, char *progname,
+                                    ap_file_t **fpout, ap_file_t **fpin,
+                                    ap_file_t **fperr)
 {
-    int child_pid = 1;
+    int rc = -1;
+    ap_procattr_t *procattr;
+    ap_proc_t *procnew;
 
-    /*
-     * Prepare for exec
-     */
-    ap_cleanup_for_exec();
+    ap_block_alarms();
+
 #ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
 #endif
 
-    /*
-     * Exec() the child program
-     */
-#if defined(WIN32)
-    /* MS Windows */
-    {
-        char pCommand[MAX_STRING_LEN];
-        STARTUPINFO si;
-        PROCESS_INFORMATION pi;
+    
+    if ((ap_createprocattr_init(&procattr, p)           != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, APR_FULL_BLOCK,
+                                     APR_FULL_NONBLOCK,
+                                     APR_FULL_NONBLOCK) != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(p, progname))
+                                                        != APR_SUCCESS) ||
+        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)  != APR_SUCCESS)) {
+        /* Something bad happened, give up and go away. */
+        rc = -1;
+    }
+    else {
+        rc = ap_create_process(&procnew, progname, NULL, NULL, procattr, p);
+    
+        if (rc == APR_SUCCESS) {
+            ap_note_subprocess(p, procnew, kill_after_timeout);
 
-        ap_snprintf(pCommand, sizeof(pCommand), "%s /C %s", SHELL_PATH, cmd);
+            if (fpin) {
+                ap_get_childin(fpin, procnew);
+            }
 
-        memset(&si, 0, sizeof(si));
-        memset(&pi, 0, sizeof(pi));
+            if (fpout) {
+                ap_get_childout(fpout, procnew);
+            }
 
-        si.cb          = sizeof(si);
-        si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-        si.wShowWindow = SW_HIDE;
-        si.hStdInput   = pinfo->hPipeInputRead;
-        si.hStdOutput  = pinfo->hPipeOutputWrite;
-        si.hStdError   = pinfo->hPipeErrorWrite;
-
-        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0,
-                          environ, NULL, &si, &pi)) {
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            child_pid = pi.dwProcessId;
+            if (fperr) {
+                ap_get_childerr(fperr, procnew);
+            }
         }
     }
-#elif defined(OS2)
-    /* IBM OS/2 */
-    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-#else
-    /* Standard Unix */
-    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif
-    return(child_pid);
+
+    ap_unblock_alarms();
+
+    return (rc);
 }
 
 
@@ -3757,11 +3781,11 @@ static char *lookup_variable(request_rec *r, char *var)
 static char *lookup_header(request_rec *r, const char *name)
 {
     ap_array_header_t *hdrs_arr;
-    table_entry *hdrs;
+    ap_table_entry_t *hdrs;
     int i;
 
     hdrs_arr = ap_table_elts(r->headers_in);
-    hdrs = (table_entry *)hdrs_arr->elts;
+    hdrs = (ap_table_entry_t *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (hdrs[i].key == NULL) {
             continue;
@@ -4163,9 +4187,10 @@ static struct flock   lock_it;
 static struct flock unlock_it;
 #endif
 
-static void fd_lock(request_rec *r, int fd)
+static void fd_lock(request_rec *r, ap_file_t *fd)
 {
     int rc;
+    int sys_file;
 
 #ifdef USE_FCNTL
     lock_it.l_whence = SEEK_SET; /* from current point */
@@ -4174,13 +4199,15 @@ static void fd_lock(request_rec *r, int fd)
     lock_it.l_type   = F_WRLCK;  /* set exclusive/write lock */
     lock_it.l_pid    = 0;        /* pid not actually interesting */
 
-    while (   ((rc = fcntl(fd, F_SETLKW, &lock_it)) < 0)
+    ap_get_os_file(&sys_file, fd);
+    while (   ((rc = fcntl(sys_file, F_SETLKW, &lock_it)) < 0)
               && (errno == EINTR)                               ) {
         continue;
     }
 #endif
 #ifdef USE_FLOCK
-    while (   ((rc = flock(fd, LOCK_EX)) < 0)
+    ap_get_os_file(fd, &sys_file);
+    while (   ((rc = flock(sys_file, LOCK_EX)) < 0)
               && (errno == EINTR)               ) {
         continue;
     }
@@ -4188,9 +4215,10 @@ static void fd_lock(request_rec *r, int fd)
 #ifdef USE_LOCKING
     /* Lock the first byte, always, assume we want to append
        and seek to the end afterwards */
-    lseek(fd, 0, SEEK_SET);
-    rc = _locking(fd, _LK_LOCK, 1);
-    lseek(fd, 0, SEEK_END);
+    ap_seek(fd, APR_SET, 0);
+    ap_get_os_file(&sys_file, fd);
+    rc = _locking(sys_file, _LK_LOCK, 1);
+    ap_seek(fd, APR_END, 0);
 #endif
 
     if (rc < 0) {
@@ -4201,9 +4229,10 @@ static void fd_lock(request_rec *r, int fd)
     return;
 }
 
-static void fd_unlock(request_rec *r, int fd)
+static void fd_unlock(request_rec *r, ap_file_t *fd)
 {
     int rc;
+    int sys_file;
 
 #ifdef USE_FCNTL
     unlock_it.l_whence = SEEK_SET; /* from current point */
@@ -4212,15 +4241,18 @@ static void fd_unlock(request_rec *r, int fd)
     unlock_it.l_type   = F_UNLCK;  /* unlock */
     unlock_it.l_pid    = 0;        /* pid not actually interesting */
 
-    rc = fcntl(fd, F_SETLKW, &unlock_it);
+    ap_get_os_file(&sys_file, fd);
+    rc = fcntl(sys_file, F_SETLKW, &unlock_it);
 #endif
 #ifdef USE_FLOCK
-    rc = flock(fd, LOCK_UN);
+    ap_get_os_file(fd, &sys_file);
+    rc = flock(sys_file, LOCK_UN);
 #endif
 #ifdef USE_LOCKING
-    lseek(fd, 0, SEEK_SET);
-    rc = _locking(fd, _LK_UNLCK, 1);
-    lseek(fd, 0, SEEK_END);
+    ap_seek(fd, APR_SET, 0);
+    ap_get_os_file(&sys_file, fd);
+    rc = _locking(sys_file, _LK_UNLCK, 1);
+    ap_seek(fd, APR_END, 0);
 #endif
 
     if (rc < 0) {
