@@ -78,12 +78,18 @@ typedef enum {
 #ifndef TRUE
 #define TRUE			1
 #endif
+#ifndef AP_LONGEST_LONG
+#define AP_LONGEST_LONG		long
+#endif
 #define NUL			'\0'
 #define INT_NULL		((int *)0)
 #define WIDE_INT		long
+#define WIDEST_INT		AP_LONGEST_LONG
 
 typedef WIDE_INT wide_int;
 typedef unsigned WIDE_INT u_wide_int;
+typedef WIDEST_INT widest_int;
+typedef unsigned WIDEST_INT u_widest_int;
 typedef int bool_int;
 
 #define S_NULL			"(null)"
@@ -339,15 +345,15 @@ static char *ap_gcvt(double number, int ndigit, char *buf, boolean_e altform)
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
  */
-static char *conv_10(register wide_int num, register bool_int is_unsigned,
+static char *conv_10(register widest_int num, register bool_int is_unsigned,
 		     register bool_int *is_negative, char *buf_end,
 		     register int *len)
 {
     register char *p = buf_end;
-    register u_wide_int magnitude;
+    register u_widest_int magnitude;
 
     if (is_unsigned) {
-	magnitude = (u_wide_int) num;
+	magnitude = (u_widest_int) num;
 	*is_negative = FALSE;
     }
     else {
@@ -363,19 +369,19 @@ static char *conv_10(register wide_int num, register bool_int is_unsigned,
 	 *      d. add 1
 	 */
 	if (*is_negative) {
-	    wide_int t = num + 1;
+	    widest_int t = num + 1;
 
-	    magnitude = ((u_wide_int) -t) + 1;
+	    magnitude = ((u_widest_int) -t) + 1;
 	}
 	else
-	    magnitude = (u_wide_int) num;
+	    magnitude = (u_widest_int) num;
     }
 
     /*
      * We use a do-while loop so that we write at least 1 digit 
      */
     do {
-	register u_wide_int new_magnitude = magnitude / 10;
+	register u_widest_int new_magnitude = magnitude / 10;
 
 	*--p = (char) (magnitude - new_magnitude * 10 + '0');
 	magnitude = new_magnitude;
@@ -492,7 +498,7 @@ static char *conv_fp(register char format, register double num,
 	*s++ = format;		/* either e or E */
 	decimal_point--;
 	if (decimal_point != 0) {
-	    p = conv_10((wide_int) decimal_point, FALSE, &exponent_is_negative,
+	    p = conv_10((widest_int) decimal_point, FALSE, &exponent_is_negative,
 			&temp[EXPONENT_LENGTH], &t_len);
 	    *s++ = exponent_is_negative ? '-' : '+';
 
@@ -526,7 +532,7 @@ static char *conv_fp(register char format, register double num,
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
  */
-static char *conv_p2(register u_wide_int num, register int nbits,
+static char *conv_p2(register u_widest_int num, register int nbits,
 		     char format, char *buf_end, register int *len)
 {
     register int mask = (1 << nbits) - 1;
@@ -570,8 +576,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
     char prefix_char;
 
     double fp_num;
-    wide_int i_num = (wide_int) 0;
-    u_wide_int ui_num;
+    widest_int i_num = (widest_int) 0;
+    u_widest_int ui_num;
 
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
@@ -580,6 +586,7 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
      * Flag variables
      */
     boolean_e is_long;
+    boolean_e is_quad;
     boolean_e alternate_form;
     boolean_e print_sign;
     boolean_e print_blank;
@@ -677,14 +684,21 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	    /*
 	     * Modifier check
 	     */
-	    if (*fmt == 'l') {
+	    if (*fmt == 'q') {
+		is_quad = YES;
+		is_long = NO;
+		fmt++;
+	    }
+	    else if (*fmt == 'l') {
 		is_long = YES;
+		is_quad = NO;
 		fmt++;
 	    }
 	    else {
 		if (*fmt == 'h')  /* "short" backward compatibility */
 		    ++fmt;
 		is_long = NO;
+		is_quad = NO;
 	    }
 
 	    /*
@@ -700,10 +714,12 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	     */
 	    switch (*fmt) {
 	    case 'u':
-		if (is_long)
-		    i_num = va_arg(ap, u_wide_int);
+	    	if (is_quad)
+		    i_num = va_arg(ap, u_widest_int);
+		else if (is_long)
+		    i_num = (widest_int) va_arg(ap, u_wide_int);
 		else
-		    i_num = (wide_int) va_arg(ap, unsigned int);
+		    i_num = (widest_int) va_arg(ap, unsigned int);
 		s = conv_10(i_num, 1, &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
@@ -711,10 +727,12 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 	    case 'd':
 	    case 'i':
-		if (is_long)
-		    i_num = va_arg(ap, wide_int);
+	    	if (is_quad)
+		    i_num = va_arg(ap, widest_int);
+		else if (is_long)
+		    i_num = (widest_int) va_arg(ap, wide_int);
 		else
-		    i_num = (wide_int) va_arg(ap, int);
+		    i_num = (widest_int) va_arg(ap, int);
 		s = conv_10(i_num, 0, &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
@@ -729,10 +747,12 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 
 	    case 'o':
-		if (is_long)
-		    ui_num = va_arg(ap, u_wide_int);
+		if (is_quad)
+		    ui_num = va_arg(ap, u_widest_int);
+		else if (is_long)
+		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
 		else
-		    ui_num = (u_wide_int) va_arg(ap, unsigned int);
+		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
 		s = conv_p2(ui_num, 3, *fmt,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
@@ -745,10 +765,12 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 	    case 'x':
 	    case 'X':
-		if (is_long)
-		    ui_num = (u_wide_int) va_arg(ap, u_wide_int);
+		if (is_quad)
+		    ui_num = va_arg(ap, u_widest_int);
+		else if (is_long)
+		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
 		else
-		    ui_num = (u_wide_int) va_arg(ap, unsigned int);
+		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
 		s = conv_p2(ui_num, 4, *fmt,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
@@ -850,14 +872,15 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	    case 'p':
 		switch(*++fmt) {
 		    /*
-		     * If the pointer size is equal to the size of an unsigned
-		     * integer we convert the pointer to a hex number, otherwise 
-		     * we print "%p" to indicate that we don't handle "%p".
+		     * If the pointer size is equal to or smaller than the size
+		     * of the largest unsigned int, we convert the pointer to a
+		     * hex number, otherwise we print "%p" to indicate that we
+		     * don't handle "%p".
 		     */
 		case 'p':
-		    ui_num = (u_wide_int) va_arg(ap, void *);
+		    ui_num = (u_widest_int) va_arg(ap, void *);
 
-		    if (sizeof(char *) <= sizeof(u_wide_int))
+		    if (sizeof(char *) <= sizeof(u_widest_int))
 				s = conv_p2(ui_num, 4, 'x',
 					    &num_buf[NUM_BUF_SIZE], &s_len);
 		    else {
