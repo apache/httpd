@@ -29,8 +29,10 @@ requests to be assigned a variety of different userids</description>
 
 <summary>
     <note type="warning">
-      This MPM does not currently work on most platforms.  Work is ongoing
-      to make it functional.
+      This module is not functional.  Development of this module is not
+      complete and is not currently active.  Do not use
+      <module>perchild</module> unless you are a programmer willing to
+      help fix it.
     </note>
 
     <p>This Multi-Processing Module (MPM) implements a hybrid
