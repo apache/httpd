@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) ap_finalize_sub_req_protocol() shouldn't send an EOS bucket if
+     one was already sent.  PR 9644  [Jeff Trawick]
+
   *) Fix the display of the default name for the mime types config
      file.  PR 9729  [Matthew Brecknell <mbrecknell@orchestream.com>]
 

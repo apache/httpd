@@ -1033,7 +1033,10 @@ static void end_output_stream(request_rec *r)
 
 void ap_finalize_sub_req_protocol(request_rec *sub)
 {
-    end_output_stream(sub);
+    /* tell the filter chain there is no more content coming */
+    if (!sub->eos_sent) {
+        end_output_stream(sub);
+    }
 }
 
 /* finalize_request_protocol is called at completion of sending the
