@@ -269,7 +269,6 @@ static int display_info(request_rec *r)
 {
     module *modp = NULL;
     char buf[MAX_STRING_LEN];
-    const char *cfname;
     const char *more_info;
     const command_rec *cmd = NULL;
 #ifdef NEVERMORE
@@ -294,7 +293,6 @@ static int display_info(request_rec *r)
 	     "<html><head><title>Server Information</title></head>\n", r);
     ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
-        cfname = ap_server_root_relative(r->pool, SERVER_CONFIG_FILE);
         if (!r->args) {
             ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
