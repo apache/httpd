@@ -173,3 +173,48 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t * tm,
 {
     return cached_explode(tm, t, exploded_cache_gmt, 1);
 }
+
+AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
+{
+    /* ### This code is a clone of apr_ctime(), except that it
+     * uses ap_explode_recent_localtime() instead of apr_explode_localtime().
+     */
+    apr_time_exp_t xt;
+    const char *s;
+    int real_year;
+
+    /* example: "Wed Jun 30 21:49:08 1993" */
+    /*           123456789012345678901234  */
+
+    ap_explode_recent_localtime(&xt, t);
+    s = &apr_day_snames[xt.tm_wday][0];
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = ' ';
+    s = &apr_month_snames[xt.tm_mon][0];
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = *s++;
+    *date_str++ = ' ';
+    *date_str++ = xt.tm_mday / 10 + '0';
+    *date_str++ = xt.tm_mday % 10 + '0';
+    *date_str++ = ' ';
+    *date_str++ = xt.tm_hour / 10 + '0';
+    *date_str++ = xt.tm_hour % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_min / 10 + '0';
+    *date_str++ = xt.tm_min % 10 + '0';
+    *date_str++ = ':';
+    *date_str++ = xt.tm_sec / 10 + '0';
+    *date_str++ = xt.tm_sec % 10 + '0';
+    *date_str++ = ' ';
+    real_year = 1900 + xt.tm_year;
+    *date_str++ = real_year / 1000 + '0';
+    *date_str++ = real_year % 1000 / 100 + '0';
+    *date_str++ = real_year % 100 / 10 + '0';
+    *date_str++ = real_year % 10 + '0';
+    *date_str++ = 0;
+
+    return APR_SUCCESS;
+}

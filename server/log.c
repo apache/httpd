@@ -409,7 +409,7 @@ static void log_error_core(const char *file, int line, int level,
 
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
         errstr[0] = '[';
-        apr_ctime(errstr + 1, apr_time_now());
+        ap_recent_ctime(errstr + 1, apr_time_now());
         errstr[1 + APR_CTIME_LEN - 1] = ']';
         errstr[1 + APR_CTIME_LEN    ] = ' ';
         len = 1 + APR_CTIME_LEN + 1;
