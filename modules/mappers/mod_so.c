@@ -175,7 +175,6 @@ static void *so_sconf_create(apr_pool_t *p, server_rec *s)
 
 static apr_status_t unload_module(void *data)
 {
-    apr_status_t status;
     moduleinfo *modi = (moduleinfo*)data;
 
     /* only unload if module information is still existing */
