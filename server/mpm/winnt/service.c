@@ -1057,11 +1057,8 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
             return 0;
         }
         
-        argc += 1;
         start_argv = malloc((argc + 1) * sizeof(const char **));
-        start_argv[0] = mpm_service_name;
-        if (argc > 1)
-            memcpy(start_argv + 1, argv, (argc - 1) * sizeof(const char **));
+        memcpy(start_argv, argv, argc * sizeof(const char **));
         start_argv[argc] = NULL;
 
         rv = APR_EINIT;
