@@ -14,17 +14,12 @@ SUBDIRS = \
 	mappers \
 	metadata \
 	proxy \
+	filters \
 	$(EOLIST) 
 
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \
-	       $(EOLIST)
-endif
-
-# If the zlib libraries source exists then build the mod_deflate module
-ifeq "$(wildcard $(AP_WORK)\srclib\zlib)" "$(AP_WORK)\srclib\zlib"
-SUBDIRS += filters \
 	       $(EOLIST)
 endif
 
