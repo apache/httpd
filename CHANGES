@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_alias now emits a warning if it detects overlapping *Alias*
+     directives.  [André Malo]
+
   *) mod_rewrite no longer turns forward proxy requests into reverse proxy
      requests. PR 28125  [ast domdv.de, André Malo]
 

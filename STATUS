@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/14 17:48:10 $]
+Last modified at [$Date: 2004/06/14 22:09:41 $]
 
 Release:
 
@@ -179,10 +179,6 @@ PATCHES TO BACKPORT FROM 2.1
        necessary and forbids legal actions.
           modules/filters/mod_include.c: r1.296
        +1: nd
-
-    *) mod_alias: Emit a warning if an alias overlaps another
-          modules/mappers/mod_alias.c: r1.45, 1.46, 1.47, 1.48, 1.55
-      +1: nd, bnicholes, jjclar
 
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
