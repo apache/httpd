@@ -169,7 +169,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     ap_file_t *f;
     struct stat finfo;
 
-    ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, r, 
+    ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
 		"%s: %s", error, r->filename);
 
     if (!conf->logname ||
@@ -216,7 +216,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          * on Unix, thanks to the magic of fork().
          */
         while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, errno, r, 
                           "%s", argsbuffer);            
         }
 #else
@@ -329,7 +329,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
         (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))        != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		      "couldn't create child process: %s", r->filename);
         rc = !APR_SUCCESS;
     }
@@ -338,7 +338,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
@@ -424,7 +424,7 @@ static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p)
     fileType = ap_get_win32_interpreter(r, &interpreter);
 
     if (fileType == eFileTypeUNKNOWN) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, errno, r,
                       "%s is not executable; ensure interpreted scripts have "
                       "\"#!\" first line", 
                       r->filename);
@@ -524,19 +524,19 @@ static int cgi_handler(request_rec *r)
 
     /* build the command line */
     if (build_command_line(&command, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* build the argument list */
     else if (build_argv_list(&argv, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* run the script in its own process */
     else if (run_cgi_child(&script_out, &script_in, &script_err, command, &argv, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }

@@ -195,7 +195,7 @@ static void accept_mutex_child_init(ap_context_t *p)
     int rc = DosOpenMutexSem(NULL, &lock_sem);
 
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
 		    "Child cannot open lock semaphore, rc=%d", rc);
 	clean_child_exit(APEXIT_CHILDINIT);
     } else {
@@ -212,7 +212,7 @@ static void accept_mutex_init(ap_context_t *p)
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
     
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
 		    "Parent cannot create lock semaphore, rc=%d", rc);
 	exit(APEXIT_INIT);
     }
@@ -225,7 +225,7 @@ static void accept_mutex_on(void)
     int rc = DosRequestMutexSem(lock_sem, SEM_INDEFINITE_WAIT);
 
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
 		    "OS2SEM: Error %d getting accept lock. Exiting!", rc);
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -236,7 +236,7 @@ static void accept_mutex_off(void)
     int rc = DosReleaseMutexSem(lock_sem);
     
     if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
 		    "OS2SEM: Error %d freeing accept lock. Exiting!", rc);
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -746,46 +746,46 @@ static void set_signals(void)
 	sa.sa_flags = SA_RESETHAND;
 #endif
 	if (sigaction(SIGSEGV, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGSEGV)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGSEGV)");
 #ifdef SIGBUS
 	if (sigaction(SIGBUS, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGBUS)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGBUS)");
 #endif
 #ifdef SIGABORT
 	if (sigaction(SIGABORT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABORT)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGABORT)");
 #endif
 #ifdef SIGABRT
 	if (sigaction(SIGABRT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABRT)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGABRT)");
 #endif
 #ifdef SIGILL
 	if (sigaction(SIGILL, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGILL)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGILL)");
 #endif
 	sa.sa_flags = 0;
     }
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGTERM)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGTERM)");
 #ifdef SIGINT
     if (sigaction(SIGINT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGINT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGINT)");
 #endif
 #ifdef SIGXCPU
     sa.sa_handler = SIG_DFL;
     if (sigaction(SIGXCPU, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXCPU)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGXCPU)");
 #endif
 #ifdef SIGXFSZ
     sa.sa_handler = SIG_DFL;
     if (sigaction(SIGXFSZ, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXFSZ)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGXFSZ)");
 #endif
 #ifdef SIGPIPE
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGPIPE, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGPIPE)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGPIPE)");
 #endif
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
@@ -793,9 +793,9 @@ static void set_signals(void)
     sigaddset(&sa.sa_mask, SIGUSR1);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGHUP)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGHUP)");
     if (sigaction(SIGUSR1, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGUSR1)");
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGUSR1)");
 #else
     if (!one_process) {
 	signal(SIGSEGV, sig_coredump);
@@ -849,7 +849,7 @@ static void sock_disable_nagle(int s)
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
 		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
 		    "setsockopt: (TCP_NODELAY)");
     }
 }
@@ -996,7 +996,7 @@ static void child_main(void *child_num_arg)
 		     * on Linux 2.0.x we seem to end up with EFAULT
 		     * occasionally, and we'd loop forever due to it.
 		     */
-		    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "select: (listen)");
 		    clean_child_exit(1);
 		}
 
@@ -1107,7 +1107,7 @@ static void child_main(void *child_num_arg)
 #endif
                     break;
 		default:
-		    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, server_conf,
 				"accept: (client socket)");
 		    clean_child_exit(1);
 		}
@@ -1136,7 +1136,7 @@ static void child_main(void *child_num_arg)
         ap_get_os_sock(&sockdes, csd);
 	clen = sizeof(sa_server);
 	if (getsockname(sockdes, &sa_server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
+	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
 	    ap_close_socket(csd);
 	    continue;
 	}
@@ -1147,13 +1147,13 @@ static void child_main(void *child_num_arg)
 
 	if (iol == NULL) {
 	    if (errno == EBADF) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
 		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
 		    "found, you probably need to rebuild Apache with a "
 		    "larger FD_SETSIZE", sockdes, FD_SETSIZE);
 	    }
 	    else {
-		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
 		    "error attaching to socket");
 	    }
 	    ap_close_socket(csd);
@@ -1201,7 +1201,7 @@ static int make_child(server_rec *s, int slot, time_t now)
     ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
     if ((tid = _beginthread(child_main, NULL, 65536, (void *)slot)) == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, s, "_beginthread: Unable to create new thread");
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "_beginthread: Unable to create new thread");
 
 	/* _beginthread didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
@@ -1323,7 +1323,7 @@ static void perform_idle_server_maintenance(void)
 	    static int reported = 0;
 
 	    if (!reported) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, server_conf,
 			    "server reached MaxClients setting, consider"
 			    " raising the MaxClients setting");
 		reported = 1;
@@ -1332,7 +1332,7 @@ static void perform_idle_server_maintenance(void)
 	}
 	else {
 	    if (idle_spawn_rate >= 8) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, server_conf,
 		    "server seems busy, (you may need "
 		    "to increase StartServers, or Min/MaxSpareServers), "
 		    "spawning %d children, there are %d idle, and "
@@ -1366,7 +1366,7 @@ static void process_child_status(int tid, ap_wait_t status)
 	*/
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, server_conf,
 			"Child %d returned a Fatal error... \n"
 			"Apache is exiting!",
 			tid);
@@ -1383,7 +1383,7 @@ static void process_child_status(int tid, ap_wait_t status)
 #ifdef SYS_SIGLIST
 #ifdef WCOREDUMP
 	    if (WCOREDUMP(status)) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			     server_conf,
 			     "child tid %d exit signal %s (%d), "
 			     "possible coredump in %s",
@@ -1393,7 +1393,7 @@ static void process_child_status(int tid, ap_wait_t status)
 	    }
 	    else {
 #endif
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			     server_conf,
 			     "child tid %d exit signal %s (%d)", tid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
@@ -1401,7 +1401,7 @@ static void process_child_status(int tid, ap_wait_t status)
 	    }
 #endif
 #else
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			 server_conf,
 			 "child tid %d exit signal %d",
 			 tid, WTERMSIG(status));
@@ -1419,13 +1419,14 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
+    ap_status_t status;
 
     pconf = _pconf;
     server_conf = s;
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (ap_listen_open(s->process, s->port)) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+    if ((status = ap_listen_open(s->process, s->port)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, status, s,
 		    "no listening sockets available, shutting down");
 	return -1;
     }
@@ -1440,7 +1441,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 
     if (ppthread_globals == NULL) {
         if (DosAllocThreadLocalMemory(1, (PULONG *)&ppthread_globals)) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, server_conf,
                          "Error allocating thread local storage"
                          "Apache is exiting!");
         } else {
@@ -1473,10 +1474,10 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	hold_off_on_exponential_spawning = 10;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, server_conf,
 		"Server built: %s", ap_get_server_built());
     restart_pending = shutdown_pending = 0;
 
@@ -1516,7 +1517,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 		    * scoreboard.  Somehow we don't know about this
 		    * child.
 		    */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
 			    "long lost child came home! (tid %d)", tid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
@@ -1553,13 +1554,13 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	    const char *pidfile = NULL;
 	    pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 	    if ( pidfile != NULL && unlink(pidfile) == 0)
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
 				server_conf,
 				"removed PID file %s (pid=%ld)",
 				pidfile, (long)getpid());
 	}
 
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, server_conf,
 		    "caught SIGTERM, shutting down");
 	return 1;
     }
@@ -1580,7 +1581,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     ++ap_scoreboard_image->global.running_generation;
 
     if (is_graceful) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, server_conf,
 		    "SIGUSR1 received.  Doing graceful restart");
 
         /* kill off the idle ones */
@@ -1604,7 +1605,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         for (i = 0; i < ap_daemons_limit; ++i) {
             DosKillThread(ap_scoreboard_image->parent[i].tid);
         }
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, server_conf,
                      "SIGHUP received.  Attempting to restart");
     }
 
