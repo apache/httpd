@@ -215,6 +215,12 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "else" && \
   echo "  lcopy bindist/htdocs \$SR/htdocs 755 644" && \
   echo "fi" && \
+  echo "if [ -d \$SR/error ]" && \
+  echo "then" && \
+  echo "  echo \"[Preserving existing error documents directory.]\"" && \
+  echo "else" && \
+  echo "  lcopy bindist/error \$SR/error 755 644" && \
+  echo "fi" && \
   echo " " && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" -e \"s;\@prefix\@;\$SR;\" -e \"s;\@sbindir\@;\$SR/bin;\" \\" && \
   echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
