@@ -468,8 +468,6 @@ static int file_cache_handler(request_rec *r)
     r->clength = match->finfo.size;
     apr_table_setn(r->headers_out, "Content-Length", match->sizestr);
 
-    ap_send_http_header(r);
-
     /* Call appropriate handler */
     if (!r->header_only) {    
         if (match->is_mmapped == TRUE)

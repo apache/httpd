@@ -117,7 +117,6 @@ static int asis_handler(request_rec *r)
 	return OK;
     }
 
-    ap_send_http_header(r);
     if (!r->header_only) {
 	ap_send_fd(f, r, 0, r->finfo.size, &nbytes);
     }

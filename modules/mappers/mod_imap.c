@@ -522,8 +522,6 @@ static int imap_reply(request_rec *r, char *redirect)
 static void menu_header(request_rec *r, char *menu)
 {
     r->content_type = "text/html";
-    ap_send_http_header(r);
-
 
     ap_rvputs(r, DOCTYPE_HTML_3_2, "<html><head>\n<title>Menu for ", r->uri,
            "</title>\n</head><body>\n", NULL);

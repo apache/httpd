@@ -364,8 +364,6 @@ static int dav_error_response(request_rec *r, int status, const char *body)
     (void) ap_discard_request_body(r);
 
     /* begin the response now... */
-    ap_send_http_header(r);
-
     ap_rvputs(r,
 	      DAV_RESPONSE_BODY_1,
 	      r->status_line,
@@ -416,10 +414,7 @@ static void dav_send_multistatus(request_rec *r, int status,
     r->status = status;
     r->content_type = DAV_XML_CONTENT_TYPE;
 
-    /* Send all of the headers now */
-    ap_send_http_header(r);
-
-    /* Send the actual multistatus response now... */
+    /* Send the headers and actual multistatus response now... */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
 	     "<D:multistatus xmlns:D=\"DAV:\"", r);
 
@@ -847,7 +842,6 @@ static int dav_method_get(request_rec *r)
         }
 
         if (r->header_only) {
-            ap_send_http_header(r);
             return DONE;
         }
 
@@ -870,9 +864,6 @@ static int dav_method_get(request_rec *r)
                                  "specified Content-Range.", err);
             return dav_handle_err(r, err, NULL);
         }
-
-	/* all set. send the headers now. */
-	ap_send_http_header(r);
 
 	buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	while (1) {
@@ -1739,8 +1730,7 @@ static int dav_method_options(request_rec *r)
     if (doc == NULL) {
         ap_set_content_length(r, 0);
 
-        /* ### this will send a Content-Type. the default OPTIONS does not. */
-        ap_send_http_header(r);
+        /* ### this sends a Content-Type. the default OPTIONS does not. */
 
         /* ### the default (ap_send_http_options) returns OK, but I believe
          * ### that is because it is the default handler and nothing else
@@ -1785,10 +1775,7 @@ static int dav_method_options(request_rec *r)
     r->status = HTTP_OK;
     r->content_type = DAV_XML_CONTENT_TYPE;
 
-    /* send the headers */
-    ap_send_http_header(r);
-
-    /* send the response body */
+    /* send the headers and response body */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
              "<D:options-response xmlns:D=\"DAV:\">" DEBUG_CR, r);
 
@@ -2976,8 +2963,6 @@ static int dav_method_lock(request_rec *r)
     r->status = HTTP_OK;
     r->content_type = DAV_XML_CONTENT_TYPE;
 
-    ap_send_http_header(r);
-
     ap_rputs(DAV_XML_HEADER DEBUG_CR "<D:prop xmlns:D=\"DAV:\">" DEBUG_CR, r);
     if (lock == NULL)
 	ap_rputs("<D:lockdiscovery/>" DEBUG_CR, r);
@@ -3201,7 +3186,6 @@ static int dav_method_vsn_control(request_rec *r)
 
             /* no body */
             ap_set_content_length(r, 0);
-            ap_send_http_header(r);
 
             return DONE;
         }
@@ -3478,7 +3462,6 @@ static int dav_method_uncheckout(request_rec *r)
 
     /* no body */
     ap_set_content_length(r, 0);
-    ap_send_http_header(r);
 
     return DONE;
 }
@@ -3708,7 +3691,6 @@ static int dav_method_set_target(request_rec *r)
 
     /* no body */
     ap_set_content_length(r, 0);
-    ap_send_http_header(r);
 
     return DONE;
 }
@@ -3893,7 +3875,6 @@ static int dav_method_label(request_rec *r)
 
     /* no body */
     ap_set_content_length(r, 0);
-    ap_send_http_header(r);
 
     return DONE;
 }
@@ -3948,10 +3929,7 @@ static int dav_method_report(request_rec *r)
     r->status = HTTP_OK;
     r->content_type = DAV_XML_CONTENT_TYPE;
 
-    /* send the headers and start a timeout */
-    ap_send_http_header(r);
-
-    /* send the response body */
+    /* send the headers and response body */
     ap_rputs(DAV_XML_HEADER DEBUG_CR, r);
 
     for (t = hdr.first; t != NULL; t = t->next)

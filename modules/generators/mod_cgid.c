@@ -999,7 +999,6 @@ static int cgid_handler(request_rec *r)
             return HTTP_MOVED_TEMPORARILY; 
         } 
 
-        ap_send_http_header(r); 
         if (!r->header_only) { 
             bb = apr_brigade_create(r->pool);
             b = apr_bucket_pipe_create(tempsock);
@@ -1198,7 +1197,6 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
         return HTTP_MOVED_TEMPORARILY; 
     } 
 
-    ap_send_http_header(r); 
     if (!r->header_only) { 
         bcgi = apr_brigade_create(r->pool);
         b    = apr_bucket_pipe_create(tempsock);

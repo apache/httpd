@@ -1566,8 +1566,6 @@ static int index_directory(request_rec *r,
     ap_set_last_modified(r);
     ap_set_etag(r);
 
-    ap_send_http_header(r);
-
     if (r->header_only) {
 	apr_dir_close(thedir);
 	return 0;
