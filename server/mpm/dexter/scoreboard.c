@@ -157,7 +157,6 @@ static void setup_shared_mem(ap_context_t *p)
 		ap_server_argv0);
     }
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.running_generation = 0;
 }
 
 API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
@@ -244,7 +243,6 @@ static void setup_shared_mem(ap_context_t *p)
     close(fd);
     ap_register_cleanup(p, NULL, cleanup_shared_mem, ap_null_cleanup);
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.running_generation = 0;
 }
 
 API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
@@ -324,7 +322,6 @@ static void setup_shared_mem(ap_context_t *p)
     close(fd);
 #endif
     ap_scoreboard_image = (scoreboard *) m;
-    ap_scoreboard_image->global.running_generation = 0;
 }
 
 API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
