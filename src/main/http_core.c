@@ -572,16 +572,17 @@ char *dirsection (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     errmsg = srm_command_loop (cmd, new_dir_conf);
-    add_per_dir_conf (cmd->server, new_dir_conf);
+    if (errmsg != end_dir_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_dir_conf, &core_module);
     conf->r = r;
+
+    add_per_dir_conf (cmd->server, new_dir_conf);
  
     cmd->path = old_path;
     cmd->override = old_overrides;
 
-    if (errmsg == end_dir_magic) return NULL;
-    return errmsg;
+    return NULL;
 }
 
 static char *end_url_magic = "</Location> outside of any <Location> section";
