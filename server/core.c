@@ -3167,40 +3167,19 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
 
     /* we are reading a single LF line, e.g. the HTTP headers */
-    while (!APR_BRIGADE_EMPTY(ctx->b)) {
-        const char *pos;
+    rv = apr_brigade_split_line(b, ctx->b, block, HUGE_STRING_LEN);
+    /* We should treat EAGAIN here the same as we do for EOF (brigade is
+     * empty).  We do this by returning whatever we have read.  This may 
+     * or may not be bogus, but is consistent (for now) with EOF logic.
+     */
+    if (APR_STATUS_IS_EAGAIN(rv) || rv == APR_SUCCESS) {
+        apr_off_t total;
 
-        e = APR_BRIGADE_FIRST(ctx->b);
-        rv = apr_bucket_read(e, &str, &len, block);
-
-        /* We should treat EAGAIN here the same as we do for EOF (brigade is
-         * empty).  We do this by returning whatever we have read.  This may 
-         * or may not be bogus, but is consistent (for now) with EOF logic.
-         */
-        if (APR_STATUS_IS_EAGAIN(rv)) {
-            break;
-        }
-        else if (rv != APR_SUCCESS) {
-            return rv;
-        }
-
-        pos = memchr(str, APR_ASCII_LF, len);
-        /* We found a match. */
-        if (pos != NULL) {
-            apr_bucket_split(e, pos - str + 1);
-            APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_INSERT_TAIL(b, e);
-            *readbytes += pos - str;
-            return APR_SUCCESS;
-        }
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        *readbytes += len;
-        /* We didn't find an APR_ASCII_LF within the predefined maximum
-         * line length. */
-        if (*readbytes >= HUGE_STRING_LEN) {
-            break;
-        }
+        apr_brigade_length(b, 1, &total);
+        *readbytes = total;
+    }
+    else {
+        return rv;
     }
 
     return APR_SUCCESS;
