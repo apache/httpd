@@ -104,7 +104,10 @@ BrowserMatch Java1.0 force-response-1.0 <br>
 BrowserMatch JDK/1.0 force-response-1.0 
 </code></blockquote>
 
-<p>RealPlayer 4.0 from Progressive Networks also exhibits this problem:
+<p>RealPlayer 4.0 from Progressive Networks also exhibits this problem.
+However they have fixed it in version 4.01 of the player, but version
+4.01 uses the same <code>User-Agent</code> as version 4.0.  The
+workaround is still:
 <blockquote><code>
 BrowserMatch "RealPlayer 4.0" force-response-1.0
 </code></blockquote>
