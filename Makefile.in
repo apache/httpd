@@ -97,7 +97,7 @@ install-build:
 	sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
 	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk; \
 	cp $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir); \
-	cp $(top_srcdir)/config.nice $(DESTDIR)$(installbuilddir);
+	cp $(top_builddir)/config.nice $(DESTDIR)$(installbuilddir);
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
