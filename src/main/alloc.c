@@ -2222,6 +2222,10 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
     HANDLE hPipeInputWrite  = NULL;
     HANDLE hPipeErrorRead   = NULL;
     HANDLE hPipeErrorWrite  = NULL;
+    HANDLE hPipeInputWriteDup = NULL;
+    HANDLE hPipeOutputReadDup = NULL;
+    HANDLE hPipeErrorReadDup  = NULL;
+    HANDLE hCurrentProcess;
     int pid = 0;
     child_info info;
 
@@ -2259,6 +2263,57 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
 	    CloseHandle(hPipeOutputWrite);
 	}
 	return 0;
+    }
+    /*
+     * When the pipe handles are created, the security descriptor
+     * indicates that the handle can be inherited.  However, we do not
+     * want the server side handles to the pipe to be inherited by the
+     * child CGI process. If the child CGI does inherit the server
+     * side handles, then the child may be left around if the server
+     * closes its handles (e.g. if the http connection is aborted),
+     * because the child will have a valid copy of handles to both
+     * sides of the pipes, and no I/O error will occur.  Microsoft
+     * recommends using DuplicateHandle to turn off the inherit bit
+     * under NT and Win95.
+     */
+    hCurrentProcess = GetCurrentProcess();
+    if ((pipe_in && !DuplicateHandle(hCurrentProcess, hPipeInputWrite,
+				     hCurrentProcess,
+				     &hPipeInputWriteDup, 0, FALSE,
+				     DUPLICATE_SAME_ACCESS))
+	|| (pipe_out && !DuplicateHandle(hCurrentProcess, hPipeOutputRead,
+					 hCurrentProcess, &hPipeOutputReadDup,
+					 0, FALSE, DUPLICATE_SAME_ACCESS))
+	|| (pipe_err && !DuplicateHandle(hCurrentProcess, hPipeErrorRead,
+					 hCurrentProcess, &hPipeErrorReadDup,
+					 0, FALSE, DUPLICATE_SAME_ACCESS))) {
+	if (pipe_in) {
+	    CloseHandle(hPipeInputRead);
+	    CloseHandle(hPipeInputWrite);
+	}
+	if (pipe_out) {
+	    CloseHandle(hPipeOutputRead);
+	    CloseHandle(hPipeOutputWrite);
+	}
+	if (pipe_err) {
+	    CloseHandle(hPipeErrorRead);
+	    CloseHandle(hPipeErrorWrite);
+	}
+	return 0;
+    }
+    else {
+	if (pipe_in) {
+	    CloseHandle(hPipeInputWrite);
+	    hPipeInputWrite = hPipeInputWriteDup;
+	}
+	if (pipe_out) {
+	    CloseHandle(hPipeOutputRead);
+	    hPipeOutputRead = hPipeOutputReadDup;
+	}
+	if (pipe_err) {
+	    CloseHandle(hPipeErrorRead);
+	    hPipeErrorRead = hPipeErrorReadDup;
+	}
     }
 
     /* The script writes stdout to this pipe handle */
