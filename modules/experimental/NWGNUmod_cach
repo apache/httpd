@@ -179,7 +179,6 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/cache_util.o \
-	$(OBJDIR)/cache_hash.o \
 	$(OBJDIR)/cache_storage.o \
 	$(OBJDIR)/mod_cache.o \
 	$(EOLIST)
