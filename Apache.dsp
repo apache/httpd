@@ -49,8 +49,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /incremental:no /map /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /incremental:no /map /machine:I386
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
@@ -85,15 +85,47 @@ LINK32=link.exe
 # Name "Apache - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\os\win32\apache.ico
+SOURCE=.\build\win32\Apache.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\apache.rc
+SOURCE=.\build\win32\Apache.rc
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\server\main.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "Apache - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=.\build\win32\win32ver.awk
+
+".\build\win32\Apache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ./build/win32/win32ver.awk Apache "Apache http Server"\
+ ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=.\build\win32\win32ver.awk
+
+".\build\win32\Apache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ./build/win32/win32ver.awk Apache "Apache http Server"\
+ ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project
