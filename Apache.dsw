@@ -18,6 +18,21 @@ Package=<4>
     Project_Dep_Name ApacheMonitor
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_access
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_actions
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_alias
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_asis
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_auth_anon
     End Project Dependency
     Begin Project Dependency
@@ -27,10 +42,22 @@ Package=<4>
     Project_Dep_Name mod_auth_digest
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_autoindex
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_cern_meta
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_cgi
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_dav_fs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dir
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_env
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_expires
@@ -42,13 +69,34 @@ Package=<4>
     Project_Dep_Name mod_headers
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_imap
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_include
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_info
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_isapi
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_log_config
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_mime
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_mime_magic
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_negotiation
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_rewrite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_setenvif
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_speling
@@ -58,6 +106,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_unique_id
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_userdir
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_usertrack
@@ -372,6 +423,111 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_access"=".\modules\aaa\mod_access.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_actions"=".\modules\mappers\mod_actions.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_alias"=".\modules\mappers\mod_alias.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_asis"=".\modules\generators\mod_asis.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_auth"=".\modules\aaa\mod_auth.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_auth_anon"=".\modules\aaa\mod_auth_anon.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -384,9 +540,13 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
+
 
 ###############################################################################
 
@@ -432,6 +592,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_autoindex"=".\modules\generators\mod_autoindex.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_cern_meta"=".\modules\metadata\mod_cern_meta.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -442,6 +623,30 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_cgi"=".\modules\generators\mod_cgi.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -495,6 +700,48 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_dir"=".\modules\mappers\mod_dir.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_env"=".\modules\metadata\mod_env.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_expires"=".\modules\metadata\mod_expires.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -505,6 +752,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -525,10 +775,10 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name libhttpd
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name libaprutil
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
@@ -544,6 +794,51 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_imap"=".\modules\mappers\mod_imap.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_include"=".\modules\filters\mod_include.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -564,6 +859,72 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_isapi"=".\modules\arch\win32\mod_isapi.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_log_config"=".\modules\loggers\mod_log_config.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_mime"=".\modules\http\mod_mime.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
@@ -580,6 +941,51 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_negotiation"=".\modules\mappers\mod_negotiation.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy"=".\modules\proxy\mod_proxy.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -600,6 +1006,30 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_setenvif"=".\modules\metadata\mod_setenvif.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
@@ -616,6 +1046,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -641,9 +1074,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name pcre
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -658,6 +1088,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
@@ -678,6 +1111,30 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_userdir"=".\modules\mappers\mod_userdir.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
@@ -696,6 +1153,9 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
 }}}
@@ -703,24 +1163,6 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_vhost_alias"=".\modules\mappers\mod_vhost_alias.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_proxy"=".\modules\proxy\mod_proxy.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

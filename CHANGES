@@ -1,4 +1,15 @@
 Changes with Apache 2.0.31-dev
+
+  *) Split all Win32 modules [excluding the core components mod_core, 
+     mod_so, mod_win32 and the winnt mpm] into individual loadable
+     modules, so the administrator may individually disable the former
+     compiled-in modules by simply commenting out their LoadModule
+     directives.  [William Rowe]
+
+  *) Saved Win32 module authors and porters many future headaches, by
+     duplicating the appropriate .h files such as os.h into the include
+     directory, including in the build tree.  [William Rowe]
+
   *) mod_ssl adjustments to help with using toolkits other than OpenSSL:
       Use SSL functions/macros instead of directly dereferencing SSL
       structures wherever possible.

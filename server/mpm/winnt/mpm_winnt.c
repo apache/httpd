@@ -83,7 +83,7 @@
  * the overhead.
  */
 #ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 4096
+#define HARD_THREAD_LIMIT 1920
 #endif
 
 /* Limit on the total --- clients will be locked out if more servers than

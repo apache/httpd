@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /I "./modules/proxy" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -68,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /I "./modules/proxy" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -196,6 +196,8 @@ SOURCE=.\server\gen_test_char.exe
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
+USERDEP__WIN32=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h
 InputPath=.\server\gen_test_char.exe
 
@@ -207,12 +209,212 @@ InputPath=.\server\gen_test_char.exe
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
+USERDEP__WIN32=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h
 InputPath=.\server\gen_test_char.exe
 
 ".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	.\server\gen_test_char.exe >.\server\test_char.h 
 	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\mod_core.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_core.h
+InputPath=.\modules\http\mod_core.h
+
+".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_core.h
+	copy .\modules\http\mod_core.h .\include\mod_core.h
+	echo Created mod_core.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_core.h
+InputPath=.\modules\http\mod_core.h
+
+".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_core.h
+	copy .\modules\http\mod_core.h .\include\mod_core.h
+	echo Created mod_core.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\dav\main\mod_dav.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_dav.h
+InputPath=.\modules\dav\main\mod_dav.h
+
+".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_dav.h
+	copy .\modules\dav\main\mod_dav.h .\include\mod_dav.h
+	echo Created mod_dav.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_dav.h
+InputPath=.\modules\dav\main\mod_dav.h
+
+".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_dav.h
+	copy .\modules\dav\main\mod_dav.h .\include\mod_dav.h
+	echo Created mod_dav.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\proxy\mod_proxy.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_proxy.h
+InputPath=.\modules\proxy\mod_proxy.h
+
+".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_proxy.h
+	copy .\modules\proxy\mod_proxy.h .\include\mod_proxy.h
+	echo Created mod_proxy.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mod_proxy.h
+InputPath=.\modules\proxy\mod_proxy.h
+
+".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mod_proxy.h
+	copy .\modules\proxy\mod_proxy.h .\include\mod_proxy.h
+	echo Created mod_proxy.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mpm.h
+InputPath=.\server\mpm\winnt\mpm.h
+
+".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mpm.h
+	copy .\server\mpm\winnt\mpm.h .\include\mpm.h
+	echo Created mpm.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mpm.h
+InputPath=.\server\mpm\winnt\mpm.h
+
+".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mpm.h
+	copy .\server\mpm\winnt\mpm.h .\include\mpm.h
+	echo Created mpm.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm_default.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mpm_default.h
+InputPath=.\server\mpm\winnt\mpm_default.h
+
+".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mpm_default.h
+	copy .\server\mpm\winnt\mpm_default.h .\include\mpm_default.h
+	echo Created mpm_default.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating mpm_default.h
+InputPath=.\server\mpm\winnt\mpm_default.h
+
+".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\mpm_default.h
+	copy .\server\mpm\winnt\mpm_default.h .\include\mpm_default.h
+	echo Created mpm_default.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\os.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating os.h
+InputPath=.\os\win32\os.h
+
+".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\os.h
+	copy .\os\win32\os.h .\include\os.h
+	echo Created os.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating os.h
+InputPath=.\os\win32\os.h
+
+".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	del .\include\os.h
+	copy .\os\win32\os.h .\include\os.h
+	echo Created os.h
 	
 # End Custom Build
 
@@ -249,79 +451,7 @@ SOURCE=.\modules\http\mod_core.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\modules\aaa\mod_access.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_actions.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_alias.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\generators\mod_asis.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\aaa\mod_auth.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\generators\mod_autoindex.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\generators\mod_cgi.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_dir.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\metadata\mod_env.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_imap.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\filters\mod_include.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\filters\mod_include.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\arch\win32\mod_isapi.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\loggers\mod_log_config.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\http\mod_mime.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_negotiation.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\metadata\mod_setenvif.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\mappers\mod_so.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mappers\mod_userdir.c
 # End Source File
 # Begin Source File
 

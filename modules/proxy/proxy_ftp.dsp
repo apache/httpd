@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\proxy_ftp" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\proxy_ftp" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\include" /I "..\..\os\win32" /I "..\http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\proxy_ftp" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\proxy_ftp" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -103,5 +103,34 @@ SOURCE=.\proxy_ftp.c
 SOURCE=.\mod_proxy.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "proxy_ftp - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\proxy_ftp.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk proxy_ftp  "proxy_ftp_module for Apache" ../../include/ap_release.h > .\proxy_ftp.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "proxy_ftp - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\proxy_ftp.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk proxy_ftp  "proxy_ftp_module for Apache" ../../include/ap_release.h > .\proxy_ftp.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

@@ -131,6 +131,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 !IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
+USERDEP__WIN32=".\ApacheMonitor.rc"	
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
@@ -142,6 +143,7 @@ InputPath=..\..\build\win32\win32ver.awk
 !ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
+USERDEP__WIN32=".\ApacheMonitor.rc"	
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
