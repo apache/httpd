@@ -77,8 +77,11 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h> /* for timeval definitions */
 #endif
+#ifdef BEOS_BONE
+#include <sys/socket.h>
+#endif
 
-#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM)
+#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(MPM_BEOS)
 #define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
 #elif defined(MPMT_PTHREAD_MPM) || defined (PREFORK_MPM)
