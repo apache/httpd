@@ -21,7 +21,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache MPM threadpool</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/threadpool.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/threadpool.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</td></tr>
@@ -72,7 +72,7 @@
 
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/threadpool.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/threadpool.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

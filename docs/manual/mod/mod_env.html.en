@@ -21,7 +21,9 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_env</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_env.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_env.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_env.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_env.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Modifies the environment which is passed to CGI scripts and
 SSI pages</td></tr>
@@ -106,7 +108,9 @@ SSI pages</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_env.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_env.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_env.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_env.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

@@ -18,7 +18,12 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Overview of new features in Apache 2.0</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./de/new_features_2_0.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="./en/new_features_2_0.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./fr/new_features_2_0.html" hreflang="fr" title="Français">&nbsp;fr&nbsp;</a> | <a href="./ja/new_features_2_0.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/new_features_2_0.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a> | <a href="./ru/new_features_2_0.html" hreflang="ru" title="Russian">&nbsp;ru&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/new_features_2_0.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/new_features_2_0.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
   <p>This document describes some of the major changes between the
@@ -224,7 +229,12 @@
     </dl>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./de/new_features_2_0.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="./en/new_features_2_0.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./fr/new_features_2_0.html" hreflang="fr" title="Français">&nbsp;fr&nbsp;</a> | <a href="./ja/new_features_2_0.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/new_features_2_0.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a> | <a href="./ru/new_features_2_0.html" hreflang="ru" title="Russian">&nbsp;ru&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/new_features_2_0.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/new_features_2_0.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>

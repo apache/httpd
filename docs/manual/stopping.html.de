@@ -18,7 +18,10 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Beenden und Neustarten</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/stopping.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="./en/stopping.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/stopping.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/stopping.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
@@ -237,7 +240,10 @@
     haben, ohne kaputte Bilder oder leere Dokumente zu erhalten.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/stopping.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="./en/stopping.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/stopping.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/stopping.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>

@@ -21,7 +21,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache MPM os2</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mpmt_os2.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mpmt_os2.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Hybrid multi-process, multi-threaded MPM for OS/2</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
@@ -65,7 +65,7 @@ uses</a></li>
 
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mpmt_os2.html" hreflang="en" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mpmt_os2.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

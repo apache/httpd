@@ -18,7 +18,9 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>사용자정의 오류 응답</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="./en/custom-error.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/custom-error.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/custom-error.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/custom-error.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>웹마스터는 오류나 문제가 발생했을때 아파치의 응답을
@@ -185,7 +187,9 @@
     
   </div></div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./en/custom-error.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="./ja/custom-error.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="./ko/custom-error.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/custom-error.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>

@@ -21,7 +21,9 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_deflate</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_deflate.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_deflate.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -338,7 +340,9 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_deflate.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_deflate.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
