@@ -102,8 +102,6 @@ AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(resolv, sethostent)
 
-APACHE_INADDR_NONE
-
 APACHE_EBCDIC
 
 AC_ARG_WITH(optim,[  --with-optim="FLAGS"      compiler optimisation flags],

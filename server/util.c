@@ -1868,7 +1868,7 @@ unsigned long ap_get_virthost_addr(char *w, apr_port_t *ports)
     }
 
     my_addr = apr_inet_addr((char *)w);
-    if (my_addr != INADDR_NONE) {
+    if (my_addr != APR_INADDR_NONE) {
 	if (p != NULL)
 	    *p = ':';
 	return my_addr;

@@ -193,7 +193,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	*s++ = '\0';
 
 	if (!is_ip(where)
-	    || (a->x.ip.net = apr_inet_addr(where)) == INADDR_NONE) {
+	    || (a->x.ip.net = apr_inet_addr(where)) == APR_INADDR_NONE) {
 	    a->type = T_FAIL;
 	    return "syntax error in network portion of network/netmask";
 	}
@@ -206,7 +206,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	/* is it in /a.b.c.d form? */
 	if (strchr(s, '.')) {
 	    mask = apr_inet_addr(s);
-	    if (mask == INADDR_NONE) {
+	    if (mask == APR_INADDR_NONE) {
 		a->type = T_FAIL;
 		return "syntax error in mask portion of network/netmask";
 	    }
@@ -334,7 +334,7 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 	    return 1;
 
 	case T_IP:
-	    if (ap[i].x.ip.net != INADDR_NONE
+	    if (ap[i].x.ip.net != APR_INADDR_NONE
 		&& (r->connection->remote_addr.sin_addr.s_addr
 		    & ap[i].x.ip.mask) == ap[i].x.ip.net) {
 		return 1;

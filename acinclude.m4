@@ -176,38 +176,6 @@ AC_DEFUN(APACHE_ONCE,[
 sinclude(lib/apr/apr_common.m4)
 sinclude(lib/apr/hints.m4)
 
-dnl
-dnl APACHE_INADDR_NONE
-dnl
-dnl checks for missing INADDR_NONE macro
-dnl
-AC_DEFUN(APACHE_INADDR_NONE,[
-  AC_CACHE_CHECK(whether system defines INADDR_NONE, ac_cv_inaddr_none,[
-  AC_TRY_COMPILE([
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-],[
-unsigned long foo = INADDR_NONE;
-],[
-    ac_cv_inaddr_none=yes
-],[
-    ac_cv_inaddr_none=no
-])])
-  if test "$ac_cv_inaddr_none" = "no"; then	
-    AC_DEFINE(INADDR_NONE, ((unsigned int) 0xffffffff), [ ])
-  fi
-])
-
 AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
   AC_CACHE_CHECK(whether sigwait takes one argument,ac_cv_sigwait_one_arg,[
   AC_TRY_COMPILE([
