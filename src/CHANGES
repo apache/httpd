@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Fix mod_speling's handling of multiple matched URLs.
+     [Manoj Kasichainula]
+
   *) Correct comment in mod_log_config.c about its internals.
      [Elf Sternberg <elf@halcyon.com>]
 
