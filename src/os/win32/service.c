@@ -706,8 +706,8 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
     while (++argv, --argc) {
         if ((**argv == '-') && strchr("kndf", argv[0][1]))
             --argc, ++argv; /* Skip already handled -k -n -d -f options */
-        else
-            *(newelem++) = *argv, ++regargc;
+        else if ((**argv != '-') || !strchr("iu", argv[0][1]))
+            *(newelem++) = *argv, ++regargc;  /* Ignoring -i -u options */
     }
 
     printf(reconfig ? "Reconfiguring the %s service\n"

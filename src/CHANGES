@@ -1,5 +1,9 @@
 Changes with Apache 1.3.15
 
+  *) Fix a new problem introduced with the -k config syntax, that the
+     service installed with the -i flag would attempt to re-install
+     itself when starting the server.  [William Rowe, Andrew Braund]
+
   *) Fix the declaration of the module structure in mod_example.
      PR#7095 [Gururaj Upadhye <gururaj@enertec.com>]
 
