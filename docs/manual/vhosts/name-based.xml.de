@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
 <!-- English revision: 1.10 -->
 
 <manualpage metafile="name-based.xml.meta">
