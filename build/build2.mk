@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: build2.mk,v 1.2 2000/01/16 17:18:13 sascha Exp $
+# $Id: build2.mk,v 1.3 2000/01/16 18:20:17 sascha Exp $
 
 include generated_lists
 
@@ -65,6 +65,7 @@ $(TOUCH_FILES):
 
 configure: aclocal.m4 configure.in $(config_m4_files)
 	@echo rebuilding $@
+	rm -f config.cache
 	autoconf
 
 $(apr_config_h_in): $(apr_configure) lib/apr/acconfig.h
