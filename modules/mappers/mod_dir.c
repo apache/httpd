@@ -124,8 +124,9 @@ static int handle_dir(request_rec *r)
     int num_names;
     int error_notfound = 0;
 
-    if(strcmp(r->handler,DIR_MAGIC_TYPE))
+    if (r->finfo.filetype != APR_DIR) {
 	return DECLINED;
+    }
 
     d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
 						&dir_module);
@@ -223,9 +224,7 @@ static int handle_dir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszSucc[]={ "mod_autoindex.c", NULL };
-
-    ap_hook_handler(handle_dir,NULL,aszSucc,APR_HOOK_MIDDLE);
+    ap_hook_fixups(handle_dir,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA dir_module = {

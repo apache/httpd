@@ -1,5 +1,11 @@
 Changes with Apache 2.0.12-dev
 
+  *) Make mod_dir use a fixup for sending a redirect to the browser.
+     Before this, we were using a handler, which doesn't make much
+     sense, because the handler wasn't generating any data, it would
+     either return a redirect error code, or DECLINED.  This fits the
+     current hooks better.  [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Make the threaded MPM use APR threads instead of pthreads.
      [Ryan Bloom]
 
