@@ -26,10 +26,6 @@ Changes with Apache 2.1.0-dev
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
-  *) Fix a potential SEGV in the 'shmcb' session cache when session data
-     size is greater than the size of the cache. PR 27751
-     [Geoff Thorpe <geoff geoffthorpe.net>]
-
   *) Proxy server was deleting cookies that Apache had already
      assigned if the origin server had set any cookies. PR 27023.
      [Jim Jagielski]
@@ -69,7 +65,8 @@ Changes with Apache 2.1.0-dev
 
   *) mod_cgi: Handle output on stderr during script execution on Unix
      platforms; preventing deadlock when stderr output fills pipe buffer.
-     PR 22030.  [Joe Orton, Jeff Trawick]
+     Also fixes case where stderr from nph- scripts could be lost.
+     PR 22030, 18348.  [Joe Orton, Jeff Trawick]
 
   *) mod_deflate: New option for DEFLATE output file (force-gzip),
      new output filter 'INFLATE' for uncompressing responses.
@@ -375,6 +372,12 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.50
 
+  *) mod_ssl: Fix a potential segfault in the 'shmcb' session cache for
+     small cache sizes.  PR 27751.  [Geoff Thorpe <geoff geoffthorpe.net>]
+
+  *) Remove 2Gb log file size restriction on some 32-bit platforms.
+     PR 13511.  [Joe Orton]
+
   *) mod_logio no longer removes the EOS bucket. PR 27928.
      [Bojan Smojver <bojan rexursive.com>]
 
@@ -396,36 +399,36 @@ Changes with Apache 2.0.50
 
   *) Fix a segfault when requests for shared memory fails and returns
      NULL. Fix a segfault caused by a lack of bounds checking on the
-     cache. PR 24801 [Graham Leggett]
+     cache.  PR 24801.  [Graham Leggett]
 
   *) Throw an error message if an attempt is made to use the LDAPTrustedCA
      or LDAPTrustedCAType directives in a VirtualHost. PR 26390
      [Brad Nicholes]
 
   *) Fix a potential segfault if the bind password in the LDAP cache
-     is NULL. PR 26686 [Jari Ahonen <jah@progress.com>]
+     is NULL.  PR 28250.  [Jari Ahonen <jah progress.com>]
 
   *) Quotes cannot be used around require group and require dn
      directives, update the documentation to reflect this. Also add
      quotes around the dn and group within debug messages, to make it
      more obvious why authentication is failing if quotes are used in
-     error. PR 19304 [Graham Leggett]
+     error.  PR 19304.  [Graham Leggett]
 
   *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
      from escaping filters twice when the backslash character is used.
-     PR 24437 [Jess Holle <jessh@ptc.com>]
+     PR 24437.  [Jess Holle <jessh ptc.com>]
 
   *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
      functions leave the connections in a sane state after errors have
      occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
      27271 [Graham Leggett]
-
+                                                                                
   *) mod_ldap calls ldap_simple_bind_s() to validate the user
      credentials.  If the bind fails, the connection is left
      in an unbound state.  Make sure that the ldap connection
      record is updated to show that the connection is no longer
      bound. [Brad Nicholes]
-                                                                                
+
   *) Ensure that lines in the request which are too long are 
      properly terminated before logging.
      [Tsurutani Naoki <turutani scphys.kyoto-u.ac.jp>]
