@@ -485,6 +485,9 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
      * HTTP/1.1 requires us to accept 3 types of dates, but only generate
      * one type
      */
+    /* we SET the dates here, obliterating possible multiple dates, as only
+     * one of each date makes sense in each response.
+     */
     if ((datestr = ap_table_get(resp_hdrs, "Date")) != NULL)
         ap_table_set(resp_hdrs, "Date", ap_proxy_date_canon(p, datestr));
     if ((datestr = ap_table_get(resp_hdrs, "Last-Modified")) != NULL)
@@ -528,8 +531,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
     /* Setup the headers for our client from upstreams response-headers */
     ap_overlap_tables(r->headers_out, resp_hdrs, AP_OVERLAP_TABLES_SET);
-    /* Add X-Cache header */
-    ap_table_setn(r->headers_out, "X-Cache",
+    /* Add X-Cache header - be careful not to obliterate any upstream headers */
+    ap_table_mergen(r->headers_out, "X-Cache",
                   ap_pstrcat(r->pool, "MISS from ",
                              ap_get_server_name(r), NULL));
     /* The Content-Type of this response is the upstream one. */

@@ -475,7 +475,8 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
         for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
             *end = '\0';
 
-        ap_table_add(resp_hdrs, buffer, value);
+        /* make sure we merge so as not to destroy duplicated headers */
+        ap_table_merge(resp_hdrs, buffer, value);
 
         /* the header was too long; at the least we should skip extra data */
         if (len >= size - 1) { 

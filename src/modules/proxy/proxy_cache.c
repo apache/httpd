@@ -878,7 +878,8 @@ int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp)
 
     /* Prepare and send headers to client */
     ap_overlap_tables(r->headers_out, c->hdrs, AP_OVERLAP_TABLES_SET);
-    ap_table_setn(r->headers_out, "X-Cache", c->xcache);
+    /* make sure our X-Cache header does not stomp on a previous header */
+    ap_table_mergen(r->headers_out, "X-Cache", c->xcache);
     r->content_type = ap_table_get(r->headers_out, "Content-Type");
     ap_send_http_header(r);
 
@@ -1210,7 +1211,8 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
         if (!( (-1 < smaxage && age < smaxage) ||
              (-1 < maxage && age < maxage) ||
              (c->expire != BAD_DATE && (c->expire - c->date) > age) )) {
-            ap_table_set(c->hdrs, "Warning", "110 Response is stale");
+            /* make sure we don't stomp on a previous warning */
+            ap_table_merge(c->hdrs, "Warning", "110 Response is stale");
         }
 
         /* check conditionals (If-Modified-Since, etc) */

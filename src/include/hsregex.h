@@ -16,12 +16,10 @@ extern "C" {
 #endif
 #endif
 
-#ifndef ap_private_extern
-#if defined(DARWIN)
+#if defined(MAC_OS) || defined(MAC_OS_X_SERVER)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern
-#endif
 #endif
 
 typedef off_t regoff_t;

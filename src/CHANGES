@@ -1,4 +1,16 @@
 Changes with Apache 1.3.24
+
+  *) Fix a problem with proxy where each entry of a duplicated
+     header such as Set-Cookie would overwrite and obliterate the
+     previous value of the header, resulting in multiple header
+     values (like cookies) going missing.
+     [Graham Leggett, Joshua Slive]
+
+  *) Fix a problem with proxy where X-Cache headers were
+     overwriting and then obliterating upstream X-Cache headers
+     from other proxies.
+     [Graham Leggett, Jacob Rief <jacob.rief@tiscover.com>]
+
   *) Win32: Work around a bug in Windows XP that caused data
      corruption on writes to the network. The WinXP bug
      is tickled by the combined use of WSADuplicateSocket 
