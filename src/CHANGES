@@ -1,4 +1,8 @@
 Changes with Apache 1.3
+  
+  *) API: It's possible to replace standalone_main (define STANDALONE_MAIN)
+     and it's possible to use SFIO for the underlying i/o layer.
+     [Doug MacEachern]
 
   *) Enhance UserDir directive (mod_userdir) to accept a list of
      usernames for the 'disable' keyword, and add 'enable user...' to
