@@ -971,7 +971,7 @@ static void perform_idle_server_maintenance(void)
 	 * that ap_threads_per_child is always > 0 */
 	int status = SERVER_DEAD;
 	int any_dying_threads = 0;
-	int idle_thread_addition = 0;
+	int any_dead_threads = 0;
 
 	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
@@ -980,6 +980,7 @@ static void perform_idle_server_maintenance(void)
 	    status = ws->status;
 
 	    any_dying_threads = any_dying_threads || (status == SERVER_GRACEFUL);
+	    any_dead_threads = any_dead_threads || (status == SERVER_DEAD);
 
 	    /* We consider a starting server as idle because we started it
 	     * at least a cycle ago, and if it still hasn't finished starting
@@ -987,23 +988,22 @@ static void perform_idle_server_maintenance(void)
 	     * So we hopefully won't need to fork more if we count it.
 	     * This depends on the ordering of SERVER_READY and SERVER_STARTING.
 	     */
-	    if (status <= SERVER_READY) {
-	        ++idle_thread_addition;
+	    if (status <= SERVER_READY && status != SERVER_DEAD) {
+	        ++idle_thread_count;
 	    }
 	}
-	if (any_dying_threads && free_length < idle_spawn_rate) {
+	if (any_dead_threads && free_length < idle_spawn_rate) {
 	    free_slots[free_length] = i;
 	    ++free_length;
 	}
 	if (!any_dying_threads) {
             last_non_dead = i;
             ++total_non_dead;
-	    idle_thread_count += idle_thread_addition;
         }
     }
     ap_max_daemons_limit = last_non_dead + 1;
 
-    if (idle_thread_count > max_spare_threads * ap_max_daemons_limit) {
+    if (idle_thread_count > max_spare_threads * total_non_dead) {
         /* Kill off one child */
         char char_of_death = '!';
         if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
@@ -1011,7 +1011,7 @@ static void perform_idle_server_maintenance(void)
         }
         idle_spawn_rate = 1;
     }
-    else if (idle_thread_count < min_spare_threads * ap_max_daemons_limit) {
+    else if (idle_thread_count < min_spare_threads * total_non_dead) {
         /* terminate the free list */
         if (free_length == 0) {
 	    /* only report this condition once */
