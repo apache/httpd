@@ -119,8 +119,8 @@ static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
     /* give priority to the config in the subdirectory */
     new->forcelangpriority = add->forcelangpriority ? add->forcelangpriority
                                                     : base->forcelangpriority;
-    new->language_priority = apr_array_append(p, add->language_priority,
-                                           base->language_priority);
+    new->language_priority = add->language_priority ? add->language_priority 
+                                                    : base->language_priority;
     return new;
 }
 
@@ -1367,19 +1367,20 @@ static int level_cmp(var_rec *var1, var_rec *var2)
 
 static int find_lang_index(apr_array_header_t *accept_langs, char *lang)
 {
-    accept_rec *accs;
+    const char **alang;
     int i;
 
     if (!lang || !accept_langs) {
         return -1;
     }
 
-    accs = (accept_rec *) accept_langs->elts;
+    alang = (const char **) accept_langs->elts;
 
     for (i = 0; i < accept_langs->nelts; ++i) {
-        if (!strncmp(lang, accs[i].name, strlen(accs[i].name))) {
+        if (!strncmp(lang, *alang, strlen(*alang))) {
             return i;
         }
+        alang += (accept_langs->elt_size / sizeof(char*));
     }
 
     return -1;
