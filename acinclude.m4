@@ -47,6 +47,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(datadir)
   APACHE_SUBST(localstatedir)
   APACHE_SUBST(mandir)
+  APACHE_SUBST(libdir)
   APACHE_SUBST(libexecdir)
   APACHE_SUBST(htdocsdir)
   APACHE_SUBST(manualdir)
