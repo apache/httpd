@@ -3,7 +3,7 @@
   [ <!ENTITY sitemap SYSTEM "../sitemap.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.4.2.1 -->
 
 <moduleindex>
   <title>Modul-Index</title>
@@ -15,6 +15,10 @@
       Apache-Direktiven</a>.
     </p>
   </summary>
+  <seealso><a href="../mpm.html">Multi-Processing-Module (MPMs)</a>
+  </seealso>
+  <seealso><a href="quickreference.html">Kurzreferenz der Direktiven</a>
+  </seealso>
 
   &sitemap;
 </moduleindex>
