@@ -87,8 +87,8 @@ individual symbols in the module.</p>
       <tr>
         <td><a href="http://www.washington.edu/imap/">C-Client</a></td>
         <td> </td>
-        <td>?</td>
-        <td> </td>
+        <td>Perhaps</td>
+        <td>c-client uses strtok() and gethostbyname() which are not thread-safe on most C library implementations.  c-client's static data is meant to be shared across threads.  If strtok() and gethostbyname() are thread-safe on your OS, c-client <i>may</i> be thread-safe.</td>
       </tr>
       <tr>
         <td><a href="http://www.fastio.com/">cpdflib</a></td>
@@ -159,8 +159,11 @@ individual symbols in the module.</p>
       <tr>
         <td><a href="http://mysql.com">libmysqlclient</a></td>
         <td> </td>
-        <td>?</td>
-        <td> </td>
+        <td>Yes</td>
+        <td>Use mysqlclient_r library variant to ensure thread-safety.  For
+            more information, please read <a
+            href="http://www.mysql.com/doc/en/Threaded_clients.html"
+            >http://www.mysql.com/doc/en/Threaded_clients.html</a>.</td>
       </tr>
       <tr>
         <td><a href="http://www.opaque.net/ming/">Ming</a></td>
