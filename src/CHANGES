@@ -1,5 +1,11 @@
 Changes with Apache 1.3.20
 
+  *) Changed the initial screen handling for NetWare so that the -s 
+     parameter will properly destroy the Apache console screen and switch 
+     to the system console screen.  Also removed the call to clrscr() for 
+     NetWare so that any warning messages produced during startup are visible.
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Integrate support for the Cygwin 1.x platform (a POSIX emulation layer
      for Win32 systems, see http://www.cygwin.com)
      [Stipe Tolj <tolj@wapme-systems.de>]
