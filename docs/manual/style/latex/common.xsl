@@ -57,15 +57,15 @@ select="$metafile/basename"/>
 <!-- ==================================================================== -->
 <!-- <example>                                                            -->
 <!-- ==================================================================== -->
-
+<!-- verbatim inside of fbox doesn't work for some reason -->
 <xsl:template match="example">
 <xsl:text>\par\smallskip\begin{center}</xsl:text>
 <xsl:if test="not(pre)"><xsl:text>\fbox{</xsl:text></xsl:if>
 <xsl:text>\begin{minipage}{.8\textwidth}\begin{flushleft}</xsl:text>
 <xsl:apply-templates select="title" mode="print" />
-<xsl:if test="not(pre)"><xsl:text>{\ttfamily\small </xsl:text></xsl:if>
+<xsl:text>{\ttfamily\small </xsl:text>
 <xsl:text>\noindent </xsl:text><xsl:apply-templates/>
-<xsl:if test="not(pre)"><xsl:text>}</xsl:text></xsl:if>
+<xsl:text>}</xsl:text>
 <xsl:text>\end{flushleft}\end{minipage}</xsl:text>
 <xsl:if test="not(pre)"><xsl:text>}</xsl:text></xsl:if>
 <xsl:text>\end{center}\par\smallskip</xsl:text>
@@ -188,4 +188,39 @@ select="$metafile/basename"/>
 </xsl:text>
 </xsl:template>
 
+
+<!-- ==================================================================== -->
+<!-- <seealso>                                                            -->
+<!-- ==================================================================== -->
+<xsl:template name="seealso">
+     <xsl:if test="seealso">
+	<xsl:text>\textbf{</xsl:text>
+        <xsl:value-of select="$messages/message [@name='seealso']" />
+        <xsl:text>}\begin{itemize}</xsl:text>
+        <xsl:for-each select="seealso">
+        <xsl:text>\item </xsl:text>
+          <xsl:apply-templates />
+        <xsl:text>
+</xsl:text>
+        </xsl:for-each>
+<xsl:text>\end{itemize}</xsl:text>
+     </xsl:if>
+</xsl:template>
+
+
+<!-- ==================================================================== -->
+<!-- section-title                                                        -->
+<!-- ==================================================================== -->
+<xsl:template name="section-title">
+<xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
+<xsl:text>\section{</xsl:text><xsl:apply-templates select="title"/>
+<xsl:text>}</xsl:text>
+<xsl:text>\label{</xsl:text><xsl:value-of 
+select="$metafile/path"/><xsl:value-of 
+select="$metafile/basename"/>
+<xsl:text>}
+</xsl:text>
+</xsl:template>
+
 </xsl:stylesheet>
+
