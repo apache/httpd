@@ -654,7 +654,7 @@ static void accept_mutex_init_pthread(pool *p)
     accept_mutex = (pthread_mutex_t *) mmap((caddr_t) 0, sizeof(*accept_mutex),
 				 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (accept_mutex == (void *) (caddr_t) - 1) {
-	perror("mmap");
+	perror("mmap /dev/zero");
 	exit(APEXIT_INIT);
     }
     close(fd);
