@@ -38,7 +38,6 @@
 
 <!-- Description and module-headers -->
 
-
 <table bgcolor="#cccccc" cellpadding="0" cellspacing="1">
 <tr><td>
 <table bgcolor="#ffffff">
@@ -57,8 +56,10 @@
 </table>
 
 
+<xsl:if test="summary">
 <h2>Summary</h2>
 <xsl:apply-templates select="summary"/>
+</xsl:if>
 
 <xsl:if test="seealso">
 <p><strong>See also:</strong></p>
@@ -97,6 +98,21 @@
 
     </body>
     </html>
+  </xsl:template>
+
+  <xsl:template match="section/section">
+   <xsl:variable name="href">
+      <xsl:value-of select="@id"/>
+    </xsl:variable>
+      <!-- Section heading -->
+    <xsl:if test="@id">
+      <h3><a name="{$href}"><xsl:apply-templates select="./title" mode="print"/></a></h3>
+    </xsl:if>
+    <xsl:if test="not(@id)">
+      <h3><xsl:apply-templates select="./title" mode="print"/></h3>
+    </xsl:if>
+      <!-- Section body -->
+        <xsl:apply-templates/>
   </xsl:template>
 
 <!-- Process a documentation section -->
