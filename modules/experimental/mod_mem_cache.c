@@ -429,7 +429,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
                                           APR_HASH_KEY_STRING);
     if (obj) {
         if (obj->complete) {
-            request_rec *rmain, *rtmp;
+            request_rec *rmain=r, *rtmp;
 
 #ifdef USE_ATOMICS
             apr_atomic_inc(&obj->refcount);
