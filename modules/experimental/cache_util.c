@@ -133,7 +133,144 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
     return type;
 }
 
-/*
+
+/* do a HTTP/1.1 age calculation */
+CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value)
+{
+    apr_time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age,
+           resident_time, current_age;
+
+    /* Perform an HTTP/1.1 age calculation. (RFC2616 13.2.3) */
+
+    apparent_age = MAX(0, info->response_time - info->date);
+    corrected_received_age = MAX(apparent_age, age_value);
+    response_delay = info->response_time - info->request_time;
+    corrected_initial_age = corrected_received_age + response_delay;
+    resident_time = apr_time_now() - info->response_time;
+    current_age = corrected_initial_age + resident_time;
+
+    return (current_age);
+}
+
+CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, 
+                                            request_rec *r)
+{
+    apr_time_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale, minfresh;
+    const char *cc_cresp, *cc_req, *pragma_cresp;
+    const char *agestr = NULL;
+    char *val;
+    apr_time_t age_c = 0;
+    cache_info *info = &(cache->handle->cache_obj->info);
+
+    /*
+     * We now want to check if our cached data is still fresh. This depends
+     * on a few things, in this order:
+     *
+     * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache no-cache in
+     * either the request or the cached response means that we must
+     * revalidate the request unconditionally, overriding any expiration
+     * mechanism. It's equivalent to max-age=0,must-revalidate.
+     * 
+     * - RFC2616 14.32 Pragma: no-cache This is treated the same as
+     * Cache-Control: no-cache.
+     * 
+     * - RFC2616 14.9.3 Cache-Control: max-stale, must-revalidate,
+     * proxy-revalidate if the max-stale request header exists, modify the
+     * stale calculations below so that an object can be at most <max-stale>
+     * seconds stale before we request a revalidation, _UNLESS_ a
+     * must-revalidate or proxy-revalidate cached response header exists to
+     * stop us doing this.
+     * 
+     * - RFC2616 14.9.3 Cache-Control: s-maxage the origin server specifies the
+     * maximum age an object can be before it is considered stale. This
+     * directive has the effect of proxy|must revalidate, which in turn means
+     * simple ignore any max-stale setting.
+     * 
+     * - RFC2616 14.9.4 Cache-Control: max-age this header can appear in both
+     * requests and responses. If both are specified, the smaller of the two
+     * takes priority.
+     * 
+     * - RFC2616 14.21 Expires: if this request header exists in the cached
+     * entity, and it's value is in the past, it has expired.
+     * 
+     */
+    cc_cresp = ap_table_get(r->headers_out, "Cache-Control");
+    cc_req = ap_table_get(r->headers_in, "Cache-Control");
+    pragma_cresp = ap_table_get(r->headers_out, "Pragma");  /* TODO: pragma_cresp not being used? */
+    if ((agestr = ap_table_get(r->headers_out, "Age"))) {
+        age_c = atoi(agestr);
+    }
+
+    /* calculate age of object */
+    age = ap_cache_current_age(info, age_c);
+
+    /* extract s-maxage */
+    if (cc_cresp && ap_cache_liststr(cc_cresp, "s-maxage", &val))
+        smaxage = atoi(val);
+    else
+        smaxage = -1;
+
+    /* extract max-age from request */
+    if (cc_req && ap_cache_liststr(cc_req, "max-age", &val))
+        maxage_req = atoi(val);
+    else
+        maxage_req = -1;
+
+    /* extract max-age from response */
+    if (cc_cresp && ap_cache_liststr(cc_cresp, "max-age", &val))
+        maxage_cresp = atoi(val);
+    else
+        maxage_cresp = -1;
+
+    /*
+     * if both maxage request and response, the smaller one takes priority
+     */
+    if (-1 == maxage_req)
+        maxage = maxage_cresp;
+    else if (-1 == maxage_cresp)
+        maxage = maxage_req;
+    else
+        maxage = MIN(maxage_req, maxage_cresp);
+
+    /* extract max-stale */
+    if (cc_req && ap_cache_liststr(cc_req, "max-stale", &val))
+        maxstale = atoi(val);
+    else
+        maxstale = 0;
+
+    /* extract min-fresh */
+    if (cc_req && ap_cache_liststr(cc_req, "min-fresh", &val))
+        minfresh = atoi(val);
+    else
+        minfresh = 0;
+
+    /* override maxstale if must-revalidate or proxy-revalidate */
+    if (maxstale && ((cc_cresp &&
+                      ap_cache_liststr(cc_cresp, "must-revalidate", NULL))
+                     || (cc_cresp && ap_cache_liststr(cc_cresp,
+                                                      "proxy-revalidate", NULL))))
+        maxstale = 0;
+    /* handle expiration */
+    if ((-1 < smaxage && age < (smaxage - minfresh)) ||
+        (-1 < maxage && age < (maxage + maxstale - minfresh)) ||
+        (info->expire != APR_DATE_BAD && age < (info->expire - info->date + maxstale - minfresh))) {
+        /* it's fresh darlings... */
+        /* set age header on response */
+        ap_table_set(r->headers_out, "Age",
+                     ap_psprintf(r->pool, "%lu", (unsigned long)age));
+
+        /* add warning if maxstale overrode freshness calculation */
+        if (!((-1 < smaxage && age < smaxage) ||
+              (-1 < maxage && age < maxage) ||
+              (info->expire != APR_DATE_BAD && (info->expire - info->date) > age))) {
+            /* make sure we don't stomp on a previous warning */
+            ap_table_merge(r->headers_out, "Warning", "110 Response is stale");
+        }
+        return 1;    /* Cache object is fresh */
+    }
+    return 0;        /* Cache object is stale */
+}
+/* 
  * list is a comma-separated list of case-insensitive tokens, with
  * optional whitespace around the tokens.
  * The return returns 1 if the token val is found in the list, or 0

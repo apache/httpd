@@ -152,8 +152,6 @@ static int cache_url_handler(request_rec *r, int lookup)
      * - RFC2616 14.9.2 Cache-Control: no-store
      * - Pragma: no-cache
      * - Any requests requiring authorization.
-     * - Any URLs whose length exceeds MAX_URL_LENGTH
-     * - TODO: Make MAX_URL_LENGTH a config directive?
      */
     if (conf->ignorecachecontrol_set == 1 && conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -199,12 +197,13 @@ static int cache_url_handler(request_rec *r, int lookup)
         return DECLINED;
     }
     else if (OK == rv) {
-        /* cache file exists */
+        /* RFC2616 13.2 - Check cache object expiration */
+        cache->fresh = ap_cache_check_freshness(cache, r);
         if (cache->fresh) {
+            /* fresh data available */
             apr_bucket_brigade *out;
             conn_rec *c = r->connection;
 
-            /* fresh data available */
             if (lookup) {
                 return OK;
             }
@@ -214,17 +213,8 @@ static int cache_url_handler(request_rec *r, int lookup)
 
             /* We are in the quick handler hook, which means that no output
              * filters have been set. So lets run the insert_filter hook.
-             * XXX - Should we be inserting filters in the output stream
-             * for proxy requests? Certainly we need the core filters
-             * (byterange, chunking, etc.).  I can also see the need to
-             * conditionally insert tag processing filters (e.g. INCLUDES).
              */
             ap_run_insert_filter(r);
-
-            /* Now add the cache_out filter. cache_out is a FTYPE_CONTENT
-             * which means it will be inserted first in the stream, which
-             * is exactly what we need.
-             */
             ap_add_output_filter("CACHE_OUT", NULL, r, r->connection);
 
             /* kick off the filter stack */
@@ -252,7 +242,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                              r->server,
                              "cache: conditional - add cache_in filter and "
                              "DECLINE");
-
+                /* Why not add CACHE_CONDITIONAL? */
                 ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
 
                 return DECLINED;
@@ -339,10 +329,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
             "cache: running CACHE_OUT filter");
 
-    /* TODO: Handle getting errors on either of these calls 
-     * ???: Should we return headers on a subrequest?
-     */
-    cache_read_entity_headers(cache->handle, r);    
+    /* cache_read_entity_headers() was called in cache_select_url() */
     cache_read_entity_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
