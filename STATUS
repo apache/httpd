@@ -72,6 +72,10 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * [PATCH] TPF port
+        Message-ID: <19981103174610.A7818@raleigh.ibm.com>
+        Status: Jim +1 (with minor nits)
+
     * Ralf's Build outside of source tree (take 2: alternative solution)
       ("overrules"  Wilfredo Sanchez's [PATCH] Build outside of source tree)
         Message-ID: <19981027154021.A24640@engelschall.com>
