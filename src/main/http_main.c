@@ -1206,6 +1206,8 @@ void set_signals() {
     signal(SIGTERM,(void (*)())sig_term);
     signal(SIGHUP,(void (*)())restart);
     signal(SIGUSR1,(void (*)())graceful_restart);
+    /* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
+    /*  problems will be dealt with in a future release */
 #else
     memset(&sa,0,sizeof sa);
     sa.sa_handler=(void (*)())sig_term;
@@ -1783,6 +1785,8 @@ void standalone_main(int argc, char **argv)
     
     if(is_graceful)
 	{
+	/* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
+	/*  problems will be dealt with in a future release */
 	log_error("SIGUSR1 received.  Doing graceful restart",server_conf);
 	kill_cleanups_for_fd(pconf,sd);
 	}
