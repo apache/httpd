@@ -18,8 +18,11 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a href="platform/windows.html#signal">Signaling Apache when
-    running</a>.</p>
+    Unix-like systems. Windows NT, 2000 and XP users should see
+    <a href="platform/windows.html#winsvc">Running Apache as a
+    Service</a> and Windows 9x and ME users should see <a href="platform/windows.html#wincons">Running Apache as a
+    Console Application</a> for information on how to control
+    Apache on those platforms.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li>
