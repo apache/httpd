@@ -146,42 +146,64 @@
     <h2><a id="acceptpathinfo"
     name="adddefaultcharset">AcceptPathInfo directive</a></h2>
     <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> AcceptPathInfo On|Off<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> all<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core<br />
+    rel="Help"><strong>Syntax:</strong></a> AcceptPathInfo On|Off|Default<br />
      <a href="directive-dict.html#Default"
     rel="Help"><strong>Default:</strong></a>
-    <code>Varies by handler, see below</code><br />
+    <code>AcceptPathInfo Default</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual host,
+    directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a>
     AcceptPathInfo is only available in Apache 2.0.30 and later 
 
-    <p>This directive provides the ability to accept or reject requests
-    that contain PATH_INFO, or trailing pathname information that follows
-    an actual filename (or non-existant file in an existing directory).
-    For example, if the location /test/ points to a directory, and the
-    file here.html exists, while the file nothere.html does not exist,
-    the requests for <code>/test/here.html/more</code> and 
-    <code>/test/nothere.html/more</code> both collect <code>/more</code> 
-    as PATH_INFO.</p>
+    <p>This directive controls whether requests that contain trailing
+    pathname information that follows an actual filename (or
+    non-existent file in an existing directory) will be accepted or
+    rejected.  The trailing pathname information can be made
+    available to scripts in the PATH_INFO environment variable.</p>
 
-    <p>By default, the core handler for normal files rejects any
-    PATH_INFO with an error 404 NOT FOUND, since the file does not
-    exist (in our example above, <code>/test/here.html/more</code>
-    is not a file name.)  Other handlers that serve scripts, such as 
-    mod_cgi, mod_cgid and mod_isapi, generally accept PATH_INFO by 
-    default.</p>
+    <p>For example, assume the location <code>/test/</code> points to
+    a directory that contains only the single file
+    <code>here.html</code>.  Then requests for
+    <code>/test/here.html/more</code> and
+    <code>/test/nothere.html/more</code> both collect
+    <code>/more</code> as PATH_INFO.</p>
 
-    <p>You may override the default behavior of any Apache module, and 
-    possibly third party modules, with the AcceptPathInfo directive.
-    It is up to the individual module to respect your override.</p>
+    <p>The three possible arguments for the
+    <code>AcceptPathInfo</code> directive are:</p>
+    <dl>
+    <dt><code>off</code></dt><dd>A request will only be accepted if it
+    maps to a literal path that exists.  Therefore a request with
+    trailing pathname information after the true filename such as
+    <code>/test/here.html/more</code> in the above example will return
+    a 404 NOT FOUND error.</dd>
 
-    <p>This override is required, for example, when you use a filter,
-    such as mod_includes, to generate content based on PATH_INFO.  The
-    core module would usually reject the request, so you could use the
-    following configuration to enable such a script:</p>
+    <dt><code>on</code></dt><dd>A request will be accepted if a
+    leading path component maps to a file that exists.  The above
+    example <code>/test/here.html/more</code> will be accepted if
+    <code>/test/here.html</code> maps to a valid file.</dt>
+    
+    <dt><code>default</code><dd>The treatment of requests with
+    trailing pathname information is determined by the <a
+    href="../handlers.html">handler</a> responsible for the request.
+    The core handler for normal files defaults to rejecting PATH_INFO.
+    Handlers that serve scripts, such as <a
+    href="mod_cgi.html">cgi-script</a> and <a
+    href="mod_isapi.html">isapi-isa</a>, generally accept PATH_INFO by
+    default.</dd>
+    </dl>
+
+    <p>The primary purpose of the <code>AcceptPathInfo</code>
+    directive is to allow you to override the handler's choice of
+    accepting or rejecting PATH_INFO.  This override is required, for
+    example, when you use a <a href="../filter.html">filter</a>, such
+    as <a href="mod_include.html">INCLUDES</a>, to generate content
+    based on PATH_INFO.  The core handler would usually reject the
+    request, so you can use the following configuration to enable
+    such a script:</p>
 <pre>
 &lt;Files "mypaths.shtml"&gt;
     Options +Includes

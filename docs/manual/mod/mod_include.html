@@ -41,8 +41,9 @@
       <li><a href="#xbithack">XBitHack</a></li>
     </ul>
 
-    <p>See also: <a href="core.html#options">Options</a> and <a
-    href="core.html.html#SetOutputFilter">SetOutputFilter</a>.</p>
+    <p>See also: <a href="core.html#options">Options</a>, <a
+    href="core.html.html#SetOutputFilter">SetOutputFilter</a>,
+    and <a href="core.html#acceptpathinfo">AcceptPathInfo</a>.</p>
 
     <h2>Enabling Server-Side Includes</h2>
 
@@ -476,6 +477,15 @@
     There is <a href="../misc/custom_errordocs.html">a document</a>
     which describes how to use the features of mod_include to offer
     internationalized customized server error documents. 
+
+    <h2>PATH_INFO with Server Side Includes</h2>
+
+    <p>Files processed for server-side includes no longer accept
+    requests with PATH_INFO (trailing pathname information) by
+    default.  You can use the <a
+    href="core.html#AcceptPathInfo">AcceptPathInfo</a> directive to
+    configure the server to accept requests with PATH_INFO.</p>
+
     <hr />
 
     <h2><a id="xbithack" name="xbithack">XBitHack</a>

@@ -53,6 +53,19 @@
       proxy access control is now placed inside a &lt;Proxy&gt; block
       rather than a &lt;Directory proxy:&gt; block.</li>
 
+      <li>The handling of PATH_INFO (trailing path information after
+      the true filename) has changed for some modules.  Modules
+      that were previously implemented as a handler but are now
+      implemented as a filter may no longer accept requests with
+      PATH_INFO.  Filters such as <a
+      href="mod/mod_include.html">INCLUDES</a> are implemented on top
+      of the core handler, and therefore reject requests with
+      PATH_INFO.  You can use the <a
+      href="core.html#acceptpathinfo">AcceptPathInfo</a> directive to
+      force the core handler to accept requests with PATH_INFO and
+      thereby restore the ability to use PATH_INFO in server-side 
+      includes.</li>
+
       <li>The <code>CacheNegotiatedDocs</code> directive now takes
       the argument <code>on</code> or <code>off</code>. Existing
       instances of <code>CacheNegotiatedDocs</code> should be
