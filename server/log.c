@@ -594,15 +594,12 @@ static int piped_log_spawn(piped_log *pl)
     ap_os_proc_t pid;
     ap_proc_t *procnew;
 
-    /* pjr - calls to block and unblock alarms weren't here before, was this */
-    /*       an oversight or intentional?                                    */
-
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
 #endif
     if ((ap_createprocattr_init(&procattr, pl->p)         != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||
-        (ap_set_childin(procattr, ap_piped_log_read_fd(pl), ap_piped_log_write_fd(pl)) != APR_SUCCESS)) {
+        (ap_setprocattr_childin(procattr, ap_piped_log_read_fd(pl), 
+                                ap_piped_log_write_fd(pl)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
 	    "piped_log_spawn: unable to exec '%s': %s",
@@ -610,7 +607,13 @@ static int piped_log_spawn(piped_log *pl)
         rc = -1;
     }
     else {
-        rc = ap_create_process(&procnew, pl->program, NULL, NULL, procattr, pl->p);
+        char **args;
+        const char *pname;
+
+        ap_tokenize_to_argv(pl->program, &args, pl->p);
+        pname = ap_pstrdup(pl->p, args[0]);
+ 
+        rc = ap_create_process(&procnew, pname, args, NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            
             /* pjr - This no longer happens inside the child, */
@@ -618,12 +621,10 @@ static int piped_log_spawn(piped_log *pl)
             /*   successful that the child is running.        */
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
             pl->pid = procnew;
-            ap_get_os_proc(&pid, procnew);
-            ap_register_other_child(pid, piped_log_maintenance, pl, ap_piped_log_write_fd(pl));
+            ap_register_other_child(procnew, piped_log_maintenance, pl, 
+                                    ap_piped_log_write_fd(pl), pl->p);
         }
     }
-    
-/*  ap_unblock_alarms(); */
     
     return 0;
 }
@@ -634,8 +635,8 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
     piped_log *pl = data;
 
     switch (reason) {
-    case OC_REASON_DEATH:
-    case OC_REASON_LOST:
+    case APR_OC_REASON_DEATH:
+    case APR_OC_REASON_LOST:
 	pl->pid = NULL;
 	ap_unregister_other_child(pl);
 	if (pl->program == NULL) {
@@ -651,20 +652,20 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 	}
 	break;
     
-    case OC_REASON_UNWRITABLE:
+    case APR_OC_REASON_UNWRITABLE:
 	if (pl->pid != NULL) {
 	    ap_kill(pl->pid, SIGTERM);
 	}
 	break;
     
-    case OC_REASON_RESTART:
+    case APR_OC_REASON_RESTART:
 	pl->program = NULL;
 	if (pl->pid != NULL) {
 	    ap_kill(pl->pid, SIGTERM);
 	}
 	break;
 
-    case OC_REASON_UNREGISTER:
+    case APR_OC_REASON_UNREGISTER:
 	break;
     }
 }
@@ -706,6 +707,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_pool_t *p, const char *program)
 	errno = save_errno;
 	return NULL;
     }
+    ap_block_pipe(ap_piped_log_read_fd(pl));
+    ap_block_pipe(ap_piped_log_write_fd(pl));
     ap_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;

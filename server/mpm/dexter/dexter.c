@@ -283,7 +283,7 @@ static int wait_or_timeout(ap_wait_t *status)
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
-#ifdef HAS_OTHER_CHILD
+#ifdef APR_HAS_OTHER_CHILD
 	probe_writable_fds();
 #endif
     }
@@ -1110,7 +1110,7 @@ static void server_main_loop(int remaining_children_to_start)
 		    make_child(server_conf, child_slot, time(NULL));
 		    --remaining_children_to_start;
 		}
-#ifdef HAS_OTHER_CHILD
+#ifdef APR_HAS_OTHER_CHILD
 	    }
 	    else if (reap_other_child(pid, status) == 0) {
 		/* handled */

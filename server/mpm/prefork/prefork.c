@@ -1014,12 +1014,14 @@ static void increment_counts(int child_num, request_rec *r)
 }
 */
 
-static int find_child_by_pid(int pid)
+static int find_child_by_pid(ap_proc_t *pid)
 {
     int i;
+    int actual_pid;
 
+    ap_get_os_proc(&actual_pid, pid);
     for (i = 0; i < max_daemons_limit; ++i)
-	if (ap_scoreboard_image->parent[i].pid == pid)
+	if (ap_scoreboard_image->parent[i].pid == actual_pid)
 	    return i;
 
     return -1;
@@ -1147,23 +1149,24 @@ int reap_children(ap_wait_t *status)
 #endif
 static int wait_or_timeout_counter;
 
-static int wait_or_timeout(ap_wait_t *status)
+static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
-    int ret;
+    ap_status_t rv;
+    ap_proc_t *ret = NULL;
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
-#ifdef HAS_OTHER_CHILD
-	probe_writable_fds();
+#ifdef APR_HAS_OTHER_CHILD
+	ap_probe_writable_fds();
 #endif
     }
-    ret = waitpid(-1, status, WNOHANG);
-    if (ret == -1 && errno == EINTR) {
-	return -1;
+    rv = ap_wait_all_procs(&ret, WNOHANG, p);
+    if (rv != -1 && rv == APR_CHILD_NOTDONE) {
+	return NULL;
     }
-    if (ret > 0) {
+    if (rv == APR_CHILD_DONE) {
 	return ret;
     }
 #ifdef NEED_WAITPID
@@ -1174,7 +1177,7 @@ static int wait_or_timeout(ap_wait_t *status)
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);
-    return -1;
+    return NULL;
 }
 
 /* handle all varieties of core dumping signals */
@@ -1937,8 +1940,10 @@ static void perform_idle_server_maintenance(void)
 }
 
 
-static void process_child_status(int pid, ap_wait_t status)
+static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 {
+    int pid;
+    ap_get_os_proc(&pid, abs_pid);
     /* Child died... if it died due to a fatal error,
 	* we should simply bail out.
 	*/
@@ -2096,13 +2101,14 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
 	ap_wait_t status;
-	int pid = wait_or_timeout(&status);
+        /* this is a memory leak, but I'll fix it later. */
+	ap_proc_t *pid = wait_or_timeout(&status, pconf);
 
 	/* XXX: if it takes longer than 1 second for all our children
 	 * to start up and get into IDLE state then we may spawn an
 	 * extra child
 	 */
-	if (pid >= 0) {
+	if (pid != NULL) {
 	    process_child_status(pid, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    ap_sync_scoreboard_image();
@@ -2119,9 +2125,9 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		    make_child(server_conf, child_slot, time(0));
 		    --remaining_children_to_start;
 		}
-#ifdef HAS_OTHER_CHILD
+#ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(pid, status) == 0) {
 		/* handled */
 #endif
 	    }
