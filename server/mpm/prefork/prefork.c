@@ -1039,7 +1039,7 @@ static void child_main(int child_num_arg)
 
 	sock_disable_nagle(sockdes);
 
-	iol = unix_attach_socket(csd);
+	iol = ap_iol_attach_socket(csd);
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
