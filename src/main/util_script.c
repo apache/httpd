@@ -442,6 +442,12 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
     
     conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
+    /* the fd on r->server->error_log is closed, but we need somewhere to
+     * put the error messages from the log_* functions. So, we use stderr,
+     * since that is better than allowing errors to go unnoticed.
+     */
+    r->server->error_log = stderr;
+
 #ifdef RLIMIT_CPU
     if (conf->limit_cpu != NULL)
 	if ((setrlimit (RLIMIT_CPU, conf->limit_cpu)) != 0)

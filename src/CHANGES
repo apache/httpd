@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) Logging of errors from the call_exec routine simply went nowhere,
+     since the logfile fd has been closed, so now we send them to stderr.
+     [Harald T. Alvestrand]
+
   *) Fixed core dump when DocumentRoot is a CGI.
      [Ben Laurie, reported by geddis@tesserae.com]
 
