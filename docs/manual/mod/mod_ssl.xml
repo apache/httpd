@@ -1363,10 +1363,10 @@ proxy handshake</description>
 <usage>
 <p>Equivalent to <code>SSLCipherSuite</code>, but for the proxy connection.
 Please refer to <directive module="mod_ssl">SSLCipherSuite</directive>
-for additional information.
+for additional information.</p>
 </usage>
 
-</directivesynopsys>
+</directivesynopsis>
 <directivesynopsis>
 <name>SSLProxyCACertificatePath</name>
 <description>Directory of PEM-encoded CA Certificates for 
