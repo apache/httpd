@@ -327,8 +327,14 @@ install-include:
 install-docroot:
 	@echo "===> [docroot: Installing initial DocumentRoot files]"
 	-$(CP) -R $(ROOT)/htdocs/* $(datadir)/htdocs/
+	-find $(datadir)/htdocs/ -type d -print | xargs chmod a+rx
+	-find $(datadir)/htdocs/ -type f -print | xargs chmod a+r
 	-$(CP) -R $(ROOT)/icons/* $(datadir)/icons/
+	-find $(datadir)/icons/ -type d -print | xargs chmod a+rx
+	-find $(datadir)/icons/ -type f -print | xargs chmod a+r
 	-$(CP) -R $(ROOT)/cgi-bin/* $(datadir)/cgi-bin/
+	-find $(datadir)/cgi-bin/ -type d -print | xargs chmod a+rx
+	-find $(datadir)/cgi-bin/ -type f -print | xargs chmod a+r
 	@echo "<=== [docroot]"
 
 ## ------------------------------------------------------------------
