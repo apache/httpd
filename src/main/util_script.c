@@ -425,8 +425,13 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
+#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
+    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+
     core_dir_config *conf =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+
+#endif
 
     /* the fd on r->server->error_log is closed, but we need somewhere to
      * put the error messages from the log_* functions. So, we use stderr,
