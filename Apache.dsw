@@ -177,7 +177,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name httpd
@@ -189,7 +189,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "aprlib"=".\srclib\apr\aprlib.dsp" - Package Owner=<4>
+Project: "apr"=".\srclib\apr\apr.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -210,7 +210,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
 }}}
 
@@ -282,7 +282,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
@@ -300,7 +300,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
@@ -318,7 +318,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
@@ -336,7 +336,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name httpd
@@ -357,7 +357,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
