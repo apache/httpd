@@ -8,10 +8,12 @@
 #include <direct.h>
 
 #include "httpd.h"
+#include "http_conf_globals.h"
 #include "http_log.h"
 #include "http_main.h"
 #include "multithread.h"
 #include "service.h"
+#include "registry.h"
 
 static struct
 {
@@ -247,6 +249,9 @@ void InstallService()
 
         if (schService) {
             CloseServiceHandle(schService);
+
+	    /* Now store the server_root in the registry */
+	    ap_registry_set_server_root(server_root);
         }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 

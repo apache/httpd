@@ -162,6 +162,7 @@ void force_library_loading(void) {
 
 #ifdef WIN32
 #include "../os/win32/service.h"
+#include "../os/win32/registry.h"
 #endif
 
 
@@ -4904,7 +4905,22 @@ int main(int argc, char *argv[])
     server_post_read_config = make_array(pcommands, 1, sizeof(char *));
     
     server_argv0 = argv[0];
-    ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
+
+    /* Get the serverroot from the registry, if it exists. This can be
+     * overridden by a command line -d argument.
+     */
+    if (ap_registry_get_server_root(pconf, server_root, sizeof(server_root)) < 0) {
+	/* The error has already been logged. Actually it won't have been,
+	 * because we haven't read the config files to find out where our 
+	 * error log is. But we can't just ignore the error since we might
+	 * end up using totally the wrong server root.
+	 */
+	exit(1);
+    }
+
+    if (!*server_root) {
+	ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
+    }
     ap_cpystrn(server_confname, SERVER_CONFIG_FILE, sizeof(server_confname));
 
     setup_prelinked_modules();

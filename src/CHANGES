@@ -1,5 +1,10 @@
 Changes with Apache 1.3b6
 
+  *) WIN32: The server root is obtained from the registry key
+     HKLM\SOFTWARE\Apache Group\Apache\<version> (version is currently
+     "1.3 beta"), unless overridden by the -d command line flag. The
+     value is stored by running "apache -i -d serverroot".
+
   *) Now mod_rewrite no longer makes problematic assumptions on the characters
      a username can contain when trying to expand it via /etc/passwd. 
      [Ralf S. Engelschall]

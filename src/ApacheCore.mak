@@ -86,6 +86,7 @@ CLEAN :
 	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\readdir.obj"
+	-@erase "$(INTDIR)\registry.obj"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\service.obj"
 	-@erase "$(INTDIR)\util.obj"
@@ -156,6 +157,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
 	"$(INTDIR)\readdir.obj" \
+	"$(INTDIR)\registry.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -258,6 +260,8 @@ CLEAN :
 	-@erase "$(INTDIR)\multithread.sbr"
 	-@erase "$(INTDIR)\readdir.obj"
 	-@erase "$(INTDIR)\readdir.sbr"
+	-@erase "$(INTDIR)\registry.obj"
+	-@erase "$(INTDIR)\registry.sbr"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\rfc1413.sbr"
 	-@erase "$(INTDIR)\service.obj"
@@ -328,6 +332,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
 	"$(INTDIR)\readdir.sbr" \
+	"$(INTDIR)\registry.sbr" \
 	"$(INTDIR)\rfc1413.sbr" \
 	"$(INTDIR)\service.sbr" \
 	"$(INTDIR)\util.sbr" \
@@ -386,6 +391,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
 	"$(INTDIR)\readdir.obj" \
+	"$(INTDIR)\registry.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\service.obj" \
 	"$(INTDIR)\util.obj" \
@@ -806,6 +812,7 @@ DEP_CPP_HTTP_M=\
 	".\os\win32\getopt.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
 	
 
@@ -837,6 +844,7 @@ DEP_CPP_HTTP_M=\
 	".\os\win32\getopt.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
 	
 
@@ -1009,15 +1017,15 @@ DEP_CPP_HTTP_V=\
 !ENDIF 
 
 SOURCE=.\main\md5c.c
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
 DEP_CPP_MD5C_=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\md5.h"\
 	".\os\win32\os.h"\
 	
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
 
 "$(INTDIR)\md5c.obj" : $(SOURCE) $(DEP_CPP_MD5C_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1025,12 +1033,6 @@ DEP_CPP_MD5C_=\
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
-DEP_CPP_MD5C_=\
-	".\include\conf.h"\
-	".\include\hsregex.h"\
-	".\include\md5.h"\
-	".\os\win32\os.h"\
-	
 
 "$(INTDIR)\md5c.obj"	"$(INTDIR)\md5c.sbr" : $(SOURCE) $(DEP_CPP_MD5C_)\
  "$(INTDIR)"
@@ -1945,15 +1947,15 @@ DEP_CPP_MODUL=\
 !ENDIF 
 
 SOURCE=.\os\win32\multithread.c
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
 DEP_CPP_MULTI=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
 	
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
 
 "$(INTDIR)\multithread.obj" : $(SOURCE) $(DEP_CPP_MULTI) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1961,12 +1963,6 @@ DEP_CPP_MULTI=\
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
-DEP_CPP_MULTI=\
-	".\include\conf.h"\
-	".\include\hsregex.h"\
-	".\include\multithread.h"\
-	".\os\win32\os.h"\
-	
 
 "$(INTDIR)\multithread.obj"	"$(INTDIR)\multithread.sbr" : $(SOURCE)\
  $(DEP_CPP_MULTI) "$(INTDIR)"
@@ -1991,6 +1987,47 @@ DEP_CPP_READD=\
 
 
 "$(INTDIR)\readdir.obj"	"$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD)\
+ "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=.\os\win32\registry.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+DEP_CPP_REGIS=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\registry.obj" : $(SOURCE) $(DEP_CPP_REGIS) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+DEP_CPP_REGIS=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\registry.obj"	"$(INTDIR)\registry.sbr" : $(SOURCE) $(DEP_CPP_REGIS)\
  "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
@@ -2052,12 +2089,14 @@ DEP_CPP_SERVI=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
 	
 
@@ -2073,12 +2112,14 @@ DEP_CPP_SERVI=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
 	
 
