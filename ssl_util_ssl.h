@@ -60,8 +60,6 @@
 #ifndef SSL_UTIL_SSL_H
 #define SSL_UTIL_SSL_H
 
-#if 0 /* XXX */
-
 /*
  * Determine SSL library version number
  */
@@ -74,6 +72,8 @@
 #define SSL_LIBRARY_NAME    "OtherSSL"
 #define SSL_LIBRARY_TEXT    "OtherSSL 0.0.0 00 XXX 0000"
 #endif
+
+#if 0 /* XXX */
 
 /*
  * Support for retrieving/overriding states
