@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) TPF: Use the correct subpool whening opening the error log.
+     This prevents a possible SIGPIPE in standalone_main.
+     [David McCreedy <McCreedy@us.ibm.com>]
+
   *) When proxy enabled a slow frontend client to read from an
      expensive backend server, it would wait until it had delivered
      the response to the slow frontend client completely before

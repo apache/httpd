@@ -5406,7 +5406,7 @@ int REALMAIN(int argc, char *argv[])
         memcpy(tpf_server_name, input_parms.parent.servname,
                INETD_SERVNAME_LENGTH);
         tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
-        ap_open_logs(server_conf, pconf);
+        ap_open_logs(server_conf, plog);
         ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);
     }
     if (ap_standalone) {
