@@ -1911,6 +1911,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     if ((l->method_list = NULL) || (l->method_list->nelts == 0)) {
 	return 0;
     }
+    methods = (char **)l->method_list->elts;
     for (i = 0; i < l->method_list->nelts; ++i) {
 	if (strcmp(method, methods[i]) == 0) {
 	    return 1;
@@ -1918,7 +1919,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     }
     return 0;
 }
-    
+
 /*
  * Add the specified method to a method list (if it isn't already there).
  */
@@ -1942,6 +1943,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
      * Otherwise, see if the method name is in the array of string names.
      */
     if (l->method_list->nelts != 0) {
+        methods = (char **)l->method_list->elts;
 	for (i = 0; i < l->method_list->nelts; ++i) {
 	    if (strcmp(method, methods[i]) == 0) {
 		return;
@@ -1975,6 +1977,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
      */
     if (l->method_list->nelts != 0) {
 	register int i, j, k;
+        methods = (char **)l->method_list->elts;
 	for (i = 0; i < l->method_list->nelts; ) {
 	    if (strcmp(method, methods[i]) == 0) {
 		for (j = i, k = i + 1; k < l->method_list->nelts; ++j, ++k) {
