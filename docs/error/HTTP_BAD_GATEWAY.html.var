@@ -82,3 +82,20 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->   
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Gateway errato!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il server proxy ha ricevuto una risposta
+    non valida dal server precedente.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -56,3 +56,14 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="La richiesta non pu&ograve; essere soddisfatta!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il server non supporta il tipo di azione richiesta dal browser.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -47,3 +47,16 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Campo Content-Length non valido!" -->
+<!--#include virtual="include/top.html" -->
+
+    Una richiesta con il metodo
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    richiede che venga specificato un header <code>Content-Length</code> valido.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

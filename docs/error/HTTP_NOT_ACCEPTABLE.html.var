@@ -59,3 +59,15 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Nessun oggetto accettabile!" -->
+<!--#include virtual="include/top.html" -->
+
+    Questo server non riesce a trovare una rappresentazione
+    appropriata per la risorsa richiesta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

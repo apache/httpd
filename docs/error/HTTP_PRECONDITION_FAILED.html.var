@@ -18,7 +18,7 @@ Body:----------en--
 
     The precondition on the request for the URL failed positive evaluation.
   
-<!--#include virtual="include/bottom.html" --> 
+<!--#include virtual="include/bottom.html" -->
 ----------en--
 
 Content-language: es
@@ -42,7 +42,8 @@ Body:----------fr--
     La pr&eacute;condition pour l'URL requise a &eacute;t&eacute;
     &eacute;valu&eacute;e n&eacute;gativement.
 
-<!--#include virtual="include/bottom.html" -->----------fr--
+<!--#include virtual="include/bottom.html" -->
+----------fr--
 
 Content-language: sv
 Content-type: text/html
@@ -54,5 +55,17 @@ Body:----------sv--
     adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
     med acceptabelt resultat.
 
-<!--#include virtual="include/bottom.html" --> 
+<!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Criteri di precondizione non soddisfatti!" -->
+<!--#include virtual="include/top.html" -->
+
+    I criteri di precondizione per consentire l'invio dell'URL
+    richiesto non sono stati soddisfatti.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

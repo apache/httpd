@@ -59,3 +59,15 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Metodo non consentito!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    non &egrave; consentito per l'URL richiesto.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

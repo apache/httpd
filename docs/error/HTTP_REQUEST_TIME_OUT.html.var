@@ -58,5 +58,18 @@ Body:----------sv--
     webbl&auml;saren inte avslutade f&ouml;rfr&aring;gan inom
     f&ouml;rbest&auml;md tid.
 
-<!--#include virtual="include/bottom.html" --> 
+<!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Time-out della richiesta!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il server ha chiuso la connessione in quanto &egrave; stato
+    superato il limite di tempo entro il quale il browser avrebbe
+    dovuto eseguire la richiesta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

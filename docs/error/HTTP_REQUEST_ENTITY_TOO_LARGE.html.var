@@ -5,8 +5,8 @@ Body:----------de--
 <!--#include virtual="include/top.html" -->
 
     Die bei der Anfrage &uuml;bermittelten Daten sind f&uuml;r
-    die <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->-Methode nicht erlaubt
-    oder die Datenmenge hat das Maximum &uuml;berschritten.
+    die <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->-Methode
+    nicht erlaubt oder die Datenmenge hat das Maximum &uuml;berschritten.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -17,8 +17,9 @@ Body:----------en--
 <!--#set var="TITLE" value="Request entity too large!" -->
 <!--#include virtual="include/top.html" -->
 
-    The <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> method does not allow the data
-    transmitted, or the data volume exceeds the capacity limit.
+    The <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    method does not allow the data transmitted, or the data volume
+    exceeds the capacity limit.
 
 <!--#include virtual="include/bottom.html" -->
 ----------en--
@@ -61,3 +62,16 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Richiesta troppo grande!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    non consente di trasferire dati, oppure la quantit&agrave; di dati 
+    richiesti &egrave; eccessiva.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

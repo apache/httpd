@@ -56,7 +56,6 @@ Body:----------es--
     que porfavor vuelva a intentar la operaci&oacute;n suministrando
     nuevamente su numero de identificaci&oacute;n y su contrase&ntilde;a.
 
- Muchas Gracias.
 <!--#include virtual="include/bottom.html" -->
 ----------es--
 
@@ -101,3 +100,23 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Autorizzazione necessaria!" -->
+<!--#include virtual="include/top.html" -->
+
+    Questo server non pu&ograve; verificare l'autorizzazione
+    all'accesso a "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Questo errore potrebbe essere causato da credenziali errate
+    (nome utente o password errata) oppure da un browser che non
+    riesce a comunicare il nome utente e la password in modo corretto.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Nel caso in cui ritieni di aver diritto ad accedere al documento,
+    controlla il nome utente e la password forniti e riprova.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
