@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/16 17:28:29 $]
+Last modified at [$Date: 2003/04/17 02:57:21 $]
 
 Release:
 
@@ -58,12 +58,6 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 RELEASE SHOWSTOPPERS:
-
-    * --enable-layout breakage, a better fix for PR 18649
-      configure.in r1.248
-      apr/build/apr_common.m4 r1.55
-      +1: jerenkrantz, trawick, thommay
-      -1:
 
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to

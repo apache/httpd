@@ -1,5 +1,10 @@
 Changes with Apache 2.0.46
 
+  *) Fix a build problem with passing unsupported --enable-layout
+     args to apr and apr-util.  This broke binbuild.sh as well as
+     user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
+     Jeff Trawick]
+
   *) If a Date response header was already set in the headers array,
      this value was ignored in favour of the current time. This meant
      that Date headers on proxied requests where rewritten when they
