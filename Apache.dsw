@@ -261,6 +261,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "apriconv"=".\srclib\apr-iconv\apriconv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "aprutil"=".\srclib\apr-util\aprutil.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -269,9 +281,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
     End Project Dependency
@@ -387,6 +396,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "libapriconv"=".\srclib\apr-iconv\libapriconv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "libaprutil"=".\srclib\apr-util\libaprutil.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -397,6 +421,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
@@ -418,6 +445,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
