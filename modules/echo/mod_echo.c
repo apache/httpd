@@ -64,52 +64,53 @@
 
 AP_DECLARE_DATA module echo_module;
 
-typedef struct
-    {
+typedef struct {
     int bEnabled;
-    } EchoConfig;
+} EchoConfig;
 
-static void *create_echo_server_config(apr_pool_t *p,server_rec *s)
-    {
-    EchoConfig *pConfig=apr_pcalloc(p,sizeof *pConfig);
+static void *create_echo_server_config(apr_pool_t *p, server_rec *s)
+{
+    EchoConfig *pConfig = apr_pcalloc(p, sizeof *pConfig);
 
-    pConfig->bEnabled=0;
+    pConfig->bEnabled = 0;
 
     return pConfig;
-    }
+}
 
 static const char *echo_on(cmd_parms *cmd, void *dummy, int arg)
-    {
-    EchoConfig *pConfig=ap_get_module_config(cmd->server->module_config,
-					     &echo_module);
-    pConfig->bEnabled=arg;
+{
+    EchoConfig *pConfig = ap_get_module_config(cmd->server->module_config,
+                                               &echo_module);
+    pConfig->bEnabled = arg;
 
     return NULL;
-    }
+}
 
 static int process_echo_connection(conn_rec *c)
-    {
+{
     char buf[1024];
-    EchoConfig *pConfig=ap_get_module_config(c->base_server->module_config,
-					     &echo_module);
+    EchoConfig *pConfig = ap_get_module_config(c->base_server->module_config,
+                                               &echo_module);
 
-    if(!pConfig->bEnabled)
-	return DECLINED;
+    if (!pConfig->bEnabled) {
+        return DECLINED;
+    }
 
-    for( ; ; )
-	{
+    for ( ; ; ) {
 	apr_ssize_t r, w;
         r = sizeof(buf);
         apr_recv(c->client_socket, buf, &r);
-	if(r <= 0)
-	    break;
+	if (r <= 0) {
+            break;
+        }
         w = r;
 	apr_send(c->client_socket, buf, &w);
-	if(w != r)
+	if (w != r) {
 	    break;
-	}
-    return OK;
+        }
     }
+    return OK;
+}
 
 static const command_rec echo_cmds[] = 
 {
@@ -120,7 +121,8 @@ static const command_rec echo_cmds[] =
 
 static void register_hooks(void)
 {
-    ap_hook_process_connection(process_echo_connection,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_process_connection(process_echo_connection, NULL, NULL,
+                               AP_HOOK_MIDDLE);
 }
 
 AP_DECLARE_DATA module echo_module = {
