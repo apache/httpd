@@ -116,6 +116,7 @@ char *crypt(char *pw, char *salt);
 #undef NO_SETSID
 #define HAVE_SYS_SELECT_H
 #define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
 
 #elif defined(ULTRIX)
 #define HAVE_GMTOFF

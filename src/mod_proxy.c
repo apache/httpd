@@ -2668,7 +2668,7 @@ connect_handler(request_rec *r, struct cache_req *c, char *url)
 	case DEFAULT_SNEWS_PORT:
 	    break;
 	default:
-	    return SERVICE_UNAVAILABLE;
+	    return HTTP_SERVICE_UNAVAILABLE;
     }
 
     Explain2("CONNECT to %s on port %d", host, port);
