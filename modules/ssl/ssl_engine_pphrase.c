@@ -67,7 +67,7 @@
  * Return true if the named file exists and is readable
  */
 
-static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool)
+static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool, apr_time_t *mtime)
 {
     apr_status_t stat;
     apr_finfo_t sbuf;
@@ -81,6 +81,10 @@ static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool)
 
     if ((stat = apr_file_open(&fd, fname, APR_READ, 0, pool)) != APR_SUCCESS)
         return stat;
+
+    if (mtime) {
+        *mtime = sbuf.mtime;
+    }
 
     apr_file_close(fd);
     return APR_SUCCESS;
@@ -121,7 +125,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     ssl_algo_t algoCert, algoKey, at;
     char *an;
     char *cp;
-
+    apr_time_t pkey_mtime = 0;
+    int isterm = 1;
     /*
      * Start with a fresh pass phrase array
      */
@@ -158,7 +163,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFile[i] != NULL; i++) {
 
             apr_cpystrn(szPath, sc->szPublicCertFile[i], sizeof(szPath));
-            if ( exists_and_readable(szPath, p) != APR_SUCCESS ) {
+            if ( exists_and_readable(szPath, p, NULL) != APR_SUCCESS ) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Init: Can't open server certificate file %s", szPath);
                 ssl_die();
@@ -249,15 +254,40 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * the callback function which serves the pass
                  * phrases to OpenSSL
                  */
-                if ( exists_and_readable(szPath, p) != APR_SUCCESS ) {
+                if ( exists_and_readable(szPath, p, &pkey_mtime) != APR_SUCCESS ) {
                      ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                          "Init: Can't open server private key file %s",szPath);
                      ssl_die();
                 }
+
+                /*
+                 * isatty() returns false once httpd has detached from the terminal.
+                 * if the private key is encrypted and SSLPassPhraseDialog is configured to "builtin"
+                 * it isn't possible to prompt for a password.  in this case if we already have a
+                 * private key and the file name/mtime hasn't changed, then reuse the existing key.
+                 * of course this will not work if the server was started without LoadModule ssl_module
+                 * configured, then restarted with it configured.  but we fall through with a chance of
+                 * success if the key is not encrypted.  and in the case of fallthrough, pkey_mtime and
+                 * isterm values are used to give a better idea as to what failed.
+                 */
+                if ((sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) &&
+                    !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
+                {
+                    char *key_id = apr_psprintf(p, "%s:%s", cpVHostID, "RSA"); /* XXX: check for DSA key too? */
+                    ssl_asn1_t *asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, key_id);
+                    
+                    if (asn1 && (asn1->source_mtime == pkey_mtime)) {
+                        ssl_log(pServ, SSL_LOG_INFO,
+                                "%s reusing existing private key on restart",
+                                cpVHostID);
+                        return;
+                    }
+                }
+
                 cpPassPhraseCur = NULL;
                 bReadable = ((pPrivateKey = SSL_read_PrivateKey(szPath, NULL,
                             ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
-  
+                
                 /*
                  * when the private key file now was readable,
                  * it's fine and we go out of the loop
@@ -298,12 +328,20 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 /*
                  * Ok, anything else now means a fatal error.
                  */
-                if (cpPassPhraseCur == NULL)
-                    ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Private key not found");
+                if (cpPassPhraseCur == NULL) {
+                    if (nPassPhraseDialogCur && pkey_mtime && !isterm) {
+                        ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                                "Init: Unable read passphrase "
+                                "[Hint: key introduced or changed before restart?]");
+                    }
+                    else {
+                        ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Private key not found");
+                    }
                     if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
                         fprintf(stdout, "Apache:mod_ssl:Error: Private key not found.\n");
                         fprintf(stdout, "**Stopped\n");
                     }
+                }
                 else {
                     ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Pass phrase incorrect");
                     if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
@@ -371,6 +409,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             asn1->nData  = i2d_PrivateKey(pPrivateKey, NULL);
             asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
             ucp = asn1->cpData; i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
+
+            asn1->source_mtime = pkey_mtime;
 
             /*
              * Free the private key structure

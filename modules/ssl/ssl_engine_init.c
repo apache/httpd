@@ -89,8 +89,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_config_global_create(s); /* just to avoid problems */
     ssl_config_global_fix(mc);
 
-    mc->nInitCount++;
-
     /*
      *  try to fix the configuration and open the dedicated SSL
      *  logfile as early as possible
@@ -121,78 +119,22 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /*
      * Identification
      */
-    if (mc->nInitCount == 1) {
-        ssl_log(s, SSL_LOG_INFO, "Server: %s, Interface: %s, Library: %s",
-                AP_SERVER_BASEVERSION,
-                ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE"),
-                ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
-    }
+    ssl_log(s, SSL_LOG_INFO, "Server: %s, Interface: %s, Library: %s",
+            AP_SERVER_BASEVERSION,
+            ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE"),
+            ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
 
-    /*
-     * Initialization round information
-     */
-    if (mc->nInitCount == 1)
-        ssl_log(s, SSL_LOG_INFO, "Init: 1st startup round (still not detached)");
-    else if (mc->nInitCount == 2)
-        ssl_log(s, SSL_LOG_INFO, "Init: 2nd startup round (already detached)");
-    else
-        ssl_log(s, SSL_LOG_INFO, "Init: %d%s restart round (already detached)",
-                mc->nInitCount-2, (mc->nInitCount-2) == 1 ? "st" : "nd");
+    ssl_log(s, SSL_LOG_INFO, "Init: Initializing %s library",
+            SSL_LIBRARY_NAME);
 
-    /*
-     *  The initialization phase inside the Apache API is totally bogus.
-     *  We actually have three non-trivial problems:
-     *
-     *  1. Under Unix the API does a 2-round initialization of modules while
-     *     under Win32 it doesn't. This means we have to make sure that at
-     *     least the pass phrase dialog doesn't occur twice.  We overcome this
-     *     problem by using a counter (mc->nInitCount) which has to
-     *     survive the init rounds.
-     *
-     *  2. Between the first and the second round Apache detaches from
-     *     the terminal under Unix. This means that our pass phrase dialog
-     *     _has_ to be done in the first round and _cannot_ be done in the
-     *     second round.
-     *
-     *  3. When Dynamic Shared Object (DSO) mechanism is used under Unix the
-     *     module segment (code & data) gets unloaded and re-loaded between
-     *     the first and the second round. This means no global data survives
-     *     between first and the second init round. We overcome this by using
-     *     an entry ("ssl_module") inside the process_rec->pool->user_data.
-     *
-     *  The situation as a table:
-     *
-     *  Unix/static Unix/DSO          Win32     Action Required
-     *              (-DSHARED_MODULE) (-DWIN32)
-     *  ----------- ----------------- --------- -----------------------------------
-     *  -           load module       -         -
-     *  init        init              init      SSL library init, Pass Phrase Dialog
-     *  detach      detach            -         -
-     *  -           reload module     -         -
-     *  init        init              -         SSL library init, mod_ssl init
-     *
-     *  Ok, now try to solve this totally ugly situation...
-     */
-
-#ifdef SHARED_MODULE
-    ssl_log(s, SSL_LOG_INFO, "Init: %snitializing %s library",
-            mc->nInitCount == 1 ? "I" : "Rei", SSL_LIBRARY_NAME);
     ssl_init_SSLLibrary();
-#else
-    if (mc->nInitCount <= 2) {
-        ssl_log(s, SSL_LOG_INFO, "Init: %snitializing %s library",
-                mc->nInitCount == 1 ? "I" : "Rei", SSL_LIBRARY_NAME);
-        ssl_init_SSLLibrary();
-    }
-#endif
+
 #if APR_HAS_THREADS
     ssl_util_thread_setup(s, p);
 #endif
-    if (mc->nInitCount == 1) {
-        ssl_pphrase_Handle(s, p);
-        ssl_init_TmpKeysHandle(SSL_TKP_GEN, s, p);
-        return OK;
-    }
+
+    ssl_pphrase_Handle(s, p);
+    ssl_init_TmpKeysHandle(SSL_TKP_GEN, s, p);
 
     /*
      * SSL external crypto device ("engine") support
