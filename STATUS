@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/19 09:07:29 $]
+  Last modified at [$Date: 1999/08/20 09:39:22 $]
 
 Release:
 
@@ -487,7 +487,7 @@ Binaries (1.3.9):
  mips-sgi-irix6.2              no      Lars Eilebrecht
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-sni-svr4                 no      Martin Kraemer
- OS/2                          no      Brian Havard
+ OS/2                          yes     Brian Havard
  powerpc-apple-rhapsody5.3     no      Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
