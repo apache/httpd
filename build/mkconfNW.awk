@@ -32,6 +32,7 @@ BEGIN {
     print "#LoadModule dav_module modules/mod_dav.nlm"
     print "#LoadModule dav_fs_module modules/moddavfs.nlm"
     print "#LoadModule expires_module modules/expires.nlm"
+    print "#LoadModule ext_filter_module modules/extfiltr.nlm"
     print "#LoadModule file_cache_module modules/filecach.nlm"
     print "#LoadModule headers_module modules/headers.nlm"
     print "#LoadModule info_module modules/info.nlm"
