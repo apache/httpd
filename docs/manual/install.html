@@ -29,7 +29,28 @@ to achieve easy installation.  Apache 2.0 now uses libtool and
 autoconf to create an environment that looks like many other Open
 Source projects.</p>
 
-<h3>Overview for the impatient</h3>
+<ul>
+<li><a href="#overview">Overview for the impatient</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#download">Download</a></li>
+<li><a href="#extract">Extract</a></li>
+<li><a href="#configure">Configuring the source tree</a>
+  <ul>
+  <li><a href="#environment">Environment Variables</a></li>
+  <li><a href="#output">autoconf Output Options</a></li>
+  <li><a href="#pathnames">Pathnames</a></li>
+  <li><a href="#modules">Modules</a></li>
+  <li><a href="#suexec">Suexec</a></li>
+  </ul></li>
+<li><a href="#compile">Build</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#customize">Customize</a></li>
+<li><a href="#test">Test</a></li>
+</ul>
+
+<hr>
+
+<h3><a name="overview">Overview for the impatient</a></h3>
 
 <table>
 <tr><td><a href="#download">Download</a></td>
@@ -72,7 +93,7 @@ specified, it defaults to <code>/usr/local/apache2</code>.</p>
 described in more detail below, beginning with the requirements
 for compiling and installing Apache HTTPD.</p>
 
-<h3>Requirements</h3>
+<h3><a name="requirements">Requirements</a></h3>
 
 <p>The following requirements exist for building Apache:</p>
 
@@ -89,7 +110,7 @@ ANSI-C compiler installed. The <a
 href="http://www.gnu.org/software/gcc/gcc.html">GNU C compiler
 (GCC)</a> from the <a href="http://www.gnu.org/">Free Software
 Foundation (FSF)</a> is recommended (version 2.7.2 is fine). If you
-don't have GCC then at least make sure your vendors compiler is ANSI
+don't have GCC then at least make sure your vendor's compiler is ANSI
 compliant.  In addition, your <code>PATH</code> must contain basic
 build tools such as <code>make</code>.<br><br></li>
 
@@ -196,7 +217,7 @@ which will later be used to compile the server.</p>
 is to run ./configure --help.  What follows is a brief description
 of most of the arguments and environment variables.</p>
 
-<h4>Environment Variables</h4>
+<h4><a name="environment">Environment Variables</a></h4>
 
 <p>The autoconf build process uses several environment variables to
 configure the build environment.  In general, these variables change
@@ -246,7 +267,7 @@ linker.</dd>
 
 </dl>
 
-<h4>autoconf Output Options</h4>
+<h4><a name="output">autoconf Output Options</a></h4>
 
 <dl>
 
@@ -263,7 +284,7 @@ including the names of all the files examined.</dd>
 
 </dl>
 
-<h4>Pathnames</h4>
+<h4><a name="pathnames">Pathnames</a></h4>
 
 <p>There are currently two ways to configure the pathnames under
 which Apache will install its files.  First, you can specify
@@ -314,7 +335,7 @@ own.  If you want to customize your install, you should edit the
 <code>config.layout</code> file and use the
 <code>--enable-layout</code> option.</p>
 
-<h4>Modules</h4>
+<h4><a name="modules">Modules</a></h4>
 
 <p>Apache is a modular server.  Only the most basic functionality is
 included in the core server.  Extended features are available in
@@ -348,14 +369,42 @@ and include the module <em>MODULE</em>.  The identifier
 <em>MODULE</em> is the <a
 href="mod/module-dict.html#ModuleIdentifier"
 >Module Identifier</a> from the module documentation without the
-"_module" string.  To compile the module dynamically as a DSO, add the
+"_module" string.  To compile the module as a DSO, add the
 option <code>=shared</code>.</dd>
 
 <dt><code>--disable-<em>MODULE</em></code></dt>
 <dd>Remove the module <em>MODULE</em> which would otherwise be
 compiled and included.</dd>
 
+<dt><code>--enable-modules=<em>MODULE-LIST</em></code> <dd>Compile and
+include the modules listed in the space-separated
+<em>MODULE-LIST</em>.</dd>
+
+<dt><code>--enable-mods-shared=<em>MODULE-LIST</em></code> <dd>Compile
+and include the modules in the space-separated <em>MODULE-LIST</em> as
+dynamically loadable (DSO) modules.</dd>
+
 </dl>
+
+<p>The <em>MODULE-LIST</em> in the <code>--enable-modules</code> and
+<code>--enable-mods-shared</code> options is usually a space-separated list
+of module identifiers.  For example, to enable mod_dav and mod_info, you
+can either use</p>
+<blockquote><code>
+./configure --enable-dav --enable-info
+</code></blockquote>
+<p>or, equivalently,</p>
+<blockquote><code>
+./configure --enable-modules="dav info"
+</code></blockquote>
+<p>In addition, the special keywords <code>all</code>
+or <code>most</code> can be used to add all or most of the modules
+in one step.  You can then remove any modules that you do not want
+with the <code>--disable-<em>MODULE</em></code> option.  For example,
+to include all modules as DSOs with the exception of mod_info, you can use</p>
+<blockquote><code>
+./configure --enable-mods-shared=all --disable-info
+</code></blockquote> 
 
 <p>In addition to the standard set of modules, Apache 2.0 also
 includes a choice of <a href="mpm.html">Multi-Processing Modules</a>
@@ -371,7 +420,7 @@ on the <code>configure</code> command line.
 
 </dl>
 
-<h4>Suexec</h4>
+<h4><a name="suexec">Suexec</a></h4>
 
 <p>Apache includes a support program called <a
 href="suexec.html">suexec</a> which can be used to isolate user CGI
@@ -379,9 +428,9 @@ programs.  However, if suexec is improperly configured, it can cause
 serious security problems.  Therefore, you should carefully read and
 consider the <a href="suexec.html">suexec documentation</a> before
 implementing this feature.</p>
- 
 
-<h3><a name="compile">Building the package</a></h3>
+
+<h3><a name="compile">Build</a></h3>
      
 <p>Now you can build the various parts which form the Apache package
 by simply running the command:</p>
@@ -396,26 +445,25 @@ system, but this will vary widely depending on your hardware and the
 number of modules which you have enabled.</p>
 
  
-<h3><a name="install">Installing the package</a></h3>
+<h3><a name="install">Install</a></h3>
      
 <p>Now its time to install the package under the configured
-installation PREFIX (see <code>--prefix</code> option above) by running:</h3>
-<blockquote><code>
-        $ make install
-</code></blockquote> 
+installation <em>PREFIX</em> (see <code>--prefix</code> option above)
+by running:</h3> <blockquote><code> $ make install
+</code></blockquote>
 
 <p>If you are upgrading, the installation will not overwrite 
 your configuration files or documents.</p>
 
 
-<h3><a name="customize">Customizing the package</a></h3>
+<h3><a name="customize">Customize</a></h3>
  
 <p>Next, you can customize your Apache HTTP server by editing the <a
 href="configuring.html">configuration files</a> under
-PREFIX/conf/.</p> 
+<em>PREFIX</em>/conf/.</p> 
 
 <blockquote><code> 
-$ vi PREFIX/conf/httpd.conf
+$ vi <em>PREFIX</em>/conf/httpd.conf
 </code></blockquote>
 
 <p>Have a look at the Apache manual under <a
@@ -424,24 +472,23 @@ href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
 for a complete reference of available <a
 href="mod/directives.html">configuration directives</a>.</p>
 
-<h3><a name="test">Testing the package</a></h3>
+<h3><a name="test">Test</a></h3>
  
 <p>Now you can <a href="invoking.html">start</a> your Apache HTTP
 server by immediately running:</p>
 
 <blockquote><code>
-        $ PREFIX/bin/apachectl start
+        $ <em>PREFIX</em>/bin/apachectl start
 </code></blockquote>
  
 <p>and then you should be able to request your first document via URL
-http://localhost/ (when you built and installed Apache as root) or
-http://localhost:8080/ (when you built and installed Apache as a
-regular user).  The web page you see is located under the <a
+http://localhost/.  The web page you see is located under the <a
 href="mod/core.html#documentroot">DocumentRoot</a> which will usually
-be <code>PREFIX/htdocs/</code>.  Then <a href="stopping.html">stop</a>
-the server again by running:</p>
+be <code><em>PREFIX</em>/htdocs/</code>.  Then <a
+href="stopping.html">stop</a> the server again by running:</p>
 
-<blockquote><code> $ PREFIX/bin/apachectl stop </code></blockquote>
+<blockquote><code> $ <em>PREFIX</em>/bin/apachectl stop
+</code></blockquote>
 
 
 <!--#include virtual="footer.html" -->
