@@ -17,11 +17,6 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
   APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
 ])
 
-dnl ### this isn't going to work quite right because of ordering issues
-dnl ### among the config.m4 files. it is possible that a *later* module
-dnl ### is marked as shared (thus setting sharedobjs), so we won't see
-dnl ### it here. we need to shift *this* config.m4 to be "last" or we
-dnl ### need to find a different way to set up this default and module spec.
 if test "$sharedobjs" = "yes"; then
     APACHE_MODULE(so, DSO capability, , , yes)
 else
