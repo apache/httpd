@@ -853,6 +853,10 @@ static void start_connect(struct connection * c)
 				SOCK_STREAM, c->ctx)) != APR_SUCCESS) {
 	apr_err("socket", rv);
     }
+    if ((rv = apr_setsocketopt(c->aprsock, APR_SO_NONBLOCK, 1))
+         != APR_SUCCESS) {
+        apr_err("socket nonblock", rv);
+    }
     c->start = apr_time_now();
     if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
 	if (APR_STATUS_IS_EINPROGRESS(rv)) {
@@ -941,16 +945,21 @@ static void read_connection(struct connection * c)
     char respcode[4];		/* 3 digits and null */
 
     r = sizeof(buffer);
-    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
     status = apr_recv(c->aprsock, buffer, &r);
-    if (r == 0 || (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status))) {
+    if (APR_STATUS_IS_EAGAIN(status))
+	return;
+    else if (r == 0 && APR_STATUS_IS_EOF(status)) {
 	good++;
 	close_connection(c);
 	return;
     }
-
-    if (APR_STATUS_IS_EAGAIN(status))
-	return;
+    /* catch legitimate fatal apr_recv errors */
+    else if (status != APR_SUCCESS) {
+        err_except++; /* XXX: is this the right error counter? */
+        /* XXX: Should errors here be fatal, or should we allow a
+         * certain number of them before completely failing? -aaron */
+        apr_err("apr_recv", status);
+    }
 
     totalread += r;
     if (c->read == 0) {
@@ -1302,14 +1311,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.95 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.96 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.95 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.96 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
