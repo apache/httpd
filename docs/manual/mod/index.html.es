@@ -64,7 +64,7 @@ requests to be assigned a variety of different userids</dd>
 hebrado</dd>
 <dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
-<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
+<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Módulo de multiprocesamiento optimizado para Windows
 NT.</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Módulo de MultiProcesamiento que implementa un
 servidor web híbrido multihebra-multiproceso</dd>
