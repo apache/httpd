@@ -99,6 +99,7 @@ APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(access_checker)
 	    APR_HOOK_LINK(auth_checker)
 	    APR_HOOK_LINK(insert_filter)
+            APR_HOOK_LINK(create_request)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -114,6 +115,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r),(r),DECLINED)
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
+AP_IMPLEMENT_HOOK_VOID(create_request, (request_rec *r), (r))
 
 /*****************************************************************
  *
@@ -849,8 +851,6 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->server         = r->server;
 
     rnew->request_config = ap_create_request_config(rnew->pool);
-    ap_set_module_config(rnew->request_config, &core_module,
-              ap_get_module_config(r->request_config, &core_module));
 
     rnew->htaccess       = r->htaccess;
     rnew->per_dir_config = r->server->lookup_defaults;
@@ -871,6 +871,11 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
+
+    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+     * pointer won't be setup
+     */
+    ap_run_create_request(rnew);
 
     /* would be nicer to pass "method" to ap_set_sub_req_protocol */
     rnew->method = method;
@@ -958,8 +963,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->server         = r->server;
 
     rnew->request_config = ap_create_request_config(rnew->pool);
-    ap_set_module_config(rnew->request_config, &core_module,
-              ap_get_module_config(r->request_config, &core_module));
 
     rnew->htaccess       = r->htaccess;
     rnew->chunked        = r->chunked;
@@ -980,6 +983,12 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
+
+    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+     * pointer won't be setup
+     */
+    ap_run_create_request(rnew);
+
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
 
     /*

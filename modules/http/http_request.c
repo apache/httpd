@@ -424,7 +424,6 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 static request_rec *internal_internal_redirect(const char *new_uri,
 					       request_rec *r) {
     int access_status;
-    core_request_config *req_cfg;
     request_rec *new = (request_rec *) apr_pcalloc(r->pool,
 						   sizeof(request_rec));
 
@@ -444,14 +443,16 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     ap_parse_uri(new, new_uri);
 
     new->request_config = ap_create_request_config(r->pool);
-    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = apr_brigade_create(r->pool);
-    ap_set_module_config(new->request_config, &core_module, req_cfg);
 
     new->per_dir_config = r->server->lookup_defaults;
 
     new->prev = r;
     r->next   = new;
+
+    /* Must have prev and next pointers set before calling create_request
+     * hook.
+     */
+    ap_run_create_request(new);
 
     /* Inherit the rest of the protocol info... */
 

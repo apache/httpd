@@ -1,5 +1,12 @@
 Changes with Apache 2.0.15-dev
 
+  *) Add a hook, create_request.  This hook allows modules to modify
+     a request while it is being created.  This hook is called for all
+     request_rec's, main request, sub request, and internal redirect.
+     When this hook is called, the the r->main, r->prev, r->next
+     pointers have been set, so modules can determine what kind of
+     request this is.  [Ryan Bloom]
+
   *) Cleanup the build process a bit more.  The Apache configure
      script no longer creates its own helper scripts, it just
      uses APR's.  

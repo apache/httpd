@@ -3236,6 +3236,21 @@ static void core_insert_filter(request_rec *r)
     }
 }
 
+static void core_create_req(request_rec *r)
+{
+    if (r->main) {
+        ap_set_module_config(r->request_config, &core_module,
+              ap_get_module_config(r->main->request_config, &core_module));
+    }
+    else {
+        core_request_config *req_cfg;
+
+        req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
+        req_cfg->bb = apr_brigade_create(r->pool);
+        ap_set_module_config(r->request_config, &core_module, req_cfg);
+    }
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
@@ -3245,6 +3260,7 @@ static void register_hooks(apr_pool_t *p)
     /* FIXME: I suspect we can eliminate the need for these - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
 
     /* register the core's insert_filter hook and register core-provided
      * filters
