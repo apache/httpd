@@ -1,5 +1,4 @@
  (MODCACHE)
- ap_cache_request_is_conditional,
  ap_cache_get_providers,
  ap_cache_liststr,
  ap_cache_tokstr,

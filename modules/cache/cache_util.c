@@ -24,17 +24,6 @@
 
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
-/* return true if the request is conditional */
-CACHE_DECLARE(int) ap_cache_request_is_conditional(apr_table_t *table)
-{
-    if (apr_table_get(table, "If-Match") ||
-        apr_table_get(table, "If-None-Match") ||
-        apr_table_get(table, "If-Modified-Since") ||
-        apr_table_get(table, "If-Unmodified-Since")) {
-        return 1;
-    }
-    return 0;
-}
 
 CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
                                                   cache_server_conf *conf, 
