@@ -131,6 +131,8 @@ install: install-recursive
 # directory that has ever been configured.  To do this, we just do a quick
 # find for all the leftover Makefiles, and then run make distclean in those
 # directories.
+# Exception: Skip APR directories (other than the base APR directory),
+#            because APR knows how to do these tasks better than we do.
 distclean-recursive clean-recursive depend-recursive all-recursive install-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
 	list='$(SUBDIRS)'; for i in $$list; do \
@@ -148,12 +150,15 @@ distclean-recursive clean-recursive depend-recursive all-recursive install-recur
 		for d in `find . -name Makefile`; do \
 			i=`dirname "$$d"`; \
 			target="$$otarget"; \
-			echo "Making $$target in $$i"; \
-			if test "$$i" = "."; then \
-				ok=yes; \
-				target="$$target-p"; \
+			in_apr=`echo $$i|grep 'apr/.'`; \
+			if test "x$$in_apr" = "x"; then \
+				echo "Making $$target in $$i"; \
+				if test "$$i" = "."; then \
+					ok=yes; \
+					target="$$target-p"; \
+				fi; \
+				(cd $$i && $(MAKE) $$target) || exit 1; \
 			fi; \
-			(cd $$i && $(MAKE) $$target) || exit 1; \
 		done; \
 	fi
 
