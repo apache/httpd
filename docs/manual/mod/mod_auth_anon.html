@@ -1,15 +1,18 @@
-<html>
-<head>
-<title>Module mod_auth_anon.c</title>
-</head>
-<body>
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_auth_anon.c</TITLE>
+</HEAD>
+<BODY>
 <!--#include virtual="header.html" -->
 <H1>Module mod_auth_anon</H1>
 
 This module is contained in the <code>mod_auth_anon.c</code> file and
-is compiled in by default. It is only available in Apache 1.1 and
-later.
-<p>
+is not compiled in by default. It is only available in Apache 1.1 and
+later. It allows "anonymous" user access to authenticated areas.
+
+<h2>Summary</h2>
+
 It does access control in a manner similar to anonymous-ftp sites; i.e.
 have a 'magic' user id 'anonymous' and the email address as a password.
 These email addresses can be logged.
@@ -22,7 +25,7 @@ funny URL pre/postfixes, it is completely browser independent and it
 allows users to share URLs.
 <p>
 
-<a href="#FullDescription">Full description</a> /
+<a href="#Directives">Directives</a> /
 <a href="#Example">Example</a> /
 <a href="#CompileTimeOptions">Compile time options</a> /
 <a href="#RevisionHistory">RevisionHistory</a> /
@@ -30,12 +33,26 @@ allows users to share URLs.
 <a href="#Sourcecode">Sourcecode</a>
 <p>
 
-<hr><h2><a name="FullDescription">Full description of all tokens</a></h2>
-<dl>
+<h2><a name="Directives">Directives</a></h2>
+<ul>
+<li><A HREF="#anonymous">Anonymous</A>
+<li><A HREF="#LogMail">Anonymous_LogEmail</A>
+<li><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
+<li><A HREF="#NoUser">Anonymous_NoUser</A>
+<li><A HREF="#Authoritative">Anonymous_Authoritative</A>
+</ul>
 
-<code><dt>
-Anonymous &lt; Space separated list &gt
-</code></dt><dd>
+<hr>
+
+<A name="anonymous"><h2>Anonymous</h2></a>
+<!--%plaintext &lt;?INDEX {\tt Anonymous} directive&gt; -->
+<strong>Syntax:</strong> Anonymous <em>user user ...</em><br>
+<strong>Default:</strong> none<br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
 	A list of one or more 'magic' userIDs which are allowed access
 	without password verification. The userIDs are space separated.
 	It is possible to use the ' and " quotes to allow a space in
@@ -53,37 +70,57 @@ Anonymous &lt; Space separated list &gt
 	This would allow the user to enter without password verification
 	by using the userId's 'anonymous', 'AnonyMous','Not Registered' and
 	'I Don't Know'.
-</dd>
+<hr>
 
-<code><dt>
-Anonymous_LogEmail &lt; on | off &gt
-</code></dt><dd>
+<A name="LogMail"><h2>Anonymous_LogEmail</h2></A>
+<strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
+<strong>Default:</strong> <code>off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
 	When set 'on', the default, the 'password' entered (which hopefully
 	contains a sensible email address) is logged in the httpd-log file.
-</dd>
+<hr>
 
-<code><dt>
-Anonymous_VerifyEmail &lt; on | off &gt
-</code></dt><dd>
-	When set 'on', the default is 'off', the 'password' entered is
+<A name="VerifyEmail"><h2>Anonymous_VerifyEmail</h2></A>
+<strong>Syntax:</strong> Anonymous <em>on | off</em><br>
+<strong>Default:</strong> <code>Anonymous_VerifyEmail off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	When set 'on' the 'password' entered is
 	checked for at least one '@' and a '.' to encourage users to enter
-	valid email addresses (see the above <code>Auth_LogEmail</code>.
-</dd>
+	valid email addresses (see the above <code>Auth_LogEmail</code>).
 
-<code><dt>
-Anonymous_NoUserID &lt; on | off &gt
-</code></dt><dd>
-	When set 'on', the default is 'off', users can leave
+<HR>
+
+<A name="NoUser"><h2>Anonymous_NoUser</h2></A>
+<strong>Syntax:</strong> Anonymous_NoUser <em>on | off</em><br>
+<strong>Default:</strong> <code>Anonymous_NoUser off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+	When set 'on', users can leave
 	the userID (and perhaps the password field) empty. This
 	can be very convenient for MS-Explorer users who can
 	just hit return or click directly on the OK button; which
 	seems a natural reaction.
-</dd>
 
-<code><dt>
-<a name="Authoritative">Anonymous_Authoritative &lt; on | off &gt</a>
-</code></dt><dd>
-        Default is 'off'. When set 'on', there is no
+<A name="Authoritative"><h2>Anonymous_Authoritative</h2></A>
+<strong>Syntax:</strong> Anonymous_Authoritative <em>on | off</em><br>
+<strong>Default:</strong> <code>Anonymous_Authoritative off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Override:</strong> AuthConfig<br>
+<strong>Status:</strong> Extension<br>
+<strong>Module:</strong> mod_auth_anon<p>
+
+        When set 'on', there is no
         fall-through to other authorization methods. So if a
         userID does not match the values specified in the
 	<code>Anonymous</code> directive, access is denied.
@@ -92,10 +129,6 @@ Anonymous_NoUserID &lt; on | off &gt
 	it on. And remember that it is the linking order of the modules
 	(in the Configuration / Make file) which details the order
 	in which the Authorization modules are queried.
-</dd>
-
-</dl>
-
 
 <hr><a name="Example"><h2>Example</h2></a>
 
