@@ -368,7 +368,8 @@ void worker_main(void *arg)
     tv.tv_sec = 1;
     tv.tv_usec = 0;
 
-    apr_pool_create(&ptrans, pmain);
+    apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
+    apr_pool_tag(ptrans, "transaction");
 
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
