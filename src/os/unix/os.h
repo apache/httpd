@@ -120,6 +120,10 @@ const char *dlerror(void);
 #define RTLD_NOW 1
 #endif
 
+#ifndef RTLD_GLOBAL
+#define RTLD_GLOBAL 0
+#endif
+
 #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 #define DLSYM_NEEDS_UNDERSCORE
 #endif

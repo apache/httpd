@@ -35,9 +35,9 @@ void *ap_os_dso_load(const char *path)
 #else
 #if defined(OSF1) ||\
     (defined(__FreeBSD_version) && (__FreeBSD_version >= 220000))
-    return dlopen((char *)path, RTLD_NOW);
+    return dlopen((char *)path, RTLD_NOW | RTLD_GLOBAL);
 #else
-    return dlopen(path, RTLD_NOW);
+    return dlopen(path, RTLD_NOW | RTLD_GLOBAL);
 #endif
 #endif
 }
