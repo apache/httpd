@@ -118,6 +118,14 @@ server</description>
     <p>Note that the last three examples above match exactly the
     same set of hosts.</p>
 
+    <p>IPv6 addresses and IPv6 subnets can be specified as shown
+    below:</p>
+
+    <example>
+       Allow from fe80::a00:20ff:fea7:ccea
+       Allow from fe80::a00:20ff:fea7:ccea/10
+    </example>
+
     <p>The third format of the arguments to the
     <directive>Allow</directive> directive allows access to the server
     to be controlled based on the existence of an <a

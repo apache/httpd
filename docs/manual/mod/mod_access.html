@@ -145,6 +145,14 @@
     <p>Note that the last three examples above match exactly the
     same set of hosts.</p>
 
+    <p>IPv6 addresses and IPv6 subnets can be specified as shown
+    below:</p>
+
+    <pre>
+       Allow from fe80::a00:20ff:fea7:ccea
+       Allow from fe80::a00:20ff:fea7:ccea/10
+    </pre>
+
     <p>The third format of the arguments to the <code>Allow</code>
     directive allows access to the server to be controlled based on
     the existence of an <a href="../env.html">environment
