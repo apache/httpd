@@ -69,10 +69,12 @@
  *
  * Exit values:
  *  0: Success
- *  1: Failure; file permission problem
+ *  1: Failure; file access/permission problem
  *  2: Failure; command line syntax problem (usage message issued)
  *  3: Failure; password verification failure
  *  4: Failure; operation interrupted (such as with CTRL/C)
+ *  5: Failure; buffer would overflow (username, filename, or computed
+ *     record too long)
  */
 
 #include "ap_config.h"
@@ -104,6 +106,7 @@
 #define ERR_SYNTAX 2
 #define ERR_PWMISMATCH 3
 #define ERR_INTERRUPTED 4
+#define ERR_OVERFLOW 5
 
 /*
  * This needs to be declared statically so the signal handler can
@@ -223,7 +226,7 @@ static char *getpass(const char *prompt)
 #endif
 
 /*
- * Make a password record from the given information.  A true return
+ * Make a password record from the given information.  A zero return
  * indicates success; failure means that the output buffer contains an
  * error message instead.
  */
@@ -236,7 +239,7 @@ static int mkrecord(char *user, char *record, size_t rlen, int alg)
     pw = strd((char *) getpass("New password: "));
     if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
 	ap_cpystrn(record, "password verification error", (rlen - 1));
-	return 0;
+	return ERR_PWMISMATCH;
     }
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 8);
@@ -261,12 +264,12 @@ static int mkrecord(char *user, char *record, size_t rlen, int alg)
      */
     if ((strlen(user) + 1 + strlen(cpw)) > (rlen - 1)) {
 	ap_cpystrn(record, "resultant record too long", (rlen - 1));
-	return 0;
+	return ERR_OVERFLOW;
     }
     strcpy(record, user);
     strcat(record, ":");
     strcat(record, cpw);
-    return 1;
+    return 0;
 }
 
 static int usage(void)
@@ -413,12 +416,12 @@ int main(int argc, char *argv[])
     }
     if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
 	fprintf(stderr, "%s: filename too long\n", argv[0]);
-	return 1;
+	return ERR_OVERFLOW;
     }
     strcpy(pwfilename, argv[i]);
     if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
 	fprintf(stderr, "%s: username too long\n", argv[0]);
-	return 1;
+	return ERR_OVERFLOW;
     }
     strcpy(user, argv[i + 1]);
 
@@ -477,9 +480,9 @@ int main(int argc, char *argv[])
      * Any error message text is returned in the record buffer, since
      * the mkrecord() routine doesn't have access to argv[].
      */
-    if (! mkrecord(user, record, sizeof(record) - 1, alg)) {
+    if ((i = mkrecord(user, record, sizeof(record) - 1, alg)) != 0) {
 	fprintf(stderr, "%s: %s\n", argv[0], record);
-	exit(ERR_PWMISMATCH);
+	exit(i);
     }
 
     /*
