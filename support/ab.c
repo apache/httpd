@@ -657,7 +657,7 @@ static void output_results(void)
 	}
 	else {
 	    printf("              min   avg   max\n");
-#define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %5e %5" APR_TIME_T_FMT "\n"
+#define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %5" APR_TIME_T_FMT "%5" APR_TIME_T_FMT "\n"
 	    printf("Connect:    " CONF_FMT_STRING, 
                    mincon, totalcon / requests, maxcon);
 	    printf("Processing: " CONF_FMT_STRING, mintot - mincon, 
@@ -1302,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.85 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.86 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.85 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.86 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
