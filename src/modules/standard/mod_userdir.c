@@ -317,7 +317,8 @@ static int translate_userdir(request_rec *r)
          */
         if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
             r->filename = pstrcat(r->pool, filename, dname, NULL);
-            r->finfo = statbuf;
+	    if (*userdirs)
+		r->finfo = statbuf;
             return OK;
         }
     }
