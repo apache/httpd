@@ -455,12 +455,14 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
         return;
     }
 
-    access_status = ap_process_request_internal(new);
-    if (access_status == OK) {
-        if ((access_status = ap_invoke_handler(new)) != 0) {
-            ap_die(access_status, new);
-            return;
+    access_status = ap_run_quick_handler(new, 0);  /* Not a look-up request */
+    if (access_status == DECLINED) {
+        access_status = ap_process_request_internal(new);
+        if (access_status == OK) {
+            access_status = ap_invoke_handler(new);
         }
+    }
+    if (access_status == OK) {
         ap_finalize_request_protocol(new);
     }
     else {
