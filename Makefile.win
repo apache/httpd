@@ -65,6 +65,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd srclib\apr-util\uri
+	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
 	cd srclib\apr-util\xml\expat\lib
 	 $(MAKE) $(MAKEOPT) -f xml.mak CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
         cd ..\..\..
@@ -77,7 +80,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd server
-	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 -del $(LONG)\buildmark.obj
