@@ -1446,14 +1446,14 @@ void ap_proxy_table_unmerge(pool *p, table *t, char *key)
 {
     long int offset = 0;
     long int count = 0;
-    const char *initial = ap_table_get(t, key);
+    char *value = NULL;
 
     /* get the value to unmerge */
-    char *value = ap_pstrdup(p, initial);
-    if (!value) {
+    const char *initial = ap_table_get(t, key);
+    if (!initial) {
         return;
     }
-    
+    value = ap_pstrdup(p, initial);
 
     /* remove the value from the headers */
     ap_table_unset(t, key);
