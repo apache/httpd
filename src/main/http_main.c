@@ -274,10 +274,7 @@ int sig;
 	if (!current_conn->keptalive) 
             log_transaction(log_req);
 
-	pfclose (timeout_req->connection->pool,
-		 timeout_req->connection->client);
-	pfclose (timeout_req->connection->pool,
-	         timeout_req->connection->request_in);
+	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
 #ifdef NEXT
@@ -888,12 +885,12 @@ void default_server_hostnames(server_rec *s)
 void abort_connection (conn_rec *c)
 {
     /* Make sure further I/O DOES NOT HAPPEN */
-    shutdown (fileno (c->client), 2);
+    shutdown (c->client->fd, 2);
     signal (SIGPIPE, SIG_IGN);	/* Ignore further complaints */
     c->aborted = 1;
 }
 
-conn_rec *new_connection (pool *p, server_rec *server, FILE *in, FILE *out,
+conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
 			  const struct sockaddr_in *saddr)
 {
     conn_rec *conn = (conn_rec *)pcalloc (p, sizeof(conn_rec));
@@ -907,8 +904,7 @@ conn_rec *new_connection (pool *p, server_rec *server, FILE *in, FILE *out,
     conn->pool = p;
     conn->server = find_virtual_server(saddr->sin_addr, ntohs(saddr->sin_port),
 				       server);
-    conn->client = out;
-    conn->request_in = in;
+    conn->client = inout;
     
     get_remote_host(conn);
     
@@ -961,7 +957,7 @@ void child_main(int child_num_arg)
 #endif    
 
     while (1) {
-	FILE *conn_in, *conn_out;
+	BUFF *conn_io;
 	request_rec *r;
       
         alarm(0);		/* Cancel any outstanding alarms. */
@@ -1018,18 +1014,11 @@ void child_main(int child_num_arg)
 	    continue;
 	}
 	
-	dupped_csd = csd;
-#if defined(AUX) || defined(SCO)
-	if ((dupped_csd = dup(csd)) < 0) {
-	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
-	    dupped_csd = csd;	/* Oh well... */
-	}
-#endif
 	update_child_status (child_num, SERVER_BUSY);
-	conn_in = pfdopen (ptrans, csd, "r");
-	conn_out = pfdopen (ptrans, dupped_csd, "w");
+	conn_io = bcreate(ptrans, B_RDWR);
+	bpushfd(conn_io, csd, csd);
 
-	current_conn = new_connection (ptrans, server_conf, conn_in, conn_out,
+	current_conn = new_connection (ptrans, server_conf, conn_io,
 				       (struct sockaddr_in *)&sa_server);
 
 	if (current_conn->server->do_rfc931)
@@ -1041,7 +1030,7 @@ void child_main(int child_num_arg)
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
 	while (r && current_conn->keepalive) {
-	  fflush(conn_out);
+	  bflush(conn_io);
 	  destroy_pool(r->pool);
 	  r = read_request (current_conn);
 	  if (r) process_request (r);
@@ -1052,9 +1041,8 @@ void child_main(int child_num_arg)
 		       "Memory hog alert: allocated %ld bytes for %s",
 		       bytes_in_pool (ptrans), r->the_request);
 		
-	fflush (conn_out);
-	pfclose (ptrans,conn_in);
-	pfclose (ptrans,conn_out);
+	bflush(conn_io);
+	bclose(conn_io);
     }    
 }
 
@@ -1283,6 +1271,7 @@ main(int argc, char *argv[])
         conn_rec *conn;
 	request_rec *r;
 	struct sockaddr sa_server;
+	BUFF *cio;
       
 	open_logs(server_conf, pconf);
 	set_group_privs();
@@ -1298,13 +1287,15 @@ main(int argc, char *argv[])
 	    exit(1);
 	}
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
-	conn = new_connection (ptrans, server_conf, stdin, stdout,
+	cio = bcreate(ptrans, B_RDWR);
+	bpushfd(cio, fileno(stdin), fileno(stdout));
+	conn = new_connection (ptrans, server_conf, cio,
 			       (struct sockaddr_in *)&sa_server);
 	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */
 
         while (r && conn->keepalive) {
-	  fflush(stdout);
+	  bflush(cio);
 	  destroy_pool(r->pool);
           r = read_request (conn);
           if (r) process_request (r);

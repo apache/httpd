@@ -91,8 +91,6 @@
 #define X 0
 #define Y 1
 
-char *getline(char *, int, FILE *);
-
 module imap_module;
 
 int pointinrect(double point[2], double coords[MAXVERTS][2])
@@ -291,7 +289,7 @@ int imap_handler (request_rec *r)
     referer = table_get (r->headers_in, "Referer");
     base_uri[0] = '\0';
 
-    while ((getline(input, MAXLINE, imap))) {
+    while ((cfg_getline(input, MAXLINE, imap))) {
 
 	if ((input[0] == '#') || (!input[0]) )
 	    continue;

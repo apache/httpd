@@ -419,10 +419,10 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
         if(stat(fn,&finfo) == -1)
             return 0;
         plaintext=1;
-        if(rule) rprintf(r,"<HR>%c",LF);
-        rprintf(r,"<PRE>%c",LF);
+        if(rule) rputs("<HR>\n", r);
+        rputs("<PRE>\n", r);
     }
-    else if(rule) rprintf(r,"<HR>%c",LF);
+    else if (rule) rputs("<HR>\n", r);
     if(!(f = pfopen(r->pool,fn,"r")))
         return 0;
     if (!plaintext)
@@ -444,17 +444,17 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
 		    if (buf[i] == '<' || buf[i] == '>' || buf[i] == '&') break;
 		ch = buf[i];
 		buf[i] = '\0';
-		rprintf(r, "%s", &buf[c]);
-		if (ch == '<') rprintf(r, "&lt;");
-		else if (ch == '>') rprintf(r, "&gt;");
-		else if (ch == '&') rprintf(r, "&amp;");
+		rputs(&buf[c], r);
+		if (ch == '<') rputs("&lt;", r);
+		else if (ch == '>') rputs("&gt;", r);
+		else if (ch == '&') rputs("&amp;", r);
 		c = i + 1;
 	    }
 	}
     }
     pfclose(r->pool, f);
     if(plaintext)
-        rprintf(r,"</PRE>%c",LF);
+        rputs("</PRE>\n", r);
     return 1;
 }
 
@@ -574,21 +574,21 @@ void output_directories(struct ent **ar, int n,
     if(name[0] == '\0') name = "/";
 
     if(dir_opts & FANCY_INDEXING) {
-        rprintf (r, "<PRE>");
+        rputs("<PRE>", r);
         if((tp = find_default_icon(d,"^^BLANKICON^^")))
-            rprintf(r, "<IMG SRC=\"%s\" ALT=\"     \"> ",
-		    escape_html(scratch, tp));
-        rprintf (r, "Name                   ");
+            rvputs(r, "<IMG SRC=\"", escape_html(scratch, tp),
+		   "\" ALT=\"     \"> ", NULL);
+        rputs("Name                   ", r);
         if(!(dir_opts & SUPPRESS_LAST_MOD))
-            rprintf(r, "Last modified     ");
+            rputs("Last modified     ", r);
         if(!(dir_opts & SUPPRESS_SIZE))
-            rprintf(r, "Size  ");
+            rputs("Size  ", r);
         if(!(dir_opts & SUPPRESS_DESC))
-            rprintf(r, "Description");
-        rprintf(r,"%c<HR>%c",LF,LF);
+            rputs("Description", r);
+        rputs("\n<HR>\n", r);
     }
     else {
-        rprintf (r, "<UL>");
+        rputs("<UL>", r);
     }
         
     for(x=0;x<n;x++) {
@@ -629,48 +629,48 @@ void output_directories(struct ent **ar, int n,
 
         if(dir_opts & FANCY_INDEXING) {
             if(dir_opts & ICONS_ARE_LINKS)
-                rprintf (r,"%s",anchor);
+                rputs(anchor, r);
             if((ar[x]->icon) || d->default_icon) {
-                rprintf(r, "<IMG SRC=\"%s\" ALT=\"[%s]\">",
-			escape_html(scratch, ar[x]->icon ?
-				    ar[x]->icon : d->default_icon),
-			ar[x]->alt ? ar[x]->alt : "   ");
+                rvputs(r, "<IMG SRC=\"", 
+		       escape_html(scratch, ar[x]->icon ?
+				   ar[x]->icon : d->default_icon),
+		       "\" ALT=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
+		       "]\">", NULL);
             }
             if(dir_opts & ICONS_ARE_LINKS) 
-                rprintf (r, "</A>");
+                rputs("</A>", r);
 
-            rprintf(r," %s%s", anchor, t2);
+            rvputs(r," ", anchor, t2, NULL);
             if(!(dir_opts & SUPPRESS_LAST_MOD)) {
                 if(ar[x]->lm != -1) {
 		    char time[MAX_STRING_LEN];
                     struct tm *ts = localtime(&ar[x]->lm);
                     strftime(time,MAX_STRING_LEN,"%d-%b-%y %H:%M  ",ts);
-		    rprintf (r, "%s", time);
+		    rputs(time, r);
                 }
                 else {
-                    rprintf(r, "                 ");
+                    rputs("                 ", r);
                 }
             }
             if(!(dir_opts & SUPPRESS_SIZE)) {
                 send_size(ar[x]->size,r);
-                rprintf (r, "  ");
+                rputs("  ", r);
             }
             if(!(dir_opts & SUPPRESS_DESC)) {
                 if(ar[x]->desc) {
-                    rprintf(r,"%s",
-			    terminate_description(d, ar[x]->desc, dir_opts));
+                    rputs(terminate_description(d, ar[x]->desc, dir_opts), r);
                 }
             }
         }
         else
-            rprintf(r, "<LI> %s %s",anchor,t2);
-        rputc(LF,r);
+            rvputs(r, "<LI> ", anchor," ", t2);
+        rputc('\n', r);
     }
     if(dir_opts & FANCY_INDEXING) {
-        rprintf(r, "</PRE>");
+        rputs("</PRE>", r);
     }
     else {
-        rprintf(r, "</UL>");
+        rputs("</UL>", r);
     }
 }
 
@@ -714,11 +714,11 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     while (title_endp > title_name && *title_endp == '/')
 	*title_endp-- = '\0';
     
-    rprintf (r,"<HEAD><TITLE>Index of %s</TITLE></HEAD><BODY>%c",
-	     title_name, LF);
+    rvputs(r, "<HEAD><TITLE>Index of ", title_name, "</TITLE></HEAD><BODY>\n",
+	   NULL);
 
     if((!(tmp = find_header(dir_conf,r))) || (!(insert_readme(name,tmp,0,r))))
-        rprintf(r,"<H1>Index of %s</H1>%c",title_name,LF);
+        rvputs(r, "<H1>Index of ", title_name, "</H1>\n", NULL);
 
     /* 
      * Since we don't know how many dir. entries there are, put them into a 
@@ -753,10 +753,10 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
          if((tmp = find_readme(dir_conf, r)))
              insert_readme(name,tmp,1,r);
      else {
-         rprintf(r, "</UL>");
+         rputs("</UL>", r);
      }
 
-     rprintf(r, "</BODY>");
+     rputs("</BODY>", r);
      return 0;
 }
 

@@ -59,7 +59,7 @@
 #include "alloc.h"
 #include "buff.h"
 
-#define DEFAULT_BUFSIZE (8192)
+#define DEFAULT_BUFSIZE (4096)
 
 /*
  * Buffered I/O routines.
@@ -88,19 +88,23 @@
 static void
 doerror(BUFF *fb, int err)
 {
-    fb->flags |= B_ERROR;
+    if (err == B_RD)
+	fb->flags |= B_RDERR;
+    else
+	fb->flags |= B_WRERR;
     if (fb->error != NULL) (*fb->error)(fb, err, fb->error_data);
 }
 
 /* Buffering routines */
-
+/*
+ * Create a new buffered stream
+ */
 BUFF *
-bopen(pool *p, int fd, int flags)
+bcreate(pool *p, int flags)
 {
     BUFF *fb;
 
     fb = palloc(p, sizeof(BUFF));
-    fb->fd = fd;
     fb->bufsiz = DEFAULT_BUFSIZE;
     fb->flags = flags & B_RDWR;
 
@@ -115,8 +119,52 @@ bopen(pool *p, int fd, int flags)
     fb->incnt = 0;
     fb->outcnt = 0;
     fb->error = NULL;
+    fb->bytes_sent = 0L;
+
+    fb->fd = -1;
+    fb->fd_in = -1;
 
     return fb;
+}
+
+/*
+ * Push some I/O file descriptors onto the stream
+ */
+void
+bpushfd(BUFF *fb, int fd_in, int fd_out)
+{
+    fb->fd = fd_out;
+    fb->fd_in = fd_in;
+}
+
+int
+bsetopt(BUFF *fb, int optname, const void *optval)
+{
+    if (optname == BO_BYTECT)
+    {
+	fb->bytes_sent = *(const long int *)optval - (long int)fb->outcnt;;
+	return 0;
+    } else
+    {
+	errno = EINVAL;
+	return -1;
+    }
+}
+
+int
+bgetopt(BUFF *fb, int optname, void *optval)
+{
+    if (optname == BO_BYTECT)
+    {
+	long int bs=fb->bytes_sent + fb->outcnt;
+	if (bs < 0L) bs = 0L;
+	*(long int *)optval = bs;
+	return 0;
+    } else
+    {
+	errno = EINVAL;
+	return -1;
+    }
 }
 
 /*
@@ -129,13 +177,13 @@ bread(BUFF *fb, void *buf, int nbyte)
 {
     int i, nrd;
 
-    if (fb->flags & B_ERROR) return -1;
+    if (fb->flags & B_RDERR) return -1;
     if (nbyte == 0) return 0;
 
     if (!(fb->flags & B_RD))
     {
 /* Unbuffered reading */
-	do i = read(fb->fd, buf, nbyte);
+	do i = read(fb->fd_in, buf, nbyte);
 	while (i == -1 && errno == EINTR);
 	if (i == -1 && errno != EAGAIN) doerror(fb, B_RD);
 	return i;
@@ -164,7 +212,7 @@ bread(BUFF *fb, void *buf, int nbyte)
     if (nbyte >= fb->bufsiz)
     {
 /* read directly into buffer */
-	do i = read(fb->fd, buf, nbyte);
+	do i = read(fb->fd_in, buf, nbyte);
 	while (i == -1 && errno == EINTR);
 	if (i == -1)
 	{
@@ -179,7 +227,7 @@ bread(BUFF *fb, void *buf, int nbyte)
     {
 /* read into hold buffer, then memcpy */
 	fb->inptr = fb->inbase;
-	do i = read(fb->fd, fb->inptr, fb->bufsiz);
+	do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
 	while (i == -1 && errno == EINTR);
 	if (i == -1)
 	{
@@ -229,7 +277,7 @@ bgets(char *buff, int n, BUFF *fb)
 	errno = EINVAL;
 	return -1;
     }
-    if (fb->flags & B_ERROR) return -1;
+    if (fb->flags & B_RDERR) return -1;
 
     ct = 0;
     i = 0;
@@ -241,7 +289,7 @@ bgets(char *buff, int n, BUFF *fb)
 	    fb->inptr = fb->inbase;
 	    fb->incnt = 0;
 	    if (fb->flags & B_EOF) break;
-	    do i = read(fb->fd, fb->inptr, fb->bufsiz);
+	    do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
 	    while (i == -1 && errno == EINTR);
 	    if (i == -1)
 	    {
@@ -304,7 +352,7 @@ bskiplf(BUFF *fb)
 	errno = EINVAL;
 	return -1;
     }
-    if (fb->flags & B_ERROR) return -1;
+    if (fb->flags & B_RDERR) return -1;
 
     for (;;)
     {
@@ -320,7 +368,7 @@ bskiplf(BUFF *fb)
 	fb->inptr = fb->inbase;
 	fb->incnt = 0;
 	if (fb->flags & B_EOF) return 0;
-	do i = read(fb->fd, fb->inptr, fb->bufsiz);
+	do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
 	while (i == -1 && errno == EINTR);
 	if (i == 0) fb->flags |= B_EOF;
 	if (i == -1 && errno != EAGAIN) doerror(fb, B_RD);
@@ -329,6 +377,32 @@ bskiplf(BUFF *fb)
     }
 }
 
+/*
+ * Emtpy the buffer after putting a single character in it
+ */
+int
+bflsbuf(int c, BUFF *fb)
+{
+    char ss[1];
+
+    ss[0] = c;
+    return bwrite(fb, ss, 1);
+}
+
+/*
+ * Fill the buffer and read a character from it
+ */
+int
+bfilbuf(BUFF *fb)
+{
+    int i;
+    char buf[1];
+
+    i = bread(fb, buf, 1);
+    if (i == 0) errno = 0;  /* no error; EOF */
+    if (i != 1) return EOF;
+    else return buf[0];
+}
 
 /*
  * Write nbyte bytes.
@@ -340,7 +414,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 {
     int i, nwr;
 
-    if (fb->flags & B_ERROR) return -1;
+    if (fb->flags & (B_WRERR|B_EOUT)) return -1;
     if (nbyte == 0) return 0;
 
     if (!(fb->flags & B_WR))
@@ -348,6 +422,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 /* unbuffered write */
 	do i = write(fb->fd, buf, nbyte);
 	while (i == -1 && errno == EINTR);
+	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
 	{
 	    i = -1;  /* return of 0 means non-blocking */
@@ -380,6 +455,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 /* the buffer must be full */
 	do i = write(fb->fd, fb->outbase, fb->bufsiz);
 	while (i == -1 && errno == EINTR);
+	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
 	{
 	    i = -1;  /* return of 0 means non-blocking */
@@ -415,6 +491,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
     {
 	do i = write(fb->fd, buf, nbyte);
 	while (i == -1 && errno == EINTR);
+	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
 	{
 	    i = -1;  /* return of 0 means non-blocking */
@@ -450,9 +527,9 @@ bflush(BUFF *fb)
 {
     int i, j;
 
-    if (!(fb->flags & B_WR)) return 0;
+    if (!(fb->flags & B_WR) || (fb->flags & B_EOUT)) return 0;
 
-    if (fb->flags & B_ERROR) return -1;
+    if (fb->flags & B_WRERR) return -1;
     
     while (fb->outcnt > 0)
     {
@@ -460,6 +537,7 @@ bflush(BUFF *fb)
 	j = fb->outcnt;
 	do i = write(fb->fd, fb->outbase, fb->outcnt);
 	while (i == -1 && errno == EINTR);
+	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
 	{
 	    errno = EAGAIN;
@@ -488,37 +566,58 @@ bflush(BUFF *fb)
 
 /*
  * Flushes and closes the file, even if an error occurred.
+ * Discards an data that was not read, or not written by bflush()
+ * Sets the EOF flag to indicate no futher data can be read,
+ * and the EOUT flag to indicate no further data can be written.
  */
 int
 bclose(BUFF *fb)
 {
-    int rc1, rc2;
+    int rc1, rc2, rc3;
 
-    if (!(fb->flags & B_WR)) return close(fb->fd);
-    rc1 = bflush(fb);
+    if (fb->flags & B_WR) rc1 = bflush(fb);
+    else rc1 = 0;
     rc2 = close(fb->fd);
+    if (fb->fd_in != fb->fd) rc3 = close(fb->fd_in);
+    else rc3 = 0;
+
+    fb->inptr = fb->inbase;
+    fb->incnt = 0;
+    fb->outcnt = 0;
+
+    fb->flags |= B_EOF | B_EOUT;
+    fb->fd = -1;
+    fb->fd_in = -1;
+
     if (rc1 != 0) return rc1;
-    else return rc2;
+    else if (rc2 != 0) return rc2;
+    else return rc3;
 }
 
+/*
+ * returns the number of bytes written or -1 on error
+ */
 int
 bputs(const char *x, BUFF *fb)
 {
     int i, j=strlen(x);
     i = bwrite(fb, x, j);
     if (i != j) return -1;
-    else return 0;
+    else return j;
 }
 
+/*
+ * returns the number of bytes written or -1 on error
+ */
 int
 bvputs(BUFF *fb, ...)
 {
-    int i, j;
+    int i, j, k;
     va_list v;
     const char *x;
 
     va_start(v, fb);
-    for (;;)
+    for (k=0;;)
     {
 	x = va_arg(v, const char *);
 	if (x == NULL) break;
@@ -529,11 +628,12 @@ bvputs(BUFF *fb, ...)
 	    va_end(v);
 	    return -1;
 	}
+	k += i;
     }
 
     va_end(v);
 
-    return 0;
+    return k;
 }
 
 void

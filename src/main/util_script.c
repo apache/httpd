@@ -248,16 +248,19 @@ int scan_script_header(request_rec *r, FILE *f)
 }
 
 void send_size(size_t size, request_rec *r) {
+    char ss[20];
+
     if(size == -1) 
-        rprintf (r, "    -");
+        strcpy(ss, "    -");
     else if(!size) 
-        rprintf (r, "   0K");
+        strcpy(ss, "   0K");
     else if(size < 1024) 
-        rprintf(r, "   1K");
+        strcpy(ss, "   1K");
     else if(size < 1048576)
-        rprintf(r, "%4dK", size / 1024);
+        sprintf(ss, "%4dK", size / 1024);
     else
-        rprintf(r, "%4dM", size / 1048576);
+        sprintf(ss, "%4dM", size / 1048576);
+    rputs(ss, r);
 }
 
 #ifdef __EMX__

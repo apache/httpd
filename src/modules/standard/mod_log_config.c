@@ -180,7 +180,17 @@ char *log_status (request_rec *r, char *a)
 { return pfmt(r->pool, r->status); }
 
 char *log_bytes_sent (request_rec *r, char *a)
-{ return pfmt (r->pool, r->bytes_sent); }
+{
+    if (!r->sent_bodyct) return "-";
+    else
+    {
+	long int bs;
+	char dummy[40];
+	bgetopt(r, BO_BYTECT, &bs);
+	sprintf(dummy, "%ld", bs);
+	return pstrdup(r->pool, dummy);
+    }
+}
 
 char *log_header_in (request_rec *r, char *a)
 { return table_get (r->headers_in, a); }

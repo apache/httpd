@@ -50,30 +50,56 @@
  *
  */
 
-#define B_RD    (1)
-#define B_WR    (2)
-#define B_RDWR  (3)
-#define B_EOF   (4)
-#define B_ERROR (8)
+/* Reading is buffered */
+#define B_RD     (1)
+/* Writing is buffered */
+#define B_WR     (2)
+#define B_RDWR   (3)
+/* At end of file, or closed stream; no further input allowed */
+#define B_EOF    (4)
+/* No further output possible */
+#define B_EOUT   (8)
+/* A read error has occurred */
+#define B_RDERR (16)
+/* A write error has occurred */
+#define B_WRERR (32)
+#define B_ERROR (48)
 
 typedef struct buff_struct BUFF;
 
 struct buff_struct
 {
-    int fd;                /* the file descriptor */
     int flags;             /* flags */
     unsigned char *inptr;  /* pointer to next location to read */
-    int incnt;             /* number of bytes left to read from input buffer */
+    int incnt;             /* number of bytes left to read from input buffer;
+			    * always 0 if had a read error  */
     int outcnt;            /* number of byte put in output buffer */
     unsigned char *inbase;
     unsigned char *outbase;
     int bufsiz;
     void (*error)(BUFF *fb, int op, void *data);
     void *error_data;
+    long int bytes_sent;   /* number of bytes actually written */
 /* could also put pointers to the basic I/O routines here */
+    int fd;                /* the file descriptor */
+    int fd_in;             /* input file descriptor, if different */
 };
 
-extern BUFF *bopen(pool *p, int fd, int flags);
+/* Options to bset/getopt */
+#define BO_BYTECT (1)
+
+/* Stream creation and modification */
+extern BUFF *bcreate(pool *p, int flags);
+extern void bpushfd(BUFF *fb, int fd_in, int fd_out);
+extern int bsetopt(BUFF *fb, int optname, const void *optval);
+extern int bgetopt(BUFF *fb, int optname, void *optval);
+extern int bclose(BUFF *fb);
+
+/* Error handling */
+extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
+		     void *data);
+
+/* I/O */
 extern int bread(BUFF *fb, void *buf, int nbyte);
 extern int bgets(char *s, int n, BUFF *fb);
 extern int bskiplf(BUFF *fb);
@@ -81,6 +107,14 @@ extern int bwrite(BUFF *fb, const void *buf, int nbyte);
 extern int bflush(BUFF *fb);
 extern int bputs(const char *x, BUFF *fb);
 extern int bvputs(BUFF *fb, ...);
-extern int bclose(BUFF *fb);
-extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
-		     void *data);
+
+/* Internal routines */
+extern int bflsbuf(int c, BUFF *fb);
+extern int bfilbuf(BUFF *fb);
+
+#define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
+		    ((fb)->incnt--, *((fb)->inptr++)) )
+
+#define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
+		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
+		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))

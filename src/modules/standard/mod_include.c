@@ -355,7 +355,7 @@ int include_cgi(char *s, request_rec *r)
     if (run_sub_req (rr) == REDIRECT) {
         char *location = table_get (rr->headers_out, "Location");
 	location = escape_html(rr->pool, location);
-	rprintf(r,"<A HREF=\"%s\">%s</A>",location,location);
+	rvputs(r,"<A HREF=\"", location, "\">", location, "</A>", NULL);
     }
     
     destroy_sub_req (rr);
@@ -408,7 +408,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 		    
             if (error_fmt) {
                 log_printf(r->server, error_fmt, tag_val, r->filename);
-                rprintf(r,"%s",error);
+                rputs(error, r);
             }            
 
 	    if (rr != NULL) destroy_sub_req (rr);
@@ -418,7 +418,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
         else {
             log_printf(r->server, "unknown parameter %s to tag include in %s",
 		       tag, r->filename);
-            rprintf(r,"%s",error);
+            rputs(error, r);
         }
     }
 }
@@ -520,7 +520,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
             if(include_cmd(tag_val, r) == -1) {
                 log_printf(r->server, "failed command exec %s in %s",
 			   tag_val, file);
-                rprintf(r,"%s",error);
+                rputs(error, r);
             }
             /* just in case some stooge changed directories */
             chdir_file(r->filename);
@@ -528,7 +528,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         else if(!strcmp(tag,"cgi")) {
             if(include_cgi(tag_val, r) == -1) {
                 log_printf(r->server, "invalid CGI ref %s in %s",tag_val,file);
-                rprintf(r,"%s",error);
+                rputs(error, r);
             }
             /* grumble groan */
             chdir_file(r->filename);
@@ -538,7 +538,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         else {
             log_printf(r->server, "unknown parameter %s to tag exec in %s",
 		       tag, file);
-            rprintf(r, "%s",error);
+            rputs(error, r);
         }
     }
 
@@ -554,14 +554,14 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
         if(!strcmp(tag,"var")) {
 	    char *val = table_get (r->subprocess_env, tag_val);
 
-	    if (val) rprintf (r, "%s", val);
-	    else rprintf (r, "(none)");
+	    if (val) rputs(val, r);
+	    else rputs("(none)", r);
         } else if(!strcmp(tag,"done"))
             return 0;
         else {
             log_printf(r->server, "unknown parameter %s to tag echo in %s",
 		    tag, r->filename);
-            rprintf (r, "%s", error);
+            rputs(error, r);
         }
     }
 }
@@ -596,7 +596,7 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
         else {
             log_printf(r->server, "unknown parameter %s to tag config in %s",
                     tag, r->filename);
-            rprintf (r,"%s",error);
+            rputs(error, r);
         }
     }
 }
@@ -617,7 +617,7 @@ int find_file(request_rec *r, char *directive, char *tag,
             log_printf(r->server,
                     "unable to get information about %s in parsed file %s",
                     to_send, r->filename);
-            rprintf (r,"%s",error);
+            rputs(error, r);
             return -1;
         }
         return 0;
@@ -633,7 +633,7 @@ int find_file(request_rec *r, char *directive, char *tag,
             log_printf(r->server,
                     "unable to get information about %s in parsed file %s",
                     tag_val, r->filename);
-            rprintf(r,"%s",error);
+            rputs(error, r);
 	    destroy_sub_req (rr);
             return -1;
         }
@@ -641,7 +641,7 @@ int find_file(request_rec *r, char *directive, char *tag,
     else {
         log_printf(r->server, "unknown parameter %s to tag %s in %s",
                 tag, directive, r->filename);
-        rprintf(r,"%s",error);
+	rputs(error, r);
         return -1;
     }
 }
@@ -693,7 +693,7 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
         else if(!strcmp(tag,"done"))
             return 0;
         else if(!find_file(r,"flastmod",tag,tag_val,&finfo,error))
-            rprintf (r, "%s", ht_time(r->pool, finfo.st_mtime, tf, 0));
+            rputs(ht_time(r->pool, finfo.st_mtime, tf, 0), r);
     }
 }    
 
@@ -725,7 +725,7 @@ void send_parsed_content(FILE *f, request_rec *r)
                     log_printf(r->server,
 			       "httpd: exec used but not allowed in %s",
 			       r->filename);
-                    rprintf(r,"%s",error);
+                    rputs(error, r);
                     ret = find_string(f,ENDING_SEQUENCE,NULL);
                 } else 
                     ret=handle_exec(f, r, error);
@@ -744,7 +744,7 @@ void send_parsed_content(FILE *f, request_rec *r)
                 log_printf(r->server, 
 			   "httpd: unknown directive %s in parsed doc %s",
 			   directive, r->filename);
-                rprintf (r,"%s",error);
+                rputs(error, r);
                 ret=find_string(f,ENDING_SEQUENCE,NULL);
             }
             if(ret) {

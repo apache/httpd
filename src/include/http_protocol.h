@@ -104,8 +104,12 @@ long send_fd(FILE *f, request_rec *r);
  * definitions of the macros would get a whole lot hairier.
  */
      
+#if 0
 long rprintf (request_rec *r, char *s, ...);     
+#endif
 int rputc (int c, request_rec *r);     
+extern int rputs(const char *str, request_rec *r);
+extern int rvputs(request_rec *r, ...);
      
 /*
  * Index used in custom_responses array for a specific error code

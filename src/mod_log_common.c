@@ -180,8 +180,13 @@ int common_log_transaction(request_rec *orig)
     if (r->status != -1) sprintf(status,"%d ", r->status);
     else                 strcpy(status, "- ");
 
-    if(r->bytes_sent != -1)
-	sprintf(&status[strlen(status)], "%d\n", r->bytes_sent);
+    if (r->sent_bodyct)
+    {
+	long int bs;
+
+	bgetopt(r->connection->client, BO_BYTECT, &bs);
+	sprintf(&status[strlen(status)], "%ld\n", bs);
+    }
     else
         strcat(status, "-\n");
 

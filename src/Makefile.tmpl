@@ -36,7 +36,7 @@ dist.tar:
 
 #Dependencies
 #Core code
-$(OBJS): Makefile httpd.h alloc.h conf.h
+$(OBJS): Makefile httpd.h alloc.h buff.h conf.h
 
 http_config.o http_core.o http_main.o util.o: http_conf_globals.h
 http_config.o http_core.o http_main.o: http_config.h http_log.h
@@ -61,12 +61,10 @@ mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
 mod_dir.o: http_protocol.h
 mod_imap.o mod_include.o: http_protocol.h
 mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
-mod_proxy.o: buff.h
 mod_proxy.o: md5.h
 mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
 
 #Utils
-buff.o: buff.h
 md5c.o: md5.h
 util.o: http_conf_globals.h
 util_script.o: http_core.h http_main.h http_protocol.h util_script.h

@@ -211,17 +211,14 @@ int set_last_modified(request_rec *r, time_t mtime)
  * Finally, real protocol stuff.
  */
 
-char *getline (char *s, int n, FILE *in)
+static char *
+getline(char *s, int n, BUFF *in)
 {
-    char *retval = fgets (s, n, in);
-    char *cp;
+    int retval = bgets (s, n, in);
 
-    if (retval == NULL) return NULL;
+    if (retval == -1) return NULL;
 
-    cp = s + strlen(s) - 1;
-
-    while (cp >= s && (*cp == '\015' || *cp == '\012'))
-        *cp-- = '\0';
+    if (retval > 0 && s[retval-1] == '\n') s[retval-1] = '\0';
 
     return s;
 }
@@ -264,7 +261,7 @@ int read_request_line (request_rec *r)
     conn_rec *conn = r->connection;
     
     l[0] = '\0';
-    if(!getline(l, HUGE_STRING_LEN, conn->request_in))
+    if(!getline(l, HUGE_STRING_LEN, conn->client))
         return 0;
     if(!l[0]) 
         return 0;
@@ -285,7 +282,7 @@ void get_mime_headers(request_rec *r)
     char *t;
     conn_rec *c = r->connection;
 
-    while(getline(w, MAX_STRING_LEN-1, c->request_in)) {
+    while(getline(w, MAX_STRING_LEN-1, c->client)) {
         if(!w[0]) 
             return;
         if(!(t = strchr(w,':')))
@@ -320,7 +317,7 @@ request_rec *read_request (conn_rec *conn)
     r->request_config = create_request_config (r->pool);
     r->per_dir_config = r->server->lookup_defaults; /* For now. */
 
-    r->bytes_sent = -1;
+    r->sent_bodyct = 0; /* bytect isn't for body */
     
     r->status = 200;		/* Until further notice.
 				 * Only changed by die(), or (bletch!)
@@ -385,7 +382,6 @@ void set_sub_req_protocol (request_rec *rnew, request_rec *r)
 
 void finalize_sub_req_protocol (request_rec *sub)
 {
-    sub->main->bytes_sent += sub->bytes_sent;
 } 
 
 /* Support for the Basic authentication protocol.  
@@ -488,16 +484,16 @@ int index_of_response(int err_no) {
 
 void basic_http_header (request_rec *r)
 {
-    FILE *fd = r->connection->client;
+    BUFF *fd = r->connection->client;
     
     if (r->assbackwards) return;
     
     if (!r->status_line)
         r->status_line = status_lines[index_of_response(r->status)];
     
-    fprintf(fd,"%s %s\015\012", SERVER_PROTOCOL, r->status_line);
-    fprintf(fd,"Date: %s\015\012", gm_timestr_822 (r->pool, time(NULL)));
-    fprintf(fd,"Server: %s\015\012",SERVER_VERSION);
+    bvputs(fd, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
+    bvputs(fd,"Date: ",gm_timestr_822 (r->pool, time(NULL)), "\015\012", NULL);
+    bvputs(fd,"Server: ", SERVER_VERSION, "\015\012", NULL);
 }
 
 char *nuke_mime_parms (pool *p, char *content_type)
@@ -528,7 +524,8 @@ char *nuke_mime_parms (pool *p, char *content_type)
 void send_http_header(request_rec *r)
 {
     conn_rec *c = r->connection;
-    FILE *fd = c->client;
+    BUFF *fd = c->client;
+    const long int zero=0L;
     array_header *hdrs_arr;
     table_entry *hdrs;
     int i;
@@ -538,7 +535,8 @@ void send_http_header(request_rec *r)
     char *default_type = dir_conf->default_type;
   
     if (r->assbackwards) {
-	r->bytes_sent = 0;
+	bsetopt(fd, BO_BYTECT, &zero);
+	r->sent_bodyct = 1;
 	return;
     }
     
@@ -547,41 +545,42 @@ void send_http_header(request_rec *r)
     set_keepalive (r);
     
     if (r->content_type)
-        fprintf (fd, "Content-type: %s\015\012",
-		 nuke_mime_parms (r->pool, r->content_type));
+        bvputs(fd, "Content-type: ", 
+		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
     else
-        fprintf (fd, "Content-type: %s\015\012", default_type);
+        bvputs(fd, "Content-type: ", default_type, "\015\012", NULL);
     
     if (r->content_encoding)
-        fprintf (fd, "Content-encoding: %s\015\012", r->content_encoding);
+        bvputs(fd,"Content-encoding: ", r->content_encoding, "\015\012", NULL);
     
     if (r->content_language)
-        fprintf (fd, "Content-language: %s\015\012", r->content_language);
+        bvputs(fd,"Content-language: ", r->content_language, "\015\012", NULL);
     
     hdrs_arr = table_elts(r->headers_out);
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) continue;
-	fprintf (fd, "%s: %s\015\012", hdrs[i].key, hdrs[i].val);
+	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
     }
 
     hdrs_arr = table_elts(r->err_headers_out);
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) continue;
-	fprintf (fd, "%s: %s\015\012", hdrs[i].key, hdrs[i].val);
+	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
     }
 
-    fputs("\015\012",fd);
+    bputs("\015\012",fd);
 
-    fflush(r->connection->client);
+    bflush(r->connection->client);  /* only if kept-alive??? */
 
-    r->bytes_sent = 0;		/* Whatever follows is real body stuff... */
+    bsetopt(fd, BO_BYTECT, &zero);
+    r->sent_bodyct = 1;		/* Whatever follows is real body stuff... */
 }
 
 long read_client_block (request_rec *r, char *buffer, int bufsiz)
 {
-    return fread (buffer, sizeof(char), bufsiz, r->connection->request_in);
+    return bread(r->connection->client, buffer, bufsiz);
 }
 
 long send_fd(FILE *f, request_rec *r)
@@ -601,18 +600,17 @@ long send_fd(FILE *f, request_rec *r)
             break;
         }
         o=0;
-        if (r->bytes_sent != -1) r->bytes_sent += n;
 	total_bytes_sent += n;
 	
         while(n && !r->connection->aborted) {
-            w=fwrite(&buf[o],sizeof(char),n,c->client);
+            w=bwrite(c->client, &buf[o], n);
 	    if (w)
 	        reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
         }
     }
-    fflush(c->client);
+    bflush(c->client);
     
     return total_bytes_sent;
 }
@@ -620,24 +618,44 @@ long send_fd(FILE *f, request_rec *r)
 int rputc (int c, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
-    putc (c, r->connection->client);
-    ++r->bytes_sent;
+    bputc(c, r->connection->client);
     return c;
 }
 
-long rprintf (request_rec *r, char *fmt, ...)
+int
+rputs(const char *str, request_rec *r)
+{
+    if (r->connection->aborted) return EOF;
+    return bputs(str, r->connection->client);
+}
+
+int
+rvputs(request_rec *r, ...)
 {
     va_list args;
-    int retval;
+    int i, j, k;
+    const char *x;
+    BUFF *fb=r->connection->client;
     
     if (r->connection->aborted) return EOF;
     
-    va_start (args, fmt);
-    retval = vfprintf (r->connection->client, fmt, args);
-    va_end (args);
+    va_start (args, r);
+    for (k=0;;)
+    {
+	x = va_arg(args, const char *);
+	if (x == NULL) break;
+	j = strlen(x);
+	i = bwrite(fb, x, j);
+	if (i != j)
+	{
+	    va_end(v);
+	    return -1;
+	}
+	k += i;
+    }
+    va_end(v);
 
-    r->bytes_sent += retval;
-    return retval;
+    return k;
 }
 
 void send_error_response (request_rec *r, int recursive_error)
@@ -662,89 +680,89 @@ void send_error_response (request_rec *r, int recursive_error)
 	
 	if (status == USE_LOCAL_COPY) {
 	    if (set_keepalive(r))
-	      fprintf(c->client, "Connection: Keep-Alive\015\012");
-	    fprintf (c->client, "\015\012");
+		bputs("Connection: Keep-Alive\015\012", c->client);
+	    bputs("\015\012", c->client);
 	    return;
 	}
 	
 	if (status == REDIRECT)
-	    fprintf (c->client, "Location: %s\015\012", location);
+	    bvputs(c->client, "Location: ", location, "\015\012", NULL);
 	
 	for (i = 0; i < err_hdrs_arr->nelts; ++i) {
 	    if (!err_hdrs[i].key) continue;
-	    fprintf (c->client, "%s: %s\015\012",
-		     err_hdrs[i].key, err_hdrs[i].val);
+	    bvputs(c->client, err_hdrs[i].key, ": ", err_hdrs[i].val,
+		   "\015\012", NULL);
 	}
 
-	fprintf(c->client, "Content-type: text/html\015\012\015\012");
+	bputs("Content-type: text/html\015\012\015\012", c->client);
     }
 
     if (r->header_only) return;
     
     if ((custom_response = response_code_string (r, idx)))
-        fputs (custom_response, c->client);
+        bputs(custom_response, c->client);
     else {
 	char *title = response_titles[idx];
-	FILE *fd = c->client;
+	BUFF *fd = c->client;
 	
-        fprintf(fd,"<HEAD><TITLE>%s</TITLE></HEAD>%c",title,LF);
-	fprintf(fd,"<BODY><H1>%s</H1>%c",title,LF);
+        bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", title,
+	       "</H1>\n", NULL);
 	
         switch (r->status) {
 	case REDIRECT:
-	    fprintf (fd,"The document has moved <A HREF=\"%s\">here</A>.<P>\n",
-		     escape_html(r->pool, location));
+	    bvputs(fd, "The document has moved <A HREF=\"",
+		    escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
 	    break;
 	case AUTH_REQUIRED:
-	    fprintf (fd, "This server could not verify that you%c", LF);
-	    fprintf (fd, "are authorized to access the document you%c", LF);
-	    fprintf (fd, "requested.  Either you supplied the wrong%c", LF);
-	    fprintf (fd, "credentials (e.g., bad password), or your%c", LF);
-	    fprintf (fd, "browser doesn't understand how to supply%c", LF);
-	    fprintf (fd, "the credentials required.<P>%c", LF);
+	    bputs("This server could not verify that you\n", fd);
+	    bputs("are authorized to access the document you\n", fd);
+	    bputs("requested.  Either you supplied the wrong\n", fd);
+	    bputs("credentials (e.g., bad password), or your\n", fd);
+	    bputs("browser doesn't understand how to supply\n", fd);
+	    bputs("the credentials required.<P>\n", fd);
 	    break;
 	case BAD_REQUEST:
-	    fprintf (fd, "Your browser sent a query that%c", LF);
-	    fprintf (fd, "this server could not understand.<P>%c", LF);
+	    bputs("Your browser sent a query that\n", fd);
+	    bputs("this server could not understand.<P>\n", fd);
 	    break;
 	case FORBIDDEN:
-	    fprintf (fd, "You don't have permission to access %s\n",
-		     escape_html(r->pool, r->uri));
-	    fprintf (fd, "on this server.<P>%c", LF);
+	    bvputs(fd, "You don't have permission to access ",
+		     escape_html(r->pool, r->uri), "\non this server.<P>\n",
+		   NULL);
 	    break;
 	case NOT_FOUND:
-	    fprintf (fd,
-		     "The requested URL %s was not found on this server.<P>\n",
-		     escape_html(r->pool, r->uri));
+	     bvputs(fd, "The requested URL ", escape_html(r->pool, r->uri),
+		    " was not found on this server.<P>\n", NULL);
 	    break;
 	case SERVER_ERROR:
-	    fprintf(fd,"The server encountered an internal error or%c",LF);
-	    fprintf(fd,"misconfiguration and was unable to complete%c",LF);
-	    fprintf(fd,"your request.<P>%c",LF);
-	    fprintf(fd,"Please contact the server administrator,%c",LF);
-	    fprintf(fd," %s ", escape_html(r->pool, r->server->server_admin));
-	    fprintf(fd,"and inform them of the time the error occurred,%c",LF);
-	    fprintf(fd,"and anything you might have done that may have%c",LF);
-	    fprintf(fd,"caused the error.<P>%c",LF);
+	    bputs("The server encountered an internal error or\n", fd);
+	    bputs("misconfiguration and was unable to complete\n", fd);
+	    bputs("your request.<P>\n", fd);
+	    bputs("Please contact the server administrator,\n ", fd);
+	    bputs(escape_html(r->pool, r->server->server_admin), fd);
+	    bputs(" and inform them of the time the error occurred,\n", fd);
+	    bputs("and anything you might have done that may have\n", fd);
+	    bputs("caused the error.<P>\n", fd);
 	    break;
 	case NOT_IMPLEMENTED:
-	    fprintf(fd,"%s to %s not supported.<P>\n",
-		    escape_html(r->pool, r->method),
-		    escape_html(r->pool, r->uri));
+	    bvputs(fd, escape_html(r->pool, r->method), " to ",
+		   escape_html(r->pool, r->uri), " not supported.<P>\n", NULL);
 	    break;
 	case BAD_GATEWAY:
-	    fprintf(fd,"The proxy server received an invalid\015\012");
-	    fprintf(fd,"response from an upstream server.<P>\015\012");
+	    bputs("The proxy server received an invalid\015\012", fd);
+	    bputs("response from an upstream server.<P>\015\012", fd);
 	    break;
 	}
 
         if (recursive_error) {
-	    fprintf (fd, "Additionally, an error of type %d was encountered%c",
-		     recursive_error, LF);
-	    fprintf (fd, "while trying to use an ErrorDocument to%c", LF);
-	    fprintf (fd, "handle the request.%c", LF);
+	    char x[80];
+	    sprintf (x, "Additionally, an error of type %d was encountered\n",
+		     recursive_error);
+	    bputs(x, fd);
+	    bputs("while trying to use an ErrorDocument to\n", fd);
+	    bputs("handle the request.\n", fd);
 	}
-	fprintf (fd, "</BODY>%c", LF);
+	bputs("</BODY>\n", fd);
     }
         
 }
@@ -756,6 +774,6 @@ void send_error_response (request_rec *r, int recursive_error)
 
 void client_to_stdout (conn_rec *c)
 {
-  fflush (c->client);
-  dup2 (fileno (c->client), STDOUT_FILENO);
+    bflush(c->client);
+    dup2(c->client->fd, STDOUT_FILENO);
 }

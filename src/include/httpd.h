@@ -60,6 +60,7 @@
 
 #include "conf.h"
 #include "alloc.h"
+#include "buff.h"
 
 /* ----------------------------- config dir ------------------------------ */
 
@@ -325,8 +326,7 @@ struct request_rec {
   char *method;			/* GET, HEAD, POST, etc. */
   int method_number;		/* M_GET, M_POST, etc. */
 
-  /* int header_bytes_sent; */
-  int bytes_sent;		/* body --- not headers */
+  int sent_bodyct;		/* byte count in stream is for body */
   
   /* MIME header environments, in and out.  Also, an array containing
    * environment variables to be passed to subprocesses, so people can
@@ -391,8 +391,7 @@ struct conn_rec {
   
   /* Information about the connection itself */
   
-  FILE *client;			/* Connetion to the guy */
-  FILE *request_in;		/* Connection from the guy */
+  BUFF *client;			/* Connetion to the guy */
   int aborted;			/* Are we still talking? */
   
   /* Who is the client? */

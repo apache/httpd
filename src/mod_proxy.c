@@ -56,7 +56,6 @@
 #include "http_main.h"
 #include "http_protocol.h"
 
-#include "buff.h"
 #include "md5.h"
 
 #include <utime.h>
@@ -823,19 +822,20 @@ send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 	}
 	if (n == 0) break; /* EOF */
         o=0;
-        if (r->bytes_sent != -1) r->bytes_sent += n;
 	total_bytes_sent += n;
 
 	if (f2 != NULL)
 	    if (bwrite(f2, buf, n) != n) f2 = cache_error(c);
 	
         while(n && !r->connection->aborted) {
-            w=fwrite(&buf[o],sizeof(char),n,con->client);
+            w = bwrite(con->client, &buf[o], n);
+	    if (w > 0)
+	        reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
         }
     }
-    fflush(con->client);
+    bflush(con->client);
     
     return total_bytes_sent;
 }
@@ -905,25 +905,22 @@ del_header(array_header *hdrs_arr, const char *field)
  * Sends response line and headers
  */
 static void
-send_headers(FILE *fp, const char *respline, array_header *hdrs_arr)
+send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr)
 {
     struct hdr_entry *hdrs;
     int i;
 
     hdrs = (struct hdr_entry *)hdrs_arr->elts;
 
-    fputs(respline, fp);
-    fputs("\015\012", fp);
+    bputs(respline, fp);
+    bputs("\015\012", fp);
     for (i = 0; i < hdrs_arr->nelts; i++)
     {
         if (hdrs[i].field == NULL) continue;
-	fputs(hdrs[i].field, fp);
-	fputs(": ", fp);
-	fputs(hdrs[i].value, fp);
-	fputs("\015\012", fp);
+	bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, "\015\012", NULL);
     }
 
-    fputs("\015\012", fp);
+    bputs("\015\012", fp);
 }
 
 
@@ -1491,6 +1488,7 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
     time_t now;
     BUFF *cachefp;
     int cfd, i;
+    const long int zero=0L;
 
     c = pcalloc(r->pool, sizeof(struct cache_req));
     *cr = c;
@@ -1527,7 +1525,8 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	if (cfd != -1)
 	{
 	    note_cleanups_for_fd(r->pool, cfd);
-	    cachefp = bopen(r->pool, cfd, B_RD | B_WR);
+	    cachefp = bcreate(r->pool, B_RD | B_WR);
+	    bpushfd(cachefp, cfd, cfd);
 	} else if (errno != ENOENT)
 	    log_uerror("open", c->filename, "proxy: error opening cache file",
 		       r->server);
@@ -1577,7 +1576,8 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	soft_timeout ("send", r);
 	if (!r->assbackwards)
 	    send_headers(r->connection->client, c->resp_line,  c->hdrs);
-	r->bytes_sent = 0;
+	bsetopt(r->connection->client, BO_BYTECT, &zero);
+	r->sent_bodyct = 1;
 	if (!r->header_only) send_fb (cachefp, r, NULL, NULL);
 	pclosef(r->pool, cachefp->fd);
 	return OK;
@@ -1634,6 +1634,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
         (proxy_server_conf *)get_module_config(sconf, &proxy_module);
+    const long int zero=0L;
 
     c->tempfile = NULL;
 
@@ -1789,7 +1790,8 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    soft_timeout ("send", r);
 	    if (!r->assbackwards)
 		send_headers(r->connection->client, c->resp_line,  c->hdrs);
-	    r->bytes_sent = 0;
+	    bsetopt(r->connection->client, BO_BYTECT, &zero);
+	    r->sent_bodyct = 1;
 	    if (!r->header_only) send_fb (c->fp, r, NULL, NULL);
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
@@ -1834,7 +1836,8 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 	return DECLINED;
     }
     note_cleanups_for_fd(r->pool, i);
-    c->fp = bopen(r->pool, i, B_WR);
+    c->fp = bcreate(r->pool, B_WR);
+    bpushfd(c->fp, -1, i);
 
     if (bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1)
     {
@@ -1851,25 +1854,28 @@ static void
 cache_tidy(struct cache_req *c)
 {
     server_rec *s=c->req->server;
+    long int bc;
 
     if (c->fp == NULL) return;
+
+    bgetopt(c->req->connection->client, BO_BYTECT, &bc);
 
     if (c->len != -1)
     {
 /* file lengths don't match; don't cache it */
-	if (c->req->bytes_sent != c->len)
+	if (bc != c->len)
 	{
 	    pclosef(c->req->pool, c->fp->fd);  /* no need to flush */
 	    unlink(c->tempfile);
 	    return;
 	}
-    } else if (c->req->bytes_sent != -1)
+    } else
     {
 /* update content-length of file */
 	char buff[9];
 	off_t curpos;
 
-	c->len = c->req->bytes_sent;
+	c->len = bc;
 	bflush(c->fp);
 	sec2hex(c->len, buff);
 	curpos = lseek(c->fp->fd, 36, SEEK_SET);
@@ -1991,10 +1997,11 @@ proxyerror(request_rec *r, const char *message)
     r->content_type = "text/html";
 
     send_http_header(r);
-    rprintf(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\015\012\
+    rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\015\012\
 <html><head><title>Proxy Error</title><head>\015\012<body><h1>Proxy Error\
 </h1>\015\012The proxy server could not handle this request.\
-\015\012<p>\015\012Reason: <b>%s</b>\015\012</body><html>\015\012", message);
+\015\012<p>\015\012Reason: <b>", message, "</b>\015\012</body><html>\015\012",
+	   NULL);
     return OK;
 }
 
@@ -2102,6 +2109,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     BUFF *f, *cache, *data;
     pool *pool=r->pool;
     const int one=1;
+    const long int zero=0L;
 
 /* we only support GET and HEAD */
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
@@ -2174,7 +2182,8 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = doconnect(sock, &server, r);
     if (i == -1) return proxyerror(r, "Could not connect to remote machine");
 
-    f = bopen(pool, sock, B_RDWR);
+    f = bcreate(pool, B_RDWR);
+    bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
 /* possible results: 120, 220, 421 */
@@ -2346,14 +2355,15 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	return BAD_GATEWAY;
     }
     note_cleanups_for_fd(pool, csd);
-    data = bopen(pool, csd, B_RD);
+    data = bcreate(pool, B_RD);
+    bpushfd(data, csd, -1);
     kill_timeout(r);
 
     hard_timeout ("proxy receive", r);
 /* send response */
 /* write status line */
     if (!r->assbackwards)
-	rprintf(r, "%s %s\015\012", SERVER_PROTOCOL, r->status_line);
+	rvputs(r, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
     if (cache != NULL)
 	if (bvputs(cache, SERVER_PROTOCOL, " ", r->status_line, "\015\012",
 		   NULL) == -1)
@@ -2367,18 +2377,19 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (hdr[i].field == NULL || hdr[i].value == NULL ||
 	    hdr[i].value[0] == '\0') continue;
 	if (!r->assbackwards)
-	    rprintf(r, "%s: %s\015\012", hdr[i].field, hdr[i].value);
+	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
 	if (cache != NULL)
 	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
 		       NULL) == -1)
 		cache = cache_error(c);
     }
 
-    if (!r->assbackwards) rprintf(r, "\015\012");
+    if (!r->assbackwards) rputs("\015\012", r);
     if (cache != NULL)
 	if (bputs("\015\012", cache) == -1) cache = cache_error(c);
 
-    r->bytes_sent = 0;
+    bsetopt(r->connection->client, BO_BYTECT, &zero);
+    r->sent_bodyct = 1;
 /* send body */
     if (!r->header_only)
     {
@@ -2433,6 +2444,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
     struct hdr_entry *hdr;
     char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
     pool *pool=r->pool;
+    const long int zero=0L;
 
     memset(&server, '\0', sizeof(server));
     server.sin_family = AF_INET;
@@ -2488,7 +2500,8 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	else return proxyerror(r, "Could not connect to remote machine");
     }
 
-    f = bopen(pool, sock, B_RD | B_WR);
+    f = bcreate(pool, B_RDWR);
+    bpushfd(f, sock, sock);
 
     hard_timeout ("proxy send", r);
     bvputs(f, r->method, " ", url, " HTTP/1.0\015\012", NULL);
@@ -2601,7 +2614,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* write status line */
     if (!r->assbackwards)
-	rprintf(r, "HTTP/1.0 %s\015\012", r->status_line);
+        rvputs(r, "HTTP/1.0 ", r->status_line, "\015\012", NULL);
     if (cache != NULL)
 	if (bvputs(cache, outprotocol, " ", r->status_line, "\015\012", NULL)
 	    == -1)
@@ -2614,26 +2627,26 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (hdr[i].field == NULL || hdr[i].value == NULL ||
 	    hdr[i].value[0] == '\0') continue;
 	if (!r->assbackwards)
-	    rprintf(r, "%s: %s\015\012", hdr[i].field, hdr[i].value);
+	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
 	if (cache != NULL)
 	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
 		       NULL) == -1)
 		cache = cache_error(c);
     }
 
-    if (!r->assbackwards) rprintf(r, "\015\012");
+    if (!r->assbackwards) rputs("\015\012", r);
     if (cache != NULL)
 	if (bputs("\015\012", cache) == -1) cache = cache_error(c);
 
+    bsetopt(r->connection->client, BO_BYTECT, &zero);
+    r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 respose? If so, send the extra data */
     if (strcmp(inprotocol, "HTTP/0.9") == 0)
     {
-	fwrite(buffer, 1, len, r->connection->client);
+	bwrite(r->connection->client, buffer, len);
 	if (cache != NULL)
 	    if (bwrite(f, buffer, len) != len) cache = cache_error(c);
-	r->bytes_sent = len;
-    } else
-	r->bytes_sent = 0;
+    }
 
 /* send body */
 /* if header only, then cache will be NULL */

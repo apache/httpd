@@ -961,7 +961,7 @@ void get_remote_host(conn_rec *conn)
 
     len = sizeof(struct sockaddr);
 
-    if ((getpeername(fileno(conn->client), &addr, &len)) < 0) {
+    if ((getpeername(conn->client->fd, &addr, &len)) < 0) {
 	conn->remote_name = conn->remote_host = NO_SUCH_HOST_NAME;
 	conn->remote_ip = NO_SUCH_HOST_ADDR;
         return;
