@@ -61,7 +61,6 @@
 #include "http_core.h"
 #include "http_request.h"
 #include "apr_strings.h"
-#include "suexec.h"
 #include "unixd.h"
 
 module MODULE_VAR_EXPORT suexec_module;

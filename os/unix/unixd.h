@@ -64,6 +64,20 @@
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
+#include "ap_hooks.h"
+#include "apr_thread_proc.h"
+
+#include <pwd.h>
+#include <grp.h>
+#include <sys/types.h>
+
+typedef struct {
+    uid_t uid;
+    gid_t gid;
+} ap_unix_identity_t;
+
+AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r)
+)
 
 /* common stuff that unix MPMs will want */
 

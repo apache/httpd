@@ -101,7 +101,7 @@
 #include "http_config.h"
 #include "http_request.h"
 #ifdef HAVE_UNIX_SUEXEC
-#include "suexec.h"        /* Contains the suexec_identity hook used on Unix */
+#include "unixd.h"        /* Contains the suexec_identity hook used on Unix */
 #endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
