@@ -156,17 +156,10 @@ static int set_group_privs(void)
 
 int beosd_setup_child(void)
 {
-    if (set_group_privs()) {
-	return -1;
-    }
+    /* TODO: revisit the whole issue of users/groups for BeOS as
+     * R4.5.2 and below doesn't really have much concept of them.
+     */
 
-    /* Only try to switch if we're running as root */
-    if (!geteuid() && (
-	setuid(beosd_config.user_id) == -1)) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-		    "setuid: unable to change uid");
-	return -1;
-    }
     return 0;
 }
 
