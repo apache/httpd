@@ -694,13 +694,14 @@ See also <A HREF="#maxspareservers">MaxSpareServers</A> and
 
 <A name="options"><h2>Options directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
-<strong>Syntax:</strong> Options <em>option option ...</em><br>
+<strong>Syntax:</strong> Options <em>[+|-]option [+|-]option ...</em><br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Override:</strong> Options<br>
 <strong>Status:</strong> core<p>
 
 The Options directive controls which server features are available in
-a particular directory.<p>
+a particular directory. 
+<p>
 <em>option</em> can be set to <code>None</code>, in which case none of
 the extra features are enabled, or one or more of the following:
 <dl>
@@ -741,8 +742,16 @@ The server will only follow symbolic links for which the target
 file or directory is owned by the same user id as the link.
 </dl>
 
-If multiple Options could apply to a directory, then the most specific one is
-taken complete; the options are not merged. For example:
+Normally, if multiple <code>Options</code> could apply to a directory,
+then the most specific one is taken complete; the options are not
+merged. However if <i>all</i> the options on the <code>Options</code> directive are
+preceeded by a + or - symbol, the options are merged. Any options
+preceeded by a + are added to the options currently in force, and any
+options preceeded by a - are removed from the options currently in
+force.  <P>
+
+For example, without any + and - symbols:
+
 <blockquote><code>
 &lt;Directory /web/docs&gt; <br>
 Options Indexes FollowSymLinks<br>
@@ -752,7 +761,19 @@ Options Includes<br>
 &lt;/Directory&gt;
 </code></blockquote>
 then only <code>Includes</code> will be set for the /web/docs/spec
-directory.<p><hr>
+directory. However if the second <code>Options</code> directive uses the +
+and - symbols:<p>
+
+<blockquote><code>
+&lt;Directory /web/docs&gt; <br>
+Options Indexes FollowSymLinks<br>
+&lt;/Directory&gt;<br>
+&lt;Directory /web/docs/spec&gt; <br>
+Options +Includes -Indexes<br>
+&lt;/Directory&gt;
+</code></blockquote>
+then the options <code>FollowSymLinks</code> and <code>Includes</code>
+are set for the /web/docs/spec directory.
 
 <A name="pidfile"><h2>PidFile directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
