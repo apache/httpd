@@ -1,5 +1,6 @@
 Changes with Apache 2.0.33-dev
   *) Win32: Fix bug in mod_status with displaying "Restart Time"
+     and "Server uptime".
      [Bill Stoddard]
 
   *) Fix IPv6 name-based virtual hosts.  [Jeff Trawick]
