@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache 2.0 Thread Safe Issues</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1>Thread Safetyness</h1>
+    <p>When using any of the threaded mpms in Apache 2.0 it is important
+    that every function from Apache be thread safe.  When linking in 3rd
+    party extensions it can be difficult to determine whether the resulting
+    server will be thread safe.  Casual testing generally won't tell you this
+    either as thread safety problems can lead to subtle race conditons that
+    may only show up in certain conditions under heavy load.</p>
+
+    <h1>Common 3rd Party Libraries</h1>
+    <p>The following is a list of common libraries that are used by 3rd party
+    Apache modules.  You can check to see if your module is using a potentially
+    unsafe library by using tools such as <tt>ldd</tt> and <tt>nm</tt>.  For PHP,
+    for example, try this:
+<pre>% ldd libphp4.so
+libsablot.so.0 => /usr/local/lib/libsablot.so.0 (0x401f6000)
+libexpat.so.0 => /usr/lib/libexpat.so.0 (0x402da000)
+libsnmp.so.0 => /usr/lib/libsnmp.so.0 (0x402f9000)
+libpdf.so.1 => /usr/local/lib/libpdf.so.1 (0x40353000)
+libz.so.1 => /usr/lib/libz.so.1 (0x403e2000)
+libpng.so.2 => /usr/lib/libpng.so.2 (0x403f0000)
+libmysqlclient.so.11 => /usr/lib/libmysqlclient.so.11 (0x40411000)
+libming.so => /usr/lib/libming.so (0x40449000)
+libm.so.6 => /lib/libm.so.6 (0x40487000)
+libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x404a8000)
+libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x404e7000)
+libcrypt.so.1 => /lib/libcrypt.so.1 (0x40505000)
+libssl.so.2 => /lib/libssl.so.2 (0x40532000)
+libcrypto.so.2 => /lib/libcrypto.so.2 (0x40560000)
+libresolv.so.2 => /lib/libresolv.so.2 (0x40624000)
+libdl.so.2 => /lib/libdl.so.2 (0x40634000)
+libnsl.so.1 => /lib/libnsl.so.1 (0x40637000)
+libc.so.6 => /lib/libc.so.6 (0x4064b000)
+/lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x80000000)</pre>
+In addition to these libraries you will need to have a look at any libraries
+linked statically into the module.  You can use <tt>nm</tt> to look for individual
+symbols in the module.</p>
+
+    <h2>Library List</h2>
+    <p>Please drop a note to rasmus@apache.org [need a better contact address here] if
+    you have additions or corrections to this list.</p>
+    <p>
+    <table><tr><th>Library</th><th>Version</th><th>Thread Safe?</th><th>Notes</th></tr>
+    <tr><td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://sources.redhat.com/bzip2/index.html">BZip2</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://cr.yp.to/cdb.html">cdb</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.fastio.com/">cpdflib</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.ijg.org/files/">libcrypt</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td>Expat</td><td> </td><td>Yes</td><td>Need a separate parser instance per thread</td></tr>
+    <tr><td><a href="http://www.freetds.org/">FreeTDS</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.freetype.org/">FreeType</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.boutell.com/gd/">GD 1.8.x</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.boutell.com/gd/">GD 2.0.x</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.imagemagick.org/">ImageMagick</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.enlightenment.org/pages/imlib2.html">Imlib2</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.ijg.org/files/">libjpeg</a></td><td>v6b</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://mysql.com">libmysqlclient</a></td><td> </td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.opaque.net/ming/">Ming</a></td><td>0.2a</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td><td>5.0.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.openldap.org/">OpenLDAP</a></td><td>2.1.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.openssl.org/">OpenSSL</a></td><td>0.96g</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td><td>8.x,9.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://pdflib.com/">pdflib</a></td><td>4.0.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td><td>1.0.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td><td>1.2.x</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.postgresql.org/idocs/index.php?libpq-threading.html">libpq (PostgreSQL)</a></td><td>7.x</td><td>Yes</td><td>Don't share connections across threads and watch out for crypt() calls</td></tr>
+    <tr><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td><td>0.95</td><td>?</td><td> </td></tr>
+    <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td><td>1.1.4</td><td>?</td><td> </td></tr>
+    </table>
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
