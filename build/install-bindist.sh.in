@@ -1,0 +1,130 @@
+#!/bin/sh
+#
+# Usage: install-bindist.sh [ServerRoot]
+# This script installs the Apache binary distribution and
+# was automatically created by binbuild.sh.
+ 
+lmkdir()
+{
+  path=""
+  dirs=`echo $1 | sed -e 's%/% %g'`
+  mode=$2
+ 
+  set -- ${dirs}
+ 
+  for d in ${dirs}
+  do
+    path="${path}/$d"
+    if test ! -d "${path}" ; then
+      mkdir ${path}
+      if test $? -ne 0 ; then
+        echo "Failed to create directory: ${path}"
+        exit 1
+      fi
+      chmod ${mode} ${path}
+    fi
+  done
+}
+ 
+lcopy()
+{
+  from=$1
+  to=$2
+  dmode=$3
+  fmode=$4
+ 
+  test -d ${to} || lmkdir ${to} ${dmode}
+  (cd ${from} && tar -cf - *) | (cd ${to} && tar -xf -)
+ 
+  if test "X${fmode}" != X ; then
+    find ${to} -type f -print | xargs chmod ${fmode}
+  fi
+  if test "X${dmode}" != X ; then
+    find ${to} -type d -print | xargs chmod ${dmode}
+  fi
+}
+ 
+##
+##  determine path to (optional) Perl interpreter
+##
+PERL=no-perl5-on-this-system
+perls='perl5 perl'
+path=`echo $PATH | sed -e 's/:/ /g'`
+ 
+for dir in ${path} ;  do
+  for pperl in ${perls} ; do
+    if test -f "${dir}/${pperl}" ; then
+      if `${dir}/${pperl} -v | grep 'version 5\.' >/dev/null 2>&1` ; then
+        PERL="${dir}/${pperl}"
+        break
+      fi
+    fi
+  done
+done
+ 
+if [ .$1 = . ]
+then
+  SR=@default_dir@
+else
+  SR=$1
+fi
+echo "Installing binary distribution for platform i686-pc-linux"
+echo "into directory $SR ..."
+lmkdir $SR 755
+lmkdir $SR/proxy 750
+lmkdir $SR/logs 750
+lcopy bindist/man $SR/man 755 644
+if [ -d bindist/modules ]
+then
+  lcopy bindist/modules $SR/modules 750 750
+fi
+lcopy bindist/include $SR/include 755 644
+lcopy bindist/icons $SR/icons 755 644
+lcopy bindist/cgi-bin $SR/cgi-bin 750 750
+lcopy bindist/bin $SR/bin 750 750
+if [ -d $SR/conf ]
+then
+  echo "[Preserving existing configuration files.]"
+  cp bindist/conf/*-std.conf $SR/conf/
+else
+  lcopy bindist/conf $SR/conf 750 640
+  sed -e "s%@default_dir@%$SR%" $SR/conf/httpd-std.conf > $SR/conf/httpd.conf
+fi
+if [ -d $SR/htdocs ]
+then
+  echo "[Preserving existing htdocs directory.]"
+else
+  lcopy bindist/htdocs $SR/htdocs 755 644
+fi
+if [ -d $SR/error ]
+then
+  echo "[Preserving existing error documents directory.]"
+else
+  lcopy bindist/error $SR/error 755 644
+fi
+ 
+sed -e "s;^#!/.*;#!$PERL;" -e "s;\@prefix\@;$SR;" -e "s;\@sbindir\@;$SR/bin;" \
+	-e "s;\@libexecdir\@;$SR/libexec;" -e "s;\@includedir\@;$SR/include;" \
+	-e "s;\@sysconfdir\@;$SR/conf;" bindist/bin/apxs > $SR/bin/apxs
+sed -e "s;^#!/.*;#!$PERL;" bindist/bin/dbmmanage > $SR/bin/dbmmanage
+sed -e "s%@default_dir@%$SR%" \
+        -e "s%^HTTPD=.*$%HTTPD=\"$SR/bin/httpd -d $SR\"%" bindist/bin/apachectl > $SR/bin/apachectl
+ 
+echo "Ready."
+echo " +--------------------------------------------------------+"
+echo " | You now have successfully installed the Apache @ver@  |"
+echo " | HTTP server. To verify that Apache actually works      |"
+echo " | correctly you should first check the (initially        |"
+echo " | created or preserved) configuration files:             |"
+echo " |                                                        |"
+echo " |   $SR/conf/httpd.conf"
+echo " |                                                        |"
+echo " | You should then be able to immediately fire up         |"
+echo " | Apache the first time by running:                      |"
+echo " |                                                        |"
+echo " |   $SR/bin/apachectl start "
+echo " |                                                        |"
+echo " | Thanks for using Apache.       The Apache Group        |"
+echo " |                                http://www.apache.org/  |"
+echo " +--------------------------------------------------------+"
+echo " "
