@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Added Cygwin directory layout to config.layout file.
+     [Stipe Tolj, <tolj@wapme-systems.de>]
+
   *) Added a '-F' flag; which causes the mother/supervisor process to
      no longer fork down and detach. But instead stays attached to
      the tty - thus making live for automatic restart and exit checking

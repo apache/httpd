@@ -282,3 +282,25 @@
     logfiledir:    $prefix/logs
     proxycachedir: $prefix/proxy
 </Layout>
+
+#   Cygwin 1.x layout
+<Layout Cygwin>
+    prefix:        /usr
+    exec_prefix:   $prefix
+    bindir:        $prefix/bin
+    sbindir:       $prefix/sbin
+    libexecdir:    $prefix/lib/apache
+    mandir:        $prefix/man
+    sysconfdir:    /etc/apache
+    datadir:       /var/www
+    iconsdir:      $datadir/icons
+    htdocsdir:     $datadir/htdocs
+    manualdir:     $htdocsdir/manual
+    cgidir:        $datadir/cgi-bin
+    includedir:    $prefix/include/apache
+    localstatedir: /var
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log/apache
+    proxycachedir: $localstatedir/cache/apache
+</Layout>
+
