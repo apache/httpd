@@ -21,7 +21,7 @@
 </summary>
 
 
-<section>
+<section id="logging">
 <title>Logging</title>
 
     <p>Previously, the cookies module (now the user tracking
@@ -43,7 +43,7 @@ CustomLog logs/clickstream "%{cookie}n %r %t"
     module="mod_log_config">CustomLog</directive> directive. </p>
 </section>
 
-<section>
+<section id="cookiedate">
 <title>2-digit or 4-digit dates for cookies?</title>
 
     <p>(the following is from message
