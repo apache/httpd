@@ -70,7 +70,7 @@ apr_status_t ajp_msg_dump(ajp_msg_t *msg, char *err)
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                       "ajp_msg_dump(): %.4lx    %s",
-                      i, line);
+                      (unsigned long)i, line);
     }
     
     return APR_SUCCESS;
