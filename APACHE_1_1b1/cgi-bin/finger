@@ -1,0 +1,26 @@
+#!/bin/sh
+
+FINGER=/usr/ucb/finger
+
+echo Content-type: text/html
+echo
+
+if [ -x $FINGER ]; then
+	if [ $# = 0 ]; then
+		cat << EOM
+<TITLE>Finger Gateway</TITLE>
+<H1>Finger Gateway</H1>
+
+<ISINDEX>
+
+This is a gateway to "finger". Type a user@host combination in your browser's
+search dialog.<P>
+EOM
+	else
+		echo \<PRE\>
+		$FINGER "$*"
+	fi
+else
+	echo Cannot find finger on this system.
+fi
+
