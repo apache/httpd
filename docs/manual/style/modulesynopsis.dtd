@@ -4,7 +4,7 @@
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module">
 
-<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
+<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | img
 | blockquote">
 
 <!ENTITY % Block "(%blocktags;)*">
@@ -46,7 +46,14 @@ usage?, seealso*)>
 <!ELEMENT a %Inline;>
 
 <!ATTLIST a  href CDATA #IMPLIED 
-             name CDATA #IMPLIED>
+             name CDATA #IMPLIED >
+
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+  src         CDATA   #REQUIRED
+  alt         CDATA   #REQUIRED
+  height      CDATA   #IMPLIED
+  width       CDATA  #IMPLIED >
 
 <!ATTLIST directivesynopsis  type CDATA  #IMPLIED
                              location CDATA  #IMPLIED >
@@ -73,6 +80,7 @@ usage?, seealso*)>
 <!ELEMENT ul (li+)>
 
 <!ELEMENT ol (li+)>
+<!ATTLIST ol type CDATA  #IMPLIED>
 
 <!ELEMENT li %BlockOrInline;>
 
@@ -81,16 +89,24 @@ usage?, seealso*)>
 <!ELEMENT br EMPTY>
 
 <!ELEMENT table (tr)+>
+<!ATTLIST table summary     CDATA  #IMPLIED
+                width       CDATA  #IMPLIED
+                bgcolor     CDATA  #IMPLIED
+                cellspacing CDATA  #IMPLIED
+                cellpadding CDATA  #IMPLIED
+                border      CDATA  #IMPLIED >
 
 <!ELEMENT tr (th | td)+>
+<!ATTLIST tr valign CDATA #IMPLIED >
 
 <!ELEMENT td %BlockOrInline;>
 
 <!ELEMENT th %BlockOrInline;>
 
-<!ATTLIST td  colspan CDATA  #IMPLIED
-                rowspan CDATA  #IMPLIED
-                class   CDATA  #IMPLIED >
+<!ATTLIST td  colspan  CDATA  #IMPLIED
+              rowspan  CDATA  #IMPLIED
+              bgcolor  CDATA  #IMPLIED
+              class    CDATA  #IMPLIED >
 <!ELEMENT directive (#PCDATA)>
 
 <!ATTLIST directive  module CDATA  #IMPLIED
