@@ -623,7 +623,7 @@ static void test(void)
                      VERSION,
                      keepalive ? "Connection: Keep-Alive\r\n" : "", 
                      hostname, postlen, 
-                     (content_type) ? content_type : "text/plain");
+                     (content_type[0]) ? content_type : "text/plain");
     }
 
     if (verbosity >= 2) printf("INFO: POST header == \n---\n%s\n---\n", request);
