@@ -88,7 +88,7 @@
 **      www.engelschall.com
 */
 
-
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -103,9 +103,13 @@
 
 #ifndef NO_WRITEV
 #ifndef NETWARE
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#endif
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
+#endif
 #endif
 
 /*

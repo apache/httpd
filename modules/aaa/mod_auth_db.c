@@ -90,12 +90,15 @@
  *         no control is passed along.
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#ifdef HAVE_DB_H
 #include <db.h>
+#endif
 
 #if defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
 #define DB2

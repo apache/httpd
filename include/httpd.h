@@ -377,7 +377,7 @@ enum server_token_type {
 API_EXPORT(const char *) ap_get_server_version(void);
 API_EXPORT(void) ap_add_version_component(const char *component);
 #else
-#define ap_get_server_version()	(SERVER_BASEVERSION)
+#define ap_get_server_version()	(AP_SERVER_BASEVERSION)
 #define ap_add_version_component(x) ((void)0)
 #endif
 API_EXPORT(const char *) ap_get_server_built(void);

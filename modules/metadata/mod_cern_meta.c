@@ -148,13 +148,18 @@
  * 29.Jun.96 All directives made per-directory.
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
-#include <sys/types.h>
-#include <sys/stat.h>
 #include "util_script.h"
 #include "http_log.h"
 #include "http_request.h"
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
 
 #define DIR_CMD_PERMS OR_INDEXES
 

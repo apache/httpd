@@ -90,10 +90,11 @@
  * disabled, except those explicitly turned on with the "enabled" keyword.
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-#ifndef WIN32
+#ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
 

@@ -64,6 +64,7 @@
  * Adapted to Apache by rst.
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -73,7 +74,9 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "apr_fnmatch.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 module MODULE_VAR_EXPORT autoindex_module;
 

@@ -62,6 +62,7 @@
  * rst
  */
 
+#include "ap_config.h"
 #include "apr_file_io.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -70,7 +71,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "util_script.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 
