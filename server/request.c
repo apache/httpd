@@ -1402,8 +1402,11 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
         /*
-         * If this is an APR_LNK that resolves to an APR_DIR, then 
-         * we will rerun everything anyways... this should be safe.
+         * apr_dir_read isn't very complete on this platform, so
+         * we need another apr_lstat (or simply apr_stat if we allow
+         * all symlinks here.)  If this is an APR_LNK that resolves 
+         * to an APR_DIR, then we will rerun everything anyways... 
+         * this should be safe.
          */
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
