@@ -74,7 +74,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-    
+
+    *) LimitRequestFieldSize directive: Remove upper limit on the request field size.    
+       http://svn.apache.org/viewcvs.cgi?rev=149269&view=rev
+       +1: stoddard
+
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565
