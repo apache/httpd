@@ -83,8 +83,15 @@ DEF_Explain
  * of modules which control just about all of the server operation.
  */
 
-/* total_modules is the number of modules linked in.  */
+/* total_modules is the number of modules that have been linked
+ * into the server.
+ */
 static int total_modules = 0;
+/* dynamic_modules is the number of modules that have been added
+ * after the pre-linked ones have been set up. It shouldn't be larger
+ * than DYNAMIC_MODULE_LIMIT.
+ */
+static int dynamic_modules = 0;
 module *top_module = NULL;
     
 typedef int (*handler_func)(request_rec *);
@@ -117,7 +124,8 @@ API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val)
 void *
 create_empty_config (pool *p)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * total_modules);
+   void **conf_vector = (void **)pcalloc(p, sizeof(void*) *
+					 (total_modules+DYNAMIC_MODULE_LIMIT));
    return (void *)conf_vector;
 }
 
@@ -472,8 +480,17 @@ API_EXPORT(void) add_module (module *m)
     }
     if (m->module_index == -1) {
 	m->module_index = total_modules++;
+	dynamic_modules++;
+
+	if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
+	    fprintf(stderr, "httpd: module \"%s\" could not be loaded, because"
+		    " the dynamic\n", m->name);
+	    fprintf(stderr, "module limit was reached. Please increase "
+		    "DYNAMIC_MODULE_LIMIT and recompile.\n");
+	    exit(1);
+	}
     }
-    
+
     /* Some C compilers put a complete path into __FILE__, but we want
      * only the filename (e.g. mod_includes.c). So check for path
      * components (Unix and DOS), and remove them.
