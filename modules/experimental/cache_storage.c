@@ -80,8 +80,9 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
     const char *type;
 
     /* for each specified cache type, delete the URL */
-    while ((type = ap_cache_tokstr(r->pool, next, &next))) {
-	cache_run_remove_url(type, url);
+    while(next) {
+        type = ap_cache_tokstr(r->pool, next, &next);
+        cache_run_remove_url(type, url);
     }
     return OK;
 }
@@ -132,14 +133,10 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
  * The specific entity referenced by the cache_handle is removed
  * from the cache, and the cache_handle is closed.
  */
+/* XXX Don't think we need to pass in request_rec or types ... */
 int cache_remove_entity(request_rec *r, const char *types, cache_handle *h)
 {
-    const char *next = types;
-    const char *type;
-
-    while (next) {
-        type = ap_cache_tokstr(r->pool, next, &next);
-    }
+    h->remove_entity(h);
     return 1;
 }
 
