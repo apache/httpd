@@ -180,7 +180,7 @@ ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
-    ap_proc_t *ret = ap_pcalloc(p, sizeof(ret));
+    ap_proc_t *ret = ap_pcalloc(p, sizeof(*ret));
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
