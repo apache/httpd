@@ -200,7 +200,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                 /* Create the tranaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                rv = apr_pool_create_ex(&context->ptrans, NULL, NULL, allocator);
+                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
                                  "mpm_get_completion_context: Failed to create the transaction pool.");
@@ -447,7 +447,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context = apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
         apr_allocator_create(&allocator);
         apr_allocator_max_free_set(allocator, ap_max_mem_free);
-        apr_pool_create_ex(&context->ptrans, NULL, NULL, allocator);
+        apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
         apr_allocator_owner_set(allocator, context->ptrans);
         apr_pool_tag(context->ptrans, "transaction");
         context->ba = apr_bucket_alloc_create(pchild);
