@@ -269,6 +269,9 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
     apr_status_t rv;
 
+    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(id), 
+                                  SERVER_BUSY_READ, (request_rec *) NULL);
+
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
      */
