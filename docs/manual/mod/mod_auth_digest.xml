@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.16 $ -->
+<!-- $Revision: 1.17 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -73,7 +73,9 @@
     browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a> (fails when used with a query string), <a
+    Explorer</a> (fails when used with a query string - see the
+    <directive module="mod_auth_digest">AuthDigestEnableQueryStringHack
+    </directive> option below for a workaround), <a
     href="http://www.w3.org/Amaya/">Amaya</a>, <a
     href="http://www.mozilla.org">Mozilla</a> and <a
     href="http://channels.netscape.com/ns/browsers/download.jsp"
@@ -82,6 +84,36 @@
     authentication, you should use it only in controlled environments.</p>
     </note>
 </section>
+
+<section id="msie"><title>Working with MS Internet Explorer</title>
+    <p>The Digest authentication implementation in current Internet
+    Explorer implementations has known issues, namely that <code><GET</code>
+    requests with a query string are not RFC compliant.  There are a
+    few ways to work around this issue.</p>
+
+    <p>
+    The first way is to use <code>POST</code> requests instead of
+    <code>GET</code> requests to pass data to your program.  This method
+    is the simplest approach if your application can work with this
+    limitation.
+    </p>
+
+    <p>Apache also provides a workaround in the
+    <code>AuthDigestEnableQueryStringHack</code> environment variable.
+    If <code>AuthDigestEnableQueryStringHack</code> is true for the
+    request, Apache will take steps to work around the MSIE bug and
+    remove the request URI from the digest comparison.  Using this
+    method would look similar to the following.</p>
+
+    <example><title>Using Digest Authentication with MSIE:</title>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </example>
+
+    <p>See the <directive module="mod_setenvif">BrowserMatch</directive>
+    directive for more details on conditionally setting environment
+    variables</p>
+</section>
+
 
 <directivesynopsis>
 <name>AuthDigestProvider</name>
