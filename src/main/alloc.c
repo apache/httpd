@@ -1813,15 +1813,8 @@ static int fd_magic_cleanup(void *fdv)
 
 API_EXPORT(void) ap_note_cleanups_for_fd_ex(pool *p, int fd, int domagic)
 {
-    if (domagic) {
-        ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
-			 fd_magic_cleanup);
-    } else {
-	/* basically ap_register_cleanup but save the possible
-	   overhead of an extraneous function call */
-        ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
-			 NULL);
-    }
+    ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
+                           domagic ? fd_magic_cleanup : NULL);
 }
 
 API_EXPORT(void) ap_note_cleanups_for_fd(pool *p, int fd)
@@ -1915,13 +1908,8 @@ static int file_magic_cleanup(void *fpv)
 
 API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *p, FILE *fp, int domagic)
 {
-    if (domagic) {
-	ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
-			 file_magic_cleanup);
-    } else {
-	ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
-			 NULL);
-    }
+    ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
+                           domagic ? file_magic_cleanup : NULL);
 }
 
 API_EXPORT(void) ap_note_cleanups_for_file(pool *p, FILE *fp)
@@ -2044,13 +2032,9 @@ static int socket_magic_cleanup(void *fpv)
 
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
 {
-    if (domagic) {
-	ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
-			 socket_cleanup, socket_magic_cleanup);
-    } else {
-	ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
-			 socket_cleanup, NULL);
-    }
+    ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
+                           socket_cleanup,
+                           domagic ? socket_magic_cleanup : NULL);
 }
 
 API_EXPORT(void) ap_note_cleanups_for_socket(pool *p, int fd)
