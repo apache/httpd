@@ -1,5 +1,9 @@
 Changes with Apache 1.3.3
 
+  *) Add [REDIRECT_]VARIANTS environment variable to mod_speling
+     so that ErrorDocument 300 processors can reformat the list
+     if desired.  [Ken Coar] PR#2859
+
   *) Add +/- incremental prefixes to IndexOptions keywords, and
      enable merging of multiple IndexOptions directives.  [Ken Coar]
 
