@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) In core_input_filter, check for an empty brigade after 
+     APR_BRIGADE_NORMALIZE().  Otherwise, we can get segfaults if a
+     client says it will post some data but we get FIN before any
+     data arrives.  [Jeff Trawick]
+
   *) Not being able to bind to the socket is a fatal error.  We should
      print an error to the console, and return a non-zero status code.
      With these changes, all of the Unix MPMs do that correctly.

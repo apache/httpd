@@ -3058,14 +3058,16 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
         net->in_ctx = ctx;
     }
-    else if (APR_BRIGADE_EMPTY(ctx->b)) {
-        /* hit EOF on socket already */
-        return APR_EOF;
-    }
 
     /* ### This is bad. */
     APR_BRIGADE_NORMALIZE(ctx->b);
 
+    /* check for empty brigade *AFTER* APR_BRIGADE_NORMALIZE() */
+    if (APR_BRIGADE_EMPTY(ctx->b)) {
+        /* hit EOF on socket already */
+        return APR_EOF;
+    }
+    
     /* ### AP_MODE_PEEK is a horrific name for this mode because we also
      * eat any CRLFs that we see.  That's not the obvious intention of
      * this mode.  Determine whether anyone actually uses this or not. */
