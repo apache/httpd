@@ -175,22 +175,22 @@ struct data {
 int verbosity = 0;        	/* no verbosity by default */
 int posting = 0;        	/* GET by default */
 int requests = 1;        	/* Number of requests to make */
-int concurrency = 1;        	/* Number of multiple requests to make */
+int concurrency = 1;        /* Number of multiple requests to make */
 int tlimit = 0;        		/* time limit in cs */
 int keepalive = 0;        	/* try and do keepalive connections */
-char servername[1024];        	/* name that server reports */
-char hostname[1024];        	/* host name */
+char servername[1024];      /* name that server reports */
+char hostname[1024];        /* host name */
 char path[1024];        	/* path name */
-char postfile[1024];        	/* name of file containing post data */
+char postfile[1024];        /* name of file containing post data */
 char *postdata;        		/* *buffer containing data from postfile */
-apr_ssize_t postlen = 0;        	/* length of data to be POSTed */
-char content_type[1024];        /* content type to put in POST header */
+apr_ssize_t postlen = 0;    /* length of data to be POSTed */
+char content_type[1024];    /* content type to put in POST header */
 char cookie[1024],        	/* optional cookie line */
      auth[1024],        	/* optional (basic/uuencoded)
-        			 * authentification */
+                             * authentification */
      hdrs[4096];        	/* optional arbitrary headers */
 int port = 80;        		/* port number */
-time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
+apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
 
 int use_html = 0;        	/* use html in the report */
 const char *tablestring;
@@ -224,6 +224,7 @@ struct data *stats;        	/* date for each request */
 apr_pool_t *cntxt;
 
 apr_pollfd_t *readbits;
+
 #ifdef NOT_ASCII
 apr_xlate_t *from_ascii, *to_ascii;
 #endif
@@ -259,7 +260,7 @@ static void write_request(struct connection *c)
 {
     apr_ssize_t len = reqlen;
     c->connect = apr_now();
-    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 30 * APR_USEC_PER_SEC);
+    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
     if (apr_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
         reqlen != len) {
         printf("Send request failed!\n");
@@ -512,6 +513,7 @@ static void start_connect(struct connection *c)
                         "\nTest aborted after 10 failures\n\n");
                 apr_err("apr_connect()", rv);
             }
+            c->state = STATE_UNCONNECTED;
             start_connect(c);
             return;
         }
@@ -554,7 +556,8 @@ static void close_connection(struct connection *c)
 
     apr_remove_poll_socket(readbits, c->aprsock);
     apr_close_socket(c->aprsock);
-
+    c->state = STATE_UNCONNECTED;
+    
     /* connect again */
     start_connect(c);
     return;
@@ -731,7 +734,6 @@ static void read_connection(struct connection *c)
 static void test(void)
 {
     apr_time_t now;
-    apr_interval_time_t timeout;
     apr_int16_t rv;
     int i;
     apr_status_t status;
@@ -819,11 +821,9 @@ static void test(void)
         if (tlimit && timed > (tlimit * 1000)) {
             requests = done;   /* so stats are correct */
         }
-        /* Timeout of 30 seconds. */
-        timeout = 30 * APR_USEC_PER_SEC;
 
         n = concurrency;
-        status = apr_poll(readbits, &n, timeout);
+        status = apr_poll(readbits, &n, aprtimeout);
         if (status != APR_SUCCESS)
             apr_err("apr_poll", status);
 
@@ -832,8 +832,12 @@ static void test(void)
         }
 
         for (i = 0; i < concurrency; i++) {
+            /* If the connection isn't connected how can we check it?
+             */
+            if (con[i].state == STATE_UNCONNECTED)
+                continue;
+                               
             apr_get_revents(&rv, con[i].aprsock, readbits);
-
             /* Note: APR_POLLHUP is set after FIN is received on some
              * systems, so treat that like APR_POLLIN so that we try
              * to read again.
@@ -845,9 +849,19 @@ static void test(void)
                continue;
             }
             if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
-               read_connection(&con[i]);
+                read_connection(&con[i]);
             if (rv & APR_POLLOUT)
-               write_request(&con[i]);
+                write_request(&con[i]);
+
+            /* When using a select based poll every time we check the bits
+             * are reset. In 1.3's ab we copied the FD_SET's each time through,
+             * but here we're going to check the state and if the connection
+             * is in STATE_READ or STATE_CONNECTING we'll add the socket back
+             * in as APR_POLLIN.
+             */
+            if (con[i].state == STATE_READ || con[i].state == STATE_CONNECTING)
+                apr_add_poll_socket(readbits, con[i].aprsock, APR_POLLIN);
+            
         }
     }
     if (use_html)
@@ -862,14 +876,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.28 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.29 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.28 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.29 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
