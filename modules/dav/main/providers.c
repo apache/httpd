@@ -70,7 +70,7 @@ static apr_status_t dav_cleanup_providers(void *ctx)
 }
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
-                                       const dav_provider *provider)
+                                        const dav_provider *provider)
 {
     /* ### ignore the pool; it is NULL right now */
     p = ap_global_hook_pool;
@@ -81,10 +81,10 @@ DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
     }
 
     /* just set it. no biggy if it was there before. */
-    apr_hash_set(dav_repos_providers, name, 0, provider);
+    apr_hash_set(dav_repos_providers, name, APR_HASH_KEY_STRING, provider);
 }
 
 const dav_provider * dav_lookup_provider(const char *name)
 {
-    return apr_hash_get(dav_repos_providers, name, 0);
+    return apr_hash_get(dav_repos_providers, name, APR_HASH_KEY_STRING);
 }

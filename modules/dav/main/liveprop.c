@@ -87,19 +87,20 @@ DAV_DECLARE(void) dav_register_liveprop_namespace(apr_pool_t *p,
         apr_register_cleanup(p, NULL, dav_cleanup_liveprops, apr_null_cleanup);
     }
 
-    value = (int)apr_hash_get(dav_liveprop_uris, uri, 0);
+    value = (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
     if (value != 0) {
         /* already registered */
         return;
     }
 
     /* start at 1, and count up */
-    apr_hash_set(dav_liveprop_uris, uri, 0, (void *)++dav_liveprop_count);
+    apr_hash_set(dav_liveprop_uris, uri, APR_HASH_KEY_STRING,
+                 (void *)++dav_liveprop_count);
 }
 
 DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri)
 {
-    return (int)apr_hash_get(dav_liveprop_uris, uri, 0);
+    return (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
 }
 
 int dav_get_liveprop_ns_count(void)
