@@ -237,7 +237,7 @@ static int status_handler(request_rec *r)
     unsigned long bcount = 0;
     unsigned long kbcount = 0;
     long req_time;
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 #ifdef _SC_CLK_TCK
     float tick = sysconf(_SC_CLK_TCK);
 #else
@@ -326,12 +326,12 @@ static int status_handler(request_rec *r)
 	        lres = score_record.access_count;
 	        bytes = score_record.bytes_served;
 	        if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 		    tu += score_record.times.tms_utime;
 		    ts += score_record.times.tms_stime;
 		    tcu += score_record.times.tms_cutime;
 		    tcs += score_record.times.tms_cstime;
-#endif /* NO_TIMES */
+#endif /* HAVE_TIMES */
 		    count += lres;
 		    bcount += bytes;
 		    if (bcount >= KBYTE) {
@@ -371,7 +371,7 @@ static int status_handler(request_rec *r)
 	    ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n",
 		count, kbcount);
 
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	    /* Allow for OS/2 not having CPU stats */
 	    if (ts || tu || tcu || tcs)
 		ap_rprintf(r, "CPULoad: %g\n",
@@ -395,7 +395,7 @@ static int status_handler(request_rec *r)
 	    ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
 	    format_kbyte_out(r, kbcount);
 
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	    /* Allow for OS/2 not having CPU stats */
 	    ap_rputs("<br>\n", r);
 	    ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
@@ -493,7 +493,7 @@ static int status_handler(request_rec *r)
 	    if (no_table_report)
 		ap_rputs("<p><hr><h2>Server Details</h2>\n\n", r);
 	    else
-#ifdef NO_TIMES
+#ifndef HAVE_TIMES
 		/* Allow for OS/2 not having CPU stats */
 		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
 #else
@@ -510,17 +510,18 @@ static int status_handler(request_rec *r)
 		vhost = NULL;
 	    }
 
+
 #if defined(NO_GETTIMEOFDAY)
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	    if (score_record.start_time == (clock_t) 0)
-#endif /* NO_TIMES */
+#endif /* HAVE_TIMES */
 		req_time = 0L;
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	    else {
 		req_time = score_record.stop_time - score_record.start_time;
 		req_time = (req_time * 1000) / (int) tick;
 	    }
-#endif /* NO_TIMES */
+#endif /* HAVE_TIMES */
 #else
 	    if (score_record.start_time == 0L &&
 		score_record.start_time == 0L)
@@ -587,7 +588,7 @@ static int status_handler(request_rec *r)
 			    ap_rputs("?STATE?", r);
 			    break;
 			}
-#ifdef NO_TIMES
+#ifndef HAVE_TIMES
 			/* Allow for OS/2 not having CPU stats */
 			ap_rprintf(r, "]\n %.0f %ld (",
 #else
@@ -661,7 +662,7 @@ static int status_handler(request_rec *r)
 			    ap_rputs("<td>?", r);
 			    break;
 			}
-#ifdef NO_TIMES
+#ifndef HAVE_TIMES
 			/* Allow for OS/2 not having CPU stats */
 			ap_rprintf(r, "\n<td>%.0f<td>%ld",
 #else
@@ -697,7 +698,7 @@ static int status_handler(request_rec *r)
 	}
 
 	if (!(short_report || no_table_report)) {
-#ifdef NO_TIMES
+#ifndef HAVE_TIMES
 	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
