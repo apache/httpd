@@ -70,14 +70,15 @@ is today more widely used than all other web servers combined.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 27 July 2000:
+Current Apache Group in alphabetical order as of 2 October 2001:
 
    Brian Behlendorf       Collab.Net, California 
    Ryan Bloom             Covalent Technologies, California 
    Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
    Mark J. Cox            Red Hat, England
-   Lars Eilebrecht        CyberSolutions, Munich, Germany 
-   Ralf S. Engelschall    Munich, Germany.
+   Lars Eilebrecht        Parc Technologies, Munich, Germany 
+   Ralf S. Engelschall    Munich, Germany
+   Justin Erenkrantz      eBuilt, California
    Roy T. Fielding        eBuilt, California 
    Tony Finch             Covalent Technologies, California
    Dean Gaudet            Transmeta Corporation, California 
@@ -100,10 +101,13 @@ Current Apache Group in alphabetical order as of 27 July 2000:
    Wilfredo Sanchez       Apple Computer, California
    Cliff Skolnick         California
    Marc Slemko            Canada 
+   Joshua Slive           Canada
    Greg Stein             California
    Bill Stoddard          IBM Corporation, Research Triangle Park, NC
    Paul Sutton            Seattle
    Randy Terbush          Covalent Technologies, California 
+   Jeff Trawick           IBM Corporation, Research Triangle Park, NC
+   Cliff Woolley          University of Virginia
 
 Apache Emeritus (old group members now off doing other things)
 
