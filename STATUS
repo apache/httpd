@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/27 15:54:22 $]
+Last modified at [$Date: 2001/04/27 21:10:39 $]
 
 Release:
 
@@ -183,12 +183,6 @@ RELEASE SHOWSTOPPERS:
       Bill would be happy with changing MaxClients to MaxServers
       to make it agree with the operation of the StartServers
       directive.
-
-    * Doug M. reports that there is a there is a problem with both
-      threaded and prefork mpms children not properly handling
-      SIGTERM which results in the server taking a long time to
-      shutdown.
-      Status: Paul Reder is investigating...
 
     * A design problem with the scoreboard can cause the threaded 
       MPM to get in a state where it will no longer serve requests.
