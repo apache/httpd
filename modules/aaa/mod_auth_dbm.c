@@ -212,7 +212,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
 					      &dbm_auth_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
-    char *invalid_pw;
+    ap_status_t invalid_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
@@ -235,7 +235,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
 	*colon_pw = '\0';
     }
     invalid_pw = ap_validate_password(sent_pw, real_pw);
-    if (invalid_pw != NULL) {
+    if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DBM user %s: authentication failure for \"%s\": %s",
 		      r->user, r->uri, invalid_pw);
@@ -309,26 +309,20 @@ static int dbm_check_auth(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_auth_checker(dbm_check_auth, NULL, NULL, HOOK_MIDDLE);
+}
 
 module dbm_auth_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_dbm_auth_dir_config,	/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     dbm_auth_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
-    dbm_authenticate_basic_user,	/* check_user_id */
-    dbm_check_auth,		/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks              /* register hooks */
 };
