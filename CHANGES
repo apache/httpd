@@ -1,6 +1,8 @@
-Changes with Apache 2.1.4
+Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
+
+Changes with Apache 2.1.4
 
   *) Add ReceiveBufferSize directive to control the TCP receive buffer.
      [Eric Covener <covener gmail.com>]
