@@ -1,10 +1,10 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
- Sofern Sie dies für eine Fehlfunktion des Servers halten,
+ Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
  informieren Sie bitte den
  <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
- hierüber.
+ hier&uuml;ber.
 ----------de--
 
 Content-language: en
