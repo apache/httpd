@@ -6,10 +6,12 @@ AC_ARG_WITH(mpm,
   mpm_explicit="yes"
 ],[
   APACHE_MPM=mpmt_pthread
-  case "`uname -sr`" in
-    "BeOS"*)
+  PLAT=`$ac_config_guess`
+  PLAT=`$ac_config_sub $PLAT`
+  case "$PLAT" in
+    *beos*)
       APACHE_MPM=mpmt_beos;;
-    "OS/2"*)
+    *os2_emx*)
       APACHE_MPM=spmt_os2;;
   esac 
   mpm_explicit="no"
