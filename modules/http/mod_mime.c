@@ -465,10 +465,8 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     return OK;
 }
 
-static char *zap_sp(char *s)
+static const char *zap_sp(const char *s)
 {
-    char *tp;
-
     if (s == NULL) {
 	return (NULL);
     }
@@ -476,15 +474,25 @@ static char *zap_sp(char *s)
 	return (s);
     }
 
-    /* delete prefixed white space */
+    /* skip prefixed white space */
     for (; *s == ' ' || *s == '\t' || *s == '\n'; s++);
 
-    /* delete postfixed white space */
-    for (tp = s; *tp != '\0'; tp++);
-    for (tp--; tp != s && (*tp == ' ' || *tp == '\t' || *tp == '\n'); tp--) {
-	*tp = '\0';
-    }
     return (s);
+}
+
+static char *zap_sp_and_dup(apr_pool_t *p, const char *start,
+                            const char *end, apr_size_t *len)
+{
+    while ((start < end) && apr_isspace(*start)) {
+        start++;
+    }
+    while ((end > start) && apr_isspace(*(end - 1))) {
+        end--;
+    }
+    if (len) {
+        *len = end - start;
+    }
+    return apr_pstrmemdup(p, start, end - start);
 }
 
 static int is_token(char c)
@@ -505,7 +513,7 @@ static int is_qtext(char c)
     return res;
 }
 
-static int is_quoted_pair(char *s)
+static int is_quoted_pair(const char *s)
 {
     int res = -1;
     int c;
@@ -519,9 +527,10 @@ static int is_quoted_pair(char *s)
     return (res);
 }
 
-static content_type *analyze_ct(request_rec *r, char *s)
+static content_type *analyze_ct(request_rec *r, const char *s)
 {
-    char *tp, *mp, *cp;
+    const char *cp;
+    const char *mp;
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
@@ -536,10 +545,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
     ctp->subtype = NULL;
     ctp->param = NULL;
 
-    tp = apr_pstrdup(p, s);
-
-    mp = tp;
-    cp = mp;
+    mp = s;
 
     /* getting a type */
     if (!(cp = strchr(mp, '/'))) {
@@ -548,8 +554,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		     (const char *) mp);
 	return (NULL);
     }
-    ctp->type = apr_pstrmemdup(p, mp, cp - mp);
-    ctp->type = zap_sp(ctp->type);
+    ctp->type = zap_sp_and_dup(p, mp, cp, NULL);
     if (ctp->type == NULL || *(ctp->type) == '\0' ||
 	strchr(ctp->type, ';') || strchr(ctp->type, ' ') ||
 	strchr(ctp->type, '\t')) {
@@ -564,17 +569,15 @@ static content_type *analyze_ct(request_rec *r, char *s)
 
     for (; *cp != ';' && *cp != '\0'; cp++)
         continue;
-    ctp->subtype = apr_pstrndup(p, mp, cp - mp);
-    ctp->subtype = zap_sp(ctp->subtype);
+    ctp->subtype = zap_sp_and_dup(p, mp, cp, NULL);
     if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0') ||
 	strchr(ctp->subtype, ' ') || strchr(ctp->subtype, '\t')) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "Cannot get media subtype.");
 	return (NULL);
     }
-    cp = zap_sp(cp);
-    if (cp == NULL || *cp == '\0') {
-	return (ctp);
+    if (*cp == '\0') {
+        return (ctp);
     }
 
     /* getting parameters */
@@ -600,8 +603,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		continue;
 	    }
 	    else if (*cp == '=') {
-		attribute = apr_pstrndup(p, mp, cp - mp);
-		attribute = zap_sp(attribute);
+		attribute = zap_sp_and_dup(p, mp, cp, NULL);
 		if (attribute == NULL || *attribute == '\0') {
 		    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 				 "Cannot get media parameter.");
@@ -675,8 +677,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		    }
 		}
 	    }
-	    value = apr_pstrndup(p, mp, cp - mp);
-	    value = zap_sp(value);
+	    value = zap_sp_and_dup(p, mp, cp, NULL);
 	    if (value == NULL || *value == '\0') {
 		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 			     "Cannot get media parameter.");
