@@ -153,8 +153,8 @@ unsigned long util_ald_hash_string(int nstr, ...)
         for (p = str; *p; ++p) {
             h = ( h << 4 ) + *p;
             if ( ( g = h & 0xf0000000 ) ) {
-	        h = h ^ (g >> 24);
-	        h = h ^ g;
+                h = h ^ (g >> 24);
+                h = h ^ g;
             }
         }
     }
@@ -187,15 +187,15 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
         p = cache->nodes[i];
         while (p != NULL) {
             if (p->add_time < cache->marktime) {
-	        q = p->next;
-	        (*cache->free)(cache, p->payload);
-	        util_ald_free(cache, p);
-	        cache->numentries--;
-	        cache->npurged++;
-	        p = q;
+                q = p->next;
+                (*cache->free)(cache, p->payload);
+                util_ald_free(cache, p);
+                cache->numentries--;
+                cache->npurged++;
+                p = q;
             }
             else {
-	        p = p->next;
+                p = p->next;
             }
         }
     }
@@ -212,46 +212,48 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
  */
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 {
-    util_url_node_t *curl = NULL;
+    util_url_node_t curl, *newcurl;
     util_ald_cache_t *search_cache;
     util_ald_cache_t *compare_cache;
     util_ald_cache_t *dn_compare_cache;
 
     /* create the three caches */
     search_cache = util_ald_create_cache(st,
-					  util_ldap_search_node_hash,
-					  util_ldap_search_node_compare,
-					  util_ldap_search_node_copy,
-					  util_ldap_search_node_free,
+                      util_ldap_search_node_hash,
+                      util_ldap_search_node_compare,
+                      util_ldap_search_node_copy,
+                      util_ldap_search_node_free,
                       util_ldap_search_node_display);
     compare_cache = util_ald_create_cache(st,
-					   util_ldap_compare_node_hash,
-					   util_ldap_compare_node_compare,
-					   util_ldap_compare_node_copy,
-					   util_ldap_compare_node_free,
-                       util_ldap_compare_node_display);
+                      util_ldap_compare_node_hash,
+                      util_ldap_compare_node_compare,
+                      util_ldap_compare_node_copy,
+                      util_ldap_compare_node_free,
+                      util_ldap_compare_node_display);
     dn_compare_cache = util_ald_create_cache(st,
-					      util_ldap_dn_compare_node_hash,
-					      util_ldap_dn_compare_node_compare,
-					      util_ldap_dn_compare_node_copy,
-					      util_ldap_dn_compare_node_free,
-                          util_ldap_dn_compare_node_display);
+                      util_ldap_dn_compare_node_hash,
+                      util_ldap_dn_compare_node_compare,
+                      util_ldap_dn_compare_node_copy,
+                      util_ldap_dn_compare_node_free,
+                      util_ldap_dn_compare_node_display);
 
     /* check that all the caches initialised successfully */
     if (search_cache && compare_cache && dn_compare_cache) {
 
-/*XXX This can be allocated on the stack since it will be copied anyway */
-        curl = (util_url_node_t *)apr_pcalloc(st->pool, sizeof(util_url_node_t));
-        curl->url = url;
-        curl->search_cache = search_cache;
-        curl->compare_cache = compare_cache;
-        curl->dn_compare_cache = dn_compare_cache;
+        /* The contents of this structure will be duplicated in shared
+           memory during the insert.  So use stack memory rather than
+           pool memory to avoid a memory leak. */
+        memset (&curl, 0, sizeof(util_url_node_t));
+        curl.url = url;
+        curl.search_cache = search_cache;
+        curl.compare_cache = compare_cache;
+        curl.dn_compare_cache = dn_compare_cache;
 
-        util_ald_cache_insert(st->util_ldap_cache, curl);
+        newcurl = util_ald_cache_insert(st->util_ldap_cache, &curl);
 
     }
 
-    return curl;
+    return newcurl;
 }
 
 
@@ -369,14 +371,14 @@ void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
  * Insert an item into the cache. 
  * *** Does not catch duplicates!!! ***
  */
-void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
+void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
 {
     int hashval;
     util_cache_node_t *node;
 
     /* sanity check */
     if (cache == NULL || payload == NULL) {
-        return;
+        return NULL;
     }
 
     /* check if we are full - if so, try purge */
@@ -384,13 +386,13 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
         util_ald_cache_purge(cache);
         if (cache->numentries >= cache->maxentries) {
             /* if the purge was not effective, we leave now to avoid an overflow */
-            return;
+            return NULL;
         }
     }
 
     /* should be safe to add an entry */
     if ((node = (util_cache_node_t *)util_ald_alloc(cache, sizeof(util_cache_node_t))) == NULL) {
-        return;
+        return NULL;
     }
 
     /* populate the entry */
@@ -408,6 +410,7 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
         cache->marktime=apr_time_now();
     }
 
+    return node->payload;
 }
 
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)

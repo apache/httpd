@@ -199,7 +199,7 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 
 void util_ald_destroy_cache(util_ald_cache_t *cache);
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload);
-void util_ald_cache_insert(util_ald_cache_t *cache, void *payload);
+void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload);
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload);
 char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char *name, char *id);
 
