@@ -249,11 +249,13 @@ struct proxy_balancer {
 #endif
 };
 
-/* data structure for set/get module_config */
+/* per connection data structure for set/get module_config */
 typedef struct {
     char                  *url;         /* rewtitten url */
     struct proxy_balancer *balancer;    /* load balancer to use */
     proxy_worker          *worker;      /* most suitable worker */
+    proxy_conn_rec        *conn_rec;
+    proxy_conn            *conn;
     void                  *opaque;      /* module private data */
 } proxy_module_conf;
 
@@ -350,7 +352,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker, apr_pool_
 PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(const char *) ap_proxy_add_balancer(struct proxy_balancer **balancer, apr_pool_t *p, proxy_server_conf *conf, const char *url);
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *worker);
-
+PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, struct proxy_balancer **balancer, request_rec *r, proxy_server_conf *conf, char **url);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
