@@ -1882,7 +1882,8 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
      *
      * This function is also a no-op on a subrequest.
      */
-    if (r->main || ap_status_drops_connection(r->status)) {
+    if (r->main || !r->connection->keepalive
+                || ap_status_drops_connection(r->status)) {
         return OK;
     }
 
