@@ -185,6 +185,7 @@ endif
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
+INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
 
 ifneq "$(IPV6)" "SET"
 OBJDIR := $(OBJDIR)_IPV6
@@ -275,7 +276,7 @@ XMLLIB		= $(XML)/$(OBJDIR)/xmllib.lib
 # Additional general defines
 #
 VERSION		= 2,0,0
-			
+
 EnvironmentDefined = 1
 endif # ifndef EnvironmentDefined
 

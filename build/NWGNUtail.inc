@@ -4,7 +4,7 @@
 #
 
 #
-# If we are going to create an nlm, make sure we have assigned variables to 
+# If we are going to create an nlm, make sure we have assigned variables to
 # use during the link.
 #
 echo NLM_NAME=$(NLM_NAME)
@@ -35,7 +35,7 @@ CCOPT_DEPENDS 	= \
 				NWGNUmakefile \
 				$(CUSTOM_INI) \
 				$(EOLIST)
-                
+
 CPPOPT_DEPENDS	= \
 				$(AP_WORK)\build\NWGNUhead.inc \
 				$(AP_WORK)\build\NWGNUenvironment.inc \
@@ -79,53 +79,53 @@ endif
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)\cc.opt
 	@echo Compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt 
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
 
 $(OBJDIR)\cc.opt: $(CCOPT_DEPENDS)
 	$(CHK) $@ $(DEL) $@
 	@echo Generating $@
 ifneq "$(strip $(CFLAGS))" ""
 	@echo $(CFLAGS) >> $@
-endif	
+endif
 ifneq "$(strip $(XCFLAGS))" ""
 	@echo $(XCFLAGS) >> $@
 endif
 ifneq "$(strip $(XINCDIRS))" ""
 	@echo $(foreach xincdir,$(strip $(subst ;,$(SPACE),$(XINCDIRS))),-I$(xincdir)) >> $@
-endif	
+endif
 ifneq "$(strip $(INCDIRS))" ""
 	@echo $(foreach incdir,$(strip $(subst ;,$(SPACE),$(INCDIRS))),-I$(incdir)) >> $@
 endif
-ifneq "$(strip $(DEFINES))" "" 
+ifneq "$(strip $(DEFINES))" ""
 	@echo $(DEFINES) >> $@
 endif
-ifneq "$(strip $(XDEFINES))" "" 
+ifneq "$(strip $(XDEFINES))" ""
 	@echo $(XDEFINES) >> $@
 endif
 
 $(OBJDIR)/%.o: %.cpp $(OBJDIR)\cpp.opt
 	@echo Compiling $<
-	$(CPP) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cpp.opt 
+	$(CPP) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cpp.opt
 
 $(OBJDIR)\cpp.opt: $(CPPOPT_DEPENDS)
 	$(CHK) $@ $(DEL) $@
 	@echo Generating $@
 ifneq "$(strip $(CFLAGS))" ""
 	@echo $(CFLAGS) >> $@
-endif	
+endif
 ifneq "$(strip $(XCFLAGS))" ""
 	@echo $(XCFLAGS) >> $@
 endif
 ifneq "$(strip $(XINCDIRS))" ""
 	@echo $(foreach xincdir,$(strip $(subst ;,$(SPACE),$(XINCDIRS))),-I$(xincdir)) >> $@
-endif	
+endif
 ifneq "$(strip $(INCDIRS))" ""
 	@echo $(foreach incdir,$(strip $(subst ;,$(SPACE),$(INCDIRS))),-I$(incdir)) >> $@
 endif
-ifneq "$(strip $(DEFINES))" "" 
+ifneq "$(strip $(DEFINES))" ""
 	@echo $(DEFINES) >> $@
 endif
-ifneq "$(strip $(XDEFINES))" "" 
+ifneq "$(strip $(XDEFINES))" ""
 	@echo $(XDEFINES) >> $@
 endif
 
@@ -141,7 +141,7 @@ $(TARGET_lib) : $(OBJDIR)\$(LIB_NAME)_lib.lst
 	@echo Generating $@
 	$(CHK) $(OBJDIR)\$(@F) $(DEL) $(OBJDIR)\$(@F)
 	$(LIB) -o $(OBJDIR)\$(@F) @$?
-   
+
 $(OBJDIR)\$(LIB_NAME)_lib.lst: $($(LIB_NAME)_LIBLST_DEPENDS)
 	$(CHK) $@ $(DEL) $@
 	@echo Generating $@
@@ -158,7 +158,7 @@ $(OBJDIR)/%.lib: NWGNU% $(AP_WORK)\build\NWGNUhead.inc $(AP_WORK)\build\NWGNUtai
 endif
 
 #
-# Rules to build nlms. 
+# Rules to build nlms.
 #
 
 vpath libcpre.o $(NOVELLLIBC)\imports
@@ -170,7 +170,7 @@ $(TARGET_nlm) : $(FILES_nlm_objs) $(FILES_nlm_libs) $(OBJDIR)\$(NLM_NAME)_link.o
 	@echo Linking $@
 	$(LINK) @$(OBJDIR)\$(NLM_NAME)_link.opt
 
-# This will force the link option file to be rebuilt if we change the 
+# This will force the link option file to be rebuilt if we change the
 # corresponding makefile
 
 $(OBJDIR)\$(NLM_NAME)_link.opt : $($(NLM_NAME)_LINKOPT_DEPENDS)
@@ -189,12 +189,12 @@ ifeq "$(RELEASE)" "debug"
 	@echo -sym internal >> $@
 	@echo -sym codeview4 >> $@
 	@echo -osym $(OBJDIR)\$(NLM_NAME).sym >> $@
-else	
+else
 	@echo -sym internal >> $@
-endif	
-	@echo -screenname "$(NLM_SCREEN_NAME)" >> $@ 
+endif
+	@echo -screenname "$(NLM_SCREEN_NAME)" >> $@
 ifneq "$(NLM_VERSION)" ""
-	@echo -nlmversion=$(NLM_VERSION) >> $@ 
+	@echo -nlmversion=$(NLM_VERSION) >> $@
 else
 	@echo -nlmversion=$(VERSION) >> $@
 endif
@@ -209,17 +209,20 @@ endif
 	@echo -l $(NWOS)/$(OBJDIR) >> $@
 	@echo -l "$(METROWERKS)/Novell Support/Metrowerks Support/Libraries/Runtime" >> $@
 	@echo -l "$(METROWERKS)/Novell Support/Metrowerks Support/Libraries/MSL C++" >> $@
+ifneq "$(IPV6)" ""
+	@echo -l $(NOVELLLIBC)\include\winsock\IPV6 >> $@
+endif
 	@echo -l $(NOVELLLIBC)/imports >> $@
-ifneq "$(LDAPSDK)" ""    
+ifneq "$(LDAPSDK)" ""
 	@echo -l $(LDAPSDK)/lib/nlm >> $@
-endif    
+endif
 	@echo -l $(XML)/$(OBJDIR) >> $@
 	@echo -nodefaults >> $@
 	@echo -map $(OBJDIR)\$(NLM_NAME).map>> $@
 	@echo -threadname "$(NLM_THREAD_NAME)" >> $@
 ifneq "$(NLM_STACK_SIZE)" ""
 	@echo -stacksize $(subst K,000,$(subst k,K,$(strip $(NLM_STACK_SIZE)))) >> $@
-else	
+else
 	@echo -stacksize 64000 >> $@
 endif
 ifneq "$(NLM_ENTRY_SYM)" ""
@@ -252,10 +255,10 @@ ifneq "$(FILES_nlm_modules)" ""
 endif
 ifneq "$(FILES_nlm_Ximports)" ""
 	@echo Import $(foreach import,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_Ximports))),$(subst /,\,$(import))) >> $(OBJDIR)\$(NLM_NAME)_link.def
-endif	
+endif
 ifneq "$(FILES_nlm_exports)" ""
 	@echo Export $(foreach export,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_exports))),$(subst /,\,$(export))) >> $(OBJDIR)\$(NLM_NAME)_link.def
-endif	
+endif
 ifneq "$(strip $(XLFLAGS))" ""
 	@echo $(XLFLAGS) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
@@ -271,7 +274,7 @@ endif
 
 else # more than one target so look for individual makefiles.
 
-# Only include these if NO_LICENSE_FILE isn't set to prevent excessive 
+# Only include these if NO_LICENSE_FILE isn't set to prevent excessive
 # recursion
 
 ifndef NO_LICENSE_FILE
