@@ -864,7 +864,7 @@ static apr_status_t brigade_bgets(ap_bucket_brigade *bb,
         }
     }
     --line;            /* point at '\n' */
-    ap_debug_assert(*line == '\n');
+    AP_DEBUG_ASSERT(*line == '\n');
     if (*(line - 1) == '\r') {
         --line;
     }
@@ -952,12 +952,12 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
         b = AP_BRIGADE_FIRST(bb);
         while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
             ap_bucket_read(b, &buf, &len, 1);
-            ap_debug_assert(len <= ctx->chunk_size - ctx->bytes_delivered);
+            AP_DEBUG_ASSERT(len <= ctx->chunk_size - ctx->bytes_delivered);
             ctx->bytes_delivered += len;
             b = AP_BUCKET_NEXT(b);
         }
         if (ctx->bytes_delivered == ctx->chunk_size) {
-            ap_debug_assert(AP_BUCKET_IS_EOS(b));
+            AP_DEBUG_ASSERT(AP_BUCKET_IS_EOS(b));
             AP_BUCKET_REMOVE(b);
             ap_bucket_destroy(b);
             ctx->state = WANT_TRL;
