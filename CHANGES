@@ -1,5 +1,10 @@
 Changes with Apache 2.0.40
 
+  *) Modified the HTTP_IN filter to immediately append the EOS (end of
+     stream) bucket for C-L POST bodies, saving a roundtrip and allowing
+     the caller to determine that no content remains without prefetching
+     additional POST body.  [William Rowe]
+
   *) Get proxy ftp to work over IPv6.  [Shoichi Sakane <sakane@kame.net>]
 
   *) Look for OpenSSL libraries in /usr/lib64.  [Peter Poeml <poeml@suse.de>]
