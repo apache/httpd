@@ -1936,9 +1936,15 @@ void winnt_rewrite_args(process_rec *process)
      *
      *   -k runservice [transition for WinNT, nothing for Win9x]
      *   -k (!)install [error out if name is not installed]
+     *   -k uninstall
+     *   -k stop
+     *   -k shutdown (same as -k stop). Maintained for backward compatability.
      *
      * We can't leave this phase until we know our identity
      * and modify the command arguments appropriately.
+     *
+     * We do not care if the .conf file exists or is parsable when
+     * attempting to stop or uninstall a service.
      */
     apr_status_t rv;
     char *def_server_root;
@@ -2108,6 +2114,20 @@ void winnt_rewrite_args(process_rec *process)
     {
         if (service_set == APR_SUCCESS) 
         {
+            /* Attempt to Uninstall, or stop, before 
+             * we can read the arguments or .conf files
+             */
+            if (!strcasecmp(signal_arg, "uninstall")) {
+                rv = mpm_service_uninstall();
+                exit(rv);
+            }
+
+            if ((!strcasecmp(signal_arg, "stop")) || 
+                (!strcasecmp(signal_arg, "shutdown"))) {
+                mpm_signal_service(process->pool, 0);
+                exit(0);
+            }
+
             rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
                                         fixed_args);
             if (rv == APR_SUCCESS) {
@@ -2152,13 +2172,7 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     /* Handle the following SCM aspects in this phase:
      *
      *   -k runservice [WinNT errors logged from rewrite_args]
-     *   -k uninstall
-     *   -k stop
-     *   -k shutdown (same as -k stop). Maintained for backward compatability.
-     *
-     * in these cases we -don't- care if httpd.conf has config errors!
      */
-    apr_status_t rv;
 
     if (ap_exists_config_define("ONE_PROCESS") ||
         ap_exists_config_define("DEBUG"))
@@ -2171,17 +2185,6 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
                      "%s: Unable to start the service manager.",
                      service_name);
         exit(APEXIT_INIT);
-    }
-
-    if (!strcasecmp(signal_arg, "uninstall")) {
-        rv = mpm_service_uninstall();
-        exit(rv);
-    }
-
-    if ((!strcasecmp(signal_arg, "stop")) || 
-        (!strcasecmp(signal_arg, "shutdown"))) {
-        mpm_signal_service(ptemp, 0);
-        exit(0);
     }
 
     ap_listen_pre_config();
