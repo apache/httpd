@@ -84,7 +84,7 @@
 
 #define ERR_OVERFLOW 5
 
-#ifdef defined(MPE) || defined(BEOS)
+#if defined(MPE) || defined(BEOS)
 #include <termios.h>
 
 char *
