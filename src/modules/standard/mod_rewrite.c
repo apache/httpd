@@ -1544,7 +1544,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             /* substitute in output */
 #ifdef HAS_APACHE_REGEX_LIB
             strncpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch), sizeof(newuri)-1);    /* substitute in output */
-	    newuri[sizeof(newuri-1)] = '\0'; 
+	    newuri[sizeof(newuri)-1] = '\0'; 
 #else
             regsub(regexp, output, newuri);                      /* substitute in output */
 #endif
