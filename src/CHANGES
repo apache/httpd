@@ -1,5 +1,11 @@
 Changes with Apache 1.2
 
+  *) Back out the HAVE_SHMGET change for Linux because it's too late in
+     the beta cycle to deal cleanly with compilation problems on the
+     myriad of linux systems out there.  Linux users should see
+     Configuration.tmpl about defining "Rule LINUX_TWEAKS=yes".
+     [Dean Gaudet] PR#336, PR#340
+
   *) Redirect did not preserve ?query_strings when present in the client's
      request.  [Dean Gaudet]
 

@@ -253,13 +253,25 @@ typedef int pid_t;
 #define NO_USE_SIGACTION
 
 #elif defined(LINUX)
+#ifndef LINUX_TWEAK
+/* the old "stable" way ... it's unfortunate that by doing this we'll incur
+ * bug reports from linux users that run multiple Apaches without setting
+ * a different ScoreBoardFile for each of them.
+ */
+/* #define HAVE_SHMGET */
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#else
+/* this stuff works under 2.0 on i386, but we've had bug reports of it
+ * causing compile-time problems on 1.x systems, and on 2.x alphas.
+ */
+#define HAVE_SHMGET
+/* #define USE_FCNTL_SERIALIZED_ACCEPT */
+#endif
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
-#define HAVE_SHMGET
 #define JMP_BUF sigjmp_buf
-#define USE_FCNTL_SERIALIZED_ACCEPT
 #include <sys/time.h>     
 
 #elif defined(SCO)
