@@ -93,6 +93,10 @@ SOURCE=.\mod_isapi.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\mod_isapi.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\mod_isapi.rc
 # End Source File
 # Begin Source File
