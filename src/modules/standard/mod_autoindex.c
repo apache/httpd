@@ -293,7 +293,7 @@ static const char *fancy_indexing(cmd_parms *cmd, void *d, int arg)
 
     cfg = (autoindex_config_rec *) d;
     curopts = cfg->opts;
-    newopts = (arg ? (curopts | FANCY_INDEXING) : (curopts & !FANCY_INDEXING));
+    newopts = (arg ? (curopts | FANCY_INDEXING) : (curopts & ~FANCY_INDEXING));
     cfg->opts = newopts;
     return NULL;
 }
