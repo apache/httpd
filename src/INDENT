@@ -61,10 +61,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_actions.c		DONE by Dean
    mod_alias.c			DONE by Dean
    mod_asis.c			DONE by Dean
-   mod_auth.c
-   mod_auth_anon.c
-   mod_auth_db.c
-   mod_auth_dbm.c
+   mod_auth.c			RESERVED by Dean
+   mod_auth_anon.c		RESERVED by Dean
+   mod_auth_db.c		RESERVED by Dean
+   mod_auth_dbm.c		RESERVED by Dean
    mod_autoindex.c
    mod_cern_meta.c
    mod_cgi.c
