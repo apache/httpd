@@ -106,8 +106,9 @@ PATCHES TO BACKPORT FROM 2.1
     *) modules/config5.m4: for a static module, use a filename with a
        lib prefix, see also rev 102381 of acinclude.m4
        svn rev 124599
-       jerenkrantz says: r102381 makes DSOs follow this convention by not using
-                         mod_*.  This just makes static modules follow.
+       jerenkrantz says: r102381 makes static modules follow this convention
+                         by not using mod_*.  This just makes the manual
+                         --with-module modules follow.
        +1: erikabele, jerenkrantz
 
     *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
