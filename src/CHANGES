@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Use a more straight forward and thus less problematic Sed command in
+     src/helper/mkdir.sh script.  [Ralf S. Engelschall]
+
   *) Make sure the `configure' scripts doesn't fail when trying to guess the
      domainname of the machine and there are multiple `domainname' and
      `search' entries in /etc/resolv.conf.

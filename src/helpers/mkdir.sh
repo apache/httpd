@@ -12,7 +12,7 @@ umask 022
 errstatus=0
 for file in ${1+"$@"} ; do 
     set fnord `echo ":$file" |\
-               sed -ne 's/^:\//#/;s/^://;s/\// /g;s/^#/\//;p'`
+               sed -e 's/^:\//%/' -e 's/^://' -e 's/\// /g' -e 's/^%/\//'`
     shift
     pathcomp=
     for d in ${1+"$@"}; do
