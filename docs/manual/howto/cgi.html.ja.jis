@@ -21,8 +21,6 @@
 <p><span>Available Languages: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
@@ -70,7 +68,7 @@
       ディレクティブは以下のように使用します:</p>
 
       <div class="example"><p><code>
-        ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/
+        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
       </code></p></div>
 
       <p>デフォルト位置に Apache をインストールしたならば、
@@ -88,12 +86,12 @@
       URL は CGI プログラムとみなされるという追加の意味を含んでいることです。
       従って、上記の例では、<code>/cgi-bin/</code>
       で始まるリソースへのあらゆるリクエストに対して、ディレクトリ
-      <code>/usr/local/apache/cgi-bin/</code> から提供し、それらを
+      <code>/usr/local/apache2/cgi-bin/</code> から提供し、それらを
       CGI プログラムとして扱うよう Apache に示します。</p>
 
       <p>例えば、URL <code>http://dev.rcbowen.com/cgi-bin/test.pl</code>
       が要求された場合、Apache は ファイル
-      <code>/usr/local/apache/cgi-bin/test.pl</code>
+      <code>/usr/local/apache2/cgi-bin/test.pl</code>
       を実行し、その出力を返すことを試みます。
       もちろん、ファイルが存在し、実行可能であり、決められた方法で出力を返します。
       そうでなければ、Apache はエラーメッセージを返します。</p>
@@ -110,9 +108,15 @@
       プログラムを任意のディレクトリで実行できないようにする理由はありません。
       例えば、ユーザに <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
       ディレクティブで彼らのホームディレクトリ配下にウェブコンテンツを持たせたいとします。
-      もし、彼らが CGI プログラムを持つことを望んでいても、メインの
+      もし、彼らが CGI プログラムを持つことを望んでいても、メインの
       <code>cgi-bin</code> ディレクトリへのアクセスができない場合、
       CGI プログラムを実行することができる他の場所が必要になります。</p>
+
+      <p>任意のディレクトリで CGI の実行を許可するには二段階の設定が必要です。
+      まず、<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> や <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ディレクティブによって
+      <code>cgi-script</code> ハンドラが可能になっている必要があります。
+      次に、<code class="directive"><a href="../mod/core.html#options">Options</a></code> ディレクティブで
+      <code>ExecCGI</code> が指定されていなければなりません。</p>
     
 
     <h3><a name="options" id="options">CGI の実行を可能にするために Options を明示的に使用する</a></h3>
@@ -123,7 +127,7 @@
       CGI の実行を許可するように指定することができます:</p>
 
       <div class="example"><p><code>
-        &lt;Directory /usr/local/apache/htdocs/somedir&gt;<br />
+        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
         <span class="indent">
           Options +ExecCGI<br />
         </span>
@@ -139,43 +143,46 @@
       プログラムとしてみなすことをサーバに伝えます:</p>
 
       <div class="example"><p><code>
-        AddHandler cgi-script cgi pl
+        AddHandler cgi-script .cgi .pl
       </code></p></div>
     
 
     <h3><a name="htaccess" id="htaccess">.htaccess files</a></h3>
       
 
-      <p><a href="htaccess.html"><code>.htaccess</code>
-      ファイル</a>は、ディレクトリ毎にディレクティブを指定する方法です。
-      Apache は、リソースを提供するときに、
-      提供するファイルが置かれているディレクトリ中の <code>.htaccess</code>
-      というファイルを参照します。そのファイルを発見したら、
-      その中で発見されたディレクティブが適用されます。
+      <p><a href="htaccess.html"><code>.htaccess</code> チュートリアル</a>
+      は <code>httpd.conf</code> を変更できない場合にどうやって CGI プログラムを
+      使えるようにするかを説明しています。</p>
+    
+
+    <h3><a name="userdir" id="userdir">User ディレクトリ</a></h3>
       
-      <code>.htaccess</code> ファイルは、
-      <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
-      ディレクティブの指定により使えるようになります。
-      <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> 
-      ディレクティブは、<code>.htaccess</code>
-      ファイルで、どのタイプのディレクティブが設定できるか、
-      あるいは全く指定できないかを指定します。
-      この目的に必要になるディレクティブを使用できるようにするには、
-      サーバのメインの設定で、以下の設定が必要になります:</p>
+
+      <p><code>.cgi</code> で終わるすべてのファイルに対して CGI プログラムの
+      実行を許可するには、以下の設定を使用できます。</p>
 
       <div class="example"><p><code>
-        AllowOverride Options
+      &lt;Directory /home/*/public_html&gt;<br />
+      <span class="indent">
+        Options +ExecCGI<br />
+        AddHandler cgi-script .cgi<br />
+      </span>
+      &lt;/Directory&gt;
       </code></p></div>
 
-      <p><code>.htaccess</code>
-      ファイルでは、次のディレクティブが必要となります:</p>
+      <p>ユーザディレクトリの <code>cgi-bin</code> サブディレクトリの
+      すべてのファイルを CGI プログラムとして指定したい場合には
+      以下のようなものを使います。</p>
 
       <div class="example"><p><code>
-        Options +ExecCGI
+      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
+      <span class="indent">
+        Options ExecCGI<br />
+        SetHandler cgi-script<br />
+      </span>
+      &lt;/Directory&gt;
       </code></p></div>
 
-      <p>この設定では、このディレクトリにおける CGI
-      プログラムの実行を許可するよう Apache に伝えます。</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -250,7 +257,10 @@
 
     <dl>
       <dt>CGI プログラムの出力</dt>
-      <dd>素晴らしい ! それはすべてがうまく動いたことを意味します。</dd>
+      <dd>素晴らしい ! それはすべてがうまく動いたことを意味します。
+      出力が正常だけれども、ブラウザが正常に処理してくれない場合は、
+      正しい <code>Content-Type</code> を CGI プログラム内で
+      セットしたかを確認してください。</dd>
 
       <dt>CGI プログラムのソースコード、または "POST Method Not Allowed"
       というメッセージ</dt> 
@@ -261,7 +271,7 @@
       </dd>
 
       <dt>メッセージが "Forbidden" で始まっている</dt>
-      <dd>これはパーミッションの問題ということを意味します。
+      <dd>これはパーミッションの問題ということを意味します。
       <a href="#errorlogs">Apache のエラーログ</a>と、後述の<a href="#filepermissions">「ファイルのパーミッション」</a>
       の章をチェックしてください。
       </dd>
@@ -294,28 +304,20 @@
       それらのファイルは、これが可能となる正しいパーミッション
       を持っている必要があります。</p>
 
-      <p>これに対する例外は、サーバが <a href="../suexec.html">suexec</a>
-      を使用するよう設定されている場合です。suexec は、CGI
-      プログラムが置かれているバーチャルホストまたはユーザの
-      ホームディレクトリによって、異なるユーザ権限で実行されるようにします。
-      suexec はとても厳しいパーミッションのチェックがあり、
-      そのチェックを通過できないと "Internal Server Error" となり、その
-      CGI プログラムの実行は失敗します。
-      この場合、どのセキュリティチェックが失敗しているのかを知るために
-      suexec ログファイルをチェックする必要があります。</p>
     
 
-    <h3><a name="pathinformation" id="pathinformation">パス情報</a></h3>
+    <h3><a name="pathinformation" id="pathinformation">パス情報と環境</a></h3>
       
 
-      <p>コマンドラインからプログラムを実行するとき、
+      <p>コマンドラインからプログラムを実行するとき、
       意識しなくてもシェルに渡される情報があります。
       例えば、参照するファイルのためにどこを検索したらよいかを
-      シェルに伝えるパスがあります。</p>
+      シェルに伝える <code>PATH</code> があります。</p>
 
       <p>プログラムが CGI プログラムとしてウェブサーバによって実行されるとき、
-      それはパスを持ちません。CGI プログラム内で呼び出すあらゆるプログラム
-      (例えば、'sendmail' のようなもの) は、
+      それは同じ <code>PATH</code> ではないかもしれません。
+      CGI プログラム内で呼び出すあらゆるプログラム
+      (例えば、<code>sendmail</code> のようなもの) は、
       フルパスで指定する必要があるでしょう。それにより、CGI
       プログラムを実行しようとしたとき、
       シェルはそのようなプログラムを見つけることができます。</p>
@@ -330,15 +332,29 @@
       <p>これがインタープリタへの実際のパスであることを確実にしておきます。</p>
     
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">構文エラー</a></h3>
+    <h3><a name="syntaxerrors" id="syntaxerrors">プログラムエラー</a></h3>
       
 
       <p>CGI
       プログラムが失敗するのは大抵、プログラム自身に問題がある場合です。
       一度 CGI の使い方を理解し、前述の二つの誤りを犯していないならば、
-      まず間違いなくそうでしょう。ブラウザを通してテストを行う前に必ず、
-      コマンドラインからプログラムの実行を試しなさい。
-      これにより、大抵の問題が起こらなくなります。</p>
+      まず間違いなくそうでしょう。ブラウザを使ってテストする前に
+      まず確認することは、コマンドラインからプログラムが実行できることです。
+      例えば、以下を実行してみてください:</p>
+
+      <div class="example"><p><code>
+      cd /usr/local/apache2/cgi-bin<br />
+      ./first.pl
+      </code></p></div>
+
+      <p>(<code>perl</code> インタプリタは呼ばないでください。
+      シェルと Apache がスクリプトの最初の行の <a href="#pathinformation">パス情報</a> を使って見つけます。)</p>
+
+      <p>最初にプログラムから出力されるのは <code>Content-Type</code> を含み、
+      後に空行の続く HTTP ヘッダでなければなりません。他のものが出力されている
+      場合は、Apache はこのプログラムをサーバ経由で実行しようとしたときには
+      <code>Premature end of script headers</code> エラーを出力します。詳細は
+      上記の <a href="#writing">CGI プログラムを書く</a> を読んでください。</p>
     
 
     <h3><a name="errorlogs" id="errorlogs">エラーログ</a></h3>
@@ -350,7 +366,31 @@
       もし、あなたがウェブサイトを主催している場所が
       エラーログの参照を許していないならば、きっと他のサイトで主催するべきです。
       エラーログの読み方を学ぶことで、ほとんど全ての問題が迅速に確認され、
-      迅速に解決されるということが分かるでしょう。</p>
+      迅速に解決されるということが分かるでしょう。</p>
+    
+
+    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+      
+
+      <p><a href="../suexec.html">suexec</a> サポートプログラムは
+      バーチャルホストやユーザのホームディレクトリの場所に依って
+      CGI プログラムを違うユーザ権限の下で走らせることを可能にします。
+      Suexec の権限のチェックは非常に厳しく、それを満たさない場合は
+      CGI プログラムが <code>Premature end of script headers</code> エラーで
+      実行されません。</p>
+
+      <p>suexec を使っているかどうかを調べためには <code>apachectl
+      -V</code> を実行して、<code>SUEXEC_BIN</code> の場所を調べてください。
+      Apache がそこに suexec のバイナリを発見した場合は、suexec が
+      使用されます。</p>
+
+      <p>suexec を完全に理解していない限り、使うべきではありません。
+      suexec を無効にするには、<code>SUEXEC_BIN</code> から指されている
+      <code>suexec</code> バイナリを削除 (か名前を変更) するだけです。
+      <a href="../suexec.html">suexec</a> を読んだ後で、まだそれを
+      使いたいのであれば、<code>suexec -V</code> を実行して suexec の
+      ログファイルの位置を調べ、そのログファイルを使ってポリシー違反を
+      見つけてください。</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -359,7 +399,7 @@
 
     <p>CGI プログラミングに習熟すると、
     裏で起こっていることについて更に理解すること役に立ちます。
-    ブラウザとサーバがどのように相互通信するかについては特にそうです。
+    ブラウザとサーバがどのように相互通信するかについては特にそうです。
     なぜなら、"Hello, World."
     を印字するプログラムを書くことはおおいに結構ですが、
     それは特に有益ではありません。</p>
@@ -393,7 +433,7 @@
       そして、公式のリストにはないいくつかの変数が表示されているかもしれません。
       さらに、Apache はデフォルトで用意されている基本的なものに
       <a href="../env.html">あなた自身の環境変数を加える</a>ための、
-      多くの異なる方法を用意してします。</p>
+      多くの異なる方法を用意してします。</p>
 
       <div class="example"><p><code>
         #!/usr/bin/perl<br />
@@ -441,7 +481,7 @@
       <code>METHOD</code> 属性の設定で指定します。</p>
 
       <p>CGI プログラムは、その文字列を役に立つ情報に分割する責任があります。
-      幸いにも、そのデータ処理を助けるライブラリやモジュールが存在します。
+      幸いにも、そのデータ処理を助けるライブラリやモジュールが存在します。
       これらは、CGI プログラムの他の面でも同様に役に立ちます。</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -484,7 +524,7 @@
     <p>CGI の問題について、加わっているメーリングリストまたはニュース
     グループに質問を送るとき、起こったもの、起こってほしいこと、
     実際に起こったことがどう違うか、使用しているサーバ、
-    CGI プログラムを記述している言語に関する十分な情報と、
+    CGI プログラムを記述している言語に関する十分な情報と、
     可能であれば問題のコードを提供するようにしてください。
     そうすることで、問題がより間単に見つかるようになります。</p>
 

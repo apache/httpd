@@ -22,8 +22,6 @@
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p><strong>suEXEC</strong>
     機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
@@ -437,28 +435,11 @@
       </dd>
     </dl>
 
-    <p><strong>suEXEC 設定の確認</strong>
-    <br />
-    suEXEC wrapper をコンパイルしてインストールする前に、設定内容を
-    <code>--layout</code> オプションで確認できます。<br />
-    出力例:</p>
-<div class="example"><p><code>
-    suEXEC setup:<br />
-            suexec binary: /usr/local/apache2/sbin/suexec<br />
-            document root: /usr/local/apache2/share/htdocs<br />
-           userdir suffix: public_html<br />
-                  logfile: /usr/local/apache2/var/log/suexec_log<br />
-                safe path: /usr/local/bin:/usr/bin:/bin<br />
-                caller ID: www<br />
-          minimum user ID: 100<br />
-         minimum group ID: 100<br />
-</code></p></div>
-
     <p><strong>suEXEC wrapper
     のコンパイルとインストール</strong><br />
     <code>--enable-suexec</code> オプションで suEXEC 機能を有効にすると、
     "make" コマンドを実行した時に <code>suexec</code> のバイナリ (Apache 自体も)
-    が自動的に作成されます。
+    が自動的に作成されます。
     <br />
     すべての構成要素が作成されると、それらのインストールには
     <code>make install</code> コマンドが実行できます。バイナリイメージの <code>suexec</code>
@@ -477,7 +458,7 @@
     システム上でこのチェックが行なわれる前に、
     suEXEC が呼ぶシステムやライブラリが脆弱である可能性は残ります。対抗策として、
     一般に良い習慣ともされいますが、
-    ファイルシステムパーミッションを使って
+    ファイルシステムパーミッションを使って
     Apache の実行時のグループのみが suEXEC を実行できるように
     するのが良いでしょう。</p>
 
@@ -507,7 +488,7 @@
     <p>起動時に、Apache は <code>--sbindir</code>
     オプションで設定されたディレクトリで
     <code>suexec</code> を探します
-    (デフォルトは "/usr/local/apache/sbin/suexec") 。
+    (デフォルトは "/usr/local/apache/sbin/suexec") 。
     適切に設定された suEXEC がみつかると、
     エラーログに以下のメッセージが出力されます。</p>
 
@@ -601,7 +582,7 @@
         <p class="indent">
           これを変更するのは危険です。この指定に含まれる各パスが
           <strong>信頼できる</strong>
-          ディレクトリであることを確認してください。
+          ディレクトリであることを確認してください。
           世界からのアクセスにより、誰かがホスト上でトロイの木馬
           を実行できるようにはしたくないでしょう。
         </p>
