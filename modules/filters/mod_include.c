@@ -523,6 +523,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     const char *c;
     const char *buf;
     const char *str = ctx->end_seq;
+    const char *start;
 
     do {
         apr_status_t rv = 0;
@@ -580,6 +581,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         else {
             c = buf;
         }
+        start = c;
         while (c < buf + len) {
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state != PARSE_TAIL) {
@@ -595,9 +597,10 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                          * end of the END_SEQUENCE is in the current bucket.
                          * The beginning might be in a previous bucket.
                          */
-                        ctx->bytes_parsed++;
+                        c++;
+                        ctx->bytes_parsed += (c - start);
                         ctx->state = PARSED;
-                        apr_bucket_split(dptr, c - buf + 1);
+                        apr_bucket_split(dptr, c - buf);
                         tmp_buck = APR_BUCKET_NEXT(dptr);
                         return (tmp_buck);
                     }           
@@ -659,8 +662,8 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 }
             }
             c++;
-            ctx->bytes_parsed++;
         }
+        ctx->bytes_parsed += (c - start);
         dptr = APR_BUCKET_NEXT(dptr);
     } while (dptr != APR_BRIGADE_SENTINEL(bb));
     return NULL;
