@@ -401,10 +401,10 @@ static void ssl_init_server_check(server_rec *s,
     }
 }
 
-static void ssl_init_ctx(server_rec *s,
-                         apr_pool_t *p,
-                         apr_pool_t *ptemp,
-                         modssl_ctx_t *mctx)
+static void ssl_init_ctx_protocol(server_rec *s,
+                                  apr_pool_t *p,
+                                  apr_pool_t *ptemp,
+                                  modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = NULL;
     SSL_METHOD *method = NULL;
@@ -694,6 +694,29 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
             n, n == 1 ? "" : "s");
 }
 
+static void ssl_init_ctx(server_rec *s,
+                         apr_pool_t *p,
+                         apr_pool_t *ptemp,
+                         modssl_ctx_t *mctx)
+{
+    ssl_init_ctx_protocol(s, p, ptemp, mctx);
+
+    ssl_init_ctx_session_cache(s, p, ptemp, mctx);
+
+    ssl_init_ctx_callbacks(s, p, ptemp, mctx);
+
+    ssl_init_ctx_verify(s, p, ptemp, mctx);
+
+    ssl_init_ctx_cipher_suite(s, p, ptemp, mctx);
+
+    ssl_init_ctx_crl(s, p, ptemp, mctx);
+
+    if (mctx->pks) {
+        /* XXX: proxy support? */
+        ssl_init_ctx_cert_chain(s, p, ptemp, mctx);
+    }
+}
+
 static int ssl_server_import_cert(server_rec *s,
                                   modssl_ctx_t *mctx,
                                   const char *id,
@@ -878,6 +901,18 @@ static void ssl_init_server_certs(server_rec *s,
     }
 }
 
+static void ssl_init_server_ctx(server_rec *s,
+                                apr_pool_t *p,
+                                apr_pool_t *ptemp,
+                                SSLSrvConfigRec *sc)
+{
+    ssl_init_server_check(s, p, ptemp, sc->server);
+
+    ssl_init_ctx(s, p, ptemp, sc->server);
+
+    ssl_init_server_certs(s, p, ptemp, sc->server);
+}
+
 /*
  * Configure a particular server
  */
@@ -886,23 +921,7 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    ssl_init_server_check(s, p, ptemp, sc->server);
-
-    ssl_init_ctx(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_session_cache(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_callbacks(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_verify(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_cipher_suite(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_crl(s, p, ptemp, sc->server);
-
-    ssl_init_ctx_cert_chain(s, p, ptemp, sc->server);
-
-    ssl_init_server_certs(s, p, ptemp, sc->server);
+    ssl_init_server_ctx(s, p, ptemp, sc);
 }
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
