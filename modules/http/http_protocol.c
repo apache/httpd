@@ -1007,7 +1007,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     while (1) {
         while (e->length == 0) {
             AP_BUCKET_REMOVE(e);
-            e->destroy(e);
+            ap_bucket_destroy(e);
 
             ap_get_brigade(c->input_filters, b);
             if (!AP_BRIGADE_EMPTY(b)) {
@@ -1034,7 +1034,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             apr_cpystrn(pos, temp, length + 1);
 	    
             AP_BUCKET_REMOVE(e);
-            e->destroy(e);
+            ap_bucket_destroy(e);
         }
         c->input_data = b;
         e = AP_BRIGADE_FIRST(b); 
@@ -2467,7 +2467,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                 ap_bucket *e = b;
                 b = AP_BUCKET_NEXT(e);
                 AP_BUCKET_REMOVE(e);
-                e->destroy(e);
+                ap_bucket_destroy(e);
             }
         } while (AP_BRIGADE_EMPTY(r->connection->input_data));
 
@@ -2481,7 +2481,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         memcpy(buffer, tempbuf, len_to_read);
         AP_BUCKET_REMOVE(b);
-        b->destroy(b);
+        ap_bucket_destroy(b);
 
         r->read_length += len_to_read;
         r->remaining -= len_to_read;
