@@ -2843,7 +2843,7 @@ static void open_rewritelog(server_rec *s, pool *p)
 {
     rewrite_server_conf *conf;
     char *fname;
-    FILE *fp;
+    piped_log *pl;
     int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
 #ifdef WIN32
     mode_t rewritelog_mode=_S_IREAD|_S_IWRITE;
@@ -2863,15 +2863,14 @@ static void open_rewritelog(server_rec *s, pool *p)
     fname = ap_server_root_relative(p, conf->rewritelogfile);
 
     if (*conf->rewritelogfile == '|') {
-        if (!spawn_child(p, rewritelog_child, (void *)(conf->rewritelogfile+1),
-                    kill_after_timeout, &fp, NULL)) {
-            perror("spawn_child");
+        if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
+            perror("ap_open_piped_log");
             fprintf(stderr,
-                    "mod_rewrite: could not fork child for "
-                    "RewriteLog process\n");
+                    "mod_rewrite: could not open reliable piped log for "
+                    "RewriteLog\n");
             exit (1);
         }
-        conf->rewritelogfp = fileno(fp);
+        conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
     else if (*conf->rewritelogfile != '\0') {
         if ((conf->rewritelogfp = ap_popenf(p, fname, rewritelog_flags,
@@ -2884,27 +2883,6 @@ static void open_rewritelog(server_rec *s, pool *p)
         }
     }
     return;
-}
-
-/* Child process code for 'RewriteLog "|..."' */
-static int rewritelog_child(void *cmd, child_info *pinfo)
-{
-    int child_pid = 1;
-
-    ap_cleanup_for_exec();
-#ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
-#endif
-#if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c",
-                       (char *)cmd, NULL);
-#elif defined(__EMX__)
-    /* OS/2 needs a '/' */
-    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-#else
-    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif
-    return(child_pid);
 }
 
 static void rewritelog(request_rec *r, int level, const char *text, ...)
