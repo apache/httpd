@@ -80,6 +80,7 @@ APR_ADDTO(CFLAGS, `$apr_config --cflags`)
 APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apr_config --includes`)
+SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
