@@ -91,7 +91,6 @@ char **create_argv(request_rec *r, char *av0, ...)
 	
 	unescape_url(t);
 	av[idx] = escape_shell_cmd(r->pool, t);
-	av[idx] = t;
 	idx++;
 	if (idx >= APACHE_ARG_MAX-1) break;
 	
@@ -99,15 +98,13 @@ char **create_argv(request_rec *r, char *av0, ...)
 	    unescape_url(t);
 	    assert(idx < APACHE_ARG_MAX);
 	    av[idx] = escape_shell_cmd(r->pool, t);
-	    av[idx] = t;
 	    idx++;
 	    if (idx >= APACHE_ARG_MAX-1) break;
 	}
-	va_end(args);
     }
     va_end(args);
 
-    av[idx] = '\0';
+    av[idx] = NULL;
     return av;
 }
 
@@ -538,7 +535,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
 	}
 	else
-	    execv(r->filename, create_argv(r, argv0, r->args, NULL));
+	    execv(r->filename, create_argv(r, argv0, r->args, (void *)NULL));
     }
     }
 #else
@@ -579,7 +576,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 
   	else {
 	    execve(SUEXEC_BIN,
-		   create_argv(r, SUEXEC_BIN, execuser, gr->gr_name, argv0, r->args, NULL),
+		   create_argv(r, SUEXEC_BIN, execuser, gr->gr_name, argv0, r->args, (void *)NULL),
 		   env);
 	}
     }
@@ -591,7 +588,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execle(r->filename, argv0, NULL, env);
 
 	else
-	    execve(r->filename, create_argv(r, argv0, r->args, NULL), env);
+	    execve(r->filename, create_argv(r, argv0, r->args, (void *)NULL), env);
     }
 #endif
 }

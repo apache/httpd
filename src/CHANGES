@@ -1,3 +1,8 @@
+Changes with Apache 1.2b8
+
+  *) Remove unnecessary call to va_end() in create_argv() which
+     caused a SEGV on some systems.
+
 Changes with Apache 1.2b7
 
   *) Port to  UXP/DS(V20) [Toshiaki Nomura <nom@yk.fujitsu.co.jp>]
