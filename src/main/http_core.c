@@ -335,6 +335,11 @@ static void inline do_double_reverse (conn_rec *conn)
 	/* already done */
 	return;
     }
+    if (conn->remote_host == NULL || conn->remote_host[0] == '\0') {
+	/* single reverse failed, so don't bother */
+	conn->double_reverse = -1;
+	return;
+    }
     hptr = gethostbyname(conn->remote_host);
     if (hptr) {
 	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
@@ -355,20 +360,28 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 {
     struct in_addr *iaddr;
     struct hostent *hptr;
-    core_dir_config *dir_conf = NULL;
-
-/* If we haven't checked the host name, and we want to */
-    if (dir_config) 
-	dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
-
-   if ((!dir_conf) || (type != REMOTE_NOLOOKUP && conn->remote_host == NULL
-	&& (type == REMOTE_DOUBLE_REV
-	    || dir_conf->hostname_lookups != HOSTNAME_LOOKUP_OFF)))
-    {
+    int hostname_lookups;
 #ifdef STATUS
-	int old_stat = update_child_status(conn->child_num,
-						SERVER_BUSY_DNS,
-						(request_rec*)NULL);
+    int old_stat = SERVER_UNKNOWN;
+#endif
+
+    /* If we haven't checked the host name, and we want to */
+    if (dir_config) {
+	hostname_lookups =
+	    ((core_dir_config *)get_module_config(dir_config, &core_module))
+		->hostname_lookups;
+    } else {
+	/* the default */
+	hostname_lookups = HOSTNAME_LOOKUP_OFF;
+    }
+
+    if (type != REMOTE_NOLOOKUP
+	&& conn->remote_host == NULL
+	&& (type == REMOTE_DOUBLE_REV
+	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
+#ifdef STATUS
+	old_stat = update_child_status(conn->child_num, SERVER_BUSY_DNS,
+					    (request_rec*)NULL);
 #endif /* STATUS */
 	iaddr = &(conn->remote_addr.sin_addr);
 	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
@@ -376,19 +389,15 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 	    conn->remote_host = pstrdup(conn->pool, (void *)hptr->h_name);
 	    str_tolower (conn->remote_host);
 	   
-	    if (dir_conf
-		&& dir_conf->hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
+	    if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
 		do_double_reverse (conn);
 		if (conn->double_reverse != 1) {
 		    conn->remote_host = NULL;
 		}
 	    }
 	}
-/* if failed, set it to the NULL string to indicate error */
+	/* if failed, set it to the NULL string to indicate error */
 	if (conn->remote_host == NULL) conn->remote_host = "";
-#ifdef STATUS
-	(void)update_child_status(conn->child_num,old_stat,(request_rec*)NULL);
-#endif /* STATUS */
     }
     if (type == REMOTE_DOUBLE_REV) {
 	do_double_reverse (conn);
@@ -396,6 +405,11 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 	    return NULL;
 	}
     }
+#ifdef STATUS
+    if (old_stat != SERVER_UNKNOWN) {
+	(void)update_child_status(conn->child_num,old_stat,(request_rec*)NULL);
+    }
+#endif /* STATUS */
 
 /*
  * Return the desired information; either the remote DNS name, if found,
