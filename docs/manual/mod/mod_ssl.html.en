@@ -1443,26 +1443,40 @@ up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
 helps to avoid unneccessary session handshakes.</p>
 <p>
-The following two storage <em>type</em>s are currently supported:</p>
+The following four storage <em>type</em>s are currently supported:</p>
 <ul>
 <li><code>none</code>
-    <p>
-    This is the default and just disables the global/inter-process Session
-    Cache. There is no drawback in functionality, but a noticeable speed
-    penalty can be observed.</p></li>
+
+    <p>This disables the global/inter-process Session Cache.  This
+    will incur a noticeable speed penalty and may cause problems if
+    using certain browsers, particularly if client certificates are
+    enabled.  This setting is not recommended.</p></li>
+
 <li><code>dbm:/path/to/datafile</code>
-    <p>
-    This makes use of a DBM hashfile on the local disk to synchronize the
-    local OpenSSL memory caches of the server processes. The slight increase
-    in I/O on the server results in a visible request speedup for your
-    clients, so this type of storage is generally recommended.</p></li>
+
+    <p>This makes use of a DBM hashfile on the local disk to
+    synchronize the local OpenSSL memory caches of the server
+    processes.  This session cache may suffer reliability issues under
+    high load.</p></li>
+
 <li><code>shm:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
-    <p>
-    This makes use of a high-performance hash table (approx. <em>size</em> bytes
-    in size) inside a shared memory segment in RAM (established via
-    <code>/path/to/datafile</code>) to synchronize the local OpenSSL memory
-    caches of the server processes. This storage type is not available on all
-    platforms.</p></li>
+
+    <p>This makes use of a high-performance cyclic buffer
+    (approx. <em>size</em> bytes in size) inside a shared memory
+    segment in RAM (established via <code>/path/to/datafile</code>) to
+    synchronize the local OpenSSL memory caches of the server
+    processes.  This is the recommended session cache.</p></li>
+
+<li><code>dc:UNIX:/path/to/socket</code>
+
+    <p>This makes use of the <a href="http://www.distcache.org/">distcache</a> distributed session
+    caching libraries.  The argument should specify the location of
+    the server or proxy to be used using the distcache address syntax;
+    for example, <code>UNIX:/path/to/socket</code> specifies a UNIX
+    domain socket (typically a local dc_client proxy);
+    <code>IP:server.example.com:9001</code> specifies an IP
+    address.</p></li>
+
 </ul>
 <div class="example"><h3>Examples</h3><p><code>
 SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br />
