@@ -303,7 +303,8 @@ static int get_path_info(request_rec *r)
             *cp = '\0';
             return OK;
         }
-        else if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
+        
+        if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
