@@ -113,6 +113,8 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r);
 AP_DECLARE(void) ap_send_http_header(request_rec *l);
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b);
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *, 
+                                                              ap_bucket_brigade *);
 
 /* Send the response to special method requests */
 
@@ -533,6 +535,7 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum);
 
 apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
 apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
+
 
   /* Hooks */
   /*
