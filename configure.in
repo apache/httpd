@@ -108,7 +108,6 @@ initgroups \
 AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
-AC_CHECK_LIB(resolv, sethostent)
 
 AC_ARG_WITH(optim,[  --with-optim="FLAGS"      compiler optimisation flags],
         [OPTIM="$withval"])
