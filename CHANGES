@@ -2,6 +2,9 @@ Changes with Apache 2.1.4
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add ReceiveBufferSize directive to control the TCP receive buffer.
+     [Eric Covener <covener gmail.com>]
+
   *) mod_proxy: Add proxy-sendextracrlf option to send an extra CRLF at the
      end of the request body to work with really old HTTP servers.
      [Justin Erenkrantz]
@@ -9,7 +12,7 @@ Changes with Apache 2.1.4
   *) util_ldap: Keep track of the number of attributes retrieved from 
      LDAP so that all the values can be properly cached even if the 
      value is NULL. PR 33901 [Brad Nicholes]
-  
+
   *) mod_cache: Fix error where incoming Cache-Control would be ignored.
      [Justin Erenkrantz]
 
