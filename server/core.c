@@ -3277,9 +3277,10 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
 }
 
 static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
-                                  int my_child_num)
+                                  int conn_id)
 {
     core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
+    apr_status_t rv;
 
 #ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     ap_sock_disable_nagle(csd);
@@ -3287,9 +3288,42 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
 
     net->in_ctx = NULL;
     net->out_ctx = NULL;
-    net->c = ap_core_new_connection(ptrans, ap_server_conf, csd,
-                                    net, my_child_num);
-
+    net->c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
+ 
+    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(conn_id),
+                                  SERVER_BUSY_READ, (request_rec *) NULL);
+ 
+    /* Got a connection structure, so initialize what fields we can
+     * (the rest are zeroed out by pcalloc).
+     */
+ 
+    net->c->conn_config=ap_create_conn_config(ptrans);
+    net->c->notes = apr_table_make(ptrans, 5);
+ 
+    net->c->pool = ptrans;
+    if ((rv = apr_socket_addr_get(&net->c->local_addr, APR_LOCAL, csd))
+        != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf,
+                     "apr_socket_addr_get(APR_LOCAL)");
+        apr_socket_close(csd);
+        return NULL;
+    }
+    apr_sockaddr_ip_get(&net->c->local_ip, net->c->local_addr);
+    if ((rv = apr_socket_addr_get(&net->c->remote_addr, APR_REMOTE, csd))
+        != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf,
+                     "apr_socket_addr_get(APR_REMOTE)");
+        apr_socket_close(csd);
+        return NULL;
+    }
+    apr_sockaddr_ip_get(&net->c->remote_ip, net->c->remote_addr);
+    net->c->base_server = ap_server_conf;
+    net->client_socket = csd;
+ 
+    net->c->id = conn_id;
+ 
+    apr_pool_cleanup_register(ptrans, net, ap_lingering_close, apr_pool_cleanup_null);
+ 
     ap_add_input_filter("CORE_IN", net, NULL, net->c);
     ap_add_output_filter("CORE", net, NULL, net->c);
     return net->c;
