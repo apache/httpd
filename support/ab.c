@@ -478,7 +478,7 @@ void ssl_util_thread_setup(apr_pool_t *p)
  *
  */
 #ifdef USE_SSL
-long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,long ret)
+static long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,long ret)
 {
     BIO *out;
 
@@ -520,7 +520,7 @@ static int ssl_rand_choosenum(int l, int h)
     return i;
 }
 
-void ssl_rand_seed()
+static void ssl_rand_seed(void)
 {
     int nDone = 0;
     int n, l;
@@ -552,9 +552,7 @@ void ssl_rand_seed()
     nDone += 128;
 }
 
-int ssl_print_connection_info(bio,ssl)
-BIO *bio;
-SSL *ssl;
+static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 {
         SSL_CIPHER *c;
         int alg_bits,bits;
@@ -569,9 +567,7 @@ SSL *ssl;
         return(1);
 }
 
-int ssl_print_cert_info(bio,x509cert)
-BIO *bio;
-X509 *x509cert;
+static int ssl_print_cert_info(BIO *bio, X509 *x509cert)
 {
         X509_NAME *dn;
         char buf[64];
@@ -603,7 +599,7 @@ X509 *x509cert;
         return(1);
 }
 
-void ssl_start_connect(struct connection * c)
+static void ssl_start_connect(struct connection * c)
 {
     BIO *bio;
     X509 *x509cert;
@@ -1720,7 +1716,14 @@ static void test(void)
 
 	for (i = 0; i < n; i++) {
             const apr_pollfd_t *next_fd = &(pollresults[i]);
-            struct connection *c = next_fd->client_data;
+            struct connection *c;
+            
+#ifdef USE_SSL
+            if (ssl) 
+                c = &con[i];
+            else
+#endif
+                c = next_fd->client_data;
 
 	    /*
 	     * If the connection isn't connected how can we check it?
@@ -1822,14 +1825,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.131 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.132 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.131 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.132 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
