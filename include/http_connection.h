@@ -72,25 +72,10 @@ extern "C" {
  * @param p Pool to allocate data structures out of
  * @param server The server to create the connection for
  * @param inout The socket to use for all communication with the client
- * @param remaddr The remote address
- * @param addr The server's local address
  * @param id ID of this connection; unique at any point in time.
  */
 conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
-                            apr_socket_t *inout,
-			    const struct sockaddr_in *remaddr,
-			    const struct sockaddr_in *saddr, long id);
-
-/**
- * Create a new connection using APR primitives.  This is basically a
- * wrapper around ap_new_connection
- * @param p Pool to allocate data structures out of.
- * @param server The server to create the connection for
- * @param conn_socket The socket we are creating the connection on.
- * @param id ID of this connection; unique at any point in time.
- */
-conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, 
-                                apr_socket_t *conn_socket, long id);
+                            apr_socket_t *inout, long id);
 
 /**
  * This is the protocol module driver.  This calls all of the

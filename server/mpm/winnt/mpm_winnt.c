@@ -1121,6 +1121,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 static void worker_main(int child_num)
 {
     PCOMP_CONTEXT context = NULL;
+    apr_os_sock_info_t sockinfo;
 
     while (1) {
         conn_rec *c;
@@ -1137,7 +1138,13 @@ static void worker_main(int child_num)
         if (!context)
             break;
         sock_disable_nagle(context->accept_socket);
-        apr_put_os_sock(&context->sock, &context->accept_socket, context->ptrans);
+
+        sockinfo.os_sock = &context->accept_socket;
+        sockinfo.local   = context->sa_server;
+        sockinfo.remote  = context->sa_client;
+        sockinfo.family  = APR_INET;
+        sockinfo.type    = SOCK_STREAM;
+        apr_make_os_sock(&context->sock, &sockinfo, context->ptrans);
 
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
                               (struct sockaddr_in *) context->sa_client,

@@ -412,8 +412,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
     (void) ap_update_child_status(my_child_num, my_thread_num,  
 				  SERVER_BUSY_READ, (request_rec *) NULL);
 
-    current_conn = ap_new_apr_connection(p, ap_server_conf, sock,
-                                         conn_id);
+    current_conn = ap_new_connection(p, ap_server_conf, sock, conn_id);
 
     ap_process_connection(current_conn);
     ap_lingering_close(current_conn);
