@@ -171,7 +171,8 @@ build for your OS.
     HAVE_MMAP:
       Define if the OS supports the BSD mmap() call. This is used by various
       OSs to allow the scoreboard file to be held in shared mmapped-memory
-      instead of a real file.
+      instead of a real file.  Note that this is only used to determine
+      if mmap should be used for shared memory.
 
     HAVE_SHMGET:
       Define if the OS has the SysV-based shmget() family of shared-memory
@@ -213,6 +214,9 @@ build for your OS.
      USE_LONGJMP:
       use the longjmp() call instead of siglongjmp()
       (as well as setjmp() instead of sigsetjmp())
+     
+     USE_MMAP_FILES:
+      Enable the use of mmap() for sending static files.
 
 --
 

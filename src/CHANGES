@@ -1,5 +1,12 @@
 Changes with Apache 1.3a2
 
+  *) Various architectures now define USE_MMAP_FILES which causes
+     the server to use mmap() for static files.  There are two
+     compile-time tunables MMAP_THRESHOLD (minimum number of bytes
+     required to use mmap(), default is 0), and MMAP_SEGMENT_SIZE (maximum
+     number of bytes written in one cycle from a single mmap()d object,
+     default 32768).  [Dean Gaudet]
+
   *) API: Added post_read_request API phase which is run right after reading
      the request from a client, or right after an internal redirect.  It is
      useful for modules setting environment variables that depend only on

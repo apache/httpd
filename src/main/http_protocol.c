@@ -1762,6 +1762,68 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
     return total_bytes_sent;
 }
 
+
+
+/* The code writes MMAP_SEGMENT_SIZE bytes at a time.  This is due to Apache's
+ * timeout model, which is a timeout per-write rather than a time for the
+ * entire transaction to complete.  Essentially this should be small enough
+ * so that in one Timeout period, your slowest clients should be reasonably
+ * able to receive this many bytes.
+ */
+#ifndef MMAP_SEGMENT_SIZE
+#define MMAP_SEGMENT_SIZE	32768
+#endif
+
+/* send data from an in-memory buffer */
+API_EXPORT(size_t) send_mmap(void * mm, request_rec *r, size_t offset,
+    size_t length)
+{
+    size_t total_bytes_sent = 0;
+    int n, w;
+    
+    if (length == 0) return 0;
+
+    soft_timeout("send mmap", r);
+
+    length += offset;
+    while (!r->connection->aborted && offset < length) {
+	if (length - offset > MMAP_SEGMENT_SIZE) {
+	    n = MMAP_SEGMENT_SIZE;
+	} else {
+	    n = length - offset;
+	}
+
+        while (n && !r->connection->aborted) {
+            w = bwrite(r->connection->client, (char *)mm + offset, n);
+            if (w > 0) {
+                reset_timeout(r); /* reset timeout after successful write */
+		total_bytes_sent += w;
+                n -= w;
+                offset += w;
+            }
+            else if (w < 0) {
+                if (r->connection->aborted)
+                    break;
+                else if (errno == EAGAIN)
+                    continue;
+                else {
+                    log_unixerr("send mmap lost connection to",
+                                get_remote_host(r->connection,
+                                    r->per_dir_config, REMOTE_NAME),
+                                NULL, r->server);
+                    bsetflag(r->connection->client, B_EOUT, 1);
+                    r->connection->aborted = 1;
+                    break;
+                }
+            }
+        }
+    }
+    
+    kill_timeout(r);
+    SET_BYTES_SENT(r);
+    return total_bytes_sent;
+}
+
 API_EXPORT(int) rputc (int c, request_rec *r)
 {
     if (r->connection->aborted) return EOF;

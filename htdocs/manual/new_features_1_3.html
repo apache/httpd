@@ -193,7 +193,7 @@ Allows additional information to be listed along with a specified module.
 	to issue multiple writes with a single system call.  They also avoid
 	copying memory into buffers as much as possible.  The result is
 	less CPU time spent on transferring large files.
-    <li><i>XXX Incomplete:</i> Static requests are served using
+    <li>Static requests are served using
 	<code>mmap</code>, which means bytes are only copied from the
 	disk buffer to the network buffer directly by the kernel.  The
 	program never copies bytes around, which reduces CPU time.

@@ -85,6 +85,7 @@ char *crypt(const char *pw, const char *salt);
 char *mktemp(char *template);
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #include <sys/time.h>     
 #define NEED_STRERROR
 typedef int rlim_t;
@@ -105,6 +106,7 @@ typedef int rlim_t;
 #define USE_PTHREAD_SERIALIZED_ACCEPT
 #define NEED_UNION_SEMUN
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 int gethostname(char *name, int namelen);
 
@@ -118,6 +120,7 @@ int gethostname(char *name, int namelen);
 /*#define USE_FCNTL_SERIALIZED_ACCEPT*/
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
+#define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 #define HAVE_BSTRING_H
@@ -158,6 +161,7 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #ifndef __ps2__
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define DEFAULT_GROUP "nobody"
 #endif
 #define DEFAULT_USER "nobody"
@@ -183,6 +187,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 
@@ -192,6 +197,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 typedef int rlim_t;
@@ -271,6 +277,7 @@ typedef int pid_t;
 #define NET_SIZE_T size_t
 #endif
 #define HAVE_SHMGET
+#define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
 typedef int rlim_t;
 /* flock is faster ... but hasn't been tested on 1.x systems */
@@ -302,6 +309,7 @@ typedef int rlim_t;
 #define HAVE_SYS_SELECT_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
 #define SecureWare
 
@@ -366,6 +374,7 @@ extern char *crypt();
 #define JMP_BUF sigjmp_buf
 #define HAVE_RESOURCE
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
 #define HAVE_SYS_SELECT_H
@@ -421,6 +430,7 @@ extern char *crypt();
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define DEFAULT_USER "nobody"
 #define DEFAULT_GROUP "nogroup"
 #if defined(__bsdi__) || \
@@ -469,6 +479,7 @@ int initgroups (char *, int);
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 #define HAVE_CRYPT_H
  
 #elif defined(__EMX__)
@@ -510,6 +521,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #undef NEED_STRDUP
 #define HAVE_MMAP
+#define USE_MMAP_FILES
 
 #define NO_TIMEZONE
 #include <stdio.h>

@@ -64,6 +64,28 @@
 #include "scoreboard.h"
 #include "fnmatch.h"
 
+#ifdef USE_MMAP_FILES
+#include <unistd.h>
+#include <sys/mman.h>
+
+/* mmap support for static files based on ideas from John Heidemann's
+ * patch against 1.0.5.  See
+ * <http://www.isi.edu/~johnh/SOFTWARE/APACHE/index.html>.
+ */
+
+/* Files have to be at least this big before they're mmap()d.  This is to
+ * deal with systems where the expense of doing an mmap() and an munmap()
+ * outweighs the benefit for small files.
+ */
+#ifndef MMAP_THRESHOLD
+#ifdef SUNOS4
+#define MMAP_THRESHOLD		(8*1024)
+#else
+#define MMAP_THRESHOLD		0
+#endif
+#endif
+#endif
+
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -1500,6 +1522,20 @@ int core_translate (request_rec *r)
 
 int do_nothing (request_rec *r) { return OK; }
 
+#ifdef USE_MMAP_FILES
+struct mmap {
+    void *mm;
+    size_t length;
+};
+
+static void mmap_cleanup (void *mmv)
+{
+    struct mmap *mmd = mmv;
+
+    munmap(mmd->mm, mmd->length);
+}
+#endif
+
 /*
  * Default handler for MIME types without other handlers.  Only GET
  * and OPTIONS at this point... anyone who wants to write a generic
@@ -1514,6 +1550,9 @@ int default_handler (request_rec *r)
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
     FILE *f;
+#ifdef USE_MMAP_FILES
+    caddr_t mm;
+#endif
 
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
@@ -1555,24 +1594,76 @@ int default_handler (request_rec *r)
 	|| (errstatus = set_content_length (r, r->finfo.st_size)))
         return errstatus;
 
-    if (d->content_md5 & 1) {
-      table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));
+#ifdef USE_MMAP_FILES
+    block_alarms();
+    if (r->finfo.st_size >= MMAP_THRESHOLD) {
+	/* we need to protect ourselves in case we die while we've got the
+	 * file mmapped */
+	mm = mmap (NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
+		    fileno(f), 0);
+    } else {
+	mm = (caddr_t)-1;
     }
 
-    rangestatus = set_byterange(r);
-    send_http_header (r);
-    
-    if (!r->header_only) {
-	if (!rangestatus)
-	    send_fd (f, r);
-	else {
-	    long offset, length;
-	    while (each_byterange(r, &offset, &length)) {
-		fseek(f, offset, SEEK_SET);
-		send_fd_length(f, r, length);
+    if (mm == (caddr_t)-1) {
+	unblock_alarms();
+
+	log_unixerr ("mmap_handler", r->filename, "mmap failed", r->server);
+#endif
+
+	if (d->content_md5 & 1) {
+	    table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));
+	}
+
+	rangestatus = set_byterange(r);
+	send_http_header (r);
+	
+	if (!r->header_only) {
+	    if (!rangestatus)
+		send_fd (f, r);
+	    else {
+		long offset, length;
+		while (each_byterange(r, &offset, &length)) {
+		    fseek(f, offset, SEEK_SET);
+		    send_fd_length(f, r, length);
+		}
+	    }
+	}
+
+#ifdef USE_MMAP_FILES
+    } else {
+	struct mmap *mmd;
+
+	mmd = palloc (r->pool, sizeof (*mmd));
+	mmd->mm = mm;
+	mmd->length = r->finfo.st_size;
+	register_cleanup (r->pool, (void *)mmd, mmap_cleanup, mmap_cleanup);
+	unblock_alarms();
+
+	if (d->content_md5 & 1) {
+	    MD5_CTX context;
+	    
+	    MD5Init(&context);
+	    MD5Update(&context, (void *)mm, r->finfo.st_size);
+	    table_set (r->headers_out, "Content-MD5",
+		md5contextTo64(r->pool, &context));
+	}
+
+	rangestatus = set_byterange(r);
+	send_http_header (r);
+	
+	if (!r->header_only) {
+	    if (!rangestatus)
+		send_mmap (mm, r, 0, r->finfo.st_size);
+	    else {
+		long offset, length;
+		while (each_byterange(r, &offset, &length)) {
+		    send_mmap(mm, r, offset, length);
+		}
 	    }
 	}
     }
+#endif
 
     pfclose(r->pool, f);
     return OK;
