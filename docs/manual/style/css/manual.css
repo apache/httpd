@@ -43,20 +43,17 @@ table, code {
 a:link {
     color: #0073c7;
     background-color: inherit;
-    text-decoration: underline;
 }
 
 a:visited {
     color: #5A88B5;
     background-color: inherit;
-    text-decoration: underline;
 }
 
 a:hover,
 a:active {
     color: #0073c7;
     background-color: #f0f0f0;
-    text-decoration: underline;
 }
 
 /* sidebar */
@@ -659,7 +656,6 @@ p.letters a:visited {
 
 p.letters a:hover,
 p.letters a:active {
-    text-decoration: underline;
     font-weight: bold;
 }
 
