@@ -15,7 +15,11 @@ to be used:
 	We're not sure what the tunable is, so there's a define
 	NO_SEM_UNDO which can be used to simulate us trapping/blocking
 	signals to be able to properly release the semaphore on a clean
-	child death.
+	child death.  You'll also need to define NEED_UNION_SEMUN
+	under solaris.
+
+You'll need to define HAVE_SHMGET if anonymous shared mmap() doesn't
+work on your system (i.e. linux).
 
 argv[1] is the #children, argv[2] is the #iterations per child
 
@@ -54,6 +58,9 @@ static struct flock lock_it;
 static struct flock unlock_it;
 
 static int fcntl_fd=-1;
+
+#define accept_mutex_child_init()
+#define accept_mutex_cleanup()
 
 /*
  * Initialize mutex lock.
@@ -113,23 +120,37 @@ void accept_mutex_off(void)
 
 static int flock_fd=-1;
 
+#define FNAME "test-lock-thing"
+
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-void
-accept_mutex_init(void)
+void accept_mutex_init(void)
 {
 
-    printf("opening test-lock-thing in current directory\n");
-    flock_fd = open("test-lock-thing", O_CREAT | O_WRONLY | O_EXCL, 0644);
+    printf("opening " FNAME " in current directory\n");
+    flock_fd = open(FNAME, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (flock_fd == -1)
     {
 	perror ("open");
 	fprintf (stderr, "Cannot open lock file: %s\n", "test-lock-thing");
 	exit (1);
     }
-    unlink("test-lock-thing");
+}
+
+void accept_mutex_child_init(void)
+{
+    flock_fd = open(FNAME, O_WRONLY, 0600);
+    if (flock_fd == -1) {
+	perror("open");
+	exit(1);
+    }
+}
+
+void accept_mutex_cleanup(void)
+{
+    unlink(FNAME);
 }
 
 void accept_mutex_on(void)
@@ -166,13 +187,19 @@ static sigset_t accept_block_mask;
 static sigset_t accept_previous_mask;
 #endif
 
+#define accept_mutex_child_init()
+#define accept_mutex_cleanup()
+
 void accept_mutex_init(void)
 {
-          union semun {
-               int val;
-               struct semid_ds *buf;
-               ushort *array;
-          };
+#ifdef NEED_UNION_SEMUN
+    /* believe it or not, you need to define this under solaris */
+    union semun {
+	int val;
+	struct semid_ds *buf;
+	ushort *array;
+    };
+#endif
 
     union semun ick;
 
@@ -251,6 +278,9 @@ static pthread_mutex_t *mutex;
 static sigset_t accept_block_mask;
 static sigset_t accept_previous_mask;
 
+#define accept_mutex_child_init()
+#define accept_mutex_cleanup()
+
 void accept_mutex_init(void)
 {
     pthread_mutexattr_t mattr;
@@ -311,9 +341,15 @@ void accept_mutex_off()
 }
 
 #elif defined (USE_USLOCK_SERIALIZED_ACCEPT)
+
 #include <ulocks.h>
+
 static usptr_t *us = NULL;
 static ulock_t uslock = NULL;
+
+#define accept_mutex_child_init()
+#define accept_mutex_cleanup()
+
 void accept_mutex_init(void)
 {
     ptrdiff_t old;
@@ -364,6 +400,94 @@ void accept_mutex_off()
 #endif
 
 
+#ifndef HAVE_SHMGET
+static void *get_shared_mem(size_t size)
+{
+    int fd;
+    void *result;
+
+    /* allocate shared memory for the shared_counter */
+    fd = open ("/dev/zero", O_RDWR);
+    if (fd == -1) {
+	perror ("open");
+	exit (1);
+    }
+    result = (unsigned long *)mmap ((caddr_t)0, size,
+		    PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    if (result == (void *)(caddr_t)-1) {
+	perror ("mmap");
+	exit (1);
+    }
+    close (fd);
+    return result;
+}
+#else
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+static void *get_shared_mem(size_t size)
+{
+    key_t shmkey = IPC_PRIVATE;
+    int shmid = -1;
+    void *result;
+#ifdef MOVEBREAK
+    char *obrk;
+#endif
+
+    if ((shmid = shmget(shmkey, size, IPC_CREAT | SHM_R | SHM_W)) == -1) {
+	perror("shmget");
+	exit(1);
+    }
+
+#ifdef MOVEBREAK
+    /*
+     * Some SysV systems place the shared segment WAY too close
+     * to the dynamic memory break point (sbrk(0)). This severely
+     * limits the use of malloc/sbrk in the program since sbrk will
+     * refuse to move past that point.
+     *
+     * To get around this, we move the break point "way up there",
+     * attach the segment and then move break back down. Ugly
+     */
+    if ((obrk = sbrk(MOVEBREAK)) == (char *) -1) {
+	perror("sbrk");
+    }
+#endif
+
+#define BADSHMAT	((void *)(-1))
+    if ((result = shmat(shmid, 0, 0)) == BADSHMAT) {
+	perror("shmat");
+    }
+    /*
+     * We must avoid leaving segments in the kernel's
+     * (small) tables.
+     */
+    if (shmctl(shmid, IPC_RMID, NULL) != 0) {
+	perror("shmctl(IPC_RMID)");
+    }
+    if (result == BADSHMAT)	/* now bailout */
+	exit(1);
+
+#ifdef MOVEBREAK
+    if (obrk == (char *) -1)
+	return;			/* nothing else to do */
+    if (sbrk(-(MOVEBREAK)) == (char *) -1) {
+	perror("sbrk 2");
+    }
+#endif
+    return result;
+}
+#endif
+
+#ifdef _POSIX_PRIORITY_SCHEDULING
+/* don't ask */
+#define _P __P
+#include <sched.h>
+#define YIELD	sched_yield()
+#else
+#define YIELD	select(0,0,0,0,0)
+#endif
 
 void main (int argc, char **argv)
 {
@@ -385,19 +509,7 @@ void main (int argc, char **argv)
     num_iter = atoi (argv[2]);
 
     /* allocate shared memory for the shared_counter */
-    i = open ("/dev/zero", O_RDWR);
-    if (i == -1) {
-	perror ("open");
-	exit (1);
-    }
-    shared_counter = (unsigned long *)mmap ((caddr_t)0,
-		    sizeof (*shared_counter),
-		    PROT_READ|PROT_WRITE, MAP_SHARED, i, 0);
-    if (shared_counter == (void *)(caddr_t)-1) {
-	perror ("mmap");
-	exit (1);
-    }
-    close (i);
+    shared_counter = get_shared_mem(sizeof(*shared_counter));
 
     /* initialize counter to 0 */
     *shared_counter = 0;
@@ -411,10 +523,12 @@ void main (int argc, char **argv)
 	pid = fork();
 	if (pid == 0) {
 	    /* child, do our thing */
+	    accept_mutex_child_init();
 	    for (i = 0; i < num_iter; ++i) {
 		accept_mutex_on ();
 		++*shared_counter;
 		accept_mutex_off ();
+		YIELD;
 	    }
 	    exit (0);
 	} else if (pid == -1) {
@@ -451,6 +565,9 @@ void main (int argc, char **argv)
     }
     last.tv_usec = ms;
     printf ("%8lu.%06lu\n", last.tv_sec, last.tv_usec);
+
+    accept_mutex_cleanup();
+
     exit(0);
 }
 
