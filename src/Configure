@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.30 1996/10/23 12:56:31 jim Exp $
+# $Id: Configure,v 1.31 1996/10/23 17:13:04 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -303,9 +303,12 @@ echo "Configured for $OS platform"
 # set above. If so, then we honor that; if not, then we set some
 # defaults (gcc and -O2)
 #
-COMPILER=`./helpers/GuessWhere gcc`
-if [ "$COMPILER" = "not found" ]; then
-    COMPILER=`./helpers/GuessWhere cc`
+if COMPILER=`./helpers/GuessWhere gcc`; then : ;
+else
+    if COMPILER=`./helpers/GuessWhere cc`; then : ;
+    else
+    	COMPILER="no-compiler-found"
+    fi
 fi
 
 if grep "CC=" Makefile > /dev/null; then
@@ -363,8 +366,7 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     if [ "$OS" = "Solaris 2" ]; then
         LIBS="$LIBS -lresolv"
     fi
-    if grep "EXTRA_" Makefile | grep "\-lsocks" > /dev/null; then
-	:
+    if grep "EXTRA_" Makefile | grep "\-lsocks" > /dev/null; then : ;
     else
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
@@ -372,7 +374,10 @@ fi
 #
 # Look for ranlib
 #
-RANLIB=`./helpers/GuessWhere ranlib`
+if RANLIB=`./helpers/GuessWhere ranlib`; then : ;
+else
+    RANLIB="true"
+fi
 
 #
 # Good enough

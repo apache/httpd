@@ -12,5 +12,4 @@ do
 	exit 0
     fi
 done
-echo "not found"
 exit 1
