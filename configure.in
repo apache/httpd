@@ -30,8 +30,10 @@ AC_PROG_INSTALL
 dnl AC_PROG_RANLIB
 dnl AC_PATH_PROG(PERL_PATH, perl)
 
-dnl info autoconf says AIX needs this. Okay.
+dnl various OS checks that apparently set required flags
 AC_AIX
+AC_ISC_POSIX
+AC_MINIX
 
 dnl ## Check for libraries
 
