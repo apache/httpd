@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: build2.mk,v 1.3 2000/01/16 18:20:17 sascha Exp $
+# $Id: build2.mk,v 1.4 2000/01/16 20:00:48 sascha Exp $
 
 include generated_lists
 
@@ -73,6 +73,6 @@ $(apr_config_h_in): $(apr_configure) lib/apr/acconfig.h
 	@rm -f $@
 	(cd lib/apr && autoheader)
 
-$(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in
+$(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/threads.m4
 	@echo rebuilding $@
 	(cd lib/apr && autoconf)
