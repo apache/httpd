@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/31 01:10:54 $]
+  Last modified at [$Date: 1998/12/31 14:09:11 $]
 
 Release:
 
@@ -108,7 +108,7 @@ Available Patches:
       First pass for concept; maybe directive should be renamed or
       syntax changed?
 	Message-ID: <368917BF.8D04D153@Apache.Org>
-	Status: Ken +1 (concept), Lars +1 (concept)
+	Status: Ken +1 (concept), Martin +1 (concept)
 
     * Lars' 'binbuild' patch
         Message-ID: <XFMail.981226052910.sfx@unix-ag.org>
