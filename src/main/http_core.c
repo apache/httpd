@@ -247,7 +247,9 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 {
     struct in_addr *iaddr;
     struct hostent *hptr;
+#ifdef MAXIMUM_DNS
     char **haddr;
+#endif
     core_dir_config *dir_conf;
 
 /* If we haven't checked the host name, and we want to */
