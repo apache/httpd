@@ -1060,7 +1060,9 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     }
     else {
         /* Well this looks familiar!  If our end-result (dir_merged) hasn't
-         * changed, we have nothing to do :)
+         * changed, we have nothing to do :)  This test really doesn't play well
+         * with other walkers who reset to the vhost default, but we will
+         * leave this escape in for simpler modules.
          */
         apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_merged",
                               r->pool);
