@@ -843,9 +843,6 @@ static void ssl_init_server_certs(server_rec *s,
     if (!(have_rsa || have_dsa)) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server certificate found?!");
-        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
-                "You have to perform a *full* server restart "
-                "when you added or removed a certificate and/or key file");
         ssl_die();
     }
 
