@@ -165,6 +165,7 @@
 #include "util_script.h"
 #include "http_log.h"
 #include "http_request.h"
+#include "http_protocol.h"
 #include "apr_lib.h"
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -292,7 +293,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 
 	    tmp = apr_pstrdup(r->pool, l);
 	    ap_content_type_tolower(tmp);
-	    r->content_type = tmp;
+	    ap_rset_content_type(tmp, r);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);

@@ -1895,9 +1895,9 @@ static int index_directory(request_rec *r,
     }
 
 #if APR_HAS_UNICODE_FS 
-    r->content_type = "text/html;charset=utf-8";
+    ap_rset_content_type("text/html;charset=utf-8", r);
 #else
-    r->content_type = "text/html";
+    ap_rset_content_type("text/html", r);
 #endif
     if (autoindex_opts & TRACK_MODIFIED) {
         ap_update_mtime(r, r->finfo.mtime);

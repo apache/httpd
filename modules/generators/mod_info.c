@@ -377,7 +377,7 @@ static int display_info(request_rec *r)
     if (r->method_number != M_GET)
 	return DECLINED;
 
-    r->content_type = "text/html";
+    ap_rset_content_type("text/html", r);
     if (r->header_only) {
         return 0;
     }

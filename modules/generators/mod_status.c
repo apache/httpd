@@ -283,7 +283,7 @@ static int status_handler(request_rec *r)
     if (r->method_number != M_GET)
         return DECLINED;
 
-    r->content_type = "text/html";
+    ap_rset_content_type("text/html", r);
 
     /*
      * Simple table-driven form data set parser that lets you alter the header
@@ -312,7 +312,7 @@ static int status_handler(request_rec *r)
                     no_table_report = 1;
                     break;
                 case STAT_OPT_AUTO:
-                    r->content_type = "text/plain";
+                    ap_rset_content_type("text/plain", r);
                     short_report = 1;
                     break;
                 }

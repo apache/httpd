@@ -237,7 +237,7 @@ apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
         return rv;
     }
 
-    r->content_type = apr_pstrdup(r->pool, info->content_type);
+    ap_rset_content_type(apr_pstrdup(r->pool, info->content_type), r);
     r->filename = apr_pstrdup(r->pool, info->filename );
 
     return APR_SUCCESS;
