@@ -1317,6 +1317,10 @@ CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
     s->server_uid = ap_user_id;
     s->server_gid = ap_group_id;
 
+    s->limit_req_line = main_server->limit_req_line;
+    s->limit_req_fieldsize = main_server->limit_req_fieldsize;
+    s->limit_req_fields = main_server->limit_req_fields;
+
     *ps = s;
 
     return ap_parse_vhost_addrs(p, hostname, s);
