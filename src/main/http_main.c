@@ -112,11 +112,14 @@
 /* special debug stuff -- PCS */
 
   /* APD1() to APD5() are macros to help us debug. Then can either
-   * log to the screen or the error_log file.
+   * log to the screen or the error_log file. In release builds, this
+   * macros do nothing. In debug builds, they send messages at priority
+   * "debug" to the error log file, or if DEBUG_TO_CONSOLE is defined,
+   * to the console.
    */
 
 # ifdef _DEBUG
-#  ifdef DEBUG_TO_ERROR_LOG
+#  ifndef DEBUG_TO_CONSOLE
 #   define APD1(a) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a)
 #   define APD2(a,b) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b)
 #   define APD3(a,b,c) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b,c)
