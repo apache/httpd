@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Fix a bug with dbm rewrite maps which caused the wrong value to
+     be used when the key was not found in the dbm.  PR 13204
+     [Jeff Trawick]
+
   *) Fix a problem with streaming script output and mod_cgid.
      [Jeff Trawick]
 

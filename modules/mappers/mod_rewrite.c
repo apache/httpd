@@ -2968,7 +2968,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
     if ((rv = apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY, 
                               0 /* irrelevant when reading */, r->pool)) == APR_SUCCESS) {
         rv = apr_dbm_fetch(dbmfp, dbmkey, &dbmval);
-        if (rv == APR_SUCCESS) {
+        if (rv == APR_SUCCESS && dbmval.dptr) {
             memcpy(buf, dbmval.dptr, 
                    dbmval.dsize < sizeof(buf)-1 ? 
                    dbmval.dsize : sizeof(buf)-1  );
