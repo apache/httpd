@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Added SuSE layout to config.layout for convinience reasons.
+     [Sebastian Helms <sebastian.helms@gmx.de>] PR#5112
+
   *) Consistency cleanup of the complete APXS tool and corresponding manpage.
      [Ralf S. Engelschall]
 

@@ -150,3 +150,23 @@
     proxycachedir: $localstatedir/proxy
 </Layout>
 
+#   SuSE 6.x layout
+<Layout SuSE>
+    prefix:        /usr
+    exec_prefix:   $prefix
+    bindir:        $prefix/bin
+    sbindir:       $prefix/sbin
+    libexecdir:    $prefix/lib/apache
+    mandir:        $prefix/man
+    sysconfdir:    /etc/httpd
+    datadir:       /usr/local/httpd
+    iconsdir:      $datadir/icons
+    htdocsdir:     $datadir/htdocs
+    cgidir:        $datadir/cgi-bin
+    includedir:    $prefix/include/apache
+    localstatedir: /var
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log/httpd
+    proxycachedir: $localstatedir/cache/httpd
+</Layout>
+
