@@ -454,7 +454,7 @@ case "$PLAT" in
     	PLATOSVERS=`echo $PLAT | sed 's/^.*freebsd//'`
 	OS="FreeBSD $PLATOSVERS"
 	case "$PLATOSVERS" in
-	    [23]*)
+	    [234]*)
 		DEF_WANTHSREGEX=no
 		CFLAGS="$CFLAGS -funsigned-char"
 		;;
@@ -955,7 +955,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
-	*-freebsd3*)
+	*-freebsd3*|*-freebsd4*)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
 	    OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
