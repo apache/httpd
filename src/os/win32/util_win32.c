@@ -23,7 +23,18 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
     for (nSlashes = 0; s > szFile && s[-1] == '\\'; ++nSlashes, --s)
 	;
 
-    n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
+    if (strlen(szFile)==2 && szFile[1]==':') {
+        /*
+         * If the file name is x:, do not call GetFullPathName
+         * because it will use the current path of the executable
+         */
+        strcpy(buf,szFile);
+        n = strlen(buf);
+        szFilePart = buf + n;
+    }
+    else {
+        n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
+    }
     ap_assert(n);
     ap_assert(n < sizeof buf);
 
@@ -36,6 +47,8 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
      * is no '\' in szInFile, it must just be a file name, so it should be
      * valid to use the name from GetFullPathName.  Be sure to adjust the
      * 's' variable so the rest of the code functions normally.
+     * Note it is possible to get here when szFile == 'x:', but that is OK
+     * because we will bail out of this routine early.
      */
     if (!s) {
         szFile = buf;
@@ -180,9 +193,21 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 
     buf[0] = ap_tolower(buf[0]);
 
-    ap_assert(strlen(buf)+nSlashes < sizeof buf);
-    while (nSlashes--) {
-        strcat(buf, "/");
+    if (nSlashes) {
+        /*
+         * If there were additional trailing slashes, add them back on.
+         * Be sure not to add more than were originally there though,
+         * by checking to see if sub_canonical_filename added one;
+         * this could happen in cases where the file name is 'd:/'
+         */
+        ap_assert(strlen(buf)+nSlashes < sizeof buf);
+
+        if (nSlashes && buf[strlen(buf)-1] == '/')
+            nSlashes--;
+
+        while (nSlashes--) {
+            strcat(buf, "/");
+        }
     }
 
     return ap_pstrdup(pPool, buf);
@@ -233,8 +258,13 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 	return stat(buf, pStat);
     }
 
+    /*
+     * Below removes the trailing /, however, do not remove
+     * it in the case of 'x:/' or stat will fail
+     */
     n = strlen(szPath);
-    if (szPath[n - 1] == '\\' || szPath[n - 1] == '/') {
+    if ((szPath[n - 1] == '\\' || szPath[n - 1] == '/') &&
+        !(n == 3 && szPath[1] == ':')) {
         char buf[_MAX_PATH];
         
         ap_assert(n < _MAX_PATH);

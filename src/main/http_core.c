@@ -2670,8 +2670,20 @@ static int core_translate(request_rec *r)
 				 (r->uri + r->server->pathlen), NULL);
     }
     else {
-        r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri,
-				 NULL);
+	/*
+         * Make sure that we do not mess up the translation by adding two
+         * /'s in a row.  This happens under windows when the document
+         * root ends with a /
+         */
+        if ((conf->ap_document_root[strlen(conf->ap_document_root)-1] == '/')
+	    && (*(r->uri) == '/')) {
+	    r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri+1,
+				     NULL);
+	}
+	else {
+	    r->filename = ap_pstrcat(r->pool, conf->ap_document_root, r->uri,
+				     NULL);
+	}
     }
 
     return OK;
