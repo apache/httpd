@@ -226,7 +226,8 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     /* read the data from the cache file */
     /* format
      * date SP expire SP count CRLF
-     * dates are stored as hex seconds since 1970
+     * dates are stored as a hex representation of apr_time_t (number of
+     * microseconds since 00:00:00 january 1, 1970 UTC)
      */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
     if (rv != APR_SUCCESS) {
@@ -240,11 +241,11 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
         return APR_EGENERAL;
     }
 
-    info->date = ap_cache_hex2msec(urlbuff + offset);
+    info->date = ap_cache_hex2usec(urlbuff + offset);
     offset += (sizeof(info->date)*2) + 1;
-    info->expire = ap_cache_hex2msec(urlbuff + offset);
+    info->expire = ap_cache_hex2usec(urlbuff + offset);
     offset += (sizeof(info->expire)*2) + 1;
-    dobj->version = ap_cache_hex2msec(urlbuff + offset);
+    dobj->version = ap_cache_hex2usec(urlbuff + offset);
     
     /* check that we have the same URL */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
@@ -283,9 +284,9 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
         return 0;
     }
 
-    ap_cache_msec2hex(info->date, dateHexS);
-    ap_cache_msec2hex(info->expire, expireHexS);
-    ap_cache_msec2hex(dobj->version++, verHexS);
+    ap_cache_usec2hex(info->date, dateHexS);
+    ap_cache_usec2hex(info->expire, expireHexS);
+    ap_cache_usec2hex(dobj->version++, verHexS);
     buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, "\n", NULL);
     amt = strlen(buf);
     rc = apr_file_write(fd, buf, &amt);

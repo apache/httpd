@@ -210,15 +210,10 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, cons
 }
 
 /*
- * XXX TODO:
- * These functions were lifted from mod_proxy
- * Consider putting them in APR or some other common accessable
- * location.
+ * Converts apr_time_t expressed as hex digits to 
+ * a true apr_time_t.
  */
-/*
- * Converts apr_time_t hex digits to a time integer
- */
-CACHE_DECLARE(apr_time_t) ap_cache_hex2msec(const char *x)
+CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x)
 {
     int i, ch;
     apr_time_t j;
@@ -236,9 +231,9 @@ CACHE_DECLARE(apr_time_t) ap_cache_hex2msec(const char *x)
 }
 
 /*
- * Converts a time integer to apr_time_t hex digits
+ * Converts apr_time_t to apr_time_t expressed as hex digits.
  */
-CACHE_DECLARE(void) ap_cache_msec2hex(apr_time_t j, char *y)
+CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y)
 {
     int i, ch;
 
