@@ -212,12 +212,12 @@ AP_DECLARE(int) ap_exists_scoreboard_image(void)
 }
 
 static APR_INLINE void put_scoreboard_info(int child_num, int thread_num, 
-				       short_score *new_score_rec)
+				       worker_score *new_score_rec)
 {
     /* XXX - needs to be fixed to account for threads */
 #ifdef SCOREBOARD_FILE
-    lseek(scoreboard_fd, (long) child_num * sizeof(short_score), 0);
-    force_write(scoreboard_fd, new_score_rec, sizeof(short_score));
+    lseek(scoreboard_fd, (long) child_num * sizeof(worker_score), 0);
+    force_write(scoreboard_fd, new_score_rec, sizeof(worker_score));
 #endif
 }
 
@@ -233,21 +233,21 @@ void update_scoreboard_global(void)
 
 AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r)
 {
-    short_score *ss;
+    worker_score *ws;
 
-    ss = &ap_scoreboard_image->servers[child_num][thread_num];
+    ws = &ap_scoreboard_image->servers[child_num][thread_num];
 
 #ifdef HAVE_TIMES
-    times(&ss->times);
+    times(&ws->times);
 #endif
-    ss->access_count++;
-    ss->my_access_count++;
-    ss->conn_count++;
-    ss->bytes_served += r->bytes_sent;
-    ss->my_bytes_served += r->bytes_sent;
-    ss->conn_bytes += r->bytes_sent;
+    ws->access_count++;
+    ws->my_access_count++;
+    ws->conn_count++;
+    ws->bytes_served += r->bytes_sent;
+    ws->my_bytes_served += r->bytes_sent;
+    ws->conn_bytes += r->bytes_sent;
 
-    put_scoreboard_info(child_num, thread_num, ss);
+    put_scoreboard_info(child_num, thread_num, ws);
 }
 
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
@@ -267,76 +267,76 @@ AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r)
 {
     int old_status;
-    short_score *ss;
-    parent_score *ps;
+    worker_score *ws;
+    process_score *ps;
 
     if (child_num < 0)
 	return -1;
 
-    ss = &ap_scoreboard_image->servers[child_num][thread_num];
-    old_status = ss->status;
-    ss->status = status;
+    ws = &ap_scoreboard_image->servers[child_num][thread_num];
+    old_status = ws->status;
+    ws->status = status;
 
     ps = &ap_scoreboard_image->parent[child_num];
     
     if ((status == SERVER_READY  || status == SERVER_ACCEPTING)
 	&& old_status == SERVER_STARTING) {
-        ss->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
+        ws->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
         ps->generation = ap_my_generation;
         ps->worker_threads = ap_threads_per_child;
     }
 
     if (ap_extended_status) {
-    ss->last_used = apr_time_now();
+    ws->last_used = apr_time_now();
 	if (status == SERVER_READY || status == SERVER_DEAD) {
 	    /*
 	     * Reset individual counters
 	     */
 	    if (status == SERVER_DEAD) {
-		ss->my_access_count = 0L;
-		ss->my_bytes_served = 0L;
+		ws->my_access_count = 0L;
+		ws->my_bytes_served = 0L;
 	    }
-	    ss->conn_count = (unsigned short) 0;
-	    ss->conn_bytes = (unsigned long) 0;
+	    ws->conn_count = (unsigned short) 0;
+	    ws->conn_bytes = (unsigned long) 0;
 	}
 	if (r) {
 	    conn_rec *c = r->connection;
-	    apr_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
-				  REMOTE_NOLOOKUP, NULL), sizeof(ss->client));
+	    apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
+				  REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
 	    if (r->the_request == NULL) {
-		    apr_cpystrn(ss->request, "NULL", sizeof(ss->request));
+		    apr_cpystrn(ws->request, "NULL", sizeof(ws->request));
 	    } else if (r->parsed_uri.password == NULL) {
-		    apr_cpystrn(ss->request, r->the_request, sizeof(ss->request));
+		    apr_cpystrn(ws->request, r->the_request, sizeof(ws->request));
 	    } else {
 		/* Don't reveal the password in the server-status view */
-		    apr_cpystrn(ss->request, apr_pstrcat(r->pool, r->method, " ",
+		    apr_cpystrn(ws->request, apr_pstrcat(r->pool, r->method, " ",
 					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
-				       sizeof(ss->request));
+				       sizeof(ws->request));
 	    }
-	    ss->vhostrec =  r->server;
+	    ws->vhostrec =  r->server;
 	}
     }
     
-    put_scoreboard_info(child_num, thread_num, ss);
+    put_scoreboard_info(child_num, thread_num, ws);
     return old_status;
 }
 
 void ap_time_process_request(int child_num, int thread_num, int status)
 {
-    short_score *ss;
+    worker_score *ws;
 
     if (child_num < 0)
 	return;
 
-    ss = &ap_scoreboard_image->servers[child_num][thread_num];
+    ws = &ap_scoreboard_image->servers[child_num][thread_num];
 
     if (status == START_PREQUEST) {
-        ss->start_time = apr_time_now(); 
+        ws->start_time = apr_time_now(); 
     }
     else if (status == STOP_PREQUEST) {
-        ss->stop_time = apr_time_now(); 
+        ws->stop_time = apr_time_now(); 
     }
-    put_scoreboard_info(child_num, thread_num, ss);
+    put_scoreboard_info(child_num, thread_num, ws);
 }
 

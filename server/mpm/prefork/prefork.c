@@ -232,7 +232,7 @@ static void clean_child_exit(int code)
     if (pchild) {
 	apr_pool_destroy(pchild);
     }
-    ap_scoreboard_image->servers[my_child_num][0].life_status = SB_WORKING;
+    ap_scoreboard_image->parent[my_child_num].process_status = SB_WORKING;
     chdir_for_gprof();
     exit(code);
 }
@@ -378,7 +378,7 @@ static void just_die(int sig)
 static void please_die_gracefully(int sig)
 {
     /* clean_child_exit(0); */
-    ap_scoreboard_image->servers[my_child_num][0].life_status = SB_IDLE_DIE;
+    ap_scoreboard_image->parent[my_child_num].process_status = SB_IDLE_DIE;
     if (sig == SIGHUP) {
         (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num),
                                       SERVER_GRACEFUL, (request_rec *) NULL);
@@ -534,7 +534,7 @@ static int requests_this_child;
 static fd_set main_fds;
 
 #define I_AM_TO_SHUTDOWN()                                                   \
-(ap_scoreboard_image->servers[my_child_num][0].life_status != SB_WORKING)
+(ap_scoreboard_image->parent[my_child_num].process_status != SB_WORKING)
    
 int ap_graceful_stop_signalled(void)
 {
@@ -846,7 +846,7 @@ static int make_child(server_rec *s, int slot)
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
 	apr_signal(SIGTERM, just_die);
-        ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
+        ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -897,7 +897,7 @@ static int make_child(server_rec *s, int slot)
 	apr_signal(SIGHUP, please_die_gracefully);
 	apr_signal(SIGWINCH, please_die_gracefully);
 	apr_signal(SIGTERM, just_die);
-        ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
+        ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -905,7 +905,7 @@ static int make_child(server_rec *s, int slot)
 #ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[slot]), 0);
     force_write(scoreboard_fd, &ap_scoreboard_image->parent[slot],
-		sizeof(parent_score));
+		sizeof(process_score));
 #endif
 
     return 0;
@@ -946,7 +946,7 @@ static void perform_idle_server_maintenance(void)
     int i;
     int to_kill;
     int idle_count;
-    short_score *ss;
+    worker_score *ws;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -966,8 +966,8 @@ static void perform_idle_server_maintenance(void)
 
 	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
-	ss = &ap_scoreboard_image->servers[i][0];
-	status = ss->status;
+	ws = &ap_scoreboard_image->servers[i][0];
+	status = ws->status;
 	if (status == SERVER_DEAD) {
 	    /* try to keep children numbers as low as possible */
 	    if (free_length < idle_spawn_rate) {
@@ -1260,7 +1260,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     update_scoreboard_global();
     
     for (index = 0; index < ap_daemons_limit; ++index) {
-        ap_scoreboard_image->servers[index][0].life_status = SB_IDLE_DIE;
+        ap_scoreboard_image->parent[index].process_status = SB_IDLE_DIE;
     }
 
     if (is_graceful) {

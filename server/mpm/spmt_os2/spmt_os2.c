@@ -777,7 +777,7 @@ static void perform_idle_server_maintenance(void)
     int i;
     int to_kill;
     int idle_count;
-    short_score *ss;
+    worker_score *ws;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -796,8 +796,8 @@ static void perform_idle_server_maintenance(void)
 
 	if (i >= max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
-	ss = &ap_scoreboard_image->servers[0][i];
-	status = ss->status;
+	ws = &ap_scoreboard_image->servers[0][i];
+	status = ws->status;
 	if (status == SERVER_DEAD) {
 	    /* try to keep children numbers as low as possible */
 	    if (free_length < idle_spawn_rate) {

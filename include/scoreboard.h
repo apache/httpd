@@ -106,8 +106,8 @@ extern "C" {
  *
  * The safe way to access the vhost pointer is like this:
  *
- * short_score *ss = pointer to whichver slot is interesting;
- * parent_score *ps = pointer to whichver slot is interesting;
+ * worker_score *ss = pointer to whichver slot is interesting;
+ * process_score *ps = pointer to whichver slot is interesting;
  * server_rec *vh = ss->vhostrec;
  *
  * if (ps->generation != ap_my_generation) {
@@ -132,8 +132,15 @@ typedef enum {
 #define SB_IDLE_DIE 1  /* The server is idle and the child is superfluous. */
                        /*   The child should check for this and exit gracefully. */
 
-/* stuff which is thread/process specific */
-typedef struct {
+/* stuff which is worker specific */
+/***********************WARNING***************************************/
+/* These are things that are used by mod_status. Do not put anything */
+/*   in here that you cannot live without. This structure will not   */
+/*   be available if mod_status is not loaded.                       */
+/*********************************************************************/
+typedef struct worker_score worker_score;
+
+struct worker_score {
     int thread_num;
 #if APR_HAS_THREADS
     apr_os_thread_t tid;
@@ -145,7 +152,6 @@ typedef struct {
     unsigned long my_bytes_served;
     unsigned long conn_bytes;
     unsigned short conn_count;
-    unsigned short life_status;    /* Either SB_WORKING or SB_IDLE_DIE */
     apr_time_t start_time;
     apr_time_t stop_time;
 #ifdef HAVE_TIMES
@@ -156,7 +162,8 @@ typedef struct {
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
                                 /* SEE ABOVE FOR SAFE USAGE! */
-} short_score;
+    worker_score *next;
+};
 
 typedef struct {
     ap_scoreboard_e sb_type;
@@ -165,15 +172,20 @@ typedef struct {
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
-typedef struct {
+typedef struct process_score process_score;
+struct process_score{
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
+    ap_scoreboard_e sb_type;
+    unsigned short process_status;    /* Either SB_WORKING or SB_IDLE_DIE */
     int worker_threads;
-} parent_score;
+    worker_score *worker_head;
+    process_score *next;
+};
 
 typedef struct {
-    short_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
-    parent_score parent[HARD_SERVER_LIMIT];
+    worker_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
+    process_score parent[HARD_SERVER_LIMIT];
     global_score global;
 } scoreboard;
 
@@ -183,13 +195,6 @@ typedef struct {
     char key[KEY_LENGTH];
     char value[VALUE_LENGTH];
 } status_table_entry;
-
-#define STATUSES_PER_CONNECTION 10
-
-typedef struct {
-    status_table_entry
-        table[HARD_SERVER_LIMIT*HARD_THREAD_LIMIT][STATUSES_PER_CONNECTION];
-} new_scoreboard;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 #define NEW_SCOREBOARD_SIZE	sizeof(new_scoreboard)
