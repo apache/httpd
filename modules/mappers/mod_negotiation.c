@@ -89,8 +89,15 @@
  */
 
 typedef struct {
+    int forcelangpriority;
     apr_array_header_t *language_priority;
 } neg_dir_config;
+
+#define FLP_UNDEF   0    /* Same as FLP_NONE, but base overrides */
+#define FLP_NONE    1    /* Return 406, HTTP_NOT_ACCEPTABLE */
+#define FLP_PREFIX  2    /* Try xx(-.*) from language_priority */
+#define FLP_ANY     4    /* Try anything in language_priority */
+                         /* If both, tries FLP_PREFIX then FLP_ANY */
 
 module AP_MODULE_DECLARE_DATA negotiation_module;
 
@@ -98,6 +105,7 @@ static void *create_neg_dir_config(apr_pool_t *p, char *dummy)
 {
     neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
+    new->forcelangpriority = FLP_UNDEF;
     new->language_priority = apr_array_make(p, 4, sizeof(char *));
     return new;
 }
@@ -109,6 +117,8 @@ static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
     neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
     /* give priority to the config in the subdirectory */
+    new->forcelangpriority = add->forcelangpriority ? add->forcelangpriority
+                                                    : base->forcelangpriority;
     new->language_priority = apr_array_append(p, add->language_priority,
                                            base->language_priority);
     return new;
@@ -121,6 +131,29 @@ static const char *set_language_priority(cmd_parms *cmd, void *n,
     const char **langp = (const char **) apr_array_push(arr);
 
     *langp = lang;
+    return NULL;
+}
+
+static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
+{
+    neg_dir_config *n = n_;
+  
+    if (!strcasecmp(w, "None")) {
+	n->forcelangpriority = FLP_NONE;
+    }
+    else if (!strcasecmp(w, "Prefix")) {
+        n->forcelangpriority = FLP_PREFIX;
+    }
+    else if (!strcasecmp(w, "Any")) {
+        n->forcelangpriority = FLP_ANY;
+    }
+    else if (!strcasecmp(w, "Full")) {
+	n->forcelangpriority = FLP_PREFIX | FLP_ANY;
+    }
+    else {
+	return apr_pstrcat(cmd->pool, "Illegal ForceLanguagePriority option ", w, NULL);
+    }
+
     return NULL;
 }
 
@@ -143,6 +176,8 @@ static const command_rec negotiation_cmds[] =
                  "Either 'on' or 'off' (default)"),
     AP_INIT_ITERATE("LanguagePriority", set_language_priority, NULL, OR_FILEINFO, 
                     "space-delimited list of MIME language abbreviations"),
+    AP_INIT_TAKE1("ForceLanguagePriority", set_force_priority, NULL, OR_FILEINFO,
+                  "One of 'none', 'prefix', 'any', or 'full'"),
     {NULL}
 };
 
@@ -180,13 +215,13 @@ typedef struct accept_rec {
 
 typedef struct var_rec {
     request_rec *sub_req;       /* May be NULL (is, for map files) */
-    char *mime_type;            /* MUST be lowercase */
-    char *file_name;            /* Set to 'this' (for map file body content) */
+    const char *mime_type;      /* MUST be lowercase */
+    const char *file_name;      /* Set to 'this' (for map file body content) */
     apr_off_t body;             /* Only for map file body content */
     const char *content_encoding;
     apr_array_header_t *content_languages;   /* list of languages for this variant */
-    char *content_charset;
-    char *description;
+    const char *content_charset;
+    const char *description;
 
     /* The next five items give the quality values for the dimensions
      * of negotiation for this variant. They are obtained from the
@@ -925,7 +960,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *
                      break;
                 }
                 mime_info.bytes = len;
-                mime_info.file_name = rr->filename;
+                mime_info.file_name = apr_filename_of_pathname(rr->filename);
             }
         }
         else {
@@ -1189,8 +1224,8 @@ static int read_types_multi(negotiation_state *neg)
 
 static int mime_match(accept_rec *accept_r, var_rec *avail)
 {
-    char *accept_type = accept_r->name;
-    char *avail_type = avail->mime_type;
+    const char *accept_type = accept_r->name;
+    const char *avail_type = avail->mime_type;
     int len = strlen(accept_type);
 
     if (accept_type[0] == '*') {        /* Anything matches star/star */
@@ -1711,7 +1746,7 @@ static void set_charset_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs;
-    char *charset = variant->content_charset;
+    const char *charset = variant->content_charset;
     accept_rec *star = NULL;
 
     /* if no Accept-Charset: header, leave quality alone (will
@@ -2398,9 +2433,9 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
 
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
         var_rec *variant = &((var_rec *) neg->avail_vars->elts)[i];
-        char *filename = variant->file_name ? variant->file_name : "";
+        const char *filename = variant->file_name ? variant->file_name : "";
         apr_array_header_t *languages = variant->content_languages;
-        char *description = variant->description ? variant->description : "";
+        const char *description = variant->description ? variant->description : "";
 
         /* The format isn't very neat, and it would be nice to make
          * the tags human readable (eg replace 'language en' with 'English').
