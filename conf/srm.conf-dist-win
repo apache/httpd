@@ -20,8 +20,12 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 
 # UserDir: The name of the directory which is appended onto a user's home
 # directory if a ~user request is recieved.
-
-UserDir public_html
+#
+# Under Win32, we do not currently try to determine the home directory of
+# a Windows login, so one of the forms such as the below needs to be
+# used.  See the manual for details.
+#
+#UserDir "/@@ServerRoot@@/users/"
 
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
