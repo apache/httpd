@@ -699,7 +699,7 @@ void timeout(int sig)			/* Also called on SIGPIPE */
     }
     
     if (!current_conn->keptalive) 
-	aplog_error(APLOG_MARK, APLOG_WARNING, current_conn->server, errstr);
+	aplog_error(APLOG_MARK, APLOG_DEBUG, current_conn->server, errstr);
           
     if (timeout_req) {
 	/* Someone has asked for this transaction to just be aborted
@@ -3049,14 +3049,14 @@ static void perform_idle_server_maintenance (void)
 	    static int reported = 0;
 
 	    if (!reported) {
-		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
 			    "server reached MaxClients setting, consider"
 			    " raising the MaxClients setting");
 		reported = 1;
 	    }
 	} else {
 	    if (idle_spawn_rate >= 4) {
-		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
 			    "server seems busy, spawning %d children (you may need "
 			    "to increase StartServers, or Min/MaxSpareServers)",
 			    idle_spawn_rate);
