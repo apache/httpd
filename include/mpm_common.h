@@ -139,7 +139,6 @@ struct ap_pod_t {
     apr_file_t *pod_in;
     apr_file_t *pod_out;
     apr_pool_t *p;
-    apr_sockaddr_t *sa;
 };
 
 /**
