@@ -1,5 +1,8 @@
 Changes with Apache 2.0.35
 
+  *) Performance: implemented the bucket allocator made possible by the
+     API change in 2.0.34.  [Cliff Woolley]
+
   *) Don't allow initialization to succeed if we can't get a socket
      corresponding to one of the Listen statements.  [Jeff Trawick]
 

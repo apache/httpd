@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/30 23:55:16 $]
+Last modified at [$Date: 2002/04/01 21:19:41 $]
 
 Release:
 
@@ -288,17 +288,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       (3) Trying to seperate the https filter logic from mod_ssl -
           This is to facilitate other modules that wish to use the https
           filter or the mod_ssl logic or both as required.
-
-    * Performance & Debug: Eliminate most (and perhaps all) of the 
-      malloc/free calls in the bucket brigade code.  Need some 
-      light weight memory management functions that allow freeing 
-      memory (putting it back into a memory pool) when it is no 
-      longer needed. Enabling simple debugging features like guard
-      bands, double free detection, etc. would be cool but certainly
-      not a hard requirement.
-
-          Status: The necessary API changes are in... apr_buckets_alloc.c
-                  just needs to be fleshed out.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
