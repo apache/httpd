@@ -1,5 +1,13 @@
 Changes with Apache 2.0.14-dev
 
+  *) Fix a number of SGI compile warnings throughout the server.  Fix some
+     bad parameters to apr_bucket_read().  Fix a bad statement in 
+     ap_method_in_list().  For the mod_rewrite cache use apr_time_t 
+     consistently; we were mixing apr_time_t and time_t in invalid ways 
+     before.  In load_file(), call apr_dso_error() instead of 
+     apr_strerror() so that we get a more specific string on some platforms.
+     PR #6980  [Jeff Trawick]
+
   *) Allow modules to query the MPM about it's execution profile.  This
      query API can and should be extended in the future, but for now,
      max_daemons, and threading or forking is a very good start.
