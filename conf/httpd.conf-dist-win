@@ -886,7 +886,7 @@ ServerSignature On
 #  N.B.: You can redirect to a script or a document using server-side-includes.
 #
 #    3) external redirects
-#ErrorDocument 402 http://some.other-server.com/subscription_info.html
+#ErrorDocument 402 http://www.example.com/subscription_info.html
 #  N.B.: Many of the environment variables associated with the original
 #  request will *not* be available to such a script.
 

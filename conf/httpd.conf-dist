@@ -269,7 +269,7 @@ ServerAdmin you@your.address
 # machine always knows itself by this address. If you use Apache strictly for 
 # local testing and development, you may use 127.0.0.1 as the server name.
 #
-#ServerName new.host.name
+#ServerName www.example.com
 
 #
 # DocumentRoot: The directory out of which you will serve your
@@ -840,7 +840,7 @@ ServerSignature On
 #  N.B.: You can redirect to a script or a document using server-side-includes.
 #
 #    3) external redirects
-#ErrorDocument 402 http://some.other-server.com/subscription_info.html
+#ErrorDocument 402 http://www.example.com/subscription_info.html
 #  N.B.: Many of the environment variables associated with the original
 #  request will *not* be available to such a script.
 
@@ -874,25 +874,25 @@ ServerSignature On
 
 #
 # Allow server status reports, with the URL of http://servername/server-status
-# Change the ".your-domain.com" to match your domain to enable.
+# Change the ".example.com" to match your domain to enable.
 #
 #<Location /server-status>
 #    SetHandler server-status
 #    Order deny,allow
 #    Deny from all
-#    Allow from .your-domain.com
+#    Allow from .example.com
 #</Location>
 
 #
 # Allow remote server configuration reports, with the URL of
 # http://servername/server-info (requires that mod_info.c be loaded).
-# Change the ".your-domain.com" to match your domain to enable.
+# Change the ".example.com" to match your domain to enable.
 #
 #<Location /server-info>
 #    SetHandler server-info
 #    Order deny,allow
 #    Deny from all
-#    Allow from .your-domain.com
+#    Allow from .example.com
 #</Location>
 
 #
