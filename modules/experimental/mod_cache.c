@@ -371,6 +371,15 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
+    /* make space for the per request config 
+     * We hit this code path when CACHE_IN has been installed by someone
+     * other than the cache handler
+     */
+    if (!cache) {
+        cache = ap_pcalloc(r->pool, sizeof(cache_request_rec));
+        ap_set_module_config(r->request_config, &cache_module, cache);
+    }
+
     /*
      * Pass Data to Cache
      * ------------------
@@ -543,7 +552,10 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
-    
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                 "cache: Caching url: %s", url);
+
     /*
      * We now want to update the cache file header information with
      * the new date, last modified, expire and content length and write
@@ -620,7 +632,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * Write away header information to cache.
      */
     cache_write_entity_headers(cache->handle, r, info, r->headers_in, r->headers_out);
-    
+    cache_write_entity_body(cache->handle, in);    
     return ap_pass_brigade(f->next, in);
 }
 
@@ -796,10 +808,14 @@ register_hooks(apr_pool_t *p)
     /* cache initializer */
     /* cache handler */
     ap_hook_quick_handler(ap_url_cache_handler, NULL, NULL, APR_HOOK_FIRST);
-    /* cache filters */
-    ap_register_output_filter("CACHE_IN", ap_cache_in_filter, AP_FTYPE_NETWORK);
+    /* cache filters 
+     * XXX The cache filters need to run right after the handlers and before
+     * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
+     * Make them AP_FTYPE_CONTENT for now.
+     */
+    ap_register_output_filter("CACHE_IN", ap_cache_in_filter, AP_FTYPE_CONTENT);
     ap_register_output_filter("CACHE_OUT", ap_cache_out_filter, AP_FTYPE_CONTENT);
-    ap_register_output_filter("CACHE_CONDITIONAL", ap_cache_conditional_filter, AP_FTYPE_NETWORK);
+    ap_register_output_filter("CACHE_CONDITIONAL", ap_cache_conditional_filter, AP_FTYPE_CONTENT);
 }
 
 module AP_MODULE_DECLARE_DATA cache_module =
