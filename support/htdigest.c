@@ -208,6 +208,7 @@ int main(int argc, const char * const argv[])
     apr_file_t *f;
     apr_status_t rv;
     char tn[] = "htdigest.tmp.XXXXXX";
+    char *dirname;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
@@ -251,7 +252,14 @@ int main(int argc, const char * const argv[])
     else if (argc != 4)
 	usage();
 
-    if (apr_file_mktemp(&tfp, tn,
+    if (apr_temp_dir_get((const char**)&dirname, cntxt) != APR_SUCCESS) {
+        fprintf(stderr, "%s: could not determine temp dir\n",
+                        argv[0]);
+        exit(1);
+    }
+    dirname = apr_psprintf(cntxt, "%s/%s", dirname, tn);
+
+    if (apr_file_mktemp(&tfp, dirname,
 #ifdef OMIT_DELONCLOSE
     APR_CREATE | APR_READ | APR_WRITE | APR_EXCL
 #else
@@ -296,15 +304,15 @@ int main(int argc, const char * const argv[])
     }
     apr_file_close(f);
 #if defined(OS2) || defined(WIN32)
-    sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
+    sprintf(command, "copy \"%s\" \"%s\"", dirname, argv[1]);
 #else
-    sprintf(command, "cp %s %s", tn, argv[1]);
+    sprintf(command, "cp %s %s", dirname, argv[1]);
 #endif
 
 #ifdef OMIT_DELONCLOSE
     apr_file_close(tfp);
     system(command);
-    apr_file_remove(tn, cntxt);
+    apr_file_remove(dirname, cntxt);
 #else
     system(command);
     apr_file_close(tfp);
