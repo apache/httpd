@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 15:51:45 $]
+Last modified at [$Date: 2003/07/23 16:25:32 $]
 
 Release:
 
@@ -311,8 +311,18 @@ PATCHES TO PORT FROM 2.1
       jerenkrantz says: Ben Collins-Sussman confirms this fixes a problem
                         with Subversion when mod_deflate is used where it'd
                         hold on to the entire response until EOS.  That's bad.
-      +1: jerenkrantz, striker
+      +1: jerenkrantz, striker, nd
 
+    * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
+      configures:
+        RewriteBase /
+        RewriteRule foo bar [R]
+      it will be redirected to http://host//bar (double slash).
+      In 2.1 this was fixed while I rewrote the subst_prefix_path function,
+      which is responsible for this behaviour. I'd suggest to backport that
+      function rewrite at all (it's even much better code :-).
+        modules/mappers/mod_rewrite.c: r1.162
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
