@@ -46,8 +46,8 @@
 <seealso>
   <directive module="mod_auth_digest">AuthDigestProvider</directive>
 </seealso>
-<seealso><a href="../programs/htpasswd.html">htpasswd</a></seealso>
-<seealso><a href="../programs/htdigest.html">htdigest</a></seealso>
+<seealso><program>htpasswd</program></seealso>
+<seealso><program>htdigest</program></seealso>
  
 <directivesynopsis>
 <name>AuthUserFile</name>
@@ -70,7 +70,7 @@ passwords for authentication</description>
     ID is defined multiple times, <module>mod_authn_file</module> will
     use the first occurrence to verify the password.</p>
 
-    <p>The utility <a href="../programs/htpasswd.html">htpasswd</a>
+    <p>The utility <program>htpasswd</program>
     which is installed as part of the binary distribution, or which
     can be found in <code>src/support</code>, is used to maintain
     the password file for <em>HTTP Basic Authentication</em>. See the
@@ -97,9 +97,9 @@ passwords for authentication</description>
     module="mod_authn_dbm">AuthDBMUserFile</directive> should be used
     instead.</p>
 
-    <p>If you are using <em>HTTP Digest Authentication</em>, the <a
-    href="../programs/htpasswd.html">htpasswd</a> tool is not sufficient.
-    You have to use <a href="../programs/htdigest.html">htdigest</a>
+    <p>If you are using <em>HTTP Digest Authentication</em>, the <program>
+    htpasswd</program> tool is not sufficient.
+    You have to use <program>htdigest</program>
     instead. Note that you cannot mix user data for Digest Authentication
     and Basic Authentication within the same file.</p>
 

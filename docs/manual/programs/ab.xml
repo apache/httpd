@@ -31,7 +31,7 @@
     you how many requests per second your Apache installation is capable of
     serving.</p>
 </summary>
-<seealso><a href="httpd.html">httpd</a></seealso>
+<seealso><program>httpd</program></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
     <p><code><strong>ab</strong>

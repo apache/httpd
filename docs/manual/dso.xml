@@ -27,13 +27,13 @@
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
     server by selecting a set of modules. The modules can be
-    statically compiled into the <code>httpd</code> binary when the
+    statically compiled into the <program>httpd</program> binary when the
     server is built. Alternatively, modules can be compiled as
     Dynamic Shared Objects (DSOs) that exist separately from the
-    main <code>httpd</code> binary file. DSO modules may be
+    main <program>httpd</program> binary file. DSO modules may be
     compiled at the time the server is built, or they may be
     compiled and added at a later time using the Apache Extension
-    Tool (<a href="programs/apxs.html">apxs</a>).</p>
+    Tool (<program>apxs</program>).</p>
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
@@ -57,7 +57,7 @@
     <module>core</module> which cannot be put into a DSO
     itself. Practically all other distributed Apache modules can then
     be placed into a DSO by individually enabling the DSO build for
-    them via <code>configure</code>'s
+    them via <program>configure</program>'s
     <code>--enable-<em>module</em>=shared</code> option as discussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
@@ -68,14 +68,14 @@
 
     <p>To simplify this creation of DSO files for Apache modules
     (especially for third-party modules) a new support program
-    named <a href="programs/apxs.html">apxs</a> (<em>APache
-    eXtenSion</em>) is available. It can be used to build DSO based
+    named <program>apxs</program> (<dfn>APache
+    eXtenSion</dfn>) is available. It can be used to build DSO based
     modules <em>outside of</em> the Apache source tree. The idea is
-    simple: When installing Apache the <code>configure</code>'s
+    simple: When installing Apache the <program>configure</program>'s
     <code>make install</code> procedure installs the Apache C
     header files and puts the platform-dependent compiler and
-    linker flags for building DSO files into the <code>apxs</code>
-    program. This way the user can use <code>apxs</code> to compile
+    linker flags for building DSO files into the <program>apxs</program>
+    program. This way the user can use <program>apxs</program> to compile
     his Apache module sources without the Apache distribution
     source tree and without having to fiddle with the
     platform-dependent compiler and linker flags for DSO
@@ -105,7 +105,10 @@ $ make install
         <code>mod_foo.so</code>: 
 
 <example>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br />
+$ ./configure --add-module=<var>module_type</var>:/path/to/3rdparty/mod_foo.c \<br />
+<indent>
+  --enable-foo=shared<br />
+</indent>
 $ make install
 </example>
       </li>
@@ -124,7 +127,7 @@ $ make install
         Build and install a <em>third-party</em> Apache module, say
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code> <em>outside of</em> the Apache
-        source tree using <a href="programs/apxs.html">apxs</a>: 
+        source tree using <program>apxs</program>: 
 
 <example>
 $ cd /path/to/3rdparty<br />
@@ -252,7 +255,7 @@ $ apxs -i -a -n foo mod_foo.la
       the actual server process can be assembled at run-time via
       <directive module="mod_so">LoadModule</directive>
       <code>httpd.conf</code> configuration commands instead of
-      <code>configure</code> options at build-time. For instance
+      <program>configure</program> options at build-time. For instance
       this way one is able to run different server instances
       (standard &amp; SSL version, minimalistic &amp; powered up
       version [mod_perl, PHP3], <em>etc.</em>) with only one Apache
@@ -266,7 +269,7 @@ $ apxs -i -a -n foo mod_foo.la
       <em>etc.</em></li>
 
       <li>Easier Apache module prototyping because with the
-      DSO/<code>apxs</code> pair you can both work outside the
+      DSO/<program>apxs</program> pair you can both work outside the
       Apache source tree and only need an <code>apxs -i</code>
       command followed by an <code>apachectl restart</code> to
       bring a new version of your currently developed module into

@@ -62,7 +62,8 @@
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
-<seealso><a href="../suexec.html">Running CGI programs under different user IDs</a></seealso>
+<seealso><a href="../suexec.html">Running CGI programs under different
+    user IDs</a></seealso>
 <seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></seealso>
 
 <section id="env"><title>CGI Environment variables</title>

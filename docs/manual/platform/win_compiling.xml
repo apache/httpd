@@ -231,7 +231,8 @@ nmake /f Makefile.win _apached
 
     <p>Exported <code>.mak</code> files pose a greater hassle, but they are
     required for Visual C++ 5.0 users to build <module>mod_ssl</module>,
-    abs (ab with SSL support) and/or <module>mod_deflate</module>.
+    abs (<program>ab</program> with SSL support) and/or
+    <module>mod_deflate</module>.
     VC++ 7.0 (.net) users also benefit, <code>nmake</code> builds
     are faster than <code>binenv</code> builds.
     Build the entire project from within the VC++ 5.0 or 6.0 IDE,
@@ -246,7 +247,7 @@ nmake /f Makefile.win _apached
     </example>
 
     <p>You must type this command from the <em>top level</em>
-    directory of the <code>httpd</code> source tree. Every
+    directory of the httpd source tree. Every
     <code>.mak</code> and <code>.dep</code> project file within
     the current directory and below will be corrected, and the
     timestamps adjusted to reflect the <code>.dsp</code>.</p>

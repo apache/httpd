@@ -31,8 +31,8 @@
      child processes or threads to handle requests.</p>
 
      <p>In general, <code>httpd</code> should not be invoked directly,
-     but rather should be invoked via <a
-     href="apachectl.html">apachectl</a> on Unix-based systems or <a
+     but rather should be invoked via <program>
+     apachectl</program> on Unix-based systems or <a
      href="../platform/windows.html#winsvc">as a service on Windows NT,
      2000 and XP</a> and <a href="../platform/windows.html#wincons">as
      a console application on Windows 9x and ME</a>.</p>
@@ -42,7 +42,7 @@
 <seealso><a href="../stopping.html">Stopping Apache</a></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
 <seealso><a href="../platform/">Platform-specific Documentation</a></seealso>
-<seealso><a href="apachectl.html">apachectl</a></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
      <p><code><strong>httpd</strong> [ -<strong>d</strong>

@@ -31,8 +31,8 @@ and Group</description>
 
 
 <summary>
-    <p>This module, in combination with the <a
-    href="../programs/suexec.html">suexec support program</a> allows
+    <p>This module, in combination with the <program>
+    suexec</program> support program allows
     CGI scripts to run as a specified user and Group.</p>
 </summary>
 

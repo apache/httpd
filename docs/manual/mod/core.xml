@@ -722,7 +722,7 @@ from the web</description>
 </contextlist>
 
 <usage>
-    <p>This directive sets the directory from which <code>httpd</code>
+    <p>This directive sets the directory from which <program>httpd</program>
     will serve files. Unless matched by a directive like <directive
     module="mod_alias">Alias</directive>, the server appends the
     path from the requested URL to the document root to make the
@@ -756,7 +756,7 @@ Location</a></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p>This directive controls whether the <code>httpd</code> may use
+    <p>This directive controls whether the <program>httpd</program> may use
     memory-mapping if it needs to read the contents of a file during
     delivery.  By default, when the handling of a request requires
     access to the data within a file -- for example, when delivering a
@@ -769,10 +769,10 @@ Location</a></seealso>
 
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
-    performance of the <code>httpd</code>.</li>
+    performance of the <program>httpd</program>.</li>
     <li>With an NFS-mounted <directive module="core">DocumentRoot</directive>,
-    the <code>httpd</code> may crash due to a segmentation fault if a file
-    is deleted or truncated while the <code>httpd</code> has it
+    the <program>httpd</program> may crash due to a segmentation fault if a file
+    is deleted or truncated while the <program>httpd</program> has it
     memory-mapped.</li>
     </ul>
 
@@ -808,8 +808,8 @@ Location</a></seealso>
 <compatibility>Available in version 2.0.44 and later</compatibility>
 
 <usage>
-    <p>This directive controls whether <code>httpd</code> may use the sendfile
-    support from the kernel to transmit file contents to the client.
+    <p>This directive controls whether <program>httpd</program> may use the
+    sendfile support from the kernel to transmit file contents to the client.
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
     static file -- Apache uses sendfile to deliver the file contents
@@ -1222,10 +1222,10 @@ MIME content-type</description>
     don't have to suffer the extra latency that a lookup entails.
     Heavily loaded sites should leave this directive
     <code>Off</code>, since DNS lookups can take considerable
-    amounts of time. The utility <a
-    href="../programs/logresolve.html">logresolve</a>, compiled by default
-    to the <code>bin</code> subdirectory of your installation directory, can
-    be used to look up host names from logged IP addresses offline.</p>
+    amounts of time. The utility <program>logresolve</program>, compiled by
+    default to the <code>bin</code> subdirectory of your installation
+    directory, can be used to look up host names from logged IP addresses
+    offline.</p>
 </usage>
 </directivesynopsis>
 
@@ -1264,7 +1264,7 @@ if a test is true at startup</description>
     <var>parameter-name</var> is <strong>not</strong> defined.</p>
 
     <p>The <var>parameter-name</var> argument is a define as given on
-    the <code>httpd</code> command line via <code>-D<var>parameter-</var>
+    the <program>httpd</program> command line via <code>-D<var>parameter-</var>
     </code>, at the time the server was started.</p>
 
     <p><directive type="section">IfDefine</directive> sections are
@@ -1362,7 +1362,7 @@ the server configuration files</description>
     rather than a file, Apache will read all files in that directory
     and any subdirectory.  But including entire directories is not
     recommended, because it is easy to accidentally leave temporary
-    files in a directory that can cause <code>httpd</code> to
+    files in a directory that can cause <program>httpd</program> to
     fail.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
@@ -1396,7 +1396,7 @@ the server configuration files</description>
     </example>
 </usage>
 
-<seealso><a href="../programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

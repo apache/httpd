@@ -98,8 +98,8 @@ hosts</a></seealso>
 
     <p>This command will dump out a description of how Apache parsed
     the configuration file. Careful examination of the IP addresses and
-    server names may help uncover configuration mistakes. (See <a
-    href="../programs/httpd.html">the docs for the httpd program</a> for
+    server names may help uncover configuration mistakes. (See
+    the docs for the <program>httpd</program> program for
     other command line options)</p>
 
 </section>

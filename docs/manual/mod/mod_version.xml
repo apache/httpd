@@ -63,7 +63,8 @@
 
 <usage>
     <p>The <directive type="section">IfVersion</directive> section encloses
-    configuration directives which are executed only if the httpd version
+    configuration directives which are executed only if the
+    <program>httpd</program> version
     matches the desired criteria. For normal (numeric) comparisons the
     <var>version</var> argument has the format
     <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code>, e.g.
