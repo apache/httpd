@@ -1,3 +1,4 @@
+.libs
 *.lo
 .deps
 Makefile
