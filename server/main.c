@@ -191,12 +191,6 @@ static void show_compile_settings(void)
 #ifdef SERVER_CONFIG_FILE
     printf(" -D SERVER_CONFIG_FILE=\"" SERVER_CONFIG_FILE "\"\n");
 #endif
-#ifdef ACCESS_CONFIG_FILE
-    printf(" -D ACCESS_CONFIG_FILE=\"" ACCESS_CONFIG_FILE "\"\n");
-#endif
-#ifdef RESOURCE_CONFIG_FILE
-    printf(" -D RESOURCE_CONFIG_FILE=\"" RESOURCE_CONFIG_FILE "\"\n");
-#endif
 }
 
 static void destroy_and_exit_process(process_rec *process, int process_exit_value)

@@ -181,16 +181,6 @@ extern "C" {
 #define SERVER_CONFIG_FILE "conf/httpd.conf"
 #endif
 
-/* The name of the document config file */
-#ifndef RESOURCE_CONFIG_FILE
-#define RESOURCE_CONFIG_FILE "conf/srm.conf"
-#endif
-
-/* The name of the access file */
-#ifndef ACCESS_CONFIG_FILE
-#define ACCESS_CONFIG_FILE "conf/access.conf"
-#endif
-
 /* Whether we should enable rfc1413 identity checking */
 #ifndef DEFAULT_RFC1413
 #define DEFAULT_RFC1413 0
@@ -806,11 +796,6 @@ struct server_rec {
     /* description of where the definition came from */
     const char *defn_name;
     unsigned defn_line_number;
-
-    /* Full locations of server config info */
-
-    char *srm_confname;
-    char *access_confname;
 
     /* Contact information */
 

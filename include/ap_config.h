@@ -476,14 +476,8 @@ typedef int pid_t;
 #ifndef SERVER_CONFIG_FILE
 #define SERVER_CONFIG_FILE      "Configuration/Server"
 #endif
-#ifndef RESOURCE_CONFIG_FILE
-#define RESOURCE_CONFIG_FILE    "Configuration/Resources"
-#endif
 #ifndef TYPES_CONFIG_FILE
 #define TYPES_CONFIG_FILE       "Configuration/MIME"
-#endif
-#ifndef ACCESS_CONFIG_FILE
-#define ACCESS_CONFIG_FILE      "Configuration/Access"
 #endif
 #ifndef DEFAULT_USER_DIR
 #define DEFAULT_USER_DIR        "Library/Web Documents"

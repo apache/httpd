@@ -383,10 +383,6 @@ static int display_info(request_rec *r)
     if (!r->args || strcasecmp(r->args, "list")) {
         cfname = ap_server_root_relative(r->pool, ap_server_confname);
         mod_info_cfg_httpd = mod_info_load_config(r->pool, cfname, r);
-        cfname = ap_server_root_relative(r->pool, serv->srm_confname);
-        mod_info_cfg_srm = mod_info_load_config(r->pool, cfname, r);
-        cfname = ap_server_root_relative(r->pool, serv->access_confname);
-        mod_info_cfg_access = mod_info_load_config(r->pool, cfname, r);
         if (!r->args) {
             ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
