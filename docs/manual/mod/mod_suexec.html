@@ -1,75 +1,107 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_suexec</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_suexec</h1>
-
-    <p>This module provides support for <a
-    href="../suexec.html">running CGI scripts as a specified User
-    and Group</a>.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a> mod_suexec.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    suexec_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 2.0 and later.</p>
-
-    <h2>Summary</h2>
-
-    <p>This module allows CGI scripts to run as a specified user
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-->
+<title>mod_suexec - Apache HTTP Server</title>
+<link href="../style/manual.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<blockquote>
+<div align="center">
+<img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"><h3>Apache HTTP Server Version 2.0</h3>
+</div>
+<h1 align="center">Apache Module mod_suexec</h1>
+<table cellspacing="1" cellpadding="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table bgcolor="#ffffff">
+<tr>
+<td><span class="help">Description:</span></td><td>
+<description>This module allows CGI scripts to run as a specified user
+and Group.</description>
+</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>suexec_module</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td>
+<compatibility>Available in Apache 2.0 and later</compatibility>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<h2>Summary</h2>
+<summary>
+    
+<p>This module allows CGI scripts to run as a specified user
     and Group.</p>
 
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#suexecusergroup">SuexecUserGroup</a></li>
-    </ul>
-
-    <h2><a id="suexecusergroup"
-    name="suexecusergroup">SuexecUserGroup directive</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> SuexecUserGroup
-    <em>User Group</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_suexec<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> SuexecUserGroup
-    is only available in 2.0 and later.</p>
-
-    <p>The <code>SuexecUserGroup</code> directive allows you to
+</summary>
+<h2>Directives</h2>
+<ul>
+<li>
+<a href="#suexecusergroup">SuexecUserGroup</a>
+</li>
+</ul>
+<hr>
+<h2>
+<a name="SuexecUserGroup">SuexecUserGroup</a> <a name="suexecusergroup">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>SuexecUserGroup <em>User Group</em>
+</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_suexec</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>SuexecUserGroup is only available in 2.0 and
+later.</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>The <code class="directive">SuexecUserGroup</code> directive allows you to
     specify a user and group for CGI programs to run as. Non-CGI
     requests are still processes with the user specified in the
     User directive. This directive replaces using the User and
     Group directives inside of VirtualHosts.</p>
-    <hr />
 
-    <h3 align="CENTER">Apache HTTP Server Version 2.0</h3>
-    <a href="./"><img src="../images/index.gif" alt="Index" /></a>
-    <a href="../"><img src="../images/home.gif" alt="Home" /></a>
-  </body>
+</usage>
+<hr>
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img alt="Index" src="../images/index.gif"></a><a href="../"><img alt="Home" src="../images/home.gif"></a>
+</blockquote>
+</body>
 </html>
-
