@@ -403,19 +403,13 @@ require valid-user
         Fred User connects as <code>fuser</code>, the filter would look
         like</p>
 
-        <example>(&amp;<font
-        color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font
-        color="blue">uid</font>=<font
-        color="green">fuser</font>))</example>
+        <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=fuser))</example>
 
         <p>The above search will only succeed if <em>fuser</em> has a
         pager. When Joe Manager connects as <em>jmanager</em>, the
         filter looks like</p>
 
-        <example>(&amp;<font
-        color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font
-        color="blue">uid</font>=<font
-        color="green">jmanager</font>))</example>
+        <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=jmanager))</example>
 
         <p>The above search will succeed whether <em>jmanager</em>
         has a pager or not.</p>

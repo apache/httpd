@@ -379,13 +379,13 @@ require valid-user
         Fred User connects as <code>fuser</code>, the filter would look
         like</p>
 
-        <div class="example"><p><code>(&amp;<font color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font color="blue">uid</font>=<font color="green">fuser</font>))</code></p></div>
+        <div class="example"><p><code>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=fuser))</code></p></div>
 
         <p>The above search will only succeed if <em>fuser</em> has a
         pager. When Joe Manager connects as <em>jmanager</em>, the
         filter looks like</p>
 
-        <div class="example"><p><code>(&amp;<font color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font color="blue">uid</font>=<font color="green">jmanager</font>))</code></p></div>
+        <div class="example"><p><code>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=jmanager))</code></p></div>
 
         <p>The above search will succeed whether <em>jmanager</em>
         has a pager or not.</p>
