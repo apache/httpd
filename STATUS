@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/11/10 18:16:51 $]
+Last modified at [$Date: 2000/11/14 02:42:51 $]
 
 Release:
 
@@ -174,10 +174,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
-
-    * PR#73: mod_log-any
-      reporting of referer in error_log
-	Status: 
 
     * PR#76: general
       missing call to "setlocale();"

@@ -328,6 +328,7 @@ static void log_error_core(const char *file, int line, int level,
     char errstr[MAX_STRING_LEN];
     size_t len;
     apr_file_t *logf = NULL;
+    const char *referer;
 
     if (s == NULL) {
 	/*
@@ -425,8 +426,12 @@ static void log_error_core(const char *file, int line, int level,
 	len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"(%d)%s: ", status, apr_strerror(status, buf, sizeof(buf)));
     }
-
     len += apr_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
+
+    if (r && (referer = apr_table_get(r->headers_in, "Referer"))) {
+        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                ", referer: %s", referer);
+    }
 
     /* NULL if we are logging to syslog */
     if (logf) {
