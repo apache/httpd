@@ -175,7 +175,7 @@ static handler_rec handler_table[] = {
 };
 
     /* the main config structure */
-module rewrite_module = {
+module MODULE_VAR_EXPORT rewrite_module = {
    STANDARD_MODULE_STUFF,
    init_module,                 /* module initializer                  */
    config_perdir_create,        /* create per-dir    config structures */
