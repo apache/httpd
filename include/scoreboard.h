@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -73,11 +72,6 @@ extern "C" {
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
-
-/* The optimized timeouts only work if we're not using a scoreboard file */
-#if !APR_FILE_BASED_SHM
-#define OPTIMIZE_TIMEOUTS
-#endif
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
@@ -155,10 +149,6 @@ typedef enum {
 
 /* stuff which is thread/process specific */
 typedef struct {
-#ifdef OPTIMIZE_TIMEOUTS
-    vtime_t cur_vtime;		/* the child's current vtime */
-    unsigned short timeout_len;	/* length of the timeout */
-#endif
     int thread_num;
 #if APR_HAS_THREADS
     apr_os_thread_t tid;
@@ -176,9 +166,7 @@ typedef struct {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-#ifndef OPTIMIZE_TIMEOUTS
     time_t last_used;
-#endif
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
@@ -196,10 +184,6 @@ typedef struct {
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
     int worker_threads;
-#ifdef OPTIMIZE_TIMEOUTS
-    time_t last_rtime;		/* time(0) of the last change */
-    vtime_t last_vtime;		/* the last vtime the parent has seen */
-#endif
 } parent_score;
 
 typedef struct {

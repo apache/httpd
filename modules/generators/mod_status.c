@@ -516,7 +516,6 @@ static int status_handler(request_rec *r)
 		vhost = NULL;
 	    }
 
-
 #if defined(NO_GETTIMEOFDAY)
 #ifdef HAVE_TIMES
 	    if (score_record.start_time == (clock_t) 0)
@@ -605,11 +604,7 @@ static int status_handler(request_rec *r)
 			    score_record.times.tms_cutime / tick,
 			    score_record.times.tms_cstime / tick,
 #endif
-#ifdef OPTIMIZE_TIMEOUTS
-			    difftime(nowtime, ps_record.last_rtime),
-#else
 			    difftime(nowtime, score_record.last_used),
-#endif
 			    (long) req_time);
 			format_byte_out(r, conn_bytes);
 			ap_rputs("|", r);
@@ -678,11 +673,7 @@ static int status_handler(request_rec *r)
 			     score_record.times.tms_cutime +
 			     score_record.times.tms_cstime) / tick,
 #endif
-#ifdef OPTIMIZE_TIMEOUTS
-			    difftime(nowtime, ps_record.last_rtime),
-#else
 			    difftime(nowtime, score_record.last_used),
-#endif
 			    (long) req_time);
 			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
