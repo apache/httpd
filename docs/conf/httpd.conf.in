@@ -447,6 +447,9 @@ DefaultType text/plain
 # Local access to the Apache HTTP Server Manual
 #Include @rel_sysconfdir@/extra/httpd-manual.conf
 
+# Distributed authoring and versioning (WebDAV)
+#Include @rel_sysconfdir@/extra/httpd-dav.conf
+
 # Various default settings
 #Include @rel_sysconfdir@/extra/httpd-default.conf
 
