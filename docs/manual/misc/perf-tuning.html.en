@@ -58,11 +58,15 @@
 
     <p>The single biggest hardware issue affecting webserver
     performance is RAM. A webserver should never ever have to swap,
-    swapping increases the latency of each request beyond a point
+    as swapping increases the latency of each request beyond a point
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
     should, control the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> setting so that your server
-    does not spawn so many children it starts swapping.</p>
+    does not spawn so many children it starts swapping. This procedure
+    for doing this is simple: determine the size of your average Apache
+    process, by looking at your process list via a tool such as
+    <code>top</code>, and divide this into your total available memory,
+    leaving some room for other processes.</p>
 
     <p>Beyond that the rest is mundane: get a fast enough CPU, a
     fast enough network card, and fast enough disks, where "fast
@@ -100,20 +104,32 @@
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
 
-    <h3>HostnameLookups</h3>
+    <h3><a name="dns" id="dns">HostnameLookups and other DNS considerations</a></h3>
 
       
 
       <p>Prior to Apache 1.3, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> defaulted to <code>On</code>.
       This adds latency to every request because it requires a
       DNS lookup to complete before the request is finished. In
-      Apache 1.3 this setting defaults to <code>Off</code>.
-      However (1.3 or later), if you use any <code>Allow from domain</code>
-      or <code>Deny from domain</code> directives then you will pay for
+      Apache 1.3 this setting defaults to <code>Off</code>. If you need
+      to have addresses in your log files resolved to hostnames, use the
+      <a href="../programs/logresolve.html"><code>logresolve</code></a>
+      program that comes with Apache, on one of the numerous log
+      reporting packages which are available.</p>
+
+      <p>It is recommended that you do this sort of postprocessing of
+      your log files on some machine other than the production web
+      server machine, in order that this activity not adversely affect
+      server performance.</p>
+
+      <p>If you use any <code><code class="directive"><a href="../mod/access.html#allow">Allow</a></code> 
+      from domain</code> or <code><code class="directive"><a href="../mod/access.html#deny">Deny</a></code> from domain</code> 
+      directives (i.e., using a hostname, or a domain name, rather than
+      an IP address) then you will pay for
       a double reverse DNS lookup (a reverse, followed by a forward
-      to make sure that the reverse is not being spoofed). So for the
-      highest performance avoid using these directives (it's fine to
-      use IP addresses rather than domain names).</p>
+      to make sure that the reverse is not being spoofed). For best
+      performence, therefore, use IP addresses, rather than names, when
+      using these directives, if possible.</p>
 
       <p>Note that it's possible to scope the directives, such as
       within a <code>&lt;Location /server-status&gt;</code> section.
@@ -134,18 +150,9 @@
       could consider doing the <code>gethostbyname</code> call in the
       specific CGIs that need it.</p>
 
-      <p>Similarly, if you need to have hostname information in your
-      server logs in order to generate reports of this information,
-      you can postprocess your log file with <a href="../programs/logresolve.html"><code>logresolve</code></a>,
-      so that these lookups can be done without making the client wait.
-      It is recommended that you do this postprocessing, and any other
-      statistical analysis of the log file, somewhere other than your
-      production web server machine, in order that this activity does
-      not adversely affect server performance.</p>
-
     
 
-    <h3>FollowSymLinks and SymLinksIfOwnerMatch</h3>
+    <h3><a name="symlinks" id="symlinks">FollowSymLinks and SymLinksIfOwnerMatch</a></h3>
 
       
 
@@ -198,7 +205,7 @@
 
     
 
-    <h3>AllowOverride</h3>
+    <h3><a name="htacess" id="htacess">AllowOverride</a></h3>
 
       
 
@@ -226,7 +233,7 @@
 
     
 
-    <h3>Negotiation</h3>
+    <h3><a name="negotiation" id="negotiation">Negotiation</a></h3>
 
       
 
@@ -253,6 +260,13 @@
       <code>MultiViews</code>, as the necessary information can be
       determined by reading this single file, rather than having to
       scan the directory for files.</p>
+
+    <p>If your site needs content negotiation consider using
+    <code>type-map</code> files, rather than the <code>Options
+    MultiViews</code> directive to accomplish the negotiation. See the
+    <a href="../content-negotiation.html">Content Negotiation</a>
+    documentation for a full discussion of the methods of negotiation,
+    and instructions for creating <code>type-map</code> files.</p>
 
     
 
@@ -324,7 +338,7 @@
 
     
 
-    <h3>Process Creation</h3>
+    <h3><a name="process" id="process">Process Creation</a></h3>
 
       
 
@@ -421,6 +435,32 @@
 
       <p>For more information on these and other MPMs, please
       see the MPM <a href="../mpm.html">documentation</a>.</p>
+
+    
+
+    <h3><a name="modules" id="modules">Modules</a></h3>
+
+        
+
+        <p>Since memory usage is such an important consideration in
+        performance, you should attempt to eliminate modules that youare
+        not actually using. If you have built the modules as <a href="../dso.html">DSOs</a>, eliminating modules is a simple
+        matter of commenting out the associated <code class="directive"><a href="../mod/so.html#loadmodule">LoadModule</a></code> directive for that module.
+        This allows you to experiment with removing modules, and seeing
+        if your site still functions in their absense.</p>
+
+        <p>If, on the other hand, you have modules statically linked
+        into your Apache binary, you will need to recompile Apache in
+        order to remove unwanted modules.</p>
+
+        <p>An associated question that arises here is, of course, what
+        modules you need, and which ones you don't. The answer here
+        will, of course, vary from one web site to another. However, the
+        <em>minimal</em> list of modules which you can get by with tends
+        to include <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>,
+        and <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. <code>mod_log_config</code> is,
+        of course, optional, as you can run a web site without log
+        files. This is, however, not recommended.</p>
 
     
 
