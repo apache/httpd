@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/24 19:22:10 $]
+Last modified at [$Date: 2004/05/25 00:14:36 $]
 
 Release:
 
@@ -72,23 +72,27 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Allow LimitRequestBody to be reset to unlimited. PR 29106
+         server/core.c: r1.279
+       +1: nd
+
     *) Fix a segfault when requests for shared memory fails and returns
        NULL. Fix a segfault caused by a lack of bounds checking on the
        cache.
-       modules/experimental/util_ldap_cache_mgr.c r1.16
+         modules/experimental/util_ldap_cache_mgr.c r1.16
        PR 24801
        +1: minfrin, bnicholes, jim
 
     *) Throw an error message if an attempt is made to use the LDAPTrustedCA
        or LDAPTrustedCAType directives in a VirtualHost.
-       modules/experimental/util_ldap.c r1.29
+         modules/experimental/util_ldap.c r1.29
        PR 26390 [Brad Nicholes]
        +1: minfrin, bnicholes, jim
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
        an attempt to do this would try and connect to 0.0.0.0, regardless
        of the server specified.
-       modules/proxy/proxy_ftp.c r1.143
+         modules/proxy/proxy_ftp.c r1.143
        PR 24922 [Pascal Terjan <pterjan@linuxfr.org>]
        +1: minfrin
 
