@@ -21,7 +21,7 @@ If a file has already been indent'd, or doesn't need it, mark it as DONE
    http_core.h
    http_log.c
    http_log.h
-   http_main.c			RESERVED until Dean applies his two patches
+   http_main.c			RESERVED by Dean
    http_main.h
    http_protocol.c		DONE by Roy
    http_protocol.h		DONE by Roy
