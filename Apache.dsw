@@ -209,15 +209,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wintty
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name abs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_deflate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_ssl
-    End Project Dependency
 }}}
 
 ###############################################################################
