@@ -106,27 +106,31 @@ apr_status_t ap_cleanup_shared_mem(void *d)
 static void setup_shared_mem(apr_pool_t *p)
 {
     char buf[512];
+    char errmsg[120];
     const char *fname;
+    apr_status_t rv;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE, fname, p) != APR_SUCCESS) {
-        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
-                    ap_server_argv0);
-        perror(buf);
+    rv = apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE, fname, p);
+    if (rv != APR_SUCCESS) {
+        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: %s",
+                    ap_server_argv0, apr_strerror(rv, errmsg, sizeof errmsg));
+        fprintf(stderr, "%s\n", buf);
         exit(APEXIT_INIT);
     }
     ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE);
-    if (apr_shm_init(&status_shm, NEW_SCOREBOARD_SIZE, fname, p) != APR_SUCCESS) {
-        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
-                    ap_server_argv0);
-        perror(buf);
+    rv = apr_shm_init(&status_shm, NEW_SCOREBOARD_SIZE, fname, p);
+    if (rv != APR_SUCCESS) {
+        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: %s",
+                    ap_server_argv0, apr_strerror(rv, errmsg, sizeof errmsg));
+        fprintf(stderr, "%s\n", buf);
         exit(APEXIT_INIT);
     }
     ap_new_scoreboard_image = apr_shm_malloc(status_shm, NEW_SCOREBOARD_SIZE);
     if (ap_scoreboard_image == NULL || ap_new_scoreboard_image == NULL) {
         apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
                     ap_server_argv0);
-        perror(buf);
+        perror(buf); /* o.k. since MM sets errno */
         apr_shm_destroy(scoreboard_shm);
         apr_shm_destroy(status_shm);
         exit(APEXIT_INIT);
