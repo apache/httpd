@@ -70,24 +70,13 @@
 **  _________________________________________________________________
 */
 
-#ifndef NO_WRITEV
-#include <sys/types.h>
-#include <sys/uio.h>
-#endif
-
 static int ssl_io_hook_read(BUFF *fb, char *buf, int len);
 static int ssl_io_hook_write(BUFF *fb, char *buf, int len);
-#ifndef NO_WRITEV
-static int ssl_io_hook_writev(BUFF *fb, const struct iovec *iov, int iovcnt);
-#endif
 
 void ssl_io_register(void)
 {
     ap_hook_register("ap::buff::read",   ssl_io_hook_read,  AP_HOOK_NOCTX);
     ap_hook_register("ap::buff::write",  ssl_io_hook_write, AP_HOOK_NOCTX);
-#ifndef NO_WRITEV
-    ap_hook_register("ap::buff::writev", ssl_io_hook_writev, AP_HOOK_NOCTX);
-#endif
     return;
 }
 
@@ -95,9 +84,6 @@ void ssl_io_unregister(void)
 {
     ap_hook_unregister("ap::buff::read",   ssl_io_hook_read);
     ap_hook_unregister("ap::buff::write",  ssl_io_hook_write);
-#ifndef NO_WRITEV
-    ap_hook_unregister("ap::buff::writev", ssl_io_hook_writev);
-#endif
     return;
 }
 
@@ -166,75 +152,6 @@ static int ssl_io_hook_write(BUFF *fb, char *buf, int len)
         rc = write(fb->fd, buf, len);
     return rc;
 }
-
-#ifndef NO_WRITEV
-/* the prototype for our own SSL_writev() */
-static int SSL_writev(SSL *, const struct iovec *, int);
-
-static int ssl_io_hook_writev(BUFF *fb, const struct iovec *iov, int iovcnt)
-{
-    SSL *ssl;
-    conn_rec *c;
-    int rc;
-
-    if ((ssl = ap_ctx_get(fb->ctx, "ssl")) != NULL) {
-        rc = SSL_writev(ssl, iov, iovcnt);
-        /*
-         * Simulate an EINTR in case OpenSSL wants to write more.
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_WANT_WRITE)
-            errno = EINTR;
-        /*
-         * Log SSL errors
-         */
-        if (rc < 0 && SSL_get_error(ssl, rc) == SSL_ERROR_SSL) {
-            c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "SSL error on writing data");
-        }
-        /*
-         * writev(2) returns only the generic error number -1
-         */
-        if (rc < 0)
-            rc = -1;
-    }
-    else
-        rc = writev(fb->fd, iov, iovcnt);
-    return rc;
-}
-#endif
-
-/*  _________________________________________________________________
-**
-**  Special Functions for OpenSSL
-**  _________________________________________________________________
-*/
-
-/*
- * There is no SSL_writev() provided by OpenSSL. The reason is mainly because
- * OpenSSL has to fragment the data itself again for the SSL record layer, so a
- * writev() like interface makes not much sense.  What we do is to emulate it
- * to at least being able to use the write() like interface. But keep in mind
- * that the network I/O performance is not write() like, of course.
- */
-#ifndef NO_WRITEV
-static int SSL_writev(SSL *ssl, const struct iovec *iov, int iovcnt)
-{
-    int i;
-    int n;
-    int rc;
-
-    rc = 0;
-    for (i = 0; i < iovcnt; i++) {
-        if ((n = SSL_write(ssl, iov[i].iov_base, iov[i].iov_len)) == -1) {
-            rc = -1;
-            break;
-        }
-        rc += n;
-    }
-    return rc;
-}
-#endif
 
 /*  _________________________________________________________________
 **
