@@ -23,9 +23,16 @@ BEGIN {
 }
 
 /@@LoadModule@@/ {
-    print "#LoadModule auth_anon_module modules/authanon.nlm"
-    print "#LoadModule auth_dbm_module modules/authdbm.nlm"
-    print "#LoadModule auth_digest_module modules/digest.nlm"
+    print "#LoadModule auth_basic_module modules/authbasc.nlm"
+    print "#LoadModule auth_digest_module modules/authdigt.nlm"
+    print "#LoadModule authn_anon_module modules/authnano.nlm"
+    print "#LoadModule authn_dbm_module modules/authndbm.nlm"
+    print "#LoadModule authn_default_module modules/authndef.nlm"
+    print "#LoadModule authn_file_module modules/authnfil.nlm"
+    print "#LoadModule authz_dbm_module modules/authzdbm.nlm"
+    print "#LoadModule authz_default_module modules/authzdef.nlm"
+    print "#LoadModule authz_groupfile_module modules/authzgrp.nlm"
+    print "#LoadModule authz_user_module modules/authzusr.nlm"
     print "#LoadModule cern_meta_module modules/cernmeta.nlm"
     print "#LoadModule dav_module modules/mod_dav.nlm"
     print "#LoadModule dav_fs_module modules/moddavfs.nlm"
