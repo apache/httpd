@@ -793,7 +793,7 @@ struct request_rec {
     /** ST_MODE set to zero if no such file */
     apr_finfo_t finfo;
     /** components of uri, dismantled */
-    apr_uri_components parsed_uri;
+    apr_uri_t parsed_uri;
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module

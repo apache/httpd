@@ -189,12 +189,12 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
     dav_lookup_result result = { 0 };
     const char *scheme;
     apr_port_t port;
-    apr_uri_components comp;
+    apr_uri_t comp;
     char *new_file;
     const char *domain;
 
     /* first thing to do is parse the URI into various components */
-    if (apr_uri_parse_components(r->pool, uri, &comp) != APR_SUCCESS) {
+    if (apr_uri_parse(r->pool, uri, &comp) != APR_SUCCESS) {
 	result.err.status = HTTP_BAD_REQUEST;
 	result.err.desc = "Invalid syntax in Destination URI.";
 	return result;
@@ -288,7 +288,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
        the current request. Therefore, we can use ap_sub_req_lookup_uri() */
 
     /* reconstruct a URI as just the path */
-    new_file = apr_uri_unparse_components(r->pool, &comp, APR_URI_UNP_OMITSITEPART);
+    new_file = apr_uri_unparse(r->pool, &comp, APR_URI_UNP_OMITSITEPART);
 
     /*
      * Lookup the URI and return the sub-request. Note that we use the
@@ -542,7 +542,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     const char *uri = NULL;	/* scope of current production; NULL=no-tag */
     size_t uri_len = 0;
     dav_if_header *ih = NULL;
-    apr_uri_components parsed_uri;
+    apr_uri_t parsed_uri;
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     enum {no_tagged, tagged, unknown} list_type = unknown;
     int condition;
@@ -566,7 +566,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
             
             /* 2518 specifies this must be an absolute URI; just take the
              * relative part for later comparison against r->uri */
-            if (apr_uri_parse_components(r->pool, uri, &parsed_uri) != APR_SUCCESS) {
+            if (apr_uri_parse(r->pool, uri, &parsed_uri) != APR_SUCCESS) {
                 return dav_new_error(r->pool, HTTP_BAD_REQUEST,
                                      DAV_ERR_IF_TAGGED,
                                      "Invalid URI in tagged If-header.");
