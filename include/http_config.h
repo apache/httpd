@@ -135,6 +135,8 @@ typedef union {
     { directive, { .take2=func }, mconfig, where, ITERATE2, help }
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE23, help }
+# define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
+    { directive, { .take3=func }, mconfig, where, TAKE23, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
@@ -164,6 +166,8 @@ typedef const char *(*cmd_func) ();
 # define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, ITERATE2, help }
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE23, help }
+# define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, TAKE23, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, FLAG, help }
