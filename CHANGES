@@ -1,4 +1,10 @@
 Changes with Apache 2.0.18-dev
+  *) Do not start piped log processes during the config file 
+     preflight.  This change also circumvents a problem on 
+     Windows where the rotatelog processes created during preflight
+     was not getting cleaned up properly.
+     [Bill Stoddard]
+
   *) add "Request Phase Participation" info to mod_info
      [Doug MacEachern]
 
