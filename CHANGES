@@ -1,5 +1,9 @@
 Changes with Apache 2.0.29-dev
 
+  *) Add buffering in core_output_filter to ensure that long
+     lists of small buckets don't cause small packet writes.
+     [Brian Pane, Ryan Bloom]
+
   *) Fix the installation target to make sure that the manual is 
      installed in the correct location.
      [Yoshifumi Hiramatsu <hiramatu@boreas.dti.ne.jp> and
