@@ -878,6 +878,17 @@ void die(int type, request_rec *r)
     }
 
     /*
+     * If we want to keep the connection, be sure that the request body
+     * (if any) has been read.
+     */
+    if ((r->status != HTTP_NOT_MODIFIED) && (r->status != HTTP_NO_CONTENT)
+        && !status_drops_connection(r->status)
+        && r->connection && (r->connection->keepalive != -1)) {
+
+        (void) discard_request_body(r);
+    }
+
+    /*
      * Two types of custom redirects --- plain text, and URLs. Plain text has
      * a leading '"', so the URL code, here, is triggered on its absence
      */

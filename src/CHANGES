@@ -1,5 +1,10 @@
 Changes with Apache 1.3b4
 
+  *) When die() happens we need to eat any request body if one exists.
+     Otherwise we can't continue with a keepalive session.  This shows up
+     as a POST problem with MSIE 4.0, typically against pages which are
+     authenticated.  [Roy Fielding] PR#1399
+
   *) If you define SECURITY_HOLE_PASS_AUTHORIZATION then the Authorization
      header will be passed to CGIs.  This is generally a security hole, so
      it's not a default.  [Marc Slemko] PR#549
