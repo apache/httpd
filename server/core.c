@@ -3077,6 +3077,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
        to the connection. */
     while (b) {
         apr_size_t nbytes = 0;
+        apr_bucket *last_e = NULL; /* initialized for debugging */
         apr_bucket *e;
 
         /* tail of brigade if we need another pass */
@@ -3095,6 +3096,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         /* Iterate over the brigade: collect iovecs and/or a file */
         APR_BRIGADE_FOREACH(e, b) {
+            /* XXX: APR_BRIGADE_FOREACH breaks the value of e! 
+             * is that the expected behavior?
+             */
+            last_e = e;
             if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
                 break;
             }
@@ -3166,13 +3171,13 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *       with the hope of concatenating with another response)
          */
         if ((!fd && !more && 
-            (nbytes + flen < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
-            || (nbytes + flen < AP_MIN_BYTES_TO_WRITE && APR_BUCKET_IS_EOS(e) && c->keepalive)) {
+            (nbytes + flen < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(last_e))
+            || (nbytes + flen < AP_MIN_BYTES_TO_WRITE && APR_BUCKET_IS_EOS(last_e) && c->keepalive)) {
             /* NEVER save an EOS in here.  If we are saving a brigade with 
              * an EOS bucket, then we are doing keepalive connections, and 
              * we want to process to second request fully.
              */
-            if (APR_BUCKET_IS_EOS(e)) {
+            if (APR_BUCKET_IS_EOS(last_e)) {
                 apr_bucket *bucket = NULL;
                 /* If we are in here, then this request is a keepalive.  We
                  * need to be certain that any data in a bucket is valid
