@@ -226,7 +226,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19970623
+#define MODULE_MAGIC_NUMBER 19970628
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
