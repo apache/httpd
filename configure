@@ -219,7 +219,8 @@ permute=''
 #   determine rules
 rules=''
 rulelist=''
-OIFS="$IFS" IFS='
+OIFS="$IFS"
+IFS='
 '
 for rule in `grep '^Rule' $src/Configuration.tmpl`; do
     rule=`echo "$rule" | sed -e 's/^Rule[ 	]*//'`
@@ -236,7 +237,8 @@ rules=`echo $rules | sed -e 's/^://'`
 #   determine modules
 modules=''
 modulelist=''
-OIFS="$IFS" IFS='
+OIFS="$IFS"
+IFS='
 '
 for module in `egrep '^[# 	]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     add=yes
@@ -267,7 +269,8 @@ modules=`echo $modules | sed -e 's/^://'`
 #   backward compatibility for old src/Configuration.tmpl
 #   parameter names to the canonical Autoconf-style shell
 #   variable names.
-OIFS="$IFS" IFS="$DIFS"
+OIFS="$IFS"
+IFS="$DIFS"
 for var in CFLAGS LDFLAGS LIBS INCLUDES DEPS; do
     eval "val=\$EXTRA_$var"
     if [ "x$val" != "x" ]; then
@@ -301,7 +304,8 @@ esac
 ##  can be overridden by others.
 ##
 apc_prev=''
-OIFS1="$IFS" IFS="$DIFS"
+OIFS1="$IFS"
+IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
@@ -402,7 +406,8 @@ do
                 -e "s/[ 	]*$/'/g" \
                 $file >$pldconf
             . $pldconf
-            OIFS="$IFS" IFS="$DIFS"
+            OOIFS="$IFS"  # most likely not needed: jmj
+            IFS="$DIFS"   # ditto
             for var in prefix exec_prefix bindir sbindir libexecdir mandir \
                        sysconfdir datadir includedir localstatedir runtimedir \
                        logfiledir proxycachedir; do
@@ -418,7 +423,7 @@ do
                         ;;
                 esac
             done
-            IFS="$OIFS"
+            IFS="$OOIFS"
             rm -f $pldconf 2>/dev/null
             if [ "x$prefix" = "xUNSET" ]; then
                 echo "configure:Error: Path layout definition not found or incorrect" 1>&2
@@ -441,7 +446,6 @@ done
 ##
 addconf_created=0
 apc_prev=''
-OIFS1="$IFS" IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
@@ -679,18 +683,20 @@ do
                 module ) 
                     case $apc_optarg in
                        all ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"
+                           IFS=':'
                            for module in $modules; do
                                eval "module_${module}=yes" 
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            ;;
                        most ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"
+                           IFS=':'
                            for module in $modules; do
                                eval "module_${module}=yes" 
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            module_auth_db=no     # not all platforms have -ldb
                            module_mmap_static=no # not all platforms have mmap()
                            module_so=no          # not all platforms have dlopen()
@@ -711,15 +717,17 @@ do
                 shared ) 
                     case $apc_optarg in
                        max ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"
+                           IFS=':'
                            for module in $modules; do
                                eval "shared_${module}=yes" 
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            shared_so=no        # because of bootstrapping
                            ;;
                        remain ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"
+                           IFS=':'
                            for module in $modules; do
                                eval "add=\$module_${module}" 
                                if [ "x$add" = "xno" ]; then
@@ -727,7 +735,7 @@ do
                                    eval "shared_${module}=yes" 
                                fi
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            shared_so=no
                            ;;
                        * ) 
@@ -770,11 +778,12 @@ do
                 module )
                     case $apc_optarg in
                        all ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"r
+                           IFS=':'
                            for module in $modules; do
                                eval "module_${module}=no" 
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
@@ -789,11 +798,12 @@ do
                 shared )
                     case $apc_optarg in
                        all ) 
-                           OIFS="$IFS" IFS=':'
+                           OOIFS="$IFS"
+                           IFS=':'
                            for module in $modules; do
                                eval "shared_${module}=no" 
                            done
-                           IFS="$OIFS"
+                           IFS="$OOIFS"
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
@@ -959,7 +969,8 @@ fi
 ##  expand path variables and make sure
 ##  they do not end with a backslash
 ##
-OIFS="$IFS" IFS="$DIFS"
+OIFS="$IFS"
+IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir libexecdir mandir \
            sysconfdir datadir includedir localstatedir runtimedir \
            logfiledir proxycachedir suexec_docroot suexec_logexec; do
@@ -1176,7 +1187,8 @@ rm -f $sedsubst 2>/dev/null
 touch $sedsubst
 
 #   generate settings from imported environment variables
-OIFS="$IFS" IFS="$DIFS"
+OIFS="$IFS"
+IFS="$DIFS"
 for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
     eval "val=\"\$$var\"";
@@ -1195,7 +1207,8 @@ done
 IFS="$OIFS"
 
 #   generate rule directives 
-OIFS="$IFS" IFS=':'
+OIFS="$IFS"
+IFS=':'
 for rule in $rules; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
@@ -1208,7 +1221,8 @@ IFS="$OIFS"
 
 #   consistency checks for shared object support
 some_shares=0
-OIFS="$IFS" IFS=':'
+OIFS="$IFS"
+IFS=':'
 for module in $modules; do
     eval "share=\$shared_$module"
     if [ "x$share" = "xyes" ]; then
@@ -1233,7 +1247,8 @@ fi
 #   module permutation support
 if [ "x$permute" != "x" ]; then
     sed -e '/## mod_mmap_static/,$d' <src/Configuration.tmpl >$tplconf
-    OIFS="$IFS" IFS='
+    OIFS="$IFS"
+    IFS='
 '
     for line in `cat src/Configuration.tmpl $addconf | egrep '^[# ]*(Add|Shared)Module'`; do
         name=`echo "$line" |\
@@ -1303,7 +1318,8 @@ else
 fi
 
 #   generate module directives
-OIFS="$IFS" IFS=':'
+OIFS="$IFS"
+IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
     if [ "x$add" = "xyes" ]; then
@@ -1340,7 +1356,8 @@ files=`$AWK <$sedsubst '
         print $0 >file;
     }
 ' "sedsubst=$sedsubst"`
-OIFS="$IFS" IFS="$DIFS"
+OIFS="$IFS"
+IFS="$DIFS"
 substcmd=""
 for file in $files; do
     substcmd="${substcmd} sed -f $file |"

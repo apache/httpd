@@ -1,5 +1,7 @@
 Changes with Apache 1.3.7
 
+  *) Prevent clobbering saved IFS values in APACI. [Jim Jagielski]
+
   *) Fix buffer overflows in ap_uuencode and ap_uudecode pointed out
      by "Peter 'Luna' Altberg <peter@altberg.nu>" and PR#3422
      [Peter 'Luna' Altberg <peter@altberg.nu>, Ronald Tschalär]
