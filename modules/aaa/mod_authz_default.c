@@ -95,7 +95,7 @@ static void *create_authz_default_dir_config(apr_pool_t *p, char *d)
 
 static const command_rec authz_default_cmds[] =
 {
-    AP_INIT_FLAG("AccessAuthoritative", ap_set_flag_slot,
+    AP_INIT_FLAG("AuthzDefaultAuthoritative", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authz_default_config_rec, authoritative),
                  OR_AUTHCFG,
                  "Set to 'Off' to allow access control to be passed along to "
