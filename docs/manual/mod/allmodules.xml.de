@@ -64,7 +64,7 @@
   <modulefile>mod_userdir.xml</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
-  <modulefile>beos.xml</modulefile>
+  <modulefile>beos.xml.de</modulefile>
   <modulefile>mpm_common.xml.de</modulefile>
   <modulefile>leader.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>

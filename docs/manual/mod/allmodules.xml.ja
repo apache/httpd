@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.ja</modulefile>
   <modulefile>mod_actions.xml.ja</modulefile>
   <modulefile>mod_alias.xml.ja</modulefile>
   <modulefile>mod_asis.xml.ja</modulefile>
@@ -35,7 +35,7 @@
   <modulefile>mod_expires.xml</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
-  <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_headers.xml.ja</modulefile>
   <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml.ja</modulefile>
@@ -43,7 +43,7 @@
   <modulefile>mod_isapi.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
-  <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_logio.xml.ja</modulefile>
   <modulefile>mod_mem_cache.xml</modulefile>
   <modulefile>mod_mime.xml.ja</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
