@@ -532,7 +532,7 @@ esac
 #
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
-		RULE_WANTHSREGEX=no
+		RULE_WANTHSREGEX=yes
 	else
 		RULE_WANTHSREGEX=$DEF_WANTHSREGEX
 	fi
