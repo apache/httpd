@@ -204,11 +204,10 @@ static const command_rec ssl_config_cmds[] = {
  *  the various processing hooks
  */
 
-static int ssl_hook_pre_config(
+static void ssl_hook_pre_config(
     apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     ssl_ext_register(pconf);
-    return APR_SUCCESS;
 }
 
 static int ssl_hook_post_read_request(request_rec *r)
@@ -488,9 +487,9 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_http_method   (ssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_handler       (ssl_hook_Handler,       NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
 
 #if 0 /* XXX - Work in progress */
-    ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_process_connection (ssl_hook_process_connection, 
                                                    NULL,NULL, APR_HOOK_MIDDLE);
