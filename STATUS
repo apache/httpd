@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/23 17:39:58 $]
+  Last modified at [$Date: 2001/01/25 04:12:24 $]
 
 Release:
 
@@ -34,6 +34,10 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
+
+    * Identified bug in Netware mod_userdir has an additional patch
+      available posted on 1/24 by Brad Nicholes.  OtherBill is reviewing,
+      expect to release this hold early 1/25.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
