@@ -1,5 +1,11 @@
 Changes with Apache 2.0.41
-  *) Implement ThreadLimit directive in the Windows MPM.
+  *) Win32: Lower the default stack size from 1MB to 256K. This will
+     allow around 8000 threads to be started per child process. 
+     'EDITBIN /STACK:size apache.exe' can be used to change this 
+     value directly in the apache.exe executable.
+     [Bill Stoddard]
+
+  *) Win32: Implement ThreadLimit directive in the Windows MPM.
      [Bill Stoddard]
 
   *) Remove CacheOn config directive since it is set but never checked.
