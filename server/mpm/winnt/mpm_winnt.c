@@ -1909,11 +1909,13 @@ void winnt_rewrite_args(process_rec *process)
             signal_arg = optarg;
             break;
         case 'i':
-            /* TODO: warn of depreciated syntax, "use -k install instead" */
+            ap_log_error(APLOG_MARK,APLOG_WARNING, 0, NULL,
+                "-i is deprecated.  Use -k install.");
             signal_arg = "install";
             break;
         case 'u':
-            /* TODO: warn of depreciated syntax, "use -k uninstall instead" */
+            ap_log_error(APLOG_MARK,APLOG_WARNING, 0, NULL,
+                "-u is deprecated.  Use -k uninstall.");
             signal_arg = "uninstall";
             break;
         default:
