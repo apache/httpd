@@ -252,9 +252,8 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
  * @param status The status for which the custom response should be used
  * @param string The custom response.  This can be a static string, a file
  *               or a URL
- * @deffunc void ap_custom_response(request_rec *r, int status, char *string)
  */
-AP_DECLARE(void) ap_custom_response(request_rec *r, int status, char *string);
+AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *string);
 
 /**
  * Check for a definition from the server command line
