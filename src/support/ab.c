@@ -651,9 +651,9 @@ static void read_connection(struct connection * c)
 						 * terminator */
 	int tocopy = (space < r) ? space : r;
 #ifndef CHARSET_EBCDIC
-	memcpy(c->cbuff + c->cbx, buffer, space);
+	memcpy(c->cbuff + c->cbx, buffer, tocopy);
 #else				/* CHARSET_EBCDIC */
-	ascii2ebcdic(c->cbuff + c->cbx, buffer, space);
+	ascii2ebcdic(c->cbuff + c->cbx, buffer, tocopy);
 #endif				/* CHARSET_EBCDIC */
 	c->cbx += tocopy;
 	space -= tocopy;
