@@ -110,7 +110,7 @@ Available Patches:
 
     * Ben Hyde's [PATCH] WIN32 deserves a pid log file
 	<9712092027.AA15722@gensym1.gensym.com>
-	Status: Jim +1
+	Status: Jim +1, Martin +1
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
@@ -118,7 +118,7 @@ Available Patches:
 
     * Roy's [PATCH] protocol/1399: failing to read body
 	<9711141029.aa01965@paris.ics.uci.edu>
-	Status: Roy +1,
+	Status: Roy +1, Martin +1 (on code)
 
     * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
 	<Pine.LNX.3.95dg3.971102202625.10533Y-100000@twinlark.arctic.org>
