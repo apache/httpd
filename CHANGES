@@ -60,14 +60,6 @@ Changes with Apache 2.1.0-dev
      have buggy AcceptEx implementations.
      [Allan Edwards w/ suggestions from Bill Stoddard & Bill Rowe]
 
-  *) Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
-     the pattern will not always match as desired. PR 12596.
-     [André Malo]
-
-  *) mod_autoindex now emits and accepts modern query string parameter
-     delimiters (;). Thus column headers no longer contain unescaped
-     ampersands. PR 10880  [André Malo]
-
   *) Extend mod_negotiation to evaluate the environment variables
      no-gzip and gzip-only-text/html the same way as mod_deflate does.
      [André Malo]
@@ -164,6 +156,14 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
+     the pattern will not always match as desired. PR 12596.
+     [André Malo]
+
+  *) mod_autoindex now emits and accepts modern query string parameter
+     delimiters (;). Thus column headers no longer contain unescaped
+     ampersands. PR 10880  [André Malo]
 
   *) Enable ap_sock_disable_nagle for Windows. This along with the  
      addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
