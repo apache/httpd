@@ -223,6 +223,9 @@ if (@opt_S) {
 my $httpd = get_vars("sbindir") . "/" . get_vars("progname");
 $httpd = eval qq("$httpd");
 $httpd = eval qq("$httpd");
+my $envvars = get_vars("bindir") . "/envvars";
+$envvars = eval qq("$envvars");
+$envvars = eval qq("$envvars");
 
 #allow apxs to be run from the source tree, before installation
 if ($0 =~ m:support/apxs$:) {
@@ -234,7 +237,7 @@ unless (-x "$httpd") {
 	exit 1;
 }
 
-unless (grep /mod_so/, `$httpd -l`) {
+unless (grep /mod_so/, `. $envvars && $httpd -l`) {
     error("Sorry, no shared object support for Apache");
     error("available under your platform. Make sure");
     error("the Apache module mod_so is compiled into");
