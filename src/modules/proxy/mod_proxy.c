@@ -170,24 +170,24 @@ static int proxy_trans(request_rec *r)
  */
 static int proxy_fixup(request_rec *r)
 {
-    char *url;
+    char *url, *p;
 
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
 
-    if (!r->parsed_uri.scheme) {
-	return DECLINED;
-    }
-
 /* canonicalise each specific scheme */
-    if (strcasecmp(r->parsed_uri.scheme, "http") == 0)
-	return proxy_http_canon(r, url + 5, "http", default_port_for_scheme(r->parsed_uri.scheme));
-    else if (strcasecmp(r->parsed_uri.scheme, "ftp") == 0)
+    if (strncasecmp(url, "http:", 5) == 0)
+	return proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
+    else if (strncasecmp(url, "ftp:", 4) == 0)
 	return proxy_ftp_canon(r, url + 4);
-    else
-	return OK;		/* otherwise; we've done the best we can */
+
+    p = strchr(url, ':');
+    if (p == NULL || p == url)
+	return BAD_REQUEST;
+
+    return OK;		/* otherwise; we've done the best we can */
 }
 
 static void proxy_init(server_rec *r, pool *p)
