@@ -75,8 +75,21 @@ content-encoding, content-language, and MIME-type (content-type) of documents.
 The directive <a href="#typesconfig">TypesConfig</a> is used to specify a
 file which also maps extensions onto MIME types.  Most administrators use
 the provided mime.types file which associates common filename extensions
-with IANA registered content types.  This simplifies the httpd.conf file
-by providing the 
+with IANA registered content types.  The current list is maintained at
+<code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>
+although it may be mirrored elsewhere).  This simplifies the httpd.conf file
+by providing the majority of media-type definitions, and they may be
+overriden by <a href="#addtype">AddType</a> directives as needed.
+
+<P>
+
+<EM>Please do not send requests to the Apache httpd Project to add any new
+entries in the distributed mime.types file unless (1) they are already 
+registered with IANA, and (2) they use widely accepted, non-conflicting
+filename extensions across platforms.  category/x-subtype requests will
+be automatically rejected, as will any new two-letter extensions as they
+will likely conflict later with the already crowded language and character 
+set namespace.</EM>
 
 <P>
 
