@@ -84,7 +84,11 @@ extern int fclose(FILE *);
 
 static unsigned char test_char_table[256];
 
-/* we assume the folks using this ensure the char < 256 */
+/* we assume the folks using this ensure 0 <= c < 256... which means
+ * you need a cast to (unsigned char) first, you can't just plug a
+ * char in here and get it to work, because if char is signed then it
+ * will first be sign extended.
+ */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
 /* XXX: this should be compile-time initialized so that test_char_table can
@@ -970,13 +974,13 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
 /* find http tokens, see the definition of token from RFC2068 */
 API_EXPORT(int) find_token(pool *p, const char *line, const char *tok)
 {
-    const char *start_token;
-    const char *s;
+    const unsigned char *start_token;
+    const unsigned char *s;
 
     if (!line)
 	return 0;
 
-    s = line;
+    s = (const unsigned char *)line;
     for (;;) {
 	/* find start of token, skip all stop characters, note NUL
 	 * isn't a token stop, so we don't need to test for it
@@ -1020,13 +1024,15 @@ API_EXPORT(int) find_last_token(pool *p, const char *line, const char *tok)
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
-API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s)
+API_EXPORT(char *) escape_shell_cmd(pool *p, const char *str)
 {
     char *cmd;
-    char *d;
+    unsigned char *d;
+    const unsigned char *s;
 
-    cmd = palloc(p, 2 * strlen(s) + 1);	/* Be safe */
-    d = cmd;
+    cmd = palloc(p, 2 * strlen(str) + 1);	/* Be safe */
+    d = (unsigned char *)cmd;
+    s = (const unsigned char *)str;
     for (; *s; ++s) {
 
 #if defined(__EMX__) || defined(WIN32)
@@ -1141,6 +1147,16 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
     }
 }
 
+/* c2x takes an unsigned, and expects the caller has guaranteed that
+ * 0 <= what < 256... which usually means that you have to cast to
+ * unsigned char first, because (unsigned)(char)(x) fist goes through
+ * signed extension to an int before the unsigned cast.
+ *
+ * The reason for this assumption is to assist gcc code generation --
+ * the unsigned char -> unsigned extension is already done earlier in
+ * both uses of this code, so there's no need to waste time doing it
+ * again.
+ */
 static const char c2x_table[] = "0123456789abcdef";
 
 static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
