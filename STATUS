@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 19:19:30 $]
+Last modified at [$Date: 2003/05/13 20:11:24 $]
 
 Release:
 
@@ -238,6 +238,12 @@ PATCHES TO PORT FROM 2.1
 		   settings as the old one. If we want to change the locations
 		   I'm quite happy to do that but don't think that should 
 		   affect backporting this fix.
+
+          nd: Actually I see no problem with surprises. If someone uses this
+              tailored example config, it's probably his first SSL config. If
+              it's not his first one, he probably doesn't care about - IMHO :)
+              An appropriate change-log entry should warn the rest of the
+              people, shouldn't it?
 
     * mod_log_config: be able to log the id of the thread that handled
       the request
