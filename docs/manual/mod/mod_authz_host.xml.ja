@@ -79,13 +79,12 @@
     <dl>
       <dt>ドメイン名 (の一部)</dt>
 
-      <dd>例: <code>Allow from apache.org</code><br />
-      この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
       <dd>
       <example><title>例</title>
         Allow from apache.org
       </example>
-      <p>各部分が完全に合うものだけに適用されますので、上の例は
+      <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
       この設定をすると、サーバは
