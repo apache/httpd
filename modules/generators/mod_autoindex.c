@@ -365,7 +365,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	if (!strcasecmp(w, "FancyIndexing")) {
 	    option = FANCY_INDEXING;
 	}
-        else if (!strcasecmp(w, "FoldersFirst")) { 
+        else if (!strcasecmp(w, "FoldersFirst")) {
             option = FOLDERS_FIRST; 
         } 
 	else if (!strcasecmp(w, "HTMLTable")) {
@@ -401,7 +401,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         else if (!strcasecmp(w, "SuppressRules")) {
             option = SUPPRESS_RULES;
 	}
-        else if (!strcasecmp(w, "TrackModified")) { 
+        else if (!strcasecmp(w, "TrackModified")) {
             option = TRACK_MODIFIED; 
         } 
         else if (!strcasecmp(w, "VersionSort")) {
@@ -468,7 +468,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 		d_cfg->name_adjust = K_NOADJUST;
 	    }
 	}
-        else if (!strcasecmp(w, "DescriptionWidth")) { 
+        else if (!strcasecmp(w, "DescriptionWidth")) {
             if (action != '-') { 
                 return "DescriptionWidth with no value may only appear as " 
                        "'-DescriptionWidth'"; 
@@ -476,14 +476,14 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
             d_cfg->desc_width = DEFAULT_DESC_WIDTH; 
             d_cfg->desc_adjust = K_NOADJUST; 
         } 
-        else if (!strncasecmp(w, "DescriptionWidth=", 17)) { 
+        else if (!strncasecmp(w, "DescriptionWidth=", 17)) {
             if (action == '-') { 
                 return "Cannot combine '-' with DescriptionWidth=n"; 
             } 
             if (w[17] == '*') { 
                 d_cfg->desc_adjust = K_ADJUST; 
             } 
-            else { 
+            else {
                 int width = atoi(&w[17]); 
 
                 if (width && (width < 12)) { 
@@ -697,7 +697,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
         new->desc_width = base->desc_width; 
         new->desc_adjust = base->desc_adjust; 
     } 
-    else { 
+    else {
         new->desc_width = add->desc_width; 
         new->desc_adjust = add->desc_adjust; 
     } 
@@ -1055,13 +1055,16 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	}
     }
 
-    if (r_accept)
+    if (r_accept) {
         apr_table_setn(hdrs, "Accept", r_accept);
-    else
+    }
+    else {
         apr_table_unset(hdrs, "Accept");
+    }
 
-    if (r_accept_enc)
+    if (r_accept_enc) {
         apr_table_setn(hdrs, "Accept-Encoding", r_accept_enc);
+    }
 
     if (emit_amble) {
 	emit_preamble(r, title);
@@ -1214,16 +1217,19 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     /* The output has always been to the parent.  Don't make ourself
      * our own parent (worthless cyclical reference).
      */
-    if (!(p->name = ap_make_full_path(r->pool, r->uri, "../")))
+    if (!(p->name = ap_make_full_path(r->pool, r->uri, "../"))) {
         return (NULL);
+    }
     ap_getparents(p->name);
-    if (!*p->name)
+    if (!*p->name) {
         return (NULL);
+    }
 
     /* IndexIgnore has always compared "/thispath/.." */
     testpath = ap_make_full_path(r->pool, r->filename, "..");
-    if (ignore_entry(d, testpath))
+    if (ignore_entry(d, testpath)) {
         return (NULL);
+    }
 
     p->size = -1;
     p->lm = -1;
@@ -1231,11 +1237,14 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
     p->version_sort = autoindex_opts & VERSION_SORT;
     if (autoindex_opts & FANCY_INDEXING) {
-        if (!(p->icon = find_default_icon(d, testpath)))
+        if (!(p->icon = find_default_icon(d, testpath))) {
 	    p->icon = find_default_icon(d, "^^DIRECTORY^^");
-        if (!(p->alt = find_default_alt(d, testpath)))
-            if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^")))
+        }
+        if (!(p->alt = find_default_alt(d, testpath))) {
+            if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^"))) {
 	        p->alt = "DIR";
+            }
+        }
         p->desc = find_desc(d, testpath);
     }
     return p;
@@ -1273,8 +1282,10 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
 #endif /* !CASE_BLIND_FILESYSTEM */
 
-    if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name)))
+    if (ignore_entry(d, ap_make_full_path(r->pool,
+                                          r->filename, dirent->name))) {
         return (NULL);
+    }
 
     if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL))) {
         return (NULL);
@@ -1288,10 +1299,12 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
-    if (rr->finfo.filetype == APR_DIR)
+    if (rr->finfo.filetype == APR_DIR) {
         p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
-    else
+    }
+    else {
         p->name = apr_pstrdup(r->pool, dirent->name);
+    }
     p->size = -1;
     p->icon = NULL;
     p->alt = NULL;
@@ -1302,18 +1315,19 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
     p->version_sort = !!(autoindex_opts & VERSION_SORT);
 
-    if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING))
-    {
+    if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING)) {
 	p->lm = rr->finfo.mtime;
 	if (rr->finfo.filetype == APR_DIR) {
-            if (autoindex_opts & FOLDERS_FIRST)
+            if (autoindex_opts & FOLDERS_FIRST) {
                 p->isdir = 1;
+            }
 	    if (!(p->icon = find_icon(d, rr, 1))) {
 		p->icon = find_default_icon(d, "^^DIRECTORY^^");
 	    }
 	    if (!(p->alt = find_alt(d, rr, 1))) {
-		if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^")))
+		if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^"))) {
 		    p->alt = "DIR";
+                }
 	    }
 	}
 	else {
@@ -1463,7 +1477,7 @@ static void output_directories(struct ent **ar, int n,
         }
 
         if (d->desc_adjust == K_ADJUST) { 
-            for (x = 0; x < n; x++) { 
+            for (x = 0; x < n; x++) {
                 if (ar[x]->desc != NULL) { 
                     int t = strlen(ar[x]->desc); 
                     if (t > desc_width) { 
@@ -1486,14 +1500,18 @@ static void output_directories(struct ent **ar, int n,
 	    if ((tp = find_default_icon(d, "^^BLANKICON^^"))) {
 	        ap_rvputs(r, "<img src=\"", ap_escape_html(scratch, tp),
 		       "\" alt=\"[ICO]\"", NULL);
-	        if (d->icon_width)
+	        if (d->icon_width) {
 		    ap_rprintf(r, " width=\"%d\"", d->icon_width);
-                if (d->icon_height)
+                }
+                if (d->icon_height) {
 	            ap_rprintf(r, " height=\"%d\"", d->icon_height);
+                }
 	        ap_rputs(" /></th>", r);
             }
-            else
+            else {
                 ap_rputs("&nbsp;</th>", r);
+            }
+            
             ++cols;
         }
         ap_rputs("<th>", r);
@@ -1517,9 +1535,11 @@ static void output_directories(struct ent **ar, int n,
                       colargs, static_columns);
 	    ++cols;
 	}
-        if (!(autoindex_opts & SUPPRESS_RULES))
-            breakrow = apr_psprintf(r->pool, "<tr><th colspan=\"%d\">"
-                                             "<hr /></th></tr>\n", cols);
+        if (!(autoindex_opts & SUPPRESS_RULES)) {
+            breakrow = apr_psprintf(r->pool,
+                                    "<tr><th colspan=\"%d\">"
+                                    "<hr /></th></tr>\n", cols);
+        }
 	ap_rvputs(r, "</th></tr>", breakrow, NULL);
     }
     else if (autoindex_opts & FANCY_INDEXING) {
@@ -1528,14 +1548,17 @@ static void output_directories(struct ent **ar, int n,
 	    if ((tp = find_default_icon(d, "^^BLANKICON^^"))) {
 	        ap_rvputs(r, "<img src=\"", ap_escape_html(scratch, tp),
 		       "\" alt=\"Icon \"", NULL);
-	        if (d->icon_width)
+	        if (d->icon_width) {
 		    ap_rprintf(r, " width=\"%d\"", d->icon_width);
-                if (d->icon_height)
+                }
+                if (d->icon_height) {
 	            ap_rprintf(r, " height=\"%d\"", d->icon_height);
+                }
 	        ap_rputs(" /> ", r);
 	    }
-            else
+            else {
 	        ap_rputs("      ", r);
+            }
         }
         emit_link(r, "Name", K_NAME, keyid, direction, 
                   colargs, static_columns);
@@ -1558,8 +1581,9 @@ static void output_directories(struct ent **ar, int n,
             emit_link(r, "Description", K_DESC, keyid, direction,
                       colargs, static_columns);
 	}
-	if (!(autoindex_opts & SUPPRESS_RULES))
+	if (!(autoindex_opts & SUPPRESS_RULES)) {
             ap_rputs("<hr />", r);
+        }
     }
     else {
 	ap_rputs("<ul>", r);
@@ -1574,10 +1598,12 @@ static void output_directories(struct ent **ar, int n,
         t = ar[x]->name;
 	anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
 
-        if (!x && t[0] == '/')
+        if (!x && t[0] == '/') {
 	    t2 = "Parent Directory";
-        else
+        }
+        else {
 	    t2 = t;
+        }
 
         if (autoindex_opts & TABLE_INDEXING) {
 	    if (!(autoindex_opts & SUPPRESS_ICON)) {
@@ -1592,22 +1618,27 @@ static void output_directories(struct ent **ar, int n,
 					                 : d->default_icon),
 			      "\" alt=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
 			      "]\"", NULL);
-	            if (d->icon_width)
+	            if (d->icon_width) {
 		        ap_rprintf(r, " width=\"%d\"", d->icon_width);
-                    if (d->icon_height)
+                    }
+                    if (d->icon_height) {
                         ap_rprintf(r, " height=\"%d\"", d->icon_height);
+                    }
 		    ap_rputs(" />", r);
 	        }
-                else
+                else {
                     ap_rputs("&nbsp;", r);            
-	        if (autoindex_opts & ICONS_ARE_LINKS)
+                }
+	        if (autoindex_opts & ICONS_ARE_LINKS) {
 		    ap_rputs("</a></td>", r);
-	        else
+                }
+	        else {
                     ap_rputs("</td>", r);
+                }
             }
             if (d->name_adjust == K_ADJUST) {
 	        ap_rvputs(r, "<td><a href=\"", anchor, "\">",
-	          ap_escape_html(scratch, t2), "</a>", NULL);
+                          ap_escape_html(scratch, t2), "</a>", NULL);
             }
             else {
 	        nwidth = strlen(t2);
@@ -1643,13 +1674,15 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	    if (!(autoindex_opts & SUPPRESS_DESC)) {
 		if (ar[x]->desc) {
-                    if (d->desc_adjust == K_ADJUST)
+                    if (d->desc_adjust == K_ADJUST) {
 		        ap_rvputs(r, "</td><td>", ar[x]->desc, NULL);
-                    else
+                    }
+                    else {
 		        ap_rvputs(r, "</td><td>", 
                                   terminate_description(d, ar[x]->desc,
 						        autoindex_opts, 
                                                         desc_width), NULL);
+                    }
 		}
 	    }
             else
@@ -1668,18 +1701,23 @@ static void output_directories(struct ent **ar, int n,
 					                 : d->default_icon),
 			      "\" alt=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
 			      "]\"", NULL);
-	            if (d->icon_width)
+	            if (d->icon_width) {
 		        ap_rprintf(r, " width=\"%d\"", d->icon_width);
-                    if (d->icon_height)
+                    }
+                    if (d->icon_height) {
                         ap_rprintf(r, " height=\"%d\"", d->icon_height);
+                    }
 		    ap_rputs(" />", r);
 	        }
-                else
+                else {
 		    ap_rputs("     ", r);
-	        if (autoindex_opts & ICONS_ARE_LINKS)
+                }
+	        if (autoindex_opts & ICONS_ARE_LINKS) {
 		    ap_rputs("</a> ", r);
-	        else
+                }
+	        else {
 		    ap_rputc(' ', r);
+                }
             }
 	    nwidth = strlen(t2);
 	    if (nwidth > name_width) {
@@ -1735,10 +1773,12 @@ static void output_directories(struct ent **ar, int n,
 	ap_rvputs(r, breakrow, "</table>\n", NULL);
     }
     else if (autoindex_opts & FANCY_INDEXING) {
-	if (!(autoindex_opts & SUPPRESS_RULES))
+	if (!(autoindex_opts & SUPPRESS_RULES)) {
             ap_rputs("<hr /></pre>\n", r);
-        else
+        }
+        else {
             ap_rputs("</pre>\n", r);
+        }
     }
     else {
 	ap_rputs("</ul>\n", r);
@@ -1804,19 +1844,25 @@ static int dsortf(struct ent **e1, struct ent **e2)
         }
         break;
     case K_DESC:
-	if (c1->version_sort)
-	    result = apr_strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
-	else
-	    result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+	if (c1->version_sort) {
+	    result = apr_strnatcmp(c1->desc ? c1->desc : "",
+                                   c2->desc ? c2->desc : "");
+        }
+	else {
+	    result = strcmp(c1->desc ? c1->desc : "",
+                            c2->desc ? c2->desc : "");
+        }
         if (result) {
             return result;
         }
         break;
     }
-    if (c1->version_sort)
+    if (c1->version_sort) {
 	return apr_strnatcmp(c1->name, c2->name);
-    else
+    }
+    else {
 	return strcmp(c1->name, c2->name);
+    }
 }
 
 
@@ -1894,33 +1940,38 @@ static int index_directory(request_rec *r,
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'O' && qstring[1] == '='
-                    && ((qstring[2] == D_ASCENDING)
-                     || (qstring[2] == D_DESCENDING)) 
-                    && (qstring[3] == '&' || !qstring[3])) {
+                     && ((qstring[2] == D_ASCENDING)
+                         || (qstring[2] == D_DESCENDING)) 
+                     && (qstring[3] == '&' || !qstring[3])) {
 	        direction = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'F' && qstring[1] == '='
-                    && qstring[2] && strchr("012", qstring[2])
-                    && (qstring[3] == '&' || !qstring[3])) {
-                if (qstring[2] == '0')
+                     && qstring[2] && strchr("012", qstring[2])
+                     && (qstring[3] == '&' || !qstring[3])) {
+                if (qstring[2] == '0') {
                     autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING);
-                else if (qstring[2] == '1')
+                }
+                else if (qstring[2] == '1') {
                     autoindex_opts = (autoindex_opts | FANCY_INDEXING)
-                                                    & ~TABLE_INDEXING;
-                else if (qstring[2] == '2')
+                        & ~TABLE_INDEXING;
+                }
+                else if (qstring[2] == '2') {
                     autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING;
+                }
                 strcpy(fval, "&F= "); 
                 fval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'V' && qstring[1] == '='
-                    && (qstring[2] == '0' || qstring[2] == '1')
-                    && (qstring[3] == '&' || !qstring[3])) {
-                if (qstring[2] == '0')
+                     && (qstring[2] == '0' || qstring[2] == '1')
+                     && (qstring[3] == '&' || !qstring[3])) {
+                if (qstring[2] == '0') {
                     autoindex_opts &= ~VERSION_SORT;
-                else if (qstring[2] == '1')
+                }
+                else if (qstring[2] == '1') {
                     autoindex_opts |= VERSION_SORT;
+                }
                 strcpy(fval, "&V= "); 
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
@@ -1936,13 +1987,16 @@ static int index_directory(request_rec *r,
                     pstring = apr_pstrdup(r->pool, qstring + 2);
                     qstring = NULL;
                 }
-                if (*pstring)
+                if (*pstring) {
                     ppre = "&P="; 
-                else
+                }
+                else {
                     pstring = NULL;
+                }
             }
-            else /* Syntax error?  Ignore the remainder! */
+            else {              /* Syntax error?  Ignore the remainder! */
                 qstring = NULL;
+            }
         }
         colargs = apr_pstrcat(r->pool, fval, vval, ppre, pstring, NULL);
     }
@@ -2007,8 +2061,9 @@ static int handle_autoindex(request_rec *r)
     autoindex_config_rec *d;
     int allow_opts;
 
-    if(strcmp(r->handler,DIR_MAGIC_TYPE))
+    if(strcmp(r->handler,DIR_MAGIC_TYPE)) {
 	return DECLINED;
+    }
 
     allow_opts = ap_allow_options(r);
 
