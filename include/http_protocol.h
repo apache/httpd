@@ -552,9 +552,9 @@ AP_DECLARE_HOOK(const char *,http_method,(const request_rec *))
  * Return the default port from the current request
  * @param r The current request
  * @return The current port
- * @deffunc unsigned short ap_run_default_port(const request_rec *r)
+ * @deffunc apr_port_t ap_run_default_port(const request_rec *r)
  */
-AP_DECLARE_HOOK(unsigned short,default_port,(const request_rec *))
+AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *))
 
 #ifdef __cplusplus
 }

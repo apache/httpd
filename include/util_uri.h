@@ -78,7 +78,7 @@ struct schemes_t {
     /** The name of the scheme */
     const char *name;
     /** The default port for the scheme */
-    unsigned short default_port;
+    apr_port_t default_port;
 };
 
 #define	DEFAULT_FTP_DATA_PORT	20
@@ -128,7 +128,7 @@ struct uri_components {
     struct hostent *hostent;
 
     /** The port number, numeric, valid only if port_str != NULL */
-    unsigned short port;
+    apr_port_t port;
     
     /** has the structure been initialized */
     unsigned is_initialized:1;
@@ -145,17 +145,17 @@ struct uri_components {
  * http, ftp, https, gopher, wais, nntp, snews, and prospero
  * @param scheme_str The string that contains the current scheme
  * @return The default port for this scheme
- * @deffunc unsigned short ap_default_port_for_scheme(const char *scheme_str)
+ * @deffunc apr_port_t ap_default_port_for_scheme(const char *scheme_str)
  */ 
-AP_DECLARE(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
+AP_DECLARE(apr_port_t) ap_default_port_for_scheme(const char *scheme_str);
 
 /**
  * Return the default for the current request
  * @param r The current request
  * @return The default port
- * @deffunc unsigned short ap_default_port_for_request(const request_rec *r)
+ * @deffunc apr_port_t ap_default_port_for_request(const request_rec *r)
  */
-AP_DECLARE(unsigned short) ap_default_port_for_request(const request_rec *r);
+AP_DECLARE(apr_port_t) ap_default_port_for_request(const request_rec *r);
 
 /**
  * Create a copy of a "struct hostent" record; it was presumably returned
