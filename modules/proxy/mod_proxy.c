@@ -257,6 +257,13 @@ static int alias_match(const char *uri, const char *alias_fakename)
         urip = end_uri;
     }
 
+   /* We reach the end of the uri before the end of "alias_fakename"
+    * for example uri is "/" and alias_fakename "/examples"
+    */
+   if (urip == end_uri && aliasp!=end_fakename) {
+       return 0;
+   }
+
     /* Check last alias path component matched all the way */
     if (aliasp[-1] != '/' && *urip != '\0' && *urip != '/')
         return 0;
