@@ -6,6 +6,10 @@ Changes with Apache 2.0.45
      source tarball for Apache 2.0.45.  PR 17206
      [Christian Kratzer <ck@cksoft.de>, Bjoern A. Zeeb <bz@zabbadoz.net>]
 
+  *) Fix path handling of mod_rewrite, especially on non-unix systems.
+     There was some confusion between local paths and URL paths.
+     PR 12902.  [André Malo]
+
   *) Prevent endless loops of internal redirects in mod_rewrite by
      aborting after exceeding a limit of internal redirects. The
      limit defaults to 10 and can be changed using the RewriteOptions
