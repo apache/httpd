@@ -1,4 +1,9 @@
 Changes with Apache 1.3b4
+
+  *) Added mod_so module to support dynamic loading of modules on Unix
+     (like mod_dld for Win32). This replaces mod_dld.c. Use SharedModule
+     instead of AddModule in Configuration to build shared modules
+     [Sameer Parekh, Paul Sutton]
   
   *) Minor cleanups to r->finfo handling in some modules.
      [Dean Gaudet]
