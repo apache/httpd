@@ -33,9 +33,14 @@
 
 </summary>
 
-<seealso>
-    <module>mod_vhost_alias</module>
-</seealso>
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">Name-based virtual
+hosts</a></seealso>
+<seealso><a href="ip-based.html">IP-based virtual hosts</a></seealso>
+<seealso><a href="examples.html">Virtual host examples</a></seealso>
+<seealso><a href="fd-limits.html">File descriptor limits</a></seealso>
+<seealso><a href="mass.html">Mass virtual hosting</a></seealso>
+<seealso><a href="details.html">Detalis of host matching</a></seealso>
 
 <section id="support"><title>Virtual Host Support</title>
 
