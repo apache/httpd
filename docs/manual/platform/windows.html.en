@@ -16,14 +16,26 @@
     down bugs), see <a href="win_compiling.html">Compiling Apache
     for Microsoft Windows</a>.</p>
 
-    <p><strong>At this time, support for Windows 95, 98 and ME is
+    <p><strong>Abbreviations and their meanings used in this
+    document include:</strong></p>
+    <ul>
+      <li><strong>Windows NT:</strong> This means all versions of
+      Microsoft Windows that are based on the NT kernel,
+      including Windows NT, Windows 2000, Windows XP and Windows
+      .NET Server 2003 or later.</li>
+      <li><strong>Windows 9x:</strong> This means all versions of
+      Microsoft Windows targeted at home use, including Windows 95,
+      Windows 98 and Windows ME.</li>
+    </ul>
+
+    <p><strong>At this time, support for Windows 9x is
     incomplete. Apache 2.0 is not expected to work on those
     platforms at this time.</strong> If you are interested in
     helping with that effort, please see the developer's site for
     information on <a href="http://dev.apache.org/">how to get
     involved</a>. Support will likely be provided at some point in
-    the future, and patches to allow Apache to work on 95, 98 and
-    ME are welcome!</p>
+    the future, and patches to allow Apache to work on 9x are
+    welcome!</p>
 
   </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Requirements</a></li><li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for Windows</a></li><li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache for Windows</a></li><li><img alt="" src="../images/down.gif" /> <a href="#run">Running Apache for Windows</a></li><li><img alt="" src="../images/down.gif" /> <a href="#use">Configuring Apache for Windows</a></li><li><img alt="" src="../images/down.gif" /> <a href="#service">Running Apache for Windows as a Service</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cmdline">Running Apache for Windows from the Command Line</a></li><li><img alt="" src="../images/down.gif" /> <a href="#signalsrv">Signalling Apache when running as a Service</a></li><li><img alt="" src="../images/down.gif" /> <a href="#signal">Signalling Apache when running as a console application</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="req" id="req">Requirements</a></h2>
 
@@ -32,9 +44,8 @@
     <p>Apache 2.0 is designed to run on Windows NT 4.0 and Windows
     2000. The binary installer will only work with the x86 family
     of processors, such as Intel's. Apache may also run on Windows
-    95, 98 and ME, but these are not tested, and are never
-    recommended for production servers. In all cases TCP/IP
-    networking must be installed.</p>
+    9x, but it is not tested, and is never recommended for production
+    servers. In all cases TCP/IP networking must be installed.</p>
 
     <p>If running on Windows 95, the "Winsock2" upgrade MUST BE
     INSTALLED. "Winsock2" for Windows 95 is available <a href="http://www.microsoft.com/windows95/downloads/">here</a>.</p>
@@ -119,13 +130,13 @@
 
     <ul>
       <li><p>As a <a href="win_service.html#service">"service"</a>
-      (available on Windows NT/2000/XP, or a pseudo-service on Windows
-      95, 98 or ME). This is the best option if you want Apache to
+      (available on Windows NT, or a pseudo-service on Windows
+      9x). This is the best option if you want Apache to
       automatically start when you machine boots, and to keep
       Apache running when you log-off.</p></li>
 
       <li><p>From a <a href="#cmdline">console window</a>. This MUST
-      be used by any administrator to test before to attempting to
+      be used by any administrator to test before attempting to
       run as a service.</p></li>
     </ul>
 
@@ -159,8 +170,7 @@
     </code></p></div>
 
     <p><strong>Complete the steps above before you proceed
-    to attempt to start Apache as a Window NT/2000/XP
-    service!</strong></p>
+    to attempt to start Apache as a Windows NT service!</strong></p>
 
     <p>To start Apache as a service, you first need to install it
     as a service. Multiple Apache services can be installed, each
@@ -183,7 +193,7 @@
     Running</a> for more information on installing and controlling
     Apache services.</p>
 
-    <div class="note"><strong>Apache, unlike many other Windows NT/2000/XP services,
+    <div class="note"><strong>Apache, unlike many other Windows NT services,
     logs any errors to its own <code>error.log</code> file in the
     <code>logs</code> folder within the Apache server root folder.
     You will <em>not</em> find Apache error details in the Windows
@@ -212,7 +222,7 @@
     <p>Once your basic installation is working, you should
     configure it properly by editing the files in the
     <code>conf</code> directory. Again, if you change the
-    configuration of the Windows NT/2000/XP service for Apache, first
+    configuration of the Windows NT service for Apache, first
     attempt to start it from the command line to assure that the
     service starts with no errors.</p>
 
@@ -331,7 +341,7 @@
     Apache only support the default service name
     "Apache".</strong></div>
 
-    <p>You can install Apache as a Windows NT/2000/XP service as
+    <p>You can install Apache as a Windows NT service as
     follows:</p>
 
     <div class="example"><p><code>
@@ -517,7 +527,7 @@
 
     
 
-    <p>On Windows NT/2000/XP, multiple instances of Apache can be run as
+    <p>On Windows NT, multiple instances of Apache can be run as
     services. Signal an Apache service to start, restart, or
     shutdown as follows:</p>
 
@@ -527,7 +537,7 @@
       apache -n "service name" -k shutdown
     </code></p></div>
 
-    <p>In addition, when running on Windows NT/2000/XP, you can use the
+    <p>In addition, when running on Windows NT, you can use the
     native <code>NET</code> command to start and stop Apache services
     as follows:</p>
 
@@ -540,7 +550,7 @@
 
     
 
-    <p>On Windows 95/98/ME, Apache runs as a console application. You can
+    <p>On Windows 9x, Apache runs as a console application. You can
     tell a running Apache to stop by opening another console window
     and typing:</p>
 
