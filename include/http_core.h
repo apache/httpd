@@ -302,7 +302,7 @@ AP_DECLARE(int) ap_satisfies (request_rec *r);
  */
 AP_DECLARE(const apr_array_header_t *) ap_requires (request_rec *);    
 
-#ifdef WIN32
+#if defined(WIN32)
 /* 
  * CGI Script stuff for Win32...
  */
