@@ -50,12 +50,14 @@
 # 
 # Makefile for the Apache proxy library
 # 
-# $Id: Makefile,v 1.1 1996/09/26 12:35:16 chuck Exp $
+# $Id: Makefile,v 1.2 1996/09/29 13:58:55 chuck Exp $
 #
 
 SHELL = /bin/sh
 
 INCDIR=../..
+
+LIB=libproxy.a
 
 # define -DEXPLAIN if you want verbose debugging output
 CFLAGS=-I. -I$(INCDIR) $(AUX_CFLAGS)
@@ -64,17 +66,19 @@ CFLAGS=-I. -I$(INCDIR) $(AUX_CFLAGS)
 OBJS=mod_proxy.o
 PROXYSRC=mod_proxy.c
 
-default:	lib
+default:	$(LIB)
 
-lib:	$(OBJS)
-	rm -f libproxy.a
-	ar crv libproxy.a $(OBJS)
-	$(RANLIB) libproxy.a
+$(LIB):	$(OBJS)
+	rm -f $@
+	ar crv $@ $(OBJS)
+	$(RANLIB) $@
 
 # dependencies
 mod_proxy.o: $(INCDIR)/http_log.h
 mod_proxy.o: $(INCDIR)/http_main.h
 mod_proxy.o: $(INCDIR)/http_protocol.h
+mod_proxy.o: $(INCDIR)/http_config.h
+mod_proxy.o: $(INCDIR)/httpd.h
 mod_proxy.o: $(INCDIR)/md5.h
 mod_proxy.o: $(INCDIR)/explain.h
 
