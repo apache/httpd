@@ -1,5 +1,9 @@
 Changes with Apache 1.3b1
   
+  *) mod_proxy was sending HTTP/1.1 responses to ftp requests by mistake.
+     Also removed the auto-generated link to www.apache.org that was the
+     source of so many misdirected bug reports.  [Roy Fielding, Marc Slemko]
+
   *) Change to CGI permission test to allow User/Group tests to do the
      right thing for suexec. [Randy Terbush] PR#918
 

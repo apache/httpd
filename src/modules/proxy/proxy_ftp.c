@@ -375,10 +375,9 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    o += w;
 	}
     }
-    ap_snprintf(buf, sizeof(buf), "</PRE><HR><I><A HREF=\"http://www.apache.org\">%s</A></I></BODY></HTML>", SERVER_VERSION);
-    bwrite(con->client, buf, strlen(buf));
+    bputs("</PRE><HR></BODY></HTML>\015\012", con->client);
     if (f2 != NULL)
-	bwrite(f2, buf, strlen(buf));
+	bputs("</PRE><HR></BODY></HTML>\015\012", f2);
     total_bytes_sent += strlen(buf);
     bflush(con->client);
 
@@ -964,9 +963,9 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* send response */
 /* write status line */
     if (!r->assbackwards)
-	rvputs(r, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
+	rvputs(r, "HTTP/1.0 ", r->status_line, "\015\012", NULL);
     if (cache != NULL)
-	if (bvputs(cache, SERVER_PROTOCOL, " ", r->status_line, "\015\012",
+	if (bvputs(cache, "HTTP/1.0 ", r->status_line, "\015\012",
 		   NULL) == -1)
 	    cache = proxy_cache_error(c);
 
