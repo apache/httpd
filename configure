@@ -322,6 +322,7 @@ case $PLATFORM in
 	iflags_dso="${iflags_dso} -S \"-S\""
 	;;
     *OS/2* ) 
+        default_layout="Apache"
         iflags_program="${iflags_program} -e .exe" 
         iflags_core="${iflags_core} -e .exe" 
         ;;
