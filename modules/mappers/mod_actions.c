@@ -92,6 +92,9 @@
 typedef struct {
     apr_table_t *action_types;       /* Added with Action... */
     const char *scripted[METHODS];   /* Added with Script... */
+    int configured;  /* True if Action or Script has been
+                      * called at least once
+                      */
 } action_dir_config;
 
 module actions_module;
@@ -121,6 +124,8 @@ static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
         new->scripted[i] = add->scripted[i] ? add->scripted[i]
                                             : base->scripted[i];
     }
+
+    new->configured = (base->configured || add->configured);
     return new;
 }
 
@@ -129,6 +134,7 @@ static const char *add_action(cmd_parms *cmd, void *m_v,
 {
     action_dir_config *m = (action_dir_config *)m_v;
     apr_table_setn(m->action_types, type, script);
+    m->configured = 1;
     return NULL;
 }
 
@@ -146,6 +152,7 @@ static const char *set_script(cmd_parms *cmd, void *m_v,
     else
         m->scripted[methnum] = script;
 
+    m->configured = 1;
     return NULL;
 }
 
@@ -162,10 +169,13 @@ static int action_handler(request_rec *r)
 {
     action_dir_config *conf = (action_dir_config *)
         ap_get_module_config(r->per_dir_config, &actions_module);
-    const char *t, *action = r->handler ? r->handler : 
-	ap_field_noparam(r->pool, r->content_type);
+    const char *t, *action;
     const char *script;
     int i;
+
+    if (!conf->configured) {
+        return DECLINED;
+    }
 
     /* Note that this handler handles _all_ types, so handler is unchecked */
 
@@ -191,6 +201,8 @@ static int action_handler(request_rec *r)
 	return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
+    action = r->handler ? r->handler :
+	ap_field_noparam(r->pool, r->content_type);
     if ((t = apr_table_get(conf->action_types,
 		       action ? action : ap_default_type(r)))) {
 	script = t;
