@@ -2567,14 +2567,8 @@ static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
     lim = atoi(arg);
     if (lim < 0) {
         return apr_pstrcat(cmd->temp_pool, "LimitRequestFieldsize \"", arg,
-                          "\" must be a non-negative integer (0 = no limit)",
+                          "\" must be a non-negative integer",
                           NULL);
-    }
-
-    if (lim > DEFAULT_LIMIT_REQUEST_FIELDSIZE) {
-        return apr_psprintf(cmd->temp_pool, "LimitRequestFieldsize \"%s\" "
-                           "must not exceed the precompiled maximum of %d",
-                            arg, DEFAULT_LIMIT_REQUEST_FIELDSIZE);
     }
 
     cmd->server->limit_req_fieldsize = lim;
