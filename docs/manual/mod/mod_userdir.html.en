@@ -18,8 +18,7 @@ tutorial</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
               </a></th><td>Location of the user-specific directories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>UserDir <em>directory-filename</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>UserDir public_html</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual
-host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_userdir</td></tr></table>
 

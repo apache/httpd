@@ -211,8 +211,7 @@ enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets filename for the logging of cookies</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>CookieLog <em>filename</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual
-host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>Only available in Apache 1.2 and above</td></tr></table>
@@ -227,8 +226,7 @@ host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td><code>CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
     [env=[!]<em>environment-variable</em>]</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual
-host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>Nickname only available in Apache 1.3 or later.
@@ -300,8 +298,7 @@ Conditional logging available in 1.3.5 or later.</td></tr></table>
               </a></th><td><code>LogFormat
     <em>format</em>|<em>nickname</em> [<em>nickname</em>]</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual
-host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>Nickname only available in Apache 1.3 or later.
@@ -343,8 +340,7 @@ host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Specifly location of a log file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>TransferLog <em>file</em>|<em>pipe</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual
-host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_log_config</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td /></tr></table>

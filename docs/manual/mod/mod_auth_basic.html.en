@@ -51,7 +51,7 @@ passed to lower level modules</td></tr><tr><th><a href="directive-dict.html#Synt
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the authentication provider(s) for this location</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>AuthBasicProvider <em>provider-name</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, location, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_auth_basic</td></tr></table>
