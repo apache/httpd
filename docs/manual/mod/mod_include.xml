@@ -41,7 +41,7 @@
     <p>The following directive must be given for the directories
     containing the shtml files (typically in a
     <code>&lt;Directory&gt;</code> section, but this directive is
-    also valid .htaccess files if <code>AllowOverride
+    also valid in .htaccess files if <code>AllowOverride
     Options</code> is set):</p>
 
     <example>
@@ -435,11 +435,11 @@
 
 <example>
     &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;<br />
-    in foo<br />
+&nbsp;&nbsp;    in foo<br />
     &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;<br />
-    in bar<br />
+&nbsp;&nbsp;    in bar<br />
     &lt;!--#else --&gt;<br />
-    in neither<br />
+&nbsp;&nbsp;    in neither<br />
     &lt;!--#endif --&gt;
 </example>
 </section>
@@ -556,33 +556,30 @@
 
 <directivesynopsis>
 <name>SSIEndTag</name>
-<description>Changes the string that mod_include looks for to end an
-include command.</description>
+<description>String that ends an include element</description>
 <syntax>SSIEndTag <em>tag</em></syntax>
 <default>SSIEndTag &quot;--&gt;&quot;</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<override>FileInfo</override>
 <compatibility>Available in version 2.0.30 and later.
 </compatibility>
 
 <usage>
     <p>This directive changes the string that mod_include looks for 
-    to mark the end of a include command.</p>
+    to mark the end of an include element.</p>
 
 </usage>
-<seealso><directive>SSIStartTag</directive></seealso>
+<seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SSIUndefinedEcho</name>
-<description>Changes the string that mod_include displays when
-a variable isn't set.</description>
+<description>String displayed when
+an unset variable is echoed</description>
 <syntax>SSIUndefinedEcho <em>tag</em></syntax>
 <default>SSIUndefinedEcho &quot;&lt;!-- undef --&gt;&quot;</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<override>FileInfo</override>
 <compatibility>Available in version 2.0.34 and later.
 </compatibility>
 
@@ -594,7 +591,7 @@ a variable isn't set.</description>
 
 <directivesynopsis>
 <name>SSIErrorMsg</name>
-<description>Changes the error message displayed when there is an error</description>
+<description>Error message displayed when there is an SSI error</description>
 <syntax>SSIErrorMsg <em>message</em></syntax>
 <default>SSIErrorMsg 
 &quot;[an error occurred while processing this directive]&quot;</default>
@@ -604,7 +601,7 @@ a variable isn't set.</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<override></override>
+<override>All</override>
 <compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
@@ -622,7 +619,7 @@ a variable isn't set.</description>
 
 <directivesynopsis>
 <name>SSIStartTag</name>
-<description></description>
+<description>String that starts an include element</description>
 <syntax>Changes the string that mod_include looks for to start an
 include element</syntax>
 <default>SSIStartTag &quot;&lt;!--&quot;</default>
@@ -630,7 +627,6 @@ include element</syntax>
 <context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<override></override>
 <compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
@@ -638,12 +634,12 @@ include element</syntax>
     <p>This directive changes the string that mod_include looks for 
     to mark an include element to process.</p>
 
-    <p>You may want to use this option if have 2 servers parsing the
+    <p>You may want to use this option if you have 2 servers parsing the
     output of a file each processing different commands (possibly at
     different times).</p> 
 
 </usage>
-<seealso><directive>SSIEndTag</directive></seealso>
+<seealso><directive module="mod_include">SSIEndTag</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -658,7 +654,7 @@ displayed</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<override></override>
+<override>All</override>
 <compatibility>Available in version 2.0.30 and later.</compatibility>
 
 <usage>
@@ -684,7 +680,6 @@ bit set</description>
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>
-<compatibility></compatibility>
 
 <usage>
     <p>The XBitHack directives controls the parsing of ordinary
