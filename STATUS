@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/10 17:04:08 $]
+Last modified at [$Date: 2000/04/10 19:28:29 $]
 
 Release:
 
@@ -18,9 +18,6 @@ RELEASE SHOWSTOPPERS:
       buffering logic from the OS/2 directory.  stdio FILE *'s should not be
       used on Unix because of the limitations these impose on some platforms,
       for example the 256 File * limit on Solaris.
-
-    * There is a bug in ap_create_process on Linux at least.  Currently CGI
-      processes are not working at all.
 
     * Fix SAFEREAD.  Can somebody detail what is wrong with SAFEREAD?
 
