@@ -100,6 +100,6 @@
  <message name="sitemap">Seitenindex</message>
 
  <!-- footer line -->
- <message name="maintainedby">Gepflegt durch das</message>
+ <message name="licensed">Lizenziert unter der</message>
  <message name="langavail">Verfügbare Sprachen</message>
 </messages>

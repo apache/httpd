@@ -85,6 +85,6 @@
  <message name="sitemap">Карта сайта</message>
 
  <!-- footer line -->
- <message name="maintainedby">Поддержка осуществляется</message>
+ <message name="licensed">Licensed under the</message>
  <message name="langavail">Available Languages</message>
 </messages>
