@@ -666,6 +666,7 @@ apr_strerror
 apr_strftime
 apr_strnatcasecmp
 apr_strnatcmp
+apr_strtok
 apr_table_add
 apr_table_addn
 apr_table_clear
