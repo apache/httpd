@@ -78,6 +78,8 @@
 #include "apr_general.h"
 #include "apr_file_io.h"
 #include "apr_portable.h"
+#include "ap_buckets.h"
+#include "util_filter.h"
 #include "httpd.h" 
 #include "http_config.h" 
 #include "http_request.h" 
@@ -736,7 +738,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
 } 
 
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret, 
-                  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err) 
+                  char *dbuf, const char *sbuf, apr_file_t *script_in, apr_file_t *script_err) 
 { 
     apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in); 
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
@@ -752,10 +754,10 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
          (apr_open(&f, ap_server_root_relative(r->pool, conf->logname), 
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         /* Soak up script output */ 
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) 
+        while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
             continue; 
         if (script_err) {
-            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
+            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
                 continue; 
         }
         return ret; 
@@ -792,27 +794,27 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     if (sbuf && *sbuf) 
         apr_fprintf(f, "%s\n", sbuf); 
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) { 
+    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) { 
         apr_puts("%stdout\n", f); 
         apr_puts(argsbuffer, f); 
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) 
+        while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
             apr_puts(argsbuffer, f); 
         apr_puts("\n", f); 
     } 
 
     if (script_err) {
-        if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) { 
+        if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) { 
             apr_puts("%stderr\n", f); 
             apr_puts(argsbuffer, f); 
-            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
+            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
                 apr_puts(argsbuffer, f); 
             apr_puts("\n", f); 
         } 
     }
 
-    ap_bclose(script_in); 
+    apr_close(script_in); 
     if (script_err) {
-        ap_bclose(script_err); 
+        apr_close(script_err); 
     }
 
     apr_close(f); 
@@ -829,7 +831,8 @@ static int cgid_handler(request_rec *r)
 { 
     int retval, nph, dbpos = 0; 
     char *argv0, *dbuf = NULL; 
-    BUFF *script = NULL; 
+    ap_bucket_brigade *bb;
+    ap_bucket *b;
     char argsbuffer[HUGE_STRING_LEN]; 
     void *sconf = r->server->module_config; 
     cgid_server_conf *conf = (cgid_server_conf *) ap_get_module_config(sconf, &cgid_module); 
@@ -837,9 +840,8 @@ static int cgid_handler(request_rec *r)
     int sd;
     char **env; 
     struct sockaddr_un unix_addr;
-    apr_socket_t *tempsock = NULL;
+    apr_file_t *tempsock = NULL;
     int nbytes;
-    script = ap_bcreate(r->pool, B_RDWR); 
 
     if (r->method_number == M_OPTIONS) { 
         /* 99 out of 100 cgid scripts, this is all they support */ 
@@ -916,9 +918,10 @@ static int cgid_handler(request_rec *r)
 
     send_req(sd, r, argv0, env); 
 
-    apr_put_os_sock(&tempsock, &sd, pcgi);
-
-    ap_bpush_socket(script, tempsock); 
+    /* We are putting the tempsock variable into a file so that we can use
+     * a pipe bucket to send the data to the client.
+     */
+    apr_put_os_file(&tempsock, &sd, pcgi);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 
@@ -940,8 +943,6 @@ static int cgid_handler(request_rec *r)
             dbpos = 0; 
         } 
 
-
-
         while ((len_read = 
                 ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) { 
             if (conf->logname) { 
@@ -954,7 +955,8 @@ static int cgid_handler(request_rec *r)
                 memcpy(dbuf + dbpos, argsbuffer, dbsize); 
                 dbpos += dbsize; 
             } 
-            ap_bwrite(script, argsbuffer, len_read, &nbytes);
+            nbytes = len_read;
+            apr_write(tempsock, argsbuffer, &nbytes);
             if (nbytes < len_read) { 
                 /* silly script stopped reading, soak up remaining message */ 
                 while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) { 
@@ -963,19 +965,16 @@ static int cgid_handler(request_rec *r)
                 break; 
             } 
         } 
-
-        ap_bflush(script); 
-
     } 
 
     /* Handle script return... */ 
-    if (script && !nph) { 
+    if (!nph) { 
         const char *location; 
         char sbuf[MAX_STRING_LEN]; 
         int ret; 
 
-        if ((ret = ap_scan_script_header_err_buff(r, script, sbuf))) { 
-            return log_script(r, conf, ret, dbuf, sbuf, script, NULL); 
+        if ((ret = ap_scan_script_header_err(r, tempsock, sbuf))) { 
+            return log_script(r, conf, ret, dbuf, sbuf, tempsock, NULL); 
         } 
 
         location = apr_table_get(r->headers_out, "Location"); 
@@ -983,7 +982,7 @@ static int cgid_handler(request_rec *r)
         if (location && location[0] == '/' && r->status == 200) { 
 
             /* Soak up all the script output */ 
-            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script) > 0) { 
+            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, tempsock) > 0) { 
                 continue; 
             } 
             /* This redirect needs to be a GET no matter what the original 
@@ -1010,13 +1009,23 @@ static int cgid_handler(request_rec *r)
 
         ap_send_http_header(r); 
         if (!r->header_only) { 
-            ap_send_fb(script, r); 
+            bb = ap_brigade_create(r->pool);
+            b = ap_bucket_create_pipe(tempsock);
+            AP_BRIGADE_INSERT_TAIL(bb, b);
+            b = ap_bucket_create_eos();
+            AP_BRIGADE_INSERT_TAIL(bb, b);
+            ap_pass_brigade(r->filters, bb);
         } 
-        ap_bclose(script); 
+        apr_close(tempsock); 
     } 
 
-    if (script && nph) { 
-        ap_send_fb(script, r); 
+    if (tempsock && nph) { 
+        bb = ap_brigade_create(r->pool);
+        b = ap_bucket_create_pipe(tempsock);
+        AP_BRIGADE_INSERT_TAIL(bb, b);
+        b = ap_bucket_create_eos();
+        AP_BRIGADE_INSERT_TAIL(bb, b);
+        ap_pass_brigade(r->filters, bb);
     } 
 
     return OK; /* NOT r->status, even if it has changed. */ 
