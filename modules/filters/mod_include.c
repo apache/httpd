@@ -2743,6 +2743,16 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char *var     = NULL;
     apr_bucket *tmp_buck;
     char *parsed_string;
+    request_rec *sub = r->main;
+    apr_pool_t *p = r->pool;
+
+    /* we need to use the 'main' request pool to set notes as that is 
+     * a notes lifetime
+     */
+    while (sub) {
+        p = sub->pool;
+        sub = sub->main;
+    }
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -2768,8 +2778,8 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
                 parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
                                                     MAX_STRING_LEN, 0);
-                apr_table_setn(r->subprocess_env, apr_pstrdup(r->pool, var),
-                               apr_pstrdup(r->pool, parsed_string));
+                apr_table_setn(r->subprocess_env, apr_pstrdup(p, var),
+                               apr_pstrdup(p, parsed_string));
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
