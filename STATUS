@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/19 11:25:04 $]
+Last modified at [$Date: 2004/03/19 13:04:48 $]
 
 Release:
 
@@ -80,7 +80,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Michael Corcoran's patch to listen.c to avoid segfault when
        there are no Listen directives.
            server/listen.c: r1.101
-       +1: trawick
+       +1: trawick, stoddard
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
