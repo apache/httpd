@@ -63,9 +63,7 @@ a more elegant solution, and because it also allows for both a type
 <A HREF="mod/mod_mime.html#multipleext">Files with Multiple
 Extensions</A>.)</p>
 
-</P>
-
-<P>Handlers can either be built into the server, included in a module,
+<P>Handlers can either be built into the server or included in a module,
 or they can be added with the <A
 HREF="mod/mod_actions.html#action">Action</A> directive. The built-in
 handlers in the standard distribution are as follows:</P>
