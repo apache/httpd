@@ -184,6 +184,8 @@
 #define MAPTYPE_TXT                 1<<0
 #define MAPTYPE_DBM                 1<<1
 #define MAPTYPE_PRG                 1<<2
+#define MAPTYPE_INT                 1<<3
+#define MAPTYPE_RND                 1<<4
 
 #define ENGINE_DISABLED             1<<0
 #define ENGINE_ENABLED              1<<1
@@ -228,8 +230,10 @@ typedef struct {
     char *datafile;                /* filename for map data files */
     char *checkfile;               /* filename to check for map existence */
     int   type;                    /* the type of the map */
-    int   fpin;                    /* in  filepointer for program maps */
-    int   fpout;                   /* out filepointer for program maps */
+    int   fpin;                    /* in  file pointer for program maps */
+    int   fpout;                   /* out file pointer for program maps */
+    char *(*func)(request_rec *,   /* function pointer for internal maps */
+                  char *);         
 } rewritemap_entry;
 
 typedef struct {
@@ -385,13 +389,19 @@ static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 static char *expand_tildepaths(request_rec *r, char *uri);
 static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 
-    /* DBM hashfile support functions */
+    /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
 #if HAS_NDBM_LIB
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
 static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
+static char *lookup_map_internal(request_rec *r, char *(*func)(request_rec *r, char *key), char *key);
+static char *rewrite_mapfunc_toupper(request_rec *r, char *key);
+static char *rewrite_mapfunc_tolower(request_rec *r, char *key);
+static char *select_random_value_part(request_rec *r, char *value);
+static void  rewrite_rand_init(void);
+static int   rewrite_rand(int l, int h);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);

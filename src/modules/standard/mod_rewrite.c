@@ -93,6 +93,7 @@
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef WIN32
@@ -435,8 +436,14 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
     new = push_array(sconf->rewritemaps);
 
     new->name = a1;
+    new->func = NULL;
     if (strncmp(a2, "txt:", 4) == 0) {
         new->type      = MAPTYPE_TXT;
+        new->datafile  = a2+4;
+        new->checkfile = a2+4;
+    }
+    else if (strncmp(a2, "rnd:", 4) == 0) {
+        new->type      = MAPTYPE_RND;
         new->datafile  = a2+4;
         new->checkfile = a2+4;
     }
@@ -454,6 +461,18 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->type = MAPTYPE_PRG;
         new->datafile = a2+4;
         new->checkfile = a2+4;
+    }
+    else if (strncmp(a2, "int:", 4) == 0) {
+        new->type      = MAPTYPE_INT;
+        new->datafile  = NULL;
+        new->checkfile = NULL;
+        if (strcmp(a2+4, "tolower") == 0) 
+            new->func = rewrite_mapfunc_tolower;
+        else if (strcmp(a2+4, "toupper") == 0)
+            new->func = rewrite_mapfunc_toupper;
+        else if (sconf->state == ENGINE_ENABLED)
+            return pstrcat(cmd->pool, "RewriteMap: internal map not found:",
+                           a2+4, NULL);     
     }
     else {
         new->type      = MAPTYPE_TXT;
@@ -2499,6 +2518,52 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                                s->name, key);
                 }
             }
+            else if (s->type == MAPTYPE_INT) {
+                if ((value = lookup_map_internal(r, s->func, key)) != NULL) {
+                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", 
+                               s->name, key, value);
+                    return value;
+                }
+                else {
+                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", 
+                               s->name, key);
+                }
+            }
+            else if (s->type == MAPTYPE_RND) {
+                if (stat(s->checkfile, &st) == -1) {
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                                "mod_rewrite: can't access text RewriteMap "
+                                "file %s", s->checkfile);
+                    rewritelog(r, 1,
+                               "can't open RewriteMap file, see error log");
+                    return NULL;
+                }
+                value = get_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key);
+                if (value == NULL) {
+                    rewritelog(r, 6, "cache lookup FAILED, forcing new "
+                               "map lookup");
+                    if ((value = 
+                         lookup_map_txtfile(r, s->datafile, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
+                                   "-> val=%s", s->name, key, value);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS, 
+                                         st.st_mtime, key, value);
+                    }
+                    else {
+                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
+                                   "key=%s", s->name, key);
+                        return NULL;
+                    }
+                }
+                else {
+                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
+                               "-> val=%s", s->name, key, value);
+                }
+                value = select_random_value_part(r, value);
+                rewritelog(r, 5, "randomly choosen the subvalue `%s'", value);
+                return value;
+            }
         }
     }
     return NULL;
@@ -2605,7 +2670,87 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
         return pstrdup(r->pool, buf);
 }
 
+static char *lookup_map_internal(request_rec *r,
+                                 char *(*func)(request_rec *, char *),
+                                 char *key)
+{
+    /* currently we just let the function convert 
+       the key to a corresponding value */
+    return func(r, key);
+}
 
+static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
+{
+    char *value, *cp;
+
+    for (cp = value = pstrdup(r->pool, key); cp != NULL && *cp != '\0'; cp++)
+        *cp = toupper(*cp);
+    return value;
+}
+
+static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
+{
+    char *value, *cp;
+
+    for (cp = value = pstrdup(r->pool, key); cp != NULL && *cp != '\0'; cp++)
+        *cp = tolower(*cp);
+    return value;
+}
+
+static int rewrite_rand_init_done = 0;
+
+void rewrite_rand_init(void)
+{
+    if (!rewrite_rand_init_done) {
+        srand((unsigned)(getpid()));
+        rewrite_rand_init_done = 1;
+    }
+    return;
+}
+
+int rewrite_rand(int l, int h)
+{
+    int i;
+    char buf[50];
+
+    rewrite_rand_init();
+    sprintf(buf, "%.0f", (((double)rand()/RAND_MAX)*(h-l)));
+    i = atoi(buf)+1;
+    if (i < l) i = l;
+    if (i > h) i = h;
+    return i;
+}
+
+static char *select_random_value_part(request_rec *r, char *value)
+{
+    char *buf;
+    int n, i, k;
+
+    /*  count number of distinct values  */
+    for (n = 1, i = 0; value[i] != '\0'; i++)
+        if (value[i] == '|')
+            n++;
+
+    /*  when only one value we have no option to choose  */
+    if (n == 1)
+        return value;
+
+    /*  else randomly select one  */
+    k = rewrite_rand(1, n);
+
+    /*  and grep it out  */
+    for (n = 1, i = 0; value[i] != '\0'; i++) {
+        if (n == k)
+            break;
+        if (value[i] == '|')
+            n++;
+    }
+    buf = pstrdup(r->pool, &value[i]);
+    for (i = 0; buf[i] != '\0' && buf[i] != '|'; i++)
+        ;
+    buf[i] = '\0';
+    return buf;
+}
 
 
 /*
@@ -2912,7 +3057,7 @@ static char *expand_variables(request_rec *r, char *str)
                 continue;
             }
         }
-	outp = ap_cpystrn(outp, cp, endp - outp);
+        outp = ap_cpystrn(outp, cp, endp - outp);
         break;
     }
     return expanded ? pstrdup(r->pool, output) : str;
@@ -3010,7 +3155,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->server->server_admin;
     }
     else if (strcasecmp(var, "SERVER_NAME") == 0) {
-	result = get_server_name(r);
+        result = get_server_name(r);
     }
     else if (strcasecmp(var, "SERVER_PORT") == 0) {
         ap_snprintf(resultbuf, sizeof(resultbuf), "%u", get_server_port(r));

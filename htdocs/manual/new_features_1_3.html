@@ -562,6 +562,17 @@ Allows additional information to be listed along with a specified module.
   as a reverse proxy to avoid by-passing the reverse proxy because of HTTP
   redirects on the backend servers which stay behind the reverse proxy.
  </LI>
+
+ <LI><STRONG>New map types for <SAMP><A HREF="mod/mod_rewrite.html#RewriteMap">RewriteMap</A></SAMP> directive</STRONG>
+  <BR>
+  The new map types `Randomized Plain Text' and `Internal Function' were added
+  to the <SAMP>RewriteMap</SAMP> directive of mod_rewrite.  They provide two
+  new features: First, you now can randomly choose a sub-value from a value
+  which was looked-up in a rewriting map (which is useful when choosing
+  between backend servers in a Reverse Proxy situation). Second, you now can
+  translate URL parts to fixed (upper or lower) case (which is useful when
+  doing mass virtual hosting by the help of mod_rewrite).
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->

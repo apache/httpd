@@ -30,10 +30,6 @@ Available Patches:
 	Status: Dean +1, Martin +0 (duplicates /server-info?server),
 		Alexei -1 (shared lib concerns)
 
-    * Ralf's [PATCH] New RewriteMap types for mod_rewrite
-      <199802121518.QAA27349@en1.engelschall.com>
-      Status: Ralf +1
-
 Concepts:
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()

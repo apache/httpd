@@ -256,7 +256,7 @@ RewriteLogLevel 3
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteMap</CODE> <EM>Mapname</EM> <CODE>{txt,dbm,prg}:</CODE><EM>Filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> <CODE>RewriteMap</CODE> <EM>MapName</EM> <EM>MapType</EM><CODE>:</CODE><EM>MapSource</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -267,82 +267,146 @@ RewriteLogLevel 3
 ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
 <P>
 
-The <TT>RewriteMap</TT> directive defines an external <EM>Rewriting Map</EM>
+The <TT>RewriteMap</TT> directive defines a <EM>Rewriting Map</EM>
 which can be used inside rule substitution strings by the mapping-functions
-to insert/substitute fields through a key lookup.
+to insert/substitute fields through a key lookup. The source of this
+lookup can be of various types.
 <P>
 
-The <A NAME="mapfunc"><EM>Mapname</EM></A> is the name of the map and will
+The <A NAME="mapfunc"><EM>MapName</EM></A> is the name of the map and will
 be used to specify a mapping-function for the substitution strings of a
-rewriting rule via
+rewriting rule via one of the following constructs:
 
 <BLOCKQUOTE><STRONG>
-<CODE>${</CODE> <EM>Mapname</EM> <CODE>:</CODE> <EM>LookupKey</EM>
+<CODE>${</CODE> <EM>MapName</EM> <CODE>:</CODE> <EM>LookupKey</EM>
+<CODE>}</CODE><BR>
+<CODE>${</CODE> <EM>MapName</EM> <CODE>:</CODE> <EM>LookupKey</EM>
 <CODE>|</CODE> <EM>DefaultValue</EM> <CODE>}</CODE>
 </STRONG></BLOCKQUOTE>
 
-When such a directive occurs the map <EM>Mapname</EM>
+When such a construct occurs the map <EM>MapName</EM>
 is consulted and the key <EM>LookupKey</EM> is looked-up. If the key is
-found, the map-function directive is substituted by <EM>SubstValue</EM>. If
-the key is not found then it is substituted by <EM>DefaultValue</EM>.
+found, the map-function construct is substituted by <EM>SubstValue</EM>. If
+the key is not found then it is substituted by <EM>DefaultValue</EM> or
+the empty string if no <EM>DefaultValue</EM> was specified.
 
 <P>
-The <EM>Filename</EM> must be a valid Unix filepath, containing one
-of the following formats:
+The following combinations for <EM>MapType</EM> and <EM>MapSource</EM>
+can be used:
 
-<OL>
-<LI><STRONG>Plain Text Format</STRONG>
+<UL>
+<LI><STRONG>Standard Plain Text</STRONG><BR>
+    MapType: <CODE>txt</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-    This is a ASCII file which contains either blank lines, comment lines
-    (starting with a '#' character) or
+	This is the standard rewriting map feature where the <EM>MapSource</EM> is
+	a plain ASCII file containing either blank lines, comment lines (starting
+	with a '#' character) or pairs like the following - one per line.
 
     <BLOCKQUOTE><STRONG>
     <EM>MatchingKey</EM>  <EM>SubstValue</EM>
     </STRONG></BLOCKQUOTE>
 
-    pairs - one per line. You can create such files either manually,
-    using your favorite editor, or by using the programs
-    <TT>mapcollect</TT> and <TT>mapmerge</TT> from the <TT>support</TT>
-    directory of the <STRONG>mod_rewrite</STRONG> distribution.
     <P>
-    To declare such a map prefix, <EM>Filename</EM> with a <CODE>txt:</CODE>
-    string as in the following example:
-
+	Example:
 <P>
 <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <TR><TD><PRE>
-#
-#   map.real-to-user -- maps realnames to usernames
-#
+##
+##  map.txt -- rewriting map
+##
 
 Ralf.S.Engelschall    rse   # Bastard Operator From Hell
-Dr.Fred.Klabuster     fred  # Mr. DAU
+Mr.Joe.Average        joe   # Mr. Average
 </PRE></TD></TR>
 </TABLE>
 
 <P>
 <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <TR><TD><PRE>
-RewriteMap real-to-host txt:/path/to/file/map.real-to-user
+RewriteMap real-to-host txt:/path/to/file/map.txt
 </PRE></TD></TR>
 </TABLE>
 
 <P>
-<LI><STRONG>DBM Hashfile Format</STRONG>
+<LI><STRONG>Randomized Plain Text</STRONG><BR>
+    MapType: <CODE>rnd</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-    This is a binary NDBM format file containing the
-    same contents as the <EM>Plain Text Format</EM> files. You can create
-    such a file with any NDBM tool or with the <TT>dbmmanage</TT> program
-    from the <TT>support</TT> directory of the Apache distribution.
-    <P>
-    To declare such a map prefix <EM>Filename</EM> with a <CODE>dbm:</CODE>
-    string.
+	This is identical to the Standard Plain Text variant above but with a special
+	post-processing feature: After looking up a value it is parsed according
+    to contained ``<TT>|</TT>'' characters which have the meaning of ``or''.  Or
+    in other words: they indicate a set of alternatives from which the actual
+    returned value is choosen randomly. Although this sounds crazy and useless, it
+    was actually designed for load balancing in a reverse proxy situation where
+    the looked up values are server names.
+	Example:
 <P>
-<LI><STRONG>Program Format</STRONG>
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
+<TR><TD><PRE>
+##
+##  map.txt -- rewriting map
+##
+
+static   www1|www2|www3|www4
+dynamic  www5|www6
+</PRE></TD></TR>
+</TABLE>
+
+<P>
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
+<TR><TD><PRE>
+RewriteMap servers rnd:/path/to/file/map.txt
+</PRE></TD></TR>
+</TABLE>
+
+<P>
+<LI><STRONG>Hash File</STRONG><BR>
+    MapType: <CODE>dbm</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-    This is a Unix executable, not a lookup file.  To create it you can use
+	Here the source is a binary NDBM format file containing the same contents
+	as a <EM>Plain Text</EM> format file, but in a special representation
+    which is optimized for really fast lookups. You can create such a file with
+    any NDBM tool or with the following Perl script:
+    <P>
+    <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
+    <TR><TD><PRE>
+#!/path/to/bin/perl
+##
+##  txt2dbm -- convert txt map to dbm format
+##
+
+($txtmap, $dbmmap) = @ARGV;
+open(TXT, "&lt;$txtmap");
+dbmopen(%DB, $dbmmap, 0644);
+while (&lt;TXT&gt;) {
+    next if (m|^s*#.*| or m|^s*$|);
+    $DB{$1} = $2 if (m|^\s*(\S+)\s+(\S+)$|);
+}
+dbmclose(%DB);
+close(TXT)</PRE></TD></TR>
+    </TABLE>
+	<P>
+    <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
+    <TR><TD><PRE>$ txt2dbm map.txt map.db </PRE></TD></TR>
+    </TABLE>
+<P>
+<LI><STRONG>Internal Function</STRONG><BR>
+    MapType: <CODE>int</CODE>, MapSource: Internal Apache function
+    <P>
+    Here the source is an internal Apache function. Currently you cannot
+    create your own, but the following functions already exists:
+    <UL> 
+    <LI><STRONG>toupper</STRONG>:<BR>
+        Converts the looked up key to all upper case.
+    <LI><STRONG>tolower</STRONG>:<BR>
+        Converts the looked up key to all lower case.
+    </UL>
+<P>
+<LI><STRONG>External Rewriting Program</STRONG><BR>
+    MapType: <CODE>prg</CODE>, MapSource: Unix filesystem path to valid regular file
+    <P>
+    Here the source is a Unix program, not a map file. To create it you can use
     the language of your choice, but the result has to be a run-able Unix
-    binary (i.e. either object-code or a script with the
+    executable (i.e. either object-code or a script with the
     magic cookie trick '<TT>#!/path/to/interpreter</TT>' as the first line).
     <P>
     This program gets started once at startup of the Apache servers and then
@@ -367,7 +431,7 @@ while (&lt;STDIN&gt;) {
 </PRE></TD></TR>
 </TABLE>
     <P>
-    <STRONG>But be very careful:</STRONG><BR>
+    But be very careful:<BR>
     <OL>
     <LI>``<EM>Keep the program simple, stupid</EM>'' (KISS), because
         if this program hangs it will lead to a hang of the Apache server
@@ -376,10 +440,7 @@ while (&lt;STDIN&gt;) {
     This will cause a deadloop! Hence the ``<TT>$|=1</TT>'' in the above
     example...
     </OL>
-    <P>
-    To declare such a map prefix <EM>Filename</EM> with a <CODE>prg:</CODE>
-    string.
-</OL>
+</UL>
 
 The <TT>RewriteMap</TT> directive can occur more than once. For each
 mapping-function use one <TT>RewriteMap</TT> directive to declare its
