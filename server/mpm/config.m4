@@ -27,6 +27,7 @@ APACHE_FAST_OUTPUT(server/mpm/Makefile)
 
 MPM_NAME=$apache_cv_mpm
 if test "$MPM_NAME" = "leader" -o "$MPM_NAME" = "threadpool" ; then
+  AC_MSG_WARN(You have selected an EXPERIMENTAL MPM.  Be warned!)
   MPM_SUBDIR_NAME=experimental/$MPM_NAME
 else
   MPM_SUBDIR_NAME=$MPM_NAME
