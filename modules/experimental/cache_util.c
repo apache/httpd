@@ -138,7 +138,7 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
 
 
 /* do a HTTP/1.1 age calculation */
-CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value)
+CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value)
 {
     apr_time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age,
            resident_time, current_age;
@@ -152,13 +152,13 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
     resident_time = apr_time_now() - info->response_time;
     current_age = corrected_initial_age + resident_time;
 
-    return (current_age);
+    return apr_time_sec(current_age);
 }
 
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, 
                                             request_rec *r)
 {
-    apr_time_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale, minfresh;
+    apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale, minfresh;
     const char *cc_cresp, *cc_req, *pragma_cresp;
     const char *agestr = NULL;
     char *val;
@@ -202,7 +202,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     /* TODO: pragma_cresp not being used? */
     pragma_cresp = apr_table_get(r->headers_out, "Pragma");  
     if ((agestr = apr_table_get(r->headers_out, "Age"))) {
-        age_c = atoi(agestr);
+        age_c = apr_atoi64(agestr);
     }
 
     /* calculate age of object */
@@ -210,19 +210,19 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
 
     /* extract s-maxage */
     if (cc_cresp && ap_cache_liststr(cc_cresp, "s-maxage", &val))
-        smaxage = atoi(val);
+        smaxage = apr_atoi64(val);
     else
         smaxage = -1;
 
     /* extract max-age from request */
     if (cc_req && ap_cache_liststr(cc_req, "max-age", &val))
-        maxage_req = atoi(val);
+        maxage_req = apr_atoi64(val);
     else
         maxage_req = -1;
 
     /* extract max-age from response */
     if (cc_cresp && ap_cache_liststr(cc_cresp, "max-age", &val))
-        maxage_cresp = atoi(val);
+        maxage_cresp = apr_atoi64(val);
     else
         maxage_cresp = -1;
 
@@ -238,13 +238,13 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
 
     /* extract max-stale */
     if (cc_req && ap_cache_liststr(cc_req, "max-stale", &val))
-        maxstale = atoi(val);
+        maxstale = apr_atoi64(val);
     else
         maxstale = 0;
 
     /* extract min-fresh */
     if (cc_req && ap_cache_liststr(cc_req, "min-fresh", &val))
-        minfresh = atoi(val);
+        minfresh = apr_atoi64(val);
     else
         minfresh = 0;
 
