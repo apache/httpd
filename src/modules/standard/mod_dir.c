@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_dir.c,v 1.11 1996/08/20 11:51:08 paul Exp $ */
+/* $Id: mod_dir.c,v 1.12 1996/10/08 07:29:52 brian Exp $ */
 
 /*
  * http_dir.c: Handles the on-the-fly html index generation
@@ -732,32 +732,34 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
             num_ent++;
         }
     }
-    ar=(struct ent **) palloc(r->pool, num_ent*sizeof(struct ent *));
-    p=head;
-    x=0;
-    while(p) {
-        ar[x++]=p;
-        p = p->next;
-    }
+    if (num_ent > 0) {
+        ar=(struct ent **) palloc(r->pool, num_ent*sizeof(struct ent *));
+        p=head;
+        x=0;
+        while(p) {
+            ar[x++]=p;
+            p = p->next;
+        }
     
-    qsort((void *)ar,num_ent,sizeof(struct ent *),
+        qsort((void *)ar,num_ent,sizeof(struct ent *),
 #ifdef ULTRIX_BRAIN_DEATH
-          (int (*))dsortf);
+	      (int (*))dsortf);
 #else
-          (int (*)(const void *,const void *))dsortf);
+	      (int (*)(const void *,const void *))dsortf);
 #endif
-     output_directories(ar, num_ent, dir_conf, r, dir_opts);
-     closedir(d);
+    }
+    output_directories(ar, num_ent, dir_conf, r, dir_opts);
+    closedir(d);
 
-     if (dir_opts & FANCY_INDEXING)
-         if((tmp = find_readme(dir_conf, r)))
-             insert_readme(name,tmp,1,r);
-     else {
-         rputs("</UL>", r);
-     }
+    if (dir_opts & FANCY_INDEXING)
+        if((tmp = find_readme(dir_conf, r)))
+            insert_readme(name,tmp,1,r);
+    else {
+        rputs("</UL>", r);
+    }
 
-     rputs("</BODY>", r);
-     return 0;
+    rputs("</BODY>", r);
+    return 0;
 }
 
 /* The formal handler... */
