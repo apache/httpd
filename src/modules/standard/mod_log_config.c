@@ -374,7 +374,7 @@ static const char *log_request_time(request_rec *r, char *a)
 {
     int timz;
     struct tm *t;
-    static char tstr[MAX_STRING_LEN];
+    char tstr[MAX_STRING_LEN];
 
     t = ap_get_gmtoff(&timz);
 
@@ -395,7 +395,7 @@ static const char *log_request_time(request_rec *r, char *a)
                     "%c%.2d%.2d]", sign, timz / 60, timz % 60);
     }
 
-    return tstr;
+    return ap_pstrdup(r->pool, tstr);
 }
 
 static const char *log_request_duration(request_rec *r, char *a)
