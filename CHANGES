@@ -5,9 +5,6 @@ Changes with Apache 2.1.0-dev
   *) mod_cache: Add CacheIgnoreHeaders directive.  PR 30399.
      [Rüiger Plü <r.pluem t-online.de>]
 
-  *) WIN64: API changes to clean up Windows 64bit compile warnings
-     [Allan Edwards]
-
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [Andr� Malo]
 

@@ -1387,7 +1387,7 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r)
     return c;
 }
 
-AP_DECLARE(apr_ssize_t) ap_rputs(const char *str, request_rec *r)
+AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 {
     apr_size_t len;
 
@@ -1441,9 +1441,9 @@ static apr_status_t r_flush(apr_vformatter_buff_t *buff)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_ssize_t) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
+AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    apr_ssize_t written;
+    apr_size_t written;
     struct ap_vrprintf_data vd;
     char vrprintf_buf[AP_IOBUFSIZE];
 
@@ -1461,7 +1461,7 @@ AP_DECLARE(apr_ssize_t) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
     *(vd.vbuff.curpos) = '\0';
 
     if (written != -1) {
-        apr_size_t n = vd.vbuff.curpos - vrprintf_buf;
+        int n = vd.vbuff.curpos - vrprintf_buf;
 
         /* last call to buffer_output, to finish clearing the buffer */
         if (buffer_output(r, vrprintf_buf,n) != APR_SUCCESS)
@@ -1473,10 +1473,10 @@ AP_DECLARE(apr_ssize_t) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
     return written;
 }
 
-AP_DECLARE_NONSTD(apr_ssize_t) ap_rprintf(request_rec *r, const char *fmt, ...)
+AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 {
     va_list va;
-    apr_ssize_t n;
+    int n;
 
     if (r->connection->aborted)
         return -1;
@@ -1488,7 +1488,7 @@ AP_DECLARE_NONSTD(apr_ssize_t) ap_rprintf(request_rec *r, const char *fmt, ...)
     return n;
 }
 
-AP_DECLARE_NONSTD(apr_ssize_t) ap_rvputs(request_rec *r, ...)
+AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
     va_list va;
     const char *s;
