@@ -166,18 +166,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_context_t *pPool, const char *sz
 int ap_os_is_filename_valid(const char *file);
 int os_strftime(char *, size_t , const char *, const struct tm *);
 
-/* Abstractions for dealing with shared object files (DLLs on Win32).
- * These are used by mod_so.c
- * ToDo: This need to be migrated to APR
- */
-
-#define ap_os_dso_handle_t  HINSTANCE
-#define ap_os_dso_init()
-#define ap_os_dso_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
-#define ap_os_dso_unload(l) FreeLibrary(l)
-#define ap_os_dso_sym(h,s)  GetProcAddress(h,s)
 #define ap_os_dso_error()   ""	/* for now */
-
 /* Other ap_os_ routines not used by this platform */
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 

@@ -158,7 +158,7 @@ static void *so_sconf_create(ap_context_t *p, server_rec *s)
     soc->loaded_modules = ap_make_array(p, DYNAMIC_MODULE_LIMIT, 
                                      sizeof(moduleinfo));
 #ifndef NO_DLOPEN
-    ap_os_dso_init();
+    ap_dso_init();
 #endif
 
     return (void *)soc;
