@@ -351,6 +351,7 @@ module MODULE_VAR_EXPORT so_module = {
    NULL,			/* check auth */
    NULL,			/* check access */
    NULL,			/* type_checker */
+   NULL,			/* fixer_upper */
    NULL,			/* logger */
    NULL,			/* header parser */
    NULL,			/* child_init */
