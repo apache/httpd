@@ -1391,10 +1391,10 @@ strerror (int err) {
 }
 #endif
 
-#ifndef LESS_SLACK_JACK
+#ifndef NO_SLACK
 int ap_slack (int fd, int line)
 {
-#if !defined(F_DUPFD) || defined(NO_SLACK)
+#if !defined(F_DUPFD)
     return fd;
 #else
     int new_fd;
@@ -1420,4 +1420,4 @@ int ap_slack (int fd, int line)
     return new_fd;
 #endif
 }
-#endif /* LESS_SLACK_JACK */
+#endif /* NO_SLACK */

@@ -773,7 +773,7 @@ extern time_t restart_time;
  * never fails.  If the high line was requested and it fails it will also try
  * the low line.
  */
-#ifdef LESS_SLACK_JACK
+#ifdef NO_SLACK
 #define ap_slack(fd,line)   (fd)
 #else
 int ap_slack (int fd, int line);
