@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.16 (outdated: 1.17) -->
+<!-- English Revision: 1.17 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -144,7 +144,7 @@
     <p>非常に混んでいるサイトでのみ、このパラメータをチューニングするべきです。
     このパラメータを大きくするということは、大抵の場合は悪い発想です。
     <directive module="prefork">MinSpareServers</directive>
-    よりも小さい値に設定した場合、<directive>MinSpareServers</directive>
+    以下に設定した場合、<directive>MinSpareServers</directive>
     <code>+1</code> に自動調整されます。</p>
 </usage>
 <seealso><directive module="prefork">MinSpareServers</directive></seealso>
