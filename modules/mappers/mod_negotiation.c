@@ -2261,7 +2261,7 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
          * Note that if you change the number of substrings pushed, you also
          * need to change the calculation of max_vlist_array above.
          */
-        *((const char **) apr_array_push(arr)) = "<li /><a href=\"";
+        *((const char **) apr_array_push(arr)) = "<li><a href=\"";
         *((const char **) apr_array_push(arr)) = filename;
         *((const char **) apr_array_push(arr)) = "\">";
         *((const char **) apr_array_push(arr)) = filename;
@@ -2285,7 +2285,7 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
             *((const char **) apr_array_push(arr)) = ", encoding ";
             *((const char **) apr_array_push(arr)) = variant->content_encoding;
         }
-        *((const char **) apr_array_push(arr)) = "\n";
+        *((const char **) apr_array_push(arr)) = "</li>\n";
     }
     *((const char **) apr_array_push(arr)) = "</ul>\n";
 
