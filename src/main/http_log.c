@@ -280,48 +280,56 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
     va_list args;
     char errstr[MAX_STRING_LEN];
     static TRANS *pname = priorities;
-    
+    size_t len;
+    int save_errno = errno;
+    FILE *logf;
 
-    if (level > s->loglevel)
+    if (s && (level & APLOG_LEVELMASK) > s->loglevel)
 	return;
 
-    switch (s->loglevel) {
-    case APLOG_DEBUG:
-	ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: %s: %d: ",
-		    pname[level].t_name, errno, strerror(errno), file, line);
-	break;
-    case APLOG_EMERG:
-    case APLOG_CRIT:
-    case APLOG_ALERT:
-	ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: ",
-		    pname[level].t_name, errno, strerror(errno));
-	break;
-    case APLOG_INFO:
-    case APLOG_ERR:
-    case APLOG_WARNING:
-    case APLOG_NOTICE:
-	ap_snprintf(errstr, sizeof(errstr), "[%s] ", pname[level].t_name);
-	break;
+    if (!s) {
+	logf = stderr;
+    } else if (s && s->error_log) {
+	logf = s->error_log;
+    } else {
+	logf = NULL;
     }
-	
+
+    if (logf) {
+	len = ap_snprintf(errstr, sizeof(errstr), "[%s] ", get_time());
+    } else {
+	len = 0;
+    }
+
+    len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	    "[%s] ", pname[level & APLOG_LEVELMASK].t_name);
+
+    if (!(level & APLOG_NOERRNO)) {
+	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+		"%d: %s: ", save_errno, strerror(save_errno));
+    }
+    if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
+	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+		"%s: %d: ", file, line);
+    }
+
     va_start(args, fmt);
+    len += ap_vsnprintf(errstr + len, sizeof(errstr) - len, fmt, args);
+    va_end(args);
 
     /* NULL if we are logging to syslog */
-    if (s->error_log) {
-	fprintf(s->error_log, "[%s] %s", get_time(), errstr);
-	vfprintf(s->error_log, fmt, args);
-	fprintf(s->error_log, "\n");
-	fflush(s->error_log);
+    if (logf) {
+	fputs(errstr, logf);
+	fputc('\n', logf);
+	fflush(logf);
     }
 #ifdef HAVE_SYSLOG
     else {
-	vsprintf(errstr + strlen(errstr), fmt, args);
-	syslog(level, "%s", errstr);
+	syslog(level & APLOG_LEVELMASK, "%s", errstr);
     }
 #endif
-    
-    va_end(args);
 }
+    
 
 void log_pid (pool *p, char *pid_fname)
 {

@@ -719,7 +719,8 @@ void timeout(int sig)
     }
 
     if (!current_conn->keptalive)
-	aplog_error(APLOG_MARK, APLOG_DEBUG, current_conn->server, errstr);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG,
+		    current_conn->server, errstr);
 
     if (timeout_req) {
 	/* Someone has asked for this transaction to just be aborted
@@ -1336,7 +1337,6 @@ static int shmid = -1;
 
 static void setup_shared_mem(void)
 {
-    char errstr[MAX_STRING_LEN];
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
     char *obrk;
@@ -1345,18 +1345,18 @@ static void setup_shared_mem(void)
     if ((shmid = shmget(shmkey, SCOREBOARD_SIZE, IPC_CREAT | SHM_R | SHM_W)) == -1) {
 #ifdef LINUX
 	if (errno == ENOSYS) {
-	    fprintf(stderr,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "httpd: Your kernel was built without CONFIG_SYSVIPC\n"
 		    "httpd: please consult the Apache FAQ for details\n");
 	}
 #endif
-	perror("shmget");
-	fprintf(stderr, "httpd: Could not call shmget\n");
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "could not call shmget");
 	exit(1);
     }
 
-    ap_snprintf(errstr, sizeof(errstr), "created shared memory segment #%d", shmid);
-    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, errstr);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+		"created shared memory segment #%d", shmid);
 
 #ifdef MOVEBREAK
     /*
@@ -1369,30 +1369,29 @@ static void setup_shared_mem(void)
      * attach the segment and then move break back down. Ugly
      */
     if ((obrk = sbrk(MOVEBREAK)) == (char *) -1) {
-	perror("sbrk");
-	fprintf(stderr, "httpd: Could not move break\n");
+	aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+	    "sbrk() could not move break");
     }
 #endif
 
 #define BADSHMAT	((scoreboard *)(-1))
     if ((scoreboard_image = (scoreboard *) shmat(shmid, 0, 0)) == BADSHMAT) {
-	perror("shmat");
-	fprintf(stderr, "httpd: Could not call shmat\n");
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf, "shmat error");
 	/*
 	 * We exit below, after we try to remove the segment
 	 */
     }
     else {			/* only worry about permissions if we attached the segment */
 	if (shmctl(shmid, IPC_STAT, &shmbuf) != 0) {
-	    perror("shmctl");
-	    fprintf(stderr, "httpd: Could not stat segment #%d\n", shmid);
+	    aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		"shmctl() could not stat segment #%d", shmid);
 	}
 	else {
 	    shmbuf.shm_perm.uid = user_id;
 	    shmbuf.shm_perm.gid = group_id;
 	    if (shmctl(shmid, IPC_SET, &shmbuf) != 0) {
-		perror("shmctl");
-		fprintf(stderr, "httpd: Could not set segment #%d\n", shmid);
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "shmctl() could not set segment #%d", shmid);
 	    }
 	}
     }
@@ -1401,12 +1400,9 @@ static void setup_shared_mem(void)
      * (small) tables.
      */
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
-	perror("shmctl");
-	fprintf(stderr, "httpd: Could not delete segment #%d\n", shmid);
-	ap_snprintf(errstr, sizeof(errstr),
-		    "could not remove shared memory segment #%d", shmid);
 	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
-		    "shmctl: IPC_RMID: %s", errstr);
+		"shmctl: IPC_RMID: could not remove shared memory segment #%d",
+		shmid);
     }
     if (scoreboard_image == BADSHMAT)	/* now bailout */
 	exit(1);
@@ -1415,8 +1411,8 @@ static void setup_shared_mem(void)
     if (obrk == (char *) -1)
 	return;			/* nothing else to do */
     if (sbrk(-(MOVEBREAK)) == (char *) -1) {
-	perror("sbrk");
-	fprintf(stderr, "httpd: Could not move break back\n");
+	aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+	    "sbrk() could not move break back");
     }
 #endif
     scoreboard_image->global.exit_generation = 0;
@@ -1757,21 +1753,21 @@ static void reclaim_child_processes(int start_tries)
 	    switch (tries) {
 	    case 1:
 		/* perhaps it missed the SIGHUP, lets try again */
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 		    "child process %d did not exit, sending another SIGHUP",
 			    pid);
 		kill(pid, SIGHUP);
 		break;
 	    case 2:
 		/* ok, now it's being annoying */
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 		   "child process %d still did not exit, sending a SIGTERM",
 			    pid);
 		kill(pid, SIGTERM);
 		break;
 	    case 3:
 		/* die child scum */
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 		   "child process %d still did not exit, sending a SIGKILL",
 			    pid);
 		kill(pid, SIGKILL);
@@ -1782,7 +1778,7 @@ static void reclaim_child_processes(int start_tries)
 		 * exited, we will likely fail to bind to the port
 		 * after the restart.
 		 */
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 			    "could not make child process %d exit, "
 			    "attempting to continue anyway", pid);
 		break;
@@ -1952,7 +1948,7 @@ void sig_coredump(int sig)
     ap_snprintf(emsg, sizeof(emsg),
 		"httpd: caught %s, attempting to dump core in %s",
 		s, coredump_dir);
-    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, emsg);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, emsg);
     chdir(coredump_dir);
     abort();
     exit(1);
@@ -2325,7 +2321,7 @@ static void dump_vhash_statistics(void)
     }
     p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
 		     total, count[VHASH_TABLE_SIZE - 1]);
-    aplog_error(APLOG_MARK, APLOG_DEBUG, server_conf, buf);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, server_conf, buf);
 }
 #endif
 
@@ -2930,7 +2926,7 @@ void child_main(int child_num_arg)
 #ifdef LINUX
 		    if (errno == EFAULT) {
 			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "select: (listen) fatal, exiting");
+				    "select: (listen) fatal, child exiting");
 			child_exit_modules(pconf, server_conf);
 			destroy_pool(pconf);
 			exit(1);
@@ -3309,7 +3305,7 @@ static void perform_idle_server_maintenance(void)
 	    static int reported = 0;
 
 	    if (!reported) {
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 			    "server reached MaxClients setting, consider"
 			    " raising the MaxClients setting");
 		reported = 1;
@@ -3318,7 +3314,7 @@ static void perform_idle_server_maintenance(void)
 	}
 	else {
 	    if (idle_spawn_rate >= 4) {
-		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 		    "server seems busy, spawning %d children (you may need "
 			"to increase StartServers, or Min/MaxSpareServers)",
 			    idle_spawn_rate);
@@ -3423,11 +3419,11 @@ void standalone_main(int argc, char **argv)
 	    hold_off_on_exponential_spawning = 10;
 	}
 
-	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 		    "Apache HTTP Server version: %s", SERVER_VERSION);
-	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 		    "Server built: %s", SERVER_BUILT);
-	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 		    "Server configured -- resuming normal operations");
 	restart_pending = shutdown_pending = 0;
 
@@ -3467,7 +3463,7 @@ void standalone_main(int argc, char **argv)
 		     * scoreboard.  Somehow we don't know about this
 		     * child.
 		     */
-		    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
 				"long lost child came home! (pid %d)", pid);
 		}
 		/* Don't perform idle maintenance when a child dies,
@@ -3502,7 +3498,7 @@ void standalone_main(int argc, char **argv)
 		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
 	    }
 	    reclaim_child_processes(2);		/* Start with SIGTERM */
-	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"httpd: caught SIGTERM, shutting down");
 
 	    /* Clear the pool - including any registered cleanups */
@@ -3532,7 +3528,7 @@ void standalone_main(int argc, char **argv)
 	    scoreboard_image->global.exit_generation = generation;
 	    update_scoreboard_global();
 
-	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"SIGUSR1 received.  Doing graceful restart");
 
 	    /* kill off the idle ones */
@@ -3559,7 +3555,7 @@ void standalone_main(int argc, char **argv)
 		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGHUP");
 	    }
 	    reclaim_child_processes(1);		/* Not when just starting up */
-	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"SIGHUP received.  Attempting to restart");
 	}
 	++generation;

@@ -59,6 +59,8 @@
 #define	APLOG_INFO	6	/* informational */
 #define	APLOG_DEBUG	7	/* debug-level messages */
 #define DEFAULT_LOGLEVEL	APLOG_ERR
+#define APLOG_LEVELMASK 15	/* mask off the level value */
+#define APLOG_NOERRNO	16
 #define APLOG_MARK	__FILE__,__LINE__
 
 typedef struct _trans {
