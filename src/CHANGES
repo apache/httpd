@@ -1,4 +1,7 @@
 Changes with Apache 1.3b4
+
+  *) Interim (slow) fix for p->sub_pool critical sections in
+     alloc.c (affects win32 only).  [Ben Hyde]
   
   *) non-WIN32 was missing destroy_mutex definition.  [Ben Hyde]
   

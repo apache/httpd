@@ -57,6 +57,7 @@ Committed:
     * Dean's [PATCH] fix Rasmus' chunking error
     * [PATCH] PR#1366: fix result of send_fd_length
     * Ben Hyde's [PATCH] Finish suite of mutex ops for non-threaded platforms
+    * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool (take 2)
 
 Available:
 
@@ -83,15 +84,6 @@ Available:
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
 	Status: Martin +1, Dean +1
-
-    * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool
-      (take 2)
-    	<9712171601.AA26992@gensym1.gensym.com>
-	Status: Dean +1, Jim +1
-
-    * Dean's [PATCH] child_timeouts set wrong
-	<Pine.LNX.3.95dg3.971213000430.29165E-100000@twinlark.arctic.org>
-	Status: Jim +1, Dean +1
 
     * Marc's [PATCH] PR#1543: suexec logging exec failures
 	<Pine.BSF.3.95.971210202721.1361I-100000@alive.znep.com>

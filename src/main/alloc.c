@@ -376,11 +376,13 @@ API_EXPORT(void) clear_pool(struct pool *a)
 {
     block_alarms();
 
+    (void) acquire_mutex(alloc_mutex);
+    {
     while (a->sub_pools)
 	destroy_pool(a->sub_pools);
-
-    a->sub_pools = NULL;
-
+    }
+    (void) release_mutex(alloc_mutex);
+    /* Don't hold the mutex during cleanups. */
     run_cleanups(a->cleanups);
     a->cleanups = NULL;
     free_proc_chain(a->subprocesses);
@@ -413,6 +415,8 @@ API_EXPORT(void) destroy_pool(pool *a)
     block_alarms();
     clear_pool(a);
 
+    (void) acquire_mutex(alloc_mutex);
+    {
     if (a->parent) {
 	if (a->parent->sub_pools == a)
 	    a->parent->sub_pools = a->sub_next;
@@ -421,6 +425,8 @@ API_EXPORT(void) destroy_pool(pool *a)
 	if (a->sub_next)
 	    a->sub_next->sub_prev = a->sub_prev;
     }
+    }
+    (void) release_mutex(alloc_mutex);
 
     free_blocks(a->first);
     unblock_alarms();
