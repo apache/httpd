@@ -2027,20 +2027,7 @@ static const dav_dyn_provider dav_dyn_providers_fs[] =
         &dav_hooks_liveprop_fs,
         NULL
     },
-    /* propdb provider */
-    {
-	DAV_FS_PROVIDER_ID,
-        DAV_DYN_TYPE_PROPDB,
-        &dav_hooks_db_dbm,
-        NULL
-    },
-    /* locks provider */
-    {
-	DAV_FS_PROVIDER_ID,
-        DAV_DYN_TYPE_LOCKS,
-        &dav_hooks_locks_fs,
-        NULL
-    },
+
     /* must always be last */
     DAV_DYN_END_MARKER
 };
@@ -2072,4 +2059,14 @@ int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
     (void) ap_set_userdata(resource, DAV_KEY_RESOURCE, ap_null_cleanup,
                            r->pool);
     return OK;
+}
+
+const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r)
+{
+    return &dav_hooks_locks_fs;
+}
+
+const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r)
+{
+    return &dav_hooks_db_dbm;
 }

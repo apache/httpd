@@ -226,11 +226,14 @@ dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *de
 */
 
 /* forward-declare this structure */
-typedef struct dav_hooks_db dav_hooks_db;
+typedef struct dav_hooks_propdb dav_hooks_propdb;
 typedef struct dav_hooks_locks dav_hooks_locks;
 typedef struct dav_hooks_vsn dav_hooks_vsn;
 typedef struct dav_hooks_repository dav_hooks_repository;
 typedef struct dav_hooks_liveprop dav_hooks_liveprop;
+
+/* ### deprecated name */
+typedef dav_hooks_propdb dav_hooks_db;
 
 
 /* --------------------------------------------------------------------
@@ -384,12 +387,14 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 AP_DECLARE_HOOK(int, get_resource, (request_rec *r, const char *root_dir,
                                     const char *workspace))
-AP_DECLARE_HOOK(int, set_lock_hooks, (request_rec *r))
-AP_DECLARE_HOOK(int, set_propdb_hooks, (request_rec *r))
-AP_DECLARE_HOOK(int, set_vsn_hooks, (request_rec *r))
-AP_DECLARE_HOOK(int, find_liveprop, (const char *ns_uri, const char *name,
-                                     struct dav_hooks_liveprop **hooks))
-AP_DECLARE_HOOK(void, insert_all_liveprops, (const dav_resource *resource,
+AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
+AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
+AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
+AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
+                                     const char *ns_uri, const char *name,
+                                     const dav_hooks_liveprop **hooks))
+AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
+                                             const dav_resource *resource,
                                              int insvalue, ap_hash_t *ns_map,
                                              ap_text_header *phdr))
 
@@ -397,6 +402,10 @@ AP_DECLARE_HOOK(void, insert_all_liveprops, (const dav_resource *resource,
 #define DAV_KEY_LOCK_HOOKS      "dav-lock-hooks"
 #define DAV_KEY_PROPDB_HOOKS    "dav-propdb-hooks"
 #define DAV_KEY_VSN_HOOKS       "dav-vsn-hooks"
+
+const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
+const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
+const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 
 
 /* --------------------------------------------------------------------
@@ -554,23 +563,15 @@ int dav_scan_providers(void *ctx,
 		       const dav_dyn_provider **provider,
 		       dav_dyn_hooks *output);
 
-/* handy macros to assist with dav_dyn_hooks.hooks usage */
-#define DAV_AS_HOOKS_PROPDB(ph)		((const dav_hooks_db *)((ph)->hooks))
-#define DAV_AS_HOOKS_LOCKS(ph)		((const dav_hooks_locks *)((ph)->hooks))
-#define DAV_AS_HOOKS_QUERY_GRAMMAR(ph)	((void *)((ph)->hooks))
-#define DAV_AS_HOOKS_ACL(ph)		((void *)((ph)->hooks))
-#define DAV_AS_HOOKS_VSN(ph)		((const dav_hooks_vsn *)((ph)->hooks))
+/* ### deprecated */
+#define DAV_GET_HOOKS_PROPDB(r)         dav_get_propdb_hooks(r)
+#define DAV_GET_HOOKS_LOCKS(r)          dav_get_lock_hooks(r)
+#define DAV_GET_HOOKS_VSN(r)            dav_get_vsn_hooks(r)
+
+/* ### temporary; this semantic won't apply in the new scheme */
+const dav_dyn_hooks *dav_get_liveprop_hooks(request_rec *r);
 #define DAV_AS_HOOKS_LIVEPROP(ph)	((const dav_hooks_liveprop *)((ph)->hooks))
-
-/* get provider hooks, given a request record */
-const dav_dyn_hooks *dav_get_provider_hooks(request_rec *r, int provider_type);
-
-#define DAV_GET_HOOKS_PROPDB(r)         DAV_AS_HOOKS_PROPDB(dav_get_provider_hooks(r, DAV_DYN_TYPE_PROPDB))
-#define DAV_GET_HOOKS_LOCKS(r)          DAV_AS_HOOKS_LOCKS(dav_get_provider_hooks(r, DAV_DYN_TYPE_LOCKS))
-#define DAV_GET_HOOKS_QUERY_GRAMMAR(r)  DAV_AS_HOOKS_QUERY_GRAMMAR(dav_get_provider_hooks(r, DAV_DYN_TYPE_QUERY_GRAMMAR))
-#define DAV_GET_HOOKS_ACL(r)            DAV_AS_HOOKS_ACL(dav_get_provider_hooks(r, DAV_DYN_TYPE_ACL))
-#define DAV_GET_HOOKS_VSN(r)            DAV_AS_HOOKS_VSN(dav_get_provider_hooks(r, DAV_DYN_TYPE_VSN))
-#define DAV_GET_HOOKS_LIVEPROP(r)       DAV_AS_HOOKS_LIVEPROP(dav_get_provider_hooks(r, DAV_DYN_TYPE_LIVEPROP))
+#define DAV_GET_HOOKS_LIVEPROP(r)       DAV_AS_HOOKS_LIVEPROP(dav_get_liveprop_hooks(r))
 
 
 /* --------------------------------------------------------------------
@@ -824,7 +825,7 @@ typedef struct
 } dav_datum;
 
 /* hook functions to enable pluggable databases */
-struct dav_hooks_db
+struct dav_hooks_propdb
 {
     dav_error * (*open)(ap_pool_t *p, const dav_resource *resource, int ro,
 			dav_db **pdb);

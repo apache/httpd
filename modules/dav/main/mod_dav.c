@@ -112,10 +112,7 @@ typedef struct {
     ap_table_t *d_params;	/* per-directory DAV config parameters */
     struct dav_dyn_mod_ctx *dmc;
 
-    dav_dyn_hooks propdb;
-    dav_dyn_hooks locks;
     dav_dyn_hooks *liveprop;
-    dav_dyn_hooks vsn;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -156,26 +153,6 @@ static void dav_copy_providers(ap_pool_t *p, const char *name, dav_dir_conf *con
     while (!dav_scan_providers(ctx, &provider, &hooks)) {
 
 	switch (provider->type) {
-
-	case DAV_DYN_TYPE_PROPDB:
-	    conf->propdb = hooks;
-	    break;
-
-	case DAV_DYN_TYPE_LOCKS:
-	    conf->locks = hooks;
-	    break;
-
-	case DAV_DYN_TYPE_QUERY_GRAMMAR:
-	    /* ### not yet defined */
-	    break;
-
-	case DAV_DYN_TYPE_ACL:
-	    /* ### not yet defined */
-	    break;
-
-	case DAV_DYN_TYPE_VSN:
-	    conf->vsn = hooks;
-	    break;
 
 	case DAV_DYN_TYPE_LIVEPROP:
 	{
@@ -278,21 +255,6 @@ static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
     ap_overlap_tables(newconf->d_params, child->d_params,
 		      AP_OVERLAP_TABLES_SET);
 
-    if (child->propdb.hooks != NULL)
-        newconf->propdb = child->propdb;
-    else
-        newconf->propdb = parent->propdb;
-    
-    if (child->locks.hooks != NULL)
-        newconf->locks = child->locks;
-    else
-        newconf->locks = parent->locks;
-
-    if (child->vsn.hooks != NULL)
-        newconf->vsn = child->vsn;
-    else
-        newconf->vsn = parent->vsn;
-
     if (child->liveprop != NULL)
         newconf->liveprop = child->liveprop;
     else
@@ -328,49 +290,60 @@ size_t dav_get_limit_xml_body(const request_rec *r)
     return (size_t)conf->limit_xml_body;
 }
 
-const dav_dyn_hooks *dav_get_provider_hooks(request_rec *r, int provider_type)
+const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
+{
+    void *data;
+    const dav_hooks_locks *hooks;
+
+    (void) ap_get_userdata(&data, DAV_KEY_LOCK_HOOKS, r->pool);
+    if (data == NULL) {
+        hooks = ap_run_get_lock_hooks(r);
+        (void) ap_set_userdata(hooks, DAV_KEY_LOCK_HOOKS, ap_null_cleanup,
+                               r->pool);
+    }
+    else
+        hooks = data;
+    return hooks;
+}
+
+const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r)
+{
+    void *data;
+    const dav_hooks_db *hooks;
+
+    (void) ap_get_userdata(&data, DAV_KEY_PROPDB_HOOKS, r->pool);
+    if (data == NULL) {
+        hooks = ap_run_get_propdb_hooks(r);
+        (void) ap_set_userdata(hooks, DAV_KEY_PROPDB_HOOKS, ap_null_cleanup,
+                               r->pool);
+    }
+    else
+        hooks = data;
+    return hooks;
+}
+
+const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
+{
+    void *data;
+    const dav_hooks_vsn *hooks;
+
+    (void) ap_get_userdata(&data, DAV_KEY_VSN_HOOKS, r->pool);
+    if (data == NULL) {
+        hooks = ap_run_get_vsn_hooks(r);
+        (void) ap_set_userdata(hooks, DAV_KEY_VSN_HOOKS, ap_null_cleanup,
+                               r->pool);
+    }
+    else
+        hooks = data;
+    return hooks;
+}
+
+const dav_dyn_hooks *dav_get_liveprop_hooks(request_rec *r)
 {
     dav_dir_conf *conf;
-    const dav_dyn_hooks *hooks;
-    static const dav_dyn_hooks null_hooks = { { 0 } };
 
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
-    switch (provider_type) {
-
-    case DAV_DYN_TYPE_PROPDB:
-        hooks = &conf->propdb;
-        break;
-
-    case DAV_DYN_TYPE_LOCKS:
-        hooks = &conf->locks;
-        break;
-
-    case DAV_DYN_TYPE_QUERY_GRAMMAR:
-        /* ### not yet defined */
-        hooks = &null_hooks;
-        break;
-
-    case DAV_DYN_TYPE_ACL:
-        /* ### not yet defined */
-        hooks = &null_hooks;
-        break;
-
-    case DAV_DYN_TYPE_VSN:
-        hooks = &conf->vsn;
-        break;
-
-    case DAV_DYN_TYPE_LIVEPROP:
-        hooks = conf->liveprop;
-        break;
-
-    default:
-        /* unknown provider type */
-        hooks = &null_hooks;
-	break;
-    }
-
-    return hooks;
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    return conf->liveprop;
 }
 
 /*
@@ -3264,9 +3237,9 @@ module MODULE_VAR_EXPORT dav_module =
 
 AP_HOOK_STRUCT(
     AP_HOOK_LINK(get_resource)
-    AP_HOOK_LINK(set_lock_hooks)
-    AP_HOOK_LINK(set_propdb_hooks)
-    AP_HOOK_LINK(set_vsn_hooks)
+    AP_HOOK_LINK(get_lock_hooks)
+    AP_HOOK_LINK(get_propdb_hooks)
+    AP_HOOK_LINK(get_vsn_hooks)
     AP_HOOK_LINK(find_liveprop)
     AP_HOOK_LINK(insert_all_liveprops)
     )
@@ -3274,3 +3247,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, get_resource,
                             (request_rec *r, const char *root_dir,
                              const char *workspace),
                             (r, root_dir, workspace), DECLINED);
+AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_locks *, get_lock_hooks,
+                            (request_rec *r), (r), NULL);
+AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_db *, get_propdb_hooks,
+                            (request_rec *r), (r), NULL);
+AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_vsn *, get_vsn_hooks,
+                            (request_rec *r), (r), NULL);
