@@ -9,6 +9,7 @@ Makefile.config
 *.ncb
 *.dsw
 *.opt
+*.plg
 ApacheD
 ApacheR
 CoreD
