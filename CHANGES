@@ -1,5 +1,9 @@
 Changes with Apache 2.0.23-dev
 
+  *) mod_rewrite: Fix the line ending on some non-Unix systems for 
+     messages written to the rewrite log.  
+     [Richard Labennett <rlabenn@us.ibm.com>]
+
   *) All mod_autoindex query parsing is now quietly quashed with the 
      IndexOption IgnoreClient.  The IndexOption SuppressColumnSorting 
      still drops the column sort <a href>'s for the column headers, but 
