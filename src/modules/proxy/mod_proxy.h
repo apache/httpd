@@ -184,6 +184,7 @@ struct nocache_entry {
 #define DEFAULT_CACHE_MAXEXPIRE SEC_ONE_DAY
 #define DEFAULT_CACHE_EXPIRE    SEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR (0.1)
+#define DEFAULT_CACHE_COMPLETION (0.9)
 
 /* static information about the local cache */
 struct cache_conf {
@@ -195,6 +196,7 @@ struct cache_conf {
     time_t gcinterval;		/* garbage collection interval, in seconds */
     int dirlevels;		/* Number of levels of subdirectories */
     int dirlength;		/* Length of subdirectory names */
+    float cache_completion;	/* Force cache completion after this point */
 };
 
 typedef struct {
@@ -232,6 +234,8 @@ struct cache_req {
     off_t len;			/* content length */
     char *protocol;		/* Protocol, and major/minor number, e.g. HTTP/1.1 */
     int status;			/* the status of the cached file */
+    unsigned int written;	/* total *content* bytes written to cache */
+    float cache_completion;	/* specific to this request */
     char *resp_line;		/* the whole status like (protocol, code + message) */
     array_header *hdrs;		/* the HTTP headers of the file */
 };

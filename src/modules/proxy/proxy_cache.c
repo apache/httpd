@@ -693,8 +693,11 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    cachefp = NULL;
 	}
     }
+/* fixed?  in this case, we want to get the headers from the remote server
+   it will be handled later if we don't do this (I hope ;-)
     if (cachefp == NULL)
 	c->hdrs = ap_make_array(r->pool, 2, sizeof(struct hdr_entry));
+*/
     /* FIXME: Shouldn't we check the URL somewhere? */
     now = time(NULL);
 /* Ok, have we got some un-expired data? */
@@ -1034,7 +1037,10 @@ void ap_proxy_cache_tidy(struct cache_req *c)
     if (c->fp == NULL)
 	return;
 
+/* don't care how much was sent, but rather how much was written to cache
     ap_bgetopt(c->req->connection->client, BO_BYTECT, &bc);
+ */
+    bc = c->written;
 
     if (c->len != -1) {
 /* file lengths don't match; don't cache it */
@@ -1044,11 +1050,13 @@ void ap_proxy_cache_tidy(struct cache_req *c)
 	    return;
 	}
     }
+/* don't care if aborted, cache it if fully retrieved from host!
     else if (c->req->connection->aborted) {
-	ap_pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
+	ap_pclosef(c->req->pool, c->fp->fd);	/ no need to flush /
 	unlink(c->tempfile);
 	return;
     }
+*/
     else {
 /* update content-length of file */
 	char buff[9];

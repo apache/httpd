@@ -443,12 +443,16 @@ array_header *
 
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 {
+    int  ok = 1;
     char buf[IOBUFSIZE];
-    long total_bytes_sent;
+    long total_bytes_rcv;
     register int n, o, w;
     conn_rec *con = r->connection;
+    int alt_to = 1;
 
-    total_bytes_sent = 0;
+    total_bytes_rcv = 0;
+    if (c)
+        c->written = 0;
 
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
@@ -462,10 +466,43 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
      * it is unsafe to do a soft_timeout here, at least until the proxy
      * has its own timeout handler which can set both buffers to EOUT.
      */
-    ap_hard_timeout("proxy send body", r);
 
-    while (!con->aborted && f != NULL) {
+    ap_kill_timeout(r);
+
+#ifdef WIN32
+    /* works fine under win32, so leave it */
+    ap_hard_timeout("proxy send body", r);
+    alt_to = 0;
+#else
+    /* CHECKME! Since hard_timeout won't work in unix on sends with partial
+     * cache completion, we have to alternate between hard_timeout
+     * for reads, and soft_timeout for send.  This is because we need
+     * to get a return from ap_bwrite to be able to continue caching.
+     * BUT, if we *can't* continue anyway, just use hard_timeout.
+     */
+
+    if (c) {
+        if (c->len <= 0 || c->cache_completion == 1) {
+            ap_hard_timeout("proxy send body", r);
+            alt_to = 0;
+        }
+    } else {
+        ap_hard_timeout("proxy send body", r);
+        alt_to = 0;
+    }
+#endif
+
+    while (ok && f != NULL) {
+        if (alt_to)
+            ap_hard_timeout("proxy send body", r);
+
 	n = ap_bread(f, buf, IOBUFSIZE);
+
+        if (alt_to)
+            ap_kill_timeout(r);
+        else
+            ap_reset_timeout(r);
+
 	if (n == -1) {		/* input error */
 	    if (f2 != NULL)
 		f2 = ap_proxy_cache_error(c);
@@ -474,34 +511,57 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c
 	if (n == 0)
 	    break;		/* EOF */
 	o = 0;
-	total_bytes_sent += n;
+	total_bytes_rcv += n;
 
-	if (f2 != NULL)
-	    if (ap_bwrite(f2, buf, n) != n)
-		f2 = ap_proxy_cache_error(c);
+        if (f2 != NULL) {
+            if (ap_bwrite(f2, &buf[0], n) != n) {
+                f2 = ap_proxy_cache_error(c);
+            } else {
+                c->written += n;
+            }
+        }
 
-	while (n && !con->aborted) {
-	    w = ap_bwrite(con->client, &buf[o], n);
-	    if (w <= 0) {
-		if (f2 != NULL) {
-		    ap_pclosef(c->req->pool, c->fp->fd);
-		    c->fp = NULL;
-		    f2 = NULL;
-		    con->aborted = 1;
-		    unlink(c->tempfile);
-		}
-		break;
-	    }
-	    ap_reset_timeout(r);	/* reset timeout after successful write */
-	    n -= w;
-	    o += w;
-	}
+        while (n && !con->aborted) {
+            if (alt_to)
+                ap_soft_timeout("proxy send body", r);
+
+            w = ap_bwrite(con->client, &buf[o], n);
+
+            if (alt_to)
+                ap_kill_timeout(r);
+            else
+                ap_reset_timeout(r);
+
+            if (w <= 0) {
+                if (f2 != NULL) {
+                    /* when a send failure occurs, we need to decide
+                     * whether to continue loading and caching the
+                     * document, or to abort the whole thing
+                     */
+                    ok = (c->len > 0) &&
+                         (c->cache_completion > 0) &&
+                         (c->len * c->cache_completion < total_bytes_rcv);
+
+                    if (! ok) {
+                        ap_pclosef(c->req->pool, c->fp->fd);
+                        c->fp = NULL;
+                        f2 = NULL;
+                        unlink(c->tempfile);
+                    }
+                }
+                con->aborted = 1;
+                break;
+            }
+            n -= w;
+            o += w;
+        }
     }
+
     if (!con->aborted)
 	ap_bflush(con->client);
 
     ap_kill_timeout(r);
-    return total_bytes_sent;
+    return total_bytes_rcv;
 }
 
 /*

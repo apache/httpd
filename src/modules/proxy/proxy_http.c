@@ -371,6 +371,8 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	resp_hdrs = ap_make_array(p, 2, sizeof(struct hdr_entry));
     }
 
+    c->hdrs = resp_hdrs;
+
     ap_kill_timeout(r);
 
 /*
@@ -459,8 +461,11 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* send body */
 /* if header only, then cache will be NULL */
 /* HTTP/1.0 tells us to read to EOF, rather than content-length bytes */
-    if (!r->header_only)
+    if (!r->header_only) {
+/* we need to set this for ap_proxy_send_fb()... */
+	c->cache_completion = conf->cache.cache_completion;
 	ap_proxy_send_fb(f, r, cache, c);
+    }
 
     ap_proxy_cache_tidy(c);
 

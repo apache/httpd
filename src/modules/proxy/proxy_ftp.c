@@ -1003,6 +1003,8 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     r->status_line = "200 OK";
 
     resp_hdrs = ap_make_array(p, 2, sizeof(struct hdr_entry));
+    c->hdrs = resp_hdrs;
+
     if (parms[0] == 'd')
 	ap_proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
     else {
@@ -1034,7 +1036,10 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	ap_bclose(f);
 	return i;
     }
+
     cache = c->fp;
+
+    c->hdrs = resp_hdrs;
 
     if (!pasvmode) {		/* wait for connection */
 	ap_hard_timeout("proxy ftp data connect", r);
@@ -1100,9 +1105,11 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     r->sent_bodyct = 1;
 /* send body */
     if (!r->header_only) {
-	if (parms[0] != 'd')
+	if (parms[0] != 'd') {
+/* we need to set this for ap_proxy_send_fb()... */
+	    c->cache_completion = 0;
 	    ap_proxy_send_fb(data, r, cache, c);
-	else
+	} else
 	    send_dir(data, r, cache, c, url);
 
 	if (rc == 125 || rc == 150)

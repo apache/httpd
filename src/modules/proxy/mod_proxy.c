@@ -405,6 +405,7 @@ static void *
     /* at these levels, the cache can have 2^18 directories (256,000)  */
     ps->cache.dirlevels = 3;
     ps->cache.dirlength = 1;
+    ps->cache.cache_completion = DEFAULT_CACHE_COMPLETION;
 
     return ps;
 }
@@ -742,6 +743,22 @@ static const char *
     return NULL;
 }
 
+static const char*
+    set_cache_completion(cmd_parms *parms, void *dummy, char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+    int s = atoi(arg);
+    if (s > 100 || s < 0) {
+	return "CacheForceCompletion must be <= 100 percent, "
+               "or 0 for system default.";
+    }
+
+    if (s > 0)
+      psf->cache.cache_completion = ((float)s / 100);
+    return NULL;    
+}
+
 static const handler_rec proxy_handlers[] =
 {
     {"proxy-server", proxy_handler},
@@ -784,6 +801,8 @@ static const command_rec proxy_cmds[] =
      "The number of characters in subdirectory names"},
     {"NoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
      "A list of names, hosts or domains for which caching is *not* provided"},
+    {"CacheForceCompletion", set_cache_completion, NULL, RSRC_CONF, TAKE1,
+     "Force a http cache completion after this percentage is loaded"},
     {NULL}
 };
 
