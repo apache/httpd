@@ -109,6 +109,7 @@
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
+#include <signal.h>
 
 /* config globals */
 
