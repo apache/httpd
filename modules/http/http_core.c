@@ -1193,7 +1193,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     }
 
     arg = ap_os_canonical_filename(cmd->pool, arg);
-    if (/* TODO: ap_configtestonly && ap_docrootcheck && */ !ap_is_directory(arg)) {
+    if (/* TODO: ap_configtestonly && ap_docrootcheck && */ !ap_is_directory(cmd->pool, arg)) {
 	if (cmd->server->is_virtual) {
 	    ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, cmd->pool,
                          "Warning: DocumentRoot [%s] does not exist",
@@ -1994,7 +1994,7 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy,
 
     arg = ap_os_canonical_filename(cmd->pool, arg);
 
-    if (!ap_is_directory(arg)) {
+    if (!ap_is_directory(cmd->pool, arg)) {
         return "ServerRoot must be a valid directory";
     }
     ap_server_root = arg;

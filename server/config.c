@@ -1369,7 +1369,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
      * horrible loops).  If so, let's recurse and toss it back into
      * the function.
      */
-    if (ap_is_rdirectory(fname)) {
+    if (ap_is_rdirectory(ptemp, fname)) {
         apr_dir_t *dirp;
 	int current;
 	apr_array_header_t *candidates = NULL;
