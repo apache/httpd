@@ -827,10 +827,6 @@ struct conn_rec {
 				 * "" if it has and no address was found.
 				 * N.B. Only access this though
 				 * get_remote_host() */
-    char *local_ip;		/* server IP address */
-    char *local_host;		/* used for ap_get_server_name when
-				 * UseCanonicalName is set to DNS
-				 * (ignores setting of HostnameLookups) */
     char *remote_logname;	/* Only ever set if doing rfc1413 lookups.
 				 * N.B. Only access this through
 				 * get_remote_logname() */
@@ -847,6 +843,10 @@ struct conn_rec {
     signed int double_reverse:2;/* have we done double-reverse DNS?
 				 * -1 yes/failure, 0 not yet, 1 yes/success */
     int keepalives;		/* How many times have we used it? */
+    char *local_ip;		/* server IP address */
+    char *local_host;		/* used for ap_get_server_name when
+				 * UseCanonicalName is set to DNS
+				 * (ignores setting of HostnameLookups) */
 };
 
 /* Per-vhost config... */
