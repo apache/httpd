@@ -210,13 +210,11 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
 #if APR_HAS_MMAP
     if (mmap) {
-        apr_mmap_t *mm;
-
         /* MMAPFile directive. MMAP'ing the file
          * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
          * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
          */
-        if ((rc = apr_mmap_create(&mm, fd, 0, 
+        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, 
                                   (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
@@ -225,13 +223,6 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
             return;
         }
         apr_file_close(fd);
-        /* We want to cache a duplicate apr_mmap_t to pass to each
-         * request so that nothing in the request will ever think that
-         * it's allowed to delete the mmap, since the "refcount" will
-         * never reach zero. */
-        /* XXX: the transfer_ownership flag on this call
-         * will go away soon.. it's ignored right now. */
-        apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
         new_file->is_mmapped = TRUE;
     }
 #endif
@@ -321,9 +312,11 @@ static int mmap_handler(request_rec *r, a_file *file)
 #if APR_HAS_MMAP
     conn_rec *c = r->connection;
     apr_bucket *b;
+    apr_mmap_t *mm;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    b = apr_bucket_mmap_create(file->mm, 0, (apr_size_t)file->finfo.size,
+    apr_mmap_dup(&mm, file->mm, r->pool, 0);
+    b = apr_bucket_mmap_create(mm, 0, (apr_size_t)file->finfo.size,
                                c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create(c->bucket_alloc);
