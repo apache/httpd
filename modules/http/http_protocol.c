@@ -2479,6 +2479,20 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 	fixup_vary(r);
     }
 
+    /* Need to add a fudge factor so that the CRLF at the end of the headers
+     * and the basic http headers don't overflow this buffer.
+     */
+    len += strlen(ap_get_server_version()) + 100;
+    buff_start = buff = apr_pcalloc(r->pool, len);
+    ap_basic_http_header(r, buff);
+    buff += strlen(buff);
+
+    h.r = r;
+    h.buf = buff;
+
+
+    ap_set_keepalive(r);
+
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
@@ -2551,17 +2565,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
                  (void *) &len, r->headers_out, NULL);
     }
     
-    /* Need to add a fudge factor so that the CRLF at the end of the headers
-     * and the basic http headers don't overflow this buffer.
-     */
-    len += strlen(ap_get_server_version()) + 100;
-    buff_start = buff = apr_pcalloc(r->pool, len);
-    ap_basic_http_header(r, buff);
-    buff += strlen(buff);
-
-    h.r = r;
-    h.buf = buff;
-
     if (r->status == HTTP_NOT_MODIFIED) {
         apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
                     (void *) &h, r->headers_out,
@@ -2583,8 +2586,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     }
 
     terminate_header(buff);
-
-    ap_set_keepalive(r);
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
