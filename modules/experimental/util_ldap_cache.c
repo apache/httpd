@@ -22,6 +22,7 @@
  */
 
 #include <apr_ldap.h>
+#include <apr_strings.h>
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
 
@@ -76,6 +77,12 @@ void util_ldap_url_node_free(util_ald_cache_t *cache, void *n)
     util_ald_destroy_cache(node->compare_cache);
     util_ald_destroy_cache(node->dn_compare_cache);
     util_ald_free(cache, node);
+}
+
+void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
+{
+    util_url_node_t *node = (util_url_node_t *)n;
+
 }
 
 /* ------------------------------------------------------------------ */
@@ -156,6 +163,27 @@ void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
     util_ald_free(cache, node);
 }
 
+void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
+{
+    util_search_node_t *node = (util_search_node_t *)n;
+    char date_str[APR_CTIME_LEN+1];
+    char *buf;
+
+    apr_ctime(date_str, node->lastbind);
+
+    buf = apr_psprintf(r->pool, 
+             "<tr valign='top'>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<tr>",
+         node->username,
+         node->dn,
+         date_str);
+
+    ap_rputs(buf, r);
+}
+
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_compare_node_hash(void *n)
@@ -203,6 +231,41 @@ void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n)
     util_ald_free(cache, node);
 }
 
+void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
+{
+    util_compare_node_t *node = (util_compare_node_t *)n;
+    char date_str[APR_CTIME_LEN+1];
+    char *buf, *cmp_result;
+
+    apr_ctime(date_str, node->lastcompare);
+
+    if (node->result == LDAP_COMPARE_TRUE) {
+        cmp_result = "LDAP_COMPARE_TRUE";
+    }
+    else if (node->result == LDAP_COMPARE_FALSE) {
+        cmp_result = "LDAP_COMPARE_FALSE";
+    }
+    else {
+        cmp_result = apr_itoa(r->pool, node->result);
+    }
+
+    buf = apr_psprintf(r->pool, 
+             "<tr valign='top'>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<tr>",
+         node->dn,
+         node->attrib,
+         node->value,
+         date_str,
+         cmp_result);
+
+    ap_rputs(buf, r);
+}
+
 /* ------------------------------------------------------------------ */
 
 unsigned long util_ldap_dn_compare_node_hash(void *n)
@@ -239,6 +302,22 @@ void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n)
     util_ald_free(cache, node->reqdn);
     util_ald_free(cache, node->dn);
     util_ald_free(cache, node);
+}
+
+void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
+{
+    util_dn_compare_node_t *node = (util_dn_compare_node_t *)n;
+    char *buf;
+
+    buf = apr_psprintf(r->pool, 
+             "<tr valign='top'>"
+             "<td nowrap>%s</td>"
+             "<td nowrap>%s</td>"
+             "<tr>",
+         node->reqdn,
+         node->dn);
+
+    ap_rputs(buf, r);
 }
 
 
@@ -290,7 +369,8 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
                               util_ldap_url_node_hash,
                               util_ldap_url_node_compare,
                               util_ldap_url_node_copy,
-                              util_ldap_url_node_free);
+                              util_ldap_url_node_free,
+                              util_ldap_url_node_display);
     return APR_SUCCESS;
 }
 

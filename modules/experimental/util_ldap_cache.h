@@ -51,6 +51,7 @@ struct util_ald_cache {
     int (*compare)(void *, void *);     /* Func to compare two payloads */
     void * (*copy)(util_ald_cache_t *cache, void *); /* Func to alloc mem and copy payload to new mem */
     void (*free)(util_ald_cache_t *cache, void *); /* Func to free mem used by the payload */
+    void (*display)(request_rec *r, util_ald_cache_t *cache, void *); /* Func to display the payload contents */
     util_cache_node_t **nodes;
 
     unsigned long numpurges;    /* No. of times the cache has been purged */
@@ -157,18 +158,25 @@ unsigned long util_ldap_url_node_hash(void *n);
 int util_ldap_url_node_compare(void *a, void *b);
 void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c);
 void util_ldap_url_node_free(util_ald_cache_t *cache, void *n);
+void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n);
+
 unsigned long util_ldap_search_node_hash(void *n);
 int util_ldap_search_node_compare(void *a, void *b);
 void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c);
 void util_ldap_search_node_free(util_ald_cache_t *cache, void *n);
+void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void *n);
+
 unsigned long util_ldap_compare_node_hash(void *n);
 int util_ldap_compare_node_compare(void *a, void *b);
 void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c);
 void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n);
+void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n);
+
 unsigned long util_ldap_dn_compare_node_hash(void *n);
 int util_ldap_dn_compare_node_compare(void *a, void *b);
 void *util_ldap_dn_compare_node_copy(util_ald_cache_t *cache, void *c);
 void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n);
+void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n);
 
 
 /* util_ldap_cache_mgr.c */
@@ -186,14 +194,14 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 unsigned long (*hashfunc)(void *), 
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),
-                                void (*freefunc)(util_ald_cache_t *cache, void *));
+                                void (*freefunc)(util_ald_cache_t *cache, void *),
+                                void (*displayfunc)(request_rec *r, util_ald_cache_t *cache, void *));
                                 
 void util_ald_destroy_cache(util_ald_cache_t *cache);
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload);
 void util_ald_cache_insert(util_ald_cache_t *cache, void *payload);
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload);
-char *util_ald_cache_display_stats(apr_pool_t *p, util_ald_cache_t *cache,
-                                 char *name);
+char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char *name, char *id);
 
 #endif /* APR_HAS_LDAP */
 #endif /* APU_LDAP_CACHE_H */
