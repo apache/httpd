@@ -84,9 +84,6 @@ Package=<4>
     Project_Dep_Name mod_autoindex
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_cache
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_cern_meta
     End Project Dependency
     Begin Project Dependency
@@ -333,10 +330,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name libapr
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name libaprutil
+    Project_Dep_Name aprutil
     End Project Dependency
 }}}
 
@@ -424,9 +421,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name pcre
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name pcreposix
