@@ -140,3 +140,10 @@
      mod_ssl automatically recognizes this OpenSSL variant and then can
      activate external crypto devices through SSLCryptoDevice directive.
 
+ INCOMPATIBILITIES
+
+ The following intentional incompatibilities exist between mod_ssl 2.x
+ from Apache 1.3 and this mod_ssl version for Apache 2.0:
+
+ o The complete EAPI-based SSL_VENDOR stuff was removed.
+ 
