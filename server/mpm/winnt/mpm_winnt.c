@@ -1617,7 +1617,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      * null terminated strings.
      */  
     _putenv(apr_psprintf(p,"AP_PARENT_PID=%i", parent_pid));
-    _putenv(apr_psprintf(p,"AP_MY_GENERATION=%i", ap_my_generation));
 
     i = 0;
     iEnvBlockLen = 1;
@@ -1666,7 +1665,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(hShareError);
     }
     _putenv("AP_PARENT_PID=");
-    _putenv("AP_MY_GENERATION=");
 
     if (!rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
@@ -1820,7 +1818,6 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "ResetEvent(shutdown_event)");
         }
-
     }
     else if (cld == RESTART_HANDLE) {
         /* Received a restart event. Prepare the restart_event to be reused 
@@ -1843,7 +1840,6 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          */
         CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
-        ++ap_my_generation;
     }
     else {
         /* The child process exited prematurely due to a fatal error. */
@@ -1865,9 +1861,11 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         }
         CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
-        ++ap_my_generation;
     }
-
+    if (restart_pending) {
+        ++ap_my_generation;
+        ap_scoreboard_image->global->running_generation = ap_my_generation;
+    }
 die_now:
     if (shutdown_pending) 
     {
@@ -2422,8 +2420,7 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
         /* Set up the listeners */
         get_listeners_from_parent(s);
 
-        ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-
+        ap_my_generation = ap_scoreboard_image->global->running_generation;
         rv = apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, 
                                        s->process->pool);
     }
