@@ -23,7 +23,7 @@
   <HR>
   <BLOCKQUOTE>
    Hvis de ser denne side isteden for en anden ekspekteret side, <STRONG>kontakt
-   venligst administrateren for den server de prøver at kontakte.</STRONG>
+   venligst administratøren for den server de prøver at kontakte.</STRONG>
    (Prøv at sende mail til <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
    Apache Gruppen har ikke noget at gøre med denne site, så det vil ikke
    hjælpe at sende mail to Apache forfatterne omvirkende denne site.  
@@ -34,7 +34,7 @@
   <A
    HREF="manual/index.html"
   >documentationen</A>
-  er inluderet med denne distribution.
+  er inkluderet med denne distribution.
   </P>
   <P>
   Webmasteren af denne site må gerne bruge den følgende grafik
