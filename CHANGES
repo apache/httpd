@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Proxy server was deleting cookies that Apache had already
+     assigned if the origin server had set any cookies. PR 27023.
+     [Jim Jagielski]
+
   *) Prevent Win32 pool corruption at startup [Allan Edwards]
 
   *) Removed old and unmaintained ap_add_named_module API and changed
