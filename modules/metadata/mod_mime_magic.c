@@ -2147,8 +2147,8 @@ struct uncompress_parms {
     int method;
 };
 
-static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
-                            apr_file_t **pipe_in)
+static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
+                                   apr_file_t **pipe_in)
 {
     int rc = 1;
     const char *new_argv[4];
@@ -2158,6 +2158,12 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
+    /* XXX missing 1.3 logic: 
+     *
+     * what happens when !compr[parm->method].silent?
+     * Should we create the err pipe, read it, and copy to the log?
+     */
+        
     env = (const char *const *)ap_create_environment(child_context, r->subprocess_env);
 
     if ((apr_procattr_create(&procattr, child_context) != APR_SUCCESS) ||
@@ -2174,10 +2180,6 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
         new_argv[1] = compr[parm->method].argv[1];
         new_argv[2] = r->filename;
         new_argv[3] = NULL;
-
-        if (compr[parm->method].silent) {
-            close(STDERR_FILENO);
-        }
 
         procnew = apr_pcalloc(child_context, sizeof(*procnew));
         rc = apr_proc_create(procnew, compr[parm->method].argv[0],
@@ -2216,7 +2218,7 @@ static int uncompress(request_rec *r, int method,
     if (apr_pool_create(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
 
-    if ((rv = uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
+    if ((rv = create_uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
