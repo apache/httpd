@@ -1149,6 +1149,16 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     return NULL;
 }
 
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
+{
+
+    proxy_worker *worker;
+    worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
+    init_conn_pool(p, worker);
+
+    return worker;
+}
+
 PROXY_DECLARE(void) 
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker)
 {

@@ -410,6 +410,13 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 const char *url);
 
 /**
+ * Create new worker
+ * @param p      memory pool to allocate worker from 
+ * @return       new worker
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p);
+
+/**
  * Initize the worker
  * @param worker the new worker
  * @param p      memory pool to allocate worker from 
