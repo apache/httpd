@@ -578,8 +578,8 @@ int main(int argc, const char * const argv[])
      * If we're not creating a new file, copy records from the existing
      * one to the temporary file until we find the specified user.
      */
-    if (apr_file_open(&fpw, pwfilename, APR_READ, APR_OS_DEFAULT, 
-                      pool) == APR_SUCCESS) {
+    if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
+                      APR_OS_DEFAULT, pool) == APR_SUCCESS) {
         while (apr_file_gets(line, sizeof(line), fpw) == APR_SUCCESS) {
             char *colon;
 
