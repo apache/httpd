@@ -1,5 +1,10 @@
 Changes with Apache 2.0.44
 
+  *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
+     as set by apr-util in util_ldap.c. This should allow mod_ldap
+     to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
+     <somme@oslo.westerngeco.slb.com>, Graham Leggett]
+
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
