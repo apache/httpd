@@ -20,21 +20,13 @@ provides a high-performance alternative to CGI for writing Web server
 applications in a variety of languages, including Perl, C, C++,
 Java, and Python.<p>
 
-<code>mod_fastcgi</code> is not compiled into the server by
-default. To use <code>mod_fastcgi</code> you first copy
-<code>src/mod_fastcgi.c</code> from this kit into your Apache server's
-source directory. Then you add the following line to the server build
-Configuration file:
-<pre>
-        Module fastcgi_module    mod_fastcgi.o
-</pre>
-
 Any request for a file with the MIME type
 <code>application/x-httpd-fcgi</code> will be processed by
 <code>mod_fastcgi</code>.  For the request to succeed, the server's
 configuration must have started the application (executable file)
 using the <code>AppClass</code> directive.
 
+<p>This module is included optionally in Apache 1.2 and later.
 
 <h2>Summary</h2>
 
