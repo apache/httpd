@@ -266,10 +266,18 @@ APACHE_SUBST(SHLIBPATH_VAR)
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
 
+dnl apache_need_shared tells us if Apache modules are being built as DSOs
+
 if test "$apache_need_shared" = "yes"; then
   if test -f $ac_aux_dir/ltconfig; then
     $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
   fi
+  shared_build="shared-build"
+fi
+
+dnl enable_so tells is if *any* modules can be built as DSOs
+
+if test "$enable_so" = "yes"; then
   case $host in
     *-ibm-aix*)
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_builddir/server/httpd.exp"
@@ -284,7 +292,6 @@ if test "$apache_need_shared" = "yes"; then
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS --main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll"
       SH_LDFLAGS="$SH_LDFLAGS --core-dll=$abs_srcdir/apachecore.dll"
   esac
-  shared_build="shared-build"
 fi
 
 APACHE_SUBST(PRE_SHARED_CMDS)

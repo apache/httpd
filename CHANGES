@@ -1,5 +1,12 @@
 Changes with Apache 2.0.30-dev
 
+  *) Whenever mod_so is enabled (not just when there are DSOs for
+     our modules), do whatever special magic is required for compiling/
+     loading third-party modules.  This allows third-party DSOs to
+     be used on an AIX build when there were no built-in modules
+     built as DSOs.  (This should help on OS/390 and BeOS as well.)
+     [Jeff Trawick]
+
   *) Allow apxs to be used to build DSOs on AIX without requiring the
      user to hard-code the list of import files.  (This should help
      on OS/390 and BeOS as well.)  [Jeff Trawick]
