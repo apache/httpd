@@ -154,14 +154,11 @@
     which document to give to the client, when there are
     alternative documents in more than one character set, language, 
     encoding or mime type.  All filename extensions associations
-    created with <code class="module"><a href="../mod/AddCharset.html">AddCharset</a></code>, <code class="module"><a href="../mod/AddEncoding.html">AddEncoding</a></code>, 
-    <code class="module"><a href="../mod/AddLanguage.html">AddLanguage</a></code> and <code class="module"><a href="../mod/AddType.html">AddType</a></code> directives
-    (and extensions listed in the <code class="module"><a href="../mod/MimeMagicFile.html">MimeMagicFile</a></code>)
-    participate in this select process.  Filename extensions that
-    are only associated using the <code class="module"><a href="../mod/AddHandler.html">AddHandler</a></code>,
-    <code class="module"><a href="../mod/AddInputFilter.html">AddInputFilter</a></code> or <code class="module"><a href="../mod/AddOutputFilter.html">AddOutputFilter</a></code>
-    directives may be included or excluded from matching by using 
-    the <code class="directive">MultiviewsMatch</code> directive.</p>
+    created with <code class="directive"><a href="#addcharset">AddCharset</a></code>,
+    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> and <code class="directive"><a href="#addtype">AddType</a></code> directives
+    (and extensions listed in the <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code>) participate in this select process.
+    Filename extensions that are only associated using the <code class="directive"><a href="#addhandler">AddHandler</a></code>, <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code> or <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> directives may be included or excluded
+    from matching by using the <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code> directive.</p>
 
 <h3>Charset</h3>
 

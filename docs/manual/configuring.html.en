@@ -62,7 +62,7 @@ HTTP server.</p>
 
     <p>Apache is a modular server. This implies that only the most
     basic functionality is included in the core server. Extended
-    features are available through <a href="mod/index-bytype.html">modules</a> which can be loaded
+    features are available through <a href="mod/">modules</a> which can be loaded
     into Apache. By default, a <a href="mod/module-dict.html#Status">base</a> set of modules is
     included in the server at compile-time. If the server is
     compiled to use <a href="dso.html">dynamically loaded</a>

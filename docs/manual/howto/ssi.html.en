@@ -68,12 +68,12 @@ existing HTML documents.</p>
     order to give it a <code>.shtml</code> extension, so that those
     directives would be executed.</p>
 
-    <p>The other method is to use the <code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code> directive:</p>
+    <p>The other method is to use the <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> directive:</p>
 <div class="example"><p><code>
         XBitHack on
 </code></p></div>
 
-    <p><code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code>
+    <p><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     tells Apache to parse files for SSI
     directives if they have the execute bit set. So, to add SSI
     directives to an existing page, rather than having to change
@@ -87,7 +87,7 @@ existing HTML documents.</p>
     see people recommending that you just tell Apache to parse all
     <code>.html</code> files for SSI, so that you don't have to
     mess with <code>.shtml</code> file names. These folks have
-    perhaps not heard about <code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code>. The thing to
+    perhaps not heard about <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>. The thing to
     keep in mind is that, by doing this, you're requiring that
     Apache read through every single file that it sends out to
     clients, even if they don't contain any SSI directives. This

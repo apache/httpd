@@ -15,7 +15,7 @@
     <p>The bug reporting page and dev-httpd mailing list are <em>not</em>
     provided to answer questions about configuration or running Apache.
     Before you submit a bug report or request, first consult this document, the
-    <a href="../faq/index.html">Frequently Asked Questions</a> page and the other
+    <a href="../faq/">Frequently Asked Questions</a> page and the other
     relevant documentation topics. If you still have a question or problem,
     post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
     novell.devsup.webserver</a> newsgroup, where many Apache users are more than

@@ -379,7 +379,7 @@
     functionality is included in the core server. Extended features
     are available in various modules. During the configuration
     process, you must select which modules to compile for use with
-    your server. You can view a <a href="mod/index.html">list of modules</a> included in
+    your server. You can view a <a href="mod/">list of modules</a> included in
     the documentation. Those modules with a <a href="mod/module-dict.html#Status">status</a> of "Base" are
     included by default and must be specifically disabled if you do
     not want them (e.g. <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code>). Modules with any
