@@ -444,7 +444,7 @@ audio/x-alaw-basic
 audio/x-mpegurl			m3u
 audio/x-pn-realaudio		ram ra
 audio/x-pn-realaudio-plugin
-audio/x-realaudio		rm
+application/vnd.rn-realmedia	rm
 audio/x-wav			wav
 chemical/x-pdb			pdb
 chemical/x-xyz			xyz
