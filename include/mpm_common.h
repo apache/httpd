@@ -76,6 +76,7 @@ extern "C" {
 
 void ap_reclaim_child_processes(int terminate);
 void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p);
+void ap_process_child_status(ap_proc_t *pid, ap_wait_t status);
 
 #define AP_MPM_HARD_LIMITS_FILE "src/" APACHE_MPM_DIR "/mpm_default.h"
 

@@ -65,4 +65,6 @@
 
 #define SPMT_OS2_MPM
 
+extern char ap_coredump_dir[MAX_STRING_LEN];
+
 #endif /* APACHE_MPM_DEXTER_H */

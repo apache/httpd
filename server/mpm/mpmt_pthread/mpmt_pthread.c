@@ -121,7 +121,7 @@ typedef struct {
  */
 int ap_max_daemons_limit = -1;
 
-static char ap_coredump_dir[MAX_STRING_LEN];
+char ap_coredump_dir[MAX_STRING_LEN];
 
 static ap_file_t *pipe_of_death_in = NULL;
 static ap_file_t *pipe_of_death_out = NULL;
@@ -371,58 +371,6 @@ static void set_signals(void)
 #endif /* SIGPIPE */
 
 #endif
-}
-
-static void process_child_status(ap_proc_t *pid, ap_wait_t status)
-{
-    /* Child died... if it died due to a fatal error,
-	* we should simply bail out.
-	*/
-    if ((WIFEXITED(status)) &&
-	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
-			"Child %ld returned a Fatal error... \n"
-			"Apache is exiting!",
-			(long)pid->pid);
-	exit(APEXIT_CHILDFATAL);
-    }
-    if (WIFSIGNALED(status)) {
-	switch (WTERMSIG(status)) {
-	case SIGTERM:
-	case SIGHUP:
-	case SIGUSR1:
-	case SIGKILL:
-	    break;
-	default:
-#ifdef SYS_SIGLIST
-#ifdef WCOREDUMP
-	    if (WCOREDUMP(status)) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			     0, ap_server_conf,
-			     "child pid %ld exit signal %s (%d), "
-			     "possible coredump in %s",
-			     (long)pid->pid, (WTERMSIG(status) >= NumSIG) ? "" :
-			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
-			     ap_coredump_dir);
-	    }
-	    else {
-#endif
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			     0, ap_server_conf,
-			     "child pid %ld exit signal %s (%d)", 
-                             (long)pid->pid,
-			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
-#ifdef WCOREDUMP
-	    }
-#endif
-#else
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			 0, ap_server_conf,
-			 "child pid %ld exit signal %d",
-			 (long)pid->pid, WTERMSIG(status));
-#endif
-	}
-    }
 }
 
 static int setup_listeners(server_rec *s)
@@ -1022,7 +970,7 @@ static void server_main_loop(int remaining_children_to_start)
         ap_wait_or_timeout(&status, &pid, pconf);
         
         if (pid.pid != -1) {
-            process_child_status(&pid, status);
+            ap_process_child_status(&pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(&pid);
             if (child_slot >= 0) {

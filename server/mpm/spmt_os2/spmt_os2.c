@@ -100,7 +100,7 @@ static int ap_extended_status = 0;
  */
 static int max_daemons_limit = -1;
 
-static char ap_coredump_dir[MAX_STRING_LEN];
+char ap_coredump_dir[MAX_STRING_LEN];
 
 /* *Non*-shared http_main globals... */
 
@@ -1201,58 +1201,6 @@ static void perform_idle_server_maintenance(void)
 }
 
 
-static void process_child_status(int tid, ap_wait_t status)
-{
-    /* Child died... if it died due to a fatal error,
-	* we should simply bail out.
-	*/
-    if ((WIFEXITED(status)) &&
-	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, server_conf,
-			"Child %d returned a Fatal error... \n"
-			"Apache is exiting!",
-			tid);
-	exit(APEXIT_CHILDFATAL);
-    }
-    if (WIFSIGNALED(status)) {
-	switch (WTERMSIG(status)) {
-	case SIGTERM:
-	case SIGHUP:
-	case SIGUSR1:
-	case SIGKILL:
-	    break;
-	default:
-#ifdef SYS_SIGLIST
-#ifdef WCOREDUMP
-	    if (WCOREDUMP(status)) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
-			     server_conf,
-			     "child tid %d exit signal %s (%d), "
-			     "possible coredump in %s",
-			     tid, (WTERMSIG(status) >= NumSIG) ? "" :
-			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
-			     ap_coredump_dir);
-	    }
-	    else {
-#endif
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
-			     server_conf,
-			     "child tid %d exit signal %s (%d)", tid,
-			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
-#ifdef WCOREDUMP
-	    }
-#endif
-#else
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
-			 server_conf,
-			 "child tid %d exit signal %d",
-			 tid, WTERMSIG(status));
-#endif
-	}
-    }
-}
-
-
 /*****************************************************************
  * Executive routines.
  */
@@ -1333,7 +1281,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	 * extra child
 	 */
 	if (tid >= 0) {
-	    process_child_status(tid, status);
+	    ap_process_child_status(tid, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    child_slot = find_child_by_tid(tid);
 	    if (child_slot >= 0) {

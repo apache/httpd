@@ -70,4 +70,5 @@ extern int ap_max_daemons_limit;
 extern scoreboard *ap_scoreboard_image;
 extern server_rec *ap_server_conf;
 extern int ap_my_pid;
+extern char ap_coredump_dir[MAX_STRING_LEN];
 #endif /* APACHE_MPM_DEXTER_H */
