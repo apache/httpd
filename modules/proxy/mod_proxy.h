@@ -134,26 +134,6 @@ enum enctype {
 #define CRLF   "\015\012"
 #endif /*APR_CHARSET_EBCDIC*/
 
-#if 0
-#define	DEFAULT_FTP_DATA_PORT	20
-#define	DEFAULT_FTP_PORT	21
-#define	DEFAULT_GOPHER_PORT	70
-#define	DEFAULT_NNTP_PORT	119
-#define	DEFAULT_WAIS_PORT	210
-#define	DEFAULT_HTTPS_PORT	443
-#define	DEFAULT_SNEWS_PORT	563
-#define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
-
-#define DEFAULT_CACHE_COMPLETION (0.9)
-#endif
-
-#if 0
-/* Some WWW schemes and their default ports; this is basically /etc/services */
-struct proxy_services {
-    const char *scheme;
-    int port;
-};
-#endif
 
 /* static information about a remote proxy */
 struct proxy_remote {
