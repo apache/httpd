@@ -701,6 +701,22 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
      */
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         if (h->cache_obj->info.len <= 0) {
+          /* If the target value of the content length is unknown
+           * (h->cache_obj->info.len <= 0), check if connection has been
+           * aborted by client to avoid caching incomplete request bodies.
+           *
+           * This can happen with large responses from slow backends like
+           * Tomcat via mod_jk.
+           */
+          if (r->connection->aborted) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                         "disk_cache: Discarding body for URL %s "
+                         "because connection has been aborted.",
+                         h->cache_obj->key);
+            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+            file_cache_errorcleanup(dobj, r);
+            return APR_EGENERAL;
+          }
           /* XXX Fixme: file_size isn't constrained by size_t. */
           h->cache_obj->info.len = dobj->file_size;
         }
