@@ -252,11 +252,7 @@ apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info)
     }
     queue_info->terminated = 1;
     apr_thread_cond_broadcast(queue_info->wait_for_idler);
-    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    return APR_SUCCESS;
+    return apr_thread_mutex_unlock(queue_info->idlers_mutex);
 }
 
 /**
@@ -403,10 +399,7 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
         return rv;
     }
     apr_thread_cond_broadcast(queue->not_empty);
-    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
-        return rv;
-    }
-    return APR_SUCCESS;
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
 apr_status_t ap_queue_term(fd_queue_t *queue)
