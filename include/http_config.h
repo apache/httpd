@@ -996,8 +996,8 @@ AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
 /**
  * Run the handler functions for each module
  * @param r The request_rec
- * @deffunc void ap_run_handler(request_rec *r)
  * @tip non-wildcard handlers should HOOK_MIDDLE, wildcard HOOK_LAST
+ * @deffunc void ap_run_handler(request_rec *r)
  */
 AP_DECLARE_HOOK(int,handler,(request_rec *))
 

@@ -137,7 +137,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
  * has to be inserted at the end of a sub-requests filter stack.
  * @param f The current filter
  * @param bb The brigade to filter
- * @deffuc apr_status_t ap_sub_req_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+ * @deffunc apr_status_t ap_sub_req_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  */
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb);
