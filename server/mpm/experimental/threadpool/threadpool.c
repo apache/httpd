@@ -1270,7 +1270,7 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
             ++iter;
         }
         if (iter >= 10) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                          "the listener thread didn't exit");
         }
         else {

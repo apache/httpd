@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/05 20:40:30 $]
+Last modified at [$Date: 2003/09/05 21:13:21 $]
 
 Release:
 
@@ -374,12 +374,6 @@ PATCHES TO PORT FROM 2.1
         server/mpm/experimental/leader/leader.c r1.31
         server/mpm/experimental/threadpool/threadpool.c r1.19
         server/mpm/worker/worker.c r1.138
-      +1: trawick, stoddard, brianp
-
-    * Lower the severity of the "listener thread didn't exit" message
-      to debug, as it is of interest only to developers.
-        server/mpm/experimental/threadpool/threadpool.c r1.20
-        server/mpm/worker/worker.c
       +1: trawick, stoddard, brianp
 
 CURRENT RELEASE NOTES:

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) Lower the severity of the "listener thread didn't exit" message
+     to debug, as it is of interest only to developers.  PR 9011
+     [Jeff Trawick]
+
   *) MPMs: The bucket brigades subsystem now honors the MaxMemFree setting.
      [Cliff Woolley, Jean-Jacques Clar]
 
