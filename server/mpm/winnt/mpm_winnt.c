@@ -445,7 +445,7 @@ static int setup_inherited_listeners(server_rec *s)
                 listenmaxfd = nsd;
             }
         }
-//        ap_register_cleanup(p, (void *)lr->sd, socket_cleanup, NULL);
+//        ap_register_cleanup(p, (void *)lr->sd, socket_cleanup, ap_null_cleanup);
         ap_put_os_sock(&lr->sd, &nsd, pconf);
         lr->count = 0;
     }
