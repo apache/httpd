@@ -662,7 +662,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
     switch (cmd->args_how) {
     case RAW_ARGS:
 	return ((const char *(*)(cmd_parms *, void *, const char *))
-		(*cmd->func)) (parms, mconfig, args);
+		(cmd->func)) (parms, mconfig, args);
 
     case NO_ARGS:
 	if (*args != 0)
@@ -670,7 +670,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			   NULL);
 
 	return ((const char *(*)(cmd_parms *, void *))
-		(*cmd->func)) (parms, mconfig);
+		(cmd->func)) (parms, mconfig);
 
     case TAKE1:
 	w = getword_conf(parms->pool, &args);
@@ -680,7 +680,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *))
-		(*cmd->func)) (parms, mconfig, w);
+		(cmd->func)) (parms, mconfig, w);
 
     case TAKE2:
 
@@ -692,7 +692,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			const char *)) (*cmd->func)) (parms, mconfig, w, w2);
+			const char *)) (cmd->func)) (parms, mconfig, w, w2);
 
     case TAKE12:
 
@@ -704,7 +704,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *)) (*cmd->func)) (parms, mconfig, w,
+			    const char *)) (cmd->func)) (parms, mconfig, w,
 							    *w2 ? w2 : NULL);
 
     case TAKE3:
@@ -718,7 +718,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (*cmd->func)) (parms,
+			    const char *, const char *)) (cmd->func)) (parms,
 							mconfig, w, w2, w3);
 
     case TAKE23:
@@ -733,7 +733,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (*cmd->func)) (parms,
+			    const char *, const char *)) (cmd->func)) (parms,
 							mconfig, w, w2, w3);
 
     case TAKE123:
@@ -748,7 +748,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (*cmd->func)) (parms,
+			    const char *, const char *)) (cmd->func)) (parms,
 							mconfig, w, w2, w3);
 
     case TAKE13:
@@ -763,14 +763,14 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (*cmd->func)) (parms,
+			    const char *, const char *)) (cmd->func)) (parms,
 							mconfig, w, w2, w3);
 
     case ITERATE:
 
 	while (*(w = getword_conf(parms->pool, &args)) != '\0')
 	if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
-			const char *)) (*cmd->func)) (parms, mconfig, w)))
+			const char *)) (cmd->func)) (parms, mconfig, w)))
 		    return errmsg;
 
 	return NULL;
@@ -787,7 +787,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 
 	while (*(w2 = getword_conf(parms->pool, &args)) != '\0')
 	    if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
-			    const char *, const char *)) (*cmd->func)) (parms,
+			    const char *, const char *)) (cmd->func)) (parms,
 							    mconfig, w, w2)))
 			return errmsg;
 
@@ -802,7 +802,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 			    NULL);
 
 	return ((const char *(*)(cmd_parms *, void *, int))
-		(*cmd->func)) (parms, mconfig, strcasecmp(w, "off") != 0);
+		(cmd->func)) (parms, mconfig, strcasecmp(w, "off") != 0);
 
     default:
 
