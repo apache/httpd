@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/12 03:50:19 $]
+Last modified at [$Date: 2001/07/18 07:01:32 $]
 
 Release:
 
@@ -106,10 +106,7 @@ RELEASE SHOWSTOPPERS:
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
 
     * Win32: Rotatelogs sometimes is not terminated when Apache
-      goes down hard. When this occurs, Apache will not serve requests
-      after it is restarted. The problem is that the old rotatelogs
-      is holding the listening socket. netstat -an shows two listeners
-      on the webserver port.
+      goes down hard.  Need parent tracking the child's processes.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
@@ -117,10 +114,6 @@ RELEASE SHOWSTOPPERS:
       the modules/http/config.m4 file has been renamed to 
       modules/http/config2.m4 to work around this problem, it should moved
       back when this is fixed.    rbb
-
-    * Root all file systems with <Directory /> for WIN32/OS2/NW permissions 
-        Status: patch brought forward from 1.3.14
-                WIN32 and OS2 need review [William Rowe, Brian Harvard]
 
     * Win32: Complete the revamp the service environment and relocation
         into the WinNT MPM.  Changes ServerRoot service registry 
@@ -672,10 +665,6 @@ put them into 'the next release':
       No module specific data hook for per-connection data
 	Status: 
 
-    * PR#3181: config
-      Configuration file in Japanese
-	Status: 
-
     * PR#3191: mod_negotiation
       no way to set global quality-of-source (qs) coneg values
       with multiviews
@@ -705,10 +694,6 @@ put them into 'the next release':
       New ErrorDocumentMatch directive
 	Status: 
 
-    * PR#4180: os-windows
-      Alternative for win95 users
-	Status: 
-
     * PR#4241: config
       Need to be able to override shebang line to make CGI scripts
       more portable.
@@ -730,15 +715,6 @@ put them into 'the next release':
 
     * PR#4490: mod_cgi
       mod_cgi prevents handling of OPTIONS requests
-	Status: 
-
-    * PR#4520: mod_autoindex
-      mod_autoindex does not generate Last-Modified response headers
-	Status: 
-
-    * PR#4658: os-windows
-      The output of CGI scripts appears in the window that apache
-      is running in
 	Status: 
 
     * PR#5713: os-windows
