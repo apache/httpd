@@ -83,6 +83,9 @@
     <tr><td><code>%...H</code></td>
         <td>The request protocol</td></tr>
 
+    <tr><td><code>%...I</code></td>
+        <td>The thread id if APR supports threads, otherwise 0</td></tr>
+
     <tr><td><code>%...{<var>Foobar</var>}i</code></td>
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the request sent to the server.</td></tr>
