@@ -227,10 +227,6 @@ static apr_status_t churn (SSLFilterRec *pRec,
     ap_input_mode_t eMode = (eReadType == APR_BLOCK_READ) 
                             ? AP_MODE_BLOCKING : AP_MODE_NONBLOCKING;
 
-    /* XXX : Errrr... bad way of doing things TBD */
-    eReadType = APR_BLOCK_READ;
-    eMode     = AP_MODE_BLOCKING;
-
     if(APR_BRIGADE_EMPTY(pRec->pbbInput)) {
 	ap_get_brigade(pRec->pInputFilter->next,pRec->pbbInput,eMode,readbytes);
 	if(APR_BRIGADE_EMPTY(pRec->pbbInput))
