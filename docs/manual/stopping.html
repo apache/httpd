@@ -57,17 +57,17 @@ set to zero when a <code>HUP</code> is sent.
 <p><b>Note:</b> prior to release 1.2b9 this code is quite unstable and
 shouldn't be used at all.
 
+<p><b>Note:</b> Architectures that use an on disk <a
+href="mod/core.html#scoreboardfile">ScoreBoardFile</a> are not supported
+on graceful restarts.  See the ScoreBoardFile documentation for a method
+to determine if your architecture uses a file.
+
 <p>The <code>USR1</code> signal causes the parent process to <i>advise</i>
 the children to exit after their current request (or to exit immediately
 if they're not serving anything).  The parent re-reads its configuration
 files and re-opens its log files.  As each child dies off the parent
 replaces it with a child from the new <i>generation</i> of the
 configuration, which begins serving new requests immediately.
-
-<p>Architectures that use an on disk <a
-href="mod/core.html#scoreboardfile">ScoreBoardFile</a> are not supported
-on graceful restarts.  See the ScoreBoardFile documentation for a method
-to determine if your architecture uses it.
 
 <p>This code is designed to always respect the
 <a href="mod/core.html#maxclients">MaxClients</a>,
@@ -114,7 +114,8 @@ certain architectures.
 
 <p>Architectures that use an on disk <a
 href="mod/core.html#scoreboardfile">ScoreBoardFile</a> have the potential
-to corrupt their scoreboards whenever a signal is received.  It is
+to corrupt their scoreboards whenever a signal is received (by the
+parent or children).  It is
 possible for the server to forget about some children when this happens.
 See the ScoreBoardFile documentation for a method to determine if your
 architecture uses it.
