@@ -2231,8 +2231,6 @@ static void send_parsed_content(FILE *f, request_rec *r)
                                     &printing);
                     if_nesting = 0;
                 }
-                if (!ret)
-                    continue;
             }
             else if (!strcmp(directive, "else")) {
                 ret = 0;
@@ -2240,8 +2238,6 @@ static void send_parsed_content(FILE *f, request_rec *r)
                     ret = handle_else(f, r, error, &conditional_status,
                                       &printing);
                 }
-                if (!ret)
-                    continue;
             }
             else if (!strcmp(directive, "elif")) {
                 ret = 0;
@@ -2249,8 +2245,6 @@ static void send_parsed_content(FILE *f, request_rec *r)
                     ret = handle_elif(f, r, error, &conditional_status,
                                       &printing);
                 }
-                if (!ret)
-                    continue;
             }
             else if (!strcmp(directive, "endif")) {
                 ret = 0;
@@ -2261,8 +2255,6 @@ static void send_parsed_content(FILE *f, request_rec *r)
                 else {
                     if_nesting--;
                 }
-                if (!ret)
-                    continue;
             }
             else if (!printing) {
                 continue;
