@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/24 22:37:02 $]
+Last modified at [$Date: 2003/11/25 15:39:52 $]
 
 Release:
 
@@ -117,7 +117,7 @@ PATCHES TO BACKPORT FROM 2.1
       Old code simply checked if it was non-zero, not if it
       was *valid*
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.247&r2=1.248
-      +1: bnicholes
+      +1: bnicholes, jim 
 
     * Better descriptions for the configure --help output for some modules
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
@@ -271,7 +271,7 @@ PATCHES TO BACKPORT FROM 2.1
         modules/ssl/mod_ssl.c: r1.87
         modules/ssl/mod_ssl.h: r1.139
         modules/ssl/ssl_engine_config.c: r1.82
-      +1: jwoolley, trawick
+      +1: jwoolley, trawick, jim
 
     * Catch an edge case, where strange subsequent RewriteRules could lead to
       a 400 (Bad Request) response. (2.0 + 1.3)
@@ -317,7 +317,7 @@ PATCHES TO BACKPORT FROM 2.1
       check r->connection->local_addr->port before defaulting to 
       server->port or ap_default_port()
         server/core.c r1.247
-      +1: bnicholes
+      +1: bnicholes, jim
        0: nd
          nd: can the local_addr->port ever be 0?
 	 bnicholes response: I couldn't tell you for sure if local_addr->port
@@ -329,7 +329,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
         modules/generators/mod_status.c r1.75
-      +1: trawick
+      +1: trawick, jim
        (nd: +1 on concept, lacking knowledge prevents me from definitely +1'ing
             it.)
 
