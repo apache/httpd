@@ -735,12 +735,13 @@ static void worker_main(long thread_num)
         ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, NULL);
 
         /* Grab a connection off the network */
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
-            context = win9x_get_connection(context);
-        }
-        else {
+        if (use_acceptex) {
             context = winnt_get_connection(context);
         }
+        else {
+            context = win9x_get_connection(context);
+        }
+        
         if (!context) {
             /* Time for the thread to exit */
             break;
@@ -803,7 +804,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean
 static void create_listener_thread()
 {
     int tid;
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
+    if (!use_acceptex) {
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
                        NULL, 0, &tid);
     } else {
@@ -874,7 +875,7 @@ void child_main(apr_pool_t *pconf)
      * Create the worker thread dispatch IOCompletionPort
      * on Windows NT/2000
      */
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS && windows_sockets_workaround != 1) {
+    if (use_acceptex) {
         /* Create the worker thread dispatch IOCP */
         ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                     NULL,
@@ -1041,7 +1042,7 @@ void child_main(apr_pool_t *pconf)
     }
 
     /* Shutdown the worker threads */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
+    if (!use_acceptex) {
         for (i = 0; i < threads_created; i++) {
             add_job(INVALID_SOCKET);
         }
@@ -1099,7 +1100,7 @@ void child_main(apr_pool_t *pconf)
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_thread_mutex_destroy(allowed_globals.jobmutex);
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS && windows_sockets_workaround != 1) {
+    if (use_acceptex) {
     	apr_thread_mutex_destroy(qlock);
         CloseHandle(qwait_event);
     }

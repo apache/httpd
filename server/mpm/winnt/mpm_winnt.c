@@ -102,8 +102,8 @@ OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 static DWORD parent_pid;
 DWORD my_pid;
 
-int windows_sockets_workaround = 0;
 int ap_threads_per_child = 0;
+int use_acceptex = 1;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit = 0;
 static int changed_limit_at_restart;
@@ -218,24 +218,25 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     }
     return NULL;
 }
-static const char *set_sockets_workaround (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_disable_acceptex(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
-
-    windows_sockets_workaround = 0;
-    if (!strcasecmp(arg, "on")) {
-        windows_sockets_workaround = 1;
-    }
-    else if (strcasecmp(arg, "off")) {
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
-                         "WARNING: setting WindowsSocketsWorkaround to off");
+                     "Ignoring Win32EnableAcceptEx configuration directive. "
+                     "The directive is not valid on Windows 9x");
+        return NULL;
     }
+
+    use_acceptex = 0;
+
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+                         "Disabled use AcceptEx WinSock2 API");
     return NULL;
 }
-
 
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS,
@@ -243,8 +244,8 @@ AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates" ),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum worker threads in a server for this run of Apache"),
-AP_INIT_TAKE1("WindowsSocketsWorkaround", set_sockets_workaround, NULL, RSRC_CONF,
-  "Set \"on\" to work around buggy Winsock provider implementations of certain VPN or Firewall software"),
+AP_INIT_NO_ARGS("Win32DisableAcceptEx", set_disable_acceptex, NULL, RSRC_CONF,
+  "Disable use of the high performance AcceptEx WinSock2 API to work around buggy VPN or Firewall software"),
 
 { NULL }
 };
@@ -1388,6 +1389,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
      */
 
     /* Initialize shared static objects. 
+     * TODO: Put config related statics into an sconf structure.
      */
     pconf = pconf_;
 
@@ -1411,6 +1413,11 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
 	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
+    /* use_acceptex which is enabled by default is not available on Win9x.
+     */
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        use_acceptex = 0;
+    }
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
