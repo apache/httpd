@@ -2239,7 +2239,8 @@ static int handle_autoindex(request_rec *r)
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Directory index forbidden by rule: %s", r->filename);
+                      "Directory index forbidden by "
+                      "Options directive: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
 }
