@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"
+  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ko"> ]
+>
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.29 -->
+
+<sitemap metafile="sitemap.xml.meta">
+
+  <title>사이트맵</title>
+
+<summary>
+<p>이 페이지는 현재
+<a href="./">Apache HTTP Server Version 2.1 문서</a> 목록을
+보여준다.</p>
+</summary>
+
+<category id="release">
+<title>발표문</title>
+<page href="upgrading.html">1.3에서 2.0으로 업그레이드</page>
+<page href="new_features_2_0.html">아파치 2.0의 새로운 기능</page>
+<page href="license.html">아파치 라이선스</page>
+</category>
+
+<category id="using">
+<title>아파치 웹서버 사용하기</title>
+<page href="install.html">아파치 컴파일과 설치</page>
+<page href="invoking.html">아파치 시작</page>
+<page href="stopping.html">서버 중단과 재시작</page>
+<page href="configuring.html">설정파일</page>
+<page href="sections.html">어떻게 Directory, Location, Files 섹션이
+동작하나</page>
+<page href="server-wide.html">서버 전역 설정</page>
+<page href="logs.html">로그파일</page>
+<page href="urlmapping.html">URL을 파일시스템에 대응</page>
+<page href="misc/security_tips.html">보안 팁</page>
+<page href="dso.html">동적공유객체 (DSO) 지원</page>
+<page href="content-negotiation.html">내용협상 (content negotiation)</page>
+<page href="custom-error.html">사용자정의 오류 응답</page>
+<page href="bind.html">아파치가 사용할 주소와 포트 지정</page>
+<page href="mpm.html">다중처리모듈 (MPM)</page>
+<page href="env.html">아파치의 환경변수</page>
+<page href="handler.html">아파치에서 핸들러 사용</page>
+<page href="filter.html">필터</page>
+<page href="suexec.html">suEXEC 지원</page>
+<page href="misc/perf-tuning.html">성능향상 힌트</page>
+<page href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</page>
+</category>
+
+<category id="vhosts">
+<title>아파치 가상호스트 문서</title>
+<page separate="yes" href="vhosts/">개요</page>
+<page href="vhosts/name-based.html">이름기반 가상호스트</page>
+<page href="vhosts/ip-based.html">IP기반 가상호스트 지원</page>
+<page href="vhosts/mass.html">대량의 가상호스트를 동적으로 설정하기</page>
+<page href="vhosts/examples.html">가상호스트 예</page>
+<page href="vhosts/details.html">가상호스트 찾기에 대한 자세한 설명</page>
+<page href="vhosts/fd-limits.html">파일기술자(file descriptor) 한계</page>
+<page href="dns-caveats.html">DNS와 아파치와 관련된 사항</page>
+</category>
+
+<category id="faq">
+<title>아파치 서버에 대해 자주 물어보는 질문</title>
+<page href="faq/">개요</page>
+<page separate="yes" href="faq/all_in_one.html">모두 한 페이지에</page>
+<page href="faq/support.html">지원</page>
+</category>
+
+<category id="ssl">
+<title>아파치 SSL/TLS 암호화</title>
+<page separate="yes" href="ssl/">소개</page>
+<page href="ssl/ssl_intro.html">SSL/TLS 암호화: 소개</page>
+<page href="ssl/ssl_compat.html">SSL/TLS 암호화: 호환성</page>
+<page href="ssl/ssl_howto.html">SSL/TLS 암호화: How-To</page>
+<page href="ssl/ssl_faq.html">SSL/TLS 암호화: FAQ</page>
+</category>
+
+<category id="howto">
+<title>지침서, 투토리얼, HowTo</title>
+<page separate="yes" href="howto/">개요</page>
+<page href="howto/auth.html">인증</page>
+<page href="howto/cgi.html">CGI로 동적 내용</page>
+<page href="howto/ssi.html">Server Side Includes 소개</page>
+<page href="howto/htaccess.html">.htaccess 파일</page>
+<page href="howto/public_html.html">사용자별 웹디렉토리</page>
+</category>
+
+<category id="platform">
+<title>플래폼별 설명</title>
+<page separate="yes" href="platform/">개요</page>
+<page href="platform/windows.html">Microsoft Windows에서 아파치
+사용하기</page>
+<page href="platform/win_compiling.html">Microsoft Windows에서
+아파치 컴파일하기</page>
+<page href="platform/netware.html">Novell NetWare에서 아파치
+사용하기</page>
+<page href="platform/perf-hp.html">HPUX에서 고성능 웹서버
+실행하기</page>
+<page href="platform/ebcdic.html">아파치 EBCDIC 포팅</page>
+</category>
+
+<category id="programs">
+<title>아파치 웹서버와 지원 프로그램</title>
+<page separate="yes" href="programs/">개요</page>
+<page href="programs/httpd.html">Manpage: httpd</page>
+<page href="programs/ab.html">Manpage: ab</page>
+<page href="programs/apachectl.html">Manpage: apachectl</page>
+<page href="programs/apxs.html">Manpage: apxs</page>
+<page href="programs/dbmmanage.html">Manpage: dbmmanage</page>
+<page href="programs/htdigest.html">Manpage: htdigest</page>
+<page href="programs/htpasswd.html">Manpage: htpasswd</page>
+<page href="programs/logresolve.html">Manpage: logresolve</page>
+<page href="programs/rotatelogs.html">Manpage: rotatelogs</page>
+<page href="programs/suexec.html">Manpage: suexec</page>
+<page href="programs/other.html">다른 프로그램들</page>
+</category>
+
+<category id="misc">
+<title>기타 아파치 문서</title>
+<page separate="yes" href="misc/">개요</page>
+<page href="cgi_path.html">CGI 환경에서 PATH_INFO의 변화</page>
+</category>
+
+<category id="modules">
+<title>아파치 모듈</title>
+<page href="mod/">모듈 목록</page>
+<page href="mod/directives.html">지시어 목록</page>
+<page href="mod/quickreference.html">지시어 빠른참조</page>
+&allmodules;
+</category>
+
+<category id="developer">
+<title>개발자 문서</title>
+<page separate="yes" href="developer/">개요</page>
+<page href="developer/API.html">Apache API 설명</page>
+<page href="developer/debugging.html">APR의 메모리할당 디버깅</page>
+<page href="developer/documenting.html">Apache 2.0 문서화</page>
+<page href="developer/hooks.html">Apache 2.0 훅(hook) 함수</page>
+<page href="developer/modules.html">Apache 1.3에서 Apache 2.0으로
+모듈을 수정하기</page>
+<page href="developer/request.html">Apache 2.0의 요청처리</page>
+<page href="developer/filters.html">Apache 2.0의 필터 동작법</page>
+</category>
+
+<category id="descriptive">
+<title>설명 정보</title>
+<page href="mod/module-dict.html">아파치 모듈을 설명하는데 사용한
+용어정의</page>
+<page href="mod/directive-dict.html">아파치 지시어를 설명하는데
+사용한 용어정의</page>
+<page href="glossary.html">용어</page>
+<page>사이트맵 (이 문서)</page>
+</category>
+
+</sitemap>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.5 -->
+
+<manualpage metafile="handler.xml.meta">
+
+  <title>아파치에서 핸들러 사용</title>
+
+  <summary>
+    <p>이 문서는 아파치에서 핸들러를 사용하는 방법을 설명한다.</p>
+  </summary>
+
+  <section id="definition">
+    <title>핸들러가 무엇인가</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="core">SetHandler</directive>
+      </directivelist>
+    </related>
+    
+
+    <p>파일을 요청할때 아파치가 내부적으로 수행할 작업을
+    "핸들러(handler)"라고 한다. 일반적으로 파일은 파일 종류에
+    따라 암묵적인 핸들러를 가지고 있다. 모든 파일은 보통 간단히
+    서버가 서비스하지만, 어떤 파일 종류는 따로 "처리된다(handled)".</p>
+
+    <p>Apache 1.1부터 핸들러를 명시적으로 사용할 수 있게 되었다.
+    파일 종류와 관계없이 핸들러를 파일의 확장자나 위치에 따라
+    지정할 수 있다. 이는 더 훌륭한 방법이고 파일을 종류와 핸들러
+    둘 모두와 연계할 수 있기때문에 좋다. (<a
+    href="mod/mod_mime.html#multipleext">여러 확장자를 가진 파일</a>도
+    참고)</p>
+
+    <p>핸들러는 서버나 모듈로 구현하여, <directive
+    module="mod_actions">Action</directive> 지시어로 추가할
+    수 있다. 표준 배포본에 있는 기본 핸들러는 다음과 같다:</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: 정적인 내용을
+      처리하기위해 기본적으로 사용하는 핸들러
+      <code>default_handler()</code>를 사용하여 파일을 보낸다.
+      (core)</li>
+
+      <li><strong>send-as-is</strong>: HTTP 헤더가 있는 파일을
+      그대로 보낸다. (<module>mod_asis</module>)</li>
+
+      <li><strong>cgi-script</strong>: 파일을 CGI로 처리한다.
+      (<module>mod_cgi</module>)</li>
+
+      <li><strong>imap-file</strong>: imagemap 규칙 파일로
+      처리한다. (<module>mod_imap</module>)</li>
+
+      <li><strong>server-info</strong>: 서버의 설정 정보를
+      알려준다. (<module>mod_info</module>)</li>
+
+      <li><strong>server-status</strong>: 서버의 상태를 보고한다.
+      (<module>mod_status</module>)</li>
+
+      <li><strong>type-map</strong>: 내용협상에 사용할
+      type map으로 처리한다.
+      (<module>mod_negotiation</module>)</li>
+    </ul>
+  </section>
+  <section id="examples">
+    <title>예제</title>
+
+    <section id="example1">
+      <title>CGI 스크립트를 사용하여 정적인 내용 수정하기</title>
+
+      <p>다음 지시어는 확장자가 <code>html</code>인 파일을
+      요청할 경우 <code>footer.pl</code> CGI 스크립트를 띄운다.</p>
+      
+      <example>
+        Action add-footer /cgi-bin/footer.pl<br/>
+        AddHandler add-footer .html
+      </example>
+
+      <p>CGI 스크립트는
+      (<code>PATH_TRANSLATED</code> 환경변수가 지칭하는) 원래
+      요청한 문서를 적절히 수정한 후 보낸다.</p>
+ 
+    </section>
+    <section id="example2">
+      <title>HTTP 헤더를 포함하는 파일</title>
+
+      <p>다음 지시어는 HTTP 헤더를 포함하는 파일에
+      <code>send-as-is</code> 핸들러를 지시한다.
+      <code>/web/htdocs/asis/</code> 디렉토리 안에 있는 모든
+      파일은 확장자와 관계없이 <code>send-as-is</code> 핸들러가
+      처리한다.</p>
+
+      <example>
+        &lt;Directory /web/htdocs/asis&gt;<br/>
+        SetHandler send-as-is<br/>
+        &lt;/Directory&gt;
+      </example>
+      
+    </section>
+  </section>
+  <section id="programmer">
+    <title>프로그래머를 위한 정보</title>
+
+    <p>핸들러 기능을 구현하기위해 사용함직한
+    <a href="developer/API.html">Apache API</a>가 추가되었다.
+    특히 <code>request_rec</code> 구조체에 새로운 필드가
+    추가되었다:</p>
+
+    <example>
+      char *handler
+    </example>
+
+    <p>모듈이 핸들러를 사용하려면, 요청의
+    <code>invoke_handler</code> 단계 이전에
+    <code>r-&gt;handler</code>에 핸들러 이름을 지정해주기만
+    하면 된다. 핸들러는 content type 대신 핸들러 이름을 사용한
+    것을 제외하고는 전과 같이 구현되었다. 꼭 지킬 필요는 없지만
+    핸들러 이름에 슬래쉬를 사용하지 않고, 단어들 사이에 빼기
+    기호를 사용하는 것이 일반적이다. 그래서 핸들러 이름이
+    media type과 겹치지 않는다.</p>
+  </section>
+</manualpage>
+
+
+
+
+

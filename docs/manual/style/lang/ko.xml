@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!-- English revision: 1.11 -->
+<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+
+<!--                  -->
+<!-- Language: Korean -->
+<!--                  -->
+
+<!-- Some strings might be used in other contexts, than stated in the -->
+<!-- comments...                                                      -->
+<messages lang="ko">
+ <!-- Used for the moduleindex -->
+ <message name="corefeatures">핵심 기능과 다중처리 모듈</message>
+ <message name="othermodules">다른 모듈</message>
+ <message name="obsoletemodules">이전 모듈</message>
+
+ <!-- Used for the modulesynopsis and sitemap -->
+ <message name="obsoleteapachemodule">이전 아파치 모듈</message>
+ <message name="apachemodule">아파치 모듈</message>
+ <message name="apachecore">아파치 핵심 기능</message>
+ <message name="apachempmcommon">아파치 MPM 공통 지시어</message>
+ <message name="apachempm">아파치 MPM</message>
+
+ <!-- Used in description box for modulesynopsis -->
+ <message name="description">설명</message>
+ <message name="seealso">참고</message>
+ <message name="topics">주제</message>
+ <message name="status">상태</message>
+ <message name="moduleidentifier">모듈명</message>
+ <message name="sourcefile">소스파일</message>
+ <message name="compatibility">지원</message>
+
+ <!-- Used in manualpage -->
+ <message name="relatedmodules">관련된 모듈</message>
+ <message name="relateddirectives">관련된 지시어</message>
+
+ <!-- Used in description box for directives -->
+ <message name="syntax">문법</message>
+ <message name="default">기본값</message>
+ <message name="context">사용장소</message>
+ <message name="override">Override 옵션</message>
+ <message name="status">상태</message>
+ <message name="module">모듈</message>
+
+ <!-- Used in directive context lists -->
+ <message name="serverconfig">주서버설정</message>
+ <message name="virtualhost">가상호스트</message>
+ <message name="directory">directory</message>
+ <message name="htaccess">.htaccess</message>
+
+ <!-- Used for directive lists -->
+ <message name="directives">지시어들</message>
+ <!-- the optional attribute replace-space-with takes a string.
+      if present, the space between <directive name> and 'Directive'
+      in directivesynopsis headings will be replaced by the given string.
+      (see de.xml for an example) -->
+ <message name="directive">지시어</message>
+ <message name="nodirectives">이 모듈에는 지시어가 없습니다.</message>
+
+ <!-- Used in summaries -->
+ <message name="summary">요약</message>
+
+ <!-- Used for translation notes -->
+ <message name="transnote">역주;</message>
+
+ <!-- Used in headers and footers -->
+ <message name="apachetitle">- Apache HTTP Server</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.1</message>
+ <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
+ <message name="search">Google 검색</message> <!-- search button -->
+ <message name="index">Index</message> <!-- deprecated -->
+ <message name="home">Home</message> <!-- deprecated -->
+
+ <!-- breadcrumb links -->
+ <message name="apache">Apache</message>
+ <message name="http-server">HTTP Server</message>
+ <message name="documentation">Documentation</message>
+ <message name="version">Version 2.1</message>
+
+ <!-- super menu -->
+ <message name="modules">모듈</message>
+ <message name="faq">FAQ</message>
+ <message name="glossary">용어</message>
+ <message name="sitemap">사이트맵</message>
+
+ <!-- footer line -->
+ <message name="maintainedby">Maintained by the</message>
+ <message name="langavail">가능한 언어</message>
+</messages>

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.10 -->
+
+<manualpage metafile="index.xml.meta">
+
+   <title>아파치 가상호스트 문서</title>
+
+<summary>
+
+    <p><cite>가상호스트 (Virtual Host)</cite>는 한 컴퓨터에서
+    여러 웹사이트를 (예를 들어, <code>www.company1.com</code>과
+    <code>www.company2.com</code>) 서비스함을 뜻한다.
+    가상호스트에는 각 웹사이트마다 다른 IP 주소를 사용하는
+    "<a href="ip-based.html">IP기반 (IP-based)</a>" 방식과 한
+    IP 주소당 여러 이름을 가지는 "<a
+    href="name-based.html">이름기반 (name-based)</a>" 방식이
+    있다. 여러 사이트들이 같은 서버에서 돌고있다는 사실을 웹사용자는
+    눈치채지 못한다.</p>
+
+    <p>아파치는 기본으로 IP기반 가상호스트를 지원한 초창기
+    서버들중 하나다. 아파치 버전 1.1 이상은 IP기반과 이름기반
+    가상호스트를 모두 지원한다. 이름기반 가상호스트를
+    <em>호스트기반 (host-based)</em> 또는 <em>비IP 가상호스트
+    (non-IP virtual hosts)</em>라고도 부른다.</p>
+
+    <p>다음은 아파치 버전 1.3 이상의 가상호스트 지원을 자세히
+    설명한 문서들이다.</p>
+
+</summary>
+
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">이름기반 가상호스트</a></seealso>
+<seealso><a href="ip-based.html">IP기반 가상호스트</a></seealso>
+<seealso><a href="examples.html">가상호스트 예</a></seealso>
+<seealso><a href="fd-limits.html">파일기술자 한계</a></seealso>
+<seealso><a href="mass.html">대량의 가상호스트</a></seealso>
+<seealso><a href="details.html">가상호스트 찾기에 대한 자세한 설명</a></seealso>
+
+<section id="support"><title>가상호스트 지원</title>
+
+    <ul>
+      <li><a href="name-based.html">이름기반 가상호스트</a>
+      (IP 주소당 여러 웹사이트)</li>
+      <li><a href="ip-based.html">IP기반 가상호스트</a> (각
+      웹사이트마다 IP 주소)</li>
+      <li><a href="examples.html">일반적인 가상호스트 예</a></li>
+      <li><a href="fd-limits.html">파일기술자(file descriptor)
+      한계</a> (즉, <em>너무 많은 로그파일</em>)</li>
+      <li><a href="mass.html">대량의 가상호스트를 동적으로
+      설정하기</a></li>
+      <li><a href="details.html">가상호스트 찾기에 대한 자세한
+      설명</a></li>
+    </ul>
+
+</section>
+
+<section id="directives"><title>설정 지시어</title>
+
+    <ul>
+      <li><directive type="section"
+           module="core">VirtualHost</directive></li>
+      <li><directive module="core">NameVirtualHost</directive></li>
+      <li><directive module="core">ServerName</directive></li>
+      <li><directive module="core">ServerAlias</directive></li>
+      <li><directive module="core">ServerPath</directive></li>
+    </ul>
+
+    <p>가상호스트 설정을 테스트할때 아파치의 <code>-S</code>
+    명령행 옵션이 유용하다. 즉, 다음과 같이 실행한다:</p>
+
+    <example>
+    /usr/local/apache2/bin/httpd -S
+    </example>
+
+    <p>이 명령어는 아파치가 읽은 설정파일에 대한
+    정보를 출력한다. IP 주소와 서버명을 자세히 살펴보면 설정에서
+    실수를 발견하는데 도움이 될 것이다. (다른 명령행 옵션들은
+    <a href="../programs/httpd.html">httpd 프로그램 문서</a>를
+    참고하라.)</p>
+
+</section>
+</manualpage>

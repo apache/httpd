@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.3 -->
+<manualpage metafile="server-wide.xml.meta">
+
+  <title>서버 전역 설정</title>
+
+<summary>
+<p>이 문서는 <module>core</module> 서버가 서버의 기본 행동을
+설정하기위해 제공하는 지시어중 일부를 설명한다.</p>
+</summary>
+
+  <section id="identification">
+    <title>서버 식별</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerAdmin</directive>
+        <directive module="core">ServerSignature</directive>
+        <directive module="core">ServerTokens</directive>
+        <directive module="core">UseCanonicalName</directive>
+      </directivelist>
+    </related>
+
+    <p><directive module="core">ServerAdmin</directive>과
+    <directive module="core">ServerTokens</directive> 지시어는
+    오류문 등 서버가 생성하는 문서에 나올 서버에 대한 정보를
+    설정한다. <directive module="core">ServerTokens</directive>
+    지시어는 서버 HTTP 응답 헤더를 설정한다.</p>
+
+    <p>서버는 <directive module="core">ServerName</directive>과
+    <directive module="core">UseCanonicalName</directive>
+    지시어를 사용하여 자기참조 URL을 만든다. 예를 들어,
+    클라이언트가 디렉토리를 요청했지만 디렉토리명 뒤에 슬래쉬를
+    붙이지않은 경우 아파치는 뒤에 슬래쉬를 붙인 전체 이름을
+    클라이언트에게 리다이렉트하여, 클라이언트가 문서의 상대참조를
+    올바로 찾게 한다.</p>
+  </section>
+
+  <section id="locations">
+    <title>파일 위치</title>
+
+    <related>
+      <directivelist>
+        <directive module="mpm_common">CoreDumpDirectory</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="mpm_common">LockFile</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mpm_common">ScoreBoardFile</directive>
+        <directive module="core">ServerRoot</directive>
+      </directivelist>
+    </related>
+
+    <p>이 지시어들은 아파치가 정상적으로 동작하기위해 필요한
+    여러 파일들의 위치를 설정한다. 경로명이 슬래쉬(/)로 시작하지
+    않으면, <directive module="core">ServerRoot</directive>에
+    상대적인 파일을 찾는다. root가 아닌 사용자에게 쓰기권한이
+    있는 경로에 파일을 두지않도록 조심해라. 더 자세한 정보는
+    <a href="misc/security_tips.html#serverroot">보안 팁</a>
+    문서를 참고하라.</p>
+  </section>
+
+  <section id="resource">
+    <title>자원사용 제한</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">LimitRequestBody</directive>
+        <directive module="core">LimitRequestFields</directive>
+        <directive module="core">LimitRequestFieldsize</directive>
+        <directive module="core">LimitRequestLine</directive>
+        <directive module="core">RLimitCPU</directive>
+        <directive module="core">RLimitMEM</directive>
+        <directive module="core">RLimitNPROC</directive>
+        <directive module="mpm_netware">ThreadStackSize</directive>
+      </directivelist>
+    </related>
+
+    <p><directive>LimitRequest</directive>* 지시어는 아파치가
+    클라이언트의 요청을 읽을 때 사용할 자원량을 제한한다. 이런
+    값들을 제한하여 서비스거부(denial of service)류 공격을
+    줄일 수 있다.</p>
+
+    <p><directive>RLimit</directive>* 지시어는 아파치 자식이
+    생성하는 프로세스가 사용할 자원량을 제한한다. 특히 CGI
+    스크립트나 SSI exec 명령어가 사용할 자원을 제한한다.</p>
+
+    <p><directive module="mpm_netware">ThreadStackSize</directive>
+    지시어는 스택 크기를 조절하기위해 Netware에서만 사용한다.</p>
+  </section>
+</manualpage>

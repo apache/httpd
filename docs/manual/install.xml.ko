@@ -1,0 +1,544 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.18 -->
+<manualpage metafile="install.xml.meta">
+
+  <title>컴파일과 설치</title>
+
+<summary>
+
+    <p>이 문서는 유닉스와 유닉스류 시스템에서 아파치를 컴파일하고
+    설치하는 것만을 다룬다. 윈도우즈에서 컴파일하고 설치하는 방법은
+    <a href="platform/windows.html">마이크로소프트 윈도우즈에서
+    아파치 사용</a>을 참고하라. 다른 플래폼에 대해서는 <a
+    href="platform/">플래폼</a> 문서를 참고하라.</p>
+
+    <p>아파치 2.0의 구성과 설치 환경은 1.3과 매우 다르다.
+    아파치 1.3은 쉬운 설치를 위해 자체 스크립트를 사용했다.
+    아파치 2.0은 이제 다른 여러 오픈소스 프로젝트와 비슷한 환경을
+    만들기위해 <code>libtool</code>과 <code>autoconf</code>를
+    사용한다.</p>
+
+</summary>
+
+<seealso><a href="invoking.html">아파치 시작</a></seealso>
+<seealso><a href="stopping.html">아파치 중단과 재시작</a></seealso>
+
+<section id="overview"><title>성미 급한 사람을 위한 개요</title>
+
+    <table>
+      <tr>
+        <td><a href="#download">다운로드</a></td>
+
+        <td><code>$ lynx
+        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#extract">압축 풀기</a></td>
+
+        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#configure">구성</a></td>
+
+        <td><code>$ ./configure --prefix=<em>PREFIX</em></code>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#compile">컴파일</a></td>
+
+        <td><code>$ make</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#install">설치</a></td>
+
+        <td><code>$ make install</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#customize">설정</a></td>
+
+        <td><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#test">검사</a></td>
+
+        <td><code>$ <em>PREFIX</em>/bin/apachectl start</code>
+        </td>
+      </tr>
+    </table>
+
+    <p><em>NN</em>은 현재 작은 버전 숫자로, <em>PREFIX</em>는
+    서버가 설치될 파일시스템 경로로 대체해야 한다. <em>PREFIX</em>를
+    지정하지 않으면 기본값으로 <code>/usr/local/apache2</code>를
+    사용한다.</p>
+
+    <p>아래는 아파치 웹서버를 컴파일하고 설치하기위한 요구사항부터
+    컴파일과 설치 과정을 각각 자세히 설명한다.</p>
+</section>
+
+<section id="requirements"><title>요구사항</title>
+
+    <p>아파치를 컴파일하기위해 다음과 같은 것들이 필요하다:</p>
+
+    <dl>
+      <dt>디스크 공간</dt>
+      <dd>디스크 여유공간이 최소 50 MB 이상인지 확인하라.
+      설치후 아파치는 약 10 MB의 디스크 공간을 차지한다.
+      실제 필요한 디스크 공간은 선택한 구성 옵션과 추가 모듈에
+      따라 상당히 차이가 난다.</dd>
+
+      <dt>ANSI-C 컴파일러와 컴파일 시스템</dt>
+      <dd>ANSI-C 컴파일러가 설치되있는지 확인하라. <a
+      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>의
+      <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      compiler (GCC)</a>를 추천한다. (버전 2.7.2면 된다.) GCC가
+      없다면 최소한 사용하는 컴파일러가 ANSI 호환인지 확인하라.
+      추가로 <code>PATH</code> 환경변수는 <code>make</code>와
+      같은 기본적인 컴파일 도구를 포함해야 한다.</dd>
+
+      <dt>정확한 시간</dt>
+      <dd>HTTP 프로토콜에는 하루중 시간을 표현하는 부분이 있다. 그래서
+      이제 시스템의 시간 동기화 기능을 살펴볼 시간이다. 보통
+      이를 위해 Network Time Protocol (NTP)에 기반한
+      <code>ntpdate</code>나 <code>xntpd</code>를 사용한다.
+      NTP 소프트웨어와 공개 시간 서버에 대한 정보는 뉴스그룹
+      <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>와
+      <a href="http://www.eecis.udel.edu/~ntp/">NTP 홈페이지</a>를
+      참고하라.</dd>
+
+      <dt><a href="http://www.perl.org/">Perl 5</a>
+      [선택사항]</dt>
+      <dd>(Perl로 쓰여진) <a href="programs/apxs.html">apxs</a>나
+      <a href="programs/dbmmanage.html">dbmmanage</a>와 같은
+      지원 스크립트를 위해 Perl 5 인터프리터가 필요하다. (버전
+      5.003 이상이면 된다.) `<code>configure</code>' 스크립트가
+      이 인터프리터를 찾지 못해도 문제없이 아파치 2.0을
+      컴파일하고 설치할 수 있다. 다만 지원 스크립트를 사용하지
+      못할 뿐이다. 여러 Perl 인터프리터가 설치되있다면 (아마도
+      살때 포함된 Perl 4와 직접 컴파일한 Perl 5)
+      <code>./configure</code>가 올바른 것을 찾기위해
+      <code>--with-perl</code> 옵션을 (아래 참고) 사용하길 바란다.</dd>
+    </dl>
+</section>
+
+<section id="download"><title>다운로드</title>
+
+    <p>아파치는 여러 미러 목록이 있는 <a
+    href="http://httpd.apache.org/download.cgi">아파치 웹서버
+    다운로드 사이트</a>에서 다운로드할 수 있다. 그곳에서 최신
+    안정판을 찾을 수 있다.</p>
+
+    <p>다운로드후, 특히 미러 사이트를 사용했다면, 완전하고
+    변경되지않은 아파치 웹서버임을 확인하는 것이 중요하다.
+    PGP 서명을 가지고 다운로드한 타볼(tarball)을 검사하여 확인한다.
+    이 과정은 두 단계를 거친다. 먼저 아파치 웹서버 다운로드
+    사이트에서 <a
+    href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
+    파일을 얻는다. (<code>KEYS</code> 파일 자체가 수정되지
+    않았음을 확인하기위해 이전 아파치 버전의 파일을 사용하거나
+    공개 키 서버에서 키를 가져오는 것이 좋다.) 키를 (pgp 버전에
+    따라 다름) 다음 명령어 중 하나로 개인 키 링에 포함한다:</p>
+
+<example>$ pgp &lt; KEYS</example>
+
+    <p>혹은 </p>
+
+<example>$ gpg --import KEYS</example>
+
+    <p>다음 단계는 <a
+    href="http://httpd.apache.org/download.cgi">아파치
+    웹사이트</a>에서 얻은 PGP 서명을 가지고 타볼을 검사하는
+    일이다. 서명 파일에 대한 링크는 해당 다운로드 링크 아래나
+    <a href="http://www.apache.org/dist/httpd/">아파치 배포본
+    사이트</a>의 특정 디렉토리에서 찾을 수 있다. 서명파일 이름은
+    소스 타볼 파일명뒤에 <code>.asc</code>가 붙은 것이다. (또,
+    pgp 버전에 따라 다름) 다음 명령어중 하나로 배포본을 확인할
+    수 있다:</p>
+
+<example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
+
+    <p>혹은</p>
+
+<example>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</example>
+
+    <p>다음과 같은 메세지가 나와야 한다.</p>
+
+<example>Good signature from user "Martin Kraemer
+      &lt;martin@apache.org&gt;".</example>
+
+    <p>키 링에 포함된 신뢰관계에 따라 키와 키 서명자 사이의
+    관계를 확인할 수 없다는 문구가 나올 수도 있다. 그러나 당신이
+    <code>KEYS</code> 파일를 신뢰한다면 문제가 아니다.</p>
+
+</section>
+
+<section id="extract"><title>압축 풀기</title>
+
+    <p>아파치 웹서버 타볼에서 소스를 푸는 작업은 단순히 압축과
+    tar를 푸는 것이다:</p>
+
+<example>
+      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_1_<em>NN</em>.tar
+</example>
+
+    <p>그러면 현재 디렉토리 아래에 배포본의 소스코드를 담은
+    새로운 디렉토리가 생긴다. 서버를 컴파일하기 전에 그
+    디렉토리로 <code>cd</code>해야 한다.</p>
+</section>
+
+<section id="configure"><title>소스 트리 구성하기</title>
+
+    <p>다음 과정은 특정 플래폼과 개인적인 필요에 따라 아파치
+    소스 트리를 구성하는 일이다. 이를 위해 배포본의 최상위 디렉토리에
+    있는 <code>configure</code> 스크립트를 사용한다. (아파치
+    소스 트리의 CVS 버전을 다운로드한 개발자는 이미
+    <code>autoconf</code>와 <code>libtool</code>가 설치되있고,
+    다음 과정으로 넘어가기 전에 <code>buildconf</code>를 실행해야
+    한다. 이는 정식 버전에서는 필요없다.)</p>
+
+    <p>모두 기본 옵션을 사용하여 소스 트리를 구성하려면 간단히
+    <code>./configure</code>를 입력하면된다. 기본 옵션을 수정하려면
+    <code>./configure</code>에 여러 변수와 명령행 옵션을 사용한다.
+    다른 옵션은 <code>./configure</code> 명령어 뒤에 위치하지만,
+    환경변수는 일반적으로 앞에 나온다. 여기서 가장 중요한 옵션은
+    아파치가 정상적으로 작동하기위해 구성되는 장소이자 아파치가
+    설치될 장소인 prefix다. 그러나 입맛에 맞는 다른 다양한
+    옵션들이 있다.</p>
+
+    <p>여러분이 선택할 수 있는 가능성을 보여주기위해 다음은
+    특정 컴파일러와 플래그를 사용하고 나중에 DSO로 읽어들일
+    두 모듈 <module>mod_rewrite</module>와
+    <module>mod_speling</module>을 추가하여
+    <code>/sw/pkg/apache</code>에 설치할 아파치를 컴파일하는
+    전형적인 예이다:</p>
+
+<example>
+      $ CC="pgcc" CFLAGS="-O2" \<br />
+       ./configure --prefix=/sw/pkg/apache \<br />
+       --enable-rewrite=shared \<br />
+       --enable-speling=shared
+</example>
+
+    <p><code>configure</code>를 실행하면 몇분간 시스템의 기능을
+    검사하여 나중에 서버를 컴파일할때 사용할 Makefile들을
+    만든다.</p>
+
+    <p>아파치의 모든 구성 옵션들을 볼 수 있는 가장 쉬운 방법은
+    <code>./configure --help</code>이다. 다음은 대부분의 아규먼트와
+    환경변수에 대한 간단한 설명이다.</p>
+
+<section id="environment"><title>환경변수</title>
+
+    <p><code>autoconf</code>는 컴파일 환경을 구성하기위해 여러
+    환경변수를 사용한다. 일반적으로 이 환경변수들은 서버의 기능이
+    아니라 아파치를 컴파일하는 방법에 영향을 미친다. 이 변수를
+    <code>configure</code>를 실행하기 전에 환경에 넣을 수도
+    있지만, 위의 예와 같이 <code>configure</code> 명령행에 써주는
+    것이 더 쉽다.</p>
+
+    <dl>
+      <dt><code>CC=...</code></dt>
+
+      <dd>C 컴파일러 명령어 이름.</dd>
+
+      <dt><code>CPPFLAGS=...</code></dt>
+
+      <dd>기타 C 선처리기와 컴파일러 옵션.</dd>
+
+      <dt><code>CFLAGS=...</code></dt>
+
+      <dd>C 컴파일러의 디버깅과 최적화 옵션.</dd>
+
+      <dt><code>LDFLAGS=...</code></dt>
+
+      <dd>기타 링커에 넘겨줄 옵션.</dd>
+
+      <dt><code>LIBS=...</code></dt>
+
+      <dd>링커에 넘겨줄 라이브러리 위치 정보 ("<code>-L</code>"과
+      "<code>-l</code>" 옵션).</dd>
+
+      <dt><code>INCLUDES=...</code></dt>
+
+      <dd>헤더파일을 찾을 디렉토리들 ("<code>-I<em>dir</em></code>").</dd>
+
+      <dt><code>TARGET=...</code> [기본값: <code>apache</code>]</dt>
+
+      <dd>만들 실행파일 이름.</dd>
+
+      <dt><code>NOTEST_CPPFLAGS=...</code></dt>
+
+      <dt><code>NOTEST_CFLAGS=...</code></dt>
+
+      <dt><code>NOTEST_LDFLAGS=...</code></dt>
+
+      <dt><code>NOTEST_LIBS=...</code></dt>
+
+      <dd>이 변수들은 <code>NOTEST</code>가 안붙은 것들과 같은
+      기능을 한다. 단, 이 변수들은 autoconf가 기능 검사를 마친후
+      컴파일 과정에만 영향을 미친다. 그래서 기능 검사중에는
+      문제를 일으키지만 마지막 컴파일때는 사용해야할 옵션을
+      포함한다.</dd>
+
+      <dt><code>SHLIB_PATH=...</code></dt>
+
+      <dd>컴파일러와 링커가 사용할 공유라이브러리 경로를 지정하는
+      옵션.</dd>
+    </dl>
+</section>
+
+<section id="output"><title>autoconf 출력 옵션</title>
+
+    <dl>
+      <dt><code>--help</code></dt>
+
+      <dd>모든 옵션과 사용법을 출력한다. 실제 구성을
+      하지는 않는다.</dd>
+
+      <dt><code>--quiet</code></dt>
+
+      <dd>일반적인 "<code>checking...</code>" 문구를 출력하지
+      않는다.</dd>
+
+      <dt><code>--verbose</code></dt>
+
+      <dd>구성 과정중 사용하는 모든 파일명을 포함하여 매우 자세한
+      정보를 출력한다.</dd>
+    </dl>
+</section>
+
+<section id="pathnames"><title>경로명</title>
+
+    <p>아파치가 설치될 경로명을 지정하는 방법은 현재 두가지다.
+    첫번째는 디렉토리를 지정하고, 아파치가 그 장소 밑에
+    설치하는 방법이다.</p>
+
+    <dl>
+      <dt><code>--prefix=<em>PREFIX</em></code> [기본값:
+      <code>/usr/local/apache2</code>]</dt>
+
+      <dd>아파치 파일들이 설치될 디렉토리를 지정한다.</dd>
+    </dl>
+
+    <p>아키텍쳐 특유의 파일들을 다른 디렉토리에 설치할 수도
+    있다.</p>
+
+    <dl>
+      <dt><code>--exec-prefix=<em>EPREFIX</em></code> [기본값:
+      <code><em>PREFIX</em></code>]</dt>
+
+      <dd>아키텍쳐 특유의 파일들이 위치할 디렉토리를 지정한다.</dd>
+    </dl>
+
+    <p>두번째로 아파치 설치 경로 위치를 구성하는 더 유연한
+    방법은 <code>config.layout</code> 파일을 사용하는 것이다.
+    이 방법을 사용하면 파일의 종류마다 위치를 따로 지정할 수
+    있다. <code>config.layout</code> 파일은 여러 구성 예를
+    담고있고, 이를 참고하여 자신만의 구성을 만들 수도 있다.
+    이 파일 내용은 <code>&lt;Layout FOO&gt;...&lt;/Layout&gt;</code>로
+    구분되며 <code>FOO</code>와 같은 이름으로 지칭한다.</p>
+
+    <dl>
+      <dt><code>--enable-layout=<em>LAYOUT</em></code></dt>
+
+      <dd><code>config.layout</code>의 해당 레이아웃을 사용하여
+      설치 경로를 지정한다.</dd>
+    </dl>
+
+</section>
+
+<section id="modules"><title>모듈</title>
+
+    <p>아파치는 모듈로 구성된 서버다. 서버 핵심에는 가장 기본적인
+    기능만이 포함되있다. 여러 모듈은 확장 기능을 제공한다.
+    구성 과정중에 서버에서 사용하기위해 컴파일할 모듈을 선택해야
+    한다. 문서에 포함된 <a href="mod/">모듈 목록</a>을
+    참고하라. <a href="mod/module-dict.html#Status">상태</a>가
+    "Base"인 모듈은 (예, <module>mod_userdir</module>) 서버에 기본적으로
+    포함되므로, 원하지 않는다면 명시적으로 빼줘야 한다. 다른
+    상태의 모듈은 (예, <module>mod_expires</module>) 사용하길
+    원한다면 명시적으로 넣어줘야 한다.</p>
+
+    <p>모듈을 컴파일하고 사용하는 방법은 두 가지다. <em>정적으로
+    컴파일된</em> 모듈은 아파치 실행파일에 영구히 포함된다.
+    이외에 운영체제가 동적공유객체(Dynamic Shared Objects, DSO)를
+    지원하고 <code>autoconf</code>가 이 사실을 알아낸다면 모듈을
+    <em>동적으로 컴파일할</em> 수도 있다. DSO 모듈은 아파치
+    실행파일에 직접 포함되지는 않지만, <module>mod_so</module>가 제공하는
+    설정 지시어를 사용하여 실행중에 서버에 포함하거나 뺄 수 있다.
+    컴파일때 동적 모듈을 포함하면 mod_so는 자동으로 서버에 포함된다.
+    동적 모듈을 같이 컴파일하지 않고 서버가 DSO를 읽어들일 수 있게
+    하려면 <code>--enable-so</code> 옵션을 직접 사용해야 한다.</p>
+
+    <dl>
+      <dt><code>--enable-<em>MODULE</em>[=shared]</code></dt>
+
+      <dd>모듈 <em>MODULE</em>을 컴파일하여 포함한다.
+      <em>MODULE</em>은 모듈 문서에서 나온 <a
+      href="mod/module-dict.html#ModuleIdentifier">모듈명</a>에서
+      "_module"을 뺀 이름이다. 모듈을 DSO로 컴파일하려면
+      <code>=shared</code> 옵션을 붙인다.</dd>
+
+      <dt><code>--disable-<em>MODULE</em></code></dt>
+
+      <dd>이 옵션을 사용하지 않으면 컴파일하여 포함되었을 모듈
+      <em>MODULE</em>을 제거한다.</dd>
+
+      <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
+
+      <dd>공백으로 구분한 <em>MODULE-LIST</em>에 나온 모듈들을
+      컴파일하여 포함한다.</dd>
+
+      <dt>
+      <code>--enable-mods-shared=<em>MODULE-LIST</em></code></dt>
+
+      <dd>공백으로 구분한 <em>MODULE-LIST</em>에 나온 모듈들을
+      동적으로 읽어들일 수 있는 (DSO) 모듈로 컴파일하여 포함한다.</dd>
+    </dl>
+
+    <p><code>--enable-modules</code>와
+    <code>--enable-mods-shared</code> 옵션에서 <em>MODULE-LIST</em>는
+    모듈명들을 공백으로 구분한 목록이다. 예를 들어
+    <module>mod_dav</module>와 <module>mod_info</module>를
+    포함하려면 아래 두 가지 모두 가능하다.</p>
+
+<example>./configure --enable-dav --enable-info</example>
+
+    <p>나</p>
+
+<example>./configure --enable-modules="dav info"</example>
+
+    <p>또, 특별한 키워드 <code>all</code>이나 <code>most</code>를
+    사용하여 한번에 모든 혹은 대부분의 모듈을 포함할 수 있다.
+    그런후 원하지 않는 모듈은 <code>--disable-<em>MODULE</em></code>
+    옵션으로 제거한다. 예를 들어 <module>mod_info</module>를
+    제외한 모든 모듈을 DSO로 포함하려면,</p>
+
+<example>
+      ./configure --enable-mods-shared=all
+      --disable-info
+</example>
+
+    <p>표준 모듈들외에 아파치 2.0은 <a href="mpm.html">다중처리
+    모듈</a> (MPM)을 선택할 수 있다. 오직 한 MPM만을 컴파일
+    과정에 포함할 수 있다. 각 플래폼의 기본 MPM은
+    <a href="mpm.html">MPM 문서 페이지</a>에 나와있으나,
+    <code>configure</code> 명령행에서 변경할 수 있다.</p>
+
+    <dl>
+      <dt><code>--with-mpm=<em>NAME</em></code></dt>
+
+      <dd>mpm <em>NAME</em>을 선택한다.</dd>
+    </dl>
+
+    <p><var>mpm_name</var>이라는 MPM을 사용한다면, 다음과 같다.</p>
+
+<example>
+     ./configure --with-mpm=<var>mpm_name</var>
+</example>
+
+</section>
+
+<section id="dbm"><title>DBM</title>
+
+    <p>
+    <module>mod_authn_dbm</module>과 <module>mod_rewrite</module>의
+    DBM <directive module="mod_rewrite">RewriteMap</directive>같은
+    여러 아파치 기능은 정보를 빨리 찾아보기위해 키와 값으로된
+    간단한 데이터베이스를 사용한다. 아파치는 소스코드에 SDBM을
+    포함하여, 이 데이터베이스는 항상 사용할 수 있다. 만약 다른
+    데이터베이스를 사용하려면 다음 <code>configure</code> 옵션을
+    사용한다:</p>
+
+<dl>
+<dt><code>--with-gdbm[=<em>path</em>]</code></dt>
+<dt><code>--with-ndbm[=<em>path</em>]</code></dt>
+<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt>
+
+<dd><em>path</em>를 지정하지않으면 아파치는 일상적인 검색 경로에서
+헤더파일과 라이브러리를 찾는다. 직접 <em>path</em>를 알려주면
+아파치가 <em>path</em><code>/lib</code>와
+<em>path</em><code>/include</code>에서 필요한 파일을 찾게 된다.
+마지막으로 <em>path</em>에 헤더파일 경로와 라이브러리 경로를
+콜론으로 구분하여 적을 수도 있다.</dd>
+</dl>
+</section>
+
+
+<section id="suexec"><title>Suexec</title>
+
+    <p>아파치는 사용자 CGI 프로그램을 격리하여 실행할 수
+    있는 <a href="suexec.html">suexec</a>라는 지원 프로그램을
+    포함한다. 그러나 suexec를 잘못 설정하면 심각한 보안 문제가
+    생길 수 있다. 그러므로 이 기능을 사용하기 전에 <a
+    href="suexec.html">suexec 문서</a>를 주의있게 읽고 고민해야
+    한다.</p>
+</section>
+</section>
+
+<section id="compile"><title>컴파일</title>
+
+    <p>이제 다음 명령어 하나로 아파치의 여러 부분을 컴파일할
+    수 있다:</p>
+
+<example>$ make</example>
+
+    <p>여기서 좀 기다려라. 펜티엄 III/리눅스 2.2 시스템에서
+    기본 구성을 컴파일하는데 약 3분 정도 걸린다. 이 시간은
+    하드웨어와 포함한 모듈수에 따라 크게 변한다.</p>
+</section>
+
+<section id="install"><title>설치</title>
+
+    <p>이제 다음 명령어로 패키지를 (위의 <code>--prefix</code>
+    옵션 참고) 지정한 설치 위치 <em>PREFIX</em>에 설치한다:</p>
+
+<example>$ make install</example>
+
+    <p>업그레이드한다면 이 설치 과정이 기존 설정파일이나 문서를
+    덮어쓰지 않는다.</p>
+</section>
+
+<section id="customize"><title>설정</title>
+
+    <p>다음으로 <code><em>PREFIX</em>/conf/</code>에 있는
+    <a href="configuring.html">설정파일</a>을 편집하여 아파치
+    웹서버를 설정한다.</p>
+
+<example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
+
+    <p>사용가능한 <a href="mod/directives.html">설정 지시어</a>에
+    대한 완전한 설명과 이 문서의 가장 최근 판은 <a
+    href="./">docs/manual/</a>이나 <a
+    href="http://httpd.apache.org/docs-2.1/"
+    >http://httpd.apache.org/docs-2.1/</a>에 있는 아파치 설명서를
+    참고하라.</p>
+</section>
+
+<section id="test"><title>검사</title>
+
+    <p>이제 다음과 같이 아파치 웹서버를 <a
+    href="invoking.html">시작</a>할 수 있다:</p>
+
+<example>$ <em>PREFIX</em>/bin/apachectl start</example>
+
+    <p>그리고 URL <code>http://localhost/</code>로 첫 문서를
+    요청한다. 보게될 웹페이지는 아마도
+    <code><em>PREFIX</em>/htdocs/</code>일 <directive
+    module="core">DocumentRoot</directive> 아래에 있다. 그리고
+    다음 명령어로 다시 서버를 <a href="stopping.html">중단</a>한다:</p>
+
+<example>$ <em>PREFIX</em>/bin/apachectl stop</example>
+</section>
+
+</manualpage>

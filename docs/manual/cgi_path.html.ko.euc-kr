@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>CGI 환경에서 PATH_INFO의 변화 - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>CGI 환경에서 PATH_INFO의 변화</h1>
+<div class="toplang">
+<p><span>가능한 언어: </span><a href="./en/cgi_path.html">&nbsp;en&nbsp;</a> | <a href="./ja/cgi_path.html">&nbsp;ja&nbsp;</a> | <a href="./ko/cgi_path.html">&nbsp;ko&nbsp;</a></p>
+</div>
+
+    <p>아파치 1.1.1과 그 이전 버전의 경우 CGI 환경에서
+    PATH_INFO를 만드는 방법이 직관적이지 않고 어떤 경우 서버를
+    죽이기도 했다. 아파치 1.2 이후 이 방법이 변했다. 기존의
+    어떤 CGI 프로그램들과 약간의 호환문제가 있지만
+    아파치 1.2의 행동은 아직도 CGI/1.1 규약을 벋어나지않으며,
+    쉽게 CGI 스크립트를 수정할 수 있다. (<a href="#compat">아래
+    참고</a>)</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#prob">문제점</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#solution">해결책</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compat">이전 서버와 호환성</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prob" id="prob">문제점</a></h2>
+    <p>아파치 1.1.1과 그 이전 버전은 URL 대신 파일명을
+    가지고 PATH_INFO와 SCRIPT_NAME 환경변수를 구현했다. 많은
+    경우 올바른 결과를 얻지만, 파일시스템 경로가 path
+    정보를 포함한다면 잘못된 결과가 나올 수 있다. 예를 들어,
+    설정파일에 다음과 같은 내용이 있다면:</p>
+
+    <div class="example"><p><code>
+      Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
+    </code></p></div>    
+    
+    <p>이 경우 <code>user.cgi</code>는 CGI 스크립트이고, "/ralph"는
+    CGI에 넘겨지는 정보다. 이 경우
+    "<code>/cgi-ralph/script/</code>"로 요청이 들어오면 PATH는
+    "<code>/ralph/script</code>"가 되고, SCRIPT_NAME은
+    "<code>/cgi-</code>"가 된다. 후자는 분명히 잘못되었다.
+    심지어 어떤 경우 서버가 죽기도 한다.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="solution" id="solution">해결책</a></h2>
+    <p>아파치 1.2 이후에서는 URL에서 클라이언트가 조절가능한
+    부분을 판단하여 SCRIPT_NAME과 PATH_INFO를 설정한다. 위의
+    예에서 PATH_INFO는 "<code>/script</code>"가 되고, SCRIPT_NAME은
+    "<code>/cgi-ralph</code>"가 된다. 이는 합리적이며 서버에
+    문제를 일으키지 않는다. 또, 이전 버전과 달리 스크립트에서
+    "<code>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</code>"가
+    현재 스크립트를 가리키는 URL임을 보장할 수 있다.</p>
+
+    <p>그러나 불행히도 <code>Alias</code> 지시어의
+    "<code>/ralph</code>" 정보는 사라진다. 그러나 우리는
+    파일시스템을 사용하여 이런 정보를 넘겨주는 것이 바람직한
+    방법이 아니며, 이를 사용하는 스크립트는 작동할"만하지"
+    않다고 생각한다. 그러나 아파치 1.2b3 이후에는 이에 대한
+    <a href="#compat">해결책</a>이 있다.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compat" id="compat">이전 서버와 호환성</a></h2>
+    
+
+    <p>아파치 이전 버전이나 다른 서버용으로 설계된 스크립트는
+    이전 PATH_INFO 변수가 제공했던 정보가 필요할 수 있다. 그래서
+    아파치 1.2 (1.2b3 이후)는 FILEPATH_INFO라는 변수를 더 설정한다.
+    이 환경변수는 아파치 1.1.1의 PATH_INFO 값을 가진다.</p>
+
+    <p>스크립트가 아파치 1.2와 이전 버전 모두에서 동작하게하려면,
+    먼저 FILEPATH_INFO가 있는지 검사하고 있다면 그것을
+    사용한다. 없다면 PATH_INFO를 사용한다. 예를 들어,
+    Perl로는 다음과 같다:</p>
+
+    <div class="example"><p><code>
+      $path_info = $ENV{'FILEPATH_INFO'} || $ENV{'PATH_INFO'};
+    </code></p></div>
+
+    <p>이렇게 하면 모든 아파치를 포함하여 CGI/1.1 규정을 따르는
+    모든 서버에서 스크립트가 동작할 수 있다.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>가능한 언어: </span><a href="./en/cgi_path.html">&nbsp;en&nbsp;</a> | <a href="./ja/cgi_path.html">&nbsp;ja&nbsp;</a> | <a href="./ko/cgi_path.html">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
+</body></html>
