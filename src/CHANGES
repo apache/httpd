@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) Add IndexOptions DescriptionWidth so that the width of the
+     description field in fancy-indexed directory listings can
+     be specified.
+     [Ken Coar] PR#2324, plus lots that are closed unsatisfied
+
   *) EBCDIC: Escaped characters were encoding the ebcdic representation
      of the special characters, not the latin1 representation. This
      would result in invalid URI's for, e.g., filenames (with special chars)

@@ -125,6 +125,7 @@ module MODULE_VAR_EXPORT autoindex_module;
  * Other default dimensions.
  */
 #define DEFAULT_NAME_WIDTH 23
+#define DEFAULT_DESC_WIDTH 23
 
 struct item {
     char *type;
@@ -141,13 +142,14 @@ typedef struct ai_desc_t {
 } ai_desc_t;
 
 typedef struct autoindex_config_struct {
-
     char *default_icon;
     int opts;
     int incremented_opts;
     int decremented_opts;
     int name_width;
     int name_adjust;
+    int desc_width;
+    int desc_adjust;
     int icon_width;
     int icon_height;
     char *default_order;
@@ -465,6 +467,31 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 		d_cfg->name_adjust = K_NOADJUST;
 	    }
 	}
+	else if (!strcasecmp(w, "DescriptionWidth")) {
+	    if (action != '-') {
+		return "DescriptionWidth with no value may only appear as "
+		       "'-DescriptionWidth'";
+	    }
+	    d_cfg->desc_width = DEFAULT_DESC_WIDTH;
+	    d_cfg->desc_adjust = K_NOADJUST;
+	}
+	else if (!strncasecmp(w, "DescriptionWidth=", 17)) {
+	    if (action == '-') {
+		return "Cannot combine '-' with DescriptionWidth=n";
+	    }
+	    if (w[17] == '*') {
+		d_cfg->desc_adjust = K_ADJUST;
+	    }
+	    else {
+		int width = atoi(&w[17]);
+
+		if (width < 12) {
+		    return "DescriptionWidth value must be greater than 12";
+		}
+		d_cfg->desc_width = width;
+		d_cfg->desc_adjust = K_NOADJUST;
+	    }
+	}
 	else {
 	    return "Invalid directory indexing option";
 	}
@@ -576,6 +603,8 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->icon_height = 0;
     new->name_width = DEFAULT_NAME_WIDTH;
     new->name_adjust = K_UNSET;
+    new->desc_width = DEFAULT_DESC_WIDTH;
+    new->desc_adjust = K_UNSET;
     new->icon_list = ap_make_array(p, 4, sizeof(struct item));
     new->alt_list = ap_make_array(p, 4, sizeof(struct item));
     new->desc_list = ap_make_array(p, 4, sizeof(ai_desc_t));
@@ -662,6 +691,17 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     else {
 	new->name_width = add->name_width;
 	new->name_adjust = add->name_adjust;
+    }
+    /*
+     * Likewise for DescriptionWidth.
+     */
+    if (add->desc_adjust == K_UNSET) {
+	new->desc_width = base->desc_width;
+	new->desc_adjust = base->desc_adjust;
+    }
+    else {
+	new->desc_width = add->desc_width;
+	new->desc_adjust = add->desc_adjust;
     }
 
     new->default_order = (add->default_order != NULL)
@@ -1208,19 +1248,27 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 }
 
 static char *terminate_description(autoindex_config_rec *d, char *desc,
-				   int autoindex_opts)
+				   int autoindex_opts, int desc_width)
 {
-    int maxsize = 23;
+    int maxsize = desc_width;
     register int x;
 
-    if (autoindex_opts & SUPPRESS_LAST_MOD) {
-	maxsize += 19;
-    }
-    if (autoindex_opts & SUPPRESS_SIZE) {
-	maxsize += 7;
+    /*
+     * If there's no DescriptionWidth in effect, default to the old
+     * behaviour of adjusting the description size depending upon
+     * what else is being displayed.  Otherwise, stick with the
+     * setting.
+     */
+    if (d->desc_adjust == K_UNSET) {
+	if (autoindex_opts & SUPPRESS_LAST_MOD) {
+	    maxsize += 19;
+	}
+	if (autoindex_opts & SUPPRESS_SIZE) {
+	    maxsize += 7;
+	}
     }
 
-    for (x = 0; desc[x] && (maxsize > 0 || desc[x]=='<'); x++) {
+    for (x = 0; desc[x] && ((maxsize > 0) || (desc[x] == '<')); x++) {
 	if (desc[x] == '<') {
 	    while (desc[x] != '>') {
 		if (!desc[x]) {
@@ -1286,6 +1334,7 @@ static void output_directories(struct ent **ar, int n,
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
     pool *scratch = ap_make_sub_pool(r->pool);
     int name_width;
+    int desc_width;
     char *name_scratch;
     char *pad_scratch;
 
@@ -1293,6 +1342,17 @@ static void output_directories(struct ent **ar, int n,
 	name = "/";
     }
 
+    desc_width = d->desc_width;
+    if (d->desc_adjust == K_ADJUST) {
+	for (x = 0; x < n; x++) {
+	    if (ar[x]->desc != NULL) {
+		int t = strlen(ar[x]->desc);
+		if (t > desc_width) {
+		    desc_width = t;
+		}
+	    }
+	}
+    }
     name_width = d->name_width;
     if (d->name_adjust == K_ADJUST) {
 	for (x = 0; x < n; x++) {
@@ -1392,17 +1452,17 @@ static void output_directories(struct ent **ar, int n,
 
 	    nwidth = strlen(t2);
 	    if (nwidth > name_width) {
-	      memcpy(name_scratch, t2, name_width - 3);
-	      name_scratch[name_width - 3] = '.';
-	      name_scratch[name_width - 2] = '.';
-	      name_scratch[name_width - 1] = '>';
-	      name_scratch[name_width] = 0;
-	      t2 = name_scratch;
-	      nwidth = name_width;
+		memcpy(name_scratch, t2, name_width - 3);
+		name_scratch[name_width - 3] = '.';
+		name_scratch[name_width - 2] = '.';
+		name_scratch[name_width - 1] = '>';
+		name_scratch[name_width] = 0;
+		t2 = name_scratch;
+		nwidth = name_width;
 	    }
 	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
-	      ap_escape_html(scratch, t2), "</A>", pad_scratch + nwidth,
-	      NULL);
+		      ap_escape_html(scratch, t2), "</A>",
+		      pad_scratch + nwidth, NULL);
 	    /*
 	     * The blank before the storm.. er, before the next field.
 	     */
@@ -1426,7 +1486,8 @@ static void output_directories(struct ent **ar, int n,
 	    if (!(autoindex_opts & SUPPRESS_DESC)) {
 		if (ar[x]->desc) {
 		    ap_rputs(terminate_description(d, ar[x]->desc,
-						   autoindex_opts), r);
+						   autoindex_opts,
+						   desc_width), r);
 		}
 	    }
 	}
