@@ -226,7 +226,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", fspec);
 	return;
     }
-    apr_file_set_inherit(fd);
+    apr_file_inherit_set(fd);
 
     /* WooHoo, we have a file to put in the cache */
     new_file = apr_pcalloc(cmd->pool, sizeof(a_file));
