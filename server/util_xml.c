@@ -134,6 +134,11 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
     /* tell the parser that we're done */
     status = apr_xml_parser_done(parser, pdoc);
     if (status) {
+        /* Some parsers are stupid and return an error on blank documents. */
+        if (!total_read) {
+            *pdoc = NULL;
+            return OK;
+        }
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "XML parser error (at end). status=%d", status);
         return HTTP_BAD_REQUEST;
