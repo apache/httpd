@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_env.c,v 1.3 1996/08/20 11:51:10 paul Exp $ */
+/* $Id: mod_env.c,v 1.4 1996/10/18 19:20:04 ben Exp $ */
 
 /*
  * mod_env.c
@@ -145,14 +145,14 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
 
     for ( i = 0; i < add->vars->nelts; ++i ) {
 	table_set( new_table, elts[i].key, elts[i].val ); 
-    };
+    }
 
     copy = pstrdup( p, add->unsetenv );
     uenv = getword_conf( p, &copy );
     while ( uenv[0] != '\0' ) {
 	table_unset( new_table, uenv );
 	uenv = getword_conf( p, &copy );
-    };
+    }
 
     new->vars = new_table;
 
@@ -175,7 +175,7 @@ char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr, char *arg)
         if ( env_var != NULL ) { 
             sconf->vars_present = 1;
             table_set (vars, name_ptr, env_var);
-        };
+        }
     }
     return NULL;
 }
@@ -197,7 +197,7 @@ char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr, char *arg)
 
     if ( (*name == '\0') || (*arg != '\0')) {
 	return "SetEnv takes one or two arguments.  An environment variable name and an optional value to pass to CGI." ;
-    };
+    }
 
     sconf->vars_present = 1;
     table_set (vars, name, value);
