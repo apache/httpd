@@ -456,7 +456,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     else if (strncmp(a2, "prg:", 4) == 0) {
         newmap->type = MAPTYPE_PRG;
         newmap->datafile = a2+4;
-        newmap->checkfile = a2+4;
+        newmap->checkfile = NULL;
     }
     else if (strncmp(a2, "int:", 4) == 0) {
         newmap->type      = MAPTYPE_INT;
@@ -481,7 +481,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         && (apr_stat(&st, newmap->checkfile, APR_FINFO_MIN, 
                      cmd->pool) != APR_SUCCESS)) {
         return apr_pstrcat(cmd->pool,
-                          "RewriteMap: map file or program not found:",
+                          "RewriteMap: map file not found:",
                           newmap->checkfile, NULL);
     }
 
@@ -3424,20 +3424,24 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
+    char **argv;
+
+    rc = apr_tokenize_to_argv(progname, &argv, p);
 
     if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
         ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                                   APR_FULL_NONBLOCK,
                                   APR_FULL_NONBLOCK)) != APR_SUCCESS) ||
         ((rc = apr_procattr_dir_set(procattr, 
-                                   ap_make_dirstr_parent(p, progname)))
+                                   ap_make_dirstr_parent(p, argv[0])))
          != APR_SUCCESS) ||
         ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
     }
     else {
         procnew = apr_pcalloc(p, sizeof(*procnew));
-        rc = apr_proc_create(procnew, progname, NULL, NULL, procattr, p);
+        rc = apr_proc_create(procnew, argv[0], (const char **)argv, NULL,
+                             procattr, p);
     
         if (rc == APR_SUCCESS) {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);

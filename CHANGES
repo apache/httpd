@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Allow RewriteMap prg:'s to take command-line arguments.  PR 8464.
+     [James Tait <JTait@wyrddreams.demon.co.uk>]
+
   *) Correctly return 413 when an invalid chunk size is given on
      input.  Also modify ap_discard_request_body to not do anything
      on sub-requests or when the connection will be dropped.
