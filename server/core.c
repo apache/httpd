@@ -3043,6 +3043,10 @@ AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF, \
 AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF, \
               ap_valid_accept_mutex_string),
 #endif
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,\
+              "Maximum number of 1k blocks a particular childs allocator may hold."),
+#endif
 { NULL }
 };
 

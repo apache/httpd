@@ -1045,6 +1045,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
 
     apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
 

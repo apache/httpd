@@ -880,3 +880,26 @@ void ap_mpm_rewrite_args(process_rec *process)
 
 #endif /* AP_MPM_WANT_SIGNAL_SERVER */
 
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+apr_uint32_t ap_max_mem_free = 0;
+
+const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
+	                            const char *arg)
+{
+    long value;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    
+    value = strtol(arg, NULL, 0);
+    if (value < 0 || errno == ERANGE)
+        return apr_pstrcat(cmd->pool, "Invalid MaxMemFree value: ", 
+                           arg, NULL);
+
+    ap_max_mem_free = (apr_uint32_t)value * 1024;
+
+    return NULL;
+}
+
+#endif /* AP_MPM_WANT_SET_MAX_MEM_FREE */

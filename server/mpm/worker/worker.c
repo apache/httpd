@@ -796,6 +796,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 apr_allocator_t *allocator;
 
                 apr_allocator_create(&allocator);
+                apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
                 apr_allocator_owner_set(allocator, ptrans);
             }

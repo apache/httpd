@@ -383,6 +383,7 @@ static int32 worker_thread(void * dummy)
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
     apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&ptrans, tpool, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
 
