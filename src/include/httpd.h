@@ -410,7 +410,7 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3.3-dev"	/* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.3.3"	/* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
@@ -427,7 +427,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * For a final release, 'betaseq' should be set to '99'.
  * For example, Apache 1.4.2 should be '1040299'
  */
-#define APACHE_RELEASE 1030301
+#define APACHE_RELEASE 1030399
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
