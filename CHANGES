@@ -1,5 +1,9 @@
 Changes with Apache 2.0.52
 
+  *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
+     is enabled.  Previously, such urls would still be rejected.
+     [Jeff Trawick, Bill Stoddard]
+
   *) mod_mem_cache: Fixed race condition causing segfault because of memory being
      freed twice, or reused after being freed.
      [J. Clar, W. Stoddard, G. Ames]

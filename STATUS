@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/17 15:28:07 $]
+Last modified at [$Date: 2004/09/18 00:43:59 $]
 
 Release:
 
@@ -112,12 +112,6 @@ PATCHES TO BACKPORT FROM 2.1
          (2) I'd put out (null) only if val is NULL, not if it's empty.
        jorton: ssl_var_lookup() returns "" in place of NULL, that was really
           a deliberate choice... but maybe you're right.
-
-    *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
-       is enabled.  Previously, such urls would still be rejected with
-       404.
-         server/util.c: r1.148, r1.149
-       +1: trawick, stoddard, clar
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28

@@ -1628,16 +1628,12 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
             else {
                 char decoded;
                 decoded = x2c(y + 1);
-                if (IS_SLASH(decoded)) {
-                    *x++ = *y++;
-                    *x = *y;
+                if (decoded == '\0') {
+                    badpath = 1;
                 }
                 else {
                     *x = decoded;
                     y += 2;
-                    if (decoded == '\0') {
-                        badpath = 1;
-                    }
                 }
             }
         }
