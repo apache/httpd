@@ -17,9 +17,16 @@
     <style   basedir="../mod/"
              destdir="../mod/"
            extension=".html"
-               style="./manual.xsl"
-            excludes="empty.xml"
+               style="./manual.en.xsl"
+            excludes="*.ja.xml"
             includes="*.xml">
+      <param name="relative-path" expression="."/>
+    </style>
+    <style   basedir="../mod/"
+             destdir="../mod/"
+           extension=".html"
+               style="./manual.ja.xsl"
+            includes="*.xml.ja">
       <param name="relative-path" expression="."/>
     </style>
   </target>
