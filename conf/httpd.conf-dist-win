@@ -190,7 +190,7 @@ ThreadsPerChild 50
 # Enable/disable the handling of HTTP/1.1 "Via:" headers.
 # ("Full" adds the server version; "Block" removes all outgoing Via: headers)
 # Set to one of: Off | On | Full | Block
-ProxyVia on
+#ProxyVia on
 
 # To enable the cache as well, edit and uncomment the following lines:
 # (no cacheing without CacheRoot)
