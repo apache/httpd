@@ -12,7 +12,8 @@ TO UPGRADE IMMEDIATELY.
 
 Users on other platforms should review the CHANGES file and decide
 on their upgrade plans; the security issues apply only to Apache
-on Win32.
+on Win32. We consider Apache 1.3.1 to be the most stable version
+of Apache available.
 
 Apache 1.3.1 is available for download from
 
