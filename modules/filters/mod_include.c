@@ -908,28 +908,46 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     }
     
     *tag_val = c;
-    while ((*c != '\0') &&
-           (((term != '\0') && (*c != term)) ||
-            ((term == '\0') && (!apr_isspace(*c))))) {
-        /* Accept \" (or ' or `) as valid quotation of string. 
-         */
-        if (*c == '\\') {  
-            /* Overwrite the "\" during the embedded 
-             * escape sequence of '"'. "\'" or '`'. 
-             * Shift bytes from here to next delimiter.     
+    if (!term) {
+        while (!apr_isspace(*c) && (*c != '\0')) {
+            c++;
+        }
+    }
+    else {
+        while ((*c != term) && (*c != '\0') && (*c != '\\')) {
+            /* Quickly scan past the string until we reach
+             * either the end of the tag or a backslash.  If
+             * we find a backslash, we have to switch to the
+             * more complicated parser loop that follows.
              */
             c++;
-            if (*c == term) {
-                shift_val++;
-            }
-            if (shift_val > 0) {
-                *(c-shift_val) = *c;
-            }
         }
+        if (*c == '\\') {
+            do {
+                /* Accept \" (or ' or `) as valid quotation of string. 
+                 */
+                if (*c == '\\') {  
+                    /* Overwrite the "\" during the embedded 
+                     * escape sequence of '"'. "\'" or '`'. 
+                     * Shift bytes from here to next delimiter.     
+                     */
+                    c++;
+                    if (*c == term) {
+                        shift_val++;
+                    }
+                    if (shift_val > 0) {
+                        *(c-shift_val) = *c;
+                    }
+                    if (*c == '\0') {
+                        break;
+                    }
+                }
 
-        c++;
-        if (shift_val > 0) {
-            *(c-shift_val) = *c;
+                c++;
+                if (shift_val > 0) {
+                    *(c-shift_val) = *c;
+                }
+            } while ((*c != term) && (*c != '\0'));
         }
     }
     
