@@ -258,11 +258,6 @@ SHLIB_SUFFIX_LIST=""
 AP_PRINTPATH=PrintPath
 export AP_PRINTPATH
 CAT="cat"
-if ./helpers/$AP_PRINTPATH -s ranlib; then
-    RANLIB="ranlib"
-else
-    RANLIB="true"
-fi
 
 ####################################################################
 ## Now we determine the OS/Platform automagically, thanks to
@@ -363,12 +358,14 @@ case "$PLAT" in
     *-hp-hpux11.*)
 	OS='HP-UX 11'
 	CFLAGS="$CFLAGS -DHPUX11"
+	RANLIB="/bin/true"
 	LIBS="$LIBS -lm -lpthread"
 	DEF_WANTHSREGEX=yes
 	;;
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
+	RANLIB="/bin/true"
  	case "$PLAT" in
  	  *-hp-hpux10.01)
 	       # We know this is a problem in 10.01.
@@ -381,6 +378,7 @@ case "$PLAT" in
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
+	RANLIB="/bin/true"
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lm"
 	;;
@@ -797,6 +795,7 @@ fi
 ## Look for OPTIM and save for later
 ##
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TRANLIB=`egrep '^RANLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
 ## Check for user provided flags for shared object support
@@ -1141,6 +1140,21 @@ esac
 ##
 if [ "x$TOPTIM" = "x" ]; then
     echo "OPTIM=$OPTIM" >> Makefile.config
+fi
+
+####################################################################
+## OK, now handle RANLIB
+##
+if [ ".$RANLIB" = . ]; then
+    if [ ".$TRANLIB" != . ]; then
+        RANLIB=$TRANLIB
+    else
+        if ./helpers/$AP_PRINTPATH -s ranlib; then
+            RANLIB="ranlib"
+        else
+            RANLIB="true"
+        fi
+    fi
 fi
 
 ####################################################################
