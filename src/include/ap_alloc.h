@@ -237,7 +237,8 @@ int pclosef(struct pool *, int fd);
  * to call in the child, and an argument to be passed to the function.
  */
      
-enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait};
+enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait,
+    kill_only_once };
 
 int spawn_child_err (pool *, int (*)(void *), void *,
 		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out,

@@ -8,6 +8,10 @@ Changes with Apache 1.3
 
   *) mod_auth deals with extra ':' delimited fields.  [Marc Slemko]
 
+  *) Added kill_only_once option for free_proc_chain so that it won't
+     aggressively try to kill off specific children.  For fastcgi.
+     [Stanley Gambarin <gambarin@OpenMarket.com>]
+
 Changes with Apache 1.2.1
 
   *) SECURITY: Don't serve file system objects unless they are plain files,

@@ -1301,7 +1301,8 @@ static void free_proc_chain (struct process_chain *procs)
 #endif
 
   for (p = procs; p; p = p->next) {
-    if (p->kill_how == kill_after_timeout) {
+    if ((p->kill_how == kill_after_timeout)
+	|| (p->kill_how == kill_only_once)) {
       /* Subprocess may be dead already.  Only need the timeout if not. */
       if (kill (p->pid, SIGTERM) != -1)
 	need_timeout = 1;
