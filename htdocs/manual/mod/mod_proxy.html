@@ -10,10 +10,12 @@
 
 This module is contained in the <code>mod_proxy.c</code> file, and
 is not compiled in by default. It provides for a caching proxy server.
-It is only available in Apache 1.1 and later.
+It is only available in Apache 1.1 and later. Common configuration
+questions are addressed <a href="#config">here</a>.
 
 <h3>Note:</h3>
-<p>This module is experimental. Use at your own risk.</p>
+<p>This module was experimental in Apache 1.1.x. As of Apache 1.2, mod_proxy
+stability is *greatly* improved.<p>
 
 <h2>Summary</h2>
 
@@ -204,6 +206,48 @@ cached by the proxy server. Example:
 
 <pre>
   NoCache joes.garage.com some.host.co.uk wotsamattau.edu
+</pre>
+
+Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.
+
+<hr>
+
+<a name="configs"><h2>Common configuration topics</h2></a>
+
+<ul>
+<li><a href="#access">Controlling access to your proxy</a>
+<li><a href="#shortname">Using Netscape hostname shortcuts</a>
+<li><a href="#mimetypes">Why doesn't file type <i>xxx</i> download via FTP?</a>
+</ul>
+
+<a name="access"><h2>Controlling access to your proxy</h2>
+
+You can control who can access your proxy via the normal &lt;Directory&gt;
+control block using the following example:<p>
+
+<pre>
+&lt;Directory proxy:*&gt;
+order allow,deny
+deny from [machines you'd like not to allow by IP address or name]
+allow from all
+&lt;/Directory&gt;
+</pre><p>
+
+<a name="shortname"><h2>Using Netscape hostname shortcuts</h2>
+
+There is an optional patch to the proxy module to allow Netscape-like
+hostname shortcuts to be used. It's available
+<a href="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch">
+here</a>.<p>
+
+<a name="mimetypes"><h2>Why doesn't file type <i>xxx</i> download via FTP?</h2>
+
+You probably don't have that particular file type defined as
+<i>application/octet-stream</i> in your proxy's mime.types configuration
+file. A useful line can be<p>
+
+<pre>
+application/octet-stream        bin dms lha lzh exe class tgz taz
 </pre>
 
 <!--#include virtual="footer.html" -->
