@@ -14,15 +14,15 @@
 <summary>
     <p>Except for the optimizations and the additional <directive
     module="mod_cgid">ScriptSock</directive> directive noted below,
-    mod_cgid behaves similarly to mod_cgi.  <strong>See the
-    <module>mod_cgi</module> Summary for additional details about
-    Apache and CGI.</strong></p>
+    <module>mod_cgid</module> behaves similarly to <module>mod_cgi</module>.
+    <strong>See the <module>mod_cgi</module> summary for additional details
+    about Apache and CGI.</strong></p>
 
     <p>On certain unix operating systems, forking a process from a
     multi-threaded server is a very expensive operation because the
     new process will replicate all the threads of the parent
     process. In order to avoid incurring this expense on each CGI
-    invocation, mod_cgid creates an external daemon that is
+    invocation, <module>mod_cgid</module> creates an external daemon that is
     responsible for forking child processes to run CGI scripts. The
     main server communicates with this daemon using a unix domain
     socket.</p>
@@ -36,6 +36,9 @@
     name of the socket to use for communication with the cgi
     daemon.</p>
 </summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../suexec.html">Running CGI programs under different user IDs</a></seealso>
 
 <directivesynopsis location="mod_cgi">
 <name>ScriptLog</name>
@@ -51,7 +54,9 @@
 
 <directivesynopsis>
 <name>ScriptSock</name>
-<syntax>ScriptSock <em>file-path</em></syntax>
+<description>The name of the socket to use for communication with
+the cgi daemon</description>
+<syntax>ScriptSock <var>file-path</var></syntax>
 <default>ScriptSock logs/cgisock</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -65,7 +70,7 @@
     write in the directory where the socket is located.</p>
 
     <example><title>Example</title>
-    ScriptSock /var/run/cgid.sock
+      ScriptSock /var/run/cgid.sock
     </example>
 
 </usage>
