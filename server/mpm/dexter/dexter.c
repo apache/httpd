@@ -1621,15 +1621,12 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_dexter_module = {
     STANDARD20_MODULE_STUFF,
-    NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     dexter_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* check auth */
-    NULL,			/* check access */
     dexter_hooks 		/* register_hooks */
 };
 
