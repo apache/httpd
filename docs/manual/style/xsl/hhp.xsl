@@ -145,7 +145,10 @@
 <!-- and now all sitemap-listed files -->
 <xsl:for-each select="category">
     <xsl:apply-templates select="page[@href]" />
-    <xsl:apply-templates select="modulefilelist/modulefile"/>
+    <xsl:if test="@id = 'modules'">
+        <xsl:apply-templates select="document($allmodules)/modulefilelist
+                                     /modulefile" />
+    </xsl:if>
 </xsl:for-each>&lf;
 </xsl:template>
 <!-- /sitemap -->
@@ -180,7 +183,7 @@
 <!-- ==================================================================== -->
 <!-- list module files                                                    -->
 <!-- ==================================================================== -->
-<xsl:template match="category/modulefilelist/modulefile">
+<xsl:template match="modulefilelist/modulefile">
 <xsl:text>mod\</xsl:text>
 <xsl:value-of select="substring-before(normalize-space(.), '.xml')" />
 <xsl:text>.html</xsl:text>&lf;
