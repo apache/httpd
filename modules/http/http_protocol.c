@@ -2503,10 +2503,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         apr_table_addn(r->headers_out, "Expires", date);
     }
 
-    if (!strcmp(apr_table_get(r->headers_out, "Content-Length"), "0")) {
-        apr_table_unset(r->headers_out, "Content-Length");
-    }
-
     apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
                  (void *) &len, r->headers_out, NULL);
     
