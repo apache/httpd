@@ -188,13 +188,13 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 		    r->uri);
 	write(sock, buffer, strlen(buffer));
 	ap_snprintf(buffer, sizeof(buffer),
-		    "Proxy-agent: %s" CRLF CRLF, SERVER_VERSION);
+		    "Proxy-agent: %s" CRLF CRLF, apapi_get_server_version());
 	write(sock, buffer, strlen(buffer));
     }
     else {
 	Explain0("Returning 200 OK Status");
 	rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
-	rvputs(r, "Proxy-agent: ", SERVER_VERSION, CRLF CRLF, NULL);
+	rvputs(r, "Proxy-agent: ", apapi_get_server_version(), CRLF CRLF, NULL);
 	bflush(r->connection->client);
     }
 

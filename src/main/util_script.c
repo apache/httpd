@@ -235,7 +235,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 #endif
 
     table_setn(e, "PATH", env_path);
-    table_setn(e, "SERVER_SOFTWARE", SERVER_VERSION);
+    table_setn(e, "SERVER_SOFTWARE", apapi_get_server_version());
     table_setn(e, "SERVER_NAME", get_server_name(r));
     ap_snprintf(port, sizeof(port), "%u", get_server_port(r));
     table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));

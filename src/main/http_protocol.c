@@ -1022,7 +1022,7 @@ void basic_http_header(request_rec *r)
            protocol, " ", r->status_line, "\015\012", NULL);
 
     send_header_field(r, "Date", gm_timestr_822(r->pool, r->request_time));
-    send_header_field(r, "Server", SERVER_VERSION);
+    send_header_field(r, "Server", apapi_get_server_version());
 
     table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     table_unset(r->headers_out, "Server");

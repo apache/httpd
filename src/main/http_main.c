@@ -2810,9 +2810,9 @@ static void show_compile_settings(void)
     printf("Server base version: \"%s\"\n", SERVER_BASEVERSION);
     printf("Server sub-version:  \"%s\"\n", SERVER_SUBVERSION);
 #else
-    printf("Server version \"%s\"\n", SERVER_VERSION);
+    printf("Server version \"%s\"\n", apapi_get_server_version());
 #endif
-    printf("Server built:  %s\n", SERVER_BUILT);
+    printf("Server built:  %s\n", apapi_get_server_built());
     printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
@@ -3636,9 +3636,9 @@ void standalone_main(int argc, char **argv)
 
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 		    "%s configured -- resuming normal operations",
-		    SERVER_VERSION);
+		    apapi_get_server_version());
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
-		    "Server built: %s", SERVER_BUILT);
+		    "Server built: %s", apapi_get_server_built());
 	restart_pending = shutdown_pending = 0;
 
 	while (!restart_pending && !shutdown_pending) {
@@ -3812,8 +3812,8 @@ int main(int argc, char *argv[])
 	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
-	    printf("Server version %s.\n", SERVER_VERSION);
-	    printf("Server built:  %s\n", SERVER_BUILT);
+	    printf("Server version %s.\n", apapi_get_server_version());
+	    printf("Server built:  %s\n", apapi_get_server_built());
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
@@ -3838,7 +3838,7 @@ int main(int argc, char *argv[])
     }
 
 #ifdef __EMX__
-    printf("%s \n", SERVER_VERSION);
+    printf("%s \n", apapi_get_server_version());
 #endif
 
     suexec_enabled = init_suexec();
@@ -4956,8 +4956,8 @@ int main(int argc, char *argv[])
 	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
-	    printf("Server version %s.\n", SERVER_VERSION);
-	    printf("Server built:  %s\n", SERVER_BUILT);
+	    printf("Server version %s.\n", apapi_get_server_version());
+	    printf("Server built:  %s\n", apapi_get_server_built());
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
@@ -4977,11 +4977,11 @@ int main(int argc, char *argv[])
     }
 
 #ifdef __EMX__
-    printf("%s \n", SERVER_VERSION);
+    printf("%s \n", apapi_get_server_version());
 #endif
 #ifdef WIN32
     if (!child) {
-	printf("%s \n", SERVER_VERSION);
+	printf("%s \n", apapi_get_server_version());
     }
 #endif
     if (!child && run_as_service) {

@@ -3282,7 +3282,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->protocol;
     }
     else if (strcasecmp(var, "SERVER_SOFTWARE") == 0) {
-        result = pstrdup(r->pool, SERVER_VERSION);
+        result = pstrdup(r->pool, apapi_get_server_version());
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
         ap_snprintf(resultbuf, sizeof(resultbuf), "%d", MODULE_MAGIC_NUMBER);

@@ -364,6 +364,9 @@
 #endif
 extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 
+const char *apapi_get_server_version();
+const char *apapi_get_server_built();
+
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
  */

@@ -63,6 +63,8 @@ Committed Code Changes:
     * Dean's rewrite of absoluteURI handling vhost matching
     * Dean's new mod_test_util_uri.c 
     * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
+    * Ken's abstraction of SERVER_{BUILT,VERSION}
+    * Ken's fix for os/unix/os.h and the new -DHIDE functionality
 
 Available Patches:
 

@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) To deal with modules being compiled and [dynamically] linked
+     at a different time from the core, the SERVER_VERSION and
+     SERVER_BUILT symbols have been abstracted through the new
+     API routines apapi_get_server_version() and apapi_get_server_built().
+     [Ken Coar]
+
   *) WIN32: Preserve trailing slash in canonical path (and hence
 	   in PATH_INFO). [Paul Sutton, Ben Laurie]
 
