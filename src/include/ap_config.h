@@ -271,6 +271,7 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_INITGROUPS
+#define NO_WRITEV
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #include <sys/time.h>     
