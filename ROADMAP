@@ -1,6 +1,6 @@
 APACHE 2.1+ ROADMAP:
 
-Last modified at [$Date: 2002/07/11 20:15:03 $]
+Last modified at [$Date: 2002/09/10 08:24:09 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -38,9 +38,6 @@ DEFERRRED FOR APACHE 2.1
       the apr_file_t member in request_rec, and having all modules use
       that file, and allow the cleanup to close it [if it isn't a shared,
       cached file handle.]
-
-    * Refactor auth into auth protocols and auth database stores.
-      Many interested hackers, too destabilizing for 2.0 inclusion.
 
 DEFERRRED FOR APACHE 3.0
 
