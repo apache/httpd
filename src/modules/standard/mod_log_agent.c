@@ -101,7 +101,7 @@ static const command_rec agent_log_cmds[] =
     {NULL}
 };
 
-static int agent_log_child(void *cmd)
+static int agent_log_child(void *cmd, child_info *pinfo)
 {
     /* Child process code for 'AgentLog "|..."';
      * may want a common framework for this, since I expect it will

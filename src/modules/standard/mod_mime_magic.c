@@ -2142,7 +2142,7 @@ struct uncompress_parms {
     int method;
 };
 
-static int uncompress_child(void *data)
+static int uncompress_child(void *data, child_info *pinfo)
 {
     struct uncompress_parms *parm = data;
 #if defined(WIN32)

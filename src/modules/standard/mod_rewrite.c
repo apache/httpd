@@ -2887,7 +2887,7 @@ static void open_rewritelog(server_rec *s, pool *p)
 }
 
 /* Child process code for 'RewriteLog "|..."' */
-static int rewritelog_child(void *cmd)
+static int rewritelog_child(void *cmd, child_info *pinfo)
 {
     int child_pid = 1;
 
@@ -3163,7 +3163,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 }
 
 /* child process code */
-static int rewritemap_program_child(void *cmd)
+static int rewritemap_program_child(void *cmd, child_info *pinfo)
 {
     int child_pid = 1;
 

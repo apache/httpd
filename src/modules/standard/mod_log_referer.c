@@ -116,7 +116,7 @@ static const command_rec referer_log_cmds[] =
     {NULL}
 };
 
-static int referer_log_child(void *cmd)
+static int referer_log_child(void *cmd, child_info *pinfo)
 {
     /* Child process code for 'RefererLog "|..."';
      * may want a common framework for this, since I expect it will

@@ -424,7 +424,7 @@ static int   rewrite_rand(int l, int h);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
-static int   rewritelog_child(void *cmd);
+static int   rewritelog_child(void *cmd, child_info *pinfo);
 static void  rewritelog(request_rec *r, int level, const char *text, ...)
                         __attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
@@ -438,7 +438,7 @@ static void rewritelock_free(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, pool *p);
-static int   rewritemap_program_child(void *cmd);
+static int   rewritemap_program_child(void *cmd, child_info *pinfo);
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
