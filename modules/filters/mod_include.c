@@ -2776,7 +2776,10 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             ctx->combined_tag[ctx->directive_length] = '\0';
             ctx->curr_tag_pos = &ctx->combined_tag[ctx->directive_length+1];
 
-            handle_func = apr_hash_get(include_hash, ctx->combined_tag, ctx->directive_length+1);
+            handle_func = 
+                (int (*)(include_ctx_t *, ap_bucket_brigade **, request_rec *,
+                    ap_filter_t *, ap_bucket *, ap_bucket **))
+                apr_hash_get(include_hash, ctx->combined_tag, ctx->directive_length+1);
             if (handle_func != NULL) {
                 ret = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
             }
@@ -3030,7 +3033,7 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 void ap_register_include_handler(char *tag, handler func)
 {
-    apr_hash_set(include_hash, tag, strlen(tag) + 1, func);
+    apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
 }
 
 static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
