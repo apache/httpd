@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".."/>
+
+<title>Apache 2.0 Hook Functions</title>
+
+<summary>
+    <note type="warning"><title>Warning</title>
+      <p>This document is still in development and may be partially out of
+      date.</p>
+    </note>
+
+    <p>In general, a hook function is one that Apache will call at
+    some point during the processing of a request. Modules can
+    provide functions that are called, and specify when they get
+    called in comparison to other modules.</p>
+</summary>
+
+<section id="create"><title>Creating a hook function</title>
+    <p>In order to create a new hook, four things need to be
+    done:</p>
+
+    <section id="create-declare"><title>Declare the hook function</title>
+      <p>Use the <code>AP_DECLARE_HOOK</code> macro, which needs to be given
+      the return type of the hook function, the name of the hook, and the
+      arguments. For example, if the hook returns an <code>int</code> and
+      takes a <code>request_rec *</code> and an <code>int</code> and is
+      called <code>do_something</code>, then declare it like this:</p>
+      <example>
+        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
+      </example>
+
+      <p>This should go in a header which modules will include if
+      they want to use the hook.</p>
+    </section>
+
+    <section id="create-create"><title>Create the hook structure</title>
+      <p>Each source file that exports a hook has a private structure
+      which is used to record the module functions that use the hook.
+      This is declared as follows:</p>
+
+      <example>
+        APR_HOOK_STRUCT(<br />
+        <indent>
+          APR_HOOK_LINK(do_something)<br />
+          ...<br />
+        </indent>
+        )
+      </example>
+    </section>
+
+    <section id="create-implement"><title>Implement the hook caller</title>
+      <p>The source file that exports the hook has to implement a
+      function that will call the hook. There are currently three
+      possible ways to do this. In all cases, the calling function is
+      called <code>ap_run_<var>hookname</var>()</code>.</p>
+
+      <section><title>Void hooks</title>
+        <p>If the return value of a hook is <code>void</code>, then all the
+        hooks are called, and the caller is implemented like this:</p>
+
+        <example>
+          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
+        </example>
+
+        <p>The second and third arguments are the dummy argument
+        declaration and the dummy arguments as they will be used when
+        calling the hook. In other words, this macro expands to
+        something like this:</p>
+
+        <example>
+          void ap_run_do_something(request_rec *r, int n)<br />
+          {<br />
+          <indent>
+            ...<br />
+            do_something(r, n);<br />
+          </indent>
+          }
+        </example>
+      </section>
+
+      <section><title>Hooks that return a value</title>
+        <p>If the hook returns a value, then it can either be run until
+        the first hook that does something interesting, like so:</p>
+
+        <example>
+          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
+        </example>
+
+        <p>The first hook that does <em>not</em> return <code>DECLINED</code>
+        stops the loop and its return value is returned from the hook
+        caller. Note that <code>DECLINED</code> is the tradition Apache
+        hook return meaning "I didn't do anything", but it can be
+        whatever suits you.</p>
+
+        <p>Alternatively, all hooks can be run until an error occurs.
+        This boils down to permitting <em>two</em> return values, one of
+        which means "I did something, and it was OK" and the other
+        meaning "I did nothing". The first function that returns a
+        value other than one of those two stops the loop, and its
+        return is the return value. Declare these like so:</p>
+
+        <example>
+          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
+        </example>
+
+        <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
+        values. You can use what you want.</p>
+      </section>
+    </section>
+
+    <section id="create-call"><title>Call the hook callers</title>
+      <p>At appropriate moments in the code, call the hook caller,
+      like so:</p>
+
+      <example>
+        int n, ret;<br />
+        request_rec *r;<br />
+        <br />
+        ret=ap_run_do_something(r, n);
+      </example>
+    </section>
+</section>
+
+<section id="hooking"><title>Hooking the hook</title>
+    <p>A module that wants a hook to be called needs to do two
+    things.</p>
+
+    <section id="hooking-implement"><title>Implement the hook function</title>
+      <p>Include the appropriate header, and define a static function
+      of the correct type:</p>
+
+      <example>
+        static int my_something_doer(request_rec *r, int n)<br />
+        {<br />
+        <indent>
+          ...<br />
+          return OK;<br />
+        </indent>
+        }
+      </example>
+    </section>
+
+    <section id="hooking-add"><title>Add a hook registering function</title>
+      <p>During initialisation, Apache will call each modules hook
+      registering function, which is included in the module
+      structure:</p>
+
+      <example>
+        static void my_register_hooks()<br />
+        {<br />
+        <indent>
+          ap_hook_do_something(my_something_doer, NULL, NULL, HOOK_MIDDLE);<br />
+        </indent>
+        }<br />
+        <br />
+        mode MODULE_VAR_EXPORT my_module =<br />
+        {<br />
+        <indent>
+          ...<br />
+          my_register_hooks       /* register hooks */<br />
+        </indent>
+        };
+      </example>
+    </section>
+
+    <section id="hooking-order"><title>Controlling hook calling order</title>
+      <p>In the example above, we didn't use the three arguments in
+      the hook registration function that control calling order.
+      There are two mechanisms for doing this. The first, rather
+      crude, method, allows us to specify roughly where the hook is
+      run relative to other modules. The final argument control this.
+      There are three possible values: <code>HOOK_FIRST</code>,
+      <code>HOOK_MIDDLE</code> and <code>HOOK_LAST</code>.</p>
+
+      <p>All modules using any particular value may be run in any
+      order relative to each other, but, of course, all modules using
+      <code>HOOK_FIRST</code> will be run before <code>HOOK_MIDDLE</code>
+      which are before <code>HOOK_LAST</code>. Modules that don't care
+      when they are run should use <code>HOOK_MIDDLE</code>. <em>(I spaced
+      these out so people could do stuff like <code>HOOK_FIRST-2</code>
+      to get in slightly earlier, but is this wise? - Ben)</em></p>
+
+      <p>Note that there are two more values,
+      <code>HOOK_REALLY_FIRST</code> and <code>HOOK_REALLY_LAST</code>. These
+      should only be used by the hook exporter.</p>
+
+      <p>The other method allows finer control. When a module knows
+      that it must be run before (or after) some other modules, it
+      can specify them by name. The second (third) argument is a
+      NULL-terminated array of strings consisting of the names of
+      modules that must be run before (after) the current module. For
+      example, suppose we want "mod_xyz.c" and "mod_abc.c" to run
+      before we do, then we'd hook as follows:</p>
+
+      <example>
+        static void register_hooks()<br />
+        {<br />
+        <indent>
+          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };<br />
+          <br />
+          ap_hook_do_something(my_something_doer, aszPre, NULL, HOOK_MIDDLE);<br />
+        </indent>
+        }
+      </example>
+
+      <p>Note that the sort used to achieve this is stable, so
+      ordering set by <code>HOOK_<var>ORDER</var></code> is preserved, as far
+      as is possible.</p>
+
+      <p class="cite"><cite>Ben Laurie</cite>, 15th August 1999</p>
+    </section>
+</section>
+</manualpage>
+
