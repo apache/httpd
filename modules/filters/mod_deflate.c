@@ -340,6 +340,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             encoding = apr_table_get(r->err_headers_out, "Content-Encoding");
         }
 
+        if (r->content_encoding) {
+            encoding = encoding ? apr_pstrcat(r->pool, encoding, ",",
+                                              r->content_encoding, NULL)
+                                : r->content_encoding;
+        }
+
         if (encoding) {
             const char *tmp = encoding;
 
