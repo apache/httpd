@@ -1812,11 +1812,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         conn->sock   = newsock;
         connected    = 1;
     }
-    /* Put the entire worker to error state
+    /* Put the entire worker to error state if
+     * the PROXY_WORKER_IGNORE_ERRORS flag is not set.
      * Altrough some connections may be alive
      * no further connections to the worker could be made
      */
-    if (!connected && PROXY_WORKER_IS_USABLE(worker)) {
+    if (!connected && PROXY_WORKER_IS_USABLE(worker) &&
+        !(worker->status & PROXY_WORKER_IGNORE_ERRORS)) {
         worker->status |= PROXY_WORKER_IN_ERROR;
         worker->error_time = apr_time_now();
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,

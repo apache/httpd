@@ -1120,13 +1120,16 @@ static const char *
 
     psf->req = flag;
     psf->req_set = 1;
-    /* Add default forward proxy worker */
-    if ((err = ap_proxy_add_worker(&(psf->forward), parms->pool,
-                                   psf, "*://*:0"))) {
-        return apr_pstrcat(parms->temp_pool, "ProxyRequests ", err, NULL); 
-    }
-        
 
+    if (flag) {
+        /* Add default forward proxy worker */
+        if ((err = ap_proxy_add_worker(&(psf->forward), parms->pool,
+                                       psf, "*://*:0"))) {
+            return apr_pstrcat(parms->temp_pool, "ProxyRequests ", err, NULL); 
+        }
+        /* Do not disable worker in case of errors */
+        psf->forward->status = PROXY_WORKER_IGNORE_ERRORS;
+    }
     return NULL;
 }
 
