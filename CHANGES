@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) check the return value of ap_run_pre_connection(). So if the
+     pre_connection phase fails (without setting c->aborted)
+     ap_run_process_connection is not executed. [Stas Bekman]
+
   *) Fixed a problem with mod_ldap which caused it to fault when caching
      was disabled.  Needed to make sure that the code did not
      attempt to use the cache if it didn't exist. Also fixed some memory
