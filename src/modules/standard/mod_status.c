@@ -116,6 +116,16 @@ void format_byte_out(request_rec *r,unsigned long bytes)
 	rprintf(r,"%.1f GB",(float)bytes/GBYTE);
 }
 
+void format_kbyte_out(request_rec *r,unsigned long kbytes)
+{
+    if (kbytes < KBYTE)
+	rprintf(r,"%d kB",(int)kbytes);
+    else if (kbytes < MBYTE)
+	rprintf(r,"%.1f MB",(float)kbytes/KBYTE);
+    else
+	rprintf(r,"%.1f GB",(float)kbytes/MBYTE);
+}
+
 void show_time(request_rec *r,time_t tsecs)
 {
     long days,hrs,mins,secs;
@@ -186,6 +196,7 @@ int status_handler (request_rec *r)
     unsigned long my_lres,my_bytes,conn_bytes;
     unsigned short conn_lres;
     unsigned long bcount=0;
+    unsigned long kbcount=0;
 #ifdef NEXT
     float tick=HZ;
 #else
@@ -277,6 +288,10 @@ int status_handler (request_rec *r)
 	    tcs+=score_record.times.tms_cstime;
             count+=lres;
 	    bcount+=bytes;
+	    if (bcount>=KBYTE) {
+	    	kbcount += (bcount >> 10);
+		bcount = bcount & 0x3ff;
+	    }
 	}
 #endif /* STATUS */
     }
@@ -299,7 +314,7 @@ int status_handler (request_rec *r)
 #if defined(STATUS)
     if (short_report)
     {
-        rprintf(r,"Total Accesses: %lu\nTotal Bytes: %lu\n",count,bcount);
+        rprintf(r,"Total Accesses: %lu\nTotal kBytes: %lu\n",count,kbcount);
 
 	if(ts || tu || tcu || tcs)
 	    rprintf(r,"CPULoad: %g\n",(tu+ts+tcu+tcs)/tick/up_time*100.);
@@ -309,14 +324,14 @@ int status_handler (request_rec *r)
 	    rprintf(r,"ReqPerSec: %g\n",(float)count/(float)up_time);
 
 	if (up_time>0)
-	    rprintf(r,"BytesPerSec: %g\n",(float)bcount/(float)up_time);
+	    rprintf(r,"BytesPerSec: %g\n",KBYTE*(float)kbcount/(float)up_time);
 
 	if (count>0)
-	    rprintf(r,"BytesPerReq: %g\n",(float)bcount/(float)count);
+	    rprintf(r,"BytesPerReq: %g\n",KBYTE*(float)kbcount/(float)count);
     } else /* !short_report */
     {
 	rprintf(r,"Total accesses: %lu - Total Traffic: ", count);
-	format_byte_out(r,bcount);
+	format_kbyte_out(r,kbcount);
 	rputs("<br>\n",r);
         rprintf(r,"CPU Usage: u%g s%g cu%g cs%g",
 		tu/tick,ts/tick,tcu/tick,tcs/tick);
@@ -332,13 +347,13 @@ int status_handler (request_rec *r)
 
 	if (up_time>0)
 	{
-	    format_byte_out(r,(float)bcount/(float)up_time);
+	    format_byte_out(r,KBYTE*(float)kbcount/(float)up_time);
 	    rputs("/second - ",r);
 	}
 
 	if (count>0)
 	{
-	    format_byte_out(r,(float)bcount/(float)count);
+	    format_byte_out(r,KBYTE*(float)kbcount/(float)count);
 	    rputs("/request",r);
 	}
 
@@ -386,7 +401,7 @@ int status_handler (request_rec *r)
     	if(no_table_report)
             rputs("<p><hr><h2>Server Details</h2>\n\n",r);
 	else
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Ptime<th>Conn<th>Child<th>Slot<th>Host<th>Request</tr>\n\n",r);
 
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
@@ -435,12 +450,13 @@ int status_handler (request_rec *r)
 		            rputs("Dead",r);
 		            break;
 		    }
-		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (",
+		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (%d",
 			    score_record.times.tms_utime/tick,
 			    score_record.times.tms_stime/tick,
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
-			    asctime(localtime(&score_record.last_used)));
+			    asctime(localtime(&score_record.last_used)),
+			    (int)score_record.how_long);
 		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,my_bytes);
@@ -482,12 +498,13 @@ int status_handler (request_rec *r)
 		            rputs("<td>.",r);
 		            break;
 		    }
-		    rprintf(r,"\n<td>%.2f<td>%.0f",
+		    rprintf(r,"\n<td>%.2f<td>%.0f<td>%d",
 			    (score_record.times.tms_utime +
 			    score_record.times.tms_stime +
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
-			    difftime(nowtime, score_record.last_used));
+			    difftime(nowtime, score_record.last_used),
+			    (int)score_record.how_long);
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
@@ -509,6 +526,7 @@ int status_handler (request_rec *r)
 <tr><th>M<td>Mode of operation\n \
 <tr><th>CPU<td>CPU usage, number of seconds\n \
 <tr><th>SS<td>Seconds since beginning of most recent request\n \
+<tr><th>Ptime<td>Seconds to process the recent request\n \
 <tr><th>Conn<td>Kilobytes transferred this connection\n \
 <tr><th>Child<td>Megabytes transferred this child\n \
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
