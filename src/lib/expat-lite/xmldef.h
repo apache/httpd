@@ -61,3 +61,10 @@ particular environments. */
 #define int int32
 
 #endif /* MOZILLA */
+
+#ifdef APACHE
+
+#include "ap_config.h"
+#define XML_BYTE_ORDER AP_BYTE_ORDER
+
+#endif /* APACHE */

@@ -26,6 +26,10 @@ trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exs
 #    Which prints out the sizeof <type> (sure would be nice
 #    if sizeof could be use in preprocessor if's)
 #
+# ./helpers/TestCompile byteorder
+#    Which prints out the byte order of the machine
+#    (12: little endian, 21: big endian)
+#
 # It does these by creating a small mini-makefile, based on
 # ../Makefile.config and trying to compile a small dummy
 # program. If the compilation succeeds, we assume the test
@@ -102,6 +106,29 @@ case "$1" in
 #include <sys/types.h>
 int main(void) {
     printf("%d\n", sizeof($2));
+    return(0);
+}
+EOF
+	;;
+    "byteorder")
+	TLIB=""
+	if [ "x$VERBOSE" = "xyes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
+	TARGET='testfunc'
+	cat <<EOF >testfunc.c
+#include <stdio.h>
+#include <sys/types.h>
+int main(void) {
+    /* Are we little or big endian? From Harbison & Steele */
+    union {
+        long l;
+        char c[sizeof(long)];
+    } u;
+    u.l = 1;
+    printf("%s\n", u.c[sizeof(long)-1] == 1 ? "21" : "12");
     return(0);
 }
 EOF

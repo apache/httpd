@@ -1893,6 +1893,24 @@ echo "#ifndef AP_LONGEST_LONG" >>$AP_CONFIG_AUTO_H
 echo "#define AP_LONGEST_LONG $AP_LONGEST_LONG" >>$AP_CONFIG_AUTO_H
 echo "#endif" >>$AP_CONFIG_AUTO_H
 
+####################################################################
+## More building ap_config_auto.h
+##
+## We check for the endianess of the machine
+##
+AP_BYTE_ORDER=`./helpers/TestCompile -r byteorder`
+if [ "x$AP_BYTE_ORDER" = "x21" ]; then
+    AP_BYTE_ORDER="21" # big endian
+else
+    AP_BYTE_ORDER="12" # little endian
+fi
+
+echo "" >>$AP_CONFIG_AUTO_H
+echo "/* determine: byte order of machine (12: little endian, 21: big endian) */" >>$AP_CONFIG_AUTO_H
+echo "#ifndef AP_BYTE_ORDER" >>$AP_CONFIG_AUTO_H
+echo "#define AP_BYTE_ORDER $AP_BYTE_ORDER" >>$AP_CONFIG_AUTO_H
+echo "#endif" >>$AP_CONFIG_AUTO_H
+
 ##
 ## Now compare the sizes of off_t to long
 ##

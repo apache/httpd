@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Determine AP_BYTE_ORDER for ap_config_auto.h and already
+     use this at least for Expat. [Ralf S. Engelschall]
+
   *) Allow .module files to specify libraries with Lib:.
      [Ben Laurie]
 
