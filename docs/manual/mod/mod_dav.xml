@@ -17,73 +17,100 @@
     extension to the HTTP protocol allows creating, moving,
     copying, and deleting resources and collections on a remote web
     server.</p>
-
-    <p>To enable mod_dav, add the following to a container in your
-    <code>httpd.conf</code> file:</p>
-
-<example>Dav On</example>
-
-    <p>Also, specify a valid filename for the DAV lock database by
-    adding the following to the global section in your
-    <code>httpd.conf</code> file:</p>
-
-<example>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;
-      <em>(Any web-server writable filename, without an
-      extension)</em>
-</example>
 </summary>
+<seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
+<seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
+<seealso><a href="http://www.webdav.org">WebDAV Resources</a></seealso>
+
+<section id="example"><title>Enabling WebDAV</title>
+    <p>To enable <module>mod_dav</module>, add the following to a
+    container in your <code>httpd.conf</code> file:</p>
+
+    <example>Dav On</example>
+
+    <p>This enables the DAV file system provider, which is implemented by
+    the <module>mod_dav_fs</module> module. Therefore that module has to
+    be compiled into the server or has to be loaded at runtime using the
+    <directive module="mod_so">LoadModule</directive> directive.</p>
+    
+    <p>In order to make it work you have to specify a web-server writable
+    filename for the DAV lock database by adding the following to the
+    global section in your <code>httpd.conf</code> file:</p>
+
+    <example>
+      DavLockDB /tmp/DavLock
+    </example>
+
+    <p>You may wish to add a <directive module="core" type="section"
+    >Limit</directive> clause inside the <directive module="core"
+    type="section">Location</directive> directive to limit access to
+    DAV-enabled locations. If you want to set the maximum amount of
+    bytes that a DAV client can send at one request, you have to use
+    the <directive module="core">LimitXMLRequestBody</directive>
+    directive. The "normal" <directive module="core"
+    >LimitRequestBody</directive> directive has no effect on DAV
+    requests.</p>
+
+    <example><title>Full Example</title>
+      DavLockDB /tmp/DavLock<br />
+      <br />
+       &lt;Location /foo&gt;<br />
+       <indent>
+         Dav On<br />
+         <br />
+         AuthType Basic<br />
+         AuthName DAV<br />
+         AuthUserFile user.passwd<br />
+         <br />
+         &lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         <indent>
+           require user admin<br />
+         </indent>
+         &lt;/LimitExcept&gt;<br />
+       </indent>
+       &lt;/Location&gt;<br />
+    </example>
+
+    <note type="warning"><title>Security</title>
+      <p>The use of HTTP Basic Authentication is not recommended. You
+      should use at least HTTP Digest Authentication, which is provided by
+      the <module>mod_auth_digest</module> module. Nearly all WebDAV clients
+      support this authentication method. Of course, Basic Authentication
+      over an <a href="../ssl/">SSL</a> enabled connection is secure,
+      too.</p>
+    </note>
+</section>
 
 <directivesynopsis>
 <name>Dav</name>
 <description>Enable WebDAV HTTP methods</description>
-<syntax>Dav on|off</syntax>
-<default>Dav off</default>
+<syntax>Dav On|Off|<var>provider-name</var></syntax>
+<default>Dav Off</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>Use the <directive>Dav</directive> directive to enable the
-    WebDAV HTTP methods for the given container. You may wish to add a
-    <directive module="core" type="section">Limit</directive> clause
-    inside the <directive module="core"
-    type="section">location</directive> directive to limit access to
-    DAV-enabled locations.</p>
+    WebDAV HTTP methods for the given container:</p>
 
-<example><title>Example</title>
-        DavLockDB /tmp/DavLock<br />
-        <br />
-         &lt;Location /foo&gt;<br />
-         Dav On<br />
-        <br />
-         AuthType Basic<br />
-         AuthName DAV<br />
-         AuthUserFile user.passwd<br />
-        <br />
-         &nbsp;&nbsp;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
-         &nbsp;&nbsp;require user admin<br />
-         &nbsp;&nbsp;&lt;/LimitExcept&gt;<br />
-         &lt;/Location&gt;<br />
-</example>
-</usage>
-</directivesynopsis>
+    <example>
+      &lt;Location /foo&gt;<br />
+      <indent>
+        Dav On<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
-<directivesynopsis>
-<name>DavLockDB</name>
-<description>Location of the DAV lock database</description>
-<syntax>DavLockDB <em>file-path</em></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+    <p>The value <code>On</code> is actually an alias for the default
+    provider <code>filesystem</code> which is served by the <module
+    >mod_dav_fs</module> module. Note, that once you have DAV enabled
+    for some location, it <em>cannot</em> be disabled for sublocations.
+    For a complete configuration example have a look at the <a
+    href="#example">section above</a>.</p>
 
-<usage>
-    <p>Use the <directive>DavLockDB</directive> directive to specify
-    the full path to the lock database, excluding an extension. The
-    default (file system) implementation of mod_dav uses a SDBM
-    database to track user locks. The utility
-    <code>modules/dav/util/lockview</code> can be used from the server
-    to display all locks in a lock database.</p>
-
-<example><title>Example</title>
-DavLockDB /tmp/DavLock
-</example>
+    <note type="warning">
+      Do not enable WebDAV until you have secured your server. Otherwise
+      everyone will be able to distribute files on your system.
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -91,9 +118,10 @@ DavLockDB /tmp/DavLock
 <name>DavMinTimeout</name>
 <description>Minimum amount of time the server holds a lock on
 a DAV resource</description>
-<syntax>DavMinTimeout <em>seconds</em></syntax>
+<syntax>DavMinTimeout <var>seconds</var></syntax>
 <default>DavMinTimeout 0</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
     <p>When a client requests a DAV resource lock, it can also
@@ -108,11 +136,13 @@ a DAV resource</description>
     (like 600 seconds) to reduce the chance of the client losing
     the lock due to network latency.</p>
 
-<example><title>Example</title>
-         &lt;Location /MSWord&gt;<br />
-         DavMinTimeout 600<br />
-         &lt;/Location&gt;<br />
-</example>
+    <example><title>Example</title>
+      &lt;Location /MSWord&gt;<br />
+      <indent>
+        DavMinTimeout 600<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </usage>     
 </directivesynopsis>
 
@@ -121,13 +151,14 @@ a DAV resource</description>
 <description>Allow PROPFIND, Depth: Infinity requests</description>
 <syntax>DavDepthInfinity on|off</syntax>
 <default>DavDepthInfinity off</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
     <p>Use the <directive>DavDepthInfinity</directive> directive to
-    allow the processing of PROPFIND requests containing the header
-    'Depth: Infinity'. Because this type of request could constitute a
-    denial-of-service attack, by default it is not allowed.</p>
+    allow the processing of <code>PROPFIND</code> requests containing the
+    header 'Depth: Infinity'. Because this type of request could constitute
+    a denial-of-service attack, by default it is not allowed.</p>
 </usage>
 </directivesynopsis>
 
