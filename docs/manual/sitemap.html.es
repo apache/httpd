@@ -195,6 +195,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_expires.html">Módulo Apache mod_expires</a></li>
 <li><a href="mod/mod_ext_filter.html">Módulo Apache mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Módulo Apache mod_file_cache</a></li>
+<li><a href="mod/mod_filter.html">Módulo Apache mod_filter</a></li>
 <li><a href="mod/mod_headers.html">Módulo Apache mod_headers</a></li>
 <li><a href="mod/mod_ident.html">Módulo Apache mod_ident</a></li>
 <li><a href="mod/mod_imap.html">Módulo Apache mod_imap</a></li>

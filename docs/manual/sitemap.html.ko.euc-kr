@@ -195,6 +195,7 @@
 <li><a href="mod/mod_expires.html">아파치 모듈 mod_expires</a></li>
 <li><a href="mod/mod_ext_filter.html">아파치 모듈 mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">아파치 모듈 mod_file_cache</a></li>
+<li><a href="mod/mod_filter.html">아파치 모듈 mod_filter</a></li>
 <li><a href="mod/mod_headers.html">아파치 모듈 mod_headers</a></li>
 <li><a href="mod/mod_ident.html">아파치 모듈 mod_ident</a></li>
 <li><a href="mod/mod_imap.html">아파치 모듈 mod_imap</a></li>

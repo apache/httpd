@@ -36,6 +36,7 @@
   <modulefile>mod_expires.xml.ja</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
+  <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml.ja</modulefile>
   <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
