@@ -166,6 +166,9 @@ In progress:
 	Status: Dean +1, Jim +1, Martin +1, Paul +1
 	Needs to be redone so that it better supports non-ascii hosts.
 
+    * Ken's IndexFormat enhancement to mod_autoindex to allow
+      CustomLog-like tailoring of directory listing formats
+
 Needs patch:
 
     * Dean's "locale" project
