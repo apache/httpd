@@ -1,4 +1,6 @@
 Changes with Apache 2.0b1
+  *) Install all header files in the same directory on Unix. [Ryan Bloom]
+
   *) Get the functions in server/linked into the server, regardless of
      which modules linked into the server.  This uses the same hack 
      for Apache that we use for APR and apr-util to ensure all of the

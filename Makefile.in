@@ -96,10 +96,10 @@ install-other:
 install-include:
 	@echo Installing header files
 	@test -d $(includedir)     || $(MKINSTALLDIRS) $(includedir)
-	@test -d $(includedir)/xml || $(MKINSTALLDIRS) $(includedir)/xml
-	@test -d $(includedir)/pcre || $(MKINSTALLDIRS) $(includedir)/pcre
-	@test -d $(includedir)/apr || $(MKINSTALLDIRS) $(includedir)/apr
-	@test -d $(includedir)/apr-util || $(MKINSTALLDIRS) $(includedir)/apr-util
+	@test -d $(includedir)/xml || $(MKINSTALLDIRS) $(includedir)
+	@test -d $(includedir)/pcre || $(MKINSTALLDIRS) $(includedir)
+	@test -d $(includedir)/apr || $(MKINSTALLDIRS) $(includedir)
+	@test -d $(includedir)/apr-util || $(MKINSTALLDIRS) $(includedir)
 	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
@@ -107,8 +107,8 @@ install-include:
         fi;
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
 	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
-	@cp -p $(srcdir)/srclib/expat-lite/*.h $(includedir)/xml
-	@cp -p $(srcdir)/srclib/pcre/*.h $(includedir)/pcre
-	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)/apr
-	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)/apr-util
-	@chmod 644 $(includedir)/*.h $(includedir)/xml/*.h $(includedir)/apr/*.h
+	@cp -p $(srcdir)/srclib/expat-lite/*.h $(includedir)
+	@cp -p $(srcdir)/srclib/pcre/*.h $(includedir)
+	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
+	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)
+	@chmod 644 $(includedir)/*.h
