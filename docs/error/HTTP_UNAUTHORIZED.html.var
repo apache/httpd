@@ -128,6 +128,27 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Authentication required!"
+--><!--#include virtual="include/top.html" -->
+
+    URL "<!--#echo encoding="url" var="REDIRECT_URL" -->"
+    へのアクセス権限があることを確認できませんでした。
+    間違った資格情報 (例えば、誤ったパスワード) を入力したか、
+    ブラウザが必要な資格情報を送信する方法を理解していないかです。
+
+  <!--#include virtual="include/spacer.html" -->
+
+    ドキュメントを要求できる筈である場合は、
+    ユーザ ID とパスワードを再確認して下さい。
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

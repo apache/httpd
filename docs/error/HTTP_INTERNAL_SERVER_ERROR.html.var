@@ -171,6 +171,36 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Server error!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    サーバ内部で障害が発生し、
+    リクエストに応えることができませんでした。
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Error message:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    サーバ内部で障害が発生し、
+    リクエストに応えることができませんでした。
+    サーバが過負荷であるか、
+    CGI スクリプトにエラーがあります。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

@@ -80,6 +80,20 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#include virtual="include/top.html" -->
+
+    リクエストの URL の長さが、扱える長さを超えています。
+    リクエストの処理を続けられません。
+   
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

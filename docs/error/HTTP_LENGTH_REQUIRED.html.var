@@ -81,6 +81,21 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Bad Content-Length!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    メソッドのリクエストでは、
+    正しい <code>Content-Length</code> ヘッダが必要になります。
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

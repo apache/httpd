@@ -106,6 +106,24 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Bad Gateway!"
+--><!--#include virtual="include/top.html" -->
+
+    プロクシサーバは上流サーバから不正な応答を受信しました。
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+    
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

@@ -79,6 +79,20 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Request time-out!"
+--><!--#include virtual="include/top.html" -->
+
+    ブラウザが指定時間以内にリクエストを完了しなかったので、
+    サーバは接続を切りました。
+   
+<!--#include virtual="include/bottom.html" --> 
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--
