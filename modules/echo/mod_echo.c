@@ -70,6 +70,5 @@ API_VAR_EXPORT module echo_module = {
     NULL,			/* merge per-server config structures */
     echo_cmds,			/* command table */
     NULL,			/* handlers */
-    NULL,			/* check auth */
     register_hooks		/* register hooks */
 };
