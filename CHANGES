@@ -1,5 +1,10 @@
 Changes with Apache 2.0.29-dev
 
+
+  *) Change post_config hook to return a value, allowing you
+     to flag a error post config
+     [Ian Holsman, Jeff Trawick]
+
   *) Allow SUEXEC_BIN (the path to the suexec binary that is
      hard-coded into the server) to be specified to the configure
      script by the --with-suexec-bin parameter.  [Aaron Bannert]

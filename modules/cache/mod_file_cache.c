@@ -299,10 +299,11 @@ static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filena
     return NULL;
 }
 
-static void file_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+static int file_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                                    apr_pool_t *ptemp, server_rec *s)
 {
     /* Hummm, anything to do here? */
+    return OK;
 }
 
 /* If it's one of ours, fill in r->finfo now to avoid extra stat()... this is a

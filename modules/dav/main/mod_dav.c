@@ -132,12 +132,13 @@ typedef struct {
 /* forward-declare for use in configuration lookup */
 extern module DAV_DECLARE_DATA dav_module;
 
-static void dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
+static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
 {
     /* DBG0("dav_init_handler"); */
 
     ap_add_version_component(p, "DAV/2");
+    return OK;
 }
 
 static void *dav_create_server_config(apr_pool_t *p, server_rec *s)

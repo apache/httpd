@@ -70,7 +70,7 @@
 /*
  *  Per-module initialization
  */
-void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
+int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     apr_pool_t *ptemp, server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -191,7 +191,7 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     if (mc->nInitCount == 1) {
         ssl_pphrase_Handle(s, p);
         ssl_init_TmpKeysHandle(SSL_TKP_GEN, s, p);
-        return;
+        return OK;
     }
 
     /*
@@ -265,7 +265,7 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ap_add_version_component(p, ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
 
     SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
-    return;
+    return OK;
 }
 
 /*

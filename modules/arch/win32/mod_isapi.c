@@ -213,7 +213,7 @@ static int compare_loaded(const void *av, const void *bv)
     return strcmp((*a)->filename, (*b)->filename);
 }
 
-static void isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
+static int isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec *s)
 {
     isapi_server_conf *sconf = ap_get_module_config(s->module_config, 
@@ -228,6 +228,7 @@ static void isapi_post_config(apr_pool_t *p, apr_pool_t *plog,
     for (s = s->next; s; s = s->next) {
 	ap_set_module_config(s->module_config, &isapi_module, sconf);
     }
+    return OK;
 }
 
 static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf, 

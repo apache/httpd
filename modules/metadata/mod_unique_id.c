@@ -172,7 +172,7 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_total_size,
                       unique_id_rec_size_uu;
 
-static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
+static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
     char str[APRMAXHOSTLEN + 1];
     apr_short_interval_time_t pause;
@@ -210,7 +210,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
     if ((rv = apr_gethostname(str, sizeof(str) - 1, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
           "mod_unique_id: unable to find hostname of the server");
-        exit(1);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* XXX theoretically there are boxes out there which want to use
@@ -219,7 +219,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
     if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET, 0, 0, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
                     "mod_unique_id: unable to find IPv4 address of \"%s\"", str);
-        exit(1);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
@@ -244,6 +244,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
      */
     pause = (apr_short_interval_time_t)(1000000 - (apr_time_now() % APR_USEC_PER_SEC));
     apr_sleep(pause);
+    return OK;
 }
 
 static void unique_id_child_init(apr_pool_t *p, server_rec *s)

@@ -979,8 +979,9 @@ AP_DECLARE_HOOK(void,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
  * @param s The list of server_recs
+ * @return OK or a 
  */
-AP_DECLARE_HOOK(void,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the open_logs functions for each module

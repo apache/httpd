@@ -767,7 +767,7 @@ static int status_handler(request_rec *r)
 }
 
 
-static void status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     status_flags[SERVER_DEAD] = '.';	/* We don't want to assume these are in */
     status_flags[SERVER_READY] = '_';	/* any particular order in scoreboard.h */
@@ -780,6 +780,7 @@ static void status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serv
     status_flags[SERVER_CLOSING] = 'C';
     status_flags[SERVER_GRACEFUL] = 'G';
     status_flags[SERVER_IDLE_KILL] = 'I';
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)
