@@ -860,9 +860,13 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     }
 
-    if ( conf->HTTPOverrideErrors )
-        return r->status;
-    else 
+    if ( conf->HTTPOverrideErrors ) {
+        /* the code above this checks for 'OK' which is what the hook expects */
+        if ( r->status == HTTP_OK )
+            return OK;
+        else 
+            return r->status;
+    } else 
         return OK;
 }
 

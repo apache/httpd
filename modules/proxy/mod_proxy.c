@@ -940,7 +940,7 @@ static const command_rec proxy_cmds[] =
      "A list of ports which CONNECT may connect to"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_FLAG("HTTPProxyOverrideReturnedErrors", set_http_proxy_override_error, NULL, RSRC_CONF,
+    AP_INIT_FLAG("ProxyHTTPOverrideReturnedErrors", set_http_proxy_override_error, NULL, RSRC_CONF,
      "use our error handling pages instead of the servers we are proxying"),
     {NULL}
 };
