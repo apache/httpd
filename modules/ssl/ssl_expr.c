@@ -62,8 +62,6 @@
                                           -- Unknown  */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Expression Handling
@@ -73,7 +71,7 @@
 ssl_expr_info_type ssl_expr_info;
 char              *ssl_expr_error;
 
-ssl_expr *ssl_expr_comp(pool *p, char *expr)
+ssl_expr *ssl_expr_comp(apr_pool_t *p, char *expr)
 {
     ssl_expr_info.pool       = p;
     ssl_expr_info.inputbuf   = expr;
@@ -98,7 +96,7 @@ ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *a1, void *a2)
 {
     ssl_expr *node;
 
-    node = (ssl_expr *)ap_palloc(ssl_expr_info.pool, sizeof(ssl_expr));
+    node = (ssl_expr *)apr_palloc(ssl_expr_info.pool, sizeof(ssl_expr));
     node->node_op   = op;
     node->node_arg1 = (char *)a1;
     node->node_arg2 = (char *)a2;
@@ -115,6 +113,3 @@ int ssl_expr_exec(request_rec *r, ssl_expr *expr)
     else
         return (rc ? 1 : 0);
 }
-
-#endif /* XXX */
-
