@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Move src/main/md5c.c to src/ap/ap_md5c.c; it's httpd-neutral
+     and this makes its functions available to things in src/support.
+     [Ken Coar]
+
 Changes with Apache 1.3.4
 
   *) Renamed macros status_drops_connection to ap_status_drops_connection
