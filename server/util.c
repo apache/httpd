@@ -848,7 +848,7 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p
         return APR_EACCES;
     }
 
-    stat = ap_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    stat = ap_open(&file, name, APR_READ, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
