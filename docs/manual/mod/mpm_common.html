@@ -53,9 +53,13 @@
 
       <li><a href="#sendbuffersize">SendBufferSize</a></li>
 
+      <li><a href="#serverlimit">ServerLimit</a></li>
+
       <li><a href="#startservers">StartServers</a></li>
 
       <li><a href="#startthreads">StartThreads</a></li>
+
+      <li><a href="#threadlimit">ThreadLimit</a></li>
 
       <li><a href="#threadsperchild">ThreadsPerChild</a></li>
 
@@ -332,8 +336,11 @@
     child processes that will be created to serve requests. When
     the server is built without threading, no more than this number
     of clients can be served simultaneously. To configure more than
-    256 clients, you must edit the <code>HARD_SERVER_LIMIT</code>
-    entry in <code>mpm_default.h</code> and recompile.</p>
+    256 clients with the prefork MPM, you must use the <a
+    href="#serverlimit">ServerLimit</a> directive.  To configure
+    more than 1024 clients with the worker MPM, you must use the
+    <a href="#serverlimit">ServerLimit</a> and <a
+    href="#threadlimit">ThreadLimit</a> directives.
 
     <p>Any connection attempts over the MaxClients limit will
     normally be queued, up to a number based on the <a
@@ -554,6 +561,52 @@
     transcontinental fast pipes) 
     <hr />
 
+    <h2><a id="serverlimit"
+    name="serverlimit">ServerLimit</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ServerLimit
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ServerLimit
+    256</code> (prefork MPM), <code>ServerLimit 16</code> (worker MPM)<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> prefork, worker</p>
+
+    <p>For the prefork MPM, this directive sets the maximum configured 
+    value for <code><a href="#maxclients">MaxClients</a></code> for
+    the lifetime of the Apache process.  For the worker MPM, this 
+    directive in combination with <code><a href="#threadlimit">
+    ThreadLimit</a></code> sets the maximum configured value for
+    <code><a href="#maxclients">MaxClients</a></code>
+    for the lifetime of the Apache process.  Any attempts to change 
+    this directive during a restart will be ignored, but
+    <code>MaxClients</code> can be modified during a restart.</p>
+
+    <p>Special care must be taken when using this directive.
+    If <code>ServerLimit</code> is set to a value much higher than
+    necessary, extra, unused shared memory will be allocated.
+    If both <code>ServerLimit</code> and <code>MaxClients</code> 
+    are set to values higher than the system can handle, Apache 
+    may not start or the system may become unstable.</p>
+
+    <p>With the prefork MPM, use this directive only if you need to 
+    set <code>MaxClients</code> higher higher than 256.  Do not set 
+    the value of this directive any higher than what you might want 
+    to set <code>MaxClients</code> to.</p>
+
+    <p>With the worker MPM, use this directive only if your 
+    <code>MaxClients</code> and <code>ThreadsPerChild</code> 
+    settings require more than 16 server processes.  Do not set the 
+    value of this directive any higher than the number of server 
+    processes required by what you may want for <code>MaxClients
+    </code> and <code>ThreadsPerChild</code>.</p>
+    <hr />
+
     <h2><a id="startservers" name="startservers">StartServers
     directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
@@ -600,6 +653,43 @@
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
+    <hr />
+
+    <h2><a id="threadlimit"
+    name="threadlimit">ThreadLimit</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ThreadLimit
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ThreadLimit
+    64</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> worker</p>
+
+    <p>This directive sets the maximum configured value for
+    <code><a href="#threadsperchild">ThreadsPerChild</a></code> for 
+    the lifetime of the Apache process.  Any attempts to change this 
+    directive during a restart will be ignored, but <code>
+    ThreadsPerChild</code> can be modified during a restart up to 
+    the value of this directive.</p>
+
+    <p>Special care must be taken when using this directive.
+    If <code>ThreadLimit</code> is set to a value much higher than 
+    <code>ThreadsPerChild</code>, extra unused shared memory will be 
+    allocated.  If both <code>ThreadLimit</code> and <code>
+    ThreadsPerChild</code> are set to values higher than the system 
+    can handle, Apache may not start or the system may become 
+    unstable.</p>
+
+    <p>Use this directive only if you need to set <code>
+    ThreadsPerChild</code> higher than 64.  Do not set the value of 
+    this directive any higher than what you might want to set <code>
+    ThreadsPerChild</code> to.</p>
     <hr />
 
     <h2><a id="threadsperchild"
