@@ -1027,9 +1027,6 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
             }
             e = AP_BUCKET_NEXT(e);
         }
-        if (e == AP_BRIGADE_SENTINEL(b)) {
-            ctx->b = NULL;
-        }
         if (f->c->remain == 0) {
             ap_bucket *eos = ap_bucket_create_eos();
                 
@@ -2477,7 +2474,15 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     ap_bucket_brigade *bb = conf->bb;
 
     if (!bb) {
-        conf->bb = bb = ap_brigade_create(r->pool);
+        /* XXX Yes, the pool for this brigade looks funky.  Right now it is
+         * allocated from the connection pool instead of the request pool 
+         * because HTTP_IN will sometimes split one of these brigades, with
+         * the second part of the brigade holding data belonging to another 
+         * request.  Since AP_BRIGADE_SPLIT() uses the same pool as the 
+         * original brigade, we need to use a pool that won't be cleaned up 
+         * until any subsequent requests on this connection are done.
+         */
+        conf->bb = bb = ap_brigade_create(r->connection->pool);
     }
 
     do {
