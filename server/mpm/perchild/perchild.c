@@ -467,12 +467,16 @@ static void *worker_thread(void *);
 static int start_thread(void)
 {
     pthread_t thread;
+    int rc;
 
     pthread_mutex_lock(&worker_thread_count_mutex);
     if (worker_thread_count < max_threads) {
-        if (pthread_create(&thread, &worker_thread_attr, worker_thread,
-	  &worker_thread_free_ids[worker_thread_count])) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+        if ((rc = pthread_create(&thread, &worker_thread_attr, worker_thread,
+	  &worker_thread_free_ids[worker_thread_count]))) {
+#ifdef PTHREAD_SETS_ERRNO
+            rc = errno;
+#endif
+            ap_log_error(APLOG_MARK, APLOG_ALERT, rc, ap_server_conf,
                          "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
@@ -858,8 +862,11 @@ static void child_main(int child_num_arg)
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf, "sigprocmask");
     }
 #else
-    if (pthread_sigmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
+    if ((rv = pthread_sigmask(SIG_SETMASK, &sig_mask, NULL)) != 0) {
+#ifdef PTHREAD_SETS_ERRNO
+        rv = errno;
+#endif
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "pthread_sigmask");
     }
 #endif
