@@ -81,13 +81,12 @@
 #include <stdlib.h>
 
 #include "suexec.h"
-#include "ap_config_auto.h"
 
-#if HAVE_PWD_H
+#ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
 
-#if HAVE_GRP_H
+#ifdef HAVE_GRP_H
 #include <grp.h>
 #endif
 

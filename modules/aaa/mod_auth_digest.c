@@ -96,9 +96,18 @@
  *   - expired nonces give amaya fits.  
  */
 
-#ifndef WIN32
-#include "ap_config_auto.h"
-#endif
+#include "apr_sha1.h"
+#include "apr_base64.h"
+#include "apr_lib.h"
+#include "apr_time.h"
+#include "apr_errno.h"
+#include "apr_lock.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -107,15 +116,6 @@
 #include "http_protocol.h"
 #include "util_uri.h"
 #include "util_md5.h"
-#include "apr_sha1.h"
-#include "apr_base64.h"
-#include "apr_lib.h"
-#include "apr_time.h"
-#include "apr_errno.h"
-#include "apr_lock.h"
-#include "apr_strings.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
@@ -151,7 +151,7 @@ apr_status_t apr_shm_open(apr_shmem_t *c) {
 apr_status_t apr_shm_avail(apr_shmem_t *c, apr_size_t *avail) {
     return APR_ENOTIMPL;
 }
-#endif
+#endif /* APR_HAS_SHARED_MEMORY */
 
 
 /* struct to hold the configuration info */
