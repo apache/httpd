@@ -324,6 +324,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
 AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
                                              const char *valuename, 
                                              const char *value, 
+                                             apr_int32_t flags, 
                                              apr_pool_t *pool)
 {
     /* Retrieve a registry string value, and explode any envvars
@@ -331,6 +332,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
      */
     LONG rc;
     DWORD size = strlen(value) + 1;
+    DWORD type = (flags & AP_REGKEY_EXPAND) ? REG_EXPAND_SZ : REG_SZ;
     
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE 
@@ -359,7 +361,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
          * converted to bytes; the trailing L'\0' continues to be counted.
          */
         size = (alloclen - wvallen) * 2;
-        rc = RegSetValueExW(key->hkey, wvalname, 0, REG_SZ, 
+        rc = RegSetValueExW(key->hkey, wvalname, 0, type, 
                             (LPBYTE)wvalue, size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
@@ -368,11 +370,113 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        rc = RegSetValueEx(key->hkey, valuename, 0, REG_SZ, value, size);
+        rc = RegSetValueEx(key->hkey, valuename, 0, type, value, size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
     }
 #endif
+    return APR_SUCCESS;
+}
+
+
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result, 
+                                                 apr_size_t *resultsize,
+                                                 apr_int32_t *resulttype,
+                                                 ap_regkey_t *key, 
+                                                 const char *valuename, 
+                                                 apr_pool_t *pool)
+{
+    /* Retrieve a registry string value, and explode any envvars
+     * that the system has configured (e.g. %SystemRoot%/someapp.exe)
+     */
+    LONG rc;
+    
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE 
+    {
+        apr_size_t valuelen = strlen(valuename) + 1;
+        apr_size_t wvallen = 256;
+        apr_wchar_t wvalname[256];
+        apr_status_t rv;
+        rv = apr_conv_utf8_to_ucs2(valuename, &valuelen, wvalname, &wvallen);
+        if (rv != APR_SUCCESS)
+            return rv;
+        else if (valuelen)
+            return APR_ENAMETOOLONG;
+        /* Read to NULL buffer to determine value size */
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
+                              NULL, resultsize);
+        if (rc != ERROR_SUCCESS) {
+            return APR_FROM_OS_ERROR(rc);
+        }
+
+        /* Read value based on size query above */
+        *result = apr_palloc(pool, *resultsize);
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
+                             (LPBYTE)*result, resultsize);
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        /* Read to NULL buffer to determine value size */
+        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
+                             NULL, resultsize);
+        if (rc != ERROR_SUCCESS)
+            return APR_FROM_OS_ERROR(rc);
+
+        /* Read value based on size query above */
+        *result = apr_palloc(pool, *resultsize);
+        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
+                             (LPBYTE)*result, resultsize);
+        if (rc != ERROR_SUCCESS)
+            return APR_FROM_OS_ERROR(rc);
+    }
+#endif
+    if (rc != ERROR_SUCCESS) {
+        return APR_FROM_OS_ERROR(rc);
+    }
+
+    return APR_SUCCESS;
+}
+
+
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key, 
+                                                 const char *valuename, 
+                                                 void *value, 
+                                                 apr_size_t valuesize,
+                                                 apr_int32_t valuetype,
+                                                 apr_pool_t *pool)
+{
+    LONG rc;
+    
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE 
+    {
+        apr_size_t valuelen = strlen(valuename) + 1;
+        apr_size_t wvallen = 256;
+        apr_wchar_t wvalname[256];
+        apr_status_t rv;
+        rv = apr_conv_utf8_to_ucs2(valuename, &valuelen, wvalname, &wvallen);
+        if (rv != APR_SUCCESS)
+            return rv;
+        else if (valuelen)
+            return APR_ENAMETOOLONG;
+
+        rc = RegSetValueExW(key->hkey, wvalname, 0, valuetype, 
+                            (LPBYTE)value, valuesize);
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        rc = RegSetValueEx(key->hkey, valuename, 0, valuetype, 
+                            (LPBYTE)value, valuesize);
+    }
+#endif
+    if (rc != ERROR_SUCCESS) {
+        return APR_FROM_OS_ERROR(rc);
+    }
     return APR_SUCCESS;
 }
 
@@ -385,42 +489,28 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
     /* Retrieve a registry string value, and explode any envvars
      * that the system has configured (e.g. %SystemRoot%/someapp.exe)
      */
-    LONG rc;
+    apr_status_t rv;
+    void *value;
     char *buf;
     char *tmp;
     DWORD type;
     DWORD size = 0;
-    
+
+    rv = ap_regkey_value_raw_get(&value, &size, &type, key, valuename, pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    else if (type != REG_MULTI_SZ) {
+        return APR_EINVAL;
+    }
+
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE 
     {
         apr_size_t alloclen;
         apr_size_t valuelen = strlen(valuename) + 1;
         apr_size_t wvallen = 256;
-        apr_wchar_t wvalname[256];
-        apr_wchar_t *wvalue;
-        apr_status_t rv;
-        rv = apr_conv_utf8_to_ucs2(valuename, &valuelen, wvalname, &wvallen);
-        if (rv != APR_SUCCESS)
-            return rv;
-        else if (valuelen)
-            return APR_ENAMETOOLONG;
-        /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, NULL, &size);
-        if (rc != ERROR_SUCCESS) {
-            return APR_FROM_OS_ERROR(rc);
-        }
-        if ((size < 2) || (type != REG_MULTI_SZ)) {
-            return APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER);
-        }
-        wvalue = apr_palloc(pool, size);
-
-        /* Read value based on size query above */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, 
-                              (LPBYTE)wvalue, &size);
-        if (rc != ERROR_SUCCESS) {
-            return APR_FROM_OS_ERROR(rc);
-        }
+        apr_wchar_t *wvalue = (apr_wchar_t *)value;
 
         /* ###: deliberately overallocate plus two extra nulls.
          * We could precalculate the exact buffer here instead, the question
@@ -429,10 +519,10 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
         size /= 2;
         alloclen = valuelen = size * 3 + 2;
         buf = apr_palloc(pool, valuelen);
-        rv = apr_conv_ucs2_to_utf8(wvalue, &size, buf, &valuelen);
+        rv = apr_conv_ucs2_to_utf8(value, &size, buf, &valuelen);
         if (rv != APR_SUCCESS)
             return rv;
-        else if (size || (valuelen < 2))
+        else if (size)
             return APR_ENAMETOOLONG;
         buf[(alloclen - valuelen)] = '\0';
         buf[(alloclen - valuelen) + 1] = '\0';
@@ -441,26 +531,16 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, NULL, &size);
-        if (rc != ERROR_SUCCESS)
-            return APR_FROM_OS_ERROR(rc);
-
-        if ((size < 1) || (type != REG_MULTI_SZ)) {
-            return APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER);
-        }
-
         /* Small possiblity the array is either unterminated 
          * or single NULL terminated.  Avert.
          */
-        buf = apr_palloc(pool, size + 2);
-        buf[size + 1] = '\0';
-        buf[size] = '\0';
-        
-        /* Read value based on size query above */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, buf, &size);
-        if (rc != ERROR_SUCCESS)
-            return APR_FROM_OS_ERROR(rc);
+        buf = (char *)value;
+        if (size < 2 || buf[size - 1] != '\0' || buf[size - 1] != '\0') {
+            buf = apr_palloc(pool, size + 2);
+            memcpy(buf, value, size);
+            buf[size + 1] = '\0';
+            buf[size] = '\0';
+        }
     }
 #endif
 
@@ -494,26 +574,17 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
     /* Retrieve a registry string value, and explode any envvars
      * that the system has configured (e.g. %SystemRoot%/someapp.exe)
      */
-    LONG rc;
+    int i;
+    const void *value;
+    apr_size_t bufsize;
     
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE 
     {
-        int i;
-        DWORD size;
+        apr_status_t rv;
         apr_wchar_t *buf;
         apr_wchar_t *tmp;
         apr_size_t bufrem;
-        apr_size_t bufsize;
-        apr_size_t valuelen = strlen(valuename) + 1;
-        apr_size_t wvallen = 256;
-        apr_wchar_t wvalname[256];
-        apr_status_t rv;
-        rv = apr_conv_utf8_to_ucs2(valuename, &valuelen, wvalname, &wvallen);
-        if (rv != APR_SUCCESS)
-            return rv;
-        else if (valuelen)
-            return APR_ENAMETOOLONG;
 
         bufsize = 1; /* For trailing second null */
         for (i = 0; i < nelts; ++i) {
@@ -528,7 +599,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
         tmp = buf;
         for (i = 0; i < nelts; ++i) {
             apr_size_t eltsize = strlen(elts[i]) + 1;
-            size = eltsize;
+            apr_size_t size = eltsize;
             rv = apr_conv_utf8_to_ucs2(elts[i], &size, tmp, &bufrem);
             if (rv != APR_SUCCESS)
                 return rv;
@@ -537,22 +608,22 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
             tmp += eltsize;
         }
         if (!nelts) {
+            --bufrem;
             (*tmp++) = L'\0';
         }
+        --bufrem;
         *tmp = L'\0'; /* Trailing second null */
 
-        size = (bufsize - bufrem) * 2;
-        rc = RegSetValueExW(key->hkey, wvalname, 0, REG_MULTI_SZ, 
-                            (LPBYTE)buf, size);
-        if (rc != ERROR_SUCCESS)
-            return APR_FROM_OS_ERROR(rc);
+        bufsize = (bufsize - bufrem) * 2;
+        value = (void*)buf;
     }
 #endif /* APR_HAS_UNICODE_FS */
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        int  bufsize, i;
-        char *buf, *tmp;
+        char *buf;
+        char *tmp;
+
         bufsize = 1; /* For trailing second null */
         for (i = 0; i < nelts; ++i) {
             bufsize += strlen(elts[i]) + 1;
@@ -563,21 +634,19 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
         buf = apr_palloc(pool, bufsize);
         tmp = buf;
         for (i = 0; i < nelts; ++i) {
-            strcpy(tmp, elts[i]);
-            tmp += strlen(elts[i]) + 1;
+            apr_size_t len = strlen(elts[i]) + 1;
+            memcpy(tmp, elts[i], len);
+            tmp += len;
         }
         if (!nelts) {
             (*tmp++) = '\0';
         }
         *tmp = '\0'; /* Trailing second null */
-
-        rc = RegSetValueEx(key->hkey, valuename, 0, REG_MULTI_SZ, 
-                           buf, bufsize);
-        if (rc != ERROR_SUCCESS)
-            return APR_FROM_OS_ERROR(rc);
+        value = buf;
     }
 #endif
-    return APR_SUCCESS;
+    return ap_regkey_value_raw_set(key, valuename, value, 
+                                   bufsize, REG_MULTI_SZ, pool);
 }
 
 
