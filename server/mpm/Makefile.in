@@ -1,4 +1,4 @@
 
-SUBDIRS = $(MPM_NAME)
+SUBDIRS = $(MPM_SUBDIR_NAME)
 
 include $(top_builddir)/build/rules.mk
