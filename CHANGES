@@ -1,5 +1,14 @@
 Changes with Apache 2.0.37
 
+  *) Changed cgi and piped log behavior to accept 65536 characters
+     on Win32 (matching Linux) before deadlocking between outputing
+     client stdin, slurping the output from stdout and then the stderr
+     stream.  PR 8179  [William Rowe]
+
+  *) Fixed Win32 wintty.exe support to assure the window title is valid.
+     Elimiates possible gpfault or garbage title without the -t option.
+     [William Rowe]
+
   *) Rewrite mod_cgi's input handling to use brigades and input
      filters.  [Justin Erenkrantz]
 
