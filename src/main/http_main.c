@@ -1154,7 +1154,7 @@ void set_signals() {
 #ifdef NO_USE_SIGACTION
     signal(SIGTERM,(void (*)())sig_term);
     signal(SIGHUP,(void (*)())restart);
-    signal(SIGINT,(void (*)())graceful_restart);
+    signal(SIGUSR1,(void (*)())graceful_restart);
 #else
     memset(&sa,0,sizeof sa);
     sa.sa_handler=(void (*)())sig_term;
@@ -1164,8 +1164,8 @@ void set_signals() {
     if(sigaction(SIGHUP,&sa,NULL) < 0)
 	log_unixerr("sigaction(SIGHUP)", NULL, NULL, server_conf);
     sa.sa_handler=(void (*)())graceful_restart;
-    if(sigaction(SIGINT,&sa,NULL) < 0)
-	log_unixerr("sigaction(SIGINT)", NULL, NULL, server_conf);
+    if(sigaction(SIGUSR1,&sa,NULL) < 0)
+	log_unixerr("sigaction(SIGUSR1)", NULL, NULL, server_conf);
 #endif
 }
 
@@ -1381,6 +1381,7 @@ void child_main(int child_num_arg)
 		exit(0);
 		}
 	    /*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+	    sync_scoreboard_image();
 	    if(scoreboard_image->global.exit_generation >= generation)
 		exit(0);
 
@@ -1490,7 +1491,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1);
     }
 
-    /*    note_cleanups_for_fd (pconf, s); don't arrange to close on exec or restart */
+    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
     
     if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
        == -1) {
@@ -1542,7 +1543,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 
 static listen_rec *old_listeners;
 
-static void copy_listeners()
+static void copy_listeners(pool *p)
     {
     listen_rec *lr;
 
@@ -1551,6 +1552,7 @@ static void copy_listeners()
 	{
 	listen_rec *nr=malloc(sizeof *nr);
 	*nr=*lr;
+	kill_cleanups_for_fd(p,nr->fd);
 	nr->next=old_listeners;
 	assert(!nr->used);
 	old_listeners=nr;
@@ -1621,13 +1623,16 @@ void standalone_main(int argc, char **argv)
     }
     
     if(is_graceful)
-	log_error("SIGINT received.  Doing graceful restart",server_conf);
+	{
+	log_error("SIGUSR1 received.  Doing graceful restart",server_conf);
+	kill_cleanups_for_fd(pconf,sd);
+	}
     else if (sd != -1 || listenmaxfd != -1) {
 	reclaim_child_processes(); /* Not when just starting up */
 	log_error ("SIGHUP received.  Attempting to restart", server_conf);
     }
     
-    copy_listeners();
+    copy_listeners(pconf);
     saved_sd=sd;
     restart_time = time(NULL);
     clear_pool (pconf);

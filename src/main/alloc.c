@@ -729,6 +729,11 @@ void note_cleanups_for_fd (pool *p, int fd) {
   register_cleanup (p, (void *)fd, fd_cleanup, fd_cleanup);
 }
 
+void kill_cleanups_for_fd(pool *p,int fd)
+    {
+    kill_cleanup(p,(void *)fd,fd_cleanup);
+    }
+
 int popenf(struct pool *a, char *name, int flg, int mode)
 {
   int fd;

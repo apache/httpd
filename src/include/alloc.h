@@ -205,6 +205,7 @@ int popenf(struct pool *, char *name, int flg, int mode);
 
 void note_cleanups_for_file (pool *, FILE *);
 void note_cleanups_for_fd (pool *, int);
+void kill_cleanups_for_fd (pool *p, int fd);
 
 /* routines to note closes... file descriptors are constrained enough
  * on some systems that we want to support this.
