@@ -74,8 +74,8 @@ void add_password(char *user, char *realm, FILE *f) {
     char string[MAX_STRING_LEN];
     unsigned int i;
 
-    pw = strd(getpass("New password:"));
-    if(strcmp(pw,getpass("Re-type new password:"))) {
+    pw = strd((char *) getpass("New password:"));
+    if(strcmp(pw,(char *) getpass("Re-type new password:"))) {
         fprintf(stderr,"They don't match, sorry.\n");
         if(tn)
             unlink(tn);

@@ -18,7 +18,7 @@ RM= /bin/rm -f
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
 
-TARGETS=htpasswd htdigest unescape inc2shtml httpd_monitor rotatelogs
+TARGETS=htpasswd htdigest httpd_monitor rotatelogs logresolve
 
 all: $(TARGETS)
 
@@ -50,8 +50,8 @@ sco3:
 	make all CC=cc EXTRA_LIBS=-lcrypt_i
 
 
-tar: htpasswd unescape
-	$(RM) htpasswd unescape
+tar: htpasswd 
+	$(RM) htpasswd
 
 htpasswd: htpasswd.c
 	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(EXTRA_LIBS)
@@ -59,14 +59,14 @@ htpasswd: htpasswd.c
 htdigest: htdigest.c
 	$(CC) $(CFLAGS) htdigest.c -o htdigest
 
-unescape: unescape.c
-	$(CC) $(CFLAGS) unescape.c -o unescape
-
-inc2shtml: inc2shtml.c
-	$(CC) $(CFLAGS) inc2shtml.c -o inc2shtml
-
 httpd_monitor: httpd_monitor.c
 	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
+
+rotatelogs: rotatelogs.c
+	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
+
+logresolve: logresolve.c
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve
 
 clean:
 	rm -f $(TARGETS)
