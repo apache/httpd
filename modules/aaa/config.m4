@@ -36,13 +36,12 @@ dnl these are the front-end authentication modules
 
 APACHE_MODULE(auth_basic, basic authentication, , , yes)
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
-  ap_old_cppflags=$CPPFLAGS
-  CPPFLAGS="$CPPFLAGS $INCLUDES"
-  AC_TRY_COMPILE([#include <apr.h>], [
-#if !APR_HAS_RANDOM 
-#error You need APR random support to use mod_auth_digest. 
-#endif], , enable_auth_digest=no)
-  CPPFLAGS=$ap_old_cppflags
+  APR_CHECK_APR_DEFINE(APR_HAS_RANDOM)
+  if test $ac_cv_define_APR_HAS_RANDOM = "no"; then
+    echo "You need APR random support to use mod_auth_digest."
+    echo "Look at APR configure options --with-egd and --with-devrandom."
+    enable_auth_digest="no"
+  fi
 ])
 
 APR_ADDTO(LT_LDFLAGS,-export-dynamic)
