@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 23:39:41 $]
+Last modified at [$Date: 2004/05/21 23:49:10 $]
 
 Release:
 
@@ -78,12 +78,6 @@ PATCHES TO BACKPORT FROM 2.1
        modules/proxy/proxy_ftp.c r1.143
        PR 24922 [Pascal Terjan <pterjan@linuxfr.org>]
        +1: minfrin
-
-    *) Fix a potential segfault if the bind password in the LDAP cache
-       is NULL.
-       modules/experimental/util_ldap_cache.c r1.16
-       PR 26686 [Jari Ahonen <jah@progress.com>]
-       +1: jim, trawick, bnicholes
 
     *) Fix handling of IPv6 numeric strings in mod_proxy.
          modules/proxy/proxy_ftp.c r1.141, r1.142
