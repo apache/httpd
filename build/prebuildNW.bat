@@ -36,7 +36,7 @@ copy ..\srclib\pcre\config.hw ..\srclib\pcre\config.h
 copy ..\srclib\pcre\pcre.hw ..\srclib\pcre\pcre.h
 
 @echo Generating the import lists...
-set MWCIncludes=..\include;..\modules\http;..\os\netware;..\server\mpm\netware;..\srclib\apr\include;..\srclib\apr-util\include;+%NovellLibC%
+set MWCIncludes=..\include;..\modules\http;..\modules\aaa;..\os\netware;..\server\mpm\netware;..\srclib\apr\include;..\srclib\apr-util\include;+%NovellLibC%
 mwccnlm -P nw_export.inc -d NETWARE -d CORE_PRIVATE -EP
 awk -f make_nw_export.awk nw_export.i |sort >..\os\netware\httpd.imp
 

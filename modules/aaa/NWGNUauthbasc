@@ -215,10 +215,6 @@ FILES_nlm_Ximports = \
 #
 FILES_nlm_exports = \
 	auth_basic_module \
-	authn_register_provider \
-	authn_lookup_provider \
-	authz_register_provider \
-	authz_lookup_provider \
 	$(EOLIST)
 	
 #   
