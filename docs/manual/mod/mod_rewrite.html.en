@@ -1598,7 +1598,7 @@ There is a special feature:
 
         <li>
 		'<strong><code>cookie|CO=</code></strong><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>]]'
-        (set <strong>co</strong>cookie)<br />
+        (set <strong>co</strong>okie)<br />
         This sets a cookie on the client's browser.  The cookie's name
         is specified by <em>NAME</em> and the value is
         <em>VAL</em>. The <em>domain</em> field is the domain of the
