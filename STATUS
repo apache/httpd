@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/04 14:48:30 $]
+Last modified at [$Date: 2004/02/04 15:09:31 $]
 
 Release:
 
@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    * fix DECLINE_CMD interaction with ITERATE/ITERATE2
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/config.c?r1=1.168&r2=1.169
-      +1: geoff, trawick
 
     * Fix file extensions for real media files and removed rpm extension
       from mime.types. PR 26079. (2.0 + 1.3)

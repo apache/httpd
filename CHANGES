@@ -1,5 +1,9 @@
 Changes with Apache 2.0.49
 
+  *) Keep focus of ITERATE and ITERATE2 on the current module when
+     the module chooses to return DECLINE_CMD for the directive.
+     PR 22299.  [Geoffrey Young <geoff apache.org>]
+
   *) Add support for IMT minor-type wildcards (e.g., text/*) to
      ExpiresByType.  PR#7991  [Ken Coar]
 
