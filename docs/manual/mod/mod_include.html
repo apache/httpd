@@ -109,20 +109,20 @@
         valid attributes are: 
 
         <dl>
-          <dt>errmsg</dt>
+          <dt><strong>errmsg</strong></dt>
 
           <dd>The value is a message that is sent back to the
           client if an error occurs whilst parsing the
           document.</dd>
 
-          <dt>sizefmt</dt>
+          <dt><strong>sizefmt</strong></dt>
 
           <dd>The value sets the format to be used which displaying
           the size of a file. Valid values are <code>bytes</code>
           for a count in bytes, or <code>abbrev</code> for a count
           in Kb or Mb as appropriate.</dd>
 
-          <dt>timefmt</dt>
+          <dt><strong>timefmt</strong></dt>
 
           <dd>The value is a string to be used by the
           <code>strftime(3)</code> library routine when printing
@@ -133,17 +133,18 @@
       <dt><strong><a id="echo" name="echo">echo</a></strong></dt>
 
       <dd>
-        This command prints one of the include variables, defined
+        This command prints one of the <a href="#includevars">include
+        variables</a>, defined
         below. If the variable is unset, it is printed as
         <code>(none)</code>. Any dates printed are subject to the
         currently configured <code>timefmt</code>. Attributes: 
 
         <dl>
-          <dt>var</dt>
+          <dt><strong>var</strong></dt>
 
           <dd>The value is the name of the variable to print.</dd>
 
-          <dt>encoding</dt>
+          <dt><strong>encoding</strong></dt>
 
           <dd>Specifies how Apache should encode special characters
           contained in the variable before outputting them. If set
@@ -177,7 +178,7 @@
         completely. The valid attributes are: 
 
         <dl>
-          <dt>cgi</dt>
+          <dt><strong>cgi</strong></dt>
 
           <dd>
             The value specifies a (%-encoded) URL relative path to
@@ -198,19 +199,51 @@
             addition to the standard <a href="mod_cgi.html">CGI</a>
             environment.</p>
 
+            <p>For example:</p>
+
+  <code>&lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;</code>
+
             <p>If the script returns a Location: header instead of
             output, then this will be translated into an HTML
             anchor.</p>
 
-            <p>The <code>include virtual</code> element should be
-            used in preference to <code>exec cgi</code>.</p>
+            <p>The <code><a href="#includevirtual">include
+            virtual</a></code> element should be
+            used in preference to <code>exec cgi</code>. In particular,
+            if you need to pass additional arguments to a CGI program,
+            using the query string, this cannot be done with <code>exec
+            cgi</code>, but can be done with <code>include
+            virtual</code>, as shown here:</p>
+
+  <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
           </dd>
 
-          <dt>cmd</dt>
+          <dt><strong>cmd</strong></dt>
 
-          <dd>The server will execute the given string using
-          <code>/bin/sh</code>. The include variables are available
-          to the command.</dd>
+          <dd>
+          <p>The server will execute the given string using
+          <code>/bin/sh</code>. The <a 
+          href="#includevars">include variables</a> are available
+          to the command, in addition to the usual set of CGI 
+          variables.</p>
+
+        <p>The use of <code><a href="#includevirtual">#include 
+        virtual</a></code> is almost always
+        prefered to using either <code>#exec cgi</code> or <code>#exec
+        cmd</code>. The former (<code>#include virtual</code>) used the
+        standard Apache sub-request mechanism to include files or
+        scripts. It is much better tested and maintained.</p>
+
+          <p>In addition, on some platforms, like Win32, and on unix
+          when using suexec, you cannot pass arguments to a command in 
+          an <code>exec</code> directive, or otherwise include spaces in
+          the command. Thus, while the following will work under a
+          non-suexec configuration on unix, it will not produce the
+          desired result under Win32, or when running suexec:</p>
+
+   <code>&lt;!--#exec cmd="perl /path/to/perlscript arg1 arg2" --&gt;</code>
+
+          </dd>
         </dl>
       </dd>
 
@@ -222,12 +255,12 @@
         Attributes: 
 
         <dl>
-          <dt>file</dt>
+          <dt><strong>file</strong></dt>
 
           <dd>The value is a path relative to the directory
           containing the current document being parsed.</dd>
 
-          <dt>virtual</dt>
+          <dt><strong>virtual</strong></dt>
 
           <dd>The value is a (%-encoded) URL-path relative to the
           current document being parsed. If it does not begin with
@@ -264,62 +297,85 @@
         command. The valid attributes are:</p>
 
         <dl>
-          <dt>file</dt>
+          <dt><strong>file</strong></dt>
 
           <dd>The value is a path relative to the directory
           containing the current document being parsed. It cannot
           contain <code>../</code>, nor can it be an absolute path.
+          Therefore, you cannot include files that are outside of the
+          document root, or above the current document in the directory
+          structure.
           The <code>virtual</code> attribute should always be used
           in preference to this one.</dd>
 
-          <dt>virtual</dt>
+          <dt><strong><a name="includevirtual">virtual</a></strong></dt>
 
-          <dd>The value is a (%-encoded) URL relative to the
+         <dd>
+          <p>The value is a (%-encoded) URL relative to the
           current document being parsed. The URL cannot contain a
           scheme or hostname, only a path and an optional query
           string. If it does not begin with a slash (/) then it is
-          taken to be relative to the current document.</dd>
-        </dl>
-        A URL is constructed from the attribute, and the output the
+          taken to be relative to the current document.</p>
+
+          <p>A URL is constructed from the attribute, and the output the
         server would return if the URL were accessed by the client
         is included in the parsed output. Thus included files can
-        be nested.
+           be nested.</p>
+
+           <p>If the specified URL is a CGI program, the program will
+           be executed and its output inserted in place of the directive
+           in the parsed file. You may include a query string in a CGI
+           url:</p>
+     
+     <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
+           
+           <p><code>include virtual</code> should be used in preference
+           to <code>exec cgi</code> to include the output of CGI
+           programs into an HTML document.
+          </dd>
+        </dl>
       </dd>
 
       <dt><strong>printenv</strong></dt>
 
-      <dd>This prints out a listing of all existing variables and
+      <dd>
+      <p>This prints out a listing of all existing variables and
       their values. Starting with Apache 1.3.12, special characters
       are entity encoded (see the <a
       href="#echo"><code>echo</code></a> element for details)
-      before being output. No attributes.</dd>
+      before being output. There are no attributes.</p>
 
-      <dd>For example: <code>&lt;!--#printenv --&gt;</code></dd>
+      <p>For example:</p>
 
-      <dd>Apache 1.2 and above.</dd>
+      <p><code>&lt;!--#printenv --&gt;</code></p>
 
+      <p>The <strong>printenv</strong> element is available only in
+      Apache 1.2 and above.</p>
+    </dd>
       <dt><strong>set</strong></dt>
 
       <dd>
         This sets the value of a variable. Attributes: 
 
         <dl>
-          <dt>var</dt>
+          <dt><strong>var</strong></dt>
 
           <dd>The name of the variable to set.</dd>
 
-          <dt>value</dt>
+          <dt><strong>value</strong></dt>
 
           <dd>The value to give a variable.</dd>
         </dl>
+        <p>
         For example: <code>&lt;!--#set var="category" value="help"
-        --&gt;</code>
-      </dd>
+        --&gt;</code></p>
 
-      <dd>Apache 1.2 and above.</dd>
+      <p>The <strong>set</strong> element is available only in
+      Apache 1.2 and above.</p>
+      </dd>
     </dl>
 
-    <h2>Include Variables</h2>
+    <h2><a name="includevars">Include Variables</a></h2>
     In addition to the variables in the standard CGI environment,
     these are available for the <code>echo</code> command, for
     <code>if</code> and <code>elif</code>, and to any program
