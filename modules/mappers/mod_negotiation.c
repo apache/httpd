@@ -987,7 +987,18 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-length:", 15)) {
-                mime_info.bytes = apr_atoi64((char *)body);
+                char *errp;
+                apr_off_t number;
+
+                if (apr_strtoff(&number, body, &errp, 10)
+                    || *errp || number < 0) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "Parse error in type map, Content-Length: "
+                                  "'%s' in %s is invalid.",
+                                  body, r->filename);
+                    break;
+                }
+                mime_info.bytes = number;
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-language:", 17)) {
@@ -2557,7 +2568,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         /* Note that the Alternates specification (in rfc2295) does
          * not require that we include {length x}, so we could omit it
          * if determining the length is too expensive.  We currently
-         * always include it though.  22 bytes is enough for 2^64.
+         * always include it though.
          *
          * If the variant is a CGI script, find_content_length would
          * return the length of the script, not the output it
