@@ -1597,6 +1597,7 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
 
     fsctx.params = params;
     fsctx.wres.walk_ctx = params->walk_ctx;
+    fsctx.wres.pool = params->pool;
 
     /* ### zero out versioned, working, baselined? */
 
