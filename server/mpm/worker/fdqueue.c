@@ -112,6 +112,10 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
     for (i = 0; i < queue_capacity; ++i)
         queue->data[i].sd = NULL;
 
+    queue->recycled_pools = apr_palloc(a,
+                                       queue_capacity * sizeof(apr_pool_t *));
+    queue->num_recycled = 0;
+
     apr_pool_cleanup_register(a, queue, ap_queue_destroy, apr_pool_cleanup_null);
 
     return FD_QUEUE_SUCCESS;
@@ -122,10 +126,12 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
  * the push operation has completed, it signals other threads waiting
  * in apr_queue_pop() that they may continue consuming sockets.
  */
-int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p) 
+int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
+                  apr_pool_t **recycled_pool)
 {
     fd_queue_elem_t *elem;
 
+    *recycled_pool = NULL;
     if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
@@ -137,6 +143,10 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
     elem = &queue->data[queue->tail++];
     elem->sd = sd;
     elem->p = p;
+
+    if (queue->num_recycled != 0) {
+        *recycled_pool = queue->recycled_pools[--queue->num_recycled];
+    }
 
     apr_thread_cond_signal(queue->not_empty);
 
@@ -153,12 +163,25 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
  * Once retrieved, the socket is placed into the address specified by
  * 'sd'.
  */
-apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p) 
+apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
+                          apr_pool_t *recycled_pool) 
 {
     fd_queue_elem_t *elem;
 
     if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
+        if (recycled_pool) {
+            apr_pool_destroy(recycled_pool);
+        }
         return FD_QUEUE_FAILURE;
+    }
+
+    if (recycled_pool) {
+        if (queue->num_recycled < queue->bounds) {
+            queue->recycled_pools[queue->num_recycled++] = recycled_pool;
+        }
+        else {
+            apr_pool_destroy(recycled_pool);
+        }
     }
 
     /* Keep waiting until we wake up and find that the queue is not empty. */

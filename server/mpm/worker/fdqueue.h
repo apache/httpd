@@ -91,13 +91,17 @@ struct fd_queue_t {
     apr_thread_cond_t  *not_empty;
     apr_thread_cond_t  *not_full;
     int                 cancel_state;
+    apr_pool_t        **recycled_pools;
+    int                 num_recycled;
 };
 typedef struct fd_queue_t fd_queue_t;
 
 /* FIXME: APRize these -- return values should be apr_status_t */
 int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
-int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p);
-apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p);
+int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
+                  apr_pool_t **recycled_pool);
+apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
+                          apr_pool_t *recycled_pool);
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
 
 #endif /* FDQUEUE_H */
