@@ -114,11 +114,18 @@ typedef enum {
     CT_COOKIE2
 } cookie_type_e;
 
+typedef enum {
+    CF_NORMAL,
+    CF_COMPACT
+} cookie_format_e;
+
 typedef struct {
     int enabled;
     cookie_type_e style;
+    cookie_format_e format;
     char *cookie_name;
     char *cookie_domain;
+    char *prefix_string;
 } cookie_dir_rec;
 
 /* Define this to allow post-2000 cookies. Cookies use two-digit dates,
@@ -126,15 +133,18 @@ typedef struct {
  */
 #define MILLENIAL_COOKIES
 
-/* Make Cookie: Now we have to generate something that is going to be
- * pretty unique.  We can base it on the pid, time, hostip */
-
+/* Default name of the cookie
+ */
 #define COOKIE_NAME "Apache"
 
-static void make_cookie(request_rec *r)
+
+/* Make normal cookie: Try to make something unique based on 
+ * pid, time, and hostid, plus the user-configurable prefix.
+ *
+ * This function will make a "verbose" version of the cookie.
+ */
+static char * make_normal_id(char * buffer, int bufsize, request_rec *r)
 {
-    cookie_log_state *cls = ap_get_module_config(r->server->module_config,
-						 &usertrack_module);
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
     clock_t mpe_times;
     struct tms mpe_tms;
@@ -146,9 +156,6 @@ static void make_cookie(request_rec *r)
     struct timezone tz = {0, 0};
 #endif /* defined(NETWARE) */
 #endif
-    /* 1024 == hardcoded constant */
-    char cookiebuf[1024];
-    char *new_cookie;
     const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
 					   REMOTE_NAME);
     cookie_dir_rec *dcfg;
@@ -162,12 +169,13 @@ static void make_cookie(request_rec *r)
 
     mpe_times = times(&mpe_tms);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
-		(int) getpid(),
+    ap_snprintf(buffer, bufsize, "%s%s.%d%ld%ld", 
+		dcfg->prefix_string, rname, (int) getpid(),
                 (long) r->request_time, (long) mpe_tms.tms_utime);
 #elif defined(NETWARE)
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
-        (int) getpid(), (long) r->request_time, (long) clock());                
+    ap_snprintf(buffer, bufsize, "%s%s.%d%ld%ld", 
+		dcfg->prefix_string, rname, (int) getpid(),
+		(long) r->request_time, (long) clock());
 #elif defined(WIN32)
     /*
      * We lack gettimeofday() and we lack times(). So we'll use a combination
@@ -175,17 +183,99 @@ static void make_cookie(request_rec *r)
      * was started. It should be relatively unique.
      */
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname,
-		(int) getpid(),
+    ap_snprintf(buffer, bufsize, "%s%s.%d%ld%ld",
+		dcfg->prefix_string, rname, (int) getpid(),
                 (long) r->request_time, (long) GetTickCount());
 
 #else
     gettimeofday(&tv, &tz);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%d", rname,
-		(int) getpid(),
+    ap_snprintf(buffer, bufsize, "%s%s.%d%ld%d", 
+		dcfg->prefix_string, rname, (int) getpid(),
                 (long) tv.tv_sec, (int) tv.tv_usec / 1000);
 #endif
+
+    return buffer;
+}
+
+
+/* Make normal cookie: Try to make something unique based on 
+ * pid, time, and hostid, plus the user-configurable prefix.
+ *
+ * This function will make a "compact" version of the cookie.
+ */
+static char * make_compact_id(char * buffer, int bufsize, request_rec *r)
+{
+#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+    clock_t mpe_times;
+    struct tms mpe_tms;
+#elif !defined(WIN32)
+    struct timeval tv;
+#ifdef NETWARE
+    time_t tz = 0;
+#else
+    struct timezone tz = {0, 0};
+#endif /* defined(NETWARE) */
+#endif
+    unsigned long ipaddr = ntohl(r->connection->remote_addr.sin_addr.s_addr);
+    cookie_dir_rec *dcfg;
+
+    dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
+
+#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+/* We lack gettimeofday(), so we must use time() to obtain the epoch
+   seconds, and then times() to obtain CPU clock ticks (milliseconds).
+   Combine this together to obtain a hopefully unique cookie ID. */
+
+    mpe_times = times(&mpe_tms);
+
+    ap_snprintf(buffer, bufsize, "%s%lx%x%lx%lx", 
+		dcfg->prefix_string, ipaddr, (int) getpid(),
+                (long) r->request_time, (long) mpe_tms.tms_utime);
+#elif defined(NETWARE)
+    ap_snprintf(buffer, bufsize, "%s%lx%x%lx%lx", 
+		dcfg->prefix_string, ipaddr, (int) getpid(),
+		(long) r->request_time, (long) clock());
+#elif defined(WIN32)
+    /*
+     * We lack gettimeofday() and we lack times(). So we'll use a combination
+     * of time() and GetTickCount(), which returns milliseconds since Windows
+     * was started. It should be relatively unique.
+     */
+
+    ap_snprintf(buffer, bufsize, "%s%lx%x%lx%lx",
+		dcfg->prefix_string, ipaddr, (int) getpid(),
+                (long) r->request_time, (long) GetTickCount());
+
+#else
+    gettimeofday(&tv, &tz);
+
+    ap_snprintf(buffer, bufsize, "%s%lx%x%lx%x", 
+		dcfg->prefix_string, ipaddr, (int) getpid(),
+                (long) tv.tv_sec, (int)(tv.tv_usec % 65535));
+#endif
+
+    return buffer;
+}
+
+
+static void make_cookie(request_rec *r)
+{
+    cookie_log_state *cls = ap_get_module_config(r->server->module_config,
+						 &usertrack_module);
+
+    /* 1024 == hardcoded constant */
+    char cookiebuf[1024];
+    char *new_cookie;
+    cookie_dir_rec *dcfg;
+
+    dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
+
+    if (dcfg->format == CF_COMPACT) {
+	make_compact_id(cookiebuf, sizeof(cookiebuf), r);
+    } else {
+	make_normal_id(cookiebuf, sizeof(cookiebuf), r);
+    }
 
     if (cls->expires) {
         struct tm *tms;
@@ -296,7 +386,9 @@ static void *make_cookie_dir(pool *p, char *d)
     dcfg = (cookie_dir_rec *) ap_pcalloc(p, sizeof(cookie_dir_rec));
     dcfg->cookie_name = COOKIE_NAME;
     dcfg->cookie_domain = NULL;
+    dcfg->prefix_string = "";
     dcfg->style = CT_UNSET;
+    dcfg->format = CF_NORMAL;
     dcfg->enabled = 0;
     return dcfg;
 }
@@ -440,6 +532,39 @@ static const char *set_cookie_style(cmd_parms *cmd, void *mconfig, char *name)
     return NULL;
 }
 
+/*
+ * Make a note of the cookie format we should use.
+ */
+static const char *set_cookie_format(cmd_parms *cmd, void *mconfig, char *name)
+{
+    cookie_dir_rec *dcfg;
+
+    dcfg = (cookie_dir_rec *) mconfig;
+
+    if (strcasecmp(name, "Normal") == 0) {
+        dcfg->format = CF_NORMAL;
+    }
+    else if (strcasecmp(name, "Compact") == 0) {
+        dcfg->format = CF_COMPACT;
+    }
+    else {
+        return ap_psprintf(cmd->pool, "Invalid %s keyword: '%s'",
+                           cmd->cmd->name, name);
+    }
+
+    return NULL;
+}
+
+static const char *set_cookie_prefix(cmd_parms *cmd, void *mconfig, char *name)
+{
+    cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
+
+    dcfg->prefix_string = ap_pstrdup(cmd->pool, name);
+
+    return NULL;
+}
+
+
 static const command_rec cookie_log_cmds[] = {
     {"CookieExpires", set_cookie_exp, NULL, OR_FILEINFO, TAKE1,
      "an expiry date code"},
@@ -451,6 +576,10 @@ static const command_rec cookie_log_cmds[] = {
      "domain to which this cookie applies"},
     {"CookieStyle", set_cookie_style, NULL, OR_FILEINFO, TAKE1,
      "'Netscape', 'Cookie' (RFC2109), or 'Cookie2' (RFC2965)"},
+    {"CookieFormat", set_cookie_format, NULL, OR_FILEINFO, TAKE1,
+     "'Normal' or 'Compact'"},
+    {"CookiePrefix", set_cookie_prefix, NULL, OR_FILEINFO, TAKE1,
+     "String prepended to cookie"},
     {NULL}
 };
 
