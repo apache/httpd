@@ -227,8 +227,6 @@ struct ssi_internal_ctx {
     arg_item_t   *current_arg;   /* currently parsed argument */
     arg_item_t   *argv;          /* all arguments */
 
-    char         *error_str_override;
-    char         *time_str_override;
     char         *re_string;
     regmatch_t   (*re_result)[10];
 };
@@ -1956,24 +1954,14 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
         }
 
         if (!strcmp(tag, "errmsg")) {
-            if (!ctx->intern->error_str_override) {
-                ctx->intern->error_str_override = apr_palloc(ctx->pool,
-                                                             MAX_STRING_LEN);
-                ctx->error_str = ctx->intern->error_str_override;
-            }
-
-            ap_ssi_parse_string(ctx, tag_val, ctx->intern->error_str_override,
-                                MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
+            ctx->error_str = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
+                                                 SSI_EXPAND_DROP_NAME);
         }
         else if (!strcmp(tag, "timefmt")) {
             apr_time_t date = r->request_time;
-            if (!ctx->intern->time_str_override) {
-                ctx->intern->time_str_override = apr_palloc(ctx->pool,
-                                                            MAX_STRING_LEN);
-                ctx->time_str = ctx->intern->time_str_override;
-            }
-            ap_ssi_parse_string(ctx, tag_val, ctx->intern->time_str_override,
-                                MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
+
+            ctx->time_str = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
+                                                SSI_EXPAND_DROP_NAME);
 
             apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
                            ctx->time_str, 0));
@@ -3659,8 +3647,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         ctx->if_nesting_level = 0;
         intern->re_string = NULL;
-        intern->error_str_override = NULL;
-        intern->time_str_override = NULL;
 
         ctx->error_str = conf->default_error_msg;
         ctx->time_str = conf->default_time_fmt;
