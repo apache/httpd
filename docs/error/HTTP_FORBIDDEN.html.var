@@ -1,5 +1,5 @@
 Content-language: de
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de" -->
 <!--#set var="TITLE" value="Zugriff verweigert!" -->
@@ -23,7 +23,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
 <!--#set var="TITLE" value="Access forbidden!" -->
 <!--#include virtual="include/top.html" -->
@@ -44,7 +44,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es" -->
 <!--#set var="TITLE" value="Access forbidden!" -->
@@ -69,7 +69,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr" -->
 <!--#set var="TITLE" value="Acc&egrave;s interdit!" -->
@@ -93,7 +93,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: nl
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl" -->
 <!--#set var="TITLE" value="Toegang verboden!" -->
@@ -115,7 +115,7 @@ Body:----------nl--
 ----------nl--
 
 Content-language: sv
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv" -->
 <!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!" -->
@@ -139,7 +139,7 @@ Body:----------sv--
 ----------sv--
 
 Content-language: it
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it" -->
 <!--#set var="TITLE" value="Accesso negato!" -->

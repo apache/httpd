@@ -1,5 +1,5 @@
 Content-language: de
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de" -->
 <!--#set var="TITLE" value="Objekt nicht mehr verf&uuml;gbar!" -->
@@ -26,7 +26,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
 <!--#set var="TITLE" value="Resource is no longer available!" -->
 <!--#include virtual="include/top.html" -->
@@ -51,7 +51,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es" -->
 <!--#set var="TITLE" value="Resource is no longer available!" -->
@@ -77,7 +77,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr" -->
 <!--#set var="TITLE" value="Cette ressource n'existe plus!" -->
@@ -103,7 +103,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: nl
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl" -->
 <!--#set var="TITLE" value="Dit object is niet langer beschikbaar!" -->
@@ -129,7 +129,7 @@ Body:----------nl--
 ----------nl--
 
 Content-language: sv
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv" -->
 <!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!" -->
@@ -155,7 +155,7 @@ Body:----------sv--
 ----------sv--
 
 Content-language: it
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it" -->
 <!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!" -->

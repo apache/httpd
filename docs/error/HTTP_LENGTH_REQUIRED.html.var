@@ -1,5 +1,5 @@
 Content-language: de
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de" -->
 <!--#set var="TITLE" value="Content-Length-Angabe fehlerhaft!" -->
@@ -14,7 +14,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
 <!--#set var="TITLE" value="Bad Content-Length!" -->
 <!--#include virtual="include/top.html" -->
@@ -26,7 +26,7 @@ Body:----------en--
 ----------en--
 
 Content-language: fr
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr" -->
 <!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!" -->
@@ -39,7 +39,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: nl
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl" -->
 <!--#set var="TITLE" value="Ongeldige lengte inhoud!" -->
@@ -52,7 +52,7 @@ Body:----------nl--
 ----------nl--
 
 Content-language: sv
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv" -->
 <!--#set var="TITLE" value="Felaktig Content-Length!" -->
@@ -65,7 +65,7 @@ Body:----------sv--
 ----------sv--
 
 Content-language: it
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it" -->
 <!--#set var="TITLE" value="Campo Content-Length non valido!" -->
