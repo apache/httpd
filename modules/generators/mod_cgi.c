@@ -311,8 +311,6 @@ static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_i
     apr_procattr_t *procattr;
     apr_proc_t *procnew = apr_pcalloc(p, sizeof(*procnew));
     apr_status_t rc = APR_SUCCESS;
-    apr_file_t *file = NULL;
-    apr_socket_t *sock = NULL;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf;
@@ -661,6 +659,7 @@ static int cgi_handler(request_rec *r)
             ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
             ap_brigade_append_buckets(bb, ap_bucket_create_eos());
 	}
+        ap_pass_brigade(r->filters, bb);
 
         log_script_err(r, script_err);
 	apr_close(script_err);
@@ -670,9 +669,9 @@ static int cgi_handler(request_rec *r)
         bb = ap_brigade_create(r->pool);
         ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
         ap_brigade_append_buckets(bb, ap_bucket_create_eos());
+        ap_pass_brigade(r->filters, bb);
     }
 
-    ap_pass_brigade(r->filters, bb);
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
