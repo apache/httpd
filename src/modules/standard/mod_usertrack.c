@@ -286,9 +286,28 @@ static void make_cookie(request_rec *r)
     return;
 }
 
-/* dcfg->regexp is "^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)",
- * which has three subexpressions, $0..$2 */
+/*
+ * dcfg->regexp is "^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)",
+ * which has three subexpressions, $0..$2
+ */
 #define NUM_SUBS 3
+
+static void set_and_comp_regexp(cookie_dir_rec *dcfg, 
+                                pool *p,
+                                const char *cookie_name) 
+{
+    /*
+     * The goal is to end up with this regexp, 
+     * ^cookie_name=([^;]+)|;[\t]+cookie_name=([^;]+) 
+     * with cookie_name obviously substituted either
+     * with the real cookie name set by the user in httpd.conf,
+     * or with the default COOKIE_NAME.
+     */
+    dcfg->regexp_string = ap_pstrcat(p, "^", cookie_name,
+                                     "=([^;]+)|;[ \t]+", cookie_name,
+                                     "=([^;]+)", NULL);
+    dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, REG_EXTENDED);
+}
 
 static int spot_cookie(request_rec *r)
 {
@@ -352,6 +371,11 @@ static void *make_cookie_dir(pool *p, char *d)
     dcfg->style = CT_UNSET;
     dcfg->format = CF_NORMAL;
     dcfg->enabled = 0;
+    /*
+     * In case the user does not use the CookieName directive,
+     * we need to compile the regexp for the default cookie name.
+     */
+    set_and_comp_regexp(dcfg, p, COOKIE_NAME);
     return dcfg;
 }
 
@@ -436,18 +460,10 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
-    /* The goal is to end up with this regexp, 
-     * ^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)
-     * with cookie_name
-     * obviously substituted with the real cookie name set by the
-     * user in httpd.conf. */
-    dcfg->regexp_string = ap_pstrcat(cmd->pool, "^", name, 
-                                     "=([^;]+)|;[ \t]+", name, 
-                                     "=([^;]+)", NULL);
-
     dcfg->cookie_name = ap_pstrdup(cmd->pool, name);
 
-    dcfg->regexp = ap_pregcomp(cmd->pool, dcfg->regexp_string, REG_EXTENDED);
+    set_and_comp_regexp(dcfg, cmd->pool, name);
+
     if (dcfg->regexp == NULL) {
 	return "Regular expression could not be compiled.";
     }

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.30
 
+  *) Fix bug causing core dump when using CookieTracking without
+     specifying a CookieName directly. Bugz# 24483.
+     [Manni Wood <manniwood planet-save.com>, Jim Jagielski (backport)]
+
   *) Fix RewriteBase directive to not add double slashes.  [André Malo]
 
   *) mod_rewrite: In external rewrite maps lookup keys containing
