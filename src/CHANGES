@@ -1,6 +1,13 @@
-$Id: CHANGES,v 1.67 1996/09/27 08:55:49 mjc Exp $
+$Id: CHANGES,v 1.68 1996/09/29 14:16:09 chuck Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Phase I proxy overhaul:
+     Added support for null form data set [Petr Lampa]
+     Added RFC 850 date support (Netscape uses it) [Andrew Daviel]
+     Removed old ftp handler and conditional compile stuff
+     Added server.sin_family=AF_INET to guarantee new ftp works
+     Changed proxy ftp userid to proxy_user@apache_host.org [Chuck Murcko]
 
   *) Cookie module has been renamed from mod_cookies.c to mod_usertrack.c
      to stop user confusion.  You only need the usertrack module if you
