@@ -190,7 +190,6 @@ static apr_lock_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_lock_t *accept_mutex;
-static apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
 static const char *lock_fname;
 
 #ifdef NO_SERIALIZED_ACCEPT
@@ -1266,7 +1265,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                              ap_server_root_relative(_pconf, lock_fname),
                              ap_my_pid);
     rv = apr_lock_create_np(&accept_mutex, APR_MUTEX, APR_LOCKALL,
-                            accept_lock_mech, lock_fname, _pconf);
+                            ap_accept_lock_mech, lock_fname, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");

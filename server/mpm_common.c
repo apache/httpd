@@ -570,7 +570,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 #endif
 
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
+apr_lockmech_e_np ap_accept_lock_mech = APR_LOCK_DEFAULT;
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 						     void *dummy,
 						     const char *arg)
@@ -581,26 +581,26 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
     }
 
     if (!strcasecmp(arg, "default")) {
-        accept_lock_mech = APR_LOCK_DEFAULT;
+        ap_accept_lock_mech = APR_LOCK_DEFAULT;
     }
 #if APR_HAS_FLOCK_SERIALIZE
     else if (!strcasecmp(arg, "flock")) {
-        accept_lock_mech = APR_LOCK_FLOCK;
+        ap_accept_lock_mech = APR_LOCK_FLOCK;
     }
 #endif
 #if APR_HAS_FCNTL_SERIALIZE
     else if (!strcasecmp(arg, "fcntl")) {
-        accept_lock_mech = APR_LOCK_FCNTL;
+        ap_accept_lock_mech = APR_LOCK_FCNTL;
     }
 #endif
 #if APR_HAS_SYSVSEM_SERIALIZE
     else if (!strcasecmp(arg, "sysvsem")) {
-        accept_lock_mech = APR_LOCK_SYSVSEM;
+        ap_accept_lock_mech = APR_LOCK_SYSVSEM;
     }
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
     else if (!strcasecmp(arg, "proc_pthread")) {
-        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
+        ap_accept_lock_mech = APR_LOCK_PROC_PTHREAD;
     }
 #endif
     else {
