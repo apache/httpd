@@ -749,23 +749,30 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 
 ### Section 3: Virtual Hosts
 #
+# VirtualHost: If you want to maintain multiple domains/hostnames on your
+# machine you can setup VirtualHost containers for them.
+# Please see the documentation at <URL:http://www.apache.org/docs/vhosts/>
+# for further details before you try to setup virtual hosts.
+# You may use the command line option '-S' to verify your virtual host
+# configuration.
 
 #
-# VirtualHost: Allows the daemon to respond to requests for more than one
-# server address, if your server machine is configured to accept IP packets
-# for multiple addresses. This can be accomplished with the ifconfig 
-# alias flag, or through kernel patches like VIF.
+# If you want to use name-based virtual hosts you need to define at
+# least one IP address (and port number) for them.
 #
-# Almost any Apache directive may go into a VirtualHost# container.
-# See the documentation at <URL:http://www.apache.org/docs/vhosts.html>, and
-# also the BindAddress entry.
+#NameVirtualHost 12.34.56.78:80
+#NameVirtualHost 12.34.56.78
+
 #
-#<VirtualHost host.some_domain.com>
+# VirtualHost example:
+# Almost any Apache directive may go into a VirtualHost container.
+#
+#<VirtualHost ip.address.of.host.some_domain.com>
 #    ServerAdmin webmaster@host.some_domain.com
 #    DocumentRoot /www/docs/host.some_domain.com
 #    ServerName host.some_domain.com
-#    ErrorLog logs/host.some_domain.com-error.log
-#    TransferLog logs/host.some_domain.com-access.log
+#    ErrorLog logs/host.some_domain.com-error_log
+#    CustomLog logs/host.some_domain.com-access_log common
 #</VirtualHost>
 
 #<VirtualHost _default_:*>
