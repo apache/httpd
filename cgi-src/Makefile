@@ -14,7 +14,7 @@ RM= /bin/rm -f
 .c.o: 
 	$(CC) -c $(CFLAGS) $<
 
-all: query post-query imagemap jj phf
+all: query post-query imagemap jj phf animate count random
 
 att:
 	make all CC=gcc CFLAGS="-O2 -DNO_STDLIB_H"
@@ -76,9 +76,18 @@ jj: jj.o util.o
 phf: phf.o util.o
 	$(CC) phf.o util.o -o ../cgi-bin/phf
 
+animate: animate.o
+	$(CC) animate.o -o ../cgi-bin/animate
+
+count: count.o
+	$(CC) count.o -o ../cgi-bin/count
+
+random: random.o
+	$(CC) random.o -o ../cgi-bin/random
+
 change-passwd: change-passwd.o util.o
 	$(CC) change-passwd.o util.o -o ../sec-cgi/change-passwd
 
 clean:
-	rm -f *.o ../cgi-bin/post-query ../cgi-bin/query ../sec-cgi/change-passwd ../cgi-bin/phf ../cgi-bin/jj ../cgi-bin/imagemap
+	rm -f *.o ../cgi-bin/post-query ../cgi-bin/query ../sec-cgi/change-passwd ../cgi-bin/phf ../cgi-bin/jj ../cgi-bin/imagemap ../cgi-bin/animate ../cgi-bin/count ../cgi-bin/random
 
