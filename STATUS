@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/18 06:57:50 $]
+Last modified at [$Date: 2002/02/20 17:41:18 $]
 
 Release:
 
@@ -83,6 +83,12 @@ FINAL RELEASE SHOWSTOPPERS:
         BrianP agrees: "Yes, let's clean up the remaining dependencies
                         on the old lock API."
 
+    * We need to find out the right place to add the AddOutputFilterByType
+      directive.  mod_mime?  No.  core with fixups?  That's what it is now.
+      ap_pass_brigade() hook?  As a filter that runs at HTTP_HEADER stage?
+      This needs to be resolved before the next public release.
+        Message-ID: <018701c1b99c$f0f24310$0a01230a@KOJ>
+        
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
