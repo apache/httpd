@@ -119,8 +119,11 @@
 #include "apr_shm.h"
 #include "apr_rmm.h"
 
+/* Disable shmem until pools/init gets sorted out 
+ * remove following two lines when fixed 
+ */
 #undef APR_HAS_SHARED_MEMORY
-#define APR_HAS_SHARED_MEMORY 1
+#define APR_HAS_SHARED_MEMORY 0
 
 /* struct to hold the configuration info */
 
