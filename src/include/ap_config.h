@@ -59,6 +59,7 @@
 
 /* Have to include sys/stat.h before ../os/win32/os.h so we can override
 stat() properly */
+#include <sys/types.h>
 #include <sys/stat.h>
 
 #ifdef WIN32
@@ -800,10 +801,7 @@ int setrlimit(int, struct rlimit *);
 #endif
 
 #ifndef S_ISLNK
-#ifndef __EMX__
-/* Don't define this for OS/2 */
 #define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
-#endif
 #endif
 
 #ifndef INADDR_NONE

@@ -276,6 +276,27 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	/* FIXME: Shouldn't any unexpected files be deleted? */
 	/*      if (strlen(ent->d_name) != HASH_LEN) continue; */
 
+/* under OS/2 use dirent's d_attr to identify a diretory */
+#ifdef __EMX__
+/* is it a directory? */
+	if (ent->d_attr & A_DIR) {
+	    char newcachedir[HUGE_STRING_LEN];
+	    ap_snprintf(newcachedir, sizeof(newcachedir),
+			"%s%s/", cachesubdir, ent->d_name);
+	    if (!sub_garbage_coll(r, files, cachebasedir, newcachedir)) {
+		ap_snprintf(newcachedir, sizeof(newcachedir),
+			    "%s%s", cachedir, ent->d_name);
+#if TESTING
+		fprintf(stderr, "Would remove directory %s\n", newcachedir);
+#else
+		rmdir(newcachedir);
+#endif
+		--nfiles;
+	    }
+	    continue;
+	}
+#endif
+
 /* read the file */
 	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1) {
@@ -289,6 +310,9 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    close(fd);
 	    continue;
 	}
+
+/* In OS/2 this has already been done above */
+#ifndef __EMX__
 	if (S_ISDIR(buf.st_mode)) {
 	    char newcachedir[HUGE_STRING_LEN];
 	    close(fd);
@@ -306,6 +330,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    }
 	    continue;
 	}
+#endif
 
 	i = read(fd, line, 26);
 	if (i == -1) {

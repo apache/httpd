@@ -1228,7 +1228,7 @@ static void setup_shared_mem(void)
     char errstr[MAX_STRING_LEN];
     int rc;
 
-    m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", HARD_SERVER_LIMIT * sizeof(short_score));
+    m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
     if (m == 0) {
 	fprintf(stderr, "httpd: Could not create OS/2 Shared memory pool.\n");
 	exit(1);
@@ -2086,7 +2086,7 @@ void set_signals(void)
 
 void detach(void)
 {
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__EMX__)
     int x;
 
     chdir("/");
@@ -2145,7 +2145,7 @@ void detach(void)
      * but we haven't opened that yet.  So leave it alone for now and it'll
      * be reopened moments later.
      */
-#endif /* ndef WIN32 */
+#endif /* ndef WIN32 or __EMX__ */
 }
 
 /* Reset group privileges, after rereading the config files

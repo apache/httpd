@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) OS/2 Port updated; it should be possible to build OS/2 from the same
+     sources as Unix now.  [Brian Havard <brianh@kheldar.apana.org.au>]
+
   *) Fix a year formatting bug in mod_usertrack.
      [Paul Eggert <eggert@twinsun.com>] PR#1342
 

@@ -1121,7 +1121,7 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 		"requires SUEXEC wrapper.\n");
 	}
     }
-#if !defined (BIG_SECURITY_HOLE)
+#if !defined (BIG_SECURITY_HOLE) && !defined (__EMX__)
     if (cmd->server->server_uid == 0) {
 	fprintf (stderr,
 "Error:\tApache has not been designed to serve pages while running\n"

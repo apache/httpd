@@ -17,7 +17,7 @@ OBJS= \
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
-all: @@Configuration@@ httpd
+all: @@Configuration@@ $(TARGET)
 
 @@Configuration@@: Configuration.tmpl
 	@echo "@@Configuration@@ older than Configuration.tmpl, or doesn't exist."
@@ -26,11 +26,11 @@ all: @@Configuration@@ httpd
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-httpd:  subdirs modules.o
+$(TARGET):  subdirs modules.o
 	rm -f buildmark.c
 	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
-	$(CC) $(CFLAGS) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS)  -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
 subdirs:
 	for i in $(SUBDIRS); do \
@@ -43,7 +43,7 @@ support-dir:
 	cd support; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 clean:
-	rm -f httpd *.o
+	rm -f $(TARGET) *.o
 	for i in $(SUBDIRS); do \
 		( cd $$i; $(MAKE) $@ ) || exit 1; \
 	done

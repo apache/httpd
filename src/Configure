@@ -161,7 +161,10 @@ RULE_PARANOID=`./helpers/CutRule PARANOID $file`
 DBM_LIB="-ldbm"
 DB_LIB="-ldb"
 SHELL="/bin/sh"
-if ./helpers/PrintPath -s ranlib; then
+TARGET="httpd"
+PRINTPATH=PrintPath
+
+if ./helpers/$PRINTPATH -s ranlib; then
     RANLIB="ranlib"
 else
     RANLIB="true"
@@ -235,8 +238,11 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
 	CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
-	LIBS="$LIBS -lsocket -llibufc -lbsd"
+	LIBS="$LIBS -lsocket -lufc -lbsd"
 	DBM_LIB="-lgdbm"
+	TARGET=httpd.exe
+	SHELL=sh
+	PRINTPATH=PrintPathOS2
 	;;
     *-hi-hiux)
 	OS='HI-UX'
@@ -595,7 +601,7 @@ if [ "x$TCC" = "x" ]; then
 	for compilers in "gcc" "cc" "acc" "c89"
 	do
 	    lookedfor="$lookedfor $compilers"
-	    if ./helpers/PrintPath -s $compilers; then
+	    if ./helpers/$PRINTPATH -s $compilers; then
 		COMPILER="$compilers"
 		break
 	    fi
@@ -990,6 +996,7 @@ echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 echo "OSDIR=$OSDIR">> Makefile.config
 echo "SUBDIRS=$SUBDIRS">> Makefile.config
+echo "TARGET=$TARGET" >> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
@@ -1022,7 +1029,7 @@ sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 #
 # directories to create makefiles in
 #
-MAKEDIRS="support main $OSDIR"
+MAKEDIRS="support main regex $OSDIR"
 for dir in $MAKEDIRS ; do
 	echo Creating Makefile in $dir
 	cat Makefile.config $dir/Makefile.tmpl > $dir/Makefile
@@ -1037,10 +1044,7 @@ CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
 default: all
 
 all clean :: 
-	for i in \$(MODULES); do \\
-	 (cd \$\$i; \\
-	  \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1;\\
-	done
+	for i in \$(MODULES); do (cd \$\$i; \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; done
 
 EOF
 
