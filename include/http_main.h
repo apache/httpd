@@ -63,13 +63,13 @@
 extern "C" {
 #endif
 
-extern API_EXPORT_VAR const char *ap_server_argv0;
-extern API_EXPORT_VAR const char *ap_server_root;
+extern API_VAR_EXPORT const char *ap_server_argv0;
+extern API_VAR_EXPORT const char *ap_server_root;
 
 /* for -C, -c and -D switches */
-extern API_EXPORT_VAR ap_array_header_t *ap_server_pre_read_config;
-extern API_EXPORT_VAR ap_array_header_t *ap_server_post_read_config;
-extern API_EXPORT_VAR ap_array_header_t *ap_server_config_defines;
+extern API_VAR_EXPORT ap_array_header_t *ap_server_pre_read_config;
+extern API_VAR_EXPORT ap_array_header_t *ap_server_post_read_config;
+extern API_VAR_EXPORT ap_array_header_t *ap_server_config_defines;
 
 #ifdef __cplusplus
 }

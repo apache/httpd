@@ -214,7 +214,7 @@ static ap_time_t     *otn_counter;	/* one-time-nonce counter */
 static void          *client_mm = NULL;
 #endif	/* HAVE_SHMEM_MM */
 
-module MODULE_EXPORT_VAR auth_digest_module;
+module MODULE_VAR_EXPORT auth_digest_module;
 
 /*
  * initialization code
@@ -1876,7 +1876,7 @@ static void register_hooks(void)
     ap_hook_fixups(add_auth_info, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module MODULE_EXPORT_VAR auth_digest_module =
+module MODULE_VAR_EXPORT auth_digest_module =
 {
     STANDARD20_MODULE_STUFF,
     create_digest_dir_config,	/* dir config creater */

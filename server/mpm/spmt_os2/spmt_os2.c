@@ -1669,7 +1669,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_EXPORT_VAR mpm_spmt_os2_module = {
+module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     spmt_os2_pre_config,        /* hook run before the configuration is read */

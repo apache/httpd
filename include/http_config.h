@@ -366,11 +366,11 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 #ifdef CORE_PRIVATE
 
-extern API_EXPORT_VAR module *top_module;
+extern API_VAR_EXPORT module *top_module;
 
 extern module *ap_prelinked_modules[];
 extern module *ap_preloaded_modules[];
-extern API_EXPORT_VAR module **ap_loaded_modules;
+extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For mod_so.c... */
 

@@ -112,7 +112,7 @@
 
 #include "explain.h"
 
-extern module MODULE_EXPORT_VAR proxy_module;
+extern module MODULE_VAR_EXPORT proxy_module;
 
 
 /* for proxy_canonenc() */

@@ -85,13 +85,13 @@
 #include "http_vhost.h"
 #include "util_cfgtree.h"
 
-API_EXPORT_VAR const char *ap_server_argv0;
+API_VAR_EXPORT const char *ap_server_argv0;
 
-API_EXPORT_VAR const char *ap_server_root;
+API_VAR_EXPORT const char *ap_server_root;
 
-API_EXPORT_VAR ap_array_header_t *ap_server_pre_read_config;
-API_EXPORT_VAR ap_array_header_t *ap_server_post_read_config;
-API_EXPORT_VAR ap_array_header_t *ap_server_config_defines;
+API_VAR_EXPORT ap_array_header_t *ap_server_pre_read_config;
+API_VAR_EXPORT ap_array_header_t *ap_server_post_read_config;
+API_VAR_EXPORT ap_array_header_t *ap_server_config_defines;
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(header_parser)
@@ -126,8 +126,8 @@ static int total_modules = 0;
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
-API_EXPORT_VAR module *top_module = NULL;
-API_EXPORT_VAR module **ap_loaded_modules=NULL;
+API_VAR_EXPORT module *top_module = NULL;
+API_VAR_EXPORT module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (ap_pool_t *, char *);

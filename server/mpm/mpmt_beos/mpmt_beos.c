@@ -90,7 +90,7 @@ static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
-API_EXPORT_VAR int ap_extended_status = 0;
+API_VAR_EXPORT int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -1259,7 +1259,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_EXPORT_VAR mpm_mpmt_beos_module = {
+module MODULE_VAR_EXPORT mpm_mpmt_beos_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     mpmt_beos_pre_config,       /* hook run before the configuration is read */
