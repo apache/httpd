@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.14 $ -->
+<!-- $Revision: 1.15 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -169,6 +169,16 @@
       files.  The old behavior can be restored using the <directive
       module="mod_mime">MultiviewsMatch</directive> directive.</li>
 
+      <li>(<em>since version 2.0.51</em>)
+      <p>The functionality of the <code>ErrorHeader</code> directive was
+      put together with the <directive module="mod_headers">Header</directive>
+      directive, since it was a misnomer. Use</p>
+
+      <example>
+        Header always set foo bar
+      </example>
+
+      <p>instead to get the desired bahviour.</p></li>
     </ul>
   </section>
 
