@@ -90,7 +90,8 @@ typedef struct util_ldap_connection_t {
     const char *binddn;                 /* DN to bind to server (can be NULL) */
     const char *bindpw;                 /* Password to bind to server (can be NULL) */
 
-    int secure;                         /* True if use SSL connection */
+    int secure;                         /* SSL/TLS mode of the connection */
+    apr_array_header_t *client_certs;   /* Client certificates on this connection */
 
     const char *reason;                 /* Reason for an error failure */
 
@@ -113,9 +114,11 @@ typedef struct util_ldap_state_t {
     long compare_cache_size;    /* Size (in entries) of compare cache */
 
     struct util_ldap_connection_t *connections;
-    char *cert_auth_file; 
-    int   cert_file_type;
-    int   ssl_support;
+    int   ssl_supported;
+    apr_array_header_t *global_certs;  /* Global CA certificates */
+    apr_array_header_t *client_certs;  /* Client certificates */
+    int   secure;
+    int   secure_set;
 
 #if APR_HAS_SHARED_MEMORY
     apr_shm_t *cache_shm;
