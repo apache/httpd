@@ -37,6 +37,8 @@ EOF
       mv $modpath_current/modules.mk.tmp $modpath_current/modules.mk
     fi
     MODLIST="$MODLIST $module"
+    MODULE_DIRS="$MODULE_DIRS $modtype"
+    APACHE_FAST_OUTPUT($modpath_current/Makefile)
   AC_MSG_RESULT(added $withval)
   ],
   [ AC_MSG_RESULT(no extra modules) 
