@@ -94,7 +94,7 @@ AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
  * @param uri The uri we are currently parsing
  * @param path_info The current path info
  * @return The length of the path info
- * @deffunc int ap_fine_path_info(const char *uri, const char *path_info)
+ * @deffunc int ap_find_path_info(const char *uri, const char *path_info)
  */
 AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info);
 
