@@ -488,7 +488,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	 * because it has the lifetime of the connection.  The other allocations
 	 * are temporary and can be tossed away any time.
 	 */
-	user = ap_getword_nulls (r->pool, &password, ':');
+	user = ap_getword_nulls (r->connection->pool, &password, ':');
 	r->ap_auth_type = "Basic";
 	r->user = r->parsed_uri.user = user;
     }
@@ -555,7 +555,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
-	apr_socket_close(sock);
 	return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
     }
@@ -599,7 +598,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 
 	/* handle a permanent error from the above loop */
 	if (failed) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
 				 "Could not connect to remote machine: %s port %d",
 				 connectname, connectport));
@@ -613,21 +611,20 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	 * closed the socket */
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
-	apr_socket_close(sock);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
-    conf->id = r->connection->id;
-    /* allocate this out of the connection pool - the check on r->connection->id makes
-     * sure that this string does not live past the connection lifetime */
-    conf->connectname = apr_pstrdup(r->connection->pool, connectname);
-    conf->connectport = connectport;
 
     /* if a keepalive connection is floating around, close it first! */
     /* we might support ftp keepalives later, but not now... */
-    if (conf->client_socket) {
-	apr_socket_close(conf->client_socket);
-	conf->client_socket = NULL;
+    if ((conf->id == r->connection->id) && conf->connection) {
+	apr_socket_close(conf->connection->client_socket);
+	conf->connection = NULL;
     }
+    conf->id = r->connection->id;
+    /* allocate this out of the connection pool - the check on r->connection->id makes
+     * sure that this string does not get accessed past the connection lifetime */
+    conf->connectname = apr_pstrdup(r->connection->pool, connectname);
+    conf->connectport = connectport;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: connection complete");
@@ -652,7 +649,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: FTP: initial connect returned status %d", i);
     if (i == -1) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
 #if 0
@@ -668,12 +664,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	 *     Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
 	 */
 	ap_table_add(r->headers_out, "Retry-After", apr_psprintf(p, "%u", 60*wait_mins);
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, buffer);
     }
 #endif
     if (i != 220) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
@@ -703,21 +697,17 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: returned status %d", i);
     if (i == -1) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
     if (i == 530) {
-	apr_socket_close(sock);
 	return ftp_unauthorized (r, 1);	/* log it: user name guessing attempt? */
     }
     if (i != 230 && i != 331) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
     if (i == 331) {		/* send password */
 	if (password == NULL) {
-	    apr_socket_close(sock);
 	    return ftp_unauthorized (r, 0);
 	}
 	buf = apr_pstrcat(p, "PASS ", password, CRLF, NULL);
@@ -741,22 +731,18 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "proxy: FTP: returned status %d [%s]", i, buffer);
 	if (i == -1) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
 	if (i == 332) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_UNAUTHORIZED,
 				 apr_pstrcat(p, "Need account for login: ", buffer, NULL));
 	}
 	/* @@@ questionable -- we might as well return a 403 Forbidden here */
 	if (i == 530) {
-	    apr_socket_close(sock);
 	    return ftp_unauthorized (r, 1); /* log it: passwd guessing attempt? */
 	}
 	if (i != 230 && i != 202) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
     }
@@ -793,16 +779,13 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "proxy: FTP: returned status %d", i);
 	if (i == -1) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
 	if (i == 550) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 	}
 	if (i != 250) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
 
@@ -837,12 +820,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		 "proxy: FTP: returned status %d", i);
     if (i == -1) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
     if (i != 200 && i != 504) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
     /* Allow not implemented */
@@ -879,12 +860,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		 "proxy: FTP: returned status %d", i);
     if (i == -1) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
     if (i != 227 && i != 502) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
     else if (i == 227) {
@@ -918,7 +897,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    if ((rv = apr_socket_create(&remote_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			     "proxy: error creating PASV socket");
-		apr_socket_close(sock);
 		return HTTP_INTERNAL_SERVER_ERROR;
 	    }
 
@@ -934,8 +912,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), APR_INET, pasvport, 0, p);
 	    rv = apr_connect(remote_sock, pasv_addr);
             if (rv != APR_SUCCESS) {
-		apr_socket_close(sock);
-		apr_socket_close(remote_sock);
 		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			     "proxy: FTP: PASV error creating socket");
 		return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
@@ -960,10 +936,9 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	if ((apr_socket_create(&local_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: FTP: error creating local socket");
-	    apr_socket_close(sock);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
-        apr_socket_addr_get(&local_addr, APR_LOCAL, sock);
+        apr_socket_addr_get(&local_addr, APR_LOCAL, local_sock);
         apr_sockaddr_port_get(&local_port, local_addr);
         apr_sockaddr_ip_get(&local_ip, local_addr);
 
@@ -971,8 +946,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: FTP: error setting reuseaddr option");
-	    apr_socket_close(local_sock);
-	    apr_socket_close(sock);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
@@ -981,18 +954,12 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 				  local_port, 0, r->pool) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: FTP: error creating local socket address");
-	    apr_socket_close(sock);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
 	if (apr_bind(local_sock, local_addr) != APR_SUCCESS) {
-	    char buff[22];
-
-	    apr_snprintf(buff, sizeof(buff), "%s:%d", local_ip, local_port);
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-			 "proxy: FTP: error binding to ftp data socket %s", buff);
-	    apr_socket_close(remote_sock);
-	    apr_socket_close(sock);
+			 "proxy: FTP: error binding to ftp data socket %s:%d", local_ip, local_port);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -1053,16 +1020,13 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "proxy: FTP: returned status %d", i);
 		if (i == -1) {
-		    apr_socket_close(sock);
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 					 "Error reading from remote server");
 		}
 		if (i == 550) {
-		    apr_socket_close(sock);
 		    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 		}
 		if (i != 250) {
-		    apr_socket_close(sock);
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 		}
 		path = "";
@@ -1099,12 +1063,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "proxy: FTP: PWD returned status %d", i);
     if (i == -1 || i == 421) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
     if (i == 550) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
     }
     if (i == 257) {
@@ -1151,7 +1113,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "proxy: FTP: returned status %d", rc);
     if (rc == -1) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
@@ -1179,16 +1140,13 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "proxy: FTP: returned status %d", rc);
 	if (rc == -1) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
 	}
 	if (rc == 550) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 	}
 	if (rc != 250) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
 
@@ -1212,12 +1170,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "proxy: FTP: PWD returned status %d", i);
 	if (i == -1 || i == 421) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
 	}
 	if (i == 550) {
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 	}
 	if (i == 257) {
@@ -1238,12 +1194,10 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "proxy: FTP: returned status %d", rc);
 	if (rc == -1)
-	    apr_socket_close(sock);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250) {
-	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
@@ -1291,7 +1245,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
             default:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "proxy: FTP: failed to accept data connection");
-                apr_socket_close(local_sock);
                 return HTTP_BAD_GATEWAY;
             }
         }
@@ -1304,8 +1257,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	 * closed the socket */
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: an error occurred creating the transfer connection");
-	apr_socket_close(remote_sock);
-	apr_socket_close(local_sock);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1313,7 +1264,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     ap_proxy_pre_http_connection(remote, NULL);
 
 /* XXX temporary end here while testing */
-/*apr_socket_close(sock);*/
 /*return HTTP_NOT_IMPLEMENTED;*/
 
     /*
@@ -1404,6 +1354,5 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
                  "proxy: FTP: QUIT: status %d", i);
 
     apr_brigade_destroy(bb);
-    apr_socket_close(sock);
     return OK;
 }

@@ -201,7 +201,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * connection ID of the current upstream connection is the same as that
      * of the connection when the socket was opened.
      */
-    apr_pool_t *p = r->pool;
+    apr_pool_t *p = r->connection->pool;
     conn_rec *c = r->connection;
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
@@ -227,17 +227,19 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     /* do a DNS lookup for the destination host */
     /* see memory note above */
-    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, c->pool);
+    err = apr_sockaddr_info_get(&uri_addr, apr_pstrdup(c->pool, uri.hostname), APR_UNSPEC, uri.port, 0, c->pool);
 
+    /* allocate these out of the connection pool - the check on r->connection->id makes
+     * sure that this string does not get accessed past the connection lifetime */
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
-	connectname = proxyname;
+	connectname = apr_pstrdup(c->pool,proxyname);
 	connectport = proxyport;
 	/* see memory note above */
-        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, c->pool);
+        err = apr_sockaddr_info_get(&connect_addr, connectname, APR_UNSPEC, connectport, 0, c->pool);
     }
     else {
-	connectname = uri.hostname;
+	connectname = apr_pstrdup(c->pool, uri.hostname);
 	connectport = uri.port;
 	connect_addr = uri_addr;
 	url = apr_pstrcat(p, uri.path, uri.query ? "?" : "",
@@ -283,7 +285,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * open, or whether it should be closed and a new socket created.
      */
     /* see memory note above */
-    if (conf->client_socket) {
+    if (conf->connection) {
 	if ((conf->id == c->id) &&
 	    (conf->connectport == connectport) &&
 	    (conf->connectname) &&
@@ -293,18 +295,22 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         }
 	else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-			 "proxy: keepalive address mismatch (close old socket (%s/%s, %d/%d))", connectname, conf->connectname, connectport, conf->connectport);
-            apr_socket_close(conf->client_socket);
-            conf->client_socket = NULL;
+			 "proxy: keepalive address mismatch / connection has"
+			 " changed (close old socket (%s/%s, %d/%d))", 
+			 connectname, conf->connectname, 
+			 connectport, conf->connectport);
+            apr_socket_close(conf->connection->client_socket);
+            conf->connection = NULL;
 	}
     }
 
     /* get a socket - either a keepalive one, or a new one */
     new = 1;
-    if ((conf->id == c->id) && (conf->client_socket)) {
+    if ((conf->id == c->id) && (conf->connection)) {
 
 	/* use previous keepalive socket */
-	sock = conf->client_socket;
+	sock = conf->connection->client_socket;
+	origin = conf->connection;
 	new = 0;
 
 	/* XXX FIXME: If the socket has since closed, change new to 1 so
@@ -313,7 +319,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     if (new) {
 
 	/* create a new socket */
-	conf->client_socket = NULL;
+	conf->connection = NULL;
 
 	/* see memory note above */
 	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
@@ -355,7 +361,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    /* if an error occurred, loop round and try again */
             if (err != APR_SUCCESS) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
-			     "proxy: attempt to connect to %pI (%s) failed", connect_addr, connectname);
+			     "proxy: attempt to connect to %pI (%s) failed", 
+			     connect_addr, connectname);
 		connect_addr = connect_addr->next;
 		continue;
             }
@@ -375,30 +382,32 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		return HTTP_BAD_GATEWAY;
 	    }
 	}
-    }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: socket is connected");
-
-    /* the socket is now open, create a new downstream connection */
-    origin = ap_new_connection(p, r->server, sock, r->connection->id);
-    if (!origin) {
-	/* the peer reset the connection already; ap_new_connection() 
-	 * closed the socket */
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
-	apr_socket_close(sock);
-	return HTTP_INTERNAL_SERVER_ERROR;
+		     "proxy: socket is connected");
+
+	/* the socket is now open, create a new downstream connection */
+	origin = ap_new_connection(c->pool, r->server, sock, r->connection->id);
+	if (!origin) {
+	    /* the peer reset the connection already; ap_new_connection() 
+	     * closed the socket */
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+			 "proxy: an error occurred creating a new connection to %pI (%s)", connect_addr, connectname);
+	    apr_socket_close(sock);
+	    return HTTP_INTERNAL_SERVER_ERROR;
+	}
+	conf->id = r->connection->id;
+	conf->connectname = connectname;
+	conf->connectport = connectport;
+	conf->connection = origin;
+
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: connection complete");
+
+	/* set up the connection filters */
+	ap_proxy_pre_http_connection(origin, NULL);
+
     }
-    conf->id = r->connection->id;
-    /* allocate this out of the config pool */
-    conf->connectname = apr_pstrdup(r->server->process->pconf, connectname);
-    conf->connectport = connectport;
-    conf->client_socket = sock;
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: connection complete");
-
 
 
     /*
@@ -407,8 +416,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * Send the HTTP/1.1 request to the remote server
      */
 
-    /* set up the connection filters */
-    ap_proxy_pre_http_connection(origin, NULL);
 
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
@@ -573,7 +580,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer)))) {
 	apr_socket_close(sock);
-	conf->client_socket = NULL;
+	conf->connection = NULL;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	     "proxy: error reading status line from remote server %s",
 	     connectname);
@@ -594,7 +601,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
 	    apr_socket_close(sock);
-	    conf->client_socket = NULL;
+	    conf->connection = NULL;
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", buffer, NULL));
 	}
@@ -663,6 +670,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* munge the Location and URI response headers according to ProxyPassReverse */
     {
 	const char *buf;
+/* XXX FIXME: this isn't working */
         if ((buf = apr_table_get(r->headers_out, "Location")) != NULL)
 	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, buf));
         if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL)
@@ -743,7 +751,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      */
     if (close || (r->proto_num < HTTP_VERSION(1,1))) {
         apr_socket_close(sock);
-	conf->client_socket = NULL;
+	conf->connection = NULL;
     }
 
     return OK;

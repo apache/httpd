@@ -170,7 +170,8 @@ typedef struct {
     long id;
     const char *connectname;
     apr_port_t connectport;
-    apr_socket_t *client_socket;
+/*    apr_socket_t *client_socket;*/
+    conn_rec *connection;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     char req_set;
