@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
     }
     else {
         if ((pw = getpwuid(atoi(target_uname))) == NULL) {
-            log_err("invalud target user id: (%s)\n", target_uname);
+            log_err("invalid target user id: (%s)\n", target_uname);
             exit(121);
         }
     }
