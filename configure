@@ -103,6 +103,11 @@ case "$*" in
 esac
 
 ##
+##  determine platform id
+##
+PLATFORM="`$aux/GuessOS`"
+
+##
 ##  display version information
 ##
 if [ "x$quiet" = "xno" ]; then
@@ -219,6 +224,19 @@ suexec_userdir=public_html
 suexec_uidmin=100
 suexec_gidmin=100
 suexec_safepath="/usr/local/bin:/usr/bin:/bin"
+
+#   the installation flags
+iflags_program="-m 755 -s"
+iflags_core="-m 755"
+iflags_dso="-m 755"
+iflags_script="-m 755"
+iflags_data="-m 644"
+case $PLATFORM in
+    *OS/2* ) 
+        iflags_program="$iflags_program -e .exe" 
+        iflags_core="$iflags_core -e .exe" 
+        ;;
+esac
 
 #   various other flags
 support=1
@@ -374,6 +392,7 @@ do
             echo " --with-perl=FILE       path to the optional Perl interpreter"
             echo " --without-support      disable the build and installation of support tools"
             echo " --without-confadjust   disable the user/situation adjustments in config"
+            echo " --without-execstrip    disable the stripping of executables on installation"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
@@ -862,6 +881,9 @@ do
         --without-confadjust)
             confadjust=0
             ;;
+        --without-execstrip)
+            iflags_program=`echo "$iflags_program" | sed -e 's/-s//'`
+            ;;
         --suexec-caller=*)
             suexec_caller="$apc_optarg"
             suexec_ok=1
@@ -1130,6 +1152,11 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@MKF@%$mkf%g" \
 -e "s%@AUX@%$aux%g" \
 -e "s%@TARGET@%$thetarget%g" \
+-e "s%@IFLAGS_PROGRAM@%$iflags_program%g" \
+-e "s%@IFLAGS_CORE@%$iflags_core%g" \
+-e "s%@IFLAGS_DSO@%$iflags_dso%g" \
+-e "s%@IFLAGS_SCRIPT@%$iflags_script%g" \
+-e "s%@IFLAGS_DATA@%$iflags_data%g" \
 -e "s%@prefix@%$prefix%g" \
 -e "s%@exec_prefix@%$exec_prefix%g" \
 -e "s%@bindir@%$bindir%g" \

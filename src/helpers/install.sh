@@ -34,6 +34,7 @@ chgrpcmd=""
 stripcmd=""
 rmcmd="$rmprog -f"
 mvcmd="$mvprog"
+ext=""
 src=""
 dst=""
 while [ "x$1" != "x" ]; do
@@ -54,6 +55,9 @@ while [ "x$1" != "x" ]; do
             shift; continue
             ;;
         -S) stripcmd="$stripprog $2"
+            shift; shift; continue
+            ;;
+        -e) ext="$2"
             shift; shift; continue
             ;;
         *)  if [ "x$src" = "x" ]; then
@@ -82,6 +86,10 @@ fi
 if [ -d $dst ]; then
     dst="$dst/`basename $src`"
 fi
+
+#  Add a possible extension (such as ".exe") to src and dst
+src="$src$ext"
+dst="$dst$ext"
 
 #  Make a temp file name in the proper directory.
 dstdir=`dirname $dst`

@@ -81,11 +81,11 @@ LN              = ln
 RM              = rm -f
 MKDIR           = $(TOP)/$(AUX)/mkdir.sh
 INSTALL         = $(TOP)/$(AUX)/install.sh -c
-IFLAGS_PROGRAM  = -m 755 -s
-IFLAGS_CORE     = -m 755
-IFLAGS_DSO      = -m 755
-IFLAGS_SCRIPT   = -m 755 
-IFLAGS_DATA     = -m 644
+IFLAGS_PROGRAM  = @IFLAGS_PROGRAM@
+IFLAGS_CORE     = @IFLAGS_CORE@
+IFLAGS_DSO      = @IFLAGS_DSO@
+IFLAGS_SCRIPT   = @IFLAGS_SCRIPT@
+IFLAGS_DATA     = @IFLAGS_DATA@
 INSTALL_PROGRAM = $(INSTALL) $(IFLAGS_PROGRAM)
 INSTALL_CORE    = $(INSTALL) $(IFLAGS_CORE)
 INSTALL_DSO     = $(INSTALL) $(IFLAGS_DSO)
@@ -198,10 +198,14 @@ build-support:
 ##                       Installation Targets
 ## ------------------------------------------------------------------
 
+#   indirection step to avoid conflict with INSTALL document 
+#   on case-insenstive filesystems, for instance on OS/2
+install: install-all
+
 #   the install target for installing the complete Apache
 #   package. This is implemented by running subtargets for the
 #   separate parts of the installation process.
-install:
+install-all:
 	@if [ ! -f $(TOP)/$(SRC)/.apaci.build.ok ]; then \
 		$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) build; \
 	else \
@@ -373,7 +377,7 @@ install-support:
 install-include:
 	@echo "===> [include: Installing Apache C header files]"
 	$(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
-	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os:os:'`; \
+	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os/:os/:'`; \
 		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
 		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/; \
 		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os-inline.c $(root)$(includedir)/"; \

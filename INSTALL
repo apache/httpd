@@ -159,6 +159,7 @@
                              [--with-perl=FILE]        [--suexec-uidmin=UID]
                              [--without-support]       [--suexec-gidmin=GID]
                              [--without-confadjust]    [--suexec-safepath=PATH]
+                             [--without-execstrip]
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and TARGET
@@ -370,6 +371,11 @@
      user/situation dependent adjustments to the config files (Group, Port,
      ServerAdmin, ServerName, etc.).  This is usually only interesting for
      vendor package maintainers who wants to force the keeping of defaults.
+
+     Use the --without-execstrip option to disable the stripping of
+     executables on installation. This can be important on some platforms in
+     combination with --enable-rule=SHARED_CORE or when Apache was built with
+     debugging symbols which shouldn't be lost.
  
      Use the --enable-suexec option to enable the suEXEC feature by building
      and installing the "suexec" support program. Use --suexec-caller=UID to
