@@ -61,10 +61,12 @@
 #include "apr_portable.h"
 #include "apr_lib.h"
 
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#include <strings.h>
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -72,6 +74,7 @@
 #include "http_main.h"
 #include "http_core.h"
 #include "http_config.h"
+#include "ap_mpm.h"
 
 #include "mpm.h"
 #include "scoreboard.h"
