@@ -137,7 +137,7 @@
     <p>Another solution is to disable the ability to run scripts and 
     programs from SSI pages. To do this replace <code>Includes</code>
     with <code>IncludesNOEXEC</code> in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.  Note that users may 
-    still use &gt;--#include virtual="..." --&lt; to execute CGI scripts if 
+    still use &lt;--#include virtual="..." --&gt; to execute CGI scripts if 
     these scripts are in directories desginated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
