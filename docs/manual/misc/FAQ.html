@@ -8,7 +8,7 @@
   <!--#include virtual="header.html" -->
   <H1>Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.51 $ ($Date: 1997/05/04 16:44:08 $)
+  $Revision: 1.52 $ ($Date: 1997/05/04 17:05:25 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -54,7 +54,6 @@
 <!--   HTTP/1.1 browsers?                                           -->
 <!-- - Is there an Apache for W95/WNT?                              -->
 <!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
-<!-- - How do I add browsers and referrers to my logs?              -->
 <!-- - How do I setup an access restriction so that people from     -->
 <!--   this domain don't have to authenticate, and all others can   -->
 <!--   do so via a username and password?                           -->
@@ -165,6 +164,9 @@
    </LI>
    <LI><A HREF="#cantbuild">Why won't Apache compile with my
     system's <SAMP>cc</SAMP>?</A>
+   </LI>
+   <LI><A HREF="#addlog">How do I add browsers and referrers to my
+    logs?</A>
    </LI>
   </OL>
  </LI>
@@ -1268,6 +1270,39 @@
   >problem report</A>.
   Be sure to include <EM>complete</EM> details, such as the compiler
   &amp; OS versions and exact error messages.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="addlog">
+      <STRONG>How do I add browsers and referrers to my logs?</STRONG>
+     </A>
+  <P>
+  Apache provides a couple of different ways of doing this.  The
+  recommended method is to compile the
+  <A
+   HREF="../mod/mod_log_config.html"
+  ><SAMP>mod_log_config</SAMP></A>
+  module into your configuration and use the
+  <A
+   HREF="../mod/mod_log_config.html#customlog"
+  ><SAMP>CustomLog</SAMP></A>
+  directive.
+  </P>
+  <P>
+  You can either log the additional information in files other than your
+  normal transfer log, or you can add them to the records already being
+  written.  For example:
+  </P>
+  <P>
+  <CODE>
+   CustomLog&nbsp;logs/access_log&nbsp;"%h&nbsp;%l&nbsp;%u&nbsp;%t&nbsp;\"%r\"&nbsp;%s&nbsp;%b&nbsp;\"%{Referer}i\"&nbsp;\"%{User-Agent}i\""
+  </CODE>
+  </P>
+  <P>
+  This will add the values of the <SAMP>User-agent:</SAMP> and
+  <SAMP>Referer:</SAMP> headers, which indicate the client and the
+  referring page, respectively, to the end of each line in the access
+  log.
   </P>
   <HR>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
