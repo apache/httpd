@@ -572,7 +572,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     int i = 0, j, len, rc;
     int one = 1;
     char *size = NULL;
-    apr_socket_t *origin_sock;
+    apr_socket_t *origin_sock = NULL;
 
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;
@@ -601,7 +601,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         backend->port = 0;
         ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
     }
-    origin_sock = ap_get_module_config(backend->connection->conn_config, &core_module);
+    if (backend->connection)
+        origin_sock = ap_get_module_config(backend->connection->conn_config, &core_module);
 
 
     /*
@@ -777,6 +778,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (backend->connection) {
         apr_socket_close(origin_sock);
         backend->connection = NULL;
+        origin_sock = NULL;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
@@ -1652,7 +1654,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: %d %s", rc, buffer);
     ap_flush_conn(origin);
-    apr_socket_close(origin_sock);
+    if (origin_sock) {
+        apr_socket_close(origin_sock);
+        origin_sock = NULL;
+    }
     apr_brigade_destroy(bb);
     return OK;
 }
