@@ -267,7 +267,6 @@ struct dav_propdb {
 
     /* hooks we should use for processing (based on the target resource) */
     const dav_hooks_db *db_hooks;
-    const dav_hooks_vsn *vsn_hooks;
 
 };
 
@@ -278,11 +277,7 @@ static const char * const dav_core_props[] =
     "getcontenttype",
     "getcontentlanguage",
     "lockdiscovery",
-    "resourcetype",
     "supportedlock",
-    "supported-method-set",
-    "supported-live-property-set",
-    "supported-report-set",
 
     NULL	/* sentinel */
 };
@@ -290,11 +285,7 @@ enum {
     DAV_PROPID_CORE_getcontenttype = DAV_PROPID_CORE,
     DAV_PROPID_CORE_getcontentlanguage,
     DAV_PROPID_CORE_lockdiscovery,
-    DAV_PROPID_CORE_resourcetype,
     DAV_PROPID_CORE_supportedlock,
-    DAV_PROPID_CORE_supported_method_set,
-    DAV_PROPID_CORE_supported_live_property_set,
-    DAV_PROPID_CORE_supported_report_set,
 
     DAV_PROPID_CORE_UNKNOWN
 };
@@ -382,15 +373,12 @@ static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
 
     /* these are defined as read-only */
     if (propid == DAV_PROPID_CORE_lockdiscovery
-	|| propid == DAV_PROPID_CORE_resourcetype
 #if DAV_DISABLE_WRITEABLE_PROPS
 	|| propid == DAV_PROPID_CORE_getcontenttype
 	|| propid == DAV_PROPID_CORE_getcontentlanguage
 #endif
 	|| propid == DAV_PROPID_CORE_supportedlock
-	|| propid == DAV_PROPID_CORE_supported_method_set
-	|| propid == DAV_PROPID_CORE_supported_live_property_set
-	|| propid == DAV_PROPID_CORE_supported_report_set) {
+        ) {
 
 	return 0;
     }
@@ -435,41 +423,6 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
     switch (propid) {
 
-    case DAV_PROPID_CORE_resourcetype:
-        switch (propdb->resource->type) {
-        case DAV_RESOURCE_TYPE_VERSION:
-            if (propdb->resource->baselined) {
-	        value = "<D:baseline/>";
-                break;
-            }
-            /* fall through */
-        case DAV_RESOURCE_TYPE_REGULAR:
-        case DAV_RESOURCE_TYPE_WORKING:
-            if (propdb->resource->collection) {
-	        value = "<D:collection/>";
-            }
-	    else {
-		/* ### should we denote lock-null resources? */
-
-		value = "";	/* becomes: <D:resourcetype/> */
-	    }
-            break;
-        case DAV_RESOURCE_TYPE_HISTORY:
-	    value = "<D:version-history/>";
-            break;
-        case DAV_RESOURCE_TYPE_WORKSPACE:
-	    value = "<D:collection/>";
-            break;
-        case DAV_RESOURCE_TYPE_ACTIVITY:
-	    value = "<D:activity/>";
-            break;
-
-        default:
-	    /* ### bad juju */
-	    break;
-        }
-	break;
-
     case DAV_PROPID_CORE_lockdiscovery:
         if (propdb->lockdb != NULL) {
 	    dav_lock *locks;
@@ -506,43 +459,6 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	    value = (*propdb->lockdb->hooks->get_supportedlock)(propdb->resource);
         }
 	break;
-
-    case DAV_PROPID_CORE_supported_method_set:
-        /* ### leverage code from dav_method_options ### */
-        break;
-
-    case DAV_PROPID_CORE_supported_live_property_set:
-        /* ### insert all live property names ### */
-        break;
-
-    case DAV_PROPID_CORE_supported_report_set:
-        if (propdb->vsn_hooks != NULL) {
-            const dav_report_elem *reports;
-
-            if ((err = (*propdb->vsn_hooks->avail_reports)(propdb->resource, &reports)) != NULL) {
-	        return dav_push_error(propdb->r->pool, err->status, 0,
-			              "DAV:supported-report-set could not be determined "
-                                      "due to a problem fetching the available reports "
-                                      "for this resource.",
-			              err);
-            }
-
-            if (reports == NULL)
-                break;
-
-            value = "";
-
-            for (; reports->nmspace != NULL; ++reports) {
-                /* Note: we presume reports->namespace is properly XML/URL quoted */
-                char *v = apr_psprintf(propdb->p, "<%s xmlns=\"%s\"/>" DEBUG_CR,
-                                       reports->name, reports->nmspace);
-                /* This isn't very memory-efficient, but there should only be a small
-                 * number of reports
-                 */
-                value = apr_pstrcat(propdb->p, value, v, NULL);
-            }
-        }
-        break;
 
     case DAV_PROPID_CORE_getcontenttype:
 	if (propdb->subreq == NULL) {
@@ -1005,7 +921,6 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
     propdb->ns_xlate = ns_xlate;
 
     propdb->db_hooks = DAV_GET_HOOKS_PROPDB(r);
-    propdb->vsn_hooks = DAV_GET_HOOKS_VSN(r);
 
     propdb->lockdb = lockdb;
 
@@ -1059,7 +974,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     ap_text_header hdr = { 0 };
     ap_text_header hdr_ns = { 0 };
     dav_get_props_result result = { 0 };
-    int found_resourcetype = 0;
     int found_contenttype = 0;
     int found_contentlang = 0;
     int unused_inserted;
@@ -1087,10 +1001,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
 		goto next_key;
 
 	    /*
-	    ** See if this is the <DAV:resourcetype> property. We need to
-	    ** know whether it was found (and therefore, whether to supply
-	    ** a default later).
-	    **
 	    ** We also look for <DAV:getcontenttype> and
 	    ** <DAV:getcontentlanguage>. If they are not stored as dead
 	    ** properties, then we need to perform a subrequest to get
@@ -1110,12 +1020,7 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
 		    colon = strchr(key.dptr + 2, ':');
 		}
 
-		if (colon[1] == 'r'
-		    && strcmp(colon + 1, "resourcetype") == 0) {
-
-		    found_resourcetype = 1;
-		}
-		else if (colon[1] == 'g') {
+		if (colon[1] == 'g') {
 		    if (strcmp(colon + 1, "getcontenttype") == 0) {
 			found_contenttype = 1;
 		    }
@@ -1166,23 +1071,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     (void)dav_insert_coreprop(propdb,
 			      DAV_PROPID_CORE_lockdiscovery, "lockdiscovery",
 			      getvals, &hdr, &unused_inserted);
-    (void)dav_insert_coreprop(propdb,
-			      DAV_PROPID_CORE_supported_method_set, "supported-method-set",
-			      getvals, &hdr, &unused_inserted);
-    (void)dav_insert_coreprop(propdb,
-			      DAV_PROPID_CORE_supported_live_property_set, "supported-live-property-set",
-			      getvals, &hdr, &unused_inserted);
-    (void)dav_insert_coreprop(propdb,
-			      DAV_PROPID_CORE_supported_report_set, "supported-report-set",
-			      getvals, &hdr, &unused_inserted);
-
-    /* if the resourcetype wasn't stored, then prepare one */
-    if (!found_resourcetype) {
-	/* ### should be handling the return error here */
-	(void)dav_insert_coreprop(propdb,
-				  DAV_PROPID_CORE_resourcetype, "resourcetype",
-				  getvals, &hdr, &unused_inserted);
-    }
 
     /* if we didn't find these, then do the whole subreq thing. */
     if (!found_contenttype) {
