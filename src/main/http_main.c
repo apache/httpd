@@ -73,11 +73,6 @@
  *      Extensive rework for Apache.
  */
 
-/* XXX: systems without HAVE_SHMGET or HAVE_MMAP do not reliably update
- * the scoreboard because a received signal might interrupt the scoreboard
- * calls.
- */
-
 #define CORE_PRIVATE
 
 #include "httpd.h"
@@ -804,11 +799,14 @@ static void setup_shared_mem(void)
 }
 
 #else
+#define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
 static scoreboard *scoreboard_image=&_scoreboard_image;
-static int have_scoreboard_fname = 0;
 static int scoreboard_fd;
 
+/* XXX: things are seriously screwed if we ever have to do a partial
+ * read or write ... we could get a corrupted scoreboard
+ */
 static int force_write (int fd, char *buffer, int bufsz)
 {
     int rv, orig_sz = bufsz;
@@ -819,7 +817,7 @@ static int force_write (int fd, char *buffer, int bufsz)
 	    buffer += rv;
 	    bufsz -= rv;
 	}
-    } while (rv > 0 && bufsz > 0);
+    } while ((rv > 0 && bufsz > 0) || (rv == -1 && errno == EINTR));
 
     return rv < 0? rv : orig_sz - bufsz;
 }
@@ -834,7 +832,7 @@ static int force_read (int fd, char *buffer, int bufsz)
 	    buffer += rv;
 	    bufsz -= rv;
 	}
-    } while (rv > 0 && bufsz > 0);
+    } while ((rv > 0 && bufsz > 0) || (rv == -1 && errno == EINTR));
     
     return rv < 0? rv : orig_sz - bufsz;
 }
@@ -847,7 +845,7 @@ void reinit_scoreboard (pool *p)
     if(scoreboard_image)
 	exit_gen=scoreboard_image->global.exit_generation;
 	
-#if defined(HAVE_SHMGET) || defined(HAVE_MMAP)
+#ifndef SCOREBOARD_FILE
     if (scoreboard_image == NULL)
     {
 	setup_shared_mem();
@@ -857,8 +855,6 @@ void reinit_scoreboard (pool *p)
 #else
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
-    have_scoreboard_fname = 1;
-    
 #ifdef __EMX__
     /* OS/2 needs binary mode set. */
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0644);
@@ -882,7 +878,7 @@ void reinit_scoreboard (pool *p)
 /* called by child */
 void reopen_scoreboard (pool *p)
 {
-#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+#ifdef SCOREBOARD_FILE
     if (scoreboard_fd != -1) pclosef (p, scoreboard_fd);
     
 #ifdef __EMX__    
@@ -918,7 +914,7 @@ void reopen_scoreboard (pool *p)
 
 void cleanup_scoreboard ()
 {
-#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+#ifdef SCOREBOARD_FILE
     unlink (scoreboard_fname);
 #endif
 }
@@ -936,7 +932,7 @@ void cleanup_scoreboard ()
 
 void sync_scoreboard_image ()
 {
-#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+#ifdef SCOREBOARD_FILE
     lseek (scoreboard_fd, 0L, 0);
     force_read (scoreboard_fd, (char*)scoreboard_image,
 		sizeof(*scoreboard_image));
@@ -987,7 +983,7 @@ int update_child_status (int child_num, int status, request_rec *r)
     }
 #endif
 
-#if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
+#ifndef SCOREBOARD_FILE
     memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof new_score_rec);
 #else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
@@ -999,7 +995,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 
 void update_scoreboard_global()
     {
-#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+#ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd,
 	  (char *)&scoreboard_image->global-(char *)scoreboard_image,0);
     force_write(scoreboard_fd,(char *)&scoreboard_image->global,
@@ -1067,7 +1063,7 @@ static void increment_counts (int child_num, request_rec *r)
     times(&new_score_rec.times);
 
 
-#if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
+#ifndef SCOREBOARD_FILE
     memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof(short_score));
 #else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
@@ -2128,6 +2124,11 @@ void standalone_main(int argc, char **argv)
 	if (!is_graceful) {
 	    restart_time = time(NULL);
 	}
+#ifdef SCOREBOARD_FILE
+	else {
+	    kill_cleanups_for_fd (pconf, scoreboard_fd);
+	}
+#endif
 	clear_pool (pconf);
 	ptrans = make_sub_pool (pconf);
 
@@ -2138,6 +2139,12 @@ void standalone_main(int argc, char **argv)
 	if (!is_graceful) {
 	    reinit_scoreboard(pconf);
 	}
+#ifdef SCOREBOARD_FILE
+	else {
+	    scoreboard_fname = server_root_relative (pconf, scoreboard_fname);
+	    note_cleanups_for_fd (pconf, scoreboard_fd);
+	}
+#endif
 
 	default_server_hostnames (server_conf);
 
@@ -2284,9 +2291,11 @@ void standalone_main(int argc, char **argv)
 	    if (ap_killpg(pgrp, SIGUSR1) < 0) {
 		log_unixerr ("killpg SIGUSR1", NULL, NULL, server_conf);
 	    }
+#ifndef SCOREBOARD_FILE
 	    /* This is mostly for debugging... so that we know what is still
-	     * gracefully dealing with existing request.
-	     * XXX: clean this up a bit?
+	     * gracefully dealing with existing request.  But we can't really
+	     * do it if we're in a SCOREBOARD_FILE because it'll cause
+	     * corruption too easily.
 	     */
 	    sync_scoreboard_image();
 	    for (i = 0; i < daemons_limit; ++i ) {
@@ -2294,10 +2303,6 @@ void standalone_main(int argc, char **argv)
 		    scoreboard_image->servers[i].status = SERVER_GRACEFUL;
 		}
 	    }
-#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
-	    lseek (scoreboard_fd, 0L, 0);
-	    force_write (scoreboard_fd, (char*)scoreboard_image,
-			sizeof(*scoreboard_image));
 #endif
 	}
 	else {
