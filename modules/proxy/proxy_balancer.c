@@ -351,30 +351,25 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                                        request_rec *r,
                                        proxy_server_conf *conf)
 {
-    int access_status;
-    if (!balancer)
-        access_status = DECLINED;
-    else { 
-        apr_status_t rv;
-        if ((rv = PROXY_BALANCER_LOCK(balancer)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "proxy: BALANCER: lock");
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-        /* increase the free channels number */
-        if (worker->cp->nfree)
-            worker->cp->nfree++;
-        /* TODO: calculate the bytes transfered */
+    apr_status_t rv;
 
-        /* TODO: update the scoreboard status */
-
-        PROXY_BALANCER_UNLOCK(balancer);        
-        access_status = OK;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy_balancer_post_request for (%s)", balancer->name);
+    if ((rv = PROXY_BALANCER_LOCK(balancer)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+            "proxy: BALANCER: lock");
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
+    /* increase the free channels number */
+    if (worker->cp->nfree)
+        worker->cp->nfree++;
+    /* TODO: calculate the bytes transfered */
 
-    return access_status;
+    /* TODO: update the scoreboard status */
+
+    PROXY_BALANCER_UNLOCK(balancer);        
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy_balancer_post_request for (%s)", balancer->name);
+
+    return OK;
 } 
 
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
