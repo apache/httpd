@@ -647,10 +647,8 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
     dump_iphash_statistics(main_s);
 #endif
     if (getenv("DUMP_VHOSTS")) {
-        int errfileno = STDERR_FILENO;
         ap_file_t *thefile = NULL;
-
-        ap_put_os_file(&thefile, &errfileno, p);
+        ap_open_stderr(&thefile, p);
 	dump_vhost_config(thefile);
     }
 }
