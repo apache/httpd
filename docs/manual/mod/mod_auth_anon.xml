@@ -34,8 +34,8 @@ areas</description>
     properties:</p>
 
     <ul>
-      <li>It insists that the user enters a userId.
-      (<code>Anonymous_NoUserId</code>)</li>
+      <li>It insists that the user enters a userID.
+      (<code>Anonymous_NoUserID</code>)</li>
 
       <li>It insists that the user enters a password.
       (<code>Anonymous_MustGiveEmail</code>)</li>
@@ -46,15 +46,15 @@ areas</description>
 
       <li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
-      sensitive.</li>
+      sensitive. (<code>Anonymous</code>)</li>
 
       <li>And the Email addresses entered in the passwd field are
-      logged to the error log file
+      logged to the error log file.
       (<code>Anonymous_LogEmail</code>)</li>
     </ul>
 
     <example><title>Excerpt of httpd.conf:</title>
-      Anonymous_NoUserId off<br />
+      Anonymous_NoUserID off<br />
       Anonymous_MustGiveEmail on<br />
       Anonymous_VerifyEmail on<br />
       Anonymous_LogEmail on<br />
@@ -81,7 +81,7 @@ areas</description>
 
 <directivesynopsis>
 <name>Anonymous</name>
-<description>Specifies userIDs that areallowed access without
+<description>Specifies userIDs that are allowed access without
 password verification</description>
 <syntax>Anonymous <var>user</var> [<var>user</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
