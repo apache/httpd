@@ -420,15 +420,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->stream.avail_out = c->bufferSize;
     }
     
-    for (e = APR_BRIGADE_FIRST(bb);
-         e != APR_BRIGADE_SENTINEL(bb);
-         e = APR_BUCKET_NEXT(e))
+    while (!APR_BRIGADE_EMPTY(bb))
     {
         const char *data;
         apr_bucket *b;
         apr_size_t len;
-
         int done = 0;
+
+        e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
             char *buf;
@@ -516,6 +515,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         if (APR_BUCKET_IS_FLUSH(e)) {
             apr_bucket *bkt;
             apr_status_t rv;
+
+            apr_bucket_delete(e);
+
             if (ctx->stream.avail_in > 0) {
                 zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
@@ -575,6 +577,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             if (zRC != Z_OK)
                 return APR_EGENERAL;
         }
+
+        apr_bucket_delete(e);
     }
 
     apr_brigade_cleanup(bb);
