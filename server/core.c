@@ -3868,23 +3868,20 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want
          * to buffer the brigade or send the brigade out on the network.
          *
-         * Save if:
+         * Save if we haven't accumulated enough bytes to send, and:
          *
          *   1) we didn't see a file, we don't have more passes over the
-         *      brigade to perform, we haven't accumulated enough bytes to
-         *      send, AND we didn't stop at a FLUSH bucket.
-         *      (IOW, we will save away plain old bytes)
+         *      brigade to perform,  AND we didn't stop at a FLUSH bucket.
+         *      (IOW, we will save plain old bytes such as HTTP headers)
          * or
          *   2) we hit the EOS and have a keep-alive connection
          *      (IOW, this response is a bit more complex, but we save it
          *       with the hope of concatenating with another response)
          */
-        if ((!fd && !more
-             && (nbytes + flen < AP_MIN_BYTES_TO_WRITE)
-             && !APR_BUCKET_IS_FLUSH(last_e))
-            || (nbytes + flen < AP_MIN_BYTES_TO_WRITE 
-                && APR_BUCKET_IS_EOS(last_e)
-                && c->keepalive == AP_CONN_KEEPALIVE)) {
+        if (nbytes + flen < AP_MIN_BYTES_TO_WRITE
+            && (!fd && !more && !APR_BUCKET_IS_FLUSH(last_e))
+                || (APR_BUCKET_IS_EOS(last_e)
+                    && c->keepalive == AP_CONN_KEEPALIVE)) {
 
             /* NEVER save an EOS in here.  If we are saving a brigade with
              * an EOS bucket, then we are doing keepalive connections, and
