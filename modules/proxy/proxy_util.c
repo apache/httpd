@@ -379,6 +379,8 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->connection      = c;
     rp->output_filters  = c->output_filters;
     rp->input_filters   = c->input_filters;
+    rp->proto_output_filters  = c->output_filters;
+    rp->proto_input_filters   = c->input_filters;
 
     rp->request_config  = ap_create_request_config(c->pool);
     proxy_run_create_req(r, rp);
