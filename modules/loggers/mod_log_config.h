@@ -96,10 +96,10 @@ APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler,
  * you will need to set your init handler *BEFORE* the open_logs 
  * in mod_log_config gets executed
  */
-APR_DECLARE_OPTIONAL_FN(void, ap_log_set_writer_init,(ap_log_writer_init *func));
+APR_DECLARE_OPTIONAL_FN(ap_log_writer_init*, ap_log_set_writer_init,(ap_log_writer_init *func));
 /** 
  * you should probably set the writer at the same time (ie..before open_logs)
  */
-APR_DECLARE_OPTIONAL_FN(void, ap_log_set_writer, (ap_log_writer* func));
+APR_DECLARE_OPTIONAL_FN(ap_log_writer*, ap_log_set_writer, (ap_log_writer* func));
 
 #endif /* MOD_LOG_CONFIG */
