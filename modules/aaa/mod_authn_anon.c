@@ -140,7 +140,7 @@ static authn_status check_anonymous(request_rec *r, const char *user,
     authn_status res = AUTH_USER_NOT_FOUND;
 
     /* Ignore if we are not configured */
-    if (!conf->users) {
+    if (!conf->users && !conf->anyuserid) {
         return AUTH_USER_NOT_FOUND;
     }
 
