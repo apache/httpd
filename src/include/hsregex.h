@@ -16,7 +16,7 @@ extern "C" {
 #endif
 #endif
 
-#if defined(RHAPSODY) || defined(NEXT)
+#if defined(RHAPSODY)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern

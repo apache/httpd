@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) Remove ap_private_extern method of hiding conflicting symbols
+     on the NEXT platform because it is not correct for all versions,
+     and the versions for which it is correct are unknown.
+     [Wilfredo Sanchez <wsanchez@apple.com>]
+
   *) Fix inheritance of IndexOptions NameWidth and remove unintended
      restriction on +NameWidth, +IconHeight, and +IconWidth.  [Ken Coar]
 

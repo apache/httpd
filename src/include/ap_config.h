@@ -849,12 +849,12 @@ typedef int rlim_t;
 #define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
 #endif
 
-/* On OpenStep and Rhapsody, symbols that conflict with loaded dylibs
+/* On Mac OS X Server, symbols that conflict with loaded dylibs
  * (eg. System framework) need to be declared as private symbols with
  * __private_extern__.
  * For other systems, make that a no-op.
  */
-#if defined(RHAPSODY) || defined(NEXT)
+#if defined(RHAPSODY)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern
