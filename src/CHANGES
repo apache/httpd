@@ -1,5 +1,8 @@
 Changes with Apache 1.3.24
 
+  *) mod_rewrite: restored rnd behavior that was broken in 1.3.23.
+     PR 10090, 10185  [Jeroen Boomgaardt <jeroen@swissclue.com>]
+
   *) NetWare: Added the command line directive -e that forces all
      fatal configuration error messages to the logger screen rather
      than the Apache screen before Apache is unloaded.
