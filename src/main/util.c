@@ -877,8 +877,8 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 			 * line continuation requested -
 			 * then remove backslash and continue
 			 */
-			cbuf = cp;
 			cbufsize -= (cp-cbuf);
+			cbuf = cp;
 			continue;
 		    }
 		    else {

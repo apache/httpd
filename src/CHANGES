@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Fix a bug in the calculation of the buffer size for the line continuation
+     facility in Apache's configuration files which could lead to a buffer
+     overflow situation. [Thomas Devanneaux <Thomas.Devanneaux@enst.fr>] PR#3617
+
   *) Make documentation and error messages of APACI's --activate-module=FILE 
      option more clear. [Jan Wolter <janc@wwnet.net>] PR#3995
 
