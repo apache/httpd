@@ -391,10 +391,10 @@ API_EXPORT(void) ap_add_version_component(const char *component)
 static void ap_set_version()
 {
     if (ap_note_platform) {
-        ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
+        ap_add_version_component(SERVER_VERSION " (" PLATFORM ")");
     }
     else {
-        ap_add_version_component(SERVER_BASEVERSION);
+        ap_add_version_component(SERVER_VERSION);
     }
     version_locked++;
 }
@@ -3012,14 +3012,10 @@ static void AMCSocketCleanup(void)
 
 static void show_compile_settings(void)
 {
-#ifdef SERVER_SUBVERSION
     printf("Server base version: %s\n", SERVER_BASEVERSION);
     printf("Server sub-version:  %s\n", SERVER_SUBVERSION);
+    printf("Server Full version: %s\n", ap_get_server_version());
     printf("Server built:        %s\n", ap_get_server_built());
-#else
-    printf("Server version: %s\n", ap_get_server_version());
-    printf("Server built:   %s\n", ap_get_server_built());
-#endif
     printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
