@@ -138,7 +138,27 @@ typedef union {
 
 typedef const char *(*cmd_func) ();
 
+# define AP_NO_ARGS  func
 # define AP_RAW_ARGS func
+# define AP_TAKE1    func
+# define AP_TAKE2    func
+# define AP_TAKE3    func
+# define AP_FLAG     func
+
+# define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, RAW_ARGS, help }
+# define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, RAW_ARGS, help }
+# define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE1, help }
+# define AP_INIT_ITERATE(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, ITERATE, help }
+# define AP_INIT_TAKE2(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE2, help }
+# define AP_INIT_TAKE12(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE12, help }
+# define AP_INIT_FLAG(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, FLAG, help }
 
 #endif
 
