@@ -68,6 +68,11 @@
 
 #include <stdarg.h>
 
+#ifdef OS2
+#define INCL_DOS
+#include <os2.h>
+#endif
+
 /* debugging support, define this to enable code which helps detect re-use
  * of freed memory and other such nonsense.
  *
@@ -2214,6 +2219,10 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
             close(err_fds[1]);
         }
     
+        DosSetFHState(in_fds[1], OPEN_FLAGS_NOINHERIT);
+        DosSetFHState(out_fds[0], OPEN_FLAGS_NOINHERIT);
+        DosSetFHState(err_fds[0], OPEN_FLAGS_NOINHERIT);
+        
         pid = func(data, NULL);
     
         if ( pid )
