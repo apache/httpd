@@ -713,7 +713,7 @@ static const char
 }
 static const command_rec disk_cache_cmds[] =
 {
-    AP_INIT_FLAG1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
                  "The directory to store cache files"),
     AP_INIT_TAKE1("CacheSize", set_cache_size, NULL, RSRC_CONF,
                   "The maximum disk space used by the cache in Kb"),
