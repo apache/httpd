@@ -1,5 +1,7 @@
 Changes with Apache 2.0.40
 
+  *) Update SuSE layout.  [Peter Poeml <poeml@suse.de>]
+
   *) Changes to the internationalized error documents:
      Comment them out in the default config file to make the default
      install as simple as possible; Correct the english 500 error to
