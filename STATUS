@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 08:55:12 $]
+Last modified at [$Date: 2002/02/06 15:56:07 $]
 
 Release:
 
@@ -215,7 +215,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       indicated?
         Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
 
-      +1:  gregames
+      +1:  
       -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
