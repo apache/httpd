@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/24 21:38:37 $]
+Last modified at [$Date: 2003/11/24 21:40:10 $]
 
 Release:
 
@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
       having been set in the httpd.conf file. PR: 23748, 24459
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c.diff?r1=1.46&r2=1.47
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c.diff?r1=1.47&r2=1.48
-      +1: rederpj
+      +1: rederpj, nd
 
     * Make Win32 MPM honor MaxMemFree for transaction pools
       server/mpm/winnt/child.c: r1.17
