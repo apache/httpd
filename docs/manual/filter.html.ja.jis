@@ -1,79 +1,43 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-
-    <title>フィルタ - Apache HTTPD</title>
-  </head>
-  <!-- English revision: 1.9 -->
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">フィルタ</h1>
-
-    <table border="1">
-      <tr>
-        <td valign="top"><strong>関連モジュール</strong><br />
-         <br />
-         <a href="mod/mod_deflate.html">mod_deflate</a><br />
-         <a href="mod/mod_ext_filter.html">mod_ext_filter</a><br />
-         <a href="mod/mod_include.html">mod_include</a><br />
-        </td>
-
-        <td valign="top"><strong>関連ディレクティブ</strong><br />
-         <br />
-         <a
-        href="mod/mod_mime.html#addinputfilter">AddInputFilter</a><br />
-         <a
-        href="mod/mod_mime.html#addoutputfilter">AddOutputFilter</a><br />
-         <a
-        href="mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a><br />
-         <a
-        href="mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a><br />
-         <a
-        href="mod/core.html#setinputfilter">SetInputFilter</a><br />
-         <a
-        href="mod/core.html#setoutputfilter">SetOutputFilter</a><br />
-         </td>
-      </tr>
-    </table>
-
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>フィルタ - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">フィルタ</h1>
+    <p>Apache でのフィルタの使い方について記述しています。</p>
+  <hr><h2><a name="filters">フィルタ</a></h2>
+    
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br><br><code><a href="./mod/mod_deflate.html">mod_deflate</a></code><br><code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code><br><code><a href="./mod/mod_include.html">mod_include</a></code><br></td><td valign="top"><strong>関連ディレクティブ</strong><br><br><a href="./mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a><br><a href="./mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a><br><a href="./mod/mod_ext_filter.html#extfilterdefine" class="directive"><code class="directive">ExtFilterDefine</code></a><br><a href="./mod/mod_ext_filter.html#extfilteroptions" class="directive"><code class="directive">ExtFilterOptions</code></a><br><a href="./mod/core.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a><br><a href="./mod/core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a><br></td></tr></table>
+    
     <p><em>フィルタ</em> とは、サーバが送受信したデータに
     適用される処理プロセスのことをいいます。クライアントからサーバに
-    送られたデータは <em>入力フィルタ</em> によって、サーバから
+    送られたデータは <em>入力フィルタ</em> によって、サーバから
     クライアントに送られるデータは<em>出力フィルタ</em>によって
     処理されます。複数のフィルタを適用することができ、
     その順番を厳密に指定することもできます。</p>
 
-    <p>Apache 内部では、チャンク (データのぶつ切り) を行ったり、
+    <p>Apache 内部では、チャンク (データのぶつ切り) を行ったり、
     バイト範囲の指定されたリクエストを扱ったりといった機能を
     行う際に、フィルタが使われています。それに加えて、
     実行時の設定ディレクティブで選択が可能なフィルタを
     モジュールが提供できます。
-    データに適応されるフィルタのセットは、 <code>SetInputFilter</code>,
-    <code>SetOutputFilter</code>, <code>AddInputFilter</code>, 
-    <code>AddOutputFilter</code> ディレクティブで制御できます。</p>
+    データに適応されるフィルタのセットは、
+    <a href="./mod/core.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a>,
+    <a href="./mod/core.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a>,
+    <a href="./mod/core.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a>,
+    <a href="./mod/core.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a>
+    ディレクティブで制御できます。</p>
 
     <p>現行の Apache HTTP サーバの配布では、
     次のユーザ選択可能なフィルタが提供されています。</p>
 
-<dl>
-<dt>INCLUDES</dt> <dd><a
-href="mod/mod_include.html">mod_include</a>で Server-Side Include をします。</dd>
-<dt>DEFLATE</dt> <dd><a href="mod/mod_deflate.html">mod_deflate</a> を使って、
-クライアントに送信する前に出力を圧縮します。</dd>
-</dl>
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd><code><a href="./mod/mod_include.html">mod_include</a></code> で Server-Side Include をします。</dd>
+      <dt>DEFLATE</dt>
+      <dd><code><a href="./mod/mod_deflate.html">mod_deflate</a></code>
+      を使って、クライアントに送信する前に出力を圧縮します。</dd>
+    </dl>
 
-    <p>また、<a
-    href="mod/mod_ext_filter.html">mod_ext_filter</a> モジュールで
-    外部プログラムをフィルタとして指定することができます。</p>
-
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+    <p>また、<code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> モジュールで
+    外部プログラムをフィルタとして指定することができます。</p>
+  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"></a><a href="./"><img src="./images/home.gif" alt="ホーム"></a></body></html>
