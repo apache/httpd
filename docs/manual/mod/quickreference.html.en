@@ -174,8 +174,7 @@ cache.</td></tr>
 manager</td></tr>
 <tr><td><a href="mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck On|Off</a></td><td> On </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Indicates if the cache observes Expires dates when seeking
 files</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile
-    <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
 <tr><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Percentage of document served, after which the server
 will complete caching the file even if the request is cancelled.</td></tr>
 <tr class="odd"><td><a href="mod_disk_cache.html#cachegcclean">CacheGcClean <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The time to retain unchanged cached files that match a
@@ -403,7 +402,7 @@ using the specified magic file</td></tr>
 <tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td>  5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
 spikes</td></tr>
-<tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when 
