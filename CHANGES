@@ -1,5 +1,14 @@
 Changes with Apache 2.0b1
 
+  *) Cleaned out open_file from mod_file_cache, as apr now accepts
+     the APR_XTHREAD argument to open a file for consumption by
+     parallel threads on win32.  [William Rowe]
+
+  *) Correct a bug in determining when we follow symlinks.  The code
+     expected a stat -1 result, not an apr_status_t positive error.
+     Also check if the APR_FINFO_USER fields are valid before we
+     follow the link.  [William Rowe]
+
   *) Move initgroupgs, ap_uname2id and ap_gname2id from util.c to
      mpm_common.c.  These functions are only valid on some platforms,
      so they should not be in the main-line code. [Ryan Bloom]
