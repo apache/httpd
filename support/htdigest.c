@@ -74,15 +74,15 @@
 #include <stdio.h>
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
+#if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_SYS_SIGNAL_H
+#if APR_HAVE_SYS_SIGNAL_H
 #include <sys/signal.h>
 #endif
 
-#ifdef HAVE_SIGNAL_H
+#if APR_HAVE_SIGNAL_H
 #include <signal.h>
 #endif
 

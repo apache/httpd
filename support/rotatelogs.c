@@ -61,15 +61,22 @@
  */
 
 
-#include "ap_config.h"
-#include <stdio.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include "apr.h"
 #include <stdlib.h>
 #include <time.h>
 #include <errno.h>
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_IO_H
+#include <io.h>
+#endif
+#if APR_HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
 
 #define BUFSIZE         65536
 #define ERRMSGSZ        82
