@@ -506,7 +506,8 @@ clean:
 #   force a reload of the shared object file
 reload: install restart
 
-#   the general Apache start/restart/top #   procedures
+#   the general Apache start/restart/stop
+#   procedures
 start:
 	apachectl start
 restart:
