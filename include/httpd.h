@@ -1299,9 +1299,6 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
  */
 API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
 
-/* deprecated.  The previous two routines are preferred. */
-API_EXPORT(char *) ap_make_dirstr(apr_pool_t *a, const char *s, int n);
-
 /**
  * Given a directory and filename, create a single path out of them.  This
  * function is smart enough to ensure that there is a sinlge '/' between the
