@@ -53,11 +53,6 @@ RELEASE SHOWSTOPPERS:
 
 PROPOSED PATCHES FOR THIS RELEASE:
 
-   *) ap_auth_nonce misuse of ap_snprintf (Eric Covener patch)
-      [1.3 PATCH] mod_digest: ap_auth_nonce returns diff value between calls
-      (using the s/%pI/%pA/ proposal)
-      +1: trawick, jorton, jim
-
    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
       like Set-Cookie to be logged properly. PR 27787 
         modules/loggers/mod_log_config.c: r1.116 (2.x patch - need 1.3 version)

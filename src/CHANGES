@@ -1,5 +1,8 @@
 Changes with Apache 1.3.34
 
+  *) mod_digest: Fix another nonce string calculation issue.
+     [Eric Covener]
+
 Changes with Apache 1.3.33
 
   *) SECURITY: CAN-2004-0940 (cve.mitre.org)
@@ -11,7 +14,7 @@ Changes with Apache 1.3.32
   *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
      [michael teitler <michael.teitler cetelem.fr>,
       Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
-                                                                                
+
   *) mod_rewrite: Fix 0 bytes write into random memory position.
      PR 31036. [André Malo]
 
