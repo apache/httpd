@@ -1377,7 +1377,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
     return connection_destructor(conn, NULL, NULL);
 }
 
-static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
+PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
 {
     apr_status_t rv;
 
@@ -1420,13 +1420,13 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 #endif
     {
         
-        connection_constructor((void **)&(worker->cp->conn), s, worker->cp->pool);
-        rv = APR_SUCCESS;
+        rv = connection_constructor((void **)&(worker->cp->conn), s, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: initialized single connection worker for (%s)",
                       worker->hostname);
     }
-
+    if (rv == APR_SUCCESS)
+        worker->status |= PROXY_WORKER_INITIALIZED;
     return rv;
 }
 
@@ -1464,16 +1464,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                server_rec *s)
 {
     apr_status_t rv;
-
-    if (!(worker->status & PROXY_WORKER_INITIALIZED)) {
-        if ((rv = init_conn_worker(worker, s)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "proxy: %s: failed to initialize worker for (%s)",
-                         proxy_function, worker->hostname);
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-        worker->status |= PROXY_WORKER_INITIALIZED;
-    }
 
     if (!PROXY_WORKER_IS_USABLE(worker)) {
         /* Retry the worker */

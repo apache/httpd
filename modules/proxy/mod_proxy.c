@@ -1349,7 +1349,6 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
     /* Add the worker to the load balancer */
     ap_proxy_add_worker_to_balancer(cmd->pool, balancer, worker);
-
     return NULL;
 }
 
@@ -1596,8 +1595,20 @@ PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
+    proxy_server_conf *conf =
+    (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
+    proxy_worker *worker;
+    int i;
+
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
+
+    /* Initialize all the workers */
+    worker = (proxy_worker *)conf->workers->elts;
+    for (i = 0; i < conf->workers->nelts; i++) {
+        ap_proxy_initialize_worker(worker, s);
+        worker++;
+    }
 
     return OK;
 }

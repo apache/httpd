@@ -282,7 +282,6 @@ typedef struct {
 } proxy_runtime_worker;
 
 struct proxy_balancer {
-    int                status;
     apr_array_header_t *workers; /* array of proxy_runtime_workers */
     const char *name;            /* name of the load balancer */
     const char *sticky;          /* sticky session identifier */
@@ -409,6 +408,16 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 apr_pool_t *p,
                                                 proxy_server_conf *conf,
                                                 const char *url);
+
+/**
+ * Initize the worker
+ * @param worker the new worker
+ * @param p      memory pool to allocate worker from 
+ * @param s      current server record
+ * @return       APR_SUCCESS or error code
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
+                                                       server_rec *s);
 /**
  * Get the balancer from proxy configuration
  * @param p     memory pool used for finding balancer
