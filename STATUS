@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/19 06:11:52 $]
+Last modified at [$Date: 2001/10/22 12:46:29 $]
 
 Release:
 
@@ -34,11 +34,6 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
-
-    * The recent split of proxy.conf and ssl.conf, good or bad?
-        Split ssl.conf & proxy.conf: +1 OtherBill, Aaron, Ken
-        Split out ssl.conf only:     +1 Ryan, BrianH, Jim
-        Everything in httpd.conf:    +1 Cliff, Justin, Joshua
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
