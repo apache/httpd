@@ -102,8 +102,6 @@ static struct {
     unsigned char status;
 } child_table[HARD_SERVER_LIMIT];
 
-#define SAFE_ACCEPT(stmt) do {stmt;} while (0)
-
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with NumServers changes across SIGWINCH restarts.  We use this
@@ -172,9 +170,14 @@ static int idle_thread_count;
 static pthread_mutex_t idle_thread_count_mutex;
 
 /* Locks for accept serialization */
-static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
+#ifdef NO_SERIALIZED_ACCEPT
+#define SAFE_ACCEPT(stmt) APR_SUCCESS
+#else
+#define SAFE_ACCEPT(stmt) (stmt)
 static ap_lock_t *process_accept_mutex;
+#endif /* NO_SERIALIZED_ACCEPT */
 static char *lock_fname;
+static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
@@ -879,7 +882,8 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
-        if ((rv = ap_lock(process_accept_mutex)) != APR_SUCCESS) {
+        if ((rv = SAFE_ACCEPT(ap_lock(process_accept_mutex)))
+            != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
                          "ap_lock failed. Attempting to shutdown "
                          "process gracefully.");
@@ -936,7 +940,8 @@ static void *worker_thread(void *arg)
             if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "ap_accept");
             }
-            if ((rv = ap_unlock(process_accept_mutex)) != APR_SUCCESS) {
+            if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
+                != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
                              "ap_unlock failed. Attempting to shutdown "
                              "process gracefully.");
@@ -956,7 +961,8 @@ static void *worker_thread(void *arg)
             process_socket(ptrans, csd, conn_id);
             requests_this_child--;
 	} else {
-            if ((rv = ap_unlock(process_accept_mutex)) != APR_SUCCESS) {
+            if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
+                != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
                              "ap_unlock failed. Attempting to shutdown "
                              "process gracefully.");
@@ -1001,7 +1007,8 @@ static void child_main(int child_num_arg)
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    rv = ap_child_init_lock(&process_accept_mutex, lock_fname, pchild);
+    rv = SAFE_ACCEPT(ap_child_init_lock(&process_accept_mutex, lock_fname,
+                                        pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
                      "Couldn't initialize cross-process lock in child");
@@ -1335,8 +1342,8 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     lock_fname = ap_psprintf(_pconf, "%s.%lu",
                              ap_server_root_relative(_pconf, lock_fname),
                              my_pid);
-    rv = ap_create_lock(&process_accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                   lock_fname, _pconf);
+    rv = SAFE_ACCEPT(ap_create_lock(&process_accept_mutex, APR_MUTEX,
+                                    APR_CROSS_PROCESS, lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");
