@@ -481,7 +481,7 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
 AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
                                       void *val);
 
-#if defined(AP_DEBUG)
+#if !defined(AP_DEBUG)
 
 #define ap_get_module_config(v,m)	\
     (((void **)(v))[(m)->module_index])
