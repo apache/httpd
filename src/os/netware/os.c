@@ -162,7 +162,7 @@ void init_name_space()
 	NetWare assumes that all physical paths are fully qualified.  
 	Each file path must include a volume name.
  */
-char *ap_os_canonical_filename(pool *pPool, const char *szFile)
+static char *os_canonical_filename(pool *pPool, const char *szFile)
 {
     char *pNewName = ap_pstrdup(pPool, szFile);
     char *slash_test;
@@ -189,6 +189,14 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
             pNewName = ap_pstrcat (pPool, vol, "/", pNewName+strlen(vol), NULL);
         }
     }
+    return pNewName;
+}
+
+char *ap_os_canonical_filename(pool *pPool, const char *szFile)
+{
+    char *pNewName = os_canonical_filename(pPool, szFile);
+
+    /* Lower case the name so that the interal string compares work */
     strlwr(pNewName);
     return pNewName;
 }
@@ -198,7 +206,7 @@ char *ap_os_case_canonical_filename(pool *pPool, const char *szFile)
 {
     /* First thing we need to do is get a copy of the 
         canonicalized path */
-    char *pNewName = ap_os_canonical_filename(pPool, szFile);
+    char *pNewName = os_canonical_filename(pPool, szFile);
     int	  volnum=0;
     long  dirnum=0;
     long  pathcount=0;
@@ -230,8 +238,8 @@ char *ap_os_case_canonical_filename(pool *pPool, const char *szFile)
         pNewName = ap_pstrcat (pPool, &(vol[1]), ":", path, NULL);
     }
 
-    /* At this point we either have a real case accurate path or 
-        our best guess whichis a lower cased path */
+    /* At this point we either have a real case accurate canonical path or 
+        the original name canonicalized */
     return pNewName;
 }
 
