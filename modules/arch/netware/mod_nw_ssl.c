@@ -220,7 +220,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
             (LPWSAPROTOCOL_INFO)&SecureProtoInfo, 0, 0);
             
     if (s == INVALID_SOCKET) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), sconf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
                      "make_secure_socket: failed to get a socket for %s", 
                      addr);
         return -1;
@@ -231,7 +231,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
 		    
         if (WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), sconf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
                          "make_secure_socket: for %s, WSAIoctl: "
                          "(SO_SSL_SET_FLAGS)", addr);
             return -1;
@@ -246,7 +246,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
 
     if (WSAIoctl(s, SO_SSL_SET_SERVER, (char *)&opts, sizeof(opts),
         NULL, 0, NULL, NULL, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), sconf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
                      "make_secure_socket: for %s, WSAIoctl: "
                      "(SO_SSL_SET_SERVER)", addr);
         return -1;
@@ -257,7 +257,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
 
         if(WSAIoctl(s, SO_SSL_SET_FLAGS, (char*)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), sconf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
                          "make_secure_socket: for %s, WSAIoctl: "
                          "(SO_SSL_SET_FLAGS)", addr);
             return -1;
