@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/04/13 11:44:50 $]
+  Last modified at [$Date: 2000/04/13 21:54:10 $]
 
 Release:
 
@@ -43,6 +43,11 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
+      to handle both Digest *and* Basic authentication modes.
+	PR: 5879
+	Status: 
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
