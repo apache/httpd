@@ -1404,6 +1404,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     /* This is 100% safe, since dirent->name just came from the filesystem */
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
+    if (r->canonical_filename == r->filename)
+        rnew->canonical_filename = rnew->filename;
+    
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
     rnew->per_dir_config = r->per_dir_config;
