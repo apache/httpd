@@ -534,7 +534,7 @@ install-config:
 			-e 's;conf/mime\.types;$(sysconfdir)/mime.types;' \
 			-e 's;User nobody;User $(conf_user);' \
 			-e 's;Group #-1;Group $(conf_group);' \
-			-e 's;Group "#-1";Group $(conf_group);' \
+			-e 's;^Group "#-1";Group $(conf_group);' \
 			-e 's;Port 80;Port $(conf_port);' \
 			-e 's;ServerAdmin you@your.address;ServerAdmin $(conf_serveradmin);' \
 			-e 's;ServerName new.host.name;ServerName $(conf_servername);' \
