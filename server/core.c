@@ -3932,12 +3932,6 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     return OK;
 }
 
-static int core_open_logs(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
-{
-    ap_open_logs(s, plog);
-    return OK;
-}
-
 static void core_insert_filter(request_rec *r)
 {
     core_dir_config *conf = (core_dir_config *)
@@ -4111,7 +4105,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
-    ap_hook_open_logs(core_open_logs,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
