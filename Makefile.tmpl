@@ -350,11 +350,13 @@ install-data:
 	-@if [ -f $(root)$(datadir)/cgi-bin/printenv ]; then \
 		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(datadir)/cgi-bin/]"; \
 	else \
-		echo "Copying tree $(TOP)/cgi-bin/ -> $(root)$(datadir)/cgi-bin/"; \
-		(cd $(TOP)/cgi-bin/ && $(TAR) cf - *) |\
-		(cd $(root)$(datadir)/cgi-bin/ && $(TAR) xf -); \
-		find $(root)$(datadir)/cgi-bin/ -type d -exec chmod a+rx {} \; ; \
-		find $(root)$(datadir)/cgi-bin/ -type f -exec chmod a+r {} \; ; \
+		for script in printenv test-cgi; do \
+			cat $(TOP)/cgi-bin/$${script} |\
+			sed -e 's;^#!/.*perl;#!$(PERL);' \
+        		> $(TOP)/$(SRC)/.apaci.install.tmp; \
+			echo "$(INSTALL_DATA) $(TOP)/conf/$${script}[*] $(root)$(datadir)/cgi-bin/$${script}"; \
+			$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(datadir)/cgi-bin/$${script}; \
+		done; \
 	fi
 	@echo "Copying tree $(TOP)/icons/ -> $(root)$(datadir)/icons/"; \
 	(cd $(TOP)/icons/ && $(TAR) cf - *) |\

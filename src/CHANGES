@@ -1,4 +1,8 @@
 Changes with Apache 1.3.2
+
+  *) Make sure that the path to the Perl interpreter is correctly
+     adjusted under `make install' also for the printenv CGI script.
+     [Ralf S. Engelschall] PR#2595
  
   *) Update the mod_rewrite.html document to correctly reflect the situation
      of the `proxy' (`[P]') feature. [Ralf S. Engelschall] PR#2679
