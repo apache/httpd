@@ -445,7 +445,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
         return rv;
     }
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static apr_status_t pod_signal_internal(ap_pod_t *pod)
