@@ -227,9 +227,18 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	Explain0("Sending the CONNECT request to the remote proxy");
 	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF,
 		    r->uri);
+#ifdef CHARSET_EBCDIC
+	/* We are writing to the pure socket,
+	 * so we must convert our string to ASCII first
+	 */
+	ebcdic2ascii(buffer, buffer, strlen(buffer));
+#endif
 	send(sock, buffer, strlen(buffer),0);
 	ap_snprintf(buffer, sizeof(buffer),
 		    "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+#ifdef CHARSET_EBCDIC
+	ebcdic2ascii(buffer, buffer, strlen(buffer));
+#endif
 	send(sock, buffer, strlen(buffer),0);
     }
     else {

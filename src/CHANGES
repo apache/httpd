@@ -1,5 +1,10 @@
 Changes with Apache 1.3.21
 
+  *) EBCDIC: The proxy, when used in a proxy chain, "forgot" to
+     convert the "CONNECT host:port HTTP/1.0" request line to ASCII
+     before contacting the next proxy, and was thus unusable for
+     SSL proxying.  [Martin Kraemer]
+
   *) SECURITY: Make support/split-logfile use the default log file if
      "/" or "\" are present in the virtual host name.  This prevents
      the possible use of specially crafted virtual host names in
