@@ -541,6 +541,28 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define REQUEST_CHUNKED_DECHUNK  2
 #define REQUEST_CHUNKED_PASS     3
 
+/* Limits on the size of various request items.  These limits primarily
+ * exist to prevent simple denial-of-service attacks on a server based
+ * on misuse of the protocol.  The recommended values will depend on the
+ * nature of the server resources -- CGI scripts and database backends
+ * might require large values, but most servers could get by with much
+ * smaller limits than we use below.  These limits can be reset on a
+ * per-server basis using the LimitRequestLine, LimitRequestFields,
+ * LimitRequestFieldSize, and LimitRequestBody configuration directives.
+ */
+#ifndef DEFAULT_LIMIT_REQUEST_LINE
+#define DEFAULT_LIMIT_REQUEST_LINE 8190
+#endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
+#ifndef DEFAULT_LIMIT_REQUEST_FIELDS
+#define DEFAULT_LIMIT_REQUEST_FIELDS 100
+#endif /* default limit on number of header fields */
+#ifndef DEFAULT_LIMIT_REQUEST_FIELDSIZE
+#define DEFAULT_LIMIT_REQUEST_FIELDSIZE 8190
+#endif /* default limit on bytes in any one field  */
+#ifndef DEFAULT_LIMIT_REQUEST_BODY
+#define DEFAULT_LIMIT_REQUEST_BODY 33554432ul
+#endif /* default limit on bytes in request body   */
+
 /* Things which may vary per file-lookup WITHIN a request ---
  * e.g., state of MIME config.  Basically, the name of an object, info
  * about the object, and any other info we may ahve which may need to
@@ -822,8 +844,13 @@ struct server_rec {
     array_header *names;	/* Normal names for ServerAlias servers */
     array_header *wild_names;	/* Wildcarded names for ServerAlias servers */
 
-    uid_t server_uid;		/* effective user id when calling exec wrapper */
-    gid_t server_gid;		/* effective group id when calling exec wrapper */
+    uid_t server_uid;        /* effective user id when calling exec wrapper */
+    gid_t server_gid;        /* effective group id when calling exec wrapper */
+
+    unsigned int  limit_req_line;      /* limit on bytes in Request-Line   */
+    unsigned int  limit_req_fields;    /* limit on number of header fields */
+    unsigned long limit_req_fieldsize; /* limit on bytes in any one field  */
+    unsigned long limit_req_body;      /* limit on bytes in request body   */
 };
 
 /* These are more like real hosts than virtual hosts */

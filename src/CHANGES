@@ -1,5 +1,11 @@
 Changes with Apache 1.3.2
 
+  *) SECURITY: Added default limits for various aspects of reading a
+     client request to avoid some simple denial of service attacks,
+     including limits on maximum request-line size, number of header
+     fields, size of any one header field, and size of the request
+     message body.  [Roy Fielding]
+
   *) Make status module aware of DNS and logging states, even if
      STATUS not defined.  [Jim Jagielski]
 

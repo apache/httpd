@@ -1409,6 +1409,10 @@ static server_rec *init_server_config(pool *p)
     s->loglevel = DEFAULT_LOGLEVEL;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;
+    s->limit_req_line      = DEFAULT_LIMIT_REQUEST_LINE;
+    s->limit_req_fields    = DEFAULT_LIMIT_REQUEST_FIELDS;
+    s->limit_req_fieldsize = DEFAULT_LIMIT_REQUEST_FIELDSIZE;
+    s->limit_req_body      = DEFAULT_LIMIT_REQUEST_BODY;
     s->timeout = DEFAULT_TIMEOUT;
     s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
     s->keep_alive_max = DEFAULT_KEEPALIVE;
