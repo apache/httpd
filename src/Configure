@@ -965,15 +965,17 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    SHLIB_SUFFIX_DEPTH=0
 	    ;;
 	*-freebsd2*)
+		LD_SHLIB="gcc"
 	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB="-shared"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
 	*-freebsd3*|*-freebsd4*)
+		LD_SHLIB="gcc"
 	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB="-shared"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
 	    if [ "x$OBJFORMAT" = "xelf" ]; then

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Link DSO's with "gcc -shared" instead of "ld -Bshareable" at 
+     least on Linux and FreeBSD for now.  
+     [Rasmus Lerdorf]
+
   *) Win32: More apache -k restart work. Restarts are now honored
      immediately and connections in the listen queue are -not- lost.
      This is made possible by the use of the WSADuplicateSocket()
