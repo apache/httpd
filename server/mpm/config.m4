@@ -13,7 +13,7 @@ AC_MSG_RESULT($APACHE_MPM)
 apache_cv_mpm=$APACHE_MPM
 	
 if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "threadpool" ; then
-  APR_CHECK_APR_DEFINE(APR_HAS_THREADS, srclib/apr)
+  APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
   if test "x$ac_cv_define_APR_HAS_THREADS" = "xno"; then
     AC_MSG_RESULT(The currently selected MPM requires threads which your system seems to lack)
