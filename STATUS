@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/10 15:10:31 $]
+Last modified at [$Date: 2004/03/14 16:46:50 $]
 
 Release:
 
@@ -70,6 +70,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Allow Satisfy directives to be influenced by <Limit>.
+       PR: 14726
+         include/http_core.h: r1.81
+         server/core.c: r1.266
+       +1: nd
 
     *) Win32: Tweak worker thread accounting routines to prevent
        server hang when number of Listen directives is >=
