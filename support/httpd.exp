@@ -410,7 +410,6 @@ apr_bucket_socket_create
 apr_collapse_spaces
 apr_connect
 apr_cpystrn
-apr_create_signal_thread
 apr_ctime
 apr_day_snames
 apr_dbm_close
@@ -621,6 +620,7 @@ apr_shutdown
 apr_signal
 apr_signal_get_description
 apr_signal_init
+apr_signal_thread
 apr_sleep
 apr_snprintf
 apr_sockaddr_info_get
