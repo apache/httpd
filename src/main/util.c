@@ -1132,24 +1132,101 @@ API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
  * an HTTP field value list.  Returns 1 if found, 0 if not found.
  * This would be much more efficient if we stored header fields as
  * an array of list items as they are received instead of a plain string.
- * We could make it more efficient by duplicating the loop/switch above
- * within this function, replacing the assignments with compares.
  */
 API_EXPORT(int) ap_find_list_item(pool *p, const char *line, const char *tok)
 {
-    const char *nxt;
-    char *item;
+    const unsigned char *pos;
+    const unsigned char *ptr = (const unsigned char *)line;
+    int good = 0, addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0;
 
     if (!line || !tok)
         return 0;
 
-    nxt = line;
+    do {  /* loop for each item in line's list */
 
-    while ((item = ap_get_list_item(p, &nxt)) != NULL) {
-        if (strcmp(item, tok) == 0)
-            return 1;
-    }
-    return 0;
+        /* Find first non-comma, non-whitespace byte */
+
+        while (*ptr == ',' || ap_isspace(*ptr))
+            ++ptr;
+
+        if (*ptr)
+            good = 1;  /* until proven otherwise for this item */
+        else
+            break;     /* no items left and nothing good found */
+
+        /* We skip extra whitespace and any whitespace around a '=', '/',
+         * or ';' and lowercase normal characters not within a comment,
+         * quoted-string or quoted-pair.
+         */
+        for (pos = (const unsigned char *)tok;
+             *ptr && (in_qpair || in_qstr || in_com || *ptr != ',');
+             ++ptr) {
+
+            if (in_qpair) {
+                in_qpair = 0;
+                if (good)
+                    good = (*pos++ == *ptr);
+            }
+            else {
+                switch (*ptr) {
+                    case '\\': in_qpair = 1;
+                               if (addspace == 1)
+                                   good = good && (*pos++ == ' ');
+                               good = good && (*pos++ == *ptr);
+                               addspace = 0;
+                               break;
+                    case '"' : if (!in_com)
+                                   in_qstr = !in_qstr;
+                               if (addspace == 1)
+                                   good = good && (*pos++ == ' ');
+                               good = good && (*pos++ == *ptr);
+                               addspace = 0;
+                               break;
+                    case '(' : if (!in_qstr)
+                                   ++in_com;
+                               if (addspace == 1)
+                                   good = good && (*pos++ == ' ');
+                               good = good && (*pos++ == *ptr);
+                               addspace = 0;
+                               break;
+                    case ')' : if (in_com)
+                                   --in_com;
+                               good = good && (*pos++ == *ptr);
+                               addspace = 0;
+                               break;
+                    case ' ' :
+                    case '\t': if (addspace || !good)
+                                   break;
+                               if (in_com || in_qstr)
+                                   good = (*pos++ == *ptr);
+                               else
+                                   addspace = 1;
+                               break;
+                    case '=' :
+                    case '/' :
+                    case ';' : if (!(in_com || in_qstr))
+                                   addspace = -1;
+                               good = good && (*pos++ == *ptr);
+                               break;
+                    default  : if (!good)
+                                   break;
+                               if (addspace == 1)
+                                   good = (*pos++ == ' ');
+                               if (in_com || in_qstr)
+                                   good = good && (*pos++ == *ptr);
+                               else
+                                   good = good && (*pos++ == ap_tolower(*ptr));
+                               addspace = 0;
+                               break;
+                }
+            }
+        }
+        if (good && *pos)
+            good = 0;          /* not good if only a prefix was matched */
+
+    } while (*ptr && !good);
+
+    return good;
 }
 
 

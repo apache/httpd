@@ -1,12 +1,12 @@
-/* This program tests the ap_get_list_item routine in ../main/util.c.
+/* This program tests the ap_find_list_item routine in ../main/util.c.
  *
  * The defines in this sample compile line are specific to Roy's system.
  * They should match whatever was used to compile Apache first.
  *
-     gcc -g -O2 -I../os/unix -I../include -o test_parser \
+     gcc -g -O2 -I../os/unix -I../include -o test_find \
             -DSOLARIS2=250 -Wall -DALLOC_DEBUG -DPOOL_DEBUG \
             ../main/alloc.o ../main/buff.o ../main/util.o \
-            ../ap/libap.a -lsocket -lnsl test_parser.c
+            ../ap/libap.a -lsocket -lnsl test_find.c
  * 
  * Roy Fielding, 1999
  */
@@ -34,7 +34,7 @@ API_EXPORT(void) ap_unblock_alarms(void)
 }
 
 API_EXPORT(void) ap_log_error(const char *file, int line, int level,
-                               const request_rec *r, const char *fmt, ...)
+                              const request_rec *r, const char *fmt, ...)
 {
     ;
 }
@@ -42,17 +42,20 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 int main (void)
 {
     ap_pool *p;
-    const char *field;
-    char *newstr;
-    char instr[512];
+    char line[512];
+    char tok[512];
 
     p = ap_init_alloc();
 
-    while (gets(instr)) {
-        printf("  [%s] ==\n", instr);
-        field = instr;
-        while ((newstr = ap_get_list_item(p, &field)) != NULL)
-            printf("  <%s> ..\n", newstr);
+    printf("Enter field value to find items within:\n");
+    if (!gets(line))
+        exit(0);
+
+    printf("Enter search item:\n");
+    while (gets(tok)) {
+        printf("  [%s] == %s\n", tok, ap_find_list_item(p, line, tok)
+                                  ? "Yes" : "No");
+        printf("Enter search item:\n");
     }
     
     exit(0);
