@@ -1,4 +1,9 @@
 Changes with Apache 1.3b1
+  
+  *) If BUFFERED_LOGS is defined then mod_log_config will do atomic
+     buffered writes -- that is, it will buffer up to PIPE_BUF (i.e. 4k)
+     bytes before writing, but it will never split a log entry across a
+     buffer boundary.  [Dean Gaudet]
 
   *) API: the short_score record has been split into two pieces, one which
      the parent writes on, and one which the child writes on.  As part of
