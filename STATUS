@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/07 07:46:33 $]
+Last modified at [$Date: 2003/08/07 14:17:28 $]
 
 Release:
 
@@ -298,6 +298,10 @@ PATCHES TO PORT FROM 2.1
       by mod_ssl itself.
         modules/ssl/ssl_engine_kernel.c: r1.97
       +1: striker
+
+    * fix extern "C" declaration of util_ebcdic.h. PR: 22203
+        include/util_ebcdic.h: r1.15
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
