@@ -194,7 +194,8 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
                                                 char **url,
                                                 const char *proxyname,
                                                 apr_port_t proxyport,
-                                                char *server_portstr) {
+                                                char *server_portstr,
+                                                int server_portstr_size) {
     int server_port;
     apr_status_t err;
     apr_sockaddr_t *uri_addr;
@@ -253,7 +254,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
         if (ap_is_default_port(server_port, r)) {
             strcpy(server_portstr,"");
         } else {
-            apr_snprintf(server_portstr, sizeof(server_portstr), ":%d",
+            apr_snprintf(server_portstr, server_portstr_size, ":%d",
                          server_port);
         }
     }
@@ -940,7 +941,8 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_http_determine_connection(p, r, p_conn, c, conf, uri,
                                                 &url, proxyname, proxyport,
-                                                server_portstr);
+                                                server_portstr,
+                                                sizeof(server_portstr));
     if ( status != OK ) {
         return status;
     }
