@@ -1,4 +1,8 @@
 Changes with Apache 1.3b3
+
+  *) Ensure that one copy of config warnings makes it to the
+     error_log.  [Dean Gaudet]
+
   *) Invent new structure and associated methods to handle config file
      reading. Add "custom" hook to use config file cfg_getline() on
      something which is not a FILE*  [Martin Kraemer]

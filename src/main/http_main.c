@@ -3390,9 +3390,10 @@ int main(int argc, char *argv[])
 
     suexec_enabled = init_suexec();
     server_conf = read_config(pconf, ptrans, server_confname);
-    init_modules(pconf, server_conf);
 
     if (standalone) {
+	open_logs(server_conf, pconf);
+	init_modules(pconf, server_conf);
 	STANDALONE_MAIN(argc, argv);
     }
     else {
@@ -3402,6 +3403,8 @@ int main(int argc, char *argv[])
 	BUFF *cio;
 	NET_SIZE_T l;
 
+	/* Yes this is called twice. */
+	init_modules(pconf, server_conf);
 	open_logs(server_conf, pconf);
 	init_modules(pconf, server_conf);
 	set_group_privs();
