@@ -385,7 +385,7 @@ void worker_main(void *arg)
 
             if (srv <= 0) {
                 if (srv < 0) {
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, apr_get_netos_error(), ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, WSAGetLastError(), ap_server_conf,
                         "select() failed on listen socket");
                     apr_thread_yield();
                 }
