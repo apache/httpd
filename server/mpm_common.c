@@ -167,4 +167,41 @@ void ap_reclaim_child_processes(int terminate)
     }
 }
 
+/* number of calls to wait_or_timeout between writable probes */
+#ifndef INTERVAL_OF_WRITABLE_PROBES
+#define INTERVAL_OF_WRITABLE_PROBES 10
+#endif
+static int wait_or_timeout_counter;
+
+static ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
+{
+    struct timeval tv;
+    ap_status_t rv;
+    ap_proc_t *ret = NULL;
+
+    ++wait_or_timeout_counter;
+    if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
+        wait_or_timeout_counter = 0;
+#ifdef APR_HAS_OTHER_CHILD
+        ap_probe_writable_fds();
+#endif
+    }
+    rv = ap_wait_all_procs(&ret, status, APR_NOWAIT, p);
+    if (ap_canonical_error(rv) == APR_EINTR) {
+        return NULL;
+    }
+    if (rv == APR_CHILD_DONE) {
+        return ret;
+    }
+#ifdef NEED_WAITPID
+    if ((ret = reap_children(status)) > 0) {
+        return ret;
+    }
+#endif
+    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
+    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
+    ap_select(0, NULL, NULL, NULL, &tv);
+    return NULL;
+}
+
 
