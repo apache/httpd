@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Test Side for Apache installationen</TITLE>
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <H1 ALIGN="CENTER">
+   Det virkede!  Apache Web Serveren er installeret på denne maskine!
+  </H1>
+  <P>
+  Hvis de kan se denne side, så har dem som ejer dette domain lige
+  installeret <A HREF="http://www.apache.org/">Apache Web Serveren</A>.
+  De må nu placere web sider i dette directory og fjerne denne side, eller
+  peje serveren på et andet directory.
+  </P>
+  <HR>
+  <BLOCKQUOTE>
+   Hvis de ser denne side isteden for en anden ekspekteret side, <STRONG>kontakt
+   venligst administrateren for den server de prøver at kontakte.</STRONG>
+   (Prøv at sende mail til <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
+   Apache Gruppen har ikke noget at gøre med denne site, så det vil ikke
+   hjælpe at sende mail to Apache forfatterne omvirkende denne site.  
+  </BLOCKQUOTE>
+  <HR>
+  <P>
+  Apache
+  <A
+   HREF="manual/index.html"
+  >documentationen</A>
+  er inluderet med denne distribution.
+  </P>
+  <P>
+  Webmasteren af denne site må gerne bruge den følgende grafik
+  på en Apache-drevet web server.  Mange tak for at bruge Apache!
+  </P>
+  <DIV ALIGN="CENTER">
+   <IMG SRC="apache_pb.gif" ALT="">
+  </DIV>
+ </BODY>
+</HTML>
