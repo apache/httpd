@@ -27,7 +27,7 @@ Secure Sockts Layer と Transport Layer Security
 <li><a href="ssl_compat.html">互換性</a></li>
 <li><a href="ssl_howto.html">How-To</a></li>
 <li><a href="ssl_faq.html">よくある質問</a></li>
-<li><a href="ssl_glossary.html">用語</a></li>
+<li><a href="../glossary.html">用語</a></li>
 </ul>
 
 <p>このモジュールで提供されるディレクティブや環境変数に関する
