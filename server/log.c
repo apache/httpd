@@ -634,7 +634,7 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
     apr_status_t rv;
     const char *fname;
     char *buf, *endptr;
-    apr_size_t bytes_wanted, bytes_read;
+    apr_size_t bytes_read;
 
     if (!filename) {
         return APR_EGENERAL;
@@ -652,24 +652,22 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
         return rv;
     }
 
-    bytes_wanted = BUFFER_SIZE;
-    endptr = buf = apr_palloc(p, BUFFER_SIZE);
-    do {
-        bytes_read = bytes_wanted;
-        rv = apr_file_read(pid_file, endptr, &bytes_read);
-        if (rv != APR_SUCCESS && rv != APR_EOF) {
-            return rv;
-        }
-        bytes_wanted -= bytes_read;
-        endptr += bytes_read; 
-    }
-    while (bytes_wanted > 0 && rv != APR_EOF);
+    /* Ensure null-termination, so that strtol doesn't go crazy. */
+    buf = apr_palloc(p, BUFFER_SIZE);
+    buf[BUFFER_SIZE - 1] = '\0';
 
-    *mypid = strtol(buf, &endptr, 10);
-    /* We only know for sure that the beginning part is the pid. */
-    if (*buf == '\0' || *endptr != '\n') {
+    rv = apr_file_read_full(pid_file, buf, BUFFER_SIZE - 1, &bytes_read);
+    if (rv != APR_SUCCESS && rv != APR_EOF) {
+        return rv;
+    }
+
+    /* If we fill the buffer, we're probably reading a corrupt pid file.
+     * To be nice, let's also ensure the first char is a digit. */
+    if (bytes_read == BUFFER_SIZE - 1 || !apr_isdigit(*buf)) {
         return APR_EGENERAL;
     }
+
+    *mypid = strtol(buf, &endptr, 10);
 
     apr_file_close(pid_file);
     return APR_SUCCESS;
