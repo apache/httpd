@@ -176,6 +176,7 @@ extern "C" {
 #define is_fnmatch                     ap_is_fnmatch
 #define is_initial_req                 ap_is_initial_req
 #define is_matchexp                    ap_is_matchexp
+#define is_table_empty                 ap_is_table_empty
 #define is_url                         ap_is_url
 #define keepalive_timeout              ap_keepalive_timeout
 #define kill_cleanup                   ap_kill_cleanup
@@ -379,6 +380,7 @@ extern "C" {
 #define table_add                      ap_table_add
 #define table_addn                     ap_table_addn
 #define table_do                       ap_table_do
+#define table_elts                     ap_table_elts
 #define table_get                      ap_table_get
 #define table_merge                    ap_table_merge
 #define table_mergen                   ap_table_mergen
