@@ -311,7 +311,8 @@ AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
         return NULL;
     }
 
-    apr_pool_cleanup_register(p, (void *) preg, regex_cleanup, regex_cleanup);
+    apr_pool_cleanup_register(p, (void *) preg, regex_cleanup,
+                              apr_pool_cleanup_null);
 
     return preg;
 }
