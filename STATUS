@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/12 12:50:22 $]
+Last modified at [$Date: 2002/12/17 17:34:14 $]
 
 Release:
 
@@ -56,6 +56,11 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+
+    * PR 15113. The cache_in_filter code in mod_cache now coredumps
+      if a 302/404/etc response comes back from the proxy due to
+      the use of apr_pstrcat instead of apr_psprintf. [Paul J. Reder]
+      +1: rederpj
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
