@@ -6,6 +6,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.44
 
+  *) build: './configure && make' now works without an in-tree
+     apr and apr-util. [Wilfredo Sanchez]
+
   *) mod_negotiation: Set the appropriate mime response headers
      (Content-Type, charset, Content-Language and Content-Encoding)
      for negotated type-map "Body:" responses (such as the error
