@@ -149,21 +149,15 @@ static void make_cookie(request_rec *r)
     apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, apr_time_now());
 
     if (cls->expires) {
-	apr_exploded_time_t tms;
-        time_t when;
-
-        when = cls->expires;
-        if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
-            when += r->request_time;
-        }
-
-	apr_explode_gmt(&tms,
-                        r->request_time + cls->expires * APR_USEC_PER_SEC);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         new_cookie = apr_psprintf(r->pool, "%s=%s; path=/",
                                   dcfg->cookie_name, cookiebuf);
+
         if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
+	    apr_exploded_time_t tms;
+            apr_explode_gmt(&tms, r->request_time 
+                                + cls->expires * APR_USEC_PER_SEC);
             new_cookie = apr_psprintf(r->pool,
                                        "%s; expires=%s, "
                                        "%.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
@@ -175,7 +169,7 @@ static void make_cookie(request_rec *r)
         }
         else {
             new_cookie = apr_psprintf(r->pool, "%s; max-age=%d",
-                                      new_cookie, (int) when);
+                                      new_cookie, cls->expires);
         }
     }
     else {
