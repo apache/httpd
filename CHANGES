@@ -20,9 +20,6 @@ Changes with Apache 2.1.0-dev
      [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
      Michael Schroepl <Michael.Schroepl@telekurs.de>]
 
-  *) Restore the ability of htdigest.exe to create files that contain
-     more than one user. PR 12910.  [André Malo]
-
   *) Added the WindowsSocketsWorkaround directive for Windows NT/2000/XP
      to work around problems with certain VPN and Firewall products that 
      have buggy AcceptEx implementations.
@@ -167,6 +164,13 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Restore the ability of htdigest.exe to create files that contain
+     more than one user. PR 12910.  [André Malo]
+
+  *) Improve binary compatibility of the core between debug (aka
+     maintainer-mode) and a non-debug compile.
+     [Sander Striker]
 
   *) mod_usertrack: don't set the cookie in subrequests. This works
      around the problem that cookies were set twice during fast internal
