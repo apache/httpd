@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) PORT: SUNOS now always defines SUNOS_LIB_PROTOTYPES because a
+     recent change elsewhere left us without definitions for fgetc()
+     and fgets() breaking compilation.  [Martin Kraemer, Ben Hyde]
+
   *) It was necessary to distinguish between resources which are
      allocated in the parent, for cleanup in the parent, and resources
      which are allocated in each child, for cleanup in each child.

@@ -117,6 +117,7 @@ typedef int rlim_t;
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define NEED_DIFFTIME
 #define HAVE_SYSLOG
+#define SUNOS_LIB_PROTOTYPES
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
@@ -923,8 +924,8 @@ Sigfunc *signal(int signo, Sigfunc * func);
 
 int getopt(int, char **, char *);
 
-int strcasecmp(char *, char *);
-int strncasecmp(char *, char *, int);
+int strcasecmp(const char *, const char *);
+int strncasecmp(const char *, const char *, int);
 int toupper(int);
 int tolower(int);
 
@@ -945,7 +946,7 @@ void setbuf(FILE *, char *);
 void perror(char *);
 
 time_t time(time_t *);
-int strftime(char *, int, char *, struct tm *);
+int strftime(char *, int, const char *, struct tm *);
 
 int initgroups(char *, int);
 int wait3(int *, int, void *);	/* Close enough for us... */
@@ -969,7 +970,7 @@ int gethostname(char *name, int namelen);
 void syslog(int, char *,...);
 char *mktemp(char *);
 
-long vfprintf(FILE *, char *, va_list);
+long vfprintf(FILE *, const char *, va_list);
 
 #endif /* SUNOS_LIB_PROTOTYPES */
 
