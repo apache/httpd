@@ -84,6 +84,7 @@ Committed Code Changes:
     * Dean's [PATCH] protect the environment
     * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
     * mod_rewrite/1684: RewriteLog directive does the equivalent of "HostnameLookups on"
+    * protocol/1683: The Connection header may contain multiple close tokens
 
 Available Patches:
 

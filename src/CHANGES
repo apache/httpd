@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) The "Connection" header could be sent back with multiple "close"
+     tokens.  Not an error, but a waste.
+     [Ronald.Tschalaer@psi.ch] PR#1683
+
   *) mod_rewrite's RewriteLog should behave like mod_log_config, it
      shouldn't force hostname lookups.  [Dean Gaudet] PR#1684
 

@@ -346,7 +346,8 @@ int set_keepalive(request_rec *r)
      * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
      * to a HTTP/1.1 client. Better safe than sorry.
      */
-    table_merge(r->headers_out, "Connection", "close");
+    if (!wimpy)
+      table_merge(r->headers_out, "Connection", "close");
 
     r->connection->keepalive = 0;
 
