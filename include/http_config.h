@@ -737,7 +737,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 #define  NOT_IN_FILES           0x10 /**< Forbidden in <Files> */
 /** Forbidden in <Directory>/<Location>/<Files>*/
 #define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) 
-/** Forbidden in <VirtualHost>/<Limit>/Directory>/<Location>/<Files> */
+/** Forbidden in <VirtualHost>/<Limit>/<Directory>/<Location>/<Files> */
 #define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE) 
 
 /** @} */
