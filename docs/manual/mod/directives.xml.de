@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English revision: 1.7 -->
+
+<directiveindex>
+  <title>Verzeichnis der Direktiven</title>
+  <summary>
+    <p>
+      Hier sind alle Apache-Direktiven aufgef&uuml;hrt, die in der
+      Standard-Apache-Distribution verf&uuml;gbar sind. Sie sind in
+      einem einheitlichen Format beschrieben. Ein <a
+      href="directive-dict.html" rel="Glossary">Glossar</a>
+      erl&auml;utert die in der Beschreibung verwendeten Begriffe.
+    </p>
+
+    <p>
+      Au&szlig;erdem existiert eine <a
+      href="quickreference.html">Kurzreferenz der Direktiven</a>, welche
+      zu jeder Direktive eine Zusammenfassung der Details enth&auml;lt.
+    </p>
+  </summary>
+
+  &sitemap;
+</directiveindex>
