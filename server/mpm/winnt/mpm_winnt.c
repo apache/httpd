@@ -1690,6 +1690,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         /* Don't wait to verify that the child process really exits, 
          * just move on with the restart.
          */
+        CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
         ++ap_my_generation;
     }
@@ -1733,17 +1734,21 @@ die_now:
                 ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf,
                              "Parent: SetEvent for child process %d failed", event_handles[CHILD_HANDLE]);
         }
-        rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
-        if (rv == WAIT_OBJECT_0) {
-            ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
-                         "Parent: Child process %d exited successfully.", event_handles[CHILD_HANDLE]);
-            event_handles[CHILD_HANDLE] = NULL;
-        }
-        else {
-            ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
-                         "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
-            TerminateProcess(event_handles[CHILD_HANDLE], 1);
-            event_handles[CHILD_HANDLE] = NULL;
+        if (event_handles[CHILD_HANDLE]) {
+            rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
+            if (rv == WAIT_OBJECT_0) {
+                ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                             "Parent: Child process %d exited successfully.", event_handles[CHILD_HANDLE]);
+                CloseHandle(event_handles[CHILD_HANDLE]);
+                event_handles[CHILD_HANDLE] = NULL;
+            }
+            else {
+                ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                             "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
+                TerminateProcess(event_handles[CHILD_HANDLE], 1);
+                CloseHandle(event_handles[CHILD_HANDLE]);
+                event_handles[CHILD_HANDLE] = NULL;
+            }
         }
         return 0;  /* Tell the caller we do not want to restart */
     }
