@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href=".." />
+  <parentdocument href="./">Miscellaneous Documentation</parentdocument>
+
+  <title>Known Problems in Clients</title>
+
+  <summary>
+
+    <note type="warning"><title>Warning:</title>
+      <p>This document has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </note>
+
+    <p>Over time the Apache Group has discovered or been notified
+    of problems with various clients which we have had to work
+    around, or explain. This document describes these problems and
+    the workarounds available. It's not arranged in any particular
+    order. Some familiarity with the standards is assumed, but not
+    necessary.</p>
+
+    <p>For brevity, <em>Navigator</em> will refer to Netscape's
+    Navigator product (which in later versions was renamed
+    "Communicator" and various other names), and <em>MSIE</em> will
+    refer to Microsoft's Internet Explorer product. All trademarks
+    and copyrights belong to their respective companies. We welcome
+    input from the various client authors to correct
+    inconsistencies in this paper, or to provide us with exact
+    version numbers where things are broken/fixed.</p>
+
+    <p>For reference, <a
+    href="ftp://ds.internic.net/rfc/rfc1945.txt">RFC1945</a>
+    defines HTTP/1.0, and <a
+    href="ftp://ds.internic.net/rfc/rfc2068.txt">RFC2068</a>
+    defines HTTP/1.1. Apache as of version 1.2 is an HTTP/1.1
+    server (with an optional HTTP/1.0 proxy).</p>
+
+    <p>Various of these workarounds are triggered by environment
+    variables. The admin typically controls which are set, and for
+    which clients, by using <code>mod_browser</code>. Unless
+    otherwise noted all of these workarounds exist in versions 1.2
+    and later.</p>
+
+  </summary>
+
+  <section id="trailing-crlf"><title>Trailing CRLF on POSTs</title>
+
+    <p>This is a legacy issue. The CERN webserver required
+    <code>POST</code> data to have an extra <code>CRLF</code>
+    following it. Thus many clients send an extra <code>CRLF</code>
+    that is not included in the <code>Content-Length</code> of the
+    request. Apache works around this problem by eating any empty
+    lines which appear before a request.</p>
+
+  </section>
+
+  <section id="broken-keepalive"><title>Broken KeepAlive</title>
+
+    <p>Various clients have had broken implementations of
+    <em>keepalive</em> (persistent connections). In particular the
+    Windows versions of Navigator 2.0 get very confused when the
+    server times out an idle connection. The workaround is present
+    in the default config files:</p>
+
+    <example>
+      BrowserMatch Mozilla/2 nokeepalive
+    </example>
+
+    <p>Note that this matches some earlier versions of MSIE, which
+    began the practice of calling themselves <em>Mozilla</em> in
+    their user-agent strings just like Navigator.</p>
+
+    <p>MSIE 4.0b2, which claims to support HTTP/1.1, does not
+    properly support keepalive when it is used on 301 or 302
+    (redirect) responses. Unfortunately Apache's
+    <code>nokeepalive</code> code prior to 1.2.2 would not work
+    with HTTP/1.1 clients. You must apply <a
+    href="http://www.apache.org/dist/httpd/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch">
+    this patch</a> to version 1.2.1. Then add this to your
+    config:</p>
+
+    <example>
+      BrowserMatch "MSIE 4\.0b2;" nokeepalive
+    </example>
+
+  </section>
+
+  <section id="force-response-1.0"><title>Incorrect interpretation of
+    <code>HTTP/1.1</code> in response</title>
+
+    <p>To quote from section 3.1 of RFC1945:</p>
+
+    <note>
+      HTTP uses a "&lt;MAJOR&gt;.&lt;MINOR&gt;" numbering scheme to
+      indicate versions of the protocol. The protocol versioning
+      policy is intended to allow the sender to indicate the format
+      of a message and its capacity for understanding further HTTP
+      communication, rather than the features obtained via that
+      communication.
+    </note>
+
+    <p>Since Apache is an HTTP/1.1 server, it indicates so as part of
+    its response. Many client authors mistakenly treat this part of
+    the response as an indication of the protocol that the response
+    is in, and then refuse to accept the response.</p>
+
+    <p>The first major indication of this problem was with AOL's
+    proxy servers. When Apache 1.2 went into beta it was the first
+    wide-spread HTTP/1.1 server. After some discussion, AOL fixed
+    their proxies. In anticipation of similar problems, the
+    <code>force-response-1.0</code> environment variable was added
+    to Apache. When present Apache will indicate "HTTP/1.0" in
+    response to an HTTP/1.0 client, but will not in any other way
+    change the response.</p>
+
+    <p>The pre-1.1 Java Development Kit (JDK) that is used in many
+    clients (including Navigator 3.x and MSIE 3.x) exhibits this
+    problem. As do some of the early pre-releases of the 1.1 JDK.
+    We think it is fixed in the 1.1 JDK release. In any event the
+    workaround:</p>
+
+    <example>
+       BrowserMatch Java/1.0 force-response-1.0<br />
+       BrowserMatch JDK/1.0 force-response-1.0
+    </example>
+
+    <p>RealPlayer 4.0 from Progressive Networks also exhibits this
+    problem. However they have fixed it in version 4.01 of the
+    player, but version 4.01 uses the same <code>User-Agent</code>
+    as version 4.0. The workaround is still:</p>
+
+    <example>
+      BrowserMatch "RealPlayer 4.0" force-response-1.0
+    </example>
+
+  </section>
+
+  <section id="msie4.0b2"><title>Requests use HTTP/1.1 but 
+                     responses must be in HTTP/1.0</title>
+
+    <p>MSIE 4.0b2 has this problem. Its Java VM makes requests in
+    HTTP/1.1 format but the responses must be in HTTP/1.0 format
+    (in particular, it does not understand <em>chunked</em>
+    responses). The workaround is to fool Apache into believing the
+    request came in HTTP/1.0 format.</p>
+
+    <example>
+      BrowserMatch "MSIE 4\.0b2;" downgrade-1.0
+      force-response-1.0
+    </example>
+
+    <p>This workaround is available in 1.2.2, and in a <a
+    href="http://www.apache.org/dist/httpd/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch">
+    patch</a> against 1.2.1.</p>
+
+  </section>
+
+  <section id="byte-257"><title>Boundary problems with
+    header parsing</title>
+
+    <p>All versions of Navigator from 2.0 through 4.0b2 (and
+    possibly later) have a problem if the trailing CRLF of the
+    response header starts at offset 256, 257 or 258 of the
+    response. A BrowserMatch for this would match on nearly every
+    hit, so the workaround is enabled automatically on all
+    responses. The workaround implemented detects when this
+    condition would occur in a response and adds extra padding to
+    the header to push the trailing CRLF past offset 258 of the
+    response.</p>
+
+  </section>
+
+  <section id="boundary-string"><title>Multipart responses and 
+                              Quoted Boundary Strings</title>
+
+    <p>On multipart responses some clients will not accept quotes
+    (") around the boundary string. The MIME standard recommends
+    that such quotes be used. But the clients were probably written
+    based on one of the examples in RFC2068, which does not include
+    quotes. Apache does not include quotes on its boundary strings
+    to workaround this problem.</p>
+
+  </section>
+
+  <section id="byterange-requests"><title>Byterange Requests</title>
+
+    <p>A byterange request is used when the client wishes to
+    retrieve a portion of an object, not necessarily the entire
+    object. There was a very old draft which included these
+    byteranges in the URL. Old clients such as Navigator 2.0b1 and
+    MSIE 3.0 for the MAC exhibit this behaviour, and it will appear
+    in the servers' access logs as (failed) attempts to retrieve a
+    URL with a trailing ";xxx-yyy". Apache does not attempt to
+    implement this at all.</p>
+
+    <p>A subsequent draft of this standard defines a header
+    <code>Request-Range</code>, and a response type
+    <code>multipart/x-byteranges</code>. The HTTP/1.1 standard
+    includes this draft with a few fixes, and it defines the header
+    <code>Range</code> and type
+    <code>multipart/byteranges</code>.</p>
+
+    <p>Navigator (versions 2 and 3) sends both <code>Range</code>
+    and <code>Request-Range</code> headers (with the same value),
+    but does not accept a <code>multipart/byteranges</code>
+    response. The response must be
+    <code>multipart/x-byteranges</code>. As a workaround, if Apache
+    receives a <code>Request-Range</code> header it considers it
+    "higher priority" than a <code>Range</code> header and in
+    response uses <code>multipart/x-byteranges</code>.</p>
+
+    <p>The Adobe Acrobat Reader plugin makes extensive use of
+    byteranges and prior to version 3.01 supports only the
+    <code>multipart/x-byterange</code> response. Unfortunately
+    there is no clue that it is the plugin making the request. If
+    the plugin is used with Navigator, the above workaround works
+    fine. But if the plugin is used with MSIE 3 (on Windows) the
+    workaround won't work because MSIE 3 doesn't give the
+    <code>Range-Request</code> clue that Navigator does. To
+    workaround this, Apache special cases "MSIE 3" in the
+    <code>User-Agent</code> and serves
+    <code>multipart/x-byteranges</code>. Note that the necessity
+    for this with MSIE 3 is actually due to the Acrobat plugin, not
+    due to the browser.</p>
+
+    <p>Netscape Communicator appears to not issue the non-standard
+    <code>Request-Range</code> header. When an Acrobat plugin prior
+    to version 3.01 is used with it, it will not properly
+    understand byteranges. The user must upgrade their Acrobat
+    reader to 3.01.</p>
+
+  </section>
+
+  <section id="cookie-merge"><title><code>Set-Cookie</code> header is
+    unmergeable</title>
+
+    <p>The HTTP specifications say that it is legal to merge
+    headers with duplicate names into one (separated by commas).
+    Some browsers that support Cookies don't like merged headers
+    and prefer that each <code>Set-Cookie</code> header is sent
+    separately. When parsing the headers returned by a CGI, Apache
+    will explicitly avoid merging any <code>Set-Cookie</code>
+    headers.</p>
+
+  </section>
+
+  <section id="gif89-expires"><title><code>Expires</code> headers 
+    and GIF89A animations</title>
+
+    <p>Navigator versions 2 through 4 will erroneously re-request
+    GIF89A animations on each loop of the animation if the first
+    response included an <code>Expires</code> header. This happens
+    regardless of how far in the future the expiry time is set.
+    There is no workaround supplied with Apache, however there are
+    hacks for <a
+    href="http://www.arctic.org/~dgaudet/patches/apache-1.2-gif89-expires-hack.patch">
+    1.2</a> and for <a
+    href="http://www.arctic.org/~dgaudet/patches/apache-1.3-gif89-expires-hack.patch">
+    1.3</a>.</p>
+
+  </section>
+
+  <section id="no-content-length"><title><code>POST</code> without
+    <code>Content-Length</code></title>
+
+    <p>In certain situations Navigator 3.01 through 3.03 appear to
+    incorrectly issue a POST without the request body. There is no
+    known workaround. It has been fixed in Navigator 3.04,
+    Netscapes provides some <a
+    href="http://help.netscape.com/kb/client/971014-42.html">information</a>.
+    There's also <a
+    href="http://www.arctic.org/~dgaudet/apache/no-content-length/">
+    some information</a> about the actual problem.</p>
+
+  </section>
+
+  <section id="jdk-12-bugs"><title>JDK 1.2 betas lose
+    parts of responses.</title>
+
+    <p>The http client in the JDK1.2beta2 and beta3 will throw away
+    the first part of the response body when both the headers and
+    the first part of the body are sent in the same network packet
+    AND keep-alive's are being used. If either condition is not met
+    then it works fine.</p>
+
+    <p>See also Bug-ID's 4124329 and 4125538 at the java developer
+    connection.</p>
+
+    <p>If you are seeing this bug yourself, you can add the
+    following BrowserMatch directive to work around it:</p>
+
+    <example>
+    BrowserMatch "Java1\.2beta[23]" nokeepalive
+    </example>
+
+    <p>We don't advocate this though since bending over backwards
+    for beta software is usually not a good idea; ideally it gets
+    fixed, new betas or a final release comes out, and no one uses
+    the broken old software anymore. In theory.</p>
+
+  </section>
+
+  <section id="content-type-persistent"><title><code>Content-Type</code>
+    change is not noticed after reload</title>
+
+    <p>Navigator (all versions?) will cache the
+    <code>content-type</code> for an object "forever". Using reload
+    or shift-reload will not cause Navigator to notice a
+    <code>content-type</code> change. The only work-around is for
+    the user to flush their caches (memory and disk). By way of an
+    example, some folks may be using an old <code>mime.types</code>
+    file which does not map <code>.htm</code> to
+    <code>text/html</code>, in this case Apache will default to
+    sending <code>text/plain</code>. If the user requests the page
+    and it is served as <code>text/plain</code>. After the admin
+    fixes the server, the user will have to flush their caches
+    before the object will be shown with the correct
+    <code>text/html</code> type.</p>
+
+  </section>
+
+  <section id="msie-cookie-y2k"><title>MSIE Cookie
+    problem with expiry date in the year 2000</title>
+
+    <p>MSIE versions 3.00 and 3.02 (without the Y2K patch) do not
+    handle cookie expiry dates in the year 2000 properly. Years
+    after 2000 and before 2000 work fine. This is fixed in IE4.01
+    service pack 1, and in the Y2K patch for IE3.02. Users should
+    avoid using expiry dates in the year 2000.</p>
+
+  </section>
+
+  <section id="lynx-negotiate-trans"><title>Lynx incorrectly asking for
+    transparent content negotiation</title>
+
+    <p>The Lynx browser versions 2.7 and 2.8 send a "negotiate:
+    trans" header in their requests, which is an indication the
+    browser supports transparent content negotiation (TCN). However
+    the browser does not support TCN. As of version 1.3.4, Apache
+    supports TCN, and this causes problems with these versions of
+    Lynx. As a workaround future versions of Apache will ignore
+    this header when sent by the Lynx client.</p>
+
+  </section>
+
+  <section id="ie40-vary"><title>MSIE 4.0 mishandles Vary
+    response header</title>
+
+    <p>MSIE 4.0 does not handle a Vary header properly. The Vary
+    header is generated by mod_rewrite in apache 1.3. The result is
+    an error from MSIE saying it cannot download the requested
+    file. There are more details in <a
+    href="http://bugs.apache.org/index/full/4118">PR#4118</a>.</p>
+
+    <p>A workaround is to add the following to your server's
+    configuration files:</p>
+
+   <example>
+    BrowserMatch "MSIE 4\.0" force-no-vary
+   </example>
+
+    <p>(This workaround is only available with releases
+    <strong>after</strong> 1.3.6 of the Apache Web server.)</p>
+
+  </section>
+</manualpage>

@@ -13,6 +13,13 @@
     <p>Below is a list of additional documentation pages that apply
     to the Apache web server development project.</p>
 
+    <note type="warning"><title>Warning</title>
+    <p>Some of the documents below have not been fully updated
+    to take into account changes made in the 2.0 version of the
+    Apache HTTP Server. Some of the information may still be
+    relevant, but please use it with care.</p>
+    </note>
+
     <dl>
       <dt><a href="custom_errordocs.html">How to use XSSI and
       Negotiation for custom ErrorDocuments</a></dt>
@@ -59,14 +66,6 @@
         Apache for highest performance. Notes explaining why Apache
         does some things, and why it doesn't do other things (which
         make it slower/faster).</p>
-
-        <note type="warning"><title>Warning</title>
-        <p>This document has not been fully updated
-        to take into account changes made in the 2.0 version of the
-        Apache HTTP Server. Some of the information may still be
-        relevant, but please use it with care.</p>
-        </note>
-
       </dd>
 
       <dt><a href="security_tips.html">Security Tips</a></dt>
@@ -84,8 +83,14 @@
         to solve typical URL-based problems webmasters are usually confronted
         with in practice.</p>
       </dd>
-    </dl>
 
+      <dt><a href="tutorials.html">Apache Tutorials</a></dt>
+
+      <dd>
+        <p>A list of external resources which help to accomplish common
+        tasks with the Apache HTTP server.</p>
+      </dd>
+    </dl>
   </summary>
 
 </manualpage>
