@@ -138,7 +138,7 @@ typedef struct {
     configfile_t *config_file;	/* Config file structure from pcfg_openfile() */
 
     pool *pool;			/* Pool to allocate new storage in */
-    pool *temp_pool;		/* Pool for scratch memory; persists during
+    struct pool *temp_pool;		/* Pool for scratch memory; persists during
 				 * configuration, but wiped before the first
 				 * request is served...
 				 */

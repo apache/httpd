@@ -14,7 +14,9 @@
 
 #define STATUS
 #define WIN32_LEAN_AND_MEAN
-#define STRICT
+#ifndef STRICT
+ #define STRICT
+#endif
 #define NO_UNISTD_H
 #define NO_WRITEV
 #define NO_SETSID

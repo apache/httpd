@@ -785,7 +785,11 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <process.h>
 #endif
 
+#ifdef WIN32
+#include "../regex/regex.h"
+#else
 #include <regex.h>
+#endif
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
