@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/20 20:39:30 $]
+Last modified at [$Date: 2001/07/21 06:47:58 $]
 
 Release:
 
@@ -123,11 +123,6 @@ RELEASE SHOWSTOPPERS:
         signals are not being acknowledged.  Close window and shutdown 
         also seem out of sorts.
         OtherBill is working on this and will finish over the weekend.
-
-    * We need a thread-safe resolver, at least on Unix.
-        Status: The best known candidate would be something from
-	BIND v9.
-        Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
 
     * The AddInputFilter and AddOutputFilter directives do not allow the
       administrator to remove or reorder filters.  Once a filter is added
