@@ -502,7 +502,7 @@ static int ssl_rand_choosenum(int l, int h)
 
 void ssl_rand_seed()
 {
-    int nDone;
+    int nDone = 0;
     int n, l;
     time_t t;
     pid_t pid;
@@ -589,7 +589,6 @@ void ssl_start_connect(struct connection * c)
     X509 *x509cert;
     STACK_OF(X509) *sk;
     int i, count, hdone = 0;
-    apr_status_t rv;
     char ssl_hostname[80];
     
     /* XXX - Verify if it's okay - TBD */
@@ -652,7 +651,6 @@ void ssl_start_connect(struct connection * c)
                 if (bad++ > 10) {
                     SSL_free (c->ssl);
                     BIO_printf(bio_err,"\nTest aborted after 10 failures\n\n");
-                    apr_err("apr_connect()", rv);
                     exit (1);
                 }
                 break;
@@ -1725,14 +1723,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.104 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.105 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.104 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.105 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
