@@ -82,7 +82,7 @@ of the daemon</description>
 <syntax>PidFile <em>filename</em></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchilde</module>
+<modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
 
