@@ -5,6 +5,10 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * mainframe ;-)
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+html {
+    font-size: 14px;
+}
+
 body {
     background-color: #fff;
     color: #036;
@@ -43,7 +47,7 @@ a:link {
 }
 
 a:visited {
-    color: #5A88B5; /* #54acc4; */
+    color: #5A88B5;
     background-color: inherit;
     text-decoration: underline;
 }
@@ -55,22 +59,29 @@ a:active {
     text-decoration: underline;
 }
 
+/* sidebar */
+div#quickview a:hover,
+div#quickview a:active {
+    background-color: #fff;
+    color: #0073c7; /* prevent validator warning */
+}
+
 /* code.module [links]    */
 /* ====================== */
 code.module,
 code.module a:link {
-    color: #8B4513; /* #bc0f00; */
+    color: #8b4513;
     background-color: inherit;
 }
 
 code.module a:visited {
-    color: #BC8F8F; /* #a06b66; */
+    color: #bc8f8f;
     background-color: inherit;
 }
 
 code.module a:hover,
 code.module a:active {
-    color: #8B4513; /* #bc0f00; */
+    color: #8b4513;
     background-color: #f0f0f0;
 }
 
@@ -78,39 +89,18 @@ code.module a:active {
 /* ====================== */
 code.directive,
 code.directive a:link {
-    color: #287f00; /* #35a500; */
+    color: #287f00;
     background-color: inherit;
 }
 
 code.directive a:visited {
-    color: #35a500; /* #99af76; */
+    color: #35a500;
     background-color: inherit;
 }
 
 code.directive a:hover,
 code.directive a:active {
-    color: #287f00; /* #35a500; */
-    background-color: #f0f0f0;
-}
-
-/* page header & footer   */
-/* ====================== */
-div#page-header p.menu a:link,
-div#page-header p.menu a:visited,
-div#path a:link,
-div#path a:visited,
-div#footer a:link,
-div#footer a:visited {
-    text-decoration: underline;
-}
-
-div#page-header p.menu a:hover,
-div#page-header p.menu a:active,
-div#path a:hover,
-div#path a:active,
-div#footer a:hover,
-div#footer a:active {
-    text-decoration: underline;
+    color: #287f00;
     background-color: #f0f0f0;
 }
 
@@ -127,7 +117,7 @@ h1 {
     background-color: inherit;
     color: #036;
     text-decoration: none;
-    font-size: 1.5em;
+    font-size: 22px;
     font-weight: bold;
 }
 
@@ -137,7 +127,7 @@ h2 {
     padding: 0.2em 0 0.2em 0.7em;
     margin: 0 0 0.5em 0;
     text-decoration: none;
-    font-size: 1.2em;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -167,7 +157,7 @@ h3 {
     color: #036;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 16px;
     margin: 1.3em 0 0.4em 0;
     padding: 0;
 }
@@ -192,11 +182,17 @@ div.note h3,
 div.warning h3 {
     margin: 0 0 0.5em 0;
     text-align: center;
-    font-size: 1em;
+    font-size: 13px;
 }
 
+/* sidebar */
 div#quickview h3 {
-    margin-top: 0;
+    margin: 1em 0 0.3em 0.5em;
+    font-size: 15px;
+}
+
+div#quickview h3.directives {
+    margin-top: 0.3em;
 }
 
 /* take care of <a name>s inside */
@@ -290,31 +286,11 @@ table table.bordered th {
     border: 1px solid #aaa;
 }
 
-/* module overview table  */
-/* ====================== */
-table.module th a:link,
-table.module th a:visited {
-    text-decoration: underline;
-    white-space: nowrap;
-}
-
-table.module th a:hover,
-table.module th a:active {
-    text-decoration: underline;
-    background-color: #f0f0f0;
-}
-
-/* directive overview table */
+/* mod/dir. overview table  */
 /* ======================== */
-table.directive th a:link,
-table.directive th a:visited {
-    text-decoration: underline;
+table.module th,
+table.directive th {
     white-space: nowrap;
-}
-
-table.directive th a:hover,
-table.directive th a:active {
-    text-decoration: underline;
 }
 
 /* related modules & dir. */
@@ -424,6 +400,51 @@ div#directive-list ul {
     padding: 0;
 }
 
+/* sidebar                */
+/* ====================== */
+div#quickview li {
+    font-size: 13px;
+}
+
+div#quickview ul {
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+div#quickview ul#toc {
+    margin: 0 0 0 0.5em;
+    padding: 0;
+}
+
+#manual-page div#quickview ul#toc {
+    margin-left: 0;
+}
+
+div#quickview ul#toc li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+div#quickview li img {
+    display: none;
+}
+
+#manual-page div#quickview ul#toc,
+div#quickview #topics,
+div#quickview .seealso {
+    padding-left: 15px;
+}
+
+#manual-page div#quickview ul#toc li,
+div#quickview #topics li,
+div#quickview .seealso li {
+    margin: 0 0 2px 0;
+    padding: 0;
+    list-style-type: square;
+    list-style-position: outside;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * main page sections
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -456,7 +477,7 @@ div#page-header p.apache {
 
 div#page-header p.menu {
     text-align: right;
-    font-size: smaller;
+    font-size: 13px;
     margin: 30px 0 0.5em 0;
     padding: 0;
 }
@@ -465,7 +486,7 @@ div#page-header p.menu {
 div#path {
     margin: 0.2em 0 1.2em 30px;
     padding: 0;
-    font-size: smaller;
+    font-size: 13px;
 }
 
 /* content sections       */
@@ -495,8 +516,24 @@ div#directive-list {
     padding: 0 0 1em 1em;
 }
 
+/* sidebar position: right */
 div#quickview {
-    margin-left: 30px;
+    position: absolute;
+    top: 5.5em;
+    right: 1em;
+    margin-left: 0;
+    margin-top: 40px;
+    padding: 4px;
+    width: 13.5em;
+    background-color: #f0f0f0;
+    color: inherit;
+}
+
+/* -> move content left */
+div#page-content {
+    padding-top: 0;
+    margin-right: 13em;
+    padding-right: 30px;
 }
 
 /* in general */
@@ -508,7 +545,7 @@ p {
 /* ====================== */
 div#footer {
     margin-left: 30px;
-    font-size: smaller;
+    font-size: 13px;
     border-top: 1px solid #405871;
     padding-top: 0.2em;
 }
@@ -575,7 +612,7 @@ div.example p {
 
 div.example pre,
 div.example p > code {
-    font-size: 0.9em;
+    font-size: 13px;
 }
 
 /* notes & warnings       */
@@ -596,7 +633,7 @@ div.warning p {
 
 div.note pre,
 div.warning pre {
-    font-size: 0.9em;
+    font-size: 13px;
 }
 
 /* inside table */
@@ -657,142 +694,6 @@ p.figure img {
 
 p.figure dfn {
     font-weight: bold;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * -> The End <-
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * manual.css
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-/* sidebar */
-div#quickview {
-    position: absolute;
-    top: 4.9em;
-    right: 1em;
-    margin-left: 0;
-    margin-top: 40px;
-    padding: 4px;
-    width: 13.5em;
-    background-color: #f0f0f0;
-    color: inherit;
-}
-
-div#quickview li {
-    font-size: smaller;
-}
-
-div#quickview a:hover,
-div#quickview a:active {
-    background-color: #fff;
-}
-
-div#quickview h3 {
-    margin: 1em 0 0.3em 0.5em;
-    font-size: 1em;
-}
-
-div#quickview h3.directives {
-    margin-top: 0.3em;
-}
-
-div#quickview ul {
-    margin: 0 0 15px 0;
-    padding: 0;
-}
-
-div#quickview ul#toc {
-    margin: 0 0 0 0.5em;
-    padding: 0;
-}
-
-div#quickview ul#toc li {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-div#quickview li img {
-    display: none;
-}
-
-#manual-page div#quickview ul#toc,
-div#quickview #topics,
-div#quickview .seealso {
-    padding-left: 15px;
-}
-
-#manual-page div#quickview ul#toc li,
-div#quickview #topics li,
-div#quickview .seealso li {
-    margin: 0 0 2px 0;
-    padding: 0;
-    list-style-type: square;
-    list-style-position: outside;
-}
-
-/* move content left */
-div#page-content {
-    padding-top: 0;
-    margin-right: 13em;
-    padding-right: 30px;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * -> The End <-
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * manual.css
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-html {
-    font-size: 14px;
-}
-
-h1 {
-    font-size: 22px;
-}
-
-h2 {
-    font-size: 18px;
-}
-
-h3 {
-    font-size: 16px;
-}
-
-/* titles for 
- * examples, notes and warnings
- */
-div.example h3,
-div.note h3,
-div.warning h3,
-div.example pre,
-div.example code,
-div.note pre,
-div.warning pre {
-    font-size: 13px;
-}
-
-div#page-header p.apache {
-    font-size: 16px;
-}
-
-div#page-header p.menu,
-div#path,
-div#footer,
-div#quickview li {
-    font-size: 13px;
-}
-
-div#quickview {
-    top: 5.2em;
-    margin-top: 40px;
-}
-
-div#quickview h3 {
-    font-size: 15px;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
