@@ -16,17 +16,18 @@
 <H1 ALIGN="CENTER">Known Problems in Clients</H1>
 
 <P>Over time the Apache Group has discovered or been notified of problems
-with various clients which we have had to work around.  This document
-describes these problems and the workarounds available.  It's not arranged
-in any particular order.  Some familiarity with the standards is assumed,
-but not necessary.
+with various clients which we have had to work around, or explain.
+This document describes these problems and the workarounds available.
+It's not arranged in any particular order.  Some familiarity with the
+standards is assumed, but not necessary.
 
 <P>For brevity, <EM>Navigator</EM> will refer to Netscape's Navigator
-product, and <EM>MSIE</EM> will refer to Microsoft's Internet Explorer
-product.  All trademarks and copyrights belong to their respective
-companies.  We welcome input from the various client authors to correct
-inconsistencies in this paper, or to provide us with exact version
-numbers where things are broken/fixed.
+product (which in later versions was renamed "Communicator" and
+various other names), and <EM>MSIE</EM> will refer to Microsoft's
+Internet Explorer product.  All trademarks and copyrights belong to
+their respective companies.  We welcome input from the various client
+authors to correct inconsistencies in this paper, or to provide us with
+exact version numbers where things are broken/fixed.
 
 <P>For reference,
 <A HREF="ftp://ds.internic.net/rfc/rfc1945.txt">RFC1945</A>
@@ -135,8 +136,8 @@ HREF="http://www.apache.org/dist/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch"
 have a problem if the trailing CRLF of the response header starts at
 offset 256, 257 or 258 of the response.  A BrowserMatch for this would
 match on nearly every hit, so the workaround is enabled automatically
-on all responses.  The workaround is to detect when this condition would
-occur in a response and add extra padding to the header to push the
+on all responses.  The workaround implemented detects when this condition would
+occur in a response and adds extra padding to the header to push the
 trailing CRLF past offset 258 of the response.
 
 <H3><A NAME="boundary-string">Multipart responses and Quoted Boundary
@@ -243,6 +244,21 @@ BrowserMatch "Java1\.2beta[23]" nokeepalive
 <P>We don't advocate this though since bending over backwards for beta software
 is usually not a good idea; ideally it gets fixed, new betas or a final release
 comes out, and no one uses the broken old software anymore.  In theory.
+
+<h3><a name="content-type-persistence"><code>Content-Type</code> change
+is not noticed after reload</a></h3>
+
+<p>Navigator (all versions?) will cache the <code>content-type</code>
+for an object "forever".  Using reload or shift-reload will not cause
+Navigator to notice a <code>content-type</code> change.  The only
+work-around is for the user to flush their caches (memory and disk).  By
+way of an example, some folks may be using an old <code>mime.types</code>
+file which does not map <code>.htm</code> to <code>text/html</code>,
+in this case Apache will default to sending <code>text/plain</code>.
+If the user requests the page and it is served as <code>text/plain</code>.
+After the admin fixes the server, the user will have to flush their caches
+before the object will be shown with the correct <code>text/html</code>
+type.
 
 <!--#include virtual="footer.html" -->
 </BODY>
