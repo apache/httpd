@@ -332,7 +332,8 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *r);
  * @param r The request to add this filter for.
  * @deffunc void ap_add_filter(const char *name, request_rec *r)
  */
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
+API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
+                               conn_rec *c);
 
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever

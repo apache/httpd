@@ -885,6 +885,9 @@ struct conn_rec {
     /** Location to store data read from the client.
      *  @defvar ap_bucket_brigade *input_data */
     struct ap_bucket_brigade *input_data;
+    /** A list of output filters to be used for this connection
+     *  @defvar ap_filter_t *filters */
+    struct ap_filter_t *output_filters;
 };
 
 /* Per-vhost config... */

@@ -148,25 +148,28 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *c)
     }
 }
 
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
+API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
+                               conn_rec *c)
 {
     ap_filter_rec_t *frec = registered_output_filters;
 
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
-            ap_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
+            apr_pool_t *p = r ? r->pool : c->pool;
+            ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
+            ap_filter_t **outf = r ? &r->output_filters : &c->output_filters;
 
             f->frec = frec;
             f->ctx = ctx;
             f->r = r;
-            f->c = NULL;
+            f->c = c;
 
-            if (INSERT_BEFORE(f, r->output_filters)) {
-                f->next = r->output_filters;
-                r->output_filters = f;
+            if (INSERT_BEFORE(f, *outf)) {
+                f->next = *outf;
+                *outf = f;
             }
             else {
-                ap_filter_t *fscan = r->output_filters;
+                ap_filter_t *fscan = *outf;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
                 f->next = fscan->next;
@@ -201,7 +204,7 @@ API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
-        if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS) {
+        if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS && next->r) {
             next->r->eos_sent = 1;
         }
         return next->frec->filter_func(next, bb);
@@ -213,12 +216,13 @@ API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
                                         ap_bucket_brigade **b)
 {
     ap_bucket *e;
+    apr_pool_t *p = f->r ? f->r->pool : f->c->pool;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
      */
     if (!(*saveto)) {
-        *saveto = ap_brigade_create(f->r->pool);
+        *saveto = ap_brigade_create(p);
     }
     
     AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {

@@ -217,6 +217,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 int ap_pre_http_connection(conn_rec *c)
 {
     ap_add_input_filter("CORE_IN", NULL, c);
+    ap_add_filter("CORE", NULL, NULL, c);
     return OK;
 }
 
