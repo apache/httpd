@@ -120,7 +120,7 @@ static int asis_handler(request_rec *r)
     if (!r->header_only) {
         apr_off_t start = 0;
         apr_off_t fsize = r->finfo.size;
-#ifdef APR_HAS_LARGE_FILES
+#if APR_HAS_LARGE_FILES
 	/* must split into mutiple send_fd chunks */
         while (fsize > AP_MAX_SENDFILE) {
             ap_send_fd(f, r, start, AP_MAX_SENDFILE, &nbytes);

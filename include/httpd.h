@@ -308,7 +308,7 @@ extern "C" {
  * than that in case the brigade code/filters attempt to read it directly.
  * ### 4mb is an invention, no idea if it is reasonable.
  */
-#define AP_MAX_SENDFILE 4194304
+#define AP_MAX_SENDFILE 16777216
 
 
 /*
