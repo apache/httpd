@@ -169,6 +169,8 @@ apache_need_expat=yes
 dnl AP_LIB_DIRS specifies the additional libs from src/lib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
 AP_LIBS="lib/apr/\$(LIBPRE)apr.a lib/pcre/libpcre.la lib/aputil/libaputil.la"
+INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/aputil"
+
 if test "$apache_need_sdbm" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS sdbm"
   AP_LIBS="$AP_LIBS lib/sdbm/libsdbm.la"
@@ -199,7 +201,8 @@ else
 fi
 
 APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile)
-APACHE_FAST_OUTPUT(modules/Makefile os/Makefile support/Makefile)
+APACHE_FAST_OUTPUT(modules/Makefile os/Makefile)
+APACHE_FAST_OUTPUT(support/Makefile test/Makefile)
 APACHE_FAST_OUTPUT(lib/pcre/Makefile lib/aputil/Makefile)
 for i in $AP_LIB_DIRS; do
   APACHE_FAST_OUTPUT(lib/$i/Makefile)
