@@ -468,6 +468,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
     BOOL bSkipFirst;
     int isca, pathlen;
     int i, n;
+    long cache_mode;
 
     /*
      * Create the server host:port string because we need it a lot
@@ -529,10 +530,18 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
      * Configure additional context ingredients
      */
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
-    if (mc->nSessionCacheMode == SSL_SCMODE_NONE)
-        SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_OFF);
-    else
-        SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_SERVER);
+    if (mc->nSessionCacheMode == SSL_SCMODE_NONE) {
+        cache_mode = SSL_SESS_CACHE_OFF;
+    }
+    else {
+        /* SSL_SESS_CACHE_NO_INTERNAL_LOOKUP will force OpenSSL
+         * to ignore process local-caching and
+         * to always get/set/delete sessions using mod_ssl's callbacks.
+         */
+        cache_mode = SSL_SESS_CACHE_SERVER|SSL_SESS_CACHE_NO_INTERNAL_LOOKUP;
+    }
+
+    SSL_CTX_set_session_cache_mode(ctx, cache_mode);
 
     /*
      *  Configure callbacks for SSL context
