@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Add back support for UseCanonicalName in <Directory> containers
+     [Manoj Kasichainula]
+
   *) More rigorous checking of Host: headers to fix security problems
      with mass name-based virtual hosting (whether using mod_rewrite
      or mod_vhost_alias).
