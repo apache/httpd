@@ -113,49 +113,6 @@ typedef enum {
 } ap_signal_parent_e;
 AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 
-/* This code is stolen from the apr_private.h and misc/win32/misc.c
- * Please see those sources for detailed documentation.
- */
-typedef enum {
-    DLL_WINBASEAPI = 0,    // kernel32 From WinBase.h
-    DLL_WINADVAPI = 1,     // advapi32 From WinBase.h
-    DLL_WINSOCKAPI = 2,    // mswsock  From WinSock.h
-    DLL_WINSOCK2API = 3,   // ws2_32   From WinSock2.h
-    DLL_defined = 4        // must define as last idx_ + 1
-} ap_dlltoken_e;
-
-FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char *fnName, int ordinal);
-
-#define AP_DECLARE_LATE_DLL_FUNC(lib, rettype, calltype, fn, ord, args, names) \
-    typedef rettype (calltype *ap_winapi_fpt_##fn) args; \
-    static ap_winapi_fpt_##fn ap_winapi_pfn_##fn = NULL; \
-    __inline rettype ap_winapi_##fn args \
-    {   if (!ap_winapi_pfn_##fn) \
-            ap_winapi_pfn_##fn = (ap_winapi_fpt_##fn) ap_load_dll_func(lib, #fn, ord); \
-        return (*(ap_winapi_pfn_##fn)) names; }; \
-
-/* Win2K kernel only */
-AP_DECLARE_LATE_DLL_FUNC(DLL_WINADVAPI, BOOL, WINAPI, ChangeServiceConfig2A, 0, (
-    SC_HANDLE hService, 
-    DWORD dwInfoLevel, 
-    LPVOID lpInfo),
-    (hService, dwInfoLevel, lpInfo));
-#undef ChangeServiceConfig2
-#define ChangeServiceConfig2 ap_winapi_ChangeServiceConfig2A
-
-/* WinNT kernel only */
-AP_DECLARE_LATE_DLL_FUNC(DLL_WINBASEAPI, BOOL, WINAPI, CancelIo, 0, (
-    IN HANDLE hFile),
-    (hFile));
-#define CancelIo ap_winapi_CancelIo
-
-/* Win9x kernel only */
-AP_DECLARE_LATE_DLL_FUNC(DLL_WINBASEAPI, DWORD, WINAPI, RegisterServiceProcess, 0, (
-    DWORD dwProcessId,
-    DWORD dwType),
-    (dwProcessId, dwType));
-#define RegisterServiceProcess ap_winapi_RegisterServiceProcess
-
 /*
  * The Windoes MPM uses a queue of completion contexts that it passes
  * between the accept threads and the worker threads. Declare the
