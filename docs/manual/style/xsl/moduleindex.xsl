@@ -109,31 +109,31 @@
 </xsl:text> <!-- insert line break -->
 
             <dt>
-              <a href="{document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name}.html">
-                <xsl:value-of select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name"/>
+              <a href="{document(modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name}.html">
+                <xsl:value-of select="document(modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/name"/>
               </a>
             </dt>
             <dd>
-              <xsl:apply-templates select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/description"/>
+              <xsl:apply-templates select="document(modulefilelist/modulefile[starts-with(.,'core.xml')])/modulesynopsis/description"/>
             </dd>
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
             <dt>
-              <a href="{document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name}.html">
-                <xsl:value-of select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name"/>
+              <a href="{document(modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name}.html">
+                <xsl:value-of select="document(modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/name"/>
               </a>
             </dt>
             <dd class="separate">
-              <xsl:apply-templates select="document(sitemap/category[@id='modules']/modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/description"/>
+              <xsl:apply-templates select="document(modulefilelist/modulefile[starts-with(.,'mpm_common.xml')])/modulesynopsis/description"/>
             </dd>
           <!-- /core, mpm_common -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-            <xsl:variable name="mpmmodules" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status='MPM' and name != 'mpm_common']"/>
+            <xsl:variable name="mpmmodules" select="document(modulefilelist/modulefile)/modulesynopsis[status='MPM' and name != 'mpm_common']"/>
             <xsl:variable name="translist">
               <xsl:call-template name="module-translist">
                 <xsl:with-param name="modules" select="$mpmmodules"/>
@@ -179,7 +179,7 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <xsl:variable name="modules" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status!='MPM' and status!='Core' and status!='Obsolete']"/>
+          <xsl:variable name="modules" select="document(modulefilelist/modulefile)/modulesynopsis[status!='MPM' and status!='Core' and status!='Obsolete']"/>
 
           <!-- collect the start letters -->
           <xsl:variable name="start-letters">
