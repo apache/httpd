@@ -209,7 +209,9 @@ typedef struct {
      * This lets us do quick merges in merge_core_dir_configs().
      */
   
-    char **response_code_strings;
+    char **response_code_strings; /* from ErrorDocument, not from
+                                   * ap_custom_response()
+                                   */
 
     /* Hostname resolution etc */
 #define HOSTNAME_LOOKUP_OFF	0

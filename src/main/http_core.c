@@ -53,6 +53,15 @@
 #define MMAP_LIMIT              (4*1024*1024)
 #endif
 
+typedef struct {
+    /* Custom response strings registered via ap_custom_response(),
+     * or NULL; check per-dir config if nothing found here
+     */
+    char **response_code_strings; /* from ap_custom_response(), not from
+                                   * ErrorDocument
+                                   */
+} core_request_config;
+
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -580,15 +589,30 @@ API_EXPORT(int) ap_satisfies(request_rec *r)
 
 API_EXPORT(char *) ap_response_code_string(request_rec *r, int error_index)
 {
-    core_dir_config *conf;
+    core_request_config *reqconf;
+    core_dir_config *dirconf;
 
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-						   &core_module); 
+    /* prefer per-request settings, which are created by calls to
+     * ap_custom_response()
+     */
+    reqconf = (core_request_config *)ap_get_module_config(r->request_config,
+                                                          &core_module); 
 
-    if (conf->response_code_strings == NULL) {
+    if (reqconf != NULL &&
+        reqconf->response_code_strings != NULL &&
+        reqconf->response_code_strings[error_index] != NULL) {
+        return reqconf->response_code_strings[error_index];
+    }
+
+    /* check for string specified via ErrorDocument */
+    dirconf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                      &core_module);
+
+    if (dirconf->response_code_strings == NULL) {
 	return NULL;
     }
-    return conf->response_code_strings[error_index];
+
+    return dirconf->response_code_strings[error_index];
 }
 
 
@@ -1193,20 +1217,26 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
 
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string)
 {
-    core_dir_config *conf = 
-	ap_get_module_config(r->per_dir_config, &core_module);
+    core_request_config *reqconf =
+	ap_get_module_config(r->request_config, &core_module);
     int idx;
 
-    if(conf->response_code_strings == NULL) {
-        conf->response_code_strings = 
+    if (reqconf == NULL) {
+        reqconf = (core_request_config *)ap_pcalloc(r->pool,
+                                                    sizeof(core_request_config));
+        ap_set_module_config(r->request_config, &core_module, reqconf);
+    }
+    
+    if (reqconf->response_code_strings == NULL) {
+        reqconf->response_code_strings = 
 	    ap_pcalloc(r->pool,
-		    sizeof(*conf->response_code_strings) * 
-		    RESPONSE_CODES);
+                       sizeof(reqconf->response_code_strings) * 
+                       RESPONSE_CODES);
     }
 
     idx = ap_index_of_response(status);
 
-    conf->response_code_strings[idx] = 
+    reqconf->response_code_strings[idx] = 
        ((ap_is_url(string) || (*string == '/')) && (*string != '"')) ? 
        ap_pstrdup(r->pool, string) : ap_pstrcat(r->pool, "\"", string, NULL);
 }

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.30
 
+  *) Fix memory corruption problem with ap_custom_response() function.
+     The core per-dir config would later point to request pool data
+     that would be reused for different purposes on different requests.
+     [Will Lowe, Jeff Trawick]
+
   *) Reinit socket to allow mod_proxy to continue to try
      connections when invalid IPs are accessed. PR 27542.
      [Alexander Prohorenko <white extrasy.net>]
