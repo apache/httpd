@@ -123,7 +123,7 @@ passwords for authentication</description>
 <name>AuthDBMType</name>
 <description>Sets the type of database file that is used to
 store passwords</description>
-<syntax>AuthDBMType default|SDBM|GDBM|DB</syntax>
+<syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
 <default>AuthDBMType default</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -135,7 +135,7 @@ store passwords</description>
 <p>Sets the type of database file that is used to store the passwords.
 The default database type is determined at compile time.  The
 availability of other types of database files also depends on
-compile-time settings.</p>
+<a href="../install.html#dbm">compile-time settings</a>.</p>
 
 <p>It is crucial that whatever program you use to create your password
 files is configured to use the same type of database.</p>

@@ -509,6 +509,32 @@
     </dl>
 </section>
 
+<section id="dbm"><title>DBM</title>
+
+    <p>Several Apache features, including
+    <module>mod_auth_dbm</module> and <module>mod_rewrite</module>'s
+    DBM <directive module="mod_rewrite">RewriteMap</directive> use
+    simple key/value databases for quick lookups of information.  Apache
+    includes SDBM with its source-code, so this database is always
+    available.  If you would like to use other database types, the
+    following <code>configure</code> options are available:</p>
+
+<dl>
+<dt><code>--with-gdbm[=<em>path</em>]</code></dt>
+<dt><code>--with-ndbm[=<em>path</em>]</code></dt>
+<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt> 
+
+<dd>If no <em>path</em> is specified, Apache will search for the
+include files and libraries in the usual search paths.  An explict
+<em>path</em> will cause Apache to look in
+<em>path</em><code>/lib</code> and
+<em>path</em><code>/include</code> for the relevant files.  Finally,
+the <em>path</em> may specify specific include and library paths
+seperated by a colon.</dd>
+</dl>
+</section>
+
+
 <section id="suexec"><title>Suexec</title>
 
     <p>Apache includes a support program called <a

@@ -16,7 +16,7 @@
     like many other Open Source projects.</p>
 
 <ul><li><a href="#overview">Overview for the
-    impatient</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#download">Download</a></li><li><a href="#extract">Extract</a></li><li><a href="#configure">Configuring the source tree</a><ul><li><a href="#environment">Environment Variables</a></li><li><a href="#output">autoconf Output Options</a></li><li><a href="#pathnames">Pathnames</a></li><li><a href="#modules">Modules</a></li><li><a href="#suexec">Suexec</a></li></ul></li><li><a href="#compile">Build</a></li><li><a href="#install">Install</a></li><li><a href="#customize">Customize</a></li><li><a href="#test">Test</a></li></ul><hr><h2><a name="overview">Overview for the
+    impatient</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#download">Download</a></li><li><a href="#extract">Extract</a></li><li><a href="#configure">Configuring the source tree</a><ul><li><a href="#environment">Environment Variables</a></li><li><a href="#output">autoconf Output Options</a></li><li><a href="#pathnames">Pathnames</a></li><li><a href="#modules">Modules</a></li><li><a href="#dbm">DBM</a></li><li><a href="#suexec">Suexec</a></li></ul></li><li><a href="#compile">Build</a></li><li><a href="#install">Install</a></li><li><a href="#customize">Customize</a></li><li><a href="#test">Test</a></li></ul><hr><h2><a name="overview">Overview for the
     impatient</a></h2>
 
     <table>
@@ -480,6 +480,32 @@
 
       <dd>Choose the mpm <em>NAME</em>.</dd>
     </dl>
+
+
+<h3><a name="dbm">DBM</a></h3>
+
+    <p>Several Apache features, including
+    <code><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> and <code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>'s
+    DBM <a href="./mod/mod_rewrite.html#rewritemap" class="directive"><code class="directive">RewriteMap</code></a> use
+    simple key/value databases for quick lookups of information.  Apache
+    includes SDBM with its source-code, so this database is always
+    available.  If you would like to use other database types, the
+    following <code>configure</code> options are available:</p>
+
+<dl>
+<dt><code>--with-gdbm[=<em>path</em>]</code></dt>
+<dt><code>--with-ndbm[=<em>path</em>]</code></dt>
+<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt> 
+
+<dd>If no <em>path</em> is specified, Apache will search for the
+include files and libraries in the usual search paths.  An explict
+<em>path</em> will cause Apache to look in
+<em>path</em><code>/lib</code> and
+<em>path</em><code>/include</code> for the relevant files.  Finally,
+the <em>path</em> may specify specific include and library paths
+seperated by a colon.</dd>
+</dl>
+
 
 
 <h3><a name="suexec">Suexec</a></h3>
