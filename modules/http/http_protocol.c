@@ -2457,18 +2457,18 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     do {
         if (AP_BRIGADE_EMPTY(bb)) {
-            apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
-            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
+            apr_getsocketopt(r->connection->client_socket, APR_SO_TIMEOUT, &timeout);
+            apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT, 0);
             if (ap_get_brigade(r->input_filters, bb, 9999) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+                apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT, timeout);
                 r->connection->keepalive = -1;
                 ap_brigade_destroy(bb);
                 return -1;
             }
-            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+            apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT, timeout);
         }
         b = AP_BRIGADE_FIRST(bb);
     } while (AP_BRIGADE_EMPTY(bb));
