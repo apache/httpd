@@ -3700,7 +3700,7 @@ static void child_main(int child_num_arg)
 #endif
 	setuid(ap_user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-		    "setuid: unable to change to uid: %d", (int) ap_user_id);
+		    "setuid: unable to change to uid: %ld", (long) ap_user_id);
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 #endif
@@ -4885,7 +4885,8 @@ int REALMAIN(int argc, char *argv[])
 	/* Only try to switch if we're running as root */
 	if (!geteuid() && setuid(ap_user_id) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			"setuid: unable to change to uid: %d", (int) ap_user_id);
+			"setuid: unable to change to uid: %ld",
+			(long) ap_user_id);
 	    exit(1);
 	}
 #endif
