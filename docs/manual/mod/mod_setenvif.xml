@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.13 $ -->
+<!-- $Revision: 1.14 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -204,7 +204,7 @@ of</p>
     <p>In the first form, the value will be set to "1". The second
     will remove the given variable if already defined, and the
     third will set the variable to the literal value given by
-    <code><em>value</em></code>. Since version 2.1 Apache will
+    <code><em>value</em></code>. Since version 2.0.51 Apache will
     recognize occurrences of <code>$1</code>..<code>$9</code> within
     <var>value</var> and replace them by parenthesized subexpressions
     of <var>regex</var>.</p>
