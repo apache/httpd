@@ -688,7 +688,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_THREADS:
             *result = ap_threads_per_child;
             return APR_SUCCESS;
-        case AP_MPMQ_MIN_SPARE_DEAMONS:
+        case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
             return APR_SUCCESS;
         case AP_MPMQ_MIN_SPARE_THREADS:    
@@ -700,7 +700,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_SPARE_THREADS:
             *result = min_spare_threads;
             return APR_SUCCESS;
-        case AP_MPMQ_MAX_REQUESTS_DEAMON:
+        case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
