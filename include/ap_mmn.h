@@ -103,15 +103,15 @@
  * 20020319 (2.0.34-dev) M_INVALID changed, plus new M_* methods for RFC 3253
  * 20020327 (2.0.35-dev) Add parameter to quick_handler hook
  * 20020329 (2.0.35-dev) bump for addition of freelists to bucket API
- * 20020413 (2.0.36-dev) bump for new arg to opt fn ap_cgi_build_command
+ * 20020329.1 (2.0.36) minor bump for new arg to opt fn ap_cgi_build_command
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020413
+#define MODULE_MAGIC_NUMBER_MAJOR 20020329
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /**
