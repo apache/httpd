@@ -202,9 +202,6 @@ typedef struct {
 typedef struct {
     apr_pool_t     *pool;   /* The pool used in constructor and destructor calls */
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    int            min;     /* Desired minimum number of available connections */
-    int            smax;    /* Soft maximum on the total number of connections */
-    int            hmax;    /* Hard maximum on the total number of connections */
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
 #else
@@ -223,6 +220,9 @@ typedef struct {
     const char      *scheme;    /* scheme to use ajp|http|https */
     const char      *hostname;  /* remote backend address */
     apr_port_t      port;
+    int             min;        /* Desired minimum number of available connections */
+    int             smax;       /* Soft maximum on the total number of connections */
+    int             hmax;       /* Hard maximum on the total number of connections */
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 } proxy_worker;
