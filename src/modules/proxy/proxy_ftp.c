@@ -54,7 +54,7 @@
 
 #include "mod_proxy.h"
 #include "http_main.h"
-#include "mod_mime.h"
+#include "../standard/mod_mime.h"
 
 /*
  * Decodes a '%' escaped string, and returns the number of characters
