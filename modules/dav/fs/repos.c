@@ -75,7 +75,6 @@
 
 /* to assist in debugging mod_dav's GET handling */
 #define DEBUG_GET_HANDLER       0
-#define DEBUG_PATHNAME_STYLE    0
 
 #define DAV_FS_COPY_BLOCKSIZE	16384	/* copy 16k at a time */
 
@@ -804,8 +803,6 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
     apr_int32_t flags;
 
     switch (mode) {
-    case DAV_MODE_READ:
-    case DAV_MODE_READ_SEEKABLE:
     default:
 	flags = APR_READ | APR_BINARY;
 	break;
@@ -850,18 +847,6 @@ static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
     return NULL;
 }
 
-static dav_error * dav_fs_read_stream(dav_stream *stream,
-				      void *buf, apr_size_t *bufsize)
-{
-    if (apr_file_read(stream->f, buf, bufsize) != APR_SUCCESS) {
-	/* ### use something besides 500? */
-	return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     "An error occurred while reading from a "
-			     "resource.");
-    }
-    return NULL;
-}
-
 static dav_error * dav_fs_write_stream(dav_stream *stream,
 				       const void *buf, apr_size_t bufsize)
 {
@@ -895,11 +880,16 @@ static dav_error * dav_fs_seek_stream(dav_stream *stream, apr_off_t abs_pos)
     return NULL;
 }
 
+
+#if DEBUG_GET_HANDLER
+
+/* only define set_headers() and deliver() for debug purposes */
+
+
 static dav_error * dav_fs_set_headers(request_rec *r,
 				      const dav_resource *resource)
 {
     /* ### this function isn't really used since we have a get_pathname */
-#if DEBUG_GET_HANDLER
     if (!resource->exists)
 	return NULL;
 
@@ -919,24 +909,59 @@ static dav_error * dav_fs_set_headers(request_rec *r,
     /* ### how to set the content type? */
     /* ### until this is resolved, the Content-Type header is busted */
 
-#endif
+    return NULL;
+}
+
+static dav_error * dav_fs_deliver(const dav_resource *resource,
+                                  ap_filter_t *output)
+{
+    apr_pool_t *pool = resource->pool;
+    apr_bucket_brigade *bb;
+    apr_file_t *fd;
+    apr_status_t status;
+    apr_bucket *bkt;
+
+    /* Check resource type */
+    if (resource->type != DAV_RESOURCE_TYPE_REGULAR
+        && resource->type != DAV_RESOURCE_TYPE_VERSION
+        && resource->type != DAV_RESOURCE_TYPE_WORKING) {
+        return dav_new_error(pool, HTTP_CONFLICT, 0,
+                             "Cannot GET this type of resource.");
+    }
+    if (resource->collection) {
+        return dav_new_error(pool, HTTP_CONFLICT, 0,
+                             "There is no default response to GET for a "
+                             "collection.");
+    }
+
+    if ((status = apr_file_open(&fd, resource->info->pathname,
+                                APR_READ | APR_BINARY, 0,
+                                pool)) != APR_SUCCESS) {
+        return dav_new_error(pool, HTTP_FORBIDDEN, 0,
+                             "File permissions deny server access.");
+    }
+
+    bb = apr_brigade_create(pool);
+
+    /* ### this does not handle large files. but this is test code anyway */
+    bkt = apr_bucket_file_create(fd, 0,
+                                 (apr_size_t)resource->info->finfo.size,
+                                 pool);
+    APR_BRIGADE_INSERT_TAIL(bb, bkt);
+
+    bkt = apr_bucket_eos_create();
+    APR_BRIGADE_INSERT_TAIL(bb, bkt);
+
+    if ((status = ap_pass_brigade(output, bb)) != APR_SUCCESS) {
+        return dav_new_error(pool, HTTP_FORBIDDEN, 0,
+                             "Could not write contents to filter.");
+    }
 
     return NULL;
 }
 
-#if DEBUG_PATHNAME_STYLE
-static const char * dav_fs_get_pathname(
-    const dav_resource *resource,
-    void **free_handle_p)
-{
-    return resource->info->pathname;
-}
-#endif
+#endif /* DEBUG_GET_HANDLER */
 
-static void dav_fs_free_file(void *free_handle)
-{
-    /* nothing to free ... */
-}
 
 static dav_error * dav_fs_create_collection(dav_resource *resource)
 {
@@ -1714,16 +1739,15 @@ static const dav_hooks_repository dav_hooks_repository_fs =
     dav_fs_is_parent_resource,
     dav_fs_open_stream,
     dav_fs_close_stream,
-    dav_fs_read_stream,
     dav_fs_write_stream,
     dav_fs_seek_stream,
+#if DEBUG_GET_HANDLER
     dav_fs_set_headers,
-#if DEBUG_PATHNAME_STYLE
-    dav_fs_get_pathname,
+    dav_fs_deliver,
 #else
-    0,
+    NULL,
+    NULL,
 #endif
-    dav_fs_free_file,
     dav_fs_create_collection,
     dav_fs_copy_resource,
     dav_fs_move_resource,

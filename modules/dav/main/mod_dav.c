@@ -756,7 +756,6 @@ static int dav_parse_range(request_rec *r,
 static int dav_method_get(request_rec *r)
 {
     dav_resource *resource;
-    int result;
     dav_error *err;
 
     /* This method should only be called when the resource is not
@@ -772,122 +771,28 @@ static int dav_method_get(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    /* Check resource type */
-    if (resource->type != DAV_RESOURCE_TYPE_REGULAR &&
-        resource->type != DAV_RESOURCE_TYPE_VERSION &&
-        resource->type != DAV_RESOURCE_TYPE_WORKING)
-    {
-        return dav_error_response(r, HTTP_CONFLICT,
-                                  "Cannot GET this type of resource.");
+    /* set up the HTTP headers for the response */
+    if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Unable to set up HTTP headers.",
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
 
-    /* Cannot handle GET of a collection from a repository */
-    if (resource->collection) {
-	return dav_error_response(r, HTTP_CONFLICT, 
-                                  "No default response to GET for a "
-                                  "collection.");
+    if (r->header_only) {
+        return DONE;
     }
 
-    /*
-    ** We can use two different approaches for a GET.
-    **
-    ** 1) get_pathname will return a pathname to a file which should be
-    **    sent to the client. If the repository provides this, then we
-    **    use it.
-    **
-    **    This is the best alternative since it allows us to do a sub-
-    **    request on the file, which gives the Apache framework a chance
-    **    to deal with negotiation, MIME types, or whatever.
-    **
-    ** 2) open_stream and read_stream.
-    */
-    if (resource->hooks->get_pathname != NULL) {
-	const char *pathname;
-	void *fhandle;
-	request_rec *new_req;
-	
-	/* Ask repository for copy of file */
-	pathname = (*resource->hooks->get_pathname)(resource, &fhandle);
-	if (pathname == NULL) {
-	    return HTTP_NOT_FOUND;
-	}
-
-	/* Create a sub-request with the new filename 
-         * The new_req filename is canonicalized by ap_sub_req_lookup_file()
-         */
-	new_req = ap_sub_req_lookup_file(pathname, r, NULL);
-	if (new_req == NULL) {
-	    (*resource->hooks->free_file)(fhandle);
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-
-	/* This may be a HEAD request */
-	new_req->header_only = r->header_only;
-
-	/* ### this enables header generation */
-	new_req->assbackwards = 0;
-
-	/* Run the sub-request */
-	result = ap_run_sub_req(new_req);
-	ap_destroy_sub_req(new_req);
-
-	/* Free resources */
-	(*resource->hooks->free_file)(fhandle);
-
-	return result;
-    }
-    else {
-	dav_stream *stream;
-	void *buffer;
-
-	/* set up the HTTP headers for the response */
-	if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "Unable to set up HTTP headers.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
-
-        if (r->header_only) {
-            return DONE;
-        }
-
-	if ((err = (*resource->hooks->open_stream)(resource, DAV_MODE_READ,
-                                                   &stream)) != NULL) {
-	    /* ### assuming FORBIDDEN is probably not quite right... */
-	    err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
-				 apr_psprintf(r->pool,
-					     "Unable to GET contents for %s.",
-					     ap_escape_html(r->pool, r->uri)),
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
-
-	buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
-	while (1) {
-	    apr_size_t amt = DAV_READ_BLOCKSIZE;
-
-	    if ((err = (*resource->hooks->read_stream)(stream, buffer,
-                                                       &amt)) != NULL) {
-		break;
-	    }
-	    if (amt == 0) {
-		/* no more content */
-		break;
-	    }
-	    if (ap_rwrite(buffer, amt, r) < 0) {
-		/* ### what to do with this error? */
-		break;
-	    }
-	}
-
-	if (err != NULL)
-	    return dav_handle_err(r, err, NULL);
-
-	return DONE;
+    /* okay... time to deliver the content */
+    if ((err = (*resource->hooks->deliver)(resource,
+                                           r->output_filters)) != NULL) {
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Unable to deliver content.",
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
 
-    /* NOTREACHED */
+    return DONE;
 }
 
 /* validate resource on POST, then pass it off to the default handler */
