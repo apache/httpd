@@ -70,7 +70,7 @@ static int ImportLogTransaction(request_rec *r)
     return DECLINED;
 }
 
-void ImportFnRetrieve(void)
+static void ImportFnRetrieve(void)
 {
     pfn=APR_RETRIEVE_OPTIONAL_FN(TestOptionalFn);
 }
