@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/12/07 19:54:00 $
+Last modified: $Date: 2002/02/15 18:56:56 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -12,6 +12,10 @@ http://apache-server.com/tutorials/ATdocs-project.html for an excellent
 tutorial on how to get started with making your contribution.
 
               ------------------------------
+
+The module docs are being converted to a new xml format.  The format
+is described at: http://httpd.apache.org/docs-project/docsformat.html
+Help with the conversion is needed.
 
 - IPv6: need to update some directives to show correct syntax for IPv6
     - Listen
