@@ -94,3 +94,20 @@
     logfiledir:    $localstatedir/log/httpd
     proxycachedir: $localstatedir/cache/httpd
 </Layout>     
+
+#   According to the /opt filesystem conventions
+<Layout opt>
+    prefix:        /opt/apache
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    /etc$prefix
+    datadir:       $prefix/share
+    includedir:    $prefix/include
+    localstatedir: /var$prefix
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/logs
+    proxycachedir: $localstatedir/proxy
+</Layout>
