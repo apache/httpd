@@ -1,9 +1,11 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/25 08:12:18 $]
+  Last modified at [$Date: 1999/07/07 11:05:15 $]
 
 Release:
 
     1.3.7-dev: current.  Ken volunteers to be release manager.
+        Proposed dates: roll on Mon, 26 July 1999, test, and release
+        on Fri, 30 July 1999.
 
     1.3.6. Tagged and rolled on Mar. 22. Released and announced on 24th.
     1.3.5: Not released.
@@ -20,7 +22,7 @@ Binaries (1.3.6):
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
  alpha-dec-osf3.0              no      Sameer Parekh
- alpha-dec-osf4.0              yes     Lars Eilebrecht
+ alpha-dec-osf4.0              yes     Lars Eilebrecht, Ken Coar
  armv4l-whatever-linux2        yes     Rasmus Lerdorf
  hppa1.1-hp-hpux               no      Rob Hartill
  i386-slackware-linux(a.out)   no      Sameer Parekh
@@ -34,9 +36,10 @@ Binaries (1.3.6):
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht
  i686-unknown-linux2           yes     Lars Eilebrecht
+ i686-whatever-linux2          yes     Ken Coar
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.2.1     N/A     Lars Eilebrecht
- i386-unknown-netBSD-1.3.2     yes      Lars Eilebrecht
+ i386-unknown-netBSD-1.3.2     yes     Lars Eilebrecht
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
  i386-sni-svr4                 yes     Martin Kraemer
@@ -105,33 +108,8 @@ Available Patches:
 	Status: Jim +1, Mark +1, Dean +1, BenH +1,
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
-		Martin +1 (untested),
-
-		Ken: -1 for pre-2.0 if it will: a) force a new release of
-		mod_perl or mod_php in order to maintain compatibility OR
-		b) require a version bump to 1.4.0 and a beta cycle
-                Ralf: It doesn't force a new release of any module (just a
-                recompilation), because it's a pure _ADDITION_ to the API and
-                doesn't make anything incompatible. The point b) I still do
-                not sunderstand, sorry. 
-
-                * Hmmmm.... now we've to solve another problem for the EAPI
-                * idea: the existance of KEAPI. That's not my problem any
-                * longer.  Others have to make decisions now. Additionally the
-                * group as a whole is far away from a point where it's clear
-                * what should be done in the future and also far away from
-                * the point where it's fun. 
-                *
-                * So I finally withdraw my proposed addition of EAPI for
-                * 1.3.7/1.4.0 and for 2.0 I've still no strong opinion how it
-                * should be done.  I'll try to stay out of all this and keep
-                * being happy to have EAPI myself and don't have to worry
-                * about all those useless politics and endless ping-pong
-                * decisions.
-                *
-                * IMHO the ASF should really quickly propose the
-                * revitalization of RST's old ENOTOWN symbolic errno value 
-                * for use by its developers...       -- RSE
+		Martin +1 (untested), Ken -1 for 1.3.7 (too controversial,
+		esp. w/KEAPI offered as well)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
