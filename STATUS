@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/27 12:10:56 $]
+  Last modified at [$Date: 1999/10/07 14:00:06 $]
 
 Release:
 
@@ -42,6 +42,19 @@ Documentation that needs writing:
 
 
 Available Patches:
+    * JJ Keijser's patch (99/10/06) to enable mod_info on Win32
+	PR#: PR2415, PR1442
+	Status: 
+
+    * JJ Keijser's patch (99/10/06) to: 
+	- Run Apache as a service on Win95 (PR2208)
+	- Making sure that Apache is shut down when the system is shutdown. 
+           (PR1643, PR2472)
+	- Use apache -i/-u to install/uninstalling Apache on Win95
+	- Add ConsoleCtrlHandler to catch Ctrl-C in the Apache console window
+	- Make Apache shut down cleanly when run on Windows 95 (PR4125)
+	PR#: PR2472, PR4125, PR1643 (suspended) and PR2208 (suspended).
+	Status:
 
     * Paul Reder's patch to fix Allow/Deny (.htaccess parsing) in
       regex <Directory*> processing.
