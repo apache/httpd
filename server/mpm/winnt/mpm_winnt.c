@@ -73,6 +73,8 @@
 #include "mpm_winnt.h"
 #include "mpm_common.h"
 
+typedef HANDLE thread;
+
 /*
  * Definitions of WINNT MPM specific config globals
  */
@@ -111,8 +113,8 @@ OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
 
-static event *exit_event;
-HANDLE maintenance_event;
+static HANDLE exit_event;
+static HANDLE maintenance_event;
 apr_lock_t *start_mutex;
 DWORD my_pid;
 DWORD parent_pid;
@@ -155,16 +157,12 @@ static apr_status_t socket_cleanup(void *sock)
  * or thrown out entirely...
  */
 
-typedef void semaphore;
-typedef void event;
-
-static semaphore *
-create_semaphore(int initial)
+static HANDLE create_semaphore(int initial)
 {
     return(CreateSemaphore(NULL, initial, 1000000, NULL));
 }
 
-static void acquire_semaphore(semaphore *semaphore_id)
+static void acquire_semaphore(HANDLE semaphore_id)
 {
     int rv;
     
@@ -173,12 +171,12 @@ static void acquire_semaphore(semaphore *semaphore_id)
     return;
 }
 
-static int release_semaphore(semaphore *semaphore_id)
+static int release_semaphore(HANDLE semaphore_id)
 {
     return(ReleaseSemaphore(semaphore_id, 1, NULL));
 }
 
-static void destroy_semaphore(semaphore *semaphore_id)
+static void destroy_semaphore(HANDLE semaphore_id)
 {
     CloseHandle(semaphore_id);
 }
@@ -599,7 +597,7 @@ typedef struct joblist_s {
  */
 
 typedef struct globals_s {
-    semaphore *jobsemaphore;
+    HANDLE jobsemaphore;
     joblist *jobhead;
     joblist *jobtail;
     apr_lock_t *jobmutex;
