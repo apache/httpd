@@ -591,6 +591,9 @@ static int status_handler(request_rec *r)
 			case SERVER_GRACEFUL:
 			    ap_rputs("Graceful", r);
 			    break;
+                        case SERVER_IDLE_KILL:
+                            ap_rputs("Dying", r);
+                            break;
 			default:
 			    ap_rputs("?STATE?", r);
 			    break;
@@ -662,6 +665,9 @@ static int status_handler(request_rec *r)
 			case SERVER_GRACEFUL:
 			    ap_rputs("<td>G", r);
 			    break;
+                        case SERVER_IDLE_KILL:
+                            ap_rputs("<td>I", r);
+                            break;
 			default:
 			    ap_rputs("<td>?", r);
 			    break;
