@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix mod_include expression parser's handling of unquoted strings
+     followed immediately by a closing paren.  PR 8462.  [Brian Pane]
+
   *) Remove autom4te.cache in 'make distclean'.
      [Thom May <thom@planetarytramp.net>]
 
