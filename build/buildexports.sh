@@ -26,7 +26,7 @@ do
 done
 
 echo ""
-echo "const void *ap_ugly_hack;"
+echo "const void *ap_ugly_hack = NULL;"
 echo ""
 
 # convert export files (on STDIN) into a series of declarations
