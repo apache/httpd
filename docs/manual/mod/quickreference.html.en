@@ -165,21 +165,20 @@ store passwords</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
 respect to case</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The default time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var>cache_type</var> <var>url-string</var></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs by specified storage
-manager</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td /><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching specified URLs in a specified storage
+<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td /><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
 <tr><td><a href="mod_file_cache.html#cachefile">CacheFile
     <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Percentage of download to arrive for the cache to force
-complete transfer</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore requests from the client for uncached
-content</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore responses where there is no Last Modified
-Header</td></tr>
-<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The factor used to estimate the Expires date from the
-LastModified date</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Percentage of document served, after which the server
+will complete caching the file even if the request is cancelled.</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore the fact that the client requested the content not be
+cached.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
+header.</td></tr>
+<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The factor used to compute an expiry date based on the
+LastModified date.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
 <tr><td><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer <var>size_in_bytes</var></a></td><td> 0 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory
 before declaring the response uncacheable</td></tr>
