@@ -16,12 +16,6 @@ sub tovc6 {
 	    if ($src =~ s|Format Version 5\.00|Format Version 6\.00|) {
 		$verchg = -1;
 	    }
-	    if ($src =~ s|^(# ADD CPP .*)/Zi (.*)|$1/ZI $2|) {
-		$verchg = -1;
-	    }
-	    if ($src =~ s|^(# ADD BASE CPP .*)/Zi (.*)|$1/ZI $2|) {
-		$verchg = -1;
-	    }
 	    if ($src =~ s|^(!MESSAGE .*)\\\n|$1|) {
 		$cont = <$srcfl>;
 		$src = $src . $cont;
