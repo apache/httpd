@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_headers</TITLE>
+</HEAD>
+
+<BODY>
+<!--#include virtual="header.html" -->
+<h1>Headers Module</h1>
+
+The optional headers module allows for the customisation of HTTP
+response headers. Headers can be merged, replaced or removed. The
+directives described in this document are only available if Apache is
+compiled with <b>mod_headers.c</b>.
+
+<hr>
+
+<h2>Directive</h2>
+<ul>
+<li><A HREF="#header">Header</A>
+</ul>
+
+<hr>
+
+<A name="header"><h2>Header</h2></A>
+<strong>Sytnax:</strong> Header [ set | append | add ] <em>header</em> <em>value</em><br>
+<strong>Sytnax:</strong> Header unset <em>header</em><br>
+<strong>Context:</strong> server config, virtual host, access.conf, .htaccess<br>
+<strong>Status:</strong> optional<br>
+<strong>Module:</strong> mod_header<p>
+
+This directive can replace, merge or remove HTTP response headers. The
+action it performs is determined by the first argument. This can be one
+of the following values:
+
+<ul>
+<li><b>set</b><br>
+  The response header is set, replacing any previous header with this name
+
+<li><b>append</b><br>
+  The response header is appended to any existing header of the same
+  name. When a new value is merged onto an existing header it is
+  separated from the existing header with a comma. This is the HTTP standard
+  way of giving a header multiple values.
+
+<li><b>add</b><br>
+  The response header is added to the existing set of headers, even if
+  this header already exists. This can result in two (or more) headers
+  having the same name. This can lead to unforseen consequences, and in
+  general "append" should be used instead.
+
+<li><b>unset</b><br>
+  The response header of this name is removed, if it exists. If there are
+  multiple headers of the same name, only the first one set will be removed.
+</ul>
+
+This argument is followed by a header name, which can include the
+final colon, but it is not required. Case is ignored. For
+add, append and set a value is given as the third argument. If this
+value contains spaces, it should be surrounded by double quotes.
+For unset, no value should be given.
+
+<h3>Order of Processing</h3>
+
+The Header directive can occur almost anywhere within the server
+configuration. It is valid in the main server config and virtual host
+sections, inside &lt;Directory&gt;, &lt;Location&gt; and &lt;Files&gt;
+sections, and within .htaccess files.
+<p>
+The Header directives are processed in the following order:
+<ol>
+<li>main server
+<li>virtual host
+<li>&lt;Directory&gt; sections and .htaccess
+<li>&lt;Location&gt;
+<li>&lt;Files&gt;
+</ol>
+
+Order is important. These two headers have a different effect if reversed:
+<pre>
+Header append Author "John P. Doe"
+Header unset Author
+</pre>
+
+This way round, the Author header is not set. If reversed, the Author
+header is set to "John P. Doe".
+<p>
+
+The Header directives are processed just before the response is sent
+by its handler. These means that some headers that are added just
+before the response is sent cannot be unset or overridden. This
+includes headers such as "Date" and "Server".
+<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
