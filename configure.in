@@ -2,15 +2,15 @@ dnl ## Process this file with autoconf to produce a configure script
 
 AC_PREREQ(2.13)
 AC_INIT(acinclude.m4)
+
+AC_CONFIG_HEADER(include/ap_config_auto.h)
+AC_CONFIG_AUX_DIR(.)
  
 dnl ## This is the central place where Apache's version should be kept.
 dnl AM_INIT_AUTOMAKE(apache, 2.0-dev)
 
 VERSION="apache-2.0-dev"
 	
-AC_CONFIG_HEADER(include/ap_config_auto.h)
-AC_CONFIG_AUX_DIR_DEFAULT
-
 APACHE_VERSION=$VERSION
 APACHE_SUBST(APACHE_VERSION)
 
