@@ -15,6 +15,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/modules
     mandir:        ${prefix}/man
     sysconfdir:    ${prefix}/conf
@@ -39,6 +40,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec
     mandir:        ${prefix}/man
     sysconfdir:    ${prefix}/etc+
@@ -62,6 +64,7 @@
     exec_prefix:
     bindir:        bin
     sbindir:       bin
+    libdir:        lib
     libexecdir:    libexec
     mandir:        man
     sysconfdir:    conf
@@ -85,6 +88,7 @@
     exec_prefix:   /usr
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    /System/Library/Apache/Modules
     mandir:        ${exec_prefix}/share/man
     sysconfdir:    ${prefix}/Configuration
@@ -108,6 +112,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec+
     mandir:        ${prefix}/share/man
     datadir:       /Library/WebServer
@@ -131,6 +136,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${prefix}/bin
     sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
     libexecdir:    ${prefix}/lib/apache
     mandir:        ${prefix}/man
     sysconfdir:    /etc/httpd/conf
@@ -154,6 +160,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec
     mandir:        ${prefix}/man
     sysconfdir:    /etc${prefix}
@@ -177,6 +184,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec
     mandir:        ${prefix}/man
     sysconfdir:    ${prefix}/conf
@@ -200,6 +208,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${prefix}/bin
     sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
     libexecdir:    ${prefix}/lib/apache
     mandir:        ${prefix}/man
     sysconfdir:    /etc/httpd
@@ -223,6 +232,7 @@
     exec_prefix:   /usr/contrib
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec/apache
     mandir:        ${exec_prefix}/man
     sysconfdir:    ${prefix}/conf
@@ -246,6 +256,7 @@
     exec_prefix:   ${prefix}
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/bin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/libexec
     mandir:        ${exec_prefix}/man
     sysconfdir:    /etc/apache
@@ -269,6 +280,7 @@
     exec_prefix:   /usr
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/lib/apache/modules
     mandir:        ${exec_prefix}/share/man
     sysconfdir:    ${prefix}/conf
@@ -292,6 +304,7 @@
     exec_prefix:   ${prefix}/usr
     bindir:        ${exec_prefix}/bin
     sbindir:       ${exec_prefix}/sbin
+    libdir:        ${exec_prefix}/lib
     libexecdir:    ${exec_prefix}/lib/apache2/modules
     mandir:        ${exec_prefix}/share/man
     sysconfdir:    ${prefix}/etc/apache2
