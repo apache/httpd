@@ -143,7 +143,7 @@ VirtualScriptAlias  /www/hosts/%0/cgi-bin
     ISP's homepages server. Using a slightly more complicated
     configuration we can select substrings of the server name to
     use in the filename so that e.g. the documents for
-    <samp>www.user.isp.com</samp> are found in
+    <code>www.user.isp.com</code> are found in
     <code>/home/user/</code>. It uses a single <code>cgi-bin</code>
     directory instead of one per virtual host.</p>
 
