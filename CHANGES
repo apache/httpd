@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) Performance improvement for keepalive requests: when setting
+     aside a small file for potential concatenation with the next
+     response on the connection, set aside the file descriptor rather
+     than copying the file into the heap.  [Brian Pane]
 
 Changes with Apache 2.0.40
 
