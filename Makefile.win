@@ -79,6 +79,7 @@ _build:
          nmake /nologo CFG="ApacheModuleStatus - Win32 $(LONG)" -f ApacheModuleStatus.mak RECURSE=0 $(CTARGET)
 #        nmake /nologo CFG"=ApacheModuleInfo - Win32 $(LONG)" -f ApacheModuleInfo.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleAuthAnon - Win32 $(LONG)" -f ApacheModuleAuthAnon.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleAuthDigest - Win32 $(LONG)" -f ApacheModuleAuthDigest.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleCERNMeta - Win32 $(LONG)" -f ApacheModuleCERNMeta.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleExpires - Win32 $(LONG)" -f ApacheModuleExpires.mak RECURSE=0 $(CTARGET)
 	 nmake /nologo CFG="ApacheModuleHeaders - Win32 $(LONG)" -f ApacheModuleHeaders.mak RECURSE=0 $(CTARGET)
@@ -102,6 +103,7 @@ _install:
         copy os\win32\ApacheModuleStatus$(SHORT)\ApacheModuleStatus.dll $(INSTDIR)\modules
 #       copy os\win32\ApacheModuleInfo$(SHORT)\ApacheModuleInfo.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleAuthAnon$(SHORT)\ApacheModuleAuthAnon.dll $(INSTDIR)\modules
+	copy os\win32\ApacheModuleAuthDigest$(SHORT)\ApacheModuleAuthDigest.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleCERNMeta$(SHORT)\ApacheModuleCERNMeta.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleExpires$(SHORT)\ApacheModuleExpires.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleHeaders$(SHORT)\ApacheModuleHeaders.dll $(INSTDIR)\modules
