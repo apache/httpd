@@ -1,5 +1,9 @@
 Changes with Apache 2.0.35
 
+  *) Fixes for mod_include errors on boundary conditions in which
+     "<!--#" occurs at the very end of a bucket
+     [Paul Reder, Brian Pane]
+
   *) worker, prefork, perchild, beos MPMs: Add -DFOREGROUND switch to 
      cause the Apache parent process to run in the foreground (similar to
      -DNO_DETACH except that it doesn't switch session ids).  
