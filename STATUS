@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/13 15:39:57 $]
+Last modified at [$Date: 2004/09/13 15:56:19 $]
 
 Release:
 
@@ -75,16 +75,17 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_dav_fs: Fix indirect lock record handling on 64-bit platforms.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.31&r2=1.32
+       jerenkrantz asks: Won't this break already existing lock DBs?
        +1: jorton
 
     *) mod_dav_fs: Fix indirect lock refresh.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.32&r2=1.33
-       +1: jorton
+       +1: jorton, jerenkrantz
        PR: 31183 (yes, I will do a CHANGES entry too)
 
     *) ap_rgetline_core correctness fix.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.151&r2=1.152
-       +1: jorton
+       +1: jorton, jerenkrantz
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
