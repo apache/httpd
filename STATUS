@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/02 14:35:17 $]
+Last modified at [$Date: 2003/10/11 01:47:43 $]
 
 Release:
 
@@ -178,16 +178,6 @@ PATCHES TO PORT FROM 2.1
               around... :)
               Yes, I think, a useful error message is better than
               a coredump in this case.
-
-    * httpd-std.conf: Try to be clearer in describing the connection
-      between AddType and AddEncoding for defining the meaning of
-      compressed file extensions.  Follows mime.types change above.
-        docs/conf/httpd-std.conf.in: r1.47, 1.53
-        docs/conf/httpd-win.conf:    r1.93
-      jerenkrantz asks: Why does httpd-std.conf.in have two copies of the
-                        AddEncoding directives?  This is a typo, right?
-            nd replies: Sure. 1.53 fixes that.
-      +1: fielding, nd, jerenkrantz, erikabele
 
     * More ab fixes; r1.129 fixes what looks like a trivial error in the 
       SSL support; r1.130 adds some state-handling fixes related to

@@ -1,11 +1,16 @@
 Changes with Apache 2.0.48
 
+  *) Update httpd-*.conf to be clearer in describing the connection
+     between AddType and AddEncoding for defining the meaning of
+     compressed file extensions. [Roy Fielding]
+
   *) mod_rewrite: Don't die silently when failing to open RewriteLogs.
      PR 23416.  [André Malo]
 
   *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
-      rewritten request using "proxy:". The code was adding multiple "proxy:"
-      fields in the rewritten URI. PR: 13946. [Eider Oliveira <eider@bol.com.br>]
+     rewritten request using "proxy:". The code was adding multiple "proxy:"
+     fields in the rewritten URI. PR: 13946.
+     [Eider Oliveira <eider@bol.com.br>]
 
   *) cache_util: Fix ap_check_cache_freshness to check max_age, smax_age, and
      expires as directed in RFC 2616. [Thomas Castelle tcastelle@generali.fr]
@@ -3689,7 +3694,7 @@ Changes with Apache 2.0.17
 
   *) Allow module authors to add a module to their Apache build using
      --with-module, without re-running buildconf.  The syntax is:
-	--with-module=module_type:/path/to/module.c
+         --with-module=module_type:/path/to/module.c
      The configure script will copy the module.c file to 
      modules/module_type, and it will be added to the relevant Makefiles.
      currently, this only works for static modules.  [Ryan Bloom]
