@@ -1331,9 +1331,21 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: end body send");
-        } else {
+        }
+        else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: header only");
+
+            /* strikerXXX: pass EOS bucket down the filter chain? */
+            e = apr_bucket_eos_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
+                || c->aborted) {
+                /* Ack! Phbtt! Die! User aborted! */
+                backend->close = 1;  /* this causes socket close below */
+            }
+
+            apr_brigade_cleanup(bb);
         }
     } while (interim_response);
 
