@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/02 13:18:07 $]
+Last modified at [$Date: 2004/02/03 15:30:57 $]
 
 Release:
 
@@ -89,11 +89,6 @@ PATCHES TO BACKPORT FROM 2.1
         docs/conf/mime.types: r1.23
       jerenkrantz: Why is rm not application/vnd.rn-realmedia as in PR 26079?
       +1: nd, trawick
-
-    * Fix segfault in mod_mem_cache cache_insert() due to cache size
-      becoming negative.  PR: 21285, 21287
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c?r1=1.99&r2=1.100
-      +1: stoddard, rederpj, trawick
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
