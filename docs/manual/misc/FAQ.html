@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.85 $ ($Date: 1997/07/30 18:02:33 $)
+  $Revision: 1.86 $ ($Date: 1997/08/02 21:57:40 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -218,12 +218,12 @@
    <LI><A HREF="#linux-shmget">When I run it under Linux I get "shmget:
     function not found", what should I do?</A>
    </LI>
-   <LI><A HREF="#authauthoritative">Why does my authentification give
+   <LI><A HREF="#authauthoritative">Why does my authentication give
     me a server error?</A>
    <LI><A HREF="#auth-on-same-machine">Do I have to keep the (mSQL)
-    authentification information on the same machine?</A>
+    authentication information on the same machine?</A>
    </LI>
-   <LI><A HREF="#msql-slow">Why is my mSQL authentification terribly slow?</A>
+   <LI><A HREF="#msql-slow">Why is my mSQL authentication terribly slow?</A>
    </LI>
    <LI><A HREF="#rewrite-more-config">Where can I find mod_rewrite rulesets
     which already solve particular URL-related problems?</A>
@@ -685,7 +685,7 @@
   This is generally only necessary when you are calling external
   programs from your script that send output to stdout, or if there will
   be a long delay between the time the headers are sent and the actual
-  content starts being emitted.  To maximise performance, you should
+  content starts being emitted.  To maximize performance, you should
   turn buffer-flushing back <EM>off</EM> (with <CODE>$| = 0</CODE> or the
   equivalent) after the statements that send the headers, as displayed
   above.
@@ -944,32 +944,41 @@
       <STRONG>Can I increase <SAMP>FD_SETSIZE</SAMP> on FreeBSD?</STRONG>
      </A>
   <P>
-  On versions of FreeBSD older than 2.2 <SAMP>FD_SETSIZE</SAMP>, which
-  limits the number of open files on the system, is controlled by a
-  kernel option and is limited to 256.  You can set this value using a
-  line such as the following in your kernel configuration file:
+  On versions of FreeBSD before 3.0, the <SAMP>FD_SETSIZE</SAMP> define 
+  defaults to 256.  This means that you will have trouble usefully using
+  more than 256 file descriptors in Apache.  This can be increased, but
+  doing so can be tricky.
+
+  If you are using a version prior to 2.2, you need to recompile your
+  kernel with a larger FD_SETSIZE.  This can be done by adding a 
+  line such as:
   </P>
   <DL>
    <DD><CODE>options FD_SETSIZE <EM>nnn</EM></CODE>
    </DD>
   </DL>
   <P>
-  This can restrict the number of
-  virtual hosts you can use, especially if they all use different log
-  files.  Increasing this limit (and recompiling Apache) is not enough,
-  as it is on some platforms (such as Solaris), as you also will have
-  to recompile <SAMP>libc</SAMP> with the changed setting.
+  To your kernel config file.  Starting at version 2.2, this is no
+  longer necessary.
   </P>
   <P>
-  With FreeBSD 2.2 and later, you <EM>can</EM> increase the setting of
-  <SAMP>FD_SETSIZE</SAMP> at Apache compilation time by adding
-  &quot;<SAMP>-DFD_SETSIZE=<EM>nnn</EM></SAMP>&quot; to the
+  If you are using a version of 2.1-stable from after 1997/03/10 or
+  2.2 or 3.0-current from before 1997/06/28, there is a limit in
+  the resolver library that prevents it from using more file descriptors
+  than what FD_SETSIZE is set to when libc is compiled.  To increase
+  this, you have to recompile libc with a higher FD_SETSIZE.
+  </P>
+  <P>
+  In FreeBSD 3.0, the default FD_SETSIZE has been increased to
+  1024 and the above limitation in the resolver library
+  has been removed.
+  </P>
+  <P>
+  After you deal with the appropriate changes above, you can increase 
+  the setting of <SAMP>FD_SETSIZE</SAMP> at Apache compilation time 
+  by adding &quot;<SAMP>-DFD_SETSIZE=<EM>nnn</EM></SAMP>&quot; to the
   <SAMP>EXTRA_CFLAGS</SAMP> line in your <SAMP>Configuration</SAMP>
   file.
-  </P>
-  <P>
-  On FreeBSD 3.0 the default is 1024, so the problem is lessened still
-  more, and may not require any intervention at all.
   </P>
   <HR>
  </LI>
@@ -1028,7 +1037,7 @@
    </LI>
    <LI>Web authentication passwords (at least for Basic authentication)
     generally fly across the wire, and through intermediate proxy
-    systems, in what amounts to plaintext.  &quot;O'er the net we
+    systems, in what amounts to plain text.  &quot;O'er the net we
     go/Caching all the way;/O what fun it is to surf/Giving my password
     away!&quot;
    </LI>
@@ -1229,7 +1238,7 @@
      </A>
   <P>
   This is a normal message and nothing about which to be alarmed.  It simply
-  means that the client cancelled the connection before it had been
+  means that the client canceled the connection before it had been
   completely set up - such as by the end-user pressing the &quot;Stop&quot;
   button.  People's patience being what it is, sites with response-time
   problems or slow network links may experiences this more than
@@ -1779,13 +1788,13 @@
   <HR>
  </LI>
  <LI><A NAME="authauthoritative">
-      <STRONG>Why does my authentification give me a server error?</STRONG>
+      <STRONG>Why does my authentication give me a server error?</STRONG>
      </A>
   <P>
   Under normal circumstances, the Apache access control modules will
   pass unrecognized user IDs on to the next access control module in
   line.  Only if the user ID is recognized and the password is validated
-  (or not) will it give the usual success or &quot;authentification
+  (or not) will it give the usual success or &quot;authentication
   failed&quot; messages.
   </P>
   <P>
@@ -1821,7 +1830,7 @@
   <SAMP>mod_auth_mysql</SAMP>, <SAMP>mod_auth_anon</SAMP> or
   <SAMP>mod_auth_cookie</SAMP> modules on their own.  These are by
   default <STRONG>not</STRONG> authoritative, and this will pass the
-  buck on to the (non-existent) next authentification module when the
+  buck on to the (non-existent) next authentication module when the
   user ID is not in their respective database.  Just add the appropriate
   '<SAMP><EM>XXX</EM>Authoritative yes</SAMP>' line to the configuration.
   </P>
@@ -1835,11 +1844,11 @@
   <HR>
  </LI>
  <LI><A NAME="auth-on-same-machine">
-      <STRONG>Do I have to keep the (mSQL) authentification information
+      <STRONG>Do I have to keep the (mSQL) authentication information
       on the same machine?</STRONG>
      </A>
   <P>
-  Some organizations feel very strongly about keeping the authentification
+  Some organizations feel very strongly about keeping the authentication
   information on a different machine than the webserver. With the
   <SAMP>mod_auth_msql</SAMP>, <SAMP>mod_auth_mysql</SAMP>, and other SQL
   modules connecting to (R)DBMses this is quite possible. Just configure
@@ -1855,10 +1864,10 @@
   <HR>
  </LI>
  <LI><A NAME="msql-slow">
-      <STRONG>Why is my mSQL authentification terribly slow?</STRONG>
+      <STRONG>Why is my mSQL authentication terribly slow?</STRONG>
      </A>
   <P>
-  You have probably configured the Host by specificing a FQHN,
+  You have probably configured the Host by specifying a FQHN,
   and thus the libmsql will use a full blown tcp/ip socket to talk to
   the database, rather than a fast internal device.  The
   <SAMP>libmsql</SAMP>, the mSQL FAQ, and the <SAMP>mod_auth_msql</SAMP>
@@ -1912,7 +1921,7 @@
   <A
       HREF="http://www.heise.de/ix/artikel/9612149/"
   >http://www.heise.de/ix/artikel/9612149/</A>,
-  the english (translated) version can be found at 
+  the English (translated) version can be found at 
   <A
       HREF="http://www.heise.de/ix/artikel/E/9612149/"
   >http://www.heise.de/ix/artikel/E/9612149/</A>.
