@@ -68,20 +68,17 @@ static apr_status_t error_read(apr_bucket *b, const char **str,
     return APR_SUCCESS;
 }
 
-static void error_destroy(void *data) {
-    ap_bucket_error *h = data;
-    apr_sms_free(h->sms, h);
-}
-
 AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error, 
 		const char *buf, apr_pool_t *p)
 {
     ap_bucket_error *h;
 
-    h = (ap_bucket_error *)apr_sms_malloc(b->sms, sizeof(*h));
+    h = malloc(sizeof(*h));
+    if (h == NULL) {
+        return NULL;
+    }
     h->status = error;
     h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
-    h->sms = b->sms;
 
     b->length = 0;
     b->start  = 0;
@@ -93,22 +90,16 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
 AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, 
 		const char *buf, apr_pool_t *p)
 {
-    apr_sms_t *sms;
-    apr_bucket *b;
-    
-    if (!apr_bucket_global_sms) {
-        apr_sms_std_create(&apr_bucket_global_sms);
-    }
-    sms = apr_bucket_global_sms;
-    b = (apr_bucket *)apr_sms_malloc(sms, sizeof(*b));
+    apr_bucket *b = (apr_bucket *)malloc(sizeof(*b));
+
     APR_BUCKET_INIT(b);
-    b->sms = sms;
+    b->free = free;
     return ap_bucket_error_make(b, error, buf, p);
 }
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
-    error_destroy,
+    free,
     error_read,
     apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,
