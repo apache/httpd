@@ -162,8 +162,9 @@ API_EXPORT(const ap_array_header_t *) ap_requires (request_rec *);
  */
 typedef enum { eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32, 
                eFileTypeSCRIPT } file_type_e;
-typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY, 
-               INTERPRETER_SOURCE_SHEBANG } interpreter_source_e;
+typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY_STRICT, 
+               INTERPRETER_SOURCE_REGISTRY, INTERPRETER_SOURCE_SHEBANG 
+             } interpreter_source_e;
 API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, 
                                                  char **interpreter,
                                                  char **arguments);
