@@ -1044,26 +1044,26 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
 	direction = D_ASCENDING;
     }
     else {
-    qstring = r->args;
+	qstring = r->args;
 
-    /*
+	/*
 	 * If no QUERY_STRING was specified, we use the default: ascending
 	 * by name.
-     */
-    if ((qstring == NULL) || (*qstring == '\0')) {
-	keyid = K_NAME;
-	direction = D_ASCENDING;
-    }
-    else {
-	keyid = *qstring;
-	getword(r->pool, &qstring, '=');
-	if (qstring != '\0') {
-	    direction = *qstring;
-	}
-	else {
+	 */
+	if ((qstring == NULL) || (*qstring == '\0')) {
+	    keyid = K_NAME;
 	    direction = D_ASCENDING;
 	}
-    }
+	else {
+	    keyid = *qstring;
+	    getword(r->pool, &qstring, '=');
+	    if (qstring != '\0') {
+		direction = *qstring;
+	    }
+	    else {
+		direction = D_ASCENDING;
+	    }
+	}
     }
 
     /* 
