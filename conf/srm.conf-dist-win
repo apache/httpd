@@ -153,6 +153,11 @@ LanguagePriority en fr de
 # make certain files to be certain types.
 # Format: AddType type/subtype ext1
 
+# For example, the PHP3 module (not part of the Apache distribution)
+# will typically use:
+#AddType application/x-httpd-php3 .phtml
+#AddType application/x-httpd-php3-source .phps
+
 # AddHandler allows you to map certain file extensions to "handlers",
 # actions unrelated to filetype. These can be either built into the server
 # or added with the Action command (see below)
