@@ -216,16 +216,6 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
                              connectname, NULL));
     }
 
-    /* create a new socket */
-    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-            "proxy: error creating socket");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-    /* Set a timeout on the socket */
-    apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)(r->server->timeout * APR_USEC_PER_SEC));
-
 	/*
 	 * At this point we have a list of one or more IP addresses of
 	 * the machine to connect to. If configured, reorder this
@@ -235,19 +225,36 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
          *
          * For now we do nothing, ie we get DNS round robin.
 	 * XXX FIXME
+         *
+         * We have to create a new socket each time through the loop because
+         *
+         *   (1) On most stacks, connect() fails with EINVAL or similar if
+         *       we previously failed connect() on the socket in the past
+         *   (2) The address family of the socket needs to match that of the
+         *       address we're trying to connect to.
 	 */
-
 
     /* try each IP address until we connect successfully */
     {
 	int failed = 1;
 	while (connect_addr) {
 
+            /* create a new socket */
+            if ((rv = apr_socket_create(&sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "proxy: error creating socket");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
+            /* Set a timeout on the socket */
+            apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)(r->server->timeout * APR_USEC_PER_SEC));
+
 	    /* make the connection out of the socket */
 	    rv = apr_connect(sock, connect_addr);
 
 	    /* if an error occurred, loop round and try again */
             if (rv != APR_SUCCESS) {
+                apr_socket_close(sock);
 		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			     "proxy: CONNECT: attempt to connect to %pI (%s) failed", connect_addr, connectname);
 		connect_addr = connect_addr->next;
@@ -261,7 +268,6 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 
 	/* handle a permanent error from the above loop */
 	if (failed) {
-	    apr_socket_close(sock);
 	    if (proxyname) {
 		return DECLINED;
 	    }

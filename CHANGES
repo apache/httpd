@@ -1,8 +1,9 @@
 Changes with Apache 2.0.30-dev
 
-  *) Fix a couple of mod_proxy problems forwarding HTTP connections:
-     (1) PR #9190  It failed to connect to IPv6 hosts.
-     (2) It failed to connect when the first IP address returned by 
+  *) Fix a couple of mod_proxy problems forwarding HTTP connections
+     and handling CONNECT:
+     (1) PR #9190  Proxy failed to connect to IPv6 hosts.
+     (2) Proxy failed to connect when the first IP address returned by 
          the resolver was unreachable but a secondary IP address was.  
      [Jeff Trawick]
 
