@@ -126,6 +126,7 @@ API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype)
 
 API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, int gmt)
 {
+    ap_int32_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
 
@@ -170,7 +171,7 @@ API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, in
     }
 
     /* check return code? */
-    ap_strftime(ts, MAX_STRING_LEN, fmt, t);
+    ap_strftime(ts, &retcode, MAX_STRING_LEN, fmt, t);
     ts[MAX_STRING_LEN - 1] = '\0';
     return ap_pstrdup(p, ts);
 }
