@@ -706,7 +706,11 @@ static char *substring_conf(ap_context_t *p, const char *start, int len, char qu
     }
 
     *resp++ = '\0';
+#if RESOLVE_ENV_PER_TOKEN
+    return ap_resolve_env(p,result);
+#else
     return result;
+#endif
 }
 
 API_EXPORT(char *) ap_getword_conf_nc(ap_context_t *p, char **line)
@@ -755,6 +759,41 @@ API_EXPORT(char *) ap_getword_conf(ap_context_t *p, const char **line)
     return res;
 }
 
+/* Check a string for any ${ENV} environment variable
+ * construct and replace each them by the value of
+ * that environment variable, if it exists. If the
+ * environment value does not exist, replace by an
+ * empty string. Any unrecognized construct is not
+ * replaced and silently ignored.
+ */
+API_EXPORT(char *) ap_resolve_env(ap_context_t *p, const char * word)
+{
+       char tmp[ MAX_STRING_LEN ];
+       char * s, * e;
+       tmp[0] = '\0';
+
+       if (!(s=strchr(word,'$')))
+               return (char *)word;
+
+       do {
+               /* XXX - relies on strncat() to add '\0'
+                */
+	       strncat(tmp,word,s - word);
+               if ((s[1] == '{') && (e=strchr(s,'}'))) {
+                       *e = '\0';
+                       word = e + 1;
+                       e = getenv(s+2);
+                       strcat(tmp,e ? e : "");
+               } else {
+                       /* ignore invalid strings */
+                       word = s+1;
+                       strcat(tmp,"$");
+               };
+       } while ((s=strchr(word,'$')));
+       strcat(tmp,word);
+
+       return ap_pstrdup(p,tmp);
+}
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
 {
 #ifdef DEBUG

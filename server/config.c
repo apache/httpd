@@ -636,6 +636,9 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     switch (cmd->args_how) {
     case RAW_ARGS:
+#ifdef RESOLVE_ENV_PER_TOKEN
+	args = ap_resolve_env(parms->pool,args);
+#endif
 	return ((const char *(*)(cmd_parms *, void *, const char *))
 		(cmd->func)) (parms, mconfig, args);
 
@@ -829,6 +832,7 @@ CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module
     return mconfig;
 }
 
+
 CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l)
 {
     void *oldconfig;
@@ -839,7 +843,11 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
     if ((l[0] == '#') || (!l[0]))
 	return NULL;
 
+#if RESOLVE_ENV_PER_TOKEN
     args = l;
+#else
+    args = ap_resolve_env(parms->temp_pool,l); 
+#endif
     cmd_name = ap_getword_conf(parms->temp_pool, &args);
     if (*cmd_name == '\0')
 	return NULL;
