@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Apache 2.0 の新機能の概略</h1>
+    <h1 align="center">Apache 2.0 の新機能の概略</h1>
 
     <p>拡張: <a href="#core">コア</a> | <a
     href="#module">モジュール</a></p>
@@ -99,7 +100,7 @@
       ファイルシステムに直接変換されて、Windows 2000 と Windows XP を
       含む、全ての Windows NT で多言語サポートを提供します。
       <em>このサポートは、ファイルシステムのアクセス時にローカルの
-      コードページを使う Windows 95, 98, ME には適用されません。</em>
+      コードページを使う Windows 95, 98, ME には適用されません。</em></dd>
 
     </dl>
     <hr />
@@ -170,7 +171,7 @@
       きれいに表示されるために HTML のテーブルを使うように
       設定できるようになりました。また、バージョンによるソーティングなど、
       より細かいソーティングの制御ができるようになり、ディレクトリ
-      の内容一覧をワイルドカードにより選別することができるようにもなりました。
+      の内容一覧をワイルドカードにより選別することができるようにもなりました。</dd>
 
       <dt><strong>mod_include</strong></dt>
 
