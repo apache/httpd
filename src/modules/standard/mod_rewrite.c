@@ -3573,8 +3573,8 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
         si.hStdOutput  = pinfo->hPipeOutputWrite;
         si.hStdError   = pinfo->hPipeErrorWrite;
 
-        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0,
-                          environ, NULL, &si, &pi)) {
+        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, 
+                          NULL, NULL, &si, &pi)) {
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
             child_pid = pi.dwProcessId;
