@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/05 00:30:26 $]
+Last modified at [$Date: 2003/11/05 02:34:27 $]
 
 Release:
 
@@ -291,7 +291,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
       option is set. PR 21668.
         modules/generators/mod_autoindex.c: r1.123
-      +1: nd
+      +1: nd, trawick
 
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
@@ -307,7 +307,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_include: Don't allow ETag to be sent in 304. PR 19355.
         modules/filters/mod_include.c: r1.290
-      +1: nd
+      +1: nd, trawick
 
     * mod_autoindex: Restore the ability to add a description for
       directories that don't contain an index file.
