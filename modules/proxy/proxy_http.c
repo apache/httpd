@@ -738,7 +738,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* if the connection is < HTTP/1.1, or Connection: close,
      * we close the socket, otherwise we leave it open for KeepAlive support
      */
-    if (close || (r->proto_num < 1001)) {
+    if (close || (r->proto_num < HTTP_1_1)) {
         apr_socket_close(sock);
 	conf->client_socket = NULL;
     }
