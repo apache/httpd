@@ -2975,21 +2975,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     return rv;
 }
 
-#ifdef AP_USE_MMAP_FILES
-
-/* The code writes MMAP_SEGMENT_SIZE bytes at a time.  This is due to Apache's
- * timeout model, which is a timeout per-write rather than a time for the
- * entire transaction to complete.  Essentially this should be small enough
- * so that in one Timeout period, your slowest clients should be reasonably
- * able to receive this many bytes.
- *
- * To take advantage of zero-copy TCP under Solaris 2.6 this should be a
- * multiple of 16k.  (And you need a SunATM2.0 network card.)
- */
-#ifndef MMAP_SEGMENT_SIZE
-#define MMAP_SEGMENT_SIZE       32768
-#endif
-
+#if APR_HAS_MMAP
 /* send data from an in-memory buffer */
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
@@ -3004,7 +2990,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 
     return mm->size; /* XXX - change API to report apr_status_t? */
 }
-#endif /* AP_USE_MMAP_FILES */
+#endif /* APR_HAS_MMAP */
 
 AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 {
