@@ -163,7 +163,7 @@
     -i option) it will run as user "System" (the LocalSystem
     account). There should be few issues if all resources for the
     web server reside on the local system, but it has broad
-    security privilages to affect the local machine!</p>
+    security privileges to affect the local machine!</p>
 
     <blockquote>
       LocalSystem is a very privileged account locally, so you
@@ -173,9 +173,9 @@
       DCOM, or secure RPC.
     </blockquote>
 
-    <p><strong>NEVER grant network privilages to the SYSTEM
+    <p><strong>NEVER grant network privileges to the SYSTEM
     account!</strong> Create a new user account instead, grant the
-    appropriate privilages to that user, and use the the 'Log On
+    appropriate privileges to that user, and use the the 'Log On
     As:' option. Select the Start Menu -&gt; Settings -&gt; Control
     Panel -&gt; Services -&gt; apache service ... and click the
     "Startup" button to access this setting.</p>
@@ -188,7 +188,7 @@
       for verification.
     </blockquote>
 
-    <p>The SYSTEM account has no privilages to the network, so
+    <p>The SYSTEM account has no privileges to the network, so
     shared pages or a shared installation of Apache is invisible to
     the service. If you intend to use <em>any</em> network
     resources, the following steps should help:</p>
@@ -236,7 +236,7 @@
     </ul>
 
     <p>If you allow the account to log in as a user, then you can
-    log in yourself and test that the account has the privilages to
+    log in yourself and test that the account has the privileges to
     execute the scripts, read the web pages, and that you can start
     Apache in a console window. If this works, and you have
     followed the steps above, Apache should execute as a service
@@ -356,7 +356,7 @@
     menu or desktop to perform the required action.</p>
 
     <p>Apache and Windows 95/98 offer no support for running the
-    Apache service as a specific user with network privilages. In
+    Apache service as a specific user with network privileges. In
     fact, Windows 95/98 offers no security on the local machine,
     either. This is the simple reason that the Apache Software
     Foundation never endorses the use of Windows 95/98 as a public
