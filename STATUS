@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 03:01:22 $]
+Last modified at [$Date: 2004/03/29 03:47:16 $]
 
 Release:
 
@@ -291,7 +291,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Don't include newlines in strings passed to ap_log_error.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/main.c?r1=1.155&r2=1.156
-      +1: trawick
+      +1: trawick, geoff
 
 CURRENT RELEASE NOTES:
 
