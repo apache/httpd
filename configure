@@ -440,10 +440,11 @@ do
                                eval "module_${module}=yes" 
                            done
                            module_auth_db=no     # not all platforms have -ldb
+                           module_mmap_static=no # not all platforms have mmap()
+                           module_so=no          # not all platforms have dlopen()
+                           module_example=no     # only for developers
                            module_log_agent=no   # deprecated
                            module_log_referer=no # deprecated
-                           module_example=no     # only for developers
-                           module_so=no          # not all platforms have dlopen()
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
