@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 124594 -->
+<!-- English Revision: 126304 -->
 
 <!--
- Copyright 2002-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors,
+                     as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -448,7 +449,7 @@
     <tr><td>loadfactor</td>
         <td>1</td>
         <td>ワーカーあたりの負荷係数です。BalancerMember で使います。
-        1 から 100 までの数字でそのワーカーに対する負荷を指定します。
+        1 から 100 までの数字でそのワーカーに対する正規化された負荷率を指定します。
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -475,6 +476,14 @@
     <tr><th>パラメータ</th>
         <th>デフォルト値</th>
         <th>説明</th></tr>
+    <tr><td>lbmethod</td>
+        <td>-</td>
+        <td>Balancer のロードバランス方法。使用するロードバランスの
+        スケジューリング方法を選びます。処理したリクエストの数で重み付けする
+        <code>requests</code> か、転送量のバイト数で重み付けする
+        <code>traffic</code> を設定できます。デフォルトは
+        <code>requests</code> です。
+    </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
         <td>バランサーのスティッキーセッション名です。通常はこの値は <code>JSESSIONID</code>
