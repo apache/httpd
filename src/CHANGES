@@ -1,5 +1,18 @@
 Changes with Apache 1.3.7
 
+  *) Add functionality to the install-bindist.sh script created by
+     binbuild.sh to use tar when copying distribution files to the
+     serverroot. This allows upgrading an existing installation
+     without nesting the new distribution in the old.
+
+     install-bindist.sh now detects the local perl5 path to install
+     apxs and dbmmanage with proper path to perl interpreter.
+
+     Add an install-binsupport target which copies the source files
+     for apxs and dbmmanage to bindist to allow these scripts to
+     be properly installed relative to the destination serverroot.
+     [Randy Terbush, Covalent Technologies, randy@covalent.net]
+
   *) Fix intermittent SEGV in ap_proxy_cache_error() in
      src/modules/proxy_util.c where a NULL filepointer and
      temporary filename were closed and unlinked.

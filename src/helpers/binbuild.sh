@@ -129,6 +129,55 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "# This script installs the Apache binary distribution and" && \
   echo "# was automatically created by binbuild.sh." && \
   echo " " && \
+  echo "lmkdir()" && \
+  echo "{" && \
+  echo "  path=\"\"" && \
+  echo "  dirs=\`echo \$1 | sed -e 's%/% %g'\`" && \
+  echo "  mode=\$2" && \
+  echo " " && \
+  echo "  set -- \${dirs}" && \
+  echo " " && \
+  echo "  for d in \${dirs}" && \
+  echo "  do" && \
+  echo "    path=\"\${path}/\$d\"" && \
+  echo "    if test ! -d \"\${path}\" ; then" && \
+  echo "      mkdir \${path}" && \
+  echo "      if test \$? -ne 0 ; then" && \
+  echo "        echo \"Failed to create directory: \${path}\"" && \
+  echo "        exit 1" && \
+  echo "      fi" && \
+  echo "      chmod \${mode} \${path}" && \
+  echo "    fi" && \
+  echo "  done" && \
+  echo "}" && \
+  echo " " && \
+  echo "lcopy()" && \
+  echo "{" && \
+  echo "  from=\$1" && \
+  echo "  to=\$2" && \
+  echo "  dmode=\$3" && \
+  echo "  fmode=\$4" && \
+  echo " " && \
+  echo "  test -d \${to} || lmkdir \${to} \${dmode}" && \
+  echo "  (cd \${from} && tar -cf - *) | (cd \${to} && tar -xf -)" && \
+  echo " " && \
+  echo "  if test \"X\${fmode}\" != X ; then" && \
+  echo "    find \${to} -type f -print | xargs chmod \${fmode}" && \
+  echo "  fi" && \
+  echo "  if test \"X\${dmode}\" != X ; then" && \
+  echo "    find \${to} -type d -print | xargs chmod \${dmode}" && \
+  echo "  fi" && \
+  echo "}" && \
+  echo " " && \
+  echo "##" && \
+  echo "##  determine path to (optional) Perl interpreter" && \
+  echo "##" && \
+  echo "PERL=no-perl-on-this-system" && \
+  echo "perlpath=\"\`src/helpers/PrintPath perl5 perl miniperl\`\"" && \
+  echo "if [ \"x\$perlpath\" != \"x\" ]; then" && \
+  echo "  PERL=\"\$perlpath\"" && \
+  echo "fi" && \
+  echo " " && \
   echo "if [ .\$1 = . ]" && \
   echo "then" && \
   echo "  SR=/usr/local/apache" && \
@@ -138,27 +187,32 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "echo \"Installing binary distribution for platform $OS\"" && \
   echo "echo \"into directory \$SR ...\"" && \
   echo "./src/helpers/mkdir.sh \$SR" && \
-  echo "cp -r bindist/proxy \$SR/proxy" && \
-  echo "cp -r bindist/man \$SR/man" && \
-  echo "cp -r bindist/logs \$SR/logs" && \
-  echo "cp -r bindist/libexec \$SR/libexec" && \
-  echo "cp -r bindist/include \$SR/include" && \
-  echo "cp -r bindist/icons \$SR/icons" && \
-  echo "cp -r bindist/cgi-bin \$SR/cgi-bin" && \
-  echo "cp -r bindist/bin \$SR/bin" && \
+  echo "lmkdir \$SR/proxy 750" && \
+  echo "lmkdir \$SR/logs 750" && \
+  echo "lcopy bindist/man \$SR/man 755 644" && \
+  echo "lcopy bindist/libexec \$SR/libexec 750 644" && \
+  echo "lcopy bindist/include \$SR/include 755 644" && \
+  echo "lcopy bindist/icons \$SR/icons 755 644" && \
+  echo "lcopy bindist/cgi-bin \$SR/cgi-bin 750 750" && \
+  echo "lcopy bindist/bin \$SR/bin 750 750" && \
   echo "if [ -d \$SR/conf ]" && \
   echo "then" && \
   echo "  echo \"[Preserving existing configuration files.]\"" && \
-  echo "  cp -r bindist/conf/*.default \$SR/conf/" && \
+  echo "  cp bindist/conf/*.default \$SR/conf/" && \
   echo "else" && \
-  echo "  cp -r bindist/conf \$SR/conf" && \
+  echo "  lcopy bindist/conf \$SR/conf 750 640" && \
   echo "fi" && \
   echo "if [ -d \$SR/htdocs ]" && \
   echo "then" && \
   echo "  echo \"[Preserving existing htdocs directory.]\"" && \
   echo "else" && \
-  echo "  cp -r bindist/htdocs \$SR/htdocs" && \
+  echo "  lcopy bindist/htdocs \$SR/htdocs 755 644" && \
   echo "fi" && \
+  echo " " && \
+  echo "sed -e \"s;^#!/.*;#!\$PERL;\" -e \"s;\@prefix\@;\$SR;\" -e \"s;\@sbindir\@;\$SR/bin;\" \\" && \
+  echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
+  echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
+  echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
   echo "sed -e s%/usr/local/apache%\$SR/% \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
   echo "sed -e s%PIDFILE=%PIDFILE=\$SR/% -e s%HTTPD=%HTTPD=\\\"\$SR/% -e \"s%/httpd$%/httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
@@ -166,12 +220,12 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "echo \" +--------------------------------------------------------+\"" && \
   echo "echo \" | You now have successfully installed the Apache $VER   |\"" && \
   echo "echo \" | HTTP server. To verify that Apache actually works      |\"" && \
-  echo "echo \" | correctly you now should first check the (initially    |\"" && \
-  echo "echo \" | created or preserved) configuration files              |\"" && \
+  echo "echo \" | correctly you should first check the (initially        |\"" && \
+  echo "echo \" | created or preserved) configuration files:             |\"" && \
   echo "echo \" |                                                        |\"" && \
   echo "echo \" |   \$SR/conf/httpd.conf\"" && \
   echo "echo \" |                                                        |\"" && \
-  echo "echo \" | and then you should be able to immediately fire up     |\"" && \
+  echo "echo \" | You should then be able to immediately fire up         |\"" && \
   echo "echo \" | Apache the first time by running:                      |\"" && \
   echo "echo \" |                                                        |\"" && \
   echo "echo \" |   \$SR/bin/apachectl start \"" &&\
