@@ -2,6 +2,8 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Removed old and unmaintained ap_add_named_module API. [André Malo]
+
   *) htpasswd no longer refuses to process files that contain empty
      lines.  [André Malo]
 

@@ -566,14 +566,6 @@ AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p);
  */
 AP_DECLARE(void) ap_remove_loaded_module(module *mod);
 /**
- * Add a module to the list of loaded module based on the name of the
- * module
- * @param name The name of the module
- * @param p The pool valid for the lifetime of the module
- * @return 1 on success, 0 on failure
- */
-AP_DECLARE(int) ap_add_named_module(const char *name, apr_pool_t *p);
-/**
  * Find the name of the specified module
  * @param m The module to get the name for
  * @return the name of the module

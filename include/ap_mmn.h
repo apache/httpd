@@ -80,14 +80,15 @@
  * 20030821.1 (2.1.0-dev) added XHTML doctypes
  * 20030821.2 (2.1.0-dev) added ap_escape_errorlog_item
  * 20030821.3 (2.1.0-dev) added ap_get_server_revision / ap_version_t
+ * 20040425 (2.1.0-dev) removed ap_add_named_module API
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20030821
+#define MODULE_MAGIC_NUMBER_MAJOR 20040425
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
