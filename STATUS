@@ -77,14 +77,6 @@ Committed Code Changes:
 
 Available Patches:
 
-    * Marc's [PATCH] mod_status warnings
-	<Pine.BSF.3.95q.980109214424.8064O-100000@valis.worldgate.com>
-	Status: Marc +1, Paul +1
-
-    * Marc's [PATCH] a couple of casts for msvc warnings
-	<Pine.BSF.3.95q.980109213743.8064N-100000@valis.worldgate.com>
-	Status: Marc +1, Paul +1
-
     * Dean's [PATCH] OSF/1 serialized accept
 	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
 	Status: Dean +1
@@ -278,7 +270,7 @@ Win32 specific issues:
     * the mutex should be critical-regions, since the current design
       is creating a mess of SO calls that are unnecessary
 
-    * don't mmap.  Use TransmitFile?
+    * we don't mmap on NT.  Use TransmitFile?
 
     * CGIs
 	- simultaneous execution problem
