@@ -3109,8 +3109,7 @@ a packet is sent.
 <A HREF="directive-dict.html#Default" REL="Help">
 <STRONG>Default:</STRONG></A> <CODE>UseCanonicalName on</CODE><BR>
 <A HREF="directive-dict.html#Context" REL="Help">
-<STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess
-<BR>
+<STRONG>Context:</STRONG></A> server config, virtual host<BR>
 <A HREF="directive-dict.html#Override" REL="Help">
 <STRONG>Override:</STRONG></A> Options<BR>
 <A HREF="directive-dict.html#Compatibility" REL="Help">
@@ -3144,6 +3143,12 @@ enabled, this will cause the user to have to reauthenticate twice (once
 for <CODE>www</CODE> and once again for <CODE>www.domain.com</CODE>).
 But if <CODE>UseCanonicalName</CODE> is set off, then Apache will redirect
 to <CODE>http://www/splat/</CODE>.
+
+<P>There is a third option, <CODE>UseCanonicalName DNS</CODE>, which
+is intended for use with mass IP-based virtual hosting to support
+ancient clients that do not provide a <CODE>Host:</CODE> header. With
+this option Apache does a reverse DNS lookup on the server IP address
+that the client connected to in order to work out self-referential URLs.
 
 <P><STRONG>Warning:</STRONG> if CGIs make assumptions about the values of
 <CODE>SERVER_NAME</CODE> they may be broken by this option.  The client
