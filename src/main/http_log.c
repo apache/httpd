@@ -353,7 +353,7 @@ static void log_error_core (const char *file, int line, int level,
 	 * first. -djg
 	 */
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
-		"(client %s): ", r->connection->remote_ip);
+		"[client %s] ", r->connection->remote_ip);
     }
     if (!(level & APLOG_NOERRNO)
 	&& (save_errno != 0)
