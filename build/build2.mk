@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: build2.mk,v 1.4 2000/01/16 20:00:48 sascha Exp $
+# $Id: build2.mk,v 1.5 2000/03/04 15:49:16 dreid Exp $
 
 include generated_lists
 
@@ -32,10 +32,11 @@ LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 config_h_in = include/ap_config_auto.h.in
 apr_config_h_in = lib/apr/include/apr_config.h.in
 apr_configure = lib/apr/configure
+mm_configure = lib/apr/shmem/mm/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
-APR_TARGETS = $(apr_configure) $(apr_config_h_in)
+APR_TARGETS = $(apr_configure) $(apr_config_h_in) $(mm_configure)
 
 targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS)
 
@@ -76,3 +77,7 @@ $(apr_config_h_in): $(apr_configure) lib/apr/acconfig.h
 $(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/threads.m4
 	@echo rebuilding $@
 	(cd lib/apr && autoconf)
+
+$(mm_configure): lib/apr/shmem/unix/mm/configure.in
+	@echo rebuilding $@
+	(cd lib/apr/shmem/unix/mm && autoconf)
