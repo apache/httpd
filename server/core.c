@@ -4547,11 +4547,6 @@ static int core_pre_connection(conn_rec *c, void *csd)
     apr_status_t rv;
 
 #ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
-    /* BillS says perhaps this should be moved to the MPMs. Some OSes
-     * allow listening socket attributes to be inherited by the
-     * accept sockets which means this call only needs to be made
-     * once on the listener
-     */
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
