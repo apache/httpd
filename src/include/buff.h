@@ -197,7 +197,7 @@ API_EXPORT(int) ap_bfilbuf(BUFF *fb);
 		     ?os_toascii[(unsigned char)c]:(c), 0))
 
 #endif /*CHARSET_EBCDIC*/
-struct _child_info {
+struct child_info {
 #ifdef WIN32
     /*
      *  These handles are used by ap_call_exec to call 
