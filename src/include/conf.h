@@ -200,6 +200,10 @@ typedef int rlim_t;
 #ifdef NEED_RLIM_T
 typedef int rlim_t;
 #endif
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#ifdef USEBCOPY
+#define memmove(a,b,c) bcopy(b,a,c)
+#endif
 
 #elif defined(ULTRIX)
 #define HAVE_GMTOFF
@@ -211,7 +215,6 @@ typedef int rlim_t;
 #ifndef __ultrix__		/* Hack to check for pre-Ultrix 4.4 cc */
 #define const			/* Not implemented */
 #endif
-#define HAVE_SYSLOG
 
 #elif defined(OSF1)
 #define HAVE_GMTOFF
@@ -397,9 +400,8 @@ extern char *crypt();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG
-#ifdef SNI  /* SINIX/ReliantUNIX, probably other SVR4's as well */
 #define NET_SIZE_T size_t
-#endif /*SNI*/
+#define HAVE_SHMGET
 
 #elif defined(UW)
 #define NO_LINGCLOSE
@@ -433,7 +435,7 @@ extern char *crypt();
 #define ap_inet_addr inet_network
 #define HAVE_SYSLOG
 
-#elif defined(__NetBSD__) || defined(__OpenBSD__)
+#elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(NETBSD)
 #define HAVE_SYS_RESOURCE_H
 #define HAVE_GMTOFF
 #undef NO_KILLPG

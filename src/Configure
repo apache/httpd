@@ -223,10 +223,12 @@ case "$PLAT" in
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
+	DEF_WANTHSREGEX=yes
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
+	DEF_WANTHSREGEX=yes
 	;;
     *-sgi-irix64)
 # Note: We'd like to see patches to compile 64-bit, but for now...
@@ -304,14 +306,15 @@ case "$PLAT" in
 	DBM_LIB=""
 	DB_LIB=""
 	;;
-    *486-*-freebsd*|*486-*-netbsd*)
-	OS='FreeBSD/NETBSD on 486'
+    *-netbsd*)
+	OS='NetBSD'
+	CFLAGS="$CFLAGS -DNETBSD"
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	DB_LIB=""
 	;;
-    *-freebsd*|*-netbsd*)
-	OS='FreeBSD/NetBSD'
+    *-freebsd*)
+	OS='FreeBSD'
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	DB_LIB=""
@@ -398,17 +401,17 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
 	CFLAGS="$CFLAGS -DSVR4 -DNO_LINGCLOSE"
-	LIBS="$LIBS -lsocket -lnsl -lcrypt"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware211)
 	OS='Unixware 2.1.1'
 	CFLAGS="$CFLAGS -DUW"
-	LIBS="$LIBS -lsocket -lnsl -lcrypt"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware212)
 	OS='Unixware 2.1.2'
 	CFLAGS="$CFLAGS -DUW"
-	LIBS="$LIBS -lsocket -lnsl -lcrypt"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	DBM_LIB=""
 	;;
     maxion-*-sysv4*)
@@ -419,7 +422,7 @@ case "$PLAT" in
 	;;
     *-sni-sysv4*)
 	OS='SVR4'
-	CFLAGS="$CFLAGS -DSVR4 -D_XPG_IV -DHAVE_MMAP"
+	CFLAGS="$CFLAGS -DSVR4 -D_XPG_IV"
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;

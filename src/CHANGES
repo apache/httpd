@@ -1,5 +1,17 @@
 Changes with Apache 1.3b3
 
+  *) PORT: AIX now uses USE_FCNTL_SERIALIZED_ACCEPT. PR#849
+     PORT: i386 AIX does not have memmove. PR#1267
+     PORT: HPUX now defaults to using Spencer regex.  PR#482, 1246
+     PORT: Some versions of netbsd don't automatically define
+	    __NetBSD__.  Workaround by defining NETBSD. PR#977
+     PORT: Unixware 2.x requires -lgen for syslog. PR#1249
+     PORT: Ultrix appears to not have syslog.
+     PORT: Basic Gemini port (treat it like unixware212).
+     PORT: All SVR4 systems now use NET_SIZE_T = size_t, and
+	    use HAVE_SHMGET.
+     [various]
+
   *) Various improvements in detecting config file errors (missing closing
      directives for <Directory>, <Files> etc. blocks, prohibiting global
      server settings in <VirtualHost> blocks, flagging unhandled multiple
