@@ -25,8 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-
 !IF  "$(CFG)" == "regex - Win32 Release"
 
 OUTDIR=.\Release
@@ -56,10 +54,43 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+RSC=rc.exe
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
  "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
 BSC32_SBRS= \
@@ -106,28 +137,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+RSC=rc.exe
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
  "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)\regex.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\regcomp.obj" \
-	"$(INTDIR)\regerror.obj" \
-	"$(INTDIR)\regexec.obj" \
-	"$(INTDIR)\regfree.obj"
-
-"$(OUTDIR)\regex.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -159,12 +174,28 @@ LIB32_OBJS= \
    $(CPP_PROJ) $< 
 <<
 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\regex.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\regcomp.obj" \
+	"$(INTDIR)\regerror.obj" \
+	"$(INTDIR)\regexec.obj" \
+	"$(INTDIR)\regfree.obj"
+
+"$(OUTDIR)\regex.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ENDIF 
+
 
 !IF "$(CFG)" == "regex - Win32 Release" || "$(CFG)" == "regex - Win32 Debug"
 SOURCE=.\regcomp.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGCO=\
 	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
@@ -177,28 +208,8 @@ DEP_CPP_REGCO=\
 
 "$(INTDIR)\regcomp.obj" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGCO=\
-	"..\include\ap_ctype.h"\
-	"..\include\hsregex.h"\
-	".\cclass.h"\
-	".\cname.h"\
-	".\regcomp.ih"\
-	".\regex2.h"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regcomp.obj" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
-
-
-!ENDIF 
 
 SOURCE=.\regerror.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGER=\
 	"..\include\hsregex.h"\
 	".\regerror.ih"\
@@ -207,24 +218,8 @@ DEP_CPP_REGER=\
 
 "$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGER=\
-	"..\include\hsregex.h"\
-	".\regerror.ih"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
-
-
-!ENDIF 
 
 SOURCE=.\regexec.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGEX=\
 	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
@@ -236,27 +231,8 @@ DEP_CPP_REGEX=\
 
 "$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGEX=\
-	"..\include\ap_ctype.h"\
-	"..\include\hsregex.h"\
-	".\engine.c"\
-	".\engine.ih"\
-	".\regex2.h"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
-
-
-!ENDIF 
 
 SOURCE=.\regfree.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGFR=\
 	"..\include\hsregex.h"\
 	".\regex2.h"\
@@ -265,19 +241,6 @@ DEP_CPP_REGFR=\
 
 "$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGFR=\
-	"..\include\hsregex.h"\
-	".\regex2.h"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
-
-
-!ENDIF 
 
 
 !ENDIF 

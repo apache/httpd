@@ -30,10 +30,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Release"
 
 OUTDIR=.\ApacheModuleAuthDigestR
@@ -67,12 +63,46 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D\
  "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleAuthDigestR/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleAuthDigest.bsc" 
 BSC32_SBRS= \
@@ -128,33 +158,12 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /I\
  "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleAuthDigestD/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleAuthDigest.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\ApacheModuleAuthDigest.pdb"\
- /map:"$(INTDIR)\ApacheModuleAuthDigest.map" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleAuthDigest.dll"\
- /implib:"$(OUTDIR)\ApacheModuleAuthDigest.lib" /pdbtype:sept\
- /base:@"BaseAddr.ref",mod_auth_digest 
-LINK32_OBJS= \
-	"$(INTDIR)\mod_auth_digest.obj" \
-	"..\..\CoreD\ApacheCore.lib"
-
-"$(OUTDIR)\ApacheModuleAuthDigest.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -186,6 +195,31 @@ LINK32_OBJS= \
    $(CPP_PROJ) $< 
 <<
 
+MTL=midl.exe
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleAuthDigest.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib advapi32.lib /nologo /subsystem:windows /dll\
+ /incremental:no /pdb:"$(OUTDIR)\ApacheModuleAuthDigest.pdb"\
+ /map:"$(INTDIR)\ApacheModuleAuthDigest.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\ApacheModuleAuthDigest.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleAuthDigest.lib" /pdbtype:sept\
+ /base:@"BaseAddr.ref",mod_auth_digest 
+LINK32_OBJS= \
+	"$(INTDIR)\mod_auth_digest.obj" \
+	"..\..\CoreD\ApacheCore.lib"
+
+"$(OUTDIR)\ApacheModuleAuthDigest.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
+
 
 !IF "$(CFG)" == "ApacheModuleAuthDigest - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleAuthDigest - Win32 Debug"
@@ -193,13 +227,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "\live\apache-1.3\src"
+   cd "\apache\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
  
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "\live\apache-1.3\src"
+   cd "\apache\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Release" RECURSE=1 
    cd ".\os\win32"
@@ -207,12 +241,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "\live\apache-1.3\src"
+   cd "\apache\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "\live\apache-1.3\src"
+   cd "\apache\apache-1.3\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Debug" RECURSE=1 
    cd ".\os\win32"

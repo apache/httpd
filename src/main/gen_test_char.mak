@@ -223,9 +223,6 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
 !IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" ==\
  "gen_test_char - Win32 Debug"
 SOURCE=.\gen_test_char.c
-
-!IF  "$(CFG)" == "gen_test_char - Win32 Release"
-
 DEP_CPP_GEN_T=\
 	"..\include\ap.h"\
 	"..\include\ap_alloc.h"\
@@ -239,17 +236,14 @@ DEP_CPP_GEN_T=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
+NODEP_CPP_GEN_T=\
+	"..\include\ap_config_auto.h"\
+	"..\include\ebcdic.h"\
+	"..\include\sfio.h"\
+	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
-
-
-"$(INTDIR)\gen_test_char.obj" : $(SOURCE) "$(INTDIR)"
-
-
-!ENDIF 
 
 
 !ENDIF 
