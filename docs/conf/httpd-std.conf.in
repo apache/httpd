@@ -787,8 +787,8 @@ AddDefaultCharset ISO-8859-1
 # Commonly used filename extensions to character sets. You probably
 # want to avoid clashes with the language extensions, unless you
 # are good at carefully testing your setup after each change.
-# See ftp://ftp.isi.edu/in-notes/iana/assignments/character-sets for
-# the official list of charset names and their respective RFCs
+# See http://www.iana.org/assignments/character-sets for the
+# official list of charset names and their respective RFCs.
 #
 AddCharset ISO-8859-1  .iso8859-1  .latin1
 AddCharset ISO-8859-2  .iso8859-2  .latin2 .cen
@@ -817,7 +817,7 @@ AddCharset UTF-8       .utf8
 # capitalization actually matters (it should not, but it
 # does for some browsers).
 #
-# See ftp://ftp.isi.edu/in-notes/iana/assignments/character-sets
+# See http://www.iana.org/assignments/character-sets
 # for a list of sorts. But browsers support few.
 #
 AddCharset GB2312      .gb2312 .gb 
