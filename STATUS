@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 16:12:19 $]
+Last modified at [$Date: 2003/05/13 16:30:00 $]
 
 Release:
 
@@ -202,11 +202,6 @@ PATCHES TO PORT FROM 2.1
       comfortable with doing)
       (the docs should explain the thing better. Currently it's not
        really understandable for users. If nobody else does, nd tries to.)
-
-    * By default, use the same CC and CPP with which APR was built.
-      The user can override with CC and CPP environment variables.
-      configure.in              r1.249
-      +1: trawick, nd, stoddard
 
     * Fix a problem that caused httpd to be linked with incorrect flags
       on some platforms when mod_so was enabled by default, breaking 

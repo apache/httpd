@@ -76,6 +76,8 @@ if test "$apr_found" = "reconfig"; then
   AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS apr"
 fi
 
+APR_SETIFNULL(CC, `$apr_config --cc`)
+APR_SETIFNULL(CPP, `$apr_config --cpp`)
 APR_ADDTO(CFLAGS, `$apr_config --cflags`)
 APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
@@ -105,6 +107,12 @@ APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
 APU_INCLUDEDIR=`$apu_config --includedir`
+
+dnl In case we picked up CC and CPP from APR, get that info into the
+dnl config cache so that PCRE uses it.  Otherwise, CC and CPP used for
+dnl PCRE and for our config tests will be whatever PCRE determines.
+AC_PROG_CC
+AC_PROG_CPP
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
@@ -236,8 +244,6 @@ dnl ## Check for programs
 
 AC_PATH_PROG(RM, rm)
 AC_PROG_AWK
-AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
