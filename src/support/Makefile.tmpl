@@ -7,6 +7,7 @@ CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1) -lap
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L../ap
+INCDIR=../include
 
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
@@ -30,3 +31,26 @@ logresolve: logresolve.o
 clean:
 	rm -f $(TARGETS) *.o
 
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+
+#Dependencies
+
+$(OBJS): Makefile
+
+# DO NOT REMOVE
+cls.o: cls.c
+htdigest.o: htdigest.c ../main/md5c.c $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/md5.h
+htpasswd.o: htpasswd.c
+logresolve.o: logresolve.c
+rotatelogs.o: rotatelogs.c
+suexec.o: suexec.c suexec.h

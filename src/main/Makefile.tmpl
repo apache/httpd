@@ -37,92 +37,94 @@ http_bprintf.o: http_bprintf.c
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.
 depend:
-	sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
-	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && mv Makefile.tmpl Makefile.tmpl.bak \
-	    && mv Makefile.new Makefile.tmpl
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
 
 #Dependencies
 
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-alloc.o: alloc.c ../include/httpd.h ../include/conf.h ../os/unix/os.h \
- ../include/hsregex.h ../include/alloc.h ../include/buff.h \
- ../include/ap.h ../include/multithread.h ../include/http_log.h
-buff.o: buff.c ../include/httpd.h ../include/conf.h ../os/unix/os.h \
- ../include/hsregex.h ../include/alloc.h ../include/buff.h \
- ../include/ap.h ../include/http_main.h ../include/http_log.h
-explain.o: explain.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/explain.h
-fnmatch.o: fnmatch.c ../include/fnmatch.h
-http_bprintf.o: http_bprintf.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h
-http_config.o: http_config.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_core.h ../include/http_log.h \
- ../include/http_request.h ../include/http_conf_globals.h \
- ../include/http_vhost.h ../include/explain.h
-http_core.o: http_core.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_core.h ../include/http_protocol.h \
- ../include/http_request.h ../include/http_conf_globals.h \
- ../include/http_vhost.h ../include/http_main.h ../include/http_log.h \
- ../include/rfc1413.h ../include/util_md5.h ../include/md5.h \
- ../include/scoreboard.h ../include/fnmatch.h
-http_log.o: http_log.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_core.h ../include/http_log.h ../include/http_main.h
-http_main.o: http_main.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_main.h \
- ../include/http_log.h ../include/http_config.h \
- ../include/http_protocol.h ../include/http_request.h \
- ../include/http_conf_globals.h ../include/http_core.h \
- ../include/http_vhost.h ../include/util_script.h \
- ../include/scoreboard.h ../include/multithread.h ../include/explain.h
-http_protocol.o: http_protocol.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_core.h ../include/http_protocol.h \
- ../include/http_main.h ../include/http_request.h \
- ../include/http_vhost.h ../include/http_log.h ../include/util_date.h \
- ../include/http_conf_globals.h
-http_request.o: http_request.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_request.h ../include/http_core.h \
- ../include/http_protocol.h ../include/http_log.h \
- ../include/http_main.h ../include/scoreboard.h ../include/fnmatch.h
-http_vhost.o: http_vhost.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_conf_globals.h ../include/http_log.h \
- ../include/http_vhost.h ../include/http_protocol.h
-md5c.o: md5c.c ../include/conf.h ../os/unix/os.h ../include/hsregex.h \
- ../include/md5.h
-rfc1413.o: rfc1413.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_log.h \
- ../include/rfc1413.h ../include/http_main.h
-util.o: util.c ../include/httpd.h ../include/conf.h ../os/unix/os.h \
- ../include/hsregex.h ../include/alloc.h ../include/buff.h \
- ../include/ap.h ../include/http_conf_globals.h ../include/http_log.h
-util_date.o: util_date.c ../include/conf.h ../os/unix/os.h \
- ../include/hsregex.h ../include/util_date.h
-util_md5.o: util_md5.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/util_md5.h \
- ../include/md5.h
-util_script.o: util_script.c ../include/httpd.h ../include/conf.h \
- ../os/unix/os.h ../include/hsregex.h ../include/alloc.h \
- ../include/buff.h ../include/ap.h ../include/http_config.h \
- ../include/http_conf_globals.h ../include/http_main.h \
- ../include/http_log.h ../include/http_protocol.h \
- ../include/http_core.h ../include/http_request.h \
- ../include/util_script.h ../include/util_date.h
+alloc.o: alloc.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/multithread.h $(INCDIR)/http_log.h
+buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h
+explain.o: explain.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/explain.h
+fnmatch.o: fnmatch.c $(INCDIR)/fnmatch.h
+http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h
+http_config.o: http_config.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_conf_globals.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/explain.h
+http_core.o: http_core.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_conf_globals.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h \
+ $(INCDIR)/rfc1413.h $(INCDIR)/util_md5.h $(INCDIR)/md5.h \
+ $(INCDIR)/scoreboard.h $(INCDIR)/fnmatch.h
+http_log.o: http_log.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_main.h
+http_main.o: http_main.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/util_script.h \
+ $(INCDIR)/scoreboard.h $(INCDIR)/multithread.h $(INCDIR)/explain.h
+http_protocol.o: http_protocol.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_main.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/http_log.h $(INCDIR)/util_date.h \
+ $(INCDIR)/http_conf_globals.h
+http_request.o: http_request.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/scoreboard.h $(INCDIR)/fnmatch.h
+http_vhost.o: http_vhost.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/http_protocol.h
+md5c.o: md5c.c $(INCDIR)/conf.h ../os/unix/os.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/md5.h
+rfc1413.o: rfc1413.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_log.h \
+ $(INCDIR)/rfc1413.h $(INCDIR)/http_main.h
+util.o: util.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h
+util_date.o: util_date.c $(INCDIR)/conf.h ../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/util_date.h
+util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_md5.h \
+ $(INCDIR)/md5.h
+util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
+ $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_request.h \
+ $(INCDIR)/util_script.h $(INCDIR)/util_date.h

@@ -6,6 +6,7 @@
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH0) $(EXTRA_INCLUDES)
+INCDIR=include
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= \
@@ -51,12 +52,14 @@ clean:
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.
 depend:
-	sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
-	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && mv Makefile.tmpl Makefile.tmpl.bak \
-	    && mv Makefile.new Makefile.tmpl
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
 	for i in $(SUBDIRS); do \
-	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend) || exit 1; \
+	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend ) || exit 1; \
 	done
 
 #Dependencies
@@ -65,7 +68,6 @@ $(OBJS): Makefile
 
 # DO NOT REMOVE
 buildmark.o: buildmark.c
-modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
- include/hsregex.h include/alloc.h include/buff.h include/ap.h \
- include/http_config.h
-tt.o: tt.c
+modules.o: modules.c $(INCDIR)/httpd.h $(INCDIR)/conf.h os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/http_config.h

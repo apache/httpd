@@ -1,13 +1,16 @@
 # default Makefile.tmpl to force Configure to create a Makefile
+INCDIR=../../include
 
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.
 depend:
-	sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
-	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && mv Makefile.tmpl Makefile.tmpl.bak \
-	    && mv Makefile.new Makefile.tmpl
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
 
 #Dependencies
 

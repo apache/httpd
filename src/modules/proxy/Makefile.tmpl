@@ -1,6 +1,7 @@
 LIB=libproxy.a
 OBJS=mod_proxy.o proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o \
-proxy_util.o
+	proxy_util.o
+INCDIR=../../include
 
 all:	$(LIB)
 
@@ -19,10 +20,12 @@ clean:
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.
 depend:
-	sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
-	    && $(CC) -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && mv Makefile.tmpl Makefile.tmpl.bak \
-	    && mv Makefile.new Makefile.tmpl
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
 
 #Dependencies
 
