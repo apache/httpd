@@ -159,17 +159,17 @@ static int get_line(char *s, int n, FILE *f)
     register int i = 0;
 
     while (1) {
-	s[i] = (char) fgetc(f);
+        s[i] = (char) fgetc(f);
 
-	if (s[i] == CR) {
-	    s[i] = fgetc(f);
-	}
+        if (s[i] == CR) {
+            s[i] = fgetc(f);
+        }
 
-	if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
-	    s[i] = '\0';
-	    return (feof(f) ? 1 : 0);
-	}
-	++i;
+        if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
+            s[i] = '\0';
+            return (feof(f) ? 1 : 0);
+        }
+        ++i;
     }
 }
 
@@ -178,7 +178,7 @@ static void putline(FILE *f, char *l)
     int x;
 
     for (x = 0; l[x]; x++) {
-	fputc(l[x], f);
+        fputc(l[x], f);
     }
     fputc('\n', f);
 }
@@ -186,11 +186,11 @@ static void putline(FILE *f, char *l)
 static void to64(char *s, unsigned long v, int n)
 {
     static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
-	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     while (--n >= 0) {
-	*s++ = itoa64[v&0x3f];
-	v >>= 6;
+        *s++ = itoa64[v&0x3f];
+        v >>= 6;
     }
 }
 
@@ -200,7 +200,7 @@ static void to64(char *s, unsigned long v, int n)
  * error message instead.
  */
 static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
-		    int alg)
+                    int alg)
 {
     char *pw;
     char cpw[120];
@@ -210,44 +210,44 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     size_t bufsize;
 
     if (passwd != NULL) {
-	pw = passwd;
+        pw = passwd;
     }
     else {
         bufsize = sizeof(pwin);
-	if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
-	    apr_snprintf(record, (rlen - 1), "password too long (>%" APR_SIZE_T_FMT
-	        ")", sizeof(pwin) - 1);
-	    return ERR_OVERFLOW;
-	}
+        if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
+            apr_snprintf(record, (rlen - 1), "password too long (>%" APR_SIZE_T_FMT
+                ")", sizeof(pwin) - 1);
+            return ERR_OVERFLOW;
+        }
         bufsize = sizeof(pwv);
-	apr_password_get("Re-type new password: ", pwv, &bufsize);
-	if (strcmp(pwin, pwv) != 0) {
-	    apr_cpystrn(record, "password verification error", (rlen - 1));
-	    return ERR_PWMISMATCH;
-	}
-	pw = pwin;
+        apr_password_get("Re-type new password: ", pwv, &bufsize);
+        if (strcmp(pwin, pwv) != 0) {
+            apr_cpystrn(record, "password verification error", (rlen - 1));
+            return ERR_PWMISMATCH;
+        }
+        pw = pwin;
         memset(pwv, '\0', sizeof(pwin));
     }
     switch (alg) {
 
     case ALG_APSHA:
-	/* XXX cpw >= 28 + strlen(sha1) chars - fixed len SHA */
- 	apr_sha1_base64(pw,strlen(pw),cpw);
-	break;
+        /* XXX cpw >= 28 + strlen(sha1) chars - fixed len SHA */
+        apr_sha1_base64(pw,strlen(pw),cpw);
+        break;
 
     case ALG_APMD5: 
         (void) srand((int) time((time_t *) NULL));
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	apr_md5_encode((const char *)pw, (const char *)salt,
-		     cpw, sizeof(cpw));
-	break;
+        apr_md5_encode((const char *)pw, (const char *)salt,
+                     cpw, sizeof(cpw));
+        break;
 
     case ALG_PLAIN:
-	/* XXX this len limitation is not in sync with any HTTPd len. */
-	apr_cpystrn(cpw,pw,sizeof(cpw));
-	break;
+        /* XXX this len limitation is not in sync with any HTTPd len. */
+        apr_cpystrn(cpw,pw,sizeof(cpw));
+        break;
 
 #if !(defined(WIN32) || defined(NETWARE))
     case ALG_CRYPT:
@@ -256,8 +256,8 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	apr_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
-	break;
+        apr_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
+        break;
 #endif
     }
     memset(pw, '\0', strlen(pw));
@@ -267,8 +267,8 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
      * hash, and delimiters.
      */
     if ((strlen(user) + 1 + strlen(cpw)) > (rlen - 1)) {
-	apr_cpystrn(record, "resultant record too long", (rlen - 1));
-	return ERR_OVERFLOW;
+        apr_cpystrn(record, "resultant record too long", (rlen - 1));
+        return ERR_OVERFLOW;
     }
     strcpy(record, user);
     strcat(record, ":");
@@ -287,22 +287,22 @@ static int usage(void)
     fprintf(stderr, " -n  Don't update file; display results on stdout.\n");
     fprintf(stderr, " -m  Force MD5 encryption of the password"
 #if defined(WIN32) || defined(TPF) || defined(NETWARE)
-	" (default)"
+        " (default)"
 #endif
-	".\n");
+        ".\n");
     fprintf(stderr, " -d  Force CRYPT encryption of the password"
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
-	    " (default)"
+            " (default)"
 #endif
-	    ".\n");
+            ".\n");
     fprintf(stderr, " -p  Do not encrypt the password (plaintext).\n");
     fprintf(stderr, " -s  Force SHA encryption of the password.\n");
     fprintf(stderr, " -b  Use the password from the command line rather "
-	    "than prompting for it.\n");
+            "than prompting for it.\n");
     fprintf(stderr,
-	    "On Windows, NetWare and TPF systems the '-m' flag is used by default.\n");
+            "On Windows, NetWare and TPF systems the '-m' flag is used by default.\n");
     fprintf(stderr,
-	    "On all other systems, the '-p' flag will probably not work.\n");
+            "On all other systems, the '-p' flag will probably not work.\n");
     return ERR_SYNTAX;
 }
 
@@ -310,7 +310,7 @@ static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
     if (tempfilename != NULL) {
-	unlink(tempfilename);
+        unlink(tempfilename);
     }
     exit(ERR_INTERRUPTED);
 }
@@ -325,7 +325,7 @@ static int accessible(char *fname, char *mode)
 
     s = fopen(fname, mode);
     if (s == NULL) {
-	return 0;
+        return 0;
     }
     fclose(s);
     return 1;
@@ -368,7 +368,7 @@ static void copy_file(FILE *target, FILE *source)
     static char line[MAX_STRING_LEN];
 
     while (fgets(line, sizeof(line), source) != NULL) {
-	fputs(line, target);
+        fputs(line, target);
     }
 }
 
@@ -448,38 +448,38 @@ int main(int argc, const char * const argv[])
      * have to precede any other arguments.
      */
     for (i = 1; i < argc; i++) {
-	arg = argv[i];
-	if (*arg != '-') {
-	    break;
-	}
-	while (*++arg != '\0') {
-	    if (*arg == 'c') {
-		newfile++;
-	    }
-	    else if (*arg == 'n') {
-		nofile++;
-		args_left--;
-	    }
-	    else if (*arg == 'm') {
-		alg = ALG_APMD5;
-	    }
-	    else if (*arg == 's') {
-		alg = ALG_APSHA;
-	    }
-	    else if (*arg == 'p') {
-		alg = ALG_PLAIN;
-	    }
-	    else if (*arg == 'd') {
-		alg = ALG_CRYPT;
-	    }
-	    else if (*arg == 'b') {
-		noninteractive++;
-		args_left++;
-	    }
-	    else {
-		return usage();
-	    }
-	}
+        arg = argv[i];
+        if (*arg != '-') {
+            break;
+        }
+        while (*++arg != '\0') {
+            if (*arg == 'c') {
+                newfile++;
+            }
+            else if (*arg == 'n') {
+                nofile++;
+                args_left--;
+            }
+            else if (*arg == 'm') {
+                alg = ALG_APMD5;
+            }
+            else if (*arg == 's') {
+                alg = ALG_APSHA;
+            }
+            else if (*arg == 'p') {
+                alg = ALG_PLAIN;
+            }
+            else if (*arg == 'd') {
+                alg = ALG_CRYPT;
+            }
+            else if (*arg == 'b') {
+                noninteractive++;
+                args_left++;
+            }
+            else {
+                return usage();
+            }
+        }
     }
 
     /*
@@ -488,100 +488,100 @@ int main(int argc, const char * const argv[])
      * specified).
      */
     if ((argc - i) != args_left) {
-	return usage();
+        return usage();
     }
     if (newfile && nofile) {
-	fprintf(stderr, "%s: -c and -n options conflict\n", argv[0]);
-	return ERR_SYNTAX;
+        fprintf(stderr, "%s: -c and -n options conflict\n", argv[0]);
+        return ERR_SYNTAX;
     }
     if (nofile) {
-	i--;
+        i--;
     }
     else {
-	if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
-	    fprintf(stderr, "%s: filename too long\n", argv[0]);
-	    return ERR_OVERFLOW;
-	}
-	strcpy(pwfilename, argv[i]);
-	if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-	    fprintf(stderr, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
-	        argv[0], sizeof(user) - 1);
-	    return ERR_OVERFLOW;
-	}
+        if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
+            fprintf(stderr, "%s: filename too long\n", argv[0]);
+            return ERR_OVERFLOW;
+        }
+        strcpy(pwfilename, argv[i]);
+        if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
+            fprintf(stderr, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
+                argv[0], sizeof(user) - 1);
+            return ERR_OVERFLOW;
+        }
     }
     strcpy(user, argv[i + 1]);
     if ((arg = strchr(user, ':')) != NULL) {
-	fprintf(stderr, "%s: username contains illegal character '%c'\n",
-		argv[0], *arg);
-	return ERR_BADUSER;
+        fprintf(stderr, "%s: username contains illegal character '%c'\n",
+                argv[0], *arg);
+        return ERR_BADUSER;
     }
     if (noninteractive) {
-	if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
-	    fprintf(stderr, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
-	        argv[0], sizeof(password) - 1);
-	    return ERR_OVERFLOW;
-	}
-	strcpy(password, argv[i + 2]);
+        if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
+            fprintf(stderr, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
+                argv[0], sizeof(password) - 1);
+            return ERR_OVERFLOW;
+        }
+        strcpy(password, argv[i + 2]);
     }
 
 #if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
-	alg = ALG_APMD5;
-	fprintf(stderr, "Automatically using MD5 format.\n");
+        alg = ALG_APMD5;
+        fprintf(stderr, "Automatically using MD5 format.\n");
     }
 #endif
 
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
-	fprintf(stderr,"Warning: storing passwords as plain text might "
-		"just not work on this platform.\n");
+        fprintf(stderr,"Warning: storing passwords as plain text might "
+                "just not work on this platform.\n");
     }
 #endif
     if (! nofile) {
-	/*
-	 * Only do the file checks if we're supposed to frob it.
-	 *
-	 * Verify that the file exists if -c was omitted.  We give a special
-	 * message if it doesn't.
-	 */
-	if ((! newfile) && (! exists(pwfilename, pool))) {
-	    fprintf(stderr,
-		    "%s: cannot modify file %s; use '-c' to create it\n",
-		    argv[0], pwfilename);
-	    perror("fopen");
-	    exit(ERR_FILEPERM);
-	}
-	/*
-	 * Verify that we can read the existing file in the case of an update
-	 * to it (rather than creation of a new one).
-	 */
-	if ((! newfile) && (! readable(pwfilename))) {
-	    fprintf(stderr, "%s: cannot open file %s for read access\n",
-		    argv[0], pwfilename);
-	    perror("fopen");
-	    exit(ERR_FILEPERM);
-	}
-	/*
-	 * Now check to see if we can preserve an existing file in case
-	 * of password verification errors on a -c operation.
-	 */
-	if (newfile && exists(pwfilename, pool) && (! readable(pwfilename))) {
-	    fprintf(stderr, "%s: cannot open file %s for read access\n"
-		    "%s: existing auth data would be lost on "
-		    "password mismatch",
-		    argv[0], pwfilename, argv[0]);
-	    perror("fopen");
-	    exit(ERR_FILEPERM);
-	}
-	/*
-	 * Now verify that the file is writable!
-	 */
-	if (! writable(pwfilename)) {
-	    fprintf(stderr, "%s: cannot open file %s for write access\n",
-		    argv[0], pwfilename);
-	    perror("fopen");
-	    exit(ERR_FILEPERM);
-	}
+        /*
+         * Only do the file checks if we're supposed to frob it.
+         *
+         * Verify that the file exists if -c was omitted.  We give a special
+         * message if it doesn't.
+         */
+        if ((! newfile) && (! exists(pwfilename, pool))) {
+            fprintf(stderr,
+                    "%s: cannot modify file %s; use '-c' to create it\n",
+                    argv[0], pwfilename);
+            perror("fopen");
+            exit(ERR_FILEPERM);
+        }
+        /*
+         * Verify that we can read the existing file in the case of an update
+         * to it (rather than creation of a new one).
+         */
+        if ((! newfile) && (! readable(pwfilename))) {
+            fprintf(stderr, "%s: cannot open file %s for read access\n",
+                    argv[0], pwfilename);
+            perror("fopen");
+            exit(ERR_FILEPERM);
+        }
+        /*
+         * Now check to see if we can preserve an existing file in case
+         * of password verification errors on a -c operation.
+         */
+        if (newfile && exists(pwfilename, pool) && (! readable(pwfilename))) {
+            fprintf(stderr, "%s: cannot open file %s for read access\n"
+                    "%s: existing auth data would be lost on "
+                    "password mismatch",
+                    argv[0], pwfilename, argv[0]);
+            perror("fopen");
+            exit(ERR_FILEPERM);
+        }
+        /*
+         * Now verify that the file is writable!
+         */
+        if (! writable(pwfilename)) {
+            fprintf(stderr, "%s: cannot open file %s for write access\n",
+                    argv[0], pwfilename);
+            perror("fopen");
+            exit(ERR_FILEPERM);
+        }
     }
 
     /*
@@ -592,15 +592,15 @@ int main(int argc, const char * const argv[])
      * the mkrecord() routine doesn't have access to argv[].
      */
     i = mkrecord(user, record, sizeof(record) - 1,
-		 noninteractive ? password : NULL,
-		 alg);
+                 noninteractive ? password : NULL,
+                 alg);
     if (i != 0) {
-	fprintf(stderr, "%s: %s\n", argv[0], record);
-	exit(i);
+        fprintf(stderr, "%s: %s\n", argv[0], record);
+        exit(i);
     }
     if (nofile) {
-	printf("%s\n", record);
-	exit(0);
+        printf("%s\n", record);
+        exit(0);
     }
 
     /*
@@ -610,57 +610,57 @@ int main(int argc, const char * const argv[])
     errno = 0;
     tempfilename = tmpnam(tname_buf);
     if ((tempfilename == NULL) || (*tempfilename == '\0')) {
-	fprintf(stderr, "%s: unable to generate temporary filename\n",
-		argv[0]);
-	if (errno == 0) {
-	    errno = ENOENT;
-	}
-	perror("tmpnam");
-	exit(ERR_FILEPERM);
+        fprintf(stderr, "%s: unable to generate temporary filename\n",
+                argv[0]);
+        if (errno == 0) {
+            errno = ENOENT;
+        }
+        perror("tmpnam");
+        exit(ERR_FILEPERM);
     }
     ftemp = fopen(tempfilename, "w+");
     if (ftemp == NULL) {
-	fprintf(stderr, "%s: unable to create temporary file '%s'\n", argv[0],
-		tempfilename);
-	perror("fopen");
-	exit(ERR_FILEPERM);
+        fprintf(stderr, "%s: unable to create temporary file '%s'\n", argv[0],
+                tempfilename);
+        perror("fopen");
+        exit(ERR_FILEPERM);
     }
     /*
      * If we're not creating a new file, copy records from the existing
      * one to the temporary file until we find the specified user.
      */
     if (! newfile) {
-	char scratch[MAX_STRING_LEN];
+        char scratch[MAX_STRING_LEN];
 
-	fpw = fopen(pwfilename, "r");
-	while (! (get_line(line, sizeof(line), fpw))) {
-	    char *colon;
+        fpw = fopen(pwfilename, "r");
+        while (! (get_line(line, sizeof(line), fpw))) {
+            char *colon;
 
-	    if ((line[0] == '#') || (line[0] == '\0')) {
-		putline(ftemp, line);
-		continue;
-	    }
-	    strcpy(scratch, line);
-	    /*
-	     * See if this is our user.
-	     */
-	    colon = strchr(scratch, ':');
-	    if (colon != NULL) {
-		*colon = '\0';
-	    }
-	    if (strcmp(user, scratch) != 0) {
-		putline(ftemp, line);
-		continue;
-	    }
-	    found++;
-	    break;
-	}
+            if ((line[0] == '#') || (line[0] == '\0')) {
+                putline(ftemp, line);
+                continue;
+            }
+            strcpy(scratch, line);
+            /*
+             * See if this is our user.
+             */
+            colon = strchr(scratch, ':');
+            if (colon != NULL) {
+                *colon = '\0';
+            }
+            if (strcmp(user, scratch) != 0) {
+                putline(ftemp, line);
+                continue;
+            }
+            found++;
+            break;
+        }
     }
     if (found) {
-	fprintf(stderr, "Updating ");
+        fprintf(stderr, "Updating ");
     }
     else {
-	fprintf(stderr, "Adding ");
+        fprintf(stderr, "Adding ");
     }
     fprintf(stderr, "password for user %s\n", user);
     /*
@@ -672,8 +672,8 @@ int main(int argc, const char * const argv[])
      * records beyond the one we're updating, so copy them.
      */
     if (! newfile) {
-	copy_file(ftemp, fpw);
-	fclose(fpw);
+        copy_file(ftemp, fpw);
+        fclose(fpw);
     }
     /*
      * The temporary file now contains the information that should be
