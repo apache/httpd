@@ -171,7 +171,6 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *type;
     apr_status_t rv;
     cache_handle_t *h;
-    //    cache_info *info;
     char *key;
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
