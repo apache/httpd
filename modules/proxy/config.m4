@@ -2,7 +2,9 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(proxy)
 
-if test "$enable_proxy" = "yes" -o "$enable_proxy" = "shared"; then
+if test "$enable_proxy" = "shared"; then
+  proxy_mods_enable=shared
+elif test "$enable_proxy" = "yes"; then
   proxy_mods_enable=yes
 else
   proxy_mods_enable=no
