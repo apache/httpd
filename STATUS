@@ -76,12 +76,9 @@ Committed Code Changes:
     * WIN32: fix CGI scripts called w/o '=' in path info  PR#1591
     * Doug's [PATCH] add -c and -C switches (take 3)
     * Paul's WIN32: patch to allow for Doug's -c option
+    * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
 
 Available Patches:
-
-    * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
-	<Pine.LNX.3.95dg3.980111035658.25014B-100000@twinlark.arctic.org>
-	Status: Dean +1
 
     * Dean's [PATCH] MONCONTROL for profiling children
 	<Pine.LNX.3.95dg3.980111040040.25014C-100000@twinlark.arctic.org>

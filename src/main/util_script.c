@@ -348,7 +348,7 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 #ifdef WIN32
 	    /* We need to make this a real Windows path name */
 	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
-	    table_set(e, "PATH_TRANSLATED", pstrdup(r->pool, buffer));
+	    table_set(e, "PATH_TRANSLATED", buffer);
 #else
 	    table_set(e, "PATH_TRANSLATED", pt);
 #endif

@@ -1217,7 +1217,7 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->read_length     = r->read_length;     /* We can only read it once */
 
     ap_snprintf(t, sizeof(t), "%d", r->status);
-    table_set(new->subprocess_env, "REDIRECT_STATUS", pstrdup(r->pool, t));
+    table_set(new->subprocess_env, "REDIRECT_STATUS", t);
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need

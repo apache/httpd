@@ -908,15 +908,13 @@ static int hook_uri2file(request_rec *r)
          var = pstrcat(r->pool, "REDIRECT_", ENVVAR_SCRIPT_URL, NULL);
          var = table_get(r->subprocess_env, var);
          if (var == NULL) 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL,
-                       pstrdup(r->pool, r->uri));
+             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, r->uri);
          else 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL,
-                       pstrdup(r->pool, var));
+             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
     } 
     else {
          var = table_get(r->main->subprocess_env, ENVVAR_SCRIPT_URL);
-         table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, pstrdup(r->pool, var));
+         table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
     }
 
     /*
@@ -945,7 +943,7 @@ static int hook_uri2file(request_rec *r)
 #else
     var = pstrcat(r->pool, "http://", thisserver, thisport, thisurl, NULL);
 #endif
-    table_set(r->subprocess_env, ENVVAR_SCRIPT_URI, pstrdup(r->pool, var));
+    table_set(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
 
     /* if filename was not initially set,
@@ -3484,8 +3482,7 @@ static void add_env_variable(request_rec *r, char *s)
         var[n] = '\0';
         strncpy(val, cp+1, sizeof(val)-1);
         EOS_PARANOIA(val);
-        table_set(r->subprocess_env, pstrdup(r->pool, var), 
-                  pstrdup(r->pool, val));
+        table_set(r->subprocess_env, var, val);
         rewritelog(r, 5, "setting env variable '%s' to '%s'", var, val);
     }
 }

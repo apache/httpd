@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) pstrdup() is implicit in calls to table_* functions, so there's
+     no need to do it before calling.  Clean up a few cases.
+     [Marc Slemko, Dean Gaudet]
+
   *) new -C and -c command line arguments
      usage:
      -C "directive" : process directive before reading config files
