@@ -3274,6 +3274,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
+    apr_status_t rv;
 
     /* XXX this seems too specific, this should probably become
      * some general-case test
@@ -3300,10 +3301,12 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         while (*path == '/') {
             ++path;
         }
-        if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
-                               APR_FILEPATH_TRUENAME
-                             | APR_FILEPATH_SECUREROOT, r->pool)
+        if ((rv = apr_filepath_merge(&r->filename, conf->ap_document_root, path,
+                                     APR_FILEPATH_TRUENAME
+                                   | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                         "URI in request %s maps to invalid filename", r->the_request);
             return HTTP_FORBIDDEN;
         }
         r->canonical_filename = r->filename;
@@ -3321,10 +3324,12 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         while (*path == '/') {
             ++path;
         }
-        if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
-                               APR_FILEPATH_TRUENAME
-                             | APR_FILEPATH_SECUREROOT, r->pool)
+        if ((rv = apr_filepath_merge(&r->filename, conf->ap_document_root, path,
+                                     APR_FILEPATH_TRUENAME
+                                   | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                         "URI in request %s maps to invalid filename", r->the_request);
             return HTTP_FORBIDDEN;
         }
         r->canonical_filename = r->filename;

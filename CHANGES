@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Log an error when requests for URIs which fail to map to a valid 
+     filesystem name are rejected with 403.  [Jeff Trawick]
+
   *) Fixed mod_usertrack to not get false positive matches on the
      user-tracking cookie's name.  PR 16661.
      [Manni Wood <manniwood@planet-save.com>]
