@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_dir.c,v 1.12 1996/10/08 07:29:52 brian Exp $ */
+/* $Id: mod_dir.c,v 1.13 1996/10/08 22:34:29 brian Exp $ */
 
 /*
  * http_dir.c: Handles the on-the-fly html index generation
@@ -691,7 +691,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     struct DIR_TYPE *dstruct;
     int num_ent=0,x;
     struct ent *head,*p;
-    struct ent **ar;
+    struct ent **ar = NULL;
     char *tmp;
     int dir_opts = find_opts(dir_conf, r);
 
