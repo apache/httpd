@@ -500,7 +500,7 @@ char *escape_shell_cmd(pool *p, char *s) {
         }
 #endif
 
-        if(ind("&;`'\"|*?~<>^()[]{}$\\",cmd[x]) != -1){
+        if(ind("&;`'\"|*?~<>^()[]{}$\\\n",cmd[x]) != -1){
             for(y=l+1;y>x;y--)
                 cmd[y] = cmd[y-1];
             l++; /* length has been increased */
