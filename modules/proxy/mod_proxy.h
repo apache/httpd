@@ -198,6 +198,7 @@ typedef struct {
     int          is_ssl;
     apr_pool_t   *pool;     /* Subpool used for creating socket */
     apr_socket_t *sock;     /* Connection socket */
+    apr_sockaddr_t *addr;   /* Preparsed remote address info */
     apr_uint32_t flags;     /* Conection flags */
     int          close;     /* Close 'this' connection */
     int          close_on_recycle; /* Close the connection when returning to pool */
