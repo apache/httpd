@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="KOI8-R"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Использование обработчиков в Apache - HTTP сервер Apache</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="apache">HTTP сервер Apache версии 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="./">Версия 2.0</a></div><div id="page-content"><div id="preamble"><h1>Использование обработчиков в Apache</h1>
+<div class="toplang">
+<p><span>Доступные языки: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/handler.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div>
+
+    <p>Этот документ описывает использование обработчиков (handlers) в Apache</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">Что такое обработчик</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">Примеры</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programmer">Замечание для программистов</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="definition" id="definition">Что такое обработчик</a></h2>
+    
+    <table class="related"><tr><th>Смотрите также модули</th><th>Смотрите также директивы</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+
+
+    <p>Обработчик является внутренней структурой
+    Apache, которая задает поведение сервера при обработке
+    запрашиваемого файла. Как правило, каждому файлу соответствует
+    свой внутренний обработчик, который назначается сервером,
+    исходя из типа файла. Обычно файлы просто возвращаются
+    пользователю, но некоторые типы файлов предварительно
+    обрабатываются (handled) сервером.</p>
+
+    <p>В Apache 1.1 добавлена возможность использовать обработчики
+    явно. Причем обработка файлов может основываться
+    теперь не только на их типе, но и на расширении файлов или
+    их местонахождении. Это представляется наиболее удачным
+    решением, во-первых потому, что это решение элегантно, а
+    во-вторых, это позволяет ассоциировать с файлом как
+    тип, <strong>так и</strong> обработчик. (См. также
+    <a href="mod/mod_mime.html#multipleext">"Файлы с несколькими
+    расширениями"</a>)</p>
+
+    <p>Обработчики могут представлять из себя как
+    вкомпилированные в сервер (или подключаемые с помощью
+    модулей) функции, или они могут быть добавлены с помощью
+    директивы <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code>.
+    В стандартном дистрибутиве сервера имеются следующие встроенные
+    обработчики:</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: Посылает файл, используя
+      <code>default_handler()</code>, который является обработчиком
+      по-умолчанию для статических файлов. (ядро)</li>
+
+      <li><strong>send-as-is</strong>: Посылает файл, содержащий в
+      себе HTTP заголовки, как есть. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
+
+      <li><strong>cgi-script</strong>: Обрабатывает файл как CGI-скрипт.
+      (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
+
+      <li><strong>imap-file</strong>: Обрабатывает файл как карту изображения
+      (imagemap). (<code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code>)</li>
+
+      <li><strong>server-info</strong>: Возвращает конфигурационную
+      информацию сервера. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
+
+      <li><strong>server-status</strong>: Возвращает отчет о состоянии
+      сервера. (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
+
+      <li><strong>type-map</strong>: Обрабатывает файл как карту типов
+      (type map). (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Примеры</a></h2>
+    
+
+    <h3><a name="example1" id="example1">Обработка статического содержимого документа CGI-скриптом</a></h3>
+      
+
+      <p>При использовании следующих директив, каждый запрос файла
+      с расширением <code>html</code> будет запускать на выполнение
+      CGI-скрипт <code>footer.pl</code> для предварительной обработки
+      запрашиваемого файла.</p>
+
+      <div class="example"><p><code>
+        Action add-footer /cgi-bin/footer.pl<br />
+        AddHandler add-footer .html
+      </code></p></div>
+
+      <p>В этом случает CGI-скрипт ответственен за то, чтобы
+      выслать пользователю запрошенный документ (на который указывает
+      переменная окружения <code>PATH_TRANSLATED</code>), сделав
+      в нем предварительно все необходимые изменения.</p>
+
+    
+    <h3><a name="example2" id="example2">Файлы с HTTP заголовками</a></h3>
+      
+
+      <p>Следующие несколько директив заставят выполняться обработчик
+      <code>send-as-is</code>, который используется для файлов, содержащих
+      свои собственные HTTP-заголовки. Все файлы в каталоге
+      <code>/web/htdocs/asis/</code> будут обрабатываться обработчиком
+      <code>send-as-is</code>, независимо от их расширения.</p>
+
+      <div class="example"><p><code>
+        &lt;Directory /web/htdocs/asis&gt;<br />
+        SetHandler send-as-is<br />
+        &lt;/Directory&gt;
+      </code></p></div>
+
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="programmer" id="programmer">Замечание для программистов</a></h2>
+    
+
+    <p>Для того чтобы можно было использовать обработчики, в
+    <a href="developer/API.html">Apache API</a> были внесены
+    некоторые дополнения. В частности в структуру <code>request_rec</code>
+    было добавлено новое поле:</p>
+
+    <div class="example"><p><code>
+      char *handler
+    </code></p></div>
+
+    <p>Если вы хотите в своем модуле использовать обработчик,
+    то все, что вам надо сделать, это записать в <nobr><code>r-&gt;handler</code></nobr>
+    имя соответствующего обработчика, причем сделать это необходимо
+    перед тем, как запрос доходит до стадии <code>invoke_handler</code>.
+    Обработчики реализуются точно так же, как и раньше,
+    за исключением лишь того, что теперь необходимо указывать
+    имя обработчика, а не тип содержимого (content type).
+    Хотя это и не является обязательным, но существуют следующие
+    правила именования обработчиков - необходимо использовать
+    слова, разделенные дефисом и не содержащие косых черт - это
+    позволит не пересекаться с пространством имен медиа-типов (media type).</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Доступные языки: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/handler.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div>
+</body></html>
