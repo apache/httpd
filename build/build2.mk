@@ -116,11 +116,7 @@ $(apr_private.h_in): $(apr_configure) lib/apr/acconfig.h
 
 $(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/apr_common.m4 lib/apr/hints.m4
 	@echo rebuilding $@
-	(cd lib/apr && autoconf)
-
-$(mm_configure): lib/apr/shmem/unix/mm/configure.in lib/apr/shmem/unix/mm/aclocal.m4
-	@echo rebuilding $@
-	(cd lib/apr/shmem/unix/mm && autoconf)
+	(cd lib/apr && ./buildconf)
 
 $(pcre_configure): lib/pcre/configure.in
 	@echo rebuilding $@
