@@ -146,7 +146,7 @@ SSLStateMachine *SSLStateMachine_new(const char *szCertificateFile,
     if (n <= 0) {
         SSLStateMachine_print_error(pMachine,
                                     "Error opening certificate file:");
-        SSLStateMachine_destroy(pMachine);
+        SSLStateMachine_free(pMachine);
         return NULL;
     }
 
@@ -155,7 +155,7 @@ SSLStateMachine *SSLStateMachine_new(const char *szCertificateFile,
     if (n <= 0) {
         SSLStateMachine_print_error(pMachine,
                                     "Error opening private key file:");
-        SSLStateMachine_destroy(pMachine);
+        SSLStateMachine_free(pMachine);
         return NULL;
     }
 
@@ -173,7 +173,7 @@ SSLStateMachine *SSLStateMachine_new(const char *szCertificateFile,
     return pMachine;
     }
 
-void SSLStateMachine_destroy(SSLStateMachine *pMachine)
+void SSLStateMachine_free(SSLStateMachine *pMachine)
 {
     if (pMachine->pCtx) {
         SSL_CTX_free(pMachine->pCtx);

@@ -119,7 +119,7 @@ static const char *tls_cert_file(cmd_parms *cmd, void *dummy, const char *arg)
 
 static apr_status_t tls_filter_cleanup(void *data)
 {
-    SSLStateMachine_destroy((SSLStateMachine *)data);
+    SSLStateMachine_free((SSLStateMachine *)data);
     return APR_SUCCESS;
 }
 
