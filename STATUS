@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/22 16:22:05 $]
+Last modified at [$Date: 2003/01/23 00:58:09 $]
 
 Release:
 
@@ -57,6 +57,8 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+
+    * mod_file_cache segfault bugfix. PR 16313.
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       +1: nd
