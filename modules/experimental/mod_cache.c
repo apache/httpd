@@ -802,7 +802,7 @@ static const char *add_ignore_header(cmd_parms *parms, void *dummy,
              * (When 'None' is passed, IGNORE_HEADERS_SET && nelts == 0.)
              */
             new = (char **)apr_array_push(conf->ignore_headers);
-            (*new) = header;
+            (*new) = (char *)header;
         }
     }
     conf->ignore_headers_set = CACHE_IGNORE_HEADERS_SET;
