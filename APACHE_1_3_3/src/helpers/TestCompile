@@ -1,0 +1,158 @@
+#!/bin/sh
+exstat=1
+trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exstat' 0 1 2 3 15
+#
+# Yet another Apache Configure helper script.
+# This script tests certain aspects of the compilation
+# process. Right now, it can perform 5 tests:
+#
+# ./helpers/TestCompile lib <libname>
+#    Which checks to see if <libname> exists on this system
+#
+# ./helpers/TestCompile lib <libname> <func>
+#    Which checks to see if <libname> exists on this system and
+#    contains func.
+#
+# ./helpers/TestCompile func <function>
+#    Which checks to see if <function> exists
+#
+# ./helpers/TestCompile header <header>
+#    Which checks to see if header file <header> exists
+#
+# ./helpers/TestCompile sanity
+#    Which does a simple sanity check/test compile
+#
+# It does these by creating a small mini-makefile, based on
+# ../Makefile.config and trying to compile a small dummy
+# program. If the compilation succeeds, we assume the test
+# was successful as well.
+#
+# This must be run as './helpers/TestCompile' from
+# the ./src directory (same directory that Configure is
+# located) if you want to test it out. Configure must
+# also call it as './helpers/TestCompile'
+#
+# Blame Jim; he wrote it (along with a cast of dozens).
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
+
+cd ./helpers
+
+#
+# Handle "verbose" and "silent" flags
+#
+case "$1" in
+    "-v")
+        VERBOSE="yes"
+	shift
+	;;
+    "-s")
+        VERBOSE="no"
+	shift
+	;;
+esac
+
+#
+# Make sure have the right arguments
+#
+
+case "$1" in
+    "lib")
+	if [ "x$2" = "x" ]; then
+	    exit
+	fi
+	TLIB="-l$2"
+	if [ "$VERBOSE" = "yes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
+	if [ "x$3" = "x" ]; then
+	    TARGET='dummy'
+	else
+	    TARGET='testfunc'
+	    echo "int main(void) { $3(); return(0); }" > testfunc.c
+	fi
+	;;
+    "sanity")
+	TLIB=""
+	if [ "$VERBOSE" = "no" ]; then
+	    ERRDIR='2>/dev/null'
+	else
+	    ERRDIR=""
+	fi
+	TARGET='dummy'
+	;;
+    "func")
+	if [ "x$2" = "x" ]; then
+	    exit
+	fi
+	TLIB=""
+	if [ "$VERBOSE" = "yes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
+	TARGET='testfunc'
+	cat <<EOF >testfunc.c
+int main(void) {
+    $2();
+    return(0);
+}
+EOF
+	;;
+    "header")
+	if [ "x$2" = "x" ]; then
+	    exit
+	fi
+	TLIB=""
+	if [ "$VERBOSE" = "yes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
+	TARGET='testfunc'
+	cat <<EOF >testfunc.c
+#include <$2>
+int main(void) {
+    return(0);
+}
+EOF
+	;;
+    *)
+    	exit
+	;;
+esac
+
+#
+# Get makefile settings and build a basic Makefile
+#
+rm -f dummy
+cat ../Makefile.config > Makefile
+cat <<EOF >> Makefile
+CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
+LIBS=\$(EXTRA_LIBS) \$(LIBS1)
+INCLUDES=\$(INCLUDES1) \$(EXTRA_INCLUDES)
+LDFLAGS=\$(LDFLAGS1) \$(EXTRA_LDFLAGS)
+
+dummy:
+	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/dummy.c -o helpers/dummy $TLIB \$(LIBS)
+
+testfunc:
+	cd ..; \$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/testfunc.c -o helpers/testfunc $TLIB \$(LIBS)
+EOF
+
+# Now run that Makefile
+eval "make $TARGET >/dev/null $ERRDIR"
+
+# And see if dummy exists and is executable, if so, then we
+# assume the condition we are testing for is good
+#
+# Use our PrintPath helper script using the "-p" option to
+# have PrintPath just search this directory.
+
+if ./PrintPath -s -p`pwd` $TARGET ; then
+    exstat=0
+fi

@@ -1,0 +1,20 @@
+OS Specific notes for building/compiling Apache
+
+-------------
+Introduction:
+-------------
+Apache has been ported to a wide variety of platforms, from multiple
+UNIX variants to OS/2 to Windows95/NT. In building and/or compiling
+Apache on some platforms, there are some hints and notes which may
+help you if you run into problems.
+
+-----
+A/UX:
+-----
+  Don't even try with cc. Instead, use gcc-2.7.2 and the libUTIL.a
+  function library, both of which are available on jagubox.gsfc.nasa.gov.
+  libUTIL.a includes many basic functions that Apache (and other software)
+  requires as well as fixed versions of functions in libc.a. Contact
+  Jim Jagielski (jim@apache.org) if you need a precompiled build for
+  A/UX 3.1.x.
+
