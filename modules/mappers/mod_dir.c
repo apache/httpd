@@ -225,9 +225,6 @@ static int handle_dir(request_rec *r)
     if (error_notfound)
         return error_notfound;
 
-    if (r->method_number != M_GET)
-        return DECLINED;
-
     /* nothing for us to do, pass on through */
 
     return DECLINED;
