@@ -119,12 +119,12 @@ static const command_rec authn_dbm_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authn_dbm_module;
 
-static apr_status_t fetch_dbm(const char *dbmtype, const char *dbmfile,
-                              const char *user, apr_datum_t *val,
-                              apr_pool_t *pool)
+static apr_status_t fetch_dbm_value(const char *dbmtype, const char *dbmfile,
+                                    const char *user, char **value,
+                                    apr_pool_t *pool)
 {
     apr_dbm_t *f;
-    apr_datum_t key;
+    apr_datum_t key, val;
     apr_status_t rv;
 
     rv = apr_dbm_open_ex(&f, dbmtype, dbmfile, APR_DBM_READONLY, 
@@ -141,7 +141,11 @@ static apr_status_t fetch_dbm(const char *dbmtype, const char *dbmfile,
     key.dsize = strlen(key.dptr) + 1;
 #endif
 
-    rv = apr_dbm_fetch(f, key, val);
+    *value = NULL;
+
+    if (apr_dbm_fetch(f, key, &val) == APR_SUCCESS && val.dptr) {
+        *value = apr_pstrmemdup(pool, val.dptr, val.dsize);
+    }
 
     apr_dbm_close(f);
     
@@ -153,22 +157,18 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
 {
     authn_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authn_dbm_module);
-    apr_datum_t dbm_pw;
     apr_status_t rv;
-    char *dbm_password = NULL;
+    char *dbm_password;
     char *colon_pw;
 
-    rv = fetch_dbm(conf->dbmtype, conf->pwfile, user, &dbm_pw, r->pool);
+    rv = fetch_dbm_value(conf->dbmtype, conf->pwfile, user, &dbm_password,
+                         r->pool);
 
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "could not open dbm (type %s) auth file: %s",
                       conf->dbmtype, conf->pwfile);
         return AUTH_GENERAL_ERROR;
-    }
-
-    if (dbm_pw.dptr) {
-        dbm_password = apr_pstrmemdup(r->pool, dbm_pw.dptr, dbm_pw.dsize);
     }
 
     if (!dbm_password) {
@@ -194,24 +194,19 @@ static authn_status get_dbm_realm_hash(request_rec *r, const char *user,
 {
     authn_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authn_dbm_module);
-    apr_datum_t dbm_hd;
     apr_status_t rv;
-    char *dbm_hash = NULL;
+    char *dbm_hash;
     char *colon_hash;
 
-    rv = fetch_dbm(conf->dbmtype, conf->pwfile,
-                   apr_pstrcat(r->pool, user, ":", realm, NULL),
-                   &dbm_hd, r->pool);
+    rv = fetch_dbm_value(conf->dbmtype, conf->pwfile,
+                         apr_pstrcat(r->pool, user, ":", realm, NULL),
+                         &dbm_hash, r->pool);
 
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "Could not open dbm (type %s) hash file: %s",
                       conf->dbmtype, conf->pwfile);
         return AUTH_GENERAL_ERROR;
-    }
-
-    if (dbm_hd.dptr) {
-        dbm_hash = apr_pstrmemdup(r->pool, dbm_hd.dptr, dbm_hd.dsize);
     }
 
     if (!dbm_hash) {
