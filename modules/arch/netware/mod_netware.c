@@ -171,6 +171,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
     /* Figure out what the extension is so that we can matche it. */
     ext = strrchr(apr_filename_of_pathname(cmd_only), '.');
+
+    /* If there isn't an extension then give it an empty string */
+    if (!ext) {
+        ext = "";
+    }
     
     /* eliminate the '.' if there is one */
     if (*ext == '.')
