@@ -79,6 +79,10 @@ Changes with Apache 1.3b6
 
 Changes with Apache 1.3b5
 
+  *) Source file dependencies in Makefile.tmpl files throughout the
+     source tree were updated to accurately reflect reality.
+     [Dean Gaudet]
+
   *) Preserve the content encoding given by the AddEncoding directive
      when the client doesn't otherwise specify an encoding.
      [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>]
