@@ -895,7 +895,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
     if (status != APR_SUCCESS)
         return status;
 
-    status = apr_getfileinfo(&finfo, APR_FINFO_NORM, file);
+    status = apr_getfileinfo(&finfo, APR_FINFO_TYPE, file);
     if (status != APR_SUCCESS)
         return status;
 
@@ -1679,7 +1679,7 @@ AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;
 
-    if (apr_stat(&finfo, path, APR_FINFO_NORM, p) != APR_SUCCESS)
+    if (apr_stat(&finfo, path, APR_FINFO_TYPE, p) != APR_SUCCESS)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
@@ -1689,7 +1689,7 @@ AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;
 
-    if (apr_lstat(&finfo, path, APR_FINFO_NORM, p) != APR_SUCCESS)
+    if (apr_lstat(&finfo, path, APR_FINFO_TYPE, p) != APR_SUCCESS)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);

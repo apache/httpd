@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) Modify the apr_stat/lstat/getfileinfo calls within apache to use
+     the most optimal APR_FINFO_wanted bits.  This spares Win32 from
+     performing very expensive owner, group and permission lookups
+     and allows the server to function until these apr_finfo_t fields
+     are implemented under Win32.  [William Rowe]
+
   *) Support for typedsafe optional functions - that is functions exported by
      optional modules, which, therefore, may or may not be present, depending
      on configuration. See the experimental modules mod_optional_fn_{ex,im}port

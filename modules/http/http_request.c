@@ -180,7 +180,7 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
     else
         lastp = NULL;
 
-    res = apr_lstat(&lfi, d, APR_FINFO_NORM, p);
+    res = apr_lstat(&lfi, d, APR_FINFO_TYPE | APR_FINFO_OWNER, p);
 
     if (lastp)
         *lastp = '/';
@@ -190,7 +190,8 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
      * the like may cons up a way to run the transaction anyway)...
      */
 
-    if ((res != APR_SUCCESS) || lfi.filetype != APR_LNK)
+    if ((res != APR_SUCCESS && res != APR_INCOMPLETE)
+           || (lfi.filetype != APR_LNK))
         return OK;
 
     /* OK, it's a symlink.  May still be OK with OPT_SYM_OWNER */
@@ -198,11 +199,16 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
     if (!(opts & OPT_SYM_OWNER))
         return HTTP_FORBIDDEN;
 
-    if (apr_stat(&fi, d, APR_FINFO_NORM, p) != APR_SUCCESS)
+    /* OPT_SYM_OWNER only works if we can get the owner from the file */
+
+    if (res != APR_SUCCESS)
         return HTTP_FORBIDDEN;
 
-    return ((fi.valid & lfi.valid & APR_FINFO_OWNER)
-            && (fi.user == lfi.user)) ? OK : HTTP_FORBIDDEN;
+    if (apr_stat(&fi, d, APR_FINFO_OWNER, p) != APR_SUCCESS)
+        return HTTP_FORBIDDEN;
+
+    /* TODO: replace with an apr_compare_users() fn */
+    return (fi.user == lfi.user) ? OK : HTTP_FORBIDDEN;
 
 #endif
 }
@@ -281,7 +287,7 @@ static int get_path_info(request_rec *r)
         if (cp != end)
             *cp = '/';
 
-        if (rv == APR_SUCCESS) {    
+        if (rv == APR_SUCCESS || rv == APR_INCOMPLETE) {
             /*
              * Aha!  Found something.  If it was a directory, we will search
              * contents of that directory for a multi_match, so the PATH_INFO
@@ -297,8 +303,7 @@ static int get_path_info(request_rec *r)
             *cp = '\0';
             return OK;
         }
-
-        if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
+        else if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
@@ -967,13 +972,15 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     if (ap_strchr_c(new_file, '/') == NULL) {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+        apr_status_t rv;
 
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-        if (apr_stat(&rnew->finfo, rnew->filename,
-                     APR_FINFO_NORM, rnew->pool) != APR_SUCCESS) {
+        if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                           APR_FINFO_NORM, rnew->pool)) != APR_SUCCESS)
+                                                 && (rv != APR_INCOMPLETE)) {
             rnew->finfo.protection = 0;
         }
 

@@ -1468,7 +1468,7 @@ static float find_content_length(negotiation_state *neg, var_rec *variant)
                                            variant->file_name);
 
         if (apr_stat(&statb, fullname,
-                     APR_FINFO_NORM, neg->pool) == APR_SUCCESS) {
+                     APR_FINFO_SIZE, neg->pool) == APR_SUCCESS) {
             /* Note, precision may be lost */
             variant->bytes = (float) statb.size;
         }

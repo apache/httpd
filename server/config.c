@@ -1271,17 +1271,17 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     if ((ap_server_pre_read_config->nelts
 	 || ap_server_post_read_config->nelts)
 	&& !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
-	if (apr_stat(&finfo, fname, APR_FINFO_NORM, p) != APR_SUCCESS)
+	if (apr_lstat(&finfo, fname, APR_FINFO_TYPE, p) != APR_SUCCESS)
 	    return;
     }
 
     /* 
      * here we want to check if the candidate file is really a
      * directory, and most definitely NOT a symlink (to prevent
-     * horrible loops).  If so, let's recurse and toss it back into
-     * the function.
+     * horrible loops).  So we do so above using apr_lstat.
+     * If so, let's recurse and toss it back into the function.
      */
-    if (ap_is_rdirectory(ptemp, fname)) {
+    if (finfo.filetype == APR_DIR) {
         apr_dir_t *dirp;
         apr_finfo_t dirent;
 	int current;
