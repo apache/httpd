@@ -177,6 +177,9 @@ void add_common_vars(request_rec *r)
     table_set (e, "SERVER_ADMIN", s->server_admin); /* Apache */
     table_set (e, "SCRIPT_FILENAME", r->filename); /* Apache */
     
+    sprintf(port, "%d", c->remote_addr.sin_port);
+    table_set (e, "REMOTE_PORT", port);            /* Apache */
+
     if (c->user) table_set(e, "REMOTE_USER", c->user);
     if (c->auth_type) table_set(e, "AUTH_TYPE", c->auth_type);
     rem_logname = get_remote_logname(r);
