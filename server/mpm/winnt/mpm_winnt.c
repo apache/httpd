@@ -113,7 +113,7 @@ event *exit_event;
 mutex *start_mutex;
 int my_pid;
 int parent_pid;
-int listenmaxfd;
+int listenmaxfd = -1;
 
 /* a clean exit from a child with proper cleanup 
    static void clean_child_exit(int code) __attribute__ ((noreturn)); 
@@ -362,11 +362,20 @@ static int setup_listeners(pool *pconf, server_rec *s)
     ap_listen_rec *lr;
     int num_listeners = 0;
 
+    /* Setup the listeners */
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+
     if (ap_listen_open(pconf, s->port)) {
        return 0;
     }
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
+        if (lr->fd >= 0) {
+            FD_SET(lr->fd, &listenfds);
+            if (lr->fd > listenmaxfd)
+                listenmaxfd = lr->fd;
+        }
     }
 
     head_listener = ap_listeners;
@@ -671,7 +680,7 @@ static void child_sub_main(int child_num)
     int csd = -1;
     ap_iol *iol;
     int srv = 0;
-
+    int conn_id = 1;
     /* Note: current_conn used to be a defined at file scope as follows... Since the signal code is
        not being used in WIN32, make the variable local */
     //    static APACHE_TLS conn_rec *volatile current_conn;
@@ -776,7 +785,8 @@ static void child_sub_main(int child_num)
         
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
                                          (struct sockaddr_in *) &sa_client,
-                                         (struct sockaddr_in *) &sa_server);
+                                         (struct sockaddr_in *) &sa_server,
+                                         conn_id);
         
         ap_process_connection(current_conn);
     }        
@@ -896,11 +906,7 @@ void worker_main(void)
 
     pchild = ap_make_sub_pool(pconf);
 
-//    ap_standalone = 1;
-//    sd = -1; ?? this variable is global in 1.3.x!
     nthreads = ap_threads_per_child;
-
-    my_pid = getpid();
 
 //    ap_restart_time = time(NULL);
 
@@ -1077,7 +1083,6 @@ void worker_main(void)
     destroy_semaphore(allowed_globals.jobsemaphore);
     ap_destroy_mutex(allowed_globals.jobmutex);
 
-//    ap_child_exit_modules(pconf, server_conf);
     ap_destroy_pool(pchild);
 
 //    cleanup_scoreboard();
@@ -1139,7 +1144,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
      int rv;
      char buf[1024];
      char *pCommand;
-     char *pEnvBlock;
 
      STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
      PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
@@ -1179,7 +1183,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
          return -1;
      }
 
-//     pEnvBlock = ap_psprintf(p, "AP_PARENT_PID=%d\0",parent_pid);
      SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%d",parent_pid));
 
      /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
@@ -1194,8 +1197,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
 
      if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                         TRUE,               /* Inherit handles */
-                        CREATE_SUSPENDED,   /* Creation flags */ // checkout DETACHED_PROCESS here and in the CGI
-                        NULL,          /* Environment block */
+                        CREATE_SUSPENDED,   /* Creation flags */
+                        NULL,               /* Environment block */
                         NULL,
                         &si, &pi)) {
          ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
@@ -1220,7 +1223,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
 
          /* Create the exit_event, apCHILD_PID */
          kill_event = CreateEvent(NULL, TRUE, FALSE, 
-                                  ap_psprintf(pconf,"ap%d", pi.dwProcessId));
+                                  ap_psprintf(pconf,"apC%d", pi.dwProcessId)); // exit_event_name...
          if (!kill_event) {
              ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
                           "Parent: Could not create exit event for child process");
@@ -1450,7 +1453,7 @@ die_now:
 static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp) 
 {
     char *pid;
-    one_process = !!getenv("ONE_PROCESS");
+    one_process=1;//!!getenv("ONE_PROCESS");
 
     /* Track parent/child pids... */
     pid = getenv("AP_PARENT_PID");
@@ -1474,7 +1477,6 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
-    AMCSocketInitialize();
 }
 
 /*
@@ -1499,26 +1501,36 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
 
     if ((parent_pid != my_pid) || one_process) {
         /* Child process */
-        exit_event_name = ap_psprintf(pconf, "ap%d", my_pid);
-        exit_event = open_event(exit_event_name);
+        AMCSocketInitialize();
+        exit_event_name = ap_psprintf(pconf, "apC%d", my_pid);
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
-        start_mutex = ap_open_mutex(signal_name_prefix);
+        if (one_process) {
+            start_mutex = ap_create_mutex(signal_name_prefix);        
+            exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
+        }
+        else {
+            start_mutex = ap_open_mutex(signal_name_prefix);
+            exit_event = open_event(exit_event_name);
+        }
         ap_assert(start_mutex);
+        ap_assert(exit_event);
 
         worker_main();
 
         destroy_event(exit_event);
+        AMCSocketCleanup();
     }
     else {
         /* Parent process */
         static int restart = 0;
         PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
+
         ap_clear_pool(plog);
         ap_open_logs(server_conf, plog);
 
         if (!restart) {
             /* service_set_status(SERVICE_START_PENDING);*/
-
+            AMCSocketInitialize();
             setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
@@ -1550,8 +1562,7 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
              * child process from entering the accept loop at once.
              */
             start_mutex = ap_create_mutex(signal_name_prefix);        
-//            start_mutex = ap_create_mutex(ap_psprintf(pconf,"ap%d", parent_pid));
-            /* TOTD: Add some code to detect failure */
+            /* TODO: Add some code to detect failure */
         }
 
         /* Go to work... */
@@ -1570,7 +1581,7 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
-
+            AMCSocketCleanup();
             /* service_set_status(SERVICE_STOPPED); */
         }
         return !restart;
@@ -1584,23 +1595,7 @@ static void winnt_hooks(void)
     one_process = 0;
     /* Configuration hooks implemented by http_config.c ... */
     ap_hook_pre_config(winnt_pre_config, NULL, NULL, HOOK_MIDDLE);
-   /*
-    ap_hook_post_config()...);
-    ap_hook_open_logs(xxx,NULL,NULL,HOOK_MIDDLE);
-   */
-
-/*
-    ap_hook_translate_name(xxx,NULL,NULL,HOOK_REALLY_LAST);
-    ap_hook_process_connection(xxx,NULL,NULL,
-			       HOOK_REALLY_LAST);
-    ap_hook_http_method(xxx,NULL,NULL,HOOK_REALLY_LAST);
-    ap_hook_default_port(xxx,NULL,NULL,HOOK_REALLY_LAST);
-
-    // FIXME: I suspect we can eliminate the need for these - Ben
-    ap_hook_type_checker(xxx,NULL,NULL,HOOK_REALLY_LAST);
-*/
 }
-
 
 /* 
  * Command processors 
@@ -1752,15 +1747,12 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_winnt_module = {
     STANDARD20_MODULE_STUFF,
-    NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     winnt_cmds,		        /* command table */
     NULL,			/* handlers */
-    NULL,			/* check auth */
-    NULL,			/* check access */
     winnt_hooks 		/* register_hooks */
 };
 
