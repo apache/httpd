@@ -115,8 +115,8 @@ CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size);
  * @remark If the value is NULL the hash entry is deleted.
  * @return The value of the deleted cache entry (so the caller can clean it up).
  */
-CACHE_DECLARE(const void *) cache_hash_set(cache_hash_t *ht, const void *key,
-                                           apr_ssize_t klen, const void *val);
+CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht, const void *key,
+                                     apr_ssize_t klen, const void *val);
 
 /**
  * Look up the value associated with a key in a hash table.
