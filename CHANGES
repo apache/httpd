@@ -1,5 +1,9 @@
 Changes with Apache 2.0.43
 
+  *) SuExec needs to use the same default directory as the rest of
+     server, namely /usr/local/apache2.  
+     [SangBeom han <sbhan@os.korea.ac.kr>]
+
   *) Get mod_auth_ldap to retry connections on LDAP_SERVER_DOWN.
      [Thomas Bennett <thomas.bennett@eds.com>, Graham Leggett]
 
