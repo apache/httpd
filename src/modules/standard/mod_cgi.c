@@ -337,7 +337,8 @@ static int cgi_child (void *child_stuff)
      */
     
     ap_snprintf(err_string, sizeof(err_string),
-	    "exec of %s failed, errno is %d\n", r->filename, errno);
+	    "exec of %s failed, reason: %s (errno = %d)\n", 
+            r->filename, strerror(errno), errno);
     write(2, err_string, strlen(err_string));
     exit(0);
     /* NOT REACHED */
