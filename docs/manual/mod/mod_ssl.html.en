@@ -90,6 +90,7 @@ be made available under different names, too. Look in the <a href="../ssl/ssl_co
 compatibility variables.</p>
 
 <table class="bordered">
+
 <tr>
  <th>Variable Name:</th>
  <th>Value Type:</th>
@@ -128,8 +129,6 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
-<tr><td colspan="3">[ where <em>x509</em> is a component of a X.509 DN:
-  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</td></tr>
 </table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -379,6 +378,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
 <table class="bordered">
+
 <tr><th>Tag</th> <th>Description</th></tr>
 <tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
@@ -455,6 +455,7 @@ EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </code></p></div>
 <table class="bordered">
+
 <tr><th>Cipher-Tag</th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
