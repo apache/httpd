@@ -9,6 +9,12 @@ htdocs/manual/windows.html with this distribution.
 
 Alexei Kosut <akosut@apache.org> - July 21, 1997
 
+WARNING: Apache on NT has not yet been optimized for performance.
+Apache still performs best, and is most reliable on Unix platforms.
+Over time we will improve NT performance. Folks doing comparative reviews
+of webserver performance are asked to compare against Apache on a Unix
+platform such as Solaris, FreeBSD, or Linux.
+
 Integration with official Apache sources
  ========================================
 
