@@ -78,9 +78,8 @@
 #define modssl_PEM_read_bio_PrivateKey(b, k, cb, arg) \
    PEM_read_bio_PrivateKey(b, k, cb)
 
-/* XXX: add configure check */
 #ifndef HAVE_SSL_SET_STATE
-#define SSL_set_state(ssl, state)
+#define SSL_set_state(ssl, state) /* XXX: should throw an error */
 #endif
 
 #define modssl_set_cipher_list(ssl, l) \

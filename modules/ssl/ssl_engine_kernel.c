@@ -578,7 +578,7 @@ int ssl_hook_Access(request_rec *r)
      * used SSL_CTX_set_cert_store which is not thread safe.
      */
 
-#if MODSSL_HAVE_SSL_SET_CERT_STORE
+#ifdef HAVE_SSL_SET_CERT_STORE
     /*
      * check if per-dir and per-server config field are not the same.
      * if f is defined in per-dir and not defined in per-server
@@ -629,7 +629,7 @@ int ssl_hook_Access(request_rec *r)
                 "Changed client verification locations "
                 "will force renegotiation");
     }
-#endif /* MODSSL_HAVE_SSL_SET_CERT_STORE */
+#endif /* HAVE_SSL_SET_CERT_STORE */
 
     /* 
      * SSL renegotiations in conjunction with HTTP
