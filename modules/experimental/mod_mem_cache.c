@@ -66,12 +66,6 @@
 #include <unistd.h>
 #endif
 
-/* USE_ATOMICS should be replaced with the appropriate APR feature macro */
-#define USE_ATOMICS
-#ifdef USE_ATOMICS
-#include "apr_atomic.h"
-#endif
-
 #if !APR_HAS_THREADS
 #error This module does not currently compile unless you have a thread-capable APR. Sorry!
 #endif
@@ -360,7 +354,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->vobj = mobj;
     mobj->m_len = len;
     obj->complete = 0;
+#ifdef USE_ATOMICS
+    apr_atomic_set(&obj->refcount, 1);
+#else
     obj->refcount = 1;
+#endif
 
     /* Place the cache_object_t into the hash table.
      * Note: Perhaps we should wait to put the object in the
@@ -431,7 +429,11 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
                                           APR_HASH_KEY_STRING);
     if (obj) {
         if (obj->complete) {
+#ifdef USE_ATOMICS
+            apr_atomic_inc(&obj->refcount);
+#else
             obj->refcount++;
+#endif
             apr_pool_cleanup_register(r->pool, obj, decrement_refcount,
                                       apr_pool_cleanup_null);
         }
@@ -595,7 +597,7 @@ static int remove_url(const char *type, const char *key)
         obj->cleanup = 1;
 #ifdef USE_ATOMICS
         /* Refcount increment MUST be made under protection of the lock */
-        obj->refcount++;
+        apr_atomic_inc(&obj->refcount);
 #else
         if (!obj->refcount) {
             cleanup_cache_object(obj);
@@ -758,7 +760,11 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             apr_os_file_get(&(mobj->fd), tmpfile);
 
             obj->cleanup = 0;
+#ifdef USE_ATOMICS
+            (void)apr_atomic_dec(&obj->refcount);
+#else
             obj->refcount--;    /* Count should be 0 now */
+#endif
             apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
 
             /* Open for business */
@@ -788,7 +794,11 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 
         if (APR_BUCKET_IS_EOS(e)) {
             obj->cleanup = 0;
+#ifdef USE_ATOMICS
+            (void)apr_atomic_dec(&obj->refcount);
+#else
             obj->refcount--;    /* Count should be 0 now */
+#endif
             apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
 
             /* Open for business */
