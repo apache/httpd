@@ -1,9 +1,10 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/24 20:20:46 $]
+Last modified at [$Date: 2001/07/26 19:08:01 $]
 
 Release:
 
-    2.0.21  : re-rolled July 20, 2001, targetted for beta 7/23
+    2.0.22  : preliminary tag July 26, 2001
+    2.0.21  : re-rolled July 20, 2001
     2.0.20  : rolled July 8, 2001
     2.0.19  : rolled June 27, 2001
     2.0.18  : rolled May 18, 2001
