@@ -130,9 +130,9 @@ static const command_rec authz_groupfile_cmds[] =
                  (void *)APR_OFFSETOF(authz_groupfile_config_rec,
                                       authoritative),
                  OR_AUTHCFG,
-                 "Set to 'no' to allow access control to be passed along to "
+                 "Set to 'Off' to allow access control to be passed along to "
                  "lower modules if the 'require group' fails. (default is "
-                 "no)."),
+                 "On)."),
     {NULL}
 };
 
