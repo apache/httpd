@@ -1007,7 +1007,7 @@ default: all
 all clean :: 
 	for i in \$(MODULES); do \\
 	 (cd \$\$i; \\
-	  \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)' \$@);\\
+	  \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1;\\
 	done
 
 EOF
