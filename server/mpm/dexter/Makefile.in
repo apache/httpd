@@ -1,9 +1,4 @@
 
-DEPTH     = ../../..
-top_srcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
-
 LTLIBRARY_NAME    = libdexter.la
 LTLIBRARY_SOURCES = dexter.c scoreboard.c
 

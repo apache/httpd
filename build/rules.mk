@@ -54,7 +54,7 @@
 # The build environment was provided by Sascha Schumann.
 #
 
-include $(DEPTH)/config_vars.mk
+include $(top_builddir)/config_vars.mk
 
 
 SHLIB_SUFFIX = so
@@ -66,14 +66,12 @@ mkinstalldirs = $(abs_srcdir)/helpers/mkdir.sh
 INSTALL = $(abs_srcdir)/helpers/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
-SHLIBTOOL = $(SHELL) $(DEPTH)/shlibtool --silent
+SHLIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
 APACHE_COMPILE = $(COMPILE) -c $< && touch $@
 APACHE_SH_COMPILE = $(SHLIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -c $< && touch $@
 SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 
-DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I$(DEPTH)
-
-top_builddir = $(DEPTH)
+DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I$(top_builddir)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s .y .l .slo

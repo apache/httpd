@@ -58,10 +58,11 @@
 srcdir=$1
 shift
 
-top_srcdir=`(cd $srcdir; pwd)`
-
 mkdir_p=$1
 shift
+
+top_srcdir=`(cd $srcdir; pwd)`
+top_builddir=`pwd`
 
 if test "$mkdir_p" = "yes"; then
   mkdir_p="mkdir -p"
@@ -69,14 +70,18 @@ else
   mkdir_p="$top_srcdir/helpers/mkdir.sh"
 fi
 
-base="\$(DEPTH)/$srcdir"
+for makefile in $@; do
+  echo "creating $makefile"
+# portable dirname
+  dir=`echo $makefile|sed 's%[^/][^/]*$%%'`
 
-for i in $@ ; do
-	echo "creating $i"
-	dir=`dirname $i`
-	$mkdir_p $dir
-	sed \
-		-e s#@top_srcdir@#$base# \
-		-e s#@srcdir@#$base/$dir# \
-	< $top_srcdir/$i.in > $i
+  (cat <<EOF
+top_srcdir   = $top_srcdir
+top_builddir = $top_builddir
+srcdir       = $top_srcdir/$dir
+builddir     = $top_builddir/$dir
+VPATH        = $top_srcdir/$dir
+EOF
+)| cat - $makefile.in > $makefile
+
 done

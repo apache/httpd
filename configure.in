@@ -31,6 +31,8 @@ AC_PROG_INSTALL
 dnl AC_PROG_RANLIB
 dnl AC_PATH_PROG(PERL_PATH, perl)
 
+REENTRANCY_FLAGS
+
 dnl various OS checks that apparently set required flags
 AC_AIX
 AC_ISC_POSIX
@@ -108,8 +110,6 @@ AC_CHECK_FUNCS(inet_addr inet_network, break, [
 APACHE_INADDR_NONE
 
 APACHE_EBCDIC
-
-REENTRANCY_FLAGS
 
 AC_FUNC_SELECT_ARGTYPES
 
