@@ -81,8 +81,10 @@ start|stop|restart|graceful)
     ERROR=$?
     ;;
 startssl|sslstart|start-SSL)
-    $HTTPD -k start -DSSL
-    ERROR=$?
+    echo The startssl option is no longer supported.
+    echo Please edit httpd.conf to include the SSL configuration settings
+    echo and then use "apachectl start".
+    ERROR=2
     ;;
 configtest)
     $HTTPD -t
