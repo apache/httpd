@@ -3075,10 +3075,11 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r)
     char c2 = (char)c;
 
     if (r->connection->aborted) {
-	return EOF;
+	return -1;
     }
 
-    (void) buffer_output(r, &c2, 1);
+    if (buffer_output(r, &c2, 1) != APR_SUCCESS)
+        return -1;
 
     return c;
 }
@@ -3088,11 +3089,10 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
     apr_size_t len;
 
     if (r->connection->aborted)
-        return EOF;
-    if (*str == '\0')
-        return 0;
+        return -1;
 
-    (void) buffer_output(r, str, len = strlen(str));
+    if (buffer_output(r, str, len = strlen(str)) != APR_SUCCESS)
+        return -1;
 
     return len;
 }
@@ -3100,9 +3100,10 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r)
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
     if (r->connection->aborted)
-        return EOF;
+        return -1;
 
-    (void) buffer_output(r, buf, nbyte);
+    if (buffer_output(r, buf, nbyte) != APR_SUCCESS)
+        return -1;
 
     return nbyte;
 }
@@ -3113,11 +3114,12 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
     apr_size_t written;
 
     if (r->connection->aborted)
-        return EOF;
+        return -1;
 
     /* ### fix this mechanism to allow more than 4K of output */
     written = apr_vsnprintf(buf, sizeof(buf), fmt, va);
-    (void) buffer_output(r, buf, written);
+    if (buffer_output(r, buf, written) != APR_SUCCESS)
+        return -1;
 
     return written;
 }
@@ -3128,7 +3130,7 @@ AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
     int n;
 
     if (r->connection->aborted)
-        return EOF;
+        return -1;
 
     va_start(va, fmt);
     n = ap_vrprintf(r, fmt, va);
@@ -3145,7 +3147,7 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
     apr_size_t written;
 
     if (r->connection->aborted)
-        return EOF;
+        return -1;
 
     /* ### TODO: if the total output is large, put all the strings
        ### into a single brigade, rather than flushing each time we
@@ -3176,7 +3178,8 @@ AP_DECLARE(int) ap_rflush(request_rec *r)
     bb = apr_brigade_create(r->pool);
     b = apr_bucket_create_flush();
     APR_BRIGADE_INSERT_TAIL(bb, b);
-    ap_pass_brigade(r->output_filters, bb);
+    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
+        return -1;
     return 0;
 }
 
