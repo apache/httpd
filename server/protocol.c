@@ -583,8 +583,8 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->allowed_methods = ap_make_method_list(p, 2);
 
-    r->headers_in      = apr_table_make(r->pool, 50);
-    r->subprocess_env  = apr_table_make(r->pool, 50);
+    r->headers_in      = apr_table_make(r->pool, 25);
+    r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
     r->err_headers_out = apr_table_make(r->pool, 5);
     r->notes           = apr_table_make(r->pool, 5);
