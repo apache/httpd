@@ -2564,6 +2564,85 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
 
     return APR_SUCCESS;
 }
+
+/* sendfile_it_all()
+ *  send the entire file using sendfile()
+ *  handle partial writes
+ *  return only when all bytes have been sent or an error is encountered.
+ */
+
+#if APR_HAS_SENDFILE
+static apr_status_t sendfile_it_all(conn_rec   *c, 
+                                    apr_file_t *fd,
+                                    apr_hdtr_t *hdtr, 
+                                    apr_off_t   file_offset,
+                                    apr_size_t  file_bytes_left, 
+                                    apr_size_t  total_bytes_left,
+                                    apr_int32_t flags)
+{
+    apr_status_t rv;
+    apr_int32_t timeout = 0;
+
+    AP_DEBUG_ASSERT((apr_getsocketopt(c->client_socket, APR_SO_TIMEOUT, 
+                       &timeout) == APR_SUCCESS) && 
+                     timeout > 0);  /* socket must be in timeout mode */ 
+    do {
+        apr_ssize_t tmplen = file_bytes_left;
+        
+        rv = apr_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen, 
+                          flags);
+        total_bytes_left -= tmplen;
+        if (!total_bytes_left || rv != APR_SUCCESS) {
+            return rv;        /* normal case & error exit */ 
+        }
+
+        AP_DEBUG_ASSERT(total_bytes_left > 0 && tmplen > 0);
+        
+        /* partial write, oooh noooo... 
+         * Skip over any header data which was written
+         */
+        while (tmplen && hdtr->numheaders) {
+            if (tmplen >= hdtr->headers[0].iov_len) {
+                tmplen -= hdtr->headers[0].iov_len;
+                --hdtr->numheaders;
+                ++hdtr->headers;
+            }
+            else {
+                hdtr->headers[0].iov_len -= tmplen;
+       (char *) hdtr->headers[0].iov_base += tmplen;
+                tmplen = 0;
+            }
+        }
+
+        /* Skip over any file data which was written */
+
+        if (tmplen <= file_bytes_left) {
+            file_offset += tmplen;
+            file_bytes_left -= tmplen;
+            continue; 
+        }
+        tmplen -= file_bytes_left;
+        file_bytes_left = 0;
+        file_offset = 0;
+        
+        /* Skip over any trailer data which was written */
+        
+        while (tmplen && hdtr->numtrailers) {
+            if (tmplen >= hdtr->trailers[0].iov_len) {
+                tmplen -= hdtr->trailers[0].iov_len;
+                --hdtr->numtrailers;
+                ++hdtr->trailers;
+            }
+            else {
+                hdtr->trailers[0].iov_len -= tmplen;
+        (char *)hdtr->trailers[0].iov_base += tmplen;
+                tmplen = 0;
+            }
+        }
+    } while (1);
+}
+#endif
+        
 /*
  * send_the_file()
  * Sends the contents of file fd along with header/trailer bytes, if any,
@@ -3341,14 +3420,15 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 /* Prepare the socket to be reused */
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }
-            nbytes = flen;
-            rv = apr_sendfile(c->client_socket, 
-                              fd,       /* The file to send */
-                              &hdtr,    /* Header and trailer iovecs */
-                              &foffset, /* Offset in file to begin sending from */
-                              &nbytes,
-                              flags);
-            bytes_sent = nbytes;
+            rv = sendfile_it_all(c,             /* the connection            */
+                                 fd,            /* the file to send          */
+                                 &hdtr,         /* header and trailer iovecs */
+                                 foffset,       /* offset in the file to begin
+                                                   sending from              */
+                                 flen,          /* length of file            */
+                                 nbytes + flen, /* total length including 
+                                                   headers                   */
+                                 flags);        /* apr_sendfile flags        */
 
             /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file() to
              * loop on apr_read/apr_send to send the file. Our Windows binary 
