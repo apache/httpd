@@ -1863,7 +1863,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
     const ap_text *cdata;
     const ap_text *f_cdata;
     char value;
-    dav_elem_private *priv = elem->private;
+    dav_elem_private *priv = elem->priv;
 
     if (priv->propid != DAV_PROPID_FS_executable) {
 	*defer_to_dead = 1;
