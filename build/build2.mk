@@ -81,7 +81,7 @@ all: $(targets)
 
 libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
 
-aclocal.m4: acinclude.m4 lib/apr/threads.m4 lib/apr/hints.m4 $(libtool_m4)
+aclocal.m4: acinclude.m4 lib/apr/apr_common.m4 lib/apr/hints.m4 $(libtool_m4)
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
 
@@ -108,7 +108,7 @@ $(apr_private.h_in): $(apr_configure) lib/apr/acconfig.h
 	@rm -f $@
 	(cd lib/apr && autoheader)
 
-$(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/threads.m4 lib/apr/hints.m4
+$(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/apr_common.m4 lib/apr/hints.m4
 	@echo rebuilding $@
 	(cd lib/apr && autoconf)
 
