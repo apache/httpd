@@ -280,21 +280,23 @@ int ap_registry_get_server_root(ap_pool_t *p, char **buf)
     return (rv < -1) ? -1 : 0;
 }
 #endif
-char *ap_get_service_key(char *service_name)
+char *ap_get_service_key(char *display_name)
 {
-    char *key = malloc(strlen(SERVICEKEYPRE) +
-                       strlen(service_name) +
-                       strlen(SERVICEKEYPOST) + 1);
+    size_t keylen = strlen(display_name);
+    char *key2, *key = malloc(sizeof(SERVICEKEYPRE) + keylen
+                            + sizeof(SERVICEKEYPOST) + 1);
 
-    sprintf(key,"%s%s%s", SERVICEKEYPRE, service_name, SERVICEKEYPOST);
-
+    key2 = ap_cpystrn(key, SERVICEKEYPRE, sizeof(SERVICEKEYPRE) + 1);
+    key2 = ap_collapse_spaces(key2, display_name);
+    key2 = ap_cpystrn(key2, SERVICEKEYPOST, sizeof(SERVICEKEYPOST) + 1);
+    
     return(key);
 }
 #if 0
-int ap_registry_get_service_conf(ap_pool_t *p, char *dir, int size, char *service_name)
+int ap_registry_get_service_conf(ap_pool_t *p, char *dir, int size, char *display_name)
 {
     int rv;
-    char *key = ap_get_service_key(service_name);
+    char *key = ap_get_service_key(display_name);
 
     rv = ap_registry_get_key_int(p, key, "ConfPath", dir, size, NULL);
     if (rv < 0) {
@@ -527,10 +529,10 @@ static int ap_registry_store_key_int(char *key, char *name, DWORD type, void *va
  * logged via aplog_error().
  */
 
-int ap_registry_set_service_conf(char *conf, char *service_name)
+int ap_registry_set_service_conf(char *conf, char *display_name)
 {
     int rv;
-    char *key = ap_get_service_key(service_name);
+    char *key = ap_get_service_key(display_name);
     
     rv = ap_registry_store_key_int(key, "ConfPath", REG_SZ, conf, strlen(conf)+1);
     free(key);
