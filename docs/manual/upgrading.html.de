@@ -11,7 +11,7 @@
     gedacht. Weitere Informationen finden Sie entweder unter
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li></ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
     
 
     <ul>
@@ -33,33 +33,32 @@
       <li>Viele Anweisungen aus dem Serverkern des Apache 1.3 sind
       jetzt in den MPMs enthalten. Wenn Sie ein Serververhalten
       wünschen, das demjenigen des Apache 1.3 möglichst
-      ähnlich ist, sollten Sie das <a href="mod/prefork.html">prefork</a>-MPM
+      ähnlich ist, sollten Sie das <code class="module"><a href="./mod/prefork.html">prefork</a></code>-MPM
       auswählen. Andere MPMs verwenden abweichende Anweisungen
       für die Prozess-Erstellung und Request-Verarbeitung.</li>
 
       <li>Das <a href="mod/mod_proxy.html">Proxy-Modul</a> wurde
       umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
       der bedeutendsten Änderungen ist die Platzierung der
-      Proxy-Zugriffskontrolle innerhalb eines &lt;Proxy&gt;-Blocks,
-      statt innerhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
+      Proxy-Zugriffskontrolle innerhalb eines <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>-Blocks, statt innerhalb eines
+      <code>&lt;Directory proxy:&gt;</code>-Blocks.</li>
 
-      <li>Die Behandlung von PATH_INFO (hinter dem tatsächlichen
-      Dateinamen angefügte Pfadangaben) wurde für einige Module
-      geändert. Module, die bisher als Handler implementiert
-      waren, jetzt aber als Filter implementiert sind, akzeptieren
-      möglicherweise keine Requests mit PATH_INFO mehr.
-      Filter wie <a href="mod/mod_include.html">INCLUDES</a> sind
-      gleich oben im Core-Handler implementiert und weisen deshalb
-      Requests mit PATH_INFO ab. Sie können die <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>-Direktive
+      <li>Die Behandlung von <code>PATH_INFO</code> (hinter dem
+      tatsächlichen Dateinamen angefügte Pfadangaben) wurde
+      für einige Module geändert. Module, die bisher als Handler
+      implementiert waren, jetzt aber als Filter implementiert sind,
+      akzeptieren möglicherweise keine Requests mit
+      <code>PATH_INFO</code> mehr. Filter wie <a href="mod/mod_include.html">INCLUDES</a> sind gleich oben im
+      Core-Handler implementiert und weisen deshalb Requests mit
+      <code>PATH_INFO</code> ab. Sie können die <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>-Direktive
       verwenden, um den Core-Handler zu zwingen, Requests mit
-      PATH_INFO zu akzeptieren, und dadurch die Fähigkeit
-      wiederherstellen, PATH_INFO in Server Side Includes zu benutzen.
-      </li>
+      <code>PATH_INFO</code> zu akzeptieren, und dadurch die Fähigkeit
+      wiederherstellen, <code>PATH_INFO</code> in Server Side Includes zu
+      benutzen.</li>
 
       <li>Die <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>-Direktive
       hat jetzt das Argument an (<code>on</code>) oder aus
-      (<code>off</code>). Die vorhandenen Anweisungen
-      <code>CacheNegotiatedDocs</code> sollten durch
+      (<code>off</code>). Die vorhandenen Anweisungen <code class="directive">CacheNegotiatedDocs</code> sollten durch
       <code>CacheNegotiatedDocs on</code> ersetzt werden.</li>
 
       <li>
@@ -91,11 +90,11 @@
       Wenn Sie die Defaultwerte dieser Direktiven verwendet haben,
       ohne sie in die Konfigurationsdateien einzufügen, müssen Sie
       möglicherweise <code>Include conf/access.conf</code> und
-      <code>Include conf/srm.conf</code> zu Ihrer httpd.conf hinzufügen.
-      Um sicherzustellen, daß der Apache die Konfigurationsdateien in
-      der gleichen Reihenfolge liest, wie sie von den älteren Direktiven
-      impliziert wurde, sollten die <code>Include</code>-Direktiven ans
-      Ende der httpd.conf gestellt werden, wobei die Direktive für
+      <code>Include conf/srm.conf</code> zu Ihrer <code>httpd.conf</code>
+      hinzufügen. Um sicherzustellen, daß der Apache die
+      Konfigurationsdateien in der gleichen Reihenfolge liest, wie sie von
+      den älteren Direktiven impliziert wurde, sollten die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktiven ans Ende der
+      <code>httpd.conf</code> gestellt werden, wobei die Direktive für
       <code>srm.conf</code> derjenigen für <code>access.conf</code>
       vorangeht.</li>
 
@@ -117,10 +116,10 @@
       des MPM ermittelt. Derzeit ist kein MPM dafür bestimmt, von inetd
       gestartet zu werden.</li>
 
-      <li>Die Module mod_log_agent und mod_log_referer, welche die
-      Direktiven <code>AgentLog</code>, <code>RefererLog</code> und
-      <code>RefererIgnore</code> bereitgestellt hatten, wurden entfernt.
-      Durch Verwendung der Direktive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> aus mod_log_config
+      <li>Die Module <code>mod_log_agent</code> und <code>
+      mod_log_referer</code>, welche die Direktiven <code>AgentLog</code>,
+      <code>RefererLog</code> und <code>RefererIgnore</code> bereitgestellt
+      hatten, wurden entfernt. Durch Verwendung der Direktive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> aus mod_log_config
       sind die Agent- und Refererlogs auch weiterhin verfügbar.</li>
 
       <li>Die Direktiven <code>AddModule</code> und
@@ -144,11 +143,11 @@
       Virtual-Host-Konfiguration auszugeben, wurde durch
       <code>-t -D DUMP_VHOSTS</code> ersetzt.</li>
 
-      <li>Das Modul mod_auth_digest, das im Apache 1.3 experimentellen
-      Status hatte, ist nun ein Standardmodul.</li>
+      <li>Das Modul <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, das im Apache 1.3
+      experimentellen Status hatte, ist nun ein Standardmodul.</li>
 
-      <li>Das Modul mod_mmap_static, das im Apache 1.3 experimentellen
-      Status hatte, wurde durch das Modul mod_file_cache ersetzt.</li>
+      <li>Das Modul <code>mod_mmap_static</code>, das im Apache 1.3
+      experimentellen Status hatte, wurde durch das Modul <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> ersetzt.</li>
 
       <li>Die Distribution wurde komplett reorganisiert und enthält kein
       unabhängiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
