@@ -2,9 +2,10 @@
 
 <!ENTITY nbsp "&#160;">
 
-<!ENTITY % inlinetags "em | strong | code | a | br | directive | module">
+<!ENTITY % inlinetags "em | strong | code | a | br | directive | module | img
+| cite | dfn">
 
-<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | img
+<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
 
 <!ENTITY % Block "(%blocktags;)*">
@@ -40,12 +41,17 @@
                      type   CDATA  #IMPLIED >
 
 <!ELEMENT p %Inline;>
+<!ATTLIST p class CDATA  #IMPLIED>
 
 <!ELEMENT em %Inline;>
 
 <!ELEMENT strong %Inline;>
 
 <!ELEMENT code %Inline;>
+
+<!ELEMENT cite %Inline;>
+
+<!ELEMENT dfn %Inline;>
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a  href CDATA #IMPLIED
