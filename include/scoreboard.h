@@ -184,9 +184,9 @@ struct process_score{
 };
 
 typedef struct {
-    worker_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
-    process_score parent[HARD_SERVER_LIMIT];
     global_score global;
+    process_score parent[HARD_SERVER_LIMIT];
+    worker_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
 } scoreboard;
 
 #define KEY_LENGTH 16
