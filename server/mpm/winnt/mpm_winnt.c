@@ -801,7 +801,7 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
         return -1;
     }
     ap_create_context(&context->ptrans, p);
-    context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
+    context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
     ap_get_os_sock(&nsd, context->lr->sd);
@@ -846,7 +846,8 @@ static ap_inline int reset_completion_context(PCOMP_CONTEXT context)
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
     ap_get_os_sock(&nsd, context->lr->sd);
 
-    if (!AcceptEx(nsd, context->accept_socket, 
+    if (!AcceptEx(nsd, 
+                  context->accept_socket, 
                   context->recv_buf, context->recv_buf_size,
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                   &BytesRead, (LPOVERLAPPED) context)) {
@@ -902,8 +903,8 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     context->conn_io->incnt = BytesRead;
 
-    GetAcceptExSockaddrs(context->conn_io->inbase, 
-                         context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE,
+    GetAcceptExSockaddrs(context->recv_buf, 
+                         context->recv_buf_size,
                          PADDED_ADDR_SIZE,
                          PADDED_ADDR_SIZE,
                          &context->sa_server,
@@ -968,12 +969,10 @@ static void child_main(int child_num)
             closesocket(context->accept_socket);
             continue;
         }
-
         ap_bpush_iol(context->conn_io, iol);
-
-	current_conn = ap_new_connection(context->ptrans, server_conf, context->conn_io,
-                                         (struct sockaddr_in *) &context->sa_client,
-                                         (struct sockaddr_in *) &context->sa_server,
+        current_conn = ap_new_connection(context->ptrans, server_conf, context->conn_io,
+                                         (struct sockaddr_in *) context->sa_client,
+                                         (struct sockaddr_in *) context->sa_server,
                                          child_num);
 
         ap_process_connection(current_conn);
