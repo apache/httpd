@@ -170,17 +170,11 @@
 
  o Cleanup ssl_engine_io.c !!
  o Port all remaining code (code inside #if 0...#endif blocks)
- o Try to use APR routines in ssl_util_ssl.c for performing FILE operations.
- o Enable other hooks - ssl_hook_Access, ssl_hook_Auth, ssl_hook_UserCheck.
  o Enable the use of ssl_var_lookup (and other ssl_var_* functionalities).
  o Whether to unregister and how to unregister?
    ssl_var_unregister();
    ssl_ext_unregister();
-   ssl_io_unregister();
  o We certainly need CRYPTO_set_locking_callback() now also under Unix!
- o Eliminate APR_BLOCK_READ from churn (). The APR_NONBLOCK_READ doesn't work
-   currently. The filter logic has to be changed to handle situations when 
-   the data is not available immediately.
  o Enable Timeout processing.
  o Do we need SSL_set_read_ahead()?
  o Enable Client authentication.
