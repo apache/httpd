@@ -578,7 +578,7 @@ void get_handles_from_parent(server_rec *s)
         exit(APEXIT_CHILDINIT);
     }
 
-    rv = ap_reopen_scoreboard(pchild, &ap_scoreboard_shm, 1);
+    rv = ap_reopen_scoreboard(s->process->pool, &ap_scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, 
                      "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
@@ -633,13 +633,13 @@ void get_listeners_from_parent(server_rec *s)
                          "Child %d: setup_inherited_listeners(), WSASocket failed to open the inherited socket.", my_pid);
             exit(APEXIT_CHILDINIT);
         }
-        apr_os_sock_put(&lr->sd, &nsd, pconf);
+        apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
                  "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 
-    if (!set_listeners_noninheritable(pconf)) {
+    if (!set_listeners_noninheritable(s->process->pool)) {
         exit(APEXIT_CHILDINIT);
     }
 }
@@ -2336,7 +2336,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
         return DONE;
     }
 
-    if (!set_listeners_noninheritable(pconf)) {
+    if (!set_listeners_noninheritable(s->process->pool)) {
         return 1;
     }
 
