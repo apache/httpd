@@ -110,6 +110,7 @@
  * follows:
  *
  * %...b:  bytes sent, excluding HTTP headers.
+ * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request

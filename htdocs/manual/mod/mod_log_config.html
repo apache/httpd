@@ -101,6 +101,7 @@ by the values as follows:
 <PRE>
 %...b:          Bytes sent, excluding HTTP headers.
 %...f:          Filename
+%...{FOOBAR}e:  The contents of the environment variable FOOBAR
 %...h:          Remote host
 %...{Foobar}i:  The contents of Foobar: header line(s) in the request
                 sent to the server.
@@ -228,7 +229,7 @@ Custom Log Formats</A> for details on the format arguments.<p><hr>
 <h2><A name="transferlog">TransferLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <strong>Syntax:</strong> TransferLog <em>file-pipe</em><br>
-<strong>Default:</strong> <code>TransferLog logs/transfer_log</code><br>
+<strong>Default:</strong> none<br>
 <Strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_log_config<p>
