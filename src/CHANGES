@@ -1,5 +1,9 @@
 Changes with Apache 1.3.32
 
+  *) No longer breaks mod_dav, frontpage and others.  Backs out
+     a patch which prevented discarding the request body for requests
+     that will be keptalive but are not currently keptalive. PR 29237.
+
   *) COMPATIBILITY: Added new compile-time flag: UCN_OFF_HONOR_PHYSICAL_PORT.
      It controls how UseCanonicalName Off determines the port value if
      the client doesn't provide one in the Host header. If defined during
