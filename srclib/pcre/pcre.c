@@ -9,7 +9,7 @@ the file Tech.Notes for some information on the internals.
 
 Written by: Philip Hazel <ph10@cam.ac.uk>
 
-           Copyright (c) 1997-2000 University of Cambridge
+           Copyright (c) 1997-2001 University of Cambridge
 
 -----------------------------------------------------------------------------
 Permission is granted to anyone to use this software for any purpose on any
@@ -60,10 +60,23 @@ the external pcre header. */
 #endif
 
 
-/* Number of items on the nested bracket stacks at compile time. This should
-not be set greater than 200. */
+/* Maximum number of items on the nested bracket stacks at compile time. This
+applies to the nesting of all kinds of parentheses. It does not limit
+un-nested, non-capturing parentheses. This number can be made bigger if
+necessary - it is used to dimension one int and one unsigned char vector at
+compile time. */
 
 #define BRASTACK_SIZE 200
+
+
+/* The number of bytes in a literal character string above which we can't add
+any more is different when UTF-8 characters may be encountered. */
+
+#ifdef SUPPORT_UTF8
+#define MAXLIT 250
+#else
+#define MAXLIT 255
+#endif
 
 
 /* Min and max values for the common repeats; for the maxima, 0 => infinity */
@@ -85,7 +98,7 @@ static const char *OP_names[] = {
   "class", "Ref", "Recurse",
   "Alt", "Ket", "KetRmax", "KetRmin", "Assert", "Assert not",
   "AssertB", "AssertB not", "Reverse", "Once", "Cond", "Cref",
-  "Brazero", "Braminzero", "Bra"
+  "Brazero", "Braminzero", "Branumber", "Bra"
 };
 #endif
 
@@ -101,9 +114,9 @@ static const short int escapes[] = {
     0,      0,      0,      0,      0,      0,      0,      0,   /* H - O */
     0,      0,      0, -ESC_S,      0,      0,      0, -ESC_W,   /* P - W */
     0,      0, -ESC_Z,    '[',   '\\',    ']',    '^',    '_',   /* X - _ */
-  '`',      7, -ESC_b,      0, -ESC_d,     27,   '\f',      0,   /* ` - g */
-    0,      0,      0,      0,      0,      0,   '\n',      0,   /* h - o */
-    0,      0,   '\r', -ESC_s,   '\t',      0,      0, -ESC_w,   /* p - w */
+  '`',      7, -ESC_b,      0, -ESC_d,  ESC_E,  ESC_F,      0,   /* ` - g */
+    0,      0,      0,      0,      0,      0,  ESC_N,      0,   /* h - o */
+    0,      0,  ESC_R, -ESC_s,  ESC_T,      0,      0, -ESC_w,   /* p - w */
     0,      0, -ESC_z                                            /* x - z */
 };
 
@@ -176,6 +189,64 @@ void  (*pcre_free)(void *) = free;
 
 
 
+/*************************************************
+*    Macros and tables for character handling    *
+*************************************************/
+
+/* When UTF-8 encoding is being used, a character is no longer just a single
+byte. The macros for character handling generate simple sequences when used in
+byte-mode, and more complicated ones for UTF-8 characters. */
+
+#ifndef SUPPORT_UTF8
+#define GETCHARINC(c, eptr) c = *eptr++;
+#define GETCHARLEN(c, eptr, len) c = *eptr;
+#define BACKCHAR(eptr)
+
+#else   /* SUPPORT_UTF8 */
+
+/* Get the next UTF-8 character, advancing the pointer */
+
+#define GETCHARINC(c, eptr) \
+  c = *eptr++; \
+  if (md->utf8 && (c & 0xc0) == 0xc0) \
+    { \
+    int a = utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
+    int s = 6*a; \
+    c = (c & utf8_table3[a]) << s; \
+    while (a-- > 0) \
+      { \
+      s -= 6; \
+      c |= (*eptr++ & 0x3f) << s; \
+      } \
+    }
+
+/* Get the next UTF-8 character, not advancing the pointer, setting length */
+
+#define GETCHARLEN(c, eptr, len) \
+  c = *eptr; \
+  len = 1; \
+  if (md->utf8 && (c & 0xc0) == 0xc0) \
+    { \
+    int i; \
+    int a = utf8_table4[c & 0x3f];  /* Number of additional bytes */ \
+    int s = 6*a; \
+    c = (c & utf8_table3[a]) << s; \
+    for (i = 1; i <= a; i++) \
+      { \
+      s -= 6; \
+      c |= (eptr[i] & 0x3f) << s; \
+      } \
+    len += a; \
+    }
+
+/* If the pointer is not at the start of a character, move it back until
+it is. */
+
+#define BACKCHAR(eptr) while((*eptr & 0xc0) == 0x80) eptr--;
+
+#endif
+
+
 
 /*************************************************
 *             Default character tables           *
@@ -188,6 +259,66 @@ whenever the caller of pcre_compile() does not provide an alternate set of
 tables. */
 
 #include "chartables.c"
+
+
+
+#ifdef SUPPORT_UTF8
+/*************************************************
+*           Tables for UTF-8 support             *
+*************************************************/
+
+/* These are the breakpoints for different numbers of bytes in a UTF-8
+character. */
+
+static int utf8_table1[] = { 0x7f, 0x7ff, 0xffff, 0x1fffff, 0x3ffffff, 0x7fffffff};
+
+/* These are the indicator bits and the mask for the data bits to set in the
+first byte of a character, indexed by the number of additional bytes. */
+
+static int utf8_table2[] = { 0,    0xc0, 0xe0, 0xf0, 0xf8, 0xfc};
+static int utf8_table3[] = { 0xff, 0x1f, 0x0f, 0x07, 0x03, 0x01};
+
+/* Table of the number of extra characters, indexed by the first character
+masked with 0x3f. The highest number for a valid UTF-8 character is in fact
+0x3d. */
+
+static uschar utf8_table4[] = {
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5 };
+
+
+/*************************************************
+*       Convert character value to UTF-8         *
+*************************************************/
+
+/* This function takes an integer value in the range 0 - 0x7fffffff
+and encodes it as a UTF-8 character in 0 to 6 bytes.
+
+Arguments:
+  cvalue     the character value
+  buffer     pointer to buffer for result - at least 6 bytes long
+
+Returns:     number of characters placed in the buffer
+*/
+
+static int
+ord2utf8(int cvalue, uschar *buffer)
+{
+register int i, j;
+for (i = 0; i < sizeof(utf8_table1)/sizeof(int); i++)
+  if (cvalue <= utf8_table1[i]) break;
+buffer += i;
+for (j = i; j > 0; j--)
+ {
+ *buffer-- = 0x80 | (cvalue & 0x3f);
+ cvalue >>= 6;
+ }
+*buffer = utf8_table2[i] | cvalue;
+return i + 1;
+}
+#endif
 
 
 
@@ -349,9 +480,9 @@ while (length-- > 0)
 
 /* This function is called when a \ has been encountered. It either returns a
 positive value for a simple escape such as \n, or a negative value which
-encodes one of the more complicated things such as \d. On entry, ptr is
-pointing at the \. On exit, it is on the final character of the escape
-sequence.
+encodes one of the more complicated things such as \d. When UTF-8 is enabled,
+a positive value greater than 255 may be returned. On entry, ptr is pointing at
+the \. On exit, it is on the final character of the escape sequence.
 
 Arguments:
   ptrptr     points to the pattern position pointer
@@ -373,7 +504,9 @@ check_escape(const uschar **ptrptr, const char **errorptr, int bracount,
 const uschar *ptr = *ptrptr;
 int c, i;
 
-c = *(++ptr) & 255;   /* Ensure > 0 on signed-char systems */
+/* If backslash is at the end of the pattern, it's an error. */
+
+c = *(++ptr);
 if (c == 0) *errorptr = ERR1;
 
 /* Digits or letters may have special meaning; all others are literals. */
@@ -433,18 +566,46 @@ else
       }
 
     /* \0 always starts an octal number, but we may drop through to here with a
-    larger first octal digit */
+    larger first octal digit. */
 
     case '0':
     c -= '0';
     while(i++ < 2 && (cd->ctypes[ptr[1]] & ctype_digit) != 0 &&
       ptr[1] != '8' && ptr[1] != '9')
         c = c * 8 + *(++ptr) - '0';
+    c &= 255;     /* Take least significant 8 bits */
     break;
 
-    /* Special escapes not starting with a digit are straightforward */
+    /* \x is complicated when UTF-8 is enabled. \x{ddd} is a character number
+    which can be greater than 0xff, but only if the ddd are hex digits. */
 
     case 'x':
+#ifdef SUPPORT_UTF8
+    if (ptr[1] == '{' && (options & PCRE_UTF8) != 0)
+      {
+      const uschar *pt = ptr + 2;
+      register int count = 0;
+      c = 0;
+      while ((cd->ctypes[*pt] & ctype_xdigit) != 0)
+        {
+        count++;
+        c = c * 16 + cd->lcc[*pt] -
+          (((cd->ctypes[*pt] & ctype_digit) != 0)? '0' : 'W');
+        pt++;
+        }
+      if (*pt == '}')
+        {
+        if (c < 0 || count > 8) *errorptr = ERR34;
+        ptr = pt;
+        break;
+        }
+      /* If the sequence of hex digits does not end with '}', then we don't
+      recognize this construct; fall through to the normal \x handling. */
+      }
+#endif
+
+    /* Read just a single hex char */
+
     c = 0;
     while (i++ < 2 && (cd->ctypes[ptr[1]] & ctype_xdigit) != 0)
       {
@@ -453,6 +614,8 @@ else
         (((cd->ctypes[*ptr] & ctype_digit) != 0)? '0' : 'W');
       }
     break;
+
+    /* Other special escapes not starting with a digit are straightforward */
 
     case 'c':
     c = *(++ptr);
@@ -591,12 +754,13 @@ if the length is fixed. This is needed for dealing with backward assertions.
 
 Arguments:
   code     points to the start of the pattern (the bracket)
+  options  the compiling options
 
 Returns:   the fixed length, or -1 if there is no fixed length
 */
 
 static int
-find_fixedlength(uschar *code)
+find_fixedlength(uschar *code, int options)
 {
 int length = -1;
 
@@ -617,7 +781,7 @@ for (;;)
     case OP_BRA:
     case OP_ONCE:
     case OP_COND:
-    d = find_fixedlength(cc);
+    d = find_fixedlength(cc, options);
     if (d < 0) return -1;
     branchlength += d;
     do cc += (cc[1] << 8) + cc[2]; while (*cc == OP_ALT);
@@ -653,10 +817,11 @@ for (;;)
     /* Skip over things that don't match chars */
 
     case OP_REVERSE:
+    case OP_BRANUMBER:
+    case OP_CREF:
     cc++;
     /* Fall through */
 
-    case OP_CREF:
     case OP_OPT:
     cc++;
     /* Fall through */
@@ -671,10 +836,17 @@ for (;;)
     cc++;
     break;
 
-    /* Handle char strings */
+    /* Handle char strings. In UTF-8 mode we must count characters, not bytes.
+    This requires a scan of the string, unfortunately. We assume valid UTF-8
+    strings, so all we do is reduce the length by one for byte whose bits are
+    10xxxxxx. */
 
     case OP_CHARS:
     branchlength += *(++cc);
+#ifdef SUPPORT_UTF8
+    for (d = 1; d <= *cc; d++)
+      if ((cc[d] & 0xc0) == 0x80) branchlength--;
+#endif
     cc += *cc + 1;
     break;
 
@@ -703,7 +875,7 @@ for (;;)
     /* Check a class for variable quantification */
 
     case OP_CLASS:
-    cc += (*cc == OP_REF)? 2 : 33;
+    cc += 33;
 
     switch (*cc)
       {
@@ -810,7 +982,7 @@ return -1;
 
 Arguments:
   options      the option bits
-  brackets     points to number of brackets used
+  brackets     points to number of extracting brackets used
   code         points to the pointer to the current code point
   ptrptr       points to the current pattern pointer
   errorptr     points to pointer to error message
@@ -861,7 +1033,7 @@ for (;; ptr++)
   int class_charcount;
   int class_lastchar;
   int newoptions;
-  int condref;
+  int skipbytes;
   int subreqchar;
 
   c = *ptr;
@@ -872,7 +1044,7 @@ for (;; ptr++)
       {
       /* The space before the ; is to avoid a warning on a silly compiler
       on the Macintosh. */
-      while ((c = *(++ptr)) != 0 && c != '\n') ;
+      while ((c = *(++ptr)) != 0 && c != NEWLINE) ;
       continue;
       }
     }
@@ -1054,7 +1226,17 @@ for (;; ptr++)
             goto FAILED;
             }
           }
-        /* Fall through if single character */
+
+        /* Fall through if single character, but don't at present allow
+        chars > 255 in UTF-8 mode. */
+
+#ifdef SUPPORT_UTF8
+        if (c > 255)
+          {
+          *errorptr = ERR33;
+          goto FAILED;
+          }
+#endif
         }
 
       /* A single character may be followed by '-' to form a range. However,
@@ -1074,17 +1256,29 @@ for (;; ptr++)
           }
 
         /* The second part of a range can be a single-character escape, but
-        not any of the other escapes. */
+        not any of the other escapes. Perl 5.6 treats a hyphen as a literal
+        in such circumstances. */
 
         if (d == '\\')
           {
+          const uschar *oldptr = ptr;
           d = check_escape(&ptr, errorptr, *brackets, options, TRUE, cd);
+
+#ifdef SUPPORT_UTF8
+          if (d > 255)
+            {
+            *errorptr = ERR33;
+            goto FAILED;
+            }
+#endif
+          /* \b is backslash; any other special means the '-' was literal */
+
           if (d < 0)
             {
             if (d == -ESC_b) d = '\b'; else
               {
-              *errorptr = ERR7;
-              goto FAILED;
+              ptr = oldptr - 2;
+              goto SINGLE_CHARACTER;  /* A few lines below */
               }
             }
           }
@@ -1111,6 +1305,8 @@ for (;; ptr++)
 
       /* Handle a lone single character - we can get here for a normal
       non-escape char, or after \ that introduces a single character. */
+
+      SINGLE_CHARACTER:
 
       class [c/8] |= (1 << (c&7));
       if ((options & PCRE_CASELESS) != 0)
@@ -1386,7 +1582,7 @@ for (;; ptr++)
       OP_BRAZERO in front of it, and because the group appears once in the
       data, whereas in other cases it appears the minimum number of times. For
       this reason, it is simplest to treat this case separately, as otherwise
-      the code gets far too mess. There are several special subcases when the
+      the code gets far too messy. There are several special subcases when the
       minimum is zero. */
 
       if (repeat_min == 0)
@@ -1537,7 +1733,7 @@ for (;; ptr++)
 
     case '(':
     newoptions = options;
-    condref = -1;
+    skipbytes = 0;
 
     if (*(++ptr) == '?')
       {
@@ -1560,9 +1756,18 @@ for (;; ptr++)
         bravalue = OP_COND;       /* Conditional group */
         if ((cd->ctypes[*(++ptr)] & ctype_digit) != 0)
           {
-          condref = *ptr - '0';
+          int condref = *ptr - '0';
           while (*(++ptr) != ')') condref = condref*10 + *ptr - '0';
+          if (condref == 0)
+            {
+            *errorptr = ERR35;
+            goto FAILED;
+            }
           ptr++;
+          code[3] = OP_CREF;
+          code[4] = condref >> 8;
+          code[5] = condref & 255;
+          skipbytes = 3;
           }
         else ptr--;
         break;
@@ -1665,16 +1870,21 @@ for (;; ptr++)
         }
       }
 
-    /* Else we have a referencing group; adjust the opcode. */
+    /* Else we have a referencing group; adjust the opcode. If the bracket
+    number is greater than EXTRACT_BASIC_MAX, we set the opcode one higher, and
+    arrange for the true number to follow later, in an OP_BRANUMBER item. */
 
     else
       {
-      if (++(*brackets) > EXTRACT_MAX)
+      if (++(*brackets) > EXTRACT_BASIC_MAX)
         {
-        *errorptr = ERR13;
-        goto FAILED;
+        bravalue = OP_BRA + EXTRACT_BASIC_MAX + 1;
+        code[3] = OP_BRANUMBER;
+        code[4] = *brackets >> 8;
+        code[5] = *brackets & 255;
+        skipbytes = 3;
         }
-      bravalue = OP_BRA + *brackets;
+      else bravalue = OP_BRA + *brackets;
       }
 
     /* Process nested bracketed re. Assertions may not be repeated, but other
@@ -1690,13 +1900,13 @@ for (;; ptr++)
          options | PCRE_INGROUP,       /* Set for all nested groups */
          ((options & PCRE_IMS) != (newoptions & PCRE_IMS))?
            newoptions & PCRE_IMS : -1, /* Pass ims options if changed */
-         brackets,                     /* Bracket level */
+         brackets,                     /* Extracting bracket count */
          &tempcode,                    /* Where to put code (updated) */
          &ptr,                         /* Input pointer (updated) */
          errorptr,                     /* Where to put an error message */
          (bravalue == OP_ASSERTBACK ||
           bravalue == OP_ASSERTBACK_NOT), /* TRUE if back assert */
-         condref,                      /* Condition reference number */
+         skipbytes,                    /* Skip over OP_COND/OP_BRANUMBER */
          &subreqchar,                  /* For possible last char */
          &subcountlits,                /* For literal count */
          cd))                          /* Tables block */
@@ -1710,7 +1920,7 @@ for (;; ptr++)
     /* If this is a conditional bracket, check that there are no more than
     two branches in the group. */
 
-    if (bravalue == OP_COND)
+    else if (bravalue == OP_COND)
       {
       uschar *tc = code;
       condcount = 0;
@@ -1777,9 +1987,11 @@ for (;; ptr++)
       {
       if (-c >= ESC_REF)
         {
+        int number = -c - ESC_REF;
         previous = code;
         *code++ = OP_REF;
-        *code++ = -c - ESC_REF;
+        *code++ = number >> 8;
+        *code++ = number & 255;
         }
       else
         {
@@ -1814,7 +2026,7 @@ for (;; ptr++)
           {
           /* The space before the ; is to avoid a warning on a silly compiler
           on the Macintosh. */
-          while ((c = *(++ptr)) != 0 && c != '\n') ;
+          while ((c = *(++ptr)) != 0 && c != NEWLINE) ;
           if (c == 0) break;
           continue;
           }
@@ -1829,6 +2041,20 @@ for (;; ptr++)
         tempptr = ptr;
         c = check_escape(&ptr, errorptr, *brackets, options, FALSE, cd);
         if (c < 0) { ptr = tempptr; break; }
+
+        /* If a character is > 127 in UTF-8 mode, we have to turn it into
+        two or more characters in the UTF-8 encoding. */
+
+#ifdef SUPPORT_UTF8
+        if (c > 127 && (options & PCRE_UTF8) != 0)
+          {
+          uschar buffer[8];
+          int len = ord2utf8(c, buffer);
+          for (c = 0; c < len; c++) *code++ = buffer[c];
+          length += len;
+          continue;
+          }
+#endif
         }
 
       /* Ordinary character or single-char escape */
@@ -1839,7 +2065,7 @@ for (;; ptr++)
 
     /* This "while" is the end of the "do" above. */
 
-    while (length < 255 && (cd->ctypes[c = *(++ptr)] & ctype_meta) == 0);
+    while (length < MAXLIT && (cd->ctypes[c = *(++ptr)] & ctype_meta) == 0);
 
     /* Update the last character and the count of literals */
 
@@ -1851,7 +2077,7 @@ for (;; ptr++)
     the next state. */
 
     previous[1] = length;
-    if (length < 255) ptr--;
+    if (length < MAXLIT) ptr--;
     break;
     }
   }                   /* end of big loop */
@@ -1889,7 +2115,7 @@ Argument:
   ptrptr      -> the address of the current pattern pointer
   errorptr    -> pointer to error message
   lookbehind  TRUE if this is a lookbehind assertion
-  condref     > 0 for OPT_CREF setting at start of conditional group
+  skipbytes   skip this many bytes at start (for OP_COND, OP_BRANUMBER)
   reqchar     -> place to put the last required character, or a negative number
   countlits   -> place to put the shortest literal count of any branch
   cd          points to the data block with tables pointers
@@ -1899,7 +2125,7 @@ Returns:      TRUE on success
 
 static BOOL
 compile_regex(int options, int optchanged, int *brackets, uschar **codeptr,
-  const uschar **ptrptr, const char **errorptr, BOOL lookbehind, int condref,
+  const uschar **ptrptr, const char **errorptr, BOOL lookbehind, int skipbytes,
   int *reqchar, int *countlits, compile_data *cd)
 {
 const uschar *ptr = *ptrptr;
@@ -1912,16 +2138,7 @@ int branchreqchar, branchcountlits;
 
 *reqchar = -1;
 *countlits = INT_MAX;
-code += 3;
-
-/* At the start of a reference-based conditional group, insert the reference
-number as an OP_CREF item. */
-
-if (condref > 0)
-  {
-  *code++ = OP_CREF;
-  *code++ = condref;
-  }
+code += 3 + skipbytes;
 
 /* Loop for each alternative branch */
 
@@ -1989,7 +2206,7 @@ for (;;)
   if (lookbehind)
     {
     *code = OP_END;
-    length = find_fixedlength(last_branch);
+    length = find_fixedlength(last_branch, options);
     DPRINTF(("fixed length = %d\n", length));
     if (length < 0)
       {
@@ -2073,7 +2290,8 @@ for (;;)
     break;
 
     case OP_CREF:
-    code += 2;
+    case OP_BRANUMBER:
+    code += 3;
     break;
 
     case OP_WORD_BOUNDARY:
@@ -2280,6 +2498,16 @@ uschar bralenstack[BRASTACK_SIZE];
 uschar *code_base, *code_end;
 #endif
 
+/* Can't support UTF8 unless PCRE has been compiled to include the code. */
+
+#ifndef SUPPORT_UTF8
+if ((options & PCRE_UTF8) != 0)
+  {
+  *errorptr = ERR32;
+  return NULL;
+  }
+#endif
+
 /* We can't pass back an error message if errorptr is NULL; I guess the best we
 can do is just return NULL. */
 
@@ -2326,6 +2554,7 @@ while ((c = *(++ptr)) != 0)
   {
   int min, max;
   int class_charcount;
+  int bracket_length;
 
   if ((options & PCRE_EXTENDED) != 0)
     {
@@ -2334,7 +2563,7 @@ while ((c = *(++ptr)) != 0)
       {
       /* The space before the ; is to avoid a warning on a silly compiler
       on the Macintosh. */
-      while ((c = *(++ptr)) != 0 && c != '\n') ;
+      while ((c = *(++ptr)) != 0 && c != NEWLINE) ;
       continue;
       }
     }
@@ -2360,7 +2589,7 @@ while ((c = *(++ptr)) != 0)
       }
     length++;
 
-    /* A back reference needs an additional char, plus either one or 5
+    /* A back reference needs an additional 2 bytes, plus either one or 5
     bytes for a repeat. We also need to keep the value of the highest
     back reference. */
 
@@ -2368,7 +2597,7 @@ while ((c = *(++ptr)) != 0)
       {
       int refnum = -c - ESC_REF;
       if (refnum > top_backref) top_backref = refnum;
-      length++;   /* For single back reference */
+      length += 2;   /* For single back reference */
       if (ptr[1] == '{' && is_counted_repeat(ptr+2, &compile_block))
         {
         ptr = read_repeat_counts(ptr+2, &min, &max, errorptr, &compile_block);
@@ -2466,6 +2695,7 @@ while ((c = *(++ptr)) != 0)
 
     case '(':
     branch_newextra = 0;
+    bracket_length = 3;
 
     /* Handle special forms of bracket, which all start (? */
 
@@ -2533,7 +2763,7 @@ while ((c = *(++ptr)) != 0)
         if ((compile_block.ctypes[ptr[3]] & ctype_digit) != 0)
           {
           ptr += 4;
-          length += 2;
+          length += 3;
           while ((compile_block.ctypes[*ptr] & ctype_digit) != 0) ptr++;
           if (*ptr != ')')
             {
@@ -2660,15 +2890,19 @@ while ((c = *(++ptr)) != 0)
       }
 
     /* Extracting brackets must be counted so we can process escapes in a
-    Perlish way. */
+    Perlish way. If the number exceeds EXTRACT_BASIC_MAX we are going to
+    need an additional 3 bytes of store per extracting bracket. */
 
-    else bracount++;
+    else
+      {
+      bracount++;
+      if (bracount > EXTRACT_BASIC_MAX) bracket_length += 3;
+      }
 
-    /* Non-special forms of bracket. Save length for computing whole length
-    at end if there's a repeat that requires duplication of the group. Also
-    save the current value of branch_extra, and start the new group with
-    the new value. If non-zero, this will either be 2 for a (?imsx: group, or 3
-    for a lookbehind assertion. */
+    /* Save length for computing whole length at end if there's a repeat that
+    requires duplication of the group. Also save the current value of
+    branch_extra, and start the new group with the new value. If non-zero, this
+    will either be 2 for a (?imsx: group, or 3 for a lookbehind assertion. */
 
     if (brastackptr >= sizeof(brastack)/sizeof(int))
       {
@@ -2680,7 +2914,7 @@ while ((c = *(++ptr)) != 0)
     branch_extra = branch_newextra;
 
     brastack[brastackptr++] = length;
-    length += 3;
+    length += bracket_length;
     continue;
 
     /* Handle ket. Look for subsequent max/min; for certain sets of values we
@@ -2760,7 +2994,7 @@ while ((c = *(++ptr)) != 0)
           {
           /* The space before the ; is to avoid a warning on a silly compiler
           on the Macintosh. */
-          while ((c = *(++ptr)) != 0 && c != '\n') ;
+          while ((c = *(++ptr)) != 0 && c != NEWLINE) ;
           continue;
           }
         }
@@ -2775,6 +3009,16 @@ while ((c = *(++ptr)) != 0)
           &compile_block);
         if (*errorptr != NULL) goto PCRE_ERROR_RETURN;
         if (c < 0) { ptr = saveptr; break; }
+
+#ifdef SUPPORT_UTF8
+        if (c > 127 && (options & PCRE_UTF8) != 0)
+          {
+          int i;
+          for (i = 0; i < sizeof(utf8_table1)/sizeof(int); i++)
+            if (c <= utf8_table1[i]) break;
+          runlength += i;
+          }
+#endif
         }
 
       /* Ordinary character or single-char escape */
@@ -2784,7 +3028,7 @@ while ((c = *(++ptr)) != 0)
 
     /* This "while" is the end of the "do" above. */
 
-    while (runlength < 255 &&
+    while (runlength < MAXLIT &&
       (compile_block.ctypes[c = *(++ptr)] & ctype_meta) == 0);
 
     ptr--;
@@ -2831,7 +3075,7 @@ ptr = (const uschar *)pattern;
 code = re->code;
 *code = OP_BRA;
 bracount = 0;
-(void)compile_regex(options, -1, &bracount, &code, &ptr, errorptr, FALSE, -1,
+(void)compile_regex(options, -1, &bracount, &code, &ptr, errorptr, FALSE, 0,
   &reqchar, &countlits, &compile_block);
 re->top_bracket = bracount;
 re->top_backref = top_backref;
@@ -2945,7 +3189,10 @@ while (code < code_end)
 
   if (*code >= OP_BRA)
     {
-    printf("%3d Bra %d", (code[1] << 8) + code[2], *code - OP_BRA);
+    if (*code - OP_BRA > EXTRACT_BASIC_MAX)
+      printf("%3d Bra extra", (code[1] << 8) + code[2]);
+    else
+      printf("%3d Bra %d", (code[1] << 8) + code[2], *code - OP_BRA);
     code += 2;
     }
 
@@ -2953,16 +3200,6 @@ while (code < code_end)
     {
     case OP_OPT:
     printf(" %.2x %s", code[1], OP_names[*code]);
-    code++;
-    break;
-
-    case OP_COND:
-    printf("%3d Cond", (code[1] << 8) + code[2]);
-    code += 2;
-    break;
-
-    case OP_CREF:
-    printf(" %.2d %s", code[1], OP_names[*code]);
     code++;
     break;
 
@@ -2982,11 +3219,10 @@ while (code < code_end)
     case OP_ASSERTBACK:
     case OP_ASSERTBACK_NOT:
     case OP_ONCE:
-    printf("%3d %s", (code[1] << 8) + code[2], OP_names[*code]);
-    code += 2;
-    break;
-
     case OP_REVERSE:
+    case OP_BRANUMBER:
+    case OP_COND:
+    case OP_CREF:
     printf("%3d %s", (code[1] << 8) + code[2], OP_names[*code]);
     code += 2;
     break;
@@ -3059,8 +3295,8 @@ while (code < code_end)
     break;
 
     case OP_REF:
-    printf("    \\%d", *(++code));
-    code ++;
+    printf("    \\%d", (code[1] << 8) | code[2]);
+    code += 3;
     goto CLASS_REF_REPEAT;
 
     case OP_CLASS:
@@ -3273,8 +3509,14 @@ for (;;)
 
   if (op > OP_BRA)
     {
+    int offset;
     int number = op - OP_BRA;
-    int offset = number << 1;
+
+    /* For extended extraction brackets (large number), we have to fish out the
+    number from a dummy opcode at the start. */
+
+    if (number > EXTRACT_BASIC_MAX) number = (ecode[4] << 8) | ecode[5];
+    offset = number << 1;
 
 #ifdef DEBUG
     printf("start bracket %d subject=", number);
@@ -3304,6 +3546,7 @@ for (;;)
       md->offset_vector[offset] = save_offset1;
       md->offset_vector[offset+1] = save_offset2;
       md->offset_vector[md->offset_end - number] = save_offset3;
+
       return FALSE;
       }
 
@@ -3336,10 +3579,10 @@ for (;;)
     case OP_COND:
     if (ecode[3] == OP_CREF)         /* Condition is extraction test */
       {
-      int offset = ecode[4] << 1;    /* Doubled reference number */
+      int offset = (ecode[4] << 9) | (ecode[5] << 1); /* Doubled ref number */
       return match(eptr,
         ecode + ((offset < offset_top && md->offset_vector[offset] >= 0)?
-          5 : 3 + (ecode[1] << 8) + ecode[2]),
+          6 : 3 + (ecode[1] << 8) + ecode[2]),
         offset_top, md, ims, eptrb, match_isgroup);
       }
 
@@ -3359,10 +3602,12 @@ for (;;)
       }
     /* Control never reaches here */
 
-    /* Skip over conditional reference data if encountered (should not be) */
+    /* Skip over conditional reference or large extraction number data if
+    encountered. */
 
     case OP_CREF:
-    ecode += 2;
+    case OP_BRANUMBER:
+    ecode += 3;
     break;
 
     /* End of the pattern. If PCRE_NOTEMPTY is set, fail if we have matched
@@ -3429,10 +3674,21 @@ for (;;)
 
     /* Move the subject pointer back. This occurs only at the start of
     each branch of a lookbehind assertion. If we are too close to the start to
-    move back, this match function fails. */
+    move back, this match function fails. When working with UTF-8 we move
+    back a number of characters, not bytes. */
 
     case OP_REVERSE:
+#ifdef SUPPORT_UTF8
+    c = (ecode[1] << 8) + ecode[2];
+    for (i = 0; i < c; i++)
+      {
+      eptr--;
+      BACKCHAR(eptr)
+      }
+#else
     eptr -= (ecode[1] << 8) + ecode[2];
+#endif
+
     if (eptr < md->start_subject) return FALSE;
     ecode += 3;
     break;
@@ -3617,8 +3873,14 @@ for (;;)
 
       if (*prev != OP_COND)
         {
+        int offset;
         int number = *prev - OP_BRA;
-        int offset = number << 1;
+
+        /* For extended extraction brackets (large number), we have to fish out
+        the number from a dummy opcode at the start. */
+
+        if (number > EXTRACT_BASIC_MAX) number = (prev[4] << 8) | prev[5];
+        offset = number << 1;
 
 #ifdef DEBUG
         printf("end bracket %d", number);
@@ -3678,7 +3940,7 @@ for (;;)
     if (md->notbol && eptr == md->start_subject) return FALSE;
     if ((ims & PCRE_MULTILINE) != 0)
       {
-      if (eptr != md->start_subject && eptr[-1] != '\n') return FALSE;
+      if (eptr != md->start_subject && eptr[-1] != NEWLINE) return FALSE;
       ecode++;
       break;
       }
@@ -3697,7 +3959,7 @@ for (;;)
     case OP_DOLL:
     if ((ims & PCRE_MULTILINE) != 0)
       {
-      if (eptr < md->end_subject) { if (*eptr != '\n') return FALSE; }
+      if (eptr < md->end_subject) { if (*eptr != NEWLINE) return FALSE; }
         else { if (md->noteol) return FALSE; }
       ecode++;
       break;
@@ -3708,7 +3970,7 @@ for (;;)
       if (!md->endonly)
         {
         if (eptr < md->end_subject - 1 ||
-           (eptr == md->end_subject - 1 && *eptr != '\n')) return FALSE;
+           (eptr == md->end_subject - 1 && *eptr != NEWLINE)) return FALSE;
 
         ecode++;
         break;
@@ -3727,7 +3989,7 @@ for (;;)
 
     case OP_EODN:
     if (eptr < md->end_subject - 1 ||
-       (eptr == md->end_subject - 1 && *eptr != '\n')) return FALSE;
+       (eptr == md->end_subject - 1 && *eptr != NEWLINE)) return FALSE;
     ecode++;
     break;
 
@@ -3749,9 +4011,13 @@ for (;;)
     /* Match a single character type; inline for speed */
 
     case OP_ANY:
-    if ((ims & PCRE_DOTALL) == 0 && eptr < md->end_subject && *eptr == '\n')
+    if ((ims & PCRE_DOTALL) == 0 && eptr < md->end_subject && *eptr == NEWLINE)
       return FALSE;
     if (eptr++ >= md->end_subject) return FALSE;
+#ifdef SUPPORT_UTF8
+    if (md->utf8)
+      while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
+#endif
     ecode++;
     break;
 
@@ -3808,8 +4074,8 @@ for (;;)
     case OP_REF:
       {
       int length;
-      int offset = ecode[1] << 1;                /* Doubled reference number */
-      ecode += 2;                                /* Advance past the item */
+      int offset = (ecode[1] << 9) | (ecode[2] << 1); /* Doubled ref number */
+      ecode += 3;                                     /* Advance past item */
 
       /* If the reference is unset, set the length to be longer than the amount
       of subject left; this ensures that every attempt at a match fails. We
@@ -3953,7 +4219,13 @@ for (;;)
       for (i = 1; i <= min; i++)
         {
         if (eptr >= md->end_subject) return FALSE;
-        c = *eptr++;
+        GETCHARINC(c, eptr)         /* Get character; increment eptr */
+
+#ifdef SUPPORT_UTF8
+        /* We do not yet support class members > 255 */
+        if (c > 255) return FALSE;
+#endif
+
         if ((data[c/8] & (1 << (c&7))) != 0) continue;
         return FALSE;
         }
@@ -3973,7 +4245,12 @@ for (;;)
           if (match(eptr, ecode, offset_top, md, ims, eptrb, 0))
             return TRUE;
           if (i >= max || eptr >= md->end_subject) return FALSE;
-          c = *eptr++;
+          GETCHARINC(c, eptr)       /* Get character; increment eptr */
+
+#ifdef SUPPORT_UTF8
+          /* We do not yet support class members > 255 */
+          if (c > 255) return FALSE;
+#endif
           if ((data[c/8] & (1 << (c&7))) != 0) continue;
           return FALSE;
           }
@@ -3985,17 +4262,29 @@ for (;;)
       else
         {
         const uschar *pp = eptr;
-        for (i = min; i < max; eptr++, i++)
+        int len = 1;
+        for (i = min; i < max; i++)
           {
           if (eptr >= md->end_subject) break;
-          c = *eptr;
-          if ((data[c/8] & (1 << (c&7))) != 0) continue;
-          break;
+          GETCHARLEN(c, eptr, len)  /* Get character, set length if UTF-8 */
+
+#ifdef SUPPORT_UTF8
+          /* We do not yet support class members > 255 */
+          if (c > 255) break;
+#endif
+          if ((data[c/8] & (1 << (c&7))) == 0) break;
+          eptr += len;
           }
 
         while (eptr >= pp)
+          {
           if (match(eptr--, ecode, offset_top, md, ims, eptrb, 0))
             return TRUE;
+
+#ifdef SUPPORT_UTF8
+          BACKCHAR(eptr)
+#endif
+          }
         return FALSE;
         }
       }
@@ -4315,15 +4604,31 @@ for (;;)
 
     /* First, ensure the minimum number of matches are present. Use inline
     code for maximizing the speed, and do the type test once at the start
-    (i.e. keep it out of the loop). Also test that there are at least the
-    minimum number of characters before we start. */
+    (i.e. keep it out of the loop). Also we can test that there are at least
+    the minimum number of bytes before we start, except when doing '.' in
+    UTF8 mode. Leave the test in in all cases; in the special case we have
+    to test after each character. */
 
     if (min > md->end_subject - eptr) return FALSE;
     if (min > 0) switch(ctype)
       {
       case OP_ANY:
+#ifdef SUPPORT_UTF8
+      if (md->utf8)
+        {
+        for (i = 1; i <= min; i++)
+          {
+          if (eptr >= md->end_subject ||
+             (*eptr++ == NEWLINE && (ims & PCRE_DOTALL) == 0))
+            return FALSE;
+          while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
+          }
+        break;
+        }
+#endif
+      /* Non-UTF8 can be faster */
       if ((ims & PCRE_DOTALL) == 0)
-        { for (i = 1; i <= min; i++) if (*eptr++ == '\n') return FALSE; }
+        { for (i = 1; i <= min; i++) if (*eptr++ == NEWLINE) return FALSE; }
       else eptr += min;
       break;
 
@@ -4378,7 +4683,11 @@ for (;;)
         switch(ctype)
           {
           case OP_ANY:
-          if ((ims & PCRE_DOTALL) == 0 && c == '\n') return FALSE;
+          if ((ims & PCRE_DOTALL) == 0 && c == NEWLINE) return FALSE;
+#ifdef SUPPORT_UTF8
+          if (md->utf8)
+            while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
+#endif
           break;
 
           case OP_NOT_DIGIT:
@@ -4418,11 +4727,38 @@ for (;;)
       switch(ctype)
         {
         case OP_ANY:
+
+        /* Special code is required for UTF8, but when the maximum is unlimited
+        we don't need it. */
+
+#ifdef SUPPORT_UTF8
+        if (md->utf8 && max < INT_MAX)
+          {
+          if ((ims & PCRE_DOTALL) == 0)
+            {
+            for (i = min; i < max; i++)
+              {
+              if (eptr >= md->end_subject || *eptr++ == NEWLINE) break;
+              while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
+              }
+            }
+          else
+            {
+            for (i = min; i < max; i++)
+              {
+              eptr++;
+              while (eptr < md->end_subject && (*eptr & 0xc0) == 0x80) eptr++;
+              }
+            }
+          break;
+          }
+#endif
+        /* Non-UTF8 can be faster */
         if ((ims & PCRE_DOTALL) == 0)
           {
           for (i = min; i < max; i++)
             {
-            if (eptr >= md->end_subject || *eptr == '\n') break;
+            if (eptr >= md->end_subject || *eptr == NEWLINE) break;
             eptr++;
             }
           }
@@ -4490,8 +4826,14 @@ for (;;)
         }
 
       while (eptr >= pp)
+        {
         if (match(eptr--, ecode, offset_top, md, ims, eptrb, 0))
           return TRUE;
+#ifdef SUPPORT_UTF8
+        if (md->utf8)
+          while (eptr > pp && (*eptr & 0xc0) == 0x80) eptr--;
+#endif
+        }
       return FALSE;
       }
     /* Control never gets here */
@@ -4557,8 +4899,8 @@ const uschar *req_char_ptr = start_match - 1;
 const real_pcre *re = (const real_pcre *)external_re;
 const real_pcre_extra *extra = (const real_pcre_extra *)external_extra;
 BOOL using_temporary_offsets = FALSE;
-BOOL anchored = ((re->options | options) & PCRE_ANCHORED) != 0;
-BOOL startline = (re->options & PCRE_STARTLINE) != 0;
+BOOL anchored;
+BOOL startline;
 
 if ((options & ~PUBLIC_EXEC_OPTIONS) != 0) return PCRE_ERROR_BADOPTION;
 
@@ -4566,12 +4908,16 @@ if (re == NULL || subject == NULL ||
    (offsets == NULL && offsetcount > 0)) return PCRE_ERROR_NULL;
 if (re->magic_number != MAGIC_NUMBER) return PCRE_ERROR_BADMAGIC;
 
+anchored = ((re->options | options) & PCRE_ANCHORED) != 0;
+startline = (re->options & PCRE_STARTLINE) != 0;
+
 match_block.start_pattern = re->code;
 match_block.start_subject = (const uschar *)subject;
 match_block.end_subject = match_block.start_subject + length;
 end_subject = match_block.end_subject;
 
 match_block.endonly = (re->options & PCRE_DOLLAR_ENDONLY) != 0;
+match_block.utf8 = (re->options & PCRE_UTF8) != 0;
 
 match_block.notbol = (options & PCRE_NOTBOL) != 0;
 match_block.noteol = (options & PCRE_NOTEOL) != 0;
@@ -4693,7 +5039,7 @@ do
     {
     if (start_match > match_block.start_subject + start_offset)
       {
-      while (start_match < end_subject && start_match[-1] != '\n')
+      while (start_match < end_subject && start_match[-1] != NEWLINE)
         start_match++;
       }
     }
@@ -4798,7 +5144,7 @@ do
 
   rc = match_block.offset_overflow? 0 : match_block.end_offset_top/2;
 
-  if (match_block.offset_end < 2) rc = 0; else
+  if (offsetcount < 2) rc = 0; else
     {
     offsets[0] = start_match - match_block.start_subject;
     offsets[1] = match_block.end_match_ptr - match_block.start_subject;
