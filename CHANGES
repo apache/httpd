@@ -110,9 +110,6 @@ Changes with Apache 2.1.0-dev
      status and terminate the provider chain prior to checking the password.
      [Geoffrey Young]
 
-  *) Allow RequestHeader directives to be conditional. PR 27951.
-     [Vincent Deffontaines <vincent gryzor.com>, André Malo]
-
   *) mod_rewrite no longer turns forward proxy requests into reverse proxy
      requests. PR 28125  [ast domdv.de, André Malo]
 
@@ -380,6 +377,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Allow RequestHeader directives to be conditional. PR 27951.
+     [Vincent Deffontaines <vincent gryzor.com>, André Malo]
 
   *) Allow LimitRequestBody to be reset to unlimited. PR 29106
      [André Malo]
