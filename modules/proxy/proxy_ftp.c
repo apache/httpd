@@ -710,7 +710,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
-    int i = 0, len, rc;
+    int len, rc;
     int one = 1;
     char *size = NULL;
     apr_socket_t *origin_sock = NULL;
@@ -1382,7 +1382,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
-        else if (i == 213) {/* Size command ok */
+        else if (rc == 213) {/* Size command ok */
             int j;
             for (j = 0; apr_isdigit(ftpmessage[j]); j++)
 	        ;
