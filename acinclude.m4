@@ -489,6 +489,13 @@ if test "x$ap_ssltk_base" = "x"; then
     fi
   fi
   APR_ADDTO(LIBS, [-lssl -lcrypto])
+  pkg-config openssl 2> /dev/null
+  if test $? -eq 0; then
+    ap_ssltk_incdep=`pkg-config --cflags-only-I openssl`
+    APR_ADDTO(INCLUDES, $ap_ssltk_incdep)
+    ap_ssltk_libdep=`pkg-config --libs openssl`
+    APR_ADDTO(LIBS, $ap_ssltk_libdep)
+  fi
   ap_cv_ssltk="$ap_ssltk_base"
 fi
 ])

@@ -1,5 +1,13 @@
 Changes with Apache 2.0.51
 
+  *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
+
+  *) SECURITY: CAN-2004-0748 (cve.mitre.org)
+     mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
+
+  *) mod_ssl: Avoid startup failure after unclean shutdown if using shmcb.
+     PR 18989.  [Joe Orton]
+
   *) mod_userdir: Ensure that the userdir identity is used for
      suexec userdir access in a virtual host which has suexec configured.  
      PR 18156.  [Joshua Slive]

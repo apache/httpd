@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/20 21:17:39 $]
+Last modified at [$Date: 2004/08/23 14:59:51 $]
 
 Release:
 
@@ -82,16 +82,6 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
        PR: 30134
        +1: jorton
-
-    *) [SECURITY] mod_ssl: Fix potential infinite loop.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.124&r2=1.125
-       PR: 29964
-       +1: jorton, nd, jerenkrantz
-
-    *) mod_ssl: Use anon shm in shmcb by default.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
-       PR: 21335
-       +1: jorton, minfrin, nd
 
     *) apachectl: Fix a problem finding envvars if sbindir != bindir.
        PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
@@ -385,12 +375,6 @@ PATCHES TO BACKPORT FROM 2.1
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
       +1 concept: trawick, nd
-
-    * Work around RedHat bug 82359 (openssl requires pkg-config):
-        http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=82369
-      Patch (2.1 version already committed, 2.0 has diff OpenSSL config logic):
-        http://www.apache.org/~jerenkrantz/httpd-openssl-pkgconfig.patch
-      +1: jerenkrantz, trawick, jorton
 
 CURRENT RELEASE NOTES:
 

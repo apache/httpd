@@ -587,6 +587,10 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
     while (1) {
 
         if (!inctx->filter_ctx->pssl) {
+            /* Ensure a non-zero error code is returned */
+            if (inctx->rc == APR_SUCCESS) {
+                inctx->rc = APR_EGENERAL;
+            }
             break;
         }
 
