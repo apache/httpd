@@ -273,7 +273,7 @@ static worker_wakeup_info *worker_wakeup_create(apr_pool_t *pool)
  */
 typedef struct {
     /* 'state' consists of several fields concatenated into a
-     * single 32-bit int for use with the apr_atomic_cas() API:
+     * single 32-bit int for use with the apr_atomic_cas32() API:
      *   state & STACK_FIRST  is the thread ID of the first thread
      *                        in a linked list of idle threads
      *   state & STACK_TERMINATED  indicates whether the proc is shutting down
@@ -308,7 +308,7 @@ static apr_status_t worker_stack_wait(worker_stack *stack,
             if (state & STACK_TERMINATED) {
                 return APR_EINVAL;
             }
-            if (apr_atomic_cas(&(stack->state), STACK_LIST_END, state) !=
+            if (apr_atomic_cas32(&(stack->state), STACK_LIST_END, state) !=
                 state) {
                 continue;
             }
@@ -317,7 +317,7 @@ static apr_status_t worker_stack_wait(worker_stack *stack,
             }
         }
         wakeup->next = state;
-        if (apr_atomic_cas(&(stack->state), worker_id, state) != state) {
+        if (apr_atomic_cas32(&(stack->state), worker_id, state) != state) {
             continue;
         }
         else {
@@ -333,8 +333,8 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
         apr_uint32_t state = stack->state;
         apr_uint32_t first = state & STACK_FIRST;
         if (first == STACK_LIST_END) {
-            if (apr_atomic_cas(&(stack->state), state | STACK_NO_LISTENER,
-                               state) != state) {
+            if (apr_atomic_cas32(&(stack->state), state | STACK_NO_LISTENER,
+                                 state) != state) {
                 continue;
             }
             else {
@@ -343,8 +343,8 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
         }
         else {
             worker_wakeup_info *wakeup = worker_wakeups[first];
-            if (apr_atomic_cas(&(stack->state), (state ^ first) | wakeup->next,
-                               state) != state) {
+            if (apr_atomic_cas32(&(stack->state), (state ^ first) | wakeup->next,
+                                 state) != state) {
                 continue;
             }
             else {
@@ -373,8 +373,8 @@ static apr_status_t worker_stack_term(worker_stack *stack)
 
     while (1) {
         apr_uint32_t state = stack->state;
-        if (apr_atomic_cas(&(stack->state), state | STACK_TERMINATED,
-                           state) == state) {
+        if (apr_atomic_cas32(&(stack->state), state | STACK_TERMINATED,
+                             state) == state) {
             break;
         }
     }

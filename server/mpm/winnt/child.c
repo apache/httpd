@@ -206,7 +206,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
  
                 context->accept_socket = INVALID_SOCKET;
                 context->ba = apr_bucket_alloc_create(pchild);
-                apr_atomic_inc(&num_completion_contexts); 
+                apr_atomic_inc32(&num_completion_contexts); 
                 break;
             }
         } else {
@@ -671,10 +671,10 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     mpm_recycle_completion_context(context);
 
-    apr_atomic_inc(&g_blocked_threads);
+    apr_atomic_inc32(&g_blocked_threads);
     while (1) {
         if (workers_may_exit) {
-            apr_atomic_dec(&g_blocked_threads);
+            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead, &CompKey,
@@ -691,15 +691,15 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             context = CONTAINING_RECORD(pol, COMP_CONTEXT, Overlapped);
             break;
         case IOCP_SHUTDOWN:
-            apr_atomic_dec(&g_blocked_threads);
+            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         default:
-            apr_atomic_dec(&g_blocked_threads);
+            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         break;
     }
-    apr_atomic_dec(&g_blocked_threads);
+    apr_atomic_dec32(&g_blocked_threads);
 
     return context;
 }

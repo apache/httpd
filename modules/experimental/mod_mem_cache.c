@@ -168,7 +168,7 @@ static void memcache_set_pos(void *a, apr_ssize_t pos)
     mem_cache_object_t *mobj = obj->vobj;
 
 #ifdef USE_ATOMICS
-    apr_atomic_set(&mobj->pos, pos);
+    apr_atomic_set32(&mobj->pos, pos);
 #else
     mobj->pos = pos;
 #endif    
@@ -179,7 +179,7 @@ static apr_ssize_t memcache_get_pos(void *a)
     mem_cache_object_t *mobj = obj->vobj;
 
 #ifdef USE_ATOMICS
-    return apr_atomic_read(&mobj->pos);
+    return apr_atomic_read32(&mobj->pos);
 #else
     return mobj->pos;
 #endif    
@@ -213,7 +213,7 @@ static void memcache_cache_free(void*a)
      * condition. A similar pattern is used in remove_url()
      */
 #ifdef USE_ATOMICS
-    apr_atomic_inc(&obj->refcount);
+    apr_atomic_inc32(&obj->refcount);
 #else
     obj->refcount++;
 #endif
@@ -221,7 +221,7 @@ static void memcache_cache_free(void*a)
     obj->cleanup = 1;
 
 #ifdef USE_ATOMICS
-    if (!apr_atomic_dec(&obj->refcount)) {
+    if (!apr_atomic_dec32(&obj->refcount)) {
         cleanup_cache_object(obj);
     }
 #else
@@ -357,7 +357,7 @@ static apr_status_t decrement_refcount(void *arg)
 
     /* Cleanup the cache object */
 #ifdef USE_ATOMICS
-    if (!apr_atomic_dec(&obj->refcount)) {
+    if (!apr_atomic_dec32(&obj->refcount)) {
         if (obj->cleanup) {
             cleanup_cache_object(obj);
         }
@@ -399,9 +399,9 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     /* Iterate over the cache and clean up each entry */  
     /* Free the object if the recount == 0 */
 #ifdef USE_ATOMICS
-        apr_atomic_inc(&obj->refcount);
+        apr_atomic_inc32(&obj->refcount);
         obj->cleanup = 1;
-        if (!apr_atomic_dec(&obj->refcount)) {
+        if (!apr_atomic_dec32(&obj->refcount)) {
 #else
         obj->cleanup = 1;
         if (!obj->refcount) {
@@ -517,7 +517,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     /* Finish initing the cache object */
 #ifdef USE_ATOMICS
-    apr_atomic_set(&obj->refcount, 1);
+    apr_atomic_set32(&obj->refcount, 1);
 #else 
     obj->refcount = 1;
 #endif
@@ -595,7 +595,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
         if (obj->complete) {
             request_rec *rmain=r, *rtmp;
 #ifdef USE_ATOMICS
-            apr_atomic_inc(&obj->refcount);
+            apr_atomic_inc32(&obj->refcount);
 #else
             obj->refcount++;
 #endif
@@ -758,7 +758,7 @@ static int remove_url(const char *type, const char *key)
         /* Refcount increment in this case MUST be made under 
          * protection of the lock 
          */
-        apr_atomic_inc(&obj->refcount);
+        apr_atomic_inc32(&obj->refcount);
 #else
         if (!obj->refcount) {
             cleanup_cache_object(obj);
@@ -774,7 +774,7 @@ static int remove_url(const char *type, const char *key)
     }
 #ifdef USE_ATOMICS
     if (obj) {
-        if (!apr_atomic_dec(&obj->refcount)) {
+        if (!apr_atomic_dec32(&obj->refcount)) {
             cleanup_cache_object(obj);
         }
     }
