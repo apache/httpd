@@ -1,5 +1,8 @@
 Changes with Apache 2.0.22-dev
 
+  *) Fix a segfault in threaded.c caused by passing uninitialized
+     apr_thread_t * to apr_thread_join().  [Jeff Trawick]
+
   *) Use new APR number conversion functions to reduce CPU consumption 
      when setting the content length, and in mod_log_config.
      [Brian Pane]
