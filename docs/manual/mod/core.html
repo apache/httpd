@@ -53,6 +53,8 @@
 
       <li><a href="#errorlog">ErrorLog</a></li>
 
+      <li><a href="#fileetag">FileETag</a></li>
+
       <li><a href="#files">&lt;Files&gt;</a></li>
 
       <li><a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
@@ -865,6 +867,63 @@
 
     <p><strong>See also:</strong> <a href="#loglevel">LogLevel</a>
     and <a href="../logs.html">Apache Log Files</a></p>
+    <hr />
+
+    <h2><a id="fileetag" name="fileetag">FileETag directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> FileETag
+    <i>component</i> ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> only available
+    in Apache 1.3.23 versions and later. 
+
+    <p>
+    The FileETag directive configures the file attributes that are
+    used to create the ETag (entity tag) response header field
+    when the document is based on a file.
+    (The ETag value is used in cache management to save network
+    bandwidth.)  In Apache 1.3.22 and earlier, the ETag value was
+    <i>always</i> formed from the file's inode, size, and last-modified
+    time (mtime).  The FileETag directive allows you to choose
+    which of these -- if any -- should be used.  The recognised
+    keywords are:
+    </p>
+    <dl compact="compact">
+     <dt><b>INode</b></dt>
+     <dd>The file's i-node number will be included in the calculation</dd>
+     <dt><b>MTime</b></dt>
+     <dd>The date and time the file was last modified will be included</dd>
+     <dt><b>Size</b></dt>
+     <dd>The number of bytes in the file will be included</dd>
+     <dt><b>All</b></dt>
+     <dd>All available fields will be used (equivalent to
+      '<code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>')</dd>
+     <dt><b>None</b></dt>
+     <dd>If a document is file-based, no ETag field will be included in the
+      response</dd>
+    </dl>
+    <p>
+    The INode, MTime, and Size keywords may be prefixed with either '+'
+    or '-', which allow changes to be made to the default setting
+    inherited from a broader scope.  Any keyword appearing without
+    such a prefix immediately and completely cancels the inherited
+    setting.
+    </p>
+    <p>
+    If a directory's configuration includes
+    '<code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>', and a
+    subdirectory's includes '<code>FileETag&nbsp;-INode</code>',
+    the setting for that subdirectory (which will be inherited by
+    any sub-subdirectories that don't override it) will be equivalent to
+    '<code>FileETag&nbspMTime&nbsp;Size</code>'.
+    </p>
     <hr />
 
     <h2><a id="files" name="files">&lt;Files&gt; directive</a></h2>
