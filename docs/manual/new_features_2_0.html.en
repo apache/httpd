@@ -83,6 +83,18 @@
     <h2><a id="module" name="module">Module Enhancements:</a></h2>
 
     <dl>
+      <dt><strong>mod_ssl</strong></dt>
+
+      <dd>New module in Apache 2.0.  This module is an interface
+      to the SSL/TLS strong encryption protocols provided by
+      OpenSSL.</dd>
+
+      <dt><strong>mod_dav</strong></dt>
+
+      <dd>New module in Apache 2.0. This module implements the HTTP
+      Distributed Authoring and Versioning (DAV) specification for
+      posting and maintaining web content.</dd>
+
       <dt><strong>mod_auth_db</strong></dt>
 
       <dd>Now supports Berkely DB 3.0</dd>
@@ -96,12 +108,6 @@
 
       <dd>New module in Apache 2.0. This experimental module allows
       for character set translation or recoding.</dd>
-
-      <dt><strong>mod_dav</strong></dt>
-
-      <dd>New module in Apache 2.0. This module implements the HTTP
-      Distributed Authoring and Versioning (DAV) specification for
-      posting and maintaining web content.</dd>
 
       <dt><strong>mod_file_cache</strong></dt>
 
