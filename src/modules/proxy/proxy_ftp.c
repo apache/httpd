@@ -102,11 +102,7 @@ static int ftp_check_string(const char *x)
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
-#ifndef CHARSET_EBCDIC
-	if (ch == '\015' || ch == '\012' || (ch & 0x80))
-#else /*CHARSET_EBCDIC*/
-	if (ch == '\r' || ch == '\n' || (os_toascii[ch] & 0x80))
-#endif /*CHARSET_EBCDIC*/
+	if (ch == CR || ch == LF || (OS_ASC(ch) & 0x80))
 	    return 0;
     }
     return 1;
@@ -780,7 +776,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
     if (parms[0] != 'a') {
 	/* set type to image */
-	/* TM - Added \015\012 to the end of TYPE I, otherwise it hangs the
+	/* TM - Added CRLF to the end of TYPE I, otherwise it hangs the
 	   connection */
 	ap_bputs("TYPE I" CRLF, f);
 	ap_bflush(f);

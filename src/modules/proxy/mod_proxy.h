@@ -128,13 +128,6 @@ enum enctype {
 /* maximum  'CacheDirLevels*CacheDirLength' value */
 #define CACHEFILE_LEN 20	/* must be less than HASH_LEN/2 */
 
-#ifdef CHARSET_EBCDIC
-#define CRLF   "\r\n"
-#else /*CHARSET_EBCDIC*/
-#define CRLF   "\015\012"
-#endif /*CHARSET_EBCDIC*/
-
-
 #define	SEC_ONE_DAY		86400	/* one day, in seconds */
 #define	SEC_ONE_HR		3600	/* one hour, in seconds */
 

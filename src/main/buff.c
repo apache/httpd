@@ -540,16 +540,16 @@ static void end_chunk(BUFF *fb)
 	*strp++ = ' ';
 	++i;
     }
-    *strp++ = '\015';
-    *strp = '\012';
+    *strp++ = CR;
+    *strp = LF;
 #ifdef CHARSET_EBCDIC
     /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
     ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], CHUNK_HEADER_SIZE);
 #endif /*CHARSET_EBCDIC*/
 
     /* tack on the trailing CRLF, we've reserved room for this */
-    fb->outbase[fb->outcnt++] = '\015';
-    fb->outbase[fb->outcnt++] = '\012';
+    fb->outbase[fb->outcnt++] = CR;
+    fb->outbase[fb->outcnt++] = LF;
 
     fb->outchunk = -1;
 }
@@ -874,27 +874,15 @@ API_EXPORT(int) ap_bgets(char *buff, int n, BUFF *fb)
 	}
 
 	ch = fb->inptr[i++];
-#ifndef CHARSET_EBCDIC
-	if (ch == '\012') {	/* got LF */
-	    if (ct == 0)
-		buff[ct++] = '\n';
-/* if just preceeded by CR, replace CR with LF */
-	    else if (buff[ct - 1] == '\015')
-		buff[ct - 1] = '\n';
-	    else if (ct < n - 1)
-		buff[ct++] = '\n';
-	    else
-		i--;		/* no room for LF */
-	    break;
-	}
-#else /* an EBCDIC machine: do the same, but convert to EBCDIC on the fly: */
+#ifdef CHARSET_EBCDIC
 	if (fb->flags & B_ASCII2EBCDIC)
 	    ch = os_toebcdic[(unsigned char)ch];
-	if (ch == os_toebcdic['\012']) {  /* got LF */
+#endif
+	if (ch == LF) {  /* got LF */
 	    if (ct == 0)
 		buff[ct++] = '\n';
 /* if just preceeded by CR, replace CR with LF */
-	    else if (buff[ct - 1] == os_toebcdic['\015'])
+	    else if (buff[ct - 1] == CR)
 		buff[ct - 1] = '\n';
 	    else if (ct < n - 1)
 		buff[ct++] = '\n';
@@ -902,7 +890,6 @@ API_EXPORT(int) ap_bgets(char *buff, int n, BUFF *fb)
 		i--;		/* no room for LF */
 	    break;
 	}
-#endif
 	if (ct == n - 1) {
 	    i--;		/* push back ch */
 	    break;
@@ -1159,7 +1146,7 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
 #ifdef NO_WRITEV
     /* without writev() this has poor performance, too bad */
 
-    ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
+    ap_snprintf(chunksize, sizeof(chunksize), "%x" CRLF, nbyte);
 #ifdef CHARSET_EBCDIC
     /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
     ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
@@ -1168,12 +1155,12 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
 	return -1;
     if (write_it_all(fb, buf, nbyte) == -1)
 	return -1;
-    if (write_it_all(fb, "\015\012", 2) == -1)
+    if (write_it_all(fb, CRLF, 2) == -1)
 	return -1;
     return nbyte;
 #else
     vec[0].iov_base = chunksize;
-    vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012",
+    vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x" CRLF,
 				 nbyte);
 #ifdef CHARSET_EBCDIC
     /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
@@ -1181,7 +1168,7 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
 #endif /*CHARSET_EBCDIC*/
     vec[1].iov_base = (void *) buf;	/* cast is to avoid const warning */
     vec[1].iov_len = nbyte;
-    vec[2].iov_base = "\015\012";
+    vec[2].iov_base = CRLF;
     vec[2].iov_len = 2;
 
     return writev_it_all(fb, vec, (sizeof(vec) / sizeof(vec[0]))) ? -1 : nbyte;
@@ -1213,7 +1200,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
     if (fb->flags & B_CHUNK) {
 	vec[nvec].iov_base = chunksize;
 	vec[nvec].iov_len = ap_snprintf(chunksize, sizeof(chunksize),
-					"%x\015\012", nbyte);
+					"%x" CRLF, nbyte);
 #ifdef CHARSET_EBCDIC
     /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
 	ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
@@ -1222,7 +1209,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
 	vec[nvec].iov_base = (void *) buf;
 	vec[nvec].iov_len = nbyte;
 	++nvec;
-	vec[nvec].iov_base = "\015\012";
+	vec[nvec].iov_base = CRLF;
 	vec[nvec].iov_len = 2;
 	++nvec;
     }

@@ -599,6 +599,8 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #ifndef CHARSET_EBCDIC
 #define LF 10
 #define CR 13
+#define CRLF "\015\012"
+#define OS_ASC(c) (c)
 #else /* CHARSET_EBCDIC */
 #include "ebcdic.h"
 /* OSD_POSIX uses the EBCDIC charset. The transition ASCII->EBCDIC is done in
@@ -610,6 +612,8 @@ API_EXPORT(const char *) ap_get_server_built(void);
  */
 #define CR '\r'
 #define LF '\n'
+#define CRLF "\r\n"
+#define OS_ASC(c) (os_toascii[c])
 #endif /* CHARSET_EBCDIC */
 
 /* Possible values for request_rec.read_body (set by handling module):

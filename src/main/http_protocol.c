@@ -244,7 +244,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     if (!**r_range) {
         if (r->byterange > 1) {
             if (realreq)
-                ap_rvputs(r, "\015\012--", r->boundary, "--\015\012", NULL);
+                ap_rvputs(r, CRLF "--", r->boundary, "--" CRLF, NULL);
             else
                 *tlength += 4 + strlen(r->boundary) + 4;
         }
@@ -271,8 +271,8 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
         ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
                     r->clength);
         if (realreq)
-            ap_rvputs(r, "\015\012--", r->boundary, "\015\012Content-type: ",
-                   ct, "\015\012Content-range: bytes ", ts, "\015\012\015\012",
+            ap_rvputs(r, CRLF "--", r->boundary, CRLF "Content-type: ",
+                   ct, CRLF "Content-range: bytes ", ts, CRLF CRLF,
                    NULL);
         else
             *tlength += 4 + strlen(r->boundary) + 16 + strlen(ct) + 23 +
@@ -1334,7 +1334,7 @@ API_EXPORT(int) ap_index_of_response(int status)
 API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
     const char *fieldname, const char *fieldval)
 {
-    return (0 < ap_rvputs(r, fieldname, ": ", fieldval, "\015\012", NULL));
+    return (0 < ap_rvputs(r, fieldname, ": ", fieldval, CRLF, NULL));
 }
 
 API_EXPORT(void) ap_basic_http_header(request_rec *r)
@@ -1366,7 +1366,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
-    ap_rvputs(r, protocol, " ", r->status_line, "\015\012", NULL);
+    ap_rvputs(r, protocol, " ", r->status_line, CRLF, NULL);
 
     ap_send_header_field(r, "Date", ap_gm_timestr_822(r->pool, r->request_time));
     ap_send_header_field(r, "Server", ap_get_server_version());
@@ -1401,9 +1401,9 @@ static void terminate_header(BUFF *client)
 
     ap_bgetopt(client, BO_BYTECT, &bs);
     if (bs >= 255 && bs <= 257)
-        ap_bputs("X-Pad: avoid browser bug\015\012", client);
+        ap_bputs("X-Pad: avoid browser bug" CRLF, client);
 
-    ap_bputs("\015\012", client);  /* Send the terminating empty line */
+    ap_bputs(CRLF, client);  /* Send the terminating empty line */
 }
 
 /* Build the Allow field-value from the request handler method mask.
@@ -1448,11 +1448,11 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
 
     /* Now we recreate the request, and echo it back */
 
-    ap_rvputs(r, r->the_request, "\015\012", NULL);
+    ap_rvputs(r, r->the_request, CRLF, NULL);
 
     ap_table_do((int (*) (void *, const char *, const char *))
                 ap_send_header_field, (void *) r, r->headers_in, NULL);
-    ap_rputs("\015\012", r);
+    ap_rputs(CRLF, r);
 
     ap_kill_timeout(r);
     return OK;
@@ -1691,9 +1691,9 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         ap_bsetflag(r->connection->client, B_CHUNK, 0);
 
         ap_soft_timeout("send ending chunk", r);
-        ap_rputs("0\015\012", r);
+        ap_rputs("0" CRLF, r);
         /* If we had footer "headers", we'd send them now */
-        ap_rputs("\015\012", r);
+        ap_rputs(CRLF, r);
         ap_kill_timeout(r);
     }
 }
@@ -1819,7 +1819,7 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         /* sending 100 Continue interim response */
-        ap_rvputs(r, SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
+        ap_rvputs(r, SERVER_PROTOCOL, " ", status_lines[0], CRLF CRLF,
                   NULL);
         ap_rflush(r);
     }
@@ -2694,8 +2694,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	    }
 	    break;
 	case BAD_GATEWAY:
-	    ap_rputs("The proxy server received an invalid\015\012"
-	             "response from an upstream server.<P>\015\012", r);
+	    ap_rputs("The proxy server received an invalid" CRLF
+	             "response from an upstream server.<P>" CRLF, r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }

@@ -1,5 +1,14 @@
 Changes with Apache 1.3.10
 
+  *) Replace all occurrences of "\012\015" by a macro CRLF. This makes
+     the code (somewhat) more readable, and improves the portability
+     to character sets other than ASCII (e.g., EBCDIC).
+     This patch results in no functional change whatsoever on ASCII
+     machines, but allows EBCDIC platforms to live without the
+     ebcdic2ascii_strictly() kludge.
+     [Paul Gilmartin <pg@sweng.stortek.com>, slightly modified
+     by Martin Kraemer]
+
   *) more fixes to mod_auth_digest:
      - better comparing of request-uri with uri parameter in Authorization
        header
