@@ -202,6 +202,15 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
     int found_eos = 0, n;
     char buf[1024];
     apr_status_t rv;
+    int do_handshake = (eMode == AP_MODE_INIT);
+ 
+    if (do_handshake) {
+        /* protocol module needs to handshake before sending
+         * data to client (e.g. NNTP or FTP)
+         */
+        *readbytes = AP_IOBUFSIZE;
+        eMode = AP_MODE_NONBLOCKING;
+    }
 
     /* Flush the output buffers. */
     churn_output(pRec);
@@ -213,6 +222,13 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
 
     /* If we have nothing in the raw brigade, get some more. */
     if (APR_BRIGADE_EMPTY(ctx->rawb)) {
+        if (do_handshake) {
+            /* 
+             * ap_get_brigade with AP_MODE_INIT should always be called
+             * in non-blocking mode, but we need to block here
+             */
+            eMode = AP_MODE_BLOCKING;
+        }
         rv = ap_get_brigade(f->next, ctx->rawb, eMode, readbytes);
 
         if (rv != APR_SUCCESS)
@@ -289,6 +305,11 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
      */
     rv = ssl_hook_process_connection(pRec);
 
+    if (do_handshake && (rv == APR_SUCCESS)) {
+        /* don't block after the handshake */
+        eMode = AP_MODE_NONBLOCKING;
+    }
+
     /* Flush again. */
     churn_output(pRec);
 
@@ -322,8 +343,12 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
             return APR_SUCCESS;
         }
         if (rv == SSL_ERROR_WANT_READ) {
+            /* if eMode was originally AP_MODE_INIT,
+             * need to reset before we recurse
+             */
+            ap_input_mode_t mode = do_handshake ? AP_MODE_INIT : eMode;
             apr_off_t tempread = AP_IOBUFSIZE;
-            return churn_input(pRec, eMode, &tempread);
+            return churn_input(pRec, mode, &tempread);
         }
         return rv;
     }
