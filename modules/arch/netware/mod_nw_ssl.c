@@ -89,6 +89,10 @@
 #include "apr_portable.h"
 #include "apr_optional.h"
 
+#ifndef SO_TLS_UNCLEAN_SHUTDOWN
+#define SO_TLS_UNCLEAN_SHUTDOWN 0
+#endif
+
 APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
@@ -266,7 +270,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     }
 
     if (mutual) {
-        optParam = 0x07;               // SO_SSL_AUTH_CLIENT
+        optParam = 0x07;  // SO_SSL_AUTH_CLIENT
 
         if(WSAIoctl(s, SO_SSL_SET_FLAGS, (char*)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
@@ -276,6 +280,10 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
             return -1;
         }
     }
+
+    optParam = SO_TLS_UNCLEAN_SHUTDOWN;
+    WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam, sizeof(optParam), 
+             NULL, 0, NULL, NULL, NULL);
 
     return s;
 }
@@ -306,6 +314,10 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
                      "Error: %d with ioctlsocket(flag SO_TLS_ENABLE)", WSAGetLastError());
 		return rcode;
 	}
+
+    ulFlags = SO_TLS_UNCLEAN_SHUTDOWN;
+	WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
+                     NULL, 0, NULL, NULL, NULL);
 
     /* setup the socket for SSL */
     memset (&sWS2Opts, 0, sizeof(sWS2Opts));
@@ -526,12 +538,13 @@ static int isSecure (const request_rec *r)
 
 static int nwssl_hook_Fixup(request_rec *r)
 {
-    apr_table_t *e = r->subprocess_env;    
+    int i;
+
     if (!isSecure(r))
         return DECLINED;
 
-    apr_table_set(e, "HTTPS", "on");
-    
+    apr_table_set(r->subprocess_env, "HTTPS", "on");
+
     return DECLINED;
 }
 
