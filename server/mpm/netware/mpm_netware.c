@@ -149,7 +149,6 @@
 
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_thread_stack_size=65536;
-static apr_thread_mutex_t *accept_lock;
 static int ap_threads_to_start=0;
 static int ap_threads_min_free=0;
 static int ap_threads_max_free=0;
@@ -176,8 +175,6 @@ static char *ap_my_addrspace = NULL;
 
 static int die_now = 0;
 
-static apr_thread_mutex_t *accept_mutex = NULL;
-
 /* Keep track of the number of worker threads currently active */
 static unsigned long worker_thread_count;
 static int request_count;
@@ -192,7 +189,9 @@ static  CommandParser_t ConsoleHandler = {0, NULL, 0};
 
 static int show_settings = 0;
 
-#if 0
+//#define DBINFO_ON
+//#define DBPRINT_ON
+#ifdef DBPRINT_ON
 #define DBPRINT0(s) printf(s)
 #define DBPRINT1(s,v1) printf(s,v1)
 #define DBPRINT2(s,v1,v2) printf(s,v1,v2)
@@ -332,7 +331,6 @@ int nlmUnloadSignaled()
  * they are really private to child_main.
  */
 
-static fd_set main_fds;
 
 int ap_graceful_stop_signalled(void)
 {
@@ -340,34 +338,36 @@ int ap_graceful_stop_signalled(void)
     return 0;
 }
 
-static int dont_block = 0;
-static int missed_accept = 0;
-static apr_socket_t *sd = NULL;
-
-static int skipped_selects = 0;
+#define MAX_WB_RETRIES  3
+#ifdef DBINFO_ON
 static int would_block = 0;
+static int retry_success = 0;
+static int retry_fail = 0;
+static int avg_retries = 0;
+#endif
+
 /*static */
 void worker_main(void *arg)
 {
-    ap_listen_rec *lr;
-    ap_listen_rec *last_lr = NULL;
+    ap_listen_rec *lr, *first_lr, *last_lr = NULL;
     apr_pool_t *ptrans;
     apr_pool_t *pbucket;
     apr_allocator_t *allocator;
     apr_bucket_alloc_t *bucket_alloc;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
-    int worker_num_arg = (int)arg;
     ap_sb_handle_t *sbh;
 
-    int my_worker_num = worker_num_arg;
+    int my_worker_num = (int)arg;
     apr_socket_t *csd = NULL;
     int requests_this_child = 0;
+    apr_socket_t *sd = NULL;
+    fd_set main_fds;
 
     int sockdes;
-    ap_listen_rec *first_lr;
     int srv;
     struct timeval tv;
+    int wouldblock_retry;
 
     tv.tv_sec = 1;
     tv.tv_usec = 0;
@@ -380,9 +380,6 @@ void worker_main(void *arg)
     bucket_alloc = apr_bucket_alloc_create(pmain);
 
     atomic_inc (&worker_thread_count);
-
-    ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
-                                        (request_rec *) NULL);
 
     while (!die_now) {
         /*
@@ -403,101 +400,94 @@ void worker_main(void *arg)
         * Wait for an acceptable connection to arrive.
         */
 
-        /* Only allow a single thread at a time into the "accept" loop */
-        apr_thread_mutex_lock(accept_mutex);
-
         for (;;) {
             if (shutdown_pending || restart_pending || (ap_scoreboard_image->servers[0][my_worker_num].status == WORKER_IDLE_KILL)) {
                 DBPRINT1 ("\nThread slot %d is shutting down\n", my_worker_num);
-                apr_thread_mutex_unlock(accept_mutex);
                 clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
             }
 
-            /* If we just satisfied a request on listen port x, assume that more 
-                is coming. Don't bother using select() to determine if there is 
-                more, just try to accept() the next request. */
-            if (dont_block && (missed_accept<10)) {
-                skipped_selects++;
+            /* Check the listen queue on all sockets for requests */
+            memcpy(&main_fds, &listenfds, sizeof(fd_set));
+            srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
+
+            if (srv <= 0)
+                continue;
+
+            /* remember the last_lr we searched last time around so that
+            we don't end up starving any particular listening socket */
+            if (last_lr == NULL) {
+                lr = ap_listeners;
             }
             else {
-                /* If we determine that there are no more requests on the listen
-                    queue then set the socket back to blocking and move back into 
-                    more of an idle listen state. */
-                if (dont_block) {
-                    apr_setsocketopt(sd, APR_SO_NONBLOCK, 0);
-                    dont_block = 0;
-                }
-
-                /* Check the listen queue on all sockets for requests */
-                memcpy(&main_fds, &listenfds, sizeof(fd_set));
-                srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
-
-                if (srv <= 0)
-                    continue;
-
-                /* remember the last_lr we searched last time around so that
-                we don't end up starving any particular listening socket */
-                if (last_lr == NULL) {
+                lr = last_lr->next;
+                if (!lr)
                     lr = ap_listeners;
+            }
+            first_lr = lr;
+            do {
+                apr_os_sock_get(&sockdes, lr->sd);
+                if (FD_ISSET(sockdes, &main_fds))
+                    goto got_listener;
+                lr = lr->next;
+                if (!lr)
+                    lr = ap_listeners;
+            } while (lr != first_lr);
+            /* if we get here, something unexpected happened. Go back
+            into the select state and try again.
+            */
+            continue;
+        got_listener:
+            last_lr = lr;
+            sd = lr->sd;
+
+            wouldblock_retry = MAX_WB_RETRIES;
+
+            while (wouldblock_retry) {
+                if ((stat = apr_accept(&csd, sd, ptrans)) == APR_SUCCESS) {
+                    break;
                 }
                 else {
-                    lr = last_lr->next;
-                    if (!lr)
-                        lr = ap_listeners;
-                }
-                first_lr = lr;
-                do {
-                    apr_os_sock_get(&sockdes, lr->sd);
-                    if (FD_ISSET(sockdes, &main_fds))
-                        goto got_listener;
-                    lr = lr->next;
-                    if (!lr)
-                        lr = ap_listeners;
-                } while (lr != first_lr);
-                /* FIXME: if we get here, something bad has happened, and we're
-                probably gonna spin forever.
-                */
-                continue;
-got_listener:
-                last_lr = lr;
-                sd = lr->sd;
+                    /* if the error is a wouldblock then maybe we were too
+                        quick try to pull the next request from the listen 
+                        queue.  Try a few more times then return to our idle
+                        listen state. */
+                    if (APR_TO_NETOS_ERROR(stat) != WSAEWOULDBLOCK) {
+                        break;
+                    }
 
-                /* Just got a request on one of the listen sockets so assume that
-                    there are more coming.  Set the socket to non-blocking and 
-                    move into a fast pull mode. */
-                apr_setsocketopt(sd, APR_SO_NONBLOCK, 1);
-                dont_block = 1;
-                missed_accept = 0;
+                    if (wouldblock_retry--) {
+                        apr_thread_yield();
+                    }
+                }
             }
-            
-            stat = apr_accept(&csd, sd, ptrans);
 
             /* If we got a new socket, set it to non-blocking mode and process
                 it.  Otherwise handle the error. */
             if (stat == APR_SUCCESS) {
                 apr_setsocketopt(csd, APR_SO_NONBLOCK, 0);
+#ifdef DBINFO_ON
+                if (wouldblock_retry < MAX_WB_RETRIES) {
+                    retry_success++;
+                    avg_retries += (MAX_WB_RETRIES-wouldblock_retry);
+                }
+#endif
                 break;		/* We have a socket ready for reading */
             }
             else {
                 switch (APR_TO_NETOS_ERROR(stat)) {
-
-                    /* if the error is a wouldblock then maybe we were too
-                        quick try to pull the next request from the listen 
-                        queue.  Try a few more times then return to our idle
-                        listen state. */
+                    
                     case WSAEWOULDBLOCK:
-                        missed_accept++;
+#ifdef DBINFO_ON
                         would_block++;
-                        apr_thread_yield();
-                        continue;
+                        retry_fail++;
                         break;
-
+#endif
                     case WSAECONNRESET:
                     case WSAETIMEDOUT:
                     case WSAEHOSTUNREACH:
                     case WSAENETUNREACH:
                         break;
-
+    
                     case WSAENETDOWN:
                         /*
                         * When the network layer has been shut down, there
@@ -515,20 +505,15 @@ got_listener:
                         */
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_accept: giving up.");
-                        apr_thread_mutex_unlock(accept_mutex);
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, bucket_alloc);
-
+    
                     default:
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_accept: (client socket)");
-                        apr_thread_mutex_unlock(accept_mutex);
                         clean_child_exit(1, my_worker_num, ptrans, bucket_alloc);
                 }
             }
         }
-
-        /* Unlock the mutext so that the next thread can start listening for requests. */
-        apr_thread_mutex_unlock(accept_mutex);
 
         ap_create_sb_handle(&sbh, ptrans, 0, my_worker_num);
         /*
@@ -742,12 +727,13 @@ static void display_settings ()
     int status_array[SERVER_NUM_STATUS];
     int i, status, total=0;
     int reqs = request_count;
-    int skips = skipped_selects;
+#ifdef DBINFO_ON
     int wblock = would_block;
+    
+    would_block = 0;
+#endif    
 
     request_count = 0;
-    skipped_selects = 0;
-    would_block = 0;
 
     ClearScreen (getscreenhandle());
     printf("%s \n", ap_get_server_version());
@@ -806,8 +792,13 @@ static void display_settings ()
     }
     printf ("Total Running:\t%d\tout of: \t%d\n", total, ap_threads_limit);
     printf ("Requests per interval:\t%d\n", reqs);
-    printf ("Skipped selects:\t%d\n", skips);
+    
+#ifdef DBINFO_ON
     printf ("Would blocks:\t%d\n", wblock);
+    printf ("Successful retries:\t%d\n", retry_success);
+    printf ("Failed retries:\t%d\n", retry_fail);
+    printf ("Avg retries:\t%d\n", retry_success == 0 ? 0 : avg_retries / retry_success);
+#endif
 }
 
 static void show_server_data()
@@ -857,9 +848,9 @@ static int setup_listeners(server_rec *s)
         if (sockdes > listenmaxfd) {
             listenmaxfd = sockdes;
         }
-#ifdef NONBLOCK1
+        /* Use non-blocking listen sockets so that we
+           never get hung up. */
         apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
-#endif
     }
     return 0;
 }
@@ -894,7 +885,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     restart_pending = shutdown_pending = 0;
     worker_thread_count = 0;
-    apr_thread_mutex_create(&accept_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_NOT_SHARED) != OK) {
