@@ -63,38 +63,7 @@
  *
  ***********************************************************************
  *
- * Codebase originally from Majordomo(v1.93) release.
- * Heavy modifications by:
- *    Jason A. Dour (jad@bcc.louisville.edu)
- *    Randy Terbush (randy@zyzzyva.com)
  *
- * Version 0.1.0 - Jason A. Dour
- *    First beta.  Removed HAVE_RLIMIT and related rlimit code
- * now that the server handles the funcitonality.  Moved user-
- * defined code to suexec.h.  Added "DON'T EDIT" warning in code.
- * No more "security by obscurity"...comments added at each step.
- *
- * Version 0.0.3 - Jason A. Dour
- *    Third alpha.  Added NNAME and NGID directives to fix
- * portability problem -- various systems have different
- * values for nobody and nogroup.  Yuck.  Submitted to the
- * Apache development group for consideration.
- *
- * Version 0.0.2 - Jason A. Dour
- *    Second alpha.  Cleaned up code and comments.  Fixed some
- * test-case bugs.  Cleaned up and locked down the groups access
- * list.  Fixed setgid behaviour.  Added more paranoia checks.
- * Added ~userid support.  Cleaned up exit codes.
- *
- * Version 0.0.1 - Randy Terbush
- *    First assigned version. Heavily modified to act as generic
- * SUID wrapper for Apache.  Submitted to the Apache development
- * group for consideration.
- *
- * Version Primordial Ooze - Jason A. Dour
- *    First version.   Heavily modified from MDomo source.  Acted
- * only for ~userdir requests out of the ~userdir/cgi-bin dir.  Not
- * extremely useful...but it worked.
  */
 
 
@@ -115,37 +84,37 @@
 
 static FILE *log;
 
-static void err_output (const char *fmt, va_list ap)
+static void err_output(const char *fmt, va_list ap)
 {
     time_t timevar;
     struct tm *lt;
 
     if (!log)
-	if ((log = fopen (LOG_EXEC, "a")) == NULL)
-	{
-	    fprintf (stderr, "failed to open log file\n");
-	    perror ("fopen");
+	if ((log = fopen(LOG_EXEC, "a")) == NULL) {
+	    fprintf(stderr, "failed to open log file\n");
+	    perror("fopen");
+	    exit(1);
 	}
 
-    time (&timevar);
-    lt = localtime (&timevar);
+    time(&timevar);
+    lt = localtime(&timevar);
     
-    fprintf (log, "[%.2d:%.2d:%.2d %.2d-%.2d-%.2d]: ", lt->tm_hour, lt->tm_min,
-	     lt->tm_sec, lt->tm_mday, lt->tm_mon, lt->tm_year);
+    fprintf(log, "[%.2d:%.2d:%.2d %.2d-%.2d-%.2d]: ", lt->tm_hour, lt->tm_min,
+	    lt->tm_sec, lt->tm_mday, (lt->tm_mon + 1), lt->tm_year);
     
-    vfprintf (log, fmt, ap);
+    vfprintf(log, fmt, ap);
 
-    fflush (log);
+    fflush(log);
     return;
 }
 
-void log_err (const char *fmt, ...)
+void log_err(const char *fmt, ...)
 {
 #ifdef LOG_EXEC
     va_list     ap;
 
-    va_start (ap, fmt);
-    err_output (fmt, ap);
+    va_start(ap, fmt);
+    err_output(fmt, ap);
     va_end(ap);
 #endif /* LOG_EXEC */
     return;
@@ -153,15 +122,16 @@ void log_err (const char *fmt, ...)
 
 int main(int argc, char *argv[], char **env)
 {
-    int homelen;	    /* length of homedir path */
-    int cgilen;		    /* length of cgidir path */
+    int doclen;             /* length of the docroot     */
     int userdir = 0;        /* ~userdir flag             */
     uid_t uid;              /* user information          */
+    gid_t gid;              /* target group placeholder  */
     char *target_uname;     /* target user name          */
     char *target_gname;     /* target group name         */
     char *prog;             /* name of this program      */
     char *cmd;              /* command to be executed    */
-    char *cwd;              /* current working directory */
+    char cwd[MAXPATHLEN];   /* current working directory */
+    char dwd[MAXPATHLEN];   /* docroot working directory */
     struct passwd *pw;      /* password entry holder     */
     struct group *gr;       /* group entry holder        */
     struct stat dir_info;   /* directory info holder     */
@@ -174,9 +144,8 @@ int main(int argc, char *argv[], char **env)
      * all of them to variables.  Otherwise, error out.
      */
     prog = argv[0];
-    if (argc < 4)
-    {
-	log_err ("too few arguments\n");
+    if (argc < 4) {
+	log_err("too few arguments\n");
 	exit(101);
     }
     target_uname = argv[1];
@@ -188,10 +157,9 @@ int main(int argc, char *argv[], char **env)
      * running this program.  Error out if invalid.
      */
     uid = getuid();
-    if ((pw = getpwuid (uid)) == NULL)
-    {
-	log_err ("invalid uid: (%ld)\n", uid);
-	exit (102);
+    if ((pw = getpwuid(uid)) == NULL) {
+	log_err("invalid uid: (%ld)\n", uid);
+	exit(102);
     }
     
     /*
@@ -199,10 +167,9 @@ int main(int argc, char *argv[], char **env)
      * is the user allowed to do so as defined in
      * suexec.h.  If not the allowed user, error out.
      */
-    if (strcmp (HTTPD_USER, pw->pw_name))
-    {
-	log_err ("user mismatch (%s)\n", pw->pw_name);
-	exit (103);
+    if (strcmp(HTTPD_USER, pw->pw_name)) {
+	log_err("user mismatch (%s)\n", pw->pw_name);
+	exit(103);
     }
     
     /*
@@ -210,10 +177,9 @@ int main(int argc, char *argv[], char **env)
      * to protect against attacks.  If a '/' is
      * found, error out.  Naughty naughty crackers.
      */
-    if ((strchr (cmd, '/')) != NULL )
-    {
-	log_err ("invalid command (%s)\n", cmd);
-	exit (104);
+    if ((strchr(cmd, '/')) != NULL ) {
+	log_err("invalid command (%s)\n", cmd);
+	exit(104);
     }
 
     /*
@@ -221,8 +187,7 @@ int main(int argc, char *argv[], char **env)
      * so, set the flag, and remove the '~' from the
      * target username.
      */
-    if (!strncmp( "~", target_uname, 1))
-    {
+    if (!strncmp("~", target_uname, 1)) {
 	target_uname++;
 	userdir = 1;
     }
@@ -230,89 +195,104 @@ int main(int argc, char *argv[], char **env)
     /*
      * Error out if the target username is invalid.
      */
-    if ((pw = getpwnam (target_uname)) == NULL )
-    {
-	log_err ("invalid target user name: (%s)\n", target_uname);
-	exit (105);
+    if ((pw = getpwnam(target_uname)) == NULL) {
+	log_err("invalid target user name: (%s)\n", target_uname);
+	exit(105);
     }
 
     /*
      * Error out if the target group name is invalid.
      */
-    if ((gr = getgrnam (target_gname)) == NULL )
-    {
-	log_err ("invalid target group name: (%s)\n", target_gname);
-	exit (106);
+    if ((gr = getgrnam(target_gname)) == NULL) {
+	log_err("invalid target group name: (%s)\n", target_gname);
+	exit(106);
     }
 
     /*
-     * Get the current working directory, as well as
-     * the proper document root (dependant upon whether
-     * or not it is a ~userdir request.  Error out if
-     * we cannot get either one, or if the command is
-     * not in the docroot.
+     * Get the current working directory, as well as the proper
+     * document root (dependant upon whether or not it is a
+     * ~userdir request.  Error out if we cannot get either one,
+     * or if the current working directory is not in the docroot.
+     * Use chdir()s and getcwd()s to avoid problems with symlinked
+     * directories.  Yuck.  NOTE: We also free() dwd since it is
+     * the last usage...
      */
-    if (userdir)
-    {
-	homelen = strlen(pw->pw_dir) + 1;
-	cgilen = strlen(USER_CGI_BIN) + 1;
-	strncpy(cwd, pw->pw_dir, (homelen < MAXPATHLEN ? homelen : MAXPATHLEN));
-	homelen = MAXPATHLEN - homelen - 1;	/* get space left */
-	strncat(cwd, USER_CGI_BIN, (cgilen < homelen ? cgilen : homelen));
+    if (getcwd(cwd, MAXPATHLEN) == NULL) {
+        log_err("cannot get current working directory\n");
+        exit(107);
+    }
+    
+    if (userdir) {
+        if (((chdir(pw->pw_dir)) != 0) ||
+	    ((getcwd(dwd, MAXPATHLEN)) == NULL) ||
+            ((chdir(cwd)) != 0))
+        {
+            log_err("cannot get docroot information (%s)\n", pw->pw_dir);
+            exit(108);
+        }
+    }
+    else {
+        if (((chdir(DOC_ROOT)) != 0) ||
+	    ((getcwd(dwd, MAXPATHLEN)) == NULL) ||
+	    ((chdir(cwd)) != 0))
+        {
+            log_err("cannot get docroot information (%s)\n", DOC_ROOT);
+            exit(108);
+        }
+    }
+    
+    doclen = strlen(dwd);
+    if (strncmp(cwd, dwd, doclen) != 0) {
+        free(dwd);
+        log_err("command not in docroot (%s/%s)\n", cwd, cmd);
+        exit(109);
     }
     else
-	strncpy(cwd, DOC_ROOT, MAXPATHLEN);
+        free(dwd);
 
-
-    if (!(chdir(cwd))) {
-	log_err("cannot chdir directory: (%s)\n", cwd);
-	exit(107);
-    }
 
     /*
      * Stat the cwd and verify it is a directory, or error out.
+     * NOTE: This is the last use of cwd, so we must free() it.
      */
-    if ( (lstat (cwd, &dir_info))     ||
-         !(S_ISDIR(dir_info.st_mode)) )
-    {
-	log_err ("cannot stat directory: (%s)\n", cwd);
-	exit (108);
+    if (((lstat(cwd, &dir_info)) != 0) || !(S_ISDIR(dir_info.st_mode))) {
+        free(cwd);
+	log_err("cannot stat directory: (%s)\n", cwd);
+	exit(110);
     }
+    else
+        free(cwd);
 
     /*
      * Error out if cwd is writable by others.
      */
-    if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP))
-    {
-	log_err ("directory is writable by others: (%s)\n", cwd);
-	exit (109);
+    if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP)) {
+	log_err("directory is writable by others: (%s)\n", cwd);
+	exit(111);
     }
 
     /*
      * Error out if we cannot stat the program.
      */
-    if ((lstat (cmd, &prg_info)) || (S_ISLNK(prg_info.st_mode)))
-    {
-	log_err ("cannot stat program: (%s)\n", cmd);
-	exit (110);
+    if (((lstat(cmd, &prg_info)) != 0) || (S_ISLNK(prg_info.st_mode))) {
+	log_err("cannot stat program: (%s)\n", cmd);
+	exit(112);
     }
 
     /*
      * Error out if the program is writable by others.
      */
-    if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP))
-    {
-	log_err ("file is writable by others: (%s/%s)\n", cwd, cmd);
-	exit (111);
+    if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP)) {
+	log_err("file is writable by others: (%s/%s)\n", cwd, cmd);
+	exit(113);
     }
 
     /*
      * Error out if the file is setuid or setgid.
      */
-    if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID))
-    {
-	log_err ("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
-	exit (112);
+    if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID)) {
+	log_err("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
+	exit(114);
     }
 
     /*
@@ -324,60 +304,66 @@ int main(int argc, char *argv[], char **env)
 	(pw->pw_uid != prg_info.st_uid) ||
 	(gr->gr_gid != prg_info.st_gid))
     {
-	log_err ("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
+	log_err("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
 		 pw->pw_uid, gr->gr_gid,
 		 dir_info.st_uid, dir_info.st_gid,
 		 prg_info.st_uid, prg_info.st_gid);
-	exit (113);
+	exit(115);
     }
 
     /*
      * Error out if attempt is made to execute as root.  Tsk tsk.
      */
-    if (pw->pw_uid == 0)
-    {
-	log_err ("cannot run as uid 0 (%s)\n", cmd);
-	exit (114);
+    if (pw->pw_uid == 0) {
+	log_err("cannot run as uid 0 (%s)\n", cmd);
+	exit(116);
     }
 
     /*
      * Error out if attempt is made to execute as root group.  Tsk tsk.
      */
-    if (gr->gr_gid == 0)
-    {
-	log_err ("cannot run as gid 0 (%s)\n", cmd);
-	exit (115);
+    if (gr->gr_gid == 0) {
+	log_err("cannot run as gid 0 (%s)\n", cmd);
+	exit(117);
     }
 
     /*
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
-    log_err ("uid: (%s) gid: (%s) %s\n", target_uname, target_gname, cmd);
+    log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
+             target_uname, pw->pw_name,
+             target_gname, gr->gr_name,
+             cmd);
 
     /*
      * Initialize the group access list for the target user,
      * and setgid() to the target group. If unsuccessful, error out.
      */
-    if ((setgid (gr->gr_gid)) != 0)
-    {
-        log_err ("failed to setgid (%ld: %s/%s)\n", gr->gr_gid, cwd, cmd);
-        exit (116);
+    uid = pw->pw_uid;
+    gid = gr->gr_gid;
+    if ((initgroups(target_uname,gid) != 0) || ((setgid(gid)) != 0)) {
+        log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
+        exit(118);
     }
 
     /*
      * setuid() to the target user.  Error out on fail.
      */
-    if ((setuid (pw->pw_uid)) != 0)
-    {
-	log_err ("failed to setuid (%ld: %s/%s)\n", pw->pw_uid, cwd, cmd);
-	exit (117);
+    if ((setuid(uid)) != 0) {
+	log_err("failed to setuid (%ld: %s/%s)\n", uid, cwd, cmd);
+	exit(119);
     }
 
+    if ((setenv("PATH", SAFE_PATH, 1)) != 0) {
+	log_err("cannot reset environment PATH\n");
+	exit(120);
+    }
+    
     /*
      * Execute the command, replacing our image with its own.
      */
-    execve (cmd, &argv[3], env);
+    execve(cmd, &argv[3], env);
 
     /*
      * (I can't help myself...sorry.)
@@ -387,6 +373,6 @@ int main(int argc, char *argv[], char **env)
      *
      * Oh well, log the failure and error out.
      */
-    log_err ("exec failed (%s)\n", cmd);
+    log_err("exec failed (%s)\n", cmd);
     exit(255);
 }

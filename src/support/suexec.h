@@ -86,30 +86,11 @@
 #endif
 
 /*
- * USER_CGI_BIN -- Define this as the correct cgi-bin directory
- *                 for regular users (~user). NOTE: it needs the
- *                 initial '/' character
+ * SAFE_PATH -- Define a safe PATH environment to pass to CGI executables.
+ *
  */
-#ifndef USER_CGI_BIN
-#define USER_CGI_BIN "/public_html/cgi-bin"
-#endif
-
-/*
- * NNAME -- Define this as the name for the nobody account
- *          on your operating system.  Most systems will just
- *          need the default 'nobody'.
- */
-#ifndef NNAME
-#define NNAME "nobody"
-#endif
-
-/* NGID -- Define this as the *number* for the nogroup group
- *         on your operating system.  Most systems will have
- *         a -1 or -2.  Others might have something above
- *         65000.
- */
-#ifndef NGID
-#define NGID -1
+#ifndef SAFE_PATH
+#define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
 #endif
 
 #endif  /* _SUEXEC_H */
