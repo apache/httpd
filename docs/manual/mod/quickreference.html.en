@@ -464,7 +464,7 @@ proxied</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override error pages for proxied content</td></tr>
 <tr><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <em>bytes</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">IO buffer size for outgoing HTTP and FTP 
 connections</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxymatch">&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
+<tr class="odd"><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <em>regex</em>&gt; ...&lt;/ProxyMatch&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
 proxied resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <em>number</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
 through</td></tr>
