@@ -1775,7 +1775,7 @@ NODEP_CPP_MOD_U=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\modules\http\error_bucket.c
+SOURCE=.\server\error_bucket.c
 DEP_CPP_ERROR=\
 	".\include\ap_config.h"\
 	".\include\ap_mmn.h"\
