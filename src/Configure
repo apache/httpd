@@ -554,7 +554,6 @@ echo "###############" >> Makefile.config
 # the highest precedence; next comes any settings from
 # the above "OS-specific" section. If still unset,
 # then we look for a known compiler somewhere in PATH
-# and set a "safe" optimization level
 #
 #
 # First, look for a CC=<whatever> setting in Configure (recall, we
@@ -585,19 +584,14 @@ if [ "x$TCC" = "x" ]; then
     fi
     echo " + setting C compiler to $CC"
 fi
+
 #
-# Ditto for optimization
+# Look for OPTIM and save for later
 #
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-if [ "x$TOPTIM" = "x" ]; then
-    if [ "x$OPTIM" = "x" ]; then
-	OPTIM="-O2"
-    fi
-    echo " + setting C compiler optimization-level to $OPTIM"
-fi
 
 ####################################################################
-# Set the value of CC if need be; don't worry about OPTIM yet
+# Set the value of CC if need be
 #
 if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
@@ -703,15 +697,18 @@ echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 
 ####################################################################
-# Use TestCompile to see if $(CC) is ANSI
+# Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
+# check
 #
+echo " + doing sanity check on compiler and options"
 if ./helpers/TestCompile ansi; then
     :
 else
    echo "** A test compilation with your Makefile configuration"
-   echo "** failed. This is mostly like since your C compiler"
+   echo "** failed. This is most likely because your C compiler"
    echo "** is not ANSI. Apache requires an ANSI C Compiler, such"
-   echo "** as gcc."
+   echo "** as gcc. The above error message from your compiler"
+   echo "** will also provide a clue."
    echo " Aborting!"
    exit 1
 fi

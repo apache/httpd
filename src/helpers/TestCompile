@@ -24,6 +24,20 @@ trap 'rm -f Makefile dummy; exit $exstat' 0 1 2 3 15
 #
 
 #
+# Handle "verbose" and "silent" flags
+#
+case "$1" in
+    "-v")
+        VERBOSE="yes"
+	shift
+	;;
+    "-s")
+        VERBOSE="no"
+	shift
+	;;
+esac
+
+#
 # Make sure have the right arguments
 #
 
@@ -33,9 +47,19 @@ case "$1" in
 	    exit
 	fi
 	TLIB="-l$2"
+	if [ "$VERBOSE" = "yes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
 	;;
     "ansi")
 	TLIB=""
+	if [ "$VERBOSE" = "no" ]; then
+	    ERRDIR='2>/dev/null'
+	else
+	    ERRDIR=""
+	fi
 	;;
     *)
     	exit
@@ -60,7 +84,7 @@ dummy:
 EOF
 
 # Now run that Makefile
-make dummy >/dev/null 2>&1
+eval "make dummy >/dev/null $ERRDIR"
 
 # And see if dummy exists, if so, then we assume the 
 # condition we are testing for is good
