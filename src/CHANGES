@@ -1,5 +1,23 @@
 Changes with Apache 1.3.7
 
+  *) Win32: The query switch "apache -S" didn't exit after showing the
+     vhost settings. That was inconsistent with the other query functions.
+     [Bill Stoddard - Fixed by Martin on Unix in 1.3.4]
+
+  *) Win32: Changed behaviour of apache -k restart. 
+     Previously, the server would drain all connections in the stack's
+     listen queue before honoring the restart. On a busy server, this
+     could take hours.  Now, a restart is honored almost immediately. 
+     All connections in Apache's queues are handled but connections in 
+     the stack's listen queue are discarded. Restart triggered by 
+     MaxRequestPerChild is unchanged. 
+     [Bill Stoddard <stoddard@raleigh.ibm.com>]
+
+  *) Win32: Eliminated unnecessary call to wait_for_multiple_objects in
+     the accept loop. Good for a 5% performance boost. Cleaned up 
+     parent/child process management code. 
+     [Bill Stoddard <stoddard@raleigh.ibm.com>]
+
   *) Added ceiling on file size for memory mapped files.
      [John Giannandrea <jg@meer.net>] PR#4122
 
