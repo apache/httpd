@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".."/>
+
+<title>How filters work in Apache 2.0</title>
+
+<summary>
+    <note type="warning"><title>Warning</title>
+      <p>This is a cut 'n paste job from an email
+      (&lt;022501c1c529$f63a9550$7f00000a@KOJ&gt;) and only reformatted for
+      better readability. It's not up to date but may be a good start for
+      further research.</p>
+    </note>
+</summary>
+
+<section id="types"><title>Filter Types</title>
+    <p>There are three basic filter types (each of these is actually broken
+    down into two categories, but that comes later).</p>
+
+    <dl>
+    <dt><code>CONNECTION</code></dt>
+    <dd>Filters of this type are valid for the lifetime of this connection.
+    (<code>AP_FTYPE_CONNECTION</code>, <code>AP_FTYPE_NETWORK</code>)</dd>
+
+    <dt><code>PROTOCOL</code></dt>
+    <dd>Filters of this type are valid for the lifetime of this request from
+    the point of view of the client, this means that the request is valid
+    from the time that the request is sent until the time that the response
+    is received. (<code>AP_FTYPE_PROTOCOL</code>,
+    <code>AP_FTYPE_TRANSCODE</code>)</dd>
+
+    <dt><code>RESOURCE</code></dt>
+    <dd>Filters of this type are valid for the time that this content is used
+    to satisfy a request.  For simple requests, this is identical to
+    <code>PROTOCOL</code>, but internal redirects and sub-requests can change
+    the content without ending the request. (<code>AP_FTYPE_RESOURCE</code>,
+    <code>AP_FTYPE_CONTENT_SET</code>)</dd>
+    </dl>
+
+    <p>It is important to make the distinction between a protocol and a
+    resource filter.  A resource filter is tied to a specific resource, it
+    may also be tied to header information, but the main binding is to a
+    resource.  If you are writing a filter and you want to know if it is
+    resource or protocol, the correct question to ask is:  "Can this filter
+    be removed if the request is redirected to a different resource?"  If
+    the answer is yes, then it is a resource filter.  If it is no, then it
+    is most likely a protocol or connection filter.  I won't go into
+    connection filters, because they seem to be well understood. With this
+    definition, a few examples might help:</p>
+
+    <dl>
+    <dt>Byterange</dt>
+    <dd>We have coded it to be inserted for all requests, and it is removed
+    if not used.  Because this filter is active at the beginning of all
+    requests, it can not be removed if it is redirected, so this is a
+    protocol filter.</dd>
+
+    <dt>http_header</dt>
+    <dd>This filter actually writes the headers to the network.  This is
+    obviously a required filter (except in the asis case which is special
+    and will be dealt with below) and so it is a protocol filter.</dd>
+
+    <dt>Deflate</dt>
+    <dd>The administrator configures this filter based on which file has been
+    requested.  If we do an internal redirect from an autoindex page to an
+    index.html page, the deflate filter may be added or removed based on
+    config, so this is a resource filter.</dd>
+    </dl>
+
+    <p>The further breakdown of each category into two more filter types is
+    strictly for ordering.  We could remove it, and only allow for one
+    filter type, but the order would tend to be wrong, and we would need to
+    hack things to make it work.  Currently, the <code>RESOURCE</code> filters
+    only have one filter type, but that should change.</p>
+</section>
+
+<section id="howinserted"><title>How are filters inserted?</title>
+    <p>This is actually rather simple in theory, but the code is
+    complex.  First of all, it is important that everybody realize that
+    there are three filter lists for each request, but they are all
+    concatenated together.  So, the first list is
+    <code>r->output_filters</code>, then <code>r->proto_output_filters</code>,
+    and finally <code>r->connection->output_filters</code>. These correspond
+    to the <code>RESOURCE</code>, <code>PROTOCOL</code>, and
+    <code>CONNECTION</code> filters respectively. The problem previously, was
+    that we used a singly linked list to create the filter stack, and we
+    started from the "correct" location.  This means that if I had a
+    <code>RESOURCE</code> filter on the stack, and I added a
+    <code>CONNECTION</code> filter, the <code>CONNECTION</code> filter would
+    be ignored. This should make sense, because we would insert the connection
+    filter at the top of the <code>c->output_filters</code> list, but the end
+    of <code>r->output_filters</code> pointed to the filter that used to be
+    at the front of <code>c->output_filters</code>. This is obviously wrong.
+    The new insertion code uses a doubly linked list. This has the advantage
+    that we never lose a filter that has been inserted. Unfortunately, it comes
+    with a separate set of headaches.</p>
+
+    <p>The problem is that we have two different cases were we use subrequests.
+    The first is to insert more data into a response. The second is to
+    replace the existing response with an internal redirect. These are two
+    different cases and need to be treated as such.</p>
+
+    <p>In the first case, we are creating the subrequest from within a handler
+    or filter.  This means that the next filter should be passed to
+    <code>make_sub_request</code> function, and the last resource filter in the
+    sub-request will point to the next filter in the main request.  This
+    makes sense, because the sub-request's data needs to flow through the
+    same set of filters as the main request.  A graphical representation
+    might help:</p>
+
+<example>
+<pre>
+Default_handler --> includes_filter --> byterange --> ...
+</pre>
+</example>
+
+    <p>If the includes filter creates a sub request, then we don't want the
+    data from that sub-request to go through the includes filter, because it
+    might not be SSI data.  So, the subrequest adds the following:</p>
+
+<example>
+<pre>    
+Default_handler --> includes_filter -/-> byterange --> ...
+                                    /
+Default_handler --> sub_request_core
+</pre>
+</example>
+
+    <p>What happens if the subrequest is SSI data?  Well, that's easy, the
+    <code>includes_filter</code> is a resource filter, so it will be added to
+    the sub request in between the <code>Default_handler</code> and the
+    <code>sub_request_core</code> filter.</p>
+
+    <p>The second case for sub-requests is when one sub-request is going to
+    become the real request.  This happens whenever a sub-request is created
+    outside of a handler or filter, and NULL is passed as the next filter to
+    the <code>make_sub_request</code> function.</p>
+
+    <p>In this case, the resource filters no longer make sense for the new
+    request, because the resource has changed.  So, instead of starting from
+    scratch, we simply point the front of the resource filters for the
+    sub-request to the front of the protocol filters for the old request.
+    This means that we won't lose any of the protocol filters, neither will
+    we try to send this data through a filter that shouldn't see it.</p>
+
+    <p>The problem is that we are using a doubly-linked list for our filter
+    stacks now. But, you should notice that it is possible for two lists to
+    intersect in this model.  So, you do you handle the previous pointer?
+    This is a very difficult question to answer, because there is no "right"
+    answer, either method is equally valid.  I looked at why we use the
+    previous pointer.  The only reason for it is to allow for easier
+    addition of new servers.  With that being said, the solution I chose was
+    to make the previous pointer always stay on the original request.</p>
+
+    <p>This causes some more complex logic, but it works for all cases.  My
+    concern in having it move to the sub-request, is that for the more
+    common case (where a sub-request is used to add data to a response), the
+    main filter chain would be wrong.  That didn't seem like a good idea to
+    me.</p>
+</section>
+
+<section id="asis"><title>Asis</title>
+    <p>The final topic.  :-)  Mod_Asis is a bit of a hack, but the
+    handler needs to remove all filters except for connection filters, and
+    send the data.  If you are using <module>mod_asis</module>, all other
+    bets are off.</p>
+</section>
+
+<section id="conclusion"><title>Explanations</title>
+    <p>The absolutely last point is that the reason this code was so hard to
+    get right, was because we had hacked so much to force it to work.  I
+    wrote most of the hacks originally, so I am very much to blame.
+    However, now that the code is right, I have started to remove some
+    hacks.  Most people should have seen that the <code>reset_filters</code>
+    and <code>add_required_filters</code> functions are gone.  Those inserted
+    protocol level filters for error conditions, in fact, both functions did
+    the same thing, one after the other, it was really strange. Because we
+    don't lose protocol filters for error cases any more, those hacks went away.
+    The <code>HTTP_HEADER</code>, <code>Content-length</code>, and
+    <code>Byterange</code> filters are all added in the
+    <code>insert_filters</code> phase, because if they were added earlier, we
+    had some interesting interactions.  Now, those could all be moved to be
+    inserted with the <code>HTTP_IN</code>, <code>CORE</code>, and
+    <code>CORE_IN</code> filters.  That would make the code easier to
+    follow.</p>
+</section>
+</manualpage>
+
