@@ -1,4 +1,11 @@
 Changes with Apache 2.0.31-dev
+  *) mod_ssl adjustments to help with using toolkits other than OpenSSL:
+      Use SSL functions/macros instead of directly dereferencing SSL
+      structures wherever possible.
+      Add type-casts for the cases where functions return a generic pointer.
+      Add $SSL/include to configure search path.
+     [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
+
   *) Moved several pointers out of the shared Scoreboard so it is
      more portable, and will present the vhost name across server
      generation restarts.  [William Rowe]

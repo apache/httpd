@@ -604,7 +604,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
                     "CA certificates for client authentication", cpVHostID);
             ssl_die();
         }
-        SSL_CTX_set_client_CA_list(sc->pSSLCtx, skCAList);
+        SSL_CTX_set_client_CA_list(sc->pSSLCtx, (STACK *)skCAList);
     }
 
     /*
@@ -628,7 +628,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
      * should take place. This cannot work.
      */
     if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
-        skCAList = SSL_CTX_get_client_CA_list(ctx);
+        skCAList = (STACK_OF(X509_NAME) *)SSL_CTX_get_client_CA_list(ctx);
         if (sk_X509_NAME_num(skCAList) == 0)
             ssl_log(s, SSL_LOG_WARN,
                     "Init: Ops, you want to request client authentication, "
@@ -785,7 +785,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
         && sc->pPrivateKey[SSL_AIDX_DSA] != NULL) {
         pKey = X509_get_pubkey(sc->pPublicCert[SSL_AIDX_DSA]);
         if (   pKey != NULL
-            && EVP_PKEY_type(pKey->type) == EVP_PKEY_DSA 
+            && EVP_PKEY_key_type(pKey) == EVP_PKEY_DSA 
             && EVP_PKEY_missing_parameters(pKey))
             EVP_PKEY_copy_parameters(pKey, sc->pPrivateKey[SSL_AIDX_DSA]);
     }
@@ -924,7 +924,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
      * Process CA certificate bundle file
      */
     if (cpCAfile != NULL) {
-        sk = SSL_load_client_CA_file(cpCAfile);
+        sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cpCAfile);
         for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
             ssl_log(s, SSL_LOG_TRACE,
                     "CA certificate: %s",
@@ -941,7 +941,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
         apr_dir_open(&dir, cpCApath, p);
         while ((apr_dir_read(&direntry, APR_FINFO_DIRENT, dir)) != APR_SUCCESS) {
             cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
-            sk = SSL_load_client_CA_file(cp);
+            sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cp);
             for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
                 ssl_log(s, SSL_LOG_TRACE,
                         "CA certificate: %s",
