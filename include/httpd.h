@@ -278,9 +278,8 @@ extern "C" {
 /**
  * Get the scheme for a request.
  * @param r The request
- * @bug This should be called ap_http_scheme!
  */
-#define ap_http_method(r)	ap_run_http_method(r)
+#define ap_http_scheme(r)	ap_run_http_scheme(r)
 
 /** The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN

@@ -2,6 +2,10 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ap_http_scheme() replaced with ap_http_method() - this function
+     returns the scheme (http v.s. https).
+     [William Rowe]
+
   *) mod_proxy: Fix a request corruption problem and a buffering problem
      which sometimes prevented proxy-sendchunks from working.
      [Jeff Trawick]

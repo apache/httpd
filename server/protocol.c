@@ -60,7 +60,7 @@
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_read_request)
     APR_HOOK_LINK(log_transaction)
-    APR_HOOK_LINK(http_method)
+    APR_HOOK_LINK(http_scheme)
     APR_HOOK_LINK(default_port)
 )
 
@@ -503,7 +503,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     if (status == APR_SUCCESS) {
         /* if it has a scheme we may need to do absoluteURI vhost stuff */
         if (r->parsed_uri.scheme
-            && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
+            && !strcasecmp(r->parsed_uri.scheme, ap_http_scheme(r))) {
             r->hostname = r->parsed_uri.hostname;
         }
         else if (r->method_number == M_CONNECT) {
@@ -1540,7 +1540,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,
                           (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,
                           (request_rec *r), (r), OK, DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,http_scheme,
                             (const request_rec *r), (r), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,
                             (const request_rec *r), (r), 0)

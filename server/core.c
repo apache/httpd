@@ -958,10 +958,10 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri,
     const char *host = get_server_name_for_url(r);
 
     if (ap_is_default_port(port, r)) {
-        return apr_pstrcat(p, ap_http_method(r), "://", host, uri, NULL);
+        return apr_pstrcat(p, ap_http_scheme(r), "://", host, uri, NULL);
     }
 
-    return apr_psprintf(p, "%s://%s:%u%s", ap_http_method(r), host, port, uri);
+    return apr_psprintf(p, "%s://%s:%u%s", ap_http_scheme(r), host, port, uri);
 }
 
 AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
