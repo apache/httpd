@@ -1121,6 +1121,8 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 #endif
 #define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
 
+#define ap_is_aborted(abort) (abort->aborted ==1)
+
 #ifdef __cplusplus
 }
 #endif

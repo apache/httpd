@@ -189,7 +189,7 @@ API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
 
 #ifdef CHARSET_EBCDIC
 
-API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert)
+API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile, int convert)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
@@ -197,33 +197,37 @@ API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert)
     int nbytes;
 
     ap_MD5Init(&context);
-    while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {
-      length += nbytes;
+    /* ZZZ use AP func instead of fread. */
+    while ((nbytes = read(infile, buf, sizeof(buf)))) {
+	length += nbytes;
         if (!convert) {
             ascii2ebcdic(buf, buf, nbytes);
         }
-      ap_MD5Update(&context, buf, nbytes);
+	ap_MD5Update(&context, buf, nbytes);
     }
-    rewind(infile);
+    /* ZZZ use AP seek func instead of REWIND. */
+    lseek(infile, 0L, SEEK_SET);
     return ap_md5contextTo64(p, &context);
 }
 
 #else
 
-API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
+API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
     long length = 0;
-    unsigned int nbytes;
+    int nbytes;
 
     ap_MD5Init(&context);
-    while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {
+    /* ZZZ use AP func instead of fread. */
+    while ((nbytes = read(infile, buf, sizeof(buf)))) {
 	length += nbytes;
 	ap_MD5Update(&context, buf, nbytes);
     }
-    rewind(infile);
+    /* ZZZ use AP seek func instead of REWIND. */
+    lseek(infile, 0L, SEEK_SET);
     return ap_md5contextTo64(p, &context);
 }
 
-#endif /* CHARSET_EBCDIC */
+#endif

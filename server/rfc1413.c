@@ -209,12 +209,6 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     return 0;
 }
 
-/* ident_timeout - handle timeouts */
-static void ident_timeout(int sig)
-{
-    ap_longjmp(timebuf, sig);
-}
-
 /* rfc1413 - return remote user name, given socket structures */
 char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 {
@@ -235,12 +229,10 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
      * Set up a timer so we won't get stuck while waiting for the server.
      */
     if (ap_setjmp(timebuf) == 0) {
-	ap_set_callback_and_alarm(ident_timeout, ap_rfc1413_timeout);
 
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user, srv) >= 0)
 	    result = user;
     }
-    ap_set_callback_and_alarm(NULL, 0);
     ap_pclosesocket(conn->pool, sock);
     conn->remote_logname = result;
 

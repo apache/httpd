@@ -2539,7 +2539,6 @@ static int default_handler(request_rec *r)
     }
 
 #ifdef USE_MMAP_FILES
-    ap_block_alarms();
     if ((r->finfo.st_size >= MMAP_THRESHOLD)
 	&& (r->finfo.st_size < MMAP_LIMIT)
 	&& (!r->header_only || (d->content_md5 & 1))) {
@@ -2557,7 +2556,6 @@ static int default_handler(request_rec *r)
     }
 
     if (mm == (caddr_t)-1) {
-	ap_unblock_alarms();
 #endif
 
 #ifdef CHARSET_EBCDIC
@@ -2616,7 +2614,6 @@ static int default_handler(request_rec *r)
 	mmd->mm = mm;
 	mmd->length = r->finfo.st_size;
 	ap_register_cleanup(r->pool, (void *)mmd, mmap_cleanup, mmap_cleanup);
-	ap_unblock_alarms();
 
 	if (d->content_md5 & 1) {
 	    AP_MD5_CTX context;
