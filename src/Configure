@@ -264,13 +264,13 @@ OSDIR="os/unix"
 
 case "$PLAT" in
     *mint)
-        OS="MiNT"
-        CFLAGS="-DMINT"
-        LIBS="$LIBS -lportlib -lsocket"
-        DEF_WANTHSREGEX=yes
-        ;;
+	OS="MiNT"
+	CFLAGS="-DMINT"
+	LIBS="$LIBS -lportlib -lsocket"
+	DEF_WANTHSREGEX=yes
+	;;
     *MPE/iX*)
-        OS='MPE/iX'
+	OS='MPE/iX'
 	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
 	LIBS="$LIBS -lsocket -lsvipc"
 	LDFLAGS="$LDFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
@@ -352,9 +352,9 @@ case "$PLAT" in
  	case "$PLAT" in
  	  *-hp-hpux10.01)
 	       # We know this is a problem in 10.01.
-               # Not a problem in 10.20.  Otherwise, who knows?
-               CFLAGS="$CFLAGS -DSELECT_NEEDS_CAST"
-               ;;	     
+	       # Not a problem in 10.20.  Otherwise, who knows?
+	       CFLAGS="$CFLAGS -DSELECT_NEEDS_CAST"
+	       ;;	     
  	esac
 	DEF_WANTHSREGEX=yes
 	;;
@@ -366,7 +366,7 @@ case "$PLAT" in
 	LIBS="$LIBS -lm"
 	;;
     *-sgi-irix64)
-        # Note: We'd like to see patches to compile 64-bit, but for now...
+	# Note: We'd like to see patches to compile 64-bit, but for now...
 	echo "You are running 64-bit Irix. For now, we will compile 32-bit"
 	echo "but if you would care to port to 64-bit, send us the patches."
 	DEF_WANTHSREGEX=yes
@@ -584,15 +584,15 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl -lc -lgen"
 	;;
     *-*-powermax*)
-        OS='SVR4'
-        CFLAGS="$CFLAGS -DSVR4"
-        DEF_WANTHSREGEX=yes
-        LIBS="$LIBS -lsocket -lnsl -lgen"
-        LD_SHLIB='cc'
-        LDFLAGS_SHLIB="-Zlink=so"
-        LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
-        CFLAGS_SHLIB='-Zpic'
-        ;;
+	OS='SVR4'
+	CFLAGS="$CFLAGS -DSVR4"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lsocket -lnsl -lgen"
+	LD_SHLIB='cc'
+	LDFLAGS_SHLIB="-Zlink=so"
+	LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
+	CFLAGS_SHLIB='-Zpic'
+	;;
     BS2000*-sni-sysv4*)
 	OS='BS2000'
 	OSDIR='os/bs2000'
@@ -706,26 +706,26 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     4850-*.*)
-        OS='NCR MP/RAS'
-        CFLAGS="$CFLAGS -DSVR4 -DMPRAS"
-        DEF_WANTHSREGEX=yes
-        LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
-        ;;
+	OS='NCR MP/RAS'
+	CFLAGS="$CFLAGS -DSVR4 -DMPRAS"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
+	;;
     drs6000*)
-        OS='DRS6000'
-        CFLAGS="$CFLAGS -DSVR4"
-        DEF_WANTHSREGEX=yes
-        LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
-        ;;
+	OS='DRS6000'
+	CFLAGS="$CFLAGS -DSVR4"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
+	;;
     m88k-*-CX/SX|CYBER)
-        OS='Cyberguard CX/SX'
-        CFLAGS="$CFLAGS -D_CX_SX -Xa"
-        DEF_WANTHSREGEX=yes
-        CC='cc'
-        RANLIB='true'
-        ;;
+	OS='Cyberguard CX/SX'
+	CFLAGS="$CFLAGS -D_CX_SX -Xa"
+	DEF_WANTHSREGEX=yes
+	CC='cc'
+	RANLIB='true'
+	;;
     *) # default: Catch systems we don't know about
-        OS='Unknown and unsupported OS'
+	OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m
 	uname -m
@@ -740,8 +740,8 @@ case "$PLAT" in
 	echo Ideally, read the file PORTING, do what it says, and send the
 	echo resulting patches to The Apache Group by filling out a report
 	echo form at http://www.apache.org/bug_report.html. If you don\'t 
-        echo wish to do the port yourself, please submit this output rather 
-        echo than the patches. Thank you.
+	echo wish to do the port yourself, please submit this output rather 
+	echo than the patches. Thank you.
 	echo
 	echo Pressing on with the build process, but all bets are off.
 	echo Do not be surprised if it fails. If it works, and even
@@ -753,7 +753,7 @@ esac
 ####################################################################
 ## set this if we haven't
 ##
-if [ ".${MAKE}" = . ]; then
+if [ "x${MAKE}" = "x" ]; then
     MAKE='make'; export MAKE
 fi
 
@@ -790,8 +790,8 @@ fi
 TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TCC" = "x" ]; then
     if [ "x$CC" = "x" ]; then
-        # At this point, CC is not set in Configuration or above, so we
-        # try to find one
+	# At this point, CC is not set in Configuration or above, so we
+	# try to find one
 	for compilers in "gcc" "cc" "acc" "c89"
 	do
 	    lookedfor="$lookedfor $compilers"
@@ -859,13 +859,13 @@ for header in $CHECK_FOR_HEADERS; do
     name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
     CPP=$CPP ./helpers/checkheader.sh $header
     if [ $? -eq 0 ]; then
-        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
+	echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+	echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
+	echo "#endif" >>$AP_CONFIG_AUTO_H
     else
-        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
+	echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+	echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+	echo "#endif" >>$AP_CONFIG_AUTO_H
     fi
 done
 
@@ -874,11 +874,11 @@ done
 # to decide whether the Processor Binding can be used or not
 case "$PLAT" in
     *-ibm-aix*)
-        CPP=$CPP ./helpers/checkheader.sh sys/processor.h
-        if [ $? -eq 0 ]; then
-            CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
-        fi
-        ;;
+	CPP=$CPP ./helpers/checkheader.sh sys/processor.h
+	if [ $? -eq 0 ]; then
+	    CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
+	fi
+	;;
 esac
 
 ####################################################################
@@ -922,267 +922,267 @@ if [ "x$using_shlib" = "x1" ] ; then
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
     case "$PLAT" in
-        *-linux1)
-            CFLAGS_SHLIB="-fpic"
-            LDFLAGS_SHLIB="-Bshareable"
-            LDFLAGS_SHLIB_EXPORT="-rdynamic"
-            ;;
-        *-linux2)
-            CFLAGS_SHLIB="-fpic"
-            LDFLAGS_SHLIB="-Bshareable"
-            LDFLAGS_SHLIB_EXPORT="-rdynamic"
-            SHLIB_SUFFIX_DEPTH=0
-            ;;
-        *-freebsd2*)
-            CFLAGS_SHLIB="-fpic"
-            LDFLAGS_SHLIB="-Bshareable"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=2
-            ;;
-        *-freebsd3*)
-            CFLAGS_SHLIB="-fpic"
-            LDFLAGS_SHLIB="-Bshareable"
-            OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
-            if [ ".$OBJFORMAT" = .elf ]; then
-                LDFLAGS_SHLIB_EXPORT="-Wl,-E"
-                SHLIB_SUFFIX_DEPTH=0
-            else
-                LDFLAGS_SHLIB_EXPORT=""
-                SHLIB_SUFFIX_DEPTH=2
-            fi  
-            ;;
-        *-openbsd*)
-            CFLAGS_SHLIB="-fPIC"
-            LDFLAGS_SHLIB="-Bforcearchive -Bshareable"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=2
-            ;;
-        alpha-*-netbsd*|mips-*-netbsd*|powerpc-*-netbsd*)
-            CFLAGS_SHLIB="-fpic -DPIC"
-            LDFLAGS_SHLIB="-shared"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=2
-            ;;
-        *-netbsd*)
-            CFLAGS_SHLIB="-fpic -DPIC"
-            LDFLAGS_SHLIB="-Bshareable"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=2
-            ;;
-        *-bsdi)
-            CFLAGS_SHLIB="-fPIC"
-            LDFLAGS_SHLIB="-shared"
-            LDFLAGS_SHLIB_EXPORT="-rdynamic"
-            ;;
-        *-apple-rhapsody*)
-            LD_SHLIB="cc"
-            CFLAGS_SHLIB=""
-            LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=0
-            ;;
-        *-solaris2*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-G"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=1
-            ;;
-        *-sunos4*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */acc|acc ) CFLAGS_SHLIB="-pic" ;;
-            esac
-            LDFLAGS_SHLIB="-assert pure-text"
-            LDFLAGS_SHLIB_EXPORT=""
-            ;;
-        *-sgi-irix32)
-            case $CC in
-                */gcc|gcc )
+	*-linux1)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
+	    ;;
+	*-linux2)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
+	    SHLIB_SUFFIX_DEPTH=0
+	    ;;
+	*-freebsd2*)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=2
+	    ;;
+	*-freebsd3*)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
+	    if [ "x$OBJFORMAT" = "xelf" ]; then
+		LDFLAGS_SHLIB_EXPORT="-Wl,-E"
+		SHLIB_SUFFIX_DEPTH=0
+	    else
+		LDFLAGS_SHLIB_EXPORT=""
+		SHLIB_SUFFIX_DEPTH=2
+	    fi  
+	    ;;
+	*-openbsd*)
+	    CFLAGS_SHLIB="-fPIC"
+	    LDFLAGS_SHLIB="-Bforcearchive -Bshareable"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=2
+	    ;;
+	alpha-*-netbsd*|mips-*-netbsd*|powerpc-*-netbsd*)
+	    CFLAGS_SHLIB="-fpic -DPIC"
+	    LDFLAGS_SHLIB="-shared"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=2
+	    ;;
+	*-netbsd*)
+	    CFLAGS_SHLIB="-fpic -DPIC"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=2
+	    ;;
+	*-bsdi)
+	    CFLAGS_SHLIB="-fPIC"
+	    LDFLAGS_SHLIB="-shared"
+	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
+	    ;;
+	*-apple-rhapsody*)
+	    LD_SHLIB="cc"
+	    CFLAGS_SHLIB=""
+	    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=0
+	    ;;
+	*-solaris2*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=1
+	    ;;
+	*-sunos4*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/acc|acc ) CFLAGS_SHLIB="-pic" ;;
+	    esac
+	    LDFLAGS_SHLIB="-assert pure-text"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-sgi-irix32)
+	    case $CC in
+		*/gcc|gcc )
 		    CFLAGS_SHLIB="-fpic"
 		    N32FLAG=""
 		    ;;
-                */cc|cc )
+		*/cc|cc )
 		    CFLAGS_SHLIB="-KPIC"
 		    N32FLAG="-n32"
 		    ;;
-            esac
-            if [ "$RULE_IRIXN32" = "yes" ]; then
-                LDFLAGS_SHLIB="$N32FLAG -shared"
-            else
-                LDFLAGS_SHLIB="-shared"
-            fi
-            LDFLAGS_SHLIB_EXPORT=""
-            ;;
-        *-sgi-irix64)
-            case $CC in
-                */gcc|gcc )
+	    esac
+	    if [ "$RULE_IRIXN32" = "yes" ]; then
+		LDFLAGS_SHLIB="$N32FLAG -shared"
+	    else
+		LDFLAGS_SHLIB="-shared"
+	    fi
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-sgi-irix64)
+	    case $CC in
+		*/gcc|gcc )
 		    CFLAGS_SHLIB="-fpic"
 		    N32FLAG=""
 		    ;;
-                */cc|cc )
+		*/cc|cc )
 		    CFLAGS_SHLIB="-KPIC"
 		    N32FLAG="-n32"
 		    ;;
-            esac
-            if [ "$RULE_IRIXN32" = "yes" ]; then
-                LDFLAGS_SHLIB="$N32FLAG -shared"
-            else
-                LDFLAGS_SHLIB="-shared"
-            fi
-            LDFLAGS_SHLIB_EXPORT=""
-            ;;
-        *-sgi-irix)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-shared"
-            LDFLAGS_SHLIB_EXPORT=""
-            ;;
-        *-dec-osf*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="" ;;
-            esac
-            LDFLAGS_SHLIB="-shared -expect_unresolved '*' -s"
-            LDFLAGS_SHLIB_EXPORT=""
-            ;;
-        *-unixware*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-Bdynamic -G"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
-            ;;
-         *-sco5*)
-             case $CC in
-                 */gcc*|gcc* ) CFLAGS_SHLIB="-fpic" ;;
-                 */cc*|cc*   ) CFLAGS_SHLIB="-KPIC" ;;
-             esac
-             LDFLAGS_SHLIB="-G"
-             LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
-             SHLIB_SUFFIX_DEPTH=1
-             ;;
-        RM*-sni-sysv4*)
-            # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-G"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
-            ;;
-        *-sni-sysv4*)
-            # Older SINIX machines must be linked as "shared core"-Apache
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-G"
-            LDFLAGS_SHLIB_EXPORT=""
-            SHLIB_SUFFIX_DEPTH=0
-            DEF_SHARED_CORE=yes
-            ;;
-        *-sysv4*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
-            esac
-            LDFLAGS_SHLIB="-G"
-            LDFLAGS_SHLIB_EXPORT=""
-            DEF_SHARED_CORE=yes
-            ;;
-        *-hp-hpux9.*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="+z" ;;
-            esac
-            LDFLAGS_SHLIB="-b"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
-            SHLIB_SUFFIX_NAME=sl
-            ;;
-        *-hp-hpux10.*|*-hp-hpux11.*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="+z" ;;
-            esac
-            LDFLAGS_SHLIB="-b"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
-            SHLIB_SUFFIX_NAME=sl
-            ;;
-        *-ibm-aix*)
-            case $CC in
-                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-                */cc|cc   ) CFLAGS_SHLIB="" ;;
-            esac
-            case $PLAT in
-                *-ibm-aix4*)
-                    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -bnoentry"
-                    ;;
-                *-ibm-aix*)
-                    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -e _nostart"
-                    ;;
-            esac
-            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bI:\$(SRCDIR)/support/httpd.exp "
-            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
-            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
-            LDFLAGS_SHLIB_EXPORT="-Wl,-bE:\$(SRCDIR)/support/httpd.exp"
-            SHLIB_EXPORT_FILES=yes
-            ;;
-        *-*-powermax*)
-            LD_SHLIB='cc'
-            LDFLAGS_SHLIB="-Zlink=so"
-            LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
-            CFLAGS_SHLIB='-Zpic'
-            ;;
-        *)
-            ##  ok, no known explict support for shared objects
-            ##  on this platform, but we give not up immediately.
-            ##  We take a second chance by guessing the compiler
-            ##  and linker flags from the Perl installation
-            ##  if it exists.
-            PERL=
-            for dir in `echo $PATH | sed -e 's/:/ /g'`
-            do
-                if [ -f "$dir/perl5" ]; then
-                    PERL="$dir/perl5"
-                    break
-                fi
-                if [ -f "$dir/perl" ]; then
-                    PERL="$dir/perl"
-                    break
-                fi
-            done
-            if [ "x$PERL" != "x" ]; then
-                #   cool, Perl is installed on this platform...
-                if [ "x`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != "x" ]; then
-                    #   ...and actually uses the dlopen-style interface,
-                    #   so we can guess the flags from its knowledge
-                    CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
-                    LDFLAGS_SHLIB="`$PERL -V:lddlflags | cut -d\' -f2`"
-                    LDFLAGS_SHLIB_EXPORT="`$PERL -V:ccdlflags | cut -d\' -f2`"
-                    #   but additionally we have to inform the
-                    #   user that we are just guessing the flags
-                    echo ""
-                    echo "** WARNING: We have no explicit knowledge about shared object"
-                    echo "** support for your particular platform. But perhaps you have"
-                    echo "** luck: We were able to guess the compiler and linker flags"
-                    echo "** for creating shared objects from your Perl installation."
-                    echo "** If they actually work, please send the following information"
-                    echo "** for inclusion into later releases to new-httpd@apache.org or make"
-                    echo "** a suggestion report at http://www.apache.org/bug_report.html:"
-                    echo "**     PLATFORM=$PLAT"
-                    echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
-                    echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
-                    echo "**     LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT"
-                    echo ""
-                fi
-            fi
-            ;;
+	    esac
+	    if [ "$RULE_IRIXN32" = "yes" ]; then
+		LDFLAGS_SHLIB="$N32FLAG -shared"
+	    else
+		LDFLAGS_SHLIB="-shared"
+	    fi
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-sgi-irix)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-shared"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-dec-osf*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="" ;;
+	    esac
+	    LDFLAGS_SHLIB="-shared -expect_unresolved '*' -s"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-unixware*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-Bdynamic -G"
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	    ;;
+	 *-sco5*)
+	     case $CC in
+		 */gcc*|gcc* ) CFLAGS_SHLIB="-fpic" ;;
+		 */cc*|cc*   ) CFLAGS_SHLIB="-KPIC" ;;
+	     esac
+	     LDFLAGS_SHLIB="-G"
+	     LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	     SHLIB_SUFFIX_DEPTH=1
+	     ;;
+	RM*-sni-sysv4*)
+	    # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
+	    ;;
+	*-sni-sysv4*)
+	    # Older SINIX machines must be linked as "shared core"-Apache
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=0
+	    DEF_SHARED_CORE=yes
+	    ;;
+	*-sysv4*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    DEF_SHARED_CORE=yes
+	    ;;
+	*-hp-hpux9.*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="+z" ;;
+	    esac
+	    LDFLAGS_SHLIB="-b"
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+	    SHLIB_SUFFIX_NAME=sl
+	    ;;
+	*-hp-hpux10.*|*-hp-hpux11.*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="+z" ;;
+	    esac
+	    LDFLAGS_SHLIB="-b"
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
+	    SHLIB_SUFFIX_NAME=sl
+	    ;;
+	*-ibm-aix*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="" ;;
+	    esac
+	    case $PLAT in
+		*-ibm-aix4*)
+		    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -bnoentry"
+		    ;;
+		*-ibm-aix*)
+		    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -e _nostart"
+		    ;;
+	    esac
+	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bI:\$(SRCDIR)/support/httpd.exp "
+	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
+	    LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-bE:\$(SRCDIR)/support/httpd.exp"
+	    SHLIB_EXPORT_FILES=yes
+	    ;;
+	*-*-powermax*)
+	    LD_SHLIB='cc'
+	    LDFLAGS_SHLIB="-Zlink=so"
+	    LDFLAGS_SHLIB_EXPORT="-Zlink=dynamic -Wl,-Bexport"
+	    CFLAGS_SHLIB='-Zpic'
+	    ;;
+	*)
+	    ##  ok, no known explict support for shared objects
+	    ##  on this platform, but we give not up immediately.
+	    ##  We take a second chance by guessing the compiler
+	    ##  and linker flags from the Perl installation
+	    ##  if it exists.
+	    PERL=
+	    for dir in `echo $PATH | sed -e 's/:/ /g'`
+	    do
+		if [ -f "$dir/perl5" ]; then
+		    PERL="$dir/perl5"
+		    break
+		fi
+		if [ -f "$dir/perl" ]; then
+		    PERL="$dir/perl"
+		    break
+		fi
+	    done
+	    if [ "x$PERL" != "x" ]; then
+		#   cool, Perl is installed on this platform...
+		if [ "x`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != "x" ]; then
+		    #   ...and actually uses the dlopen-style interface,
+		    #   so we can guess the flags from its knowledge
+		    CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
+		    LDFLAGS_SHLIB="`$PERL -V:lddlflags | cut -d\' -f2`"
+		    LDFLAGS_SHLIB_EXPORT="`$PERL -V:ccdlflags | cut -d\' -f2`"
+		    #   but additionally we have to inform the
+		    #   user that we are just guessing the flags
+		    echo ""
+		    echo "** WARNING: We have no explicit knowledge about shared object"
+		    echo "** support for your particular platform. But perhaps you have"
+		    echo "** luck: We were able to guess the compiler and linker flags"
+		    echo "** for creating shared objects from your Perl installation."
+		    echo "** If they actually work, please send the following information"
+		    echo "** for inclusion into later releases to new-httpd@apache.org or make"
+		    echo "** a suggestion report at http://www.apache.org/bug_report.html:"
+		    echo "**     PLATFORM=$PLAT"
+		    echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
+		    echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
+		    echo "**     LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT"
+		    echo ""
+		fi
+	    fi
+	    ;;
     esac
 fi
 
@@ -1192,16 +1192,16 @@ fi
 ##
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB"  = "x" -a "x$CFLAGS_SHLIB"  = "x"  -a \
-         "x$TLDFLAGS_SHLIB" = "x" -a "x$LDFLAGS_SHLIB" = "x" ]; then
-        echo ""
-        echo "** FAILURE: Sorry, no shared object support available."
-        echo "** Either compile all modules statically (use AddModule instead"
-        echo "** of SharedModule in the Configuration file) or at least provide"
-        echo "** us with the appropriate compiler and linker flags via the"
-        echo "** CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
-        echo "** in the Configuration file."
-        echo ""
-        exit 1
+	 "x$TLDFLAGS_SHLIB" = "x" -a "x$LDFLAGS_SHLIB" = "x" ]; then
+	echo ""
+	echo "** FAILURE: Sorry, no shared object support available."
+	echo "** Either compile all modules statically (use AddModule instead"
+	echo "** of SharedModule in the Configuration file) or at least provide"
+	echo "** us with the appropriate compiler and linker flags via the"
+	echo "** CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
+	echo "** in the Configuration file."
+	echo ""
+	exit 1
     fi
 fi
 
@@ -1281,13 +1281,13 @@ fi
 ##
 if [ "x$RANLIB" = "x" ]; then
     if [ "x$TRANLIB" != "x" ]; then
-        RANLIB=$TRANLIB
+	RANLIB=$TRANLIB
     else
-        if ./helpers/PrintPath -s ranlib; then
-            RANLIB="ranlib"
-        else
-            RANLIB="true"
-        fi
+	if ./helpers/PrintPath -s ranlib; then
+	    RANLIB="ranlib"
+	else
+	    RANLIB="true"
+	fi
     fi
 fi
 
@@ -1329,9 +1329,9 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
     case $PLAT in
-        *-solaris2* )
-            LIBS="$LIBS -lresolv"
-            ;;
+	*-solaris2* )
+	    LIBS="$LIBS -lresolv"
+	    ;;
     esac
 fi
 
@@ -1345,12 +1345,12 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
     CFLAGS="$CFLAGS -Dconnect=SOCKSconnect -Dselect=SOCKSselect"
     CFLAGS="$CFLAGS -Dgethostbyname=SOCKSgethostbyname -Dclose=SOCKSclose"
     if [ "x`grep EXTRA_ Makefile | grep lsocks5`" = "x" ]; then
-        LIBS="$LIBS -L/usr/local/lib -lsocks5"
+	LIBS="$LIBS -L/usr/local/lib -lsocks5"
     fi
     case $PLAT in
-        *-solaris2* )
-            LIBS="$LIBS -lresolv"
-            ;;
+	*-solaris2* )
+	    LIBS="$LIBS -lresolv"
+	    ;;
     esac
 fi
 
@@ -1522,16 +1522,16 @@ fi
 LIBS_SHLIB=''
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "$RULE_SHARED_CHAIN" = "default" ] ; then
-        RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
+	RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
     fi
     if [ "$RULE_SHARED_CHAIN" = "yes" ]; then
-        echo " + enabling DSO files to be linked against others"
-        #   determine libraries which can be safely linked
-        #   to our DSO files, i.e. PIC libraries and shared libraries
-        extra_ldflags="`grep EXTRA_LDFLAGS= Makefile.config`"
-        extra_libs="`grep EXTRA_LIBS= Makefile.config`"
-        eval "`./helpers/slo.sh $LDFLAGS $LIBS $extra_ldflags $extra_libs`"
-        LIBS_SHLIB="$SLO_DIRS_PIC $SLO_LIBS_PIC $SLO_DIRS_DSO $SLO_LIBS_DSO"
+	echo " + enabling DSO files to be linked against others"
+	#   determine libraries which can be safely linked
+	#   to our DSO files, i.e. PIC libraries and shared libraries
+	extra_ldflags="`grep EXTRA_LDFLAGS= Makefile.config`"
+	extra_libs="`grep EXTRA_LIBS= Makefile.config`"
+	eval "`./helpers/slo.sh $LDFLAGS $LIBS $extra_ldflags $extra_libs`"
+	LIBS_SHLIB="$SLO_DIRS_PIC $SLO_LIBS_PIC $SLO_DIRS_DSO $SLO_LIBS_DSO"
     fi
 fi
 
@@ -1540,34 +1540,34 @@ fi
 ##
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "$RULE_SHARED_CORE" = "default" ] ; then
-        RULE_SHARED_CORE=$DEF_SHARED_CORE
+	RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
     if [ "$RULE_SHARED_CORE" = "yes" ]; then
-        echo " + enabling generation of Apache core as DSO"
-        #    shuffle compiler flags from shlib variant to standard
-        CFLAGS="$CFLAGS $CFLAGS_SHLIB"
-        CFLAGS_SHLIB=""
-        #    indicate that Rule SHARED_CORE is active
-        CFLAGS="$CFLAGS -DSHARED_CORE"
-        #    select the special subtarget for shared core generation
-        SUBTARGET=target_shared
-        #    determine additional suffixes for libhttpd.so
+	echo " + enabling generation of Apache core as DSO"
+	#    shuffle compiler flags from shlib variant to standard
+	CFLAGS="$CFLAGS $CFLAGS_SHLIB"
+	CFLAGS_SHLIB=""
+	#    indicate that Rule SHARED_CORE is active
+	CFLAGS="$CFLAGS -DSHARED_CORE"
+	#    select the special subtarget for shared core generation
+	SUBTARGET=target_shared
+	#    determine additional suffixes for libhttpd.so
 	V=1 R=3 P=4
-        if [ "$SHLIB_SUFFIX_DEPTH" = "0" ]; then
-            SHLIB_SUFFIX_LIST=""
-        fi
-        if [ "$SHLIB_SUFFIX_DEPTH" = "1" ]; then
-            SHLIB_SUFFIX_LIST="$V"
-        fi
-        if [ "$SHLIB_SUFFIX_DEPTH" = "2" ]; then
-            SHLIB_SUFFIX_LIST="$V.$R"
-        fi
-        if [ "$SHLIB_SUFFIX_DEPTH" = "3" ]; then
-            SHLIB_SUFFIX_LIST="$V.$R.$P"
-        fi
-        if [ "$SHLIB_SUFFIX_DEPTH" = "all" ]; then
-            SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
-        fi
+	if [ "$SHLIB_SUFFIX_DEPTH" = "0" ]; then
+	    SHLIB_SUFFIX_LIST=""
+	fi
+	if [ "$SHLIB_SUFFIX_DEPTH" = "1" ]; then
+	    SHLIB_SUFFIX_LIST="$V"
+	fi
+	if [ "$SHLIB_SUFFIX_DEPTH" = "2" ]; then
+	    SHLIB_SUFFIX_LIST="$V.$R"
+	fi
+	if [ "$SHLIB_SUFFIX_DEPTH" = "3" ]; then
+	    SHLIB_SUFFIX_LIST="$V.$R.$P"
+	fi
+	if [ "$SHLIB_SUFFIX_DEPTH" = "all" ]; then
+	    SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
+	fi
     fi
 fi
 
@@ -1577,16 +1577,16 @@ fi
 ##
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
-        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
+	echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
     fi
     if [ "x$TLD_SHLIB" = "x" ]; then
-        echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
+	echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
-        echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
+	echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
-        echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
+	echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
     fi
 fi
 
@@ -1691,7 +1691,7 @@ $CAT >> $awkfile <<'EOF2'
 	    dir = pp[1] "/" pp[2] 
 	    inthere = 0
 	    for ( tdir in autodirs ) {
-	        if (tdir == dir) 
+		if (tdir == dir) 
 		    inthere = 1
 	    }
 	    if (inthere == 1)
@@ -1769,31 +1769,31 @@ echo "SHELL=$SHELL">> Makefile.config
 if [ "x$using_shlib" = "x1" ] ; then
     DL_LIB=""
     case $PLAT in
-        *-ibm-aix* )
-            DL_LIB="-lld"
-            ;;
-        *-hp-hpux*)
-            if ./helpers/TestCompile func shl_load; then
-                :
-            else
-                if ./helpers/TestCompile lib dld; then
-                    DL_LIB="-ldld"
-                fi
-            fi
-            ;;
-        * )
-            if ./helpers/TestCompile func dlopen; then
-                :
-            else
-                if ./helpers/TestCompile lib dl; then
-                    DL_LIB="-ldl"
-                fi
-            fi
-            ;;
+	*-ibm-aix* )
+	    DL_LIB="-lld"
+	    ;;
+	*-hp-hpux*)
+	    if ./helpers/TestCompile func shl_load; then
+		:
+	    else
+		if ./helpers/TestCompile lib dld; then
+		    DL_LIB="-ldld"
+		fi
+	    fi
+	    ;;
+	* )
+	    if ./helpers/TestCompile func dlopen; then
+		:
+	    else
+		if ./helpers/TestCompile lib dl; then
+		    DL_LIB="-ldl"
+		fi
+	    fi
+	    ;;
     esac
     if [ "x$DL_LIB" != "x" ]; then
-        LIBS="$LIBS $DL_LIB"
-        echo " + using $DL_LIB for vendor DSO support"
+	LIBS="$LIBS $DL_LIB"
+	echo " + using $DL_LIB for vendor DSO support"
     fi
 fi
 
@@ -1805,9 +1805,9 @@ fi
 ## include Apache header files.
 ##
 TEXTRA_CFLAGS=`egrep '^EXTRA_CFLAGS=' Makefile.config | tail -1 |\
-               sed -e 's;^EXTRA_CFLAGS=;;' -e 's;\`.*\`;;'`
+	       sed -e 's;^EXTRA_CFLAGS=;;' -e 's;\`.*\`;;'`
 tmpstr=`echo $CFLAGS $TEXTRA_CFLAGS |\
-        sed -e 's;[ 	]-;!-;g' -e 's/\\\"/\"/g' -e 's/\([^\\]\)"/\1/g'`
+	sed -e 's;[ 	]-;!-;g' -e 's/\\\"/\"/g' -e 's/\([^\\]\)"/\1/g'`
 OIFS="$IFS"
 IFS='!'
 for cflag in $tmpstr; do
@@ -1816,17 +1816,17 @@ done
 IFS="$OIFS"
 awk >>$AP_CONFIG_AUTO_H <$tmpconfig '
     /^-D.*/ {
-        i = index($0, "=")
-        if (i > 0) {
-            define = substr($0, 3, i-3)
-            value  = substr($0, i+1, length($0)-i)
-        }
-        else {
-            define = substr($0, 3, length($0)-2)
-            value  = "1";
-        }
-        printf ("\n/* build flag: %s */\n", $0)
-        printf ("#ifndef %s\n#define %s %s\n#endif\n", define, define, value)
+	i = index($0, "=")
+	if (i > 0) {
+	    define = substr($0, 3, i-3)
+	    value  = substr($0, i+1, length($0)-i)
+	}
+	else {
+	    define = substr($0, 3, length($0)-2)
+	    value  = "1";
+	}
+	printf ("\n/* build flag: %s */\n", $0)
+	printf ("#ifndef %s\n#define %s %s\n#endif\n", define, define, value)
     }
 '
 
@@ -1963,7 +1963,7 @@ EOF
 	    END { 
 		printf "SHLIBS=%s\n", shlibs;
 		printf "OBJS_PIC=%s\n", objspic;
-            }'
+	    }'
 
 	    $CAT << 'EOF' >> $moddir/Makefile
 
@@ -1999,7 +1999,7 @@ depend:
 	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
 	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
 	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
-	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		   -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
 		> Makefile.tmpl \
 	    && rm Makefile.new
 
