@@ -89,6 +89,8 @@
 #include "http_protocol.h"
 #include "http_vhost.h"
 
+#include "mod_ssl.h"
+
 #include "mod_rewrite.h"
 
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
@@ -380,6 +382,9 @@ static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static apr_global_mutex_t *rewrite_log_lock = NULL;
 #endif
 
+/* Optional functions imported from mod_ssl when loaded: */
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
 
 /*
  * +-------------------------------------------------------+
@@ -1610,6 +1615,10 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                 result = getenv(var);
             }
         }
+        else if (var[4] && !strncasecmp(var, "SSL", 3) && rewrite_ssl_lookup) {
+            result = rewrite_ssl_lookup(r->pool, r->server, r->connection, r,
+                                        var + 4);
+        }
     }
     else if (var[4] == ':') {
         if (var[5]) {
@@ -1691,6 +1700,13 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                                       tm.tm_hour, tm.tm_min, tm.tm_sec);
                 rewritelog((r, 1, ctx->perdir, "RESULT='%s'", result));
                 return (char *)result;
+            }
+            break;
+            
+        case  5:
+            if (!strcmp(var, "HTTPS")) {
+                int flag = rewrite_is_https && rewrite_is_https(r->connection);
+                return apr_pstrdup(r->pool, flag ? "on" : "off");
             }
             break;
 
@@ -3995,6 +4011,9 @@ static int post_config(apr_pool_t *p,
             }
         }
     }
+
+    rewrite_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    rewrite_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
 
     return OK;
 }
