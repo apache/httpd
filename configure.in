@@ -78,17 +78,10 @@ dnl explicitly so that the normal HAVE_xxx_H symbol is defined.
 AC_HEADER_STDC
 AC_CHECK_HEADERS( \
 string.h \
-stdlib.h \
-ctype.h \
 limits.h \
 unistd.h \
-sys/time.h \
-sys/types.h \
 sys/socket.h \
-netinet/in.h \
 netinet/tcp.h \
-arpa/inet.h \
-netdb.h \
 pwd.h \
 grp.h \
 strings.h
@@ -269,8 +262,6 @@ AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "conf/$progname.conf",
 	[Location of the config file, relative to the Apache root directory])
 AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
 	[Location of the source for the current MPM])
-
-AC_TYPE_RLIM_T
 
 perlbin=`$srcdir/build/PrintPath perl`
 AC_SUBST(perlbin)
