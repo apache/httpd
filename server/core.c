@@ -1230,6 +1230,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
 	    ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, cmd->pool,
                          "Warning: DocumentRoot [%s] does not exist",
 		         arg);
+            conf->ap_document_root = arg;
 	}
 	else {
 	    return "DocumentRoot must be a directory";
