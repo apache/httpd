@@ -234,7 +234,7 @@ static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade *bb, char *msgbuf, int 
 
 /* FIXME: If the line was too long, read till LF */
 
-	    mb = apr_cpystrn(mb, response+4, me - mb);
+	    mb = apr_cpystrn(mb, response + (' ' == response[0] ? 1 : 4), me - mb);
 	} while (memcmp(response, buff, 4) != 0);
     }
 
