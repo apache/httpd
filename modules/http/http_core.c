@@ -3057,11 +3057,11 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     if (pass_the_brigade) {
         /* Insert ctx->buf into the correct spot in the brigade */
         if (insert_first) {
-            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, 1, NULL);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, NULL);
             AP_BRIGADE_INSERT_HEAD(b, e);
         } 
         else if (insert_before) {
-            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, 1, NULL);
+            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, NULL);
             AP_BUCKET_INSERT_BEFORE(e, insert_before);
             AP_BUCKET_REMOVE(insert_before);
             ap_bucket_destroy(insert_before);
