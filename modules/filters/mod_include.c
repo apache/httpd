@@ -126,7 +126,6 @@ typedef enum {
     TOKEN_NE,
     TOKEN_RBRACE,
     TOKEN_LBRACE,
-    TOKEN_GROUP,
     TOKEN_GE,
     TOKEN_LE,
     TOKEN_GT,
@@ -336,7 +335,6 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
             continue;
 
         case TOKEN_NOT:
-        case TOKEN_GROUP:
         case TOKEN_RBRACE:
         case TOKEN_LBRACE:
             if (!current->dump_done) {
@@ -1213,8 +1211,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 break;
 
             case TOKEN_RE:
-            case TOKEN_RBRACE:
-            case TOKEN_GROUP:
+            case TOKEN_RBRACE: /* cannot happen */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
@@ -1333,7 +1330,23 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 return retval;
             }
 
-            TYPE_TOKEN(&current->token, TOKEN_GROUP);
+            /* empty groups return TRUE (backwards compat) */
+            if (!current->right) {
+                CREATE_NODE(ctx, current->right);
+                TYPE_TOKEN(&current->right->token, TOKEN_STRING);
+                current->right->token.value = "()";
+            }
+
+            current->right->parent = current->parent;
+            if (!current->parent) {
+                current = root = current->right;
+            }
+            else if (current->parent->left == current) {
+                current = current->parent->left = current->right;
+            }
+            else {
+                current = current->parent->right = current->right;
+            }
             break;
 
         case TOKEN_NOT:
@@ -1341,8 +1354,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             switch (current->token.type) {
             case TOKEN_STRING:
             case TOKEN_RE:
-            case TOKEN_RBRACE:
-            case TOKEN_GROUP:
+            case TOKEN_RBRACE: /* cannot happen */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
@@ -1356,9 +1368,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             current->right = new;
             new->parent = current;
             current = new;
-            break;
-
-        default:
             break;
         }
     }
@@ -1560,33 +1569,9 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             current = current->parent;
             break;
 
-        case TOKEN_GROUP:
-            if (current->right) {
-                if (!current->right->done) {
-                    current = current->right;
-                    continue;
-                }
-                current->value = current->right->value;
-            }
-            else {
-                current->value = 1;
-            }
-
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
-            break;
-
         case TOKEN_LBRACE:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Unmatched '(' in \"%s\" in file %s",
-                          expr, r->filename);
-            *was_error = 1;
-            return retval;
-
-        case TOKEN_RBRACE:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Unmatched ')' in \"%s\" in file %s",
                           expr, r->filename);
             *was_error = 1;
             return retval;
