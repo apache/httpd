@@ -725,6 +725,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellc
 	dot = strrchr(exename, '.');
 	if (dot) {
 	    if (!strcasecmp(dot, ".BAT") ||
+		!strcasecmp(dot, ".CMD") ||
 		!strcasecmp(dot, ".EXE") ||
 		!strcasecmp(dot, ".COM"))
 		is_exe = 1;
