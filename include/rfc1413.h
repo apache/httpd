@@ -64,6 +64,10 @@ extern "C" {
 #endif
 
 /**
+ * @package RFC1413 package
+ */
+
+/**
  * Retrieve the remote user name, given socket structures.  This implements the
  * rfc1413, identd.
  * @param conn The current connection
