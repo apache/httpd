@@ -129,11 +129,11 @@ int isapi_handler (request_rec *r) {
     if (!(allow_options(r) & OPT_EXECCGI))
 	return FORBIDDEN;
 
-    if (S_ISDIR(r->finfo.st_mode))
-	return FORBIDDEN;
-
     if (r->finfo.st_mode == 0)
 	return NOT_FOUND;
+
+    if (S_ISDIR(r->finfo.st_mode))
+	return FORBIDDEN;
 
     /* Load the module */
 
