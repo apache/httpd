@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) SECURITY: CAN-2004-0809 (cve.mitre.org)
+     mod_dav_fs: Fix a segfault in the handling of an indirect lock
+     refresh.  PR 31183.  [Joe Orton]
+
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
