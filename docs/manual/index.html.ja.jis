@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<!-- English revision: 1.44 -->
+<!-- English revision: 1.45 -->
 
-<title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title><link
+<title>Apache HTTP サーバ バージョン 2.1 ドキュメント</title><link
 href="./style/css/manual.css" rel="stylesheet" media="all"
 type="text/css" title="Main stylesheet" />
 <style type="text/css" media="all">
@@ -32,16 +32,16 @@ href="./mod/">モジュール</a> | <a
 href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a>
 | <a href="./glossary.html">用語</a> | <a
 href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP
-Server Version 2.0</p><img alt="" src="./images/feather.gif"
+Server Version 2.1</p><img alt="" src="./images/feather.gif"
 /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-"
 src="./images/left.gif" /></a></div><div id="path"><a
 href="http://www.apache.org/">Apache</a> &gt; <a
 href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a
 href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a
-href="./">バージョン 2.0</a></div>
+href="./">バージョン 2.1</a></div>
 
 <div id="page-content">
-<h1>Apache HTTP サーバ バージョン 2.0 ドキュメント</h1>
+	<h1>Apache HTTP サーバ バージョン 2.1 ドキュメント</h1>
 
 
 

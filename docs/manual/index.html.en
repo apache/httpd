@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<title>Apache HTTP Server Version 2.0 Documentation</title><link
+<title>Apache HTTP Server Version 2.1 Documentation</title><link
 href="./style/css/manual.css" rel="stylesheet" media="all"
 type="text/css" title="Main stylesheet" />
 <style type="text/css" media="all">
@@ -31,16 +31,16 @@ href="./mod/">Modules</a> | <a
 href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a>
 | <a href="./glossary.html">Glossary</a> | <a
 href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP
-Server Version 2.0</p><img alt="" src="./images/feather.gif"
+Server Version 2.1</p><img alt="" src="./images/feather.gif"
 /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-"
 src="./images/left.gif" /></a></div><div id="path"><a
 href="http://www.apache.org/">Apache</a> &gt; <a
 href="http://httpd.apache.org/">HTTP Server</a> &gt; <a
 href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a
-href="./">Version 2.0</a></div>
+href="./">Version 2.1</a></div>
 
 <div id="page-content">
-<h1>Apache HTTP Server Version 2.0 Documentation</h1>
+<h1>Apache HTTP Server Version 2.1 Documentation</h1>
 
 
 
