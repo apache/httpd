@@ -227,16 +227,16 @@ In no event should you raise this above about 60 seconds, as
 
 <H3>Compile-Time Configuration Issues</H3>
 
-<H4>mod_status and Rule STATUS=yes</H4>
+<H4>mod_status and ExtendedStatus On</H4>
 
 <P>If you include <CODE>mod_status</CODE>
-and you also set <CODE>Rule STATUS=yes</CODE> when building
+and you also set <CODE>ExtendedStatus On</CODE> when building and running
 Apache, then on every request Apache will perform two calls to
 <CODE>gettimeofday(2)</CODE> (or <CODE>times(2)</CODE> depending
 on your operating system), and (pre-1.3) several extra calls to
 <CODE>time(2)</CODE>.  This is all done so that the status report
-contains timing indications.  For highest performance, set <CODE>Rule
-STATUS=no</CODE>.
+contains timing indications.  For highest performance, set
+<CODE>ExtendedStatus off</CODE> (which is the default).
 
 <H4>accept Serialization - multiple sockets</H4>
 
@@ -660,7 +660,7 @@ end of the request.  A custom logging module could eliminate one of the
 calls.  Or you can use a method which moves the time into shared memory,
 see the <A HREF="#patches">patches section below</A>.
 
-<P>As described earlier, <CODE>Rule STATUS=yes</CODE> causes two
+<P>As described earlier, <CODE>ExtendedStatus On</CODE> causes two
 <CODE>gettimeofday</CODE> calls and a call to <CODE>times</CODE>:
 
 <BLOCKQUOTE><PRE>
@@ -670,8 +670,8 @@ gettimeofday({873959960, 417742}, NULL) = 0
 times({tms_utime=5, tms_stime=0, tms_cutime=0, tms_cstime=0}) = 446747
 </PRE></BLOCKQUOTE>
 
-These can be removed by either removing <CODE>mod_status</CODE> or
-setting <CODE>Rule STATUS=no</CODE>.
+These can be removed by setting <CODE>ExtendedStatus Off</CODE> (which
+is the default).
 
 <P>It might seem odd to call <CODE>stat</CODE>:
 
@@ -766,7 +766,7 @@ which were described earlier.
 
 <P>Let's apply some of these optimizations:
 <CODE>-DSINGLE_LISTEN_UNSERIALIZED_ACCEPT -DBUFFERED_LOGS</CODE> and
-<CODE>Rule STATUS=no</CODE>.  Here's the final trace:
+<CODE>ExtendedStatus Off</CODE>.  Here's the final trace:
 
 <BLOCKQUOTE><PRE>
 accept(15, {sin_family=AF_INET, sin_port=htons(22286), sin_addr=inet_addr("127.0.0.1")}, [16]) = 3

@@ -84,15 +84,14 @@ directory of Apache, <CODE>log_server_status</CODE>.
 To obtain full statistics you must compile Apache with a special
 directive.  On some machines there may be a small performance loss
 if you do this.  Try full statistics and see if you notice any
-difference.  If you do please contact <A HREF="mailto:mark@ukweb.com">
-mark@ukweb.com</A> and tell me your configuration.
+difference.  If you do please contact <A HREF="mailto:jim@apache.org">
+jim@apache.org</A> and tell us your configuration.
 
 <P>
 
-Do this by adding the following to the AUX_CFLAGS line in the
-"Configuration" file and then recompiling as usual.
+Do this by using the following run-time directive:
 <PRE>
-        AUX_CFLAGS= (something) -DSTATUS
+        ExtendedStatus On
 </PRE>
 
 <BLOCKQUOTE>
