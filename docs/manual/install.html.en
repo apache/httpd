@@ -84,46 +84,36 @@
 
     <p>The following requirements exist for building Apache:</p>
 
-    <ul>
-      <li>Disk Space<br />
-      <br />
-       Make sure you have at least 50 MB of temporary free disk
+    <dl>
+      <dt>Disk Space</dt>
+      <dd>Make sure you have at least 50 MB of temporary free disk
       space available. After installation Apache occupies
       approximately 10 MB of disk space. The actual disk space
       requirements will vary considerably based on your chosen
-      configuration options and any third-party modules.<br />
-      <br />
-      </li>
+      configuration options and any third-party modules.</dd>
 
-      <li>ANSI-C Compiler and Build System<br />
-      <br />
-       Make sure you have an ANSI-C compiler installed. The <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      <dt>ANSI-C Compiler and Build System</dt>
+      <dd>Make sure you have an ANSI-C compiler installed. The <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
       compiler (GCC)</a> from the <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended (version 2.7.2 is fine). If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
-      basic build tools such as <code>make</code>.<br />
-      <br />
-      </li>
+      basic build tools such as <code>make</code>.</dd>
 
-      <li>Accurate time keeping<br />
-      <br />
-       Elements of the HTTP protocol are expressed as the time of
+      <dt>Accurate time keeping</dt>
+      <dd>Elements of the HTTP protocol are expressed as the time of
       day. So, it's time to investigate setting some time
       synchronization facility on your system. Usually the
-      <code>ntpdate</code> or xntpd programs are used for this purpose which
-      are based on the Network Time Protocol (NTP). See the Usenet newsgroup
-      <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
+      <code>ntpdate</code> or <code>xntpd</code> programs are used for
+      this purpose which are based on the Network Time Protocol (NTP).
+      See the Usenet newsgroup <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
       and the <a href="http://www.eecis.udel.edu/~ntp/">NTP
       homepage</a> for more details about NTP software and public
-      time servers.<br />
-      <br />
-      </li>
+      time servers.</dd>
 
-      <li><a href="http://www.perl.org/">Perl 5</a>
-      [OPTIONAL]<br />
-      <br />
-       For some of the support scripts like <a href="programs/apxs.html">apxs</a> or <a href="programs/dbmmanage.html">dbmmanage</a> (which are
+      <dt><a href="http://www.perl.org/">Perl 5</a>
+      [OPTIONAL]</dt>
+      <dd>For some of the support scripts like <a href="programs/apxs.html">apxs</a> or <a href="programs/dbmmanage.html">dbmmanage</a> (which are
       written in Perl) the Perl 5 interpreter is required (versions
       5.003 or newer are sufficient). If no such interpreter is found by
       the `<code>configure</code>' script there is no harm. Of course, you
@@ -132,10 +122,8 @@
       installed (perhaps a Perl 4 from the vendor and a Perl 5 from
       your own), then it is recommended to use the <code>--with-perl</code>
       option (see below) to make sure the correct one is selected
-      by <code>./configure</code>.<br />
-      <br />
-      </li>
-    </ul>
+      by <code>./configure</code>.</dd>
+    </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="download" id="download">Download</a></h2>
 
     <p>Apache can be downloaded from the <a href="http://www.apache.org/dist/httpd/">Apache Software

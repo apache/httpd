@@ -84,34 +84,27 @@
     <p>Folgende Anforderungen gelten für die Erstellung des
     Apache:</p>
 
-    <ul>
-      <li>Plattenplatz<br />
-      <br />
-      Stellen Sie sicher, dass Sie kurzzeitig wenigstens 50 MB freien
+    <dl>
+      <dt>Plattenplatz</dt>
+      <dd>Stellen Sie sicher, dass Sie kurzzeitig wenigstens 50 MB freien
       Festplattenplatz zur Verfügung haben. Nach der Installation
       belegt der Apache ungefähr 10 MB Plattenplatz. Der
       tatsächliche Platzbedarf variiert in Abhängigkeit von den
       gewählten Konfigurationseinstellungen und
-      Modulen von Drittanbietern.<br />
-      <br />
-      </li>
+      Modulen von Drittanbietern.</dd>
 
-      <li>ANSI-C-Compiler und Generierungswerkzeuge<br />
-      <br />
-      Stellen Sie sicher, dass Sie einen ANSI-C Compiler installiert
+      <dt>ANSI-C-Compiler und Generierungswerkzeuge</dt>
+      <dd>Stellen Sie sicher, dass Sie einen ANSI-C Compiler installiert
       haben. Der <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
       Compiler (GCC)</a> der <a href="http://www.gnu.org/">Free Software
       Foundation (FSF)</a> ist empfehlenswert (Version 2.7.2 ist gut). Wenn
       Sie den GCC nicht besitzen, stellen Sie zumindest sicher, dass der
       Compiler Ihres Anbieters ANSI-kompatibel ist. Außerdem muss Ihr
       <code>PATH</code> wesentliche Generierungswerkzeuge wie
-      <code>make</code> enthalten.<br />
-      <br />
-      </li>
+      <code>make</code> enthalten.</dd>
 
-      <li>Zeitgenauigkeit bewahren<br />
-      <br />
-      Elemente des HTTP-Protokolls werden in Form einer Tageszeit
+      <dt>Zeitgenauigkeit bewahren</dt>
+      <dd>Elemente des HTTP-Protokolls werden in Form einer Tageszeit
       ausgedrückt. Darum sollten Sie jetzt prüfen, ob Ihr System
       die Fähigkeit zur Zeitsynchronisation besitzt, und diese
       gegebenenfalls installieren. Üblicherweise werden hierfür
@@ -120,14 +113,11 @@
       Informationen über NTP Software und öffentliche Zeitserver
       finden Sie in der Usenet Newsgroup <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
       und auf der <a href="http://www.eecis.udel.edu/~ntp/">NTP
-      Homepage</a>.<br />
-      <br />
-      </li>
+      Homepage</a>.</dd>
 
-      <li><a href="http://www.perl.org/">Perl 5</a>
-      [OPTIONAL]<br />
-      <br />
-      Für einige Pflegeprogramme wie <a href="programs/apxs.html">apxs</a>
+      <dt><a href="http://www.perl.org/">Perl 5</a>
+      [OPTIONAL]</dt>
+      <dd>Für einige Pflegeprogramme wie <a href="programs/apxs.html">apxs</a>
       oder <a href="programs/dbmmanage.html">dbmmanage</a> (die in Perl
       geschrieben sind) wird der Perl 5 Interpreter benötigt (die
       Versionen ab 5.003 sind ausreichend). Wenn kein derartiger Interpreter
@@ -139,10 +129,8 @@
       Händler und Perl 5 durch Sie selbst), dann ist die Verwendung der
       <code>--with-perl</code> Option (siehe unten) empfehlenswert, um
       sicherzustellen, dass der richtige Interpreter von
-      <code>./configure</code> ausgewählt wird.<br />
-      <br />
-      </li>
-    </ul>
+      <code>./configure</code> ausgewählt wird.</dd>
+    </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="download" id="download">Download</a></h2>
 
     <p>Der Apache kann von der <a href="http://www.apache.org/dist/httpd/">Apache Software
