@@ -339,7 +339,11 @@ case $PLATFORM in
         iflags_program="${iflags_program} -e .exe" 
         iflags_core="${iflags_core} -e .exe" 
         ;;
-   *)
+    *MPE/iX* )
+       default_layout="Apache"
+       iflags_program="-m 755"
+       ;;
+    *)
 	default_layout="Apache"
 	;;
 esac
@@ -357,9 +361,6 @@ case "$*" in
             set -- --with-layout="$default_layout" "$@"
         fi
         ;;
-    *MPE/iX* )
-	iflags_program="-m 755"
-	;;
 esac
 
 ##
