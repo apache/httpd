@@ -65,16 +65,18 @@
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_buckets.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for EOF, sscanf() */
-#endif
+#define APR_WANT_STDIO          /* for sscanf */
+#define APR_WANT_STRFUNC
+#define APR_WANT_MEMFUNC
+#include "apr_want.h"
+
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 
 #define CORE_PRIVATE
-#include "apr_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"
@@ -91,12 +93,12 @@
 #include "util_ebcdic.h"
 #include "mpm_status.h"
 
+#include "mod_core.h"
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(post_read_request)
