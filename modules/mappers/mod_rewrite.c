@@ -707,6 +707,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
     newrule->flags  = RULEFLAG_NONE;
     newrule->env[0] = NULL;
+    newrule->cookie[0] = NULL;
     newrule->skip   = 0;
     if (a3 != NULL) {
         if ((err = cmd_rewriterule_parseflagfield(cmd->pool, newrule,
@@ -873,6 +874,17 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
         }
         else {
             return "RewriteRule: too many environment flags 'E'";
+        }
+    }
+    else  if ( strcasecmp(key, "cookie") == 0 || strcasecmp(key, "CO") == 0) {
+        for (i = 0; (cfg->cookie[i] != NULL) && (i < MAX_COOKIE_FLAGS); i++)
+            ;
+        if (i < MAX_COOKIE_FLAGS) {
+            cfg->cookie[i] = apr_pstrdup(p, val);
+            cfg->cookie[i+1] = NULL;
+        }
+        else {
+            return "RewriteRule: too many cookie flags 'CO'";
         }
     }
     else if (   strcasecmp(key, "nosubreq") == 0
@@ -1960,11 +1972,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     /*
      *  If this is a pure matching rule (`RewriteRule <pat> -')
      *  we stop processing and return immediately. The only thing
-     *  we have not to forget are the environment variables
-     *  (`RewriteRule <pat> - [E=...]')
+     *  we have not to forget are the environment variables and
+     *  cookies:
+     *  (`RewriteRule <pat> - [E=...,CO=...]')
      */
     if (strcmp(output, "-") == 0) {
         do_expand_env(r, p->env, briRR, briRC);
+        do_expand_cookie(r, p->cookie, briRR, briRC);
         if (p->forced_mimetype != NULL) {
             if (perdir == NULL) {
                 /* In the per-server context we can force the MIME-type
@@ -2012,6 +2026,12 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  strings (`RewriteRule .. .. [E=<string>]').
      */
     do_expand_env(r, p->env, briRR, briRC);
+
+    /*
+     *  Also set cookies for any cookie strings
+     *  (`RewriteRule .. .. [CO=<string>]').
+     */
+    do_expand_cookie(r, p->cookie, briRR, briRC);
 
     /*
      *  Now replace API's knowledge of the current URI:
@@ -2457,6 +2477,18 @@ static void do_expand_env(request_rec *r, char *env[],
     for (i = 0; env[i] != NULL; i++) {
     do_expand(r, env[i], buf, sizeof(buf), briRR, briRC);
     add_env_variable(r, buf);
+    }
+}
+
+static void do_expand_cookie( request_rec *r, char *cookie[],
+                              backrefinfo *briRR, backrefinfo *briRC)
+{
+    int i;
+    char buf[MAX_STRING_LEN];
+
+    for (i = 0; cookie[i] != NULL; i++) {
+        do_expand(r, cookie[i], buf, sizeof(buf), briRR, briRC);
+        add_cookie(r, buf);
     }
 }
 
@@ -4094,6 +4126,50 @@ static void add_env_variable(request_rec *r, char *s)
         apr_cpystrn(val, cp+1, sizeof(val));
         apr_table_set(r->subprocess_env, var, val);
         rewritelog(r, 5, "setting env variable '%s' to '%s'", var, val);
+    }
+}
+
+static void add_cookie(request_rec *r, char *s)
+{
+    char *var;
+    char *val;
+    char *domain;
+    char *expires;
+
+    char *tok_cntx;
+    char *cookie;
+
+    if (s) {
+        var = apr_strtok(s, ":", &tok_cntx);
+        val = apr_strtok(NULL, ":", &tok_cntx);
+        domain = apr_strtok(NULL, ":", &tok_cntx);
+        /** the line below won't hit the token ever **/
+        expires = apr_strtok(NULL, ":", &tok_cntx); 
+
+        if (var && val && domain) {
+            /* FIX: use cached time similar to how logging does it */
+            cookie = apr_pstrcat( r->pool, 
+                                  var,
+                                  "=",
+                                  val,
+                                  "; path=/; domain=",
+                                  domain,
+                                  (expires)? "; expires=" : NULL,
+                                  (expires)? ap_ht_time(r->pool, 
+                                                        r->request_time + 
+                                                        (60 * atol(expires)),
+                                                         "%a, %d-%b-%Y %T GMT", 1)
+                                           : NULL, 
+                                  NULL);
+
+            
+            /* 
+             * XXX: should we add it to err_headers_out as well ?
+             * if we do we need to be careful that only ONE gets sent out
+             */
+            apr_table_add(r->headers_out, "Set-Cookie", cookie);
+            rewritelog(r, 5, "setting cookie '%s' to '%s'", var, val);
+        }
     }
 }
 
