@@ -61,18 +61,18 @@
  */
 
 
-#define BUFSIZE		65536
-#ifdef MAX_PATH
-#undef MAX_PATH
-#endif
-#define MAX_PATH	1024
-
 #include "ap_config.h"
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define BUFSIZE		65536
+
+#ifndef MAX_PATH
+#define MAX_PATH	1024
+#endif
 
 int main (int argc, char *argv[])
 {
@@ -138,4 +138,6 @@ int main (int argc, char *argv[])
 	    exit(5);
 	}
     }
+    /* Of course we never, but prevent compiler warnings */
+    return 0;
 }
