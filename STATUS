@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/16 00:26:54 $]
+  Last modified at [$Date: 1999/03/16 00:38:47 $]
 
 Release:
 
@@ -47,10 +47,6 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
-
-    * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
-        Message-ID: <199901192353.PAA15190@scv4.apple.com>
-        Status: Jim +1
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz

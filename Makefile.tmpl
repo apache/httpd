@@ -432,6 +432,7 @@ install-config:
 			-e 's;@@ServerRoot@@/cgi-bin;$(cgidir);' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
 			-e 's;@@ServerRoot@@;$(prefix);g' \
+			-e 's;httpd.conf;$(TARGET).conf;' \
 			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \
 			-e 's;logs/apache_runtime_status;$(runtimedir)/$(TARGET).scoreboard;' \
 			-e 's;logs/httpd.pid;$(runtimedir)/$(TARGET).pid;' \
