@@ -217,9 +217,7 @@
  * We keep a hard maximum number of servers, for two reasons --- first off,
  * in case something goes seriously wrong, we want to stop the fork bomb
  * short of actually crashing the machine we're running on by filling some
- * kernel table (I was originally going to make this 256, but it turns out
- * that that would actually fill the process table on reasonably configured
- * machines).  Secondly, it keeps the size of the scoreboard file small
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
