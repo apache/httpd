@@ -107,6 +107,10 @@ extern char *sbrk(int);
 #include <prot.h>
 #endif
 
+#include "explain.h"
+
+DEF_Explain
+
 /*
  * Actual definitions of config globals... here because this is
  * for the most part the only code that acts on 'em.  (Hmmm... mod_main.c?)
@@ -839,7 +843,7 @@ void increment_counts (int child_num, request_rec *r, int flag)
 {
     long int bs=0;
     time_t now;
-    short_score new_score_rec=scoreboard_image[child_num];
+    short_score new_score_rec=scoreboard_image->servers[child_num];
 
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
@@ -861,7 +865,7 @@ void increment_counts (int child_num, request_rec *r, int flag)
     new_score_rec.how_long = now - new_score_rec.last_used;
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
-    memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
+    memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof(short_score));
 #else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
     force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
@@ -1663,6 +1667,7 @@ void standalone_main(int argc, char **argv)
 	    /* Child died... note that it's gone in the scoreboard. */
 	    sync_scoreboard_image();
 	    child_slot = find_child_by_pid (pid);
+	    Explain2("Reaping child %d slot %d",pid,child_slot);
 	    if (child_slot >= 0)
 		(void)update_child_status (child_slot, SERVER_DEAD,
 		 (request_rec*)NULL);
@@ -1672,6 +1677,7 @@ void standalone_main(int argc, char **argv)
 	if ((count_idle_servers() < daemons_min_free)
 	 && (child_slot = find_free_child_num()) >= 0
 	 && child_slot <= daemons_limit) {
+	    Explain1("Starting new child in slot %d",child_slot);
 	    (void)update_child_status(child_slot,SERVER_STARTING,
 	     (request_rec*)NULL);
 	    make_child(server_conf, child_slot);

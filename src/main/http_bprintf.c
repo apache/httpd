@@ -29,7 +29,11 @@
 #define max(a,b)	(a > b ? a : b)
 #endif
 
+#ifdef NO_LONG_DOUBLE
+#define LONG_DOUBLE	double
+#else
 #define LONG_DOUBLE	long double
+#endif
 
 #define FALSE	0
 #define TRUE	1

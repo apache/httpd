@@ -93,7 +93,8 @@ char *crypt(char *pw, char *salt);
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
- 
+#define NO_LONG_DOUBLE
+
 #elif defined(HPUX)
 #define HAVE_RESOURCE
 #undef HAVE_GMTOFF
