@@ -263,6 +263,8 @@
 #define SERVER_VERSION	SERVER_BASEVERSION
 #endif
 
+#define APACHE_RELEASE_DATE 19970629
+
 #define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
 
