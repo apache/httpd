@@ -102,8 +102,8 @@ typedef struct util_ldap_state_t {
     apr_pool_t *pool;           /* pool from which this state is allocated */
 #if APR_HAS_THREADS
     apr_thread_mutex_t *mutex;          /* mutex lock for the connection list */
-    apr_thread_rwlock_t *util_ldap_cache_lock;
 #endif
+    apr_global_mutex_t *util_ldap_cache_lock;
 
     apr_size_t cache_bytes;     /* Size (in bytes) of shared memory cache */
     char *cache_file;           /* filename for shm */
@@ -124,6 +124,7 @@ typedef struct util_ldap_state_t {
 
     /* cache ald */
     void *util_ldap_cache;
+    char *lock_file;           /* filename for shm lock mutex */
 
 } util_ldap_state_t;
 
