@@ -653,6 +653,7 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *) # default: Catch systems we don't know about
+        OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m
 	uname -m
@@ -671,8 +672,11 @@ case "$PLAT" in
 	echo apache-bugs@apache.org.  If you don\'t wish to do the port
 	echo yourself, please submit this output rather than the patches.
 	echo Thank you
-	exitcode=1
-	exit 1
+	echo
+	echo Pressing on with the build process, but all bets are off.
+	echo Do not be surprised if it fails. If it works, and even
+	echo if it does not, please contact the above address.
+	echo
 	;;
 esac
 

@@ -52,10 +52,13 @@ much feedback as possible.
 ----------------------
 Configure cannot Grok:
 ----------------------
-If this happens to you, then it means that Configure doesn't
-know how to configure and compile Apache for your OS. The first
-course of action is the easiest: Look in Configure and see if
-there are any OSs which are similar to yours.
+If this happens to you, then it means that Configure doesn't know
+how to configure and compile Apache for your OS. It will still try
+nonetheless, but at this point, all bets are off.
+
+The best solution if this happens to you is to make Apache aware
+of your OS.  The first course of action is the easiest:  Look in
+Configure and see if there are any OSs which are similar to yours.
 
 For example, let's say that your OS is similar to HP-UX, but that
 GuessOS returns "foobar-intel-hubble". You would then edit
