@@ -18,7 +18,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>가능한 언어: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -175,7 +176,7 @@ Side Includes</a>를 처리한다.<br />
 <dd><a href="#http">HTTP</a> 요청과 응답에서 실제 내용 이전에
 보내는 부분으로 내용을 설명하는 정보가 있다.</dd>
 
-<dt><a name=".htaccess">.htaccess</a></dt> <dd>웹문서들 안에 있는
+<dt><a name="htaccess">.htaccess</a></dt> <dd>웹문서들 안에 있는
 <a href="#configurationfile">설정파일 (configuration file)</a>로,
 설정 <a href="#directive">지시어 (directive)</a>를 자신이 위치한
 디렉토리와 모든 하위디렉토리에 적용한다. 이름과 달리 이
@@ -353,7 +354,8 @@ ITU-T)이 권장하는 인증서 양식. SSL/TLS 인증에서 사용한다.<br />
 </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>가능한 언어: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
