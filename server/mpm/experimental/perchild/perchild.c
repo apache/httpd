@@ -179,14 +179,15 @@ static jmp_buf jmpbuffer;
 struct child_info_t {
     uid_t uid;
     gid_t gid;
-    int sd;
+    int input;       /* The socket descriptor */
+    int output;      /* The socket descriptor */
 };
 
 typedef struct {
-    const char *sockname;    /* The base name for the socket */
+    const char *sockname;       /* The base name for the socket */
     const char *fullsockname;   /* socket base name + extension */
-    int        sd;       /* The socket descriptor */
-    int        sd2;       /* The socket descriptor */
+    int        input;           /* The socket descriptor */
+    int        output;          /* The socket descriptor */
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
@@ -573,6 +574,29 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id,
     }
 }
 
+static perchild_process_connection(conn_rec *c)
+{
+    ap_filter_t *f;
+    apr_bucket_brigade *bb;
+    core_net_rec *net;
+
+    apr_pool_userdata_get((void **)&bb, "PERCHILD_SOCKETS", c->pool);
+    if (bb != NULL) {
+        for (f = c->output_filters; f != NULL; f = f->next) {
+            if (!strcmp(f->frec->name, "core")) {
+                break;
+            }
+        }
+        if (f != NULL) {
+            net = f->ctx;
+            net->in_ctx = apr_palloc(c->pool, sizeof(*net->in_ctx));
+            net->in_ctx->b = bb;
+        }
+    }
+    return DECLINED;
+}
+    
+
 static void *worker_thread(apr_thread_t *, void *);
 
 /* Starts a thread as long as we're below max_threads */
@@ -649,35 +673,51 @@ static apr_status_t receive_from_other_child(void **csd, ap_listen_rec *lr,
 {
     struct msghdr msg;
     struct cmsghdr *cmsg;
-    char sockname[80];
-    struct iovec iov;
+    char headers[HUGE_STRING_LEN];
+    char request_body[HUGE_STRING_LEN];
+    struct iovec iov[2];
     int ret, dp;
     apr_os_sock_t sd;
-
-    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, ptrans,
-                 "trying to receive request from other child");
+    apr_socket_t *unix_sd = NULL;
+    apr_bucket_alloc_t *alloc = apr_bucket_alloc_create(ptrans);
+    apr_bucket_brigade *bb = apr_brigade_create(ptrans, alloc);
+    apr_bucket *bucket;
 
     apr_os_sock_get(&sd, lr->sd);
 
-    iov.iov_base = sockname;
-    iov.iov_len = 80;
+    iov[0].iov_base = headers;
+    iov[0].iov_len = HUGE_STRING_LEN;
+    iov[0].iov_base = request_body;
+    iov[0].iov_len = HUGE_STRING_LEN;
 
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
-    msg.msg_iov = &iov;
-    msg.msg_iovlen = 1;
+    msg.msg_iov = iov;
+    msg.msg_iovlen = 2;
 
     cmsg = apr_palloc(ptrans, sizeof(*cmsg) + sizeof(sd));
     cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sd);
-    msg.msg_control = (caddr_t)cmsg;
+    msg.msg_control = cmsg;
     msg.msg_controllen = cmsg->cmsg_len;
-    msg.msg_flags = 0;
-    
+
     ret = recvmsg(sd, &msg, 0);
 
     memcpy(&dp, CMSG_DATA(cmsg), sizeof(dp));
 
     apr_os_sock_put((apr_socket_t **)csd, &dp, ptrans);
+
+    bucket = apr_bucket_eos_create(alloc);
+    APR_BRIGADE_INSERT_HEAD(bb, bucket);
+    bucket = apr_bucket_socket_create(*csd, alloc);
+    APR_BRIGADE_INSERT_HEAD(bb, bucket);
+    bucket = apr_bucket_heap_create(iov[1].iov_base, 
+                                    iov[1].iov_len, NULL, alloc);
+    APR_BRIGADE_INSERT_HEAD(bb, bucket);
+    bucket = apr_bucket_heap_create(iov[0].iov_base, 
+                                    iov[0].iov_len, NULL, alloc);
+    APR_BRIGADE_INSERT_HEAD(bb, bucket);
+
+    apr_pool_userdata_set(bb, "PERCHILD_SOCKETS", NULL, ptrans);
     return 0;
 }
 
@@ -711,7 +751,10 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners; lr != NULL; lr = lr->next) {
-        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN | APR_POLLOUT);
+        int fd;
+        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
+
+        apr_os_sock_get(&fd, lr->sd);
     }
 
     while (!workers_may_exit) {
@@ -776,7 +819,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 }
                 /* XXX: Should we check for POLLERR? */
                 apr_poll_revents_get(&event, lr->sd, pollset);
-                if (event & (APR_POLLIN | APR_POLLOUT)) {
+                if (event & (APR_POLLIN)) {
                     last_lr = lr;
                     goto got_fd;
                 }
@@ -954,7 +997,7 @@ typedef struct perchild_header {
 static int perchild_header_field(perchild_header *h,
                              const char *fieldname, const char *fieldval)
 {
-    apr_pstrcat(h->p, h->headers, fieldname, ": ", fieldval, CRLF); 
+    apr_pstrcat(h->p, h->headers, fieldname, ": ", fieldval, CRLF, NULL); 
     return 1;
 }
 
@@ -963,10 +1006,25 @@ static void child_main(int child_num_arg)
 {
     int i;
     apr_status_t rv;
-
+    apr_socket_t *sock = NULL;
+    ap_listen_rec *lr;
+    
     my_pid = getpid();
     child_num = child_num_arg;
     apr_pool_create(&pchild, pconf);
+
+    for (lr = ap_listeners ; lr->next != NULL; lr = lr->next) {
+        continue;
+    }
+
+    apr_os_sock_put(&sock, &child_info_table[child_num].input, pconf);
+    lr->next = apr_palloc(pconf, sizeof(*lr));
+    lr->next->sd = sock;
+    lr->next->active = 1;
+    lr->next->accept_func = receive_from_other_child;
+    lr->next->next = NULL;
+    lr = lr->next;
+    num_listensocks++;
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
@@ -1311,14 +1369,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lr = lr->next;
     num_listensocks++;
 
-    apr_os_sock_put(&sock, &child_info_table[child_num].sd, pconf);
-    lr->next = apr_palloc(pconf, sizeof(*lr));
-    lr->next->sd = sock;
-    lr->next->active = 1;
-    lr->next->accept_func = receive_from_other_child;
-    lr->next->next = NULL;
-    num_listensocks++;
-
     set_signals();
 
     /* If we're doing a graceful_restart then we're going to see a lot
@@ -1553,7 +1603,8 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     for (i = 0; i < tmp_server_limit; i++) {
         child_info_table[i].uid = -1;
         child_info_table[i].gid = -1;
-        child_info_table[i].sd = -1;
+        child_info_table[i].input = -1;
+        child_info_table[i].output = -1;
     }
 
     return OK;
@@ -1561,63 +1612,89 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 
 static int pass_request(request_rec *r)
 {
+    int rv;
     apr_socket_t *thesock = ap_get_module_config(r->connection->conn_config, &core_module);
     struct msghdr msg;
     struct cmsghdr *cmsg;
     int sfd;
-    struct iovec iov;
+    struct iovec iov[2];
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    perchild_server_conf *sconf = (perchild_server_conf *)
-                            ap_get_module_config(r->server->module_config, 
-                                                 &mpm_perchild_module);
-    char request_body[HUGE_STRING_LEN];
+    apr_bucket_brigade *sockbb;
+    char request_body[HUGE_STRING_LEN] = "\0";
     apr_off_t len = 0;
     apr_size_t l = 0;
     perchild_header h;
+    apr_bucket *sockbuck;
+    perchild_server_conf *sconf = (perchild_server_conf *)
+                            ap_get_module_config(r->server->module_config, 
+                                                 &mpm_perchild_module);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
-                 "passing request to another child.  Vhost: %s, child %d",
-                 apr_table_get(r->headers_in, "Host"), child_num);
-    ap_get_brigade(r->input_filters, bb, AP_MODE_EXHAUSTIVE, APR_NONBLOCK_READ,
+                 "passing request to another child.  Vhost: %s, child %d %d",
+                 apr_table_get(r->headers_in, "Host"), child_num, sconf->output);
+    ap_get_brigade(r->connection->input_filters, bb, AP_MODE_EXHAUSTIVE, APR_NONBLOCK_READ,
                    len);
+
+    for (sockbuck = APR_BRIGADE_FIRST(bb); sockbuck != APR_BRIGADE_SENTINEL(bb);
+         sockbuck = APR_BUCKET_NEXT(sockbuck)) {
+        if (APR_BUCKET_IS_SOCKET(sockbuck)) {
+            break;
+        }
+    }
+    
+    if (!sockbuck) {
+    }
+    sockbb = apr_brigade_split(bb, sockbuck); 
+
     if (apr_brigade_flatten(bb, request_body, &l) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                     "Unable to flatten brigade, declining request");
         return DECLINED;
     }
 
     apr_os_sock_get(&sfd, thesock);
 
-    iov.iov_base = "FOOBAR";
-    iov.iov_len = 1;
+    h.p = r->pool;
+    h.headers = apr_pstrcat(h.p, r->the_request, CRLF, "Host: ", r->hostname, 
+                            CRLF, NULL);
+/* XXX  This REALLY needs to be uncommented, but it is causing problems.
+    apr_table_do((int (*) (void *, const char *, const char *))
+                 perchild_header_field, (void *) &h, r->headers_in, NULL); */
+    h.headers = apr_pstrcat(h.p, h.headers, CRLF, NULL);
+
+    iov[0].iov_base = h.headers;
+    iov[0].iov_len = strlen(h.headers) + 1;
+    iov[1].iov_base = request_body;
+    iov[1].iov_len = len + 1;
 
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
-    msg.msg_iov = &iov;
-    msg.msg_iovlen = 1;
+    msg.msg_iov = iov;
+    msg.msg_iovlen = 2;
 
     cmsg = apr_palloc(r->pool, sizeof(*cmsg) + sizeof(sfd));
-    cmsg->cmsg_len = sizeof(*cmsg) + sizeof(int);
+    cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sfd);
     cmsg->cmsg_level = SOL_SOCKET;
     cmsg->cmsg_type = SCM_RIGHTS;
 
     memcpy(CMSG_DATA(cmsg), &sfd, sizeof(sfd));
 
-    msg.msg_control = (caddr_t)cmsg;
+    msg.msg_control = cmsg;
     msg.msg_controllen = cmsg->cmsg_len;
-    msg.msg_flags=0;
 
-    if (sendmsg(sconf->sd2, &msg, 0) == -1) {
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                 "Writing message to %d, passing sd:  %d", sconf->output, sfd);
+
+    if ((rv = sendmsg(sconf->output, &msg, 0)) == -1) {
         apr_pool_destroy(r->pool);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                 "Writing message failed %d %d", rv, errno);
         return -1;
     }
 
-    h.p = r->pool;
-    h.headers = apr_pstrdup(h.p, r->the_request);
-    apr_table_do((int (*) (void *, const char *, const char *))
-                 perchild_header_field, (void *) &h, r->headers_in, NULL);
-
-    write(sconf->sd2, h.headers, strlen(h.headers));
-    write(sconf->sd2, request_body, len);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                 "Writing message succeeded %d", rv);
 
     apr_pool_destroy(r->pool);
     return 1;
@@ -1643,7 +1720,7 @@ static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
         sconf = (perchild_server_conf *)ap_get_module_config(sr->module_config,
                                                       &mpm_perchild_module);
 
-        if (sconf->sd == -1) {
+        if (sconf->input == -1) {
             sconf->fullsockname = apr_pstrcat(sr->process->pool, 
                                              sconf->sockname, ".DEFAULT", NULL);
             if (def_sd[0] == -1) {
@@ -1651,14 +1728,15 @@ static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
                     /* log error */
                 }
             }
-            sconf->sd = def_sd[0];
-            sconf->sd2 = def_sd[1];
+            sconf->input = def_sd[0];
+            sconf->output = def_sd[1];
         }
     }
 
     for (i = 0; i < num_daemons; i++) {
         if (child_info_table[i].uid == -1) {
-            child_info_table[i].sd = def_sd[0];
+            child_info_table[i].input = def_sd[0];
+            child_info_table[i].output = def_sd[1];
         }
     }
 
@@ -1691,12 +1769,12 @@ static int perchild_post_read(request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
                      "Determining if request should be passed. "
                      "Child Num: %d, SD: %d, sd from table: %d, hostname from server: %s", child_num, 
-                     sconf->sd, child_info_table[child_num].sd, 
+                     sconf->input, child_info_table[child_num].input, 
                      r->server->server_hostname);
         /* sconf is the server config for this vhost, so if our socket
          * is not the same that was set in the config, then the request
          * needs to be passed to another child. */
-        if (sconf->sd != child_info_table[child_num].sd) {
+        if (sconf->input != child_info_table[child_num].input) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
                          "Passing request.");
             if (pass_request(r) == -1) {
@@ -1724,13 +1802,17 @@ static void perchild_hooks(apr_pool_t *p)
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_post_config(perchild_post_config, NULL, NULL, APR_HOOK_MIDDLE); 
 
-    /* This must be run absolutely first.  If this request isn't for this
-     * server then we need to forward it to the proper child.  No sense
+    /* Both of these must be run absolutely first.  If this request isn't for 
+     * this server then we need to forward it to the proper child.  No sense
      * tying up this server running more post_read request hooks if it is
-     * just going to be forwarded along.
+     * just going to be forwarded along.  The process_connection hook allows
+     * perchild to receive the passed request correctly, by automatically
+     * filling in the core_input_filter's ctx pointer.
      */
     ap_hook_post_read_request(perchild_post_read, NULL, NULL,
                               APR_HOOK_REALLY_FIRST);
+    ap_hook_process_connection(perchild_process_connection, NULL, NULL, 
+                               APR_HOOK_REALLY_FIRST);
 }
 
 static const char *set_num_daemons(cmd_parms *cmd, void *dummy,
@@ -1895,17 +1977,20 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
         return errstr;
     }
 
-    sconf->sd = socks[0]; 
-    sconf->sd2 = socks[1];
+    sconf->input = socks[0]; 
+    sconf->output = socks[1];
 
     for (i = 0; i < num_daemons; i++) {
         if (u == child_info_table[i].uid && g == child_info_table[i].gid) {
-            child_info_table[i].sd = sconf->sd;
+            child_info_table[i].input = sconf->input;
+            child_info_table[i].output = sconf->output;
             matching++;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
                          "filling out child_info_table; UID: %d, GID: %d, "
-                         "SD: %d, Child Num: %d", child_info_table[i].uid, 
-                         child_info_table[i].gid, sconf->sd, i);
+                         "SD: %d %d, OUTPUT: %d %d, Child Num: %d", 
+                         child_info_table[i].uid, child_info_table[i].gid, 
+                         sconf->input, child_info_table[i].input, sconf->output,
+                         child_info_table[i].output, i);
         }
     }
 
@@ -2025,7 +2110,8 @@ static void *perchild_create_config(apr_pool_t *p, server_rec *s)
     perchild_server_conf *c = (perchild_server_conf *)
                                   apr_pcalloc(p, sizeof(perchild_server_conf));
 
-    c->sd = -1;
+    c->input = -1;
+    c->output = -1;
     return c;
 }
 
