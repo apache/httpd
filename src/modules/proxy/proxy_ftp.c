@@ -275,7 +275,8 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
                 searchptr = filename;
                 searchidx = filename - buf;
             }
-            else if (searchptr != NULL && searchidx != 0) {
+            else if (searchptr != NULL && searchidx != 0 &&
+	      buf[searchidx] != 0) {
                 *(--filename) = ' ';
                 buf[searchidx - 1] = 0;
                 filename = &buf[searchidx];    
