@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: CAN-2004-0811 (cve.mitre.org)
+     Fix merging of the Satisfy directive, which was applied to 
+     the surrounding context and could allow access despite configured
+     authentication.  PR 31315.  [Rici Lake <rici ricilake.net>]
+
   *) Fix the global mutex crash when the global mutex is never allocated due
      to disabled/empty caches. [Jess Holle <jessh ptc.com>]
 

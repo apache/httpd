@@ -353,9 +353,13 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     /* Otherwise we simply use the base->sec_file array
      */
 
+    /* use a separate ->satisfy[] array either way */
+    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
     for (i = 0; i < METHODS; ++i) {
         if (new->satisfy[i] != SATISFY_NOSPEC) {
             conf->satisfy[i] = new->satisfy[i];
+        } else {
+            conf->satisfy[i] = base->satisfy[i];
         }
     }
 
