@@ -250,7 +250,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.2b9" /* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.2b10-dev" /* SEE COMMENTS ABOVE */
 #ifdef SERVER_SUBVERSION
 #define SERVER_VERSION	SERVER_BASEVERSION " " SERVER_SUBVERSION
 #else
