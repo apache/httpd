@@ -1,4 +1,12 @@
 Changes with Apache 1.3.21
+  *) Security: Close autoindex /?M=D directory listing hole reported
+     in bugtraq id 3009.  In some configurations where multiviews and 
+     indexes are enabled for a directory, requesting URI /?M=D could
+     result in a directory listing being returned to the client rather
+     than the negotiated index.html variant that was configured and
+     expected.  The work around for this problem (for pre 1.3.21
+     releases) is to disable Indexes or Multiviews in the affected
+     directories. [Bill Stoddard, Bill Rowe]
 
   *) Enabled Win32/OS2/Netware file paths (not / rooted, but c:/ rooted)
      as arguments for mod_vhost_alias'es directives.  [William Rowe]
