@@ -164,8 +164,12 @@ layout=0
 
 #   suexec defaults
 suexec=0
+suexec_ok=0
 suexec_caller=www
 suexec_userdir=public_html
+suexec_uidmin=100
+suexec_gidmin=100
+suexec_safepath="/usr/local/bin:/usr/bin:/bin"
 
 #   with support tools
 support=1
@@ -347,6 +351,9 @@ do
             echo " --enable-suexec        enable the suEXEC feature"
             echo " --suexec-caller=NAME   set the suEXEC username of the allowed caller [$suexec_caller]"
             echo " --suexec-userdir=DIR   set the suEXEC user subdirectory [$suexec_userdir]"
+            echo " --suexec-uidmin=UID    set the suEXEC minimal allowed UID [$suexec_uidmin]"
+            echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
+            echo " --suexec-safepath=PATH set the suEXEC safe PATH [$suexec_safepath]"
             echo ""
             exit 0
             ;;
@@ -631,9 +638,23 @@ do
             ;;
         --suexec-caller=*)
             suexec_caller="$apc_optarg"
+            suexec_ok=1
             ;;
         --suexec-userdir=*)
             suexec_userdir="$apc_optarg"
+            suexec_ok=1
+            ;;
+        --suexec-uidmin=*)
+            suexec_uidmin="$apc_optarg"
+            suexec_ok=1
+            ;;
+        --suexec-gidmin=*)
+            suexec_gidmin="$apc_optarg"
+            suexec_ok=1
+            ;;
+        --suexec-safepath=*)
+            suexec_safepath="$apc_optarg"
+            suexec_ok=1
             ;;
         * )
             echo "configure:Error: invalid option '$apc_option'" 1>&2
@@ -645,6 +666,20 @@ IFS="$OIFS1"
 if [ ".$apc_prev" != . ]; then
     echo "configure:Error: missing argument to --`echo $apc_prev | sed 's/_/-/g'`" 1>&2
     exit 1
+fi
+
+##
+##  a few errors
+##
+if [ ".$suexec" = .1 ]; then
+    if [ ".$suexec_ok" = .0 ]; then
+        echo "configure:Error: You enabled the suEXEC feature via --enable-suexec but"
+        echo "                 without explicitly configuring it via at least one"
+        echo "                 --suexec-xxxxx option. Seems like you are still not"
+        echo "                 familiar with the suEXEC risks. Please read the INSTALL"
+        echo "                 and htdocs/manual/suexec.html documents first."
+        exit 1
+    fi
 fi
 
 ##
@@ -780,6 +815,9 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g" \
+-e "s%@suexec_uidmin@%$suexec_uidmin%g" \
+-e "s%@suexec_gidmin@%$suexec_gidmin%g" \
+-e "s%@suexec_safepath@%$suexec_safepath%g" \
 -e "s%@build_support@%$build_support%g" \
 -e "s%@install_support@%$install_support%g" \
 -e "s%@clean_support@%$clean_support%g" \

@@ -1,5 +1,19 @@
 Changes with Apache 1.3b7
 
+  *) Cleanup the suEXEC support in APACI and make it more safe:
+     1. Add big fat hint in INSTALL about risks and to read the
+        htdocs/manual/suexec.html document before using the suexec-related
+        configure options.
+     2. Make sure the user has at least provided one --suexec-xxxx option
+        (specifies suEXEC parameters) in addition to --enable-suexec option.
+        If only --enable-suexec is given APACI stops with a hint to INSTALL
+        and htdocs/manual/suexec.html documents.
+     3. Provide two additional --suexec-xxxx options to make the suEXEC
+        configuration complete (especially for package maintainers who else
+        had to patch the source tree) by providing ways to configure minimal
+        UID/GID and safe PATH, too.
+     [Ralf S. Engelschall]
+
   *) Cleanup of the `configure --shadow' process:
      - make sure the configure script creates its temporary files in the
        shadow tree to avoid conflicts with parallel configure runs

@@ -114,6 +114,9 @@ libexecdir_relative   = @libexecdir_relative@
 suexec          = @suexec@
 suexec_caller   = @suexec_caller@
 suexec_userdir  = @suexec_userdir@
+suexec_uidmin   = @suexec_uidmin@
+suexec_gidmin   = @suexec_gidmin@
+suexec_safepath = @suexec_safepath@
 
 #   usage of src/support stuff
 build-support     = @build_support@
@@ -152,8 +155,16 @@ build-support:
 	cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) all; \
 	if [ ".$(suexec)" = .1 ]; then \
 	    $(MAKE) $(MFLAGS) \
-	            EXTRA_CFLAGS='-DHTTPD_USER=\"$(suexec_caller)\" -DUSERDIR_SUFFIX=\"$(suexec_userdir)\"' \
-	            suexec; \
+		EXTRA_CFLAGS='\
+			-DHTTPD_USER=\"$(suexec_caller)\" \
+			-DUID_MIN=$(suexec_uidmin) \
+			-DGID_MIN=$(suexec_gidmin) \
+			-DUSERDIR_SUFFIX=\"$(suexec_userdir)\" \
+			-DLOG_EXEC=\"$(logfiledir)/suexec_log\" \
+			-DDOC_ROOT=\"$(datadir)/htdocs\" \
+			-DSAFE_PATH=\"$(suexec_safepath)\" \
+		' \
+		suexec; \
 	fi; \
 	echo "<=== $(SRC)/support"
 

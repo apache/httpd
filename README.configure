@@ -95,6 +95,9 @@
                    --enable-suexec \
                    --suexec-caller=www \
                    --suexec-userdir=.www
+                   --suexec-uidmin=1000 \
+                   --suexec-gidmin=1000 \
+                   --suexec-safepath="/bin:/usr/bin"
      $ make
      $ make install
 

@@ -148,9 +148,12 @@
                                [--localstatedir=DIR]  [--enable-suexec]     
                                [--runtimedir=DIR]     [--suexec-caller=UID] 
                                [--logfiledir=DIR]     [--suexec-userdir=DIR]
-                               [--proxycachedir=DIR] 
-                               [--compat]             [--with-perl=FILE]   
-                                                      [--without-support] 
+                               [--proxycachedir=DIR]  [--suexec-uidmin=UID]
+                               [--compat]             [--suexec-gidmin=GID]
+                                                      [--suexec-safepath=PATH] 
+
+                                                      [--with-perl=FILE]   
+                                                      [--without-support]  
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
@@ -262,9 +265,26 @@
  
      Use the --enable-suexec option to enable the suEXEC feature by building
      and installing the "suexec" support program. Use --suexec-caller=UID to
-     set the allowed caller user id and --suexec-userdir=DIR to set the user
-     subdirectory for this feature.
+     set the allowed caller user id, the --suexec-userdir=DIR to set the user
+     subdirectory, the --suexec-uidmin=UID/--suexec-gidmin=GID to set the
+     minimal allowed UID/GID and --suexec-safepath=PATH to set the safe shell
+     PATH for the suEXEC feature. At least one --suexec-xxxxx option has
+     to be provided together with --enable-suexec option to let APACI accept
+     your request for using the suEXEC feature.
+
+     CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY RECOMMEND YOU TO
+              FIRST READ THE DOCUMENT htdocs/manual/suexec.html BEFORE USING
+              THE ABOVE OPTIONS.
      
+              USING THE SUEXEC FEATURE PROPERLY CAN REDUCE CONSIDERABLY THE
+              SECURITY RISKS INVOLVED WITH ALLOWING USERS TO DEVELOP AND RUN
+              PRIVATE CGI OR SSI PROGRAMS. HOWEVER, IF SUEXEC IS IMPROPERLY
+              CONFIGURED, IT CAN CAUSE ANY NUMBER OF PROBLEMS AND POSSIBLY
+              CREATE NEW HOLES IN YOUR COMPUTER'S SECURITY.  IF YOU AREN'T
+              FAMILIAR WITH MANAGING SETUID ROOT PROGRAMS AND THE SECURITY
+              ISSUES THEY PRESENT, WE HIGHLY RECOMMEND THAT YOU NOT CONSIDER
+              USING SUEXEC AND KEEP AWAY FROM THESE OPTIONS!
+
      Use the --shadow option to let APACI create a shadow source tree of the
      sources for building. This is useful when you want to build for different
      platforms in parallel (usually through a NFS, AFS or DFS mounted
