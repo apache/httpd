@@ -1483,7 +1483,8 @@ static request_rec *make_sub_request(const request_rec *r,
     else {
         rnew->output_filters = r->output_filters;
     }
-    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
+    ap_add_output_filter_handle(ap_subreq_core_filter_handle,
+                                NULL, rnew, rnew->connection); 
 
     /* no input filters for a subrequest */
 
