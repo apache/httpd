@@ -347,6 +347,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
 
 int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
+    int rv;
     request_rec *r = f->r;
     char *url = r->unparsed_uri;
     const char *cc_out = ap_table_get(r->headers_out, "Cache-Control");
@@ -520,7 +521,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
     /* no cache handle, create a new entity */
     if (!cache->handle) {
-        cache_create_entity(r, cache->types, url, size);
+        rv = cache_create_entity(r, cache->types, url, size);
     }
     /* pre-existing cache handle and 304, make entity fresh */
     else if (r->status == HTTP_NOT_MODIFIED) {
@@ -531,9 +532,14 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* pre-existing cache handle and new entity, replace entity with this one */
     else {
         cache_remove_entity(r, cache->types, cache->handle);
-        cache_create_entity(r, cache->types, url, size);
+        rv = cache_create_entity(r, cache->types, url, size);
     }
     
+    if (rv != OK) {
+        /* Caching layer declined the opportunity to cache the response */
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, in);
+    }
     
     /*
      * We now want to update the cache file header information with
