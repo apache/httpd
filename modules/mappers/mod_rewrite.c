@@ -3383,7 +3383,7 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
     }
     else {
         procnew = apr_pcalloc(p, sizeof(*procnew));
-        rc = ap_os_create_privileged_process(r, procnew, progname, NULL, NULL, procattr, p);
+        rc = apr_create_process(procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
             apr_note_subprocess(p, procnew, kill_after_timeout);
