@@ -63,6 +63,8 @@
  * UUencoding modified by: Alvaro Martinez Echevarria <alvaro@lander.es>
  */
 
+#define APR_WANT_BYTEFUNC   /* for htons() et al */
+#include "apr_want.h"
 #include "apr_general.h"    /* for APR_XtOffsetOf                */
 #include "apr_network_io.h"
 
