@@ -115,10 +115,10 @@ API_EXPORT(void) ap_open_logs (server_rec *, pool *p);
  * attack and other messy behavior.  Instead, use a simple format string
  * like "%s", followed by the string containing the untrusted data.
  */
-API_EXPORT_NONSTD(void) ap_log_error(const char *file, int line, int level,
+API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 			     const server_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,5,6)));
-API_EXPORT_NONSTD(void) ap_log_rerror(const char *file, int line, int level,
+API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 			     const request_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,5,6)));
 API_EXPORT(void) ap_error_log2stderr (server_rec *);     
@@ -130,7 +130,7 @@ API_EXPORT(void) ap_log_pid (pool *p, char *fname);
 API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s);
 API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
 			     const char *msg, server_rec *s);
-API_EXPORT_NONSTD(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,2,3)));
 API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 			    request_rec *r);

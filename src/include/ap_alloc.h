@@ -232,8 +232,8 @@ API_EXPORT(void) ap_table_mergen(table *, const char *name, const char *more_val
 API_EXPORT(void) ap_table_unset(table *, const char *key);
 API_EXPORT(void) ap_table_add(table *, const char *name, const char *val);
 API_EXPORT(void) ap_table_addn(table *, const char *name, const char *val);
-API_EXPORT_NONSTD(void) ap_table_do(int (*comp) (void *, const char *, const char *), 
-                                    void *rec, const table *t,...);
+API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), void *rec,
+			  const table *t,...);
 
 API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table *base);
 

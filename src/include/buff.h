@@ -172,7 +172,7 @@ API_EXPORT(int) ap_bskiplf(BUFF *fb);
 API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(int) ap_bflush(BUFF *fb);
 API_EXPORT(int) ap_bputs(const char *x, BUFF *fb);
-API_EXPORT_NONSTD(int) ap_bvputs(BUFF *fb,...);
+API_EXPORT(int) ap_bvputs(BUFF *fb,...);
 API_EXPORT_NONSTD(int) ap_bprintf(BUFF *fb, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
 API_EXPORT(int) ap_vbprintf(BUFF *fb, const char *fmt, va_list vlist);

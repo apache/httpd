@@ -2567,7 +2567,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
     return n;
 }
 
-API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
+API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 {
     va_list vlist;
     int n;
