@@ -66,8 +66,56 @@ BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File SDBM_File) }
 use strict;
 use Fcntl;
 use AnyDBM_File ();
-use Crypt::PasswdMD5 qw(apache_md5_crypt); # http://www.cpan.org/modules/by-module/Crypt/
-use Digest::SHA1 qw(sha1_base64);          # http://www.cpan.org/modules/by-module/MD5/
+
+sub usage {
+    my $cmds = join "|", sort keys %dbmc::;
+    die <<SYNTAX;
+Usage: dbmmanage [enc] dbname command [username [pw [group[,group] [comment]]]]
+
+    where enc is  -d for crypt encryption (default except on Win32, Netware)
+                  -m for MD5 encryption (default on Win32, Netware)
+                  -s for SHA1 encryption
+                  -p for plaintext
+
+    command is one of: $cmds
+
+    pw of . for update command retains the old password
+    pw of - (or blank) for update command prompts for the password
+
+    groups or comment of . (or blank) for update command retains old values
+    groups or comment of - for update command clears the existing value
+    groups or comment of - for add and adduser commands is the empty value
+SYNTAX
+}
+
+sub need_sha1_crypt {
+    if (!eval ('require "Digest/SHA1.pm";')) {
+        print STDERR <<SHAERR;
+dbmmanage SHA1 passwords require the interface or the module Digest::SHA1
+available from CPAN:
+ 
+    http://www.cpan.org/modules/by-module/Digest/Digest-MD5-2.12.tar.gz
+ 
+Please install Digest::SHA1 and try again, or use a different crypt option:
+
+SHAERR
+        usage();
+    }
+}
+
+sub need_md5_crypt {
+    if (!eval ('require "Crypt/PasswdMD5.pm";')) {
+        print STDERR <<MD5ERR;
+dbmmanage MD5 passwords require the module Crypt::PasswdMD5 available from CPAN
+ 
+    http://www.cpan.org/modules/by-module/Crypt/PasswdMD5-1.1.tar.gz
+ 
+Please install Crypt::PasswdMD5 and try again, or use a different crypt option:
+
+MD5ERR
+        usage();
+    }
+}
 
 # if your osname is in $newstyle_salt, then use new style salt (starts with '_' and contains
 # four bytes of iteration count and four bytes of salt).  Otherwise, just use
@@ -125,7 +173,12 @@ if (@ARGV[0] eq "-p") {
 
 if (@ARGV[0] eq "-s") {
     shift @ARGV;
+    need_sha1_crypt();
     $crypt_method = "sha1";
+}
+
+if ($crypt_method eq "md5") {
+    need_md5_crypt();
 }
 
 my($file,$command,$key,$crypted_pwd,$groups,$comment) = @ARGV;
@@ -146,29 +199,6 @@ tie (%DB, "AnyDBM_File", $file, $flags, $mode) || die "Can't tie $file: $!";
 dbmc->$command();
 untie %DB;
 
-sub usage {
-    my $cmds = join "|", sort keys %dbmc::;
-    die <<SYNTAX;
-Usage: dbmmanage [enc] dbname command [username [pw [group[,group] [comment]]]]
-
-    where enc is  -d for crypt encryption (default except on Win32, Netware)
-                  -m for MD5 encryption (default on Win32, Netware)
-                  -s for SHA1 encryption
-                  -p for plaintext
-
-    command is one of: $cmds
-
-    pw of . for update command retains the old password
-    pw of - (or blank) for update command prompts for the password
-
-    groups or comment of . (or blank) for update command retains old values
-    groups or comment of - for update command clears the existing value
-    groups or comment of - for add and adduser commands is the empty value
-
-    Note that crypt is not accepted by Apache/Win32 or Apache/Netware,
-    and plaintext is accepted only by Apache/Win32 and Apache/Netware.
-SYNTAX
-}
 
 my $x;
 sub genseed {
@@ -212,12 +242,12 @@ sub saltpw_md5 {
 sub cryptpw_md5 {
     my($pw, $salt) = @_;
     $salt = saltpw_md5 unless $salt;
-    apache_md5_crypt $pw, $salt;
+    Crypt::PasswdMD5::apache_md5_crypt($pw, $salt);
 }
 
 sub cryptpw_sha1 {
     my($pw, $salt) = @_;
-    '{SHA}' . sha1_base64($pw) . "=";
+    '{SHA}' . Digest::SHA1::sha1_base64($pw) . "=";
 }
 
 sub cryptpw {
@@ -299,8 +329,10 @@ sub dbmc::check {
     my $chkpass = (split /:/, $DB{$key}, 3)[0];
     my $testpass = getpass();
     if (substr($chkpass, 0, 6) eq '$apr1$') {
+        need_md5_crypt;
         $crypt_method = "md5";
     } elsif (substr($chkpass, 0, 5) eq '{SHA}') {
+        need_sha1_crypt;
         $crypt_method = "sha1";
     } elsif (length($chkpass) == 13 && $chkpass ne $testpass) {
         $crypt_method = "crypt";
