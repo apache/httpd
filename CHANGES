@@ -62,6 +62,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Don't remove the Content-Length from responses in mod_proxy
+     PR: 8677 [Brian Pane]
+
   *) Ensure LDAP version is set to v3 on every bind. PR 14235.
      [Sergey A. Lipnevich <sergeyli@pisem.net>]
 
