@@ -467,7 +467,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     /* If we can send chunks, do so! */
     if (send_chunks) {
-        const char *te_hdr = "Transfer-Encoding: chunked" CRLF;
+        const char te_hdr[] = "Transfer-Encoding: chunked" CRLF;
 
         buf = apr_pmemdup(p, te_hdr, sizeof(te_hdr)-1);
         ap_xlate_proto_to_ascii(buf, sizeof(te_hdr)-1);
@@ -552,6 +552,17 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             e = apr_bucket_immortal_create(ASCII_CRLF, 2, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         }
+        else {
+            /* The send_chunks case does not need to be setaside, but this
+             * case does because we may have transient buckets that may get
+             * overwritten in the next iteration of the loop.
+             */
+            e = APR_BRIGADE_FIRST(input_brigade);
+            while (e != APR_BRIGADE_SENTINEL(input_brigade)) {
+                apr_bucket_setaside(e, p);
+                e = APR_BUCKET_NEXT(e);
+            }
+        }
 
         e = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
@@ -587,11 +598,24 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
         if (bytes) {
             const char *cl_hdr = "Content-Length", *cl_val;
-            cl_val = apr_off_t_toa(c->pool, bytes);
+            cl_val = apr_off_t_toa(p, bytes);
             buf = apr_pstrcat(p, cl_hdr, ": ", cl_val, CRLF, NULL);
             ap_xlate_proto_to_ascii(buf, strlen(buf));
             e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
             APR_BUCKET_INSERT_AFTER(last_header_bucket, e);
+        }
+        else {
+            /* A client might really have sent a C-L of 0.  Pass it on. */
+            const char *cl_hdr = "Content-Length", *cl_val;
+
+            cl_val = apr_table_get(r->headers_in, cl_hdr);
+            if (cl_val && cl_val[0] == '0' && cl_val[1] == 0) {
+                buf = apr_pstrcat(p, cl_hdr, ": ", cl_val, CRLF, NULL);
+                ap_xlate_proto_to_ascii(buf, strlen(buf));
+                e = apr_bucket_pool_create(buf, strlen(buf), p,
+                                           c->bucket_alloc);
+                APR_BUCKET_INSERT_AFTER(last_header_bucket, e);
+            }
         }
         status = ap_pass_brigade(origin->output_filters, header_brigade);
         if (status != APR_SUCCESS) {
