@@ -2348,6 +2348,7 @@ static const command_rec core_cmds[] = {
   "Name(s) of per-directory config files (default: .htaccess)" },
 { "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1,
   "Root directory of the document tree"  },
+/* TODOC: ErrorDocument no longer has silly quoting semantics */
 { "ErrorDocument", set_error_document, NULL, OR_FILEINFO, TAKE2,
   "Change responses for HTTP errors" },
 { "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS,
