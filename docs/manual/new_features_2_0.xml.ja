@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.4.2.1 -->
 
 <title>Apache 2.0 の新機能の概要</title>
 
@@ -12,7 +12,7 @@
      の主な違いについて記述しています。</p>
 </summary>
 
-<seealso><a href="upgrading.html">Apache 2.0 へのアップグレード</a></seealso>
+<seealso><a href="upgrading.html">1.3 から 2.0 へのアップグレード</a></seealso>
 
   <section id="core">
     <title>コア機能の拡張</title>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.11.2.3 -->
 
   <title>コンパイルとインストール</title>
 
@@ -26,7 +26,7 @@
 
 </summary>
 
-<seealso><a href="invoking.html">起動</a></seealso>
+<seealso><a href="invoking.html">Apache の起動</a></seealso>
 <seealso><a href="stopping.html">停止と再起動</a></seealso>
 
 <section id="overview"><title>概要 (せっかちな人向け)</title>
@@ -140,21 +140,10 @@
 
 <section id="download"><title>ダウンロード</title>
 
-    <p>Apache は <a
-    href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>や<a
-    href="http://www.apache.org/dyn/closer.cgi/httpd/">近くの
-    ミラーサイト</a>からダウンロードできます。</p>
-
-    <p><code>alpha</code> で終わるバージョン番号は、
-    動くか動かないかよく分からない、
-    早期のプリテストバージョンであることを示しています。
-    <code>beta</code> で終わるバージョンはそれよりは信頼性のある
-    リリースですが、テストとバグフィックスを重ねる段階のものです。
-    Apache HTTP サーバの入手可能な中で最高の製品リリースを
-    ダウンロードしたいのであれば、ファイル名に <code>alpha</code>
-    も <code>beta</code>
-    も付かない最新のバージョンを選んでください。</p>
+    <p>Apache はいくつかのミラーのリストがある <a
+    href="http://httpd.apache.org/download.cgi">Apache HTTP
+    サーバダウンロードサイト</a>でダウンロードできます。
+    そこには、リリースされた最新の安定版があります。</p>
 
     <p>ダウンロード後、特にミラーサイトを使った場合は、
     ダウンロードしたものが Apache HTTP 
@@ -162,8 +151,8 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <code>KEYS</code> ファイルを <a
-    href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
+    まず <a href="http://www.apache.org/dist/httpd/><code>KEYS</code></a>
+    ファイルも Apache 配布サイト
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 
     配布から取り出したファイルを使ったり、
@@ -179,8 +168,11 @@
 
     <p>次のステップでは、tarball を PGP 署名でテストします。
     PGP 署名は必ず <a
-    href="http://www.apache.org/dist/httpd/">メインの Apache
+    href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
+    署名ファイルへのリンクは対応するダウンロードリンクの次にあり、
+    <a href="http://www.apache.org/dist/httpd/">Apache
+    配布サイト</a>の特定のディレクトリにもあるかもしれません。
     署名ファイルの名前は、ソースファイルの tarball と同じ名前に
     <code>.asc</code> を付加したものになっています。
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
@@ -506,7 +498,7 @@
 
 <section id="dbm"><title>DBM</title>
 
-    <p><module>mod_authn_dbm</module> と <module>mod_rewrite</module>
+    <p><module>mod_auth_dbm</module> と <module>mod_rewrite</module>
     の DBM <directive module="mod_rewrite">RewriteMap</directive> 
     等、 Apache 機能の幾つかでは情報の検索に単純な key/value
     データベースを使用します。Apache には SDBM がソースコードごと
