@@ -6,7 +6,7 @@
 # Extra types can either be added here or by using an AddType directive
 # in your config files. For more information about Internet media types,
 # please read RFC 2045, 2046, 2047, 2048, and 2077.  The Internet media type
-# registry is at <ftp://ftp.iana.org/assignments/media-types/>.
+# registry is at <http://www.iana.org/assignments/media-types/>.
 
 # MIME type			Extension
 application/EDI-Consent
