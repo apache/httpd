@@ -77,7 +77,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "apr_fnmatch.h"
-#include "apr_strnatcmp.h"
+#include "apr_strings.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
