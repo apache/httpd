@@ -252,6 +252,7 @@ typedef struct dav_hooks_locks dav_hooks_locks;
 typedef struct dav_hooks_vsn dav_hooks_vsn;
 typedef struct dav_hooks_repository dav_hooks_repository;
 typedef struct dav_hooks_liveprop dav_hooks_liveprop;
+typedef struct dav_hooks_binding dav_hooks_binding;
 
 /* ### deprecated name */
 typedef dav_hooks_propdb dav_hooks_db;
@@ -278,19 +279,18 @@ typedef enum {
     DAV_RESOURCE_TYPE_UNKNOWN,
 
     DAV_RESOURCE_TYPE_REGULAR,          /* file or collection; could be
-                                           unversioned or version selector */
+                                         * unversioned, or version selector,
+                                         * or baseline selector */
 
-    DAV_RESOURCE_TYPE_VERSION,          /* version URL */
+    DAV_RESOURCE_TYPE_VERSION,          /* version or baseline URL */
 
-    DAV_RESOURCE_TYPE_HISTORY,          /* version history URL */
+    DAV_RESOURCE_TYPE_HISTORY,          /* version or baseline history URL */
 
     DAV_RESOURCE_TYPE_WORKING,          /* working resource URL */
 
     DAV_RESOURCE_TYPE_WORKSPACE,        /* workspace URL */
 
     DAV_RESOURCE_TYPE_ACTIVITY,         /* activity URL */
-
-    DAV_RESOURCE_TYPE_BASELINE,         /* baseline URL */
 
     DAV_RESOURCE_TYPE_PRIVATE           /* repository-private type */
 
@@ -317,11 +317,14 @@ typedef struct dav_resource {
 
     int versioned;	/* 0 => unversioned; can be 1 for
                          * REGULAR and WORKSPACE resources,
-                         * and is always 1 for VERSION, WORKING,
-                         * and BASELINE */
+                         * and is always 1 for VERSION and WORKING */
+
+    int baselined;      /* 0 => not baselined; can be 1 for
+                         * REGULAR and VERSION resources;
+                         * versioned == 1 when baselined == 1 */
 
     int working;	/* 0 => not checked out; can be 1 for
-                         * REGULAR, WORKSPACE, and BASELINE,
+                         * REGULAR and WORKSPACE resources,
                          * and is always 1 for WORKING */
 
     const char *uri;	/* the URI for this resource */
@@ -456,6 +459,7 @@ typedef struct {
     const dav_hooks_locks *locks;
     const dav_hooks_liveprop *liveprop;
     const dav_hooks_vsn *vsn;
+    const dav_hooks_binding *binding;
 
 } dav_provider;
 
@@ -474,6 +478,7 @@ AP_DECLARE_EXTERNAL_HOOK(DAV, void, insert_all_liveprops,
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
+const dav_hooks_binding *dav_get_binding_hooks(request_rec *r);
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
@@ -490,6 +495,7 @@ void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
 #define DAV_GET_HOOKS_PROPDB(r)         dav_get_propdb_hooks(r)
 #define DAV_GET_HOOKS_LOCKS(r)          dav_get_lock_hooks(r)
 #define DAV_GET_HOOKS_VSN(r)            dav_get_vsn_hooks(r)
+#define DAV_GET_HOOKS_BINDING(r)        dav_get_binding_hooks(r)
 
 
 /* --------------------------------------------------------------------
@@ -1341,8 +1347,6 @@ struct dav_hooks_repository
      *
      * The root_dir is the root of the directory for which this repository
      * is configured.
-     * The workspace is the value of any Workspace header, or NULL
-     * if there is none.
      * The target is either a label, or a version URI, or NULL. If there
      * is a target, then is_label specifies whether the target is a label
      * or a URI.
@@ -1353,7 +1357,6 @@ struct dav_hooks_repository
     dav_resource * (*get_resource)(
         request_rec *r,
         const char *root_dir,
-        const char *workspace,
 	const char *target,
         int is_label
     );
@@ -1549,13 +1552,6 @@ struct dav_hooks_repository
 */
 
 
-/* dav_get_workspace:
- *
- * Returns the value of any Workspace header in a request
- * (used by versioning clients)
- */
-int dav_get_workspace(request_rec *r, const char **workspace);
-
 /*
  * dav_get_target_selector
  *
@@ -1647,15 +1643,32 @@ typedef struct {
 /* Versioning provider hooks */
 struct dav_hooks_vsn
 {
+    /*
+    ** MANDATORY HOOKS
+    ** The following hooks are mandatory for all versioning providers;
+    ** they define the functionality needed to implement "core" versioning.
+    */
+
     /* Return supported versioning level
      * for the Versioning header
      */
     const char * (*get_vsn_header)(void);
 
-    /* Create a new (empty) resource. If successful,
-     * the resource object state is updated appropriately.
+    /* Put a resource under version control. If the resource already
+     * exists unversioned, then it becomes the initial version of the
+     * new version history, and it is replaced by a version selector
+     * which targets the new version.
+     *
+     * If the resource does not exist, then a new version selector
+     * is created which either targets an existing version (if the
+     * "target" argument is not NULL), or the initial, empty version
+     * in a new history resource (if the "target" argument is NULL).
+     *
+     * If successful, the resource object state is updated appropriately
+     * (that is, changed to refer to the new version selector resource).
      */
-    dav_error * (*mkresource)(dav_resource *resource);
+    dav_error * (*vsn_control)(dav_resource *resource,
+                               const char *target);
 
     /* Checkout a resource. If successful, the resource
      * object state is updated appropriately.
@@ -1684,6 +1697,17 @@ struct dav_hooks_vsn
     dav_error * (*checkin)(dav_resource *resource,
                            dav_resource **version_resource);
 
+    /*
+    ** Set the default target of a version selector or
+    ** baseline selector resource.
+    ** The target argument specifies the new target, which
+    ** can be a label, if is_label != 0, or a version URI,
+    ** if is_label == 0.
+    */
+    dav_error * (*set_target)(const dav_resource *resource,
+	                      const char *target,
+                              int is_label);
+
     /* Determine whether a non-versioned (or non-existent) resource
      * is versionable. Returns != 0 if resource can be versioned.
      */
@@ -1699,14 +1723,124 @@ struct dav_hooks_vsn
     ** Return the set of reports available at this resource.
     **
     ** An array of report elements should be returned, with an end-marker
-    ** element containing namespace==NULL. The report response will be
-    ** constructed and returned.
-    **
-    ** DAV:available-report should not be returned; the mod_dav core will
-    ** handle that.
+    ** element containing namespace==NULL. The value of the
+    ** DAV:supported-report-set property will be constructed and
+    ** returned.
     */
     dav_error * (*avail_reports)(const dav_resource *resource,
                                  const dav_report_elem **reports);
+
+    /*
+    ** Determine whether a Target-Selector header can be used
+    ** with a particular report. The dav_xml_doc structure
+    ** contains the parsed report request body.
+    ** Returns 0 if Target-Selector is not allowed.
+    */
+    int (*report_target_selector_allowed)(const ap_xml_doc *doc);
+
+    /*
+    ** Generate a report on a resource. Since a provider is free
+    ** to define its own reports, and the value of request headers
+    ** may affect the interpretation of a report, the request record
+    ** must be passed to this routine.
+    **
+    ** The dav_xml_doc structure contains the parsed report request
+    ** body. The report response is generated into the dav_text_header
+    ** structure.
+    **
+    ** ### shouldn't generate large responses to memory ###
+    */
+    dav_error * (*get_report)(request_rec *r,
+                              const dav_resource *resource,
+                              const ap_xml_doc *doc,
+                              ap_text_header *report);
+
+    /*
+    ** OPTIONAL HOOKS
+    ** The following hooks are optional; if not defined, then the
+    ** corresponding protocol methods will be unsupported.
+    */
+
+    /*
+    ** Add a label to a version. The resource is either a specific
+    ** version, or a version selector, in which case the label should
+    ** be added to the current target of the version selector. The
+    ** version selector cannot be checked out.
+    **
+    ** If replace != 0, any existing label by the same name is
+    ** effectively deleted first. Otherwise, it is an error to
+    ** attempt to add a label which already exists on some version
+    ** of the same history resource.
+    **
+    ** This hook is optional; if not defined, then the LABEL method
+    ** will not be supported. If it is defined, then the remove_label
+    ** hook must be defined also.
+    */
+    dav_error * (*add_label)(const dav_resource *resource,
+                             const char *label,
+                             int replace);
+
+    /*
+    ** Remove a label from a version. The resource is either a specific
+    ** version, or a version selector, in which case the label should
+    ** be added to the current target of the version selector. The
+    ** version selector cannot be checked out.
+    **
+    ** It is an error if no such label exists on the specified version.
+    **
+    ** This hook is optional, but if defined, the add_label hook
+    ** must be defined also.
+    */
+    dav_error * (*remove_label)(const dav_resource *resource,
+                                const char *label);
+
+    /*
+    ** Determine whether a null resource can be created as a workspace.
+    ** The provider may restrict workspaces to certain locations.
+    ** Returns 0 if the resource cannot be a workspace.
+    **
+    ** This hook is optional; if the provider does not support workspaces,
+    ** it should be set to NULL.
+    */
+    int (*can_be_workspace)(const dav_resource *resource);
+
+    /*
+    ** Create a workspace resource. The resource must not already
+    ** exist. Any <DAV:mkworkspace> element is passed to the provider
+    ** in the "doc" structure; it may be empty.
+    **
+    ** If workspace creation is succesful, the state of the resource
+    ** object is updated appropriately.
+    **
+    ** This hook is optional; if the provider does not support workspaces,
+    ** it should be set to NULL.
+    */
+    dav_error * (*make_workspace)(dav_resource *resource,
+                                  ap_xml_doc *doc);
+};
+
+
+/* --------------------------------------------------------------------
+**
+** BINDING FUNCTIONS
+*/
+
+/* binding provider hooks */
+struct dav_hooks_binding {
+
+    /* Determine whether a resource can be the target of a binding.
+     * Returns 0 if the resource cannot be a binding target.
+     */
+    int (*is_bindable)(const dav_resource *resource);
+
+    /* Create a binding to a resource.
+     * The resource argument is the target of the binding;
+     * the binding argument must be a resource which does not already
+     * exist.
+     */
+    dav_error * (*bind_resource)(const dav_resource *resource,
+				 dav_resource *binding);
+
 };
 
 
