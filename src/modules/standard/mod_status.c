@@ -95,6 +95,7 @@
 #include "util_script.h"
 #include <time.h>
 #include "scoreboard.h"
+#include "http_log.h"
 
 #ifdef NEXT
 #include <machine/param.h>
@@ -229,7 +230,14 @@ int status_handler (request_rec *r)
     status[SERVER_BUSY_DNS]='D';
     status[SERVER_GRACEFUL]='G';
 
-    if (r->method_number != M_GET) return NOT_IMPLEMENTED;
+    if (!exists_scoreboard_image()) {
+         log_printf(r->server, "Server status unavailable in inetd mode");
+         return HTTP_NOT_IMPLEMENTED;
+     }
+    r->allowed = (1 << M_GET) | (1 << M_TRACE);
+    if (r->method_number != M_GET) return HTTP_METHOD_NOT_ALLOWED;
+    if (!exists_scoreboard_image()) return HTTP_NOT_IMPLEMENTED;
+
     r->content_type = "text/html";
 
     /*

@@ -8,6 +8,9 @@ Changes with Apache 1.3
 
 Changes with Apache 1.2.1
 
+  *) PR#566: mod_status dumps core in inetd mode.
+     [Marc Slemko and Roy Fielding]
+
   *) Attempt to work around problems with third party libraries that do not
      handle high numbered descriptors (examples include bind, and
      solaris libc).  On all systems apache attempts to keep all permanent
