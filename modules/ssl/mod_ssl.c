@@ -265,7 +265,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
     SSL_clear(ssl);
     cpVHostMD5 = ap_md5(c->pool, cpVHostID);
     if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
-            strlen(cpVHostMD5))) {
+                                    MD5_DIGESTSIZE*2)) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to set session id context to `%s'", cpVHostMD5);
         c->aborted = 1;
