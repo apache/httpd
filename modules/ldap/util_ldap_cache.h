@@ -63,16 +63,12 @@
 /* this whole thing disappears if LDAP is not enabled */
 #ifdef APU_HAS_LDAP
 
-/* FIXME */
-#define APU_HAS_LDAP_SHARED_CACHE
 
 /*
  * LDAP Cache Manager
  */
 
-#ifdef APU_HAS_LDAP_SHARED_CACHE
 #include <apr_shmem.h>
-#endif
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
@@ -105,7 +101,7 @@ typedef struct util_ald_cache_t {
     unsigned long removes;	/* Number of removes */
 } util_ald_cache_t;
 
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
 apr_shmem_t *util_ldap_shm;
 #endif
 util_ald_cache_t *util_ldap_cache;
