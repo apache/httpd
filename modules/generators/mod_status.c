@@ -82,7 +82,10 @@ static int status_handler(request_rec *r)
     int i;
     ap_array_header_t *server_status;
     ap_status_table_row_t *status_rows;
-    time_t nowtime = time(NULL);
+    ap_time_t *nowtime = NULL;
+
+    ap_make_time(&nowtime, r->pool);
+    ap_curtime(nowtime);
 
     r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)
