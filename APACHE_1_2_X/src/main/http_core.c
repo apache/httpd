@@ -338,9 +338,7 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
     if (dir_config) 
 	dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
 
-   if ((!dir_conf) || (type == REMOTE_FORCE_HOST && conn->remote_host == NULL)
-	|| (type != REMOTE_NOLOOKUP
-	    && conn->remote_host == NULL && dir_conf->hostname_lookups))
+   if ((!dir_conf) || (type != REMOTE_NOLOOKUP && conn->remote_host == NULL && dir_conf->hostname_lookups))
     {
 #ifdef STATUS
 	int old_stat = update_child_status(conn->child_num,
@@ -385,7 +383,7 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 	return conn->remote_host;
     else
     {
-	if (type == REMOTE_HOST || type == REMOTE_FORCE_HOST) return NULL;
+	if (type == REMOTE_HOST) return NULL;
 	else return conn->remote_ip;
     }
 }
