@@ -270,6 +270,8 @@ conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
 
     conn->pool = p;
     conn->local_addr = *saddr;
+    conn->local_ip = ap_pstrdup(conn->pool,
+				inet_ntoa(conn->local_addr.sin_addr));
     conn->base_server = server;
     conn->client = inout;
 
