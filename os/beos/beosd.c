@@ -109,6 +109,8 @@ void beosd_detach(void)
 
 static int set_group_privs(void)
 {
+#if B_BEOS_VERSION < 0x0460
+
     if (!geteuid()) {
 	char *name;
 
@@ -147,6 +149,7 @@ static int set_group_privs(void)
 	    return -1;
 	}
     }
+#endif
     return 0;
 }
 
