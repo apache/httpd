@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/23 19:46:09 $]
+Last modified at [$Date: 2002/05/23 21:35:08 $]
 
 Release:
 
@@ -55,8 +55,6 @@ RELEASE SHOWSTOPPERS:
     * Worker MPM deadlocks
 
     * for 2.0.37: decide if the MMN bump was warranted
-
-    * there is an outstanding veto on an apr_brigade_puts() optimization
 
 CURRENT VOTES:
 
