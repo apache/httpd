@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) Add the ProxyIOBufferSize option. Previously the size of the
+     buffer used while reading from the remote server in proxy was
+     taken from ProxyReceiveBufferSize. [Graham Leggett]
+
   *) Fix a NULL variable check in proxy where we were checking the
      wrong variable. [Geff Hanoian <geff@pier64.com>]
 

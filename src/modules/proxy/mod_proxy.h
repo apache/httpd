@@ -201,6 +201,8 @@ typedef struct {
     char viaopt_set;
     size_t recv_buffer_size;
     char recv_buffer_size_set;
+    size_t io_buffer_size;
+    char io_buffer_size_set;
 } proxy_server_conf;
 
 struct hdr_entry {

@@ -424,6 +424,8 @@ static void *
     ps->req_set = 0;
     ps->recv_buffer_size = 0; /* this default was left unset for some reason */
     ps->recv_buffer_size_set = 0;
+    ps->io_buffer_size = IOBUFSIZE;
+    ps->io_buffer_size_set = 0;
 
     ps->cache.root = NULL;
     ps->cache.space = DEFAULT_CACHE_SPACE;
@@ -467,6 +469,7 @@ static void *
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
+    ps->io_buffer_size = (overrides->io_buffer_size_set == 0) ? base->io_buffer_size : overrides->io_buffer_size;
 
     ps->cache.root = (overrides->cache.root == NULL) ? base->cache.root : overrides->cache.root;
     ps->cache.space = (overrides->cache.space_set == 0) ? base->cache.space : overrides->cache.space;
@@ -843,6 +846,18 @@ static const char *
     return NULL;
 }
 
+static const char *
+     set_io_buffer_size(cmd_parms *parms, void *dummy, char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+    long s = atol(arg);
+
+    psf->io_buffer_size = ((s > IOBUFSIZE) ? s : IOBUFSIZE);
+    psf->io_buffer_size_set = 1;
+    return NULL;
+}
+
 static const char*
     set_cache_completion(cmd_parms *parms, void *dummy, char *arg)
 {
@@ -904,6 +919,8 @@ static const command_rec proxy_cmds[] =
      "A list of names, hosts or domains to which the proxy will not connect"},
     {"ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF, TAKE1,
      "Receive buffer size for outgoing HTTP and FTP connections in bytes"},
+    {"ProxyIOBufferSize", set_io_buffer_size, NULL, RSRC_CONF, TAKE1,
+     "IO buffer size for outgoing HTTP and FTP connections in bytes"},
     {"NoProxy", set_proxy_dirconn, NULL, RSRC_CONF, ITERATE,
      "A list of domains, hosts, or subnets to which the proxy will connect directly"},
     {"ProxyDomain", set_proxy_domain, NULL, RSRC_CONF, TAKE1,
