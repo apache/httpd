@@ -1,3 +1,5 @@
+Changes with Apache 2.0.27-dev
+
 Changes with Apache 2.0.26
 
   *) Port the MaxClients changes from the worker MPM to the threaded
