@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/08 00:43:10 $]
+Last modified at [$Date: 2003/08/08 07:38:39 $]
 
 Release:
 
@@ -290,7 +290,7 @@ PATCHES TO PORT FROM 2.1
     * mod_dav: Use bucket brigades when reading PUT data. This avoids
       problems if the data stream is modified by an input filter. PR 22104.
         modules/dav/main/mod_dav.c: r1.98, r1.99
-      +1: nd
+      +1: nd, trawick
       (gstein likes the concept, but needs to review...)
 
     * mod_ssl: Fix FakeBasicAuth for subrequests, by declining check_user_id.
@@ -303,7 +303,7 @@ PATCHES TO PORT FROM 2.1
     * mod_ssl: Add error msg for the case when FakeBasicAuth is tried to be
       tricked.  IOW, when someone tries to spoof his identity.
         modules/ssl/ssl_engine_kernel.c: r1.98
-      +1: striker, gstein
+      +1: striker, gstein, trawick
 
     * fix extern "C" declaration of util_ebcdic.h. PR: 22203
         include/util_ebcdic.h: r1.15
