@@ -24,7 +24,7 @@
         many more connections in the FIN_WAIT_2 state (as reported
         by <code>netstat</code>) than they saw using older
         versions. When the server closes a TCP connection, it sends
-        a packet with the FIN bit sent to the client, which then
+        a packet with the FIN bit set to the client, which then
         responds with a packet with the ACK bit set. The client
         then sends a packet with the FIN bit set to the server,
         which responds with an ACK and the connection is closed.
