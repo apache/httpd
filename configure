@@ -388,7 +388,6 @@ do
             echo "Stand-alone options:"
             echo " --help, -h             print this message"
             echo " --show-layout          print installation path layout (check and debug)"
-            echo " --layout               backward compat use --show-layout"
             echo ""
             echo "Installation layout options:"
             echo " --with-layout=[F:]ID   use installation path layout ID (from file F)"
@@ -406,7 +405,6 @@ do
             echo " --runtimedir=DIR       install runtime data in DIR"
             echo " --logfiledir=DIR       install logfile data in DIR"
             echo " --proxycachedir=DIR    install proxy cache data in DIR"
-            echo " --compat               backward compat use --with-layout=Apache"
             echo ""
             echo "Configuration options:"
             echo " --enable-rule=NAME     enable  a particular Rule named 'NAME'"
@@ -434,21 +432,23 @@ do
             echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
             echo " --suexec-safepath=PATH set the suEXEC safe PATH [$suexec_safepath]"
             echo ""
+            echo "Deprecated options:"
+            echo " --layout               backward compat only: use --show-layout"
+            echo " --compat               backward compat only: use --with-layout=Apache"
             exit 0
             ;;
         --with-layout=*|--compat)
+            if [ ".$apc_option" = ".--compat" ]; then
+                apc_optarg="Apache"
+            fi
             case $apc_optarg in
                 *:* ) 
                     file=`echo $apc_optarg | sed -e 's/:.*//'`
                     name=`echo $apc_optarg | sed -e 's/.*://'`
                     ;;
                 * ) 
-		    if [ ".$apc_option" = ".--compat" ]; then
-			name=Apache
-		    else
-			name=$apc_optarg
-		    fi
-		    file=$configlayout
+                    name=$apc_optarg
+                    file=$configlayout
                     ;;
             esac
             if [ ! -f "$file" ]; then
@@ -457,9 +457,9 @@ do
             fi
             sed -e "1,/[ 	]*<[Ll]ayout[ 	]*$name[ 	]*>[ 	]*/d" \
                 -e '/[ 	]*<\/Layout>[ 	]*/,$d' \
-				-e "s/^[ 	]*//g" \
-				-e "s/:[ 	]*/=\'/g" \
-				-e "s/[ 	]*$/'/g" \
+                -e "s/^[ 	]*//g" \
+                -e "s/:[ 	]*/=\'/g" \
+                -e "s/[ 	]*$/'/g" \
                 $file >$pldconf
             . $pldconf
             rm -f $pldconf 2>/dev/null
@@ -472,7 +472,7 @@ do
             fi
             with_layout=1
             ;;
-        --layout|--show-layout)
+        --show-layout|--layout)
             show_layout=1
             ;;
         --target=*)

@@ -135,27 +135,27 @@
 
      Reference:
 
-     $ [CC=...]        [CFLAGS_SHLIB=...]         
+     $ [CC=...]        [CFLAGS_SHLIB=...]           [TARGET=...]
        [OPTIM=...]     [LD_SHLIB=...]
        [CFLAGS=...]    [LDFLAGS_SHLIB=...]        
        [INCLUDES=...]  [LDFLAGS_SHLIB_EXPORT=...] 
        [LDFLAGS=...]   [RANLIB=...]  
-       [LIBS=...] 
+       [LIBS=...]      [DEPS=...]
        ./configure [--quiet]   [--prefix=DIR]         [--enable-rule=NAME]    
                    [--verbose] [--exec-prefix=PREFIX] [--disable-rule=NAME]   
                    [--shadow]  [--bindir=EPREFIX]     [--add-module=FILE]     
                    [--help]    [--sbindir=DIR]        [--activate-module=FILE]
-                   [--layout]  [--libexecdir=DIR]     [--enable-module=NAME]  
+                               [--libexecdir=DIR]     [--enable-module=NAME]  
                                [--mandir=DIR]         [--disable-module=NAME] 
                                [--sysconfdir=DIR]     [--enable-shared=NAME]  
                                [--datadir=DIR]        [--disable-shared=NAME] 
                                [--includedir=DIR]     [--permute-module=N1:N2]
-                               [--localstatedir=DIR]  
-                               [--runtimedir=DIR]     [--enable-suexec]        
-                               [--logfiledir=DIR]     [--suexec-caller=UID]    
+                               [--localstatedir=DIR]
+                               [--runtimedir=DIR]     [--enable-suexec]
+                               [--logfiledir=DIR]     [--suexec-caller=UID]
                                [--proxycachedir=DIR]  [--suexec-docroot=DIR]
-                               [--compat]             [--suexec-logfile=FILE]
-                                                      [--suexec-userdir=DIR]
+                               [--with-layout=[F:]ID] [--suexec-logfile=FILE]
+                               [--show-layout]        [--suexec-userdir=DIR]
                                                       [--suexec-uidmin=UID]
                                                       [--suexec-gidmin=GID]
                                                       [--suexec-safepath=PATH]
@@ -165,10 +165,10 @@
                                                       [--without-confadjust]   
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
-     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment
-     variables to override the corresponding default entries in the
-     src/Configuration.tmpl file (see there for more information about their
-     usage).
+     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and TARGET
+     environment variables to override the corresponding default entries in
+     the src/Configuration.tmpl file (see there for more information about
+     their usage).
 
          Note: The syntax ``KEY=VALUE ./configure ...'' (one single line!) is
                the GNU Autoconf compatible way of specifying defines and can
@@ -216,11 +216,17 @@
                make sure the paths fit your situation by checking the finally
                chosen paths via the --layout option.
 
-     Use the --compat option to install Apache into a installation tree which
-     has a similar layout than the one used with Apache 1.2.
+     Use the --with-layout=[F:]ID option to select a particular installation
+     path base-layout. You always _HAVE_ to select a base-layout. There are
+     currently two layouts pre-defined in the file config.layout: `Apache' for
+     the classical Apache path layout and `GNU' for a path layout conforming
+     to the GNU `standards' document. When you want to use your own custom
+     layout FOO, either add a corresponding "<Layout FOO>...</Layout>" section
+     to config.layout and use --with-layout=FOO or place it into your own
+     file, say config.mypaths, and use --with-layout=config.mypaths:FOO.
  
-     Use the --layout option to check the final installation path layout while
-     fiddling with the options above.
+     Use the --show-layout option to check the final installation path layout
+     while fiddling with the options above.
  
      Use the --enable-rule=NAME and --disable-rule=NAME options to enable or
      disable a particular Rule from the Apache src/Configuration.tmpl file. The
