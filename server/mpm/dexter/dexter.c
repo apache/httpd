@@ -69,6 +69,7 @@
 #include "ap_listen.h"
 #include "acceptlock.h"
 #include "mpm_default.h"
+#include "dexter.h"
 
 #include <poll.h>
 #include <netinet/tcp.h> 
