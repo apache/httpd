@@ -1544,6 +1544,9 @@ static void reinit_scoreboard(pool *p)
 {
     ap_assert(!ap_scoreboard_image);
     ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+    if (ap_scoreboard_image == NULL) {
+	fprintf(stderr, "Ouch!  Out of memory reiniting scoreboard!\n");
+    }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }
 
@@ -4809,6 +4812,9 @@ void add_job(int sock)
     /* TODO: If too many jobs in queue, sleep, check for problems */
     ap_acquire_mutex(allowed_globals.jobmutex);
     new_job = (joblist *) malloc(sizeof(joblist));
+    if (new_jobs == NULL) {
+	fprintf(stderr, "Ouch!  Out of memory in add_job()!\n");
+    }
     new_job->next = NULL;
     new_job->sock = sock;
     if (allowed_globals.jobtail != NULL)
@@ -6119,6 +6125,9 @@ int main(int argc, char *argv[], char *envp[])
     }
     if (llp_slot == NULL) {
 	envpnew = (char **)malloc(sizeof(char *)*(i + 2));
+	if (envpnew == NULL) {
+	    fprintf(stderr, "Ouch!  Out of memory generating envpnew!\n");
+	}
 	memcpy(envpnew, envp, sizeof(char *)*i);
 	envp = envpnew;
 	llp_slot = &envp[i++];

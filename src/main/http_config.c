@@ -327,6 +327,9 @@ static void build_method_shortcuts(void)
 	}
     }
     method_ptrs = malloc((how_many_ptrs + NMETHODS) * sizeof(handler_func));
+    if (method_ptrs == NULL) {
+	fprintf(stderr, "Ouch!  Out of memory in build_method_shortcuts()!\n");
+    }
     next_ptr = 0;
     for (i = 0; i < NMETHODS; ++i) {
 	/* XXX: This is an itsy bit presumptuous about the alignment
@@ -693,6 +696,9 @@ void ap_setup_prelinked_modules()
      */
     ap_loaded_modules = (module **)malloc(
         sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
+    if (ap_loaded_modules == NULL) {
+	fprintf(stderr, "Ouch!  Out of memory in ap_setup_prelinked_modules()!\n");
+    }
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
         *m2++ = *m++;
     *m2 = NULL;

@@ -1625,8 +1625,10 @@ char *strdup(const char *str)
 {
     char *sdup;
 
-    if (!(sdup = (char *) malloc(strlen(str) + 1)))
+    if (!(sdup = (char *) malloc(strlen(str) + 1))) {
+	fprintf(stderr, "Ouch!  Out of memory in our strdup()!\n");
 	return NULL;
+    }
     sdup = strcpy(sdup, str);
 
     return sdup;

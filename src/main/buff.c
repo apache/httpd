@@ -1233,8 +1233,10 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
             if (cbuf != NULL)
                 free(cbuf);
             cbuf = malloc(csize = nbyte+HUGE_STRING_LEN);
-            if (cbuf == NULL)
+            if (cbuf == NULL) {
+                fprintf(stderr, "Ouch!  Out of memory in ap_bwrite()!\n");
                 csize = 0;
+            }
         }
         ebcdic2ascii((cbuf) ? cbuf : (void*)buf, buf, nbyte);
         buf = (cbuf) ? cbuf : buf;
