@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.15) -->
+<!-- English Revision: 1.15 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -95,6 +95,8 @@
 </section>
 
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
