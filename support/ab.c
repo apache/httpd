@@ -123,6 +123,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 /* ------------------- DEFINITIONS -------------------------- */
 
@@ -216,7 +217,7 @@ ap_pool_t *cntxt;
 
 ap_pollfd_t *readbits;
 #ifdef NOT_ASCII
-ap_xlate_t *fromascii, *toascii;
+ap_xlate_t *from_ascii, *to_ascii;
 #endif
 
 /* --------------------------------------------------------- */
@@ -255,7 +256,6 @@ static void write_request(struct connection *c)
 
     c->state = STATE_READ;
     ap_add_poll_socket(readbits, c->aprsock, APR_POLLIN);
-    ap_remove_poll_socket(readbits, c->aprsock);
 }
 
 /* --------------------------------------------------------- */
@@ -474,6 +474,9 @@ static void start_connect(struct connection *c)
     if (ap_create_tcp_socket(&c->aprsock, cntxt) != APR_SUCCESS) {
         err("Socket:");
     }
+    if (ap_set_remote_port(c->aprsock, port) != APR_SUCCESS) {
+        err("Port:");
+    }
     c->start = ap_now();
     if (ap_connect(c->aprsock, hostname) != APR_SUCCESS) {
         if (errno == APR_EINPROGRESS) {
@@ -555,7 +558,7 @@ static void read_connection(struct connection *c)
         return;
     }
 
-    if (ap_canonical_error(status) == EAGAIN)
+    if (ap_canonical_error(status) == APR_EAGAIN)
         return;
 
     c->read += r;
@@ -569,7 +572,7 @@ static void read_connection(struct connection *c)
 #ifdef NOT_ASCII
         ap_size_t inbytes_left = space, outbytes_left = space;
 
-        status = ap_xlate_conv_buffer(fromascii, buffer, &inbytes_left,
+        status = ap_xlate_conv_buffer(from_ascii, buffer, &inbytes_left,
                                       c->cbuff + c->cbx, &outbytes_left);
         if (status || inbytes_left || outbytes_left) {
             fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
@@ -765,7 +768,7 @@ static void test(void)
 
 #ifdef NOT_ASCII
     inbytes_left = outbytes_left = reqlen;
-    status = ap_xlate_conv_buffer(toascii, request, &inbytes_left,
+    status = ap_xlate_conv_buffer(to_ascii, request, &inbytes_left,
                                   request, &outbytes_left);
     if (status || inbytes_left || outbytes_left) {
         fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
@@ -803,7 +806,7 @@ static void test(void)
             err("\nServer timed out\n\n");
         }
         if (n < 1)
-            err("select");
+            err("ap_poll");
 
         for (i = 0; i < concurrency; i++) {
             ap_get_revents(&rv, con[i].aprsock, readbits);
@@ -836,14 +839,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.8 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.9 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.8 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.9 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -887,7 +890,7 @@ static int parse_url(char *url)
 {
     char *cp;
     char *h;
-    char *p/* = NULL*/;
+    char *p = NULL; /* points to port if url has it */
 
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
         url += 7;
@@ -963,12 +966,12 @@ int main(int argc, char **argv)
     ap_create_pool(&cntxt, NULL);
 
 #ifdef NOT_ASCII
-    status = ap_xlate_open(&toascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
+    status = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (status) {
         fprintf(stderr, "ap_xlate_open(to ASCII)->%d\n", status);
         exit(1);
     }
-    status = ap_xlate_open(&fromascii, APR_DEFAULT_CHARSET, "ISO8859-1", cntxt)
+    status = ap_xlate_open(&from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", cntxt)
 
     if (status) {
         fprintf(stderr, "ap_xlate_open(from ASCII)->%d\n", status);
