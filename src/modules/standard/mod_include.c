@@ -748,19 +748,19 @@ static int include_cmd_child(void *arg, child_info *pinfo)
     table *env = r->subprocess_env;
     int child_pid = 0;
 #ifdef DEBUG_INCLUDE_CMD
+#ifdef OS2
+    /* under OS/2 /dev/tty is referenced as con */
+    FILE *dbg = fopen("con", "w");
+#else
     FILE *dbg = fopen("/dev/tty", "w");
+#endif
 #endif
 #ifndef WIN32
     char err_string[MAX_STRING_LEN];
 #endif
 
 #ifdef DEBUG_INCLUDE_CMD
-#ifdef OS2
-    /* under OS/2 /dev/tty is referenced as con */
-    FILE *dbg = fopen("con", "w");
-#else
     fprintf(dbg, "Attempting to include command '%s'\n", s);
-#endif
 #endif
 
     if (r->path_info && r->path_info[0] != '\0') {
