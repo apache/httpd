@@ -890,7 +890,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     int length;
     ap_bucket_brigade *b;
     ap_bucket *e;
-#ifdef APACHE_XLATE
+#ifdef APACHE_XLATE_XXX
     /* When getline() is called, the HTTP protocol is in a state
      * where we MUST be reading "plain text" protocol stuff,
      * (Request line, MIME headers, Chunk sizes) regardless of
@@ -988,7 +988,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	    break;       /* if not, input line exceeded buffer size */
 	}
     }
-#ifdef APACHE_XLATE
+#ifdef APACHE_XLATE_XXX
     /* restore translation handle */
     AP_POP_INPUTCONVERSION_STATE(in);
 #endif /*APACHE_XLATE*/
@@ -2566,6 +2566,7 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 {
     ap_bucket_brigade *bb = NULL;
     ap_bucket *b;
+    apr_status_t rv;
 
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_file(fd, offset, len);
@@ -2576,9 +2577,15 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     b = ap_bucket_create_eos();
     AP_BRIGADE_INSERT_TAIL(bb, b);
 #endif
-    ap_pass_brigade(r->output_filters, bb);
+    rv = ap_pass_brigade(r->output_filters, bb);
+    if (rv != APR_SUCCESS) {
+        *nbytes = 0; /* no way to tell how many were actually sent */
+    }
+    else {
+        *nbytes = len;
+    }
 
-    return len;
+    return rv;
 }
 #if 0
 /* Leave the old implementation around temporarily for reference purposes */
