@@ -1,5 +1,7 @@
 Changes with Apache 2.0.34-dev
 
+  *) Small performance fixes for mod_include [Brian Pane]
+
   *) Performance improvement for the error logger [Brian Pane]
 
   *) Change configure so that Solaris 8 and above have 
