@@ -17,6 +17,8 @@
 
 </summary>
 
+<seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
+
   <section id="related">
     <title>Per-user web directories</title>
     <related>
@@ -32,8 +34,7 @@
     </section>
 
     <section id="userdir">
-    <title>Setting the file path with <directive
-    module="mod_userdir">UserDir</directive></title>
+    <title>Setting the file path with UserDir</title>
 
     <p>The <directive module="mod_userdir">UserDir</directive>
     directive specifies a directory out of which per-user
@@ -107,13 +108,13 @@
   <title>Enabling a cgi directory for each user</title>
 
    <p>In order to give each user their own cgi-bin directory, you can use
-    a <directive module="core">DirectoryMatch</directive>
+    a <directive module="core" type="section">Directory</directive>
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
     <example>
-      &lt;DirectoryMatch /home/*/cgi-bin/&gt;<br />
-       Options +ExecCGI<br />
+      &lt;Directory /home/*/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
        SetHandler cgi-script<br />
        &lt;/DirectoryMatch&gt;
     </example>

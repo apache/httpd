@@ -11,11 +11,11 @@
     out of the home directory of the user "<code>username</code>", out of
     the subdirectory specified by the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive.</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li><li><img alt="" src="../images/down.gif" /> <a href="#userdir">Setting the file path with <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></a></li><li><img alt="" src="../images/down.gif" /> <a href="#enable">Restricting what users are permitted to use this 
-    feature</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi">Enabling a cgi directory for each user</a></li><li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Allowing users to alter configuration</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">Per-user web directories</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li><li><img alt="" src="../images/down.gif" /> <a href="#userdir">Setting the file path with UserDir</a></li><li><img alt="" src="../images/down.gif" /> <a href="#enable">Restricting what users are permitted to use this 
+    feature</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi">Enabling a cgi directory for each user</a></li><li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Allowing users to alter configuration</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">Per-user web directories</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="userdir" id="userdir">Setting the file path with <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></a></h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="userdir" id="userdir">Setting the file path with UserDir</a></h2>
     
 
     <p>The <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
@@ -86,13 +86,13 @@
   
 
    <p>In order to give each user their own cgi-bin directory, you can use
-    a <code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code>
+    a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
     <div class="example"><p><code>
-      &lt;DirectoryMatch /home/*/cgi-bin/&gt;<br />
-       Options +ExecCGI<br />
+      &lt;Directory /home/*/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
        SetHandler cgi-script<br />
        &lt;/DirectoryMatch&gt;
     </code></p></div>
