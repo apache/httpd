@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
+<!-- English Revision: 106753 -->
 
 <!--
  Copyright 2005 The Apache Software Foundation or its licensors,
@@ -43,7 +44,7 @@
     <!-- comments...                                                      -->
     <messages>
         <!-- language link titles -->
-        <message id="nativename">Portugu&#234;s</message>
+        <message id="nativename">Portugu&#234;s (Brasil)</message>
 
         <!-- Used for the moduleindex -->
         <message id="corefeatures">Funcionalidades Principais e M&#243;dulos de Multi-Processos (MPM)</message>
@@ -56,6 +57,7 @@
         <message id="apachecore">Funcionalidades Principais Apache</message>
         <message id="apachempmcommon">Diretivas Comuns Apache MPM</message>
         <message id="apachempm">Apache MPM</message>
+
         <!-- Used in description box for modulesynopsis -->
         <message id="description">Descri&#231;&#227;o</message>
         <message id="seealso">Veja tamb&#233;m</message>
@@ -73,7 +75,7 @@
         <message id="syntax">Sintaxe</message>
         <message id="default">Padr&#227;o</message>
         <message id="context">Contexto</message>
-        <message id="override">Override</message>
+        <message id="override">Sobrescreve</message>
         <message id="status">Status</message>
         <message id="module">M&#243;dulo</message>
 
@@ -96,7 +98,7 @@
         <message id="summary">Sum&#225;rio</message>
 
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">see glossary</message>
+        <message id="glossarylink">ver gloss&#225;rio</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
