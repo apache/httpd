@@ -104,10 +104,13 @@ extern int ap_os_is_path_absolute(const char *file);
 #endif
 
 /*
- * Do not use native AIX DSO support
+ * Do not use native AIX DSO support on releases of AIX prior
+ * to 4.3. 
  */
 #ifdef AIX
+#if AIX < 43
 #undef HAVE_DLFCN_H
+#endif
 #endif
 
 #ifdef HAVE_DLFCN_H
