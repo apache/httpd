@@ -47,7 +47,25 @@ which is capable of caching any content, not only content from proxy.
 dangerous both to your network and to the Internet at large.</p></div>
 
 
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li><li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyerroroverride">ProxyErrorOverride</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyiobuffersize">ProxyIOBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxymatch">&lt;ProxyMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxypass">ProxyPass</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxypassreverse">ProxyPassReverse</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxypreservehost">ProxyPreserveHost</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyremote">ProxyRemote</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyremotematch">ProxyRemoteMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyrequests">ProxyRequests</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#configs">Common configuration topics</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="configs" id="configs">Common configuration topics</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyerroroverride">ProxyErrorOverride</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyiobuffersize">ProxyIOBufferSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxymatch">&lt;ProxyMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypass">ProxyPass</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypassreverse">ProxyPassReverse</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypreservehost">ProxyPreserveHost</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyremote">ProxyRemote</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyremotematch">ProxyRemoteMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyrequests">ProxyRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#configs">Common configuration topics</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="configs" id="configs">Common configuration topics</a></h2>
 
 <ul>
 <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
@@ -250,7 +268,7 @@ SetEnv proxy-nokeepalive 1<br />
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Ports that are allowed to CONNECT through
 the proxy</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AllowCONNECT <em>port</em> [<em>port</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AllowCONNECT <em>port</em> [<em>port</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AllowCONNECT 443 563</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -266,7 +284,7 @@ allow connections to the listed ports only.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Hosts, domains, or networks that will be connected
 to directly</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>NoProxy <em>host</em> [<em>host</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>NoProxy <em>host</em> [<em>host</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -367,7 +385,7 @@ following type list:</p>
 <h3>See also</h3><ul><li><a href="../dns-caveats.html">DNS Issues</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Container for directives applied to proxied 
 resources</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -399,8 +417,8 @@ server:</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Words, hosts, or domains that are banned from being
 proxied</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyBlock *|<em>word|host|domain</em>
-[<em>word|host|domain</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyBlock *|<em>word|host|domain</em>
+[<em>word|host|domain</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -432,7 +450,7 @@ ProxyBlock *
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Default domain name for proxied requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyDomain <em>Domain</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyDomain <em>Domain</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -450,7 +468,7 @@ will be generated.</p>
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Override error pages for proxied content</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyErrorOverride On|Off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyErrorOverride On|Off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyErrorOverride Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -465,7 +483,7 @@ Error message).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>IO buffer size for outgoing HTTP and FTP 
 connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyIOBufferSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyIOBufferSize <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -473,7 +491,7 @@ connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Container for directives applied to regular-expression-matched 
 proxied resources</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -483,7 +501,7 @@ using regular expressions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maximium number of proxies that a request can be forwarded
 through</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyMaxForwards <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyMaxForwards <em>number</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyMaxForwards 10</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -499,7 +517,7 @@ set to prevent infinite proxy loops, or a DoS attack.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps remote servers into the local server 
 URL-space</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyPass [<em>path</em>] !|<em>url</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyPass [<em>path</em>] !|<em>url</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -540,7 +558,7 @@ with the <code>[P]</code> flag.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Adjusts the URL in HTTP response headers sent from
 a reverse proxied server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyPassReverse [<em>path</em>] <em>url</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyPassReverse [<em>path</em>] <em>url</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -583,7 +601,7 @@ ommitted and the local directory is obtained from the <code class="directive"><a
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Use incoming Host HTTP request header for
 proxy request</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyPreserveHost on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyPreserveHost on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyPreserveHost Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -598,7 +616,7 @@ specified in the proxypass line.
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Network buffer size for outgoing HTTP and FTP 
 connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyReceiveBufferSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyReceiveBufferSize <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -612,7 +630,7 @@ be used.</p>
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Remote proxy used to handle certain requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyRemote <em>match remote-server</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyRemote <em>match remote-server</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -647,7 +665,7 @@ server is hidden by another forward proxy.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Remote proxy used to handle requests
 matched by regular expressions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyRemote <em>regex remote-server</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProxyRemote <em>regex remote-server</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -657,7 +675,7 @@ directive, except the first argument is a regular expression
 match against the requested URL.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables forward (standard) proxy requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyRequests on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyRequests on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyRequests Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -675,7 +693,7 @@ dangerous both to your network and to the Internet at large.</p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Network timeout for proxied requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyTimeout <em>seconds</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyTimeout <em>seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyTimeout 300</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -690,7 +708,7 @@ of waiting however long it takes the server to return
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Information provided in the Via HTTP response
 header for proxied requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProxyVia on|off|full|block</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ProxyVia on|off|full|block</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ProxyVia off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:

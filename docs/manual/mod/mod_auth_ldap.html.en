@@ -30,7 +30,19 @@ for HTTP Basic authentication.</td></tr><tr><th><a href="module-dict.html#Status
       <li>Support for LDAP over SSL (requires the Netscape SDK) or
       TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapenabled">AuthLDAPEnabled</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li><li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li><li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The require Directives</a></li><li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li><li><img alt="" src="../images/down.gif" /> <a href="#frontpage">Using Microsoft
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapenabled">AuthLDAPEnabled</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li><li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li><li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The require Directives</a></li><li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li><li><img alt="" src="../images/down.gif" /> <a href="#frontpage">Using Microsoft
     FrontPage with mod_auth_ldap</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="contents" id="contents">Contents</a></h2>
 
     <ul>
@@ -495,7 +507,7 @@ AuthLDAPFrontPageHack  on
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPAuthoritative" id="AuthLDAPAuthoritative">AuthLDAPAuthoritative</a> <a name="authldapauthoritative" id="authldapauthoritative">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Prevent other authentication modules from
 authenticating the user if this one fails</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPAuthoritative on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -508,7 +520,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     supplied user name (as passed by the client).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Optional DN to use in binding to the LDAP server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPBindDN <em>distinguished-name</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthLDAPBindDN <em>distinguished-name</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -518,7 +530,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     an anonymous bind.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Password used in conjuction with the bind DN</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPBindPassword <em>password</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthLDAPBindPassword <em>password</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -529,7 +541,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     absolutely need them to search the directory.</p> 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Use the LDAP server to compare the DNs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPCompareDNOnServer on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPCompareDNOnServer on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPCompareDNOnServer on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -547,7 +559,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     DN comparison in most situations.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>When will the module de-reference aliases</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPDereferenceAliases never|searching|finding|always</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPDereferenceAliases never|searching|finding|always</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPDereferenceAliases Always</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -558,7 +570,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     <code>always</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPEnabled" id="AuthLDAPEnabled">AuthLDAPEnabled</a> <a name="authldapenabled" id="authldapenabled">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Turn on or off LDAP authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> AuthLDAPEnabled on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code> AuthLDAPEnabled on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPEnabled on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -571,7 +583,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     certain locations.</p> 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPFrontPageHack" id="AuthLDAPFrontPageHack">AuthLDAPFrontPageHack</a> <a name="authldapfrontpagehack" id="authldapfrontpagehack">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Allow LDAP authentication to work with MS FrontPage</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPFrontPageHack on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPFrontPageHack on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPFronPageHack off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -581,7 +593,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
     FrontPage</a> with <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>LDAP attributes used to check for group membership</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPGroupAttribute <em>attribute</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -594,7 +606,7 @@ authenticating the user if this one fails</td></tr><tr><th><a href="directive-di
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Use the DN of the client username when checking for
 group membership</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPGroupAttributeIsDN on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPGroupAttributeIsDN on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPGroupAttributeIsDN on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -613,7 +625,7 @@ group membership</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPRemoteUserIsDN on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPRemoteUserIsDN on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPUserIsDN off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -626,7 +638,7 @@ environment variable</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     default.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPStartTLS directive" id="AuthLDAPStartTLS directive">AuthLDAPStartTLS directive</a> <a name="authldapstarttls directive" id="authldapstarttls directive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Use a secure TLS connection to the LDAP server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPStartTLS on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthLDAPStartTLS on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPStartTLS off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -638,7 +650,7 @@ environment variable</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     server to support TLS.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>URL specifying the LDAP search parameters</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthLDAPUrl <em>url</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthLDAPUrl <em>url</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:

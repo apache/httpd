@@ -50,7 +50,25 @@
     encoding) you may need to 'touch' affected files (updating
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addhandler">AddHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addinputfilter">AddInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addlanguage">AddLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li><li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeencoding">RemoveEncoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removehandler">RemoveHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeinputfilter">RemoveInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removelanguage">RemoveLanguage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> Character sets and languages</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addhandler">AddHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addinputfilter">AddInputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addlanguage">AddLanguage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removeencoding">RemoveEncoding</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removehandler">RemoveHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removeinputfilter">RemoveInputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removelanguage">RemoveLanguage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> Character sets and languages</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
 
 
     <p>Files can have more than one extension, and the order of the
@@ -167,8 +185,8 @@ Content-Type: text/plain; charset=ISO-8859-2
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps the given filename extensions
     to the specified content charset</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddCharset <em>charset extension</em> 
-[<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AddCharset <em>charset extension</em> 
+[<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -205,8 +223,8 @@ Content-Type: text/plain; charset=ISO-8859-2
 <h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps the given filename extensions
     to the specified encoding type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddEncoding
-    <em>MIME-enc extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AddEncoding
+    <em>MIME-enc extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -250,8 +268,8 @@ Content-Type: text/plain; charset=ISO-8859-2
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps the filename extensions
 to the specified handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AddHandler
+    <em>handler-name extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -278,9 +296,9 @@ use:</p>
               </a></th><td>Maps filename extensions
     to the filters that will process
     client requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddInputFilter
+              </a></th><td><code>AddInputFilter
     <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    [<em>extension</em> ...]</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -304,8 +322,8 @@ use:</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps the given filename extension
 to the specified content language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddLanguage
-    <em>MIME-lang extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AddLanguage
+    <em>MIME-lang extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -354,9 +372,9 @@ to the specified content language</td></tr><tr><th><a href="directive-dict.html#
               </a></th><td>Maps filename
 extensions to the filters that will process
 responses from the server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddOutputFilter
+              </a></th><td><code>AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    [<em>extension</em> ...]</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -391,8 +409,8 @@ responses from the server</td></tr><tr><th><a href="directive-dict.html#Syntax">
 <h3>See also</h3><ul><li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps the given filename extensions
 onto the specified content type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -423,8 +441,8 @@ onto the specified content type</td></tr><tr><th><a href="directive-dict.html#Sy
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets all files in the given scope to the 
 specified language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DefaultLanguage
-    <em>MIME-lang</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>DefaultLanguage
+    <em>MIME-lang</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -455,7 +473,7 @@ DefaultLanguage en
 
 <h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Tells mod_mime to treat path_info components as part of the filename</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ModMimeUsePathInfo On|Off</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, location, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -486,8 +504,8 @@ ModMimeUsePathInfo On
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>MultiviewsMatch
+    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -530,8 +548,8 @@ MultiviewsMatch Handlers Filters
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any character set associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveCharset
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -553,8 +571,8 @@ RemoveCharset .html .shtml
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any content encoding associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveEncoding
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveEncoding
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -590,8 +608,8 @@ AddType text/plain .asc
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any handler associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveHandler
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveHandler
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -622,8 +640,8 @@ RemoveHandler .html
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any input filter associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveInputFilter
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveInputFilter
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -642,8 +660,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any language associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveLanguage
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveLanguage
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -661,8 +679,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any output filter associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveOutputFilter
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveOutputFilter
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -685,8 +703,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes any content type associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RemoveType
-    <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RemoveType
+    <em>extension</em> [<em>extension</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -717,7 +735,7 @@ RemoveType .cgi
     be specified with or without a leading dot.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The location of the mime.types file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>TypesConfig <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>TypesConfig <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>TypesConfig conf/mime.types</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:

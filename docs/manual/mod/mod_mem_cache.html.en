@@ -24,9 +24,14 @@ This module is experimental. Documentation is still under development...
 </div>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li><li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#mcacheminobjectsize">MCacheMinObjectSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li><li><img alt="" src="../images/down.gif" /> <a href="#mcachesize">MCacheSize</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMaxObjectCount" id="MCacheMaxObjectCount">MCacheMaxObjectCount</a> <a name="mcachemaxobjectcount" id="mcachemaxobjectcount">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcacheminobjectsize">MCacheMinObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachesize">MCacheSize</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMaxObjectCount" id="MCacheMaxObjectCount">MCacheMaxObjectCount</a> <a name="mcachemaxobjectcount" id="mcachemaxobjectcount">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The maximum number of objects allowed to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MCacheMaxObjectCount <em>value</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MCacheMaxObjectCount <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MCacheMaxObjectCount 1009</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -45,7 +50,7 @@ This module is experimental. Documentation is still under development...
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMaxObjectSize" id="MCacheMaxObjectSize">MCacheMaxObjectSize</a> <a name="mcachemaxobjectsize" id="mcachemaxobjectsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The maximum size (in bytes) of an object to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MCacheMaxObjectSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MCacheMaxObjectSize <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MCacheMaxObjectSize 10000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -62,7 +67,7 @@ This module is experimental. Documentation is still under development...
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMinObjectSize" id="MCacheMinObjectSize">MCacheMinObjectSize</a> <a name="mcacheminobjectsize" id="mcacheminobjectsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The minimum size (in bytes) of an object to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MCacheMinObjectSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MCacheMinObjectSize <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MCacheMinObjectSize 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -75,7 +80,7 @@ This module is experimental. Documentation is still under development...
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheRemovalAlgorithm" id="MCacheRemovalAlgorithm">MCacheRemovalAlgorithm</a> <a name="mcacheremovalalgorithm" id="mcacheremovalalgorithm">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The algorithm used to remove entries from the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MCacheRemovalAlgorithm <em>algorithm</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MCacheRemovalAlgorithm <em>algorithm</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MCacheRemovalAlgorithm GDSF</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -95,7 +100,7 @@ This module is experimental. Documentation is still under development...
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheSize" id="MCacheSize">MCacheSize</a> <a name="mcachesize" id="mcachesize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The maximum amount of memory used by the cache in KBytes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>MCacheSize <em>KBytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MCacheSize <em>KBytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MCacheSize 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:

@@ -13,7 +13,15 @@
     <p>This module implements HTTP Digest Authentication.  However, it
     has not been extensively tested and is therefore marked
     experimental.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestfile">AuthDigestFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestgroupfile">AuthDigestGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestnccheck">AuthDigestNcCheck</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Using Digest Authentication</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Using Digest Authentication</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestfile">AuthDigestFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestgroupfile">AuthDigestGroupFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnccheck">AuthDigestNcCheck</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Using Digest Authentication</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Using Digest Authentication</h2>
 
     <p>Using MD5 Digest authentication is very simple. Simply set
     up authentication normally, using "AuthType Digest" and
@@ -46,7 +54,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Selects the algorithm used to calculate the challenge and
 response hases in digest authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestAlgorithm MD5|MD5-sess</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthDigestAlgorithm MD5|MD5-sess</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -62,7 +70,7 @@ response hases in digest authentication</td></tr><tr><th><a href="directive-dict
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain" id="authdigestdomain">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>URIs that are in the same protection space for digest
 authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -90,7 +98,7 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestFile" id="AuthDigestFile">AuthDigestFile</a> <a name="authdigestfile" id="authdigestfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Location of the text file containing the list
 of users and encoded passwords for digest authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDigestFile <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -106,7 +114,7 @@ of users and encoded passwords for digest authentication</td></tr><tr><th><a hre
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestGroupFile" id="AuthDigestGroupFile">AuthDigestGroupFile</a> <a name="authdigestgroupfile" id="authdigestgroupfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Name of the text file containing the list of groups
 for digest authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestGroupFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDigestGroupFile <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -132,7 +140,7 @@ for digest authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestNcCheck" id="AuthDigestNcCheck">AuthDigestNcCheck</a> <a name="authdigestnccheck" id="authdigestnccheck">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables or disables checking of the nonce-count sent by the
 server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestNcCheck On|Off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthDigestNcCheck On|Off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDigestNcCheck Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -141,7 +149,7 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestNonceFormat" id="AuthDigestNonceFormat">AuthDigestNonceFormat</a> <a name="authdigestnonceformat" id="authdigestnonceformat">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Determines how the nonce is generated</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestNonceFormat <em>format</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDigestNonceFormat <em>format</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -150,7 +158,7 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>How long the server nonce is valid</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestNonceLifetime <em>seconds</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthDigestNonceLifetime <em>seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDigestNonceLifetime 300</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -168,7 +176,7 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop" id="authdigestqop">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Determines the quality-of-protection to use in digest
 authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDigestQop none|auth|auth-int [auth|auth-int]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthDigestQop none|auth|auth-int [auth|auth-int]</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDigestQop auth</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:

@@ -14,7 +14,11 @@
     the <code>DEFLATE</code> output filter that allows output from
     your server to be compressed before being sent to the client over
     the network.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Enabling Compression</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Enabling Compression</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Enabling Compression</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Enabling Compression</h2>
 
     <p>Compression is implemented by the <code>DEFLATE</code>
     <a href="../filter.html">filter</a>. The following directive
@@ -45,7 +49,7 @@ SetOutputFilter DEFLATE
     for that particular browser so that no compression will be performed.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Fragment size to be compressed at one time by zlib</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DeflateBufferSize <em>value</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateBufferSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateBufferSize 8096</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -55,7 +59,7 @@ SetOutputFilter DEFLATE
     time.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Places the compression ratio in a note for logging</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DeflateFilterNote <em>notename</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>DeflateFilterNote <em>notename</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_deflate</td></tr></table>
@@ -65,7 +69,7 @@ SetOutputFilter DEFLATE
     the directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>How much memory should be used by zlib for compression</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DeflateMemLevel <em>value</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateMemLevel <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateMemLevel 9</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -75,7 +79,7 @@ SetOutputFilter DEFLATE
     (a value between 1 and 9).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Zlib compression window size</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DeflateWindowSize <em>value</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateWindowSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateWindowSize 15</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:

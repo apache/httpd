@@ -14,9 +14,10 @@ modules</td></tr><tr><th><a href="module-dict.html#Status">Status:
     <p>This module provides an example protocol module to illustrate the
     concept. It provides a simple echo server. Telnet to it and type
     stuff, and it will echo it.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocolecho">ProtocolEcho</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocolecho">ProtocolEcho</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Turn the echo server on or off</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ProtocolEcho <em>On|Off</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProtocolEcho <em>On|Off</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_echo</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:

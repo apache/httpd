@@ -29,9 +29,13 @@
       <em>(Any web-server writable filename, without an
       extension)</em>
 </code></p></div>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enable WebDAV HTTP methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Dav on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>Dav on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Dav off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -59,7 +63,7 @@
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Allow PROPFIND, Depth: Infinity requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DavDepthInfinity on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DavDepthInfinity on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DavDepthInfinity off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -70,7 +74,7 @@
     denial-of-service attack, by default it is not allowed.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Location of the DAV lock database</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DavLockDB <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>DavLockDB <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_dav</td></tr></table>
@@ -87,7 +91,7 @@ DavLockDB /tmp/DavLock
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Minimum amount of time the server holds a lock on
 a DAV resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DavMinTimeout <em>seconds</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DavMinTimeout <em>seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DavMinTimeout 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
