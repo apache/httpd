@@ -1,5 +1,9 @@
 Changes with Apache 2.0.53
 
+  *) conf: Remove AddDefaultCharset from the default configuration because
+     setting a site-wide default does more harm than good. PR 23421.
+     [Roy Fielding]
+
   *) Add charset to example CGI scripts.  [Roy Fielding]
 
   *) mod_ssl: fail quickly if SSL connection is aborted rather than
