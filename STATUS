@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/04 11:36:13 $]
+Last modified at [$Date: 2004/09/13 15:39:57 $]
 
 Release:
 
@@ -73,6 +73,19 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_dav_fs: Fix indirect lock record handling on 64-bit platforms.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.31&r2=1.32
+       +1: jorton
+
+    *) mod_dav_fs: Fix indirect lock refresh.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/lock.c?r1=1.32&r2=1.33
+       +1: jorton
+       PR: 31183 (yes, I will do a CHANGES entry too)
+
+    *) ap_rgetline_core correctness fix.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.151&r2=1.152
+       +1: jorton
+
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
          http://www.apache.org/~nd/dbmmap_1.3.patch
@@ -102,7 +115,10 @@ PATCHES TO BACKPORT FROM 2.1
        nd: two comments:
          (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
              native chars here and it will be converted later? (I'm not sure)
+       jorton: I have no idea, let an EBCDIC-er complain if it breaks?
          (2) I'd put out (null) only if val is NULL, not if it's empty.
+       jorton: ssl_var_lookup() returns "" in place of NULL, that was really
+          a deliberate choice... but maybe you're right.
 
     *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
        is enabled.  Previously, such urls would still be rejected with
