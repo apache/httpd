@@ -1,5 +1,14 @@
 #!/bin/sh
 # Look for $1 somewhere in $PATH
+#  will print out the full pathname unless
+#  called with the '-s' option
+#
+if [ $1 = "-s" ]; then
+    shift
+    echo="#"
+else
+    echo="echo"
+fi
 
 for path in `echo $PATH |
  sed 's/^:/.:/
@@ -8,7 +17,7 @@ for path in `echo $PATH |
       s/:/ /g' `
 do
     if [ -x $path/$1 ]; then
-	echo $path/$1
+    	eval $echo $path/$1
 	exit 0
     fi
 done
