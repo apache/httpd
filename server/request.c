@@ -454,15 +454,15 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     /* XXX: Better (faster) tests needed!!!
      *
      * "OK" as a response to a real problem is not _OK_, but to allow broken 
-     * modules to proceed, we will permit the not-a-path filename to pass here.
-     * We must catch it later if it's heading for the core handler.  Leave an 
-     * INFO note here for module debugging.
+     * modules to proceed, we will permit the not-a-path filename to pass the
+     * following two tests.  This behavior may be revoked in future versions
+     * of Apache.  We still must catch it later if it's heading for the core 
+     * handler.  Leave INFO notes here for module debugging.
      */
-    if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
+    if (r->filename == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
-                      "Module bug?  Request filename path %s is missing "
-                      "or not absolute for uri %s", 
-                      r->filename ? r->filename : "<NULL>", r->uri);
+                      "Module bug?  Request filename is missing for URI %s", 
+                      r->uri);
        return OK;
     }
 
@@ -513,8 +513,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * and the vhost's list of directory sections hasn't changed, 
      * we can skip rewalking the directory_walk entries.
      */
-    if (cache->cached && ((r->finfo.filetype == APR_REG)
-                          || (r->finfo.filetype == APR_DIR))
+    if (cache->cached 
+        && ((r->finfo.filetype == APR_REG)
+         || ((r->finfo.filetype == APR_DIR) 
+          && (!r->path_info || !*r->path_info)))
         && (cache->dir_conf_tested == sec_ent) 
         && (strcmp(entry_dir, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
