@@ -538,7 +538,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             entry_dir = entry_core->d;
 
             if (entry_core->r
-		|| !ap_os_is_path_absolute(entry_dir)
+		|| !entry_core->d_is_absolute
 #if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
     /* To account for the top-level "/" directory when i == 0 
      * XXX: The net test may be wrong... may fail ap_os_is_path_absolute
