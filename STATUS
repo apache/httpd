@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/29 16:40:45 $]
+Last modified at [$Date: 2003/10/30 19:40:29 $]
 
 Release:
 
@@ -278,6 +278,11 @@ PATCHES TO BACKPORT FROM 2.1
         server/request.c r1.129
         server/protocol.c r1.137
       +1: trawick, striker
+
+    * mod_status: Report total CPU time accurately when using a
+      threaded MPM.  PR: 23795
+        modules/generators/mod_status.c r1.75
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
