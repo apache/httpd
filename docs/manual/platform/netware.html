@@ -26,7 +26,7 @@
 	   Before you submit a bug report or request, first consult this document, the
     <a HREF="faq/index.html">Frequently Asked Questions</a> page and the other 
 	   relevant documentation topics.  If you still have a question or problem, 
-	   post it to the <a HREF="news://devforums.novell.com/novell.devsup.webserver">
+	   post it to the <a HREF="news://developer-forums.novell.com/novell.devsup.webserver">
 	   novell.devsup.webserver</a> newsgroup, where many 
 	   Apache users are more than willing to answer new 
 	   and obscure questions about using Apache on NetWare.</p>
@@ -85,7 +85,7 @@
     date.&nbsp;
 
     <p>Follow these steps to install Apache on NetWare from the
-    binary download (assuming you will install to sys:/apache):</p>
+    binary download (assuming you will install to sys:/apache2):</p>
 
     <ul>
       <li>Unzip the binary download file to the root of the SYS:
@@ -94,8 +94,8 @@
       <li>Edit the httpd.conf file setting ServerRoot and
       ServerName to reflect your correct server settings</li>
 
-      <li>Add SYS:/APACHE to the search path. EXAMPLE: SEARCH ADD
-      SYS:\APACHE</li>
+      <li>Add SYS:/APACHE2 to the search path. EXAMPLE: SEARCH ADD
+      SYS:\APACHE2</li>
     </ul>
 
     <p>Follow these steps to install Apache on NetWare manually
@@ -103,44 +103,44 @@
     sys:/apache):</p>
 
     <ul>
-      <li>Create a directory called <code>Apache</code> on a
+      <li>Create a directory called <code>Apache2</code> on a
       NetWare volume</li>
 
-      <li>Copy APACHE.NLM, APRLIB.NLM, HTDIGEST.NLM, HTPASSWD.NLM to SYS:/APACHE</li>
+      <li>Copy APACHE2.NLM, APRLIB.NLM, HTDIGEST.NLM, HTPASSWD.NLM to SYS:/APACHE2</li>
 
-      <li>Create a directory under SYS:/APACHE called CONF</li>
+      <li>Create a directory under SYS:/APACHE2 called CONF</li>
 
-      <li>Copy all the HTTPD-NW.CONF file to the SYS:/APACHE/CONF
+      <li>Copy the HTTPD-STD.CONF file to the SYS:/APACHE2/CONF
       directory and rename to HTTPD.CONF</li>
 
-      <li>Copy the MIME.TYPES and MAGIC files to SYS:/APACHE/CONF
+      <li>Copy the MIME.TYPES and MAGIC files to SYS:/APACHE2/CONF
       directory</li>
 
       <li>Copy all files and subdirectories in \HTTPD-2.0\DOCS\ICONS to
-      SYS:/APACHE/ICONS</li>
+        SYS:/APACHE2/ICONS</li>
 
       <li>Copy all files and subdirectories in \HTTPD-2.0\DOCS\MANUAL to
-        SYS:/APACHE/MANUAL</li>
+        SYS:/APACHE2/MANUAL</li>
 
       <li>Copy all files and subdirectories in \HTTPD-2.0\DOCS\ERROR to
-        SYS:/APACHE/ERROR</li>
+        SYS:/APACHE2/ERROR</li>
 
       <li>Copy all files and subdirectories in \HTTPD-2.0\DOCS\DOCROOT to
-        SYS:/APACHE/HTDOCS</li>
+        SYS:/APACHE2/HTDOCS</li>
 
-      <li>Create the directory SYS:/APACHE/LOGS on the server</li>
+      <li>Create the directory SYS:/APACHE2/LOGS on the server</li>
 
-      <li>Create the directory SYS:/APACHE/CGI-BIN on the
+      <li>Create the directory SYS:/APACHE2/CGI-BIN on the
       server</li>
 
-      <li>Create the directory SYS:/APACHE/MODULES and copy all nlm
+      <li>Create the directory SYS:/APACHE2/MODULES and copy all nlm
       modules into the modules directory</li>
 
       <li>Edit the HTTPD.CONF file searching for all @@<i>Value</i>@@ markers
         and replacing them with the appropriate setting</li>
 
-      <li>Add SYS:/APACHE to the search path. EXAMPLE: SEARCH ADD
-      SYS:\APACHE</li>
+      <li>Add SYS:/APACHE2 to the search path. EXAMPLE: SEARCH ADD
+      SYS:\APACHE2</li>
     </ul>
 
     <p>Apache may be installed to other volumes besides the default <samp>SYS</samp> volume.</p>
@@ -151,7 +151,7 @@
     prefer to load Apache in a protected address space you may
     specify the address space with the load statement as follows: 
 <pre>
-    load address space = apache apache
+    load address space = apache2 apache2
 </pre>
 
     <p>This will load Apache into an address space called apache.
@@ -175,12 +175,16 @@
     <p>To unload Apache running in the OS address space just type
     the following at the console:</p>
 <pre>
-    unload apache
+    unload apache2</pre>
+    <blockquote>
+<pre>or</pre>
+    </blockquote>
+<pre>    httpd shutdown
 </pre>
     If apache is running in a protected address space specify the
     address space in the unload statement: 
 <pre>
-    unload address space = apache apache
+    unload address space = apache2 apache2
 </pre>
 
     <p>When working with Apache it is important to know how it will
@@ -192,7 +196,7 @@
       file</li>
     </ul>
 <pre>
-    apache -f &quot;vol:/my server/conf/my.conf&quot;
+    apache2 -f &quot;vol:/my server/conf/my.conf&quot;
 </pre>
 <pre>
     apache -f test/test.conf
@@ -217,8 +221,7 @@
       <li>The server root compiled into the server.</li>
     </ul>
 
-    <p>The server root compiled into the server is usually
-    "sys:/apache". invoking apache with the -V switch will display
+    <p>The server root compiled into the server is usually &quot;sys:/apache2&quot;. invoking apache with the -V switch will display
     this value labeled as HTTPD_ROOT.</p>
 
     <p>Apache 2.0 for NetWare includes a set of command line directives that can
@@ -310,7 +313,7 @@
         <p>Apache for NetWare has the ability to load modules at
         runtime, without recompiling the server. If Apache is
         compiled normally, it will install a number of optional
-        modules in the <code>\Apache\modules</code> directory. To
+        modules in the <code>\Apache2\modules</code> directory. To
         activate these, or other modules, the <a
         href="mod/mod_so.html#loadmodule">LoadModule</a> directive
         must be used. For example, to active the status module, use
@@ -333,26 +336,28 @@
     higher to be properly installed.</p>
 
     <p>First, unpack the Apache distribution into an appropriate
-    directory. Then go to the <code>src</code> subdirectory of the
-    Apache distribution and unzip <code>ApacheNW.mcp.gz</code>. You
-    may use a recent version of WinZip to accomplish this or gzip
-    for Windows. The main Metrowerks project file for Apache
-    <code>(ApacheNW.mcp)</code> is now ready to use. Just double
-    click on it from within explorer and it should automatically
-    launch MetroWerks CodeWarrior.</p>
+    directory. Then go to the <code>httpd and httpd/srclib/apr</code>
+    subdirectories of the
+    Apache distribution and unzip the files <code>ApacheNW.mcp.zip and
+    libaprnw.mcp.zip respectively</code>. You
+    may use a recent version of WinZip to accomplish this. The main Metrowerks project files for Apache
+    <code>(ApacheNW.mcp)and the Apache Portable Runtime (libaprnw.mcp)</code>
+    are now ready to use. Just double
+    click on them from within explorer and they should automatically
+    launch the MetroWerks CodeWarrior IDE.</p>
 
-    <p>All major pieces of Apache may be built using the
+    <p>All major pieces of Apache and APR are built using the
     ApacheNW.mcp and LibAprNW.mcp project files. This includes modules such as
-    status, info, and proxy.</p>
+    status, info, proxy, etc.</p>
 
-    <p>Once Apache has been built, it needs to be installed in its
-    server root directory. The default is the
-    <code>sys:/Apache</code> directory.</p>
+    <p>Once Apache has been built, it needs to be installed on a NetWare
+    volume's root directory. The default is the
+    <code>sys:/Apache2</code> directory.</p>
 
     <p>Before running the server you must fill out the conf
-    directory. Copy the *.conf-dist-nw from the distribution conf
-    directory and rename *.conf. Edit the ServerRoot entries to
-    your actual server root (for example "sys:/apache"). Copy over
+    directory. Copy the file HTTPD-STD.CONF from the distribution conf
+    directory and rename it to HTTPD.CONF. Edit the HTTPD.CONF file searching for all @@<i>Value</i>@@ markers
+        and replacing them with the appropriate setting. Copy over
     the conf/magic and conf/mime.types files as well.</p>
 
     
@@ -361,7 +366,7 @@
     
 	Requirements:&nbsp;</u></b></p>
     <p>
-	The following developments tools are required to build Apache 2.0
+	The following development tools are required to build Apache 2.0
 	for NetWare:</p>
     <ul>
       <li>Metrowerks CodeWarrior 6.0 or higher with the <a href="http://developer.novell.com/ndk/cwpdk.htm"> NetWare PDK
@@ -378,6 +383,13 @@
     </ul>
     <p><b><u>Building Apache using the Metrowerks Project Files:&nbsp;</u></b></p>
     <ul>
+      <li>Set the environment variable &quot;NovellNDK&quot; has been set to the
+        location of the NetWare Libraries for C SDK (ex. Set NovellNDK=c:\novell\ndk\libc).</li>
+      <li>Make sure that the path to the CodeWarrior command line tools (MWCCNLM.exe,
+        MWLDNLM.exe) has been included in the system's PATH environment
+        variable.</li>
+      <li>Make sure that the path to the AWK utility has been included in the
+        system's PATH environment variable.</li>
       <li>Download the source code and unzip to an appropriate directory on
      your workstation.&nbsp;</li>
       <li>Change directory to \httpd\srclib\apr\build and run the batch file
@@ -424,7 +436,7 @@
      \httpd\os\netware on the build machine.&nbsp;</li>
       <li>Select the target "Apache Full Debug&quot; or &quot;Apache Full
         Release&quot; in the IDE and build.  This will
-     produce the file APACHE.nlm along with all of the external module NLMs. </li>
+     produce the file APACHE2.nlm along with all of the external module NLMs. </li>
     </ul>
 
     <hr />
