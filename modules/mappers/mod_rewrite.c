@@ -3796,6 +3796,9 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "REMOTE_ADDR") == 0) {
         result = r->connection->remote_ip;
     }
+    else if (strcasecmp(var, "REMOTE_PORT") == 0) {
+        return apr_itoa(r->pool, r->connection->remote_addr->port);
+    }
     else if (strcasecmp(var, "REMOTE_HOST") == 0) {
         result = (char *)ap_get_remote_host(r->connection,
                                             r->per_dir_config, REMOTE_NAME, NULL);
