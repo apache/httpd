@@ -526,7 +526,7 @@ API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *fname
 
 /**
  * Add a module to the server
- * @param the module structure of the module to add
+ * @param m the module structure of the module to add
  * @deffunc void ap_add_module(module *m)
  */
 API_EXPORT(void) ap_add_module(module *m);
@@ -536,19 +536,19 @@ API_EXPORT(void) ap_add_module(module *m);
  * per-dir and per-server configurations are invalid. So we should
  * only ever call this function when you are invalidating almost
  * all our current data. I.e. when doing a restart.
- * @param the module structure of the module to remove
+ * @param m the module structure of the module to remove
  * @deffunc void ap_remove_module(module *m)
  */
 API_EXPORT(void) ap_remove_module(module *m);
 /**
  * Add a module to the chained modules list and the list of loaded modules
- * @param the module structure of the module to add
+ * @param m the module structure of the module to add
  * @deffunc void ap_add_loaded_module(module *m)
  */
 API_EXPORT(void) ap_add_loaded_module(module *mod);
 /**
  * Remove a module fromthe chained modules list and the list of loaded modules
- * @param the module structure of the module to remove
+ * @param m the module structure of the module to remove
  * @deffunc void ap_remove_loaded_module(module *m)
  */
 API_EXPORT(void) ap_remove_loaded_module(module *mod);
@@ -569,7 +569,7 @@ API_EXPORT(void) ap_clear_module_list(void);
  * Find the name of the specified module
  * @param m The module to get the name for
  * @return the name of the module
- * deffunc const char * ap_find_module_name(module *m)
+ * @deffunc const char *ap_find_module_name(module *m)
  */
 API_EXPORT(const char *) ap_find_module_name(module *m);
 /**
@@ -617,7 +617,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
 
 /**
  * Read one char from open configfile_t, increase line number upon LF 
- * @param The file to read from
+ * @param cfp The file to read from
  * @return the character read
  * @deffunc int ap_cfg_getc(configfile_t *cfp)
  */
@@ -765,63 +765,228 @@ API_EXPORT(void) ap_show_directives(void);
  * @deffunc void ap_show_modules(void)
  */
 API_EXPORT(void) ap_show_modules(void);
+
+/**
+ * Read all config files and setup the server
+ * @param process The process running the server
+ * @param temp_pool A pool to allocate temporary data out of.
+ * @param config_name The name of the config file
+ * @param conftree Place to store the root of the config tree
+ * @return The setup server_rec list.
+ * @deffunc server_rec *ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree)
+ */
 API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
-API_EXPORT(void) ap_pre_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
+
+/**
+ * Run all post config hooks for loaded modules.
+ * @param pconf The configuration pool
+ * @param plog The logging pool
+ * @param ptemp The temporary pool
+ * @param s The list of server_rec structures
+ * @deffunc void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
+ */
 API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
+
+/**
+ * Run all rewrite args hooks for loaded modules
+ * @param process The process currently running the server
+ * @deffunc void ap_run_rewrite_args(process_rec *process)
+ */
 API_EXPORT(void) ap_run_rewrite_args(process_rec *process);
+
+/**
+ * Run the register hooks function for a specified module
+ * @param m The module to run the register hooks function fo
+ * @deffunc void ap_register_hooks(module *m)
+ */
 API_EXPORT(void) ap_register_hooks(module *m);
+
+/**
+ * Setup all virtual hosts
+ * @param p The pool to allocate out of
+ * @param main_server The head of the server_rec list
+ * @deffunc void ap_fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server)
+ */
 API_EXPORT(void) ap_fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server);
 
 /* For http_request.c... */
 
+/**
+ * Setup the config vector for a request_rec
+ * @param p The pool to allocate the config vector out of
+ * @return The config vector
+ */
 void *ap_create_request_config(ap_pool_t *p);
+
+/**
+ * Setup the config vector for per dir module configs
+ * @param p The pool to allocate the config vector out of
+ * @return The config vector
+ * @deffunc void *ap_create_per_dir_config(ap_pool_t *p)
+ */
 CORE_EXPORT(void *) ap_create_per_dir_config(ap_pool_t *p);
+
+/**
+ * Run all of the modules merge per dir config functions
+ * @param p The pool to pass to the merge functions
+ * @param base The base directory config structure
+ * @param new The new directory config structure
+ */
 void *ap_merge_per_dir_configs(ap_pool_t *p, void *base, void *new);
 
 /* For http_connection.c... */
-
+/**
+ * Setup the config vector for a connection_rec
+ * @param p The pool to allocate the config vector out of
+ * @return The config vector
+ */
 void *ap_create_conn_config(ap_pool_t *p);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
+/**
+ * parse an htaccess file
+ * @param resulting htaccess_result
+ * @param r The request currently being served
+ * @param override Which overrides are active
+ * @param path The path to the htaccess file
+ * @param access_name The list of possible names for .htaccess files
+ * int The status of the current request
+ */
 int ap_parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
 
+/**
+ * Setup a virtual host
+ * @param p The pool to allocate all memory out of
+ * @param hostname The hostname of the virtual hsot
+ * @param main_server The main server for this Apache configuration
+ * @param ps Place to store the new server_rec
+ * return Error string on error, NULL on success
+ * @deffunc const char *ap_init_virtual_host(ap_pool_t *p, const char *hostname, server_rec *main_server, server_rec **ps)
+ */
 CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostname,
 				server_rec *main_server, server_rec **);
+
+/**
+ * Process the config file for Apache
+ * @param s The server rec to use for the command parms
+ * @param fname The name of the config file
+ * @param conftree The root node of the created config tree
+ * @param p Pool for general allocation
+ * @param ptem Pool for temporary allocation
+ */
 void ap_process_resource_config(server_rec *s, const char *fname, 
                  ap_directive_t **conftree, ap_pool_t *p, ap_pool_t *ptemp);
+
+/**
+ * Process all directives in the config tree
+ * @param s The server rec to use in the command parms
+ * @param conftree The config tree to process
+ * @param p The pool for general allocation
+ * @param ptemp The pool for temporary allocations
+ */
 API_EXPORT(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
                                         ap_pool_t *p, ap_pool_t *ptemp);
 
 
 /* For individual MPMs... */
-
+/**
+ * Run all child init hooks
+ * @param pchild The pool for child process allocations
+ * @param s The list of all server_recs
+ */
 void ap_child_init_hook(ap_pool_t *pchild, server_rec *s);
 
 /* Module-method dispatchers, also for http_request.c */
-
-int ap_translate_name(request_rec *);
-int ap_check_user_id(request_rec *);	/* obtain valid username from client auth */
+/**
+ * Run the handler phase of each module until a module accepts the
+ * responsibility of serving the request
+ * @param r The current request
+ * @return The status of the current request
+ */
 int ap_invoke_handler(request_rec *);
 
 /* for mod_perl */
 
+/**
+ * Find a given directive in a command_rec table
+ * @param name The directive to search for
+ * @param cmds The table to search
+ * @return The directive definition of the specified directive
+ * @deffunc const command_rec *ap_find_command(const char *name, const command_rec *cmds)
+ */
 CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command_rec *cmds);
+
+/**
+ * Find a given directive in a list module
+ * @param cmd_name The directive to search for
+ * @param mod The module list to search
+ * @return The directive definition of the specified directive
+ * @deffunc const command_rec *ap_find_command_in_modules(const char *cmd_name,module **mod)
+ */
 CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
+
+/**
+ * Add a per_dir and per_server config vector to a given module
+ * @param parms The command_parms to use
+ * @param config The config vector
+ * @param mod The module to add the vector for.
+ * @return The new config vector
+ * @deffunc void *ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
+ */
 CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod);
-CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l);
 
 #endif
 
   /* Hooks */
+
+/**
+ * Run the header parser functions for each module
+ * @param r The current request
+ * @return OK or DECLINED
+ * @deffunc int ap_run_header_parser(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,header_parser,(request_rec *))
+
+/**
+ * Run the pre_config function for each module
+ * @param pconf The config pool
+ * @param plog The logging streams pool
+ * @param ptemp The temporary pool
+ * @deffunc void ap_run_pre_config(ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp)
+ */
 AP_DECLARE_HOOK(void,pre_config,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp))
+
+/**
+ * Run the post_config function for each module
+ * @param pconf The config pool
+ * @param plog The logging streams pool
+ * @param ptemp The temporary pool
+ * @param s The list of server_recs
+ * @deffunc void ap_run_post_config(ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp, server_rec *s)
+ */
 AP_DECLARE_HOOK(void,post_config,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
+
+/**
+ * Run the open_logs functions for each module
+ * @param pconf The config pool
+ * @param plog The logging streams pool
+ * @param ptemp The temporary pool
+ * @param s The list of server_recs
+ * @deffunc void ap_run_open_logs(ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp, server_rec *s)
+ */
 AP_DECLARE_HOOK(void,open_logs,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
+
+/**
+ * Run the child_init functions for each module
+ * @param pchild The child pool
+ * @param s The list of server_recs in this server 
+ * @deffunc void ap_run_child_init(ap_pool_t *pchild, server_rec *s)
+ */
 AP_DECLARE_HOOK(void,child_init,(ap_pool_t *pchild, server_rec *s))
 
 #ifdef __cplusplus
