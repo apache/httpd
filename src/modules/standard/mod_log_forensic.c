@@ -219,7 +219,7 @@ static int log_before(request_rec *r)
     const char *id;
     hlog h;
 
-    if (cfg->fd < 0)
+    if (cfg->fd < 0 || r->prev)
         return DECLINED;
 
     if (!(id = ap_table_get(r->subprocess_env, "UNIQUE_ID"))) {

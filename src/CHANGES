@@ -1,5 +1,8 @@
 Changes with Apache 1.3.30
 
+  *) Forensic logging shouldn't log internal redirects.
+     [Ivan Ristic <ivanr@webkreator.com>]
+
   *) Some syntax errors in mod_mime_magic's magic file can result
      in a 500 error, which previously was unlogged.  Now we log the
      error.  [Jeff Trawick]
