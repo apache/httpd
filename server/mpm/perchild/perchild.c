@@ -173,7 +173,6 @@ static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static ap_pod_t *pod;
-static apr_socket_t **listenfds;
 static jmp_buf jmpbuffer;
 
 struct child_info_t {
@@ -215,7 +214,7 @@ module AP_MODULE_DECLARE_DATA mpm_perchild_module;
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
-static apr_lock_t *pipe_of_death_mutex;
+static apr_thread_mutex_t *pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
 
@@ -241,29 +240,29 @@ int raise_sigstop_flags;
 static apr_pool_t *pconf;              /* Pool for config stuff */
 static apr_pool_t *pchild;             /* Pool for httpd child stuff */
 static apr_pool_t *thread_pool_parent; /* Parent of per-thread pools */
-static apr_lock_t *thread_pool_parent_mutex;
+static apr_thread_mutex_t *thread_pool_parent_mutex;
 
 static int child_num;
 static unsigned int my_pid; /* Linux getpid() doesn't work except in 
                       main thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-static apr_lock_t *worker_thread_count_mutex;
+static apr_thread_mutex_t *worker_thread_count_mutex;
 static int *worker_thread_free_ids;
 static apr_threadattr_t *worker_thread_attr;
 
 /* Keep track of the number of idle worker threads */
 static int idle_thread_count;
-static apr_lock_t *idle_thread_count_mutex;
+static apr_thread_mutex_t *idle_thread_count_mutex;
 
 /* Locks for accept serialization */
 #ifdef NO_SERIALIZED_ACCEPT
 #define SAFE_ACCEPT(stmt) APR_SUCCESS
 #else
 #define SAFE_ACCEPT(stmt) (stmt)
-static apr_lock_t *process_accept_mutex;
+static apr_proc_mutex_t *process_accept_mutex;
 #endif /* NO_SERIALIZED_ACCEPT */
-static apr_lock_t *thread_accept_mutex;
+static apr_thread_mutex_t *thread_accept_mutex;
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
@@ -581,7 +580,7 @@ static int start_thread(void)
     apr_thread_t *thread;
     int rc;
 
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     if (worker_thread_count < max_threads - 1) {
         rc = apr_thread_create(&thread, worker_thread_attr, worker_thread,
                  &worker_thread_free_ids[worker_thread_count], pchild);
@@ -593,7 +592,7 @@ static int start_thread(void)
                over and over again if we exit. */
             sleep(10);
             workers_may_exit = 1;
-            apr_lock_release(worker_thread_count_mutex);
+            apr_thread_mutex_unlock(worker_thread_count_mutex);
             return 0;
         }
         else {
@@ -611,23 +610,25 @@ static int start_thread(void)
                          "NumServers settings");
             reported = 1;
         }
-        apr_lock_release(worker_thread_count_mutex);
+        apr_thread_mutex_unlock(worker_thread_count_mutex);
         return 0;
     }
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
     return 1;
 
 }
+
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
-static void check_pipe_of_death(void)
+static apr_status_t check_pipe_of_death(void **csd, ap_listen_rec *lr,
+                                        apr_pool_t *ptrans)
 {
-    apr_lock_acquire(pipe_of_death_mutex);
+    apr_thread_mutex_lock(pipe_of_death_mutex);
     if (!workers_may_exit) {
         int ret;
         char pipe_read_char;
         apr_size_t n = 1;
 
-        ret = apr_recv(listenfds[0], &pipe_read_char, &n);
+        ret = apr_recv(lr->sd, &pipe_read_char, &n);
         if (APR_STATUS_IS_EAGAIN(ret)) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
@@ -638,33 +639,64 @@ static void check_pipe_of_death(void)
             workers_may_exit = 1;
         }
     }
-    apr_lock_release(pipe_of_death_mutex);
+    apr_thread_mutex_unlock(pipe_of_death_mutex);
+    return APR_SUCCESS;
+}
+
+static apr_status_t receive_from_other_child(void **csd, ap_listen_rec *lr,
+                                             apr_pool_t *ptrans)
+{
+    struct msghdr msg;
+    struct cmsghdr *cmsg;
+    char sockname[80];
+    struct iovec iov;
+    int ret, dp;
+    apr_os_sock_t sd;
+
+    apr_os_sock_get(&sd, lr->sd);
+
+    iov.iov_base = sockname;
+    iov.iov_len = 80;
+
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+
+    cmsg = apr_palloc(ptrans, sizeof(*cmsg) + sizeof(sd));
+    cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sd);
+    msg.msg_control = (caddr_t)cmsg;
+    msg.msg_controllen = cmsg->cmsg_len;
+    msg.msg_flags = 0;
+    
+    ret = recvmsg(sd, &msg, 0);
+
+    memcpy(&dp, CMSG_DATA(cmsg), sizeof(dp));
+
+    apr_os_sock_put((apr_socket_t **)csd, &dp, ptrans);
+    return 0;
 }
 
 /* idle_thread_count should be incremented before starting a worker_thread */
 
 static void *worker_thread(apr_thread_t *thd, void *arg)
 {
-    apr_socket_t *csd = NULL;
+    void *csd = NULL;
     apr_pool_t *tpool;      /* Pool for this thread           */
     apr_pool_t *ptrans;     /* Pool for per-transaction stuff */
-    apr_socket_t *sd = NULL;
-    volatile int last_pollfd = 0;
     volatile int thread_just_started = 1;
     int srv;
-    int curr_pollfd;
     int thread_num = *((int *) arg);
     long conn_id = child_num * thread_limit + thread_num;
     apr_pollfd_t *pollset;
     apr_status_t rv;
-    ap_listen_rec *lr;
+    ap_listen_rec *lr, *last_lr = ap_listeners;
     int n;
-    apr_socket_t *childsock = NULL;
     apr_bucket_alloc_t *bucket_alloc;
 
-    apr_lock_acquire(thread_pool_parent_mutex);
+    apr_thread_mutex_lock(thread_pool_parent_mutex);
     apr_pool_create(&tpool, thread_pool_parent);
-    apr_lock_release(thread_pool_parent_mutex);
+    apr_thread_mutex_unlock(thread_pool_parent_mutex);
     apr_pool_create(&ptrans, tpool);
 
     (void) ap_update_child_status_from_indexes(child_num, thread_num, 
@@ -673,25 +705,23 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
 
     bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
 
-    apr_poll_setup(&pollset, num_listensocks + 1, tpool);
+    apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners; lr != NULL; lr = lr->next) {
         apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
     }
-    apr_os_sock_put(&childsock, &child_info_table[child_num].sd, tpool);
-    apr_poll_socket_add(pollset, childsock, APR_POLLIN);
 
     while (!workers_may_exit) {
         workers_may_exit |= ((ap_max_requests_per_child != 0)
                             && (requests_this_child <= 0));
         if (workers_may_exit) break;
         if (!thread_just_started) {
-            apr_lock_acquire(idle_thread_count_mutex);
+            apr_thread_mutex_lock(idle_thread_count_mutex);
             if (idle_thread_count < max_spare_threads) {
                 idle_thread_count++;
-                apr_lock_release(idle_thread_count_mutex);
+                apr_thread_mutex_unlock(idle_thread_count_mutex);
             }
             else {
-                apr_lock_release(idle_thread_count_mutex);
+                apr_thread_mutex_unlock(idle_thread_count_mutex);
                 break;
             }
         }
@@ -703,15 +733,15 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                                                    SERVER_READY,
                                                    (request_rec *) NULL);
 
-        apr_lock_acquire(thread_accept_mutex);
+        apr_thread_mutex_lock(thread_accept_mutex);
         if (workers_may_exit) {
-            apr_lock_release(thread_accept_mutex);
+            apr_thread_mutex_unlock(thread_accept_mutex);
             break;
         }
-        if ((rv = SAFE_ACCEPT(apr_lock_acquire(process_accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(process_accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock_acquire failed. Attempting to shutdown "
+                         "apr_proc_mutex_lock failed. Attempting to shutdown "
                          "process gracefully.");
             workers_may_exit = 1;
         }
@@ -733,61 +763,37 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
             }
             if (workers_may_exit) break;
 
-/*            apr_poll_revents_get(&event, listenfds[0], pollset);
-            if (event & APR_POLLIN) {
-                * A process got a signal on the shutdown pipe. Check if we're
-                 * the lucky process to die. 
-                check_pipe_of_death();
-                continue;
-            }
-            apr_poll_revents_get(&event, listenfds[1], pollset);
-            if (event & APR_POLLIN || event & APR_POLLOUT) {
-                * This request is from another child in our current process.
-                 * We should set a flag here, and then below we will read
-                 * two bytes (the socket number and the NULL byte.
-                thread_socket_table[thread_num] = AP_PERCHILD_OTHERCHILD;
-                goto got_from_other_child;
-            }
-           */ 
-
-            if (num_listensocks == 1) {
-                sd = ap_listeners->sd;
-                goto got_fd;
-            }
-            else {
-                /* find a listener */
-                curr_pollfd = last_pollfd;
-                do {
-                    curr_pollfd++;
-                    if (curr_pollfd > num_listensocks) {
-                        curr_pollfd = 1;
-                    }
-                    /* XXX: Should we check for POLLERR? */
-                    apr_poll_revents_get(&event, listenfds[curr_pollfd],
-                                         pollset);
-                    if (event & APR_POLLIN) {
-                        last_pollfd = curr_pollfd;
-                        sd = listenfds[curr_pollfd];
-                        goto got_fd;
-                    }
-                } while (curr_pollfd != last_pollfd);
-            }
+            /* find a listener */
+            lr = last_lr;
+            do {
+                lr = lr->next;
+                if (lr == NULL) {
+                    lr = ap_listeners;
+                }
+                /* XXX: Should we check for POLLERR? */
+                apr_poll_revents_get(&event, lr->sd, pollset);
+                if (event & APR_POLLIN) {
+                    last_lr = lr;
+                    goto got_fd;
+                }
+            } while (lr != last_lr);
         }
     got_fd:
         if (!workers_may_exit) {
-            if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                             "apr_accept");
+            rv = lr->accept_func(&csd, lr, ptrans);
+            if (rv == APR_EGENERAL) {
+                /* E[NM]FILE, ENOMEM, etc */
+                workers_may_exit = 1;
             }
-            if ((rv = SAFE_ACCEPT(apr_lock_release(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(process_accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_lock_release failed. Attempting to shutdown "
+                             "apr_proc_mutex_unlock failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            apr_lock_release(thread_accept_mutex);
-            apr_lock_acquire(idle_thread_count_mutex);
+            apr_thread_mutex_unlock(thread_accept_mutex);
+            apr_thread_mutex_lock(idle_thread_count_mutex);
             if (idle_thread_count > min_spare_threads) {
                 idle_thread_count--;
             }
@@ -796,36 +802,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                     idle_thread_count--;
                 }
             }
-            apr_lock_release(idle_thread_count_mutex);
-        got_from_other_child:
-            if (thread_socket_table[thread_num] == AP_PERCHILD_OTHERCHILD) {
-                struct msghdr msg;
-                struct cmsghdr *cmsg;
-                char sockname[80];
-                struct iovec iov;
-                int ret, sd, dp;
-
-                iov.iov_base = sockname;
-                iov.iov_len = 80;
-
-                msg.msg_name = NULL;
-                msg.msg_namelen = 0;
-                msg.msg_iov = &iov;
-                msg.msg_iovlen = 1;
-
-                cmsg = apr_palloc(ptrans, sizeof(*cmsg) + sizeof(sd));
-                cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sd);
-                msg.msg_control = (caddr_t)cmsg;
-                msg.msg_controllen = cmsg->cmsg_len;
-                msg.msg_flags = 0;
-                
-                ret = recvmsg(child_info_table[child_num].sd, &msg, 0);
-
-                memcpy(&dp, CMSG_DATA(cmsg), sizeof(dp));
-
-                thread_socket_table[thread_num] = dp;
-                apr_os_sock_put(&csd, &child_info_table[child_num].sd, ptrans);
-            }
+            apr_thread_mutex_unlock(idle_thread_count_mutex);
             if (setjmp(jmpbuffer) != 1) {
                 process_socket(ptrans, csd, conn_id, bucket_alloc);
             }
@@ -835,28 +812,28 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
             requests_this_child--;
         }
         else {
-            if ((rv = SAFE_ACCEPT(apr_lock_release(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(process_accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_lock_release failed. Attempting to shutdown "
+                             "apr_proc_mutex_unlock failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            apr_lock_release(thread_accept_mutex);
-            apr_lock_acquire(idle_thread_count_mutex);
+            apr_thread_mutex_unlock(thread_accept_mutex);
+            apr_thread_mutex_lock(idle_thread_count_mutex);
             idle_thread_count--;
-            apr_lock_release(idle_thread_count_mutex);
+            apr_thread_mutex_unlock(idle_thread_count_mutex);
         break;
         }
         apr_pool_clear(ptrans);
     }
 
-    apr_lock_acquire(thread_pool_parent_mutex);
+    apr_thread_mutex_lock(thread_pool_parent_mutex);
     ap_update_child_status_from_indexes(child_num, thread_num, SERVER_DEAD,
                                         (request_rec *) NULL);
     apr_pool_destroy(tpool);
-    apr_lock_release(thread_pool_parent_mutex);
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(thread_pool_parent_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
     worker_thread_free_ids[worker_thread_count] = thread_num;
     if (worker_thread_count == 0) {
@@ -864,12 +841,14 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
          * by signalling the sigwait thread */
         kill(my_pid, SIGTERM);
     }
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     apr_bucket_alloc_destroy(bucket_alloc);
 
     return NULL;
 }
+
+
 
 /* Set group privileges.
  *
@@ -969,8 +948,8 @@ static void child_main(int child_num_arg)
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    rv = SAFE_ACCEPT(apr_lock_child_init(&process_accept_mutex, ap_lock_fname,
-                                         pchild));
+    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&process_accept_mutex, 
+                                               ap_lock_fname, pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                      "Couldn't initialize cross-process lock in child");
@@ -1002,16 +981,16 @@ static void child_main(int child_num_arg)
         worker_thread_free_ids[i] = i;
     }
     apr_pool_create(&thread_pool_parent, pchild);
-    apr_lock_create(&thread_pool_parent_mutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    APR_LOCK_DEFAULT, NULL, pchild);
-    apr_lock_create(&idle_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    APR_LOCK_DEFAULT, NULL, pchild);
-    apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    APR_LOCK_DEFAULT, NULL, pchild);
-    apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    APR_LOCK_DEFAULT, NULL, pchild);
-    apr_lock_create(&thread_accept_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    APR_LOCK_DEFAULT, NULL, pchild);
+    apr_thread_mutex_create(&thread_pool_parent_mutex, 
+                    APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&idle_thread_count_mutex, 
+                    APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&worker_thread_count_mutex,
+                    APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&pipe_of_death_mutex,
+                    APR_THREAD_MUTEX_DEFAULT, pchild);
+    apr_thread_mutex_create(&thread_accept_mutex,
+                    APR_THREAD_MUTEX_DEFAULT, pchild);
 
     apr_threadattr_create(&worker_thread_attr, pchild);
     apr_threadattr_detach_set(worker_thread_attr, 1);                                     
@@ -1247,6 +1226,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int i;
     apr_status_t rv;
     apr_size_t one = 1;
+    ap_listen_rec *lr;
+    apr_socket_t *sock = NULL;
+    int fd;
 
     ap_log_pid(pconf, ap_pid_fname);
 
@@ -1259,28 +1241,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         changed_limit_at_restart = 0;
     }
 
-    if ((rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out,
-                                   pconf)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                     (const server_rec*) ap_server_conf,
-                     "apr_file_pipe_create (pipe_of_death)");
-        exit(1);
-    }
-    if ((rv = apr_file_pipe_timeout_set(pipe_of_death_in, 0)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                     (const server_rec*) ap_server_conf,
-                     "apr_file_pipe_timeout_set (pipe_of_death)");
-        exit(1);
-    }
     ap_server_conf = s;
 
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
                                  ap_server_root_relative(_pconf, ap_lock_fname),
                                  my_pid);
-    rv = SAFE_ACCEPT(apr_lock_create(&process_accept_mutex, APR_MUTEX,
-                                     APR_CROSS_PROCESS, ap_accept_lock_mech,
-                                     ap_lock_fname, _pconf));
+    rv = SAFE_ACCEPT(apr_proc_mutex_create(&process_accept_mutex,
+                                     ap_lock_fname, ap_accept_lock_mech,
+                                     _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");
@@ -1298,6 +1267,36 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             ap_child_table[i].pid = 0;
         }
     }
+
+    /* We need to put the new listeners at the end of the ap_listeners
+     * list.  If we don't, then the pool will be cleared before the
+     * open_logs phase is called for the second time, and ap_listeners
+     * will have only invalid data.  If that happens, then the sockets
+     * that we opened using make_sock() will be lost, and the server
+     * won't start.
+     */
+    for (lr = ap_listeners ; lr->next != NULL; lr = lr->next) {
+        continue;
+    }
+
+    apr_os_file_get(&fd, pipe_of_death_in);
+    apr_os_sock_put(&sock, &fd, pconf);
+    lr->next = apr_palloc(pconf, sizeof(*lr));
+    lr->next->sd = sock;
+    lr->next->active = 1;
+    lr->next->accept_func = check_pipe_of_death;
+    lr->next->next = NULL;
+    lr = lr->next;
+    num_listensocks++;
+
+    apr_os_sock_put(&sock, &child_info_table[child_num].sd, pconf);
+    lr->next = apr_palloc(pconf, sizeof(*lr));
+    lr->next->sd = sock;
+    lr->next->active = 1;
+    lr->next->accept_func = receive_from_other_child;
+    lr->next->next = NULL;
+    num_listensocks++;
+
 
     set_signals();
 
@@ -1434,6 +1433,21 @@ static int perchild_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
                 "Could not open pipe-of-death.");
         return DONE;
     }
+
+    if ((rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out,
+                                   pconf)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
+                     (const server_rec*) ap_server_conf,
+                     "apr_file_pipe_create (pipe_of_death)");
+        exit(1);
+    }
+    if ((rv = apr_file_pipe_timeout_set(pipe_of_death_in, 0)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
+                     (const server_rec*) ap_server_conf,
+                     "apr_file_pipe_timeout_set (pipe_of_death)");
+        exit(1);
+    }
+
     return OK;
 }
 
@@ -1532,14 +1546,12 @@ static int pass_request(request_rec *r)
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
-    char *foo;
+    char *foo = NULL;
     apr_size_t len;
 
-    apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", c->pool);
+/* XXX apr_get_brigade(..., AP_MODE_EXHAUSTIVE);  RBB */
+/* foo = brigade_to_string() */
     len = strlen(foo);
-
-    apr_pool_userdata_set(NULL, "PERCHILD_BUFFER", apr_pool_cleanup_null, 
-                          c->pool);
 
     apr_os_sock_get(&sfd, thesock);
 
@@ -1637,19 +1649,10 @@ static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int perchild_post_read(request_rec *r)
 {
-    ap_filter_t *f = r->connection->input_filters;
     int thread_num = r->connection->id % thread_limit;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
-
-    while (f) {
-        if (!strcasecmp("PERCHILD_BUFFER", f->frec->name)) {
-            ap_remove_output_filter(f);
-            break;
-        }
-        f = f->next;
-    }
 
     if (thread_socket_table[thread_num] != AP_PERCHILD_THISCHILD) {
         apr_socket_t *csd = NULL;
@@ -1677,49 +1680,6 @@ static int perchild_post_read(request_rec *r)
     return OK;
 }
 
-static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b,
-                                    ap_input_mode_t mode, 
-                                    apr_read_type_e block,
-                                    apr_off_t readbytes)
-{
-    apr_bucket *e;
-    apr_status_t rv;
-    char *buffer = NULL;
-    const char *str;
-    apr_size_t len;
-
-    if ((rv = ap_get_brigade(f->next, b, mode, block, 
-                             readbytes)) != APR_SUCCESS) {
-        return rv;
-    }
-
-    apr_pool_userdata_get((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
-
-    APR_BRIGADE_FOREACH(e, b) {
-        if (e->length != 0) {
-            apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
-       
-            if (buffer == NULL) {
-                buffer = apr_pstrndup(f->c->pool, str, len);
-            }
-            else {
-               buffer = apr_pstrcat(f->c->pool, buffer, 
-                                    apr_pstrndup(f->c->pool, str, len), NULL);
-            } 
-        }
-    }
-    apr_pool_userdata_set(buffer, "PERCHILD_BUFFER", apr_pool_cleanup_null,
-                          f->c->pool);
-    
-    return APR_SUCCESS;
-}
-
-static int perchild_pre_connection(conn_rec *c, void *csd)
-{
-    ap_add_input_filter("PERCHILD_BUFFER", NULL, NULL, c);
-    return OK;
-}
-
 static void perchild_hooks(apr_pool_t *p)
 {
     /* The perchild open_logs phase must run before the core's, or stderr
@@ -1732,7 +1692,6 @@ static void perchild_hooks(apr_pool_t *p)
     ap_hook_open_logs(perchild_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_post_config(perchild_post_config, NULL, NULL, APR_HOOK_MIDDLE); 
-    ap_hook_pre_connection(perchild_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
 
     /* This must be run absolutely first.  If this request isn't for this
      * server then we need to forward it to the proper child.  No sense
@@ -1741,8 +1700,6 @@ static void perchild_hooks(apr_pool_t *p)
      */
     ap_hook_post_read_request(perchild_post_read, NULL, NULL,
                               APR_HOOK_REALLY_FIRST);
-    ap_register_input_filter("PERCHILD_BUFFER", perchild_buffer,
-                             AP_FTYPE_RESOURCE);
 }
 
 static const char *set_num_daemons(cmd_parms *cmd, void *dummy,
@@ -1876,6 +1833,7 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
     
         ug->uid = ap_uname2id(u);
         ug->gid = ap_uname2id(g); 
+
 #ifndef BIG_SECURITY_HOLE
         if (ug->uid == 0 || ug->gid == 0) {
             return "Assigning root user/group to a child.";
