@@ -4595,8 +4595,10 @@ int REALMAIN(int argc, char *argv[])
 	BUFF *cio;
 	NET_SIZE_T l;
 
+	ap_set_version();
 	/* Yes this is called twice. */
 	ap_init_modules(pconf, server_conf);
+	version_locked++;
 	ap_open_logs(server_conf, pconf);
 	ap_init_modules(pconf, server_conf);
 	set_group_privs();

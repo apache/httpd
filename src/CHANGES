@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Using DSO, the Server token was being mangled. Specifically, the
+     module's token was being added first before the Apache token. This
+     has been fixed. [Jim Jagielski]
+
   *) Major overhaul of mod_negotiation.c.
      - cleanups to mod_negotiation comments and code structure
      - made compliant with HTTP/1.1 proposed standard (rfc2068) and added
