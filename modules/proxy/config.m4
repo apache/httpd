@@ -7,7 +7,6 @@ if test "$enable_proxy" = "no"; then
 else
   proxy_mods_enable=yes
 fi
-APACHE_MODULE(dav_fs, DAV provider for the filesystem, $dav_fs_objects, ,$dav_fs_enable)
 
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , no)
