@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/11/07 04:12:55 $]
+  Last modified at [$Date: 2003/11/27 17:03:36 $]
 
 Release:
 
@@ -45,6 +45,7 @@ Release:
     2.0  : Available for general use, see httpd-2.0 repository
 
 RELEASE SHOWSTOPPERS:
+  *  Bugz: 24483
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
