@@ -1579,7 +1579,7 @@ PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf
 		     "proxy: FTP: start body send");
 
 	/* read the body, pass it to the output filters */
-	while (ap_get_brigade(remote->input_filters, bb, AP_MODE_BLOCKING, &readbytes) == APR_SUCCESS) {
+	while (ap_get_brigade(remote->input_filters, bb, AP_MODE_BLOCKING, readbytes) == APR_SUCCESS) {
 	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
 		e = apr_bucket_flush_create();
 		APR_BRIGADE_INSERT_TAIL(bb, e);
