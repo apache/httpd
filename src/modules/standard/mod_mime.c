@@ -192,35 +192,31 @@ void init_mime (server_rec *s, pool *p)
 
 int find_ct(request_rec *r)
 {
-    int i;
-    char *fn = pstrdup (r->pool, r->filename);
+    char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =
       (mime_dir_config *)get_module_config(r->per_dir_config, &mime_module);
-    char *type;
+    char *ext, *type;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
 	return OK;
     }
-    
+
     /* Parse filename extensions, which can be in any order */
-    while ((i = rind (fn, '.')) >= 0) {
-      ++i;
+    while ((ext = getword(r->pool, &fn, '.')) && *ext) {
 
       /* Check for Content-Type */
-      if ((type = table_get (conf->forced_types, &fn[i]))
-	  || (type = table_get (hash_buckets[hash(fn[i])], &fn[i])))
+      if ((type = table_get (conf->forced_types, ext))
+	  || (type = table_get (hash_buckets[hash(*ext)], ext)))
         r->content_type = type;
 
       /* Check for Content-Language */
-      if ((type = table_get (conf->language_types, &fn[i])))
+      if ((type = table_get (conf->language_types, ext)))
 	  r->content_language = type;
 	
       /* Check for Content-Encoding */
-      if ((type = table_get (conf->encoding_types, &fn[i])))
-          r->content_encoding = type;
-
-      fn[i-1] = '\0';
+      if ((type = table_get (conf->encoding_types, ext)))
+	  r->content_encoding = type;
     }
 
     return OK;
