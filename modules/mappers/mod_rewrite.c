@@ -964,6 +964,7 @@ static int post_config(apr_pool_t *p,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
     rv = unixd_set_global_mutex_perms(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
@@ -971,6 +972,7 @@ static int post_config(apr_pool_t *p,
                      "rewrite_log_lock; check User and Group directives");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+#endif
 
     rv = rewritelock_create(s, p);
     if (rv != APR_SUCCESS) {
@@ -3327,6 +3329,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
         return rc;
     }
 
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
     rc = unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
@@ -3334,6 +3337,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
                      "on RewriteLock; check User and Group directives");
         return rc;
     }
+#endif
 
     return APR_SUCCESS;
 }
