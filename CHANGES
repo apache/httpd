@@ -74,10 +74,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: Fix some problems reporting errors with mapping
      programs (RewriteMap prg:/something).  [Jeff Trawick]
 
-  *) When using Redirect in directory context, append requested query
-     string if there's no one supplied by configuration. PR 10961.
-     [André Malo]
-
   *) Fix mod_rewrite's handling of absolute URIs. The escaping routines
      now work scheme dependent and the query string will only be
      appended if supported by the particular scheme.  [André Malo]
@@ -163,6 +159,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) When using Redirect in directory context, append requested query
+     string if there's no one supplied by configuration. PR 10961.
+     [André Malo]
 
   *) Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
      the pattern will not always match as desired. PR 12596.
