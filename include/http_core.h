@@ -532,7 +532,12 @@ typedef struct {
 #define ENABLE_MMAP_OFF    (0)
 #define ENABLE_MMAP_ON     (1)
 #define ENABLE_MMAP_UNSET  (2)
-    int enable_mmap;  /* whether files in this dir can be mmap'ed */
+    unsigned int enable_mmap : 2;  /* whether files in this dir can be mmap'ed */
+
+#define ENABLE_SENDFILE_OFF    (0)
+#define ENABLE_SENDFILE_ON     (1)
+#define ENABLE_SENDFILE_UNSET  (2)
+    unsigned int enable_sendfile : 2;  /* files in this dir can be mmap'ed */
 
 } core_dir_config;
 
