@@ -134,6 +134,7 @@ char *safe_env_lst[] =
     "SERVER_ADDR=",
     "SERVER_PORT=",
     "SERVER_PROTOCOL=",
+    "SERVER_SIGNATURE=",
     "SERVER_SOFTWARE=",
     "UNIQUE_ID=",
     "USER_NAME=",
