@@ -237,10 +237,9 @@ ap_context_t *g_pHookPool;
 extern char *optarg;
 
 #ifdef WIN32
-__declspec(dllexport)
-     int apache_main(int argc, char *argv[])
+API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
 #else
-int main(int argc, char **argv)
+API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 #endif
 {
     int c;
@@ -339,21 +338,17 @@ int main(int argc, char **argv)
 
     for (;;) {
 	ap_clear_pool(pconf);
-	ap_create_context(&ptemp, pconf);
+	ap_clear_pool(ptemp);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(pconf, ptemp, confname);
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
-	ap_destroy_pool(ptemp);
 
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
     }
-
-    ap_clear_pool(pconf);
-    ap_clear_pool(plog);
-    ap_destroy_pool(pglobal);
+    ap_destroy_pool(pglobal); /* and destroy all descendent pools */
     exit(0);
 }
 
