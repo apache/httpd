@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) invoke_handler() doesn't handle mime arguments in content-type
+    [Petr Lampa] PR#160
+
   *) Reduced IdentityCheck timeout to 30 seconds, as per RFC 1413 minimum.
      [Ken Coar]
 

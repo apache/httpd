@@ -314,7 +314,13 @@ int invoke_handler (request_rec *r)
    module *modp;
    handler_rec *handp;
    char *content_type = r->content_type ? r->content_type : default_type (r);
-   char *handler = r->handler ? r->handler : content_type;
+   char *handler, *p; 
+
+   if ((p = strchr(content_type, ';')) != NULL) {  /* MIME type arguments */
+       while (p > content_type && p[-1] == ' ') --p; /* strip trailing spaces */
+       content_type = pstrndup(r->pool, content_type, p - content_type);
+   }
+   handler = r->handler ? r->handler : content_type;
   
    /* Pass one --- direct matches */
    
