@@ -102,7 +102,7 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
     
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, NULL,
-                "ajp_ilink_receive() can't receive header\n");
+                     "ajp_ilink_receive() can't receive header");
         return AJP_ENO_HEADER;
     }
     
@@ -110,7 +110,7 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_ilink_receive() received bad header\n");
+                     "ajp_ilink_receive() received bad header");
         return AJP_EBAD_HEADER;
     }
 
@@ -118,13 +118,15 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, NULL,
-                      "ajp_ilink_receive() error while receiving message body of length %d\n",
-                      hlen);
+                     "ajp_ilink_receive() error while receiving message body "
+                     "of length %" APR_SIZE_T_FMT,
+                     hlen);
         return AJP_EBAD_MESSAGE;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                  "ajp_ilink_receive() received packet len=%d type=%d\n",
+                 "ajp_ilink_receive() received packet len=%" APR_SIZE_T_FMT
+                 "type=%d\n",
                   blen, (int)msg->buf[hlen]);
 
     return APR_SUCCESS;

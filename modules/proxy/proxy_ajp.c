@@ -175,7 +175,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         /* Try to send something */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: data to read (max %d at %d)", bufsiz, msg->pos);
+                     "proxy: data to read (max %" APR_SIZE_T_FMT 
+                     " at %" APR_SIZE_T_FMT ")", bufsiz, msg->pos);
 
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
         if (status != APR_SUCCESS) {
@@ -187,7 +188,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         apr_brigade_cleanup(input_brigade);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: got %d byte of data", bufsiz);
+                     "proxy: got %" APR_SIZE_T_FMT " bytes of data", bufsiz);
         if (bufsiz > 0) {
             status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
             if (status != APR_SUCCESS) {
