@@ -3555,7 +3555,7 @@ static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
 }
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
-static void sock_disable_nagle(int s)
+static void sock_disable_nagle(int s, struct sockaddr_in *sin_client)
 {
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
@@ -3573,13 +3573,20 @@ static void sock_disable_nagle(int s)
 #ifdef NETWARE
         errno = WSAGetLastError();
 #endif
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
-		    "setsockopt: (TCP_NODELAY)");
+        if (sin_client) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, server_conf,
+                         "setsockopt: (TCP_NODELAY), client %pA probably "
+                         "dropped the connection", &sin_client->sin_addr);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, server_conf,
+                         "setsockopt: (TCP_NODELAY)");
+        }
     }
 }
 
 #else
-#define sock_disable_nagle(s)	/* NOOP */
+#define sock_disable_nagle(s, c)	/* NOOP */
 #endif
 
 static int make_sock(pool *p, const struct sockaddr_in *server)
@@ -3663,7 +3670,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     }
 #endif
 
-    sock_disable_nagle(s);
+    sock_disable_nagle(s, NULL);
     sock_enable_linger(s);
 
     /*
@@ -4513,11 +4520,14 @@ static void child_main(int child_num_arg)
 
 	clen = sizeof(sa_server);
 	if (getsockname(csd, &sa_server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG, server_conf, 
+                         "getsockname, client %pA probably dropped the "
+                         "connection", 
+                         &((struct sockaddr_in *)&sa_client)->sin_addr);
 	    continue;
 	}
 
-	sock_disable_nagle(csd);
+	sock_disable_nagle(csd, (struct sockaddr_in *)&sa_client);
 
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
@@ -5884,7 +5894,7 @@ static void child_sub_main(int child_num)
 	    memset(&sa_client, '\0', sizeof(sa_client));
 	}
 
-	sock_disable_nagle(csd);
+	sock_disable_nagle(csd, (struct sockaddr_in *)&sa_client);
 
 	(void) ap_update_child_status(child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);

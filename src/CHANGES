@@ -1,5 +1,9 @@
 Changes with Apache 1.3.28
 
+  *) Change the log messages for setsockopt(TCP_NODELAY) and
+     getsockname() failures to log the client IP address and to
+     change the log level to debug.  [Jeff Trawick]
+
   *) Correction to mod_negotation for Win32, OS2, Netware etc, where
      case insensitive requests such as the HEADER or README search
      from autoindex would fail to match HEADER.html (because the
