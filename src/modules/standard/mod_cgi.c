@@ -426,9 +426,12 @@ int cgi_handler (request_rec *r)
                 get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0)
 	{
 	    if (conf->logname) {
-		if ((dbpos + len_read) > conf->bufbytes)
+		if ((dbpos + len_read) > conf->bufbytes) {
 		    dbsize = conf->bufbytes - dbpos;
-		else dbsize = len_read;
+		}
+                else {
+                    dbsize = len_read;
+                }
                 reset_timeout(r);
                 memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
