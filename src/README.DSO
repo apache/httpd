@@ -114,6 +114,36 @@
  distribution source tree and without having to fiddle with the
  platform-dependend compiler and linker flags for DSO support.
 
+ Supported Platforms
+ -------------------
+
+ Apache's src/Configure script currently has only limited built-in knowledge
+ on how to compile DSO files because (as already mentioned) this is heavily
+ platform-dependent. Nevertheless all major Unix platforms are supported.  The
+ definitive current state (April 1998) is this:
+
+ Out-of-the-box supported platforms:
+ (actually tested versions in parenthesis)
+
+   o  FreeBSD   (2.1.5, 2.2.5, 2.2.6)
+   o  Linux     (Debian/1.3.1, RedHat/4.2)
+   o  Solaris   (2.4, 2.5.1, 2.6)
+   o  SunOS     (4.1.3)
+   o  OSF1      (4.0)
+   o  IRIX      (6.2)
+   o  HP/UX     (10.20)
+   o  UnixWare  (2.01, 2.1.2)
+   o  SINIX     (?)
+   o  SVR4      (-)
+
+ Explicitly unsupported platforms:
+
+   o  Ultrix: There is no dlopen-style interface under this platform.
+
+   o  AIX: Under AIX 3.x there is no dlopen-style interface and under AIX 4.2
+      although there is one the linker (ld) is such braindead that it is a
+      horrible mess to get the DSO mechanism working.
+   
  Usage Summary
  -------------
 
@@ -233,7 +263,7 @@
      way the global symbols are forced to be exported. As a consequence the
      Apache src/Configure script automatically forced SHARED_CORE under those
      platforms when DSO should be used.
-   
+
                                        Ralf S. Engelschall
                                        rse@engelschall.com
                                        www.engelschall.com
