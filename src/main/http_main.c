@@ -3393,10 +3393,14 @@ static void child_main(int child_num_arg)
 	    clean_child_exit(0);
 	}
 
+#ifndef WIN32
 	if ((ap_max_requests_per_child > 0
 	     && ++requests_this_child >= ap_max_requests_per_child)) {
 	    clean_child_exit(0);
 	}
+#else
+	++requests_this_child;
+#endif
 
 	(void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 

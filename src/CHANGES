@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) Ignore MaxRequestsPerChild on WIN32. [Brian Behlendorf]
+
   *) Fix discrepancy in proxy_ftp.c which was causing failures when 
      trying to connect to certain ftpd's, such as anonftpd.  
      [Rick Ohnemus <rick@ecompcon.com>]
