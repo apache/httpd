@@ -214,26 +214,6 @@ static int ftp_getrc(BUFF *f)
     return status;
 }
 
-static char *
-     encode_space(request_rec *r, char *path)
-{
-    char *newpath;
-    int i, j, len;
-
-    len = strlen(path);
-    newpath = palloc(r->pool, 3 * len + 1);
-    for (i = 0, j = 0; i < len; i++, j++) {
-	if (path[i] != ' ')
-	    newpath[j] = path[i];
-	else {
-	    proxy_c2hex(' ', &newpath[j]);
-	    j += 2;
-	}
-    }
-    newpath[j] = '\0';
-    return newpath;
-}
-
 static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
 {
     char buf[IOBUFSIZE];
@@ -287,7 +267,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 		"<BASE HREF=\"%s%s\"></HEAD>\n"
 		"<BODY><H2>Directory of "
 		"<A HREF=\"/\">%s</A>/",
-		tempurl, psite, path, site, site);
+		tempurl, psite, path, site);
     bputs(buf, con->client);
     if (f2 != NULL)
 	bputs(buf, f2);
