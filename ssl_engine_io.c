@@ -75,6 +75,13 @@
  * malloc-ed buffer, rather than copying into a mem BIO.
  * also allows us to pass the brigade as data is being written
  * rather than buffering up the entire response in the mem BIO.
+ *
+ * when SSL needs to flush (e.g. SSL_accept()), it will call BIO_flush()
+ * which will trigger a call to bio_bucket_ctrl() -> BIO_bucket_flush().
+ * so we only need to flush the output ourselves if we receive an
+ * EOS or FLUSH bucket. this was not possible with the mem BIO where we
+ * had to flush all over the place not really knowing when it was required
+ * to do so.
  */
 
 typedef struct {
@@ -353,16 +360,6 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
     return rc;
 }
 
-static apr_status_t churn_output(SSLFilterRec *ctx)
-{
-    if (!ctx->pssl) {
-        /* we've been shutdown */
-        return APR_EOF;
-    }
-
-    return BIO_bucket_flush(ctx->pbioWrite);
-}
-
 static apr_status_t ssl_filter_write(ap_filter_t *f,
                                      const char *data,
                                      apr_size_t len)
@@ -389,8 +386,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
         return APR_EINVAL;
     }
 
-    /* churn the state machine */
-    return churn_output(ctx);
+    return APR_SUCCESS;
 }
 
 #define bio_is_renegotiating(bio) \
@@ -417,9 +413,6 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
         *readbytes = AP_IOBUFSIZE;
         eMode = AP_MODE_NONBLOCKING;
     }
-
-    /* Flush the output buffers. */
-    churn_output(pRec);
 
     /* We have something in the processed brigade.  Use that first. */
     if (!APR_BRIGADE_EMPTY(ctx->b)) {
@@ -490,9 +483,6 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
 
     }
 
-    /* Flush the output buffers. */
-    churn_output(pRec);
-
     /* Note: ssl_engine_kernel.c calls ap_get_brigade when it wants to 
      * renegotiate.  Therefore, we must handle this by reading from
      * the socket and *NOT* reading into ctx->b from the BIO.  This is a 
@@ -515,9 +505,6 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
         /* don't block after the handshake */
         eMode = AP_MODE_NONBLOCKING;
     }
-
-    /* Flush again. */
-    churn_output(pRec);
 
     if (rv != APR_SUCCESS) {
         /* if process connection says HTTP_BAD_REQUEST, we've seen a 
@@ -569,9 +556,6 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
         pbuf = apr_pmemdup(p, buf, n);
         e = apr_bucket_pool_create(pbuf, n, p);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
-
-        /* Flush the output buffers. */
-        churn_output(pRec);
     }
 
     if (n < 0 && errno == EINTR && APR_BRIGADE_EMPTY(ctx->b)) {
@@ -583,7 +567,7 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
         APR_BRIGADE_INSERT_TAIL(ctx->b, apr_bucket_eos_create());
     }
 
-    return churn_output(pRec);
+    return APR_SUCCESS;
 }
 
 static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
@@ -606,7 +590,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
             apr_bucket_brigade *outbb;
             int done = APR_BUCKET_IS_EOS(bucket);
 
-            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
+            if ((ret = BIO_bucket_flush(ctx->pbioWrite)) != APR_SUCCESS) {
                 return ret;
             }
 
