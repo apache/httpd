@@ -132,46 +132,46 @@ static ap_out_filter_func filter_lookup(request_rec *r, ap_filter_rec_t *filter)
          * Not sure if there's anything better to do with them
          */
         if (!str) {
-            if (provider->match_type == DEFINED && provider->match.c) {
+            if (provider->match_type == DEFINED && provider->match.string) {
                 match = 0;
             }
         }
-        else if (!provider->match.c) {
+        else if (!provider->match.string) {
             match = 0;
         }
         else {
             /* Now we have no nulls, so we can do string and regexp matching */
             switch (provider->match_type) {
             case STRING_MATCH:
-                if (strcasecmp(str, provider->match.c)) {
+                if (strcasecmp(str, provider->match.string)) {
                     match = 0;
                 }
                 break;
             case STRING_CONTAINS:
                 str1 = apr_pstrdup(r->pool, str);
                 ap_str_tolower(str1);
-                if (!strstr(str1, provider->match.c)) {
+                if (!strstr(str1, provider->match.string)) {
                     match = 0;
                 }
                 break;
             case REGEX_MATCH:
-                if (ap_regexec(provider->match.r, str, 0, NULL, 0)
+                if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
                     == REG_NOMATCH) {
                 match = 0;
                 }
                 break;
             case INT_EQ:
-                if (atoi(str) != provider->match.i) {
+                if (atoi(str) != provider->match.number) {
                     match = 0;
                 }
                 break;
             case INT_LT:
-                if (atoi(str) < provider->match.i) {
+                if (atoi(str) < provider->match.number) {
                     match = 0;
                 }
                 break;
             case INT_GT:
-                if (atoi(str) > provider->match.i) {
+                if (atoi(str) > provider->match.number) {
                     match = 0;
                 }
                 break;
@@ -487,15 +487,15 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
         switch (match[0]) {
         case '<':
             provider->match_type = INT_LT;
-            provider->match.i = atoi(match+1);
+            provider->match.number = atoi(match+1);
             break;
         case '>':
             provider->match_type = INT_GT;
-            provider->match.i = atoi(match+1);
+            provider->match.number = atoi(match+1);
             break;
         case '=':
             provider->match_type = INT_EQ;
-            provider->match.i = atoi(match+1);
+            provider->match.number = atoi(match+1);
             break;
         case '/':
             provider->match_type = REGEX_MATCH;
@@ -510,24 +510,25 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
                     case 'x': flags |= REG_EXTENDED; break;
                 }
             }
-            provider->match.r = ap_pregcomp(cmd->pool,
-                                            apr_pstrndup(cmd->pool, match+1,
-                                                         rxend-match-1),
-                                            flags);
+            provider->match.regex = ap_pregcomp(cmd->pool,
+                                                apr_pstrndup(cmd->pool,
+                                                             match+1,
+                                                             rxend-match-1),
+                                                flags);
             break;
         case '*':
             provider->match_type = DEFINED;
-            provider->match.i = -1;
+            provider->match.number = -1;
             break;
         case '$':
             provider->match_type = STRING_CONTAINS;
             str = apr_pstrdup(cmd->pool, match+1);
             ap_str_tolower(str);
-            provider->match.c = str;
+            provider->match.string = str;
             break;
         default:
             provider->match_type = STRING_MATCH;
-            provider->match.c = apr_pstrdup(cmd->pool, match);
+            provider->match.string = apr_pstrdup(cmd->pool, match);
             break;
         }
         provider->frec = provider_frec;
