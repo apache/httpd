@@ -1,4 +1,4 @@
-Apache 1.3beta4 Released
+Apache 1.3beta5 Released
 ------------------------
 
 The Apache Group is pleased to announce the release of the 1.3b5 version
@@ -26,7 +26,7 @@ Apache has been the most popular web server on the Internet since April
 of 1996. The September 1997 WWW server site survey by Netcraft (see:
 http://www.netcraft.co.uk/Survey/) found that more web servers were
 using Apache than any other software. Apache and its derivatives are run
-on over 49% of all web domains on the Internet.
+on over 50% of all web domains on the Internet.
 
 The Apache project has been organized in an attempt to answer some of
 the concerns regarding active development of a public domain HTTP server
