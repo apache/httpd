@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Tutorial: .htaccess files</title>
+  </head>
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">.htaccess files</h1>
+    <!-- INDEX BEGIN -->
+
+    <ul>
+      <li><a href="#what">What they are/How to use them</a></li>
+
+      <li><a href="#when">When (not) to use them</a></li>
+
+      <li><a href="#how">How directives are applied</a></li>
+
+      <li><a href="#auth">Authentication example</a></li>
+
+      <li><a href="#ssi">Server side includes</a></li>
+
+      <li><a href="#cgi">CGI</a></li>
+
+      <li><a href="#troubleshoot">Troubleshooting</a></li>
+    </ul>
+    <!-- Index End -->
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Modules</strong><br />
+         <br />
+         <a href="../mod/core.html">core</a><br />
+         <a href="../mod/mod_auth.html">mod_auth</a><br />
+         <a href="../mod/mod_cgi.html">mod_cgi</a><br />
+         <a href="../mod/mod_includes.html">mod_includes</a><br />
+         <a href="../mod/mod_mime.html">mod_mine</a><br />
+         </td>
+
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a href="../mod/core.html#accessfilename">AccessFileName</a><br />
+         <a href="../mod/core.html#allowoverride">AllowOverride</a><br />
+         <a href="../mod/core.html#options">Options</a><br />
+         <a href="../mod/mod_mime.html#addhandler">AddHandler</a><br />
+         <a href="../mod/core.html#sethandler">SetHandler</a><br />
+         <a href="../mod/core.html#authtype">AuthType</a><br />
+         <a href="../mod/core.html#authname">AuthName</a><br />
+         <a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a><br />
+         <a href="../mod/mod_auth.html#authuserfile">AuthGroupFile</a><br />
+         <a href="../mod/core.html#require">Require</a><br />
+         </td>
+      </tr>
+    </table>
+    <hr />
+
+    <h2><a id="what" name="what">What they are/How to use them</a></h2>
+
+    <p>.htaccess files (or "distributed configuration files") provide a way
+    to make configuration changes on a per-directory basis. A file,
+    containing one or more configuration directives, is placed in a
+    particular document directory, and the directives apply to that
+    directory, and all subdirectories thereof.</p>
+
+    <p>Note: If you want to call your .htaccess file something else, you can
+    change the name of the file using the AccessFileName directive. For
+    example, if you would rather call the file .config then you can put the
+    following in your server configuration file:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    AccessFileName .config
+</code></td></tr></table></blockquote>
+
+    <p>What you can put in these files is determined by the AllowOverride
+    directive. This directive specifies, in categories, what directives will
+    be honored if they are found in a .htaccess file. If a directive is
+    permitted in a .htaccess file, the documentation for that directive will
+    contain an Override section, specifying what value must be in
+    AllowOverride in order for that directive to be permitted.</p>
+
+    <p>For example, if you look at the docs for the AddDefaultCharset
+    directive, you will find that it is permitted in .htaccess files. (See
+    the Context line in the directive summary.) The Override line reads
+    "FileInfo". Thus, you must have at least "AllowOverride FileInfo" in
+    order for this directive to be honored in .htaccess files.</p>
+
+    <p>Example:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+  Context:  server config, virtual host, directory, .htaccess<br>
+  Override:  FileInfo
+</code></td></tr></table></blockquote>
+
+    <p>If you are unsure whether a particular diretive is permitted in a
+    .htaccess file, look at the documentation for that directive, and check
+    the Context line for ".htaccess"</p>
+
+    <h2><a id="when" name="when">When (not) to use .htaccess files</a></h2>
+
+    <p>In general, you should never use .htaccess files unless you don't have
+    access to the main server configuration file. There is, for example, a
+    prevailing misconception that user authentication should always be done
+    in .htaccess files. This is simply not the case. You can put user
+    authentication configurations in the main server configuration, and this
+    is, in fact, the preferred way to do things.</p>
+
+    <p>.htaccess files should be used in a case where the content providers
+    need to make configuration changes to the server on a per-directory
+    basis, but do not have root access on the server system. In the event
+    that the server administrator is not willing to make frequent
+    configuration changes, it might be desirable to permit individual users
+    to make these changes in .htaccess files for themselves.</p>
+
+    <p>However, in general, use of .htaccess files should be avoided when
+    possible. Any configuration that you would consider putting in a
+    .htaccess file, can just as effectively be made in a &lt;Directory&gt;
+    section in your main server configuration file.</p>
+
+    <p>There are two main reasons to avoid the use of .htaccess files.</p>
+
+    <p>The first of these is performance. When AllowOverride is set to allow
+    the use of .htaccess files, Apache will look in every directory for
+    .htaccess files. Thus, permitting .htaccess files causes a performance
+    hit, whether or not you actually even use them! Also, the .htaccess file
+    is loaded every time a document is requested.</p>
+
+    <p>Further note that Apache must look for .htaccess files in all
+    higher-level directories, in order to have a full complement of
+    directives that it must apply. (See section on how directives are
+    applied, below.) Thus, if a file is requested out of a directory
+    /www/htdocs/example, Apache must look for the following files:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+/.htaccess<br>
+/www/.htaccess<br>
+/www/htdocs/.htaccess<br>
+/www/htdocs/example/.htaccess
+</code></td></tr></table></blockquote>
+
+    <p>And so, for each file access out of that directory, there are 4
+    additional file-system accesses, even if none of those files are present.
+    (Note that this would only be the case if .htaccess files were enabled
+    for /, which is not usually the case.)</p>
+
+    <p>The second consideration is one of security. You are permitting users
+    to modify server configuration, which may result in changes over which
+    you have no control. Carefully consider whether you want to give your
+    users this privilege.</p>
+
+    <p>Note that it is completely equivalent to put a .htaccess file in a
+    directory /www/htdocs/example containing a directive, and to put that
+    same directive in a Directory section &lt;Directory
+    /www/htdocs/example&gt; in your main server configuration:</p>
+
+    <p>.htaccess file in /www/htdocs/example:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+AddType text/example .exm
+</code></td></tr></table></blockquote>
+
+    <p>httpd.conf</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory /www/htdocs/example&gt;<br>
+    AddType text/example .exm<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+
+    <p>However, putting this configuration in your server configuration file
+    will result in less of a performance hit, as the configuration is loaded
+    once when Apache starts, rather than every time a file is requested.</p>
+
+    <p>The use of .htaccess files can be disabled completely by setting the
+    AllowOverride directive to "none"</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    AllowOverride None
+</code></td></tr></table></blockquote>
+
+    <h2><a id="how" name="how">How directives are applied:</a></h2>
+
+    <p>The configuration directives found in a .htaccess file are applied to
+    the directory in which the .htaccess file is found, and to all
+    subdirectories thereof. However, it is important to also remember that
+    there may have been .htaccess files in directories higher up. Directives
+    are applied in the order that they are found. Therefore, a .htaccess file
+    in a particular directory may override directives found in .htaccess
+    files found higher up in the directory tree. And those, in turn, may have
+    overriden directives found yet higher up, or in the main server
+    configuration file itself.</p>
+
+    <p>Example:</p>
+
+    <p>In the directory /www/htdocs/example1 we have a .htaccess file
+    containing the following:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+Options +ExecCGI
+</code></td></tr></table></blockquote>
+
+    <p>(Note: you must have "AllowOverride Options" in effect to permit the
+    use of the "Options" directive in .htaccess files.)</p>
+
+    <p>In the directory /www/htdocs/example1/example2 we have a .htaccess
+    file containing:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+Options Includes
+</code></td></tr></table></blockquote>
+
+    <p>Because of this second .htaccess file, in the directory
+    /www/htdocs/example1/example2, cgi execution is not permitted, as only
+    Options Includes is in effect, which completely overrides any earlier
+    setting that may have been in place.</p>
+
+    <h2><a id="auth" name="auth">Authentication example</a></h2>
+
+    <p>If you jumped directly to this part of the document to find out how to
+    do authentication, it is important to note one thing. There is a common
+    misconception that you are required to use .htaccess files in order to
+    implement password authentication. This is not the case. Putting
+    authentication directives in a &lt;Directory&gt; section, in your main
+    server configuration file, is the preferred way to implement this, and
+    .htaccess files should be used only if you don't have access to the main
+    server configuration file. See above for a discussion of when you should
+    and should not use .htaccess files.</p>
+
+    <p>Having said that, if you still think you need to use a .htaccess file,
+    you may find that a configuration such as what follows may work for
+    you.</p>
+
+    <p>You must have "AllowOverride AuthConfig" in effect for these
+    directives to be honored.</p>
+
+    <p>.htaccess file contents:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    AuthType Basic<br>
+    AuthName "Password Required"<br>
+    AuthUserFile /www/passwords/password.file<br>
+    AuthGroupFile /www/passwords/group.file<br>
+    Require Group admins
+</code></td></tr></table></blockquote>
+
+    <p>Note that AllowOverride AuthConfig must be in effect for these
+    directives to have any effect.</p>
+
+    <p>Please see the authentication tutorial for a more complete discussion
+    of authentication and authorization.</p>
+
+    <h2><a id="ssi" name="ssi">SSI example</a></h2>
+
+    <p>Another common use of .htaccess files is to enable Server Side
+    Includes for a particular directory. This may be done with the following
+    configuration directives, placed in a .htaccess file in the desired
+    directory:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    Options +Includes<br>
+    AddType text/html shtml<br>
+    AddHandler server-parsed shtml
+</code></td></tr></table></blockquote>
+
+    <p>Note that AllowOverride Options and AllowOverride FileInfo must both
+    be in effect for these directives to have any effect.</p>
+
+    <h2><a id="cgi" name="cgi">CGI example</a></h2>
+
+    <p>Finally, you may wish to use a .htaccess file to permit the execution
+    of CGI programs in a particular directory. This may be implemented with
+    the following configuration:</p>
+    
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    Options +ExecCGI<br>
+    AddHandler cgi-script cgi pl
+</code></td></tr></table></blockquote>
+
+    <p>Alternately, if you wish to have all files in the given directory be
+    considered to be CGI programs, this may be done with the following
+    configuration:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    Options +ExecCGI<br>
+    SetHandler cgi-script
+</code></td></tr></table></blockquote>
+
+    <p>Note that AllowOverride Options must be in effect for these directives
+    to have any effect.</p>
+
+    <h2><a id="troubleshoot" name="troubleshoot">Troubleshooting</a></h2>
+
+    <p>When you put configuration directives in a .htaccess file, and you
+    don't get the desired effect, there are a number of things that may be
+    going wrong.</p>
+
+    <p>Most commonly, the problem is that AllowOverride is not set such that
+    your configuration directives are being honored. Make sure that you don't
+    have a AllowOverride None in effect for the file scope in question. A
+    good test for this is to put garbage in your .htaccess file and reload.
+    If a server error is not generated, then you almost certainly have
+    AllowOverride None in effect.</p>
+
+    <p>If, on the other hand, you are getting server errors when trying to
+    access documents, check your Apache error log. It will likely tell you
+    that the directive used in your .htaccess file is not permitted.
+    Alternately, it may tell you that you had a syntax error, which you will
+    then need to fix.</p>
+  </body>
+</html>
+
