@@ -1,4 +1,9 @@
 Changes with Apache 2.0.19-dev
+
+  *) Add a check to ap_die() to make sure the filter stack is sane and
+     contains the correct basic filters when an error occurs. This fixes
+     a problem where headers are not being sent on error. [John Sterling]
+
   *) New Header directive 'echo' option. "Header echo regex" will
      cause any headers received on the request that match regex to be
      echoed to (included in) the response headers.
