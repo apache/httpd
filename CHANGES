@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Cache apr_explode_localtime() value for 15 seconds.
+     [Brian Pane <bpane@pacbell.net>]
+
   *) Fix mod_include to not return ETag or Last-Modified headers.
      [Ian Holsman <ianh@cnet.com>]
 

@@ -196,6 +196,7 @@
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
+#include "util_time.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -463,9 +464,9 @@ static const char *log_request_time(request_rec *r, char *a)
 	a problem with this, you can set the define.  -djg
     */
 #ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-    apr_explode_localtime(&xt, apr_time_now());
+    ap_explode_recent_localtime(&xt, apr_time_now());
 #else
-    apr_explode_localtime(&xt, r->request_time);
+    ap_explode_recent_localtime(&xt, r->request_time);
 #endif
     if (a && *a) {              /* Custom format */
         apr_strftime(tstr, &retcode, MAX_STRING_LEN, a, &xt);

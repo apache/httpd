@@ -11,10 +11,10 @@ LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     test_char.h \
 	config.c log.c main.c vhost.c util.c \
-	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c \
+	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	rfc1413.c connection.c listen.c \
-        mpm_common.c util_charset.c util_debug.c util_xml.c \
-        util_filter.c exports.c buildmark.c scoreboard.c \
+	mpm_common.c util_charset.c util_debug.c util_xml.c \
+	util_filter.c exports.c buildmark.c scoreboard.c \
 	error_bucket.c protocol.c core.c request.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
