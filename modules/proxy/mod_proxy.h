@@ -170,6 +170,12 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
+    enum {
+        status_off,
+        status_on,
+        status_full
+    } proxy_status;             /* Status display options */
+    char proxy_status_set;
 
 } proxy_server_conf;
 
@@ -261,6 +267,7 @@ typedef struct {
     double          lbfactor;   /* dynamic lbfactor */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
     apr_size_t      readed;     /* Number of bytes readed from remote */
+    apr_size_t      elected;    /* Number of times the worker was elected */
 } proxy_runtime_stat;
 
 /* Runtime worker. */

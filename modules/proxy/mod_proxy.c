@@ -18,8 +18,8 @@
 
 #include "mod_proxy.h"
 #include "mod_core.h"
-
 #include "apr_optional.h"
+#include "mod_status.h"
 
 #if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
 #include "mod_ssl.h"
@@ -1233,6 +1233,27 @@ static const char*
     return NULL;    
 }
 
+static const char*
+    set_status_opt(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    if (strcasecmp(arg, "Off") == 0)
+        psf->proxy_status = status_off;
+    else if (strcasecmp(arg, "On") == 0)
+        psf->proxy_status = status_on;
+    else if (strcasecmp(arg, "Full") == 0)
+        psf->proxy_status = status_full;
+    else {
+        return "ProxyStatus must be one of: "
+            "off | on | block";
+    }
+
+    psf->proxy_status_set = 1;
+    return NULL;    
+}
+
 static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
@@ -1294,7 +1315,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
     /* Try to find the balancer */
-    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name); 
+    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path); 
     if (!balancer) {
         const char *err = ap_proxy_add_balancer(&balancer,
                                                 cmd->pool,
@@ -1485,6 +1506,8 @@ static const command_rec proxy_cmds[] =
      "A balancer name and scheme with list of params"), 
     AP_INIT_TAKE12("BalancerStickySession", set_sticky_session, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer and sticky session name"),
+    AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
+     "Configure Status: proxy status to one of: on | off | full"),
     {NULL}
 };
 
@@ -1522,6 +1545,108 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
+
+#define KBYTE 1024
+#define MBYTE 1048576L
+#define GBYTE 1073741824L
+
+/* Format the number of bytes nicely */
+static void format_byte_out(request_rec *r, apr_off_t bytes)
+{
+
+    if (bytes < (5 * KBYTE))
+        ap_rprintf(r, "%d B", (int) bytes);
+    else if (bytes < (MBYTE / 2))
+        ap_rprintf(r, "%.1f kB", (float) bytes / KBYTE);
+    else if (bytes < (GBYTE / 2))
+        ap_rprintf(r, "%.1f MB", (float) bytes / MBYTE);
+    else
+        ap_rprintf(r, "%.1f GB", (float) bytes / GBYTE);
+}
+
+/*
+ *  proxy Extension to mod_status
+ */
+static int proxy_status_hook(request_rec *r, int flags)
+{
+    int i, n;
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *)
+        ap_get_module_config(sconf, &proxy_module);
+    proxy_balancer *balancer = NULL;
+    proxy_runtime_worker *worker = NULL;
+
+    if (flags & AP_STATUS_SHORT || conf->balancers->nelts == 0 ||
+        conf->proxy_status == status_off)
+        return OK;
+
+    balancer = (proxy_balancer *)conf->balancers->elts;
+    for (i = 0; i < conf->balancers->nelts; i++) {
+        ap_rputs("<hr />\n<h1>Proxy LoadBalancer Status for ", r);
+        ap_rvputs(r, balancer->name, "</h1>\n\n", NULL);
+        ap_rputs("\n\n<table border=\"0\"><tr>"
+                 "<th>SSes</th><th>Timeout</th>"
+                 "</tr>\n<tr>", r);                
+        ap_rvputs(r, "<td>", balancer->sticky, NULL);
+        ap_rprintf(r, "</td><td>%d %d sec</td>\n", i,
+                   apr_time_sec(balancer->timeout));
+        ap_rputs("</table>\n", r);
+        ap_rputs("\n\n<table border=\"0\"><tr>"
+                 "<th>Sch</th><th>Host</th>"
+                 "<th>Route</th><th>Redir</th>"
+                 "<th>F</th><th>Acc</th><th>Wr</th><th>Rd</th>"
+                 "</tr>\n", r);
+
+        worker = (proxy_runtime_worker *)balancer->workers->elts;
+        for (n = 0; n < balancer->workers->nelts; n++) {
+
+            ap_rvputs(r, "<tr>\n<td>", worker->w->scheme, "</td>", NULL);
+            ap_rvputs(r, "<td>", worker->w->hostname, "</td>", NULL);
+            ap_rvputs(r, "<td>", worker->w->route, NULL);
+            ap_rvputs(r, "</td><td>", worker->w->redirect, NULL);
+            ap_rprintf(r, "</td><td>%.2f</td>", worker->s->lbfactor);
+            ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
+            format_byte_out(r, worker->s->transfered);
+            ap_rputs("</td><td>", r);
+            format_byte_out(r, worker->s->transfered);
+            ap_rputs("</td>\n", r);
+
+            /* TODO: Add the rest of dynamic worker data */
+            ap_rputs("</tr>\n", r);
+
+            ++worker;
+        }
+        ap_rputs("</table>\n", r);
+        ++balancer;
+    }
+    ap_rputs("<hr /><table>\n"
+             "<tr><th>SSes</th><td>Sticky session name</td></tr>\n"
+             "<tr><th>Timeout</th><td>Balancer Timeout</td></tr>\n"
+             "<tr><th>Sch</th><td>Connection scheme</td></tr>\n"
+             "<tr><th>Host</th><td>Backend Hostname</td></tr>\n"
+             "<tr><th>Route</th><td>Session Route</td></tr>\n"
+             "<tr><th>Redir</th><td>Session Route Redirection</td></tr>\n"
+             "<tr><th>F</th><td>Load Balancer Factor in %</td></tr>\n"
+             "<tr><th>Acc</th><td>Number of requests</td></tr>\n"
+             "<tr><th>Wr</th><td>Number of bytes transfered</td></tr>\n"
+             "<tr><th>Rd</th><td>Number of bytes readed</td></tr>\n"
+             "</table>", r);
+
+    return OK;
+}
+
+/*
+ * This routine is called before the server processes the configuration
+ * files.  There is no return value.
+ */
+static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                            apr_pool_t *ptemp)
+{
+    APR_OPTIONAL_HOOK(ap, status_hook, proxy_status_hook, NULL, NULL,
+                      APR_HOOK_MIDDLE);
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     /* fixup before mod_rewrite, so that the proxied url will not
@@ -1543,6 +1668,8 @@ static void register_hooks(apr_pool_t *p)
 #endif
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
+    /* pre config handling */
+    ap_hook_pre_config(proxy_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
     /* post config handling */
     ap_hook_post_config(proxy_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
