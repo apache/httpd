@@ -52,7 +52,6 @@ dangerous both to your network and to the Internet at large.</p></note>
 <ul>
 <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
 <li><a href="#access">Controlling access to your proxy</a></li>
-<li><a href="#shortname">Using Netscape hostname shortcuts</a></li>
 <li><a href="#mimetypes">Why doesn't file type <em>xxx</em> download via FTP?</a></li>
 <li><a href="#type">How can I force an FTP ASCII download of File <em>xxx</em>?</a></li>
 <li><a href="#percent2fhack">How can I access FTP files outside of my home directory?</a></li>
@@ -118,16 +117,6 @@ Allow from 192.168.0<br />
 <p>When configuring a reverse proxy, access control takes on the
 attributes of the normal server <directive module="core"
 type="section">directory</directive> configuration.</p>
-
-
-<!--<h2><a name="shortname">Using Netscape hostname shortcuts</a></h2>
-
-There is an optional patch to the proxy module to allow Netscape-like
-hostname shortcuts to be used. It's available from the
-<a href="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch"
-><code>contrib/patches/1.2</code></a> directory on the Apache Web
-site.<p>-->
-
 </section>
 
 <section id="mimetypes"><title>Why doesn't file type <em>xxx</em>
