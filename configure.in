@@ -78,6 +78,7 @@ arpa/inet.h \
 netdb.h \
 pwd.h \
 grp.h \
+strings.h
 )
 AC_HEADER_SYS_WAIT
 

@@ -82,6 +82,9 @@
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES

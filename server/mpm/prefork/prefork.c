@@ -124,6 +124,12 @@
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h> 
+#endif
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
 #include <signal.h>
 #include <sys/times.h>
 

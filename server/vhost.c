@@ -82,6 +82,9 @@
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 /*
  * After all the definitions there's an explanation of how it's all put

@@ -1065,7 +1065,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     int remaining_children_to_start;
     int i;
     ap_status_t rv;
-    int one = 1;
+    ap_ssize_t one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;

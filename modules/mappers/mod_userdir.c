@@ -98,6 +98,9 @@
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 /* The default directory in user's home dir */
 #ifndef DEFAULT_USER_DIR

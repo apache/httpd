@@ -78,6 +78,9 @@
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 typedef struct {
 	char	*t_name;

@@ -104,6 +104,9 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define MAXVERTS 100

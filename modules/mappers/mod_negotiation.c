@@ -75,6 +75,9 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 

@@ -84,6 +84,9 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 module MODULE_VAR_EXPORT cgi_module;
 

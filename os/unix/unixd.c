@@ -74,6 +74,9 @@
 #ifdef HAVE_GRP_H
 #include <grp.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 unixd_config_rec unixd_config;
 
