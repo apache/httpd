@@ -58,6 +58,14 @@ Available Patches:
       414 responses.
       <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
 
+    * Ronald Tschalaer's Accept-Encoding patch
+      <Pine.LNX.3.96dg4.980418001055.4893D-100000@twinlark.arctic.org>
+      Status: Dean +1
+
+    * Dean's patch for OPTIMIZE_TIMEOUTS to remove rare race
+      <Pine.LNX.3.96dg4.980418002301.4893H-100000@twinlark.arctic.org>
+      Status: Dean +0
+
 In progress:
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
@@ -71,6 +79,12 @@ FINAL RELEASE SHOWSTOPPERS:
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
       do lots of fun pointer manipulations and such and possibly have overflow
       errors.  The respective flush_funcs also need to be exercised.
+
+    * The fatal errors that the children detect and fill up the log with
+      (such as bogus group id) need to be stopped.  The proposed fix is to
+      make the child exit with a special code when a fatal error occurs; the
+      parent would then abort.  See
+      <Pine.LNX.3.96dg4.980413204700.6322R-100000@twinlark.arctic.org>
 
 Documentation that needs writing:
 
