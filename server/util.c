@@ -476,12 +476,15 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
  */
 AP_DECLARE(void) ap_getparents(char *name)
 {
-    int l, w;
+    char *next;
+    int l, w, first_dot;
 
     /* Four paseses, as per RFC 1808 */
     /* a) remove ./ path segments */
-
-    for (l = 0, w = 0; name[l] != '\0';) {
+    for (next = name; *next && (*next != '.'); next++) {
+    }
+    l = w = first_dot = next - name;
+    while (name[l] != '\0') {
 	if (name[l] == '.' && name[l + 1] == '/' && (l == 0 || name[l - 1] == '/'))
 	    l += 2;
 	else
@@ -496,7 +499,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     name[w] = '\0';
 
     /* c) remove all xx/../ segments. (including leading ../ and /../) */
-    l = 0;
+    l = first_dot;
 
     while (name[l] != '\0') {
 	if (name[l] == '.' && name[l + 1] == '.' && name[l + 2] == '/' &&
