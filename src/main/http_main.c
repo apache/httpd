@@ -5063,7 +5063,7 @@ void worker_main()
     cleanup_scoreboard();
 
     APD2("process PID %d exited", my_pid);
-    exit(0);
+    clean_parent_exit(0);
 }				/* standalone_main */
 
 /* Spawn a child Apache process. The child process has the command
@@ -5525,7 +5525,8 @@ int REALMAIN(int argc, char *argv[])
 			"Apache", install, run_as_service);
     }
 
-    return (0);
+    clean_parent_exit(0);
+    return 0;	/* purely to avoid a warning */
 }
 
 #endif /* ndef MULTITHREAD */
