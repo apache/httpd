@@ -104,7 +104,7 @@ PATCHES TO BACKPORT FROM 2.1
        If the <modtype>-subdirectory doesn't exist it will be created and
        populated with a standard Makefile.in
        svn rev 124600
-       +1: erikabele, jerenkrantz
+       +1: erikabele, jerenkrantz, fielding
 
     *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
               as handled for other variables originally fixed in bug 9223.
@@ -273,7 +273,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_proxy: Respect errors reported by pre_connection hooks.
       http://svn.apache.org/viewcvs?view=rev&rev=111304
-      +1: trawick, jerenkrantz
+      +1: trawick, jerenkrantz, fielding
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
@@ -370,11 +370,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_proxy: Fix ProxyRemoteMatch.  PR 33170.
       svn rev 151248
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, fielding
 
     * Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
       svn rev 151255
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, fielding
 
 CURRENT RELEASE NOTES:
 
