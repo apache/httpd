@@ -5,9 +5,7 @@ Release:
     1.3.0: Shoot for May 16, 1998 Release!
            Brian to be RM, Jim will do announcements
 
-    1.3b7: In development... Possible release May 8.
-
-    1.3b6: Tagged APACHE_1_3b6. Announced and Released 4/20/98
+    1.3b7: 1.3.0 release candidate for May 8th
 
     2.0  : In pre-alpha development, see apache-2.0 repository
 
@@ -44,13 +42,6 @@ Plan:
 Showstoppers:
 
 Available Patches:
-
-    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
-      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
-      The patch provides per-domain cookies (which I use to share user-ids
-      among the *.troll.no web servers) and configurable cookie names.  It
-      also marginally increases the efficiency of Apache when the server
-      runs with DNS lookups turned off.
 
     * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
       414 responses.
@@ -154,17 +145,6 @@ Needs patch:
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
-
-    * TZ should not be dealt with specially any longer now that we have
-      "PassEnv".  See
-      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
-       Jim: IMO it's too late in the game for this... I'm
-            sure this would cause some strange bug reports as
-	    people's cgi-scripts no longer work correctly
-	    ("It worked just fine before I upgraded to 1.3.0")
-	    unless we warn people in big nasty letters to add
-	    PassEnv TZ to their config files "just in case"
-	    and hope they do it :)
 
      * LynxOS has system-level conf.h file
 	Seems that Lynx has a system level conf.h file that ours overrules,
@@ -377,9 +357,6 @@ Win32 specific issues:
       Looks like a code path that isn't run anywhere else that has
       something not quite right...  A PR or two on it.
 
-    * proxy module doesn't load on Win95.  Why?  Good question.
-	PR#1462.
-
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
     * CGIs
@@ -401,4 +378,30 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
     	- how to rotate logs from command line?
 
     * bad use of chdir in some places; it isn't thread-specific
+
+Delayed until after 1.3.0, unless someone happens to get to it:
+
+    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
+      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
+      The patch provides per-domain cookies (which I use to share user-ids
+      among the *.troll.no web servers) and configurable cookie names.  It
+      also marginally increases the efficiency of Apache when the server
+      runs with DNS lookups turned off.
+
+      Update: Dean found one part of the patch unacceptable, Arnt is in
+        the process of updating it.  
+
+    * TZ should not be dealt with specially any longer now that we have
+      "PassEnv".  See
+      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
+       Jim: IMO it's too late in the game for this... I'm
+            sure this would cause some strange bug reports as
+	    people's cgi-scripts no longer work correctly
+	    ("It worked just fine before I upgraded to 1.3.0")
+	    unless we warn people in big nasty letters to add
+	    PassEnv TZ to their config files "just in case"
+	    and hope they do it :)
+
+    * proxy module doesn't load on Win95.  Why?  Good question.
+	PR#1462.
 
