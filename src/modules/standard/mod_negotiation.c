@@ -1482,9 +1482,10 @@ float is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best,
     
     /* if language qualities were equal, try the LanguagePriority
      * stuff */
-    if (variant->lang_index > best->lang_index)
+    if (best->lang_index != -1 && variant->lang_index > best->lang_index)
         return 0;
-    if (variant->lang_index < best->lang_index) {
+    if (variant->lang_index != -1 &&
+        (variant->lang_index < best->lang_index || best->lang_index == -1)) {
         *p_bestq = q;
         return 1;
     }
