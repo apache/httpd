@@ -114,7 +114,14 @@ $HTML = <<EOHT;
   <TITLE>$title
   </TITLE>
  </HEAD>
- <BODY BGCOLOR="white" TEXT="black" LINK="blue" VLINK="navy" ALINK="red">
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
   <DIV ALIGN="CENTER">
    <IMG
     SRC="${prefix}images/sub.gif"
