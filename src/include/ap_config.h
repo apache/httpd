@@ -268,7 +268,9 @@ typedef int rlim_t;
 #ifdef NEED_RLIM_T
 typedef int rlim_t;
 #endif
+#if !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
 #ifdef USEBCOPY
 #define memmove(a,b,c) bcopy(b,a,c)
 #endif
