@@ -1003,11 +1003,6 @@ static void child_main(int child_num_arg)
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
-#ifdef TPF
-	if (csd == 0)                       /* 0 is invalid socket for TPF */
-	    continue;
-#endif
-
 	/* We've got a socket, let's at least process one request off the
 	 * socket before we accept a graceful restart request.  We set
 	 * the signal to ignore because we don't want to disturb any
@@ -1021,24 +1016,24 @@ static void child_main(int child_num_arg)
 
         ap_get_os_sock(&sockdes, csd);
 
+        if (sockdes >= FD_SETSIZE) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+                         "new file descriptor %d is too large; you probably need "
+                         "to rebuild Apache with a larger FD_SETSIZE "
+                         "(currently %d)", 
+                         sockdes, FD_SETSIZE);
+	    ap_close_socket(csd);
+	    continue;
+        }
+
+#ifdef TPF
+	if (sockdes == 0)                   /* 0 is invalid socket for TPF */
+	    continue;
+#endif
+
 	sock_disable_nagle(sockdes);
 
 	iol = unix_attach_socket(csd);
-	if (iol == NULL) {
-	    if (errno == EBADF) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
-		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-		    "found, you probably need to rebuild Apache with a "
-		    "larger FD_SETSIZE", sockdes, FD_SETSIZE);
-	    }
-	    else {
-		ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
-		    "error attaching to socket");
-	    }
-	    ap_close_socket(csd);
-	    continue;
-	}
-
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
