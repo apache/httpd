@@ -5,13 +5,12 @@ CLEAN_SUBDIRS = test
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(HTTPD_LDFLAGS) \
-                       $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
+                       $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
 PROGRAM_DEPENDENCIES = \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
   server/libmain.la \
-  os/$(OS_DIR)/libos.la \
-  $(AP_LIBS)
+  os/$(OS_DIR)/libos.la
 
 PROGRAMS        = $(PROGRAM_NAME)
 TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
