@@ -20,13 +20,13 @@ htdigest: htdigest.o
 	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LDFLAGS) $(LIBS)
 
 rotatelogs: rotatelogs.o
-	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.o -o rotatelogs $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) rotatelogs.o -o rotatelogs $(LDFLAGS) $(LIBS)
 
 logresolve: logresolve.o
-	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
 
 ab: ab.o
-	$(CC) $(INCLUDES) $(CFLAGS) ab.o -o ab $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) ab.o -o ab $(LDFLAGS) $(LIBS)
 
 apxs: apxs.pl
 	sed <apxs.pl >apxs \
@@ -35,6 +35,9 @@ apxs: apxs.pl
 	    -e 's%@CFLAGS@%$(CFLAGS)%g' \
 	    -e 's%@CFLAGS_SHLIB@%$(CFLAGS_SHLIB)%g' \
 	    -e 's%@LDFLAGS_SHLIB@%$(LDFLAGS_SHLIB)%g' && chmod a+x apxs
+
+suexec: suexec.o
+	$(CC) $(CFLAGS) suexec.o -o suexec $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(TARGETS) *.o
