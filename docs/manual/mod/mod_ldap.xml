@@ -480,8 +480,10 @@ Certificate Authority or global client certificates</description>
       <li>CERT_BASE64 - PEM encoded client certificate</li>
       <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
       <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+      <li>CERT_PFX - PKCS#12 encoded client certificate (Novell SDK)</li>
       <li>KEY_DER - binary DER encoded private key</li>
       <li>KEY_BASE64 - PEM encoded private key</li>
+      <li>KEY_PFX - PKCS#12 encoded private key (Novell SDK)</li>
     </ul>
 </usage>
 </directivesynopsis>
