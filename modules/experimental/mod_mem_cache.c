@@ -291,6 +291,7 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
     h->read_headers = &read_headers;
     h->write_body = &write_body;
     h->write_headers = &write_headers;
+    h->remove_entity = &remove_entity;
 
     return OK;
 }
@@ -320,6 +321,7 @@ static int open_entity(cache_handle_t *h, const char *type, char *key)
     h->read_headers = &read_headers;
     h->write_body = &write_body;
     h->write_headers = &write_headers;
+    h->remove_entity = &remove_entity;
     h->cache_obj = obj;
 
     return OK;

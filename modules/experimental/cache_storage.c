@@ -173,11 +173,9 @@ int cache_select_url(request_rec *r, const char *types, char *url)
              */
 
             /* Has the cache entry expired? */
-#if 0
             if (r->request_time > info->expire)
                 cache->fresh = 0;
             else
-#endif
                 cache->fresh = 1;
 
             /*** do content negotiation here */

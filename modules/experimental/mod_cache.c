@@ -591,6 +591,9 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      "cache: Added date header");
         info->date = date;
     }
+    else {
+        date = info->date;
+    }
 
     /* set response_time for HTTP/1.1 age calculations */
     info->response_time = now;
@@ -622,7 +625,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (exp == APR_DATE_BAD) {
         if (lastmod != APR_DATE_BAD) {
             double x = (double) (date - lastmod) * conf->factor;
-            double maxex = conf->maxex;
+            double maxex = (double)conf->maxex;
             if (x > maxex)
                 x = maxex;
             exp = now + (int) x;
@@ -742,6 +745,18 @@ static const char
     conf->maxex_set = 1;
     return NULL;
 }
+static const char
+*set_cache_maxex_min(cmd_parms *parms, void *dummy, const char *arg)
+{
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
+    long val;
+
+    val = atol(arg);
+
+    conf->maxex = (apr_time_t) (val * MSEC_ONE_MIN);
+    conf->maxex_set = 1;
+    return NULL;
+}
 
 static const char
 *set_cache_defex(cmd_parms *parms, void *dummy, const char *arg)
@@ -752,6 +767,18 @@ static const char
     if (sscanf(arg, "%lg", &val) != 1)
         return "CacheDefaultExpire value must be a float";
     conf->defex = (apr_time_t) (val * MSEC_ONE_HR);
+    conf->defex_set = 1;
+    return NULL;
+}
+static const char
+*set_cache_defex_min(cmd_parms *parms, void *dummy, const char *arg)
+{
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
+    long val;
+
+    val = atol(arg);
+
+    conf->defex = (apr_time_t) (val * MSEC_ONE_MIN);
     conf->defex_set = 1;
     return NULL;
 }
@@ -801,8 +828,14 @@ static const command_rec cache_cmds[] =
      "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
      "The maximum time in hours to cache a document"),
-    AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheMaxExpireMin", set_cache_maxex_min, NULL, RSRC_CONF,
+     "The maximum time in Minutes to cache a document"),
+
+     AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
      "The default time in hours to cache a document"),
+     AP_INIT_TAKE1("CacheDefaultExpireMin", set_cache_defex_min, NULL, RSRC_CONF,
+     "The default time in Minutes to cache a document"),
+
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
      "The factor used to estimate Expires date from LastModified date"),
     AP_INIT_TAKE1("CacheForceCompletion", set_cache_complete, NULL, RSRC_CONF,

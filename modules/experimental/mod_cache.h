@@ -120,7 +120,7 @@
 
 #define MSEC_ONE_DAY ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
 #define MSEC_ONE_HR  ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
-
+#define MSEC_ONE_MIN  ((apr_time_t)(60*APR_USEC_PER_SEC))   /* one minute, in microseconds */
 #define DEFAULT_CACHE_MAXEXPIRE MSEC_ONE_DAY
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR (0.1)
