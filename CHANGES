@@ -1,5 +1,11 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fixed persistent connections when a request contains a body.
+     [Greg Stein]
+
+  *) mod_dav uses a new API to speak to the backend provider for dead
+     property management. [Greg Stein]
+
   *) Remove the Win32 script-processing exception from mod_cgi, and
      roll build_command_line/build_argv_list into a unified, overrideable
      ap_cgi_build_command optional function.  [William Rowe]
