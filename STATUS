@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/19 14:51:25 $]
+Last modified at [$Date: 2003/02/19 21:39:22 $]
 
 Release:
 
@@ -119,7 +119,12 @@ PATCHES TO PORT FROM 2.1
     * Fix suexec compile error on SUNOS4 (no strerror()) for 2.0 and 1.3
       support/suexec.c: r1.24
       +1: nd, trawick
-      
+
+    * suexec: Be more pedantic when cleaning environment. Clean it
+      immediately after startup. PR 2790, 10449.
+      support/suexec.c: r1.25
+      +1: nd
+
     * fill out parms->err_directive while looking for open parents.
       Otherwise when trying to log the error
       (a) we segfault (if the directive was in another file)
