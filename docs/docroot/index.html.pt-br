@@ -1,55 +1,46 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-    <HEAD>
-     <TITLE>Pagina teste para a instalacao do Apache no Web Site</TITLE>
-     <!-- original translation Dulce Lajas, dulce.lajas@jrc.it, Thu Aug 19 13:12:00 GMT 1999 -->
-    </HEAD>
-   <!-- Background white, links blue (unvisited), navy (visited), red
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.73 [en] (X11; I; Linux 2.2.15-4mdk i586) [Netscape]">
+   <title>P&aacute;gina teste para a instala&ccedil;&atilde;o do Apache no
+Web Site</title>
+<!-- original translation Ricardo Oliva, rfoliva@writeme.com, Thu Dec 07
+19:51:00 PST 2000 -->
+<!-- Background white, links blue (unvisited), navy (visited), red
    (active) -->
-    <BODY
-     BGCOLOR="#FFFFFF"
-     TEXT="#000000"
-     LINK="#0000FF"
-     VLINK="#000080"
-     ALINK="#FF0000"
-    >
-     <H1 ALIGN="CENTER">
-      Funcionou!  O Apache Web Server esta instalado neste Web Site!
-     </H1>
-     <P>
-     Se conseguir ver esta pagina, entao as pessoas que possuem este
-   dominio acabaram
-     de instalar o software Apache Web
-   server
-     com sucesso.  Agora tem de adicionar o conteudo a esta directoria
-     e substituir esta pagina "placeholder", ou apontar o servidor para o
-   seu conteudo real.
-     </P>
-     <HR>
-     <BLOCKQUOTE>
-      Se esta a ver esta pagina em vez do site que esperava, por favor
-      <STRONG>contacte o administrador do site envolvido.</STRONG>
-      (Tente enviar um e-mail para
-   <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
-      Apesar de neste site estar a
-      correr o software Apache e quase certo que nao tem
-      outra ligacao com o Grupo Apache, por isso por favor nao envie
-   e-mails acerca deste
-      site ou do seu conteudo para os autores do Apache.  Se o fizer, a
-   sua mensagem vai ser
-      <STRONG><BIG>ignorada</BIG></STRONG>.
-     </BLOCKQUOTE>
-     <HR>
-     <P>
-     O Apache <A HREF="manual/index.html" >documentation</A>
-     foi incluido com esta distribuicao.
-     </P>
-     <P>
-     O Webmaster deste site e livre para utilizar a imagem abaixo num
-     Web server instalado com o Apache. Obrigado por utilizar o Apache!
-     </P>
-     <DIV ALIGN="CENTER">
-      <IMG SRC="apache_pb.gif" ALT="">
-     </DIV>
-    </BODY>
-</HTML>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#000080" alink="#FF0000">
+
+<center>
+<h1>
+Funcionou! O Apache Web Server foi instalado corretamente neste Web Site!</h1></center>
+Se voc&ecirc; est&aacute; vendo esta p&aacute;gina, isso quer dizer que o software
+Apache
+Web server foi instalado com sucesso. Agora, basta adicionar o conte&uacute;do
+ao diret&oacute;rio raiz e substituir esta p&aacute;gina temporaria, ou apontar o servidor
+para o seu conte&uacute;do real.
+<br>
+<hr>
+<blockquote>
+<center>
+<h3>
+<b>Est&aacute; vendo esta p&aacute;gina em vez do site que esperava?</b></h3></center>
+Esta p&aacute;gina est&aacute; sendo carregada, pois o administrador modificou as
+configura&ccedil;&otilde;es
+deste servidor. Por favor, <b>contacte o administrador do site para esclarecimentos.</b>
+(Tente enviar um e-mail para <tt>&lt;Webmaster@dominio></tt>.) A Apache
+Server Foundation, que desenvolveu o software (web server) utilizado pelo
+administrador, n&atilde;o tem nenhuma responsabilidade sobre a manuten&ccedil;&atilde;o desta
+p&aacute;gina e n&atilde;o poder&aacute; ajudar a resolu&ccedil;&atilde;o de problemas de
+configura&ccedil;&atilde;o.</blockquote>
+
+<hr>
+<p>O Apache <a href="manual/index.html">documentation</a> foi inclu&iacute;do
+com esta distribui&ccedil;&atilde;o.
+<p>O Webmaster deste site &eacute; livre para utilizar a imagem abaixo num web
+server utilizando o Apache. Obrigado por utilizar o Apache!
+<center><img SRC="apache_pb.gif" ALT="" ></center>
+
+</body>
+</html>
