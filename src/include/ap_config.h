@@ -138,8 +138,9 @@ int gethostname(char *name, int namelen);
  * there's some weird conflict with non-BSD signals */
 #define NO_KILLPG
 #undef NO_SETSID
-/*#define USE_FCNTL_SERIALIZED_ACCEPT */
+#if !defined(USE_FCNTL_SERIALIZED_ACCEPT) && !defined(USE_USLOCK_SERIALIZED_ACCEPT)
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
+#endif
 #define HAVE_SHMGET
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
