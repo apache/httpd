@@ -953,7 +953,7 @@ if [ "x$suexec" = "x1" ]; then
         echo "                 and htdocs/manual/suexec.html documents first."
         exit 1
     fi
-    if [ "x`id | grep root`" = "x" ]; then
+    if [ "x`src/helpers/getuid.sh" != "x0" ]; then
         echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
         echo " + root privileges for this, at the latest at the installation step." 1>&2
     fi
@@ -1047,7 +1047,7 @@ if [ "x$confadjust" = "x1" ]; then
             break
         fi
     done
-    if [ "x`id | grep root`" = "x" ]; then
+    if [ "x`src/helpers/getuid.sh" != "x0" ]; then
         conf_port="8080"
     fi
     conf_serveradmin="`$aux/buildinfo.sh -n %u@%h%d`"
