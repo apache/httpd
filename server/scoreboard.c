@@ -232,10 +232,10 @@ apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
         return APR_EINVAL;
     }
     /* everything will be cleared shortly */
-#endif
     if (*shm) {
         *shm = ap_scoreboard_shm;
     }
+#endif
     return APR_SUCCESS;
 }
 
