@@ -1177,7 +1177,6 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 #define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
 #define CONNECTION_HEADER "Connection: Upgrade"
     const char *upgrade;
-    const char *connection;
     apr_bucket_brigade *upgradebb;
     request_rec *r = f->r;
     SSLConnRec *sslconn;
@@ -1205,18 +1204,6 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
         apr_strtok(NULL,", ",&token_state);
     }
     /* "Upgrade: TLS/1.0" header not found, don't do Upgrade */
-    if (!token) {
-        return ap_pass_brigade(f->next, bb);
-    }
-
-    connection = apr_table_get(r->headers_in, "Connection");
-
-    token_string = apr_pstrdup(r->pool,connection);
-    token = apr_strtok(token_string,",",&token_state);
-    while (token && strcasecmp(token,"Upgrade")) {
-        apr_strtok(NULL,",",&token_state);
-    }
-    /* "Connection: Upgrade" header not found, don't do Upgrade */
     if (!token) {
         return ap_pass_brigade(f->next, bb);
     }
