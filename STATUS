@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/29 20:24:26 $]
+Last modified at [$Date: 2003/07/30 10:38:31 $]
 
 Release:
 
@@ -264,6 +264,16 @@ PATCHES TO PORT FROM 2.1
     * ab: reject overlong credentials from command line (2.0 + 1.3)
         support/ab.c: r1.127
       +1: nd, jerenkrantz, trawick
+
+    * ab: Handle conditions where connect() on non-blocking socket
+      doesn't complete immediately (i.e., restore functionality when
+      benchmarking non-local targets).  This doesn't resolve some
+      serious flaws in state-handling within ab; it is simply a
+      minimal change to get it going again, as fixing it correctly is
+      potentially destabilizing and may take some iterations in
+      2.1-dev before it is ready for prime time.
+        support/ab.c: r1.128
+      +1: trawick
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
