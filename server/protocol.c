@@ -212,13 +212,12 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
     apr_bucket_brigade *b;
     apr_bucket *e;
     apr_size_t bytes_handled = 0, current_alloc = 0;
-    apr_off_t bytes_read;
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
 
     b = apr_brigade_create(r->pool);
     rv = ap_get_brigade(r->input_filters, b, AP_MODE_GETLINE,
-                        APR_BLOCK_READ, bytes_read);
+                        APR_BLOCK_READ, 0);
 
     if (rv != APR_SUCCESS) {
         return rv;
@@ -379,9 +378,8 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
         apr_size_t len;
 
         /* We only care about the first byte. */
-        bytes_read = 1;
         rv = ap_get_brigade(r->input_filters, b, AP_MODE_SPECULATIVE,
-                            APR_BLOCK_READ, bytes_read);
+                            APR_BLOCK_READ, 1);
 
         if (rv != APR_SUCCESS) {
             return rv;
