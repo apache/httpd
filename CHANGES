@@ -1,5 +1,9 @@
 Changes with Apache 2.0.23-dev
 
+  *) Speed up the server's response to a spike in incoming workload
+     or restarts by assigning empty scoreboard slots to new processes
+     when they are available.  [Greg Ames]
+
   *) Add a handler to mod_includes.c.  This handler is designed to
      implement the XbitHack directive.  This can't be done with a
      fixup, because we need to check the content-type, which is

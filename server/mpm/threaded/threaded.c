@@ -973,6 +973,7 @@ static void perform_idle_server_maintenance(void)
     worker_score *ws;
     process_score *ps;
     int free_length;
+    int totally_free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
     int total_non_dead;
@@ -993,16 +994,21 @@ static void perform_idle_server_maintenance(void)
 	int status = SERVER_DEAD;
 	int any_dying_threads = 0;
 	int any_dead_threads = 0;
+	int all_dead_threads = 1;
 
-	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
+	if (i >= ap_max_daemons_limit && totally_free_length == idle_spawn_rate)
 	    break;
         ps = &ap_scoreboard_image->parent[i];
 	for (j = 0; j < ap_threads_per_child; j++) {
             ws = &ap_scoreboard_image->servers[i][j];
 	    status = ws->status;
 
+            /* XXX any_dying_threads is probably no longer needed    GLA */
 	    any_dying_threads = any_dying_threads || (status == SERVER_GRACEFUL);
 	    any_dead_threads = any_dead_threads || (status == SERVER_DEAD);
+	    all_dead_threads = all_dead_threads &&
+                                   (status == SERVER_DEAD ||
+                                    status == SERVER_GRACEFUL);
 
 	    /* We consider a starting server as idle because we started it
 	     * at least a cycle ago, and if it still hasn't finished starting
@@ -1020,13 +1026,28 @@ static void perform_idle_server_maintenance(void)
 	        ++idle_thread_count;
 	    }
 	}
-        /* XXX any_dead_threads may not be needed any more GLA */
-        if (any_dead_threads && free_length < idle_spawn_rate 
+        if (any_dead_threads && totally_free_length < idle_spawn_rate 
                 && (!ps->pid               /* no process in the slot */
                     || ps->quiescing)) {   /* or at least one is going away */
-	    free_slots[free_length] = i;
+            if (all_dead_threads) {
+                /* great! we prefer these, because the new process can
+                 * start more threads sooner.  So prioritize this slot 
+                 * by putting it ahead of any slots with active threads.
+                 *
+                 * first, make room by moving a slot that's potentially still
+                 * in use to the end of the array
+                 */
+                free_slots[free_length] = free_slots[totally_free_length];
+                free_slots[totally_free_length++] = i;
+            }
+            else {
+                /* slot is still in use - back of the bus
+                 */
+	        free_slots[free_length] = i;
+            }
 	    ++free_length;
 	}
+        /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
 	if (!any_dying_threads) {
             last_non_dead = i;
             ++total_non_dead;
@@ -1057,7 +1078,9 @@ static void perform_idle_server_maintenance(void)
 	    idle_spawn_rate = 1;
 	}
 	else {
-	    
+            if (free_length > idle_spawn_rate) {
+                free_length = idle_spawn_rate;
+            }
 	    if (idle_spawn_rate >= 8) {
 	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 			     "server seems busy, (you may need "
