@@ -175,18 +175,15 @@ Open issues:
       Apache provided general functions (e.g., ap_cpystrn)
 	ap_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 
-      OS-abstracting routines:
-        currently os_xxx, migrate to ap_xxx: Brian
-
       Public API functions (e.g., palloc)
-	apapi_xxx: +1: Ken, Brian, Ralf, Paul, Jim
+	apapi_xxx: +1: Ken, Ralf, Paul, Jim
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: +1: Brian, Paul, Jim, Ken
+	appri_xxx: +1: Paul, Jim, Ken
 	httpd_xxx: +1: 
 	apint_xxx: +1: Ralf (int = internal)
     
@@ -197,6 +194,7 @@ Open issues:
 	the few hours I did while writing apapi_vformatter is
 	making me puke.  So many extra characters, so much wasted
 	screen width, and keystrokes. -Dean
+        +1  Brian
 
         I agree with Dean 100%. The work created to keep this straight
         far outweighs any gain this could give. -Randy
@@ -210,11 +208,6 @@ Open issues:
 	We should make some effort to make our code reader and
 	maintainer friendly, because we aren't, and won't be,
 	the only one's to maintain this.
-
-        Brian - can we compromise by using the "HIDE" system to
-        expand out *all* prefixes in the cpp?  This would still affect
-        people during debugging, but would avoid the CTS-inducing
-        effect of typing "apapi" over and over.
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
