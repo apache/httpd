@@ -260,7 +260,7 @@ evaluated.</description>
        Deny from foo.apache.org<br />
 </example>
 
-    <p>On the other hand, if the <code>Order</code> in the last
+    <p>On the other hand, if the <directive>Order</directive> in the last
     example is changed to <code>Deny,Allow</code>, all hosts will
     be allowed access. This happens because, regardless of the
     actual ordering of the directives in the configuration file,
@@ -270,7 +270,7 @@ evaluated.</description>
     be allowed access because the default state will change to
     <em>allow</em>.</p>
 
-    <p>The presence of an <code>Order</code> directive can affect
+    <p>The presence of an <directive>Order</directive> directive can affect
     access to a part of the server even in the absence of accompanying
     <directive module="mod_access">Allow</directive> and <directive
     module="mod_access">Deny</directive> directives because of its effect
