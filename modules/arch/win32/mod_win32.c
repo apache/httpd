@@ -69,7 +69,7 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "mod_core.h"
-#include "apr_optional.h"
+#include "mod_cgi.h"
 #include "apr_lib.h"
 
 #ifdef WIN32
@@ -413,7 +413,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
 
 static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          request_rec *r, apr_pool_t *p, 
-                                         int process_cgi, apr_cmdtype_e *type)
+                                         cgi_exec_info_t *e_info)
 {
     const char *ext = NULL;
     const char *interpreter = NULL;
@@ -424,7 +424,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     d = (win32_dir_conf *)ap_get_module_config(r->per_dir_config, 
                                                &win32_module);
 
-    if (process_cgi) {
+    if (e_info->cmd_type) {
         /* Handle the complete file name, we DON'T want to follow suexec, since
          * an unrooted command is as predictable as shooting craps in Win32.
          *
@@ -457,8 +457,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                       == INTERPRETER_SOURCE_REGISTRY_STRICT);
         interpreter = get_interpreter_from_win32_registry(r->pool, ext,
                                                           strict);
-        if (interpreter && *type != APR_SHELLCMD) {
-            *type = APR_PROGRAM_PATH;
+        if (interpreter && e_info->prog_type != APR_SHELLCMD) {
+            e_info->prog_type = APR_PROGRAM_PATH;
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -499,8 +499,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 while (isspace(*interpreter)) {
                     ++interpreter;
                 }
-                if (*type != APR_SHELLCMD) {
-                    *type = APR_PROGRAM_PATH;
+                if (e_info->prog_type != APR_SHELLCMD) {
+                    e_info->prog_type = APR_PROGRAM_PATH;
                 }
             }
         }
@@ -529,13 +529,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     *argv = (const char **)(split_argv(p, interpreter, *cmd,
                                        args)->elts);
     *cmd = (*argv)[0];
+
+    e_info->detached = 1;
+
     return APR_SUCCESS;
 }
-
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command,
-                        (const char **cmd, const char ***argv, 
-                         request_rec *r, apr_pool_t *p, 
-                         int replace_cmd, apr_cmdtype_e *type));
 
 static void register_hooks(apr_pool_t *p)
 {
