@@ -2145,7 +2145,7 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	if (pipe_err) {
 	    hStdErr = dup(fileno(stderr));
 	    if(dup2(err_fds[1], fileno(stderr)))
-		ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
+		ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stderr) failed");
 	    close(err_fds[1]);
 	}
 
