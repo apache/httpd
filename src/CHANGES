@@ -1,4 +1,9 @@
 Changes with Apache 1.3.24
+  *) Add ap_uuencode to the httpd.exp exports file used by
+     the AIX linker. [Bill Stoddard]
+
+  *) Win32: Ignore AcceptMutex directive if it is present
+     [Bill Stoddard]
 
   *) mod_rewrite: restored rnd behavior that was broken in 1.3.23.
      PR 10090, 10185  [Jeroen Boomgaardt <jeroen@swissclue.com>]
