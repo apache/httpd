@@ -1145,8 +1145,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
      * We should be able to force connection close from this filter
      * when we see we are buffering too much.
      */
-    if ((r->proto_num >= HTTP_VERSION(1, 1))
-        || (!f->r->connection->keepalive)) {
+    if ((r->proto_num >= HTTP_VERSION(1, 1)) || (!r->connection->keepalive)) {
         partial_send_okay = 1;
     }
 
