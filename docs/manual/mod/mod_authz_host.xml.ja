@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_authz_host.xml.meta">
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.7 -->
 
 <name>mod_authz_host</name> 
 <description>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</description>
@@ -87,10 +87,13 @@
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
-      この設定をすると、サーバは
+      この設定をすると、Apache は
       <directive module="core">HostnameLookups</directive>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</p></dd>
+      DNS の 2 重逆引きを行ないます。
+      ホスト名からオリジナルの IP アドレスを順引きします。
+      順引きと逆引きが一致し、ホスト名が該当した場合にのみ、
+      アクセスが許可されます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 

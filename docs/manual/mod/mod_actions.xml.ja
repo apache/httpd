@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_actions.xml.meta">
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.14 -->
 
 <name>mod_actions</name> 
 
@@ -16,7 +16,7 @@ CGI スクリプトを実行する機能を提供</description>
 <summary>
     <p>このモジュールには二つのディレクティブがあります。<directive
     module="mod_actions">Action</directive>
-    ディレクティブは特定のタイプのファイルをリクエストされた場合に
+    ディレクティブは特定の MIME タイプのファイルをリクエストされた場合に
     CGI スクリプトが実行されるようにします。<directive
     module="mod_actions">Script</directive>
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
@@ -32,12 +32,14 @@ CGI スクリプトを実行する機能を提供</description>
 <name>Action</name>
 <description>特定のハンドラやコンテントタイプに対して CGI を実行するように
 設定</description>
-<syntax>Action <var>action-type</var> <var>cgi-script</var></syntax>
+<syntax>Action <var>action-type</var> <var>cgi-script</var> [virtual]</syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility><code>virtual</code> 修飾子とハンドラ渡しは
+Apache 2.1 で導入されました</compatibility>
 
 <usage>
     <p>このディレクティブは <var>action-type</var>
@@ -49,11 +51,13 @@ CGI スクリプトを実行する機能を提供</description>
     <var>Action-type</var> には
     <a href="../handler.html">handler</a> か MIME
     コンテントタイプを指定できます。リクエストされたドキュメントの URL
-    とファイルのパスは標準 CGI 環境変数 PATH_INFO と PATH_TRANSLATED
-    を使って伝えられます。</p>
+    とファイルのパスは標準 CGI 環境変数 <code>PATH_INFO</code> と
+    <code>PATH_TRANSLATED</code> を使って伝えられます。
+    特定のリクエストに対して使用されるハンドラへは、
+    <code>REDIRECT_HANDLER</code> 変数を使って渡せます。</p>
 
     <example><title>例</title>
-      # Requests for files of a particular type:<br />
+      # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
       # Files of a particular file extension<br />
@@ -62,12 +66,26 @@ CGI スクリプトを実行する機能を提供</description>
     </example>
 
     <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
-    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
-    <code>/cgi-bin/images.cgi</code> が呼ばれます。</p>
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/images.cgi</code> で処理されます。</p>
 
-    <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
-    そのファイルの代わりに指定されたスクリプト
-    <code>/cgi-bin/program.cgi</code> が呼ばれます。</p>
+    <p>2 番目の例では、拡張子が <code>.xyz</code> 
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/program.cgi</code> で処理されます。</p>
+
+    <p>オプションの <code>virtual</code> 修飾子を使用すると、
+    リクエストされたファイルが実際に存在するかどうかを検査しないようにできます。
+    これは例えば、<directive>Action</directive> ディレクティブをバーチャルな
+    Location に使用したい、といった場合に便利です。</p>
+
+    <example><title>例</title>
+      &lt;Location /news&gt;<br />
+      <indent>
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
@@ -90,7 +108,8 @@ CGI スクリプトを実行する機能を提供</description>
     <directive module="mod_mime">AddHandler</directive> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
     リクエストされたドキュメントの URL とファイルのパスは標準 CGI
-    環境変数 PATH_INFO と PATH_TRANSLATED を使って伝えられます。</p>
+    環境変数 <code>PATH_INFO</code> と <code>PATH_TRANSLATED</code>
+    を使って伝えられます。</p>
 
     <note>
       任意のメソッド名を使用することができます。
@@ -99,10 +118,12 @@ CGI スクリプトを実行する機能を提供</description>
       はまったく違った効果になります。
     </note>
 
-    <p>Script コマンドはデフォルトの動作を追加するだけであることに
+    <p><directive>Script</directive> コマンドはデフォルトの動作を
+    追加するだけであることに
     注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
     メソッドを内部で扱うことのできる他のリソースがあれば、それが行なわれます。
-    <code>GET</code> メソッドの Script は問合せ引数がある場合にのみ
+    <code>GET</code> メソッドの <directive>Script</directive> は問合せ
+    引数がある場合にのみ
     (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
     そうでない場合は、リクエストは通常通り処理されます。</p>
 
