@@ -1126,11 +1126,8 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                         *inserted_head);
                 }
 
-                /* destroy the sub request if it's not a nested include 
-                 * (crumb) */
-                if (rr != NULL
-                    && ap_get_module_config(rr->request_config, 
-                       &include_module) != NESTED_INCLUDE_MAGIC) {
+                /* destroy the sub request */
+                if (rr != NULL) {
                     ap_destroy_sub_req(rr);
                 }
             }
@@ -3024,7 +3021,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
     request_rec *parent;
-    apr_status_t rv;
     include_dir_config *conf = 
                    (include_dir_config *)ap_get_module_config(r->per_dir_config,
                                                               &include_module);
@@ -3108,15 +3104,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_table_unset(f->r->headers_out, "ETag");
     apr_table_unset(f->r->headers_out, "Last-Modified");
 
-    rv = send_parsed_content(&b, r, f);
-
-    if (parent) {
-        /* signify that the sub request should not be killed */
-        ap_set_module_config(r->request_config, &include_module,
-            NESTED_INCLUDE_MAGIC);
-    }
-
-    return rv;
+    return send_parsed_content(&b, r, f);
 }
 
 static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
