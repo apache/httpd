@@ -577,17 +577,21 @@ Arguments:
 Returns:       the flipped value
 */
 
-static long int
-byteflip(long int value, int n)
+static pcre_uint16
+byteflip2(pcre_uint16 value)
 {
-if (n == 2) return ((value & 0x00ff) << 8) | ((value & 0xff00) >> 8);
+return ((value & 0x00ff) << 8) |
+       ((value & 0xff00) >> 8);
+}
+
+static pcre_uint32
+byteflip4(pcre_uint32 value)
+{
 return ((value & 0x000000ff) << 24) |
        ((value & 0x0000ff00) <<  8) |
        ((value & 0x00ff0000) >>  8) |
        ((value & 0xff000000) >> 24);
 }
-
-
 
 /*************************************************
 *       Test for a byte-flipped compiled regex   *
@@ -613,27 +617,25 @@ static real_pcre *
 try_flipped(const real_pcre *re, real_pcre *internal_re,
   const pcre_study_data *study, pcre_study_data *internal_study)
 {
-if (byteflip(re->magic_number, sizeof(re->magic_number)) != MAGIC_NUMBER)
+if (byteflip4(re->magic_number) != MAGIC_NUMBER)
   return NULL;
 
 *internal_re = *re;           /* To copy other fields */
-internal_re->size = byteflip(re->size, sizeof(re->size));
-internal_re->options = byteflip(re->options, sizeof(re->options));
-internal_re->top_bracket = byteflip(re->top_bracket, sizeof(re->top_bracket));
-internal_re->top_backref = byteflip(re->top_backref, sizeof(re->top_backref));
-internal_re->first_byte = byteflip(re->first_byte, sizeof(re->first_byte));
-internal_re->req_byte = byteflip(re->req_byte, sizeof(re->req_byte));
-internal_re->name_table_offset = byteflip(re->name_table_offset,
-  sizeof(re->name_table_offset));
-internal_re->name_entry_size = byteflip(re->name_entry_size,
-  sizeof(re->name_entry_size));
-internal_re->name_count = byteflip(re->name_count, sizeof(re->name_count));
+internal_re->size = byteflip4(re->size);
+internal_re->options = byteflip4(re->options);
+internal_re->top_bracket = byteflip2(re->top_bracket);
+internal_re->top_backref = byteflip2(re->top_backref);
+internal_re->first_byte = byteflip2(re->first_byte);
+internal_re->req_byte = byteflip2(re->req_byte);
+internal_re->name_table_offset = byteflip2(re->name_table_offset);
+internal_re->name_entry_size = byteflip2(re->name_entry_size);
+internal_re->name_count = byteflip2(re->name_count);
 
 if (study != NULL)
   {
   *internal_study = *study;   /* To copy other fields */
-  internal_study->size = byteflip(study->size, sizeof(study->size));
-  internal_study->options = byteflip(study->options, sizeof(study->options));
+  internal_study->size = byteflip4(study->size);
+  internal_study->options = byteflip4(study->options);
   }
 
 return internal_re;
