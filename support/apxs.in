@@ -392,8 +392,22 @@ if ($opt_c) {
     foreach $o (@objs) {
         $lo .= " $o";
     }
+    my ($opt_Wl, $opt_L, $opt_l);
+    foreach $opt_Wl (@opt_W) {
+        if ($CFG_CC !~ m/gcc$/) {
+            $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
+        } else {
+            $opt .= " -W$opt_Wl";
+        }
+    }
+    foreach $opt_L (@opt_L) {
+        $opt .= " -L$opt_L";
+    }
+    foreach $opt_l (@opt_l) {
+        $opt .= " -l$opt_l";
+    }
 
-    push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $lo");
+    push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
