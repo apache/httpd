@@ -49,15 +49,15 @@ also want it to respond to addresses 198.4.3.2 and 198.5.4.3 (note
 that these are three distinct class C addresses in three distinct
 class C nets). Here are the ifconfigs:
 
-  ifconfig le0 198.3.2.1 up -trailers	# config primary interface
+  ifconfig le0 198.3.2.1 up -trailers   # config primary interface
 
-  ifconfig vif0 198.4.3.2 up 		# config first virtual interface
-  route delete net 198.4.3 198.4.3.2	# delete spurious route 
-  route add host 198.4.3.2 198.4.3.2 0	# add route for this i/f
+  ifconfig vif0 198.4.3.2 up            # config first virtual interface
+  route delete net 198.4.3 198.4.3.2    # delete spurious route 
+  route add host 198.4.3.2 198.4.3.2 0  # add route for this i/f
 
-  ifconfig vif1 198.5.4.3 up		# config second virtual interface
-  route delete net 198.5.4 198.5.4.3	# delete spurious route 
-  route add host 198.5.4.3 198.5.4.3 0	# add route for this i/f
+  ifconfig vif1 198.5.4.3 up            # config second virtual interface
+  route delete net 198.5.4 198.5.4.3    # delete spurious route 
+  route add host 198.5.4.3 198.5.4.3 0  # add route for this i/f
 
 The route deletes are needed because the ifconfig creates a default
 route to the interface's network, which can cause problems; all that's
@@ -91,11 +91,11 @@ The code for vif follows. To use it, put the stuff in netinet/if_vif.c
 and netinet/if_vif.h, configure your kernel with the number of
 virtual interfaces you want using a line like:
 
-pseudo-device	vif4		# Virtual IP interface
+pseudo-device   vif4            # Virtual IP interface
 
 in your configuration file, and the line
 
-netinet/if_vif.c	optional vif device-driver
+netinet/if_vif.c        optional vif device-driver
 
 in the "files" file. Also, add the appropriate entries in conf.c, so
 that you can access the if_attach() routine when you open the device:
@@ -122,9 +122,9 @@ int     vifopen(), vifclose(), vifread(), vifwrite(), vifselect(), vifioctl();
 then, way down in the definition for cdevsw[]:
 
 --------------------
-	vifopen,	vifclose,	vifread,	vifwrite,	/*14*/
-	vifioctl,	nodev,		nodev,		0,
-	0,	nodev,
+        vifopen,        vifclose,       vifread,        vifwrite,       /*14*/
+        vifioctl,       nodev,          nodev,          0,
+        0,      nodev,
 --------------------
 
 Make sure you remember the correct major device number, 14 in this case!
@@ -139,12 +139,12 @@ changes (most likely only in the includes).
 ---------------------netinet/if_vif.h--------------------------------------
 typedef struct 
 {
-	struct ifnet	vif_if;
-	struct ifnet	*vif_sif;	/* slave interface */
-	int		vif_flags;
+        struct ifnet    vif_if;
+        struct ifnet    *vif_sif;       /* slave interface */
+        int             vif_flags;
 } vif_softc_t;
 
-#define	VIFMTU	(1024+512)
+#define VIFMTU  (1024+512)
 ---------------------------------------------------------------------------
 
 and
@@ -165,7 +165,7 @@ and
 #include "../net/netisr.h"
 #include "../net/route.h"
 
-#ifdef	INET
+#ifdef  INET
 #include "../netinet/in.h"
 #include "../netinet/in_systm.h"
 #include "../netinet/in_var.h"
@@ -191,125 +191,125 @@ int vifs_inited = 0;
 
 vifattach()
 {
-	register int i;
-	register struct ifnet *ifp;
-        int	vifoutput(), vififioctl();
-	
-	for (i=0; i&lt;NVIF; i++)
-	{
-		ifp = &vif_softc[i].vif_if;
-		ifp-&gt;if_name = "vif";
-		ifp-&gt;if_unit = i;
-		ifp-&gt;if_mtu = VIFMTU;
-		ifp-&gt;if_flags = IFF_LOOPBACK | IFF_NOARP;
-		ifp-&gt;if_ioctl = vififioctl;
-		ifp-&gt;if_output = vifoutput;
-		if_attach(ifp);
-	}
+        register int i;
+        register struct ifnet *ifp;
+        int     vifoutput(), vififioctl();
+        
+        for (i=0; i&lt;NVIF; i++)
+        {
+                ifp = &vif_softc[i].vif_if;
+                ifp-&gt;if_name = "vif";
+                ifp-&gt;if_unit = i;
+                ifp-&gt;if_mtu = VIFMTU;
+                ifp-&gt;if_flags = IFF_LOOPBACK | IFF_NOARP;
+                ifp-&gt;if_ioctl = vififioctl;
+                ifp-&gt;if_output = vifoutput;
+                if_attach(ifp);
+        }
 }
 
 vifopen(dev, flag)
 int dev, flag;
 {
-	int unit;
-	
-	if (!vifs_inited)
-	{
-		vifattach();
-		vifs_inited = 1;
-		printf("vif initialized\n");
-	}
-	
-	unit = minor(dev);
-	if ((unit &lt; 0) || (unit &gt;= NVIF))
-	{
-		return ENXIO;
-	}
-	
-	return 0;
+        int unit;
+        
+        if (!vifs_inited)
+        {
+                vifattach();
+                vifs_inited = 1;
+                printf("vif initialized\n");
+        }
+        
+        unit = minor(dev);
+        if ((unit &lt; 0) || (unit &gt;= NVIF))
+        {
+                return ENXIO;
+        }
+        
+        return 0;
 }
 
 vifclose(dev, flag)
 int dev, flag;
 {
-	return 0;
+        return 0;
 }
 
 vifread()
 {
-	return ENXIO;
+        return ENXIO;
 }
 
 vifwrite()
 {
-	return ENXIO;
+        return ENXIO;
 }
 
 vifselect()
 {
-	return ENXIO;
+        return ENXIO;
 }
 
 vifoutput(ifp, m0, dst)
-	struct ifnet *ifp;
-	register struct mbuf *m0;
-	struct sockaddr *dst;
+        struct ifnet *ifp;
+        register struct mbuf *m0;
+        struct sockaddr *dst;
 {
-	int s;
-	register struct ifqueue *ifq;
-	struct mbuf *m;
-	struct sockaddr_in *din;
-	
-	if (dst-&gt;sa_family != AF_INET)
-	{
-		printf("%s%d: can't handle af%d\n", 
-		       ifp-&gt;if_name, ifp-&gt;if_unit,
-		       dst-&gt;sa_family);
-		m_freem(m0);
-		return (EAFNOSUPPORT);
-	}
+        int s;
+        register struct ifqueue *ifq;
+        struct mbuf *m;
+        struct sockaddr_in *din;
+        
+        if (dst-&gt;sa_family != AF_INET)
+        {
+                printf("%s%d: can't handle af%d\n", 
+                       ifp-&gt;if_name, ifp-&gt;if_unit,
+                       dst-&gt;sa_family);
+                m_freem(m0);
+                return (EAFNOSUPPORT);
+        }
 
-	din = (struct sockaddr_in *)dst;
-	
-	if (din-&gt;sin_addr.s_addr == IA_SIN(ifp-&gt;if_addrlist)-&gt;sin_addr.s_addr)
-	{
-		/* printf("%s%d: looping\n", ifp-&gt;if_name, ifp-&gt;if_unit); */
-		
-		/*
-		 * Place interface pointer before the data
-		 * for the receiving protocol.
-		 */
-		if (m0-&gt;m_off &lt;= MMAXOFF &&
-		    m0-&gt;m_off &gt;= MMINOFF + sizeof(struct ifnet *)) {
-			m0-&gt;m_off -= sizeof(struct ifnet *);
-			m0-&gt;m_len += sizeof(struct ifnet *);
-		} else {
-			MGET(m, M_DONTWAIT, MT_HEADER);
-			if (m == (struct mbuf *)0)
-			  return (ENOBUFS);
-			m-&gt;m_off = MMINOFF;
-			m-&gt;m_len = sizeof(struct ifnet *);
-			m-&gt;m_next = m0;
-			m0 = m;
-		}
-		*(mtod(m0, struct ifnet **)) = ifp;
-		s = splimp();
-		ifp-&gt;if_opackets++;
-		ifq = &ipintrq;
-		if (IF_QFULL(ifq)) {
-			IF_DROP(ifq);
-			m_freem(m0);
-			splx(s);
-			return (ENOBUFS);
-		}
-		IF_ENQUEUE(ifq, m0);
-		schednetisr(NETISR_IP);
-		ifp-&gt;if_ipackets++;
-		splx(s);
-		return (0);
-	}
+        din = (struct sockaddr_in *)dst;
+        
+        if (din-&gt;sin_addr.s_addr == IA_SIN(ifp-&gt;if_addrlist)-&gt;sin_addr.s_addr)
+        {
+                /* printf("%s%d: looping\n", ifp-&gt;if_name, ifp-&gt;if_unit); */
+                
+                /*
+                 * Place interface pointer before the data
+                 * for the receiving protocol.
+                 */
+                if (m0-&gt;m_off &lt;= MMAXOFF &&
+                    m0-&gt;m_off &gt;= MMINOFF + sizeof(struct ifnet *)) {
+                        m0-&gt;m_off -= sizeof(struct ifnet *);
+                        m0-&gt;m_len += sizeof(struct ifnet *);
+                } else {
+                        MGET(m, M_DONTWAIT, MT_HEADER);
+                        if (m == (struct mbuf *)0)
+                          return (ENOBUFS);
+                        m-&gt;m_off = MMINOFF;
+                        m-&gt;m_len = sizeof(struct ifnet *);
+                        m-&gt;m_next = m0;
+                        m0 = m;
+                }
+                *(mtod(m0, struct ifnet **)) = ifp;
+                s = splimp();
+                ifp-&gt;if_opackets++;
+                ifq = &ipintrq;
+                if (IF_QFULL(ifq)) {
+                        IF_DROP(ifq);
+                        m_freem(m0);
+                        splx(s);
+                        return (ENOBUFS);
+                }
+                IF_ENQUEUE(ifq, m0);
+                schednetisr(NETISR_IP);
+                ifp-&gt;if_ipackets++;
+                splx(s);
+                return (0);
+        }
 
-	return EHOSTUNREACH;
+        return EHOSTUNREACH;
 }
 
 /*
@@ -317,25 +317,25 @@ vifoutput(ifp, m0, dst)
  */
 /* ARGSUSED */
 vififioctl(ifp, cmd, data)
-	register struct ifnet *ifp;
-	int cmd;
-	caddr_t data;
+        register struct ifnet *ifp;
+        int cmd;
+        caddr_t data;
 {
-	int error = 0;
+        int error = 0;
 
-	switch (cmd) {
+        switch (cmd) {
 
-	case SIOCSIFADDR:
-		ifp-&gt;if_flags |= IFF_UP;
-		/*
-		 * Everything else is done at a higher level.
-		 */
-		break;
+        case SIOCSIFADDR:
+                ifp-&gt;if_flags |= IFF_UP;
+                /*
+                 * Everything else is done at a higher level.
+                 */
+                break;
 
-	default:
-		error = EINVAL;
-	}
-	return (error);
+        default:
+                error = EINVAL;
+        }
+        return (error);
 }
 
 vifioctl(dev, cmd, arg, mode)
@@ -344,13 +344,13 @@ int cmd;
 caddr_t arg;
 int mode;
 {
-	int unit;
-	
-	unit = minor(dev);
-	if ((unit &lt; 0) || (unit &gt;= NVIF))
-	  return ENXIO;
-	
-	return EINVAL;
+        int unit;
+        
+        unit = minor(dev);
+        if ((unit &lt; 0) || (unit &gt;= NVIF))
+          return ENXIO;
+        
+        return EINVAL;
 }
 ---------------------------------------------------------------------------- 
 

@@ -186,9 +186,9 @@ for the root process. This will exhibit itself as errors in the error log like
 "rlimit" to some large number, like 512.  
 <LI>Edit http_main.c to add calls to setrlimit() from main(), along the lines of
 <PRE>
-	struct rlimit rlp;
+        struct rlimit rlp;
 
-	rlp.rlim_cur = rlp.rlim_max = 512;
+        rlp.rlim_cur = rlp.rlim_max = 512;
         if (setrlimit(RLIMIT_NPROC, &rlp)) {
             fprintf(stderr, "setrlimit(RLIMIT_NPROC) failed.\n");
             exit(1);
