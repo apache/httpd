@@ -3340,7 +3340,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
-    ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL, 
                       APR_HOOK_MIDDLE);
