@@ -18,13 +18,13 @@
 
 This document covers compilation and installation of Apache on Unix
 systems only. For compiling and installation on Windows, see <A
-HREF="windows.html">Using Apache with Microsoft Windows</A> and for
-TPF see <A HREF="install-tpf.html">Installing the Apache 1.3 HTTP
+HREF="platform/windows.html">Using Apache with Microsoft Windows</A> and for
+TPF see <A HREF="platform/install-tpf.html">Installing the Apache 1.3 HTTP
 Server on TPF</A>.
 
 <P>
 
-UnixWare users will want to consult <A HREF="unixware.html">build notes</A>
+UnixWare users will want to consult <A HREF="platform/unixware.html">build notes</A>
 for various UnixWare versions before compiling.
 
 <H2>Downloading Apache</H2>

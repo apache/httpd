@@ -28,7 +28,7 @@ not recommended.
 
 On Windows, Apache is normally run as a service on Windows NT, or as a
 console application on Windows 95. See also <A
-HREF="windows.html#run">running Apache for Windows</A>.
+HREF="platform/windows.html#run">running Apache for Windows</A>.
 
 <H2>Command line options</H2>
 The following options are recognized on the httpd command line:
