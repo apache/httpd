@@ -57,8 +57,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\regex.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD\
- /c 
+ "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -108,8 +107,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\regex.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD\
- /c 
+ "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -168,6 +166,7 @@ SOURCE=.\regcomp.c
 !IF  "$(CFG)" == "regex - Win32 Release"
 
 DEP_CPP_REGCO=\
+	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
 	".\cclass.h"\
 	".\cname.h"\
@@ -182,6 +181,7 @@ DEP_CPP_REGCO=\
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
 DEP_CPP_REGCO=\
+	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
 	".\cclass.h"\
 	".\cname.h"\
@@ -226,6 +226,7 @@ SOURCE=.\regexec.c
 !IF  "$(CFG)" == "regex - Win32 Release"
 
 DEP_CPP_REGEX=\
+	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
 	".\engine.c"\
 	".\engine.ih"\
@@ -239,6 +240,7 @@ DEP_CPP_REGEX=\
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
 DEP_CPP_REGEX=\
+	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
 	".\engine.c"\
 	".\engine.ih"\
@@ -252,6 +254,9 @@ DEP_CPP_REGEX=\
 !ENDIF 
 
 SOURCE=.\regfree.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGFR=\
 	"..\include\hsregex.h"\
 	".\regex2.h"\
@@ -260,6 +265,19 @@ DEP_CPP_REGFR=\
 
 "$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
 
+
+!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
+
+DEP_CPP_REGFR=\
+	"..\include\hsregex.h"\
+	".\regex2.h"\
+	".\utils.h"\
+	
+
+"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
+
+
+!ENDIF 
 
 
 !ENDIF 

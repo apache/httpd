@@ -111,7 +111,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\htdigest.exe"
-	-@erase "$(OUTDIR)\htdigest.ilk"
 	-@erase "$(OUTDIR)\htdigest.map"
 	-@erase "$(OUTDIR)\htdigest.pdb"
 
@@ -129,7 +128,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:console /incremental:yes\
+ odbccp32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\htdigest.pdb" /map:"$(INTDIR)\htdigest.map" /debug\
  /machine:I386 /out:"$(OUTDIR)\htdigest.exe" /pdbtype:sept 
 LINK32_OBJS= \
@@ -195,12 +194,6 @@ DEP_CPP_AP_CP=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_AP_CP=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\os.h"\
-	"..\include\sfio.h"\
-	
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -240,10 +233,6 @@ DEP_CPP_AP_GE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_GE=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
 
 "$(INTDIR)\ap_getpass.obj" : $(SOURCE) $(DEP_CPP_AP_GE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -279,11 +268,6 @@ DEP_CPP_AP_MD=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -308,28 +292,6 @@ DEP_CPP_AP_MD=\
 !ENDIF 
 
 SOURCE=.\htdigest.c
-
-!IF  "$(CFG)" == "htdigest - Win32 Release"
-
-DEP_CPP_HTDIG=\
-	"..\include\ap.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_md5.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
-NODEP_CPP_HTDIG=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
-
-"$(INTDIR)\htdigest.obj" : $(SOURCE) $(DEP_CPP_HTDIG) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
-
 DEP_CPP_HTDIG=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -342,8 +304,6 @@ DEP_CPP_HTDIG=\
 
 "$(INTDIR)\htdigest.obj" : $(SOURCE) $(DEP_CPP_HTDIG) "$(INTDIR)"
 
-
-!ENDIF 
 
 
 !ENDIF 

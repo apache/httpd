@@ -57,9 +57,8 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /ML /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
- "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\gen_test_char.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
+ "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_test_char_R/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -116,15 +115,13 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\gen_test_char.exe"
-	-@erase "$(OUTDIR)\gen_test_char.ilk"
 	-@erase "$(OUTDIR)\gen_test_char.pdb"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /GX /Zi /Od /I "..\include" /D "WIN32" /D\
- "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\gen_test_char.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /D "WIN32" /D\
+ "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_test_char_D/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -133,9 +130,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:yes\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_test_char.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\gen_test_char.exe" /pdbtype:sept 
+ /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_test_char.obj"
 
@@ -200,8 +197,10 @@ SOURCE=.\gen_test_char.c
 DEP_CPP_GEN_T=\
 	"..\include\alloc.h"\
 	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
 	"..\include\buff.h"\
-	"..\include\conf.h"\
 	"..\include\hsregex.h"\
 	"..\include\httpd.h"\
 	"..\include\util_uri.h"\
@@ -217,8 +216,10 @@ DEP_CPP_GEN_T=\
 DEP_CPP_GEN_T=\
 	"..\include\alloc.h"\
 	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
 	"..\include\buff.h"\
-	"..\include\conf.h"\
 	"..\include\hsregex.h"\
 	"..\include\httpd.h"\
 	"..\include\util_uri.h"\

@@ -39,7 +39,7 @@ RSC=rc.exe
 OUTDIR=.\ApacheModuleDigestR
 INTDIR=.\ApacheModuleDigestR
 # Begin Custom Macros
-OutDir=.\.\ApacheModuleDigestR
+OutDir=.\ApacheModuleDigestR
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -48,23 +48,27 @@ ALL : "$(OUTDIR)\ApacheModuleDigest.dll"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheModuleDigest.dll"
+ALL : "ApacheCore - Win32 Release" "$(OUTDIR)\ApacheModuleDigest.dll"
 
 !ENDIF 
 
+!IF "$(RECURSE)" == "1" 
+CLEAN :"ApacheCore - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\mod_digest.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.dll"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.exp"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.lib"
+	-@erase "$(OUTDIR)\ApacheModuleDigest.map"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
- "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+ "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -75,11 +79,13 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
- /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb" /machine:I386\
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb"\
+ /map:"$(INTDIR)\ApacheModuleDigest.map" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleDigest.dll"\
- /implib:"$(OUTDIR)\ApacheModuleDigest.lib" 
+ /implib:"$(OUTDIR)\ApacheModuleDigest.lib" /base:@"BaseAddr.ref",mod_digest 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_digest.obj"
+	"$(INTDIR)\mod_digest.obj" \
+	"..\..\CoreR\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleDigest.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -91,7 +97,7 @@ LINK32_OBJS= \
 OUTDIR=.\ApacheModuleDigestD
 INTDIR=.\ApacheModuleDigestD
 # Begin Custom Macros
-OutDir=.\.\ApacheModuleDigestD
+OutDir=.\ApacheModuleDigestD
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -100,26 +106,30 @@ ALL : "$(OUTDIR)\ApacheModuleDigest.dll"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheModuleDigest.dll"
+ALL : "ApacheCore - Win32 Debug" "$(OUTDIR)\ApacheModuleDigest.dll"
 
 !ENDIF 
 
+!IF "$(RECURSE)" == "1" 
+CLEAN :"ApacheCore - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\mod_digest.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.dll"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.exp"
-	-@erase "$(OUTDIR)\ApacheModuleDigest.ilk"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.lib"
+	-@erase "$(OUTDIR)\ApacheModuleDigest.map"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
- "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleDigest.pch"\
- /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+ "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD\
+ /c 
 CPP_OBJS=.\ApacheModuleDigestD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -130,11 +140,13 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
- /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb" /debug\
- /machine:I386 /out:"$(OUTDIR)\ApacheModuleDigest.dll"\
- /implib:"$(OUTDIR)\ApacheModuleDigest.lib" 
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb"\
+ /map:"$(INTDIR)\ApacheModuleDigest.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\ApacheModuleDigest.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleDigest.lib" /base:@"BaseAddr.ref",mod_digest 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_digest.obj"
+	"$(INTDIR)\mod_digest.obj" \
+	"..\..\CoreD\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleDigest.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -183,27 +195,21 @@ SOURCE=..\..\modules\standard\mod_digest.c
 DEP_CPP_MOD_D=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\ap_md5.h"\
 	"..\..\include\util_md5.h"\
 	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_D=\
-	"..\..\include\ebcdic.h"\
-	"..\..\include\os.h"\
-	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
@@ -215,16 +221,17 @@ NODEP_CPP_MOD_D=\
 DEP_CPP_MOD_D=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_md5.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_protocol.h"\
 	"..\..\include\httpd.h"\
-	"..\..\include\ap_md5.h"\
 	"..\..\include\util_md5.h"\
 	"..\..\include\util_uri.h"\
 	".\os.h"\
@@ -234,6 +241,35 @@ DEP_CPP_MOD_D=\
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ENDIF 
+
+!IF  "$(CFG)" == "ApacheModuleDigest - Win32 Release"
+
+"ApacheCore - Win32 Release" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
+ 
+   cd ".\os\win32"
+
+"ApacheCore - Win32 ReleaseCLEAN" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
+ CFG="ApacheCore - Win32 Release" RECURSE=1 
+   cd ".\os\win32"
+
+!ELSEIF  "$(CFG)" == "ApacheModuleDigest - Win32 Debug"
+
+"ApacheCore - Win32 Debug" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
+   cd ".\os\win32"
+
+"ApacheCore - Win32 DebugCLEAN" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
+ CFG="ApacheCore - Win32 Debug" RECURSE=1 
+   cd ".\os\win32"
 
 !ENDIF 
 

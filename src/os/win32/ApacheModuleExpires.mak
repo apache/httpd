@@ -39,7 +39,7 @@ RSC=rc.exe
 OUTDIR=.\ApacheModuleExpiresR
 INTDIR=.\ApacheModuleExpiresR
 # Begin Custom Macros
-OutDir=.\.\ApacheModuleExpiresR
+OutDir=.\ApacheModuleExpiresR
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -48,23 +48,27 @@ ALL : "$(OUTDIR)\ApacheModuleExpires.dll"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheModuleExpires.dll"
+ALL : "ApacheCore - Win32 Release" "$(OUTDIR)\ApacheModuleExpires.dll"
 
 !ENDIF 
 
+!IF "$(RECURSE)" == "1" 
+CLEAN :"ApacheCore - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\mod_expires.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.dll"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.exp"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.lib"
+	-@erase "$(OUTDIR)\ApacheModuleExpires.map"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
- "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+ "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleExpiresR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -75,11 +79,13 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
- /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb" /machine:I386\
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb"\
+ /map:"$(INTDIR)\ApacheModuleExpires.map" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleExpires.dll"\
- /implib:"$(OUTDIR)\ApacheModuleExpires.lib" 
+ /implib:"$(OUTDIR)\ApacheModuleExpires.lib" /base:@"BaseAddr.ref",mod_expires 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_expires.obj"
+	"$(INTDIR)\mod_expires.obj" \
+	"..\..\CoreR\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleExpires.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -91,7 +97,7 @@ LINK32_OBJS= \
 OUTDIR=.\ApacheModuleExpiresD
 INTDIR=.\ApacheModuleExpiresD
 # Begin Custom Macros
-OutDir=.\.\ApacheModuleExpiresD
+OutDir=.\ApacheModuleExpiresD
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -100,26 +106,30 @@ ALL : "$(OUTDIR)\ApacheModuleExpires.dll"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheModuleExpires.dll"
+ALL : "ApacheCore - Win32 Debug" "$(OUTDIR)\ApacheModuleExpires.dll"
 
 !ENDIF 
 
+!IF "$(RECURSE)" == "1" 
+CLEAN :"ApacheCore - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\mod_expires.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.dll"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.exp"
-	-@erase "$(OUTDIR)\ApacheModuleExpires.ilk"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.lib"
+	-@erase "$(OUTDIR)\ApacheModuleExpires.map"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
- "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fp"$(INTDIR)\ApacheModuleExpires.pch"\
- /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+ "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD\
+ /c 
 CPP_OBJS=.\ApacheModuleExpiresD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -130,11 +140,13 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:windows\
- /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb" /debug\
- /machine:I386 /out:"$(OUTDIR)\ApacheModuleExpires.dll"\
- /implib:"$(OUTDIR)\ApacheModuleExpires.lib" 
+ /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb"\
+ /map:"$(INTDIR)\ApacheModuleExpires.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\ApacheModuleExpires.dll"\
+ /implib:"$(OUTDIR)\ApacheModuleExpires.lib" /base:@"BaseAddr.ref",mod_expires 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_expires.obj"
+	"$(INTDIR)\mod_expires.obj" \
+	"..\..\CoreD\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleExpires.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -183,9 +195,10 @@ SOURCE=..\..\modules\standard\mod_expires.c
 DEP_CPP_MOD_E=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -193,13 +206,6 @@ DEP_CPP_MOD_E=\
 	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_E=\
-	"..\..\include\ebcdic.h"\
-	"..\..\include\os.h"\
-	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
@@ -211,9 +217,10 @@ NODEP_CPP_MOD_E=\
 DEP_CPP_MOD_E=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -226,6 +233,35 @@ DEP_CPP_MOD_E=\
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ENDIF 
+
+!IF  "$(CFG)" == "ApacheModuleExpires - Win32 Release"
+
+"ApacheCore - Win32 Release" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
+ 
+   cd ".\os\win32"
+
+"ApacheCore - Win32 ReleaseCLEAN" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
+ CFG="ApacheCore - Win32 Release" RECURSE=1 
+   cd ".\os\win32"
+
+!ELSEIF  "$(CFG)" == "ApacheModuleExpires - Win32 Debug"
+
+"ApacheCore - Win32 Debug" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
+   cd ".\os\win32"
+
+"ApacheCore - Win32 DebugCLEAN" : 
+   cd "\live\apache-1.3\src"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
+ CFG="ApacheCore - Win32 Debug" RECURSE=1 
+   cd ".\os\win32"
 
 !ENDIF 
 

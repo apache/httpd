@@ -104,7 +104,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\rotatelogs.exe"
-	-@erase "$(OUTDIR)\rotatelogs.ilk"
 	-@erase "$(OUTDIR)\rotatelogs.map"
 	-@erase "$(OUTDIR)\rotatelogs.pdb"
 
@@ -123,7 +122,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:console /incremental:yes\
+ odbccp32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\rotatelogs.pdb" /map:"$(INTDIR)\rotatelogs.map" /debug\
  /machine:I386 /out:"$(OUTDIR)\rotatelogs.exe" /pdbtype:sept 
 LINK32_OBJS= \
@@ -170,26 +169,6 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "rotatelogs - Win32 Release" || "$(CFG)" ==\
  "rotatelogs - Win32 Debug"
 SOURCE=.\rotatelogs.c
-
-!IF  "$(CFG)" == "rotatelogs - Win32 Release"
-
-DEP_CPP_ROTAT=\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
-	
-NODEP_CPP_ROTAT=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
-
-"$(INTDIR)\rotatelogs.obj" : $(SOURCE) $(DEP_CPP_ROTAT) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
-
 DEP_CPP_ROTAT=\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -200,8 +179,6 @@ DEP_CPP_ROTAT=\
 
 "$(INTDIR)\rotatelogs.obj" : $(SOURCE) $(DEP_CPP_ROTAT) "$(INTDIR)"
 
-
-!ENDIF 
 
 
 !ENDIF 

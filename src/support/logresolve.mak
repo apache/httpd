@@ -102,7 +102,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\logresolve.exe"
-	-@erase "$(OUTDIR)\logresolve.ilk"
 	-@erase "$(OUTDIR)\logresolve.map"
 	-@erase "$(OUTDIR)\logresolve.pdb"
 
@@ -120,9 +119,8 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console\
- /incremental:yes /pdb:"$(OUTDIR)\logresolve.pdb"\
- /map:"$(INTDIR)\logresolve.map" /debug /machine:I386\
- /out:"$(OUTDIR)\logresolve.exe" 
+ /incremental:no /pdb:"$(OUTDIR)\logresolve.pdb" /map:"$(INTDIR)\logresolve.map"\
+ /debug /machine:I386 /out:"$(OUTDIR)\logresolve.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\logresolve.obj"
 
@@ -176,10 +174,6 @@ DEP_CPP_LOGRE=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_LOGRE=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"

@@ -9,3 +9,5 @@ suexec
 logresolve
 ab
 apxs
+Debug
+Release

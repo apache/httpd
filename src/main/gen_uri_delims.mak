@@ -58,9 +58,8 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D\
- "_MBCS" /Fp"$(INTDIR)\gen_uri_delims.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
- /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D\
+ "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_uri_delims_R/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -117,15 +116,13 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\gen_uri_delims.exe"
-	-@erase "$(OUTDIR)\gen_uri_delims.ilk"
 	-@erase "$(OUTDIR)\gen_uri_delims.pdb"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
- /D "_MBCS" /Fp"$(INTDIR)\gen_uri_delims.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
+ /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\gen_uri_delims_D/
 CPP_SBRS=.
 BSC32=bscmake.exe
@@ -134,9 +131,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib /nologo /subsystem:console /incremental:yes\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\gen_uri_delims.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\gen_uri_delims.exe" /pdbtype:sept 
+ /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_uri_delims.obj"
 

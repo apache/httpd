@@ -25,12 +25,16 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "xmltok - Win32 Release"
 
 OUTDIR=.\Release
 INTDIR=.\Release
 # Begin Custom Macros
-OutDir=.\.\Release
+OutDir=.\Release
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -55,46 +59,11 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MT /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
- XMLTOKAPI=__declspec(dllexport) /Fp"$(INTDIR)\xmltok.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ XMLTOKAPI=__declspec(dllexport) /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\xmltok.bsc" 
 BSC32_SBRS= \
@@ -104,7 +73,8 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
  advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
  odbccp32.lib /nologo /entry:"DllMain" /subsystem:windows /dll /incremental:no\
  /pdb:"$(OUTDIR)\xmltok.pdb" /machine:I386 /def:".\xmltok.def"\
- /out:"$(OUTDIR)\xmltok.dll" /implib:"$(OUTDIR)\xmltok.lib" 
+ /out:"$(OUTDIR)\xmltok.dll" /implib:"$(OUTDIR)\xmltok.lib"\
+ /base:@"..\..\os\win32\BaseAddr.ref",xmltok 
 DEF_FILE= \
 	".\xmltok.def"
 LINK32_OBJS= \
@@ -122,7 +92,7 @@ LINK32_OBJS= \
 OUTDIR=.\Debug
 INTDIR=.\Debug
 # Begin Custom Macros
-OutDir=.\.\Debug
+OutDir=.\Debug
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -138,23 +108,46 @@ ALL : "$(OUTDIR)\xmltok.dll"
 CLEAN :
 	-@erase "$(INTDIR)\dllmain.obj"
 	-@erase "$(INTDIR)\vc50.idb"
+	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(INTDIR)\xmlrole.obj"
 	-@erase "$(INTDIR)\xmltok.obj"
 	-@erase "$(OUTDIR)\xmltok.dll"
 	-@erase "$(OUTDIR)\xmltok.exp"
-	-@erase "$(OUTDIR)\xmltok.ilk"
 	-@erase "$(OUTDIR)\xmltok.lib"
 	-@erase "$(OUTDIR)\xmltok.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MTd /W3 /GX /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
- XMLTOKAPI=__declspec(dllexport) /Fp"$(INTDIR)\xmltok.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /Zi /c 
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ XMLTOKAPI=__declspec(dllexport) /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\xmltok.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
+ advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
+ odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
+ /pdb:"$(OUTDIR)\xmltok.pdb" /debug /machine:I386 /def:".\xmltok.def"\
+ /out:"$(OUTDIR)\xmltok.dll" /implib:"$(OUTDIR)\xmltok.lib"\
+ /base:@"..\..\os\win32\BaseAddr.ref",xmltok 
+DEF_FILE= \
+	".\xmltok.def"
+LINK32_OBJS= \
+	"$(INTDIR)\dllmain.obj" \
+	"$(INTDIR)\xmlrole.obj" \
+	"$(INTDIR)\xmltok.obj"
+
+"$(OUTDIR)\xmltok.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -186,33 +179,6 @@ CPP_SBRS=.
    $(CPP_PROJ) $< 
 <<
 
-MTL=midl.exe
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\xmltok.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
- /pdb:"$(OUTDIR)\xmltok.pdb" /debug /machine:I386 /def:".\xmltok.def"\
- /out:"$(OUTDIR)\xmltok.dll" /implib:"$(OUTDIR)\xmltok.lib" 
-DEF_FILE= \
-	".\xmltok.def"
-LINK32_OBJS= \
-	"$(INTDIR)\dllmain.obj" \
-	"$(INTDIR)\xmlrole.obj" \
-	"$(INTDIR)\xmltok.obj"
-
-"$(OUTDIR)\xmltok.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
-
 
 !IF "$(CFG)" == "xmltok - Win32 Release" || "$(CFG)" == "xmltok - Win32 Debug"
 SOURCE=.\dllmain.c
@@ -221,20 +187,35 @@ SOURCE=.\dllmain.c
 
 
 SOURCE=.\xmlrole.c
+
+!IF  "$(CFG)" == "xmltok - Win32 Release"
+
 DEP_CPP_XMLRO=\
 	".\xmldef.h"\
 	".\xmlrole.h"\
 	".\xmltok.h"\
 	
-NODEP_CPP_XMLRO=\
-	".\ap_config.h"\
-	".\nspr.h"\
+
+"$(INTDIR)\xmlrole.obj" : $(SOURCE) $(DEP_CPP_XMLRO) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "xmltok - Win32 Debug"
+
+DEP_CPP_XMLRO=\
+	".\xmldef.h"\
+	".\xmlrole.h"\
+	".\xmltok.h"\
 	
 
 "$(INTDIR)\xmlrole.obj" : $(SOURCE) $(DEP_CPP_XMLRO) "$(INTDIR)"
 
 
+!ENDIF 
+
 SOURCE=.\xmltok.c
+
+!IF  "$(CFG)" == "xmltok - Win32 Release"
+
 DEP_CPP_XMLTO=\
 	".\asciitab.h"\
 	".\iasciitab.h"\
@@ -247,13 +228,29 @@ DEP_CPP_XMLTO=\
 	".\xmltok_impl.h"\
 	".\xmltok_ns.c"\
 	
-NODEP_CPP_XMLTO=\
-	".\ap_config.h"\
-	".\nspr.h"\
+
+"$(INTDIR)\xmltok.obj" : $(SOURCE) $(DEP_CPP_XMLTO) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "xmltok - Win32 Debug"
+
+DEP_CPP_XMLTO=\
+	".\asciitab.h"\
+	".\iasciitab.h"\
+	".\latin1tab.h"\
+	".\nametab.h"\
+	".\utf8tab.h"\
+	".\xmldef.h"\
+	".\xmltok.h"\
+	".\xmltok_impl.c"\
+	".\xmltok_impl.h"\
+	".\xmltok_ns.c"\
 	
 
 "$(INTDIR)\xmltok.obj" : $(SOURCE) $(DEP_CPP_XMLTO) "$(INTDIR)"
 
+
+!ENDIF 
 
 SOURCE=.\xmltok_impl.c
 

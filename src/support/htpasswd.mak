@@ -123,7 +123,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\htpasswd.exe"
-	-@erase "$(OUTDIR)\htpasswd.ilk"
 	-@erase "$(OUTDIR)\htpasswd.map"
 	-@erase "$(OUTDIR)\htpasswd.pdb"
 
@@ -141,7 +140,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ws2_32.lib /nologo /subsystem:console /incremental:yes\
+ advapi32.lib shell32.lib ws2_32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\htpasswd.pdb" /map:"$(INTDIR)\htpasswd.map" /debug\
  /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" /pdbtype:sept 
 LINK32_OBJS= \
@@ -206,11 +205,6 @@ DEP_CPP_AP_BA=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_BA=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
 
 "$(INTDIR)\ap_base64.obj" : $(SOURCE) $(DEP_CPP_AP_BA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -246,10 +240,6 @@ DEP_CPP_AP_CH=\
 	"..\include\ap_sha1.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_CH=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
@@ -292,12 +282,6 @@ DEP_CPP_AP_CP=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-NODEP_CPP_AP_CP=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\os.h"\
-	"..\include\sfio.h"\
-	
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -337,10 +321,6 @@ DEP_CPP_AP_GE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-NODEP_CPP_AP_GE=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
-	
 
 "$(INTDIR)\ap_getpass.obj" : $(SOURCE) $(DEP_CPP_AP_GE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -375,11 +355,6 @@ DEP_CPP_AP_MD=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
@@ -416,11 +391,6 @@ DEP_CPP_AP_SH=\
 	"..\include\ap_sha1.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_AP_SH=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
@@ -461,12 +431,6 @@ DEP_CPP_AP_SN=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
-NODEP_CPP_AP_SN=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
-	"..\include\os.h"\
-	"..\include\sfio.h"\
 	
 
 "$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
@@ -509,10 +473,6 @@ DEP_CPP_HTPAS=\
 	"..\include\hsregex.h"\
 	"..\os\win32\getopt.h"\
 	"..\os\win32\os.h"\
-	
-NODEP_CPP_HTPAS=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\htpasswd.obj" : $(SOURCE) $(DEP_CPP_HTPAS) "$(INTDIR)"
