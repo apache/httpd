@@ -151,8 +151,7 @@ extern "C" {
 
 /* The name of the log files */
 #ifndef DEFAULT_XFERLOG
-#ifdef OS2
-/* Set default for OS/2 file system */
+#if defined(OS2) || defined(WIN32)
 #define DEFAULT_XFERLOG "logs/access.log"
 #else
 #define DEFAULT_XFERLOG "logs/access_log"
@@ -160,8 +159,7 @@ extern "C" {
 #endif /* DEFAULT_XFERLOG */
 
 #ifndef DEFAULT_ERRORLOG
-#ifdef OS2
-/* Set default for OS/2 file system */
+#if defined(OS2) || defined(WIN32)
 #define DEFAULT_ERRORLOG "logs/error.log"
 #else
 #define DEFAULT_ERRORLOG "logs/error_log"
