@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) Get basic HTTP proxy working on EBCDIC machines.  [Jeff Trawick]
+
   *) Allow mod_unique_id to work on systems with no IPv4 address
      corresponding to their host name.  [Jeff Trawick]
 

@@ -451,6 +451,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
 
     buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+    ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     if ( conf->preserve_host == 0 ) {
@@ -477,6 +478,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         }
         buf = apr_pstrcat(p, "Host: ", hostname, CRLF, NULL);
     }
+    ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);        
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
@@ -593,12 +595,17 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
                           headers_in[counter].val, CRLF,
                           NULL);
+        ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
     /* add empty line at the end of the headers */
+#if APR_CHARSET_EBCDIC
+    e = apr_bucket_immortal_create("\015\012", 2, c->bucket_alloc);
+#else
     e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1, c->bucket_alloc);
+#endif
     APR_BRIGADE_INSERT_TAIL(bb, e);
     e = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
