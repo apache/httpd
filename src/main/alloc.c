@@ -2645,7 +2645,6 @@ static void free_proc_chain(struct process_chain *procs)
     struct process_chain *p;
     int need_timeout = 0;
     int timeout_interval;
-    int exit_int;
     int status;
 
     if (procs == NULL)
