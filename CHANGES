@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Accept multiple leading /'s for requests within the DocumentRoot.
+     PR 10946  [William Rowe]
+
   *) Solved the reports of .pdf byterange failures on Win32 alone.
      APR's sendfile for the win32 platform collapses header and trailer
      buffers into a single buffer.  However, we destroyed the pointers
