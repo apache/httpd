@@ -111,17 +111,21 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
     res->unsetenv = NULL;
 
     arr = apr_table_elts(add->unsetenv);
-    elts = (const apr_table_entry_t *)arr->elts;
+    if (arr) {
+        elts = (const apr_table_entry_t *)arr->elts;
 
-    for (i = 0; i < arr->nelts; ++i) {
-        apr_table_unset(res->vars, elts[i].key);
+        for (i = 0; i < arr->nelts; ++i) {
+            apr_table_unset(res->vars, elts[i].key);
+        }
     }
 
     arr = apr_table_elts(add->vars);
-    elts = (const apr_table_entry_t *)arr->elts;
+    if (arr) {
+        elts = (const apr_table_entry_t *)arr->elts;
 
-    for (i = 0; i < arr->nelts; ++i) {
-        apr_table_setn(res->vars, elts[i].key, elts[i].val);
+        for (i = 0; i < arr->nelts; ++i) {
+            apr_table_setn(res->vars, elts[i].key, elts[i].val);
+        }
     }
 
     return res;
