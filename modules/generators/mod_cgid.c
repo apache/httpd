@@ -94,6 +94,9 @@
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <sys/un.h> /* for sockaddr_un */
 #include <sys/types.h>
 
