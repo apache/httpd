@@ -722,6 +722,11 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 
     if (endp) *endp = '\0';
     
+    /* FIXME: There's another feature waiting to happen here -- since you
+	can now put multiple addresses/names on a single <VirtualHost>
+	you might want to use it to group common definitions and then
+	define other "subhosts" with their individual differences.  But
+	personally I'd rather just do it with a macro preprocessor. -djg */
     if (main_server->is_virtual)
 	return "<VirtualHost> doesn't nest!";
     

@@ -477,6 +477,15 @@ struct conn_rec {
 
 /* Per-vhost config... */
 
+typedef struct server_addr_rec server_addr_rec;
+struct server_addr_rec {
+    server_addr_rec *next;
+    struct in_addr host_addr;	/* The bound address, for this server */
+    short host_port;         	/* The bound port, for this server */   
+    char *virthost;		/* The name given in <VirtualHost> */
+};
+
+
 struct server_rec {
 
     server_rec *next;
@@ -508,8 +517,7 @@ struct server_rec {
 				 */
     /* Transaction handling */
 
-    struct in_addr host_addr;	/* The bound address, for this server */
-    short host_port;            /* The bound port, for this server */
+    server_addr_rec *addrs;
     int timeout;		/* Timeout, in seconds, before we give up */
     int keep_alive_timeout;	/* Seconds we'll wait for another request */
     int keep_alive;		/* Maximum requests per connection */
@@ -518,7 +526,6 @@ struct server_rec {
     int pathlen;		/* Length of path */
 
     char *names;		/* Wildcarded names for HostAlias servers */
-    char *virthost;		/* The name given in <VirtualHost> */
 
     uid_t server_uid;		/* effective user id when calling exec wrapper */
     gid_t server_gid;		/* effective group id when calling exec wrapper */

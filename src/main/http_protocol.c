@@ -575,12 +575,14 @@ void check_hostalias (request_rec *r) {
   char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
   int port = (*r->hostname) ? atoi(r->hostname) : 80;
   server_rec *s;
+  int l;
 
   if (port && (port != r->server->port))
     return;
 
-  if ((host[strlen(host)-1]) == '.') {
-    host[strlen(host)-1] = '\0';
+  l = strlen(host)-1;
+  if ((host[l]) == '.') {
+    host[l] = '\0';
   }
 
   r->hostname = host;

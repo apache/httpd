@@ -685,9 +685,79 @@ int parse_htaccess(void **result, request_rec *r, int override,
  * are with the command table in http_core.c.
  */
 
+/*
+ * Parses a host of the form <address>[:port]
+ * paddr is used to create a list in the order of input
+ * **paddr is the ->next pointer of the last entry (or s->addrs)
+ * *paddr is the variable used to keep track of **paddr between calls
+ */
+static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
+{
+    struct hostent *hep;
+    unsigned long my_addr;
+    int ports;
+    server_addr_rec *sar;
+    char *t;
+    int i;
+
+    if( *w == 0 ) return;
+
+    t = strchr(w, ':');
+    ports = 0;
+    if (t != NULL && strcmp(t+1, "*") != 0) ports = atoi(t+1);
+
+    if (t != NULL) *t = '\0';
+    if (strcmp(w, "*") == 0) {
+	sar = pcalloc( p, sizeof( server_addr_rec ) );
+	**paddr = sar;
+	*paddr = &sar->next;
+	sar->host_addr.s_addr = htonl(INADDR_ANY);
+	sar->host_port = ports;
+	sar->virthost = pstrdup(p, w);
+	if (t != NULL) *t = ':';
+	return;
+    }
+
+#ifdef DGUX
+    my_addr = inet_network(w);
+#else
+    my_addr = inet_addr(w);
+#endif
+    if (my_addr != ((unsigned long) 0xffffffff)) {
+	sar = pcalloc( p, sizeof( server_addr_rec ) );
+	**paddr = sar;
+	*paddr = &sar->next;
+	sar->host_addr.s_addr = my_addr;
+	sar->host_port = ports;
+	sar->virthost = pstrdup(p, w);
+	if (t != NULL) *t = ':';
+	return;
+    }
+
+    hep = gethostbyname(w);
+
+    if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
+	fprintf (stderr, "Cannot resolve host name %s --- exiting!\n", w);
+	exit(1);
+    }
+
+    for( i = 0; hep->h_addr_list[i]; ++i ) {
+	sar = pcalloc( p, sizeof( server_addr_rec ) );
+	**paddr = sar;
+	*paddr = &sar->next;
+	sar->host_addr = *(struct in_addr *)hep->h_addr_list[i];
+	sar->host_port = ports;
+	sar->virthost = pstrdup(p, w);
+    }
+
+    if (t != NULL) *t = ':';
+}
+
 server_rec *init_virtual_host (pool *p, char *hostname)
 {
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
+    char *t;
+    server_addr_rec **addrs;
 
 #ifdef RLIMIT_NOFILE
     struct rlimit limits;
@@ -708,12 +778,21 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->timeout = 0;
     s->keep_alive_timeout = 0;
     s->keep_alive = -1;
-    s->host_addr.s_addr = get_virthost_addr (hostname, &s->host_port);
-    s->port = s->host_port;  /* set them the same, by default */
+    /* start the list of addreses */
+    addrs = &s->addrs;
+    while( hostname[0] ) {
+	get_addresses( p, getword_conf( p, &hostname ), &addrs );
+    }
+    /* terminate the list */
+    *addrs = NULL;
+    if( s->addrs == NULL ) {
+	fprintf( stderr, "virtual host must have at least one address\n" );
+	exit(1);
+    }
+    s->port = s->addrs->host_port;  /* set them the same, by default */
     s->next = NULL;
 
     s->is_virtual = 1;
-    s->virthost = pstrdup(p, hostname);
     s->names = NULL;
 
     s->module_config = create_empty_config (p);
@@ -804,15 +883,16 @@ server_rec *init_server_config(pool *p)
     s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
     s->keep_alive = DEFAULT_KEEPALIVE;
     s->next = NULL;
-    s->host_addr.s_addr = htonl (INADDR_ANY); /* NOT virtual host;
+    s->addrs = pcalloc(p, sizeof (server_addr_rec));
+    s->addrs->host_addr.s_addr = htonl (INADDR_ANY); /* NOT virtual host;
 					       * don't match any real network
 					       * interface.
 					       */
-    s->host_port = 0; /* matches any port */
+    s->addrs->host_port = 0; /* matches any port */
 
     s->module_config = create_server_config (p, s);
     s->lookup_defaults = create_default_per_dir_config (p);
-    
+
     return s;
 }
 

@@ -1203,15 +1203,28 @@ server_rec *find_virtual_server (struct in_addr server_ip, int port,
 				 server_rec *server)
 {
     server_rec *virt;
+    server_addr_rec *sar;
+    server_rec *def;
 
-    for (virt = server->next; virt; virt = virt->next)
-	if ((virt->is_virtual == 1) &&	/* VirtualHost */
-	    (virt->host_addr.s_addr == htonl(INADDR_ANY) ||
-	     virt->host_addr.s_addr == server_ip.s_addr) &&
-	    (virt->host_port == 0 || virt->host_port == port))
-	    return virt;
+    def = server;
+    for (virt = server->next; virt; virt = virt->next) {
+	for (sar = virt->addrs; sar; sar = sar->next) {
+	    if ((virt->is_virtual == 1) &&	/* VirtualHost */
+		(sar->host_addr.s_addr == htonl(INADDR_ANY) ||
+		sar->host_addr.s_addr == server_ip.s_addr) &&
+		(sar->host_port == 0 || sar->host_port == port)) {
+		return virt;
+	    } else if ( sar->host_addr.s_addr == 0xffffffff ) {
+		/* this is so that you can build a server that is the
+		    "default" for any interface which isn't explicitly
+		    specified.  So that you can implement "deny anything
+		    which isn't expressly permitted" -djg */
+		def = virt;
+	    }
+	}
+    }
 
-    return server;
+    return def;
 }
 
 void default_server_hostnames(server_rec *s)
@@ -1219,33 +1232,51 @@ void default_server_hostnames(server_rec *s)
     struct hostent *h, *main;
     char *def_hostname;
     int n;
+    server_addr_rec *sar;
+    int has_inaddr_any;
 
     /* Main host first */
     
-    if (!s->server_hostname)
+    if (!s->server_hostname) {
 	s->server_hostname = get_local_host(pconf);
+    }
 
     def_hostname = s->server_hostname;
     main = gethostbyname(def_hostname);
+    if( main == NULL ) {
+	fprintf(stderr,"httpd: cannot determine local host name.\n");
+	fprintf(stderr,"Use ServerName to set it manually.\n");
+	exit(1);
+    }
+
 
     /* Then virtual hosts */
     
     for (s = s->next; s; s = s->next) {
 	/* Check to see if we might be a HTTP/1.1 virtual host - same IP */
+	has_inaddr_any = 0;
 	for (n = 0; main->h_addr_list[n] != NULL; n++) {
-	  if (s->host_addr.s_addr ==
-	      (((struct in_addr *)(main->h_addr_list[n]))->s_addr))
-	    s->is_virtual = 2;
+	    for(sar = s->addrs; sar; sar = sar->next) {
+		if (sar->host_addr.s_addr ==
+		    (((struct in_addr *)(main->h_addr_list[n]))->s_addr))
+		    s->is_virtual = 2;
+		if( sar->host_addr.s_addr == htonl(INADDR_ANY) ) {
+		    has_inaddr_any = 1;
+		}
+	    }
 	}
 
+	/* FIXME: some of this decision doesn't make a lot of sense in
+	    the presence of multiple addresses on the <VirtualHost>
+	    directive.  It should issue warnings here perhaps. -djg */
         if (!s->server_hostname) {
 	    if (s->is_virtual == 2)
-	        s->server_hostname = s->virthost;
-	    else if (s->host_addr.s_addr == htonl(INADDR_ANY))
+	        s->server_hostname = s->addrs->virthost;
+	    else if (has_inaddr_any)
 		s->server_hostname = def_hostname;
 	    else
 	    {
-		h = gethostbyaddr ((char *)&(s->host_addr),
+		h = gethostbyaddr ((char *)&(s->addrs->host_addr),
 				   sizeof (struct in_addr), AF_INET);
 		if (h != NULL)
 		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
@@ -1253,7 +1284,7 @@ void default_server_hostnames(server_rec *s)
 	}
     }
 }
-	
+
 void abort_connection (conn_rec *c)
 {
     /* Make sure further I/O DOES NOT HAPPEN */
