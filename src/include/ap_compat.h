@@ -306,6 +306,7 @@ extern "C" {
 #define read_config                    ap_read_config
 #define read_request                   ap_read_request
 #define regexec                        ap_regexec
+#define regerror                       ap_regerror
 #define register_cleanup               ap_register_cleanup
 #define register_other_child           ap_register_other_child
 #define release_mutex                  ap_release_mutex

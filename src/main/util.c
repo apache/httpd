@@ -293,6 +293,12 @@ API_EXPORT(int) ap_regexec(const regex_t *preg, const char *string,
     return regexec(preg, string, nmatch, pmatch, eflags);
 }
 
+API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
+{
+    return regerror(errcode, preg, errbuf, errbuf_size);
+}
+
+
 /* This function substitutes for $0-$9, filling in regular expression
  * submatches. Pass it the same nmatch and pmatch arguments that you
  * passed ap_regexec(). pmatch should not be greater than the maximum number

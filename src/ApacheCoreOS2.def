@@ -268,7 +268,7 @@ EXPORTS
 ;	os_stat   @261
 ;	readdir   @262
 	regcomp   @263
-	regexec   @264
+	ap_regexec   @264
 	regfree   @265
 ;	access_module @266
 ;	alias_module   @267
@@ -348,3 +348,4 @@ EXPORTS
 	ap_my_generation  @342
 	ap_dummy_mutex  @343
 	ap_signal  @344
+	ap_regerror  @345
