@@ -1306,6 +1306,7 @@ server_rec *ap_read_config(process_rec *process, ap_context_t *ptemp, const char
 
     fixup_virtual_hosts(p, s);
     ap_fini_vhost_config(p, s);
+    ap_sort_hooks();
 
     return s;
 }
