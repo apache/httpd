@@ -890,6 +890,10 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     int length;
     ap_bucket_brigade *b;
     ap_bucket *e;
+    
+#define ASCII_CR '\015'
+#define ASCII_LF '\012'
+    
 #ifdef APACHE_XLATE_XXX
     /* When getline() is called, the HTTP protocol is in a state
      * where we MUST be reading "plain text" protocol stuff,
@@ -940,12 +944,23 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             break;
         }
 
-        if ((toss = ap_strchr_c(temp, '\r')) != NULL) { 
-            length = toss - temp + 2;
+	/* check for line end using ascii encoding, even on an ebcdic box
+	 * since this is raw protocol data fresh from the network
+	 */
+        if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
+            length = toss - temp + 1;
             e->split(e, length);
-            apr_cpystrn(pos, temp, length);
-            pos[length - 2] = '\n';
-            pos[--length] = '\0';
+            apr_cpystrn(pos, temp, length + 1);
+	    
+	    /* get rid of optional \r, again using ascii encoding */
+	    
+	    /*** XXX need 2 sentinels in front of pos 
+	     ***     which are never ASCII_CR, in case length < 2
+	     */
+	    if (pos[length - 2] == ASCII_CR) {
+                pos[length - 2] = ASCII_LF;
+                pos[--length] = '\0';
+	    }
             AP_BUCKET_REMOVE(e);
             e->destroy(e);
         }
