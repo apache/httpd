@@ -46,14 +46,14 @@
 
     <p>Whether or not you have preloaded an ISAPI extension, all
     ISAPI extensions are governed by the same permissions and
-    restrictions as CGI scripts. That is, <code>Options
-    ExecCGI</code> must be set for the directory that contains the
-    ISAPI .dll file.</p>
+    restrictions as CGI scripts. That is, <directive module="core"
+    >Options</directive> <code>ExecCGI</code> must be set for the
+    directory that contains the ISAPI .dll file.</p>
 
     <p>Review the <a href="#notes">Additional Notes</a> and the <a
     href="#journal">Programmer's Journal</a> for additional details
     and clarification of the specific ISAPI support offered by
-    mod_isapi.</p>
+    <module>mod_isapi</module>.</p>
 </section>
 
 <section id="notes"><title>Additional Notes</title>
@@ -72,14 +72,15 @@
     into the server and keep it loaded until memory usage is too
     high, or unless configuration options are specified. Apache
     currently loads and unloads the ISAPI extension each time it is
-    requested, unless the ISAPICacheFile directive is specified.
+    requested, unless the <directive module="mod_isapi"
+    >ISAPICacheFile</directive> directive is specified.
     This is inefficient, but Apache's memory model makes this the
     most effective method. Many ISAPI modules are subtly
     incompatible with the Apache server, and unloading these
     modules helps to ensure the stability of the server.</p>
 
     <p>Also, remember that while Apache supports ISAPI Extensions,
-    it <strong>does not support ISAPI Filters.</strong> Support for
+    it <strong>does not support ISAPI Filters</strong>. Support for
     filters may be added at a later date, but no support is planned
     at this time.</p>
 </section>
@@ -87,125 +88,127 @@
 <section id="journal"><title>Programmer's Journal</title>
 
     <p>If you are programming Apache 2.0 <module>mod_isapi</module>
-    modules, you must limit your calls to ServerSupportFunction to the
-    following directives:</p>
+    modules, you must limit your calls to <code>ServerSupportFunction</code>
+    to the following directives:</p>
 
     <dl>
-      <dt>HSE_REQ_SEND_URL_REDIRECT_RESP</dt>
-
+      <dt><code>HSE_REQ_SEND_URL_REDIRECT_RESP</code></dt>
       <dd>Redirect the user to another location.<br />
-       This must be a fully qualified URL (e.g.
-      http://server/location).</dd>
+      This must be a fully qualified URL (<em>e.g.</em>
+      <code>http://server/location</code>).</dd>
 
-      <dt>HSE_REQ_SEND_URL</dt>
-
+      <dt><code>HSE_REQ_SEND_URL</code></dt>
       <dd>Redirect the user to another location.<br />
-       This cannot be a fully qualified URL, you are not allowed to
-      pass the protocol or a server name (e.g. simply
-      /location).<br />
-       This redirection is handled by the server, not the
+      This cannot be a fully qualified URL, you are not allowed to
+      pass the protocol or a server name (<em>e.g.</em> simply
+      <code>/location</code>).<br />
+      This redirection is handled by the server, not the
       browser.<br />
-       <strong>Warning:</strong> in their recent documentation,
-      Microsoft appears to have abandoned the distinction between
-      the two HSE_REQ_SEND_URL functions. Apache continues to treat
-      them as two distinct functions with different requirements
-      and behaviors.</dd>
+      <note type="warning"><title>Warning</title>
+        <p>In their recent documentation, Microsoft appears to have
+        abandoned the distinction between the two
+        <code>HSE_REQ_SEND_URL</code> functions. Apache continues to treat
+        them as two distinct functions with different requirements
+        and behaviors.</p>
+      </note></dd>
 
-      <dt>HSE_REQ_SEND_RESPONSE_HEADER</dt>
-
+      <dt><code>HSE_REQ_SEND_RESPONSE_HEADER</code></dt>
       <dd>Apache accepts a response body following the header if it
       follows the blank line (two consecutive newlines) in the
       headers string argument. This body cannot contain NULLs,
       since the headers argument is NULL terminated.</dd>
 
-      <dt>HSE_REQ_DONE_WITH_SESSION</dt>
-
+      <dt><code>HSE_REQ_DONE_WITH_SESSION</code></dt>
       <dd>Apache considers this a no-op, since the session will be
       finished when the ISAPI returns from processing.</dd>
 
-      <dt>HSE_REQ_MAP_URL_TO_PATH</dt>
-
+      <dt><code>HSE_REQ_MAP_URL_TO_PATH</code></dt>
       <dd>Apache will translate a virtual name to a physical
       name.</dd>
 
-      <dt>HSE_APPEND_LOG_PARAMETER</dt>
-
+      <dt><code>HSE_APPEND_LOG_PARAMETER</code></dt>
       <dd>
         This logged message may be captured in any of the following
         logs:
 
         <ul>
-          <li>in the \"%{isapi-parameter}n\" component in a
-          CustomLog directive</li>
-
-          <li>in the %q log component with the
-          ISAPIAppendLogToQuery On directive</li>
-
-          <li>in the error log with the ISAPIAppendLogToErrors On
+          <li>in the <code>\"%{isapi-parameter}n\"</code> component in a
+          <directive module="mod_log_config">CustomLog</directive>
           directive</li>
+
+          <li>in the <code>%q</code> log component with the
+          <directive module="mod_isapi">ISAPIAppendLogToQuery</directive>
+          <code>On</code> directive</li>
+
+          <li>in the error log with the <directive module="mod_isapi"
+          >ISAPIAppendLogToErrors</directive> <code>On</code> directive</li>
         </ul>
-        The first option, the %{isapi-parameter}n component, is
-        always available and prefered.
+
+        <p>The first option, the <code>%{isapi-parameter}n</code> component,
+        is always available and preferred.</p>
       </dd>
 
-      <dt>HSE_REQ_IS_KEEP_CONN</dt>
-
+      <dt><code>HSE_REQ_IS_KEEP_CONN</code></dt>
       <dd>Will return the negotiated Keep-Alive status.</dd>
 
-      <dt>HSE_REQ_SEND_RESPONSE_HEADER_EX</dt>
+      <dt><code>HSE_REQ_SEND_RESPONSE_HEADER_EX</code></dt>
+      <dd>Will behave as documented, although the <code>fKeepConn</code>
+      flag is ignored.</dd>
 
-      <dd>Will behave as documented, although the fKeepConn flag is
-      ignored.</dd>
-
-      <dt>HSE_REQ_IS_CONNECTED</dt>
-
+      <dt><code>HSE_REQ_IS_CONNECTED</code></dt>
       <dd>Will report false if the request has been aborted.</dd>
     </dl>
 
-    <p>Apache returns FALSE to any unsupported call to
-    ServerSupportFunction, and sets the GetLastError value to
-    ERROR_INVALID_PARAMETER.</p>
+    <p>Apache returns <code>FALSE</code> to any unsupported call to
+    <code>ServerSupportFunction</code>, and sets the
+    <code>GetLastError</code> value to
+    <code>ERROR_INVALID_PARAMETER</code>.</p>
 
-    <p>ReadClient retrieves the request body exceeding the initial
-    buffer (defined by ISAPIReadAheadBuffer). Based on the
-    ISAPIReadAheadBuffer setting (number of bytes to buffer prior
-    to calling the ISAPI handler) shorter requests are sent
+    <p><code>ReadClient</code> retrieves the request body exceeding the
+    initial buffer (defined by <directive module="mod_isapi"
+    >ISAPIReadAheadBuffer</directive>). Based on the
+    <directive>ISAPIReadAheadBuffer</directive> setting (number of bytes
+    to buffer prior to calling the ISAPI handler) shorter requests are sent
     complete to the extension when it is invoked. If the request is
-    longer, the ISAPI extension must use ReadClient to retrieve the
-    remaining request body.</p>
+    longer, the ISAPI extension must use <code>ReadClient</code> to
+    retrieve the remaining request body.</p>
 
-    <p>WriteClient is supported, but only with the HSE_IO_SYNC flag
-    or no option flag (value of 0). Any other WriteClient request
-    will be rejected with a return value of FALSE, and a
-    GetLastError value of ERROR_INVALID_PARAMETER.</p>
+    <p><code>WriteClient</code> is supported, but only with the
+    <code>HSE_IO_SYNC</code> flag or no option flag (value of
+    <code>0</code>). Any other <code>WriteClient</code> request
+    will be rejected with a return value of <code>FALSE</code>, and a
+    <code>GetLastError</code> value of
+    <code>ERROR_INVALID_PARAMETER</code>.</p>
 
-    <p>GetServerVariable is supported, although extended server
+    <p><code>GetServerVariable</code> is supported, although extended server
     variables do not exist (as defined by other servers.) All the
     usual Apache CGI environment variables are available from
-    GetServerVariable, as well as the ALL_HTTP and ALL_RAW
-    values.</p>
+    <code>GetServerVariable</code>, as well as the <code>ALL_HTTP</code>
+    and <code>ALL_RAW</code> values.</p>
 
     <p>Apache 2.0 <module>mod_isapi</module> supports additional
     features introduced in later versions of the ISAPI specification,
-    as well as limited emulation of async I/O and the TransmitFile
-    semantics.  Apache also supports preloading ISAPI .dlls for
-    performance, neither of which were not available under Apache 1.3
-    mod_isapi.</p>
+    as well as limited emulation of async I/O and the
+    <code>TransmitFile</code> semantics.  Apache also supports preloading
+    ISAPI .dlls for performance, neither of which were not available under
+    Apache 1.3 <code>mod_isapi</code>.</p>
 </section>
 
 <directivesynopsis>
 <name>ISAPICacheFile</name>
 <description>ISAPI .dll files to be loaded at startup</description>
-<syntax>ISAPICacheFile <em>file-path</em> [<em>file-path</em>] ...</syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<syntax>ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>Specifies a space-separated list of file names to be loaded
     when the Apache server is launched, and remain loaded until the
     server is shut down. This directive may be repeated for every
     ISAPI .dll file desired. The full path name of each file should
-    be specified.</p>
+    be specified. If the path name is not absolute, it will be treated
+    relative to <directive module="core">ServerRoot</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -213,19 +216,18 @@
 <name>ISAPIReadAheadBuffer</name>
 <description>Size of the Read Ahead Buffer sent to ISAPI
 extensions</description>
-<syntax>ISAPIReadAheadBuffer <em>size</em></syntax>
+<syntax>ISAPIReadAheadBuffer <var>size</var></syntax>
 <default>ISAPIReadAheadBuffer 49152</default>
-<contextlist><context>server config</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
     <p>Defines the maximum size of the Read Ahead Buffer sent to
     ISAPI extensions when they are initially invoked. All remaining
-    data must be retrieved using the ReadClient callback; some
-    ISAPI extensions may not support the ReadClient function. Refer
-    questions to the ISAPI extension's author.</p>
+    data must be retrieved using the <code>ReadClient</code> callback; some
+    ISAPI extensions may not support the <code>ReadClient</code> function.
+    Refer questions to the ISAPI extension's author.</p>
 </usage>
 </directivesynopsis>
 
@@ -235,10 +237,8 @@ extensions</description>
 extensions</description>
 <syntax>ISAPILogNotSupported on|off</syntax>
 <default>ISAPILogNotSupported off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
@@ -251,56 +251,52 @@ extensions</description>
 
 <directivesynopsis>
 <name>ISAPIAppendLogToErrors</name>
-<description>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
-extensions to the error log</description>
+<description>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the error log</description>
 <syntax>ISAPIAppendLogToErrors on|off</syntax>
 <default>ISAPIAppendLogToErrors off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
+    <p>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from ISAPI
     extensions to the server error log.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ISAPIAppendLogToQuery</name>
-<description>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
-extensions to the query field</description>
+<description>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the query field</description>
 <syntax>ISAPIAppendLogToQuery on|off</syntax>
 <default>ISAPIAppendLogToQuery on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
-    extensions to the query field (appended to the CustomLog %q
+    <p>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from ISAPI
+    extensions to the query field (appended to the <directive
+    module="mod_log_config">CustomLog</directive> <code>%q</code>
     component).</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ISAPIFakeAsync</name>
-<description>Fake asynchronous support for isapi callbacks</description>
+<description>Fake asynchronous support for ISAPI callbacks</description>
 <syntax>ISAPIFakeAsync on|off</syntax>
 <default>ISAPIFakeAsync off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>While set to on, asynchronous support for isapi callbacks is
+    <p>While set to on, asynchronous support for ISAPI callbacks is
     simulated.</p>
 </usage>
 </directivesynopsis>
 
 </modulesynopsis>
+
