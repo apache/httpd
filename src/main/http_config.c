@@ -625,6 +625,7 @@ API_EXPORT(void) ap_remove_module(module *m)
     m->module_index = -1;	/* simulate being unloaded, should
 				 * be unnecessary */
     dynamic_modules--;
+    total_modules--;
 }
 
 API_EXPORT(void) ap_add_loaded_module(module *mod)
