@@ -2648,6 +2648,8 @@ static int handle_multi(request_rec *r)
      */
     ap_pool_join(r->pool, sub_req->pool);
     r->mtime = 0; /* reset etag info for subrequest */
+    r->uri = sub_req->uri;
+    r->args = sub_req->args;
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
