@@ -125,6 +125,18 @@ documentation</A> for more information.
 <H2><A NAME="config">Configuration Enhancements</A></H2>
 
 <DL>
+<DT><STRONG>Unified Server Configuration Files</STRONG></DT>
+<DD>As of the release following Apache 1.3.3, the contents of the three
+    server configuration files (<SAMP>httpd.conf</SAMP>,
+    <SAMP>srm.conf</SAMP>, and <SAMP>access.conf</SAMP>) have
+    been merged into a single <SAMP>httpd.conf</SAMP> file.
+    The <SAMP>srm.conf</SAMP> and <SAMP>access.conf</SAMP> files
+    are now empty except for comments directing the Webmaster
+    to look in <SAMP>httpd.conf</SAMP>.  In addition, the
+    merged <SAMP>httpd.conf</SAMP> file has been restructured
+    to allow directives to appear in a hopefully more
+    intuitive and meaningful order.
+</DD>
 <DT><STRONG>Apache Autoconf-style Interface (APACI)</STRONG>
 <DD>Until Apache 1.3 there was no real out-of-the-box batch-capable
     build and installation procedure for the complete Apache

@@ -75,10 +75,18 @@ document, or in the <CODE>src/CHANGES</CODE> file.
   <LI>There have been numerous changes to the default config files.  
     Ensure that you compare your existing configuration files with the
     new ones to ensure there aren't any undesired differences.  In
-    particular, the current config files apply different 
-    <A HREF="mod/core.html#options">Options</A> and 
-    <A HREF="mod/core.html#allowoverride">AllowOverride</A> settings to
-    various directories.
+    particular:
+    <UL>
+     <LI>As of Apache 1.3.0, the current config files apply different 
+      <A HREF="mod/core.html#options">Options</A> and 
+      <A HREF="mod/core.html#allowoverride">AllowOverride</A> settings to
+      various directories than were used in 1.2.
+     </LI>
+     <LI>As of the release following Apache 1.3.3, the three
+      config file templates have been merged into <SAMP>httpd.conf-dist</SAMP>
+      and the order of the directives changed.
+     </LI>
+    </UL>
   <LI>As of 1.3.2, <A HREF="mod/mod_expires.html"><CODE>mod_expires</CODE></A>
     will add Expires headers to content that does not come from a file 
     on disk, unless you are using a modification time based setting.
