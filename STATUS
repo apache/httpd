@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/28 02:09:31 $]
+Last modified at [$Date: 2003/07/28 15:04:44 $]
 
 Release:
 
@@ -279,6 +279,11 @@ PATCHES TO PORT FROM 2.1
       which is responsible for this behaviour. I'd suggest to backport that
       function rewrite at all (it's even much better code :-).
         modules/mappers/mod_rewrite.c: r1.162
+      +1: nd
+
+    * mod_rewrite: don't exit(1) if the logfile could not be opened. Return
+      internal server error instead to shutdown cleanly.
+        modules/mappers/mod_rewrite.c: r1.191
       +1: nd
 
 CURRENT RELEASE NOTES:
