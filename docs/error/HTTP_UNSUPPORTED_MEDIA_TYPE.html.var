@@ -61,6 +61,32 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html"-->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Tipo di dato non supportato!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server non &egrave; in grado di gestire il 
+    tipo del formato dei dati trasmesso nella richiesta.
+   
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="지원하지 않는 미디어 형식!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청으로 보내온 미디어 형식을 이 서버가 지원하지 않습니다. 
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -85,31 +111,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Mediatypen st&ouml;ds ej!"
---><!--#include virtual="include/top.html" -->
-
-    Servern st&ouml;djer inte den mediatyp som skickats i f&ouml;rfr&aring;gan.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Tipo di dato non supportato!"
---><!--#include virtual="include/top.html" -->
-
-    Il server non &egrave; in grado di gestire il 
-    tipo del formato dei dati trasmesso nella richiesta.
-   
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -136,15 +137,14 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="지원하지 않는 미디어 형식!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Mediatypen st&ouml;ds ej!"
 --><!--#include virtual="include/top.html" -->
 
-    요청으로 보내온 미디어 형식을 이 서버가 지원하지 않습니다. 
+    Servern st&ouml;djer inte den mediatyp som skickats i f&ouml;rfr&aring;gan.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

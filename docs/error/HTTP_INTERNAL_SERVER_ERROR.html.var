@@ -142,6 +142,62 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Errore del server!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Messaggio di errore:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta. Il server potrebbe
+    essere sovraccarico oppure si &egrave; verificato un
+    errore in uno script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="서버 오류!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    
+    서버에 내부 오류가 발생하여 요청을 끝까지 처리하지 못했습니다.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    오류 내용:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    서버에 내부 오류가 생겨 요청을 끝까지 처리하지 못했습니다.
+    서버에 과부하가 걸렸거나 아니면 CGI 프로그램에 오류가 있었습니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -195,63 +251,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Serverfel!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran.
-
-    <!--#include virtual="include/spacer.html" -->
-
-    Felmeddelande:
-    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-
-  <!--#else -->
-
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
-    eller s&aring; inneh&aring;ller CGI-skriptet fel.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Errore del server!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-
-    Il server ha generato un errore interno e non &egrave;
-    in grado di soddisfare la richiesta.
-
-    <!--#include virtual="include/spacer.html" -->
-
-    Messaggio di errore:
-    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-
-  <!--#else -->
-
-    Il server ha generato un errore interno e non &egrave;
-    in grado di soddisfare la richiesta. Il server potrebbe
-    essere sovraccarico oppure si &egrave; verificato un
-    errore in uno script CGI.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -310,29 +309,30 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="서버 오류!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Serverfel!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-    
-    서버에 내부 오류가 발생하여 요청을 끝까지 처리하지 못했습니다.
+
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
+    att slutf&ouml;ra din beg&auml;ran.
 
     <!--#include virtual="include/spacer.html" -->
 
-    오류 내용:
-    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+    Felmeddelande:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    서버에 내부 오류가 생겨 요청을 끝까지 처리하지 못했습니다.
-    서버에 과부하가 걸렸거나 아니면 CGI 프로그램에 오류가 있었습니다.
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
+    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
+    eller s&aring; inneh&aring;ller CGI-skriptet fel.
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

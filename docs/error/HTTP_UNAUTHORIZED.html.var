@@ -107,6 +107,48 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Autorizzazione necessaria!"
+--><!--#include virtual="include/top.html" -->
+
+    Questo server non pu&ograve; verificare l'autorizzazione
+    all'accesso a "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Questo errore potrebbe essere causato da credenziali errate
+    (nome utente o password errata) oppure da un browser che non
+    riesce a comunicare il nome utente e la password in modo corretto.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Nel caso in cui ritieni di aver diritto ad accedere al documento,
+    controlla il nome utente e la password forniti e riprova.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="인증 필요!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    이 서버가 "<!--#echo encoding="url" var="REDIRECT_URL" -->" URL을
+    접근할 수 있는 권한이 있는지 확인하지 못했습니다.
+    잘못된 인증 정보(가령, 잘못된 암호)를 보냈거나 아니면
+    사용하시는 브라우저가 필요한 인증 정보를 어떻게 보내는지 모르는 것입니다.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    이 문서를 사용할 수 있도록 허가를 받았는데도 이런다면,
+    사용자 ID와 암호를 확인하시고 다시 시도하시기 바랍니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -148,47 +190,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Autentisering kr&auml;vs!"
---><!--#include virtual="include/top.html" -->
-
-    Servern kunde inte verifiera att du har till&aring;telse att bes&ouml;ka 
-    adressen "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Antingen angav du felaktiga uppgifter (ex. fel l&ouml;senord) eller s&aring;
-    st&ouml;djer inte din webbl&auml;sare detta autentiseringss&auml;tt.
-
-  <!--#include virtual="include/spacer.html" -->
-
-    Om du har till&aring;telse att bes&ouml;ka sidan, v&auml;nligen kontrollera ditt 
-    anv&auml;ndarnamn samt l&ouml;senord och f&ouml;rs&ouml;k igen.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Autorizzazione necessaria!"
---><!--#include virtual="include/top.html" -->
-
-    Questo server non pu&ograve; verificare l'autorizzazione
-    all'accesso a "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Questo errore potrebbe essere causato da credenziali errate
-    (nome utente o password errata) oppure da un browser che non
-    riesce a comunicare il nome utente e la password in modo corretto.
-
-  <!--#include virtual="include/spacer.html" -->
-
-    Nel caso in cui ritieni di aver diritto ad accedere al documento,
-    controlla il nome utente e la password forniti e riprova.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -229,23 +230,22 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="인증 필요!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Autentisering kr&auml;vs!"
 --><!--#include virtual="include/top.html" -->
 
-    이 서버가 "<!--#echo encoding="url" var="REDIRECT_URL" -->" URL을
-    접근할 수 있는 권한이 있는지 확인하지 못했습니다.
-    잘못된 인증 정보(가령, 잘못된 암호)를 보냈거나 아니면
-    사용하시는 브라우저가 필요한 인증 정보를 어떻게 보내는지 모르는 것입니다.
+    Servern kunde inte verifiera att du har till&aring;telse att bes&ouml;ka 
+    adressen "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Antingen angav du felaktiga uppgifter (ex. fel l&ouml;senord) eller s&aring;
+    st&ouml;djer inte din webbl&auml;sare detta autentiseringss&auml;tt.
 
   <!--#include virtual="include/spacer.html" -->
 
-    이 문서를 사용할 수 있도록 허가를 받았는데도 이런다면,
-    사용자 ID와 암호를 확인하시고 다시 시도하시기 바랍니다.
+    Om du har till&aring;telse att bes&ouml;ka sidan, v&auml;nligen kontrollera ditt 
+    anv&auml;ndarnamn samt l&ouml;senord och f&ouml;rs&ouml;k igen.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--

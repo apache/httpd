@@ -69,6 +69,35 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->               
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta troppo grande!"
+--><!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    non consente di trasferire dati, oppure la quantit&agrave; di dati
+    richiesti &egrave; eccessiva.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="너무 긴 요청!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식의
+    요청으로는 내용을 보낼 수 없거나, 또는 보내온 내용이 그 방식에서 허용하는
+    최대 길이를 넘었습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -96,34 +125,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
---><!--#include virtual="include/top.html" -->
-
-    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
-    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen
-    kapacitetsniv&aring;n.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Richiesta troppo grande!"
---><!--#include virtual="include/top.html" -->
-
-    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    non consente di trasferire dati, oppure la quantit&agrave; di dati
-    richiesti &egrave; eccessiva.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -153,17 +154,16 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="너무 긴 요청!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식의
-    요청으로는 내용을 보낼 수 없거나, 또는 보내온 내용이 그 방식에서 허용하는
-    최대 길이를 넘었습니다.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
+    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen
+    kapacitetsniv&aring;n.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
