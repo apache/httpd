@@ -51,7 +51,7 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-             "proxy: HTTP: canonicalising URL %s", url);
+             "proxy: AJP: canonicalising URL %s", url);
 
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "http:", 5) == 0) {
@@ -113,120 +113,6 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
     return OK;
 }
  
-static const char *ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url)
-{
-    struct proxy_alias *ent;
-    int i, l1, l2;
-    char *u;
-
-    /* XXX FIXME: Make sure this handled the ambiguous case of the :80
-     * after the hostname */
-
-    l1 = strlen(url);
-    ent = (struct proxy_alias *)conf->raliases->elts;
-    for (i = 0; i < conf->raliases->nelts; i++) {
-        l2 = strlen(ent[i].real);
-        if (l1 >= l2 && strncasecmp(ent[i].real, url, l2) == 0) {
-            u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
-            return ap_construct_url(r->pool, u, r);
-        }
-    }
-    return url;
-}
-/* cookies are a bit trickier to match: we've got two substrings to worry
- * about, and we can't just find them with strstr 'cos of case.  Regexp
- * matching would be an easy fix, but for better consistency with all the
- * other matches we'll refrain and use apr_strmatch to find path=/domain=
- * and stick to plain strings for the config values.
- */
-static const char *proxy_cookie_reverse_map(request_rec *r,
-                          proxy_server_conf *conf, const char *str)
-{
-    struct proxy_alias *ent;
-    size_t len = strlen(str);
-    const char* newpath = NULL ;
-    const char* newdomain = NULL ;
-    const char* pathp ;
-    const char* domainp ;
-    const char* pathe = NULL;
-    const char* domaine = NULL;
-    size_t l1, l2, i, poffs = 0, doffs = 0 ;
-    int ddiff = 0 ;
-    int pdiff = 0 ;
-    char* ret ;
-
-/* find the match and replacement, but save replacing until we've done
-   both path and domain so we know the new strlen
-*/
-    if ( pathp = apr_strmatch(conf->cookie_path_str, str, len) , pathp ) {
-        pathp += 5 ;
-        poffs = pathp - str ;
-        pathe = ap_strchr_c(pathp, ';') ;
-        l1 = pathe ? (pathe-pathp) : strlen(pathp) ;
-        pathe = pathp + l1 ;
-        ent = (struct proxy_alias *)conf->cookie_paths->elts;
-        for (i = 0; i < conf->cookie_paths->nelts; i++) {
-            l2 = strlen(ent[i].fake);
-            if (l1 >= l2 && strncmp(ent[i].fake, pathp, l2) == 0) {
-                newpath = ent[i].real ;
-                pdiff = strlen(newpath) - l1 ;
-                break ;
-            }
-        }
-    }
-    if ( domainp = apr_strmatch(conf->cookie_domain_str, str, len) , domainp ) {
-        domainp += 7 ;
-        doffs = domainp - str ;
-        domaine = ap_strchr_c(domainp, ';') ;
-        l1 = domaine ? (domaine-domainp) : strlen(domainp) ;
-        domaine = domainp + l1 ;
-        ent = (struct proxy_alias *)conf->cookie_domains->elts;
-        for (i = 0; i < conf->cookie_domains->nelts; i++) {
-            l2 = strlen(ent[i].fake);
-            if (l1 >= l2 && strncasecmp(ent[i].fake, domainp, l2) == 0) {
-                newdomain = ent[i].real ;
-                ddiff = strlen(newdomain) - l1 ;
-                break ;
-            }
-        }
-    }
-    if ( newpath ) {
-        ret = apr_palloc(r->pool, len+pdiff+ddiff+1) ;
-        l1 = strlen(newpath) ;
-        if ( newdomain ) {
-            l2 = strlen(newdomain) ;
-            if ( doffs > poffs ) {
-                memcpy(ret, str, poffs) ;
-                memcpy(ret+poffs, newpath, l1) ;
-                memcpy(ret+poffs+l1, pathe, domainp-pathe) ;
-                memcpy(ret+doffs+pdiff, newdomain, l2) ;
-                strcpy(ret+doffs+pdiff+l2, domaine) ;
-            } else {
-                memcpy(ret, str, doffs) ;
-                memcpy(ret+doffs, newdomain, l2) ;
-                memcpy(ret+doffs+l2, domaine, pathp-domaine) ;
-                memcpy(ret+poffs+ddiff, newpath, l1) ;
-                strcpy(ret+poffs+ddiff+l1, pathe) ;
-            }
-        } else {
-            memcpy(ret, str, poffs) ;
-            memcpy(ret+poffs, newpath, l1) ;
-            strcpy(ret+poffs+l1, pathe) ;
-        }
-    } else {
-        if ( newdomain ) {
-            ret = apr_palloc(r->pool, len+pdiff+ddiff+1) ;
-            l2 = strlen(newdomain) ;
-            memcpy(ret, str, doffs) ;
-            memcpy(ret+doffs, newdomain, l2) ;
-            strcpy(ret+doffs+l2, domaine) ;
-        } else {
-            ret = (char*) str ;        /* no change */
-        }
-    }
-    return ret ;
-}
-
 /* Clear all connection-based headers from the incoming headers table */
 static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
 {
@@ -527,145 +413,6 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     return APR_SUCCESS;
 }
-static void process_proxy_header(request_rec* r, proxy_server_conf* c,
-                      const char* key, const char* value)
-{
-    static const char* date_hdrs[]
-        = { "Date", "Expires", "Last-Modified", NULL } ;
-    static const struct {
-        const char* name ;
-        const char* (*func)(request_rec*, proxy_server_conf*, const char*) ;
-    } transform_hdrs[] = {
-        { "Location", ap_proxy_location_reverse_map } ,
-        { "Content-Location", ap_proxy_location_reverse_map } ,
-        { "URI", ap_proxy_location_reverse_map } ,
-        { "Set-Cookie", proxy_cookie_reverse_map } ,
-        { NULL, NULL }
-    } ;
-    int i ;
-    for ( i = 0 ; date_hdrs[i] ; ++i ) {
-        if ( !strcasecmp(date_hdrs[i], key) ) {
-            apr_table_add(r->headers_out, key,
-                ap_proxy_date_canon(r->pool, value)) ;
-            return ;
-        }
-    }
-    for ( i = 0 ; transform_hdrs[i].name ; ++i ) {
-        if ( !strcasecmp(transform_hdrs[i].name, key) ) {
-            apr_table_add(r->headers_out, key,
-                (*transform_hdrs[i].func)(r, c, value)) ;
-            return ;
-       }
-    }
-    apr_table_add(r->headers_out, key, value) ;
-    return ;
-}
-
-static void ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
-{
-    int len;
-    char *value, *end;
-    char field[MAX_STRING_LEN];
-    int saw_headers = 0;
-    void *sconf = r->server->module_config;
-    proxy_server_conf *psc;
-
-    psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-
-    r->headers_out = apr_table_make(r->pool, 20);
-
-    /*
-     * Read header lines until we get the empty separator line, a read error,
-     * the connection closes (EOF), or we timeout.
-     */
-    while ((len = ap_getline(buffer, size, rr, 1)) > 0) {
-
-        if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
-
-            /* We may encounter invalid headers, usually from buggy
-             * MS IIS servers, so we need to determine just how to handle
-             * them. We can either ignore them, assume that they mark the
-             * start-of-body (eg: a missing CRLF) or (the default) mark
-             * the headers as totally bogus and return a 500. The sole
-             * exception is an extra "HTTP/1.0 200, OK" line sprinkled
-             * in between the usual MIME headers, which is a favorite
-             * IIS bug.
-             */
-             /* XXX: The mask check is buggy if we ever see an HTTP/1.10 */
-
-            if (!apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
-                if (psc->badopt == bad_error) {
-                    /* Nope, it wasn't even an extra HTTP header. Give up. */
-                    return ;
-                }
-                else if (psc->badopt == bad_body) {
-                    /* if we've already started loading headers_out, then
-                     * return what we've accumulated so far, in the hopes
-                     * that they are useful. Otherwise, we completely bail.
-                     */
-                    /* FIXME: We've already scarfed the supposed 1st line of
-                     * the body, so the actual content may end up being bogus
-                     * as well. If the content is HTML, we may be lucky.
-                     */
-                    if (saw_headers) {
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                         "proxy: Starting body due to bogus non-header in headers "
-                         "returned by %s (%s)", r->uri, r->method);
-                        return ;
-                    } else {
-                         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                         "proxy: No HTTP headers "
-                         "returned by %s (%s)", r->uri, r->method);
-                        return ;
-                    }
-                }
-            }
-            /* this is the psc->badopt == bad_ignore case */
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                         "proxy: Ignoring bogus HTTP header "
-                         "returned by %s (%s)", r->uri, r->method);
-            continue;
-        }
-
-        *value = '\0';
-        ++value;
-        /* XXX: RFC2068 defines only SP and HT as whitespace, this test is
-         * wrong... and so are many others probably.
-         */
-        while (apr_isspace(*value))
-            ++value;            /* Skip to start of value   */
-
-        /* should strip trailing whitespace as well */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --
-end)
-            *end = '\0';
-
-        /* make sure we add so as not to destroy duplicated headers
-         * Modify headers requiring canonicalisation and/or affected
-         * by ProxyPassReverse and family with process_proxy_header
-         */
-        process_proxy_header(r, psc, buffer, value) ;
-        saw_headers = 1;
-
-        /* the header was too long; at the least we should skip extra data */
-        if (len >= size - 1) {
-            while ((len = ap_getline(field, MAX_STRING_LEN, rr, 1))
-                    >= MAX_STRING_LEN - 1) {
-                /* soak up the extra data */
-            }
-            if (len == 0) /* time to exit the larger loop as well */
-                break;
-        }
-    }
-}
-
-
-
-static int addit_dammit(void *v, const char *key, const char *val)
-{
-    apr_table_addn(v, key, val);
-    return 1;
-}
 
 /*
  * Process the AJP response, data already contains the first part of it.
@@ -683,7 +430,7 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
     int type;
     apr_status_t status;
 
-    // bb = apr_brigade_create(p, c->bucket_alloc);
+    bb = apr_brigade_create(p, c->bucket_alloc);
     
     type = ajp_parse_type(r, p_conn->data);
     status = APR_SUCCESS;
@@ -700,10 +447,8 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
             char *buff;
 
             status = ajp_parse_data(r, p_conn->data, &size, &buff);
-            ap_rflush(r);
-            ap_rwrite(buff,size,r);
-            // e = apr_bucket_transient_create(buff, size, c->bucket_alloc);
-            // APR_BRIGADE_INSERT_TAIL(bb, e);
+            e = apr_bucket_transient_create(buff, size, c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
         } else {
             status = APR_EGENERAL;
             break;
@@ -722,8 +467,6 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              "Error reading from remote server");
     }
-
-    return ap_rflush(r);
 
     /* The page is ready give it to the rest of the logic */
     e = apr_bucket_eos_create(c->bucket_alloc);
