@@ -454,7 +454,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
      */
     apr_dir_t *dir;
     apr_finfo_t dirent;
-    apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
+    apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
     const char *fullname;
     BOOL ok = FALSE;
 
