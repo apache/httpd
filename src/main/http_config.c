@@ -467,6 +467,14 @@ API_EXPORT(void) add_module (module *m)
     if (m->module_index == -1) {
 	m->module_index = total_modules++;
     }
+    
+    /* Some C compilers put a complete path into __FILE__, but we want
+     * only the filename (e.g. mod_includes.c). So check for path
+     * components (Unix and DOS), and remove them.
+     */
+
+    if (strrchr(m->name, '/')) m->name = strrchr(m->name, '/');
+    if (strrchr(m->name, '\\')) m->name = strrchr(m->name, '\\');
 
     /** XXX: this will be slow if there's lots of add_modules */
     build_method_shortcuts ();

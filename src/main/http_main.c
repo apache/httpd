@@ -2695,6 +2695,8 @@ main(int argc, char *argv[])
     strncpy (server_confname, SERVER_CONFIG_FILE, sizeof(server_root)-1);
     server_confname[sizeof(server_confname)-1] = '\0';
 
+    setup_prelinked_modules();
+
     while((c = getopt(argc,argv,"Xd:f:vhl")) != -1) {
         switch(c) {
           case 'd':
@@ -2726,8 +2728,6 @@ main(int argc, char *argv[])
     printf("%s \n",SERVER_VERSION);
     printf("OS/2 port by Garey Smiley <garey@slink.com> \n");
 #endif
-
-    setup_prelinked_modules();
 
     suexec_enabled = init_suexec();
     server_conf = read_config (pconf, ptrans, server_confname);
@@ -3526,6 +3526,8 @@ __declspec(dllexport) int main(int argc, char *argv[])
     strncpy (server_confname, SERVER_CONFIG_FILE, sizeof(server_root)-1);
     server_confname[sizeof(server_confname)-1] = '\0';
 
+    setup_prelinked_modules();
+
     while((c = getopt(argc,argv,"Xd:f:vhlc:ius")) != -1) {
         switch(c) {
 #ifdef WIN32
@@ -3587,7 +3589,6 @@ __declspec(dllexport) int main(int argc, char *argv[])
     {
         service_cd();
     }
-    setup_prelinked_modules();
 
     server_conf = read_config (pconf, ptrans, server_confname);
     init_modules (pconf, server_conf);
