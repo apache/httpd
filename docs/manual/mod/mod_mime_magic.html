@@ -1,40 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_mime_magic</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <div align="CENTER">
-      <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" />
-    </div>
-
-    <h1 align="CENTER">Module mod_mime_magic</h1>
-
-    <p>This module provides for determining the MIME type of a file
-    by looking at a few bytes of its contents.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_mime_magic.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    mime_magic_module</p>
-
-    <h2>Summary</h2>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_mime_magic - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime_magic</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Determines the MIME type of a file
+    by looking at a few bytes of its contents</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mime_magic_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
     <p>This module determines the MIME type of files in the same
     way the Unix file(1) command works: it looks at the first few
     bytes of the file. It is intended as a "second line of defense"
-    for cases that <a href="mod_mime.html">mod_mime</a> can't
+    for cases that <code><a href="mod_mime.html">mod_mime</a></code> can't
     resolve. To assure that mod_mime gets first try at determining
     a file's MIME type, be sure to list mod_mime_magic
     <strong>before</strong> mod_mime in the configuration.</p>
@@ -43,20 +16,8 @@
     <code>file(1)</code> command for Unix, which uses "magic
     numbers" and other hints from a file's contents to figure out
     what the contents are. This module is active only if the magic
-    file is specified by the <a
-    href="#mimemagicfile"><code>MimeMagicFile</code></a>
-    directive.</p>
-
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#mimemagicfile">MimeMagicFile</a></li>
-    </ul>
-    <br />
-     <br />
-     
-
-    <h2>Format of the Magic File</h2>
+    file is specified by the <a href="#mimemagicfile" class="directive"><code class="directive">MimeMagicFile</code></a> directive.</p>
+</summary><h2>Directives</h2><ul><li><a href="#mimemagicfile">MimeMagicFile</a></li></ul><h2>Format of the Magic File</h2>
 
     <p>The contents of the file are plain ASCII text in 4-5
     columns. Blank lines are allowed but ignored. Commented lines
@@ -73,7 +34,7 @@
       <tr valign="top">
         <td>1</td>
 
-        <td>byte number to begin checking from<br />
+        <td>byte number to begin checking from<br>
          "&gt;" indicates a dependency upon the previous non-"&gt;"
         line</td>
       </tr>
@@ -176,6 +137,7 @@
 
     <p>For example, the following magic file lines would recognize
     some audio formats.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 <pre>
 # Sun/NeXT audio data
 0       string          .snd
@@ -188,9 +150,11 @@
 &gt;12     belong          7               audio/basic
 &gt;12     belong          23              audio/x-adpcm
 </pre>
-    Or these would recognize the difference between "*.doc" files
+</code></td></tr></table></blockquote>
+    <p>Or these would recognize the difference between "*.doc" files
     containing Microsoft Word or FrameMaker documents. (These are
-    incompatible file formats which use the same file suffix.) 
+    incompatible file formats which use the same file suffix.)</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 <pre>
 # Frame
 0       string          \&lt;MakerFile     application/x-frame
@@ -206,19 +170,21 @@
 0       string          \320\317\021\340\241\261        application/msword
 0       string          \333\245-\0\0\0                 application/msword
 </pre>
-    An optional MIME encoding can be included as a fifth column.
+</code></td></tr></table></blockquote>
+    <p>An optional MIME encoding can be included as a fifth column.
     For example, this can recognize gzipped files and set the
-    encoding for them. 
+    encoding for them.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 <pre>
 # gzip (GNU zip, not to be confused with [Info-ZIP/PKWARE] zip archiver)
 0       string          \037\213        application/octet-stream        x-gzip
 </pre>
-
-    <h2>Performance Issues</h2>
-    This module is not for every system. If your system is barely
+</code></td></tr></table></blockquote>
+<h2>Performance Issues</h2>
+    <p>This module is not for every system. If your system is barely
     keeping up with its load or if you're performing a web server
     benchmark, you may not want to enable this because the
-    processing is not free. 
+    processing is not free.</p>
 
     <p>However, an effort was made to improve the performance of
     the original file(1) code to make it fit in a busy web server.
@@ -237,10 +203,11 @@
     this one is used only as a last resort, just like it was
     designed to.</p>
 
-    <h2><a id="notes" name="notes">Notes</a></h2>
-    The following notes apply to the mod_mime_magic module and are
+<h2><a name="notes">Notes</a></h2>
+
+    <p>The following notes apply to the mod_mime_magic module and are
     included here for compliance with contributors' copyright
-    restrictions that require their acknowledgment. 
+    restrictions that require their acknowledgment. </p>
 <pre>
 /*
  * mod_mime_magic: MIME type lookup via file magic numbers
@@ -300,30 +267,12 @@
  *
  */
 </pre>
-    <hr />
-
-    <h2><a id="mimemagicfile"
-    name="mimemagicfile">MimeMagicFile</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> MimeMagicFile
-    <em>file-path</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> none<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_mime_magic</p>
-
-    <p>The <code>MimeMagicFile</code> directive can be used to
+<hr/><h2><a name="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enable MIME-type determination based on file contents
+using the specified magic file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>MimeMagicFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime_magic</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">MimeMagicFile</code> directive can be used to
     enable this module, the default file is distributed at
     <code>conf/magic</code>. Non-rooted paths are relative to the
     ServerRoot. Virtual hosts will use the same file as the main
     server unless a more specific setting is used, in which case
     the more specific setting overrides the main server's file.</p>
-  </body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
