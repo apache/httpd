@@ -203,10 +203,8 @@ static int proxy_fixup(request_rec *r)
 /* canonicalise each specific scheme */
     if (strncasecmp(url, "http:", 5) == 0)
 	return ap_proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
-#if FTP
     else if (strncasecmp(url, "ftp:", 4) == 0)
 	return ap_proxy_ftp_canon(r, url + 4);
-#endif
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
@@ -387,10 +385,8 @@ static int proxy_handler(request_rec *r)
 	return ap_proxy_connect_handler(r, url, NULL, 0);
     if (strcasecmp(scheme, "http") == 0)
 	return ap_proxy_http_handler(r, url, NULL, 0);
-#if FTP
     if (strcasecmp(scheme, "ftp") == 0)
 	return ap_proxy_ftp_handler(r, url);
-#endif
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
 		     "Neither CONNECT, HTTP or FTP for %s",
@@ -721,7 +717,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
-#ifdef FTP
+#ifdef FTP_FILTER
     /* filters */
     ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONNECTION);
 #endif

@@ -198,12 +198,18 @@ static int ftp_getrc_msg(conn_rec *c, char *msgbuf, int msglen)
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(c->pool);
 
+
     bb = apr_brigade_create(c->pool);
 
     /* Tell http_filter to grab the data one line at a time. */
     c->remain = 0;
 
     ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING);
+
+/* FIXME: When reading the initial server response to the connect, there
+ * is a hang at this point...
+ */
+
     e = APR_BRIGADE_FIRST(bb);
     apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
     if (len == -1) {
@@ -434,7 +440,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 {
     apr_pool_t *p = r->pool;
     apr_socket_t *sock, *local_sock, *remote_sock;
-    apr_sockaddr_t *uri_addr, *connect_addr;
+    apr_sockaddr_t *connect_addr;
     conn_rec *origin, *remote;
     int err;
     apr_bucket *e;
@@ -442,7 +448,6 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     char *buf, *pasv, *connectname;
     apr_port_t connectport;
     char buffer[MAX_STRING_LEN];
-
     char *path, *strp, *parms;
     char *cwd = NULL;
     char *user = NULL;
@@ -522,15 +527,14 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 		 "proxy: FTP connecting %s to %s:%d", url, connectname, connectport);
 
     /* do a DNS lookup for the destination host */
-    err = apr_sockaddr_info_get(&uri_addr, connectname, APR_UNSPEC, connectport, 0, p);
+    err = apr_sockaddr_info_get(&connect_addr, connectname, APR_UNSPEC, connectport, 0, p);
 
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, connect_addr)) {
 	return ap_proxyerror(r, HTTP_FORBIDDEN,
 			     "Connect to remote machine blocked");
     }
 
-//return HTTP_NOT_IMPLEMENTED;
 
     /*
      * II: Make the Connection
@@ -547,6 +551,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
                              "DNS lookup failure for: ",
                              connectname, NULL));
     }
+
 
     if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -612,9 +617,9 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	/* handle a permanent error from the above loop */
 	if (failed) {
 	    apr_socket_close(sock);
-	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(r->pool,
-				 "Could not connect to remote machine: ",
-				 r->parsed_uri.hostname, NULL));
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
+				 "Could not connect to remote machine: %s port %d",
+				 connectname, connectport));
 	}
     }
 
@@ -653,19 +658,20 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
      */
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(origin);
+    ap_proxy_pre_http_connection(origin, NULL);
 
     /* possible results: */
     /*   120 Service ready in nnn minutes. */
     /*   220 Service ready for new user. */
     /*   421 Service not available, closing control connection. */
     i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-				 "FTP: initial connect returned status %d", i);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "FTP: initial connect returned status %d", i);
     if (i == -1) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
+return HTTP_NOT_IMPLEMENTED;
 #if 0
     if (i == 120) {
 	/* RFC2068 states:
@@ -1319,7 +1325,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     }
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(remote);
+    ap_proxy_pre_http_connection(remote, NULL);
 
 
     /*
@@ -1333,10 +1339,12 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     /* send response */
     r->sent_bodyct = 1;
 
+#ifdef FTP_FILTER
    if (parms[0] == 'd') {
 	/* insert directory filter */
 	ap_add_output_filter("PROXY_SEND_DIR", NULL, r, r->connection);
    }
+#endif
 
     /* send body */
     if (!r->header_only) {

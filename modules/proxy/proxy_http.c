@@ -369,9 +369,8 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
     conf->id = r->connection->id;
-    /* allocate this out of the connection pool - the check on r->connection->id makes
-     * sure that this string does not live past the connection lifetime */
-    conf->connectname = apr_pstrdup(r->connection->pool, connectname);
+    /* allocate this out of the config pool */
+    conf->connectname = apr_pstrdup(r->server->process->pconf, connectname);
     conf->connectport = connectport;
     conf->client_socket = sock;
 
@@ -387,7 +386,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      */
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(origin);
+    ap_proxy_pre_http_connection(origin, NULL);
 
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
@@ -555,10 +554,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
     e = APR_BRIGADE_FIRST(bb);
-    /* XXX FIXME: a bug exists where apr_bucket_read() is returning
-     * len=0 when the response line is expected... we try it up to
-     * 5 times - this has not fixed the problem though.
-     */
     i = 5;
     len = 0;
     while (!len && i--) {
@@ -678,7 +673,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
-/* XXX FIXME - what about 304 et al responses that have no body and no content-length? */
     /* send body */
     if (!r->header_only) {
 	const char *buf;
