@@ -45,8 +45,11 @@ Committed Code Changes:
     * Lars' Configure fix to avoid confusing message under APACI control
     * Ralf's Configure fix for AWK's failing with "string to long" error
     * Ralf's fix for stderr logging to make sure default loglevel is honored
+    * Marc's catching of defined handlers still ending in the default handler
     * Ralf's cast for dlopen's arg1 under OSF1 and FreeBSD 2.2.x
     * Lars' fix for the prefix setup on configure --compat
+    * Dean's add %pA, %pI, and %pp codes to ap_vformatter
+    * Dean's httpd -S command line option to dump parsed vhost setup
 
 Available Patches:
 
