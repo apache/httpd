@@ -68,6 +68,52 @@
 **  _________________________________________________________________
 */
 
+/* This file is designed to be the bridge between OpenSSL and httpd.
+ * However, we really don't expect anyone (let alone ourselves) to
+ * remember what is in this file.  So, first, a quick overview.
+ *
+ * In this file, you will find:
+ * - ssl_io_filter_Input    (Apache input filter)
+ * - ssl_io_filter_Output   (Apache output filter)
+ *
+ * - bio_filter_in_*        (OpenSSL input filter)
+ * - bio_filter_out_*       (OpenSSL output filter)
+ *
+ * The input chain is roughly:
+ *
+ * ssl_io_filter_Input->ssl_io_input_read->SSL_read->...
+ * ...->bio_filter_in_read->ap_get_brigade/next-httpd-filter
+ *
+ * In mortal terminology, we do the following:
+ * - Receive a request for data to the SSL input filter
+ * - Call a helper function once we know we should perform a read
+ * - Call OpenSSL's SSL_read()
+ * - SSL_read() will then call bio_filter_in_read
+ * - bio_filter_in_read will then try to fetch data from the next httpd filter
+ * - bio_filter_in_read will flatten that data and return it to SSL_read
+ * - SSL_read will then decrypt the data
+ * - ssl_io_input_read will then receive decrypted data as a char* and
+ *   ensure that there were no read errors
+ * - The char* is placed in a brigade and returned
+ *
+ * Since connection-level input filters in httpd need to be able to
+ * handle AP_MODE_GETLINE calls (namely identifying LF-terminated strings), 
+ * ssl_io_input_getline which will handle this special case.
+ *
+ * Due to AP_MODE_GETLINE and AP_MODE_SPECULATIVE, we may sometimes have 
+ * 'leftover' decoded data which must be setaside for the next read.  That
+ * is currently handled by the char_buffer_{read|write} functions.  So,
+ * ssl_io_input_read may be able to fulfill reads without invoking
+ * SSL_read().
+ *
+ * Note that the filter context of ssl_io_filter_Input and bio_filter_in_*
+ * are shared as bio_filter_in_ctx_t.
+ *
+ * Note that the filter is by choice limited to reading at most
+ * AP_IOBUFSIZE (8192 bytes) per call.
+ *
+ */
+
 /* this custom BIO allows us to hook SSL_write directly into 
  * an apr_bucket_brigade and use transient buckets with the SSL
  * malloc-ed buffer, rather than copying into a mem BIO.
