@@ -249,6 +249,8 @@ _build:
 !ENDIF
 
 _install:
+	echo Y >.y
+	echo A >.A
 	-mkdir "$(INSTDIR)"
 	-mkdir "$(INSTDIR)\bin"
 	-mkdir "$(INSTDIR)\cgi-bin"
@@ -380,35 +382,30 @@ _install:
         }
     }
 <<
-        copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin"
-        xcopy docs\error "$(INSTDIR)\error" /s /d < <<
-A
-<<
-        xcopy docs\docroot "$(INSTDIR)\htdocs" /d < <<
-A
-<<
-        xcopy docs\manual "$(INSTDIR)\manual" /s /d < <<
-A
-<<
-	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < <<
-A
-<<
-	copy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include"
-	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < <<
-A
-<<
-	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < <<
-A
-<<
-	xcopy include\*.h "$(INSTDIR)\include" /d < <<
-A
-<<
-	xcopy os\win32\*.h "$(INSTDIR)\include" /d < <<
-A
-<<
-        xcopy docs\icons "$(INSTDIR)\icons" /s /d < <<
-A
-<<
+        xcopy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" /d
+        xcopy docs\error "$(INSTDIR)\error" /s /d < .a
+        xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
+        xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
+
+	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < .a
+	xcopy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include" /d
+	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < .a
+	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < .a
+	xcopy include\*.h "$(INSTDIR)\include" /d < .a
+	xcopy os\win32\*.h "$(INSTDIR)\include" /d < .a
+	xcopy server\*.h "$(INSTDIR)\include" /d < .a
+	xcopy server\mpm\winnt\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\dav\fs\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\dav\main\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\experimental\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\filters\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\generators\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\http\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\loggers\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\mappers\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\ssl\*.h "$(INSTDIR)\include" /d < .a
+	xcopy modules\proxy\*.h "$(INSTDIR)\include" /d < .a
+        xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
 	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib"
 	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib"
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib"
@@ -483,3 +480,5 @@ A
           print $$0;
     }
 <<
+	del .a .y
+
