@@ -1081,7 +1081,7 @@ awk -f $awkfile >>Makefile </dev/null
 #
 if [ "x$SUBVERSION" != "x" ] ; then
         SUBVERSION=`echo $SUBVERSION | sed 's/^ +//'`
-	CFLAGS="$CFLAGS -DSERVER_SUBVERSION=\"$SUBVERSION\""
+	CFLAGS="$CFLAGS -DSERVER_SUBVERSION=\\\"$SUBVERSION\\\""
 fi
 
 ####################################################################
