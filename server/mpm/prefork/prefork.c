@@ -97,6 +97,7 @@
 #include "scoreboard_prefork.h"
 #include "ap_mpm.h"
 #include "unixd.h"
+#include "iol_socket.h"
 #ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -2395,6 +2396,7 @@ static void child_main(int child_num_arg)
     listen_rec *lr;
     pool *ptrans;
     conn_rec *current_conn;
+    ap_iol *iol;
 
     my_pid = getpid();
     csd = -1;
@@ -2601,19 +2603,6 @@ static void child_main(int child_num_arg)
 	 */
 	signal(SIGUSR1, SIG_IGN);
 
-	ap_note_cleanups_for_fd(ptrans, csd);
-
-	/* protect various fd_sets */
-#ifdef CHECK_FD_SETSIZE
-	if (csd >= FD_SETSIZE) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
-		"[csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
-		"found, you probably need to rebuild Apache with a "
-		"larger FD_SETSIZE", csd, FD_SETSIZE);
-	    continue;
-	}
-#endif
-
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -2622,27 +2611,34 @@ static void child_main(int child_num_arg)
 	clen = sizeof(sa_server);
 	if (getsockname(csd, &sa_server, &clen) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
+	    close(csd);
 	    continue;
 	}
 
 	sock_disable_nagle(csd);
+
+	iol = unix_attach_socket(csd);
+	if (iol == NULL) {
+	    if (errno == EBADF) {
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
+		    "found, you probably need to rebuild Apache with a "
+		    "larger FD_SETSIZE", csd, FD_SETSIZE);
+	    }
+	    else {
+		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		    "error attaching to socket");
+	    }
+	    close(csd);
+	    continue;
+	}
 
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
 	conn_io = ap_bcreate(ptrans, B_RDWR);
 
-#ifdef B_SFIO
-	(void) sfdisc(conn_io->sf_in, SF_POPDISC);
-	sfdisc(conn_io->sf_in, bsfio_new(conn_io->pool, conn_io));
-	sfsetbuf(conn_io->sf_in, NULL, 0);
-
-	(void) sfdisc(conn_io->sf_out, SF_POPDISC);
-	sfdisc(conn_io->sf_out, bsfio_new(conn_io->pool, conn_io));
-	sfsetbuf(conn_io->sf_out, NULL, 0);
-#endif
-
-	ap_bpushfd(conn_io, csd);
+	ap_bpush_iol(conn_io, iol);
 
 	current_conn = new_connection(ptrans, server_conf, conn_io,
 				          (struct sockaddr_in *) &sa_client,
