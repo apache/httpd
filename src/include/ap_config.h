@@ -66,10 +66,12 @@
 #define JMP_BUF sigjmp_buf
 #define NO_SETSID
 #define NO_KILLPG
+#define NO_WRITEV
 #define NEED_INITGROUPS
 #define NEED_STRCASECMP
 #define NEED_STRDUP
 #define NEED_STRNCASECMP
+#define FNDELAY O_NDELAY
 extern void GETPRIVMODE();
 extern void GETUSERMODE();
 extern char *inet_ntoa();
