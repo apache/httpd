@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Allow mod_deflate to work with non-GET requests and properly send
+     Content-Lengths.  [Sander Striker <striker@apache.org>]
+
   *) Fix ap_directory_merge() to correctly merge configs when there is
      no <Directory /> block.  [Justin Erenkrantz, William Rowe]
 
