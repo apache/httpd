@@ -76,6 +76,7 @@
 #include "util_charset.h"
 #include "ap_buckets.h"
 #include "util_filter.h"
+#include "apr_strings.h"
 
 #ifndef APACHE_XLATE
 #error mod_charset_lite cannot work without APACHE_XLATE enabled
@@ -101,13 +102,14 @@ typedef enum {
     EES_BAD_INPUT   /* input data invalid */
 } ees_t;
 
-#define XLATE_FILTER_NAME "XLATE" /* registered name of the translation filter */
+#define XLATEOUT_FILTER_NAME "XLATEOUT" /* registered name of the translation filter */
 
 typedef struct charset_dir_t {
     enum {NO_DEBUG = 1, DEBUG} debug; /* whether or not verbose logging is enabled; 0
                                         means uninitialized */
     const char *charset_source; /* source encoding */
     const char *charset_default; /* how to ship on wire */
+    enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add; /* tmp hack! module does ap_add_filter()? */
 } charset_dir_t;
 
 /* charset_filter_ctx_t is created for each filter instance; because the same
@@ -153,6 +155,8 @@ static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv
         over->charset_default ? over->charset_default : base->charset_default;
     a->charset_source = 
         over->charset_source ? over->charset_source : base->charset_source;
+    a->implicit_add =
+        over->implicit_add != IA_INIT ? over->implicit_add : base->implicit_add;
     return a;
 }
 
@@ -178,7 +182,7 @@ static const char *add_charset_default(cmd_parms *cmd, void *in_dc,
     return NULL;
 }
 
-/* CharsetDefault charset
+/* CharsetDebug on/off
  */
 static const char *add_charset_debug(cmd_parms *cmd, void *in_dc, int arg)
 {
@@ -189,6 +193,29 @@ static const char *add_charset_debug(cmd_parms *cmd, void *in_dc, int arg)
     }
     else {
         dc->debug = NO_DEBUG;
+    }
+
+    return NULL;
+}
+
+/* CharsetOptions optionflag...
+ */
+static const char *add_charset_options(cmd_parms *cmd, void *in_dc, 
+                                       const char *flag)
+{
+    charset_dir_t *dc = in_dc;
+
+    if (!strcasecmp(flag, "ImplicitAdd")) {
+        dc->implicit_add = IA_IMPADD;
+    }
+    else if (!strcasecmp(flag, "NoImplicitAdd")) {
+        dc->implicit_add = IA_NOIMPADD;
+    }
+    else {
+        return apr_pstrcat(cmd->temp_pool, 
+                           "Invalid CharsetOptions option: ",
+                           flag,
+                           NULL);
     }
 
     return NULL;
@@ -327,10 +354,10 @@ static int find_code_page(request_rec *r)
     return DECLINED;
 }
 
-/* xlate_register_filter() is a filter hook which decides whether or not
+/* xlate_insert_filter() is a filter hook which decides whether or not
  * to insert a translation filter for the current request.
  */
-static void xlate_register_filter(request_rec *r)
+static void xlate_insert_filter(request_rec *r)
 {
     /* Hey... don't be so quick to use reqinfo->dc here; reqinfo may be NULL */
     charset_req_t *reqinfo = ap_get_module_config(r->request_config, 
@@ -341,20 +368,24 @@ static void xlate_register_filter(request_rec *r)
 
     if (debug) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "xlate_register_filter() - "
+                     "xlate_insert_filter() - "
                      "dc: %X charset_source: %s charset_default: %s",
                      (unsigned)dc,
                      dc && dc->charset_source ? dc->charset_source : "(none)",
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    if (reqinfo && reqinfo->output_ctx) {
-        ap_add_filter(XLATE_FILTER_NAME, reqinfo->output_ctx, r);
+    if (reqinfo && 
+        dc->implicit_add == IA_IMPADD &&
+        reqinfo->output_ctx) {
+        ap_add_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r);
     }
     
-#ifdef NOT_YET
-    if (reqinfo && reqinfo->input_ctx) {
-        /* ap_add_filter(xxx, yyy, r); */
+#ifdef NOT_YET /* no input filters yet; we still rely on BUFF */
+    if (reqinfo && 
+        dc->implicit_add == IA_IMPADD &&
+        reqinfo->input_ctx) {
+        /* ap_add_filter(XLATEIN_FILTER_NAME, reqinfo->input_ctx, r); */
     }
 #endif
 }
@@ -514,6 +545,16 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     int done;
     apr_status_t rv = APR_SUCCESS;
 
+    if (!ctx) { /* this is AddOutputFilter path */
+        ap_assert(dc->implicit_add == IA_NOIMPADD); 
+        if (!strcmp(f->frec->name, XLATEOUT_FILTER_NAME)) {
+            ctx = f->ctx = reqinfo->output_ctx;
+        }
+        else {
+            ap_assert(1 != 1);
+        }
+    }
+
     if (debug) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r->server,
                      "xlate_filter() - "
@@ -650,18 +691,19 @@ static const command_rec cmds[] =
                  NULL,
                  OR_FILEINFO,
                  "mod_charset_lite debug flag"),
+    AP_INIT_ITERATE("CharsetOptions",
+                    add_charset_options,
+                    NULL,
+                    OR_FILEINFO,
+                    "valid options: ImplicitAdd, NoImplicitAdd"),
     {NULL}
 };
 
 static void charset_register_hooks(void)
 {
     ap_hook_fixups(find_code_page, NULL, NULL, AP_HOOK_MIDDLE);
-    /* The first function just registers this module's register_filter 
-     * hook.  The other associates a global name with the filter defined
-     * by this module.
-     */
-    ap_hook_insert_filter(xlate_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter(XLATE_FILTER_NAME, xlate_filter, AP_FTYPE_CONTENT);
+    ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_register_filter(XLATEOUT_FILTER_NAME, xlate_filter, AP_FTYPE_CONTENT);
 }
 
 module charset_lite_module =
