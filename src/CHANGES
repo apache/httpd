@@ -1,4 +1,6 @@
 Changes with Apache 1.3.2
+  
+  *) PORT: implement serialized accepts for OS/2.  [Brian Havard]
 
   *) mod_include had problems with the fsize and flastmod directives
      under WIN32.  Fix also avoids the minor security hole of using
