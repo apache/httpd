@@ -1,4 +1,6 @@
 Changes with Apache 2.0.31-dev
+  *) New Directive Option for ProxyPass. It now can block a location
+     from being proxied [Jukka Pihl <jukka.pihl@entirem.com>]
 
   *) Don't let the default handler try to serve a raw directory.  At
      best you get gibberish.  Much worse things can happen depending
