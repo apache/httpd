@@ -1,16 +1,20 @@
-Apache 1.3.2 Released
+Apache 1.3.3 Released
 =====================
 
 The Apache Group is pleased to announce the release of version
-1.3.2 of the Apache HTTP server.  
+1.3.3 of the Apache HTTP server.
 
-The changes in this release consist of Unix portability fixes,
-DoS issues, Proxy and DSO enhancements, and assorted other minor
-features or fixes.  Users should review the CHANGES file and
-decide on their upgrade plans; We consider Apache 1.3.2 to be the
+This new Apache version is mainly a bugfix release. In the previous
+1.3.2 release, server error reporting was seriously broken.
+This affected the functionality of most custom ErrorDocuments and
+of modules such as mod_speling.
+Additionally, changes in this release consist of new supported platforms,
+Win32 and Unix portability fixes, ErrorDocument environment enhancements,
+and assorted other features or fixes.  Users should review the CHANGES file
+and decide on their upgrade plans; We consider Apache 1.3.3 to be the
 most stable version of Apache available.
 
-Apache 1.3.2 is available for download from
+Apache 1.3.3 is available for download from
 
     http://www.apache.org/dist/
 
@@ -26,10 +30,10 @@ For an overview of new features in 1.3 please see
 
 In general, Apache 1.3 offers several substantial improvements
 over version 1.2, including better performance, reliability and a
-wider-range of supported platforms, including Windows 95 and NT
+wider range of supported platforms, including Windows 95 and NT
 (which both fall under the "Win32" label).
 
-Apache is the most popular web-server in the known universe; over
+Apache is the most popular web server in the known universe; over
 half of the servers on the Internet are running Apache or one of
 its variants.
 
@@ -42,4 +46,3 @@ Apache on other platforms.  With the continued donation of time
 and resources by individuals and companies, we hope that the Win32
 version of Apache will grow stronger through the 1.3.x release
 cycle.
-
