@@ -502,6 +502,16 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 
     r->unparsed_uri = apr_pstrdup(r->pool, uri);
 
+    /* http://issues.apache.org/bugzilla/show_bug.cgi?id=31875
+     * http://issues.apache.org/bugzilla/show_bug.cgi?id=28450
+     *
+     * This is not in fact a URI, it's a path.  That matters in the
+     * case of a leading double-slash.  We need to resolve the issue
+     * by normalising that out before treating it as a URI.
+     */
+    while ((uri[0] == '/') && (uri[1] == '/')) {
+        ++uri ;
+    }
     if (r->method_number == M_CONNECT) {
         status = apr_uri_parse_hostinfo(r->pool, uri, &r->parsed_uri);
     }
