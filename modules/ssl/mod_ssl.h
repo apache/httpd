@@ -188,7 +188,7 @@
 
 #define strIsEmpty(s)    (s == NULL || s[0] == NUL)
 
-#define cfgMerge(el,unset)  new->el = add->el == unset ? base->el : add->el
+#define cfgMerge(el,unset)  new->el = (add->el == (unset)) ? base->el : add->el
 #define cfgMergeArray(el)   new->el = apr_array_append(p, add->el, base->el)
 #define cfgMergeTable(el)   new->el = apr_table_overlay(p, add->el, base->el)
 #define cfgMergeCtx(el)     new->el = apr_table_overlay(p, add->el, base->el)
