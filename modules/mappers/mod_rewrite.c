@@ -2901,7 +2901,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     char *curkey;
     char *curval;
 
-    rc = ap_open(&fp, file, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, r->pool);
+    rc = ap_open(&fp, file, APR_READ, APR_OS_DEFAULT, r->pool);
     if (rc != APR_SUCCESS) {
        return NULL;
     }
