@@ -678,6 +678,17 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
+    if (!r->hostname && (r->proto_num >= 1001)) {
+        /* Client sent us a HTTP/1.1 or later request without telling
+	 * us the hostname, either with a full URL or a Host: header.
+	 * We therefore need to (as per the 1.1 spec) send an error
+	 */
+        log_reason ("client sent HTTP/1.1 request without hostname",
+		    r->uri, r);
+	die (BAD_REQUEST, r);
+	return;
+    }
+
     if (!r->proxyreq)
     {
 	access_status = unescape_url(r->uri);

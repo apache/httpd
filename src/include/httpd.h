@@ -338,6 +338,7 @@ struct request_rec {
   int proxyreq;                 /* A proxy request */
   int header_only;		/* HEAD request, as opposed to GET */
   char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
+  int proto_num;		/* Number version of protocol; 1.1 = 1001 */
   char *hostname;		/* Host, as set by full URI or Host: */
   int hostlen;			/* Length of http://host:port in full URI */
 
@@ -484,6 +485,9 @@ struct server_rec {
   int timeout;			/* Timeout, in seconds, before we give up */
   int keep_alive_timeout;	/* Seconds we'll wait for another request */
   int keep_alive;		/* Maximum requests per connection */
+
+  char *path;			/* Pathname for ServerPath */
+  int pathlen;			/* Length of path */
 
   char *names;			/* Wildcarded names for HostAlias servers */
   char *virthost;		/* The name given in <VirtualHost> */

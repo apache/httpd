@@ -310,6 +310,7 @@ int read_request_line (request_rec *r)
     char l[HUGE_STRING_LEN];
     char *ll = l, *uri;
     conn_rec *conn = r->connection;
+    int major = 1, minor = 0;	/* Assume HTTP/1.0 if non-"HTTP" protocol*/
     
     l[0] = '\0';
     if(!getline(l, HUGE_STRING_LEN, conn->client))
@@ -325,6 +326,9 @@ int read_request_line (request_rec *r)
     
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ll[0] ? pstrdup (r->pool, ll) : "HTTP/0.9";
+    sscanf(r->protocol, "HTTP/%d.%d", &major, &minor);
+    r->proto_num = 1000*major + minor;
+
     return 1;
 }
 
@@ -387,6 +391,20 @@ void check_hostalias (request_rec *r) {
   }
 }
 
+void check_serverpath (request_rec *r) {
+  server_rec *s;
+
+  /* This is in conjunction with the ServerPath code in
+   * http_core, so we get the right host attached to a non-
+   * Host-sending request.
+   */
+
+  for (s = r->server->next; s; s = s->next) {
+    if (s->path && !strncmp(r->uri, s->path, s->pathlen))
+      r->server = r->connection->server = s;
+  }
+}
+
 request_rec *read_request (conn_rec *conn)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
@@ -427,6 +445,8 @@ request_rec *read_request (conn_rec *conn)
 
     if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
       check_hostalias(r);
+    else
+      check_serverpath(r);
 
     kill_timeout (r);
     conn->keptalive = 0;   /* We now have a request - so no more short timeouts */

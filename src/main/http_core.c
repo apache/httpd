@@ -689,6 +689,12 @@ char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg) {
     return NULL;
 }
 
+char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
+    cmd->server->path = pstrdup (cmd->pool, arg);
+    cmd->server->pathlen = strlen (arg);
+    return NULL;
+}
+
 char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
     d->content_md5 = arg;
     return NULL;
@@ -822,6 +828,8 @@ command_rec core_cmds[] = {
 { "ServerAlias", set_server_string_slot,
    (void *)XtOffsetOf (server_rec, names), RSRC_CONF, RAW_ARGS,
    "a name or names alternately used to access the server" },
+{ "ServerPath", set_serverpath, NULL, RSRC_CONF, TAKE1,
+  "The pathname the server can be reached at" },
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "timeout duration (sec)"},
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
@@ -857,7 +865,13 @@ int core_translate (request_rec *r)
     if (r->proxyreq) return NOT_IMPLEMENTED;
     if (r->uri[0] != '/') return BAD_REQUEST;
     
-    r->filename = pstrcat (r->pool, conf->document_root, r->uri, NULL);
+    if (r->server->path &&
+	!strncmp(r->uri, r->server->path, r->server->pathlen))
+      r->filename = pstrcat (r->pool, conf->document_root,
+			     (r->uri + r->server->pathlen), NULL);
+    else
+      r->filename = pstrcat (r->pool, conf->document_root, r->uri, NULL);
+
     return OK;
 }
 
