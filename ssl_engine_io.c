@@ -495,6 +495,7 @@ static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
              * renegotation which is handled implicitly by OpenSSL.)
              */
             errno = EINTR;
+            rc = 0; /* non fatal error */
         }
         else if (ssl_err == SSL_ERROR_SSL) {
             /*
@@ -504,12 +505,8 @@ static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
             ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL error on reading data");
         }
-        /*
-         * XXX - Just trying to reflect the behaviour in 
-         * openssl_state_machine.c [mod_tls]. TBD
-         */
-        rc = -1;
     }
+
     return rc;
 }
 
