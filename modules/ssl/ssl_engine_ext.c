@@ -322,7 +322,7 @@ static char *ssl_ext_mp_new_connection(request_rec *r, BUFF *fb, char *peer)
         ap_ctx_set(fb->ctx, "ssl", NULL);
         return errmsg;
     }
-    SSL_clear(ssl);
+
     cpVHostMD5 = ap_md5(r->pool, (unsigned char *)cpVHostID);
     if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5, strlen(cpVHostMD5))) {
         errmsg = ap_psprintf(r->pool, "Unable to set session id context to `%s': peer %s: %s",
