@@ -803,10 +803,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
             if (*pos == '\0') {
                 char *endstr;
+
+                errno = 0;
                 ctx->state = BODY_LENGTH;
                 ctx->remaining = strtol(lenp, &endstr, 10);
 
-                if (errno == ERANGE) {
+                if (errno || (endstr && *endstr)) {
                     conversion_error = 1; 
                 }
             }
@@ -1714,9 +1716,11 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
         if (*pos == '\0') {
             char *endstr;
+
+            errno = 0;
             r->remaining = strtol(lenp, &endstr, 10);
 
-            if (errno == ERANGE || errno == EINVAL) {
+            if (errno || (endstr && *endstr)) {
                 conversion_error = 1; 
             }
         }
