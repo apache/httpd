@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/18 05:14:34 $]
+Last modified at [$Date: 2003/02/18 05:18:33 $]
 
 Release:
 
@@ -143,7 +143,7 @@ PATCHES TO PORT FROM 2.1
       prevents filters (such as mod_deflate) to add garbage to the response.
       PR 14451.
       server/util_filter.c: r1.95
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
