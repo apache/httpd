@@ -20,7 +20,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module | img
-| cite | q | dfn | var">
+| cite | q | dfn | var | transnote">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
@@ -77,6 +77,9 @@
 <!ELEMENT dfn %Inline;>
 
 <!ELEMENT var %Inline;>
+
+<!-- translators note -->
+<!ELEMENT transnote %Inline;>
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a  href CDATA #IMPLIED
