@@ -1,4 +1,8 @@
 Changes with Apache 2.0.19-dev
+
+  *) Modify mod_echo to make it use filters for input and output.
+     [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Extend mod_headers to support conditional driven Header 
      add, append and set. Use SetEnvIf to set an envar and conditionally
      add/append/set headers based on this envar thusly:
