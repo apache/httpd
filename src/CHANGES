@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) apxs didn't get rebuilt when options were changed. This must have
+     caused much puzzlement in the past. Fixed.
+     [Ben Laurie]
+
   *) No idea why an HTTP/1.1 proxy would send an HTTP/1.0 request
      to a remote server by default. Fixed.
      [Graham Leggett, Gabriel Russell <g.russell@ieee.org>]
