@@ -4261,9 +4261,9 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                         rv = apr_bucket_read(bucket, &buf, &len,
                                              APR_BLOCK_READ);
                         if (rv != APR_SUCCESS) {
-                            ap_log_error(APLOG_MARK, APLOG_ERR, rv,
-                                         c->base_server, "core_output_filter:"
-                                         " Error reading from bucket.");
+                            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv,
+                                          c, "core_output_filter:"
+                                          " Error reading from bucket.");
                             return HTTP_INTERNAL_SERVER_ERROR;
                         }
                     }
@@ -4367,8 +4367,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
-                         "core_output_filter: writing data to the network");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c,
+                          "core_output_filter: writing data to the network");
 
             if (more)
                 apr_brigade_destroy(more);
