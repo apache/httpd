@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -51,10 +51,10 @@
  */
   
 /*
- * http_protocol.c --- routines which directly communicate with the
- * client.
+ * http_protocol.c --- routines which directly communicate with the client.
  *
- * Code originally by Rob McCool; much redone by rst.
+ * Code originally by Rob McCool; much redone by Robert S. Thau
+ * and the Apache Group.
  */
 
 #define CORE_PRIVATE
@@ -66,7 +66,7 @@
 #include "http_log.h"		/* For errors detected in basic auth
 				 * common support code...
 				 */
-
+#include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include <stdarg.h>
 
 #define SET_BYTES_SENT(r) \
@@ -74,75 +74,6 @@
 	  bgetopt (r->connection->client, BO_BYTECT, &r->bytes_sent); \
   } while (0)
 
-/* Handling of conditional gets (if-modified-since); Roy owes Rob beer. 
- * This would be considerably easier if strptime or timegm were portable...
- */
-
-const char month_snames[12][4] = {
-    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
-};
-
-int find_month(char *mon) {
-    register int x;
-
-    for(x=0;x<12;x++)
-        if(!strcmp(month_snames[x],mon))
-            return x;
-    return -1;
-}
-
-int later_than(struct tm *lms, char *ims) {
-    char *ip;
-    char mname[MAX_STRING_LEN];
-    int year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0, x;
-
-    /* Whatever format we're looking at, it will start with weekday. */
-    /* Skip to first space. */
-    if(!(ip = strchr(ims,' ')))
-        return 0;
-    else
-        while(isspace(*ip))
-            ++ip;
-
-    if(isalpha(*ip)) {
-        /* ctime */
-        sscanf(ip,"%s %d %d:%d:%d %d",mname,&day,&hour,&min,&sec,&year);
-    }
-    else if(ip[2] == '-') {
-        /* RFC 850 (normal HTTP) */
-        char t[MAX_STRING_LEN];
-        sscanf(ip,"%s %d:%d:%d",t,&hour,&min,&sec);
-        t[2] = '\0';
-        day = atoi(t);
-        t[6] = '\0';
-        strcpy(mname,&t[3]);
-        x = atoi(&t[7]);
-        /* Prevent wraparound from ambiguity */
-        if(x < 70)
-            x += 100;
-        year = 1900 + x;
-    }
-    else {
-        /* RFC 822 */
-        sscanf(ip,"%d %s %d %d:%d:%d",&day,mname,&year,&hour,&min,&sec);
-    }
-    month = find_month(mname);
-
-    if((x = (1900+lms->tm_year) - year))
-        return x < 0;
-    if((x = lms->tm_mon - month))
-        return x < 0;
-    if((x = lms->tm_mday - day))
-        return x < 0;
-    if((x = lms->tm_hour - hour))
-        return x < 0;
-    if((x = lms->tm_min - min))
-        return x < 0;
-    if((x = lms->tm_sec - sec))
-        return x < 0;
-
-    return 1;
-}
 
 static int parse_byterange (char *range, long clength, long *start, long *end)
 {
@@ -174,11 +105,6 @@ static int parse_byterange (char *range, long clength, long *start, long *end)
 
     return 1;
 }
-
-/* This is a string I made up. Pounded on the keyboard a couple of times.
- * It's a good a way as any, I suppose, if you can't parse the document
- * beforehand (which we can't).
- */
 
 int set_byterange (request_rec *r)
 {
@@ -320,16 +246,17 @@ int set_keepalive(request_rec *r)
 
 int set_last_modified(request_rec *r, time_t mtime)
 {
-    char *ts, *etag, weak_etag[MAX_STRING_LEN];
-    char *if_modified_since = table_get (r->headers_in, "If-Modified-Since");
-    char *if_unmodified = table_get (r->headers_in, "If-Unmodified-Since");
-    char *if_nonematch = table_get (r->headers_in, "If-None-Match");
-    char *if_match = table_get (r->headers_in, "If-Match");
+    char *etag, weak_etag[MAX_STRING_LEN];
+    char *if_modified_since = table_get(r->headers_in, "If-Modified-Since");
+    char *if_unmodified     = table_get(r->headers_in, "If-Unmodified-Since");
+    char *if_nonematch      = table_get(r->headers_in, "If-None-Match");
+    char *if_match          = table_get(r->headers_in, "If-Match");
+    time_t now = time(NULL);
 
-    ts = gm_timestr_822(r->pool, (mtime > r->request_time) ? r->request_time : mtime);
-    table_set (r->headers_out, "Last-Modified", ts);
+    table_set(r->headers_out, "Last-Modified",
+              gm_timestr_822(r->pool, (mtime > now) ? now : mtime));
 
-    /* Make an ETag header out of various peices of information. We use
+    /* Make an ETag header out of various pieces of information. We use
      * the last-modified date and, if we have a real file, the
      * length and inode number - note that this doesn't have to match
      * the content-length (i.e. includes), it just has to be unique
@@ -343,49 +270,79 @@ int set_last_modified(request_rec *r, time_t mtime)
 
     if (r->finfo.st_mode != 0)
         sprintf(weak_etag, "W/\"%lx-%lx-%lx\"", (unsigned long)r->finfo.st_ino,
-		(unsigned long)r->finfo.st_size, mtime);
+		(unsigned long)r->finfo.st_size, (unsigned long)mtime);
     else
-        sprintf(weak_etag, "W/\"%lx\"", mtime);
+        sprintf(weak_etag, "W/\"%lx\"", (unsigned long)mtime);
 
     etag = weak_etag + ((r->request_time - mtime > 1) ? 2 : 0);
     table_set (r->headers_out, "ETag", etag);
 
-    /* We now do the no_cache stuff using an Expires: header (we used to
-     * withhold Last-modified). However, we still want to enforce this by
-     * not allowing conditional GETs.
-     */
-
-    if (r->no_local_copy) return OK;
-
-    /* Check for conditional GETs --- note that we only want this check
-     * to succeed if the GET was successful; ErrorDocuments *always* get sent.
+    /* Check for conditional requests --- note that we only want to do
+     * this if we are successful so far and we are not processing a
+     * subrequest or an ErrorDocument.
+     *
+     * The order of the checks is important, since etag checks are supposed
+     * to be more accurate than checks relative to the modification time.
      */
     
-    if (!is_HTTP_SUCCESS(r->status))
+    if (!is_HTTP_SUCCESS(r->status) || r->no_local_copy)
         return OK;
 
-    if (if_modified_since && !r->header_only &&
-	later_than(gmtime(&mtime), if_modified_since))
-        return USE_LOCAL_COPY;
-    else if (if_unmodified && !later_than(gmtime(&mtime), if_unmodified))
-        return PRECONDITION_FAILED;
-    else if (if_nonematch && ((if_nonematch[0] == '*') ||
-			      find_token(r->pool, if_nonematch, etag)))
-        return (r->method_number == M_GET) ?
-	    USE_LOCAL_COPY : PRECONDITION_FAILED;
-    else if (if_match && !((if_match[0] == '*') ||
-			   find_token(r->pool, if_match, etag)))
-        return PRECONDITION_FAILED;
-    else
-        return OK;
+    /* If an If-Match request-header field was given and
+     * if our ETag does not match any of the entity tags in that field
+     * and the field value is not "*" (meaning match anything), then
+     *    respond with a status of 412 (Precondition Failed).
+     */
+
+    if (if_match &&
+        !((if_match[0] == '*') || find_token(r->pool, if_match, etag)))
+        return HTTP_PRECONDITION_FAILED;
+
+    /* If an If-None-Match request-header field was given and
+     * if our ETag matches any of the entity tags in that field or
+     * if the field value is "*" (meaning match anything), then
+     *    if the request method was GET or HEAD, the server SHOULD
+     *       respond with a 304 (Not Modified) response.
+     *    For all other request methods, the server MUST
+     *       respond with a status of 412 (Precondition Failed).
+     */
+
+    if (if_nonematch &&
+        ((if_nonematch[0] == '*') || find_token(r->pool, if_nonematch, etag)))
+        return ((r->method_number == M_GET) || r->header_only) ?
+                   HTTP_NOT_MODIFIED : HTTP_PRECONDITION_FAILED;
+
+    /* If a valid If-Unmodified-Since request-header field was given
+     * and the requested resource has been modified since the time
+     * specified in this field, then the server MUST
+     *    respond with a status of 412 (Precondition Failed).
+     */
+
+    if (if_unmodified) {
+        time_t ius = parseHTTPdate(if_unmodified);
+
+        if ((ius != BAD_DATE) && (mtime > ius))
+            return HTTP_PRECONDITION_FAILED;
+    }
+
+    /* If a valid If-Modified-Since request-header field was given on a GET
+     * and the requested resource has not been modified since the time
+     * specified in this field, then the server MUST
+     *    respond with a status of 304 (Not Modified).
+     * A date later than the server's current request time is invalid.
+     */
+
+    if (if_modified_since && (r->method_number == M_GET)) {
+        time_t ims = parseHTTPdate(if_modified_since);
+
+        if ((ims >= mtime) && (ims <= r->request_time))
+            return HTTP_NOT_MODIFIED;
+    }
+
+    return OK;
 }
 
-/*
- * Finally, real protocol stuff.
- */
-
-static char *
-getline(char *s, int n, BUFF *in)
+static char *getline(char *s, int n, BUFF *in)
 {
     int retval = bgets (s, n, in);
 

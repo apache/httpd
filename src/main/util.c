@@ -61,6 +61,10 @@
 #include "httpd.h"
 #include "http_conf_globals.h"	/* for user_id & group_id */
 
+const char month_snames[12][4] = {
+    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+};
+
 char *get_time() {
     time_t t;
     char *time_string;

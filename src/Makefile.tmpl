@@ -51,44 +51,77 @@ http_bprintf.o: http_bprintf.c
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
 
 #Dependencies
-#Core code
-$(OBJS): Makefile httpd.h alloc.h buff.h conf.h
 
-http_config.o http_core.o http_main.o util.o: http_conf_globals.h
-http_config.o http_core.o http_main.o: http_config.h http_log.h
-http_log.o http_protocol.o http_request.o modules.o: http_config.h
-http_config.o http_core.o http_log.o http_main.o http_protocol.o: http_core.h
-http_request.o: http_core.h
-http_protocol.o http_request.o util_script.o rfc1413.o: http_log.h
-http_core.o http_main.o http_protocol.o http_request.o: http_main.h
-http_core.o http_main.o http_protocol.o http_request.o: http_protocol.h
-http_config.o http_main.o http_request.o: http_request.h
-http_main.o: scoreboard.h
-http_core.o rfc1413.o: rfc1413.h
+$(OBJS): Makefile
 
-#Modules
-$(MODULES): http_config.h httpd.h
-mod_dld.o: http_conf_globals.h
-mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_core.h
-mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_status.o mod_cookies.o mod_log_common.o: http_core.h
-mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
-mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
-mod_status.o mod_include.o: http_main.h
-mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
-mod_status.o mod_dir.o: http_protocol.h
-mod_imap.o mod_include.o: http_protocol.h
-mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
-mod_status.o: util_script.h
-mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
-mod_digest.o: util_md5.h
-mod_status.o: scoreboard.h
-
-#Utils
+alloc.o: conf.h alloc.h
+buff.o: conf.h alloc.h buff.h
+explain.o: explain.h
+http_bprintf.o: conf.h alloc.h buff.h
+http_config.o: httpd.h http_config.h http_core.h http_log.h http_request.h \
+               http_conf_globals.h explain.h
+http_core.o: httpd.h http_config.h http_core.h http_protocol.h scoreboard.h \
+             http_conf_globals.h http_main.h http_log.h rfc1413.h util_md5.h
+http_log.o: httpd.h http_config.h http_core.h http_log.h
+http_main.o: httpd.h http_config.h http_core.h http_log.h http_request.h \
+             http_conf_globals.h http_protocol.h http_main.h scoreboard.h \
+             explain.h
+http_protocol.o: httpd.h http_config.h http_core.h http_protocol.h \
+                 http_main.h http_log.h util_date.h
+http_request.o: httpd.h http_config.h http_request.h http_core.h \
+                http_protocol.h http_log.h http_main.h scoreboard.h
 md5c.o: md5.h
-util.o: http_conf_globals.h
-util_script.o: http_core.h http_main.h http_protocol.h util_script.h
-util_md5.o: md5.h
+mod_access.o: httpd.h http_core.h http_config.h http_log.h
+mod_actions.o: httpd.h http_config.h http_request.h http_core.h \
+               http_protocol.h http_main.h http_log.h util_script.h
+mod_alias.o: httpd.h http_config.h
+mod_asis.o: httpd.h http_config.h http_protocol.h http_log.h util_script.h \
+            http_main.h http_request.h
+mod_auth.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_anon.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_db.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_dbm.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_auth_msql.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h
+mod_browser.o: httpd.h http_config.h
+mod_cern_meta.o: httpd.h http_config.h util_script.h http_log.h
+mod_cgi.o: httpd.h http_config.h http_request.h http_core.h http_protocol.h \
+           http_main.h http_log.h util_script.h
+mod_digest.o: httpd.h http_config.h http_core.h http_log.h http_protocol.h \
+              util_md5.h
+mod_dir.o: httpd.h http_config.h http_core.h http_request.h http_protocol.h \
+           http_log.h http_main.h util_script.h
+mod_dld.o: httpd.h http_config.h http_conf_globals.h
+mod_env.o: httpd.h http_config.h
+mod_expires.o: httpd.h http_config.h http_log.h
+mod_fastcgi.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               http_protocol.h http_main.h util_script.h http_conf_globals.h
+mod_headers.o: httpd.h http_config.h
+mod_imap.o: httpd.h http_config.h http_request.h http_core.h http_protocol.h \
+            http_main.h http_log.h util_script.h
+mod_include.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               http_protocol.h http_main.h util_script.h
+mod_info.o: httpd.h http_config.h http_core.h http_log.h http_main.h \
+            http_protocol.h util_script.h
+mod_log_agent.o: httpd.h http_config.h
+mod_log_config.o: httpd.h http_config.h http_core.h
+mod_log_referer.o: httpd.h http_config.h
+mod_mime.o: httpd.h http_config.h
+mod_negotiation.o: httpd.h http_config.h http_request.h http_core.h http_log.h
+mod_rewrite.o: httpd.h http_config.h http_request.h http_core.h http_log.h \
+               mod_rewrite.h
+mod_status.o: httpd.h http_config.h http_core.h http_protocol.h http_main.h \
+              util_script.h scoreboard.h
+mod_userdir.o: httpd.h http_config.h
+mod_usertrack.o: httpd.h http_config.h http_core.h
+modules.o: httpd.h http_config.h
+rfc1413.o: httpd.h http_log.h rfc1413.h
+util.o: httpd.h http_conf_globals.h
 util_date.o: util_date.h
+util_md5.o: httpd.h util_md5.h
+util_script.o: httpd.h http_config.h http_conf_globals.h http_main.h \
+               http_log.h http_protocol.h http_core.h http_request.h \
+               util_script.h
 
+httpd.h: conf.h alloc.h buff.h
+mod_rewrite.h: regexp/regexp.h
+util_md5.h: md5.h
