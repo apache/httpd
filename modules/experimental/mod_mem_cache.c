@@ -58,6 +58,7 @@
 
 #define CORE_PRIVATE
 #include "mod_cache.h"
+#include "cache_hash.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 #if APR_HAVE_UNISTD_H
@@ -69,13 +70,6 @@
 #endif
 
 module AP_MODULE_DECLARE_DATA mem_cache_module;
-
-/* 
- * XXX
- * This cache uses apr_hash functions which leak storage when something is removed
- * from the cache. This can be fixed in the apr_hash functions by making them use
- * malloc/free rather than pools to manage their storage requirements.
- */
 
 typedef enum {
     CACHE_TYPE_FILE = 1,
@@ -103,7 +97,7 @@ typedef struct mem_cache_object {
 
 typedef struct {
     apr_thread_mutex_t *lock;
-    apr_hash_t *cacheht;
+    cache_hash_t *cacheht;
     apr_size_t cache_size;
     apr_size_t object_cnt;
 
@@ -206,7 +200,7 @@ static apr_status_t decrement_refcount(void *arg)
          * removed the object from the cache (and set obj->cleanup)
          */
         if (!obj->cleanup) {
-            apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+            cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
             sconf->object_cnt--;
             sconf->cache_size -= mobj->m_len;
             obj->cleanup = 1;
@@ -243,7 +237,7 @@ static apr_status_t decrement_refcount(void *arg)
 static apr_status_t cleanup_cache_mem(void *sconfv)
 {
     cache_object_t *obj;
-    apr_hash_index_t *hi;
+    cache_hash_index_t *hi;
     mem_cache_conf *co = (mem_cache_conf*) sconfv;
 
     if (!co) {
@@ -254,12 +248,12 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         apr_thread_mutex_lock(sconf->lock);
     }
     /* Iterate over the cache and clean up each entry */
-    while ((hi = apr_hash_first(NULL, co->cacheht)) != NULL) {
+    while ((hi = cache_hash_first(NULL, co->cacheht)) != NULL) {
         /* Fetch the object from the cache */
-        apr_hash_this(hi, NULL, NULL, (void **)&obj);
+        cache_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
             /* Remove the object from the cache */
-            apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+            cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
             /* Free the object if the recount == 0 */
 #ifdef USE_ATOMICS
             apr_atomic_inc(&obj->refcount);
@@ -288,12 +282,12 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 
     sconf = apr_pcalloc(p, sizeof(mem_cache_conf));
 
-
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
     if (threaded_mpm) {
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
-    sconf->cacheht = apr_hash_make(p);
+    /* Todo: determine hash table size from max_cache_object_cnt */
+    sconf->cacheht = cache_hash_make(512);
 
     sconf->min_cache_object_size = DEFAULT_MIN_CACHE_OBJECT_SIZE;
     sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
@@ -399,11 +393,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    tmp_obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
+    tmp_obj = (cache_object_t *) cache_hash_get(sconf->cacheht, 
                                               key, 
-                                              APR_HASH_KEY_STRING);
+                                              CACHE_HASH_KEY_STRING);
     if (!tmp_obj) {
-        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
+        cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
         sconf->object_cnt++;
         sconf->cache_size += len;
     }
@@ -445,8 +439,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, 
-                                          APR_HASH_KEY_STRING);
+    obj = (cache_object_t *) cache_hash_get(sconf->cacheht, key, 
+                                          CACHE_HASH_KEY_STRING);
     if (obj) {
         if (obj->complete) {
             request_rec *rmain=r, *rtmp;
@@ -508,10 +502,11 @@ static int remove_entity(cache_handle_t *h)
      */
     if (!obj->cleanup) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
-        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+        cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
         obj->cleanup = 1;
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, NULL, "gcing a cache entry");
     }
 
     if (sconf->lock) {
@@ -585,13 +580,6 @@ static int remove_url(const char *type, const char *key)
     if (strcasecmp(type, "mem") && strcasecmp(type, "fd")) {
         return DECLINED;
     }
-
-    /* WIBNIF
-     * apr_hash_set(..,..,..,NULL) returned pointer to the object just removed.
-     * That way, we could free the object w/o doing another call to an
-     * apr_hash function.
-     */
-
     /* Order of the operations is important to avoid race conditions. 
      * First, remove the object from the cache. Remember, all additions
      * deletions from the cache are protected by sconf->lock.
@@ -604,11 +592,11 @@ static int remove_url(const char *type, const char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, 
-                                          APR_HASH_KEY_STRING);
+    /* This call will return a pointer to the cache_object just removed */
+    obj = cache_hash_set(sconf->cacheht, key, CACHE_HASH_KEY_STRING, NULL);
     if (obj) {
+        /* obj has been removed from the cache */
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
-        apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
 
