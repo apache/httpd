@@ -30,6 +30,13 @@
            repository, rather than a release distribution, then you
 	   must use the "buildconf" script before running configure.
 
+     NOTE: If you are building on FreeBSD, you should add the argument
+           --with-mpm=prefork to the configure line.  The Apache Group
+           has discovered that threads do not work well with Apache
+           on FreeBSD.  For that reason, we disable threads by default
+           on FreeBSD, and you need to build the prefork MPM.  If you wish
+           to try to make threads work on FreeBSD, they can be re-enabled
+           by using --enable-threads
 
   2. Requirements
      ------------
