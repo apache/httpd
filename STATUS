@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/20 18:50:19 $]
+Last modified at [$Date: 2003/05/20 19:37:33 $]
 
 Release:
 
@@ -244,7 +244,7 @@ PATCHES TO PORT FROM 2.1
     * Allow httpd's configure to recognize libtool 1.5 as capable of
       producing DSOs.
       configure.in: r1.252
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
