@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/26 22:39:31 $]
+  Last modified at [$Date: 2001/01/30 13:09:16 $]
 
 Release:
 
@@ -362,7 +362,7 @@ Binaries (1.3.17):
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-siemens-reliantunix5.4   no      Martin Kraemer
  netware                       no      Brad Nicholes <bnicholes@novell.com>
- OS/2                          no      Brian Havard
+ OS/2                          yes     Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
