@@ -377,7 +377,8 @@ match your local Apache installation.
 <P ALIGN="LEFT">
 <STRONG>COMPILING THE SUEXEC WRAPPER</STRONG><BR>
 You now need to compile the suEXEC wrapper.  At the shell command prompt,
-type:&nbsp;&nbsp;<STRONG><CODE>cc suexec.c -o suexec [ENTER]</CODE></STRONG>.
+after compiling Apache, 
+type:&nbsp;&nbsp;<STRONG><CODE>make suexec[ENTER]</CODE></STRONG>.
 This should create the <STRONG><EM>suexec</EM></STRONG> wrapper executable.
 </P>
 
