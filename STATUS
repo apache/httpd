@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/11 01:04:44 $]
+Last modified at [$Date: 2001/11/11 01:10:21 $]
 
 Release:
 
@@ -135,13 +135,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         This proposed change would _not_ depricate Alias.
 
     * add mod_gz to httpd-2.0 (in modules/experimental/)
-      +1: Greg, Justin, ben, Ken, Jeff, Bill
+      +1: Greg, Justin, ben, Ken, Jeff, Bill, Ian
        0: Cliff (there's now another candidate to be evaluated)
        0: Jim (premature decision at present, IMO)
       -0: Doug, Ryan
       
-      non-binding: Ian (+1)
-
     * daedalus: mod_cgid and suexec have a problem co-existing.  suexec 
       sees a null command string sometimes.  The problem happens when
       you access bugs.apache.org, then click on the "search the bug db"
