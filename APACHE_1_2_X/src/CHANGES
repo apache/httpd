@@ -1,5 +1,8 @@
 Changes with Apache 1.2.2
 
+  *) Fixed an infinite loop in mod_imap for references above the server root
+     [Dean Gaudet] PR#748
+
   *) mod_include cleanup showed that handle_else was being used to handle
      endif.  It didn't cause problems, but it was cleaned up too.
      [Howard Fear]
