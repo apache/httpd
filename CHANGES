@@ -1,5 +1,9 @@
 Changes with Apache 2.0.14-dev
 
+  *) Add config directives to override DEFAULT_ERROR_MSG and
+     DEFAULT_TIME_FORMAT.  This was sent in as PR 6193.
+     [Dan Rench <drench@xnet.com>]
+
   *) Get mod_info building and loading on Win32.  [William Rowe]
 
   *) Begin to move protocol independant functions out of mod_http.  The goal
