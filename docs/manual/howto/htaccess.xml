@@ -79,7 +79,6 @@ changes on a per-directory basis.</p>
     honored in <code>.htaccess</code> files.</p>
 
 <example><title>Example:</title>
-
       <table>
         <tr>
           <td><a
