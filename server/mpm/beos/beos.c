@@ -104,14 +104,6 @@ static apr_pool_t *pconf;		/* Pool for config stuff */
 
 static int server_pid; 
 
-/* Keep track of the number of worker threads currently active 
- * Is this still needed? Need to do some more checking but I suspect
- * that this could be removed all together.
- */
-static int worker_thread_count;
-apr_thread_mutex_t *worker_thread_count_mutex;
-
-static void check_restart(void *data);
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -124,8 +116,6 @@ int ap_max_threads_limit = -1;
 static apr_socket_t *udp_sock;
 static apr_sockaddr_t *udp_sa;
 
-/* shared http_main globals... */
-
 server_rec *ap_server_conf;
 
 /* one_process */
@@ -135,16 +125,23 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
+static void check_restart(void *data);
+
 /* When a worker thread gets to the end of it's life it dies with an
  * exit value of the code supplied to this function. The thread has
  * already had check_restart() registered to be called when dying, so
  * we don't concern ourselves with restarting at all here. We do however
- * mark the scoreboard slot as belonging to a dead server.
+ * mark the scoreboard slot as belonging to a dead server and zero out
+ * it's thread_id.
+ *
+ * TODO - use the status we set to determine if we need to restart the
+ *        thread.
  */
 static void clean_child_exit(int code, int slot)
 {
     (void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD, 
                                                (request_rec*)NULL);
+    ap_scoreboard_image->servers[0][slot].tid = 0;
     exit_thread(code);
 }
 
@@ -195,7 +192,6 @@ static void ap_start_shutdown(void)
 /* do a graceful restart if graceful == 1 */
 static void ap_start_restart(int graceful)
 {
-
     if (restart_pending == 1) {
         /* Probably not an error - don't bother reporting it */
         return;
@@ -460,11 +456,6 @@ static int32 worker_thread(void *dummy)
     apr_pool_create(&ptrans, pworker);
     apr_pool_tag(ptrans, "transaction");
 
-    /* Is this still needed? */
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count++;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
-
     ap_create_sb_handle(&sbh, pworker, 0, worker_slot);
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
                                
@@ -504,10 +495,10 @@ static int32 worker_thread(void *dummy)
         /* (Re)initialize this child to a pre-connection state. */
         apr_pool_clear(ptrans);
 
-        if ((ap_max_requests_per_child > 0 
-             && requests_this_child++ >= ap_max_requests_per_child))
+        if ((ap_max_requests_per_thread > 0 
+             && requests_this_child++ >= ap_max_requests_per_thread))
             clean_child_exit(0, worker_slot);
-
+        
         (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
         
         apr_thread_mutex_lock(accept_mutex);
@@ -599,11 +590,6 @@ got_fd:
         }
 got_a_black_spot:
     }
-
-    /* Is this needed any longer? */
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count--;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
    	apr_pool_destroy(ptrans);
     apr_pool_destroy(pworker);
@@ -819,6 +805,11 @@ static void server_main_loop(int remaining_threads_to_start)
     }
 }
 
+/* This is called to not only setup and run for the initial time, but also
+ * when we've asked for a restart. This means it must be able to handle both
+ * situations. It also means that when we exit here we should have tidied 
+ * up after ourselves fully.
+ */
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_threads_to_start, i,j;
@@ -884,16 +875,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         return 1;
     }
 
-    /* worker_thread_count_mutex
-     * locks the worker_thread_count so we have an accurate count...
-     */
-    rv = apr_thread_mutex_create(&worker_thread_count_mutex, 0, pconf);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                     "Couldn't create worker thread count lock");
-        return 1;
-    }
-
     /*
      * Startup/shutdown... 
      */
@@ -934,7 +915,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    remaining_threads_to_start = ap_thread_limit;
     }
 
-    /* if we're in one_process mode we don't want to start threads
+    /* If we're doing the single process thing or we're in a graceful_restart
+     * then we don't start threads here.
+     * if we're in one_process mode we don't want to start threads
      * do we??
      */
     if (!is_graceful && !one_process) {
@@ -973,6 +956,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     } else {
         worker_thread((void*)0);
     }
+    mpm_state = AP_MPMQ_STOPPING;
         
     /* close the UDP socket we've been using... */
     apr_socket_close(udp_sock);
@@ -1019,8 +1003,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
-    }
-    else {
+    } else {
         /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
@@ -1031,9 +1014,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		    "SIGHUP received.  Attempting to restart");
     }
     
-    /* just before we go, tidy up the locks we've created to prevent a 
-     * potential leak of semaphores... */
-    apr_thread_mutex_destroy(worker_thread_count_mutex);
+    /* just before we go, tidy up the lock we created to prevent a 
+     * potential leak of semaphores... 
+     */
     apr_thread_mutex_destroy(accept_mutex);
     
     return 0;
