@@ -324,7 +324,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = ap_max_requests_per_child;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
-            *result = ap_daemons_limit;
+            *result = server_limit;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
