@@ -554,7 +554,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
-        buflen = strlen(r->filename) + strlen(r->path_info) + 1;
+        /* Space for terminating null and an extra / is required. */
+        buflen = strlen(r->filename) + strlen(r->path_info) + 2;
         buf = apr_palloc(r->pool, buflen);
         strcpy (buf, r->filename);
         r->filename = buf;
