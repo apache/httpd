@@ -272,7 +272,7 @@ static int volatile is_graceful;
  * child to force an exit) and so do an exit anyway.
  */
 
-void ap_start_shutdown(void)
+static void ap_start_shutdown(void)
 {
     if (shutdown_pending == 1) {
 	/* Um, is this _probably_ not an error, if the user has
