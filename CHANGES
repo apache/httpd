@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Fix mod_info to use the real config file name, not the default
+     config file name.  [Aryeh Katz <aryeh@secured-services.com>]
+
   *) Set the scoreboard state to indicate logging prior to running 
      logging hooks so that server-status will show 'L' for hung loggers
      instead of 'W'.  [Jeff Trawick]
