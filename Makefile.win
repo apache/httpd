@@ -19,6 +19,8 @@
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
+default:        _apacher
+
 !IF !EXIST("srclib\apr")
 !MESSAGE Please check out or download and unpack the Apache Portability Runtime
 !MESSAGE sources (apr and apr-util) into your $(INSTDIR)\srclib directory.
@@ -33,6 +35,29 @@
 !MESSAGE Apache cannot build without these libraries!
 !MESSAGE 
 !ERROR Need $(INSTDIR)\srclib\apr-util
+!ENDIF
+
+# Note; tryssl: is only used by the msvc developer studio environment to 'fix up'
+#	the build, since conditional dependencies aren't supported
+#
+!IF EXIST("srclib\openssl")
+!IF "$(LONG)" == "Debug"
+SSLBIN=out32dll.dbg
+!ELSE
+SSLBIN=out32dll
+!ENDIF
+tryssl:
+	cd modules\ssl
+        $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\tls
+        $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSE
+tryssl:
+	echo mod_ssl and mod_tls will not build without openssl installed
+	echo in $(INSTDIR)\srclib\openssl.  They must be precompiled using
+	echo the ms/ntdll.mak file.  See INSTALL.W32 for details.
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
@@ -50,8 +75,6 @@ MAKEOPT=-nologo
 MAKEOPT=-s -N
 !ENDIF
 !ENDIF
-
-default:        _apacher
 
 _apacher: 
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release _build
@@ -132,6 +155,14 @@ _build:
 #	cd modules\proxy
 #        $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 #       cd ..\..
+!IF EXIST("srclib\openssl")
+	cd modules\ssl
+        $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\tls
+        $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd support
          $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -175,6 +206,14 @@ _install:
 	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
 #       copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
+!IF EXIST("srclib\openssl")
+	-copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules"
+	-copy modules\tls\$(LONG)\mod_tls.so "$(INSTDIR)\modules"
+	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin"
+	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
+	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
+!ENDIF
+        copy support\$(LONG)\ "$(INSTDIR)\bin"
         copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
         copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
