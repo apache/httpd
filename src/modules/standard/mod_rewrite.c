@@ -2009,8 +2009,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else if (strcmp(p->pattern, "-l") == 0) {
 #if !defined(__EMX__) && !defined(WIN32)
-/* OS/2 dosen't support links. */
-        if (stat(input, &sb) == 0)
+        if (lstat(input, &sb) == 0)
             if (S_ISLNK(sb.st_mode))
                 rc = 1;
 #endif
