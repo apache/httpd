@@ -127,11 +127,20 @@ void clean_parent_exit(int code);
 
 inline int ap_os_is_path_absolute(const char *file)
 {
-    /* XXX: Should this test *(strchr(file, ':') + 1) == '/' ? */
-    if ((file[0] == '/') || strchr(file, ':'))
-        return 1;
+    char *s = strchr (file, ':');
+    
+    if (s)
+    {
+        if (strncmp(s, "://", 3)) 
+            return 1;
+    }
     else
-        return 0;
+    {
+        if (file[0] == '/')
+            return 1;
+    }
+    	
+    return 0;
 }
 
 #define ap_os_dso_handle_t  void *

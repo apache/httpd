@@ -1,5 +1,9 @@
 Changes with Apache 1.3.17
 
+  *) Fixed ap_os_is_path_absolute() in OS.H so that it can tell the
+     between a NetWare path (SYS:/path) and a URL (HTTP://path).
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Fixed the sdbm.h bundled in Apache for Win32, bringing it in sync
      with Perl.  Because it didn't have the same geometry as Perl, 
      users reported the first user added with dbmmanage was not 
@@ -10,15 +14,14 @@ Changes with Apache 1.3.17
      volume name.  Since NetWare's current working directory always 
      defaults to the SYS: volume regardless of where the executible 
      started, the default volume will be the volume that is specified 
-     in ap_server_root.  This corrects mod_userdir/Netware reports
-     PR5826 & 6283.  [Brad Nicholes <BNICHOLES@novell.com>]
+     in ap_server_root.  [Brad Nicholes <BNICHOLES@novell.com>]
 
   *) Handle port numbers in Host headers properly again after
      the code was broken in 1.3.15. [Tony Finch]
 
 Changes with Apache 1.3.16
 
-  *) None from 1.3.15
+  *) None from 1.3.15 [repository tags were the issue, no code altered]
 
 Changes with Apache 1.3.15
 
