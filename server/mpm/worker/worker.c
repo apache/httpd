@@ -755,7 +755,7 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
     my_info->sd = 0;
     apr_thread_create(&listener, thread_attr, listener_thread, my_info, pchild);
     while (1) {
-        /* Does ap_threads_per_child include the listener thread? */
+        /* ap_threads_per_child does not include the listener thread */
         for (i = 0; i < ap_threads_per_child; i++) {
             int status = ap_scoreboard_image->servers[child_num_arg][i].status;
 
