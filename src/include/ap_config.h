@@ -135,6 +135,7 @@ char *crypt(char *pw, char *salt);
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define HAVE_CRYPT_H
+#define NO_LONG_DOUBLE
 
 #elif defined(SEQUENT)
 #define HAVE_GMTOFF

@@ -574,36 +574,3 @@ module status_module =
    NULL,			/* fixups */
    NULL				/* logger */
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
