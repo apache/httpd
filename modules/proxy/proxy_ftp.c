@@ -166,7 +166,7 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     strp = strchr(url, ';');
     if (strp != NULL) {
         *(strp++) = '\0';
-        parms = ap_proxy_canonenc(p, strp, strlen(strp), enc_parm,
+        parms = ap_proxy_canonenc(p, strp, strlen(strp), enc_parm, 0,
                                   r->proxyreq);
         if (parms == NULL)
             return HTTP_BAD_REQUEST;
@@ -174,7 +174,7 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     else
         parms = "";
 
-    path = ap_proxy_canonenc(p, url, strlen(url), enc_path, r->proxyreq);
+    path = ap_proxy_canonenc(p, url, strlen(url), enc_path, 0, r->proxyreq);
     if (path == NULL)
         return HTTP_BAD_REQUEST;
     if (!ftp_check_string(path))
@@ -182,13 +182,13 @@ static int proxy_ftp_canon(request_rec *r, char *url)
 
     if (r->proxyreq && r->args != NULL) {
         if (strp != NULL) {
-            strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
+            strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1, r->proxyreq);
             if (strp == NULL)
                 return HTTP_BAD_REQUEST;
             parms = apr_pstrcat(p, parms, "?", strp, NULL);
         }
         else {
-            strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
+            strp = ap_proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1, r->proxyreq);
             if (strp == NULL)
                 return HTTP_BAD_REQUEST;
             path = apr_pstrcat(p, path, "?", strp, NULL);
