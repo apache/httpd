@@ -336,12 +336,12 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * are used to give a better idea as to what failed.
                  */
                 if (pkey_mtime) {
-                    const char *key_types[] = {"RSA", "DSA", NULL};
+                    const char *key_types[] = {"RSA", "DSA"};
                     int i;
 
-                    for (i=0; key_types[i]; i++) {
-                        char *key_id =
-                            apr_psprintf(p, "%s:%s", cpVHostID, key_types[i]);
+                    for (i=0; i < SSL_AIDX_MAX; i++) {
+                        const char *key_id =
+                            ssl_asn1_table_keyfmt(p, cpVHostID, i);
                         ssl_asn1_t *asn1 = 
                             ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
