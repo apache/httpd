@@ -93,7 +93,7 @@
 #include <grp.h>
 #endif
 
-#ifdef AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate)
 {
     int i;
@@ -186,7 +186,7 @@ void ap_reclaim_child_processes(int terminate)
         }
     }
 }
-#endif /* AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES */
+#endif /* AP_MPM_WANT_RECLAIM_CHILD_PROCESSES */
 
 #ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
 
