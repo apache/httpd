@@ -913,10 +913,21 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
     if (cpCApath != NULL) {
         apr_dir_t *dir;
         apr_finfo_t direntry;
+        apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
 
-        apr_dir_open(&dir, cpCApath, p);
-        while ((apr_dir_read(&direntry, APR_FINFO_DIRENT, dir)) != APR_SUCCESS) {
-            const char *cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
+        if (apr_dir_open(&dir, cpCApath, p) != APR_SUCCESS) {
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
+                    "Init: Failed to open SSLCACertificatePath `%s'",
+                    cpCApath);
+            ssl_die();
+        }
+
+        while ((apr_dir_read(&direntry, finfo_flags, dir)) == APR_SUCCESS) {
+            const char *cp;
+            if (direntry.filetype == APR_DIR) {
+                continue; /* don't try to load directories */
+            }
+            cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
             ssl_init_PushCAList(skCAList, s, cp);
         }
         apr_dir_close(dir);
