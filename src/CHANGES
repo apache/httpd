@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Fix documentation of `Action' directive: It can activate a CGI script
+     when either a handler or a MIME content type is triggered by the request.
+     [Andrew Pimlott <pimlott@math.harvard.edu>] PR#3340
+
   *) Document the `add' command of `dbmmanage' in `dbmmanage.1' manpage.
      [David MacKenzie <djm@uu.net>] PR#3394
 

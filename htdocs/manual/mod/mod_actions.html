@@ -39,7 +39,7 @@ process files.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Action <EM>MIME-type cgi-script</EM><BR>
+><STRONG>Syntax:</STRONG></A> Action <EM>action-type cgi-script</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -65,9 +65,10 @@ and later
 </P>
 <P>
 This directive adds an action, which will activate <EM>cgi-script</EM> when
-a file of content type <EM>MIME-type</EM> is requested. It sends the
-URL and file path of the requested document using the standard
-CGI PATH_INFO and PATH_TRANSLATED environment variables.
+<EM>action-type</EM> is triggered by the request. The <EM>action-type</EM> can
+be either a <A HREF="../handler.html">handler</A> or a MIME content type.  It
+sends the URL and file path of the requested document using the standard CGI
+PATH_INFO and PATH_TRANSLATED environment variables.
 </P>
 <HR>
 
