@@ -98,7 +98,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\gen_test_char.pdb" /machine:I386\
+ /pdb:"$(OUTDIR)\Release\gen_test_char.pdb" /machine:I386\
  /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_test_char.obj"
@@ -143,9 +143,8 @@ ALL : "$(OUTDIR)\gen_test_char.exe"
 CLEAN :
 	-@erase "$(INTDIR)\gen_test_char.idb"
 	-@erase "$(INTDIR)\gen_test_char.obj"
-	-@erase "$(INTDIR)\gen_test_char.pdb"
+	-@erase "$(OUTDIR)\Debug\gen_test_char.pdb"
 	-@erase "$(OUTDIR)\gen_test_char.exe"
-	-@erase "$(OUTDIR)\gen_test_char.pdb"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
@@ -194,7 +193,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\gen_test_char.pdb" /debug /machine:I386\
+ /pdb:"$(OUTDIR)\Debug\gen_test_char.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_test_char.obj"

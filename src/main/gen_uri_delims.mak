@@ -98,7 +98,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\gen_uri_delims.pdb" /machine:I386\
+ /pdb:"$(OUTDIR)\Release\gen_uri_delims.pdb" /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_uri_delims.obj"
@@ -143,9 +143,8 @@ ALL : "$(OUTDIR)\gen_uri_delims.exe"
 CLEAN :
 	-@erase "$(INTDIR)\gen_uri_delims.idb"
 	-@erase "$(INTDIR)\gen_uri_delims.obj"
-	-@erase "$(INTDIR)\gen_uri_delims.pdb"
+	-@erase "$(OUTDIR)\Debug\gen_uri_delims.pdb"
 	-@erase "$(OUTDIR)\gen_uri_delims.exe"
-	-@erase "$(OUTDIR)\gen_uri_delims.pdb"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
@@ -193,7 +192,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\gen_uri_delims.pdb" /debug /machine:I386\
+ /pdb:"$(OUTDIR)\Debug\gen_uri_delims.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_uri_delims.obj"

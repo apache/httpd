@@ -49,8 +49,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
+# ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
 # Begin Special Build Tool
 SOURCE=$(InputPath)
 PostBuild_Desc=Create test_char.h
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386
+# ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386
 # Begin Special Build Tool
 SOURCE=$(InputPath)
 PostBuild_Desc=Create test_char.h

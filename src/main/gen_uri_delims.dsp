@@ -38,7 +38,7 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "Release
+# PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
@@ -49,8 +49,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_uri_delims.pdb" /machine:I386
+# ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Release\gen_uri_delims.pdb" /machine:I386
 # Begin Special Build Tool
 SOURCE=$(InputPath)
 PostBuild_Desc=Create uri_delims.h
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_uri_delims.pdb" /debug /machine:I386
+# ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_uri_delims.pdb" /debug /machine:I386
 # Begin Special Build Tool
 SOURCE=$(InputPath)
 PostBuild_Desc=Create uri_delims.h
