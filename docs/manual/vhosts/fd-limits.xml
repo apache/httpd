@@ -90,7 +90,7 @@ more about customizing your log files.)</p>
 file per virtual host) you can use the program <code><a
 href="../programs/other.html">split-logfile</a></code> to accomplish
 this. You'll find this program in the <code>support</code> directory
-of the Apache disribution.</p>
+of the Apache distribution.</p>
 
 <p>Run this program with the command:</p>
 
