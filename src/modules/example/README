@@ -42,7 +42,7 @@ following in your srm.conf file:
 
     <Location /example-info>
 	SetHandler example-handler
-    </Location?
+    </Location>
 
 As an alternative, you can put the following into a .htaccess file and
 then request the file "test.example" from that location:
