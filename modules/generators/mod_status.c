@@ -106,6 +106,9 @@
 #include <time.h>
 #include "scoreboard.h"
 #include "http_log.h"
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #ifdef NEXT
 #if (NX_CURRENT_COMPILER_RELEASE == 410)
