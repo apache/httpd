@@ -15,6 +15,11 @@
       <body id="directive-index">
         <xsl:call-template name="top"/>
 
+        <!-- collect the start letters -->
+        <xsl:variable name="start-letters">
+          <xsl:call-template name="directive-startletters" />
+        </xsl:variable>
+
         <div id="preamble">
           <h1>
             <xsl:value-of select="title"/>
@@ -23,77 +28,32 @@
           <xsl:apply-templates select="summary" />
 
           <!-- letter line -->
-          <xsl:if test="letters">
-            <p class="letters">
-              <xsl:for-each select="letters/*">
-                <xsl:variable name="letter" select="."/>
-
-                <!-- check on directives starting with $letter -->
-                <xsl:if test="count(document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)][$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]) &gt; 0">
-                  <xsl:if test="position() > 1"> <!-- assume, we always have directives starting with "A" -->
-                    <xsl:text> | </xsl:text>
-                  </xsl:if>
-
-                  <a href="#{$letter}">&nbsp;<xsl:value-of select="$letter"/>&nbsp;</a>
-                </xsl:if>
-
-              </xsl:for-each>
-            </p><xsl:text>
-</xsl:text> <!-- insert a line break -->
-          </xsl:if>
+          <p class="letters">
+            <xsl:call-template name="letter-bar">
+              <xsl:with-param name="letters" select="$start-letters"/>
+              <xsl:with-param name="first" select="true()"/>
+            </xsl:call-template>
+          </p>
           <!-- /letter line -->
+
+<xsl:text>
+</xsl:text> <!-- insert a line break -->
 
         </div> <!-- /preamble -->
 
         <div id="directive-list">
           <ul>
+            <xsl:call-template name="dindex-of-letter">
+              <xsl:with-param name="letters-todo" select="$start-letters"/>
+            </xsl:call-template>
+
             <xsl:if test="letters">
               <xsl:for-each select="letters/*">
                 <xsl:variable name="letter" select="."/>
 
-                <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)][$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
-                  <xsl:sort select="name"/>
-
-                  <li>
-                    <xsl:if test="position()=1">
-                      <a name="{$letter}" id="{$letter}" href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-                        <xsl:if test="@type = 'section'">&lt;</xsl:if>
-                        <xsl:value-of select="name"/>
-                        <xsl:if test="@type = 'section'">&gt;</xsl:if>
-                      </a>
-                    </xsl:if>
-
-                    <xsl:if test="position() != 1">
-		      <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-                        <xsl:if test="@type = 'section'">&lt;</xsl:if>
-                        <xsl:value-of select="name"/>
-                        <xsl:if test="@type = 'section'">&gt;</xsl:if>
-                      </a>
-                    </xsl:if>
-                  </li><xsl:text>
-</xsl:text>                                           <!-- insert a line break -->
-                </xsl:for-each> <!-- /directives -->
               </xsl:for-each> <!-- /letters -->
             </xsl:if>
             <!-- /if letters -->
-
-              <!-- this branch is only applied, if there's no <letters> specified in directives.xml.
-                   you may remove the this branch if you want the letters generally -->
-            <xsl:if test="not(letters)">
-              <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]">
-                <xsl:sort select="name"/>
-
-                <li>
-                  <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-                    <xsl:if test="@type = 'section'">&lt;</xsl:if>
-                    <xsl:value-of select="name"/>
-                    <xsl:if test="@type = 'section'">&gt;</xsl:if>
-                  </a>
-                </li><xsl:text>
-</xsl:text>                                           <!-- insert a line break -->
-              </xsl:for-each>
-            </xsl:if>
-            <!-- /no letters -->
 
           </ul>
         </div> <!-- /directive-index -->
@@ -101,6 +61,53 @@
         <xsl:call-template name="bottom"/>
       </body>
     </html>
-  </xsl:template> 
+  </xsl:template>
+
+
+  <!--                                                     -->
+  <!-- the working horse. builds list items of all         -->
+  <!-- directives starting with one letter                 -->
+  <!-- when done, it calls itself to catch the next letter -->
+  <!--                                                     -->
+  <xsl:template name="dindex-of-letter">
+  <xsl:param name="letters-todo"/>
+
+    <xsl:variable name="letter" select="substring($letters-todo,1,1)"/>
+
+    <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)][$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
+    <xsl:sort select="name"/>
+
+      <li><xsl:choose>
+        <xsl:when test="position()=1">
+          <a name="{$letter}" id="{$letter}" href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
+            <xsl:if test="@type = 'section'">&lt;</xsl:if>
+            <xsl:value-of select="name"/>
+            <xsl:if test="@type = 'section'">&gt;</xsl:if>
+          </a>
+        </xsl:when>
+
+        <xsl:otherwise>
+          <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
+            <xsl:if test="@type = 'section'">&lt;</xsl:if>
+            <xsl:value-of select="name"/>
+            <xsl:if test="@type = 'section'">&gt;</xsl:if>
+          </a>
+        </xsl:otherwise></xsl:choose>
+      </li>
+
+<xsl:text>
+</xsl:text> <!-- insert a line break -->
+
+    </xsl:for-each> <!-- /directives -->
+
+    <!-- call next letter, if there is -->
+    <xsl:if test="string-length($letters-todo) &gt; 1">
+      <xsl:call-template name="dindex-of-letter">
+        <xsl:with-param name="letters-todo" select="substring($letters-todo,2)"/>
+      </xsl:call-template>
+    </xsl:if>
+
+  </xsl:template>
+  <!-- /dindex-of-letter -->
 
 </xsl:stylesheet>
