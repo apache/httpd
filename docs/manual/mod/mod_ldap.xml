@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.12 $ -->
+<!-- $Revision: 1.13 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -52,12 +52,12 @@ by other LDAP modules</description>
 <section id="exampleconfig"><title>Example Configuration</title>
     <p>The following is an example configuration that uses
     <module>mod_ldap</module> to increase the performance of HTTP Basic
-    authentication provided by <module>mod_auth_ldap</module>.</p>
+    authentication provided by <module>mod_authnz_ldap</module>.</p>
 
     <example>
       # Enable the LDAP connection pool and shared<br />
       # memory cache. Enable the LDAP cache status<br />
-      # handler. Requires that mod_ldap and mod_auth_ldap<br />
+      # handler. Requires that mod_ldap and mod_authnz_ldap<br />
       # be loaded. Change the "yourdomain.example.com" to<br />
       # match your domain.<br />
       <br />
@@ -107,7 +107,7 @@ by other LDAP modules</description>
     caching strategy to minimize the number of times that the LDAP
     server must be contacted. Caching can easily double or triple
     the throughput of Apache when it is serving pages protected
-    with mod_auth_ldap. In addition, the load on the LDAP server
+    with mod_authnz_ldap. In addition, the load on the LDAP server
     will be significantly decreased.</p>
 
     <p><module>mod_ldap</module> supports two types of LDAP caching during
@@ -193,7 +193,7 @@ by other LDAP modules</description>
 
     <example>
       # Establish an SSL LDAP connection. Requires that <br />
-      # mod_ldap and mod_auth_ldap be loaded. Change the <br />
+      # mod_ldap and mod_authnz_ldap be loaded. Change the <br />
       # "yourdomain.example.com" to match your domain.<br />
       <br />
       LDAPTrustedCA /certs/certfile.der<br />
