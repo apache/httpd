@@ -43,14 +43,15 @@ else
 fi
 rm -f $testfile
 
-#   iterate over paths
-for path in `echo $pathlist |\
-             sed -e 's/^:/.:/' \
-                 -e 's/::/:.:/g' \
-                 -e 's/:$/:./' \
-                 -e 's/:/ /g'`; do
-    #   iterate over names
-    for name in $namelist; do
+paths="`echo $pathlist |\
+	 sed -e 's/^:/.:/' \
+	     -e 's/::/:.:/g' \
+	     -e 's/:$/:./' \
+	     -e 's/:/ /g'`"
+#   iterate over names
+for name in $namelist; do
+    #   iterate over paths
+    for path in $paths; do
         if [ $minusx "$path/$name" ] && [ ! -d "$path/$name" ]; then
             if [ "$silent" != "yes" ]; then
                 echo "$path/$name"
