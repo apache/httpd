@@ -76,7 +76,7 @@
 <li><a href="vhosts/name-based.html">Namensbasierte virtuelle Hosts</a></li>
 <li><a href="vhosts/ip-based.html">IP-basierte virtuelle Hosts</a></li>
 <li><a href="vhosts/mass.html">Dynamisch konfiguriertes Massen-Virtual-Hosting</a></li>
-<li><a href="vhosts/examples.html">Beispiele für virtuelles Hosts in
+<li><a href="vhosts/examples.html">Beispiele für virtuelle Hosts in
   typischen Installationen</a></li>
 <li><a href="vhosts/details.html">Tiefergehende Erörterung der Zuweisung
   virtueller Hosts</a></li>
