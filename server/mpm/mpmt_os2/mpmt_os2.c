@@ -186,7 +186,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         }
 
         for (lr = ap_listeners; lr; lr = lr->next) {
+            apr_sockaddr_t *sa;
             apr_os_sock_put(&lr->sd, &parent_info->listeners[num_listeners].listen_fd, pconf);
+            apr_socket_addr_get(&sa, APR_LOCAL, lr->sd);
             num_listeners++;
         }
 
