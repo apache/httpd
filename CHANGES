@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Fix an endless loop in ab which occurred when ab was posting
+     and the server dropped the connection unexpectedly.
+     [Jeff Trawick]
+
   *) Fix a segfault in ap_http_filter().  I hit the segfault while 
      discarding the body of a request, but it could affect other paths.
      [Jeff Trawick]

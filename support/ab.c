@@ -858,18 +858,25 @@ static void test(void)
                 continue;
                                
             apr_get_revents(&rv, con[i].aprsock, readbits);
-            /* Note: APR_POLLHUP is set after FIN is received on some
-             * systems, so treat that like APR_POLLIN so that we try
-             * to read again.
+            /* Notes: APR_POLLHUP is set after FIN is received on some
+             *        systems, so treat that like APR_POLLIN so that we try
+             *        to read again.
+             *
+             *        Some systems return APR_POLLERR with APR_POLLHUP.  We
+             *        need to call read_connection() for APR_POLLHUP, so 
+             *        check for APR_POLLHUP first so that a closed connection 
+             *        isn't treated like an I/O error.  If it is, we never
+             *        figure out that the connection is done and we loop
+             *        here endlessly calling apr_poll().
              */
+            if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
+                read_connection(&con[i]);
             if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
                bad++;
                err_except++;
                start_connect(&con[i]);
                continue;
             }
-            if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
-                read_connection(&con[i]);
             if (rv & APR_POLLOUT)
                 write_request(&con[i]);
 
@@ -896,14 +903,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.48 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.49 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.48 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.49 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
