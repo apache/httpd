@@ -18,12 +18,16 @@ Plan:
 
 Showstoppers:
 
-Committed Code Changes:
-
-    (Do we really have to keep this up to date?? It's the same as what's
-    in src/CHANGES -djg)
-
 Available Patches:
+
+    * Ralf's [PATCH] Config File Line Continuation (take 2)
+        <199802281601.RAA02379@en1.engelschall.com>
+        (this version uses strict matching of the backslash, i.e.  no trailing
+        spaces are allowed - this should be now avoid problems)
+        Status: Ralf +1
+                Martin +1 (on concept)
+                Dean +1   (on concept)
+                Dean -1?  (because of RAW_ARGS issues)
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
@@ -31,6 +35,16 @@ Available Patches:
 		Alexei -1 (shared lib concerns)
 
 Concepts:
+
+    * Ralf's [CONTRIB] AutoConf Interface Emulation
+        <199803020729.IAA20122@en1.engelschall.com>
+        (idea: GNU-style {configure,Makefile.tmpl} replaces existing 
+        but incomplete {Makefile,src/helpers/InstallApache}) 
+        Status: Ralf +1   (for 1.3.0 because either now or better never to
+                           avoid confusion later in the release cycle)
+                Jim +1    (for 1.3.1 on concept)
+                Jim -1    (for 1.3.0 because too late)
+                Randy -1  (too late for 1.3 in general)
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()
 	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
