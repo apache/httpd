@@ -1513,7 +1513,6 @@ API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
 API_EXPORT(void) ap_basic_http_header(request_rec *r)
 {
     char *protocol;
-    const char *server;
 
     if (r->assbackwards)
         return;
@@ -1542,10 +1541,13 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
     /* output the date header */
     ap_send_header_field(r, "Date", ap_gm_timestr_822(r->pool, r->request_time));
 
-    /* keep a previously set server header (possible from proxy), otherwise
+    /* keep the set-by-proxy server header, otherwise
      * generate a new server header */
-    if (server = ap_table_get(r->headers_out, "Server")) {
-        ap_send_header_field(r, "Server", server);
+    if (r->proxyreq) {
+        const char *server = ap_table_get(r->headers_out, "Server");
+        if (server) {
+            ap_send_header_field(r, "Server", server);
+        }
     }
     else {
         ap_send_header_field(r, "Server", ap_get_server_version());
