@@ -3,11 +3,11 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mpm_winnt - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mpm_winnt</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
-                      </span></td><td>このマルチプロセッシングモジュールは Windows NT
-向けに最適化されています。</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+                      </span></td><td>Windows NT
+向けに最適化されたマルチプロセッシングモジュール</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>mpm_winnt_module</td></tr></table></td></tr></table><h2>概要</h2>
-    <p>このマルチプロセッシングモジュール (MPM)
+    <p>このマルチプロセッシングモジュール (MPM)
     は Windows NT でのデフォルトになります。
     一つの制御用プロセスを用い、これが一つの子プロセスを起動し、
     そして子プロセスがリクエストを取り扱うためにスレッドを

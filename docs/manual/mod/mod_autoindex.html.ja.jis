@@ -5,7 +5,7 @@
       --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>Unix の <em>ls</em> コマンドや
     Win32 の <em>dir</em> シェルコマンドに似た
-    ディレクトリインデックスを生成します</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+    ディレクトリインデックスを生成する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>autoindex_module</td></tr></table></td></tr></table><h2>概要</h2> 
       <p>ディレクトリのインデックスは二つの情報源のうちの
@@ -15,7 +15,7 @@
       <li>普通は <code>index.html</code> と呼ばれる
       ユーザによって書かれたファイル。
       <a href="../mod/mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a>
-      ディレクティブでこのファイル名を設定します。
+      ディレクティブでこのファイル名を設定します。
       これは <code><a href="../mod/mod_dir.html">mod_dir</a></code> で制御されます。</li>
 
       <li>もしくは、サーバによって生成された一覧。
@@ -24,7 +24,7 @@
       <a href="#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>
       を使うことで、様々なファイルタイプに対してアイコン一覧を
       セットします。つまり、リストされたファイル毎に、
-      ファイルにマッチした一番最初のアイコンが表示されます。
+      ファイルにマッチした一番最初のアイコンが表示されます。
       これらは <code><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> で制御されます。</li>
     </ul>
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
@@ -49,7 +49,7 @@
     <code>SuppressColumnSorting</code>
     オプションで消すことができます。</p>
 
-    <p>"Size" でソートした場合は、用いられるのは
+    <p>"Size" でソートした場合は、用いられるのは
     <em>実際の</em>ファイルのサイズであって、
     表示の値ではないことに注意してください -
     たとえ両方ともが "1K" と表示されていたとしても、
@@ -75,7 +75,7 @@
       <li><code>C=N</code> は、ファイル名でソートします。</li>
 
       <li><code>C=M</code> は、更新日時、
-      ディレクトリ、ファイル名の順でソートします。</li>
+      ディレクトリ、ファイル名の順でソートします。</li>
 
       <li><code>C=S</code> は、サイズ、
       ディレクトリ、ファイル名の順でソートします。</li>
@@ -111,7 +111,7 @@
       に適合したファイルのみを表示します。</li>
     </ul>
 
-    <p>"P (パターンの P)" クエリー引数は、
+    <p>"P (パターンの P)" クエリー引数は、
     通常の IndexIgnore
     ディレクティブが処理された<em>後</em>に検査され、
     ファイル名全てが、他の autoindex
@@ -410,7 +410,7 @@ HeaderName HEADER.html
       (<code><a href="../mod/mod_include.html">mod_include</a></code> ドキュメントを参照して下さい)。</p>
 </td></tr></table></blockquote>
 
-    <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
+    <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
     HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
     等) を含んでいたら、
     <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions

@@ -3,19 +3,19 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mod_userdir - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_userdir</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
-                      </span></td><td>ユーザ専用のディレクトリを提供します
+                      </span></td><td>ユーザ専用のディレクトリを提供
   </td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>userdir_module</td></tr></table></td></tr></table><h2>概要</h2>
 <p>このモジュールは、
 <code>http://example.com/~user/</code>
-構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 <h2>ディレクティブ</h2><ul><li><a href="#userdir">UserDir</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../urlmapping.html">URL から
 ファイルシステムへのマッピング</a></li></ul><hr><h2><a name="UserDir">UserDir</a> <a name="userdir">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ユーザ専用ディレクトリの位置</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>UserDir <em>directory-filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>UserDir public_html</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
-                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_userdir</td></tr></table></td></tr></table>
 
@@ -23,7 +23,7 @@
     ユーザのドキュメントへのリクエストを受けた時に使う
     ユーザのホームディレクトリ中の、実際のディレクトリを
     設定します。
-    <em>directory-filename</em> には次のどれかを指定します:</p>
+    <em>directory-filename</em> には次のどれかを指定します:</p>
 
     <ul>
       <li>ディレクトリ名か下に示すようなパターン。</li>
@@ -31,7 +31,7 @@
       <li><code>disabled</code> キーワード。
       <code>enabled</code> キーワード (下記参照) で明示的に
       指定されたユーザ以外の
-      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
       しないようにします。</li>
 
       <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
@@ -78,7 +78,7 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
       <strong>このディレクティブを使うときは注意してください;
       "<code>UserDir ./</code>" は
       "<code>/~root</code>" から "<code>/</code>" へマップしますが、
-      これは望ましい動作ではないでしょう。
+      これは望ましい動作ではないでしょう。
       "<code>UserDir disabled root</code>" 宣言を
       設定の中に含めておくことを強くお薦めします。
       追加情報に <a href="../mod/core.html#directory" class="directive"><code class="directive">Directory</code></a>
