@@ -37,9 +37,11 @@ cd $START_DIR/$WORKING_DIR
 echo "Updating the site's FAQ"
 (cd /www/httpd.apache.org/docs-2.0/faq/; cvs update)
 
-# Now update the FAQ in the tarball
+# Now update the FAQ in the tarball via a download from the master site.
+# The FAQ contains SSI tags too complex for the expand.pl script to handle.
 rm -f docs/manual/faq/*.html
-cp /www/httpd.apache.org/docs-2.0/faq/*.html docs/manual/faq/
+links -source http://httpd.apache.org/docs-2.0/faq/index.html?ONEPAGE \
+              > docs/manual/faq/index.html
 
 # Create the configure scripts
 echo "Creating the configure script"
@@ -62,8 +64,7 @@ echo "Making sure people can read the manual (expanding SSI's)"
 
 echo >> $LOG_NAME
 echo "Making sure people can read the manual (expanding SSI's)" >> $LOG_NAME
-# run expand.pl twice to handle the two levels of includes in docs/manual/
-( cd docs/manual ; chmod +x expand.pl ; ./expand.pl ; ./expand.pl ; rm ./expand.pl ) >> $LOG_NAME
+( cd docs/manual ; chmod +x expand.pl ; ./expand.pl ; rm ./expand.pl ) >> $LOG_NAME
 
 # Time to roll the tarball
 echo "Rolling the tarballs"
