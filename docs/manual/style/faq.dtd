@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!ENTITY % common SYSTEM "common.dtd">
+%common;
+
+<!-- <faq> is the root element -->
+<!ELEMENT faq (parentdocument?, title, description?, summary?,
+seealso*, (section | categories))>
+
+<!ATTLIST faq metafile   CDATA        #REQUIRED
+              all-in-one (yes | no ) "no"
+>
+
+<!ELEMENT categories (categoryfile*)>
+
+<!ELEMENT categoryfile (#PCDATA)>
+
+<!ELEMENT description %Inline;>

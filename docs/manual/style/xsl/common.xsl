@@ -34,6 +34,7 @@
   <xsl:include href="sitemap.xsl"/>
   <xsl:include href="indexpage.xsl"/>
   <xsl:include href="quickreference.xsl"/>
+  <xsl:include href="faq.xsl"/>
 
   <!-- make sure, we set relative anchors
        only, if we're actually transforming
