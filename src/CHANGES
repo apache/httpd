@@ -51,7 +51,7 @@ Changes with Apache 1.2b8
      [Dean Gaudet]
 
   *) Improved generation of modules/Makefile to be more generic for
-     new module directories. [Ken Coar and Chuck Murcko]
+     new module directories. [Ken Coar, Chuck Murcko, Roy Fielding]
 
   *) Generate makefile dependency for Configuration based on the actual
      name given when running the Configure process.  [Dean Gaudet]

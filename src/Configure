@@ -571,7 +571,7 @@ echo "#### End of Configure created section ####">> Makefile.config
 cat Makefile.config >> Makefile
 sed -e "s#@@Configuration@@#$file#" "$makefile_tmpl" >>Makefile
 awk >>Makefile <$tmpfile \
-   '($3 ~ /modules\//) { printf "%s: modules/last-built ; @echo linking %s\n\n", $3, $3}'
+   '($3 ~ /modules\//) { printf "%s: modules/last-built\n\n", $3, $3}'
 cat Makefile.config ../support/Makefile.tmpl > ../support/Makefile
 
 cat << EOF > modules/Makefile
@@ -593,27 +593,30 @@ echo "MOD_CFLAGS=\$(INCLUDES2) \$(AUX_CFLAGS)">> modules/Makefile
 
 awk >> modules/Makefile < $tmpfile '\
    BEGIN {printf "MODULES="} \
-   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s.build ", pp[2]} \
+   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s ", pp[2]} \
    END {printf "\n"}'
 
 awk >> modules/Makefile < $tmpfile '\
    BEGIN {printf "CLEANERS="} \
-   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s.clean ", pp[2]} \
+   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s_clean ", pp[2]} \
    END {printf "\n"}'
 
 cat << EOF >> modules/Makefile
 
 default: \$(MODULES)
-	@echo "done building module subdirectories"
+	@echo "Done building module subdirectories"
 
 clean: \$(CLEANERS)
-	@echo "done cleaning module subdirectories"
+	@echo "Done cleaning module subdirectories"
 
-.SUFFIXES: .build .clean
+\$(MODULES): ForceMe
+	(cd \$@; \$(MAKE) CC=\$(CC) AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)')
 
-\$(MODULES):
-	(cd \$*; \$(MAKE) CC=\$(CC) AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)')
+ForceMe:
 
-\$(CLEANERS):
-	(cd \$*; \$(MAKE) clean)
 EOF
+
+awk >>modules/Makefile <$tmpfile \
+   '($3 ~ /modules\//) { split ($3, pp, "/"); \
+   printf "%s_clean:\n\t(cd %s; $(MAKE) clean)\n\n", pp[2], pp[2]}'
+
