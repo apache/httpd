@@ -209,6 +209,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     if (rv != APR_SUCCESS) {
         return "The address or port is invalid";
     }
+    if (!host) {
+        return "Missing address for VirtualHost";
+    }
     if (scope_id) {
         return "Scope ids are not supported";
     }

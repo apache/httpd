@@ -1,4 +1,7 @@
 Changes with Apache 2.0.30-dev
+  *) Fixed startup segfault that occurred when a VirtualHost
+     directive had a port but no address [Brian Pane]
+
   *) Allow htdbm to work with multiple DBM types [Ian Holsman]
 
   *) Win32: Made change to apr_sendfile() to return APR_ENOTIMPL
