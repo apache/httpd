@@ -3242,16 +3242,6 @@ static void common_init(void)
     (void) set42sig();
 #endif
 
-#ifdef SecureWare
-    if (set_auth_parameters(argc, argv) < 0)
-	perror("set_auth_parameters");
-    if (getluid() < 0)
-	if (setluid(getuid()) < 0)
-	    perror("setluid");
-    if (setreuid(0, 0) < 0)
-	perror("setreuid");
-#endif
-
 #ifdef WIN32
     /* Initialize the stupid sockets */
     AMCSocketInitialize();
@@ -4211,6 +4201,16 @@ extern int optind;
 int REALMAIN(int argc, char *argv[])
 {
     int c;
+
+#ifdef SecureWare
+    if (set_auth_parameters(argc, argv) < 0)
+	perror("set_auth_parameters");
+    if (getluid() < 0)
+	if (setluid(getuid()) < 0)
+	    perror("setluid");
+    if (setreuid(0, 0) < 0)
+	perror("setreuid");
+#endif
 
 #ifdef SOCKS
     SOCKSinit(argv[0]);

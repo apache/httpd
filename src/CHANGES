@@ -1,5 +1,7 @@
 Changes with Apache 1.3.1
 
+  *) PORT: Make SCO 5 (and probably 3) compile again. [Ben Laurie]
+
   *) PORT: NCR MPRAS systems have the same bug with SIGHUP restart that
      Solaris systems experience.  So define WORKAROUND_SOLARIS_BUG.
      [Klaus Weber <kweber@chephren.germany.ncr.com>] PR#1973
