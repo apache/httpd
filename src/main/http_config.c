@@ -908,40 +908,73 @@ API_EXPORT(char *) server_root_relative(pool *p, char *file)
     return make_full_path(p, server_root, file);
 }
 
+
+/* This structure and the following functions are needed for the
+ * table-based config file reading. They are passed to the
+ * cfg_open_custom() routine.
+ */
+
+/* Structure to be passed to cfg_open_custom(): it contains an
+ * index which is incremented from 0 to nelts on each call to
+ * cfg_getline() (which in turn calls arr_elts_getstr())
+ * and an array_header pointer for the string array.
+ */
+typedef struct {
+    array_header *array;
+    int curr_idx;
+} arr_elts_param_t;
+
+
+/* arr_elts_getstr() returns the next line from the string array. */
+static void *arr_elts_getstr(void *buf, size_t bufsiz, void *param)
+{
+    arr_elts_param_t *arr_param = (arr_elts_param_t *) param;
+
+    /* End of array reached? */
+    if (++arr_param->curr_idx > arr_param->array->nelts)
+        return NULL;
+
+    /* return the line */
+    ap_cpystrn(buf, ((char **) arr_param->array->elts)[arr_param->curr_idx - 1], bufsiz);
+
+    return buf;
+}
+
+
+/* arr_elts_close(): dummy close routine (makes sure no more lines can be read) */
+static int arr_elts_close(void *param)
+{
+    arr_elts_param_t *arr_param = (arr_elts_param_t *) param;
+    arr_param->curr_idx = arr_param->array->nelts;
+    return 0;
+}
+
 void process_command_config(server_rec *s, array_header *arr, pool *p, pool *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
-    int i;
-    char **lines = (char **)arr->elts;
+    arr_elts_param_t arr_parms;
+
+    arr_parms.curr_idx = 0;
+    arr_parms.array = arr;
 
     parms = default_parms;
     parms.pool = p;
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.config_file = pcfg_openfile(p, NULL);
+    parms.config_file = pcfg_open_custom(p, "-c/-C directives",
+                                         &arr_parms, NULL,
+                                         arr_elts_getstr, arr_elts_close);
 
-    for (i = 0; i < arr->nelts; ++i) {
-	char *line = lines[i];
+    errmsg = srm_command_loop(&parms, s->lookup_defaults);
 
-#ifdef MOD_PERL
-	if(!(strncmp(line, "PerlModule ", 11))) {
-	    const char *perl_cmd_module(cmd_parms *parms, void *dummy, char *arg);
-	    line += 11;
-	    (void)perl_cmd_module(&parms, s->lookup_defaults, line);
-	    continue;
-	}
-#endif
-	    
-	errmsg = handle_command(&parms, s->lookup_defaults, line);
-
-	if (errmsg) {
-	    fprintf(stderr, "Syntax error in command: `%s'\n", lines[i]);
-	    fprintf(stderr, "%s\n", errmsg);
-	    exit(1);
-	}
+    if (errmsg) {
+        fprintf(stderr, "Syntax error in -C/-c directive:\n%s\n", errmsg);
+        exit(1);
     }
+
+    cfg_closefile(parms.config_file);
 }
 
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)

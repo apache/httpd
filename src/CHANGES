@@ -78,7 +78,7 @@ Changes with Apache 1.3b4
      -c "directive" : process directive after reading config files
      example:
      httpd -C "PerlModule Apache::httpd_conf"
-     [Doug MacEachern]
+     [Doug MacEachern, Martin Kraemer]
 
   *) WIN32: Fix the execution of CGIs that are scripts and called 
      with path info that does not have an '=' in.

@@ -674,26 +674,43 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 {
     configfile_t *new_cfg;
     FILE *file;
-
-#ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, 
-		"Opening config file %s (%s)", 
-		name ? name : "NULL", 
-		(name && (file == NULL)) ? strerror(errno) : "successful");
+#ifdef unvoted_DISALLOW_DEVICE_ACCESS
+    struct stat stbuf;
 #endif
 
-    if (name != NULL) {
-	file = fopen(name, "r");
-	if (file == NULL)
-	    return NULL;
+    if (name == NULL) {
+        aplog_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+               "Internal error: pcfg_openfile() called with NULL filename");
+        return NULL;
     }
 
-    new_cfg = palloc(p, sizeof (*new_cfg));
+    file = fopen(name, "r");
+#ifdef DEBUG
+    aplog_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
+                "Opening config file %s (%s)",
+                name, (file == NULL) ? strerror(errno) : "successful");
+#endif
+    if (file == NULL)
+        return NULL;
+
+#ifdef unvoted_DISALLOW_DEVICE_ACCESS
+    if (strcmp(name, "/dev/null") != 0 &&
+        fstat(fileno(file), &stbuf) == 0 &&
+        !S_ISREG(stbuf.st_mode)) {
+        aplog_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+                    "Access to file %s denied by server: not a regular file",
+                    name);
+        fclose(file);
+        return NULL;
+    }
+#endif
+
+    new_cfg = palloc(p, sizeof(*new_cfg));
     new_cfg->param = file;
     new_cfg->name = pstrdup(p, name);
-    new_cfg->getch = (int(*)(void*))fgetc;
-    new_cfg->getstr = (void *(*)(void *,size_t,void *))fgets;
-    new_cfg->close = (int(*)(void*))fclose;
+    new_cfg->getch = (int (*)(void *)) fgetc;
+    new_cfg->getstr = (void *(*)(void *, size_t, void *)) fgets;
+    new_cfg->close = (int (*)(void *)) fclose;
     new_cfg->line_number = 0;
     return new_cfg;
 }
@@ -702,13 +719,13 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 /* Allocate a configfile_t handle with user defined functions and params */
 API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
     void *param,
-    int(*getch)(void*),
+    int(*getch)(void *),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void*))
+    int(*close_func)(void *))
 {
-    configfile_t *new_cfg = palloc(p, sizeof (*new_cfg));
+    configfile_t *new_cfg = palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
+    aplog_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
 #endif
     new_cfg->param = param;
     new_cfg->name = descr;
