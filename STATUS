@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/05/23 14:47:44 $]
+  Last modified at [$Date: 2001/05/23 14:49:36 $]
 
 Release:
 
@@ -375,4 +375,4 @@ Binaries (1.3.20):
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
- win32                         no      William Rowe
+ win32                         yes     William Rowe
