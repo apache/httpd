@@ -3584,6 +3584,8 @@ static void register_hooks(void)
     ap_register_input_filter("DECHUNK", dechunk_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_CONNECTION);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_CONNECTION + 1);
+    ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
+                              AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
     ap_register_output_filter("BUFFER", buffer_filter, AP_FTYPE_CONNECTION);
 }
