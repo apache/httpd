@@ -74,6 +74,10 @@
 extern "C" {
 #endif
 
+#ifdef HAVE_NETINET_TCP_H
+#include <netinet/tcp.h>    /* for TCP_NODELAY */
+#endif
+        
 void ap_reclaim_child_processes(int terminate);
 void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p);
 void ap_process_child_status(ap_proc_t *pid, ap_wait_t status);

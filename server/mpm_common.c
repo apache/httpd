@@ -77,6 +77,9 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h> /* for timeval definitions */
 #endif
+#if HAVE_SYS_SOCKET_H
+#include <sys/socket.h> /* for setsockopt prototype */
+#endif
 
 #if defined(DEXTER) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM)
 #define CHILD_TABLE 1
@@ -290,7 +293,7 @@ void ap_sock_disable_nagle(int s)
      */
     int just_say_no = 1;
 
-    if (ap_setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
+    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
                    sizeof(int)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                     "setsockopt: (TCP_NODELAY)");
