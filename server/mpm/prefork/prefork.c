@@ -235,13 +235,6 @@ static void clean_child_exit(int code)
     exit(code);
 }
 
-static void expand_lock_fname(apr_pool_t *p)
-{
-    /* XXXX possibly bogus cast */
-    ap_lock_fname = apr_psprintf(p, "%s.%lu",
-	ap_server_root_relative(p, ap_lock_fname), (unsigned long)getpid());
-}
-
 static void accept_mutex_on(void)
 {
     apr_status_t rv = apr_proc_mutex_lock(accept_mutex);
