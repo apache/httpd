@@ -190,6 +190,10 @@ SOURCE=.\modules\standard\mod_imap.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\standard\mod_include.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\standard\mod_log_config.c
 # End Source File
 # Begin Source File
@@ -203,6 +207,10 @@ SOURCE=.\modules\standard\mod_negotiation.c
 # Begin Source File
 
 SOURCE=.\modules\standard\mod_setenvif.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\standard\mod_so.c
 # End Source File
 # Begin Source File
 
