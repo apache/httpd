@@ -65,6 +65,10 @@
 #define PLATFORM "Unix"
 #endif
 
+/**
+ * @package OS Specific Functions
+ */
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
@@ -77,6 +81,12 @@
  */
 #define INLINE extern apr_inline
 
+/**
+ * Is the path an absolute or relative path
+ * @param file The path to the file
+ * @return 1 if absolute, 0 otherwise
+ * @deffunc int ap_os_is_path_absolute(const char *file)
+ */
 INLINE int ap_os_is_path_absolute(const char *file);
 
 #include "os-inline.c"
@@ -91,10 +101,53 @@ extern int ap_os_is_path_absolute(const char *file);
 
 /* Other ap_os_ routines not used by this platform */
 
+/**
+ * Perform canonicalization on a given filename.  This means that files on
+ * all platforms have the same format
+ * @param p The pool to allocate the canonical filename out of
+ * @param f The filename to canonicalize
+ * @return The new filename
+ * @deffunc char *ap_os_canonical_filename(apr_pool_t *p, const char *f)
+ */
 #define ap_os_canonical_filename(p,f)  (f)
+
+/**
+ * Perform canonicalization on a given filename, except that the input case
+ * is preserved.
+ * @param p The pool to allocate the canonical filename out of
+ * @param f The filename to canonicalize
+ * @return The new filename
+ * @deffunc char *ap_os_case_canonical_filename(apr_pool_t *p, const char *f)
+ */
 #define ap_os_case_canonical_filename(p,f)  (f)
+
+/**
+ * Tries to match a filename to the existing patch, and returns the pathname
+ * in the case that is present on the existing path.  This routine also
+ * converts alias names to long names.
+ * @param p The pool to allocate out of
+ * @param f The file to match
+ * @return The matched file name with the correct case
+ * @deffunc char *ap_os_systemcase_filename(apr_pool_t *p, const char *f)
+ */
 #define ap_os_systemcase_filename(p,f)  (f)
+
+/**
+ * Tests for validity of a filename on the current platform.  The tests for
+ * validity are operating system specific
+ * @param f The file to test
+ * @return 1 If the filename is valid, 0 otherwise
+ * @deffunc int ap_os_is_filename_valid(const char *file)
+ */
 #define ap_os_is_filename_valid(f)          (1)
+
+/**
+ * Send a signal to a specified process
+ * @param pid the process to send the signal to
+ * @param sig the signal to send
+ * @return On success 0, on error -1
+ * @deffunc int ap_os_kill(pid_t pid, int sig)
+ */
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
 #endif	/* !APACHE_OS_H */
