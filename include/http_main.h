@@ -71,6 +71,10 @@ extern ap_array_header_t *ap_server_pre_read_config;
 extern ap_array_header_t *ap_server_post_read_config;
 extern ap_array_header_t *ap_server_config_defines;
 
+#ifdef WIN32
+API_EXPORT(int) apache_main(int argc, char *argv[]);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

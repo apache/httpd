@@ -56,33 +56,25 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_MPM_WINNT_H
-#define APACHE_MPM_WINNT_H
+/*
+ * Declarations for users of the functions defined in registry.c
+ */
 
-#include "ap_listen.h"
-
-extern int ap_threads_per_child;
-extern int ap_max_requests_per_child;
-extern int ap_extended_status;
-extern void clean_child_exit(int);
-
-typedef void (CALLBACK *ap_completion_t)();
-API_VAR_IMPORT ap_completion_t ap_mpm_init_complete;
-
-API_EXPORT(void) ap_start_shutdown(void);
-
-typedef struct CompContext {
-    OVERLAPPED Overlapped;
-    SOCKET accept_socket;
-    ap_socket_t *sock;
-    ap_listen_rec *lr;
-    BUFF *conn_io;
-    char *recv_buf;
-    int  recv_buf_size;
-    ap_pool_t *ptrans;
-    struct sockaddr *sa_server;
-    int sa_server_len;
-    struct sockaddr *sa_client;
-    int sa_client_len;
-} COMP_CONTEXT, *PCOMP_CONTEXT;
-#endif /* APACHE_MPM_WINNT_H */
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0400
+#endif
+#ifndef NOGDI
+#define NOGDI
+#endif
+#ifndef NONLS
+#define NONLS
+#endif
+#ifndef NOMCX
+#define NOMCX
+#endif
+#ifndef NOIME
+#define NOIME
+#endif
+#include <windows.h>
+#include <winsock2.h>
+#include <mswsock.h>

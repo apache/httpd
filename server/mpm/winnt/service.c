@@ -58,21 +58,20 @@
 
 #ifdef WIN32
 
-#include "os.h"
-#include <stdlib.h>
-#include <direct.h>
-
 #define  CORE_PRIVATE 
+
+#include "main_win32.h"
 #include "httpd.h"
 #include "http_conf_globals.h"
 #include "http_log.h"
-#include "http_main.h"
 #include "service.h"
 #include "registry.h"
 #include "ap_mpm.h"
+#include "..\..\modules\mpm\winnt\winnt.h"
 
 typedef void (CALLBACK *ap_completion_t)();
 API_VAR_IMPORT ap_completion_t ap_mpm_init_complete;
+API_VAR_IMPORT char *ap_server_argv0;
 
 static struct
 {
@@ -85,6 +84,8 @@ static struct
     SERVICE_STATUS ssStatus;
     FILE *logFile;
     char *service_dir;
+    HANDLE threadService;
+    HANDLE threadMonitor;
 } globdat;
 
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
@@ -93,54 +94,137 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
 static int ap_start_service(SC_HANDLE);
 static int ap_stop_service(SC_HANDLE);
 
-static void CALLBACK report_service95_running()
+static LRESULT CALLBACK MonitorWin9xWndProc(HWND hWnd, UINT msg, 
+                                            WPARAM wParam, LPARAM lParam)
 {
-    FreeConsole();
-
-    /* We do this only once, ever */
-    ap_mpm_init_complete = NULL;
+/* This is the WndProc procedure for our invisible window.
+ * When the user shuts down the system, this window is sent
+ * a signal WM_ENDSESSION. We clean up by signaling Apache
+ * to shut down, and idle until Apache's primary thread quits.
+ */
+    if ((msg == WM_ENDSESSION) && (lParam != ENDSESSION_LOGOFF))
+    {
+        ap_start_shutdown();
+	if (wParam)
+	    WaitForSingleObject(globdat.threadService, 30000);
+        return 0;
+    }
+    return (DefWindowProc(hWnd, msg, wParam, lParam));
 }
 
-int service95_main(int (*main_fn)(int, char **), int argc, char **argv )
+static DWORD WINAPI MonitorWin9xEvents(LPVOID initEvent)
 {
-    HINSTANCE hkernel;
+/* When running on Windows 9x, the ConsoleCtrlHandler is _NOT_ 
+ * called when the system is shutdown.  So create an invisible 
+ * window to watch for the WM_ENDSESSION message, and watch for
+ * the WM_CLOSE message to shut the window down.
+ */
+    WNDCLASS wc;
+    HWND hwndMain;
+
+    wc.style         = CS_GLOBALCLASS;
+    wc.lpfnWndProc   = MonitorWin9xWndProc; 
+    wc.cbClsExtra    = 0;
+    wc.cbWndExtra    = 0; 
+    wc.hInstance     = NULL;
+    wc.hIcon         = NULL;
+    wc.hCursor       = NULL;
+    wc.hbrBackground = NULL;
+    wc.lpszMenuName  = NULL;
+    wc.lpszClassName = "ApacheWin9xService";
+ 
+    if (RegisterClass(&wc)) 
+    {
+        /* Create an invisible window */
+        hwndMain = CreateWindow("ApacheWin9xService", "Apache", 
+ 	                        WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, 
+                                CW_USEDEFAULT, CW_USEDEFAULT, 
+                                CW_USEDEFAULT, CW_USEDEFAULT, 
+                                NULL, NULL, NULL, NULL);
+        if (hwndMain)
+        {
+	    MSG msg;
+	    /* If we succeed, eliminate the console window.
+             * Signal the parent we are all set up, and
+             * watch the message queue while the window lives.
+             */
+	    FreeConsole();
+            SetEvent((HANDLE) initEvent);
+            while (GetMessage(&msg, NULL, 0, 0)) 
+            {
+                if (msg.message == WM_CLOSE)
+                    DestroyWindow(hwndMain); 
+                else {
+	            TranslateMessage(&msg);
+	            DispatchMessage(&msg);
+                }
+            }
+            globdat.threadMonitor = 0;
+            return(0);
+        }
+    }
+    /* We failed or are soon to die... 
+     * we won't need this much longer 
+     */
+    SetEvent((HANDLE) initEvent);
+    globdat.threadMonitor = 0;
+    return(0);
+}
+
+static void CALLBACK report_service9x_running()
+{
+}
+
+int service9x_main(int (*main_fn)(int, char **), int argc, char **argv )
+{
     DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
+    HINSTANCE hkernel;
+    DWORD threadId;
+    
+    globdat.threadService = GetCurrentThread();
     
     /* Obtain a handle to the kernel library */
     hkernel = LoadLibrary("KERNEL32.DLL");
-    if (!hkernel)
-        return -1;
-    
-    /* Find the RegisterServiceProcess function */
-    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
-                             GetProcAddress(hkernel, "RegisterServiceProcess");
-    if (RegisterServiceProcess == NULL)
-        return -1;
-	
-    /* Register this process as a service */
-    if (!RegisterServiceProcess((DWORD)NULL, 1))
-        return -1;
-
-    /* Eliminate the console for the remainer of the service session */
-    ap_mpm_init_complete = report_service95_running;
+    if (hkernel) {
+        /* Find the RegisterServiceProcess function */
+        RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
+                                 GetProcAddress(hkernel, "RegisterServiceProcess");
+        if (RegisterServiceProcess) {
+            if (RegisterServiceProcess((DWORD)NULL, 1)) {
+                HANDLE installed = CreateEvent(NULL, FALSE, FALSE, NULL);
+                globdat.threadMonitor = CreateThread(NULL, 0,
+                                                     MonitorWin9xEvents, 
+                                                     (LPVOID) installed,
+                                                     0, &threadId);
+                WaitForSingleObject(installed, 30000);
+                CloseHandle(installed);
+            }
+        }
+    }
 
     /* Run the service */
     globdat.exit_status = main_fn(argc, argv);
 
+    /* Still have a thread & window to clean up, so signal now */
+    if (globdat.threadMonitor)
+    {
+	PostThreadMessage(threadId, WM_CLOSE, 0, 0);
+        WaitForSingleObject(globdat.threadMonitor, 30000);
+    }
+
     /* When the service quits, remove it from the 
        system service table */
-    RegisterServiceProcess((DWORD)NULL, 0);
+    if (RegisterServiceProcess)
+	RegisterServiceProcess((DWORD)NULL, 0);
 
     /* Free the kernel library */
-    // Worthless, methinks, since it won't be reclaimed
-    // FreeLibrary(hkernel);
+    if (hkernel)
+        FreeLibrary(hkernel);
 
-    /* We have to quit right here to avoid an invalid page fault */
-    // But, this is worth experimenting with!
     return (globdat.exit_status);
 }
 
-int service_main(int (*main_fn)(int, char **), int argc, char **argv )
+int servicent_main(int (*main_fn)(int, char **), int argc, char **argv )
 {
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
@@ -166,24 +250,12 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     }
 }
 
-void service_cd()
-{
-    /* change to the drive with the executable */
-    char buf[300];
-    GetModuleFileName(NULL, buf, 300);
-    buf[2] = 0;
-    chdir(buf);
-}
-
-static void CALLBACK report_service_started()
+static void CALLBACK report_servicent_started()
 {
     ReportStatusToSCMgr(
         SERVICE_RUNNING,    // service state
         NO_ERROR,           // exit code
         0);                 // wait hint
-    
-    /* This is only reported once, ever! */
-    ap_mpm_init_complete = NULL;
 }
 
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
@@ -218,9 +290,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
         NO_ERROR,              // exit code
         3000);                 // wait hint
 
-    ap_mpm_init_complete = report_service_started;
-
-    service_cd();
+    ap_mpm_init_complete = report_servicent_started;
 
     /* Fetch server_conf from the registry 
      *  Rebuild argv and argc adding the -d server_root and -f server_conf then 
@@ -273,7 +343,6 @@ void service_set_status(int status)
 VOID WINAPI service_ctrl(DWORD dwCtrlCode)
 {
     int state;
-
 
     state = globdat.ssStatus.dwCurrentState;
     switch(dwCtrlCode)
@@ -342,7 +411,7 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     return(1);
 }
 
-void InstallService(char *display_name, char *conf)
+void InstallServiceNT(char *display_name, char *conf)
 {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
@@ -415,7 +484,7 @@ void InstallService(char *display_name, char *conf)
 }
 
 
-void RemoveService(char *display_name)
+void RemoveServiceNT(char *display_name)
 {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
@@ -473,15 +542,26 @@ BOOL isProcessService() {
 }
 
 /* Determine is service_name is a valid service
+ * Simplify by testing the registry rather than the SCM
+ * as this will work on both WinNT and Win9x.
  */
 
-BOOL isValidService(char *display_name) {
-    SC_HANDLE schSCM, schSVC;
+BOOL isValidService(ap_pool_t *p, char *display_name) {
     char service_name[256];
-    int Err;
+    char *service_conf;
 
     /* Remove spaces from display name to create service name */
     ap_collapse_spaces(service_name, display_name);
+
+    if(ap_registry_get_service_conf(p, &service_conf, service_name)) {
+        return TRUE;
+    }
+    
+    return FALSE;
+
+#if 0
+    SC_HANDLE schSCM, schSVC;
+    int Err;
 
     if (!(schSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
@@ -501,8 +581,12 @@ BOOL isValidService(char *display_name) {
                      "OpenService failed");
 
     return FALSE;
+#endif
 }
 
+/* Although the Win9x service enhancement added -k startservice,
+ * it is never processed here, so we still ignore that param.
+ */
 int send_signal_to_service(char *display_name, char *sig) {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
@@ -607,6 +691,6 @@ int ap_start_service(SC_HANDLE schService) {
             return TRUE;
     return FALSE;
 }
-           
+
 #endif /* WIN32 */
 

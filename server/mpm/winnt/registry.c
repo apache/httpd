@@ -101,6 +101,7 @@
 #define SERVICEKEYPRE  "System\\CurrentControlSet\\Services\\"
 #define SERVICEKEYPOST "\\Parameters"
 
+#define SERVICELAUNCH9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices\\"
 /*
  * The Windows API registry key functions don't set the last error
  * value (the windows equivalent of errno). So we need to set it
@@ -253,19 +254,6 @@ static int ap_registry_get_key_int(ap_pool_t *p, char *key, char *name, char *pB
  * dir will contain an empty string), or -1 if there was
  * an error getting the key.
  */
-#if 0
-int ap_registry_get_server_root(ap_pool_t *p, char *dir, int size)
-{
-    int rv;
-
-    rv = ap_registry_get_key_int(p, REGKEY, "ServerRoot", dir, size, NULL);
-    if (rv < 0) {
-	dir[0] = '\0';
-    }
-
-    return (rv < -1) ? -1 : 0;
-}
-#else
 int ap_registry_get_server_root(ap_pool_t *p, char **buf)
 {
     int rv;
@@ -277,7 +265,7 @@ int ap_registry_get_server_root(ap_pool_t *p, char **buf)
 
     return (rv < -1) ? -1 : 0;
 }
-#endif
+
 char *ap_get_service_key(char *display_name)
 {
     size_t keylen = strlen(display_name);
@@ -290,21 +278,7 @@ char *ap_get_service_key(char *display_name)
     
     return(key);
 }
-#if 0
-int ap_registry_get_service_conf(ap_pool_t *p, char *dir, int size, char *display_name)
-{
-    int rv;
-    char *key = ap_get_service_key(display_name);
 
-    rv = ap_registry_get_key_int(p, key, "ConfPath", dir, size, NULL);
-    if (rv < 0) {
-    dir[0] = '\0';
-    }
-
-    free(key);
-    return (rv < -1) ? -1 : 0;
-}
-#else
 int ap_registry_get_service_conf(ap_pool_t *p, char **buf, char *service_name)
 {
     int rv;
@@ -318,7 +292,6 @@ int ap_registry_get_service_conf(ap_pool_t *p, char **buf, char *service_name)
     free(key);
     return (rv < -1) ? -1 : 0;
 }
-#endif
 
 /**********************************************************************
  * The rest of this file deals with storing keys or values in the registry
@@ -552,4 +525,3 @@ int ap_registry_set_server_root(char *dir)
 
     return rv < 0 ? -1 : 0;
 }
-

@@ -68,10 +68,8 @@
 #include "ap_config.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
-//#include "service.h"
 #include "iol_socket.h"
 #include "winnt.h"
-
 
 /*
  * Definitions of WINNT MPM specific config globals
@@ -105,9 +103,8 @@ int ap_daemons_to_start=0;
 static event *exit_event;
 HANDLE maintenance_event;
 ap_lock_t *start_mutex;
-int my_pid;
-int parent_pid;
-typedef void (CALLBACK *ap_completion_t)();
+DWORD my_pid;
+DWORD parent_pid;
 API_VAR_EXPORT ap_completion_t ap_mpm_init_complete = NULL;
 
 static ap_status_t socket_cleanup(void *sock)
@@ -299,15 +296,19 @@ static void signal_parent(int type)
     }
     CloseHandle(e);
 }
+
 static int volatile is_graceful = 0;
+
 API_EXPORT(int) ap_graceful_stop_signalled(void)
 {
     return is_graceful;
 }
-void ap_start_shutdown(void)
+
+API_EXPORT(void) ap_start_shutdown(void)
 {
     signal_parent(0);
 }
+
 /*
  * Initialise the signal names, in the global variables signal_name_prefix, 
  * signal_restart_name and signal_shutdown_name.
@@ -354,6 +355,7 @@ static void sock_disable_nagle(int s)
  * Routines to deal with managing the list of listening sockets.
  */
 static ap_listen_rec *head_listener;
+
 static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
     ap_listen_rec *lr;
@@ -371,6 +373,7 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     }
     return NULL;
 }
+
 static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
@@ -1390,7 +1393,10 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     int rv;
     char buf[1024];
     char *pCommand;
+    char *pEnvVar;
+    char *pEnvBlock;
     int i;
+    int iEnvBlockLen;
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
 
@@ -1425,14 +1431,38 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
         pCommand = ap_pstrcat(p, pCommand, " \"", server_conf->process->argv[i], "\"", NULL);
     }
 
+    /* Build the environment, since Win9x disrespects the active env */
+    // SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%l",parent_pid));
+    pEnvVar = ap_psprintf(p, "AP_PARENT_PID=%i", parent_pid);
+    /*
+     * Win32's CreateProcess call requires that the environment
+     * be passed in an environment block, a null terminated block of
+     * null terminated strings.
+     */  
+    i = 0;
+    iEnvBlockLen = 1;
+    while (_environ[i]) {
+        iEnvBlockLen += strlen(_environ[i]) + 1;
+        i++;
+    }
+
+    pEnvBlock = (char *)ap_pcalloc(p, iEnvBlockLen + strlen(pEnvVar) + 1);
+    strcpy(pEnvBlock, pEnvVar);
+    pEnvVar = strchr(pEnvBlock, '\0') + 1;
+
+    i = 0;
+    while (_environ[i]) {
+        strcpy(pEnvVar, _environ[i]);
+        pEnvVar = strchr(pEnvVar, '\0') + 1;
+        i++;
+    }
+    pEnvVar = '\0';
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                      "Parent: Unable to create pipe to child process.\n");
         return -1;
     }
-
-    SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%d",parent_pid));
 
     /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
@@ -1447,7 +1477,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,               /* Inherit handles */
                        CREATE_SUSPENDED,   /* Creation flags */
-                       NULL,               /* Environment block */
+                       pEnvBlock,          /* Environment block */
                        NULL,
                        &si, &pi)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
@@ -1694,12 +1724,12 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
     pid = getenv("AP_PARENT_PID");
     if (pid) {
         /* This is the child */
-        parent_pid = atoi(pid);
-        my_pid = getpid();
+        parent_pid = (DWORD) atol(pid);
+        my_pid = GetCurrentProcessId();
     }
     else {
         /* This is the parent */
-        parent_pid = my_pid = getpid();
+        parent_pid = my_pid = GetCurrentProcessId();
     }
 
     ap_listen_pre_config();
@@ -1806,7 +1836,7 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
             if (pidfile != NULL && unlink(pidfile) == 0) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,APR_SUCCESS,
                              server_conf, "removed PID file %s (pid=%ld)",
-                             pidfile, (long)getpid());
+                             pidfile, GetCurrentProcessId());
             }
             ap_destroy_lock(start_mutex);
 
