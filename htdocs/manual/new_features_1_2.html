@@ -80,6 +80,11 @@ application processes running between requests. So, unlike CGI, you do not have 
 a new process and doing application initialization (e.g. connecting to a database) each time somebody requests
 a document. The processes start up with the Web server and keep on running.
 
+<li><b><a href="mod/mod_headers.html">Optional Headers Module to Set or Remove HTTP Headers</a></b><br>
+The optional <code>mod_headers</code> header can be used to set custom
+headers in the HTTP response. It can append to existing headers,
+replace them, or remove headers from the response.
+
 <li><b><a href="mod/mod_log_config.html">Enhanced, Configurable
 Logging</a></b><br>
 The optional <code>mod_log_config</code> included with earlier
@@ -114,6 +119,11 @@ scripts much easier to debug.
 New directives allow the limiting of resources used by CGI scripts
 (e.g. max CPU time). This is helpful in preventing 'runaway' CGI
 processes.
+
+<li><b><a href="mod/mod_alias.html">Redirect Directive Can Returns Additional Statuses</a></b><br>
+    The Redirect directive can return permanent or temporary redirectes,
+    "Gone" or "See Other" HTTP statuses. For NCSA-compatability, 
+    RedirectTemp and RedirectPermanent are also implemented.
 
 <li><b><a href="graceful.html">Graceful Restarts</a></b><br>
     Apache can re-read the config files and re-open log files without
