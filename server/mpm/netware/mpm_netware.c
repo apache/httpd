@@ -1131,12 +1131,12 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     if (ap_threads_limit > HARD_THREAD_LIMIT) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_threads_limit, HARD_SERVER_LIMIT);
+                    "of %d servers,", ap_threads_limit, HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
+                    "see the", HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                    " HARD_SERVER_LIMIT define in %s.",
+                    " HARD_THREAD_LIMIT define in %s.",
                     AP_MPM_HARD_LIMITS_FILE);
        ap_threads_limit = HARD_THREAD_LIMIT;
     } 
