@@ -234,6 +234,7 @@ AP_DECLARE(ap_filter_rec_t *)ap_get_input_filter_handle(const char *name)
 
 static ap_filter_rec_t *register_filter(const char *name,
                             ap_filter_func filter_func,
+                            ap_init_filter_func filter_init,
                             ap_filter_type ftype,
                             filter_trie_node **reg_filter_set)
 {
@@ -266,6 +267,7 @@ static ap_filter_rec_t *register_filter(const char *name,
         frec->name = normalized_name;
     }
     frec->filter_func = filter_func;
+    frec->filter_init_func = filter_init;
     frec->ftype = ftype;
     
     apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
@@ -275,20 +277,24 @@ static ap_filter_rec_t *register_filter(const char *name,
 
 AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
+                                          ap_init_filter_func filter_init,
                                           ap_filter_type ftype)
 {
     ap_filter_func f;
     f.in_func = filter_func;
-    return register_filter(name, f, ftype, &registered_input_filters);
+    return register_filter(name, f, filter_init, ftype,
+                           &registered_input_filters);
 }                                                                    
 
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
+                                           ap_init_filter_func filter_init,
                                            ap_filter_type ftype)
 {
     ap_filter_func f;
     f.out_func = filter_func;
-    return register_filter(name, f, ftype, &registered_output_filters);
+    return register_filter(name, f, filter_init, ftype,
+                           &registered_output_filters);
 }
 
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 

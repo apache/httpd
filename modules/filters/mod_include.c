@@ -3323,6 +3323,26 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
     return NULL;
 }
 
+static int includes_setup(ap_filter_t *f)
+{
+    include_dir_config *conf = 
+               (include_dir_config *)ap_get_module_config(f->r->per_dir_config,
+                                                          &include_module);
+
+    /* When our xbithack value isn't set to full or our platform isn't
+     * providing group-level protection bits or our group-level bits do not
+     * have group-execite on, we will set the no_local_copy value to 1 so
+     * that we will not send 304s.
+     */
+    if ((*conf->xbithack != xbithack_full)
+        || !(f->r->finfo.valid & APR_FINFO_GPROT)
+        || !(f->r->finfo.protection & APR_GEXECUTE)) {
+        f->r->no_local_copy = 1;
+    }
+    
+    return OK;
+}
+
 static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
@@ -3556,7 +3576,8 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_register_include_handler);
     ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(include_fixup, NULL, NULL, APR_HOOK_LAST);
-    ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_RESOURCE);
+    ap_register_output_filter("INCLUDES", includes_filter, includes_setup,
+                              AP_FTYPE_RESOURCE);
 }
 
 module AP_MODULE_DECLARE_DATA include_module =

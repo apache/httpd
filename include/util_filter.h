@@ -153,12 +153,19 @@ typedef struct ap_filter_t ap_filter_t;
  * for setting the association between a name for a filter and its 
  * associated callback (and other information).
  *
+ * If the initialization function argument passed to the registration
+ * functions is non-NULL, it will be called iff the filter is in the input
+ * or output filter chains and before any data is generated to allow the
+ * filter to prepare for processing.
+ *
  * The *bucket structure (and all those referenced by ->next and ->prev)
  * should be considered "const". The filter is allowed to modify the
  * next/prev to insert/remove/replace elements in the bucket list, but
  * the types and values of the individual buckets should not be altered.
  *
- * The return value of a filter should be an APR status value.
+ * For the input and output filters, the return value of a filter should be
+ * an APR status value.  For the init function, the return value should
+ * be an HTTP error code or OK if it was successful.
  * 
  * @ingroup filter
  * @{
@@ -170,6 +177,7 @@ typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f,
                                           ap_input_mode_t mode,
                                           apr_read_type_e block,
                                           apr_off_t readbytes);
+typedef int (*ap_init_filter_func)(ap_filter_t *f);
 
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
@@ -242,6 +250,8 @@ struct ap_filter_rec_t {
     const char *name;
     /** The function to call when this filter is invoked. */
     ap_filter_func filter_func;
+    /** The function to call before the handlers are invoked. */
+    ap_init_filter_func filter_init_func;
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
      * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
@@ -259,8 +269,8 @@ struct ap_filter_rec_t {
  * requests get an exact copy of the main requests filter chain.
  */
 struct ap_filter_t {
-     /** The internal representation of this filter.  This includes
-      *  the filter's name, type, and the actual function pointer.
+    /** The internal representation of this filter.  This includes
+     *  the filter's name, type, and the actual function pointer.
      */
     ap_filter_rec_t *frec;
 
@@ -324,6 +334,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
+                                          ap_init_filter_func filter_init,
                                           ap_filter_type ftype);
 /**
  * This function is used to register an output filter with the system. 
@@ -339,6 +350,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                             ap_out_filter_func filter_func,
+                                            ap_init_filter_func filter_init,
                                             ap_filter_type ftype);
 
 /**
