@@ -4571,6 +4571,17 @@ static void child_main(int child_num_arg)
 	    if(ap_extended_status)
 		increment_counts(my_child_num, r);
 
+#ifdef TPF_HAVE_NSD
+            /* Update the TPF Network Services Database message counters */
+            tpf_tcpip_message_cnt(NSDB_INPUT_CNT,
+                ((struct sockaddr_in *)&sa_server)->sin_port,
+                NSDB_TCP_S, 1);
+
+            tpf_tcpip_message_cnt(NSDB_OUTPUT_CNT,
+                ((struct sockaddr_in *)&sa_server)->sin_port,
+                NSDB_TCP_S, 1);
+#endif /* TPF_HAVE_NSD */
+
 	    if (!current_conn->keepalive || current_conn->aborted)
 		break;
 

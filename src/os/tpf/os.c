@@ -791,5 +791,9 @@ void show_os_specific_compile_settings(void)
 #ifdef TPF_NO_SAWNC
     printf(" -D TPF_NO_SAWNC\n"); 
 #endif
+ 
+#ifdef TPF_HAVE_NSD
+    printf(" -D TPF_HAVE_NSD\n");
+#endif
 
 }
