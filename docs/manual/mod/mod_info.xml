@@ -41,6 +41,22 @@ configuration</description>
       &lt;/Location&gt;
     </example>
 
+    <p>You may wish to use <module>mod_access</module> inside the
+    <directive type="section" module="core">Location</directive>
+    directive to limite access to your server configuration
+    information:</p>
+
+    <example>
+      &lt;Location /server-info&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourcompany.com<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.example.com/server-info</code></p>
 </summary>
