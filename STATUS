@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/21 13:54:10 $]
+Last modified at [$Date: 2002/06/22 09:21:55 $]
 
 Release:
 
@@ -867,16 +867,18 @@ Binaries (2.0.39):
  AIX 4.3.3                     no      Bill Stoddard
  Mandrake 8.1                  no      Ryan Bloom
  FreeBSD 4.1                   no      Ryan Bloom
+ hppa2.0w-hp-hpux11.00         yes     Cliff Woolley
+ ia64-hp-hpux11.20             yes     Cliff Woolley
+ i386-pc-solaris2.8            yes     Aaron Bannert
  i386-unknown-freebsd4.5       no      Aaron Bannert
- powerpc-apple-darwin5.5       yes     Aaron Bannert
- Solaris 8.x/sparc             yes     Jim Jagielski
  i686-pc-linux-gnu             yes     Aaron Bannert
  i686-pc-linux-gnu-rh70        yes     Aaron Bannert
- i386-pc-solaris2.8            yes     Aaron Bannert
+ powerpc-apple-darwin5.5       yes     Aaron Bannert
  powerpc-unknown-linux-gnu     no      Graham Leggett
+ sparc-sun-solaris2.8          yes     Jim Jagielski
  NetWare                       yes     Brad Nicholes
- Win32-x86                     no      William Rowe
  OS/2                          yes     Brian Havard
+ Win32-x86                     yes     William Rowe
 
 Other features that need writing:
 
