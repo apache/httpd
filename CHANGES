@@ -1,5 +1,9 @@
 Changes with Apache 2.0.54
 
+  *) mod_win32: Ignore both PATH_INFO as well as PATH_TRANSLATED to avoid 
+     hiccups from additional path information passed in non-utf-8 format.
+     [Richard Donkin <rd9 donkin.org]
+
 Changes with Apache 2.0.53
 
   *) Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
