@@ -283,6 +283,10 @@ API_EXPORT(BUFF *) bcreate(pool *p, int flags)
     else
 	fb->outbase = NULL;
 
+#ifdef CHARSET_EBCDIC
+    fb->flags |= (flags & B_SOCKET) ? (B_EBCDIC2ASCII | B_ASCII2EBCDIC) : 0;
+#endif /*CHARSET_EBCDIC*/
+
     fb->inptr = fb->inbase;
 
     fb->incnt = 0;
@@ -370,7 +374,12 @@ static void start_chunk(BUFF *fb)
 	bflush(fb);
     }
     /* assume there's enough space now */
+#ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
+    ebcdic2ascii(&fb->outbase[fb->outcnt], chunksize, chunk_header_size);
+#else /*CHARSET_EBCDIC*/
     memcpy(&fb->outbase[fb->outcnt], chunksize, chunk_header_size);
+#endif /*CHARSET_EBCDIC*/
     fb->outchunk = fb->outcnt;
     fb->outcnt += chunk_header_size;
     fb->outchunk_header_size = chunk_header_size;
@@ -417,6 +426,7 @@ static void end_chunk(BUFF *fb)
 	fb->outbase[i - 1] = '\015';
     }
 #ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
     ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], fb->outchunk_header_size);
 #endif /*CHARSET_EBCDIC*/
 
@@ -598,6 +608,11 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 	 * buffer from before we went unbuffered. */
 	if (fb->incnt) {
 	    i = (fb->incnt > nbyte) ? nbyte : fb->incnt;
+#ifdef CHARSET_EBCDIC
+	    if (fb->flags & B_ASCII2EBCDIC)
+		ascii2ebcdic(buf, fb->inptr, i);
+	    else
+#endif /*CHARSET_EBCDIC*/
 	    memcpy(buf, fb->inptr, i);
 	    fb->incnt -= i;
 	    fb->inptr += i;
@@ -610,6 +625,11 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
     nrd = fb->incnt;
 /* can we fill the buffer */
     if (nrd >= nbyte) {
+#ifdef CHARSET_EBCDIC
+	if (fb->flags & B_ASCII2EBCDIC)
+	    ascii2ebcdic(buf, fb->inptr, nbyte);
+	else
+#endif /*CHARSET_EBCDIC*/
 	memcpy(buf, fb->inptr, nbyte);
 	fb->incnt = nrd - nbyte;
 	fb->inptr += nbyte;
@@ -617,6 +637,11 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
     }
 
     if (nrd > 0) {
+#ifdef CHARSET_EBCDIC
+	if (fb->flags & B_ASCII2EBCDIC)
+	    ascii2ebcdic(buf, fb->inptr, nrd);
+	else
+#endif /*CHARSET_EBCDIC*/
 	memcpy(buf, fb->inptr, nrd);
 	nbyte -= nrd;
 	buf = nrd + (char *) buf;
@@ -629,6 +654,10 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
     if (nbyte >= fb->bufsiz) {
 /* read directly into buffer */
 	i = read_with_errors(fb, buf, nbyte);
+#ifdef CHARSET_EBCDIC
+	if (i > 0 && bgetflag(fb, B_ASCII2EBCDIC))
+	    ascii2ebcdic(buf, buf, nbyte);
+#endif /*CHARSET_EBCDIC*/
 	if (i == -1) {
 	    return nrd ? nrd : -1;
 	}
@@ -643,6 +672,11 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 	fb->incnt = i;
 	if (i > nbyte)
 	    i = nbyte;
+#ifdef CHARSET_EBCDIC
+	if (fb->flags & B_ASCII2EBCDIC)
+	    ascii2ebcdic(buf, fb->inptr, i);
+	else
+#endif /*CHARSET_EBCDIC*/
 	memcpy(buf, fb->inptr, i);
 	fb->incnt -= i;
 	fb->inptr += i;
@@ -702,8 +736,8 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 	    continue;		/* restart with the new data */
 	}
 
-#ifndef CHARSET_EBCDIC
 	ch = fb->inptr[i++];
+#ifndef CHARSET_EBCDIC
 	if (ch == '\012') {	/* got LF */
 	    if (ct == 0)
 		buff[ct++] = '\n';
@@ -716,15 +750,9 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 		i--;		/* no room for LF */
 	    break;
 	}
-	if (ct == n - 1) {
-	    i--;		/* push back ch */
-	    break;
-	}
-
-	buff[ct++] = ch;
-    }
 #else /* an EBCDIC machine: do the same, but convert to EBCDIC on the fly: */
-	ch = os_toebcdic[(unsigned char)fb->inptr[i++]];
+	if (fb->flags & B_ASCII2EBCDIC)
+	    ch = os_toebcdic[(unsigned char)ch];
 	if (ch == os_toebcdic['\012']) {  /* got LF */
 	    if (ct == 0)
 		buff[ct++] = '\n';
@@ -737,6 +765,7 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 		i--;		/* no room for LF */
 	    break;
 	}
+#endif
 	if (ct == n - 1) {
 	    i--;		/* push back ch */
 	    break;
@@ -744,7 +773,6 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 
 	buff[ct++] = ch;
     }
-#endif
     fb->incnt -= i;
     fb->inptr += i;
 
@@ -787,7 +815,9 @@ API_EXPORT(int) blookc(char *buff, BUFF *fb)
 #ifndef CHARSET_EBCDIC
     *buff = fb->inptr[0];
 #else /*CHARSET_EBCDIC*/
-    *buff = os_toebcdic[(unsigned char)fb->inptr[0]];
+    *buff = (fb->flags & B_ASCII2EBCDIC)
+	     ? os_toebcdic[(unsigned char)fb->inptr[0]]
+	     : fb->inptr[0];
 #endif /*CHARSET_EBCDIC*/
     return 1;
 }
@@ -837,11 +867,7 @@ API_EXPORT(int) bflsbuf(int c, BUFF *fb)
     char ss[1];
     int rc;
 
-#ifndef CHARSET_EBCDIC
     ss[0] = c;
-#else
-    ss[0] = os_toascii[(unsigned char)c];
-#endif
     rc = bwrite(fb, ss, 1);
     /* We do start_chunk() here so that the bputc macro can be smaller
      * and faster
@@ -865,11 +891,7 @@ API_EXPORT(int) bfilbuf(BUFF *fb)
     if (i != 1)
 	return EOF;
     else
-#ifndef CHARSET_EBCDIC
 	return buf[0];
-#else /*CHARSET_EBCDIC*/
-	return os_toebcdic[(unsigned char)buf[0]];
-#endif /*CHARSET_EBCDIC*/
 }
 
 
@@ -1007,6 +1029,10 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
     /* without writev() this has poor performance, too bad */
 
     ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
+#ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
+    ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
+#endif /*CHARSET_EBCDIC*/
     if (write_it_all(fb, chunksize, strlen(chunksize)) == -1)
 	return -1;
     if (write_it_all(fb, buf, nbyte) == -1)
@@ -1019,6 +1045,7 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
     vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012",
 				 nbyte);
 #ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
     ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
 #endif /*CHARSET_EBCDIC*/
     vec[1].iov_base = (void *) buf;	/* cast is to avoid const warning */
@@ -1058,6 +1085,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
 	vec[nvec].iov_len = ap_snprintf(chunksize, sizeof(chunksize),
 					"%x\015\012", nbyte);
 #ifdef CHARSET_EBCDIC
+    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
 	ebcdic2ascii(chunksize, chunksize, strlen(chunksize));
 #endif /*CHARSET_EBCDIC*/
 	++nvec;
@@ -1090,6 +1118,22 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
 API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 {
     int i, nwr;
+#ifdef CHARSET_EBCDIC
+    static char *cbuf = NULL;
+    static int csize = 0;
+
+    if (bgetflag(fb, B_EBCDIC2ASCII)) {
+        if (nbyte > csize) {
+            if (cbuf != NULL)
+                free(cbuf);
+            cbuf = malloc(csize = nbyte+HUGE_STRING_LEN);
+            if (cbuf == NULL)
+                csize = 0;
+        }
+        ebcdic2ascii((cbuf) ? cbuf : (void*)buf, buf, nbyte);
+        buf = (cbuf) ? cbuf : buf;
+    }
+#endif /*CHARSET_EBCDIC*/
 
     if (fb->flags & (B_WRERR | B_EOUT))
 	return -1;
@@ -1298,54 +1342,17 @@ API_EXPORT(int) bclose(BUFF *fb)
 	return rc3;
 }
 
-#ifdef CHARSET_EBCDIC
-/*
- * returns the number of bytes written or -1 on error
- */
-API_EXPORT(int) bnputs(const char *x, BUFF *fb, size_t amount)
-{
-    int i;
-    const char *endp = &x[amount];
-    /* @@@FIXME: This probably could use some performance improvement */
-    for ( ; x < endp; ++x) {
-	int ch = *x;
-	/* This test is a workaround: at many places in Apache, the (ASCII)
-	 * constants \012 and \015 are used in strings in place of \n and \r.
-	 * In an EBCDIC environment, the rest of the strings is interpreted
-	 * as EBCDIC characters, so we need the EBCDIC equivalent of \n and \r
-	 * instead of \012 and \015. So, for the HTTP protocol level, 
-	 * conversion is limited to characters other than \012 and \015 (in
-	 * ebcdic2ascii(), I handled it similarly).
-	 * Of course, on all ASCII based environments, the decision to use
-	 * \012 and \015 in strings makes perfectly sense, because on, e.g.,
-	 * OS-9/68k machines (or MACs), \n is compiled to \015
-	 * (as is \r; the \012 escape must be written \l) which would violate
-	 * the HTTP protocol.
-	 */
-	if (ch == '\012' || ch == '\015')
-	    ch = os_toebcdic[ch];
-	if (bputc(ch, fb) != 0)
-	    return -1;
-    }
-    return amount;
-}
-#endif /*CHARSET_EBCDIC*/
-
 /*
  * returns the number of bytes written or -1 on error
  */
 API_EXPORT(int) bputs(const char *x, BUFF *fb)
 {
-#ifndef CHARSET_EBCDIC
     int i, j = strlen(x);
     i = bwrite(fb, x, j);
     if (i != j)
 	return -1;
     else
 	return j;
-#else /*CHARSET_EBCDIC*/
-    return bnputs(x, fb, strlen(x));
-#endif /*CHARSET_EBCDIC*/
 }
 
 /*
@@ -1363,11 +1370,7 @@ API_EXPORT_NONSTD(int) bvputs(BUFF *fb,...)
 	if (x == NULL)
 	    break;
 	j = strlen(x);
-#ifndef CHARSET_EBCDIC
 	i = bwrite(fb, x, j);
-#else /*CHARSET_EBCDIC*/
-	i = bputs(x, fb);
-#endif /*CHARSET_EBCDIC*/
 	if (i != j) {
 	    va_end(v);
 	    return -1;

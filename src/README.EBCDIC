@@ -58,17 +58,22 @@ decisions of the port to this machine.
     AddType  text/x-ascii-html  .ahtml
     AddType  text/x-ascii-plain .ascii
   Similarly, any text/XXXX MIME type can be served as "raw ASCII" by
-  configuring a MIME text/x-ascii-XXXX for it.
+  configuring a MIME type "text/x-ascii-XXXX" for it using AddType.
 
 * Non-text documents are always served "binary" without conversion.
   This seems to be the most sensible choice for, .e.g., GIF/ZIP/AU
-  file types.
+  file types. This of course requires the user to copy them to the
+  mainframe host using the "rcp -b" binary switch.
 
 * Server parsed files are always assumed to be in native (i.e.,
   EBCDIC) format as used on the machine, and are converted after
   processing.
 
-*
+* For CGI output, the CGI script determines whether a conversion is
+  needed or not: by setting the appropriate Content-Type, text files
+  can be converted, or GIF output can be passed through unmodified.
+  An example for the latter case is the wwwcount program which we ported
+  as well.
 
 What works:
 - In the following list,
@@ -87,7 +92,7 @@ What works:
   mod_auth_dbm.c        - / no libdbm
   mod_autoindex.c       +
   mod_cern_meta.c       ?
-  mod_cgi.c             - / exec of scripts via #! doesn't work
+  mod_cgi.c             +
   mod_digest.c          - / MD5 not ported yet
   mod_dir.c             +
   mod_dld.c             - / no shared libs
@@ -96,7 +101,7 @@ What works:
   mod_expires.c         +
   mod_headers.c         +
   mod_imap.c            +
-  mod_include.c         + / only <!--#exec cgi= doesn't work (see mod_cgi).
+  mod_include.c         +
   mod_info.c            + / some flaws
   mod_log_agent.c       +
   mod_log_config.c      +
@@ -118,6 +123,5 @@ What works:
 What doesn't work yet:
 -   no DBM or DB authentication (library missing)
 -   no MD5 hash or digest (not ported yet)
--   no execution of #! scripts (needs porting)
 
-			    Martin Kraemer, 22-Dec-1997
+			    Martin Kraemer, 25-Jan-1998

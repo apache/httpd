@@ -800,6 +800,9 @@ request_rec *read_request(conn_rec *conn)
 
     /* Get the request... */
 
+#ifdef CHARSET_EBCDIC
+    bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
+#endif /* CHARSET_EBCDIC */
     keepalive_timeout("read request line", r);
     if (!read_request_line(r)) {
         kill_timeout(r);
@@ -1059,6 +1062,9 @@ int send_header_field(request_rec *r, const char *fieldname,
 void basic_http_header(request_rec *r)
 {
     char *protocol;
+#ifdef CHARSET_EBCDIC
+    int convert = bgetflag(r->connection->client, B_EBCDIC2ASCII);
+#endif /*CHARSET_EBCDIC*/
 
     if (r->assbackwards)
         return;
@@ -1079,6 +1085,10 @@ void basic_http_header(request_rec *r)
     else
         protocol = SERVER_PROTOCOL;
 
+#ifdef CHARSET_EBCDIC
+    bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+#endif /*CHARSET_EBCDIC*/
+
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
     bvputs(r->connection->client,
@@ -1089,6 +1099,10 @@ void basic_http_header(request_rec *r)
 
     table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     table_unset(r->headers_out, "Server");
+#ifdef CHARSET_EBCDIC
+    if (!convert)
+        bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
 }
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
@@ -1207,6 +1221,9 @@ API_EXPORT(void) send_http_header(request_rec *r)
 {
     int i;
     const long int zero = 0L;
+#ifdef CHARSET_EBCDIC
+    int convert = bgetflag(r->connection->client, B_EBCDIC2ASCII);
+#endif /*CHARSET_EBCDIC*/
 
     if (r->assbackwards) {
         if (!r->main)
@@ -1227,6 +1244,10 @@ API_EXPORT(void) send_http_header(request_rec *r)
     hard_timeout("send headers", r);
 
     basic_http_header(r);
+
+#ifdef CHARSET_EBCDIC
+    bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+#endif /*CHARSET_EBCDIC*/
 
     set_keepalive(r);
 
@@ -1279,6 +1300,10 @@ API_EXPORT(void) send_http_header(request_rec *r)
     /* Set buffer flags for the body */
     if (r->chunked)
         bsetflag(r->connection->client, B_CHUNK, 1);
+#ifdef CHARSET_EBCDIC
+    if (!convert)
+        bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
 }
 
 /* finalize_request_protocol is called at completion of sending the
@@ -1615,18 +1640,6 @@ API_EXPORT(long) send_fd(FILE *f, request_rec *r)
 }
 
 API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
-#ifdef CHARSET_EBCDIC
-{
-    return send_fd_length_cnv(f, r, length, 0);
-}
-
-API_EXPORT(long) send_fd_cnv(FILE *f, request_rec *r)
-{
-    return send_fd_length_cnv(f, r, -1, 1);
-}
-
-API_EXPORT(long) send_fd_length_cnv(FILE *f, request_rec *r, long length, int convert_to_ascii)
-#endif /*CHARSET_EBCDIC*/
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
@@ -1646,11 +1659,6 @@ API_EXPORT(long) send_fd_length_cnv(FILE *f, request_rec *r, long length, int co
         while ((n = fread(buf, sizeof(char), len, f)) < 1
                && ferror(f) && errno == EINTR && !r->connection->aborted)
             continue;
-
-#ifdef CHARSET_EBCDIC
-	if (convert_to_ascii)
-	    ebcdic_to_ascii(buf, buf, n);
-#endif /*CHARSET_EBCDIC*/
 
         if (n < 1) {
             break;
@@ -1903,11 +1911,7 @@ API_EXPORT_NONSTD(int) rvputs(request_rec *r,...)
         if (x == NULL)
             break;
         j = strlen(x);
-#ifndef CHARSET_EBCDIC
         i = bwrite(fb, x, j);
-#else /*CHARSET_EBCDIC*/
-        i = bputs(x, fb);
-#endif /*CHARSET_EBCDIC*/
         if (i != j) {
             va_end(args);
             return -1;

@@ -1823,9 +1823,6 @@ int default_handler (request_rec *r)
 #ifdef USE_MMAP_FILES
     caddr_t mm;
 #endif
-#ifdef CHARSET_EBCDIC
-    int convert_to_ascii = 0;
-#endif /*CHARSET_EBCDIC*/
 
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
@@ -1907,35 +1904,18 @@ int default_handler (request_rec *r)
 	 * the type to the real text/{plain,html,...} type. Otherwise, we
 	 * set a flag that translation is required later on.
 	 */
-
-	/* Conversion is applied to text/ files only, if ever. */
-	if (strncmp(r->content_type, "text/", 5)==0) {
-	    if (strncasecmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-		r->content_type = pstrcat(r->pool, "text/", r->content_type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);
-	    else
-		/* translate EBCDIC to ASCII */
-		convert_to_ascii = 1;
-	}
+        os_checkconv(r);
 #endif /*CHARSET_EBCDIC*/
+
 	send_http_header (r);
 	
 	if (!r->header_only) {
 	    if (!rangestatus)
-#ifdef CHARSET_EBCDIC
-		if (convert_to_ascii)
-		    send_fd_length_cnv(f, r, -1, 1);
-		else
-#endif /*CHARSET_EBCDIC*/
 		send_fd (f, r);
 	    else {
 		long offset, length;
 		while (each_byterange(r, &offset, &length)) {
 		    fseek(f, offset, SEEK_SET);
-#ifdef CHARSET_EBCDIC
-		    if (convert_to_ascii)
-			send_fd_length_cnv(f, r, length, 1);
-		    else
-#endif /*CHARSET_EBCDIC*/
 		    send_fd_length(f, r, length);
 		}
 	    }

@@ -95,13 +95,8 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
 	if (percentPtr == NULL)
 	    percentPtr = fStop;
 	if (percentPtr != f) {
-#ifndef CHARSET_EBCDIC
 	    if (bwrite(bp, f, percentPtr - f) < 0)
 		goto ErrorReturn;
-#else
-	    if (bnputs(f, bp, percentPtr - f) < percentPtr - f)
-		goto ErrorReturn;
-#endif
 	    streamCount += percentPtr - f;
 	    f = percentPtr;
 	    if (f == fStop)
@@ -559,13 +554,8 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
 	}			/* for (;;) */
 	ap_assert(buffCount < buffLen);
 	if (buffCount > 0) {
-#ifndef CHARSET_EBCDIC
 	    if (bwrite(bp, buffPtr, buffCount) < 0)
 		goto ErrorReturn;
-#else /*CHARSET_EBCDIC*/
-	    if (bnputs(buffPtr, bp, buffCount) != buffCount)
-		goto ErrorReturn;
-#endif /*CHARSET_EBCDIC*/
 	    streamCount += buffCount;
 	}
 	else if (buffCount < 0)

@@ -169,20 +169,11 @@ static void add_include_vars(request_rec *r, char *timefmt)
  * errors is and little can really be done to help the error in 
  * any case.
  */
-#ifndef CHARSET_EBCDIC
 #define FLUSH_BUF(r) \
  { \
    rwrite(outbuf, outind, r); \
    outind = 0; \
  }
-#else /*CHARSET_EBCDIC*/
-#define FLUSH_BUF(r) \
- { \
-   ebcdic2ascii(outbuf, outbuf, outind); \
-   rwrite(outbuf, outind, r); \
-   outind = 0; \
- }
-#endif /*CHARSET_EBCDIC*/
 
 /*
  * f: file handle being read from
@@ -689,6 +680,9 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
                 }
             }
 
+#ifdef CHARSET_EBCDIC
+            bsetflag(rr->connection->client, B_EBCDIC2ASCII, 0);
+#endif
             if (!error_fmt && run_sub_req(rr)) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
             }
@@ -806,11 +800,7 @@ static int include_cmd(char *s, request_rec *r)
         return -1;
     }
 
-#ifndef CHARSET_EBCDIC
     send_fd(f, r);
-#else /*CHARSET_EBCDIC*/
-    send_fd_length_cnv(f, r, -1, 1);
-#endif /*CHARSET_EBCDIC*/
     pfclose(r->pool, f);        /* will wait for zombie when
                                  * r->pool is cleared
                                  */
@@ -2304,6 +2294,11 @@ static int send_parsed_file(request_rec *r)
         add_include_vars(r, DEFAULT_TIME_FORMAT);
     }
     hard_timeout("send SSI", r);
+
+#ifdef CHARSET_EBCDIC
+    /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
+    bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+#endif
 
     send_parsed_content(f, r);
 

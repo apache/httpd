@@ -134,6 +134,7 @@ Committed Code Changes:
       (enable with #define NEED_HASHBANG_EMUL)
     * more mod_mime_magic cleanup
     * Add more compile time diagnosis to main's -V switch
+    * [Port] Fix CGI-Execution for EBCDIC hosts.
 
 Available Patches:
 

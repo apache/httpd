@@ -410,6 +410,12 @@ static int cgi_handler(request_rec *r)
     cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
 
+#ifdef CHARSET_EBCDIC
+    /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
+    /* Or must we check the Content-Type first? */
+    bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+#endif /*CHARSET_EBCDIC*/
+
     /*
      * we spawn out of r->main if it's there so that we can avoid
      * waiting for free_proc_chain to cleanup in the middle of an
@@ -486,6 +492,11 @@ static int cgi_handler(request_rec *r)
 	if ((ret = scan_script_header_err_buff(r, script_in, sbuf))) {
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	}
+
+#ifdef CHARSET_EBCDIC
+        /* Now check the Content-Type to decide if conversion is needed */
+        os_checkconv(r);
+#endif /*CHARSET_EBCDIC*/
 
 	location = table_get(r->headers_out, "Location");
 
