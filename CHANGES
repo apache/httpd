@@ -1,9 +1,5 @@
 Changes with Apache 2.0.23
 
-  *) Fix a restart problem when cgid is used.  Code in the parent
-     httpd process was trying to clear a pool which is now only 
-     initialized in the child.  [Greg Ames, Jeff Trawick]
-
   *) Use the prefork MPM by default on Unix.  [various]
 
   *) Added a systray icon monitor application for Win32.
