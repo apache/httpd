@@ -37,13 +37,13 @@ CPP=cl.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "LibR"
-# PROP Intermediate_Dir "LibR/posix"
+# PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /FD /Fd"LibR/pcreposix" /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -61,13 +61,13 @@ LIB32=link.exe -lib
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "LibD"
-# PROP Intermediate_Dir "LibD/posix"
+# PROP Intermediate_Dir "LibD"
 # PROP Target_Dir ""
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MDd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibD/pcreposix" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
