@@ -64,6 +64,7 @@
 #if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#include <strings.h>
 
 #include "ap_config.h"
 #include "httpd.h"
