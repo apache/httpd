@@ -7,3 +7,4 @@ modules.mk
 Debug
 Release
 mod_tls.plg
+*.rc 

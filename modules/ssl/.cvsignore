@@ -7,3 +7,4 @@ modules.mk
 *.plg
 Debug
 Release
+*.rc 

@@ -8,3 +8,4 @@ Makefile
 *.so
 Debug
 Release
+*.rc 
