@@ -81,6 +81,11 @@
 #endif
 
 #define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
+#ifdef WIN32
+/* Set to indicate that error msg should come from Win32's GetLastError(),
+ * not errno. */
+#define APLOG_WIN32ERROR	((APLOG_LEVELMASK+1) * 2)
+#endif
 
 #ifndef DEFAULT_LOGLEVEL
 #define DEFAULT_LOGLEVEL	APLOG_ERR

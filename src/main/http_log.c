@@ -319,6 +319,49 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"(%d)%s: ", save_errno, strerror(save_errno));
     }
+#ifdef WIN32
+    if (level & APLOG_WIN32ERROR) {
+	int nChars;
+	int nErrorCode;
+
+	nErrorCode = GetLastError();
+	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+	    "(%d)", nErrorCode);
+
+	nChars = FormatMessage( 
+	    FORMAT_MESSAGE_FROM_SYSTEM,
+	    NULL,
+	    nErrorCode,
+	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+	    (LPTSTR) errstr + len,
+	    sizeof(errstr) - len,
+	    NULL 
+	);
+	len += nChars;
+	if (nChars == 0) {
+	    /* Um, error occurred, but we can't recurse to log it again
+	     * (and it would probably only fail anyway), so lets just
+	     * log the numeric value.
+	     */
+	    nErrorCode = GetLastError();
+	    len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+		"(FormatMessage failed with code %d): ", nErrorCode);
+	}
+	else {
+	    /* FormatMessage put the message in the buffer, but it may
+	     * have appended a newline (\r\n). So remove it and use
+	     * ": " instead like the Unix errors. The error may also
+	     * end with a . before the return - if so, trash it.
+	     */
+	    if (len > 1 && errstr[len-2] == '\r' && errstr[len-1] == '\n') {
+		if (len > 2 && errstr[len-3] == '.')
+		    len--;
+		errstr[len-2] = ':';
+		errstr[len-1] = ' ';
+	    }
+	}
+    }
+#endif
 
     va_start(args, fmt);
     len += ap_vsnprintf(errstr + len, sizeof(errstr) - len, fmt, args);
