@@ -390,7 +390,7 @@
 
       <dt><code>--suexec-caller=<em>UID</em></code></dt>
 
-      <dd>The <a href="mod/core.html#user">username</a> under which
+      <dd>The <a href="mod/mpm_common.html#user">username</a> under which
       Apache normally runs. This is the only user allowed to
       execute this program.</dd>
 
@@ -523,8 +523,8 @@
 
     <p align="LEFT"><strong>Virtual Hosts:</strong><br />
      One way to use the suEXEC wrapper is through the <a
-    href="mod/core.html#user">User</a> and <a
-    href="mod/core.html#group">Group</a> directives in <a
+    href="mod/mpm_common.html#user">User</a> and <a
+    href="mod/mpm_common.html#group">Group</a> directives in <a
     href="mod/core.html#virtualhost">VirtualHost</a> definitions.
     By setting these directives to values different from the main
     server user ID, all requests for CGI resources will be executed
