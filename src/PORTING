@@ -29,6 +29,8 @@ work, although as far as we know it has not yet been tried. If you
 attempt this, let the Apache team know (send mail to apache@Apache.Org
 or make a suggestion report at <http://bugs.apache.org/>).
 
+At present, the Apache source is not compatible with C++.
+
 -------------------
 The Starting Point:
 -------------------
@@ -138,7 +140,7 @@ setup. This time using the example of AIX, we see:
    #undef NO_SETSID
    #define HAVE_SYS_SELECT_H
    #define JMP_BUF sigjmp_buf
-   #define HAVE_MMAP
+   #define USE_MMAP_SCOREBOARD
    typedef int rlim_t;
 
 The above lines describe which functions,  capabilities and specifics
@@ -174,17 +176,6 @@ build for your OS.
     HAVE_RESOURCE:
       Define if the OS supports the getrlimit()/setrlimit() functions
 
-    HAVE_MMAP:
-      Define if the OS supports the BSD mmap() call. This is used by various
-      OSs to allow the scoreboard file to be held in shared mmapped-memory
-      instead of a real file.  Note that this is only used to determine
-      if mmap should be used for shared memory.
-
-    HAVE_SHMGET:
-      Define if the OS has the SysV-based shmget() family of shared-memory
-      functions. Used to allow the scoreboard to live in a shared-memory
-      slot instead of a real file.
-
     HAVE_CRYPT_H:
       Define if the OS has the <crypt.h> header file.
 
@@ -207,6 +198,21 @@ build for your OS.
  USE_*:
   These #defines are used for functions and ability that aren't exactly
   required but should be used.
+
+     USE_MMAP_SCOREBOARD:
+      Define if the OS supports the BSD mmap() call. This is used by various
+      OSs to allow the scoreboard file to be held in shared mmapped-memory
+      instead of a real file.  Note that this is only used to determine
+      if mmap should be used for shared memory.
+
+     USE_SHMGET_SCOREBOARD:
+      Define if the OS has the SysV-based shmget() family of shared-memory
+      functions. Used to allow the scoreboard to live in a shared-memory
+      slot instead of a real file.
+
+     <<NOTE: If neither USE_MMAP_SCOREBOARD or USE_SHMGET_SCOREBOARD
+	     is defined, a file-based scoreboard will be used and
+	     SCOREBOARD_FILE will automatically be defined >>
 
      USE_LONGJMP:
       Define to use the longjmp() call instead of siglongjmp()
@@ -244,7 +250,11 @@ build for your OS.
      USE_PTHREAD_SERIALIZED_ACCEPT:
       Use POSIX mutexes to implement the semaphore.
 
-     SAFE_UNSERIALIZED_ACCEPT:
+     << NOTE: If none of the above USE_*SERIALIZED_ACCEPTs are
+	      defined, NO_SERIALIZED_ACCEPT will automatically
+	      be defined if MULTITHREAD is not defined >>
+
+     SINGLE_LISTEN_UNSERIALIZED_ACCEPT:
       It's safe to unserialize single-socket accept().
 
 --
@@ -254,23 +264,47 @@ build for your OS.
    we should not use it.
 
       NO_UNISTD_H:
+
       NO_KILLPG:
+
       NO_SETSID:
+
       NO_USE_SIGACTION:
        Do not use the sigaction() call, even if we have it.
+
       NO_LINGCLOSE:
        Do not use Apache's soft, "lingering" close feature to
        terminate connections.
+
       NO_SLACK:
        Do not use the "slack" fd feature which requires a working fcntl
        F_DUPFD.
+
       NO_GETTIMEOFDAY:
        OS does not have the gettimeofday() function (which is
-       BSDish). This assumes it has times() instead.
+       BSDish).
+
+      NO_TIMES:
+       OS does not have the times() function.
+
+      NO_OTHER_CHILD:
+       Do not implement the register_other_child API, usually because
+       certain system calls aren't available.
+
+      NO_RELIABLE_PIPED_LOGS:
+       Do not use reliable piped logs, which happen to also require
+       the register_other_child API.  The reliable piped log code
+       requires another child spawning interface which hasn't been
+       generalised yet.
+
 --
 
   MISC #DEFINES:
    Various other #defines used in the code.
+
+      MULTITHREAD:
+       Defined if the OS is multi-threaded. Valid only on
+       Win32 at present.
 
       JMP_BUF:
        The variable-type for siglongjmp() or longjmp() call.
@@ -283,16 +317,6 @@ build for your OS.
        Some functions such as accept(), getsockname(), getpeername() take
        an int *len on some architectures and a size_t *len on others.
        If left undefined apache will default it to int.
-
-      NO_OTHER_CHILD:
-       Do not implement the register_other_child API, usually because
-       certain system calls aren't available.
-
-      NO_RELIABLE_PIPED_LOGS:
-       Do not use reliable piped logs, which happen to also require
-       the register_other_child API.  The reliable piped log code
-       requires another child spawning interface which hasn't been
-       generalised yet.
 
 -----------
 Conclusion:

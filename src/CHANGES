@@ -7,7 +7,7 @@ Changes with Apache 1.3b4
      [Tom Hughes <thh@cyberscience.com>] PR#1082, PR#1282, PR#1499, PR#1553
 
   *) PORT: A/UX can handle single-listen accepts without mutex
-     locking, so we add SAFE_UNSERIALIZED_ACCEPT. [Jim Jagielski]
+     locking, so we add SINGLE_LISTEN_UNSERIALIZED_ACCEPT. [Jim Jagielski]
 
   *) When die() happens we need to eat any request body if one exists.
      Otherwise we can't continue with a keepalive session.  This shows up
@@ -28,8 +28,8 @@ Changes with Apache 1.3b4
   *) PORT: OSF/1 now uses USE_FLOCK_SERIALIZED_ACCEPT to solve PR#467.
      The choice of flock vs. fcntl was made based on timings which showed that
      even on non-NFS, non-exported filesystems fcntl() was an order of
-     magnitude slower.  It also uses SAFE_UNSERIALIZED_ACCEPT so that single
-     socket users will see no difference. [Dean Gaudet] PR#467
+     magnitude slower.  It also uses SINGLE_LISTEN_UNSERIALIZED_ACCEPT so
+     that single socket users will see no difference. [Dean Gaudet] PR#467
 
   *) "File does not exist" error message was erroneously including the
      errno.  [Marc Slemko]
@@ -465,7 +465,7 @@ Changes with Apache 1.3b3
      ["Pavel Yakovlev (Paul McHacker)" <hac@tomcat.olly.ru>]
 
   *) PORT: All SVR4 systems now use NET_SIZE_T = size_t, and
-	    use HAVE_SHMGET.
+	    use USE_SHMGET_SCOREBOARD.
      [Martin Kraemer]
 
   *) Various improvements in detecting config file errors (missing closing
@@ -780,7 +780,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      in the case where only a single socket is open it is sometimes
      redundant to serialize accept().  Not all unixes do a good job with
      potentially dozens of children blocked on accept() on the same
-     socket.  It's now possible to define SAFE_UNSERIALIZED_ACCEPT and
+     socket.  It's now possible to define SINGLE_LISTEN_UNSERIALIZED_ACCEPT and
      the server will avoid serialization when listening on only one socket,
      and use serialization when listening on multiple sockets.
      [Dean Gaudet] PR#467
@@ -1640,7 +1640,7 @@ Changes with Apache 1.2b9  [never announced]
 
   *) Clean up Linux settings in conf.h by detecting 2.x versus 1.x.  For
      1.x the settings are those of pre-1.2b8.  For 2.x we include
-     HAVE_SHMGET (scoreboard in shared memory rather than file) and
+     USE_SHMGET_SCOREBOARD (scoreboard in shared memory rather than file) and
      HAVE_SYS_RESOURCE_H (enable the RLimit commands).
      [Dean Gaudet] PR#336, PR#340
 
@@ -1706,7 +1706,7 @@ Changes with Apache 1.2b8
 
   *) Fix typo in command definition of AuthAuthoritative. [Ken Coar] PR #246
 
-  *) Defined HAVE_SHMGET for shared memory on Linux.  [Dean Gaudet]
+  *) Defined USE_SHMGET_SCOREBOARD for shared memory on Linux.  [Dean Gaudet]
 
   *) Report extra info from errno with many errors that cause httpd to exit.
      spawn_child, popenf, and pclosef now have valid errno returns in the

@@ -922,7 +922,8 @@ API_EXPORT(void) log_assert(const char *szExp, const char *szFile, int nLine)
 /* The optimized timeout code only works if we're not MULTITHREAD and we're
  * also not using a scoreboard file
  */
-#if !defined (MULTITHREAD) && (defined (HAVE_MMAP) || defined (HAVE_SHMGET))
+#if !defined (MULTITHREAD) &&
+    (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
 #define OPTIMIZE_TIMEOUTS
 #endif
 

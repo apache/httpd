@@ -88,7 +88,7 @@
 #include "scoreboard.h"
 #include "multithread.h"
 #include <sys/stat.h>
-#ifdef HAVE_SHMGET
+#ifdef USE_SHMGET_SCOREBOARD
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -155,7 +155,7 @@ long _stksize = 32768;
 
 #ifdef __EMX__
     /* Add MMAP style functionality to OS/2 */
-#ifdef HAVE_MMAP
+#ifdef USE_MMAP_SCOREBOARD
 #define INCL_DOSMEMMGR
 #include <os2.h>
 #include <umalloc.h>
@@ -748,12 +748,12 @@ static void accept_mutex_off(void)
 #endif
 #endif
 
-/* On some architectures it's safe to do unserialized accept()s in the
- * single Listen case.  But it's never safe to do it in the case where
- * there's multiple Listen statements.  Define SAFE_UNSERIALIZED_ACCEPT
+/* On some architectures it's safe to do unserialized accept()s in the single
+ * Listen case.  But it's never safe to do it in the case where there's
+ * multiple Listen statements.  Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
  * when it's safe in the single Listen case.
  */
-#ifdef SAFE_UNSERIALIZED_ACCEPT
+#ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define SAFE_ACCEPT(stmt) do {if(listeners->next != listeners) {stmt;}} while(0)
 #else
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
@@ -1310,8 +1310,8 @@ static int reap_other_child(int pid, int status)
  * malloc. But let the routines that follow, think that you have
  * shared memory (so they use memcpy etc.)
  */
-#undef HAVE_MMAP
-#define HAVE_MMAP 1
+#undef USE_MMAP_SCOREBOARD
+#define USE_MMAP_SCOREBOARD 1
 
 void reinit_scoreboard(pool *p)
 {
@@ -1333,7 +1333,7 @@ API_EXPORT(void) sync_scoreboard_image()
 
 
 #else /* MULTITHREAD */
-#if defined(HAVE_MMAP)
+#if defined(USE_MMAP_SCOREBOARD)
 
 #ifdef QNX
 static void cleanup_shared_mem(void *d)
@@ -1384,7 +1384,7 @@ static void setup_shared_mem(pool *p)
  * this #ifdef section must be ABOVE the next one (BSD style).
  *
  * I tested this stuff and it works fine for me, but if it provides 
- * trouble for you, just comment out HAVE_MMAP in QNX section of conf.h
+ * trouble for you, just comment out USE_MMAP_SCOREBOARD in QNX section of conf.h
  *
  * June 5, 1997, 
  * Igor N. Kovalenko -- infoh@mail.wplus.net
@@ -1462,7 +1462,7 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
-#elif defined(HAVE_SHMGET)
+#elif defined(USE_SHMGET_SCOREBOARD)
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
@@ -1639,7 +1639,7 @@ void reopen_scoreboard(pool *p)
     }
 #else
 #ifdef __EMX__
-#ifdef HAVE_MMAP
+#ifdef USE_MMAP_SCOREBOARD
     caddr_t m;
     int rc;
 
@@ -2803,11 +2803,11 @@ static void show_compile_settings(void)
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
-#ifdef HAVE_MMAP
-    printf(" -D HAVE_MMAP\n");
+#ifdef USE_MMAP_SCOREBOARD
+    printf(" -D USE_MMAP_SCOREBOARD\n");
 #endif
-#ifdef HAVE_SHMGET
-    printf(" -D HAVE_SHMGET\n");
+#ifdef USE_SHMGET_SCOREBOARD
+    printf(" -D USE_SHMGET_SCOREBOARD\n");
 #endif
 #ifdef USE_MMAP_FILES
     printf(" -D USE_MMAP_FILES\n");
@@ -2836,8 +2836,8 @@ static void show_compile_settings(void)
 #ifdef USE_PTHREAD_SERIALIZED_ACCEPT
     printf(" -D USE_PTHREAD_SERIALIZED_ACCEPT\n");
 #endif
-#ifdef SAFE_UNSERIALIZED_ACCEPT
-    printf(" -D SAFE_UNSERIALIZED_ACCEPT\n");
+#ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+    printf(" -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT\n");
 #endif
 #ifdef NO_OTHER_CHILD
     printf(" -D NO_OTHER_CHILD\n");
@@ -3803,7 +3803,7 @@ int main(int argc, char *argv[])
 }
 
 #ifdef __EMX__
-#ifdef HAVE_MMAP
+#ifdef USE_MMAP_SCOREBOARD
 /* The next two routines are used to access shared memory under OS/2.  */
 /* This requires EMX v09c to be installed.                           */
 

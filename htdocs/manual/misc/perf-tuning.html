@@ -415,7 +415,7 @@ decrease in requests per second over unserialized single-socket.
 But unserialized single-socket showed an extra 100ms latency on
 each request.  This latency is probably a wash on long haul lines,
 and only an issue on LANs.  If you want to override the single socket
-serialization you can define <code>SAFE_UNSERIALIZED_ACCEPT</code>
+serialization you can define <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code>
 and then single-socket servers will not serialize at all.
 
 <h4>Lingering Close</h4>
@@ -493,8 +493,8 @@ access to, or have been given detailed ports for, it typically is
 implemented using shared memory.  The rest default to using an
 on-disk file.  The on-disk file is not only slow, but it is unreliable
 (and less featured).  Peruse the <code>src/main/conf.h</code> file
-for your architecture and look for either <code>HAVE_MMAP</code> or
-<code>HAVE_SHMGET</code>.  Defining one of those two enables the
+for your architecture and look for either <code>USE_MMAP_SCOREBOARD</code> or
+<code>USE_SHMGET_SCOREBOARD</code>.  Defining one of those two enables the
 supplied shared memory code.  If your system has another type of
 shared memory then edit the file <code>src/main/http_main.c</code> and
 add the hooks necessary to use it in Apache.  (Send us back a patch
@@ -570,7 +570,7 @@ flock(18, LOCK_EX)                      = 0
 </pre></blockquote>
 
 These two calls can be removed by defining
-<code>SAFE_UNSERIALIZED_ACCEPT</code> as described earlier.
+<code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> as described earlier.
 
 <p>Notice the <code>SIGUSR1</code> manipulation:
 
@@ -751,7 +751,7 @@ close(3)                                = 0
 which were described earlier.
 
 <p>Let's apply some of these optimizations:
-<code>-DSAFE_UNSERIALIZED_ACCEPT -DBUFFERED_LOGS</code> and
+<code>-DSINGLE_LISTEN_UNSERIALIZED_ACCEPT -DBUFFERED_LOGS</code> and
 <code>Rule STATUS=no</code>.  Here's the final trace:
 
 <blockquote><pre>

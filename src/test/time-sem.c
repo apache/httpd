@@ -18,8 +18,8 @@ to be used:
 	child death.  You'll also need to define NEED_UNION_SEMUN
 	under solaris.
 
-You'll need to define HAVE_SHMGET if anonymous shared mmap() doesn't
-work on your system (i.e. linux).
+You'll need to define USE_SHMGET_SCOREBOARD if anonymous shared mmap()
+doesn't work on your system (i.e. linux).
 
 argv[1] is the #children, argv[2] is the #iterations per child
 
@@ -400,7 +400,7 @@ void accept_mutex_off()
 #endif
 
 
-#ifndef HAVE_SHMGET
+#ifndef USE_SHMGET_SCOREBOARD
 static void *get_shared_mem(size_t size)
 {
     void *result;

@@ -32,7 +32,7 @@ Committed Code Changes:
     * Ken's [PATCH] for #1479, #1480
     * Dean's [PATCH] fail gracefully if cd fails
     * Dean's [PATCH] Re: general/1491: mmap_handler error_log entry
-    * Marc's [PATCH] FreeBSD 2.2+ can use SAFE_UNSERIALIZED_ACCEPT
+    * Marc's [PATCH] FreeBSD 2.2+ can use SINGLE_LISTEN_UNSERIALIZED_ACCEPT
     * Ken's [PATCH] Configure be more verbose when it can't find
       Configuration
     * Paul's [PATCH] Proper reporting of Win32 errors
