@@ -233,6 +233,9 @@ static void usage(char *bin)
 }
 
 pool *g_pHookPool;
+
+extern char *optarg;
+
 #ifdef WIN32
 __declspec(dllexport)
      int apache_main(int argc, char *argv[])
@@ -251,7 +254,6 @@ int main(int argc, char **argv)
     pool *plog;			/* Pool for error-logging files */
     pool *ptemp;		/* Pool for temporart config stuff */
     pool *pcommands;		/* Pool for -C and -c switches */
-    extern char *optarg;
 
     /* TODO: PATHSEPARATOR should be one of the os defines */
 #define PATHSEPARATOR '/'
