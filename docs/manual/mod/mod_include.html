@@ -111,11 +111,13 @@ is appropriate in the context of a block-level HTML element, eg.
 a paragraph of text).  This can be changed by adding an
 <CODE>encoding</CODE> attribute, which will remain in effect until
 the next <CODE>encoding</CODE> attribute is encountered or the
-element ends, whichever comes first.  Note that only special
+element ends, whichever comes first.  Note that the
+<CODE>encoding</CODE> attribute must <EM>precede</EM> the corresponding
+<CODE>var</CODE> attribute to be effective, and that only special
 characters as defined in the ISO-8859-1 character encoding will be
 encoded.  This encoding process may not have the desired result if
-a different character encoding is in use.  Apache 1.3.12 and above; previous
-versions do no encoding.
+a different character encoding is in use.
+Apache 1.3.12 and above; previous versions do no encoding.
 
 </DL>
 
