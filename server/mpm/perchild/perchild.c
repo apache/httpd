@@ -1454,7 +1454,7 @@ static char *make_perchild_socket(const char *fullsockname, int sd[2])
 }
 
 
-static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     int i;
     server_rec *sr;
@@ -1486,6 +1486,7 @@ static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
             child_info_table[i].sd = def_sd[0];
         }
     }
+    return OK;
 }
 
 static int perchild_post_read(request_rec *r)
