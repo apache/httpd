@@ -100,6 +100,18 @@ allowed_port(proxy_server_conf *conf, int port)
     return 0;
 }
 
+/* canonicalise CONNECT URLs. */
+int ap_proxy_connect_canon(request_rec *r, char *url)
+{
+
+    if (r->method_number != M_CONNECT) {
+	return DECLINED;
+    }
+
+    return OK;
+}
+
+/* CONNECT handler */
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyname, apr_port_t proxyport)
 {
@@ -122,6 +134,10 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
+    /* is this for us? */
+    if (r->method_number != M_CONNECT) {
+	return DECLINED;
+    }
 
     /*
      * Step One: Determine Who To Connect To
@@ -388,6 +404,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 static void ap_proxy_connect_register_hook(apr_pool_t *p)
 {
     ap_hook_proxy_scheme_handler(ap_proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_proxy_canon_handler(ap_proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module = {

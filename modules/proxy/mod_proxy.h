@@ -206,12 +206,13 @@ typedef struct {
 
 /* proxy_connect.c */
 
+int ap_proxy_connect_canon(request_rec *r, char *url);
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, apr_port_t proxyport);
 
 /* proxy_ftp.c */
 
-int ap_proxy_ftp_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port);
+int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
 				      apr_bucket_brigade *bb);
@@ -219,8 +220,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
 
 /* proxy_http.c */
 
-int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
-		     apr_port_t def_port);
+int ap_proxy_http_canon(request_rec *r, char *url);
 int ap_proxy_http_handler(request_rec *r, char *url,
 		       const char *proxyhost, apr_port_t proxyport);
 
@@ -232,7 +232,7 @@ void ap_proxy_c2hex(int ch, char *x);
 char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
 			int isenc);
 char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
-			 char **passwordp, char **hostp, int *port);
+			 char **passwordp, char **hostp, apr_port_t *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
 apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
 int ap_proxy_liststr(const char *list, const char *val);
@@ -255,7 +255,7 @@ void ap_proxy_reset_output_filters(conn_rec *c);
 
 
 AP_DECLARE_HOOK(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport))
-AP_DECLARE_HOOK(int, proxy_canon_handler, (request_rec *r, char *url, const char *scheme, apr_port_t def_port))
+AP_DECLARE_HOOK(int, proxy_canon_handler, (request_rec *r, char *url))
 
 
 #endif /*MOD_PROXY_H*/

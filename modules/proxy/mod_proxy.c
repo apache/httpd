@@ -66,7 +66,7 @@ APR_HOOK_STRUCT(
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport),(r,url,proxyhost,proxyport),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_canon_handler, (request_rec *r, char *url, const char *scheme, apr_port_t def_port),(r,url,scheme,def_port),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_canon_handler, (request_rec *r, char *url),(r,url),DECLINED)
 
 
 /*
@@ -205,17 +205,17 @@ static int proxy_trans(request_rec *r)
 static int proxy_fixup(request_rec *r)
 {
     char *url, *p;
+    int access_status;
 
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
 
-/* canonicalise each specific scheme */
-    if (strncasecmp(url, "http:", 5) == 0)
-	return ap_proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
-    else if (strncasecmp(url, "ftp:", 4) == 0)
-	return ap_proxy_ftp_canon(r, url + 4, NULL, 0);
+    /* canonicalise each specific scheme */
+    if ((access_status = ap_run_proxy_canon_handler(r, url))) {
+	return access_status;
+    }
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
@@ -279,7 +279,6 @@ static int proxy_handler(request_rec *r)
     int i, rc;
     int direct_connect = 0;
     const char *str;
-    const char *pragma, *auth, *imstr;
     long maxfwd;
 
     /* is this for us? */
@@ -331,14 +330,6 @@ static int proxy_handler(request_rec *r)
     p = strchr(url, ':');
     if (p == NULL)
 	return HTTP_BAD_REQUEST;
-
-    pragma = apr_table_get(r->headers_in, "Pragma");
-    auth = apr_table_get(r->headers_in, "Authorization");
-    imstr = apr_table_get(r->headers_in, "If-Modified-Since");
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                 "Request for %s, pragma=%s, auth=%s, imstr=%s", url,
-                 pragma, auth, imstr);
 
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
