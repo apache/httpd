@@ -56,7 +56,7 @@
 
 all: all-recursive
 
-include modules.mk
+include $(builddir)/modules.mk
 targets = $(static) $(shared)
 install_targets = install-modules
 
