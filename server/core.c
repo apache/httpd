@@ -132,6 +132,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
         conf->d = apr_pstrcat(a, dir, "/", NULL);
     }
     conf->d_is_fnmatch = conf->d ? (apr_is_fnmatch(conf->d) != 0) : 0;
+    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(conf->d) != 0) : 0;
     conf->d_components = conf->d ? ap_count_dirs(conf->d) : 0;
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
@@ -192,6 +193,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
+    conf->d_is_absolute = new->d_is_absolute;
     conf->d_components = new->d_components;
     conf->r = new->r;
     
@@ -1663,6 +1665,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = apr_pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
+    conf->d_is_absolute = ap_os_is_path_absolute(conf->d) != 0;
     conf->r = r;
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -1729,6 +1732,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
+    conf->d_is_absolute = ap_os_is_path_absolute(conf->d) != 0;
     conf->r = r;
 
     ap_add_file_conf(c, new_file_conf);
