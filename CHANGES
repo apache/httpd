@@ -1,5 +1,7 @@
 Changes with Apache 2.0.54
 
+  *) Add a build script to create a solaris package. [Graham Leggett]
+
   *) worker MPM: Fix a problem which could cause httpd processes to
      remain active after shutdown.  [Jeff Trawick]
 

@@ -94,10 +94,6 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
-    *) Add a build script to create a solaris package.
-       svn rev 124104
-       +1: minfrin, trawick
-
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565
