@@ -83,6 +83,18 @@
 **
 */
 
+/*
+ * BUGS:
+ *
+ * - uses strcpy/etc.
+ * - has various other poor buffer attacks related to the lazy parsing of
+ *   response headers from the server
+ * - doesn't implement much of HTTP/1.x, only accepts certain forms of
+ *   responses
+ * - (performance problem) heavy use of strstr shows up top in profile
+ *   only an issue for loopback usage
+ */
+
 #define VERSION "1.2"
 
 /*  -------------------------------------------------------------------- */
@@ -480,7 +492,7 @@ static void read_connection(struct connection *c)
                 *q = 0;
             }
 
-	    /* FIXME: this parsing isn't even remotely HTTP compliant...
+	    /* XXX: this parsing isn't even remotely HTTP compliant...
 	     * but in the interest of speed it doesn't totally have to be,
 	     * it just needs to be extended to handle whatever servers
 	     * folks want to test against. -djg */
