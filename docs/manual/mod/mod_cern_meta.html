@@ -15,11 +15,33 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Apache module mod_cern_meta</H1>
 
-This module is contained in the <CODE>mod_cern_meta.c</CODE> file, and
-is not compiled in by default. It provides for CERN httpd metafile
-semantics. It is only available in Apache 1.1 and later.
+<p>This module provides for CERN httpd metafile semantics.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_cern_meta.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> cern_meta_module
+<BR>
+<A
+HREF="module-dict.html#Compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
+</P>
+
 
 <H2>Summary</H2>
+
+<!-- XXX: Should mention other possibilities in Apache: mod_header -->
 
 Emulate the CERN HTTPD Meta file semantics.  Meta files are HTTP
 headers that can be output in addition to the normal range of headers
@@ -43,7 +65,7 @@ who can exploit this module.
 
 <HR>
 
-<H2><A NAME="metafiles">MetaFiles</A></H2>
+<H2><A NAME="metafiles">MetaFiles</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -72,7 +94,9 @@ and later.<P>
 
 Turns on/off Meta file processing on a per-directory basis. This option was introduced in Apache 1.3.
 
-<H2><A NAME="metadir">MetaDir</A></H2>
+<hr>
+
+<H2><A NAME="metadir">MetaDir</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -103,7 +127,9 @@ subdirectory of the directory that contains the file being
 accessed. Set to "<CODE>.</CODE>" to look in the same directory as the
 file.
 
-<H2><A NAME="metasuffix">MetaSuffix</A></H2>
+<hr>
+
+<H2><A NAME="metasuffix">MetaSuffix</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
