@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/10 15:07:39 $]
+Last modified at [$Date: 2003/06/12 21:17:22 $]
 
 Release:
 
@@ -63,6 +63,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+    * Win32: Whack the fully qualified names that appear in the log when
+      loglevel debug is being used.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c.diff?r1=1.133&r2=1.134
+      +1: stoddard
 
     * Backport LimitInteralRecursion to 2.0 and 1.3.
       (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
