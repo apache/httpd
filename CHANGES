@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Deprecated the apr_lock.h API. Please see the following files
+     for the improved thread and process locking and signaling: 
+     apr_proc_mutex.h, apr_thread_mutex.h, apr_thread_rwlock.h,
+     apr_thread_cond.h, and apr_global_mutex.h.  [Aaron Bannert]
+
   *) Change mod_status to use scoreboard accessor functions so it can
      be used in any MPM without having to be recompiled.
      [Ryan Morgan <rmorgan@covalent.net>]
