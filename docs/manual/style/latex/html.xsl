@@ -116,23 +116,34 @@ interpreted in pre -->
 </xsl:template>
 
 <xsl:template match="table">
-<xsl:text>\begin{tabular}{ll}</xsl:text>
-<xsl:for-each select="tr">
-  <xsl:for-each select="td">
-    <xsl:text>\begin{minipage}{.5\linewidth}</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\end{minipage}</xsl:text>
-    <xsl:if test="not(last())">
-      <xsl:text> &amp; </xsl:text>
-    </xsl:if>
-  </xsl:for-each>
-  <xsl:text>\\
-</xsl:text>
+<xsl:text>\begin{tabular}{</xsl:text>
+<xsl:for-each select="columnspec/column">
+  <xsl:text>l</xsl:text>
 </xsl:for-each>
+<xsl:text>}</xsl:text>
+<xsl:apply-templates select="tr"/>
 <xsl:text>\end{tabular}
 </xsl:text>
 </xsl:template>
 
+
+<xsl:template match="tr">
+  <xsl:apply-templates select="td"/>
+  <xsl:text>\\
+</xsl:text>
+</xsl:template>
+
+<xsl:template match="td">
+    <xsl:variable name="pos" select="position()"/>
+    <xsl:text>\begin{minipage}{</xsl:text>
+    <xsl:value-of select="../../columnspec/column[$pos]/@width"/>
+    <xsl:text>\linewidth}</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\end{minipage}</xsl:text>
+    <xsl:if test="not(position()=last())">
+      <xsl:text> &amp; </xsl:text>
+    </xsl:if>
+</xsl:template>
 
 <!--
    This is a horrible hack, but it seems to mostly work.  It does a

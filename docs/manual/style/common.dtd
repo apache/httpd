@@ -96,7 +96,7 @@
 <!ELEMENT note (#PCDATA | title | %inlinetags; | %blocktags;)*>
 <!ATTLIST note type CDATA #IMPLIED>
 
-<!ELEMENT table (tr)+>
+<!ELEMENT table (columnspec | tr)+>
 <!ATTLIST table summary     CDATA  #IMPLIED
                 width       CDATA  #IMPLIED
                 bgcolor     CDATA  #IMPLIED
@@ -104,6 +104,11 @@
                 cellpadding CDATA  #IMPLIED
                 border      CDATA  #IMPLIED
                 style       CDATA  #IMPLIED>
+
+<!ELEMENT columnspec (column)+>
+
+<!ELEMENT column EMPTY>
+<!ATTLIST column width CDATA #IMPLIED>
 
 <!ELEMENT tr (th | td)+>
 <!ATTLIST tr valign CDATA #IMPLIED >
