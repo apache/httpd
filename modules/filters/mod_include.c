@@ -1183,7 +1183,7 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
                 ap_make_time(&mtime, r->pool);
-                ap_set_curtime(mtime, finfo.st_mtime);
+                ap_set_ansitime(mtime, finfo.st_mtime);
                 ap_rputs(ap_ht_time(r->pool, mtime, tf, 0), r);
             }
         }

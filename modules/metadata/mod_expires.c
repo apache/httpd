@@ -466,7 +466,7 @@ static int add_expires(request_rec *r)
         /* there's been some discussion and it's possible that 
          * 'access time' will be stored in request structure
          */
-        ap_get_curtime(r->request_time, &base);
+        ap_get_ansitime(r->request_time, &base);
         additional = atoi(&code[1]);
         break;
     default:
@@ -485,7 +485,7 @@ static int add_expires(request_rec *r)
                                  * under FreeBSD
                                  */
     ap_make_time(&finaltime, r->pool);
-    ap_set_curtime(finaltime, expires);
+    ap_set_ansitime(finaltime, expires);
     ap_timestr(&timestr, finaltime, APR_UTCTIME, r->pool); 
     ap_table_setn(r->headers_out, "Expires", timestr);
     return OK;

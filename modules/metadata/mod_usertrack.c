@@ -188,7 +188,7 @@ static void make_cookie(request_rec *r)
         ap_size_t retsize;
         
         ap_make_time(&when, r->pool);
-        ap_get_curtime(when, &req_time);
+        ap_get_ansitime(when, &req_time);
 #ifndef MILLENIAL_COOKIES
         /*
          * Only two-digit date string, so we can't trust "00" or more.
@@ -197,11 +197,11 @@ static void make_cookie(request_rec *r)
          */
 
         if (req_time + cls->expires > 946684799) {
-            ap_set_curtime(when, 946684799);
+            ap_set_ansitime(when, 946684799);
         }
         else
 #endif
-            ap_set_curtime(when,  req_time + cls->expires);
+            ap_set_ansitime(when,  req_time + cls->expires);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         ap_strftime(temp_cookie, &retsize, MAX_STRING_LEN, "%a, %d-%h-%y %H:%M:%S GMT", when); 
