@@ -255,6 +255,14 @@ void ap_open_logs(server_rec *s_main, pool *p)
     server_rec *virt, *q;
     int replace_stderr;
 
+#ifdef OS390
+    /*
+     * Cause errno2 (reason code) information to be generated whenever
+     * strerror(errno) is invoked.
+     */
+    setenv("_EDC_ADD_ERRNO2", "1", 1);
+#endif
+
     open_error_log(s_main, p);
 
     replace_stderr = 1;
