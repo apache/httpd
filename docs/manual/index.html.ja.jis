@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<!-- English revision: 1.40 -->
+<!-- English revision: 1.43 -->
 
 <title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title><link
 href="./style/css/manual.css" rel="stylesheet" media="all"
@@ -87,6 +87,9 @@ href="./">バージョン 2.0</a></div>
                 <tr><td><a href="mod/directives.html">実行の設定用ディレクティブ
                 </a> </td></tr>
               
+                <tr><td><a href="mod/quickreference.html">ディレクティブ
+                クイックリファレンス</a></td></tr>
+
                 <tr><td><a href="mod/">モジュール</a> </td></tr>
               
                 <tr><td><a href="mpm.html">マルチプロセッシングモジュール
@@ -182,6 +185,9 @@ href="./">バージョン 2.0</a></div>
                 Windows</a> </td></tr>
 
                 <tr><td><a href="platform/netware.html">Novell NetWare
+                </a> </td></tr>
+
+                <tr><td><a href="platform/ebcdic.html">EBCDIC 版
                 </a> </td></tr>
 
 <tr><td>&nbsp;</td></tr>
