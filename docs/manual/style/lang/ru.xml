@@ -50,7 +50,7 @@
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- HTTP сервер Apache</message>
- <message name="apachehttpserver">HTTP сервер Apache Версия 2.0</message>
+ <message name="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
  <message name="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
  <message name="index">Оглавление</message> <!-- deprecated -->
  <message name="home">На главную страницу</message> <!-- deprecated -->
@@ -59,7 +59,7 @@
  <message name="apache">Apache</message>
  <message name="http-server">HTTP сервер</message>
  <message name="documentation">Документация</message>
- <message name="version">Версия 2.0</message>
+ <message name="version">Версия 2.1</message>
 
  <!-- super menu -->
  <message name="modules">Модули</message>
