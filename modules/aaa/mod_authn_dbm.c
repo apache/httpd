@@ -83,6 +83,7 @@
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
+#include "mod_auth.h"
 
 typedef struct {
     char *pwfile;
@@ -127,113 +128,80 @@ static const command_rec authn_dbm_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authn_dbm_module;
 
-/* This should go into APR; perhaps with some nice
- * caching/locking/flocking of the open dbm file.
- *
- * Duplicated in mod_auth_dbm.c
- */
-static apr_status_t
-get_dbm_entry_as_str(request_rec *r, 
-                     char *user, 
-                     char *auth_dbmfile, 
-                     char *dbtype,
-                     char **str)
+static apr_status_t fetch_dbm(const char *dbmtype, const char *dbmfile,
+                              const char *user, apr_datum_t *val,
+                              apr_pool_t *pool)
 {
     apr_dbm_t *f;
-    apr_datum_t d, q;
-    char *pw = NULL;
-    apr_status_t retval;
-    q.dptr = user;
+    apr_datum_t key;
+    apr_status_t rv;
 
+    rv = apr_dbm_open_ex(&f, dbmtype, dbmfile, APR_DBM_READONLY, 
+                         APR_OS_DEFAULT, pool);
+
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    key.dptr = (char*)user;
 #ifndef NETSCAPE_DBM_COMPAT
-    q.dsize = strlen(q.dptr);
+    key.dsize = strlen(key.dptr);
 #else
-    q.dsize = strlen(q.dptr) + 1;
+    key.dsize = strlen(key.dptr) + 1;
 #endif
 
-    retval = apr_dbm_open_ex(&f, dbtype, auth_dbmfile, APR_DBM_READONLY, 
-                             APR_OS_DEFAULT, r->pool);
-
-    if (retval != APR_SUCCESS) {
-        return retval;
-    }
-
-    *str = NULL;
-
-    if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS && d.dptr) {
-        *str = apr_palloc(r->pool, d.dsize + 1);
-        strncpy(pw, d.dptr, d.dsize);
-        *str[d.dsize] = '\0'; /* Terminate the string */
-    }
+    rv = apr_dbm_fetch(f, key, val);
 
     apr_dbm_close(f);
-
-    return retval;
+    
+    return rv;
 }
 
-static int dbm_authenticate_basic_user(request_rec *r)
+static authn_status check_dbm_pw(request_rec *r, const char *user,
+                                 const char *password)
 {
     authn_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                     &authn_dbm_module);
-    const char *sent_pw;
-    char *real_pw,*colon_pw;
-    apr_status_t status;
+                                                      &authn_dbm_module);
+    apr_datum_t dbm_pw;
+    apr_status_t rv;
+    char *dbm_password;
     int res;
 
-    if ((res = ap_get_basic_auth_pw(r, &sent_pw))) {
-        return res;
+    rv = fetch_dbm(conf->dbmtype, conf->pwfile, user, &dbm_pw, r->pool);
+
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "could not open dbm (type %s) auth file: %s",
+                      conf->dbmtype, conf->pwfile);
+        return AUTH_GENERAL_ERROR;
     }
 
-    if (!conf->pwfile) {
-        return DECLINED;
+    if (dbm_pw.dptr) {
+        dbm_password = apr_pstrmemdup(r->pool, dbm_pw.dptr, dbm_pw.dsize);
     }
 
-    status = get_dbm_entry_as_str(r, r->user, conf->pwfile,
-                                  conf->dbmtype, &real_pw);
-
-    if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                      "could not open dbm (type %s) user auth file: %s",
-                      conf->dbmtype, 
-                      conf->pwfile);
-        return HTTP_INTERNAL_SERVER_ERROR;
+    if (!dbm_password) {
+        return AUTH_USER_NOT_FOUND;
     }
 
-    if(real_pw == NULL) {
+    rv = apr_password_validate(password, dbm_password);
 
-        if (!conf->authoritative) {
-            return DECLINED;
-        }
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "DBM user %s not found: %s", r->user, r->filename);
-        ap_note_basic_auth_failure(r);
-
-        return HTTP_UNAUTHORIZED;
+    if (rv != APR_SUCCESS) {
+        return AUTH_DENIED;
     }
 
-    /* Password is up to first : if exists */
-    colon_pw = strchr(real_pw, ':');
-    if (colon_pw) {
-        *colon_pw = '\0';
-    }
-
-    status = apr_password_validate(sent_pw, real_pw);
-
-    if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "DBM user %s: authentication failure for \"%s\": "
-                      "Password Mismatch",
-                      r->user, r->uri);
-        ap_note_basic_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
-    }
-    return OK;
+    return AUTH_GRANTED;
 }
+
+static const authn_provider authn_dbm_provider =
+{
+    &check_dbm_pw,
+    NULL,               /* No realm support yet. */
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL,
-                          APR_HOOK_MIDDLE);
+    authn_register_provider(p, "dbm", &authn_dbm_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authn_dbm_module =
