@@ -570,11 +570,22 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
             buf = apr_pstrcat(r->pool, CRLF, NULL);
             amt = strlen(buf);
             apr_file_write(hfd, buf, &amt);
+            
+            /* This case only occurs when the content is generated locally */
+            if (!apr_table_get(r->headers_out, "Content-Type") && r->content_type) {
+                apr_table_setn(r->headers_out, "Content-Type", 
+                               ap_make_content_type(r, r->content_type));
+            }
         }
         sprintf(statusbuf,"%d", r->status);
         buf = apr_pstrcat(r->pool, statusbuf, CRLF, NULL);
         amt = strlen(buf);
         apr_file_write(hfd, buf, &amt);
+
+        /* This case only occurs when the content is generated locally */
+        if (!r->status_line) {
+            r->status_line = ap_get_status_line(r->status);
+        }
         buf = apr_pstrcat(r->pool, r->status_line, "\n", NULL);
         amt = strlen(buf);
         apr_file_write(hfd, buf, &amt);
