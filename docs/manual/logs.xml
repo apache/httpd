@@ -149,14 +149,12 @@
 	module="mod_log_config">CustomLog</directive> directive now subsumes
 	the functionality of all the older directives.</p>
 
-    <p>The format of the access log is highly configurable. The
-    format is specified using a <directive
-	module="mod_log_config">CustomLog</directive> that
-    looks much like a C-style printf(1) format string. Some
-    examples are presented in the next sections. For a complete
-    list of the possible contents of the format string, see the <a
-    href="mod/mod_log_config.html#formats">mod_log_config
-    documentation</a>.</p>
+    <p>The format of the access log is highly configurable. The format
+    is specified using a format string that looks much like a C-style
+    printf(1) format string. Some examples are presented in the next
+    sections. For a complete list of the possible contents of the
+    format string, see the <module>mod_log_config</module> <a
+    href="mod/mod_log_config.html#formats">format strings</a>.</p>
     
     <section id="common">
       <title>Common Log Format</title>
@@ -420,7 +418,7 @@
   </section>
   
   <section id="rotation">
-    <title>Rotation Logs</title>
+    <title>Log Rotation</title>
     
     <p>On even a moderately busy server, the quantity of
     information stored in the log files is very large. The access
