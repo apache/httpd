@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/05 13:14:12 $]
+Last modified at [$Date: 2004/05/05 16:29:58 $]
 
 Release:
 
@@ -72,9 +72,16 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_cgi: Handle stderr output during script execution
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
+       PR: 22030, 18348
+       +1: jorton
+
     *) Readd suexec setuid and user check (now APR supports it)
          os/unix/unixd.c: r1.69
        +1: nd, trawick
+       +1: jorton, if surrounded with #ifdef APR_USETID to retain
+           compatibility with APR <0.9.5
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
@@ -168,7 +175,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_logio no longer removes the EOS bucket. PR 27928.
          modules/loggers/mod_logio.c: r1.8
-       +1: nd, trawick
+       +1: nd, trawick, jorton
 
     *) mod_rewrite no longer turns forward proxy requests into reverse proxy
        requests. PR 28125
@@ -367,7 +374,7 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/experimental/perchild/perchild.c: r1.143
         server/mpm/experimental/threadpool/threadpool.c: r1.25
         server/mpm/worker/worker.c: r1.145
-      +1: trawick, nd
+      +1: trawick, nd, jorton
 
     * ThreadStackSize for Win32 and threaded MPMs
       (if there is sufficient interest I'll pursue getting APR 0.9
