@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -57,26 +57,26 @@
 
 /* Read a request and fill in the fields. */
 
-request_rec *read_request (conn_rec *c);
+request_rec *read_request(conn_rec *c);
 
 /* Send a single HTTP header field */
 
-int send_header_field (request_rec *r, const char *fieldname,
-                                       const char *fieldval);
+int send_header_field(request_rec *r, const char *fieldname,
+                      const char *fieldval);
 
 /* Send the Status-Line and header fields for HTTP response */
 
-API_EXPORT(void) send_http_header (request_rec *l);     
+API_EXPORT(void) send_http_header(request_rec *l);
 
 /* Send the response to special method requests */
 
-int send_http_trace (request_rec *r);
-int send_http_options (request_rec *r);
+int send_http_trace(request_rec *r);
+int send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
 
-void finalize_request_protocol (request_rec *r);
-     
+void finalize_request_protocol(request_rec *r);
+
 /* Send error back to client... last arg indicates error status in case
  * we get an error in the process of trying to deal with an ErrorDocument
  * to handle some other error.  In that case, we print the default report
@@ -84,8 +84,8 @@ void finalize_request_protocol (request_rec *r);
  * problem with the ErrorDocument.
  */
 
-void send_error_response (request_rec *r, int recursive_error);
-     
+void send_error_response(request_rec *r, int recursive_error);
+
 /* Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
  *
@@ -93,8 +93,8 @@ void send_error_response (request_rec *r, int recursive_error);
  * permit_cache argument is set to one).
  */
 
-API_EXPORT(int) set_content_length (request_rec *r, long length);
-int set_keepalive (request_rec *r);
+API_EXPORT(int) set_content_length(request_rec *r, long length);
+int set_keepalive(request_rec *r);
 API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime);
 API_EXPORT(void) set_etag(request_rec *r);
 API_EXPORT(void) set_last_modified(request_rec *r);
@@ -118,38 +118,38 @@ API_EXPORT(long) send_fb(BUFF *f, request_rec *r);
 API_EXPORT(long) send_fb_length(BUFF *f, request_rec *r, long length);
 
 API_EXPORT(size_t) send_mmap(void *mm, request_rec *r, size_t offset,
-    size_t length);
-     
+                             size_t length);
+
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
  */
-     
-API_EXPORT(int) rputc (int c, request_rec *r);     
+
+API_EXPORT(int) rputc(int c, request_rec *r);
 API_EXPORT(int) rputs(const char *str, request_rec *r);
 API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r);
-API_EXPORT_NONSTD(int) rvputs(request_rec *r, ...);
-API_EXPORT_NONSTD(int) rprintf(request_rec *r,const char *fmt,...);
+API_EXPORT_NONSTD(int) rvputs(request_rec *r,...);
+API_EXPORT_NONSTD(int) rprintf(request_rec *r, const char *fmt,...);
 API_EXPORT(int) rflush(request_rec *r);
-     
+
 /*
  * Index used in custom_responses array for a specific error code
  * (only use outside protocol.c is in getting them configured).
  */
 
-int index_of_response (int status);
+int index_of_response(int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
-     
-API_EXPORT(int) setup_client_block (request_rec *r, int read_policy);
-API_EXPORT(int) should_client_block (request_rec *r);
-API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz);
-API_EXPORT(int) discard_request_body (request_rec *r);
+
+API_EXPORT(int) setup_client_block(request_rec *r, int read_policy);
+API_EXPORT(int) should_client_block(request_rec *r);
+API_EXPORT(long) get_client_block(request_rec *r, char *buffer, int bufsiz);
+API_EXPORT(int) discard_request_body(request_rec *r);
 
 /* Sending a byterange */
 
-API_EXPORT(int) set_byterange (request_rec *r);
-API_EXPORT(int) each_byterange (request_rec *r, long *offset, long *length);
-     
+API_EXPORT(int) set_byterange(request_rec *r);
+API_EXPORT(int) each_byterange(request_rec *r, long *offset, long *length);
+
 /* Finally, this charming little number is here to encapsulate the
  * degree to which nph- scripts completely escape from any discipline
  * the protocol code might care to impose (this as opposed to other
@@ -157,7 +157,7 @@ API_EXPORT(int) each_byterange (request_rec *r, long *offset, long *length);
  * to explicitly set the status line).
  */
 
-API_EXPORT(void) client_to_stdout (conn_rec *c); 
+API_EXPORT(void) client_to_stdout(conn_rec *c);
 
 
 /* Support for the Basic authentication protocol.  Note that there's
@@ -185,16 +185,16 @@ API_EXPORT(void) client_to_stdout (conn_rec *c);
 API_EXPORT(void) note_auth_failure(request_rec *r);
 API_EXPORT(void) note_basic_auth_failure(request_rec *r);
 API_EXPORT(void) note_digest_auth_failure(request_rec *r);
-API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw);
+API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw);
 
 /*
  * Setting up the protocol fields for subsidiary requests...
  * Also, a wrapup function to keep the internal accounting straight.
  */
 
-void set_sub_req_protocol (request_rec *rnew, const request_rec *r);
-void finalize_sub_req_protocol (request_rec *sub_r);
+void set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+void finalize_sub_req_protocol(request_rec *sub_r);
 
 /* This is also useful for putting sub_reqs and internal_redirects together */
 
-void parse_uri (request_rec *r, const char *uri);     
+void parse_uri(request_rec *r, const char *uri);
