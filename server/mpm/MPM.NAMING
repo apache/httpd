@@ -1,0 +1,22 @@
+For right now, the naming of the MPM methods follows
+the following example for the 'prefork' method.
+
+  1. The directory name under modules/mpm is the actual
+     name.
+
+       eg: modules/mpm/prefork
+
+  2. The internal module name must be that name, prepended with
+     mpm_ and suffixed with _module
+
+       eg: mpm_prefork_module
+
+  3. The Makefile.tmpl must create lib<name>.a
+
+       eg: libprefork.a
+
+Numbers 1 and 3 follow the normal rules (for example, modules/standard
+creates libstandard.a, etc...).
+
+The MPM_METHOD Rule will use the actual name (eg: prefork) to
+pick the correct method module to build.
