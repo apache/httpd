@@ -16,6 +16,7 @@
 <!-- some meta information have to be passed to the transformation -->
 <xsl:variable name="output-encoding" select="'gb2312'" />
 <xsl:variable name="is-chm" select="false()" />
+<xsl:variable name="is-zip" select="false()" />
 
 <!-- Now get the real guts of the stylesheet -->
 <xsl:include href="xsl/common.xsl"/>

@@ -67,6 +67,7 @@
 
 <!-- Injected variables:                                                  -->
 <!--   $is-chm          - (boolean) target is for CHM generation or not   -->
+<!--   $is-zip          - (boolean) target is for ZIP generation or not   -->
 <!--   $messages        - (node-set) localized common text snippets       -->
 <!--   $output-encoding - (string) MIME charset name of the output        -->
 <!--                      encoding                                        -->
@@ -104,7 +105,7 @@
 <!-- when referencing to a directory, we may need to complete the path -->
 <!-- with the index file (for offline applications like *.chm files)   -->
 <xsl:variable name="index-file">
-    <xsl:if test="$is-chm">index.html</xsl:if>
+    <xsl:if test="$is-chm or $is-zip">index.html</xsl:if>
 </xsl:variable>
 
 <!-- it may be desired to open external targets in a new window -->
@@ -121,7 +122,7 @@
 <head>
     <!-- the meta element is necessary for offline handling like CHM -->
     <xsl:choose>
-    <xsl:when test="$is-chm">
+    <xsl:when test="$is-chm or $is-zip">
         <meta http-equiv="Content-Type"
                  content="text/html; charset={$output-encoding}" />
     </xsl:when>
@@ -163,6 +164,15 @@
         <link type="text/css" rel="stylesheet" media="all"
               href="{$path}/style/css/manual-chm.css" />
     </xsl:when>
+    <!-- zip packages do also -->
+    <xsl:when test="$is-zip">
+        <link title="Main stylesheet"  type="text/css" media="all"
+                rel="stylesheet"
+               href="{$path}/style/css/manual-zip.css" />&lf;
+        <link title="No Sidebar - Default font size" type="text/css" media="all"
+               rel="alternate stylesheet"
+               href="{$path}/style/css/manual-zip-100pc.css"/>
+    </xsl:when>
     <xsl:otherwise>
         <link title="Main stylesheet"  type="text/css" media="all"
                 rel="stylesheet"
@@ -178,7 +188,7 @@
            href="{$path}/style/css/manual-print.css"/>
 
     <!-- chm files do not need a favicon -->
-    <xsl:if test="not($is-chm)">&lf;
+    <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </xsl:if>
 </head>
@@ -307,7 +317,7 @@
 <xsl:param name="position" select="'top'" />
 <xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
 
-<xsl:if test="not($is-chm)">
+<xsl:if test="not($is-chm or $is-zip)">
 <div class="{$position}lang">&lf;
     <p>
         <span>
@@ -1025,5 +1035,15 @@
 </xsl:choose>
 </xsl:template>
 <!-- /helper.uri.fix -->
+
+
+<!-- ==================================================================== -->
+<!-- Ignore table hints used for latex                                    -->
+<!-- ==================================================================== -->
+<xsl:template match="columnspec">
+</xsl:template>
+
+<xsl:template match="column">
+</xsl:template>
 
 </xsl:stylesheet>
