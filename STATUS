@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/14 06:34:59 $]
+Last modified at [$Date: 2003/05/14 20:52:18 $]
 
 Release:
 
@@ -243,6 +243,11 @@ PATCHES TO PORT FROM 2.1
       simple fix from modules/mappers/config9.m4: r1.988.2.97?
       +1: aaron, jerenkrantz
 
+
+    * htpasswd: add a delete flag.
+      support/htpasswd.c: r1.70
+      docs/manual/programs/htpasswd.xml r1.3
+      +1: thommay
 
 CURRENT RELEASE NOTES:
 
