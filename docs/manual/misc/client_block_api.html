@@ -38,7 +38,7 @@ accomplished while remaining backwards-compatible.</p>
     the module should return that error code. The second parameter
     selects the policy to apply if the request message indicates a
     body, and how a chunked
-    transfer-coding sho uld be interpreted. Choose one of
+    transfer-coding should be interpreted. Choose one of
 <pre>
     REQUEST_NO_BODY          Send 413 error if message has any body
     REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
@@ -58,7 +58,7 @@ accomplished while remaining backwards-compatible.</p>
     should proceed (to step 3).
     This step also sends a 100 Continue response
     to HTTP/1.1 clients, so should not be called until the module
-    is *defenitely* ready to read content. (otherwise, the point of the
+    is <strong>*definitely*</strong> ready to read content. (otherwise, the point of the
     100 response is defeated). Never call this function more than once.
 
 <li>Finally, call <code>get_client_block</code> in a loop. Pass it a
