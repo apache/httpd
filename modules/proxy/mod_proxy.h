@@ -205,9 +205,8 @@ typedef struct {
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
-#else
-    proxy_conn     *conn;   /* Single connection for prefork mpm's */
 #endif
+    proxy_conn     *conn;   /* Single connection for prefork mpm's */
 } proxy_conn_pool;
 
 /* Worker configuration */
