@@ -32,12 +32,6 @@ FINAL RELEASE SHOWSTOPPERS:
 
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
-    * CGIs
-        - hangs on multiple CGI execution?  PR#1607,1129
-    	    Marc can't repeat...
-
-    * SECURITY: PR#1203 still needs to be dealt with for WIN32
-
     * SECURITY: check if the magic con/aux/nul/etc names do anything
 	really bad
 
