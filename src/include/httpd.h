@@ -102,8 +102,12 @@
 /* --------- Default user name and group name running standalone ---------- */
 /* --- These may be specified as numbers by placing a # before a number --- */
 
+#ifndef DEFAULT_USER
 #define DEFAULT_USER "#-1"
+#endif
+#ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "#-1"
+#endif
 
 /* The name of the log files */
 #ifdef __EMX__
