@@ -1441,7 +1441,8 @@ static void perform_idle_server_maintenance(void)
                 ++idle_thread_count;
             }
         }
-        if (any_dead_threads && totally_free_length < idle_spawn_rate 
+        if (any_dead_threads && totally_free_length < idle_spawn_rate
+                && free_length < MAX_SPAWN_RATE
                 && (!ps->pid               /* no process in the slot */
                     || ps->quiescing)) {   /* or at least one is going away */
             if (all_dead_threads) {
