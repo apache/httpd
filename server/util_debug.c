@@ -69,27 +69,27 @@
 #undef strrchr
 #undef strstr
 
-char *ap_strchr(char *s, int c)
+AP_DECLARE(char *) ap_strchr(char *s, int c)
 {
     return strchr(s,c);
 }
-const char *ap_strchr_c(const char *s, int c)
+AP_DECLARE(const char *) ap_strchr_c(const char *s, int c)
 {
     return strchr(s,c);
 }
-char *ap_strrchr(char *s, int c)
+AP_DECLARE(char *) ap_strrchr(char *s, int c)
 {
     return strrchr(s,c);
 }
-const char *ap_strrchr_c(const char *s, int c)
+AP_DECLARE(const char *) ap_strrchr_c(const char *s, int c)
 {
     return strrchr(s,c);
 }
-char *ap_strstr(char *s, const char *c)
+AP_DECLARE(char *) ap_strstr(char *s, const char *c)
 {
     return strstr(s,c);
 }
-const char *ap_strstr_c(const char *s, const char *c)
+AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c)
 {
     return strstr(s,c);
 }
