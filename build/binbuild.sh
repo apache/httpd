@@ -6,38 +6,38 @@
 # This script falls under the Apache License.
 # See http://www.apache.org/docs/LICENSE
 
-OS=`src/helpers/GuessOS`
-case "x$OS" in
-  x*390*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most";;
-      *) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max";;
-esac
+OS=`./config.guess`
+#case "x$OS" in
+#  x*390*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most";;
+#      *) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max";;
+#esac
 APDIR=`pwd`
 APDIR=`basename $APDIR`
-VER=`echo $APDIR |sed s/apache_//`
-TAR="`src/helpers/PrintPath tar`"
-GTAR="`src/helpers/PrintPath gtar`"
-GZIP="`src/helpers/PrintPath gzip`"
+VER=`echo $APDIR |sed s/httpd_//`
+TAR="`build/PrintPath tar`"
+GTAR="`build/PrintPath gtar`"
+GZIP="`build/PrintPath gzip`"
 
 if [ x$1 != x ]
 then
   USER=$1
 else
-  USER="`src/helpers/buildinfo.sh -n %u@%h%d`"
+  USER="`build/buildinfo.sh -n %u@%h%d`"
 fi
 
 if [ ! -f ./ABOUT_APACHE ]
 then
   echo "ERROR: The current directory contains no valid Apache distribution."
   echo "Please change the directory to the top level directory of a freshly"
-  echo "unpacked Apache 1.3 source distribution and re-execute the script"
-  echo "'./src/helpers/bindbuild.sh'." 
+  echo "unpacked Apache 2.0 source distribution and re-execute the script"
+  echo "'./build/bindbuild.sh'." 
   exit 1;
 fi
 
 if [ -d ./CVS ]
 then
   echo "ERROR: The current directory is a CVS checkout of Apache."
-  echo "Only a standard Apache 1.3 source distribution should be used to"
+  echo "Only a standard Apache 2.0 source distribution should be used to"
   echo "create a binary distribution."
   exit 1;
 fi
@@ -201,7 +201,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "lmkdir \$SR/proxy 750" && \
   echo "lmkdir \$SR/logs 750" && \
   echo "lcopy bindist/man \$SR/man 755 644" && \
-  echo "lcopy bindist/libexec \$SR/libexec 750 644" && \
+  echo "lcopy bindist/modules \$SR/modules 750 644" && \
   echo "lcopy bindist/include \$SR/include 755 644" && \
   echo "lcopy bindist/icons \$SR/icons 755 644" && \
   echo "lcopy bindist/cgi-bin \$SR/cgi-bin 750 750" && \
