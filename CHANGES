@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex: Restore the ability to add a description for
+     directories that don't contain an index file.  [André Malo]
+
   *) mod_include no longer allows an ETag header on 304 responses.
      PR 19355. [Geoffrey Young <geoff@apache.org>, André Malo]
 
