@@ -125,13 +125,13 @@ Body:----------sv--
 
     Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
     tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
-    indexdokument eller s&aring; &auml;r katalogen skrivskyddad.
+    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
 
   <!--#else -->
 
     Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
     tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
-    skrivskyddat eller inte l&auml;sbart f&ouml;r servern.
+    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
 
   <!--#endif -->
 
