@@ -69,8 +69,6 @@
 #ifndef API_EXPORT
 #ifdef SHARED_CORE
 # define API_EXPORT(type)    __declspec(dllexport) type
-#else /* Not SHARED_CORE */
-# define API_EXPORT(type)    __declspec(dllimport) type
 #endif /* def SHARED_CORE */ 
 #endif /* ndef API_EXPORT */
 
