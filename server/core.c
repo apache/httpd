@@ -166,6 +166,13 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->output_filters = NULL;
     conf->input_filters = NULL;
 
+    /*
+     * Flag for use of inodes in ETags.
+     */
+    conf->etag_bits = ETAG_UNSET;
+    conf->etag_add = ETAG_UNSET;
+    conf->etag_remove = ETAG_UNSET;
+
     return (void *)conf;
 }
 
@@ -328,6 +335,26 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->input_filters) {
         conf->input_filters = new->input_filters;
+    }
+
+    /*
+     * Now merge the setting of the FileETag directive.
+     */
+    if (new->etag_bits == ETAG_UNSET) {
+        conf->etag_add =
+            (conf->etag_add & (~ new->etag_remove)) | new->etag_add;
+        conf->etag_remove =
+            (conf->opts_remove & (~ new->etag_add)) | new->etag_remove;
+        conf->etag_bits =
+            (conf->etag_bits & (~ conf->etag_remove)) | conf->etag_add;
+    }
+    else {
+        conf->etag_bits = new->etag_bits;
+        conf->etag_add = new->etag_add;
+        conf->etag_remove = new->etag_remove;
+    }
+    if (conf->etag_bits != ETAG_NONE) {
+        conf->etag_bits &= (~ ETAG_NONE);
     }
 
     return (void*)conf;
@@ -1128,6 +1155,135 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
 	}
     }
 
+    return NULL;
+}
+
+/*
+ * Note what data should be used when forming file ETag values.
+ * It would be nicer to do this as an ITERATE, but then we couldn't
+ * remember the +/- state properly.
+ */
+static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
+                                 const char *args_p)
+{
+    core_dir_config *cfg;
+    etag_components_t bit;
+    char action;
+    char *token;
+    const char *args;
+    int valid;
+    int first;
+    int explicit;
+
+    cfg = (core_dir_config *) mconfig;
+
+    args = args_p;
+    first = 1;
+    explicit = 0;
+    while (args[0] != '\0') {
+        action = '*';
+        bit = ETAG_UNSET;
+        valid = 1;
+        token = ap_getword_conf(cmd->pool, &args);
+        if ((*token == '+') || (*token == '-')) {
+            action = *token;
+            token++;
+        }
+        else {
+            /*
+             * The occurrence of an absolute setting wipes
+             * out any previous relative ones.  The first such
+             * occurrence forgets any inherited ones, too.
+             */
+            if (first) {
+                cfg->etag_bits = ETAG_UNSET;
+                cfg->etag_add = ETAG_UNSET;
+                cfg->etag_remove = ETAG_UNSET;
+                first = 0;
+            }
+        }
+
+        if (strcasecmp(token, "None") == 0) {
+            if (action != '*') {
+                valid = 0;
+            }
+            else {
+                cfg->etag_bits = bit = ETAG_NONE;
+                explicit = 1;
+            }
+        }
+        else if (strcasecmp(token, "All") == 0) {
+            if (action != '*') {
+                valid = 0;
+            }
+            else {
+                explicit = 1;
+                cfg->etag_bits = bit = ETAG_ALL;
+            }
+        }
+        else if (strcasecmp(token, "Size") == 0) {
+            bit = ETAG_SIZE;
+        }
+        else if ((strcasecmp(token, "LMTime") == 0)
+                 || (strcasecmp(token, "MTime") == 0)
+                 || (strcasecmp(token, "LastModified") == 0)) {
+            bit = ETAG_MTIME;
+        }
+        else if (strcasecmp(token, "INode") == 0) {
+            bit = ETAG_INODE;
+        }
+        else {
+            return ap_pstrcat(cmd->pool, "Unknown keyword '",
+                              token, "' for ", cmd->cmd->name,
+                              " directive", NULL);
+        }
+
+        if (! valid) {
+            return ap_pstrcat(cmd->pool, cmd->cmd->name, " keyword '",
+                              token, "' cannot be used with '+' or '-'",
+                              NULL);
+        }
+
+        if (action == '+') {
+            /*
+             * Make sure it's in the 'add' list and absent from the
+             * 'subtract' list.
+             */
+            cfg->etag_add |= bit;
+            cfg->etag_remove &= (~ bit);
+        }
+        else if (action == '-') {
+            cfg->etag_remove |= bit;
+            cfg->etag_add &= (~ bit);
+        }
+        else {
+            /*
+             * Non-relative values wipe out any + or - values
+             * accumulated so far.
+             */
+            cfg->etag_bits |= bit;
+            cfg->etag_add = ETAG_UNSET;
+            cfg->etag_remove = ETAG_UNSET;
+            explicit = 1;
+        }
+    }
+
+    /*
+     * Any setting at all will clear the 'None' and 'Unset' bits.
+     */
+
+    if (cfg->etag_add != ETAG_UNSET) {
+        cfg->etag_add &= (~ ETAG_UNSET);
+    }
+    if (cfg->etag_remove != ETAG_UNSET) {
+        cfg->etag_remove &= (~ ETAG_UNSET);
+    }
+    if (explicit) {
+        cfg->etag_bits &= (~ ETAG_UNSET);
+        if ((cfg->etag_bits & ETAG_NONE) != ETAG_NONE) {
+            cfg->etag_bits &= (~ ETAG_NONE);
+        }
+    }
     return NULL;
 }
 
@@ -2459,6 +2615,8 @@ AP_INIT_RAW_ARGS("Options", set_options, NULL, OR_OPTIONS,
 AP_INIT_TAKE1("DefaultType", ap_set_string_slot,
   (void*)APR_XtOffsetOf (core_dir_config, ap_default_type),
   OR_FILEINFO, "the default MIME type for untypable files"),
+AP_INIT_RAW_ARGS("FileETag", set_etag_bits, NULL, OR_FILEINFO,
+  "Specify components used to construct a file's ETag"),
 
 /* Old server config file commands */
 

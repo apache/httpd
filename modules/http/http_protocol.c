@@ -1189,6 +1189,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         fixup_vary(r);
     }
 
+    /*
+     * Now remove any ETag response header field if earlier processing
+     * says so (such as a 'FileETag None' directive).
+     */
+    if (apr_table_get(r->notes, "no-etag") != NULL) {
+        apr_table_unset(r->headers_out, "ETag");
+    }
+
     /* determine the protocol and whether we should use keepalives. */
     basic_http_header_check(r, &protocol);
     ap_set_keepalive(r);
@@ -2205,7 +2213,27 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
     apr_size_t weak_len;
     char *etag;
     char *next;
+    core_dir_config *cfg;
+    etag_components_t etag_bits;
+    etag_components_t bits_added;
 
+    cfg = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                  &core_module);
+    etag_bits = (cfg->etag_bits & (~ cfg->etag_remove)) | cfg->etag_add;
+    
+    /*
+     * If it's a file (or we wouldn't be here) and no ETags
+     * should be set for files, return an empty string and
+     * note it for the header-sender to ignore.
+     */
+    if (etag_bits & ETAG_NONE) {
+        apr_table_setn(r->notes, "no-etag", "omit");
+        return "";
+    }
+
+    if (etag_bits == ETAG_UNSET) {
+        etag_bits = ETAG_BACKWARD;
+    }
     /*
      * Make an ETag header out of various pieces of information. We use
      * the last-modified date and, if we have a real file, the
@@ -2228,7 +2256,10 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
     }
 
     if (r->finfo.filetype != 0) {
-        /* [W/]"inode-size-mtime" */
+        /*
+         * ETag gets set to [W/]"inode-size-mtime", modulo any
+         * FileETag keywords.
+         */
         etag = apr_palloc(r->pool, weak_len + sizeof("\"--\"") +
                           3 * CHARS_PER_UNSIGNED_LONG + 1);
         next = etag;
@@ -2238,16 +2269,31 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
             }
         }
         *next++ = '"';
-        next = etag_ulong_to_hex(next, (unsigned long)r->finfo.inode);
-        *next++ = '-';
-        next = etag_ulong_to_hex(next, (unsigned long)r->finfo.size);
-        *next++ = '-';
-        next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+        bits_added = 0;
+        if (etag_bits & ETAG_INODE) {
+            next = etag_ulong_to_hex(next, (unsigned long)r->finfo.inode);
+            bits_added |= ETAG_INODE;
+        }
+        if (etag_bits & ETAG_SIZE) {
+            if (bits_added != 0) {
+                *next++ = '-';
+            }
+            next = etag_ulong_to_hex(next, (unsigned long)r->finfo.size);
+            bits_added |= ETAG_SIZE;
+        }
+        if (etag_bits & ETAG_MTIME) {
+            if (bits_added != 0) {
+                *next++ = '-';
+            }
+            next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+        }
         *next++ = '"';
-        *next = 0;
+        *next = '\0';
     }
     else {
-        /* [W/]"mtime" */
+        /*
+         * Not a file document, so just use the mtime: [W/]"mtime"
+         */
         etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
                           CHARS_PER_UNSIGNED_LONG + 1);
         next = etag;
@@ -2259,7 +2305,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
         *next++ = '"';
         next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
         *next++ = '"';
-        *next = 0;
+        *next = '\0';
     }
 
     return etag;

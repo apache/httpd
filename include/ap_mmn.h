@@ -89,12 +89,13 @@
  * 20020102 (2.0.30-dev) bump for changed type of limit_req_body in 
  *                       core_dir_config
  * 20020109 (2.0.31-dev) bump for changed shm and scoreboard declarations
+ * 20020111 (2.0.31-dev) bump for ETag fields added at end of cor_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020109
+#define MODULE_MAGIC_NUMBER_MAJOR 20020111
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
