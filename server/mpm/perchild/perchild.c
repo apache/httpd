@@ -1091,15 +1091,16 @@ static void perform_child_maintenance(void)
 static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
-    apr_wait_t status;
+    apr_exit_why exitwhy;
+    int status;
     apr_proc_t pid;
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        ap_wait_or_timeout(&status, &pid, pconf);
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
         
         if (pid.pid != -1) {
-            ap_process_child_status(&pid, status);
+            ap_process_child_status(&pid, exitwhy, status);
             /* non-fatal death... note that it's gone in the child table and
              * clean out the status table. */
             child_slot = -1;

@@ -124,7 +124,7 @@ void ap_reclaim_child_processes(int terminate)
                 continue;
 
             proc.pid = pid;
-            waitret = apr_proc_wait(&proc, NULL, APR_NOWAIT);
+            waitret = apr_proc_wait(&proc, NULL, NULL, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
                 MPM_NOTE_CHILD_KILLED(i);
                 continue;
@@ -196,7 +196,8 @@ void ap_reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
+void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
+                        apr_pool_t *p)
 {
     apr_status_t rv;
 
@@ -204,7 +205,7 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
     }
-    rv = apr_proc_wait_all_procs(ret, status, APR_NOWAIT, p);
+    rv = apr_proc_wait_all_procs(ret, exitcode, status, APR_NOWAIT, p);
     if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;
@@ -213,7 +214,7 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
         return;
     }
 #ifdef NEED_WAITPID
-    if ((ret = reap_children(status)) > 0) {
+    if ((ret = reap_children(exitcode, status)) > 0) {
         return;
     }
 #endif
@@ -224,16 +225,16 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
 #endif /* AP_MPM_WANT_WAIT_OR_TIMEOUT */
 
 #ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
-void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
+void ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 {
-    int signum = WTERMSIG(status);
+    int signum = status;
     const char *sigdesc = apr_signal_get_description(signum);
 
     /* Child died... if it died due to a fatal error,
         * we should simply bail out.
         */
-    if ((WIFEXITED(status)) &&
-        WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
+    if ((APR_PROC_CHECK_EXIT(why)) &&
+        (status == APEXIT_CHILDFATAL)) {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
                         "Child %ld returned a Fatal error..." APR_EOL_STR
                         "Apache is exiting!",
@@ -241,7 +242,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
         exit(APEXIT_CHILDFATAL);
     }
 
-    if (WIFSIGNALED(status)) {
+    if (APR_PROC_CHECK_SIGNALED(why)) {
         switch (signum) {
         case SIGTERM:
         case SIGHUP:
@@ -249,8 +250,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
         case SIGKILL:
             break;
         default:
-#ifdef WCOREDUMP
-            if (WCOREDUMP(status)) {
+            if (APR_PROC_CHECK_CORE_DUMP(why)) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d), "
@@ -258,9 +258,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
                              (long)pid->pid, sigdesc, signum,
                              ap_coredump_dir);
             }
-            else
-#endif
-            {
+            else {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d)",

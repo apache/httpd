@@ -125,7 +125,8 @@ void ap_reclaim_child_processes(int terminate);
  * @param p The pool to allocate out of
  */
 #ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
-void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
+void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret, 
+                        apr_pool_t *p);
 #endif
 
 /**
@@ -135,7 +136,7 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
  * @param status The status returned from ap_wait_or_timeout
  */
 #ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
-void ap_process_child_status(apr_proc_t *pid, apr_wait_t status);
+void ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 #endif
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)

@@ -369,7 +369,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
    Systems without a real waitpid sometimes lose a child's exit while waiting
    for another.  Search through the scoreboard for missing children.
  */
-int reap_children(apr_wait_t *status)
+int reap_children(int *exitcode, apr_exit_why_e *status)
 {
     int n, pid;
 
@@ -379,7 +379,8 @@ int reap_children(apr_wait_t *status)
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(n), SERVER_DEAD, NULL);
 	    /* just mark it as having a successful exit status */
-	    memset(status, 0, sizeof(apr_wait_t));
+            *status = APR_PROC_EXIT;
+            *exitcode = 0;
 	    return(pid);
 	}
     }
@@ -1171,18 +1172,19 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
-	apr_wait_t status;
+        apr_exit_why_e exitwhy;
+	int status;
         /* this is a memory leak, but I'll fix it later. */
 	apr_proc_t pid;
 
-        ap_wait_or_timeout(&status, &pid, pconf);
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
 
 	/* XXX: if it takes longer than 1 second for all our children
 	 * to start up and get into IDLE state then we may spawn an
 	 * extra child
 	 */
 	if (pid.pid != -1) {
-	    ap_process_child_status(&pid, status);
+	    ap_process_child_status(&pid, exitwhy, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    ap_sync_scoreboard_image();
 	    child_slot = find_child_by_pid(&pid);
