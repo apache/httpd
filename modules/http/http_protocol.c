@@ -1417,6 +1417,7 @@ request_rec *ap_read_request(conn_rec *conn)
                ? &r->server->keep_alive_timeout
                : &r->server->timeout);
 
+    ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
     ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
 
     /* Get the request... */
@@ -2227,6 +2228,84 @@ static void fixup_vary(request_rec *r)
 
 AP_DECLARE(void) ap_send_http_header(request_rec *r)
 {
+}
+
+struct content_length_ctx {
+    ap_bucket_brigade *saved;
+};
+
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
+                                                              ap_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    struct content_length_ctx *ctx;
+    apr_status_t rv;
+    ap_bucket *e;
+
+    ctx = f->ctx;
+    if (!ctx) { /* first time through */
+        /* We won't compute a content length if one of the following is true:
+         * . subrequest
+         * . HTTP/0.9
+         * . status HTTP_NOT_MODIFIED or HTTP_NO_CONTENT
+         * . HEAD
+         * . content length already computed
+         * . can be chunked
+         * . body already chunked
+         * Much of this should correspond to checks in ap_set_keepalive().
+         */
+        if (r->assbackwards 
+            || r->status == HTTP_NOT_MODIFIED 
+            || r->status == HTTP_NO_CONTENT
+            || r->header_only
+            || apr_table_get(r->headers_out, "Content-Length")
+            || r->proto_num == HTTP_VERSION(1,1)
+            || ap_find_last_token(f->r->pool,
+                                  apr_table_get(r->headers_out,
+                                                "Transfer-Encoding"),
+                                  "chunked")) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, b);
+        }
+
+        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(struct content_length_ctx));
+    }
+
+    if (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b))) {
+        apr_ssize_t content_length = 0;
+
+        if (ctx->saved) {
+            AP_BRIGADE_CONCAT(ctx->saved, b);
+            b = ctx->saved;
+        }
+
+        AP_BRIGADE_FOREACH(e, b) {
+            if (!AP_BUCKET_IS_EOS(e)) {
+                if (e->length >= 0) {
+                    content_length += e->length;
+                }
+                else {
+                    const char *ignored;
+                    apr_ssize_t length;
+                    
+                    rv = ap_bucket_read(e, &ignored, &length, 1);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
+                    content_length += e->length;
+                }
+            }
+        }
+
+        ap_set_content_length(r, content_length);
+        return ap_pass_brigade(f->next, b);
+    }
+
+    /* save the brigade; we can't pass any data to the next
+     * filter until we have the entire content length
+     */
+    ap_save_brigade(f, &ctx->saved, &b);
+    return APR_SUCCESS;
 }
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
