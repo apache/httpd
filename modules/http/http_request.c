@@ -101,6 +101,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     int error_index = ap_index_of_response(type);
     char *custom_response = ap_response_code_string(r, error_index);
     int recursive_error = 0;
+    request_rec *r_1st_err = r;
 
     if (type == AP_FILTER_ERROR) {
         return;
@@ -120,10 +121,9 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     if (r->status != HTTP_OK) {
         recursive_error = type;
 
-        while (r->prev && (r->prev->status != HTTP_OK))
-            r = r->prev;        /* Get back to original error */
+        while (r_1st_err->prev && (r_1st_err->prev->status != HTTP_OK))
+            r_1st_err = r_1st_err->prev;  /* Get back to original error */
 
-        type = r->status;
         custom_response = NULL; /* Do NOT retry the custom thing! */
     }
 
@@ -198,7 +198,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
                         custom_response);
         }
     }
-    ap_send_error_response(r, recursive_error);
+    ap_send_error_response(r_1st_err, recursive_error);
 }
 
 static void check_pipeline_flush(request_rec *r)
