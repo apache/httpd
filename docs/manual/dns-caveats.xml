@@ -3,61 +3,63 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <manualpage metafile="dns-caveats.xml.meta">
-  
+
   <title>Issues Regarding DNS and Apache</title>
-  
+
   <summary>
-    <p>This page could be summarized with the statement: don't require Apache 
-    to use DNS for any parsing of the configuration files. If Apache has to 
-    use DNS to parse the configuration files then your server may be subject 
-    to reliability problems (it might not boot), or denial and theft of 
-    service attacks (including users able to steal hits from other users).</p>
+    <p>This page could be summarized with the statement: don't
+    configure Apache in such a way that it relies on DNS resolution
+    for parsing of the configuration files. If Apache requires DNS
+    resolution to parse the configuration files then your server
+    may be subject to reliability problems (ie. it might not boot),
+    or denial and theft of service attacks (including users able
+    to steal hits from other users).</p>
   </summary>
-  
+
   <section id="example">
     <title>A Simple Example</title>
-    
+
     <example>
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </example>
-    
-    <p>In order for Apache to function properly it absolutely needs
+
+    <p>In order for Apache to function properly, it absolutely needs
     to have two pieces of information about each virtual host: the
-    <directive module="core">ServerName</directive>
-    and at least one IP address that the server responds to. This
+    <directive module="core">ServerName</directive> and at least one
+    IP address that the server will bind and respond to. The above
     example does not include the IP address, so Apache must use DNS
     to find the address of <code>www.abc.dom</code>. If for some
     reason DNS is not available at the time your server is parsing
     its config file, then this virtual host <strong>will not be
-    configured</strong>. It won't be able to respond to any hits to
-    this virtual host (prior to Apache version 1.2 the server would
-    not even boot).</p>
-    
+    configured</strong>. It won't be able to respond to any hits
+    to this virtual host (prior to Apache version 1.2 the server
+    would not even boot).</p>
+
     <p>Suppose that <code>www.abc.dom</code> has address 10.0.0.1.
     Then consider this configuration snippet:</p>
-    
+
     <example>
       &lt;VirtualHost 10.0.0.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </example>
-    
-    <p>Now Apache needs to use reverse DNS to find the
+
+    <p>This time Apache needs to use reverse DNS to find the
     <code>ServerName</code> for this virtualhost. If that reverse
     lookup fails then it will partially disable the virtualhost
     (prior to Apache version 1.2 the server would not even boot).
     If the virtual host is name-based then it will effectively be
     totally disabled, but if it is IP-based then it will mostly
-    work. However if Apache should ever have to generate a full URL
-    for the server which includes the server name then it will fail
-    to generate a valid URL.</p>
-    
-    <p>Here is a snippet that avoids both of these problems.</p>
-    
+    work. However, if Apache should ever have to generate a full
+    URL for the server which includes the server name, then it will
+    fail to generate a valid URL.</p>
+
+    <p>Here is a snippet that avoids both of these problems:</p>
+
     <example>
       &lt;VirtualHost 10.0.0.1&gt; <br />
       ServerName www.abc.dom <br />
@@ -66,23 +68,23 @@
       &lt;/VirtualHost&gt;
     </example>
   </section>
-  
+
   <section id="denial">
     <title>Denial of Service</title>
-    
-    <p>There are (at least) two forms that denial of service can
-    come in. If you are running a version of Apache prior to
+
+    <p>There are (at least) two forms that denial of service
+    can come in. If you are running a version of Apache prior to
     version 1.2 then your server will not even boot if one of the
     two DNS lookups mentioned above fails for any of your virtual
     hosts. In some cases this DNS lookup may not even be under your
-    control. For example, if <code>abc.dom</code> is one of your
-    customers and they control their own DNS then they can force
-    your (pre-1.2) server to fail while booting simply by deleting
-    the <code>www.abc.dom</code> record.</p>
-    
+    control; for example, if <code>abc.dom</code> is one of your
+    customers and they control their own DNS, they can force your
+    (pre-1.2) server to fail while booting simply by deleting the
+    <code>www.abc.dom</code> record.</p>
+
     <p>Another form is far more insidious. Consider this
     configuration snippet:</p>
-    
+
     <example>
       &lt;VirtualHost www.abc.dom&gt; <br />
       &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
@@ -94,7 +96,7 @@
       &nbsp;&nbsp;DocumentRoot /www/def <br />
       &lt;/VirtualHost&gt;
     </example>
-    
+
     <p>Suppose that you've assigned 10.0.0.1 to
     <code>www.abc.dom</code> and 10.0.0.2 to
     <code>www.def.dom</code>. Furthermore, suppose that
@@ -105,7 +107,7 @@
     10.0.0.1. Since they control their own DNS you can't stop them
     from pointing the <code>www.def.dom</code> record wherever they
     wish.</p>
-    
+
     <p>Requests coming in to 10.0.0.1 (including all those where
     users typed in URLs of the form
     <code>http://www.abc.dom/whatever</code>) will all be served by
@@ -115,10 +117,10 @@
     serve it. A rough document describing this <a
     href="vhosts/details.html">is available</a>.</p>
   </section>
-  
+
   <section id="main">
     <title>The "main server" Address</title>
-    
+
     <p>The addition of <a href="vhosts/name-based.html">name-based
     virtual host support</a> in Apache 1.1 requires Apache to know
     the IP address(es) of the host that httpd is running on. To get
@@ -128,7 +130,7 @@
     (which should return the same as typing "hostname" at the
     command prompt). Then it performs a DNS lookup on this address.
     At present there is no way to avoid this lookup.</p>
-    
+
     <p>If you fear that this lookup might fail because your DNS
     server is down then you can insert the hostname in
     <code>/etc/hosts</code> (where you probably already have it so
@@ -137,7 +139,7 @@
     event that DNS fails. Depending on what OS you are using this
     might be accomplished by editing <code>/etc/resolv.conf</code>,
     or maybe <code>/etc/nsswitch.conf</code>.</p>
-    
+
     <p>If your server doesn't have to perform DNS for any other
     reason then you might be able to get away with running Apache
     with the <code>HOSTRESORDER</code> environment variable set to
@@ -146,60 +148,60 @@
     <module>mod_env</module> to control the environment. It's best 
     to consult the man pages or FAQs for your OS.</p>
   </section>
-  
+
   <section id="tips">
     <title>Tips to Avoid These Problems</title>
-    
+
     <ul>
       <li>
         use IP addresses in 
         <directive module="core">VirtualHost</directive>
       </li>
-    
+
       <li>
         use IP addresses in 
         <directive module="mpm_common">Listen</directive>
       </li>
-    
+
       <li>
         ensure all virtual hosts have an explicit
         <directive module="core">ServerName</directive>
       </li>
-    
+
       <li>create a <code>&lt;VirtualHost _default_:*&gt;</code>
       server that has no pages to serve</li>
     </ul>
   </section>
-  
+
   <section id="appendix">
     <title>Appendix: Future Directions</title>
-    
+
     <p>The situation regarding DNS is highly undesirable. For
     Apache 1.2 we've attempted to make the server at least continue
     booting in the event of failed DNS, but it might not be the
-    best we can do. In any event requiring the use of explicit IP
+    best we can do. In any event, requiring the use of explicit IP
     addresses in configuration files is highly undesirable in
     today's Internet where renumbering is a necessity.</p>
-    
+
     <p>A possible work around to the theft of service attack
     described above would be to perform a reverse DNS lookup on the
-    ip address returned by the forward lookup and compare the two
-    names. In the event of a mismatch the virtualhost would be
+    IP address returned by the forward lookup and compare the two
+    names -- in the event of a mismatch, the virtualhost would be
     disabled. This would require reverse DNS to be configured
     properly (which is something that most admins are familiar with
     because of the common use of "double-reverse" DNS lookups by
     FTP servers and TCP wrappers).</p>
-    
-    <p>In any event it doesn't seem possible to reliably boot a
+
+    <p>In any event, it doesn't seem possible to reliably boot a
     virtual-hosted web server when DNS has failed unless IP
     addresses are used. Partial solutions such as disabling
     portions of the configuration might be worse than not booting
     at all depending on what the webserver is supposed to
     accomplish.</p>
-    
+
     <p>As HTTP/1.1 is deployed and browsers and proxies start
     issuing the <code>Host</code> header it will become possible to
-    avoid the use of IP-based virtual hosts entirely. In this event
+    avoid the use of IP-based virtual hosts entirely. In this case,
     a webserver has no requirement to do DNS lookups during
     configuration. But as of March 1997 these features have not
     been deployed widely enough to be put into use on critical
