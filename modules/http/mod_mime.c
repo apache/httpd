@@ -506,7 +506,8 @@ static content_type *analyze_ct(request_rec *r, char *s)
     cp++;
     mp = cp;
 
-    for (; *cp != ';' && *cp != '\0'; cp++);
+    for (; *cp != ';' && *cp != '\0'; cp++)
+        continue;
     ctp->subtype = apr_pstrndup(p, mp, cp - mp);
     ctp->subtype = zap_sp(ctp->subtype);
     if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0') ||
