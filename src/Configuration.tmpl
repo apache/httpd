@@ -8,7 +8,7 @@
 # or an existing one modified. This will also most likely require some minor
 # changes to Configure to recognize those changes.
 
-# There are 4 types of lines here:
+# There are 5 types of lines here:
 
 # '#' comments, distinguished by having a '#' as the first non-blank character
 #
@@ -20,6 +20,11 @@
 # Module selection lines, distinguished by having 'Module' at the front.
 # These list the configured modules, in priority order (highest priority
 # first).  They're down at the bottom.
+#
+# Optional module selection lines, distinguished by having `%Module'
+# at the front.  These specify a module that is to be compiled in (but
+# not enabled).  The AddModule directive can be used to enable such a
+# module.  By default no such modules are defined.
 
 
 ################################################################

@@ -226,7 +226,7 @@ typedef struct module_struct {
  */
 
 #define MODULE_MAGIC_NUMBER 19961007
-#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, 0, __FILE__, NULL
+#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
  * data
@@ -249,6 +249,9 @@ char *server_root_relative (pool *p, char *fname);
 /* Finally, the hook for dynamically loading modules in... */
 
 void add_module (module *m);
+int add_named_module (char *name);
+void clear_module_list ();
+char *find_module_name (module *m);
 
 #ifdef CORE_PRIVATE
 
@@ -285,5 +288,5 @@ int find_types (request_rec *);	/* identify MIME type */
 int run_fixups (request_rec *);	/* poke around for other metainfo, etc.... */
 int invoke_handler (request_rec *);     
 int log_transaction (request_rec *r);
-     
+
 #endif

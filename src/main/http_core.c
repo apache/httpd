@@ -751,6 +751,19 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
+const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
+{
+    if (add_named_module (arg))
+        return NULL;
+    return "required module not found";
+}
+
+const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
+{
+    clear_module_list ();
+    return NULL;
+}
+
 const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* This one's pretty generic... */
@@ -1129,6 +1142,9 @@ command_rec core_cmds[] = {
       "a port number or a numeric IP address and a port number"},
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, NULL },
+{ "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,
+  "the name of a module" },
+{ "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, NULL },
 { NULL },
 };
 

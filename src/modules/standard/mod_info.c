@@ -235,8 +235,7 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 int display_info(request_rec *r) {
 	module *modp = NULL;
 	char buf[256];
-    extern char *module_names[];
-    char **names = module_names;
+	char *name;
 	command_rec *cmd=NULL;
 	handler_rec *hand=NULL;
 	server_rec *serv = r->server;
@@ -277,8 +276,9 @@ int display_info(request_rec *r) {
 		mod_info_cfg_access = mod_info_load_config(r->pool,buf);
 		if(!r->args) {
 			rputs("<tt><a href=\"#server\">Server Settings</a>, ",r);
-			for(modp = top_module, names=module_names; modp; modp = modp->next, names++) {
-				sprintf(buf,"<a href=\"#%s\">%s</a>",*names,*names);
+			for(modp = top_module; modp; modp = modp->next) {
+			        name=find_module_name (modp);
+				sprintf(buf,"<a href=\"#%s\">%s</a>",name,name);
 				rputs(buf, r);
 				if(modp->next) rputs(", ",r);
 			}
@@ -312,9 +312,10 @@ int display_info(request_rec *r) {
 			rputs(buf,r);
 		}
 		rputs("<hr><dl>",r);
-		for(modp = top_module, names=module_names; modp; modp = modp->next, names++) {
-			if(!r->args || !strcasecmp(*names,r->args)) {	
-				sprintf(buf,"<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",*names,*names);
+		for(modp = top_module; modp; modp = modp->next) {
+		        name=find_module_name (modp);
+			if(!r->args || !strcasecmp(name,r->args)) {	
+				sprintf(buf,"<dt><a name=\"%s\"><strong>Module Name:</strong> <font size=+1><tt>%s</tt></a></font>\n",name,name);
 				rputs(buf,r);
 				rputs("<dt><strong>Content-types affected:</strong>",r);	
 				hand = modp->handlers;
@@ -392,8 +393,9 @@ int display_info(request_rec *r) {
 		}
 		if(!modp && r->args && strcasecmp(r->args,"server")) rputs("<b>No such module</b>\n",r);
 	} else {
-		for(modp = top_module; modp; modp = modp->next, names++) {
-			rputs(*names,r);
+		for(modp = top_module; modp; modp = modp->next) {
+		        name=find_module_name (modp);
+			rputs(name,r);
 			if(modp->next) rputs("<br>",r);
 		}	
 	}	

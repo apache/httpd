@@ -83,7 +83,10 @@ DEF_Explain
  * of modules which control just about all of the server operation.
  */
 
+/* num_modules is the number of currently active modules.  */
 static int num_modules = 0;    
+/* total_modules is the number of modules linked in.  */
+static int total_modules = 0;
 module *top_module = NULL;
     
 typedef int (*handler)(request_rec *);
@@ -119,14 +122,14 @@ set_module_config (void *conf_vector, module *m, void *val)
 void *
 create_empty_config (pool *p)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * num_modules);
+   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * total_modules);
    return (void *)conf_vector;
 }
 
 void *
 create_default_per_dir_config (pool *p)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * (num_modules+DYNAMIC_MODULE_LIMIT));
+   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * (total_modules+DYNAMIC_MODULE_LIMIT));
    module *modp;
 
    for (modp = top_module; modp; modp = modp->next) {
@@ -141,7 +144,7 @@ create_default_per_dir_config (pool *p)
 void *
 merge_per_dir_configs (pool *p, void *base, void *new)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * num_modules);
+   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * total_modules);
    void **base_vector = (void **) base;
    void **new_vector = (void **) new;
    module *modp;
@@ -162,7 +165,7 @@ merge_per_dir_configs (pool *p, void *base, void *new)
 void *
 create_server_config (pool *p, server_rec *s)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * (num_modules+DYNAMIC_MODULE_LIMIT));
+   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * (total_modules+DYNAMIC_MODULE_LIMIT));
    module *modp;
 
    for (modp = top_module; modp; modp = modp->next) {
@@ -371,20 +374,77 @@ void add_module (module *m)
 	exit(1);
     }
 
-    m->next = top_module;
-    top_module = m;
-    m->module_index = num_modules++;
+    if (m->next == NULL) {
+        m->next = top_module;
+	top_module = m;
+    }
+    if (m->module_index == -1) {
+	m->module_index = num_modules++;
+    }
 }
 
 void setup_prelinked_modules ()
 {
-    extern module *prelinked_modules[];
-    module **m = prelinked_modules;
+    extern module *prelinked_modules[], *preloaded_modules[];
+    module **m;
+
+    /* First, set all module indices, and init total_modules.  */
+    total_modules = 0;
+    for (m = preloaded_modules; *m; ++m, ++total_modules) {
+        (*m)->module_index = total_modules;
+    }
+
+    for (m = prelinked_modules; *m; ++m) {
+        add_module (*m);
+    }
+}
+
+char *find_module_name (module *m)
+{
+    extern char *preloaded_module_names[];
+
+    if (m->module_index >= 0 && m->module_index < total_modules)
+      return preloaded_module_names[m->module_index];
+    return NULL;
+}
+
+/* Add a named module.  Returns 1 if module found, 0 otherwise.  */
+int add_named_module (char *name)
+{
+    extern module *preloaded_modules[];
+    extern char *preloaded_module_names[];
+    int i;
+
+    for (i = 0; preloaded_module_names[i]; ++i) {
+        if (strcmp (preloaded_module_names[i], name) == 0) {
+	    /* Only add modules that are not already enabled.  */
+	    if (preloaded_modules[i]->next == NULL) {
+	        add_module (preloaded_modules[i]);
+	    }
+	    return 1;
+	}
+    }
+
+    return 0;
+}
+
+/* Clear the internal list of modules, in preparation for starting
+   over.  */
+void clear_module_list ()
+{
+    module **m = &top_module;
+    module **next_m;
 
     while (*m) {
-        add_module (*m);
-	++m;
+	next_m = &((*m)->next);
+	*m = NULL;
+	m = next_m;
     }
+
+    num_modules = 0;
+
+    /* This is required; so we add it always.  */
+    add_named_module ("core");
 }
 
 /*****************************************************************

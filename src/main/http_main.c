@@ -341,11 +341,12 @@ static void lingering_close (int sd, server_rec *server_conf)
 
 void usage(char *bin)
 {
-    fprintf(stderr,"Usage: %s [-d directory] [-f file] [-v] [-h]\n",bin);
+    fprintf(stderr,"Usage: %s [-d directory] [-f file] [-v] [-h] [-l]\n",bin);
     fprintf(stderr,"-d directory : specify an alternate initial ServerRoot\n");
     fprintf(stderr,"-f file : specify an alternate ServerConfigFile\n");
     fprintf(stderr,"-v : show version number\n");
     fprintf(stderr,"-h : list directives\n");
+    fprintf(stderr,"-l : list modules\n");
     exit(1);
 }
 
@@ -1865,6 +1866,16 @@ void standalone_main(int argc, char **argv)
 
 } /* standalone_main */
 
+void show_modules()
+{
+    extern char *preloaded_module_names[];
+    int t;
+
+    printf ("Compiled-in modules:\n");
+    for (t = 0; preloaded_module_names[t]; ++t)
+      printf ("  %s\n", preloaded_module_names[t]);
+}
+
 extern char *optarg;
 extern int optind;
 
@@ -1895,7 +1906,7 @@ main(int argc, char *argv[])
     strcpy (server_root, HTTPD_ROOT);
     strcpy (server_confname, SERVER_CONFIG_FILE);
 
-    while((c = getopt(argc,argv,"Xd:f:vh")) != -1) {
+    while((c = getopt(argc,argv,"Xd:f:vhl")) != -1) {
         switch(c) {
           case 'd':
             strcpy (server_root, optarg);
@@ -1908,6 +1919,9 @@ main(int argc, char *argv[])
             exit(0);
           case 'h':
 	    show_directives();
+	    exit(0);
+	  case 'l':
+	    show_modules();
 	    exit(0);
 	  case 'X':
 	    ++one_process;	/* Weird debugging mode. */
