@@ -68,7 +68,7 @@ struct ap_listen_rec {
 /* more stuff here, like which protocol is bound to the port */
 };
 
-ap_listen_rec *ap_listeners;
+extern ap_listen_rec *ap_listeners;
 
 void ap_listen_pre_config(void);
 int ap_listen_open(process_rec *process, unsigned port);
