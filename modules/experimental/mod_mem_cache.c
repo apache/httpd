@@ -186,7 +186,6 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 
 static int create_entity(cache_handle **hp, const char *type, char *key, apr_size_t len) 
 {
-    apr_status_t rv;
     cache_object_t *obj;
     cache_handle *h;
 
@@ -250,6 +249,8 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
     apr_lock_acquire(sconf->lock);
     apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
     apr_lock_release(sconf->lock);
+
+    return OK;
 }
 
 static int open_entity(cache_handle **hp, const char *type, char *key) 
@@ -362,7 +363,6 @@ static int read_body(cache_handle *h, apr_bucket_brigade *bb)
 
 static int write_headers(cache_handle *h, request_rec *r, cache_info *info)
 {
-    apr_size_t len;
     cache_object_t *obj = (cache_object_t*) h->cache_obj;
     if (info->date) {
         obj->info.date = info->date;
