@@ -65,6 +65,8 @@ extern "C" {
 
 #include "httpd.h"
 #include "util_xml.h"
+#include "ap_hooks.h"
+#include "apr_hash.h"
 
 #include <limits.h>     /* for INT_MAX */
 
@@ -375,6 +377,32 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 /* --------------------------------------------------------------------
 **
+** DAV PLUGINS
+*/
+
+/* ### docco ... */
+
+AP_DECLARE_HOOK(int, get_resource, (request_rec *r, const char *root_dir,
+                                    const char *workspace))
+AP_DECLARE_HOOK(int, set_lock_hooks, (request_rec *r))
+AP_DECLARE_HOOK(int, set_propdb_hooks, (request_rec *r))
+AP_DECLARE_HOOK(int, set_vsn_hooks, (request_rec *r))
+AP_DECLARE_HOOK(int, find_liveprop, (const char *ns_uri, const char *name,
+                                     struct dav_hooks_liveprop **hooks))
+AP_DECLARE_HOOK(void, insert_all_liveprops, (const dav_resource *resource,
+                                             int insvalue, ap_hash_t *ns_map,
+                                             ap_text_header *phdr))
+
+#define DAV_KEY_RESOURCE        "dav-resource"
+#define DAV_KEY_LOCK_HOOKS      "dav-lock-hooks"
+#define DAV_KEY_PROPDB_HOOKS    "dav-propdb-hooks"
+#define DAV_KEY_VSN_HOOKS       "dav-vsn-hooks"
+
+
+/* --------------------------------------------------------------------
+**
+** ====> DEPRECATED <====
+**
 ** DYNAMIC EXTENSIONS
 */
 
@@ -428,7 +456,6 @@ enum
     DAV_DYN_TYPE_QUERY_GRAMMAR,	/* DASL search grammar (N per dir) */
     DAV_DYN_TYPE_ACL,		/* ACL handling (1 per dir) */
     DAV_DYN_TYPE_VSN,		/* versioning (1 per dir) */
-    DAV_DYN_TYPE_REPOSITORY,	/* resource repository (1 per dir) */
     DAV_DYN_TYPE_LIVEPROP,	/* live property handler (N per dir) */
 
     DAV_DYN_TYPE_MAX
@@ -533,7 +560,6 @@ int dav_scan_providers(void *ctx,
 #define DAV_AS_HOOKS_QUERY_GRAMMAR(ph)	((void *)((ph)->hooks))
 #define DAV_AS_HOOKS_ACL(ph)		((void *)((ph)->hooks))
 #define DAV_AS_HOOKS_VSN(ph)		((const dav_hooks_vsn *)((ph)->hooks))
-#define DAV_AS_HOOKS_REPOSITORY(ph)	((const dav_hooks_repository *)((ph)->hooks))
 #define DAV_AS_HOOKS_LIVEPROP(ph)	((const dav_hooks_liveprop *)((ph)->hooks))
 
 /* get provider hooks, given a request record */
@@ -544,7 +570,6 @@ const dav_dyn_hooks *dav_get_provider_hooks(request_rec *r, int provider_type);
 #define DAV_GET_HOOKS_QUERY_GRAMMAR(r)  DAV_AS_HOOKS_QUERY_GRAMMAR(dav_get_provider_hooks(r, DAV_DYN_TYPE_QUERY_GRAMMAR))
 #define DAV_GET_HOOKS_ACL(r)            DAV_AS_HOOKS_ACL(dav_get_provider_hooks(r, DAV_DYN_TYPE_ACL))
 #define DAV_GET_HOOKS_VSN(r)            DAV_AS_HOOKS_VSN(dav_get_provider_hooks(r, DAV_DYN_TYPE_VSN))
-#define DAV_GET_HOOKS_REPOSITORY(r)     DAV_AS_HOOKS_REPOSITORY(dav_get_provider_hooks(r, DAV_DYN_TYPE_REPOSITORY))
 #define DAV_GET_HOOKS_LIVEPROP(r)       DAV_AS_HOOKS_LIVEPROP(dav_get_provider_hooks(r, DAV_DYN_TYPE_LIVEPROP))
 
 
@@ -837,12 +862,12 @@ struct dav_hooks_db
 time_t dav_get_timeout(request_rec *r);
 
 /*
-** Opaque, repository-specific information for a lock database.
+** Opaque, provider-specific information for a lock database.
 */
 typedef struct dav_lockdb_private dav_lockdb_private;
 
 /*
-** Opaque, repository-specific information for a lock record.
+** Opaque, provider-specific information for a lock record.
 */
 typedef struct dav_lock_private dav_lock_private;
 
@@ -1355,6 +1380,7 @@ typedef enum {
     DAV_MODE_WRITE_TRUNC,	/* truncate and open for writing */
     DAV_MODE_WRITE_SEEKABLE	/* open for writing; random access */
 } dav_stream_mode;
+
 
 /* --------------------------------------------------------------------
 **

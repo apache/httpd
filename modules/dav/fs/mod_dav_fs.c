@@ -121,7 +121,7 @@ static const command_rec dav_fs_cmds[] =
 
 static void register_hooks(void)
 {
-    /* nothing yet */
+    ap_hook_get_resource(dav_fs_hook_get_resource, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT dav_fs_module =

@@ -197,19 +197,19 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const ap_xml_doc *doc,
 				    dav_lock **lock_request)
 {
-    const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     ap_pool_t *p = r->pool;
     dav_error *err;
     ap_xml_elem *child;
     dav_lock *lock;
-	
+
     if (!dav_validate_root(doc, "lockinfo")) {
 	return dav_new_error(p, HTTP_BAD_REQUEST, 0,
 			     "The request body contains an unexpected "
 			     "XML root element.");
     }
 
-    if ((err = (*hooks->create_lock)(lockdb, resource, &lock)) != NULL) {
+    if ((err = (*lockdb->hooks->create_lock)(lockdb, resource,
+                                             &lock)) != NULL) {
 	return dav_push_error(p, err->status, 0,
 			      "Could not parse the lockinfo due to an "
 			      "internal problem creating a lock structure.",
@@ -319,7 +319,6 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
 			 dav_lockdb *lockdb, dav_lock *lock,
 			 dav_response **response)
 {
-    const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     dav_error *err;
     int depth = lock->depth;
 
@@ -345,7 +344,8 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
     **
     ** Note: this also handles locknull resources
     */
-    if ((err = (*hooks->append_locks)(lockdb, resource, 0, lock)) != NULL) {
+    if ((err = (*lockdb->hooks->append_locks)(lockdb, resource, 0,
+                                              lock)) != NULL) {
 	/* ### maybe add a higher-level description */
 	return err;
     }

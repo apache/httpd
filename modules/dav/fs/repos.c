@@ -2020,13 +2020,6 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs =
 */
 static const dav_dyn_provider dav_dyn_providers_fs[] =
 {
-    /* repository provider */
-    {
-	DAV_FS_PROVIDER_ID,
-        DAV_DYN_TYPE_REPOSITORY,
-        &dav_hooks_repository_fs,
-        NULL
-    },
     /* liveprop provider */
     {
 	DAV_FS_PROVIDER_ID,
@@ -2067,3 +2060,16 @@ const dav_dyn_module dav_dyn_module_default =
 
     dav_dyn_providers_fs
 };
+
+int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
+                             const char *workspace)
+{
+    dav_resource *resource = dav_fs_get_resource(r, root_dir, workspace);
+
+    if (resource == NULL)
+        return DECLINED;
+
+    (void) ap_set_userdata(resource, DAV_KEY_RESOURCE, ap_null_cleanup,
+                           r->pool);
+    return OK;
+}

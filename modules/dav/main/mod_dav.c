@@ -115,7 +115,6 @@ typedef struct {
     dav_dyn_hooks propdb;
     dav_dyn_hooks locks;
     dav_dyn_hooks *liveprop;
-    dav_dyn_hooks repository;
     dav_dyn_hooks vsn;
 } dav_dir_conf;
 
@@ -176,11 +175,6 @@ static void dav_copy_providers(ap_pool_t *p, const char *name, dav_dir_conf *con
 
 	case DAV_DYN_TYPE_VSN:
 	    conf->vsn = hooks;
-	    break;
-
-	case DAV_DYN_TYPE_REPOSITORY:
-	    conf->repository = hooks;
-	    conf->handle_get = DAV_AS_HOOKS_REPOSITORY(&hooks)->handle_get;
 	    break;
 
 	case DAV_DYN_TYPE_LIVEPROP:
@@ -299,14 +293,6 @@ static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
     else
         newconf->vsn = parent->vsn;
 
-    if (child->repository.hooks != NULL)
-        newconf->repository = child->repository;
-    else
-        newconf->repository = parent->repository;
-    newconf->handle_get =
-	newconf->repository.hooks != NULL
-	&& DAV_AS_HOOKS_REPOSITORY(&newconf->repository)->handle_get;
-
     if (child->liveprop != NULL)
         newconf->liveprop = child->liveprop;
     else
@@ -372,10 +358,6 @@ const dav_dyn_hooks *dav_get_provider_hooks(request_rec *r, int provider_type)
 
     case DAV_DYN_TYPE_VSN:
         hooks = &conf->vsn;
-        break;
-
-    case DAV_DYN_TYPE_REPOSITORY:
-        hooks = &conf->repository;
         break;
 
     case DAV_DYN_TYPE_LIVEPROP:
@@ -745,31 +727,29 @@ static int dav_get_overwrite(request_rec *r)
 /* resolve a request URI to a resource descriptor */
 static int dav_get_resource(request_rec *r, dav_resource **res_p)
 {
-    dav_dir_conf *conf;
-    const dav_hooks_repository *repos_hooks;
+    void *data;
 
-    /* Call repository hook to resolve resource */
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
+    /* go look for the resource if it isn't already present */
+    (void) ap_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
+    if (data == NULL) {
+        dav_dir_conf *conf;
+        int rv;
 
-    repos_hooks = DAV_AS_HOOKS_REPOSITORY(&conf->repository);
-    if (repos_hooks == NULL || repos_hooks->get_resource == NULL) {
-	/* ### this should happen at startup rather than per-request */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-                      "No %s has been configured.",
-                      repos_hooks == NULL
-                      ? "repository module"
-                      : "GET handler");
-        return HTTP_INTERNAL_SERVER_ERROR;
+        conf = ap_get_module_config(r->per_dir_config, &dav_module);
+
+        /* have somebody store it into the request's user data... */
+        rv = ap_run_get_resource(r, conf->dir, dav_get_target_selector(r));
+        if (rv == DECLINED) {
+            /* Apache will supply a default error for this. */
+            return HTTP_NOT_FOUND;
+        }
+        else if (rv != OK)
+            return rv;
+
+        (void) ap_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
     }
 
-    *res_p = (*repos_hooks->get_resource)(r, conf->dir,
-                                          dav_get_target_selector(r));
-    if (*res_p == NULL) {
-	/* Apache will supply a default error for this. */
-        return HTTP_NOT_FOUND;
-    }
-
+    *res_p = data;
     return OK;
 }
 
@@ -3281,3 +3261,16 @@ module MODULE_VAR_EXPORT dav_module =
     dav_handlers,		/* handlers */
     register_hooks,             /* register hooks */
 };
+
+AP_HOOK_STRUCT(
+    AP_HOOK_LINK(get_resource)
+    AP_HOOK_LINK(set_lock_hooks)
+    AP_HOOK_LINK(set_propdb_hooks)
+    AP_HOOK_LINK(set_vsn_hooks)
+    AP_HOOK_LINK(find_liveprop)
+    AP_HOOK_LINK(insert_all_liveprops)
+    )
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, get_resource,
+                            (request_rec *r, const char *root_dir,
+                             const char *workspace),
+                            (r, root_dir, workspace), DECLINED);
