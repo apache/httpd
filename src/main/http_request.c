@@ -1065,28 +1065,38 @@ void process_request_internal(request_rec *r)
             return;
         }
         if (some_auth_required(r)) {
-            if ((access_status = check_user_id(r)) != 0) {
-                decl_die(access_status, "check user.  No user file?", r);
+            if (((access_status = check_user_id(r)) != 0) || !auth_type(r)) {
+                decl_die(access_status, auth_type(r)
+		    ? "check user.  No user file?"
+		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if ((access_status = check_auth(r)) != 0) {
-                decl_die(access_status, "check access.  No groups file?", r);
+            if (((access_status = check_auth(r)) != 0) || !auth_type(r)) {
+                decl_die(access_status, auth_type(r)
+		    ? "check access.  No groups file?"
+		    : "perform authentication. AuthType not set!", r);
                 return;
             }
         }
         break;
     case SATISFY_ANY:
-        if ((access_status = check_access(r)) != 0) {
+        if (((access_status = check_access(r)) != 0) || !auth_type(r)) {
             if (!some_auth_required(r)) {
-                decl_die(access_status, "check access", r);
+                decl_die(access_status, auth_type(r)
+		    ? "check access"
+		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if ((access_status = check_user_id(r)) != 0) {
-                decl_die(access_status, "check user.  No user file?", r);
+            if (((access_status = check_user_id(r)) != 0) || !auth_type(r)) {
+                decl_die(access_status, auth_type(r)
+		    ? "check user.  No user file?"
+		    : "perform authentication. AuthType not set!", r);
                 return;
             }
-            if ((access_status = check_auth(r)) != 0) {
-                decl_die(access_status, "check access.  No groups file?", r);
+            if (((access_status = check_auth(r)) != 0) || !auth_type(r)) {
+                decl_die(access_status, auth_type(r)
+		    ? "check access.  No groups file?"
+		    : "perform authentication. AuthType not set!", r);
                 return;
             }
         }

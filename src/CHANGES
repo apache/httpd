@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Give a more informative error when no AuthType is set.
+     [Lars Eilebrecht]
+
   *) Remove strtoul() use from mod_proxy because it isn't available
      on all platforms.   [Marc Slemko] PR#1214
 
