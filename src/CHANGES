@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Log an error if we encounter a malformed "require" directive 
+     in mod_auth if we know that we know that no other module can
+     deal with it.  [Marc Slemko]
+
   *) Remove ap_private_extern method of hiding conflicting symbols
      on the NEXT platform because it is not correct for all versions,
      and the versions for which it is correct are unknown.
