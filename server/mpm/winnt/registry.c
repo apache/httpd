@@ -1,3 +1,60 @@
+/* ====================================================================
+ * Copyright (c) 1995-1999 The Apache Group.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the Apache Group
+ *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *
+ * 4. The names "Apache Server" and "Apache Group" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache"
+ *    nor may "Apache" appear in their names without prior written
+ *    permission of the Apache Group.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the Apache Group
+ *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Group and was originally based
+ * on public domain software written at the National Center for
+ * Supercomputing Applications, University of Illinois, Urbana-Champaign.
+ * For more information on the Apache Group and the Apache HTTP server
+ * project, please see <http://www.apache.org/>.
+ *
+ */
+
 /*
  * Functions to handle interacting with the Win32 registry
  */
@@ -24,9 +81,9 @@
  * 
  * HKLM\Software\[Vendor]\[Software]\[Version]\ServerRoot
  */
-
-#include <windows.h>
-#include <stdio.h>
+#include "os.h"
+//#include <windows.h>
+//#include <stdio.h>
 
 #include "httpd.h"
 #include "http_log.h"
@@ -180,11 +237,11 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
 
     rv = RegCloseKey(hKey);
     if (rv != ERROR_SUCCESS) {
-    do_error(rv, "RegCloseKey HKLM\\%s", key);
-	if (retval == 0) {
-	    /* Keep error status from RegQueryValueEx, if any */
-	    retval = -4;  
-	}
+        do_error(rv, "RegCloseKey HKLM\\%s", key);
+        if (retval == 0) {
+            /* Keep error status from RegQueryValueEx, if any */
+            retval = -4;  
+        }
     }
 
     return retval < 0 ? retval : nSize;
@@ -197,7 +254,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
  * dir will contain an empty string), or -1 if there was
  * an error getting the key.
  */
-
+#if 0
 int ap_registry_get_server_root(ap_context_t *p, char *dir, int size)
 {
     int rv;
@@ -209,7 +266,19 @@ int ap_registry_get_server_root(ap_context_t *p, char *dir, int size)
 
     return (rv < -1) ? -1 : 0;
 }
+#else
+int ap_registry_get_server_root(ap_context_t *p, char **buf)
+{
+    int rv;
 
+    rv = ap_registry_get_key_int(p, REGKEY, "ServerRoot", NULL, 0, buf);
+    if (rv < 0) {
+        *buf = NULL;
+    }
+
+    return (rv < -1) ? -1 : 0;
+}
+#endif
 char *ap_get_service_key(char *service_name)
 {
     char *key = malloc(strlen(SERVICEKEYPRE) +
@@ -220,7 +289,7 @@ char *ap_get_service_key(char *service_name)
 
     return(key);
 }
-
+#if 0
 int ap_registry_get_service_conf(ap_context_t *p, char *dir, int size, char *service_name)
 {
     int rv;
@@ -234,6 +303,21 @@ int ap_registry_get_service_conf(ap_context_t *p, char *dir, int size, char *ser
     free(key);
     return (rv < -1) ? -1 : 0;
 }
+#else
+int ap_registry_get_service_conf(ap_context_t *p, char **buf, char *service_name)
+{
+    int rv;
+    char *key = ap_get_service_key(service_name);
+
+    rv = ap_registry_get_key_int(p, key, "ConfPath", NULL, 0, buf);
+    if (rv < 0) {
+        *buf = NULL;
+    }
+
+    free(key);
+    return (rv < -1) ? -1 : 0;
+}
+#endif
 
 /**********************************************************************
  * The rest of this file deals with storing keys or values in the registry
