@@ -628,6 +628,14 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *des
 AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp);
 
 /**
+ * Read one char from open configfile_t, increase line number upon LF 
+ * @param cfp The file to read from
+ * @return the character read
+ * @deffunc int ap_cfg_getc(ap_configfile_t *cfp)
+ */
+AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp);
+
+/**
  * Detach from open ap_configfile_t, calling the close handler
  * @param cfp The file to close
  * @return 1 on sucess, 0 on failure
