@@ -1,4 +1,4 @@
-Changes with Apache 2.0.33-dev
+Changes with Apache 2.0.33
 
   *) rename apr_exploded_time_t to apr_time_exp_t (as per renames pending)
      [Thom May <thom@planetarytramp.net>]
