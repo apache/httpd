@@ -169,16 +169,24 @@ Open issues:
 	ap_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 
       Public API functions (e.g., palloc)
-	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Dean, Roy, Jim
+	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: +1: Brian, Dean, Roy, Paul, Jim
+	appri_xxx: +1: Brian, Roy, Paul, Jim
 	httpd_xxx: +1: Ken
 	apint_xxx: +1: Ralf (int = internal)
+    
+      Alternate proposal:
+      Everything should be ap_: +1 Dean
+	Why?  Because it's far easier to type, and damn it, I
+	type these things far too much.  Just using apapi_ for
+	the few hours I did while writing apapi_vformatter is
+	making me puke.  So many extra characters, so much wasted
+	screen width, and keystrokes. -Dean
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
