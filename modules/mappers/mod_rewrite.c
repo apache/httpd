@@ -215,7 +215,9 @@
 #define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
 /* max line length (incl.\n) in text rewrite maps */
+#ifndef REWRITE_MAX_TXT_MAP_LINE
 #define REWRITE_MAX_TXT_MAP_LINE 1024
+#endif
 
 /*
  * +-------------------------------------------------------+
