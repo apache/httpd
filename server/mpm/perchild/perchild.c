@@ -111,7 +111,6 @@ static const char *ap_pid_fname=NULL;
 API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int curr_child_num=0;
-static int socket_num=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -132,7 +131,6 @@ typedef struct {
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
-typedef struct socket_info_t socket_info_t;
 
 /* Tables used to determine the user and group each child process should
  * run as.  The hash table is used to correlate a server name with a child
@@ -1333,7 +1331,6 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
     curr_child_num = 0;
-    socket_num = 0;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
@@ -1687,7 +1684,6 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
         ug->uid = atoi(u);
         ug->gid = atoi(g); 
     }
-    socket_num++;
     return NULL;
 }
 
@@ -1759,8 +1755,6 @@ static void *perchild_create_config(apr_pool_t *p, server_rec *s)
     perchild_server_conf *c =
     (perchild_server_conf *) apr_pcalloc(p, sizeof(perchild_server_conf));
 
-    c->sockname = ap_server_root_relative(p, DEFAULT_PERCHILD_SOCKET);
-    c->fullsockname = NULL;
     c->sd = -1;
     return c;
 }
