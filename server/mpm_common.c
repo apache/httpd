@@ -132,6 +132,7 @@ void ap_reclaim_child_processes(int terminate)
                 MPM_NOTE_CHILD_KILLED(i);
                 continue;
             }
+
             ++not_dead_yet;
             switch (tries) {
             case 1:     /*  16ms */
@@ -139,21 +140,25 @@ void ap_reclaim_child_processes(int terminate)
             case 3:     /* 344ms */
             case 4:     /*  16ms */
                 break;
+
             case 5:     /*  82ms */
             case 6:     /* 344ms */
             case 7:     /* 1.4sec */
                 /* ok, now it's being annoying */
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
                              0, ap_server_conf,
-                   "child process %ld still did not exit, sending a SIGTERM",
+                             "child process %ld still did not exit, "
+                             "sending a SIGTERM",
                              (long)pid);
                 kill(pid, SIGTERM);
                 break;
+
             case 8:     /*  6 sec */
                 /* die child scum */
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
                              0, ap_server_conf,
-                   "child process %ld still did not exit, sending a SIGKILL",
+                             "child process %ld still did not exit, "
+                             "sending a SIGKILL",
                              (long)pid);
 #ifndef BEOS
                 kill(pid, SIGKILL);
@@ -167,6 +172,7 @@ void ap_reclaim_child_processes(int terminate)
                 kill_thread(pid);
 #endif
                 break;
+
             case 9:     /* 14 sec */
                 /* gave it our best shot, but alas...  If this really
                  * is a child we are trying to kill and it really hasn't
@@ -176,13 +182,16 @@ void ap_reclaim_child_processes(int terminate)
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
                              0, ap_server_conf,
                              "could not make child process %ld exit, "
-                             "attempting to continue anyway", (long)pid);
+                             "attempting to continue anyway",
+                             (long)pid);
                 break;
             }
         }
+
 #if APR_HAS_OTHER_CHILD
         apr_proc_other_child_check();
 #endif
+
         if (!not_dead_yet) {
             /* nothing left to wait for */
             break;
@@ -208,19 +217,23 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
     }
+
     rv = apr_proc_wait_all_procs(ret, exitcode, status, APR_NOWAIT, p);
     if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;
     }
+
     if (APR_STATUS_IS_CHILD_DONE(rv)) {
         return;
     }
+
 #ifdef NEED_WAITPID
     if ((ret = reap_children(exitcode, status)) > 0) {
         return;
     }
 #endif
+
     apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     ret->pid = -1;
     return;
@@ -245,14 +258,17 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
         if (status == APEXIT_CHILDSICK) {
             return status;
         }
+
         if (status == APEXIT_CHILDFATAL) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO,
+                         0, ap_server_conf,
                          "Child %" APR_OS_PROC_T_FMT
                          " returned a Fatal error..." APR_EOL_STR
                          "Apache is exiting!",
                          pid->pid);
             return APEXIT_CHILDFATAL;
         }
+
         return 0;
     }
 
@@ -263,6 +279,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
         case AP_SIG_GRACEFUL:
         case SIGKILL:
             break;
+
         default:
             if (APR_PROC_CHECK_CORE_DUMP(why)) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
@@ -300,7 +317,7 @@ void ap_sock_disable_nagle(apr_socket_t *s)
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf,
-                    "setsockopt: (TCP_NODELAY)");
+                     "setsockopt: (TCP_NODELAY)");
     }
 }
 #endif
@@ -314,9 +331,11 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getpwnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_NOERRNO, 0, NULL,
+                     "%s: bad user name %s", ap_server_argv0, name);
         exit(1);
     }
+
     return (ent->pw_uid);
 }
 #endif
@@ -330,8 +349,11 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getgrnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad group name %s", ap_server_argv0, name);                                               exit(1);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_NOERRNO, 0, NULL,
+                     "%s: bad group name %s", ap_server_argv0, name);
+        exit(1);
     }
+
     return (ent->gr_gid);
 }
 #endif
@@ -351,14 +373,16 @@ int initgroups(const char *name, gid_t basegid)
 
     groups[index++] = basegid;
 
-    while (index < NGROUPS_MAX && ((g = getgrent()) != NULL))
+    while (index < NGROUPS_MAX && ((g = getgrent()) != NULL)) {
         if (g->gr_gid != basegid) {
             char **names;
 
-            for (names = g->gr_mem; *names != NULL; ++names)
+            for (names = g->gr_mem; *names != NULL; ++names) {
                 if (!strcmp(*names, name))
                     groups[index++] = g->gr_gid;
+            }
         }
+    }
 
     endgrent();
 
@@ -378,9 +402,10 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     apr_file_pipe_timeout_set((*pod)->pod_in, 0);
     (*pod)->p = p;
-    
+
     apr_sockaddr_info_get(&(*pod)->sa, ap_listeners->bind_addr->hostname,
                           APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
 
@@ -398,9 +423,11 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod)
     if ((rv == APR_SUCCESS) && (len == 1)) {
         return APR_SUCCESS;
     }
+
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     return AP_NORESTART;
 }
 
@@ -417,6 +444,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     return rv;
 }
 
@@ -429,10 +457,12 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
     do {
         rv = apr_file_write(pod->pod_out, &char_of_death, &one);
     } while (APR_STATUS_IS_EINTR(rv));
+
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "write pipe_of_death");
     }
+
     return rv;
 }
 
@@ -441,25 +471,25 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod)
  * socket, because it provides a alternate way to unblock an accept() when
  * the pod is used.
  */
-
 static apr_status_t dummy_connection(ap_pod_t *pod)
 {
     apr_status_t rv;
     apr_socket_t *sock;
     apr_pool_t *p;
-    
+
     /* create a temporary pool for the socket.  pconf stays around too long */
     rv = apr_pool_create(&p, pod->p);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    
+
     rv = apr_socket_create(&sock, pod->sa->family, SOCK_STREAM, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "get socket to connect to listener");
         return rv;
     }
+
     /* on some platforms (e.g., FreeBSD), the kernel won't accept many
      * queued connections before it starts blocking local connects...
      * we need to keep from blocking too long and instead return an error,
@@ -473,19 +503,19 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         apr_socket_close(sock);
         return rv;
     }
-    
-    rv = apr_connect(sock, pod->sa);    
+
+    rv = apr_connect(sock, pod->sa);
     if (rv != APR_SUCCESS) {
         int log_level = APLOG_WARNING;
 
         if (APR_STATUS_IS_TIMEUP(rv)) {
-            /* probably some server processes bailed out already and there 
-             * is nobody around to call accept and clear out the kernel 
+            /* probably some server processes bailed out already and there
+             * is nobody around to call accept and clear out the kernel
              * connection queue; usually this is not worth logging
              */
             log_level = APLOG_DEBUG;
         }
-	
+
         ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
                      "connect to listener");
     }
@@ -504,6 +534,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     return dummy_connection(pod);
 }
 
@@ -515,6 +546,7 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
     for (i = 0; i < num && rv == APR_SUCCESS; i++) {
         rv = pod_signal_internal(pod);
     }
+
     if (rv == APR_SUCCESS) {
         for (i = 0; i < num && rv == APR_SUCCESS; i++) {
              rv = dummy_connection(pod);
@@ -536,8 +568,9 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
     }
 
     if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
+        return "PidFile directive not allowed in <VirtualHost>";
     }
+
     ap_pid_fname = arg;
     return NULL;
 }
@@ -551,6 +584,7 @@ const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
+
     ap_scoreboard_fname = arg;
     return NULL;
 }
@@ -558,6 +592,7 @@ const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_LOCKFILE
 const char *ap_lock_fname = NULL;
+
 const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
                                 const char *arg)
 {
@@ -573,6 +608,7 @@ const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
 int ap_max_requests_per_child = 0;
+
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
                                     const char *arg)
 {
@@ -589,6 +625,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
 char ap_coredump_dir[MAX_STRING_LEN];
+
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg)
 {
@@ -602,9 +639,10 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
     fname = ap_server_root_relative(cmd->pool, arg);
     if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS)
         || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname,
-			   " does not exist or is not a directory", NULL);
+        return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname,
+                           " does not exist or is not a directory", NULL);
     }
+
     apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
 }
@@ -612,9 +650,10 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
+
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
-						     void *dummy,
-						     const char *arg)
+                                                     void *dummy,
+                                                     const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -634,6 +673,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
         ap_accept_lock_mech = APR_LOCK_FCNTL;
     }
 #endif
+
     /* perchild can't use SysV sems because the permissions on the accept
      * mutex can't be set to allow all processes to use the mutex and
      * at the same time keep all users from being able to dink with the
@@ -650,8 +690,8 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
     }
 #endif
     else {
-        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
-                           "ones for this platform and MPM are: default"
+        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; "
+                           "valid ones for this platform and MPM are: default"
 #if APR_HAS_FLOCK_SERIALIZE
                            ", flock"
 #endif
