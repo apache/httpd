@@ -1092,7 +1092,7 @@ static int update_nonce_count(request_rec *r)
 /* The hash part of the nonce is a SHA-1 hash of the time, realm, opaque,
  * and our secret.
  */
-static void gen_nonce_hash(char *hash, const char *time, const char *opaque,
+static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 			   const server_rec *server,
 			   const digest_config_rec *conf)
 {
@@ -1106,7 +1106,7 @@ static void gen_nonce_hash(char *hash, const char *time, const char *opaque,
 			 strlen(server->server_hostname));
     ap_SHA1Update_binary(&ctx, (const unsigned char *) &server->port,
 			 sizeof(server->port));
-    ap_SHA1Update_binary(&ctx, (const unsigned char *) time, strlen(time));
+    ap_SHA1Update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
     if (opaque)
 	ap_SHA1Update_binary(&ctx, (const unsigned char *) opaque,
 			     strlen(opaque));
@@ -1602,7 +1602,7 @@ static int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *conf;
     digest_header_rec *resp;
-    request_rec       *main;
+    request_rec       *mainreq;
     conn_rec          *conn = r->connection;
     const char        *t;
     int                res;
@@ -1622,10 +1622,10 @@ static int authenticate_digest_user(request_rec *r)
 
     /* get the client response and mark */
 
-    main = r;
-    while (main->main != NULL)  main = main->main;
-    while (main->prev != NULL)  main = main->prev;
-    resp = (digest_header_rec *) ap_get_module_config(main->request_config,
+    mainreq = r;
+    while (mainreq->main != NULL)  mainreq = mainreq->main;
+    while (mainreq->prev != NULL)  mainreq = mainreq->prev;
+    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
 						      &digest_module);
     resp->needed_auth = 1;
 
