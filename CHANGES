@@ -2,6 +2,10 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add --enable-pie flag to configure, to build httpd as a Position
+     Independent Executable where supported (GCC/binutils).
+     [Joe Orton]
+
   *) proxy_balancer: Add in load-balancing via weighted traffic
      byte count. [Jim Jagielski]
 
