@@ -1962,7 +1962,7 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 
     bufin = (const unsigned char *) bufcoded;
 
-    while (nprbytes > 0) {
+    while (nprbytes > 4) {
 	*(bufout++) =
 	    (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
 	*(bufout++) =
@@ -1973,13 +1973,15 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 	nprbytes -= 4;
     }
 
-    if (nprbytes & 03) {
-	if (pr2six[bufin[-2]] > 63)
-	    nbytesdecoded -= 2;
-	else
-	    nbytesdecoded -= 1;
+    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
+    if (nprbytes > 1) {
+	*(bufout++) =
+	    (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
     }
-    bufplain[nbytesdecoded] = '\0';
+    if (nprbytes > 2) {
+	*(bufout++) =
+	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
+    }
 #else /*CHARSET_EBCDIC*/
     bufin = (const unsigned char *) bufcoded;
     while (pr2six[os_toascii[(unsigned char)*(bufin++)]] <= 63);
@@ -1991,7 +1993,7 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 
     bufin = (const unsigned char *) bufcoded;
 
-    while (nprbytes > 0) {
+    while (nprbytes > 4) {
 	*(bufout++) = os_toebcdic[
 	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[os_toascii[bufin[1]]] >> 4)];
 	*(bufout++) = os_toebcdic[
@@ -2002,14 +2004,20 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 	nprbytes -= 4;
     }
 
-    if (nprbytes & 03) {
-	if (pr2six[os_toascii[bufin[-2]]] > 63)
-	    nbytesdecoded -= 2;
-	else
-	    nbytesdecoded -= 1;
+    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
+    if (nprbytes > 1) {
+	*(bufout++) = os_toebcdic[
+	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[os_toascii[bufin[1]]] >> 4)];
     }
-    bufplain[nbytesdecoded] = '\0';
+    if (nprbytes > 2) {
+	*(bufout++) = os_toebcdic[
+	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[os_toascii[bufin[2]]] >> 2)];
+    }
 #endif /*CHARSET_EBCDIC*/
+
+    nbytesdecoded -= (4 - nprbytes) & 3;
+    bufplain[nbytesdecoded] = '\0';
+
     return bufplain;
 }
 
@@ -2020,7 +2028,7 @@ API_EXPORT(char *) ap_uuencode(pool *a, char *string)
 { 
     int i, len = strlen(string); 
     char *p; 
-    char *encoded = (char *) ap_palloc(a, (len+2) / 3 * 4); 
+    char *encoded = (char *) ap_palloc(a, ((len+2) / 3 * 4) + 1); 
  
     p = encoded; 
 #ifndef CHARSET_EBCDIC
