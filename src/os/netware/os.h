@@ -122,7 +122,7 @@ typedef int gid_t;
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 #define mktemp(s) tmpnam(s)
-#define _getch(c) getch(c)
+#define _getch getch
 
 #define opendir_411(p) os_opendir(p)
 #define opendir(p) os_opendir(p)
