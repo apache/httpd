@@ -435,6 +435,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     
     /* If the file has an extension and it is not .com and not .exe and
      * we've been instructed to search the registry, then do so.
+     * Let apr_proc_create do all of the .bat/.cmd dirty work.
      */
     if (ext && (!strcasecmp(ext,".exe") || !strcasecmp(ext,".com")
                 || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
@@ -450,7 +451,10 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                       == INTERPRETER_SOURCE_REGISTRY_STRICT);
         interpreter = get_interpreter_from_win32_registry(r->pool, ext,
                                                           strict);
-        if (!interpreter) {
+        if (interpreter) {
+            *type = APR_PROGRAM_PATH;
+        }
+        else {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
                  strict ? "No ExecCGI verb found for files of type '%s'."
                         : "No ExecCGI or Open verb found for files of type '%s'.", 
@@ -490,6 +494,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 while (isspace(*interpreter)) {
                     ++interpreter;
                 }
+                *type = APR_PROGRAM_PATH;
             }
         }
         else {
