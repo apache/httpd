@@ -343,7 +343,7 @@ installdev :: FORCE
 	-copy $(subst /,\,$(APR))\arch\netware\include\*.h  $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\Apache2\lib\*.*
-+	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\Apache2\lib\*.*
+	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\Apache2\lib\*.*
     
 #
 # Any specialized rules here
