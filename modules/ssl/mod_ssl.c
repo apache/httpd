@@ -229,6 +229,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
      * Create SSL context
      */
     myConnConfigSet(c, sslconn);
+    sslconn->log_level = sc->nLogLevel;
 
     /*
      * Immediately stop processing if SSL is disabled for this connection

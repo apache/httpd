@@ -146,10 +146,14 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    ssl_log(conn->base_server, SSL_LOG_INFO,
-            "Connection to child %d closed with %s shutdown (server %s, client %s)",
-            conn->id, cpType, ssl_util_vhostid(conn->pool, conn->base_server),
-            conn->remote_ip != NULL ? conn->remote_ip : "unknown");
+    if (SSLConnLogApplies(sslconn, SSL_LOG_INFO)) {
+        ssl_log(conn->base_server, SSL_LOG_INFO,
+                "Connection to child %d closed with %s shutdown"
+                "(server %s, client %s)",
+                conn->id, cpType,
+                ssl_util_vhostid(conn->pool, conn->base_server),
+                conn->remote_ip != NULL ? conn->remote_ip : "unknown");
+    }
 
     /* deallocate the SSL connection */
     SSL_free(ssl);
@@ -242,7 +246,7 @@ int ssl_hook_Translate(request_rec *r)
     /*
      * Log information about incoming HTTPS requests
      */
-    if (ap_is_initial_req(r))
+    if (ap_is_initial_req(r) && SSLConnLogApplies(sslconn, SSL_LOG_INFO)) {
         ssl_log(r->server, SSL_LOG_INFO,
                 "%s HTTPS request received for child %d (server %s)",
                 r->connection->keepalives <= 0 ?
@@ -251,6 +255,7 @@ int ssl_hook_Translate(request_rec *r)
                                  r->connection->keepalives+1),
                 r->connection->id,
                 ssl_util_vhostid(r->pool, r->server));
+    }
 
     /* SetEnvIf ssl-*-shutdown flags can only be per-server,
      * so they won't change across keepalive requests
