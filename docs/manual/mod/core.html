@@ -2393,7 +2393,9 @@ Access controls which are applied in this way are effective for
 desired.</STRONG> If you wish to apply access controls only to
 specific methods, while leaving other methods unprotected, then place
 the <CODE>require</CODE> statement into a <A
-HREF="#limit">&lt;Limit&gt;</A> section<P><HR>
+HREF="#limit">&lt;Limit&gt;</A> section<P>
+<P>See also <A HREF="#satisfy">Satisfy</A> and <A HREF="mod_access.html">mod_access</A>.
+<HR>
 
 <H2><A NAME="resourceconfig">ResourceConfig directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt ResourceConfig} directive&gt; -->
@@ -2599,7 +2601,8 @@ they either pass the host restriction or enter a valid username and
 password. This can be used to password restrict an area, but to let
 clients from particular addresses in without prompting for a password.
 <P>
-See also <A HREF="mod_access.html">mod_access</A>.
+See also <A HREF="#require">require</A> and 
+<A HREF="mod_access.html">mod_access</A>.
 
 <P><HR>
 
