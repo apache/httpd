@@ -922,7 +922,7 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
  * @param r The current request
  * @return The status of the current request
  */
-int ap_invoke_handler(request_rec *);
+int ap_invoke_handler(request_rec *r);
 
 /* for mod_perl */
 
