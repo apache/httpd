@@ -226,6 +226,7 @@
 typedef struct {
     const char *name;              /* the name of the map */
     const char *datafile;          /* filename for map data files */
+    const char *dbmtype;           /* dbm type for dbm map data files */
     const char *checkfile;         /* filename to check for map existence */
     int   type;                    /* the type of the map */
     apr_file_t *fpin;               /* in  file pointer for program maps */
@@ -408,7 +409,8 @@ static char *expand_tildepaths(request_rec *r, char *uri);
     /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
 static char *lookup_map_txtfile(request_rec *r, const char *file, char *key);
-static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key);
+static char *lookup_map_dbmfile(request_rec *r, const char *file, 
+                                const char *dbmtype, char *key);
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key);
 
