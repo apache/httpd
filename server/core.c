@@ -2960,8 +2960,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
 
         if (APR_STATUS_IS_EAGAIN(rv)) {
             *readbytes = 0;
-            e = apr_bucket_immortal_create("", 0);
-            APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         }
         else if (rv != APR_SUCCESS) {
