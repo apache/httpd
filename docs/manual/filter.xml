@@ -53,8 +53,8 @@
       <dt>INCLUDES</dt>
       <dd>Server-Side Includes processing by <module>mod_include</module></dd>
       <dt>DEFLATE</dt>
-      <dd>Compress output before sending it to the client using <module
-      >mod_include</module></dd>
+      <dd>Compress output before sending it to the client using
+	  <module>mod_deflate</module></dd>
     </dl>
 
     <p>In addition, the module <module>mod_ext_filter</module> allows
