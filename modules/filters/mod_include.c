@@ -1899,18 +1899,12 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             switch (current->token.type) {
             case token_string:
-                if (current->token.value[0] != '\0') {
-                    strncat(current->token.value, " ",
-                         /* XXX sizeof() use is FUBAR */
-                         sizeof(current->token.value)
-                            - strlen(current->token.value) - 1);
-                }
-                strncat(current->token.value, new->token.value,
-                         /* XXX sizeof() use is FUBAR */
-                         sizeof(current->token.value)
-                            - strlen(current->token.value) - 1);
-                /* XXX sizeof() use is FUBAR */
-                current->token.value[sizeof(current->token.value) - 1] = '\0';
+                current->token.value = apr_pstrcat(r->pool,
+                                                   current->token.value,
+                                                   current->token.value[0] ? " " : "",
+                                                   new->token.value,
+                                                   NULL);
+                                                   
                 break;
             case token_eq:
             case token_ne:
