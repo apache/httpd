@@ -1745,20 +1745,10 @@ static const char *get_canned_error_string(int status,
 
 static void reset_filters(request_rec *r)
 {
-    ap_filter_t *f = r->output_filters;
-
-    while (f) {
-        if (!strcasecmp(f->frec->name, "CORE") ||
-            !strcasecmp(f->frec->name, "CONTENT_LENGTH") ||
-            !strcasecmp(f->frec->name, "HTTP_HEADER")) {
-            f = f->next;
-            continue;
-        }
-        else {
-            ap_remove_output_filter(f);
-            f = f->next;
-        }
-    }
+    r->output_filters = NULL;
+    ap_add_output_filter("CORE", NULL, r, r->connection);
+    ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
+    ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
 }
 
 /* We should have named this send_canned_response, since it is used for any
