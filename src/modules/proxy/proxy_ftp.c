@@ -500,7 +500,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     note_cleanups_for_socket(pool, sock);
 
     if (conf->recv_buffer_size) {
-      if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
+      if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		     (const char *) &conf->recv_buffer_size, sizeof(int))
 	  == -1) {
 	proxy_log_uerror("setsockopt", "(SO_RCVBUF)",
