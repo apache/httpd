@@ -176,7 +176,7 @@ void ap_lingering_close(conn_rec *c)
      * to the peer.
      */
     
-    if (ap_bshutdown(c->client, 1) != APR_SUCCESS || c->aborted) {
+    if (apr_shutdown(c->client_socket, 1) != APR_SUCCESS || c->aborted) {
         ap_bclose(c->client);
         return;
     }
@@ -186,9 +186,9 @@ void ap_lingering_close(conn_rec *c)
      */
     
     start = apr_now();
-    timeout = MAX_SECS_TO_LINGER;
+    timeout = MAX_SECS_TO_LINGER * APR_USEC_PER_SEC;
     for (;;) {
-        ap_bsetopt(c->client, BO_TIMEOUT, &timeout);
+        apr_setsocketopt(c->client_socket, BO_TIMEOUT, timeout);
         rc = ap_bread(c->client, dummybuf, sizeof(dummybuf),
                       &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
@@ -198,7 +198,7 @@ void ap_lingering_close(conn_rec *c)
         if (timeout >= MAX_SECS_TO_LINGER) break;
 
         /* figure out the new timeout */
-        timeout = MAX_SECS_TO_LINGER - timeout;
+        timeout = (MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC;
     }
 
     ap_bclose(c->client);
