@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.7 -->
 <name>prefork</name>
 <description>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </description>
@@ -98,6 +98,10 @@
 
 <directivesynopsis location="mpm_common">
 <name>MaxClients</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>MaxMemFree</name>
 </directivesynopsis>
 
 <directivesynopsis location="mpm_common">
