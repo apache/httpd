@@ -93,20 +93,20 @@ LINK32=link.exe
 # Name "xmlparse - Win32 Debug"
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\hashtable.c"
+SOURCE=".\hashtable.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlparse.c"
+SOURCE=".\xmlparse.c"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlparse.def"
+SOURCE=".\xmlparse.def"
 # PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\lib\expat-lite\xmlparse.h"
+SOURCE=".\xmlparse.h"
 # End Source File
 # End Target
 # End Project

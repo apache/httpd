@@ -40,8 +40,8 @@ RSC=rc.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -64,8 +64,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -119,27 +119,27 @@ SOURCE=.\os\win32\os.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\lib\aputil\apu_private.hw
+SOURCE=.\srclib\apr-util\apu_private.hw
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 # Begin Custom Build
-InputPath=.\lib\aputil\apu_private.hw
+InputPath=.\srclib\apr-util\apu_private.hw
 
-".\lib\aputil\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\lib\aputil\apu_private.hw .\lib\aputil\apu_private.h >nul 
-	echo Created aputil apu_private.h from apu_private.hw 
+".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
+	echo Created apr-util apu_private.h from apu_private.hw 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 # Begin Custom Build
-InputPath=.\lib\aputil\apu_private.hw
+InputPath=.\srclib\apr-util\apu_private.hw
 
-".\lib\aputil\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\lib\aputil\apu_private.hw .\lib\aputil\apu_private.h >nul 
-	echo Created aputil apu_private.h from apu_private.hw 
+".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
+	echo Created apr-util apu_private.h from apu_private.hw 
 	
 # End Custom Build
 
@@ -148,15 +148,15 @@ InputPath=.\lib\aputil\apu_private.hw
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\gen_test_char.exe
+SOURCE=.\server\gen_test_char.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 # Begin Custom Build - Generating test_char.h
-InputPath=.\main\gen_test_char.exe
+InputPath=.\server\gen_test_char.exe
 
-".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_test_char.exe >.\main\test_char.h 
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h 
 	echo Generated test_char.h from gen_test_char.exe 
 	
 # End Custom Build
@@ -164,10 +164,10 @@ InputPath=.\main\gen_test_char.exe
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 # Begin Custom Build - Generating test_char.h
-InputPath=.\main\gen_test_char.exe
+InputPath=.\server\gen_test_char.exe
 
-".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_test_char.exe >.\main\test_char.h 
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h 
 	echo Generated test_char.h from gen_test_char.exe 
 	
 # End Custom Build
@@ -177,15 +177,15 @@ InputPath=.\main\gen_test_char.exe
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\gen_uri_delims.exe
+SOURCE=.\server\gen_uri_delims.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 # Begin Custom Build - Generating uri_delims.h
-InputPath=.\main\gen_uri_delims.exe
+InputPath=.\server\gen_uri_delims.exe
 
-".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
 	echo Generated uri_delims.h from gen_uri_delims.exe 
 	
 # End Custom Build
@@ -193,10 +193,10 @@ InputPath=.\main\gen_uri_delims.exe
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 # Begin Custom Build - Generating uri_delims.h
-InputPath=.\main\gen_uri_delims.exe
+InputPath=.\server\gen_uri_delims.exe
 
-".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
 	echo Generated uri_delims.h from gen_uri_delims.exe 
 	
 # End Custom Build
@@ -206,11 +206,11 @@ InputPath=.\main\gen_uri_delims.exe
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\test_char.h
+SOURCE=.\server\test_char.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\uri_delims.h
+SOURCE=.\server\uri_delims.h
 # End Source File
 # End Group
 # Begin Group "ap_buckets"
@@ -294,7 +294,7 @@ SOURCE=.\include\ap_sha1.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\lib\aputil\apu_dbm.c
+SOURCE=.\srclib\apr-util\apu_dbm.c
 # End Source File
 # End Group
 # Begin Group "httpd"
@@ -302,7 +302,7 @@ SOURCE=.\lib\aputil\apu_dbm.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\main\http_config.c
+SOURCE=.\server\http_config.c
 # End Source File
 # Begin Source File
 
@@ -310,7 +310,7 @@ SOURCE=.\include\http_config.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_connection.c
+SOURCE=.\server\http_connection.c
 # End Source File
 # Begin Source File
 
@@ -318,7 +318,7 @@ SOURCE=.\include\http_connection.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_core.c
+SOURCE=.\server\http_core.c
 # End Source File
 # Begin Source File
 
@@ -326,7 +326,7 @@ SOURCE=.\include\http_core.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_log.c
+SOURCE=.\server\http_log.c
 # End Source File
 # Begin Source File
 
@@ -338,7 +338,7 @@ SOURCE=.\include\http_main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_protocol.c
+SOURCE=.\server\http_protocol.c
 # End Source File
 # Begin Source File
 
@@ -346,7 +346,7 @@ SOURCE=.\include\http_protocol.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_request.c
+SOURCE=.\server\http_request.c
 # End Source File
 # Begin Source File
 
@@ -354,7 +354,7 @@ SOURCE=.\include\http_request.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\http_vhost.c
+SOURCE=.\server\http_vhost.c
 # End Source File
 # Begin Source File
 
@@ -370,47 +370,47 @@ SOURCE=.\include\httpd.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_access.c
+SOURCE=.\modules\aaa\mod_access.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_actions.c
+SOURCE=.\modules\mappers\mod_actions.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_alias.c
+SOURCE=.\modules\mappers\mod_alias.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_asis.c
+SOURCE=.\modules\generators\mod_asis.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_auth.c
+SOURCE=.\modules\aaa\mod_auth.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_autoindex.c
+SOURCE=.\modules\generators\mod_autoindex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_cgi.c
+SOURCE=.\modules\generators\mod_cgi.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_dir.c
+SOURCE=.\modules\mappers\mod_dir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_env.c
+SOURCE=.\modules\metadata\mod_env.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_imap.c
+SOURCE=.\modules\mappers\mod_imap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_include.c
+SOURCE=.\modules\filters\mod_include.c
 # End Source File
 # Begin Source File
 
@@ -418,27 +418,27 @@ SOURCE=.\os\win32\mod_isapi.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_log_config.c
+SOURCE=.\modules\loggers\mod_log_config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_mime.c
+SOURCE=.\modules\http\mod_mime.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_negotiation.c
+SOURCE=.\modules\mappers\mod_negotiation.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_setenvif.c
+SOURCE=.\modules\metadata\mod_setenvif.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_so.c
+SOURCE=.\modules\mappers\mod_so.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\standard\mod_userdir.c
+SOURCE=.\modules\mappers\mod_userdir.c
 # End Source File
 # End Group
 # Begin Group "util"
@@ -446,7 +446,7 @@ SOURCE=.\modules\standard\mod_userdir.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\main\rfc1413.c
+SOURCE=.\server\rfc1413.c
 # End Source File
 # Begin Source File
 
@@ -454,11 +454,11 @@ SOURCE=.\include\rfc1413.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util.c
+SOURCE=.\server\util.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_cfgtree.c
+SOURCE=.\server\util_cfgtree.c
 # End Source File
 # Begin Source File
 
@@ -470,7 +470,7 @@ SOURCE=.\include\util_charset.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_date.c
+SOURCE=.\server\util_date.c
 # End Source File
 # Begin Source File
 
@@ -482,7 +482,7 @@ SOURCE=.\include\util_ebcdic.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_filter.c
+SOURCE=.\server\util_filter.c
 # End Source File
 # Begin Source File
 
@@ -490,7 +490,7 @@ SOURCE=.\include\util_filter.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_md5.c
+SOURCE=.\server\util_md5.c
 # End Source File
 # Begin Source File
 
@@ -498,7 +498,7 @@ SOURCE=.\include\util_md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_script.c
+SOURCE=.\server\util_script.c
 # End Source File
 # Begin Source File
 
@@ -506,7 +506,7 @@ SOURCE=.\include\util_script.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_uri.c
+SOURCE=.\server\util_uri.c
 # End Source File
 # Begin Source File
 
@@ -518,7 +518,7 @@ SOURCE=.\os\win32\util_win32.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\util_xml.c
+SOURCE=.\server\util_xml.c
 # End Source File
 # Begin Source File
 
@@ -538,11 +538,11 @@ SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\listen.c
+SOURCE=.\server\listen.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm.h
+SOURCE=.\server\mpm\winnt\mpm.h
 # End Source File
 # Begin Source File
 
@@ -550,7 +550,7 @@ SOURCE=.\include\mpm_common.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm_default.h
+SOURCE=.\server\mpm\winnt\mpm_default.h
 # End Source File
 # Begin Source File
 
@@ -558,19 +558,19 @@ SOURCE=.\include\mpm_status.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm_winnt.c
+SOURCE=.\server\mpm\winnt\mpm_winnt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm_winnt.h
+SOURCE=.\server\mpm\winnt\mpm_winnt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\registry.c
+SOURCE=.\server\mpm\winnt\registry.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\service.c
+SOURCE=.\server\mpm\winnt\service.c
 # End Source File
 # End Group
 # End Target

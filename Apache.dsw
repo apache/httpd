@@ -171,7 +171,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "aprlib"=".\lib\apr\aprlib.dsp" - Package Owner=<4>
+Project: "aprlib"=".\srclib\apr\aprlib.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -183,46 +183,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "aprlibdll"=".\lib\apr\aprlibdll.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "dftables"=".\lib\pcre\dftables.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "expatlib"=".\lib\expat-lite\expatlib.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
+Project: "aprlibdll"=".\srclib\apr\aprlibdll.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -237,7 +198,46 @@ Package=<4>
 
 ###############################################################################
 
-Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
+Project: "dftables"=".\srclib\pcre\dftables.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "expatlib"=".\srclib\expat-lite\expatlib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_test_char"=".\server\gen_test_char.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gen_uri_delims"=".\server\gen_uri_delims.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -315,7 +315,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_auth_anon"=".\os\win32\mod_auth_anon.dsp" - Package Owner=<4>
+Project: "mod_auth_anon"=".\modules\aaa\mod_auth_anon.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -333,7 +333,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_auth_dbm"=".\os\win32\mod_auth_dbm.dsp" - Package Owner=<4>
+Project: "mod_auth_dbm"=".\modules\aaa\mod_auth_dbm.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -354,7 +354,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_auth_digest"=".\os\win32\mod_auth_digest.dsp" - Package Owner=<4>
+Project: "mod_auth_digest"=".\modules\aaa\mod_auth_digest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -372,7 +372,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_cern_meta"=".\os\win32\mod_cern_meta.dsp" - Package Owner=<4>
+Project: "mod_cern_meta"=".\modules\metadata\mod_cern_meta.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -390,7 +390,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dav"=".\os\win32\mod_dav.dsp" - Package Owner=<4>
+Project: "mod_dav"=".\modules\dav\main\mod_dav.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -408,7 +408,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dav_fs"=".\os\win32\mod_dav_fs.dsp" - Package Owner=<4>
+Project: "mod_dav_fs"=".\modules\dav\fs\mod_dav_fs.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -435,7 +435,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_expires"=".\os\win32\mod_expires.dsp" - Package Owner=<4>
+Project: "mod_expires"=".\modules\metadata\mod_expires.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -453,7 +453,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_file_cache"=".\os\win32\mod_file_cache.dsp" - Package Owner=<4>
+Project: "mod_file_cache"=".\modules\cache\mod_file_cache.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -471,7 +471,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_headers"=".\os\win32\mod_headers.dsp" - Package Owner=<4>
+Project: "mod_headers"=".\modules\metadata\mod_headers.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -489,7 +489,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_info"=".\os\win32\mod_info.dsp" - Package Owner=<4>
+Project: "mod_info"=".\modules\generators\mod_info.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -507,7 +507,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy"=".\os\win32\mod_proxy.dsp" - Package Owner=<4>
+Project: "mod_proxy"=".\modules\proxy\mod_proxy.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -525,7 +525,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_rewrite"=".\os\win32\mod_rewrite.dsp" - Package Owner=<4>
+Project: "mod_rewrite"=".\modules\mappers\mod_rewrite.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -543,7 +543,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_speling"=".\os\win32\mod_speling.dsp" - Package Owner=<4>
+Project: "mod_speling"=".\modules\mappers\mod_speling.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -561,7 +561,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_status"=".\os\win32\mod_status.dsp" - Package Owner=<4>
+Project: "mod_status"=".\modules\generators\mod_status.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -579,7 +579,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_usertrack"=".\os\win32\mod_usertrack.dsp" - Package Owner=<4>
+Project: "mod_usertrack"=".\modules\metadata\mod_usertrack.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
