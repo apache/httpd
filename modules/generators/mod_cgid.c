@@ -127,6 +127,7 @@ static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 
 static apr_pool_t *pcgi; 
 static int total_modules = 0;
+static pid_t daemon_pid;
 
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
@@ -158,6 +159,19 @@ static int is_scriptaliased(request_rec *r)
  */
 #ifndef DEFAULT_CGID_LISTENBACKLOG
 #define DEFAULT_CGID_LISTENBACKLOG 100
+#endif
+
+/* DEFAULT_CONNECT_ATTEMPTS controls how many times we'll try to connect
+ * to the cgi daemon from the thread/process handling the cgi request.
+ * Generally we want to retry when we get ECONNREFUSED since it is
+ * probably because the listen queue is full.  We need to try harder so
+ * the client doesn't see it as a 503 error.
+ *
+ * Set this to 0 to continually retry until the connect works or Apache
+ * terminates.
+ */
+#ifndef DEFAULT_CONNECT_ATTEMPTS
+#define DEFAULT_CONNECT_ATTEMPTS  15
 #endif
 
 typedef struct { 
@@ -596,7 +610,6 @@ static int cgid_server(void *data)
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                       server_rec *main_server) 
 { 
-    pid_t pid; 
     apr_proc_t *procnew;
     void *data;
     int first_time = 0;
@@ -615,18 +628,18 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
 
-        if ((pid = fork()) < 0) {
+        if ((daemon_pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                          "Couldn't spawn cgid daemon process"); 
             /* XXX should we return a failure here ? */
         }
-        else if (pid == 0) {
+        else if (daemon_pid == 0) {
             apr_pool_create(&pcgi, p); 
             cgid_server(main_server);
             exit(-1);
         } 
         procnew = apr_pcalloc(p, sizeof(*procnew));
-        procnew->pid = pid;
+        procnew->pid = daemon_pid;
         procnew->err = procnew->in = procnew->out = NULL;
         apr_pool_note_subprocess(p, procnew, kill_after_timeout);
 #if APR_HAS_OTHER_CHILD
@@ -850,6 +863,58 @@ static apr_status_t close_unix_socket(void *thefd)
     return close(fd);
 }
 
+static int connect_to_daemon(int *sdptr, request_rec *r,
+                             cgid_server_conf *conf)
+{
+    struct sockaddr_un unix_addr;
+    int sd;
+    int connect_tries;
+    apr_interval_time_t sliding_timer;
+
+    memset(&unix_addr, 0, sizeof(unix_addr));
+    unix_addr.sun_family = AF_UNIX;
+    strcpy(unix_addr.sun_path, conf->sockname);
+
+    connect_tries = 0;
+    sliding_timer = 100000; /* 100 milliseconds */
+    while (1) {
+        ++connect_tries;
+        if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
+                                   "unable to create socket to cgi daemon");
+        }
+        if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
+            if (errno == ECONNREFUSED && connect_tries < DEFAULT_CONNECT_ATTEMPTS) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, errno, r,
+                              "connect #%d to cgi daemon failed, sleeping before retry",
+                              connect_tries);
+                close(sd);
+                apr_sleep(sliding_timer);
+                if (sliding_timer < 2 * APR_USEC_PER_SEC) {
+                    sliding_timer *= 2;
+                }
+            }
+            else {
+                close(sd);
+                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, 
+                                       "unable to connect to cgi daemon after multiple tries");
+            }
+        }
+        else {
+            apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
+                                      apr_pool_cleanup_null);
+            break; /* we got connected! */
+        }
+        /* gotta try again, but make sure the cgid daemon is still around */
+        if (kill(daemon_pid, 0) != 0) {
+            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno,
+                                   "cgid daemon is gone; is Apache terminating?");
+        }
+    }
+    *sdptr = sd;
+    return OK;
+}
+
 /**************************************************************** 
  * 
  * Actual cgid handling... 
@@ -865,7 +930,6 @@ static int cgid_handler(request_rec *r)
     int is_included;
     int sd;
     char **env; 
-    struct sockaddr_un unix_addr;
     apr_file_t *tempsock;
     apr_size_t nbytes;
 
@@ -928,21 +992,9 @@ static int cgid_handler(request_rec *r)
     ap_add_cgi_vars(r); 
     env = ap_create_environment(r->pool, r->subprocess_env); 
 
-    if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
-                                   "unable to create socket to cgi daemon");
+    if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
+        return retval;
     }
-    apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
-                              apr_pool_cleanup_null);
-    
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, conf->sockname);
-
-    if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
-                                   "unable to connect to cgi daemon");
-    } 
 
     send_req(sd, r, argv0, env, CGI_REQ); 
 
@@ -1196,7 +1248,6 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     int retval;
     apr_bucket_brigade *bcgi;
     apr_bucket *b;
-    struct sockaddr_un unix_addr;
     apr_file_t *tempsock = NULL;
     cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
                                                   &cgid_module); 
@@ -1204,21 +1255,9 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     add_ssi_vars(r, f->next);
     env = ap_create_environment(r->pool, r->subprocess_env);
 
-    if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
-                                   "unable to create socket to cgi daemon");
+    if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
+        return retval;
     }
-    apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
-                              apr_pool_cleanup_null);
-    
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, conf->sockname);
-
-    if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
-                                   "unable to connect to cgi daemon");
-    } 
 
     SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rc);
     if (rc != APR_SUCCESS) {
