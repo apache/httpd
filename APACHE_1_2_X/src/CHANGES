@@ -1,5 +1,8 @@
 Changes with Apache 1.2.2
-  
+
+  *) Properly treat <files> container like other containers in mod_info.
+     [Marc Slemko] PR#848
+
   *) The proxy didn't treat the "Host:" keyword of the host header as case-
      insensitive.  The proxy would corrupt the first line of a response from
      an HTTP/0.9 server.  [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#813,814
