@@ -517,7 +517,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     const char *ignored;
 
     /* args and service names live in the same pool */
-    mpm_service_set_name(mpm_new_argv->cont, &ignored, argv[0]);
+    mpm_service_set_name(mpm_new_argv->pool, &ignored, argv[0]);
 
     globdat.ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
     globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
@@ -585,7 +585,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         char **cmb_data;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = apr_palloc(mpm_new_argv->cont,
+        cmb_data = apr_palloc(mpm_new_argv->pool,
                               mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
