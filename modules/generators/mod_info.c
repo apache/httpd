@@ -91,7 +91,7 @@
 #include "http_main.h"
 #include "http_protocol.h"
 #include "util_script.h"
-#include "http_conf_globals.h"
+
 #if APR_HAVE_STRINGS_H
 #include <strings.h>
 #endif
