@@ -71,8 +71,7 @@
  */
 
 #include "apr_strings.h"
-#include "apr_md5.h"
-#include "apr_lib.h"
+#include "apr_lib.h"            /* for apr_password_validate */
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -82,7 +81,8 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
-typedef struct auth_config_struct {
+
+typedef struct {
     char *auth_pwfile;
     char *auth_grpfile;
     int auth_authoritative;
@@ -90,12 +90,12 @@ typedef struct auth_config_struct {
 
 static void *create_auth_dir_config(apr_pool_t *p, char *d)
 {
-    auth_config_rec *sec =
-    (auth_config_rec *) apr_pcalloc(p, sizeof(auth_config_rec));
-    sec->auth_pwfile = NULL;	/* just to illustrate the default really */
-    sec->auth_grpfile = NULL;	/* unless you have a broken HP cc */
-    sec->auth_authoritative = 1;	/* keep the fortress secure by default */
-    return sec;
+    auth_config_rec *conf = apr_pcalloc(p, sizeof(*conf));
+
+    conf->auth_pwfile = NULL;	/* just to illustrate the default really */
+    conf->auth_grpfile = NULL;	/* unless you have a broken HP cc */
+    conf->auth_authoritative = 1;	/* keep the fortress secure by default */
+    return conf;
 }
 
 static const char *set_auth_slot(cmd_parms *cmd, void *offset, const char *f, 
@@ -206,8 +206,8 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 
 static int authenticate_basic_user(request_rec *r)
 {
-    auth_config_rec *sec =
-    (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
+    auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                 &auth_module);
     const char *sent_pw;
     char *real_pw;
     apr_status_t invalid_pw;
@@ -216,11 +216,11 @@ static int authenticate_basic_user(request_rec *r)
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
-    if (!sec->auth_pwfile)
+    if (!conf->auth_pwfile)
 	return DECLINED;
 
-    if (!(real_pw = get_pw(r, r->user, sec->auth_pwfile))) {
-	if (!(sec->auth_authoritative))
+    if (!(real_pw = get_pw(r, r->user, conf->auth_pwfile))) {
+	if (!(conf->auth_authoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "user %s not found: %s", r->user, r->uri);
@@ -243,8 +243,8 @@ static int authenticate_basic_user(request_rec *r)
 
 static int check_user_access(request_rec *r)
 {
-    auth_config_rec *sec =
-    (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
+    auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                 &auth_module);
     char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -261,8 +261,8 @@ static int check_user_access(request_rec *r)
 	return (OK);
     reqs = (require_line *) reqs_arr->elts;
 
-    if (sec->auth_grpfile)
-	grpstatus = groups_for_user(r->pool, user, sec->auth_grpfile);
+    if (conf->auth_grpfile)
+	grpstatus = groups_for_user(r->pool, user, conf->auth_grpfile);
     else
 	grpstatus = NULL;
 
@@ -293,7 +293,7 @@ static int check_user_access(request_rec *r)
 		if (apr_table_get(grpstatus, w))
 		    return OK;
 	    }
-	} else if (sec->auth_authoritative) {
+	} else if (conf->auth_authoritative) {
 	    /* if we aren't authoritative, any require directive could be
 	     * valid even if we don't grok it.  However, if we are 
 	     * authoritative, we can warn the user they did something wrong.
@@ -309,7 +309,7 @@ static int check_user_access(request_rec *r)
     if (!method_restricted)
 	return OK;
 
-    if (!(sec->auth_authoritative))
+    if (!(conf->auth_authoritative))
 	return DECLINED;
 
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,

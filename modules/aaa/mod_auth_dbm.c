@@ -70,13 +70,8 @@
  *         no control is passed along.
  */
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_core.h"
-#include "http_log.h"
-#include "http_protocol.h"
-#include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 #include "apr_lib.h"
+
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -93,6 +88,14 @@
 #else
 #include <ndbm.h>
 #endif
+
+#include "httpd.h"
+#include "http_config.h"
+#include "http_core.h"
+#include "http_log.h"
+#include "http_protocol.h"
+#include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
+
 
 /*
  * Module definition information - the part between the -START and -END
@@ -118,17 +121,17 @@ typedef struct {
 
 static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
 {
-    dbm_auth_config_rec *sec
-    = (dbm_auth_config_rec *) apr_pcalloc(p, sizeof(dbm_auth_config_rec));
+    dbm_auth_config_rec *conf = apr_pcalloc(p, sizeof(*conf));
 
-    sec->auth_dbmpwfile = NULL;
-    sec->auth_dbmgrpfile = NULL;
-    sec->auth_dbmauthoritative = 1;	/* fortress is secure by default */
+    conf->auth_dbmpwfile = NULL;
+    conf->auth_dbmgrpfile = NULL;
+    conf->auth_dbmauthoritative = 1;	/* fortress is secure by default */
 
-    return sec;
+    return conf;
 }
 
-static const char *set_dbm_slot(cmd_parms *cmd, void *offset, const char *f, const char *t)
+static const char *set_dbm_slot(cmd_parms *cmd, void *offset,
+                                const char *f, const char *t)
 {
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
@@ -235,9 +238,8 @@ static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile)
 
 static int dbm_authenticate_basic_user(request_rec *r)
 {
-    dbm_auth_config_rec *sec =
-    (dbm_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					      &auth_dbm_module);
+    dbm_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                     &auth_dbm_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
     apr_status_t invalid_pw;
@@ -246,11 +248,11 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
-    if (!sec->auth_dbmpwfile)
+    if (!conf->auth_dbmpwfile)
 	return DECLINED;
 
-    if (!(real_pw = get_dbm_pw(r, r->user, sec->auth_dbmpwfile))) {
-	if (!(sec->auth_dbmauthoritative))
+    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile))) {
+	if (!(conf->auth_dbmauthoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "DBM user %s not found: %s", r->user, r->filename);
@@ -278,9 +280,8 @@ static int dbm_authenticate_basic_user(request_rec *r)
 
 static int dbm_check_auth(request_rec *r)
 {
-    dbm_auth_config_rec *sec =
-    (dbm_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					      &auth_dbm_module);
+    dbm_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                     &auth_dbm_module);
     char *user = r->user;
     int m = r->method_number;
 
@@ -291,7 +292,7 @@ static int dbm_check_auth(request_rec *r)
     const char *t;
     char *w;
 
-    if (!sec->auth_dbmgrpfile)
+    if (!conf->auth_dbmgrpfile)
 	return DECLINED;
     if (!reqs_arr)
 	return DECLINED;
@@ -304,16 +305,16 @@ static int dbm_check_auth(request_rec *r)
 	t = reqs[x].requirement;
 	w = ap_getword_white(r->pool, &t);
 
-	if (!strcmp(w, "group") && sec->auth_dbmgrpfile) {
+	if (!strcmp(w, "group") && conf->auth_dbmgrpfile) {
 	    const char *orig_groups, *groups;
 	    char *v;
 
-	    if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
-		if (!(sec->auth_dbmauthoritative))
+	    if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile))) {
+		if (!(conf->auth_dbmauthoritative))
 		    return DECLINED;
 		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			    "user %s not in DBM group file %s: %s",
-			    user, sec->auth_dbmgrpfile, r->filename);
+			    user, conf->auth_dbmgrpfile, r->filename);
 		ap_note_basic_auth_failure(r);
 		return HTTP_UNAUTHORIZED;
 	    }
@@ -340,7 +341,8 @@ static int dbm_check_auth(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(dbm_authenticate_basic_user, NULL, NULL,
+                          APR_HOOK_MIDDLE);
     ap_hook_auth_checker(dbm_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

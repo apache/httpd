@@ -94,15 +94,18 @@
  * 
  */
 
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
-#include "http_protocol.h"
 #include "http_request.h"
-#include "apr_strings.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
+#include "http_protocol.h"
+
 
 typedef struct anon_auth {
     char *password;
@@ -120,82 +123,79 @@ typedef struct {
 
 } anon_auth_config_rec;
 
+
 static void *create_anon_auth_dir_config(apr_pool_t *p, char *d)
 {
-    anon_auth_config_rec *sec = (anon_auth_config_rec *)
-    apr_pcalloc(p, sizeof(anon_auth_config_rec));
-
-    if (!sec)
-	return NULL;		/* no memory... */
+    anon_auth_config_rec *conf = apr_pcalloc(p, sizeof(*conf));
 
     /* just to illustrate the defaults really. */
-    sec->anon_auth_passwords = NULL;
+    conf->anon_auth_passwords = NULL;
 
-    sec->anon_auth_nouserid = 0;
-    sec->anon_auth_logemail = 1;
-    sec->anon_auth_verifyemail = 0;
-    sec->anon_auth_mustemail = 1;
-    sec->anon_auth_authoritative = 0;
-    return sec;
+    conf->anon_auth_nouserid = 0;
+    conf->anon_auth_logemail = 1;
+    conf->anon_auth_verifyemail = 0;
+    conf->anon_auth_mustemail = 1;
+    conf->anon_auth_authoritative = 0;
+    return conf;
 }
 
 static const char *anon_set_passwd_flag(cmd_parms *cmd,
-				 void *dummy, int arg)
+                                        void *my_config, int arg)
 {
-    anon_auth_config_rec *sec = dummy;
-    sec->anon_auth_mustemail = arg;
+    anon_auth_config_rec *conf = my_config;
+    conf->anon_auth_mustemail = arg;
     return NULL;
 }
 
 static const char *anon_set_userid_flag(cmd_parms *cmd,
-				 void *dummy, int arg)
+                                        void *my_config, int arg)
 {
-    anon_auth_config_rec *sec = dummy;
-    sec->anon_auth_nouserid = arg;
+    anon_auth_config_rec *conf = my_config;
+    conf->anon_auth_nouserid = arg;
     return NULL;
 }
 
 static const char *anon_set_logemail_flag(cmd_parms *cmd,
-				   void *dummy, int arg)
+                                          void *my_config, int arg)
 {
-    anon_auth_config_rec *sec = dummy;
-    sec->anon_auth_logemail = arg;
+    anon_auth_config_rec *conf = my_config;
+    conf->anon_auth_logemail = arg;
     return NULL;
 }
 
 static const char *anon_set_verifyemail_flag(cmd_parms *cmd,
-				      void *dummy, int arg)
+                                             void *my_config, int arg)
 {
-    anon_auth_config_rec *sec = dummy;
-    sec->anon_auth_verifyemail = arg;
+    anon_auth_config_rec *conf = my_config;
+    conf->anon_auth_verifyemail = arg;
     return NULL;
 }
 static const char *anon_set_authoritative_flag(cmd_parms *cmd,
-					void *dummy, int arg)
+                                               void *my_config, int arg)
 {
-    anon_auth_config_rec *sec = dummy;
-    sec->anon_auth_authoritative = arg;
+    anon_auth_config_rec *conf = my_config;
+    conf->anon_auth_authoritative = arg;
     return NULL;
 }
 
 static const char *anon_set_string_slots(cmd_parms *cmd,
-				  void *dummy, const char *arg)
+                                         void *my_config, const char *arg)
 {
-    anon_auth_config_rec *sec = dummy;
+    anon_auth_config_rec *conf = my_config;
     anon_auth *first;
 
     if (!(*arg))
 	return "Anonymous string cannot be empty, use Anonymous_NoUserId instead";
 
     /* squeeze in a record */
-    first = sec->anon_auth_passwords;
+    first = conf->anon_auth_passwords;
 
-    if (!(sec->anon_auth_passwords = apr_palloc(cmd->pool, sizeof(anon_auth))) ||
-       !(sec->anon_auth_passwords->password = apr_pstrdup(cmd->pool, arg)))
+    if (!(conf->anon_auth_passwords = apr_palloc(cmd->pool, sizeof(anon_auth))) ||
+       !(conf->anon_auth_passwords->password = apr_pstrdup(cmd->pool, arg)))
 	     return "Failed to claim memory for an anonymous password...";
 
     /* and repair the next */
-    sec->anon_auth_passwords->next = first;
+    conf->anon_auth_passwords->next = first;
 
     return NULL;
 }
@@ -221,9 +221,8 @@ module AP_MODULE_DECLARE_DATA auth_anon_module;
 
 static int anon_authenticate_basic_user(request_rec *r)
 {
-    anon_auth_config_rec *sec =
-    (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &auth_anon_module);
+    anon_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                      &auth_anon_module);
     const char *sent_pw;
     int res = DECLINED;
 
@@ -231,17 +230,17 @@ static int anon_authenticate_basic_user(request_rec *r)
 	return res;
 
     /* Ignore if we are not configured */
-    if (!sec->anon_auth_passwords)
+    if (!conf->anon_auth_passwords)
 	return DECLINED;
 
     /* Do we allow an empty userID and/or is it the magic one
      */
 
-    if ((!(r->user[0])) && (sec->anon_auth_nouserid)) {
+    if ((!(r->user[0])) && (conf->anon_auth_nouserid)) {
 	res = OK;
     }
     else {
-	anon_auth *p = sec->anon_auth_passwords;
+	anon_auth *p = conf->anon_auth_passwords;
 	res = DECLINED;
 	while ((res == DECLINED) && (p != NULL)) {
 	    if (!(strcasecmp(r->user, p->password)))
@@ -253,12 +252,12 @@ static int anon_authenticate_basic_user(request_rec *r)
     /* username is OK */
 	   (res == OK)
     /* password been filled out ? */
-	   && ((!sec->anon_auth_mustemail) || strlen(sent_pw))
+	   && ((!conf->anon_auth_mustemail) || strlen(sent_pw))
     /* does the password look like an email address ? */
-	   && ((!sec->anon_auth_verifyemail)
+	   && ((!conf->anon_auth_verifyemail)
 	       || ((strpbrk("@", sent_pw) != NULL)
 		   && (strpbrk(".", sent_pw) != NULL)))) {
-	if (sec->anon_auth_logemail && ap_is_initial_req(r)) {
+	if (conf->anon_auth_logemail && ap_is_initial_req(r)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, r,
 			"Anonymous: Passwd <%s> Accepted",
 			sent_pw ? sent_pw : "\'none\'");
@@ -266,7 +265,7 @@ static int anon_authenticate_basic_user(request_rec *r)
 	return OK;
     }
     else {
-	if (sec->anon_auth_authoritative) {
+	if (conf->anon_auth_authoritative) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, APR_SUCCESS, r,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
 			sent_pw ? sent_pw : "\'none\'");
@@ -282,14 +281,13 @@ static int check_anon_access(request_rec *r)
 {
 #ifdef NOTYET
     conn_rec *c = r->connection;
-    anon_auth_config_rec *sec =
-    (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &auth_anon_module);
+    anon_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                      &auth_anon_module);
 
-    if (!sec->anon_auth)
+    if (!conf->anon_auth)
 	return DECLINED;
 
-    if (strcasecmp(r->connection->user, sec->anon_auth))
+    if (strcasecmp(r->connection->user, conf->anon_auth))
 	return DECLINED;
 
     return OK;
