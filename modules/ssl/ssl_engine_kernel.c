@@ -1614,6 +1614,11 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
     if ((sc = mySrvConfig(s)) == NULL)
         return;
 
+    if (sc->nLogLevel < SSL_LOG_INFO) {
+        /* nothing todo here */
+        return;
+    }
+
     /*
      * create the various trace messages
      */
