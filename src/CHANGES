@@ -1,5 +1,8 @@
 Changes with Apache 1.3.18
 
+  *) PORT: Allow for build under latest dev. version of NonStopUX
+     on Compaq. [Tom Bates <tom.bates@compaq.com>]
+
   *) mod_user on Win32 bug introduced in 1.3.17 is corrected.  The parsing
      is completely rewritten so all platforms share the same file/redirect
      logic interpreting UserDir directives.  Specifying a Win32 or Netware
