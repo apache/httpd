@@ -44,10 +44,6 @@ Changes with Apache 2.1.0-dev
      already failed Apache initialization if a piped log program
      couldn't be started.  PR 15761  [Jeff Trawick]
 
-  *) Fix mod_cern_meta to not create empty metafiles when the
-     metafile searched for does not exist.  PR 12353
-     [Owen Rees <owen_rees@hp.com>]
-
   *) Modify buildconf to copy all required files into httpd's tree.
      [Thom May <thom@planetarytramp.net>]
 
@@ -115,6 +111,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Fix mod_cern_meta to not create empty metafiles when the
+     metafile searched for does not exist.  PR 12353
+     [Owen Rees <owen_rees@hp.com>]
 
   *) Introduce debugging symbols for Win32 release builds, both .pdb 
      and .dbg files (older debuggers and Dr. Watson-type utilities 
