@@ -2691,7 +2691,11 @@ connect_handler(request_rec *r, struct cache_req *c, char *url)
       Explain0("Going to sleep (select)");
       i = select((r->connection->client->fd > sock ?
 	r->connection->client->fd+1 :
+#ifdef HPUX
+	sock+1), (int*)&fds, NULL, NULL, NULL);
+#else
 	sock+1), &fds, NULL, NULL, NULL);
+#endif
       Explain1("Woke from select(), i=%d",i);
     
       if (i)
