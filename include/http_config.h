@@ -338,7 +338,8 @@ API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
 					 ap_pool_t *conf_pool,
 					 ap_pool_t *temp_pool,
 					 ap_directive_t **conftree);
-API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config, int container);
+API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree,
+					cmd_parms *parms, void *config);
 
 /* ap_check_cmd_context() definitions: */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
