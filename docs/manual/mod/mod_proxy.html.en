@@ -198,7 +198,7 @@
       </code></p></div>
 
       <p>For more information on access control directives, see
-      <code class="module"><a href="../mod/mod_access.html">mod_access</a></code>.</p>
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
 
       <p>Strictly limiting access is essential if you are using a
       forward proxy (using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive).
