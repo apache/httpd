@@ -331,7 +331,7 @@ int ssl_hook_Access(request_rec *r)
     STACK_OF(X509) *cert_stack;
     X509_STORE *cert_store;
     X509_STORE_CTX cert_store_ctx;
-    STACK_OF(SSL_CIPHER) *cipher_list_old, *cipher_list = NULL;
+    STACK_OF(SSL_CIPHER) *cipher_list_old=NULL, *cipher_list = NULL;
     SSL_CIPHER *cipher = NULL;
     int depth, verify_old, verify, n;
 
@@ -1127,7 +1127,7 @@ int ssl_hook_Fixup(request_rec *r)
     /*
      * Check to see if SSL is on
      */
-    if (!(sc->bEnabled || (sslconn && (ssl = sslconn->ssl)))) {
+    if (!(sc->bEnabled && sslconn && (ssl = sslconn->ssl))) {
         return DECLINED;
     }
 
