@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/29 00:41:32 $]
+Last modified at [$Date: 2004/02/29 14:13:16 $]
 
 Release:
 
@@ -88,7 +88,7 @@ PATCHES TO BACKPORT FROM 2.1
       PR: 27106
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.117&r2=1.118
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.120&r2=1.121      
-      +1: jorton
+      +1: jorton, trawick
 
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)
@@ -97,15 +97,14 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_ldap: Fix segfault when shared memory caching is disabled 
         modules/experimental/util_ldap_cache_mgr.c: r1.15 
-      +1: bnicholes minfrin
+      +1: bnicholes, minfrin, trawick
     
     * mod_ssl: Clear OpenSSL error stack during pphrase entry to prevent 
       spurious failures in SSL functions later.
       PR: 21160
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_pphrase.c?r1=1.44&r2=1.45
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_pphrase.c?r1=1.49&r2=1.50
-      +1: jorton, trawick (shouldn't comment be updated to indicate
-      that this isn't simply an aesthetic issue?) (yes, done in r1.50)
+      +1: jorton, trawick
 
     * Fix file extensions for real media files and removed rpm extension
       from mime.types. PR 26079. (2.0 + 1.3)
