@@ -141,10 +141,10 @@ PLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\MSL C++\MWCPP
 CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII -inst mmx
 
 # -g                    generate debugging information
-# -O1                   level 1 optimizations
+# -O0                   level 0 optimizations
 
 ifeq "$(RELEASE)" "debug"
-CFLAGS += -g -O1
+CFLAGS += -g -O0
 endif
 
 # -O4,p                 level 4 optimizations, optimize for speed
