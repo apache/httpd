@@ -59,6 +59,7 @@
 #define CORE_PRIVATE
 
 #include "mod_proxy.h"
+#include "mod_core.h"
 
 extern module AP_MODULE_DECLARE_DATA proxy_module;
 
