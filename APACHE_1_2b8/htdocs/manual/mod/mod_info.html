@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>Apache module mod_info</title>
+</head>
+
+<body>
+<!--#include virtual="header.html" -->
+<h1>Module mod_info</h1>
+
+This module is contained in the <code>mod_info.c</code> file.  It
+provides a comprehensive overview of the server configuration
+including all installed modules and directives in the configuration
+files.  This module is not compiled into the
+server by default.  It is only available in Apache 1.1 and later. To
+enable it, add the following line to the server build Configuration
+file, and rebuild the server:
+
+<PRE>
+Module info_module   mod_info.o
+</PRE>
+
+<HR>
+<P>
+To configure it, add the following to your <code>access.conf</code> file.
+
+<PRE>
+&lt;Location /server-info&gt;
+SetHandler server-info
+&lt;/Location&gt;
+</PRE>
+
+You may wish to add a
+<A
+ HREF="core.html#limit"
+>&lt;Limit&gt;</A>
+clause inside the
+<A
+ HREF="core.html#location"
+>location</A>
+directive to limit access to your server configuration information.<p>
+Once configured, the server information is obtained by accessing
+<tt>http://your.host.dom/server-info</tt><p>
+<BLOCKQUOTE>
+ <STRONG>
+  Note that the configuration files are read by the module at run-time,
+  and therefore the display may <EM>not</EM> reflect the running
+  server's active configuration if the files have been changed since the
+  server was last reloaded.  Also, the configuration files must be
+  readable by the user as which the server is running (see the
+  <A
+   HREF="core.html#user"
+  ><SAMP>User</SAMP></A>
+  directive), or else the directive settings will not be listed.
+  <P>
+  It should also be noted that if <SAMP>mod_info</SAMP> is compiled into
+  the server, its handler capability is available in <EM>all</EM>
+  configuration files, including <EM>per</EM>-directory files
+  (<EM>e.g.</EM>, <SAMP>.htaccess</SAMP>).  This may have
+  security-related ramifications for your site.
+  </P>
+ </STRONG>
+</BLOCKQUOTE>
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
