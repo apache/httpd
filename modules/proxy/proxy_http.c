@@ -276,7 +276,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 				desthost, NULL));
     }
 
-    origin = ap_new_apr_connection(r->pool, r->server, sock, 0);
+    origin = ap_new_connection(r->pool, r->server, sock, 0);
     ap_add_output_filter("CORE", NULL, NULL, origin);
 
     clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */

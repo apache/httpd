@@ -269,9 +269,7 @@ int ap_process_http_connection(conn_rec *c)
 */
 
 conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
-                            apr_socket_t *inout,
-			    const struct sockaddr_in *remaddr,
-			    const struct sockaddr_in *saddr, long id)
+                            apr_socket_t *inout, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
     apr_sockaddr_t *sa;
@@ -284,29 +282,16 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
     conn->notes = apr_make_table(p, 5);
 
     conn->pool = p;
-    conn->local_addr = *saddr;
     apr_get_sockaddr(&sa, APR_LOCAL, inout);
+    conn->local_addr = sa->sa.sin;
     apr_get_ipaddr(&conn->local_ip, sa);
     conn->base_server = server;
     conn->client_socket = inout;
 
-    conn->remote_addr = *remaddr;
     apr_get_sockaddr(&sa, APR_REMOTE, inout);
+    conn->remote_addr = sa->sa.sin;
     apr_get_ipaddr(&conn->remote_ip, sa);   
     conn->id = id;
 
     return conn;
-}
-
-
-
-conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, 
-                                apr_socket_t *conn_socket, long id)
-{
-    apr_sockaddr_t *sa_local, *sa_remote;
-
-    apr_get_sockaddr(&sa_local, APR_LOCAL, conn_socket);
-    apr_get_sockaddr(&sa_remote, APR_REMOTE, conn_socket);
-    return ap_new_connection(p, server, conn_socket, 
-                             &sa_remote->sa.sin, &sa_local->sa.sin, id);
 }

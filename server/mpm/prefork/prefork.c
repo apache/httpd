@@ -1042,8 +1042,8 @@ static void child_main(int child_num_arg)
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
-	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, csd,
-					 my_child_num);
+	current_conn = ap_new_connection(ptrans, ap_server_conf, csd, 
+                                         my_child_num);
 
 	ap_process_connection(current_conn);
         ap_lingering_close(current_conn);
