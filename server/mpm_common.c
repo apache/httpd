@@ -394,18 +394,13 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     apr_size_t one = 1;
 
     do {
-        if ((rv = apr_file_write(pod->pod_out, &char_of_death, &one))
-                                 != APR_SUCCESS) {
-            if (APR_STATUS_IS_EINTR(rv)) {
-                continue;
-            }
-            else {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
-                             "write pipe_of_death");
-                return rv;
-            }
-        }
-    } while (1);
+        rv = apr_file_write(pod->pod_out, &char_of_death, &one);
+    } while (APR_STATUS_IS_EINTR(rv));
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                     "write pipe_of_death");
+        return rv;
+    }
     
     apr_sockaddr_info_get(&sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, pod->p);
     apr_socket_create(&sock, sa->family, SOCK_STREAM, pod->p);
