@@ -1,10 +1,5 @@
-.deps
-.libs
-*.la
-modules.mk
 Makefile
 *.lo
-*.slo
-*.so
-*.dll
-*.def
+*.o
+*.a
+*.lib
