@@ -159,7 +159,7 @@ int ap_threads_per_child = 0;         /* Worker threads per child */
 static int ap_daemons_to_start = 0;
 static int min_spare_threads = 0;
 static int max_spare_threads = 0;
-static int ap_daemons_limit = 0;      /* MaxClients */
+static int ap_daemons_limit = 0;
 static int server_limit = DEFAULT_SERVER_LIMIT;
 static int first_server_limit;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
