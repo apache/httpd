@@ -603,8 +603,9 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
 
         if (r->headers_out) {
             int i;
-            apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(r->headers_out)->elts;
-            for (i = 0; i < apr_table_elts(r->headers_out)->nelts; ++i) {
+            apr_table_t* headers_out = ap_cache_cacheable_hdrs_out(r);
+            apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(headers_out)->elts;
+            for (i = 0; i < apr_table_elts(headers_out)->nelts; ++i) {
                 if (elts[i].key != NULL) {
                     buf = apr_pstrcat(r->pool, elts[i].key, ": ",  elts[i].val, CRLF, NULL);
                     amt = strlen(buf);
