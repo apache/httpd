@@ -101,16 +101,16 @@ int main(int argc, char *argv[])
 	    flags |= T_ESCAPE_SHELL_CMD;
 	}
 
-	if (!ap_isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
+	if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
 	    flags |= T_ESCAPE_PATH_SEGMENT;
 	}
 
-	if (!ap_isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
+	if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
 	    flags |= T_OS_ESCAPE_PATH;
 	}
 
 	/* these are the "tspecials" from RFC2068 */
-	if (ap_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
+	if (apr_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
 	    flags |= T_HTTP_TOKEN_STOP;
 	}
 	printf("%u%c", flags, (c < 255) ? ',' : ' ');

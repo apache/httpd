@@ -77,7 +77,7 @@
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern ap_inline
+#define INLINE extern apr_inline
 #include "os-inline.c"
 #endif
 

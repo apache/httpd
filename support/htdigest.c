@@ -157,7 +157,7 @@ static void putline(apr_file_t *f, char *l)
 static void add_password(char *user, char *realm, apr_file_t *f)
 {
     char *pw;
-    ap_md5_ctx_t context;
+    apr_md5_ctx_t context;
     unsigned char digest[16];
     char string[MAX_STRING_LEN];
     char pwin[MAX_STRING_LEN];

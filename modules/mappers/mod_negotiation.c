@@ -372,8 +372,8 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
 
         /* Look for 'var = value' --- and make sure the var is in lcase. */
 
-        for (cp = parm; (*cp && !ap_isspace(*cp) && *cp != '='); ++cp) {
-            *cp = ap_tolower(*cp);
+        for (cp = parm; (*cp && !apr_isspace(*cp) && *cp != '='); ++cp) {
+            *cp = apr_tolower(*cp);
         }
 
         if (!*cp) {
@@ -381,7 +381,7 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
         }
 
         *cp++ = '\0';           /* Delimit var */
-        while (*cp && (ap_isspace(*cp) || *cp == '=')) {
+        while (*cp && (apr_isspace(*cp) || *cp == '=')) {
             ++cp;
         }
 
@@ -392,7 +392,7 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
                  end++);
         }
         else {
-            for (end = cp; (*end && !ap_isspace(*end)); end++);
+            for (end = cp; (*end && !apr_isspace(*end)); end++);
         }
         if (*end) {
             *end = '\0';        /* strip ending quote or return */
@@ -559,7 +559,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
         if (strcmp(tok, "trans") == 0 ||
             strcmp(tok, "vlist") == 0 ||
             strcmp(tok, "guess-small") == 0 ||
-            ap_isdigit(tok[0]) ||
+            apr_isdigit(tok[0]) ||
             strcmp(tok, "*") == 0) {
 
             /* The user agent supports transparent negotiation */
@@ -665,7 +665,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 
     /* If blank, just return it --- this ends information on this variant */
 
-    for (cp = buffer; (*cp && ap_isspace(*cp)); ++cp) {
+    for (cp = buffer; (*cp && apr_isspace(*cp)); ++cp) {
         continue;
     }
 
@@ -686,13 +686,13 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
                 continue;
             }
         }
-        else if (ap_isspace(c)) {
+        else if (apr_isspace(c)) {
             /* Leading whitespace.  POSSIBLE continuation line
              * Also, possibly blank --- if so, we ungetc() the final newline
              * so that we will pick up the blank line the next time 'round.
              */
 
-            while (c != '\n' && ap_isspace(c)) {
+            while (c != '\n' && apr_isspace(c)) {
                 if(apr_getc(&c, map) != APR_SUCCESS)
 		    break;
             }
@@ -761,7 +761,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     char *cp = header;
 
     for ( ; *cp && *cp != ':' ; ++cp) {
-        *cp = ap_tolower(*cp);
+        *cp = apr_tolower(*cp);
     }
 
     if (!*cp) {
@@ -772,7 +772,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 
     do {
         ++cp;
-    } while (*cp && ap_isspace(*cp));
+    } while (*cp && apr_isspace(*cp));
 
     if (!*cp) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2648,7 +2648,7 @@ static int handle_multi(request_rec *r)
      * some values in this request will be allocated in r->pool, and others in
      * sub_req->pool.
      */
-    ap_pool_join(r->pool, sub_req->pool);
+    apr_pool_join(r->pool, sub_req->pool);
     r->mtime = 0; /* reset etag info for subrequest */
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;

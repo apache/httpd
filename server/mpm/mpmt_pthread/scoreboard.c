@@ -153,7 +153,7 @@ void reinit_scoreboard(apr_pool_t *p)
  * anyway.
  */
 
-ap_inline void ap_sync_scoreboard_image(void)
+apr_inline void ap_sync_scoreboard_image(void)
 {
 }
 
@@ -162,7 +162,7 @@ API_EXPORT(int) ap_exists_scoreboard_image(void)
     return (ap_scoreboard_image ? 1 : 0);
 }
 
-static ap_inline void put_scoreboard_info(int child_num, int thread_num, 
+static apr_inline void put_scoreboard_info(int child_num, int thread_num, 
 				       thread_score *new_score_rec)
 {
     /* XXX - needs to be fixed to account for threads */

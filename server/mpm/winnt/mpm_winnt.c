@@ -390,7 +390,7 @@ static void sock_disable_nagle(int s)
  */
 static ap_listen_rec *head_listener;
 
-static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
+static apr_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
     ap_listen_rec *lr;
     SOCKET nsd;
@@ -908,7 +908,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
 
     return 0;
 }
-static ap_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context) 
+static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context) 
 {
     DWORD BytesRead;
     SOCKET nsd;
@@ -1906,10 +1906,10 @@ void winnt_rewrite_args(process_rec *process)
                      &opt, process->pool) == APR_SUCCESS) {
         switch (opt) {
         case 'n':
-            service_named = mpm_service_set_name(process->pool, ap_optarg);
+            service_named = mpm_service_set_name(process->pool, apr_optarg);
             break;
         case 'k':
-            signal_arg = ap_optarg;
+            signal_arg = apr_optarg;
             break;
         case 'i':
             /* TODO: warn of depreciated syntax, "use -k install instead" */
@@ -1923,9 +1923,9 @@ void winnt_rewrite_args(process_rec *process)
             optbuf[1] = (char) opt;
             new_arg = (char**) apr_push_array(mpm_new_argv);
             *new_arg = apr_pstrdup(process->pool, optbuf);
-            if (ap_optarg) {
+            if (apr_optarg) {
                 new_arg = (char**) apr_push_array(mpm_new_argv);
-                *new_arg = ap_optarg;
+                *new_arg = apr_optarg;
             }
             break;
         }
@@ -1933,8 +1933,8 @@ void winnt_rewrite_args(process_rec *process)
     /* Set optreset and optind to allow apr_getopt to work correctly
      * when called from http_main.c
      */
-    ap_optreset = 1;
-    ap_optind = 1;
+    apr_optreset = 1;
+    apr_optind = 1;
     
     /* Track the number of args actually entered by the user */
     inst_argc = mpm_new_argv->nelts - fixed_args;

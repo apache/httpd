@@ -386,7 +386,7 @@ static const char *log_env_var(request_rec *r, char *a)
 
 static const char *log_request_time(request_rec *r, char *a)
 {
-    ap_exploded_time_t xt;
+    apr_exploded_time_t xt;
     apr_size_t retcode;
     char tstr[MAX_STRING_LEN];
 
@@ -423,7 +423,7 @@ static const char *log_request_time(request_rec *r, char *a)
 	}
 
         apr_snprintf(tstr, sizeof(tstr), "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
-                xt.tm_mday, ap_month_snames[xt.tm_mon], xt.tm_year+1900,
+                xt.tm_mday, apr_month_snames[xt.tm_mon], xt.tm_year+1900,
                 xt.tm_hour, xt.tm_min, xt.tm_sec,
                 sign, timz / (60*60), timz % (60*60));
     }
@@ -433,7 +433,8 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%lld", (apr_now() - r->request_time) / AP_USEC_PER_SEC);
+    return apr_psprintf(r->pool, "%lld", (apr_now() - r->request_time) 
+                                             / APR_USEC_PER_SEC);
 }
 
 /* These next two routines use the canonical name:port so that log
@@ -667,7 +668,7 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
         case '8':
         case '9':
             i = *s - '0';
-            while (ap_isdigit(*++s)) {
+            while (apr_isdigit(*++s)) {
                 i = i * 10 + (*s) - '0';
             }
             if (!it->conditions) {

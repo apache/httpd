@@ -67,7 +67,7 @@ extern "C" {
 
 API_EXPORT(char *) ap_md5(apr_pool_t *a, const unsigned char *string);
 API_EXPORT(char *) ap_md5_binary(apr_pool_t *a, const unsigned char *buf, int len);
-API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *p, ap_md5_ctx_t *context);
+API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *p, apr_md5_ctx_t *context);
 #ifdef APACHE_XLATE
 API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
                                 apr_xlate_t *xlate);

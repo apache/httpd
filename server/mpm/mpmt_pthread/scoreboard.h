@@ -217,7 +217,7 @@ void ap_mpmt_pthread_force_reset_connection_status(long conn_id);
 
 API_EXPORT(void) reopen_scoreboard(apr_pool_t *p);
 
-ap_inline void ap_sync_scoreboard_image(void);
+apr_inline void ap_sync_scoreboard_image(void);
 void increment_counts(int child_num, int thread_num, request_rec *r);
 void update_scoreboard_global(void);
 API_EXPORT(int) find_child_by_pid(apr_proc_t *pid);

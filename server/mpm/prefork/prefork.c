@@ -373,7 +373,7 @@ static void reinit_scoreboard(apr_pool_t *p)
  * since when the parent is writing an entry, it's only noting SERVER_DEAD
  * anyway.
  */
-ap_inline void ap_sync_scoreboard_image(void)
+apr_inline void ap_sync_scoreboard_image(void)
 {
 #ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd, 0L, 0);
@@ -392,7 +392,7 @@ API_EXPORT(int) ap_get_max_daemons(void)
     return ap_max_daemons_limit;
 }
 
-static ap_inline void put_scoreboard_info(int child_num,
+static apr_inline void put_scoreboard_info(int child_num,
                                        short_score *new_score_rec)
 {
 #ifdef SCOREBOARD_FILE
@@ -534,7 +534,7 @@ static int find_child_by_pid(apr_proc_t *pid)
    Systems without a real waitpid sometimes lose a child's exit while waiting
    for another.  Search through the scoreboard for missing children.
  */
-int reap_children(ap_wait_t *status)
+int reap_children(apr_wait_t *status)
 {
     int n, pid;
 
@@ -544,7 +544,7 @@ int reap_children(ap_wait_t *status)
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status(n, SERVER_DEAD, NULL);
 	    /* just mark it as having a successful exit status */
-	    bzero((char *) status, sizeof(ap_wait_t));
+	    bzero((char *) status, sizeof(apr_wait_t));
 	    return(pid);
 	}
     }
@@ -1372,7 +1372,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
-	ap_wait_t status;
+	apr_wait_t status;
         /* this is a memory leak, but I'll fix it later. */
 	apr_proc_t pid;
 

@@ -181,7 +181,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 {
     apr_file_t *f = NULL;
     apr_finfo_t finfo;
-    char time_str[AP_CTIME_LEN];
+    char time_str[APR_CTIME_LEN];
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
 		"%s: %s", error, r->filename);
@@ -227,13 +227,13 @@ static void log_script_err(request_rec *r, BUFF *script_err)
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
-    apr_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
+    apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
     apr_file_t *f = NULL;
     int i;
     apr_finfo_t finfo;
-    char time_str[AP_CTIME_LEN];
+    char time_str[APR_CTIME_LEN];
 
     if (!conf->logname ||
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
@@ -267,7 +267,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     apr_puts("%response\n", f);
-    hdrs_arr = ap_table_elts(r->err_headers_out);
+    hdrs_arr = apr_table_elts(r->err_headers_out);
     hdrs = (apr_table_entry_t *) hdrs_arr->elts;
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {

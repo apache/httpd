@@ -274,7 +274,7 @@ static double get_x_coord(const char *args)
         return (-1);            /* in case we aren't passed anything */
     }
 
-    while (*args && !ap_isdigit(*args) && *args != ',') {
+    while (*args && !apr_isdigit(*args) && *args != ',') {
         args++;                 /* jump to the first digit, but not past
                                    a comma or end */
     }
@@ -306,7 +306,7 @@ static double get_y_coord(const char *args)
         start_of_y++;           /* start looking at the character after
                                    the comma */
 
-        while (*start_of_y && !ap_isdigit(*start_of_y)) {
+        while (*start_of_y && !apr_isdigit(*start_of_y)) {
             start_of_y++;       /* jump to the first digit, but not
                                    past the end */
 	}
@@ -337,7 +337,7 @@ static void read_quoted(char **string, char **quoted_part)
     /* assume there's no quoted part */
     *quoted_part = NULL;
 
-    while (ap_isspace(*strp)) {
+    while (apr_isspace(*strp)) {
         strp++;               	/* go along string until non-whitespace */
     }
 
@@ -396,7 +396,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     }
 
     string_pos_const = value;
-    while (ap_isalpha(*string_pos_const)) {
+    while (apr_isalpha(*string_pos_const)) {
 	string_pos_const++;           /* go along the URL from the map
                                          until a non-letter */
     }
@@ -705,7 +705,7 @@ static int imap_handler(request_rec *r)
 	}
 
 	directive = string_pos;
-	while (*string_pos && !ap_isspace(*string_pos)) {	/* past directive */
+	while (*string_pos && !apr_isspace(*string_pos)) {	/* past directive */
 	    ++string_pos;
 	}
 	if (!*string_pos) {		/* need at least two fields */
@@ -716,15 +716,15 @@ static int imap_handler(request_rec *r)
 	if (!*string_pos) {		/* need at least two fields */
 	    goto need_2_fields;
 	}
-	while(*string_pos && ap_isspace(*string_pos)) { /* past whitespace */
+	while(*string_pos && apr_isspace(*string_pos)) { /* past whitespace */
 	    ++string_pos;
 	}
 
 	value = string_pos;
-	while (*string_pos && !ap_isspace(*string_pos)) {	/* past value */
+	while (*string_pos && !apr_isspace(*string_pos)) {	/* past value */
 	    ++string_pos;
 	}
-	if (ap_isspace(*string_pos)) {
+	if (apr_isspace(*string_pos)) {
 	    *string_pos++ = '\0';
 	}
 	else {
@@ -763,17 +763,17 @@ static int imap_handler(request_rec *r)
                sscanf(string_pos, "%lf%*[, ]%lf",
                       &pointarray[vertex][X], &pointarray[vertex][Y]) == 2) {
             /* Now skip what we just read... we can't use ANSIism %n */
-            while (ap_isspace(*string_pos)) {      /* past whitespace */
+            while (apr_isspace(*string_pos)) {      /* past whitespace */
                 string_pos++;
 	    }
-            while (ap_isdigit(*string_pos)) {      /* and the 1st number */
+            while (apr_isdigit(*string_pos)) {      /* and the 1st number */
                 string_pos++;
 	    }
             string_pos++;       /* skip the ',' */
-            while (ap_isspace(*string_pos)) {      /* past any more whitespace */
+            while (apr_isspace(*string_pos)) {      /* past any more whitespace */
                 string_pos++;
 	    }
-            while (ap_isdigit(*string_pos)) {      /* 2nd number */
+            while (apr_isdigit(*string_pos)) {      /* 2nd number */
                 string_pos++;
 	    }
             vertex++;

@@ -1297,7 +1297,7 @@ void ap_process_request(request_rec *r)
 
 static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 {
-    apr_array_header_t *env_arr = ap_table_elts(t);
+    apr_array_header_t *env_arr = apr_table_elts(t);
     apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
     apr_table_t *new = apr_make_table(p, env_arr->nalloc);
     int i;

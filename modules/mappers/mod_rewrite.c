@@ -891,7 +891,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
             else if (strcasecmp(val, "seeother") == 0) {
                 status = HTTP_SEE_OTHER;
             }
-            else if (ap_isdigit(*val)) {
+            else if (apr_isdigit(*val)) {
                 status = atoi(val);
             }
             if (!ap_is_HTTP_REDIRECT(status)) {
@@ -3064,7 +3064,7 @@ static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
 
     for (cp = value = apr_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
          cp++) {
-        *cp = ap_toupper(*cp);
+        *cp = apr_toupper(*cp);
     }
     return value;
 }
@@ -3075,7 +3075,7 @@ static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
 
     for (cp = value = apr_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
          cp++) {
-        *cp = ap_tolower(*cp);
+        *cp = apr_tolower(*cp);
     }
     return value;
 }
@@ -3300,7 +3300,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 
 static char *current_logtime(request_rec *r)
 {
-    ap_exploded_time_t t;
+    apr_exploded_time_t t;
     char tstr[80];
     apr_size_t len;
 
@@ -3535,7 +3535,7 @@ static char *lookup_variable(request_rec *r, char *var)
 {
     const char *result;
     char resultbuf[LONG_STRING_LEN];
-    ap_exploded_time_t tm;
+    apr_exploded_time_t tm;
     request_rec *rsub;
 #ifndef WIN32
     struct passwd *pw;
@@ -3781,7 +3781,7 @@ static char *lookup_header(request_rec *r, const char *name)
     apr_table_entry_t *hdrs;
     int i;
 
-    hdrs_arr = ap_table_elts(r->headers_in);
+    hdrs_arr = apr_table_elts(r->headers_in);
     hdrs = (apr_table_entry_t *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (hdrs[i].key == NULL) {

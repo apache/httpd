@@ -323,21 +323,21 @@ int main(int argc, char *argv[])
         switch (c) {
  	case 'c':
 	    new = (char **)apr_push_array(ap_server_post_read_config);
-	    *new = apr_pstrdup(pcommands, ap_optarg);
+	    *new = apr_pstrdup(pcommands, apr_optarg);
 	    break;
 	case 'C':
 	    new = (char **)apr_push_array(ap_server_pre_read_config);
-	    *new = apr_pstrdup(pcommands, ap_optarg);
+	    *new = apr_pstrdup(pcommands, apr_optarg);
 	    break;
 	case 'd':
-	    def_server_root = ap_optarg;
+	    def_server_root = apr_optarg;
 	    break;
 	case 'D':
 	    new = (char **)apr_push_array(ap_server_config_defines);
-	    *new = apr_pstrdup(pcommands, ap_optarg);
+	    *new = apr_pstrdup(pcommands, apr_optarg);
 	    break;
 	case 'f':
-	    confname = ap_optarg;
+	    confname = apr_optarg;
 	    break;
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());

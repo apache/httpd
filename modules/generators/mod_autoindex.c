@@ -183,7 +183,7 @@ static char c_by_encoding, c_by_type, c_by_path;
  * matches ".." or "../").  Hopefully this one call is significantly less
  * expensive than multiple strcmp() calls.
  */
-static ap_inline int is_parent(const char *name)
+static apr_inline int is_parent(const char *name)
 {
     /*
      * Now, IFF the first two bytes are dots, and the third byte is either
@@ -1128,7 +1128,7 @@ static char *find_title(request_rec *r)
 	}
 	titlebuf[n] = '\0';
 	for (x = 0, p = 0; titlebuf[x]; x++) {
-	    if (ap_toupper(titlebuf[x]) == find[p]) {
+	    if (apr_toupper(titlebuf[x]) == find[p]) {
 		if (!find[++p]) {
 		    if ((p = ap_ind(&titlebuf[++x], '<')) != -1) {
 			titlebuf[x + p] = '\0';
@@ -1179,8 +1179,8 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->alt = NULL;
     p->desc = NULL;
     p->lm = -1;
-    p->key = ap_toupper(keyid);
-    p->ascending = (ap_toupper(direction) == D_ASCENDING);
+    p->key = apr_toupper(keyid);
+    p->ascending = (apr_toupper(direction) == D_ASCENDING);
     p->version_sort = autoindex_opts & VERSION_SORT;
 
     if (autoindex_opts & FANCY_INDEXING) {
@@ -1430,7 +1430,7 @@ static void output_directories(struct ent **ar, int n,
 	    if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
-		    ap_exploded_time_t ts;
+		    apr_exploded_time_t ts;
                     apr_explode_localtime(&ts, ar[x]->lm);
 		    apr_strftime(time_str, &rv, MAX_STRING_LEN, 
                                 "%d-%b-%Y %H:%M  ", &ts);

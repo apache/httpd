@@ -197,15 +197,15 @@ typedef struct {
 
 static sp_reason spdist(const char *s, const char *t)
 {
-    for (; ap_tolower(*s) == ap_tolower(*t); t++, s++) {
+    for (; apr_tolower(*s) == apr_tolower(*t); t++, s++) {
         if (*t == '\0') {
             return SP_MISCAPITALIZED;   /* exact match (sans case) */
 	}
     }
     if (*s) {
         if (*t) {
-            if (s[1] && t[1] && ap_tolower(*s) == ap_tolower(t[1])
-		&& ap_tolower(*t) == ap_tolower(s[1])
+            if (s[1] && t[1] && apr_tolower(*s) == apr_tolower(t[1])
+		&& apr_tolower(*t) == apr_tolower(s[1])
 		&& strcasecmp(s + 2, t + 2) == 0) {
                 return SP_TRANSPOSITION;        /* transposition */
 	    }

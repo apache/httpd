@@ -584,7 +584,7 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-static ap_inline void do_double_reverse (conn_rec *conn)
+static apr_inline void do_double_reverse (conn_rec *conn)
 {
     struct hostent *hptr;
 
@@ -2845,7 +2845,7 @@ static int default_handler(request_rec *r)
         apr_mmap_offset((void**)&addr, mm ,0);
 
 	if (d->content_md5 & 1) {
-	    ap_md5_ctx_t context;
+	    apr_md5_ctx_t context;
 	    
 	    apr_MD5Init(&context);
 #ifdef APACHE_XLATE

@@ -534,7 +534,7 @@ static char* ComposeHeaders(request_rec *r, char* data)
         }
 
         *value++ = '\0';
-        while (*value && ap_isspace(*value)) ++value;
+        while (*value && apr_isspace(*value)) ++value;
 
         /* Check all the special-case headers. Similar to what
          * ap_scan_script_header_err() does (see that function for
@@ -546,7 +546,7 @@ static char* ComposeHeaders(request_rec *r, char* data)
             /* Nuke trailing whitespace */    
             char *tmp;
             char *endp = value + strlen(value) - 1;
-            while (endp > value && ap_isspace(*endp)) 
+            while (endp > value && apr_isspace(*endp)) 
                 *endp-- = '\0';
 
             tmp = apr_pstrdup (r->pool, value);

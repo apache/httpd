@@ -179,7 +179,7 @@ void ap_reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
+void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
 {
     apr_status_t rv;
 
@@ -208,7 +208,7 @@ void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
     return;
 }
 
-void ap_process_child_status(apr_proc_t *pid, ap_wait_t status)
+void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
 {
     /* Child died... if it died due to a fatal error,
         * we should simply bail out.

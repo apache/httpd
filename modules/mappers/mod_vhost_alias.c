@@ -212,7 +212,7 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
 	    ++p;
 	}
 	/* digit N */
-	if (ap_isdigit(*p)) {
+	if (apr_isdigit(*p)) {
 	    ++p;
 	}
 	else {
@@ -232,7 +232,7 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
 	    ++p;
 	}
 	/* digit M */
-	if (ap_isdigit(*p)) {
+	if (apr_isdigit(*p)) {
 	    ++p;
 	}
 	else {
@@ -270,7 +270,7 @@ static const command_rec mva_commands[] =
  * This really wants to be a nested function
  * but C is too feeble to support them.
  */
-static ap_inline void vhost_alias_checkspace(request_rec *r, char *buf,
+static apr_inline void vhost_alias_checkspace(request_rec *r, char *buf,
 					     char **pdest, int size)
 {
     /* XXX: what if size > HUGE_STRING_LEN? */
@@ -399,7 +399,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	}
 	vhost_alias_checkspace(r, buf, &dest, end - start);
 	for (p = start; p < end; ++p) {
-	    *dest++ = ap_tolower(*p);
+	    *dest++ = apr_tolower(*p);
 	}
     }
     *dest = '\0';

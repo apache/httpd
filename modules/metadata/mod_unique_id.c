@@ -244,7 +244,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    pause = (apr_interval_time_t)(1000000 - (apr_now() % AP_USEC_PER_SEC));
+    pause = (apr_interval_time_t)(1000000 - (apr_now() % APR_USEC_PER_SEC));
     apr_sleep(pause);
 }
 
@@ -287,7 +287,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
     /* Some systems have very low variance on the low end of their system
      * counter, defend against that.
      */
-    cur_unique_id.counter = tv % AP_USEC_PER_SEC / 10;
+    cur_unique_id.counter = tv % APR_USEC_PER_SEC / 10;
 
     /*
      * We must always use network ordering for these bytes, so that

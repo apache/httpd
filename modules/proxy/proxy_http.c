@@ -147,9 +147,9 @@ static void clear_connection(apr_pool_t *p, apr_table_t *headers)
 
     while (*next) {
         name = next;
-        while (*next && !ap_isspace(*next) && (*next != ','))
+        while (*next && !apr_isspace(*next) && (*next != ','))
             ++next;
-        while (*next && (ap_isspace(*next) || (*next == ','))) {
+        while (*next && (apr_isspace(*next) || (*next == ','))) {
             *next = '\0';
             ++next;
         }
@@ -224,14 +224,14 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     strp2 = strchr(desthost, ':');
     if (strp2 != NULL) {
         *(strp2++) = '\0';
-        if (ap_isdigit(*strp2)) {
+        if (apr_isdigit(*strp2)) {
             destport = atoi(strp2);
             destportstr = strp2;
         }
     }
 
 /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(desthost);
+    destaddr.s_addr = apr_inet_addr(desthost);
     for (i = 0; i < conf->noproxies->nelts; i++) {
         if ((npent[i].name != NULL && strstr(desthost, npent[i].name) != NULL)
             || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
@@ -304,7 +304,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
             );
     }
 
-    reqhdrs_arr = ap_table_elts(r->headers_in);
+    reqhdrs_arr = apr_table_elts(r->headers_in);
     reqhdrs = (apr_table_entry_t *) reqhdrs_arr->elts;
     for (i = 0; i < reqhdrs_arr->nelts; i++) {
         if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL

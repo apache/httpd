@@ -93,7 +93,7 @@ static void ap_pad(char *dest, size_t size, char ch)
 static void ap_str_toupper(char *str)
 {
     while (*str) {
-	*str = ap_toupper(*str);
+	*str = apr_toupper(*str);
 	++str;
     }
 }

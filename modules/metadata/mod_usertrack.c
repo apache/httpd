@@ -140,15 +140,15 @@ static void make_cookie(request_rec *r)
     apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, apr_now());
 
     if (cls->expires) {
-	ap_exploded_time_t tms;
+	apr_exploded_time_t tms;
 
-	apr_explode_gmt(&tms, r->request_time + cls->expires * AP_USEC_PER_SEC);
+	apr_explode_gmt(&tms, r->request_time + cls->expires * APR_USEC_PER_SEC);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         new_cookie = apr_psprintf(r->pool,
                 "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    dcfg->cookie_name, cookiebuf, ap_day_snames[tms.tm_wday],
-                    tms.tm_mday, ap_month_snames[tms.tm_mon],
+                    dcfg->cookie_name, cookiebuf, apr_day_snames[tms.tm_wday],
+                    tms.tm_mday, apr_month_snames[tms.tm_mon],
                     tms.tm_year % 100,
                     tms.tm_hour, tms.tm_min, tms.tm_sec);
     }
@@ -229,7 +229,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     char *word;
 
     /* The simple case first - all numbers (we assume) */
-    if (ap_isdigit(arg[0]) && ap_isdigit(arg[strlen(arg) - 1])) {
+    if (apr_isdigit(arg[0]) && apr_isdigit(arg[strlen(arg) - 1])) {
         cls->expires = atol(arg);
         return NULL;
     }
@@ -248,7 +248,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     /* {<num> <type>}* */
     while (word[0]) {
         /* <num> */
-	if (ap_isdigit(word[0]))
+	if (apr_isdigit(word[0]))
             num = atoi(word);
         else
             return "bad expires code, numeric value expected.";

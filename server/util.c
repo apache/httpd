@@ -137,7 +137,7 @@ API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
 	return apr_pstrdup(p, intype);
     } 
     else {
-	while ((semi > intype) && ap_isspace(semi[-1])) {
+	while ((semi > intype) && apr_isspace(semi[-1])) {
 	    semi--;
 	}
 	return apr_pstrndup(p, intype, semi - intype);
@@ -149,7 +149,7 @@ API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
     apr_size_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
-    ap_exploded_time_t xt;
+    apr_exploded_time_t xt;
 
     if (gmt) {
 	const char *f;
@@ -251,7 +251,7 @@ API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp)
 	    }
 	    return -1;
 	}
-	else if ((exp[y] != '?') && (ap_tolower(str[x]) != ap_tolower(exp[y])))
+	else if ((exp[y] != '?') && (apr_tolower(str[x]) != apr_tolower(exp[y])))
 	    return 1;
     }
     return (str[x] != '\0');
@@ -313,12 +313,12 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2)
         return((char *)s1);
     }
     while(1) {
-	for ( ; (*s1 != '\0') && (ap_tolower(*s1) != ap_tolower(*s2)); s1++);
+	for ( ; (*s1 != '\0') && (apr_tolower(*s1) != apr_tolower(*s2)); s1++);
 	if (*s1 == '\0') return(NULL);
 	/* found first character of s2, see if the rest matches */
         p1 = (char *)s1;
         p2 = (char *)s2;
-        while (ap_tolower(*++p1) == ap_tolower(*++p2)) {
+        while (apr_tolower(*++p1) == apr_tolower(*++p2)) {
             if (*p1 == '\0') {
                 /* both strings ended together */
                 return((char *)s1);
@@ -386,7 +386,7 @@ API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
     while ((c = *src++) != '\0') {
 	if (c == '&')
 	    no = 0;
-	else if (c == '$' && ap_isdigit(*src))
+	else if (c == '$' && apr_isdigit(*src))
 	    no = *src++ - '0';
 	else
 	    no = 10;
@@ -411,7 +411,7 @@ API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
     while ((c = *src++) != '\0') {
 	if (c == '&')
 	    no = 0;
-	else if (c == '$' && ap_isdigit(*src))
+	else if (c == '$' && apr_isdigit(*src))
 	    no = *src++ - '0';
 	else
 	    no = 10;
@@ -663,7 +663,7 @@ API_EXPORT(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
     char *res;
 
     for (x = 0; (*line)[x]; x++) {
-	if (ap_isspace((*line)[x])) {
+	if (apr_isspace((*line)[x])) {
 	    pos = x;
 	    break;
 	}
@@ -678,7 +678,7 @@ API_EXPORT(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
     res = apr_palloc(atrans, pos + 1);
     apr_cpystrn(res, *line, pos + 1);
 
-    while (ap_isspace((*line)[pos]))
+    while (apr_isspace((*line)[pos]))
 	++pos;
 
     *line += pos;
@@ -748,7 +748,7 @@ API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     char *res;
     char quote;
 
-    while (*str && ap_isspace(*str))
+    while (*str && apr_isspace(*str))
 	++str;
 
     if (!*str) {
@@ -771,13 +771,13 @@ API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     }
     else {
 	strend = str;
-	while (*strend && !ap_isspace(*strend))
+	while (*strend && !apr_isspace(*strend))
 	    ++strend;
 
 	res = substring_conf(p, str, strend - str, 0);
     }
 
-    while (*strend && ap_isspace(*strend))
+    while (*strend && apr_isspace(*strend))
 	++strend;
     *line = strend;
     return res;
@@ -1005,11 +1005,11 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	 * Leading and trailing white space is eliminated completely
 	 */
 	src = buf;
-	while (ap_isspace(*src))
+	while (apr_isspace(*src))
 	    ++src;
 	/* blast trailing whitespace */
 	dst = &src[strlen(src)];
-	while (--dst >= src && ap_isspace(*dst))
+	while (--dst >= src && apr_isspace(*dst))
 	    *dst = '\0';
         /* Zap leading whitespace by shifting */
         if (src != buf)
@@ -1070,7 +1070,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		     */
 		}
 		/* blast trailing whitespace */
-		while (i > 0 && ap_isspace(buf[i - 1]))
+		while (i > 0 && apr_isspace(buf[i - 1]))
 		    --i;
 		buf[i] = '\0';
 #ifdef DEBUG_CFG_LINES
@@ -1099,7 +1099,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
 
     /* Find first non-comma, non-whitespace byte */
 
-    while (*ptr == ',' || ap_isspace(*ptr))
+    while (*ptr == ',' || apr_isspace(*ptr))
         ++ptr;
 
     token = ptr;
@@ -1138,7 +1138,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
 
     /* Advance field pointer to the next non-comma, non-white byte */
 
-    while (*ptr == ',' || ap_isspace(*ptr))
+    while (*ptr == ',' || apr_isspace(*ptr))
 	++ptr;
 
     *field = (const char *)ptr;
@@ -1224,7 +1224,7 @@ API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field)
                 default  : if (addspace == 1)
                                *pos++ = ' ';
                            *pos++ = (in_com || in_qstr) ? *ptr
-                                                        : ap_tolower(*ptr);
+                                                        : apr_tolower(*ptr);
                            addspace = 0;
                            break;
             }
@@ -1253,7 +1253,7 @@ API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *t
 
         /* Find first non-comma, non-whitespace byte */
 
-        while (*ptr == ',' || ap_isspace(*ptr))
+        while (*ptr == ',' || apr_isspace(*ptr))
             ++ptr;
 
         if (*ptr)
@@ -1322,7 +1322,7 @@ API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *t
                                if (in_com || in_qstr)
                                    good = good && (*pos++ == *ptr);
                                else
-                                   good = good && (*pos++ == ap_tolower(*ptr));
+                                   good = good && (*pos++ == apr_tolower(*ptr));
                                addspace = 0;
                                break;
                 }
@@ -1352,7 +1352,7 @@ API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
 
     /* Find first non-white byte */
 
-    while (*ptr && ap_isspace(*ptr))
+    while (*ptr && apr_isspace(*ptr))
 	++ptr;
 
     tok_start = ptr;
@@ -1361,7 +1361,7 @@ API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
      * (comments are already gone).
      */
 
-    while (*ptr && (accept_white || !ap_isspace(*ptr))
+    while (*ptr && (accept_white || !apr_isspace(*ptr))
 	   && *ptr != ';' && *ptr != ',') {
 	if (*ptr++ == '"')
 	    while (*ptr)
@@ -1374,7 +1374,7 @@ API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
 
     /* Advance accept_line pointer to the next non-white byte */
 
-    while (*ptr && ap_isspace(*ptr))
+    while (*ptr && apr_isspace(*ptr))
 	++ptr;
 
     *accept_line = ptr;
@@ -1429,7 +1429,7 @@ API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *
     lidx = llen - tlen;
 
     if ((lidx < 0) ||
-	((lidx > 0) && !(ap_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
+	((lidx > 0) && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
 	return 0;
 
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
@@ -1512,7 +1512,7 @@ API_EXPORT(int) ap_unescape_url(char *url)
 	if (*y != '%')
 	    *x = *y;
 	else {
-	    if (!ap_isxdigit(*(y + 1)) || !ap_isxdigit(*(y + 2))) {
+	    if (!apr_isxdigit(*(y + 1)) || !apr_isxdigit(*(y + 2))) {
 		badesc = 1;
 		*x = '%';
 	    }
@@ -1555,7 +1555,7 @@ API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  */
 static const char c2x_table[] = "0123456789abcdef";
 
-static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
+static apr_inline unsigned char *c2x(unsigned what, unsigned char *where)
 {
 #ifdef CHARSET_EBCDIC
     what = ap_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
@@ -1702,7 +1702,7 @@ API_EXPORT(int) ap_is_url(const char *u)
 
     for (x = 0; u[x] != ':'; x++) {
 	if ((!u[x]) ||
-	    ((!ap_isalpha(u[x])) && (!ap_isdigit(u[x])) &&
+	    ((!apr_isalpha(u[x])) && (!apr_isdigit(u[x])) &&
 	     (u[x] != '+') && (u[x] != '-') && (u[x] != '.'))) {
 	    return 0;
 	}
@@ -1767,7 +1767,7 @@ API_EXPORT(int) ap_rind(const char *s, char c)
 API_EXPORT(void) ap_str_tolower(char *str)
 {
     while (*str) {
-	*str = ap_tolower(*str);
+	*str = apr_tolower(*str);
 	++str;
     }
 }
@@ -1834,7 +1834,7 @@ unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
 	return htonl(INADDR_ANY);
     }
 
-    my_addr = ap_inet_addr((char *)w);
+    my_addr = apr_inet_addr((char *)w);
     if (my_addr != INADDR_NONE) {
 	if (p != NULL)
 	    *p = ':';
@@ -1979,7 +1979,7 @@ API_EXPORT(void) ap_content_type_tolower(char *str)
 	*semi = '\0';
     }
     while (*str) {
-	*str = ap_tolower(*str);
+	*str = apr_tolower(*str);
 	++str;
     }
     if (semi) {
