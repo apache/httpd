@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/08 20:49:31 $]
+Last modified at [$Date: 2003/05/13 00:49:03 $]
 
 Release:
 
@@ -236,6 +236,13 @@ PATCHES TO PORT FROM 2.1
       "require" directives, instead of literal spaces only. PR 17135.
       modules/experimental/mod_auth_ldap.c r1.16
       +1: nd, trawick
+
+    * Use appropriate language code for Czech (cs) in default config
+      files. PR 9427. (2.0 + 1.3)
+      docs/docroot/index.html.var: r1.12
+      docs/conf/httpd-std.conf.in: r1.39
+      docs/conf/httpd-win.conf: r1.85
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
