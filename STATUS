@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/12 21:50:32 $]
+  Last modified at [$Date: 2000/12/13 01:18:28 $]
 
 Release:
 
@@ -30,11 +30,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * 16 bit CGIs (which included win9x batch files) were completely
-      broken  by 1.3.14.  The fix is in, but it interferes with console
-      and service processing on 9x.  A patch is in the works, OtherBill
-      expects it to be resolved Saturday.
-      STATUS: ???
+      None at present
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
