@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/30 16:11:10 $]
+Last modified at [$Date: 2002/01/30 16:53:44 $]
 
 Release:
 
@@ -40,7 +40,7 @@ on related projects:
 
 RELEASE SHOWSTOPPERS:
 
-    * Runtime startup failures don't reliable set the exit status.
+    * Runtime startup failures don't reliably set the exit status.
       For instance, try listening to port 80 and starting as non-root;
       server fails with make_sock and 'no listening sockets' errors
       but exits with 0 status.  Even with -DONE_PROCESS -DNO_DETACH.
