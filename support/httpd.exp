@@ -409,7 +409,6 @@ apr_get_filedata
 apr_get_hostname
 apr_get_inaddr
 apr_get_ipaddr
-apr_get_local_name
 apr_get_lockdata
 apr_get_os_dir
 apr_get_os_exp_time
@@ -422,10 +421,8 @@ apr_get_os_threadkey
 apr_get_pipe_timeout
 apr_get_polldata
 apr_get_port
-apr_get_remote_name
 apr_get_revents
 apr_get_sockaddr
-apr_get_socket_inaddr
 apr_get_socketdata
 apr_get_thread_private
 apr_get_threaddata
