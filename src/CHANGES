@@ -1,5 +1,9 @@
 Changes with Apache 1.3.1
 
+  *) mod_unique_id did not work on alpha linux (in general on any
+     architecture that has 64-bit time_t).
+     [Alvaro Martinez Echevarria <alvaro-httpd@lander.es>]
+
   *) PORT: Make SCO 5 (and probably 3) compile again. [Ben Laurie]
 
   *) PORT: NCR MPRAS systems have the same bug with SIGHUP restart that
