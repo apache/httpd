@@ -608,7 +608,7 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
         result = apr_psprintf(p, "mod_ssl/%s", MOD_SSL_VERSION);
     }
     else if (strEQ(var, "LIBRARY")) {
-        result = apr_pstrdup(p, SSL_LIBRARY_TEXT);
+        result = apr_pstrdup(p, SSLeay_version(SSLEAY_VERSION));
         if ((cp = strchr(result, ' ')) != NULL) {
             *cp = '/';
             if ((cp2 = strchr(cp, ' ')) != NULL)
