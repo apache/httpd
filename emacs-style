@@ -6,5 +6,6 @@
 			(c-set-offset 'substatement' ++)
 			(c-set-offset 'brace-list-intro' ++)
 			(c-set-offset 'statement-case-intro' ++)
+			(c-set-offset 'inextern-lang' 0)
 			)))
 (setq c++-mode-hook c-mode-hook)
