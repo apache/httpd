@@ -96,7 +96,7 @@ static void show_compile_settings(void)
 #ifdef SECURITY_HOLE_PASS_AUTHORIZATION
     printf(" -D SECURITY_HOLE_PASS_AUTHORIZATION\n");
 #endif
-#ifdef APR_HAS_MMAP
+#if APR_HAS_MMAP
     printf(" -D HAVE_MMAP\n");
 #endif
 #ifdef HAVE_SHMGET
@@ -108,12 +108,9 @@ static void show_compile_settings(void)
 #ifdef AP_USE_MEM_BASED_SCOREBOARD
     printf(" -D AP_USE_MEM_BASED_SCOREBOARD\n");
 #endif
-#ifdef AP_USE_MMAP_FILES
-    printf(" -D AP_USE_MMAP_FILES\n");
-#ifdef MMAP_SEGMENT_SIZE
-	printf(" -D MMAP_SEGMENT_SIZE=%ld\n",(long)MMAP_SEGMENT_SIZE);
-#endif
-#endif /*AP_USE_MMAP_FILES*/
+#ifdef APR_HAS_MMAP
+    printf(" -D APR_HAS_MMAP\n");
+#endif /*APR_HAS_MMAP*/
 #ifdef NO_WRITEV
     printf(" -D NO_WRITEV\n");
 #endif
