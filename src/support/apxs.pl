@@ -369,6 +369,7 @@ if ($opt_c) {
     foreach $s (@srcs) {
         my $o = $s;
         $o =~ s|\.c$|.o|;
+        $o =~ s|^.*/||;
         push(@cmds, "$CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c $s");
         unshift(@objs, $o);
     }
