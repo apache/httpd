@@ -539,13 +539,13 @@ do
   -bindir | --bindir | --bindi | --bind | --bin | --bi)
     ac_prev=bindir ;;
   -bindir=* | --bindir=* | --bindi=* | --bind=* | --bin=* | --bi=*)
-    bindir=$ac_optarg ;;
+    bindir="$ac_optarg" ;;
 
   -datadir | --datadir | --datadi | --datad | --data | --dat | --da)
     ac_prev=datadir ;;
   -datadir=* | --datadir=* | --datadi=* | --datad=* | --data=* | --dat=* \
   | --da=*)
-    datadir=$ac_optarg ;;
+    datadir="$ac_optarg" ;;
 
   -exec-prefix | --exec_prefix | --exec-prefix | --exec-prefi \
   | --exec-pref | --exec-pre | --exec-pr | --exec-p | --exec- \
@@ -554,31 +554,31 @@ do
   -exec-prefix=* | --exec_prefix=* | --exec-prefix=* | --exec-prefi=* \
   | --exec-pref=* | --exec-pre=* | --exec-pr=* | --exec-p=* | --exec-=* \
   | --exec=* | --exe=* | --ex=*)
-    exec_prefix=$ac_optarg ;;
+    exec_prefix="$ac_optarg" ;;
 
   -includedir | --includedir | --includedi | --included | --include \
   | --includ | --inclu | --incl | --inc)
     ac_prev=includedir ;;
   -includedir=* | --includedir=* | --includedi=* | --included=* | --include=* \
   | --includ=* | --inclu=* | --incl=* | --inc=*)
-    includedir=$ac_optarg ;;
+    includedir="$ac_optarg" ;;
 
   -infodir | --infodir | --infodi | --infod | --info | --inf)
     ac_prev=infodir ;;
   -infodir=* | --infodir=* | --infodi=* | --infod=* | --info=* | --inf=*)
-    infodir=$ac_optarg ;;
+    infodir="$ac_optarg" ;;
 
   -libdir | --libdir | --libdi | --libd)
     ac_prev=libdir ;;
   -libdir=* | --libdir=* | --libdi=* | --libd=*)
-    libdir=$ac_optarg ;;
+    libdir="$ac_optarg" ;;
 
   -libexecdir | --libexecdir | --libexecdi | --libexecd | --libexec \
   | --libexe | --libex | --libe)
     ac_prev=libexecdir ;;
   -libexecdir=* | --libexecdir=* | --libexecdi=* | --libexecd=* | --libexec=* \
   | --libexe=* | --libex=* | --libe=*)
-    libexecdir=$ac_optarg ;;
+    libexecdir="$ac_optarg" ;;
 
   -localstatedir | --localstatedir | --localstatedi | --localstated \
   | --localstate | --localstat | --localsta | --localst \
@@ -587,23 +587,23 @@ do
   -localstatedir=* | --localstatedir=* | --localstatedi=* | --localstated=* \
   | --localstate=* | --localstat=* | --localsta=* | --localst=* \
   | --locals=* | --local=* | --loca=* | --loc=* | --lo=*)
-    localstatedir=$ac_optarg ;;
+    localstatedir="$ac_optarg" ;;
 
   -mandir | --mandir | --mandi | --mand | --man | --ma | --m)
     ac_prev=mandir ;;
   -mandir=* | --mandir=* | --mandi=* | --mand=* | --man=* | --ma=* | --m=*)
-    mandir=$ac_optarg ;;
+    mandir="$ac_optarg" ;;
 
   -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
     ac_prev=prefix ;;
   -prefix=* | --prefix=* | --prefi=* | --pref=* | --pre=* | --pr=* | --p=*)
-    prefix=$ac_optarg ;;
+    prefix="$ac_optarg" ;;
 
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
   | --sbi=* | --sb=*)
-    sbindir=$ac_optarg ;;
+    sbindir="$ac_optarg" ;;
 
   -sharedstatedir | --sharedstatedir | --sharedstatedi \
   | --sharedstated | --sharedstate | --sharedstat | --sharedsta \
@@ -614,14 +614,14 @@ do
   | --sharedstated=* | --sharedstate=* | --sharedstat=* | --sharedsta=* \
   | --sharedst=* | --shareds=* | --shared=* | --share=* | --shar=* \
   | --sha=* | --sh=*)
-    sharedstatedir=$ac_optarg ;;
+    sharedstatedir="$ac_optarg" ;;
 
   -sysconfdir | --sysconfdir | --sysconfdi | --sysconfd | --sysconf \
   | --syscon | --sysco | --sysc | --sys | --sy)
     ac_prev=sysconfdir ;;
   -sysconfdir=* | --sysconfdir=* | --sysconfdi=* | --sysconfd=* | --sysconf=* \
   | --syscon=* | --sysco=* | --sysc=* | --sys=* | --sy=*)
-    sysconfdir=$ac_optarg ;;
+    sysconfdir="$ac_optarg" ;;
 
   esac
 done
