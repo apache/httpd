@@ -368,7 +368,7 @@ static int add_cern_meta_data(request_rec *r)
 
     retcode = apr_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
     if (retcode != APR_SUCCESS) {
-	if (errno == ENOENT) {
+	if (APR_STATUS_IS_ENOENT(retcode)) {
 	    return DECLINED;
 	}
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,

@@ -400,7 +400,7 @@ static dav_error * dav_fs_copymove_state(
 
     /* ensure that it exists */
     if (apr_make_dir(dst, APR_OS_DEFAULT, p) != 0) {
-	if (errno != EEXIST) {
+	if (APR_STATUS_IS_EEXIST(errno)) {
 	    /* ### use something besides 500? */
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not create internal state directory");
