@@ -86,16 +86,6 @@ extern int ap_os_is_path_absolute(const char *file);
 /* Other ap_os_ routines not used by this platform */
 
 
-#if !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE)
-typedef struct {           
-    char    *username;     
-    char    *account;      
-    char    *processor_name;
-}  _rini_struct;           
-
-extern int _rini(_rini_struct *);
-#endif /* !defined(_POSIX_SOURCE) && !defined(_XOPEN_SOURCE) */
-
 extern pid_t os_fork(const char *user);
 
 #endif /*! APACHE_OS_H*/
