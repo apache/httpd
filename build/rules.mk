@@ -71,7 +71,7 @@ APACHE_COMPILE = $(COMPILE) -c $< && touch $@
 APACHE_SH_COMPILE = $(SHLIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -c $< && touch $@
 SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 
-DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir)
+DEFS = -I. -I$(srcdir)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s .y .l .slo
