@@ -376,8 +376,6 @@ void worker_main(void *arg)
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_set_owner(allocator, ptrans);
 
-    bucket_alloc = apr_bucket_alloc_create(ptrans);
-
     apr_pool_tag(ptrans, "transaction");
 
     apr_thread_mutex_lock(worker_thread_count_mutex);
@@ -393,6 +391,7 @@ void worker_main(void *arg)
         */
         current_conn = NULL;
         apr_pool_clear(ptrans);
+        bucket_alloc = apr_bucket_alloc_create(ptrans);
 
         if ((ap_max_requests_per_child > 0
             && requests_this_child++ >= ap_max_requests_per_child)) {
