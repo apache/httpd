@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.10 (outdated: 1.11) -->
+<!-- English Revision: 1.11 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -54,7 +54,7 @@
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
-     [ -<strong>X</strong> ]</code></p>
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ]</code></p>
 
      <p><a href="../platform/windows.html">Windows 시스템</a>에서는
      다음 아규먼트를 추가로 사용할 수 있다:</p>
@@ -131,6 +131,10 @@ module="mod_so">LoadModule</directive> 지시어를 사용하여 동적으로
 <dd>지시어 목록을 지시어가 받는 아규먼트와 지시어 사용장소와
 같이 출력한다.</dd>
 
+<dt><code>-M</code></dt>
+
+<dd>읽어들인 정적 모듈과 공유 모듈 목록을 출력한다.</dd>
+
 <dt><code>-S</code></dt>
 
 <dd>설정파일에서 읽어들인 설정을 보여준다 (현재는 가상호스트
@@ -141,7 +145,9 @@ module="mod_so">LoadModule</directive> 지시어를 사용하여 동적으로
 <dd>설정파일의 문법검사만 한다. 프로그램은 문법을 검사한후
 (문법이 올바른 경우) 0이나 (문법에 문제가 있는 경우) 0이 아닌
 종료코드로 즉시 종료한다. -D <var>DUMP</var>_<var>VHOSTS</var>을
-사용하면 가상호스트 설정을 자세히 출력한다.</dd>
+사용하면 가상호스트 설정을 자세히 출력한다. -D
+<var>DUMP</var>_<var>MODULES</var>를 사용하면 읽어들인 모듈
+목록을 출력한다.</dd>
 
 <dt><code>-v</code></dt>
 

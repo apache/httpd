@@ -37,6 +37,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#securelisten">SecureListen</a></li>
 </ul>
 </div>
@@ -54,6 +55,22 @@
     that are used when creating a proxied SSL connection. Each
     client certificate used by a server must be listed separately 
     in its own <code>.der</code> file.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="NWSSLUpgradeable" id="NWSSLUpgradeable">NWSSLUpgradeable</a> <a name="nwsslupgradeable" id="nwsslupgradeable">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows a connection to be upgraded to an SSL connection upon request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_nw_ssl</td></tr>
+</table>
+    <p>Allow a connection that was created on the specified address 
+    and/or port to be upgraded to an SSL connection upon request from
+    the client. The address and/or port must have already be defined 
+    previously with a <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 
+    directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
