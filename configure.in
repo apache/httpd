@@ -104,10 +104,12 @@ APACHE_INADDR_NONE
 
 case "`uname -sr`" in
 "SunOS 5"*)
-	REENTRANCY_FLAGS="$REENTRANCY_FLAGS -D_POSIX_PTHREAD_SEMANTICS";;
+  REENTRANCY_CFLAGS="$REENTRANCY_CFLAGS -D_POSIX_PTHREAD_SEMANTICS";;
 esac
 
-REENTRANCY_FLAGS="$REENTRANCY_FLAGS -D_REENTRANT"
+REENTRANCY_CFLAGS="$REENTRANCY_CFLAGS -D_REENTRANT"
+
+CFLAGS="$CFLAGS $REENTRANCY_CFLAGS"
 
 AC_FUNC_SELECT_ARGTYPES
 
@@ -156,7 +158,6 @@ if test "$apache_need_shared" = "yes"; then
   $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
 fi
 
-CPPFLAGS="$CPPFLAGS $REENTRANCY_FLAGS"
 APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
            modules/Makefile os/Makefile)
 APACHE_FAST_GENERATE
@@ -165,6 +166,7 @@ dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
 
-APACHE_PASSTHRU(REENTRANCY_FLAGS)
+APACHE_PASSTHRU(REENTRANCY_CFLAGS)
+APACHE_PASSTHRU(REENTRANCY_LDFLAGS)
 
 AC_OUTPUT($APACHE_OUTPUT_FILES)
