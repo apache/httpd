@@ -90,9 +90,9 @@
 
 
 #include <limits.h>
-#include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
+#include "ap_ctype.h"
 
 
 /*
@@ -121,7 +121,7 @@ ap_strtol(nptr, endptr, base)
 	s = nptr;
 	do {
 		c = *s++;
-	} while (ap_isspace((unsigned char)c));
+	} while (ap_isspace(c));
 	if (c == '-') {
 		neg = 1;
 		c = *s++;
