@@ -305,7 +305,7 @@ static const command_rec cookie_log_cmds[] = {
 };
 static void register_hooks(void)
 {
-    ap_hook_fixups(spot_cookie,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(spot_cookie,NULL,NULL,AP_HOOK_MIDDLE);
 }
 module MODULE_VAR_EXPORT usertrack_module = {
     STANDARD20_MODULE_STUFF,

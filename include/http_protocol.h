@@ -227,10 +227,10 @@ API_EXPORT(int) ap_method_number_of(const char *method);
    * post_read_request --- run right after read_request or internal_redirect,
    *                  and not run during any subrequests.
    */
-DECLARE_HOOK(int,post_read_request,(request_rec *))
-DECLARE_HOOK(int,log_transaction,(request_rec *))
-DECLARE_HOOK(const char *,http_method,(const request_rec *))
-DECLARE_HOOK(unsigned short,default_port,(const request_rec *))
+AP_DECLARE_HOOK(int,post_read_request,(request_rec *))
+AP_DECLARE_HOOK(int,log_transaction,(request_rec *))
+AP_DECLARE_HOOK(const char *,http_method,(const request_rec *))
+AP_DECLARE_HOOK(unsigned short,default_port,(const request_rec *))
 
 #ifdef __cplusplus
 }

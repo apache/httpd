@@ -401,8 +401,8 @@ static void register_hooks(void)
 {
     static const char * const aszPre[]={ "mod_userdir.c",NULL };
 
-    ap_hook_translate_name(translate_alias_redir,aszPre,NULL,HOOK_MIDDLE);
-    ap_hook_fixups(fixup_redir,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_translate_name(translate_alias_redir,aszPre,NULL,AP_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_redir,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT alias_module =

@@ -529,13 +529,13 @@ static command_rec mmap_cmds[] =
 static void register_hooks(void)
 {
     /* static const char* const aszPre[]={"http_core.c",NULL}; */
-    /* ap_hook_pre_config(pre_config,NULL,NULL,HOOK_MIDDLE); */
-    ap_hook_post_config(file_cache_post_config, NULL, NULL, HOOK_MIDDLE);
-    ap_hook_translate_name(file_cache_xlat, NULL, NULL, HOOK_MIDDLE);
+    /* ap_hook_pre_config(pre_config,NULL,NULL,AP_HOOK_MIDDLE); */
+    ap_hook_post_config(file_cache_post_config, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_translate_name(file_cache_xlat, NULL, NULL, AP_HOOK_MIDDLE);
     /* This trick doesn't work apparently because the translate hooks
        are single shot. If the core_hook returns OK, then our hook is 
        not called.
-    ap_hook_translate_name(file_cache_xlat, aszPre, NULL, HOOK_MIDDLE); 
+    ap_hook_translate_name(file_cache_xlat, aszPre, NULL, AP_HOOK_MIDDLE); 
     */
 
 };

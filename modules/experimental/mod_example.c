@@ -1119,9 +1119,9 @@ static const handler_rec example_handlers[] =
  *                 before this module.
  * successors   -> a list of modules whose calls to this hook must come 
  *                 after this module.
- * position     -> The relative position of this module.  One of HOOK_FIRST,
- *                 HOOK_MIDDLE, or HOOK_LAST.  Most modules will use
- *                 HOOK_MIDDLE.  If multiple modules use the same relative
+ * position     -> The relative position of this module.  One of AP_HOOK_FIRST,
+ *                 AP_HOOK_MIDDLE, or AP_HOOK_LAST.  Most modules will use
+ *                 AP_HOOK_MIDDLE.  If multiple modules use the same relative
  *                 position, Apache will determine which to call first.
  *                 If your module relies on another module to run first,
  *                 or another module running after yours, use the 
@@ -1130,28 +1130,28 @@ static const handler_rec example_handlers[] =
 static void register_hooks(void)
 {
     /* module initializer */
-    ap_hook_post_config(example_init, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_post_config(example_init, NULL, NULL, AP_HOOK_MIDDLE);
     /* [2] filename-to-URI translation */
-    ap_hook_translate_name(example_translate_handler, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_translate_name(example_translate_handler, NULL, NULL, AP_HOOK_MIDDLE);
     /* [5] check/validate user_id */
-    ap_hook_check_user_id(example_check_user_id, NULL, NULL, HOOK_MIDDLE);     
+    ap_hook_check_user_id(example_check_user_id, NULL, NULL, AP_HOOK_MIDDLE);     
      /* [6] check user_id is valid *here* */
-    ap_hook_auth_checker(example_auth_checker, NULL, NULL, HOOK_MIDDLE); 
+    ap_hook_auth_checker(example_auth_checker, NULL, NULL, AP_HOOK_MIDDLE); 
     /* [4] check access by host address */
-    ap_hook_access_checker(example_access_checker, NULL, NULL, HOOK_MIDDLE);   
+    ap_hook_access_checker(example_access_checker, NULL, NULL, AP_HOOK_MIDDLE);   
     /* [7] MIME type checker/setter */
-    ap_hook_type_checker(example_type_checker, NULL, NULL, HOOK_MIDDLE);    
+    ap_hook_type_checker(example_type_checker, NULL, NULL, AP_HOOK_MIDDLE);    
     /* [8] fixups */
-    ap_hook_fixups(example_fixer_upper, NULL, NULL, HOOK_MIDDLE);   
+    ap_hook_fixups(example_fixer_upper, NULL, NULL, AP_HOOK_MIDDLE);   
     /* [10] logger */
-    ap_hook_log_transaction(example_logger, NULL, NULL, HOOK_MIDDLE);         
+    ap_hook_log_transaction(example_logger, NULL, NULL, AP_HOOK_MIDDLE);         
     /* [3] header parser */
-    ap_hook_header_parser(example_header_parser, NULL, NULL, HOOK_MIDDLE);     
+    ap_hook_header_parser(example_header_parser, NULL, NULL, AP_HOOK_MIDDLE);     
     /* process initializer */
-    ap_hook_child_init(example_child_init, NULL, NULL, HOOK_MIDDLE);       
+    ap_hook_child_init(example_child_init, NULL, NULL, AP_HOOK_MIDDLE);       
     /* [1] post read_request handling */
     ap_hook_post_read_request(example_post_read_request, NULL, NULL, 
-                              HOOK_MIDDLE);
+                              AP_HOOK_MIDDLE);
 }
 
 /*--------------------------------------------------------------------------*/

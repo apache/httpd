@@ -202,12 +202,12 @@ static const handler_rec handler_table[] = {
 
 static void register_hooks(void)
 {
-    ap_hook_post_config(init_module,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_child_init(init_child,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_post_config(init_module,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
 
-    ap_hook_fixups(hook_fixup,NULL,NULL,HOOK_FIRST);
-    ap_hook_translate_name(hook_uri2file,NULL,NULL,HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(hook_fixup,NULL,NULL,AP_HOOK_FIRST);
+    ap_hook_translate_name(hook_uri2file,NULL,NULL,AP_HOOK_FIRST);
+    ap_hook_type_checker(hook_mimetype,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
     /* the main config structure */

@@ -551,7 +551,7 @@ static int check_speling(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_fixups(check_speling,NULL,NULL,HOOK_LAST);
+    ap_hook_fixups(check_speling,NULL,NULL,AP_HOOK_LAST);
 }
 
 module MODULE_VAR_EXPORT speling_module =

@@ -494,7 +494,7 @@ static int add_expires(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_fixups(add_expires,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(add_expires,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT expires_module =

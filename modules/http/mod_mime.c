@@ -737,8 +737,8 @@ static int find_ct(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_type_checker(find_ct,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_post_config(mime_post_config,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_type_checker(find_ct,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_post_config(mime_post_config,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT mime_module = {

@@ -77,21 +77,21 @@
 #include "http_main.h"
 #include "apr_fnmatch.h"
 
-HOOK_STRUCT(
-	    HOOK_LINK(translate_name)
-	    HOOK_LINK(check_user_id)
-	    HOOK_LINK(fixups)
-	    HOOK_LINK(type_checker)
-	    HOOK_LINK(access_checker)
-	    HOOK_LINK(auth_checker)
+AP_HOOK_STRUCT(
+	    AP_HOOK_LINK(translate_name)
+	    AP_HOOK_LINK(check_user_id)
+	    AP_HOOK_LINK(fixups)
+	    AP_HOOK_LINK(type_checker)
+	    AP_HOOK_LINK(access_checker)
+	    AP_HOOK_LINK(auth_checker)
 )
 
-IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,(request_rec *r),(r),DECLINED)
-IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,(request_rec *r),(r),DECLINED)
-IMPLEMENT_HOOK_RUN_ALL(int,fixups,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,(request_rec *r),(r),DECLINED)
-IMPLEMENT_HOOK_RUN_ALL(int,access_checker,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,(request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,(request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,fixups,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,(request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
 
 /*****************************************************************
  *

@@ -114,12 +114,12 @@ API_EXPORT(void) ap_die(int type, request_rec *r);
 #endif
 
   /* Hooks */
-DECLARE_HOOK(int,translate_name,(request_rec *))
-DECLARE_HOOK(int,check_user_id,(request_rec *))
-DECLARE_HOOK(int,fixups,(request_rec *))
-DECLARE_HOOK(int,type_checker,(request_rec *))
-DECLARE_HOOK(int,access_checker,(request_rec *))
-DECLARE_HOOK(int,auth_checker,(request_rec *))
+AP_DECLARE_HOOK(int,translate_name,(request_rec *))
+AP_DECLARE_HOOK(int,check_user_id,(request_rec *))
+AP_DECLARE_HOOK(int,fixups,(request_rec *))
+AP_DECLARE_HOOK(int,type_checker,(request_rec *))
+AP_DECLARE_HOOK(int,access_checker,(request_rec *))
+AP_DECLARE_HOOK(int,auth_checker,(request_rec *))
 
 #ifdef __cplusplus
 }

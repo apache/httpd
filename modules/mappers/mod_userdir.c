@@ -342,7 +342,7 @@ static void register_hooks(void)
 {
     static const char * const aszSucc[]={ "mod_alias.c",NULL };
 
-    ap_hook_translate_name(translate_userdir,NULL,aszSucc,HOOK_MIDDLE);
+    ap_hook_translate_name(translate_userdir,NULL,aszSucc,AP_HOOK_MIDDLE);
 }
 
 module userdir_module = {

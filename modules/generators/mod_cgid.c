@@ -995,7 +995,7 @@ static const handler_rec cgid_handlers[] =
 
 static void register_hook(void)
 {
-    ap_hook_post_config(cgid_init, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_post_config(cgid_init, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT cgid_module = { 
