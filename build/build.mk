@@ -61,6 +61,12 @@
 STAMP = buildmk.stamp
 
 all: $(STAMP) generated_lists
+	@if [ ! -d lib/apr ]; then \
+	    echo "APR not found."; \
+	    echo "Please check-out a working version of APR, the anonymous"; \
+	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
+	    exit 1; \
+	fi
 	@$(MAKE) AMFLAGS=$(AMFLAGS) -s -f build/build2.mk
 
 generated_lists:
