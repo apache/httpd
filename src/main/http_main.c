@@ -6544,7 +6544,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     HANDLE hPipeWrite = NULL;
     HANDLE hPipeWriteDup;
     HANDLE hNullOutput = NULL;
-    HANDLE hNullError = NULL;
+    HANDLE hShareError = NULL;
     HANDLE hCurrentProcess;
     SECURITY_ATTRIBUTES sa = {0};  
 
@@ -6610,14 +6610,12 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
 
-    /* Open a null handle to soak info from the child */
-    hNullError = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
-                            FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                            &sa, OPEN_EXISTING, 0, NULL);
-    if (hNullError == INVALID_HANDLE_VALUE) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: Unable to create null error pipe for child process.\n");
-        return -1;
+    /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
+    if (server_conf->error_log) {
+        hShareError = (HANDLE)_get_osfhandle(fileno(server_conf->error_log));
+        if (hShareError == INVALID_HANDLE_VALUE) {
+            hShareError = GetStdHandle(STD_ERROR_HANDLE);
+        }
     }
 
     hCurrentProcess = GetCurrentProcess();
@@ -6638,7 +6636,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     si.wShowWindow = SW_HIDE;
     si.hStdInput   = hPipeRead;
     si.hStdOutput  = hNullOutput;
-    si.hStdError   = hNullError;
+    si.hStdError   = hShareError;
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,      /* Inherit handles */
@@ -6656,7 +6654,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         CloseHandle(hPipeRead);
         CloseHandle(hPipeWrite);        
         CloseHandle(hNullOutput);
-        CloseHandle(hNullError);        
 
         return -1;
     }
@@ -6704,7 +6701,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     CloseHandle(hPipeRead);
     CloseHandle(hPipeWrite);        
     CloseHandle(hNullOutput);
-    CloseHandle(hNullError);        
 
     return 0;
 }

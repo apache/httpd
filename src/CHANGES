@@ -1,5 +1,9 @@
 Changes with Apache 1.3.23
 
+  *) Cause Win32 to capture all child-worker process errors in
+     Apache to the main server error log, until the child can
+     open it's own error logs.  [William Rowe]
+
   *) Revert mod_negotation's handling of path_info and query_args
      to the 1.3.20 behavior.  PR: 8628, 8582, 8538  [William Rowe]
 
