@@ -60,7 +60,7 @@
 
 #   Apache binary distribution path layout
 <Layout BinaryDistribution>
-    prefix:        /usr/local/apache
+    prefix:        /usr/local/apache2
     exec_prefix:
     bindir:        bin
     sbindir:       bin

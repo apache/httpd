@@ -12,7 +12,7 @@ DEFAULT_DIR="/usr/local/apache2"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
 APFULLDIR=`pwd`
-CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
+CONFIGPARAM="--enable-layout=BinaryDistribution --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
 VER=`echo $APDIR |sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GTAR="`srclib/apr/build/PrintPath gtar`"
