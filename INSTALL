@@ -305,7 +305,7 @@
      Request Logging
       (+) mod_log_config ... Customizable logging of requests
       (-) mod_log_agent .... Specialized HTTP User-Agent logging (deprecated)
-      (-) mod_log_refer .... Specialized HTTP Referrer logging   (deprecated)
+      (-) mod_log_referer .. Specialized HTTP Referrer logging   (deprecated)
       (-) mod_usertrack .... Logging of user click-trails via HTTP Cookies
      Miscellaneous
       (+) mod_imap ......... Server-side Image Map support
