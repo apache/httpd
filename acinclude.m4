@@ -50,6 +50,7 @@ AC_DEFUN(APACHE_FAST_GENERATE,[
   APACHE_SUBST(CC)
   APACHE_SUBST(CFLAGS)
   APACHE_SUBST(CPPFLAGS)
+  APACHE_SUBST(LTFLAGS)
   APACHE_SUBST(LDFLAGS)
   APACHE_SUBST(DEFS)
   APACHE_SUBST(LIBTOOL)
@@ -250,6 +251,7 @@ AC_DEFUN(APACHE_MODULE,[
     case "$enable_$1" in
     shared*)
       enable_$1=`echo $ac_n $enable_$1$ac_c|sed 's/shared,*//'`
+      sharedobjs=yes
       shared=yes;;
     *)
       MODLIST="$MODLIST ifelse($4,,$1,$4)"
