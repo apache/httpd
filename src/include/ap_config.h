@@ -631,10 +631,12 @@ extern char *crypt();
 #endif /*_OSD_POSIX*/
 
 #elif defined(UW)
-#if UW < 700
 #define HAVE_FCNTL_SERIALIZED_ACCEPT
+#if UW < 700
 #define NO_LINGCLOSE
 #define NO_KILLPG
+#else
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #endif
 #undef  NO_SETSID
 #undef NEED_STRDUP
