@@ -141,60 +141,59 @@ static void ssl_tmp_keys_free(server_rec *s)
     MODSSL_TMP_KEYS_FREE(mc, DH);
 }
 
-static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
+static void ssl_tmp_key_init_rsa(server_rec *s,
+                                 int bits, int idx)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
+    if (!(mc->pTmpKeys[idx] =
+          RSA_generate_key(bits, RSA_F4, NULL, NULL)))
+    {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Init: Failed to generate temporary "
+                "%d bit RSA private key", bits);
+        ssl_die();
+    }
+
+}
+
+static void ssl_tmp_key_init_dh(server_rec *s,
+                                int bits, int idx)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+
+    if (!(mc->pTmpKeys[idx] =
+          ssl_dh_GetTmpParam(bits)))
+    {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Init: Failed to generate temporary "
+                "%d bit DH parameters", bits);
+        ssl_die();
+    }
+}
+
+#define MODSSL_TMP_KEY_INIT_RSA(s, bits) \
+    ssl_tmp_key_init_rsa(s, bits, SSL_TMP_KEY_RSA_##bits)
+
+#define MODSSL_TMP_KEY_INIT_DH(s, bits) \
+    ssl_tmp_key_init_dh(s, bits, SSL_TMP_KEY_DH_##bits)
+
+static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
+{
     /* seed PRNG */
     ssl_rand_seed(s, p, SSL_RSCTX_STARTUP, "Init: ");
 
-    /* generate 512 bit RSA key */
     ssl_log(s, SSL_LOG_INFO,
             "Init: Generating temporary RSA private keys (512/1024 bits)");
 
-    /* generate 512 bit RSA key */
-    if (!(mc->pTmpKeys[SSL_TMP_KEY_RSA_512] = 
-          RSA_generate_key(512, RSA_F4, NULL, NULL)))
-    {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: Failed to generate temporary "
-                "512 bit RSA private key");
-        ssl_die();
-    }
-
-    /* generate 1024 bit RSA key */
-    if (!(mc->pTmpKeys[SSL_TMP_KEY_RSA_1024] = 
-          RSA_generate_key(1024, RSA_F4, NULL, NULL)))
-    {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: Failed to generate temporary "
-                "1024 bit RSA private key");
-        ssl_die();
-    }
+    MODSSL_TMP_KEY_INIT_RSA(s, 512);
+    MODSSL_TMP_KEY_INIT_RSA(s, 1024);
 
     ssl_log(s, SSL_LOG_INFO,
-            "Init: Configuring temporary "
-            "DH parameters (512/1024 bits)");
+            "Init: Configuring temporary DH parameters (512/1024 bits)");
 
-    /* generate 512 bit DH param */
-    if (!(mc->pTmpKeys[SSL_TMP_KEY_DH_512] = 
-          ssl_dh_GetTmpParam(512)))
-    {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: Failed to generate temporary "
-                "512 bit DH parameters");
-        ssl_die();
-    }
-
-    /* generate 1024 bit DH param */
-    if (!(mc->pTmpKeys[SSL_TMP_KEY_DH_1024] = 
-          ssl_dh_GetTmpParam(1024)))
-    {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: Failed to generate temporary "
-                "1024 bit DH parameters");
-        ssl_die();
-    }
+    MODSSL_TMP_KEY_INIT_DH(s, 512);
+    MODSSL_TMP_KEY_INIT_DH(s, 1024);
 }
 
 /*
