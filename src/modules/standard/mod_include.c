@@ -87,7 +87,7 @@ void add_include_vars(request_rec *r, char *timefmt)
     struct passwd *pw;
     table *e = r->subprocess_env;
     char *t;
-    time_t date = time(NULL);
+    time_t date = r->request_time;
 
     table_set(e, "DATE_LOCAL", ht_time(r->pool, date, timefmt, 0));
     table_set(e, "DATE_GMT", ht_time(r->pool, date, timefmt, 1));
@@ -584,7 +584,7 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
         if(!strcmp(tag,"errmsg"))
             strcpy(error,tag_val);
         else if(!strcmp(tag,"timefmt")) {
-	    time_t date = time(NULL);
+	    time_t date = r->request_time;
             strcpy(tf,tag_val);
             table_set (env, "DATE_LOCAL", ht_time(r->pool,date,tf,0));
             table_set (env, "DATE_GMT", ht_time(r->pool,date,tf,1));

@@ -525,6 +525,7 @@ char *limit (cmd_parms *cmd, void *dummy, char *arg)
 	else if(!strcasecmp(method,"POST")) limited |= (1 << M_POST);
 	else if(!strcasecmp(method,"DELETE")) limited |= (1 << M_DELETE);
         else if(!strcasecmp(method,"CONNECT")) limited |= (1 << M_CONNECT);
+	else if(!strcasecmp(method,"OPTIONS")) limited |= (1 << M_OPTIONS);
 	else return "unknown method in <Limit>";
     }
 
@@ -1063,7 +1064,7 @@ int core_translate (request_rec *r)
     core_server_config *conf = get_module_config (sconf, &core_module);
   
     if (r->proxyreq) return NOT_IMPLEMENTED;
-    if (r->uri[0] != '/') return BAD_REQUEST;
+    if ((r->uri[0] != '/') && strcmp(r->uri, "*")) return BAD_REQUEST;
     
     if (r->server->path &&
 	!strncmp(r->uri, r->server->path, r->server->pathlen))
@@ -1079,27 +1080,34 @@ int do_nothing (request_rec *r) { return OK; }
 
 /*
  * Default handler for MIME types without other handlers.  Only GET
- * at this point... anyone who wants to write a generic handler for
- * PUT or POST is free to do so, but it seems unwise to provide any
- * defaults yet...
+ * and OPTIONS at this point... anyone who wants to write a generic
+ * handler for PUT or POST is free to do so, but it seems unwise to provide
+ * any defaults yet... So, for now, we assume that this will always be
+ * the last handler called and return 405 or 501.
  */
 
 int default_handler (request_rec *r)
 {
     core_dir_config *d =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
-    int errstatus;
+    int rangestatus, errstatus;
     FILE *f;
     
-    if (r->method_number != M_GET) return DECLINED;
+    r->allowed |= (1 << M_GET);
+    r->allowed |= (1 << M_TRACE);
+    r->allowed |= (1 << M_OPTIONS);
+
+    if (r->method_number == M_INVALID) return NOT_IMPLEMENTED;
+    if (r->method_number == M_OPTIONS) return send_http_options(r);
+    if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
 	log_reason("File does not exist", r->filename, r);
 	return NOT_FOUND;
     }
 	
-    if ((errstatus = set_content_length (r, r->finfo.st_size))
-	|| (errstatus = set_last_modified (r, r->finfo.st_mtime)))
+    if ((errstatus = set_last_modified (r, r->finfo.st_mtime))
+	|| (errstatus = set_content_length (r, r->finfo.st_size)))
         return errstatus;
     
 #ifdef __EMX__
@@ -1119,10 +1127,23 @@ int default_handler (request_rec *r)
     }
 
     soft_timeout ("send", r);
-    
+
+    rangestatus = set_byterange(r);
     send_http_header (r);
-    if (!r->header_only) send_fd (f, r);
-    fclose (f);
+    
+    if (!r->header_only) {
+	if (!rangestatus)
+	    send_fd (f, r);
+	else {
+	    long offset, length;
+	    while (each_byterange(r, &offset, &length)) {
+		fseek(f, offset, SEEK_SET);
+		send_fd_length(f, r, length);
+	    }
+	}
+    }
+
+    fclose(f);
     return OK;
 }
 

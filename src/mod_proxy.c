@@ -2117,7 +2117,7 @@ cache_error(struct cache_req *c)
 static int
 proxy_handler(request_rec *r)
 {
-    char *url, *scheme, *lenp, *p;
+    char *url, *scheme, *p;
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
         (proxy_server_conf *)get_module_config(sconf, &proxy_module);
@@ -2128,10 +2128,8 @@ proxy_handler(request_rec *r)
 
     if (strncmp(r->filename, "proxy:", 6) != 0) return DECLINED;
 
-    lenp = table_get (r->headers_in, "Content-length");
-    if ((r->method_number == M_POST || r->method_number == M_PUT)
-	&& lenp == NULL)
-	return BAD_REQUEST;
+    if ((rc = setup_client_block(r)))
+	return rc;
 
     url = r->filename + 6;
     p = strchr(url, ':');
@@ -2849,20 +2847,10 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
     bputs("\015\012", f);
 /* send the request data, if any. N.B. should we trap SIGPIPE ? */
 
-    if (r->method_number == M_POST || r->method_number == M_PUT)
+    if (should_client_block(r))
     {
-	len = atoi(table_get (r->headers_in, "Content-length"));
-
-	while (len > 0)
-	{
-	    i = len;
-	    if (i > HUGE_STRING_LEN) i = HUGE_STRING_LEN;
-	    
-	    i = read_client_block(r, buffer, i);
-	    bwrite(f, buffer, i);
-
-	    len -= i;
-	}
+	while ((i = read_client_block (r, buffer, HUGE_STRING_LEN)))
+            bwrite(f, buffer, i);
     }
     bflush(f);
     kill_timeout(r);

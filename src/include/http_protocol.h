@@ -64,6 +64,15 @@ request_rec *read_request (conn_rec *c);
 /* Send header for http response */
 
 void send_http_header (request_rec *l);     
+
+/* Send the response to special method requests */
+
+int send_http_trace (request_rec *r);
+int send_http_options (request_rec *r);
+
+/* Finish up stuff after a request */
+
+void finalize_request_protocol (request_rec *r);
      
 /* Send error back to client... last arg indicates error status in case
  * we get an error in the process of trying to deal with an ErrorDocument
@@ -99,6 +108,7 @@ void add_env_var (array_header *env, char *header_name, char *val);
  */
 
 long send_fd(FILE *f, request_rec *r);
+long send_fd_length(FILE *f, request_rec *r, long length);
      
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
@@ -121,7 +131,14 @@ int index_of_response (int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
      
+int setup_client_block (request_rec *r);
+int should_client_block (request_rec *r);
 long read_client_block (request_rec *r, char *buffer, int bufsiz);
+
+/* Sending a byterange */
+
+int set_byterange (request_rec *r);
+int each_byterange (request_rec *r, long *offset, long *length);
      
 /* Finally, this charming little number is here to encapsulate the
  * degree to which nph- scripts completely escape from any discipline

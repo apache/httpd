@@ -66,6 +66,8 @@
 /* A write error has occurred */
 #define B_WRERR (32)
 #define B_ERROR (48)
+/* Use chunked writing */
+#define B_CHUNK (64)
 
 typedef struct buff_struct BUFF;
 
@@ -98,7 +100,10 @@ extern BUFF *bcreate(pool *p, int flags);
 extern void bpushfd(BUFF *fb, int fd_in, int fd_out);
 extern int bsetopt(BUFF *fb, int optname, const void *optval);
 extern int bgetopt(BUFF *fb, int optname, void *optval);
+extern int bsetflag(BUFF *fb, int flag, int value);
 extern int bclose(BUFF *fb);
+
+#define bgetflag(fb, flag)	((fb)->flags & (flag))
 
 /* Error handling */
 extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),

@@ -1,3 +1,4 @@
+
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -170,6 +171,20 @@ bgetopt(BUFF *fb, int optname, void *optval)
 	errno = EINVAL;
 	return -1;
     }
+}
+
+/*
+ * Set a flag on (1) or off (0). Currently, these flags work
+ * as a function of the bcwrite() function, so we make sure to
+ * flush before setting them one way or the other; otherwise
+ * writes could end up with the wrong flag.
+ */
+int bsetflag(BUFF *fb, int flag, int value)
+{
+    bflush(fb);
+    if (value) fb->flags |= flag;
+    else fb->flags &= ~flag;
+    return value;
 }
 
 /*
@@ -410,6 +425,27 @@ bfilbuf(BUFF *fb)
 }
 
 /*
+ * A hook to write() that deals with chunking. This is really a protocol-
+ * level issue, but we deal with it here because it's simpler; this is
+ * an interim solution pending a complete rewrite of all this stuff in
+ * 2.0, using something like sfio stacked disciplines or BSD's funopen().
+ */
+int bcwrite(BUFF *fb, const void *buf, int nbyte) {
+    int r;
+
+    if (fb->flags & B_CHUNK) {
+	char chunksize[16];	/* Big enough for practically anything */
+
+	sprintf(chunksize, "%x\015\012", nbyte);
+	write(fb->fd, chunksize, strlen(chunksize));
+    }
+    r = write(fb->fd, buf, nbyte);
+    if ((r > 0) && (fb->flags & B_CHUNK))
+	write(fb->fd, "\015\012", 2);
+    return r;
+}
+
+/*
  * Write nbyte bytes.
  * Only returns fewer than nbyte if an error ocurred.
  * Returns -1 if no bytes were written before the error ocurred.
@@ -425,7 +461,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
     if (!(fb->flags & B_WR))
     {
 /* unbuffered write */
-	do i = write(fb->fd, buf, nbyte);
+	do i = bcwrite(fb, buf, nbyte);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
@@ -458,7 +494,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	}
 
 /* the buffer must be full */
-	do i = write(fb->fd, fb->outbase, fb->bufsiz);
+	do i = bcwrite(fb, fb->outbase, fb->bufsiz);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
@@ -494,7 +530,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
  */
     while (nbyte > fb->bufsiz)
     {
-	do i = write(fb->fd, buf, nbyte);
+	do i = bcwrite(fb, buf, nbyte);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
@@ -540,7 +576,7 @@ bflush(BUFF *fb)
     {
 /* the buffer must be full */
 	j = fb->outcnt;
-	do i = write(fb->fd, fb->outbase, fb->outcnt);
+	do i = bcwrite(fb, fb->outbase, fb->outcnt);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)

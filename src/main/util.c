@@ -528,6 +528,54 @@ char *get_token (pool *p, char **accept_line, int accept_white)
     return token;
 }
 
+static char* tspecials = " \t()<>@,;:\\/[]?={}";
+
+/* Next HTTP token from a header line.  Warning --- destructive!
+ * Use only with a copy!
+ */
+
+static char *next_token (char **toks) {
+    char *cp = *toks;
+    char *ret;
+
+    while (*cp && (iscntrl (*cp) || strchr (tspecials, *cp))) {
+        if (*cp == '"')
+	  while (*cp && (*cp != '"')) ++cp;
+	else
+	  ++cp;
+    }
+
+    if (!*cp) ret = NULL;
+    else {
+        ret = cp;
+
+        while (*cp && !iscntrl(*cp) && !strchr (tspecials, *cp))
+            ++cp;
+
+        if (*cp) {
+            *toks = cp + 1;
+            *cp = '\0';
+	}
+        else *toks = cp;
+    }
+
+    return ret;
+}
+
+int find_token (pool *p, char *line, char *tok) {
+    char *ltok;
+
+    if (!line) return 0;
+
+    line = pstrdup (p, line);
+    while ((ltok = next_token (&line)))
+        if (!strcasecmp (ltok, tok))
+            return 1;
+
+    return 0;
+}
+
+
 char *escape_shell_cmd(pool *p, char *s) {
     register int x,y,l;
     char *cmd;
@@ -617,16 +665,21 @@ unescape_url(char *url) {
     else return OK;
 }
 
-char *construct_url(pool *p, char *uri, server_rec *s) {
+char *construct_server(pool *p, char *hostname, int port) {
     char portnum[10];		/* Long enough.  Really! */
   
-    if (s->port == 80) {
-        return pstrcat (p, "http://", s->server_hostname, uri, NULL);
-    } else {
-        sprintf (portnum, "%d", s->port);
-	return pstrcat (p, "http://", s->server_hostname, ":", portnum, uri,
-			NULL);
+    if (port == 80)
+	return hostname;
+    else {
+        sprintf (portnum, "%d", port);
+	return pstrcat (p, hostname, ":", portnum, NULL);
     }
+}
+
+char *construct_url(pool *p, char *uri, server_rec *s) {
+    return pstrcat (p, "http://",
+		    construct_server(p, s->server_hostname, s->port),
+		    uri, NULL);
 }
 
 #define c2x(what,where) sprintf(where,"%%%02x",what)

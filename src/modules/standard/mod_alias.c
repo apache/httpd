@@ -234,7 +234,7 @@ int translate_alias_redir(request_rec *r)
 #else    
     if (r->uri[0] != '/' && r->uri[0] != '\0') 
 #endif    
-        return BAD_REQUEST;
+        return DECLINED;
 
     if ((ret = try_alias_list (r, serverconf->redirects, 1)) != NULL) {
         table_set (r->headers_out, "Location", ret);

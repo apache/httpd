@@ -1,4 +1,4 @@
-
+    
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,8 +50,7 @@
  * project, please see <http://www.apache.org/>.
  *
  */
-
-
+  
 /*
  * http_protocol.c --- routines which directly communicate with the
  * client.
@@ -146,68 +145,236 @@ int later_than(struct tm *lms, char *ims) {
     return 1;
 }
 
+static int parse_byterange (char *range, long clength, long *start, long *end)
+{
+    char *dash = strchr(range, '-');
+
+    if (!dash)
+	return 0;
+
+    if ((dash == range)) {
+	/* In the form "-5" */
+	*start = clength - atol(dash + 1);
+	*end = clength - 1;
+    }
+    else {
+	*dash = '\0';
+	dash++;
+	*start = atol(range);
+	if (*dash)
+	    *end = atol(dash);
+	else	/* "5-" */
+	    *end = clength -1;
+    }
+
+    if (*start > *end)
+	return 0;
+
+    if (*end >= clength)
+	*end = clength - 1;
+
+    return 1;
+}
+
+/* This is a string I made up. Pounded on the keyboard a couple of times.
+ * It's a good a way as any, I suppose, if you can't parse the document
+ * beforehand (which we can't).
+ */
+
+#define BYTERANGE_BOUNDARY "13962mx38v144c9999AQdk39d2Klmx79"
+
+int set_byterange (request_rec *r)
+{
+    char *range = table_get (r->headers_in, "Range");
+    char *if_range = table_get (r->headers_in, "If-Range");
+    char ts[MAX_STRING_LEN], *match;
+    long range_start, range_end;
+
+    /* Reasons we won't do ranges... */
+
+    if (!r->clength || r->assbackwards) return 0;
+    if (!range || strncmp(range, "bytes=", 6)) {
+	table_set (r->headers_out, "Accept-Ranges", "bytes");
+	return 0;
+    }
+
+    /* Check the If-Range header. Golly, this is a long if statement */
+
+    if (if_range
+	&& !((if_range[0] == '"') /* an entity tag */
+	     && (match = table_get(r->headers_out, "Etag"))
+	     && (match[0] == '"') && !strcasecmp(if_range, match))
+	&& !((if_range[0] != '"') /* a date */
+	     && (match = table_get(r->headers_out, "Last-Modified"))
+	     && (!strcasecmp(if_range, match))))
+	return 0;
+    
+    if (!strchr(range, ',')) {
+	/* A single range */
+	if (!parse_byterange(pstrdup(r->pool, range + 6), r->clength,
+			     &range_start, &range_end))
+	    return 0;
+
+	r->byterange = 1;
+
+	sprintf(ts, "bytes %ld-%ld/%ld", range_start, range_end,
+		r->clength);
+	table_set(r->headers_out, "Content-Range",
+		  pstrdup(r->pool, ts));
+	sprintf(ts, "%ld", range_end - range_start + 1);
+	table_set(r->headers_out, "Content-Length", ts);
+    }
+    else {
+	/* a multiple range */
+	r->byterange = 2;
+	table_unset(r->headers_out, "Content-Length");
+    }
+    
+    r->status = PARTIAL_CONTENT;
+    r->range = range + 6;
+
+    return 1;
+}
+
+int each_byterange (request_rec *r, long *offset, long *length) {
+    long range_start, range_end;
+    char *range;
+
+    if (!*r->range) {
+	if (r->byterange > 1)
+	    rvputs(r, "\015\012--", BYTERANGE_BOUNDARY, "--\015\012", NULL);
+	return 0;
+    }
+
+    range = getword(r->pool, &r->range, ',');
+    if (!parse_byterange(range, r->clength, &range_start, &range_end))
+	return each_byterange(r, offset, length);	/* Skip this one */
+
+    if (r->byterange > 1) {
+	char *ct = r->content_type ? r->content_type : default_type(r);
+	char ts[MAX_STRING_LEN];
+
+	sprintf(ts, "%ld-%ld/%ld", range_start, range_end, r->clength);
+	rvputs(r, "\015\012--", BYTERANGE_BOUNDARY, "\015\012Content-type: ",
+	       ct, "\015\012Content-range: bytes ", ts, "\015\012\015\012",
+	       NULL);
+    }
+
+    *offset = range_start;
+    *length = range_end - range_start + 1;
+    return 1;
+}
 
 int set_content_length (request_rec *r, long clength)
 {
     char ts[MAX_STRING_LEN];
-    
+
+    r->clength = clength;
+
     sprintf (ts, "%ld", clength);
-    table_set (r->headers_out, "Content-length", pstrdup (r->pool, ts));
+    table_set (r->headers_out, "Content-Length", pstrdup (r->pool, ts));
+
     return 0;
 }
 
 int set_keepalive(request_rec *r)
 {
-  char *conn = table_get (r->headers_in, "Connection");
-  char *length = table_get (r->headers_out, "Content-length");
+    char *conn = table_get (r->headers_in, "Connection");
+    char *length = table_get (r->headers_out, "Content-length");
 
-  if (conn && length && !strncasecmp(conn, "Keep-Alive", 10) &&
-      r->server->keep_alive_timeout &&
-      (r->server->keep_alive > r->connection->keepalives)) {
-    char header[26];
-    int left = r->server->keep_alive - r->connection->keepalives;
+#ifdef FORHTTP11
+    if ((((r->proto_num >= 1001) && (!find_token(r->pool, conn, "close")))
+	 || (find_token(r->pool, conn, "keep-alive")))
+#else
+    if ((find_token(r->pool, conn, "keep-alive"))
+#endif
+	&& (r->header_only || length ||
+	    ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1))))
+	&& (r->server->keep_alive_timeout &&
+	    (r->server->keep_alive > r->connection->keepalives))) {
+	char header[26];
+	int left = r->server->keep_alive - r->connection->keepalives;
+	
+	r->connection->keepalive = 1;
+	r->connection->keepalives++;
+	
+#ifdef FORHTTP11
+	if (r->proto_num < 1001) {
+#endif
+	    sprintf(header, "timeout=%d, max=%d",
+		    r->server->keep_alive_timeout, left);
+	    table_set (r->headers_out, "Connection", "Keep-Alive");
+	    table_set (r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
+#ifdef FORHTTP11
+	}
+#endif	
 
-    r->connection->keepalive = 1;
-    r->connection->keepalives++;
-    sprintf(header, "timeout=%d, max=%d", r->server->keep_alive_timeout,
-	    left);
-    table_set (r->headers_out, "Connection", "Keep-Alive");
-    table_set (r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
+	return 1;
+    }
 
-    return 1;
-  }
+    /* We only really need to send this to HTTP/1.1 clients, but we
+     * always send it anyway, because a broken proxy may identify itself
+     * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
+     * to a HTTP/1.1 client. Better safe than sorry.
+     */
+    table_set (r->headers_out, "Connection", "close");
 
-      return 0;
+    return 0;
 }
 
 int set_last_modified(request_rec *r, time_t mtime)
 {
-    char *ts;
-    char *if_modified_since = table_get (r->headers_in, "If-modified-since");
+    char *ts, etag[MAX_STRING_LEN];
+    char *if_modified_since = table_get (r->headers_in, "If-Modified-Since");
+    char *if_unmodified = table_get (r->headers_in, "If-Unmodified-Since");
+    char *if_nonematch = table_get (r->headers_in, "If-None-Match");
+    char *if_match = table_get (r->headers_in, "If-Match");
 
-    /* Cacheing proxies use the absence of a Last-modified header
-     * to indicate that a document is dynamic and shouldn't be cached.
-     * For the moment, we enforce that here, though it would probably
-     * work just as well to generate an Expires: header in send_http_header.
-     *
-     * However, even in that case, if no_cache is set, we would *not*
-     * want to send USE_LOCAL_COPY, since the client isn't *supposed*
-     * to have it cached.
-     */
-    
-    if (r->no_cache) return OK;
-    
+    /* Invalid, future time... just ignore it */
+    if (mtime > r->request_time) return OK;
+
     ts = gm_timestr_822(r->pool, mtime);
-    table_set (r->headers_out, "Last-modified", ts);
+    table_set (r->headers_out, "Last-Modified", ts);
+
+    /* Make an ETag header out of various peices of information. We use
+     * the last-modified date and, if we have a real file, the
+     * length and inode number - note that this doesn't have to match
+     * the content-length (i.e. includes), it just has to be unique
+     * for the file.
+     */
+
+    if (r->finfo.st_mode != 0)
+        sprintf(etag, "\"%lx-%lx-%lx\"", r->finfo.st_ino, r->finfo.st_size,
+		mtime);
+    else
+        sprintf(etag, "\"%lx\"", mtime);
+    table_set (r->headers_out, "ETag", etag);
+
+    /* We now do the no_cache stuff using an Expires: header (we used to
+     * withhold Last-modified). However, we still want to enforce this by
+     * not allowing conditional GETs.
+     */
+
+    if (r->no_cache) return OK;
 
     /* Check for conditional GETs --- note that we only want this check
      * to succeed if the GET was successful; ErrorDocuments *always* get sent.
      */
     
-    if (r->status == 200 &&
-	if_modified_since && later_than(gmtime(&mtime), if_modified_since))
-      
+    if ((r->status < 200) || (r->status >= 300))
+        return OK;
+
+    if (if_modified_since && later_than(gmtime(&mtime), if_modified_since))
         return USE_LOCAL_COPY;
+    else if (if_unmodified && !later_than(gmtime(&mtime), if_unmodified))
+        return PRECONDITION_FAILED;
+    else if (if_nonematch && ((if_nonematch[0] == '*') ||
+			      find_token(r->pool, if_nonematch, etag)))
+        return (r->method_number == M_GET) ?
+	    USE_LOCAL_COPY : PRECONDITION_FAILED;
+    else if (if_match && !((if_match[0] == '*') ||
+			   find_token(r->pool, if_match, etag)))
+        return PRECONDITION_FAILED;
     else
         return OK;
 }
@@ -231,15 +398,6 @@ getline(char *s, int n, BUFF *in)
 void parse_uri (request_rec *r, char *uri)
 {
     const char *s;
-    /* If we ever want to do byte-ranges a la Netscape & Franks,
-     * this is the place to parse them; with proper support in
-     * rprintf and rputc, and the sub-request setup and finalizers
-     * here, it'll all just work, even for vile cases like
-     * inclusion of byte-ranges of the output of CGI scripts, with
-     * the client requesting only a byte-range of *that*!
-     *
-     * But for now...
-     */
 
 #ifdef __EMX__
     /* Variable for OS/2 fix below. */
@@ -255,8 +413,13 @@ void parse_uri (request_rec *r, char *uri)
 	r->proxyreq = 1;
 	r->uri = uri;
 	r->args = NULL;
-    } else
-    {
+    }
+    else if (r->method && !strcmp(r->method, "TRACE")) {
+	r->proxyreq = 0;
+	r->uri = uri;
+	r->args = NULL;
+    }
+    else {
 	r->proxyreq = 0;
 	r->uri = getword (r->pool, &uri, '?');
 
@@ -373,7 +536,7 @@ void get_mime_headers(request_rec *r)
 
 void check_hostalias (request_rec *r) {
   char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
-  int port = (*r->hostname) ? atoi(r->hostname) : 0;
+  int port = (*r->hostname) ? atoi(r->hostname) : 80;
   server_rec *s;
 
   if (port && (port != r->server->port))
@@ -388,8 +551,7 @@ void check_hostalias (request_rec *r) {
   for (s = r->server->next; s; s = s->next) {
     char *names = s->names;
     
-    if ((!strcasecmp(host, s->server_hostname)) &&
-	(!port || (port == s->port))) {
+    if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
       r->server = r->connection->server = s;
       if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
 	r->uri += r->hostlen;
@@ -431,6 +593,8 @@ void check_serverpath (request_rec *r) {
 request_rec *read_request (conn_rec *conn)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
+
+    r->request_time = time(NULL);
   
     r->connection = conn;
     r->server = conn->server;
@@ -462,7 +626,7 @@ request_rec *read_request (conn_rec *conn)
     
     hard_timeout ("read", r);
     if (!read_request_line (r)) return NULL;
-    if (!r->assbackwards) get_mime_headers(r);
+    if (!r->assbackwards) get_mime_headers (r);
 
 /* handle Host header here, to get virtual server */
 
@@ -488,6 +652,10 @@ request_rec *read_request (conn_rec *conn)
         r->method_number = M_DELETE;
     else if(!strcmp(r->method,"CONNECT"))
         r->method_number = M_CONNECT;
+    else if(!strcmp(r->method,"OPTIONS"))
+        r->method_number = M_OPTIONS;
+    else if(!strcmp(r->method,"TRACE"))
+        r->method_number = M_TRACE;
     else 
         r->method_number = M_INVALID; /* Will eventually croak. */
 
@@ -550,7 +718,7 @@ void note_digest_auth_failure(request_rec *r)
 {
     char nonce[10];
 
-    sprintf(nonce, "%lu", time(NULL));
+    sprintf(nonce, "%lu", r->request_time);
     table_set (r->err_headers_out, "WWW-Authenticate",
                pstrcat(r->pool, "Digest realm=\"", auth_name(r),
                        "\", nonce=\"", nonce, "\"", NULL));
@@ -590,7 +758,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     return OK;
 }
 
-#define RESPONSE_CODE_LIST " 200 302 304 400 401 403 404 500 503 501 502 "
+#define RESPONSE_CODE_LIST " 200 206 301 302 304 400 401 403 404 405 411 412 500 503 501 502 "
 
 /* New Apache routine to map error responses into array indicies 
  *  e.g.  400 -> 0,  500 -> 1,  502 -> 2 ...                     
@@ -599,12 +767,17 @@ int get_basic_auth_pw (request_rec *r, char **pw)
 
 char *status_lines[] = {
    "200 OK",
+   "206 Partial Content",
+   "301 Moved Permanently",
    "302 Found",
    "304 Not Modified",
    "400 Bad Request",
    "401 Unauthorized",
    "403 Forbidden",
    "404 Not found",
+   "405 Method Not Allowed",
+   "411 Length Required",
+   "412 Precondition Failed",
    "500 Server error",
    "503 Out of resources",
    "501 Not Implemented",
@@ -613,12 +786,17 @@ char *status_lines[] = {
 
 char *response_titles[] = {
    "200 OK",			/* Never actually sent, barring die(200,...) */
+   "206 Partial Content",	/* Never sent as an error (we hope) */
+   "Document moved",		/* 301 Redirect */
    "Document moved",		/* 302 Redirect */
    "304 Not Modified",		/* Never sent... 304 MUST be header only */
    "Bad Request",
    "Authorization Required",
    "Forbidden",
    "File Not found",
+   "Method Not Allowed",
+   "Length Required",
+   "Precondition Failed",
    "Server Error",
    "Out of resources",
    "Method not implemented",
@@ -654,7 +832,8 @@ void basic_http_header (request_rec *r)
         r->status_line = status_lines[index_of_response(r->status)];
     
     bvputs(fd, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
-    bvputs(fd,"Date: ",gm_timestr_822 (r->pool, time(NULL)), "\015\012", NULL);
+    bvputs(fd,"Date: ",gm_timestr_822 (r->pool, r->request_time),
+	   "\015\012", NULL);
     bvputs(fd,"Server: ", SERVER_VERSION, "\015\012", NULL);
 }
 
@@ -683,6 +862,67 @@ char *nuke_mime_parms (pool *p, char *content_type)
 #endif
 }
 
+char *make_allow(request_rec *r)
+{
+    int allowed = r->allowed;
+
+    return 2 + pstrcat(r->pool, (allowed & (1 << M_GET)) ? ", GET" : "",
+		       (allowed & (1 << M_POST)) ? ", POST" : "",
+		       (allowed & (1 << M_PUT)) ? ", PUT" : "",
+		       (allowed & (1 << M_DELETE)) ? ", DELETE" : "",
+		       (allowed & (1 << M_OPTIONS)) ? ", OPTIONS" : "",
+		       (allowed & (1 << M_TRACE)) ? ", TRACE" : "",
+		       NULL);
+    
+}
+
+int send_http_trace (request_rec *r)
+{
+    array_header *hdrs_arr = table_elts(r->headers_in);
+    table_entry *hdrs = (table_entry *)hdrs_arr->elts;
+    int i;
+
+    /* Get the original request */
+    while (r->prev) r = r->prev;
+
+    soft_timeout ("send", r);
+
+    r->content_type = "message/http";
+    send_http_header(r);
+    
+    /* Now we recreate the request, and echo it back */
+
+    rvputs(r, r->method, " ", r->uri, " ", r->protocol, "\015\012", NULL);
+
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+      if (!hdrs[i].key) continue;
+      rvputs(r, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
+    }
+
+    kill_timeout(r);
+    return OK;
+}
+
+int send_http_options(request_rec *r)
+{
+    BUFF *fd = r->connection->client;
+    const long int zero=0L;
+
+    if (r->assbackwards) return DECLINED;
+
+    soft_timeout ("send", r);
+
+    basic_http_header(r);
+    bputs("Connection: close\015\012", fd);
+    bvputs(fd, "Allow: ", make_allow(r), "\015\012", NULL);
+    bputs("\015\012", fd);
+
+    bsetopt(fd, BO_BYTECT, &zero);
+    kill_timeout (r);
+
+    return OK;
+}
+
 void send_http_header(request_rec *r)
 {
     conn_rec *c = r->connection;
@@ -705,23 +945,45 @@ void send_http_header(request_rec *r)
     basic_http_header (r);
 
     set_keepalive (r);
-    
-    if (r->content_type)
-        bvputs(fd, "Content-type: ", 
+
+    if (r->chunked)
+	bputs("Transfer-Encoding: chunked\015\012", fd);
+
+    if (r->byterange > 1)
+        bvputs(fd, "Content-Type: multipart/byteranges; boundary=",
+	       BYTERANGE_BOUNDARY, "\015\012", NULL);
+    else if (r->content_type)
+        bvputs(fd, "Content-Type: ", 
 		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
-    else if(default_type)
-        bvputs(fd, "Content-type: ", default_type, "\015\012", NULL);
+    else if (default_type)
+        bvputs(fd, "Content-Type: ", default_type, "\015\012", NULL);
     
     if (r->content_encoding)
-        bvputs(fd,"Content-encoding: ", r->content_encoding, "\015\012", NULL);
+        bvputs(fd,"Content-Encoding: ", r->content_encoding, "\015\012", NULL);
     
     if (r->content_language)
-        bvputs(fd,"Content-language: ", r->content_language, "\015\012", NULL);
+        bvputs(fd,"Content-Language: ", r->content_language, "\015\012", NULL);
+
+    /* If it's a TRACE, or if they sent us Via:, send one back */
+    if ((r->method_number == M_TRACE) || table_get(r->headers_in, "Via"))
+        bvputs(fd, "Via: ",
+	SERVER_PROTOCOL + (!strncmp(SERVER_PROTOCOL, "HTTP/", 5) ? 5 : 0), " ",
+	construct_server(r->pool, r->server->server_hostname, r->server->port),
+	       " (", SERVER_VERSION, ")\015\012", NULL);
     
+    /* We now worry about this here */
+
+    if (r->no_cache && (r->proto_num >= 1001))
+        bputs ("Cache-Control: private\015\012", fd);
+    else if (r->no_cache)
+        bvputs(fd,"Expires: ", gm_timestr_822(r->pool, r->request_time),
+	       "\015\012", NULL);
+
     hdrs_arr = table_elts(r->headers_out);
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) continue;
+	if (r->no_cache && !strcasecmp(hdrs[i].key, "Expires")) continue;
 	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
     }
 
@@ -729,33 +991,144 @@ void send_http_header(request_rec *r)
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) continue;
+	if (r->no_cache && !strcasecmp(hdrs[i].key, "Expires")) continue;
 	bvputs(fd, hdrs[i].key, ": ", hdrs[i].val, "\015\012", NULL);
     }
 
     bputs("\015\012",fd);
 
     if (c->keepalive)
-	bflush(r->connection->client);  /* For bugs in Netscape, perhaps */
+	bflush(fd);  /* This is to work around a Netscape bug */
 
     bsetopt(fd, BO_BYTECT, &zero);
     r->sent_bodyct = 1;		/* Whatever follows is real body stuff... */
+
+    /* Set buffer flags for the body */
+    if (r->chunked) bsetflag(fd, B_CHUNK, 1);
+}
+
+void finalize_request_protocol (request_rec *r) {
+    BUFF *fd = r->connection->client;
+
+    /* Turn off chunked encoding */
+
+    if (r->chunked) {
+        bsetflag(fd, B_CHUNK, 0);
+	bputs("0\015\012", fd);
+	/* If we had footer "headers", we'd send them now */
+	bputs("\015\012", fd);
+    }
+
+}
+
+int setup_client_block (request_rec *r)
+{
+    char *tenc = table_get (r->headers_in, "Transfer-Encoding");
+    char *lenp = table_get (r->headers_in, "Content-length");
+
+    if ((r->method_number != M_POST) && (r->method_number != M_PUT))
+	return OK;
+
+    if (tenc) {
+	if (strcasecmp(tenc, "chunked")) {
+	    log_printf(r->server, "Unknown Transfer-Encoding %s", tenc);
+	    return BAD_REQUEST;
+	}
+	r->read_chunked = 1;
+    }
+    else {
+	if (!lenp) {
+	    log_reason("POST or PUT without Content-length:", r->filename, r);
+	    return LENGTH_REQUIRED;
+	}
+	r->remaining = atol(lenp);
+    }
+
+    return OK;
+}
+
+int should_client_block (request_rec *r) {
+    return (r->method_number == M_POST || r->method_number == M_PUT);
+}
+
+static int rd_chunk_size (BUFF *b) {
+    int chunksize = 0;
+    int c;
+
+    while ((c = bgetc (b)) != EOF && isxdigit (c)) {
+        int xvalue;
+
+        if (c >= '0' && c <= '9') xvalue = c - '0';
+        else if (c >= 'A' && c <= 'F') xvalue = c - 'A' + 0xa;
+        else if (c >= 'a' && c <= 'f') xvalue = c - 'a' + 0xa;
+
+        chunksize = (chunksize << 4) | xvalue;
+    }
+
+    /* Skip to end of line, bypassing chunk options, if present */
+
+    while (c != '\n' && c != EOF)
+        c = bgetc (b);
+
+    return (c == EOF) ? -1 : chunksize;
 }
 
 long read_client_block (request_rec *r, char *buffer, int bufsiz)
 {
-    return bread(r->connection->client, buffer, bufsiz);
+    long c, len_read, len_to_read = r->remaining;
+
+    if (!r->read_chunked) {	/* Content-length read */
+	if (len_to_read >= bufsiz)
+	    len_to_read = bufsiz - 1;
+	len_read = bread(r->connection->client, buffer, len_to_read);
+	r->remaining -= len_read;
+	return len_read;
+    }
+
+    /* Handle chunked reading */
+    if (len_to_read == 0) {
+	len_to_read = rd_chunk_size(r->connection->client);
+	if (len_to_read == 0) {
+	    /* Skip over any "footers" */
+	    do c = bgets(buffer, bufsiz, r->connection->client);
+	    while ((c > 0) && (*buffer != '\015') && (*buffer != '\012'));
+	    return 0;
+	}
+    }
+    if (len_to_read >= bufsiz) {
+	r->remaining = len_to_read - bufsiz - 1;
+	len_to_read = bufsiz - 1;
+    }
+    else
+	r->remaining = 0;
+    
+    len_read = bread(r->connection->client, buffer, len_to_read);
+    if (r->remaining == 0) {
+	do c = bgetc (r->connection->client);
+	while (c != '\n' && c != EOF);
+    }
+
+    return len_read;
 }
 
-long send_fd(FILE *f, request_rec *r)
+long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
+
+long send_fd_length(FILE *f, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent;
-    register int n,o,w;
+    register int n, w, o, len;
     conn_rec *c = r->connection;
     
+    if (length == 0) return 0;
+
     total_bytes_sent = 0;
     while (!r->connection->aborted) {
-        while ((n= fread(buf, sizeof(char), IOBUFSIZE, f)) < 1
+	if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
+	    len = length - total_bytes_sent;
+	else len = IOBUFSIZE;
+
+        while ((n= fread(buf, sizeof(char), len, f)) < 1
 	       && ferror(f) && errno == EINTR)
 	    continue;
 	
@@ -771,10 +1144,11 @@ long send_fd(FILE *f, request_rec *r)
 		break;
 	    reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
-            o+=w;
+	    o+=w;
         }
     }
-    bflush(c->client);
+
+    if (length > 0) bflush(c->client);
     
     SET_BYTES_SENT(r);
     return total_bytes_sent;
@@ -860,14 +1234,33 @@ void send_error_response (request_rec *r, int recursive_error)
 	 */
 	
 	if (status == USE_LOCAL_COPY) {
-	    if (set_keepalive(r))
-		bputs("Connection: Keep-Alive\015\012", c->client);
+	    char *etag = table_get(r->headers_out, "ETag");
+	    char *cloc = table_get(r->headers_out, "Content-Location");
+	    if (etag) bvputs(c->client, "ETag: ", etag, "\015\012", NULL);
+	    if (cloc) bvputs(c->client, "Content-Location: ", cloc,
+			     "\015\012", NULL);
+	    if (set_keepalive(r)) {
+#ifdef FORHTTP11
+		if (r->proto_num < 1001)
+#endif
+		    bputs("Connection: Keep-Alive\015\012", c->client);
+	    }
+	    else bputs("Connection: close", c->client);
 	    bputs("\015\012", c->client);
 	    return;
 	}
+
+	/* We don't want persistent connections here, for several reasons.
+	 * Most importantly, if there's been an error, we don't want
+	 * it screwing up the next request.
+	 */
+	bputs("Connection: close\015\012", c->client);
 	
-	if (status == REDIRECT)
+	if ((status == REDIRECT) || (status == MOVED))
 	    bvputs(c->client, "Location: ", location, "\015\012", NULL);
+
+	if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
+	    bvputs(c->client, "Allow: ", make_allow(r), "\015\012", NULL);
 	
 	for (i = 0; i < err_hdrs_arr->nelts; ++i) {
 	    if (!err_hdrs[i].key) continue;
@@ -911,6 +1304,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	
         switch (r->status) {
 	case REDIRECT:
+	case MOVED:
 	    bvputs(fd, "The document has moved <A HREF=\"",
 		    escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
 	    break;
@@ -932,8 +1326,22 @@ void send_error_response (request_rec *r, int recursive_error)
 		   NULL);
 	    break;
 	case NOT_FOUND:
-	     bvputs(fd, "The requested URL ", escape_html(r->pool, r->uri),
+	    bvputs(fd, "The requested URL ", escape_html(r->pool, r->uri),
 		    " was not found on this server.<P>\n", NULL);
+	    break;
+	case METHOD_NOT_ALLOWED:
+	    bvputs(fd, "The requested method ", r->method, " is not allowed "
+		   "for the URL ", escape_html(r->pool, r->uri),
+		   ".<P>\n", NULL);
+	    break;
+	case LENGTH_REQUIRED:
+	    bvputs(fd, "A request of the requested method ", r->method,
+		   " requires a valid Content-length.<P>\n", NULL);
+	    break;
+	case PRECONDITION_FAILED:
+	    bvputs(fd, "The requested precondition for serving the URL ",
+		   escape_html(r->pool, r->uri), " evaluated to false.<P>\n",
+		   NULL);
 	    break;
 	case SERVER_ERROR:
 	    bputs("The server encountered an internal error or\n", fd);

@@ -347,7 +347,7 @@ array_header *do_header_line (pool *p, char *accept_line)
 negotiation_state *parse_accept_headers (request_rec *r)
 {
     negotiation_state *new =
-        (negotiation_state *)palloc (r->pool, sizeof (negotiation_state));
+        (negotiation_state *)pcalloc (r->pool, sizeof (negotiation_state));
     table *hdrs = r->headers_in;
 
     new->pool = r->pool;
@@ -1016,6 +1016,31 @@ var_rec *best_match(negotiation_state *neg)
     return best;
 }
 
+char *set_vary (pool *p, negotiation_state *neg)
+{
+    var_rec *var_recs = (var_rec*)neg->avail_vars->elts;
+    int i, accept_encoding = 0;
+    int accept_language = 0;
+    char *enc, *lang;
+
+    /* Go through each variant and check for an encoding
+     * or language (we always set "Accept", so no need to check).
+     */
+
+    for (i = 0; i < neg->avail_vars->nelts; ++i) {
+        enc = var_recs[i].content_encoding;
+	lang = var_recs[i].content_language;
+
+        if (!accept_encoding && !(!enc || !strcmp(enc, "")))
+	    accept_encoding = 1;
+	if (!accept_language && !(!lang || !strcmp(lang, "")))
+	    accept_language = 1;
+    }
+
+    return pstrcat(p, "Accept", accept_encoding ? ", Accept-Encoding" : "",
+		   accept_language ? ", Accept-Language" : "", NULL);
+}
+
 /****************************************************************
  *
  * Executive...
@@ -1039,7 +1064,14 @@ int handle_map_file (request_rec *r)
       return NOT_FOUND;
     }
 
-    if (!do_cache_negotiated_docs(r->server)) r->no_cache = 1;
+    /* Make sure caching works - Vary should handle HTTP/1.1, but for
+     * HTTP/1.0, we can't allow caching at all. NB that we merge the
+     * header in case some other module negotiates on something else.
+     */
+    if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
+        r->no_cache = 1;
+    table_merge(r->err_headers_out, "Vary", set_vary(r->pool, neg));
+
     udir = make_dirstr (r->pool, r->uri, count_dirs (r->uri));
     udir = escape_uri(r->pool, udir);
     internal_redirect (make_full_path (r->pool, udir, best->file_name), r);
@@ -1087,7 +1119,10 @@ int handle_multi (request_rec *r)
     
     /* Otherwise, use it. */
     
-    if (!do_cache_negotiated_docs(r->server)) r->no_cache = 1;
+    if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
+        r->no_cache = 1;
+    table_merge(r->err_headers_out, "Vary", set_vary(r->pool, neg));
+
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;

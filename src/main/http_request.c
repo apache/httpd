@@ -782,7 +782,8 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
-    if (!r->hostname && (r->proto_num >= 1001)) {
+    if ((!r->hostname && (r->proto_num >= 1001)) ||
+	((r->proto_num == 1001) && !table_get(r->headers_in, "Host"))) {
         /* Client sent us a HTTP/1.1 or later request without telling
 	 * us the hostname, either with a full URL or a Host: header.
 	 * We therefore need to (as per the 1.1 spec) send an error
@@ -852,8 +853,17 @@ void process_request_internal (request_rec *r)
 	return;
     }
 
-    if ((access_status = invoke_handler (r)) != 0)
+    /* We don't want TRACE to run through the normal handler set,
+     * we handle it specially.
+     */
+    if (r->method_number == M_TRACE) send_http_trace (r);
+    else if ((access_status = invoke_handler (r)) != 0) {
         die (access_status, r);
+	return;
+    }
+
+   /* Take care of little things that need to happen when we're done */
+   finalize_request_protocol (r);
 }
 
 void process_request (request_rec *r)
@@ -913,11 +923,16 @@ request_rec *internal_internal_redirect (char *new_uri, request_rec *r)
 
     new->method = r->method;
     new->method_number = r->method_number;
+    new->allowed = r->allowed;
     
     new->status = r->status;
     new->assbackwards = r->assbackwards;
     new->header_only = r->header_only;
     new->protocol = r->protocol;
+    new->proto_num = r->proto_num;
+    new->hostname = r->hostname;
+    new->hostlen = r->hostlen;
+    new->request_time = r->request_time;
     new->main = r->main;
 
     new->headers_in = r->headers_in;

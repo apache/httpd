@@ -226,7 +226,7 @@
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 
 /* If you have altered Apache and wish to change the SERVER_VERSION define
- * below, please keep to the HTTP/1.0 specification.  This states that
+ * below, please keep to the HTTP specification.  This states that
  * the identification string should consist of product tokens with an optional
  * slash and version designator.  Sub-products which form a significant part 
  * of the application can be listed, separated by whitespace.  The tokens
@@ -235,7 +235,7 @@
  * "Product tokens should be short and to the point -- use of them for 
  * advertizing or other non-essential information is explicitly forbidden."
  *
- * Example: "Apache/1.1b3 MrWidget/0.1-alpha" 
+ * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
 #define SERVER_VERSION "Apache/1.2-dev" /* SEE COMMENTS ABOVE */
@@ -249,25 +249,32 @@
 /* ------------------------------ error types ------------------------------ */
 
 #define DOCUMENT_FOLLOWS 200
+#define PARTIAL_CONTENT 206
+#define MOVED 301
 #define REDIRECT 302
 #define USE_LOCAL_COPY 304
 #define BAD_REQUEST 400
 #define AUTH_REQUIRED 401
 #define FORBIDDEN 403
 #define NOT_FOUND 404
+#define METHOD_NOT_ALLOWED 405
+#define LENGTH_REQUIRED 411
+#define PRECONDITION_FAILED 412
 #define SERVER_ERROR 500
 #define NOT_IMPLEMENTED 501
 #define BAD_GATEWAY 502
 #define HTTP_SERVICE_UNAVAILABLE 503
-#define RESPONSE_CODES 10
+#define RESPONSE_CODES 15
 
-#define METHODS 6
+#define METHODS 8
 #define M_GET 0
 #define M_PUT 1
 #define M_POST 2
 #define M_DELETE 3
 #define M_CONNECT 4
-#define M_INVALID 5
+#define M_OPTIONS 5
+#define M_TRACE 6
+#define M_INVALID 7
 
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
@@ -342,6 +349,8 @@ struct request_rec {
   char *hostname;		/* Host, as set by full URI or Host: */
   int hostlen;			/* Length of http://host:port in full URI */
 
+  time_t request_time;		/* When the request started */
+
   char *status_line;		/* Status line, if set by script */
   int status;			/* In any case */
   
@@ -351,10 +360,19 @@ struct request_rec {
   
   char *method;			/* GET, HEAD, POST, etc. */
   int method_number;		/* M_GET, M_POST, etc. */
+  int allowed;			/* Allowed methods - for 405, OPTIONS, etc */
 
   int sent_bodyct;		/* byte count in stream is for body */
   long bytes_sent;		/* body byte count, for easy access */
-  
+
+  int chunked;			/* sending chunked transfer-coding */
+  int byterange;		/* number of byte ranges */
+  char *range;			/* The Range: header */
+  long clength;			/* The "real" content length */
+
+  long int remaining;		/* bytes left to read */
+  int read_chunked;		/* reading chunked transfer-coding */
+
   /* MIME header environments, in and out.  Also, an array containing
    * environment variables to be passed to subprocesses, so people can
    * write modules to add to that environment.
@@ -521,6 +539,7 @@ char *getword_nulls (pool *p, char **line, char stop);
 char *getword_conf (pool *p, char **line);      
 
 char *get_token (pool *p, char **accept_line, int accept_white);
+int find_token (pool *p, char *line, char *tok);
      
 int is_url(char *u);
 extern int unescape_url(char *url);
@@ -530,6 +549,7 @@ char *escape_path_segment(pool *p, const char *s);
 char *os_escape_path(pool *p,const char *path,int partial);
 char *escape_uri (pool *p, char *s);
 extern char *escape_html(pool *p, const char *s);
+char *construct_server(pool *p, char *hostname, int port);
 char *construct_url (pool *p, char *path, server_rec *s);     
 char *escape_shell_cmd (pool *p, char *s);
      

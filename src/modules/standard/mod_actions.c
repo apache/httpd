@@ -156,6 +156,12 @@ int action_handler (request_rec *r)
     char *t, *action = r->handler ? r->handler : r->content_type;
     char *script = NULL;
 
+    /* Set allowed stuff */
+    if (conf->get) r->allowed |= (1 << M_GET);
+    if (conf->post) r->allowed |= (1 << M_POST);
+    if (conf->put) r->allowed |= (1 << M_PUT);
+    if (conf->delete) r->allowed |= (1 << M_DELETE);
+
     /* First, check for the method-handling scripts */
     if ((r->method_number == M_GET) && r->args && conf->get)
         script = conf->get;

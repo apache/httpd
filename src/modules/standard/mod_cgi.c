@@ -165,14 +165,20 @@ void cgi_child (void *child_stuff)
 
 int cgi_handler (request_rec *r)
 {
-    int nph;
+    int retval, nph;
     char *argv0;
     FILE *script_out, *script_in;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp (r->protocol, "INCLUDED");
-    char *lenp = table_get (r->headers_in, "Content-length");
 
     struct cgi_child_stuff cld;
+
+    if (r->method_number == M_OPTIONS) {
+        /* 99 out of 100 CGI scripts, this is all they support */
+        r->allowed |= (1 << M_GET);
+        r->allowed |= (1 << M_POST);
+	return DECLINED;
+    }
 
     if((argv0 = strrchr(r->filename,'/')) != NULL)
         argv0++;
@@ -201,21 +207,16 @@ int cgi_handler (request_rec *r)
         log_reason("file permissions deny server execution", r->filename, r);
         return FORBIDDEN;
     }
-    if ((r->method_number == M_POST || r->method_number == M_PUT)
-	&& !lenp) {
-        log_reason("POST or PUT without Content-length:", r->filename, r);
-	return BAD_REQUEST;
-    }
+    if ((retval = setup_client_block(r)))
+	return retval;
 
     add_common_vars (r);
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     
 #ifdef __EMX__
-    if (r->method_number == M_POST || r->method_number == M_PUT) {
-        int len_to_read = atoi (lenp);
-    
-        if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
-        read_client_block (r, argsbuffer, len_to_read);
+    if (should_client_block (r)) {
+
+        read_client_block (r, argsbuffer, HUGE_STRING_LEN);
 
         if (!spawn_child_os2 (r->connection->pool, cgi_child, (void *)&cld,
                   nph ? just_wait : kill_after_timeout, 
@@ -251,39 +252,17 @@ int cgi_handler (request_rec *r)
      */
     
 #ifndef __EMX__
-    if (r->method_number == M_POST || r->method_number == M_PUT) {
+     if (should_client_block(r)) {
         void (*handler)();
-	int remaining = atoi (lenp);
+	int len_read;
 	
         hard_timeout ("copy script args", r);
         handler = signal (SIGPIPE, SIG_IGN);
     
-	while ((remaining > 0))
-	{
-	    int len_read, len_to_read = remaining;
-
-	    if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
-	    
-	    len_read = read_client_block (r, argsbuffer, len_to_read);
-	    if (len_read == 0)
-		break;
+	while ((len_read = read_client_block (r, argsbuffer, HUGE_STRING_LEN)))
 	    if (fwrite (argsbuffer, 1, len_read, script_out) == 0)
 		break;
-	    remaining -= len_read;
-	}
 
-	/* If script stopped reading early, soak up remaining stuff from
-	 * client...
-	 */
-	
-	while (remaining > 0) {
-	    int len_read, len_to_read = remaining;
-	    if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
-	    
-	    len_read = read_client_block (r, argsbuffer, len_to_read);
-	    if (len_read == 0) break;
-	}
-    
 	fflush (script_out);
 	signal (SIGPIPE, handler);
 	
