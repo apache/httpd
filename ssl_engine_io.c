@@ -373,6 +373,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
          */
         if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
             apr_bucket_brigade *outbb;
+            int done = APR_BUCKET_IS_EOS(bucket);
 
             if ((ret = churn_output(ctx)) != APR_SUCCESS) {
                 return ret;
@@ -387,7 +388,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
             }
 
             /* By definition, nothing can come after EOS. */
-            if (APR_BUCKET_IS_EOS(bucket)) {
+            if (done) {
                 break;
             }
         }
