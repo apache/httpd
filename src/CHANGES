@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Win32: Add new config directive, Win32InterpreterSource, to enable
+     searching the Win32 registry for script interpreters.
+     [Bill Stoddard]
+
   *) Win32: The compiled-in default filename for the error log is now
      error.log, which matches the default in the distributed httpd.conf.
      [Paul Sutton]

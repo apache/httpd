@@ -2635,7 +2635,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
 {
     if (!strcasecmp(arg, "registry")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY;
-    } else if (!strcasecmp(arg, "shebang")) {
+    } else if (!strcasecmp(arg, "script")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
     } else {
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
