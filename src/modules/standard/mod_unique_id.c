@@ -62,7 +62,6 @@
 #include "http_log.h"
 #include "multithread.h"
 #include <unistd.h>
-#include <netdb.h>
 
 #ifdef MULTITHREAD
 #error sorry this module does not support multithreaded servers yet
