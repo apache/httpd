@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/06 02:56:56 $]
+Last modified at [$Date: 2003/06/10 15:07:39 $]
 
 Release:
 
@@ -210,6 +210,7 @@ PATCHES TO PORT FROM 2.1
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37
+        build/.cvsignore 1.4
         +1: trawick
 
     * Ignore the Server header field as set by modules and CGIs.
