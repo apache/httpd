@@ -72,7 +72,7 @@
  * have the FILL_BYTE in them, and we check during palloc() that the bytes
  * still have FILL_BYTE in them.  If you ever see garbage URLs or whatnot
  * containing lots of 0xa5s then you know something used data that's been
- * freed.
+ * freed or uninitialized.
  */
 /* #define ALLOC_DEBUG */
 
