@@ -155,7 +155,9 @@ typedef int rlim_t;
 #define DEFAULT_GROUP "nobody"
 #endif
 #define DEFAULT_USER "nobody"
+#ifdef NEED_RLIM_T
 typedef int rlim_t;
+#endif
 
 #elif defined(ULTRIX)
 #define HAVE_GMTOFF

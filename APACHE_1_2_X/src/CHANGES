@@ -82,6 +82,8 @@ Changes with Apache 1.2.1
 
   *) pregsub had an off-by-1 in its error checking code. [Alexei Kosut]
 
+  *) PORT: fix rlim_t problems with AIX 4.2. [Marc Slemko] PR#333
+
   *) PORT: Update Unixware support for 2.1.2.
      [Lawrence Rosenman <ler@lerctr.org>] PR#511
 
