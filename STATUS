@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/23 17:44:55 $]
+Last modified at [$Date: 2002/07/23 18:04:23 $]
 
 Release:
 
@@ -84,7 +84,7 @@ CURRENT VOTES:
       httpd.sh should be the wrapper for httpd which sources envvars
       and allows any options to be passed through
 
-      +1:  trawick
+      +1:  trawick, gregames
 
     * Should we always build [support*] binaries statically unless otherwise
       indicated?
