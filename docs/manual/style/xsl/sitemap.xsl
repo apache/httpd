@@ -160,7 +160,10 @@
     </ul>
       
     <!-- optional ... -->
-    <xsl:apply-templates select="modulefilelist" />&lf;
+    <xsl:if test="@id = 'modules'">
+        <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+    </xsl:if>
+    &lf;
 </div> <!-- /.section -->
 </xsl:template>
 <!-- /category -->
@@ -170,7 +173,7 @@
 <!-- category/modulefilelist                                              -->
 <!-- insert module list into sitemap                                      -->
 <!-- ==================================================================== -->
-<xsl:template match="sitemap/category/modulefilelist">
+<xsl:template match="modulefilelist">
 <xsl:variable name="translist">
     <xsl:text>-</xsl:text>
     <xsl:for-each select="modulefile">
