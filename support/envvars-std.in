@@ -4,7 +4,7 @@
 #
 # the following lines are automatically uncommented for
 # binary builds
-#binbuild @SHLIBPATH_VAR@='@prefix@/lib/:$@SHLIBPATH_VAR@'
+#binbuild @SHLIBPATH_VAR@="@prefix@/lib/:$@SHLIBPATH_VAR@"
 #binbuild export @SHLIBPATH_VAR@
 #
 @OS_SPECIFIC_VARS@
