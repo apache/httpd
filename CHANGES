@@ -1,3 +1,5 @@
+Changes with Apache 2.0.42
+
 Changes with Apache 2.0.41
 
   *) Allow AddOutputFilterByType to add multiple filters per directive.
