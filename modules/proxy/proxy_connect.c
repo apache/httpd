@@ -86,7 +86,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     apr_pollset_t *pollset;
     apr_pollfd_t pollfd;
     const apr_pollfd_t *signalled;
-    apr_int32_t pollcnt;
+    apr_int32_t pollcnt, pi;
     apr_int16_t pollevent;
     apr_sockaddr_t *uri_addr, *connect_addr;
 
@@ -290,8 +290,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                      "proxy: CONNECT: woke from select(), i=%d", pollcnt);
 #endif
 
-        for (i = 0; i < pollcnt; i++) {
-            const apr_pollfd_t *cur = &signalled[i];
+        for (pi = 0; pi < pollcnt; pi++) {
+            const apr_pollfd_t *cur = &signalled[pi];
 
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
@@ -341,7 +341,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                         i = nbytes;
 #ifdef DEBUGGING
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                                     "proxy: CONNECT: read %d from client", i);
+                                     "proxy: CONNECT: read %d from client", 
+                                     );
 #endif
                         while(i > 0)
                         {
