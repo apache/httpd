@@ -72,6 +72,7 @@ APR_HOOK_STRUCT(
            APR_HOOK_LINK(handler)
            APR_HOOK_LINK(quick_handler)
            APR_HOOK_LINK(optional_fn_retrieve)
+           APR_HOOK_LINK(test_config)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, header_parser,
@@ -81,6 +82,10 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, pre_config,
                           (apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp),
                           (pconf, plog, ptemp), OK, DECLINED)
+
+AP_IMPLEMENT_HOOK_VOID(test_config,
+                       (apr_pool_t *pconf, server_rec *s),
+                       (pconf, s))
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, post_config,
                           (apr_pool_t *pconf, apr_pool_t *plog,

@@ -92,7 +92,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
-#include "ap_config.h"
+#include "http_core.h"
 
 #include "mod_so.h"
 
@@ -347,13 +347,18 @@ static module *ap_find_loaded_module_symbol(server_rec *s, const char *modname)
     return NULL;
 }
 
-static void ap_dump_loaded_modules(apr_pool_t* p, server_rec* s)
+static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 {
     ap_module_symbol_t *modie;
     ap_module_symbol_t *modi;
     so_server_conf *sconf;
     int i;
     apr_file_t *out = NULL;
+
+    if (!ap_exists_config_define("DUMP_MODULES")) {
+        return;
+    }
+
     apr_file_open_stderr(&out, p);
 
     apr_file_printf(out, "Loaded Modules:\n");
@@ -402,7 +407,7 @@ static void register_hooks(apr_pool_t *p)
 {
 #ifndef NO_DLOPEN
     APR_REGISTER_OPTIONAL_FN(ap_find_loaded_module_symbol);
-    APR_REGISTER_OPTIONAL_FN(ap_dump_loaded_modules);
+    ap_hook_test_config(dump_loaded_modules, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
 }
 
