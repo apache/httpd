@@ -1318,14 +1318,14 @@ BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
 
 static struct per_thread_data *get_per_thread_data()
 {
-#if defined WIN32
+#if defined(WIN32)
 
     return (struct per_thread_data *) TlsGetValue (tls_index);
 
 #else
 
-    static APACHE_TLS per_thread_data sptd;
-    return *sptd;
+    static APACHE_TLS struct per_thread_data sptd;
+    return &sptd;
 
 #endif
 }
