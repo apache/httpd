@@ -95,7 +95,7 @@ static apr_shmem_t *scoreboard_shm = NULL;
  */
 apr_status_t ap_cleanup_shared_mem(void *d)
 {
-#if APR_HAD_SHARED_MEMORY
+#if APR_HAS_SHARED_MEMORY
     apr_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     apr_shm_destroy(scoreboard_shm);
@@ -109,7 +109,7 @@ apr_status_t ap_cleanup_shared_mem(void *d)
  */
 static void setup_shared(apr_pool_t *p)
 {
-#if APR_HAD_SHARED_MEMORY
+#if APR_HAS_SHARED_MEMORY
     char buf[512];
     char errmsg[120];
     const char *fname;
