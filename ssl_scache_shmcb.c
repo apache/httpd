@@ -399,11 +399,9 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                  "Shared memory session cache initialised");
 
     /* 
-     * Success ... we hack the memory block into place by cheating for
-     * now and stealing a member variable the original shared memory
-     * cache was using. :-)
+     * Success ... 
      */
-    mc->tSessionCacheDataTable = (table_t *) shm_segment;
+    mc->tSessionCacheDataTable = shm_segment;
     return;
 }
 
@@ -422,13 +420,11 @@ BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
                            time_t timeout, SSL_SESSION * pSession)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    void *shm_segment;
     BOOL to_return = FALSE;
 
-    /* We've kludged our pointer into the other cache's member variable. */
-    shm_segment = (void *) mc->tSessionCacheDataTable;
     ssl_mutex_on(s);
-    if (!shmcb_store_session(s, shm_segment, id, idlen, pSession, timeout))
+    if (!shmcb_store_session(s, mc->tSessionCacheDataTable, id, idlen,
+                             pSession, timeout))
         /* in this cache engine, "stores" should never fail. */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "'shmcb' code was unable to store a "
@@ -445,13 +441,10 @@ BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
 SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    void *shm_segment;
     SSL_SESSION *pSession;
 
-    /* We've kludged our pointer into the other cache's member variable. */
-    shm_segment = (void *) mc->tSessionCacheDataTable;
     ssl_mutex_on(s);
-    pSession = shmcb_retrieve_session(s, shm_segment, id, idlen);
+    pSession = shmcb_retrieve_session(s, mc->tSessionCacheDataTable, id, idlen);
     ssl_mutex_off(s);
     if (pSession)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -469,12 +462,9 @@ SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
 void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    void *shm_segment;
 
-    /* We've kludged our pointer into the other cache's member variable. */
-    shm_segment = (void *) mc->tSessionCacheDataTable;
     ssl_mutex_on(s);
-    shmcb_remove_session(s, shm_segment, id, idlen);
+    shmcb_remove_session(s, mc->tSessionCacheDataTable, id, idlen);
     ssl_mutex_off(s);
 }
 
@@ -492,7 +482,6 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     SHMCBQueue queue;
     SHMCBCache cache;
     SHMCBIndex *idx;
-    void *shm_segment;
     unsigned int loop, total, cache_total, non_empty_divisions;
     int index_pct, cache_pct;
     double expiry_total;
@@ -501,11 +490,8 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
                  "inside ssl_scache_shmcb_status");
 
-    /* We've kludged our pointer into the other cache's member variable. */
-    shm_segment = (void *) mc->tSessionCacheDataTable;
-
     /* Get the header structure. */
-    shmcb_get_header(shm_segment, &header);
+    shmcb_get_header(mc->tSessionCacheDataTable, &header);
     total = cache_total = non_empty_divisions = 0;
     average_expiry = max_expiry = min_expiry = 0;
     expiry_total = 0;
