@@ -288,7 +288,7 @@ extern "C" {
 #define HUGE_STRING_LEN 8192
 
 /* The size of the server's internal read-write buffers */
-#define IOBUFSIZE 8192
+#define AP_IOBUFSIZE 8192
 
 /*
  * Special Apache error codes. These are basically used
