@@ -300,7 +300,7 @@ filenames</td></tr>
 filenames</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action to take if a single acceptable document is not 
 found</td></tr>
-<tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|none</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
+<tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|None</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 MIME content-type</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
