@@ -262,43 +262,6 @@ struct ap_filter_rec_t {
 };
 
 /**
- * ap_filter_provider_t is a filter provider, as defined and implemented
- * by mod_filter.  The struct is a linked list, with dispatch criteria
- * defined for each filter.  The provider implementation itself is a
- * (2.0-compatible) ap_filter_rec_t* frec.
- */
-struct ap_filter_provider_t {
-    /** How to match this provider to filter dispatch criterion */
-    enum {
-        STRING_MATCH,
-        STRING_CONTAINS,
-        REGEX_MATCH,
-        INT_EQ,
-        INT_LT,
-        INT_LE,
-        INT_GT,
-        INT_GE,
-        DEFINED
-    } match_type;
-
-    /** negation on match_type */
-    int not;
-
-    /** The dispatch match itself - union member depends on match_type */
-    union {
-        const char *string;
-        regex_t    *regex;
-        int         number;
-    } match;
-
-    /** The filter that implements this provider */
-    ap_filter_rec_t *frec;
-
-    /** The next provider in the list */
-    ap_filter_provider_t *next;
-};
-
-/**
  * The representation of a filter chain.  Each request has a list
  * of these structures which are called in turn to filter the data.  Sub
  * requests get an exact copy of the main requests filter chain.
