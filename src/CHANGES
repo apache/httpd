@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Move a typedef to fix compile problems on Linux with 1.x kernels.
+     [Manoj Kasichainula] PR#3177
+
   *) PORT: Add a port to the Concurrent PowerMAX OS. [Tom Horsley
      <Tom.Horsley@mail.ccur.com>]
 

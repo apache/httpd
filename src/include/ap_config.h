@@ -436,11 +436,6 @@ typedef int pid_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_FILES
 
-/* glibc 2.1 and later finally define rlim_t */
-#if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
-typedef int rlim_t;
-#endif
-
 /* flock is faster ... but hasn't been tested on 1.x systems */
 #define USE_FLOCK_SERIALIZED_ACCEPT
 
@@ -456,6 +451,11 @@ typedef int rlim_t;
 #undef NEED_STRDUP
 #include <sys/time.h>
 #define HAVE_SYSLOG 1
+
+/* glibc 2.1 and later finally define rlim_t */
+#if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
+typedef int rlim_t;
+#endif
 
 #elif defined(SCO)
 #undef HAVE_GMTOFF
