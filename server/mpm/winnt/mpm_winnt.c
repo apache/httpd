@@ -912,50 +912,60 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
 {
     DWORD BytesRead;
     SOCKET nsd;
-    int rc;
+    int rc, i;
 
-    /* recreate and initialize the accept socket if it is not being reused */
-    apr_get_os_sock(&nsd, context->lr->sd);
-    if (context->accept_socket == INVALID_SOCKET) {
-        context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if (context->accept_socket == INVALID_SOCKET) {
-            rc = WSAGetLastError();
-            ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
-                         "reset_acceptex_context: socket() failed. Process will exit.");
-            return rc;
-        }
-        
-        /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
-        if (setsockopt(context->accept_socket, SOL_SOCKET,
-                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
-                       sizeof(nsd))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
-                         server_conf,
-                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
-            /* Not a failure condition. Keep running. */
-        }
-    }
-
-    /* reset the completion context */
+    /* reset the buffer pools */
     apr_clear_pool(context->ptrans);
     context->sock = NULL;
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
 
+    /* recreate and initialize the accept socket if it is not being reused */
+    apr_get_os_sock(&nsd, context->lr->sd);
+
     /* AcceptEx on the completion context. The completion context will be signaled
-     * when a connection is accepted. */
-    if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
-                  PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
-                  (LPOVERLAPPED) context)) {
-        rc = WSAGetLastError();
-        if (rc != ERROR_IO_PENDING) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
-                         "reset_acceptex_context: AcceptEx failed for "
-                         "listening socket: %d and accept socket: %d", 
-                         nsd, context->accept_socket);
-            return rc;
+     * when a connection is accepted. Hack Alert: TransmitFile, under certain 
+     * circumstances, can 'recycle' accept sockets, saving the overhead of calling 
+     * socket(). Occasionally this fails (usually when the client closes his end 
+     * of the connection early). When this occurs, AcceptEx will fail with 10022, 
+     * Invalid Parameter. When this occurs, just open a fresh accept socket and 
+     * retry the call.
+     */
+    for (i=0; i<2; i++) {
+        if (context->accept_socket == INVALID_SOCKET) {
+            context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+            if (context->accept_socket == INVALID_SOCKET) {
+                rc = WSAGetLastError();
+                ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
+                             "reset_acceptex_context: socket() failed. Process will exit.");
+                return rc;
+            }
+
+            /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
+            if (setsockopt(context->accept_socket, SOL_SOCKET,
+                           SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd, sizeof(nsd))) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
+                             server_conf,
+                             "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+            }
         }
+
+        if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
+                      PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
+                      (LPOVERLAPPED) context)) {
+            rc = WSAGetLastError();
+            if (rc != ERROR_IO_PENDING) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
+                             "reset_acceptex_context: AcceptEx failed for "
+                             "listening socket: %d and accept socket: %d", 
+                             nsd, context->accept_socket);
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
+                continue;
+            }
+        }
+        break;
     }
 
     context->lr->count++;
@@ -981,22 +991,13 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         else {
             /* Prepare the completion context for reuse */
             if ((rc = reset_acceptex_context(context)) != APR_SUCCESS) {
-                /* Retry once, this time requesting a new socket */
-                if (context->accept_socket != INVALID_SOCKET) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rc, server_conf,
+                             "Child %d: winnt_get_connection: reset_acceptex_context failed.",
+                             my_pid); 
+                if (context->accept_socket != INVALID_SOCKET)
                     closesocket(context->accept_socket);
-                    context->accept_socket = INVALID_SOCKET;
-                }
-                if ((rc = reset_acceptex_context(context)) != APR_SUCCESS) {
-                    /* Failed again, so give up, but leave the thread up 
-                     * Should we signal a shutdown now? 
-                     */
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rc, server_conf,
-                                 "Child %d: winnt_get_connection: reset_acceptex_context failed.",
-                                 my_pid); 
-                    if (context->accept_socket != INVALID_SOCKET)
-                        closesocket(context->accept_socket);
-                    CloseHandle(context->Overlapped.hEvent);
-                }
+                CloseHandle(context->Overlapped.hEvent);
+                /* Probably should just die now... */
             }
         }
     }
@@ -1014,10 +1015,30 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         if (!rc) {
             rc = GetLastError();
             if (rc != ERROR_OPERATION_ABORTED) {
-                /* Is this a deadly condition? Hummm... */
-                ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
+                /* Is this a deadly condition? 
+                 * We sometimes get ERROR_NETNAME_DELETED when a client
+                 * disconnects when attempting to reuse sockets. Not sure why 
+                 * we see this now and not during AcceptEx(). Reset the
+                 * AcceptEx context and continue...
+                 */
+                ap_log_error(APLOG_MARK,APLOG_INFO, rc, server_conf,
                              "Child %d: - GetQueuedCompletionStatus() failed", 
                              my_pid);
+                /* Reset the completion context */
+                if (pol) {
+                    context = (PCOMP_CONTEXT) pol;
+                    if (context->accept_socket != INVALID_SOCKET)
+                        closesocket(context->accept_socket);
+                    if ((rc = reset_acceptex_context(context)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, server_conf,
+                                     "Child %d: winnt_get_connection: reset_acceptex_context failed.",
+                                     my_pid); 
+                        if (context->accept_socket != INVALID_SOCKET)
+                            closesocket(context->accept_socket);
+                        CloseHandle(context->Overlapped.hEvent);
+                        /* Probably should just die now... */
+                    }
+                }
             }
             else {
                 /* Sometimes we catch ERROR_OPERATION_ABORTED completion packets
@@ -1026,7 +1047,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                 ap_log_error(APLOG_MARK,APLOG_INFO, rc, server_conf,
                              "Child %d: - Draining ERROR_OPERATION_ABORTED packet off "
                              "the completion port.", my_pid);
-
             }
             continue;
         }
