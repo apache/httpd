@@ -463,10 +463,10 @@ typedef struct {
     interpreter_source_e script_interpreter_source;
 #endif    
 
-    char *mime_type;                     /* forced with ForceType  */
-    char *handler;                       /* forced with SetHandler */
-    apr_array_header_t *output_filters;  /* forced with SetOutputFilters */
-    apr_array_header_t *input_filters;   /* forced with SetInputFilters */
+    const char *mime_type;       /* forced with ForceType  */
+    const char *handler;         /* forced with SetHandler */
+    const char *output_filters;  /* forced with SetOutputFilters */
+    const char *input_filters;   /* forced with SetInputFilters */
 } core_dir_config;
 
 /* Per-server core configuration */

@@ -164,8 +164,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
      */
     conf->mime_type = NULL;
     conf->handler = NULL;
-    conf->output_filters = apr_array_make(a, 2, sizeof(void *));
-    conf->input_filters = apr_array_make(a, 2, sizeof(void *));
+    conf->output_filters = NULL;
+    conf->input_filters = NULL;
     return (void *)conf;
 }
 
@@ -314,11 +314,12 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->handler) {
         conf->handler = new->handler;
     }
-    conf->output_filters = apr_array_append(a, base->output_filters, 
-                                             new->output_filters);
-    conf->input_filters = apr_array_append(a, base->input_filters,
-                                            new->input_filters);
-
+    if (new->output_filters) {
+        conf->output_filters = new->output_filters;
+    }
+    if (new->input_filters) {
+        conf->input_filters = new->input_filters;
+    }
     return (void*)conf;
 }
 
@@ -1875,26 +1876,6 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *add_filter(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    core_dir_config *conf = dummy;
-    char **newfilter;
-    
-    newfilter = (char **)apr_array_push(conf->output_filters);
-    *newfilter = apr_pstrdup(cmd->pool, arg);
-    return NULL;
-}
-
-static const char *add_input_filter(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    core_dir_config *conf = dummy;
-    char **newfilter;
-    
-    newfilter = (char **)apr_array_push(conf->input_filters);
-    *newfilter = apr_pstrdup(cmd->pool, arg);
-    return NULL;
-}
-
 static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 					  const char *arg)
 {
@@ -2837,10 +2818,12 @@ AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
 AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
        (void *)APR_XtOffsetOf(core_dir_config, handler), OR_FILEINFO,
    "a handler name that overrides any other configured handler"),
-AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, OR_FILEINFO,
-   "filters to be run"),
-AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, OR_FILEINFO,
-   "filters to be run on the request body"),
+AP_INIT_ITERATE("SetOutputFilter", ap_set_string_slot, 
+       (void *)APR_XtOffsetOf(core_dir_config, output_filters), OR_FILEINFO,
+   "filter (or ; delimited list of filters) to be run on the request content"),
+AP_INIT_ITERATE("SetInputFilter", ap_set_string_slot, 
+       (void *)APR_XtOffsetOf(core_dir_config, input_filters), OR_FILEINFO,
+   "filter (or ; delimited list of filters) to be run on the request body"),
 
 /*
  * These are default configuration directives that mpms can/should
@@ -3370,21 +3353,18 @@ static void core_open_logs(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 
 static void core_insert_filter(request_rec *r)
 {
-    int i;
     core_dir_config *conf = (core_dir_config *)
                             ap_get_module_config(r->per_dir_config,
 						   &core_module); 
-    char **items = (char **)conf->output_filters->elts;
+    const char *filter, *filters = conf->output_filters;
 
-    for (i = 0; i < conf->output_filters->nelts; i++) {
-        char *foobar = items[i];
-        ap_add_output_filter(foobar, NULL, r, r->connection);
+    while (filter = ap_getword(r->pool, &filters, ';')) {
+        ap_add_output_filter(filter, NULL, r, r->connection);
     }
 
-    items = (char **)conf->input_filters->elts;
-    for (i = 0; i < conf->input_filters->nelts; i++) {
-        char *foobar = items[i];
-        ap_add_input_filter(foobar, NULL, r, r->connection);
+    filters = conf->input_filters;
+    while (filter = ap_getword(r->pool, &filters, ';')) {
+        ap_add_input_filter(filter, NULL, r, r->connection);
     }
 }
 
