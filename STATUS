@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/13 20:18:53 $]
+Last modified at [$Date: 2003/07/14 15:09:40 $]
 
 Release:
 
@@ -261,6 +261,10 @@ PATCHES TO PORT FROM 2.1
         docs/conf/httpd-std.conf.in: r1.47
         docs/conf/httpd-win.conf:    r1.93
       +1: fielding
+
+    * mod_ext_filter: Set additional environment variables for use by
+      the external filter.  PR 20944.
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
