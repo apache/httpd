@@ -92,7 +92,7 @@ echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
 
 AC_CANONICAL_SYSTEM
 
-case "$host_alias" in
+case $host in
   *os2*)
       # Use a custom made libtool replacement
       echo "using aplibtool"
@@ -112,7 +112,7 @@ case "$host_alias" in
       ;;
 esac
 
-case "$host" in
+case $host in
   *-apple-aux3*)
       APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
@@ -235,7 +235,7 @@ POST_SHARED_CMDS='echo ""'
 
 if test "$apache_need_shared" = "yes"; then
   $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
-  case "$host" in
+  case $host in
     *-ibm-aix*)
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_srcdir/server/httpd.exp"
       SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_srcdir/server/httpd.exp"
@@ -370,7 +370,7 @@ AC_SUBST(perlbin)
 dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
 
 BSD_MAKEFILE=no
-case "$host_alias" in
+case $host in
 *bsdi*)
     # Check whether they've installed GNU make
     if make --version > /dev/null 2>&1; then

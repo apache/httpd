@@ -1,9 +1,6 @@
 AC_MSG_CHECKING(for target platform)
 
-#PLATFORM=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`
-PLATFORM=$host
-
-case "$PLATFORM" in
+case $host in
 *beos*)
   OS="beos"
   OS_DIR=$OS
