@@ -75,6 +75,11 @@ LFLAGS=
 # -lndbm is commonly required for DBM auth, if that is configured in.
 EXTRA_LIBS=
 
+# Default to using ranlib on libraries (for regex). Set this to something else
+# if ranlib kills your system (usually by setting it again in the OS specific
+# section below)
+RANLIB=ranlib
+
 # AUX_CFLAGS are system-specific control flags.
 # NOTE: IF YOU DO NOT CHOOSE ONE OF THESE, EDIT httpd.h AND CHOOSE
 # SETTINGS FOR THE SYSTEM FLAGS. IF YOU DON'T, BAD THINGS WILL HAPPEN.
@@ -120,6 +125,7 @@ EXTRA_LIBS=
 #AUX_CFLAGS= -DSCO5
 #AUX_LIBS=-lsocket -lmalloc -lprot
 #BROKEN_BPRINTF_FLAGS=-K noinline
+#RANLIB=true
 # For SVR4
 # Some SVR4 implementations will require SO_LINGER option to be set in order
 # to guarantee buffer flushes. Dell, Esix, and UnixWare are a few of these.

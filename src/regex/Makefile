@@ -6,7 +6,7 @@ SHELL = /bin/sh
 # Put -Dconst= in for a pre-ANSI compiler.
 # Do not take -DPOSIX_MISTAKE out.
 # REGCFLAGS isn't important to you (it's for my use in some special contexts).
-CFLAGS=-I. -DPOSIX_MISTAKE
+CFLAGS=-I. -DPOSIX_MISTAKE $(AUX_CFLAGS)
 
 # If you have a pre-ANSI compiler, put -o into MKHFLAGS.  If you want
 # the Berkeley __P macro, put -b in.
@@ -40,7 +40,7 @@ default:	r
 lib:	purge $(OBJPRODN)
 	rm -f libregex.a
 	ar crv libregex.a $(OBJPRODN)
-	ranlib libregex.a
+	$(RANLIB) libregex.a
 
 purge:
 	rm -f *.o
