@@ -52,7 +52,7 @@ install-build:
 	@echo Installing build system files 
 	@test -d $(installbuilddir) || $(MKINSTALLDIRS) $(installbuilddir) 
 	@sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
-	    config_vars.mk > $(installbuilddir)config_vars.mk; \
+	    config_vars.mk > $(installbuilddir)/config_vars.mk; \
 	cp build/*.mk $(installbuilddir); \
 	cp srclib/apr/libtool $(installbuilddir); \
 	if test -f srclib/apr/shlibtool; then \
