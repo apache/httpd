@@ -713,7 +713,7 @@ static const command_rec digest_cmds[] =
 
 /*
  * Get the client given its client number (the key). Returns the entry,
- * or NULL if its not found.
+ * or NULL if it's not found.
  *
  * Access to the list itself is synchronized via locks. However, access
  * to the entry returned by get_client() is NOT synchronized. This means

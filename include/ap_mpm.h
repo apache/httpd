@@ -102,7 +102,7 @@
     - The proper setting for SIGPIPE is SIG_IGN, if user code changes it
         for any of their own processing, it must be restored to SIG_IGN
 	prior to executing or returning to any apache code.
-    TODO: add SIGPIPE debugging check somewhere to make sure its SIG_IGN
+    TODO: add SIGPIPE debugging check somewhere to make sure it's SIG_IGN
 */
 
 /**

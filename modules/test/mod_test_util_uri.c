@@ -114,7 +114,7 @@ static const test_uri_t uri_tests[] = {
      * string.
      *
      * We don't really need to test it explicitly since path has no explicit
-     * character that indicates its precense, and so we test empty paths all
+     * character that indicates its presence, and so we test empty paths all
      * the time by varying T_path in the loop.  It would just cost us extra
      * code to special case the empty path string...
      */

@@ -1072,7 +1072,7 @@ apr_status_t mpm_service_uninstall(void)
 
 
 /* signal_service_transition is a simple thunk to signal the service
- * and monitor it's successful transition.  If the signal passed is 0,
+ * and monitor its successful transition.  If the signal passed is 0,
  * then the caller is assumed to already have performed some service 
  * operation to be monitored (such as StartService), and no actual
  * ControlService signal is sent.
