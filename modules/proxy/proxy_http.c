@@ -671,20 +671,21 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* munge the Location and URI response headers according to ProxyPassReverse */
     {
 	const char *buf;
-/* XXX FIXME: this isn't working */
-        if ((buf = apr_table_get(r->headers_out, "Location")) != NULL)
+        if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
 	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, buf));
-        if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL)
+	}
+        if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
 	    apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, buf));
-        if ((buf = apr_table_get(r->headers_out, "URI")) != NULL)
+	}
+        if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
 	    apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, buf));
+	}
     }
 
     r->sent_bodyct = 1;
     /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
         apr_ssize_t cntr = len;
-        /* FIXME: what is buffer used for here? It is of limited size */
         e = apr_bucket_heap_create(buffer, cntr, 0, NULL);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
@@ -700,7 +701,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
 		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
 	    }
-/* FIXME: Make sure this filter is removed if this connection is reused */
 	    ap_add_input_filter("DECHUNK", NULL, rp, origin);
 	}
 
@@ -729,8 +729,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 		break;
 	    }
 	    ap_pass_brigade(r->output_filters, bb);
-	    apr_brigade_destroy(bb);
-	    bb = apr_brigade_create(p);
+	    apr_brigade_cleanup(bb);
 	}
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: end body send");
