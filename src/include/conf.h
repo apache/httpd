@@ -401,9 +401,7 @@ extern char *getwd();
 #define HAVE_MMAP
 #define DEFAULT_USER "nobody"
 #define DEFAULT_GROUP "nogroup"
-#if defined(__bsdi__) || (__FreeBSD_version < 199701)
 typedef quad_t rlim_t;
-#endif
 
 #elif defined(QNX)
 #ifndef crypt
