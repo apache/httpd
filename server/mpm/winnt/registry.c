@@ -82,10 +82,8 @@
  * 
  * HKLM\Software\[Vendor]\[Software]\[Version]\ServerRoot
  */
-#include "os.h"
-//#include <windows.h>
-//#include <stdio.h>
 
+#include "os.h"
 #include "httpd.h"
 #include "http_log.h"
 

@@ -56,14 +56,13 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include <windows.h>
+#include "httpd.h"
+#include "http_log.h"
+
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <time.h>
 #include <stdlib.h>
-
-#include "httpd.h"
-#include "http_log.h"
 
 /* Returns TRUE if the input string is a string
  * of one or more '.' characters.
