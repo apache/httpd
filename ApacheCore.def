@@ -107,7 +107,7 @@ EXPORTS
 	ap_get_server_built   @100
 	ap_get_server_name   @101
 	ap_get_server_port   @102
-	;ap_get_server_version   @103
+	ap_get_server_version   @103
 ;	ap_get_time   @104
 	ap_get_token   @105
 	ap_getparents   @106
@@ -401,12 +401,18 @@ EXPORTS
         ap_bwrite_core @396
 	
 ;       Exclusively provided for http_main.c
-        ap_register_hooks @398
-        ap_prelinked_modules @399
-        ap_preloaded_modules @400
-        ap_post_config_hook @401
-        ap_run_pre_config @402
-        ap_run_rewrite_args @403
-        ap_show_directives @404
-        ap_show_modules @405
-        ap_util_uri_init @406
+        ap_register_hooks       @398 NONAME
+        ap_prelinked_modules    @399 NONAME
+        ap_preloaded_modules    @400 NONAME
+        ap_post_config_hook     @401 NONAME
+        ap_run_pre_config       @402 NONAME
+        ap_run_rewrite_args     @403 NONAME
+        ap_show_directives      @404 NONAME
+        ap_show_modules         @405 NONAME
+        ap_util_uri_init        @406 NONAME
+        ap_mpm_run              @407 NONAME
+        ap_hook_deregister_all  @408 NONAME
+        ap_run_open_logs        @409 NONAME
+        ap_process_config_tree  @410 NONAME
+        ap_server_config_defines @411 NONAME DATA
+        

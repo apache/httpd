@@ -2,9 +2,9 @@
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
+# TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=ApacheCore - Win32 Release
+CFG=ApacheCore - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,12 @@ CFG=ApacheCore - Win32 Release
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheCore.mak" CFG="ApacheCore - Win32 Release"
+!MESSAGE NMAKE /f "ApacheCore.mak" CFG="ApacheCore - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheCore - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ApacheCore - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ApacheCore - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "ApacheCore - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -26,63 +26,55 @@ CFG=ApacheCore - Win32 Release
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir ".\CoreR"
-# PROP BASE Intermediate_Dir ".\CoreR"
+# PROP BASE Output_Dir "LibR"
+# PROP BASE Intermediate_Dir "LibR"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir ".\CoreR"
-# PROP Intermediate_Dir ".\CoreR"
-# PROP Ignore_Export_Lib 0
+# PROP Output_Dir "LibR"
+# PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "include" /I "os/win32" /I "lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
-# SUBTRACT CPP /YX
-# ADD BASE MTL /nologo /D "NDEBUG" /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "NDEBUG"
-# ADD RSC /l 0x809 /d "NDEBUG"
+RSC=rc.exe
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"LibR\apr.lib"
+# ADD LIB32 /nologo /out:"LibR\apr.lib"
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir ".\CoreD"
-# PROP BASE Intermediate_Dir ".\CoreD"
+# PROP BASE Output_Dir "LibD"
+# PROP BASE Intermediate_Dir "LibD"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".\CoreD"
-# PROP Intermediate_Dir ".\CoreD"
+# PROP Output_Dir "LibD"
+# PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "include" /I "os/win32" /I "lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
-# SUBTRACT CPP /YX
-# ADD BASE MTL /nologo /D "_DEBUG" /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x809 /d "_DEBUG"
-# ADD RSC /l 0x809 /d "_DEBUG"
+RSC=rc.exe
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "API_EXPORT_SYMBOLS" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
-# SUBTRACT LINK32 /incremental:no /map
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"LibD\apr.lib"
+# ADD LIB32 /nologo /out:"LibD\apr.lib"
 
 !ENDIF 
 
@@ -104,10 +96,6 @@ SOURCE=.\ap\ap_hooks.c
 # Begin Source File
 
 SOURCE=.\ap\ap_sha1.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ApacheCore.def
 # End Source File
 # Begin Source File
 
@@ -235,6 +223,10 @@ SOURCE=.\os\win32\modules.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\mpm\winnt\mpm_winnt.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\mpm\winnt\registry.c
 # End Source File
 # Begin Source File
@@ -272,10 +264,6 @@ SOURCE=.\main\util_uri.c
 # Begin Source File
 
 SOURCE=.\os\win32\util_win32.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mpm\winnt\mpm_winnt.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -391,6 +379,10 @@ SOURCE=.\modules\mpm\winnt\mpm_default.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\mpm\winnt\mpm_winnt.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\os.h
 # End Source File
 # Begin Source File
@@ -419,8 +411,12 @@ SOURCE=.\include\util_uri.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm_winnt.h
+SOURCE=.\modules\mpm\winnt\winnt.h
 # End Source File
+# End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
 # Begin Group "Generated Files"
 
