@@ -843,6 +843,7 @@ AddHandler type-map var
 # To parse .shtml files for server-side includes (SSI):
 # (You will also need to add "Includes" to the "Options" directive.)
 #
+#AddType text/html .shtml
 #AddOutputFilter INCLUDES .shtml
 
 #
