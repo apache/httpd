@@ -75,6 +75,10 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mpm/winnt.c: thread_num is long, aught to use %ld not %d for logs
+       svn rev 106653
+       +1: wrowe
+
     *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
        http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
        PR: 31848
