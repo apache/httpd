@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/23 14:11:48 $]
+Last modified at [$Date: 2004/10/23 14:25:24 $]
 
 Release:
 
@@ -102,11 +102,6 @@ PATCHES TO BACKPORT FROM 2.1
          http://issues.apache.org/bugzilla/showattachment.cgi?attach_id=12919
        PR 24437
        +1: minfrin
-
-    *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so".
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apxs.in?r1=1.62&r2=1.64
-       PR: 31448
-       +1: jorton, jerenkrantz, pquerna
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.101
