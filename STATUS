@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/29 18:01:50 $]
+Last modified at [$Date: 2003/08/29 19:40:43 $]
 
 Release:
 
@@ -352,26 +352,18 @@ PATCHES TO PORT FROM 2.1
       +1: nd
 
     * all MPM's: correctly honor MaxMemFree
-        server/mpm/beos/beos.c r1.102
-        server/mpm/experimental/leader/leader.c r1.30
-        server/mpm/experimental/threadpool/threadpool.c r1.18
-        server/mpm/mpmt_os2/mpmt_os2_child.c r1.25
-        server/mpm/netware/mpm_netware.c r1.72
-        server/mpm/worker/worker.c r1.137
+        server/mpm/beos/beos.c: r1.101, r1.102
+        server/mpm/experimental/leader/leader.c: r1.29, r1.30
+        server/mpm/experimental/threadpool/perchild.c: r1.139
+        server/mpm/experimental/threadpool/threadpool.c: r1.17, r1.18
+        server/mpm/mpmt_os2/mpmt_os2.c: r1.25
+        server/mpm/mpmt_os2/mpmt_os2_child.c: r1.25
+        server/mpm/netware/mpm_netware.c: r1.71, r1.72
+        server/mpm/netware/prefork.c: r1.279
+        server/mpm/netware/mpm_winnt.c: r1.300
+        server/mpm/worker/worker.c: r1.136, r1.137
       +1: jwoolley, bnicholes
 
-    * all MPM's: correctly initialize ap_max_mem_free on restarts
-        server/mpm/beos/beos.c r1.101
-        server/mpm/experimental/leader/leader.c r1.29
-        server/mpm/experimental/threadpool/perchild.c r1.139
-        server/mpm/experimental/threadpool/threadpool.c r1.17
-        server/mpm/mpmt_os2/mpmt_os2.c r1.25
-        server/mpm/netware/mpm_netware.c r1.71
-        server/mpm/netware/prefork.c r1.279
-        server/mpm/netware/mpm_winnt.c r1.300
-        server/mpm/worker/worker.c r1.136
-      +1: bnicholes
-      
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
       +1: jorton
