@@ -14,7 +14,7 @@ features:
 
   *) Support for Windows NT/95
        Apache now supports the Windows NT and Windows 95 operating
-       systems, as well as the Unix systems supported in previos
+       systems, as well as the Unix systems supported in previous
        releases. Although the Windows version of Apache may not be
        perform as well as on the Unix systems for which Apache was
        originally written, the ability to run on Windows gives Apache the
@@ -58,9 +58,9 @@ features:
 
   *) HostNameLookups now defaults to "Off"
        The HostNameLookups directive now defaults to "Off". This means
-       that, unless explictly turned on, the server will not resolve IP
+       that, unless explicitly turned on, the server will not resolve IP
        addresses into names. This was done to spare the Internet from
-       unneccessary DNS traffic.
+       unnecessary DNS traffic.
 
   *) New child_init function for module API
        A new phase for Apache's API is called once per "heavy-weight
@@ -102,9 +102,9 @@ features:
        In addition, sfio support allows plugin modules to manipulate
        the output of all modules, e.g. parsing the output of CGI programs.
        
-  *) New dbmmange script
-       A new Perl5 version of dbmmange allows modification of
-       various databases, Berkley DB, ndbm and gdbm.  Security has 
+  *) New dbmmanage script
+       A new Perl5 version of dbmmanage allows modification of
+       various databases, Berkeley DB, ndbm and gdbm.  Security has 
        been tightened such that passwords will no longer be echoed to
        the terminal, the seed for srand is more random and `add' will not
        overwrite and existing user, use the new `update' command
