@@ -716,7 +716,7 @@ static void *worker_thread(void *arg)
     }
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
-    ap_destroy_context(tpool);
+    ap_destroy_pool(tpool);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
