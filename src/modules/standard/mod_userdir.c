@@ -173,8 +173,12 @@ int translate_userdir (request_rec *r)
 
       }
 
-      /* Now see if it exists, or we're at the last entry */
-      if (!*userdirs || stat(filename, &r->finfo) != -1) {
+      /* Now see if it exists, or we're at the last entry. If we are at the
+       last entry, then use the filename generated (if there is one) anyway,
+       in the hope that some handler might handle it. This can be used, for
+       example, to run a CGI script for the user. 
+       */
+      if (filename && (!*userdirs || stat(filename, &r->finfo) != -1)) {
 	r->filename = pstrcat(r->pool, filename, dname, NULL);
 	return OK;
       }
