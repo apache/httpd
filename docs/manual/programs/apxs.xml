@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="apxs.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>apxs - APache eXtenSion tool</title>
+
+<summary>
+    <p><code>apxs</code> is a tool for building and installing extension
+    modules for the Apache HyperText Transfer Protocol (HTTP) server. This is
+    achieved by building a dynamic shared object (DSO) from one or more source
+    or object <var>files</var> which then can be loaded into the Apache server
+    under runtime via the <directive module="mod_so">LoadModule</directive>
+    directive from <module>mod_so</module>.</p>
+
+    <p>So to use this extension mechanism your platform has to support the DSO
+    feature and your Apache <code>httpd</code> binary has to be built with the
+    <module>mod_so</module> module. The <code>apxs</code> tool automatically
+    complains if this is not the case. You can check this yourself by manually
+    running the command</p>
+
+    <example>
+      $ httpd -l
+    </example>
+
+    <p>The module <module>mod_so</module> should be part of the displayed list.
+    If these requirements are fulfilled you can easily extend your Apache
+    server's functionality by installing your own modules with the DSO mechanism
+    by the help of this <code>apxs</code> tool:</p>
+
+    <example>
+      $ apxs -i -a -c mod_foo.c<br />
+      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
+      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      chmod 755 /path/to/apache/modules/mod_foo.so<br />
+      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      $ apachectl restart<br />
+      /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
+      /path/to/apache/sbin/apachectl restart: httpd started<br />
+      $ _
+    </example>
+
+    <p>The arguments <var>files</var> can be any C source file (.c), a object
+    file (.o) or even a library archive (.a). The <code>apxs</code> tool
+    automatically recognizes these extensions and  automatically used the C
+    source files for compilation while just using the object and archive files
+    for the linking phase. But when using such pre-compiled objects make sure
+    they are compiled for position independent code (PIC) to be able to use them
+    for a dynamically loaded shared object. For instance with GCC you always
+    just have to use <code>-fpic</code>. For other C compilers consult its
+    manual page or at watch for the flags <code>apxs</code> uses to compile the
+    object files.</p>
+
+    <p>For more details about DSO support in Apache read the documentation of
+    <module>mod_so</module> or perhaps even read the
+    <code>src/modules/standard/mod_so.c</code> source file.</p>
+</summary>
+<seealso><a href="apachectl.html">apachectl</a></seealso>
+<seealso><a href="httpd.html">httpd</a></seealso>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>apxs</strong> -<strong>g</strong>
+    [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
+    -<strong>n</strong> <var>modname</var></code></p>
+
+    <p><code><strong>apxs</strong> -<strong>q</strong>
+    [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
+    <var>query</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>c</strong>
+    [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
+    [ -<strong>o</strong> <var>dsofile</var> ]
+    [ -<strong>I</strong> <var>incdir</var> ]
+    [ -<strong>D</strong> <var>name</var>=<var>value</var> ]
+    [ -<strong>L</strong> <var>libdir</var> ]
+    [ -<strong>l</strong> <var>libname</var> ]
+    [ -<strong>Wc,</strong><var>compiler-flags</var> ]
+    [ -<strong>Wl,</strong><var>linker-flags</var> ]
+    <var>files</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>i</strong>
+    [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
+    [ -<strong>n</strong> <var>modname</var> ]
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]
+    <var>dso-file</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>e</strong>
+    [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
+    [ -<strong>n</strong> <var>modname</var> ]
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]
+    <var>dso-file</var> ...</code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <section id="options.common"><title>Common Options</title>
+      <dl>
+      <dt><code>-n <var>modname</var></code></dt>
+      <dd>This explicitly sets the module name for the <code>-i</code> (install)
+      and <code>-g</code> (template generation) option. Use this to explicitly
+      specify the module name. For option <code>-g</code> this is required, for
+      option <code>-i</code> the <code>apxs</code> tool tries to determine the
+      name from the source or (as a fallback) at least by guessing it from the
+      filename.</dd>
+      </dl>
+    </section>
+
+    <section id="options.query"><title>Query Options</title>
+      <dl>
+      <dt><code>-q</code></dt>
+      <dd>Performs a query for <code>apxs</code>'s knowledge about certain
+      settings. The <var>query</var> parameters can be one or more of the
+      following strings: <code>CC</code>, <code>CFLAGS</code>,
+      <code>CFLAGS_SHLIB</code>, <code>INCLUDEDIR</code>, <code>LD_SHLIB</code>,
+      <code>LDFLAGS_SHLIB</code>, <code>LIBEXECDIR</code>,
+      <code>LIBS_SHLIB</code>, <code>SBINDIR</code>, <code>SYSCONFDIR</code>,
+      <code>TARGET</code>.
+
+      <p>Use this for manually determining settings. For instance use</p>
+      <example>
+        INC=-I`apxs -q INCLUDEDIR`
+      </example>
+
+      <p>inside your own Makefiles if you need manual access to Apache's C
+      header files.</p></dd>
+      </dl>
+    </section>
+
+    <section id="options.conf"><title>Configuration Options</title>
+      <dl>
+      <dt><code>-S <var>name</var>=<var>value</var></code></dt>
+      <dd>This option changes the apxs settings described above.</dd>
+      </dl>
+    </section>
+
+    <section id="options.template"><title>Template Generation Options</title>
+      <dl>
+      <dt><code>-g</code></dt>
+      <dd>This generates a subdirectory <var>name</var> (see option
+      <code>-n</code>) and there two files: A sample module source file named
+      <code>mod_<var>name</var>.c</code> which can be used as a template for
+      creating your own modules or as a quick start for playing with the
+      apxs mechanism. And a corresponding <code>Makefile</code> for even easier
+      build and installing of this module.</dd>
+      </dl>
+    </section>
+
+    <section id="options.dso"><title>DSO Compilation Options</title>
+      <dl>
+      <dt><code>-c</code></dt>
+      <dd>This indicates the compilation operation. It first compiles the C
+      source files (.c) of <var>files</var> into corresponding object files (.o)
+      and then builds a dynamically shared object in <var>dsofile</var> by
+      linking these object files plus the remaining object files (.o and .a) of
+      <var>files</var>. If no <code>-o</code> option is specified the output
+      file is guessed from the first filename in <var>files</var> and thus
+      usually defaults to <code>mod_<var>name</var>.so</code>.</dd>
+
+      <dt><code>-o <var>dsofile</var></code></dt>
+      <dd>Explicitly specifies the filename of the created dynamically shared
+      object. If not specified and the name cannot be guessed from the
+      <var>files</var> list, the fallback name <code>mod_unknown.so</code> is
+      used.</dd>
+
+      <dt><code>-D <var>name</var>=<var>value</var></code></dt>
+      <dd>This option is directly passed through to the compilation command(s).
+      Use this to add your own defines to the build process.</dd>
+
+      <dt><code>-I <var>incdir</var></code></dt>
+      <dd>This option is directly passed through to the compilation command(s).
+      Use this to add your own include directories to search to the build
+      process.</dd>
+
+      <dt><code>-L <var>libdir</var></code></dt>
+      <dd>This option is directly passed through to the linker command. Use this
+      to add your own library directories to search to the build  process.</dd>
+
+      <dt><code>-l <var>libname</var></code></dt>
+      <dd>This option is directly passed through to the linker command. Use this
+      to add your own libraries to search to the build process.</dd>
+
+      <dt><code>-Wc,<var>compiler-flags</var></code></dt>
+      <dd>This option passes <var>compiler-flags</var> as additional flags to
+      the compiler command. Use this to add local compiler-specific options.</dd>
+
+      <dt><code>-Wl,<var>linker-flags</var></code></dt>
+      <dd>This option passes <var>linker-flags</var> as additional flags to
+      the linker command. Use this to add local linker-specific options.</dd>
+      </dl>
+    </section>
+
+    <section id="options.dsoinstall">
+    <title>DSO Installation and Configuration Options</title>
+      <dl>
+      <dt><code>-i</code></dt>
+      <dd>This indicates the installation operation and installs one or more
+      dynamically shared objects into the server's <var>modules</var>
+      directory.</dd>
+
+      <dt><code>-a</code></dt>
+      <dd>This activates the module by automatically adding a corresponding
+      <directive module="mod_so">LoadModule</directive> line to Apache's
+      <code>httpd.conf</code> configuration file, or by enabling it if it
+      already exists.</dd>
+
+      <dt><code>-A</code></dt>
+      <dd>Same as option <code>-a</code> but the created <directive
+      module="mod_so">LoadModule</directive> directive is prefixed with a hash
+      sign (<code>#</code>), <em>i.e.</em>, the module is just prepared for
+      later activation but initially disabled.</dd>
+
+      <dt><code>-e</code></dt>
+      <dd>This indicates the editing operation, which can be used with the
+      <code>-a</code> and <code>-A</code> options similarly to the
+      <code>-i</code> operation to edit Apache's <code>httpd.conf</code>
+      configuration file without attempting to install the module.</dd>
+      </dl>
+    </section>
+</section>
+
+<section id="examples"><title>Examples</title>
+    <p>Assume you have an Apache module named <code>mod_foo.c</code> available
+    which should extend Apache's server functionality. To accomplish this you
+    first have to compile the C source into a shared object suitable for loading
+    into the Apache server under runtime via the following command:</p>
+
+    <example>
+      $ apxs -c mod_foo.c<br />
+      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
+      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      $ _
+    </example>
+
+    <p>Then you have to update the Apache configuration by making sure a
+    <directive module="mod_so">LoadModule</directive> directive is present to
+    load this shared object. To simplify this step <code>apxs</code> provides
+    an automatic way to install the shared object in its "modules" directory
+    and updating the <code>httpd.conf</code> file accordingly. This can be
+    achieved by running:</p>
+
+    <example>
+      $ apxs -i -a mod_foo.c<br />
+      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      chmod 755 /path/to/apache/modules/mod_foo.so<br />
+      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      $ _
+    </example>
+
+    <p>This way a line named</p>
+
+    <example>
+      LoadModule foo_module modules/mod_foo.so
+    </example>
+
+    <p>is added to the configuration file if still not present. If you want to
+    have this disabled per default use the <code>-A</code> option,
+    <em>i.e.</em></p>
+
+    <example>
+      $ apxs -i -A mod_foo.c
+    </example>
+
+    <p>For a quick test of the apxs mechanism you can create a sample Apache
+    module template plus a corresponding Makefile via:</p>
+
+    <example>
+      $ apxs -g -n foo<br />
+      Creating [DIR]  foo<br />
+      Creating [FILE] foo/Makefile<br />
+      Creating [FILE] foo/mod_foo.c<br />
+      $ _
+    </example>
+
+    <p>Then you can immediately compile this sample module into a shared object
+    and load it into the Apache server:</p>
+
+    <example>
+      $ cd foo<br />
+      $ make all reload<br />
+      apxs -c mod_foo.c<br />
+      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
+      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      apxs -i -a -n "foo" mod_foo.so<br />
+      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      chmod 755 /path/to/apache/modules/mod_foo.so<br />
+      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      apachectl restart<br />
+      /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
+      /path/to/apache/sbin/apachectl restart: httpd started<br />
+      $ _
+    </example>
+
+    <p>You can even use <code>apxs</code> to compile complex modules outside the
+    Apache source tree, like PHP3:</p>
+
+    <example>
+      $ cd php3<br />
+      $ ./configure --with-shared-apache=../apache-1.3<br />
+      $ apxs -c -o libphp3.so mod_php3.c libmodphp3-so.a<br />
+      gcc -fpic -DSHARED_MODULE -I/tmp/apache/include  -c mod_php3.c<br />
+      ld -Bshareable -o libphp3.so mod_php3.o libmodphp3-so.a<br />
+      $ _
+    </example>
+
+    <p>because <code>apxs</code> automatically recognized C source files and
+    object files. Only C source files are compiled while remaining object
+    files are used for the linking phase.</p>
+</section>
+</manualpage>
