@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr_portable.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
@@ -89,7 +90,7 @@ static ap_shmem_t *scoreboard_shm = NULL;
 
 static ap_status_t cleanup_shared_mem(void *d)
 {
-    mm_free(scoreboard_shm, ap_scoreboard_image);
+    ap_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     ap_shm_destroy(scoreboard_shm);
 }
