@@ -1,9 +1,11 @@
 
-Apache 2.0alpha8 Released
+Apache 2.0alpha9 Released
 -------------------------
 
-The Apache Group is pleased to announce the release of the seventh public
-alpha release of Apache 2.0.  
+The Apache Group is pleased to announce the release of the ninth public
+alpha release of Apache 2.0.  This is scheduled to be the last alpha release,
+although we will not release a beta until it is ready, so we may require 
+another alpha.
 
 Apache 2.0 offers numerous enhancements, improvements and performance
 boosts over the 1.3 codebase. The most visible and noteworthy addition
@@ -19,9 +21,11 @@ support for BeOS in this version of the server.
 
 Included in this alpha is a pre-alpha version of mod_proxy.  Mod_proxy
 is not at the same level as the rest of the server, and should be enabled
-only by people who are very interested in working with the code.
+only by people who are very interested in working with the code.  Mod_proxy
+has lost some functionality in this alpha, because of a code re-org, the
+maintainers are working to get mod_proxy running again.
 
-Apache 2.0a8 under UNIX has undergone some testing, but there are some
+Apache 2.0a9 under UNIX has undergone some testing, but there are some
 known issues in the current release (hey, it is an "alpha" for a
 reason!). It is intended for developers and experienced Apache HTTPD
 administrators to play around with and work on. It is not a production
@@ -29,7 +33,7 @@ release. If you do not feel comfortable compiling and working with
 code, the Apache Group strongly recommends that you wait for a more
 stable beta release before you try this version.
 
-Apache 2.0a8 under Windows has undergone some testing as well.  There
+Apache 2.0a9 under Windows has undergone some testing as well.  There
 are known issues in the current release with regards to Apache on windows
 95 and 98.  We are working through those problems, and hope to have them
 fixed for future releases of the 2.0 alpha.
@@ -48,387 +52,81 @@ Internet web servers.
 
 For more information, please check out http://www.apache.org/httpd.html
 
-Changes with Apache 2.0a8
-  *) Add a directive to mod_mime so that filters can be associated with
-     a given mime-type.
-     [Ryan Bloom]
-
-  *) Get multi-views working again.  We were setting the path_info
-     field incorrectly if we couldn't find the specified file.
-     [Ryan Bloom]
-
-  *) Fix 304 processing.  The core should never try to send the headers
-     down the filter stack.  Always, just setup the table in the request
-     record, and let the header filter convert it to data that is ready
-     for the network.
-     [Ryan Bloom]
-
-  *) More fixes for the proxy.  There are still bugs in the proxy code,
-     but this has now proxied www.yahoo.com and www.ntrnet.net (my ISP)
-     successfully.
-     [Ryan Bloom]
-
-  *) Fix params for apr_getaddrinfo() call in connect proxy handler.
-     [Chuck Murcko]
-
-  *) APR: Add new apr_getopt_long function to handle long options.
-     [B. W. Fitzpatrick <fitz@red-bean.com>]
-
-  *) APR: Change apr_connect() to take apr_sockaddr_t instead of hostname.
-     Add generic apr_create_socket().  Add apr_getaddrinfo() for doing
-     hostname resolution/address string parsing and building
-     apr_sockaddr_t.  Add apr_get_sockaddr() for getting the address
-     of one of the apr_sockaddr_t structures for a socket.  Change
-     apr_bind() to take apr_sockaddr_t.  [David Reid and Jeff Trawick]
-
-  *) Remove the BUFF from the HTTP proxy.  This is still a bit ugly, but
-     I have proxied pages with it, cleanup will commence soon.
-     [Ryan Bloom]
-
-  *) Make the proxy work with filters.  This isn't perfect, because we
-     aren't dealing with the headers properly.  [Ryan Bloom]
-
-  *) Do not send a content-length iff the C-L is 0 and this is a head
-     request.  [Ryan Bloom]
-
-  *) Make cgi-bin work as a regular directory when using mod_vhost_alias
-     with no VirtualScriptAlias directives. PR#6829 [Tony Finch]
-
-  *) Remove BUFF from the PROXY connect handling. [Ryan Bloom]
-
-  *) Get the default_handler to stop trying to deal with HEAD requests.
-     The idea is to let the content-length filter compute the C-L before
-     we try to send the data.  If we can get the C-L correctly, then we
-     should send it in the HEAD response.
-     [Ryan Bloom]
-
-  *) The Header filter can now determine if a body should be sent based
-     on r->header_only.  The general idea of this is that if we delay
-     deciding to send the body, then we might be able to compute the
-     content-length correctly, which will help caching proxies to cache
-     our data better.  Any handler that doesn't want to try to compute
-     the content-length can just send an EOS bucket without data and
-     everything will just work.
-     [Ryan Bloom]
-
-  *) Add the referer to the error log if one is available.
-     [Markus Gyger <mgyger@itr.ch>]
-
-  *) Mod_info.c has now been ported to Apache 2.0.  As a part of this
-     change, the root of the configuration tree has been exposed to modules
-     as ap_conftree.
-     [Ryan Morgan <rmorgan@covalent.net>]
-
-  *) Get the core_output_filter to use the bucket interface directly.
-     This keeps us from calling the content-length filter multiple times
-     for a simple static request.
-     [Ryan Bloom]
-
-  *) We are sending the content-type correctly now.
-     [Ryan Bloom and Will Rowe]
-
-  *) APR on FreeBSD: Fix a bug in apr_sendfile() which caused us to report
-     a bogus bytes-sent value when the only thing being sent was trailers
-     and writev() returned an error (or EAGAIN).  [Jeff Trawick]
-
-  *) Get SINGLE_LISTEN_UNSERIALIZED_ACCEPT working again.  This uses the
-     hints file to determine which platforms define
-     SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
-     [Ryan Bloom]
-
-  *) APR: add apr_get_home_directory()  [Jeff Trawick]
-
-  *) Initial import of 1.3-current mod_proxy. [Chuck Murcko]
-
-  *) Not all platforms have INADDR_NONE defined by default.  Apache
-     used to make this check and define INADDR_NONE if appropriate,
-     but APR needs the check too, and I suspect other applications will
-     as well.  APR now defines APR_INADDR_NONE, which is always a valid
-     value on all platforms.
-     [Branko Èibej <brane@xbc.nu>]
-
-  *) Destroy the pthread mutex in lock_intra_cleanup() for PR#6824.
-     [Shuichi Kitaguchi <ki@hh.iij4u.or.jp>]
-
-  *) Relax the syntax checking of Host: headers in order to support
-     iDNS. PR#6635 [Tony Finch]
-
-  *) When reading from file buckets we convert to an MMAP if it makes
-     sense.  This also simplifies the default handler because the
-     default handler no longer needs to try to create MMAPs.
-     [Ryan Bloom]
-
-  *) BUFF has been removed from the main server.  The BUFF code will remain
-     in the code until it has been purged from the proxy module as well.
-     [Ryan Bloom]
-
-  *) Byteranges have been completely re-written to be a filter.  This
-     has been tested, and I believe it is working correctly, but it could
-     doesn't work for the Adobe Acrobat plug-in.  The output almost matches
-     the output from 1.3, the only difference being that 1.3 includes
-     a content-length in the response, and this does not.
-     [Ryan Bloom]
-
-  *) APR read/write functions and bucket read functions now operate
-     on unsigned integers, instead of signed ones.  It doesn't make
-     any sense to use signed ints, because we return the error codes,
-     so if we have an error we should report 0 bytes read or written.
-     [Ryan Bloom]
-
-  *) Always compute the content length, whether it is sent or not.
-     The reason for this, is that it allows us to correctly report
-     the bytes_sent when logging the request.  This also simplifies
-     content-length filter a bit, and fixes the actual byte-reporing
-     code in mod_log_config.c
-     [Ryan Bloom]
-
-  *) Remove AP_END_OF_BRIGADE definition.  This does not signify what
-     it says, because it was only used by EOS and FLUSH buckets.  Since
-     neither of those are required at the end of a brigade, this was
-     really signifying FLUSH_THE_DATA, but that can be determined better
-     by checking AP_BUCKET_IS_EOS() or AP_BUCKET_IS_FLUSH.  EOS and FLUSH
-     buckets now return a length of 0, which is actually the amount of data
-     read, so they make more sense.
-     [Ryan Bloom]
-
-  *) Allow the core_output_filter to save some data past the end of a
-     request.  If we get an EOS bucket, we only send the data if it
-     makes sense to send it.  This allows us to pipeline request
-     responses.  As a part of this, we also need to allocate mmap
-     buckets out of the connection pool, not the request pool.  This
-     allows the mmap to outlive the request.
-     [Ryan Bloom]
-
-  *) Make blocking and non-blocking bucket reads work correctly for
-     sockets and pipes.  These are the only bucket types that should
-     have non-blocking reads, because the other bucket types should
-     ALWAYS be able to return something immediately.
-     [Ryan Bloom]
-
-  *) In the Apache/Win32 console window, accept Ctrl+C to stop the
-     server, but use Ctrl+Break to initiate a graceful restart
-     instead of duplicating behavior. [John Sterling]
-
-  *) Patch mod_autoindex to set the Last-Modified header based on
-     the directory's mtime, and add the ETag header.  [William Rowe]
-
-  *) Merge the 1.3 patch to add support for logging query string in
-     such a way that "%m %U%q %H" is the same as "%r".
-     [Bill Stoddard]
-
-  *) Port three log methods from mod_log_config 1.3 to 2.0:
-     CLF compliant '-' byte count, method and protocol.
-     [Bill Stoddard]
-
-  *) Add a new LogFormat directive, %c, that will log connection
-     status at the end of the response as follows:
-     'X' - connection aborted before the response completed.
-     '+' - connection may be kept-alive by the server.
-     '-' - connection will be closed by the server.
-     [Bill Stoddard]
-
-  *) Expand APR for WinNT to fully accept and return utf-8 encoded
-     Unicode file names and paths for Win32, and tag the Content-Type
-     from mod_autoindex to reflect that charset if the the feature
-     macro APR_HAS_UNICODE_FS is true.  [William Rowe]
-
-  *) Compute the content length (and add appropriate header field) for
-     the response when no content length is available and we can't use
-     chunked encoding.  [Jeff Trawick]
-
-  *) Changed ap_discard_request_body() to use REQUEST_CHUNKED_DECHUNK,
-     so that content input filters get dechunked data when using
-     the default handler. Also removed REQUEST_CHUNKED_PASS.
-     [Sascha Schumann]
-
-  *) Add mod_ext_filter as an experimental module.  This module allows
-     the administrator to use external programs as filters.  Currently,
-     only filtering of output is supported.  [Jeff Trawick]
-
-  *) Most Apache functions work on EBCDIC machines again, as protocol
-     data is now translated (again).  [Jeff Trawick]
-
-  *) Introduce ap_xlate_proto_{to|from}_ascii() to clean up some of
-     the EBCDIC support.  They are noops on ASCII machines, so this
-     type of translation doesn't have to be surrounded by #ifdef
-     CHARSET_EBCDIC.  [Jeff Trawick]
-
-  *) Fix mod_include.  tag commands work again, and the server will
-     send the FAQ again.  This also allows mod_include to set aside
-     buckets that include partial buckets.
-     [Ryan Bloom and David Reid]
-
-  *) Add suexec support back.  [Manoj Kasichainula]
-
-  *) Lingering close now uses the socket directly instead of using
-     BUFF.  This has been tested, but since all we can tell is that it
-     doesn't fail, this needs to be really hacked on.
-     [Ryan Bloom]
-
-  *) Allow filters to modify headers and have those headers be sent to
-     the client.  The idea is that we have an http_header filter that
-     actually sends the headers to the network.  This removes the need
-     for the BUFF to send headers.
-     [Ryan Bloom]
-
-  *) Charset translation: mod_charset_lite handles translation of
-     request bodies.  Get rid of the xlate version of ap_md5_digest()
-     since we don't compute digests of filtered (e.g., translated)
-     response bodies this way anymore.  (Note that we don't do it at
-     all at the present; somebody needs to write a filter to do so.)
-     [Jeff Trawick]
-
-  *) Input filters and ap_get_brigade() now have a input mode parameter
-     (blocking, non-blocking, peek) instead of a length parameter.
-     [hackathon]
-
-  *) Update the mime.types file to the registered media types as
-     of 2000-10-19. PR#6613 [Carsten Klapp <carsten.klapp@home.net>,
-     Tony Finch]
-
-  *) Namespace protect some macros declared in ap_config.h
-     [Ryan Bloom]
-
-  *) Support HTTP header line folding with input filtering.
-     [Greg Ames]
-
-  *) Mod_include works again.  This should still be re-written, but at
-     least now we can serve an SHTML page again.
-     [Ryan Bloom]
-
-  *) Begin to remove BUFF from the core.  Currently, we keep a pointer
-     to both the BUFF and the socket in the conn_rec.  Functions that
-     want to use the BUFF can, functions that want to use the socket,
-     can.  They point to the same place.
-     [Ryan Bloom]
-
-  *) apr_psprintf doesn't understand %lld as a format.  Make it %ld.
-     [Tomas "Ögren" <stric@ing.umu.se>]
-
-  *) APR pipes on Unix and Win32 are now cleaned up automatically when the
-     associated pool goes away.  (APR pipes on OS/2 were already had this
-     logic.)  This resolvs a fatal file descriptor leak with CGIs.
-     [Jeff Trawick]
-
-  *) The final line of the config file was not being read if there was
-     no \n at the end of it.  This was caused by apr_fgets returning
-     APR_EOF even though we had read valid data.  This is solved by
-     making cfg_getline check the buff that was returned from apr_fgets.
-     If apr_fgets return APR_EOF, but there was data in the buf, then we
-     return the buf, otherwise we return NULL.
-     [Ryan Bloom]
-
-  *) Piped logs work again in the 2.0 series.
-     [Ryan Bloom]
-
-  *) Restore functionality broken by the mod_rewrite security fix:
-     rewrite map lookup keys and default values are now expanded
-     so that the lookup can depend on the requested URI etc.
-     PR #6671 [Tony Finch]
-
-  *) Tighten up the syntax checking of Host: headers to fix a
-     security bug in some mass virtual hosting configurations
-     that can allow a remote attacker to retrieve some files
-     on the system that should be inaccessible. [Tony Finch]
-
-  *) Add a pool bucket type.  This bucket is used for data allocated out
-     of a pool.  If the pool is cleaned before the bucket is destroyed, then
-     the data is converted to a heap bucket, allowing it to survive the
-     death of the pool.
-     [Ryan Bloom]
-
-  *) Add a flush bucket.  This allows modules to signal that the filters
-     should all flush whatever data they currently have.  There is no way
-     to actually force them to do this, so if a filter ignores this bucket,
-     that's life, but at least we can try with this.
-     [Ryan Bloom]
-
-  *) Add an output filter for sub-requests.  This filter just strips the
-     EOS bucket so that we don't confuse the main request's core output
-     filter by sending multiple EOS buckets.  This change also makes sub
-     requests start to send EOS buckets when they are finished.
-     [Ryan Bloom]
-
-  *) Make ap_bucket_(read|destroy|split|setaside) into macros.  Also
-     makes ap_bucket_destroy a return void, which is okay because it
-     used to always return APR_SUCCESS, and nobody ever checked its
-     return value anyway.
-     [Cliff Woolley <cliffwoolley@yahoo.com>]
-
-  *) Remove the index into the bucket-type table from the buckets
-     structure.  This has now been replaced with a pointer to the
-     bucket_type.  Also add some macros to test the bucket-type.
-     [Ryan Bloom]
-
-  *) Renamed all MODULE_EXPORT symbols to AP_MODULE_DECLARE and all symbols
-     for CORE_EXPORT to AP_CORE_DECLARE (namespace protecting the wrapper)
-     and retitled API_EXPORT as AP_DECLARE and APR_EXPORT as APR_DECLARE.
-     All _VAR_ flavors changes to _DATA to be absolutely clear.
+Changes with Apache 2.0a9
+
+  *) Win32 now requires perl to complete the final install step for users
+     to build + install on Win32.  Makefile.win now rewrites @@ServerRoot@
+     and installs the conf, htdocs and htdocs/manual directories.
      [William Rowe]
 
-  *) Add support for /, //, //servername and //server/sharename
-     parsing of <Directory> blocks under Win32 and OS2.
-     [Tim Costello, William Rowe, Brian Harvard]
+  *) Make mod_include use a hash table to associate directive tags with
+     functions.  This allows modules to implement their own SSI tags easily.
+     The idea is simple enough, a module can insert it's own tag and function
+     combination into a hash table provided by mod_include.  While mod_include
+     parses an SSI file, when it encounters a tag in the file, it does a
+     hash lookup to find the function that implements that tag, and passes
+     all of the relevant data to the function.  That function is then
+     responsible for processing the tag and handing the remaining data back
+     to mod_include for further processing.
+     [Paul J. Reder <rederpj@raleigh.ibm.com>]
 
-  *) Remove the function pointers from the ap_bucket type.  They have been
-     replaced with a global table.  Modules are allowed to register bucket
-     types and use then use those buckets.
+  *) Get rid of ap_new_apr_connection().  ap_new_connection() now has
+     fewer parameters: the local and remote socket addresses were removed            from the parameter list because all required information is available
+     via the APR socket.  [Jeff Trawick]
+
+  *) Distribution directory structure reorganized to reflect a
+     normal source distribution with external install targets.
+     [Roy Fielding]
+
+  *) The MPMs that need multiple segments of shared memory now create
+     two apr_shmem_t variables, one for each shared memory allocation.
+     the problem is that we can't determine how much memory will be required
+     for shared memory allocations once we try to allocate more than one
+     variable.  The MM code automatically aligns the shared memory allocations,
+     so we end up needing to pad the amount of shared memory we want based
+     on how many variables will be allocated out of the shared memory segment.
+     It is just easier to create a second apr_shmem_t variable, and two
+     shmem memory blocks.
      [Ryan Bloom]
 
-  *) mod_cgid: In the handler, shut down the Unix socket (only for write)
-     once we finish writing the request body to the cgi child process;
-     otherwise, the client doesn't hit EOF on stdin.  Small request bodies
-     worked without this change (for reasons I don't understand), but large
-     ones didn't.  [Jeff Trawick]
-
-  *) Remove file bucket specific information from the ap_bucket type.
-     This has been moved to a file_bucket specific type that hangs off
-     the data pointer in the ap_bucket type.
+  *) Cleanup the export list a bit.  This creates a single unified list of
+     functions exported by APR.  The export list is generated at configure
+     time, and that list is then used to generate the exports.c file.                Because of the way the export list is generated, we only export those
+     functions that are valid on the platform we are building on.
      [Ryan Bloom]
 
-  *) Input filtering now has a third argument.  This is the amount of data
-     to read from lower filters.  This argument can be -1, 0, or a positive
-     number.  -1 means give me all the data you have, I'll deal with it and
-     let you know if I need more.  0 means give me one line and one line
-     only.  A positive number means I want no more than this much data.
+  *) Enable logging the cookie with mod_log_config
+     [Sander van Zoest <sander@covalent.net>]
 
-     Currently, only 0 and a positive number are implemented.  This allows
-     us to remove the remaining field from the conn_rec structure, which
-     has also been done.
-     [Ryan Bloom]
+  *) Fix a segfault in mod_info when it reaches the end of the configuration.
+     [Jeff Trawick]
 
-  *) Big cleanup of the input filtering.  The goal is that http_filter
-     understands two conditions, headers and body.  It knows where it is
-     based on c->remaining.  If c->remaining is 0, then we are in headers,
-     and http_filter returns a line at a time.  If it is not 0, then we are
-     in body, and http_filter returns raw data, but only up to c->remaining
-     bytes.  It can return less, but never more.
-     [Greg Ames, Ryan Bloom, Jeff Trawick]
+  *) Added lib/aputil/ as a placeholder for utility functions which are not
+     specific to the Apache HTTP Server (but do not make sense with APR).
+     The first utility is "apu_dbm": a set of functions to work with DBM
+     files. This first version can be compiled for SDBM or GDBM databases.
+     [Greg Stein]
 
-  *) mod_cgi: Write all of the request body to the child, not just what
-     the kernel would accept on the first write.  [Jeff Trawick]
+  *) Complete re-write of mod_include.  This makes mod_include a filter that
+     uses buckets directly.  This has now served the FAQ correctly.
+     [Paul Reder <rederpj@raleigh.ibm.com>]
 
-  *) Back out the change that moved the brigade from the core_output_filters
-     ctx to the conn_rec.  Since all requests over a given connection
-     go through the same core_output_filter, the ctx pointer has the
-     correct lifetime.
-     [Ryan Bloom]
+  *) Allow modules to specify the first filter in a sub_request when                 making the sub_request.  This keeps modules from having to change the
+     output_filter immediately after creating the sub-request, and therefore
+     skip the sub_req_output_filter.  [Ryan Bloom]
 
-  *) Fix another bug in the send_the_file() read/write loop. A partial
-     send by apr_send would cause unsent data in the read buffer to
-     get clobbered. Complete making send_the_file handle partial
-     writes to the network.
-     [Bill Stoddard]
+  *) Update ab to accept URLs with IPv6 literal address strings (in the
+     format described in RFC 2732), and to build Host header fields in
+     the same format.  This allows IPv6 literal address strings to be
+     used with ab.  This support has been tested against Apache 1.3 with
+     the KAME patch, but Apache 2.0 does not yet work with this format
+     of the Host header field.  [Jeff Trawick]
 
-  *) Fix a couple of type fixes to allow compilation on AIX again
-     [Victor J. Orlikowski <v.j.orlikowski@gte.net>]
+  *) Accomodate an out-of-space condition in the piped logs and the
+     rotatelogs.c code, and no longer churn log processes for this
+     condition.  [Victor J. Orlikowski]
 
-  *) Fix bug in send_the_file() which causes offset to be ignored
-     if there are no headers to send.
-     [Bill Stoddard]
+  *) Add support for partial writes with apr_sendfile() to core_output_filter.
+     [Greg Ames]
 
-  *) Handle APR_ENOTIMPL returned from apr_sendfile in the core
-     filter. Useful for supporting Windows 9* with a binary
-     compiled on Windows NT.
-     [Bill Stoddard]
 
