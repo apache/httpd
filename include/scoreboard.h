@@ -200,7 +200,7 @@ typedef struct {
 #endif
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
-AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
+AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
 AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r);
 
 apr_status_t ap_cleanup_scoreboard(void *d);
