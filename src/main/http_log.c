@@ -172,8 +172,10 @@ static int error_log_child(void *cmd, child_info *pinfo)
     child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
-    /* For OS/2 we need to use a '/' */
-    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    /* For OS/2 we need to use a '/' and spawn the child rather than exec as
+     * we haven't forked */
+    child_pid = spawnl(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
 #else    
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif    
@@ -727,8 +729,10 @@ static int piped_log_child(void *cmd, child_info *pinfo)
     child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
-    /* For OS/2 we need to use a '/' */
-    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    /* For OS/2 we need to use a '/' and spawn the child rather than exec as
+     * we haven't forked */
+    child_pid = spawnl(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
 #else
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
