@@ -3253,6 +3253,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         header_struct h;
         ap_bucket *e;
         ap_bucket_brigade *bb;
+        apr_size_t len = 0;
 
         if (!apr_is_empty_table(r->err_headers_out))
             r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
