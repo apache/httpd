@@ -1291,6 +1291,8 @@ void winnt_rewrite_args(process_rec *process)
                 exit(rv);
             }
             /* Proceed to post_config in order to test the installed configuration */
+            fprintf(stderr,"Testing httpd.conf....\n");
+            fprintf(stderr,"Errors reported here must be corrected before the service can be started.\n");
         }
     }
     else if (running_as_service)
@@ -1345,6 +1347,8 @@ void winnt_rewrite_args(process_rec *process)
             exit(rv);
         }
         /* Proceed to post_config in order to test the installed configuration */
+        fprintf(stderr,"Testing httpd.conf....\n");
+        fprintf(stderr,"Errors reported here must be corrected before the service can be started.\n");
     }
     
     /* Track the args actually entered by the user.
