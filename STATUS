@@ -146,7 +146,7 @@ Open issues:
     * What do to about SERVER_SUBVERSION now?
       STATUS:
        o Scrap it now that modules can use ap_add_version_component
-         Jim +1 (make sure this is clear :) ), Brian +1
+         Jim +1 (make sure this is clear :) ), Brian +1, Ken +1
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.

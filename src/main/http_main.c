@@ -343,7 +343,7 @@ scoreboard *ap_scoreboard_image = NULL;
 static char *server_version = NULL;
 static int version_locked = 0;
 
-int ap_note_platform = 0;  /* Global, alas, so http_core can talk to us */
+int ap_note_platform = 1;  /* Global, alas, so http_core can talk to us */
 
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
@@ -353,7 +353,7 @@ int ap_note_platform = 0;  /* Global, alas, so http_core can talk to us */
 static void reset_version()
 {
     version_locked = 0;
-    ap_note_platform = 0;
+    ap_note_platform = 1;
     server_version = NULL;
 }
 
