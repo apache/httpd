@@ -61,6 +61,7 @@ Committed Code Changes:
     * Martin's new URI parsing stuff (the source module main/util_uri.c)
     * New `%a' construct for LogFormat and CustomLog. PR#1885
     * Ralf's `Rule HIDE' feature for hiding the symbol namespace
+      -- vetoed by Roy, will be removed Saturday (if not sooner)
     * Make \\ behave as expected.
     * Fix for "poly" directive in image maps. PR#1771
     * Reduce memory usage, and speed up ServerAlias support. PR#1531
@@ -100,6 +101,7 @@ Committed Code Changes:
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
     * Ken's change HIDE default to "yes", always include hide.h
+      -- vetoed by Roy, will be removed Saturday (if not sooner)
     * Ralf's major Configure cleanup
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
@@ -146,6 +148,8 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * proxy security fixes from 1.2.5 need to be brought forward
 
+    * HIDE has been vetoed -- no release until it is removed/replaced
+
 Needs patch:
 
     * Dean's "locale" project
@@ -175,19 +179,19 @@ Open issues:
         currently os_xxx, migrate to ap_xxx: Brian
 
       Public API functions (e.g., palloc)
-	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
+	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Jim
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: +1: Brian, Roy, Paul, Jim, Ken
+	appri_xxx: +1: Brian, Paul, Jim, Ken
 	httpd_xxx: +1: 
 	apint_xxx: +1: Ralf (int = internal)
     
       Alternate proposal:
-      Everything should be ap_: +1 Dean, Randy
+      Everything should be ap_: +1 Dean, Randy, Roy
 	Why?  Because it's far easier to type, and damn it, I
 	type these things far too much.  Just using apapi_ for
 	the few hours I did while writing apapi_vformatter is
