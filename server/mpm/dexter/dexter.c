@@ -1214,7 +1214,7 @@ static void server_main_loop(int remaining_children_to_start)
 
                     child_slot = i;
                     for (j = 0; j < HARD_THREAD_LIMIT; j++) {
-                        ap_reset_connection_status(i * HARD_THREAD_LIMIT + j);
+                        ap_dexter_force_reset_connection_status(i * HARD_THREAD_LIMIT + j);
                     }
                     break;
                 }
@@ -1448,6 +1448,7 @@ static void dexter_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t 
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    ap_dexter_set_maintain_connection_status(1);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1591,6 +1592,18 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *set_maintain_connection_status(cmd_parms *cmd,
+                                                  core_dir_config *d, int arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_dexter_set_maintain_connection_status(arg != 0);
+    return NULL;
+}
+
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
     struct stat finfo;
@@ -1662,6 +1675,8 @@ LISTEN_COMMANDS
   "Maximum number of threads per child" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
   "Maximum number of requests a particular child serves before dying." },
+{ "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF, FLAG,
+  "Whether or not to maintain status information on current connections"},
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
   "The location of the directory Apache changes to before dumping core" },
 { NULL }

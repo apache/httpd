@@ -82,6 +82,9 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p);
 /* The stuff for Dexter's status table */
 
 #include "mpm_status.h"
+
+void ap_dexter_set_maintain_connection_status(int flag);
+void ap_dexter_force_reset_connection_status(long conn_id);
 #define KEY_LENGTH 16
 #define VALUE_LENGTH 64
 typedef struct {
