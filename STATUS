@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/01 13:13:32 $]
+Last modified at [$Date: 2004/11/01 23:22:38 $]
 
 Release:
 
@@ -89,6 +89,11 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 24030
        +1: jorton, minfrin, jerenkrantz
 
+    *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
+       http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
+       PR: 31848
+       +1: jorton
+
     *) Allow for the use of --with-module=foo:bar where the ./modules/foo
        directory is a local addition to the ./modules directory.
        Assumes, of course, that the required files are in ./modules/foo,
@@ -111,10 +116,8 @@ PATCHES TO BACKPORT FROM 2.1
        +1: minfrin
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.101
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.102
        PR: 31247
-       jerenkrantz comments: This needs the final patch posted to dev@httpd?
-       jorton replies: it does indeed, hang on...
        +1: jorton
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
