@@ -1881,14 +1881,18 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
     if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_PASS)))
         return rv;
 
-    /* If we are discarding the request body, then we must already know
-     * the final status code, therefore disable the sending of 100 continue.
+    /* In order to avoid sending 100 Continue when we already know the
+     * final response status, and yet not kill the connection if there is
+     * no request body to be read, we need to duplicate the test from
+     * ap_should_client_block() here negated rather than call it directly.
      */
-    r->expecting_100 = 0;
-
-    if (ap_should_client_block(r)) {
+    if ((r->read_length == 0) && (r->read_chunked || (r->remaining > 0))) {
         char dumpbuf[HUGE_STRING_LEN];
 
+        if (r->expecting_100) {
+            r->connection->keepalive = -1;
+            return OK;
+        }
         ap_hard_timeout("reading request body", r);
         while ((rv = ap_get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0)
             continue;

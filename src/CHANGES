@@ -1,5 +1,10 @@
 Changes with Apache 1.3.7
 
+  *) Fix handling of case when a client has sent "Expect: 100-continue"
+     and we are going to respond with an error, but get stuck waiting to
+     discard the body in the pointless hope of preserving the connection.
+     [Roy Fielding, Joe Orton <jeo101@york.ac.uk>] PR#4499, PR#3806
+
   *) Fix 'configure' to work correctly with SysV-based versions of
      'tr' (consistent with Configure's use as well). [Jim Jagielski]
 
