@@ -82,6 +82,7 @@ void *create_core_dir_config (pool *a, char *dir)
       (core_dir_config *)pcalloc(a, sizeof(core_dir_config));
   
     if (!dir || dir[strlen(dir) - 1] == '/') conf->d = dir;
+    else if (strncmp(dir,"proxy:",6)==0) conf->d = pstrdup (a, dir);
     else conf->d = pstrcat (a, dir, "/", NULL);
     conf->d_is_matchexp = conf->d ? is_matchexp( conf->d ) : 0;
 

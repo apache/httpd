@@ -1,4 +1,6 @@
 Changes with Apache 1.2
+  
+  *) Fix problem with <Directory proxy:...>. [Martin Kraemer] PR#271
 
   *) Corrected spelling of "authoritative".  AuthDBAuthoratative became
      AuthDBAuthoritative. [Marc Slemko] PR#420
