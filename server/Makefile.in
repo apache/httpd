@@ -13,7 +13,7 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	connection.c listen.c \
 	mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c $(top_builddir)/server/exports.c buildmark.c \
+	util_filter.c exports.c buildmark.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
@@ -60,18 +60,11 @@ export_files:
 	sort -u $$tmp > $@; \
 	rm -f $$tmp
 
-# full path required to keep BSD make happy
-$(top_builddir)/server/exports.c: export_files
+exports.c: export_files
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
 
 export_vars.h: export_files
 	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $?` > $@
-
-# wtf does this have to be explicit????
-exports.lo: exports.c
-
-# Needed to allow exports.c to be generated in a parallel build successfully
-.NOTPARALLEL: $(top_builddir)/server/exports.c
 
 # Rule to make def file for OS/2 core dll
 ApacheCoreOS2.def: exports.c export_vars.h $(top_srcdir)/os/$(OS_DIR)/core_header.def
