@@ -1,8 +1,5 @@
 Changes with Apache 1.3b6
 
-  *) Work around a broken C preprocessor in mod_include.
-     [Dean Gaudet] PR#1717
-
   *) Use SA_RESETHAND or SA_ONESHOT when installing the coredump handlers.
      In particular the handlers could trigger themselves into an infinite
      loop if RLimitMem was used with a small amount of memory -- too small
