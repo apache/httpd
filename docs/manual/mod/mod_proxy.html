@@ -326,7 +326,9 @@ by another forward proxy.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyPass <EM>path url</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyPass <EM>path url</EM><br> 
+or: ProxyPass <EM>url</EM> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</em>
+<br>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -367,6 +369,7 @@ will cause a local request for the
 internally converted into a proxy request to
 &lt;<SAMP>http://foo.com/bar</SAMP>&gt;.
 
+
 <HR>
 
 <H2><A NAME="proxypassreverse">ProxyPassReverse</A> directive</H2>
@@ -374,6 +377,7 @@ internally converted into a proxy request to
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> ProxyPassReverse <EM>path url</EM><BR>
+or: ProxyPassReverse <EM>url</EM> when placed in a &lt;location&gt; directive <em>(Apache 2.0 only)</em><br>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
