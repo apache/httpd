@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/21 20:38:02 $]
+Last modified at [$Date: 2002/03/22 00:59:23 $]
 
 Release:
 
@@ -91,11 +91,6 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
-
-    * Don't forget to reversion mod_ssl, which is currently listed
-      as mod_ssl/3.0a0.
-        Jeff posted a patch 20020321.  He'll commit if he doesn't see
-        any concerns expressed.
 
 CURRENT VOTES:
 

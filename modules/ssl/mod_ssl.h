@@ -64,8 +64,6 @@
 #ifndef __MOD_SSL_H__
 #define __MOD_SSL_H__
 
-#define MOD_SSL_VERSION "3.0a0"
-
 /* 
  * Optionally enable the experimental stuff, but allow the user to
  * override the decision which experimental parts are included by using
