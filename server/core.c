@@ -2909,6 +2909,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
             apr_bucket_split(e, pos - str + 1);
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(b, e);
+            *readbytes += pos - str;
             return APR_SUCCESS;
         }
         APR_BUCKET_REMOVE(e);
