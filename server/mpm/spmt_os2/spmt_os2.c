@@ -1366,7 +1366,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
 static void spmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    one_process = !!getenv("ONE_PROCESS");
+    one_process = !!ap_exists_config_define("ONE_PROCESS");
 
     is_graceful = 0;
     ap_listen_pre_config();

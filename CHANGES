@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Stop using environment variables to force debug mode or
+     no detach.  We now use the -D command line argument to 
+     specify the correct mode.  -DONE_PROCESS and -DNO_DETACH.
+     [Greg Stein]
+
   *) Change handlers to use hooks. [Ben Laurie]
 
   *) Stop returning copies of filenames from both apr_file_t and

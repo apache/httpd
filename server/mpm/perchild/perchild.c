@@ -1299,8 +1299,8 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     int no_detach = 0;
     int i;
 
-    one_process = !!getenv("ONE_PROCESS");
-    no_detach = !!getenv("NO_DETACH");
+    one_process = !!ap_exists_config_define("ONE_PROCESS");
+    no_detach = !!ap_exists_config_define("NO_DETACH");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
