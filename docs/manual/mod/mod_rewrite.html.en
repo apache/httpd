@@ -69,7 +69,7 @@ URLs on the fly</td></tr><tr><th><a href="module-dict.html#Status">Status:
          <a href="mailto:rse@engelschall.com"><code>rse@engelschall.com</code></a><br />
          <a href="http://www.engelschall.com/"><code>www.engelschall.com</code></a>
       </p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteengine">RewriteEngine</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritelock">RewriteLock</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritelog">RewriteLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteloglevel">RewriteLogLevel</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">RewriteMap</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteoptions">RewriteOptions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#Internal">Interal Processing</a></li><li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Solutions">Practical Solutions</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Internal" id="Internal">Interal Processing</a></h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteengine">RewriteEngine</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritelock">RewriteLock</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritelog">RewriteLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteloglevel">RewriteLogLevel</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">RewriteMap</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriteoptions">RewriteOptions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#Internal">Internal Processing</a></li><li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Solutions">Practical Solutions</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Internal" id="Internal">Internal Processing</a></h2>
 
       <p>The internal processing of this module is very complex but
       needs to be explained once even to the average user to avoid
@@ -589,7 +589,7 @@ Result:
       <em>CondPattern</em>.</p>
 
       <p><strong>Remember:</strong> <em>CondPattern</em> is a
-      standard <em>Extended Regular Expression</em> with some
+      <em>perl compatible regular expression</em> with some
       additions:</p>
 
       <ol>
@@ -843,7 +843,9 @@ RewriteLogLevel 3
               </a></th><td><code>None</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_rewrite</td></tr></table>
+              </a></th><td>mod_rewrite</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>The choice of different dbm types is available in
+Apache 2.0.41 and later</td></tr></table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
       substitution strings by the mapping-functions to
@@ -1076,7 +1078,8 @@ once!
               </a></th><td>Sets some special options for the rewrite engine</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RewriteOptions <em>Options</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>None</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_rewrite</td></tr></table>
 
@@ -1102,7 +1105,8 @@ once!
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_rewrite</td></tr></table>
+              </a></th><td>mod_rewrite</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>The cookie-flag is available in Apache 2.0.40 and later.</td></tr></table>
       <p>The <code class="directive">RewriteRule</code> directive is the real
       rewriting workhorse. The directive can occur more than once.
       Each directive then defines one single rewriting rule. The
@@ -1110,9 +1114,8 @@ once!
       <strong>important</strong>, because this order is used when
       applying the rules at run-time.</p>
 
-      <p><a id="patterns" name="patterns"><em>Pattern</em></a> can
-      be (for Apache 1.1.x a System V8 and for Apache 1.2.x and
-      later a POSIX) <a id="regexp" name="regexp">regular
+      <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
+      a perl compatible <a id="regexp" name="regexp">regular
       expression</a> which gets applied to the current URL. Here
       ``current'' means the value of the URL when this rule gets
       applied. This may not be the originally requested URL,
@@ -1148,12 +1151,11 @@ once!
               (for instance to specify the chars "<code>.[]()</code>" <em>etc.</em>)
 </pre></div>
 
-      <p>For more information about regular expressions either have
-      a look at your local regex(3) manpage or its
-      <code>src/regex/regex.3</code> copy in the Apache 1.3
-      distribution. If you are interested in more detailed
+      <p>For more information about regular expressions have a look at the
+      perl regular expression manpage ("<a href="http://www.perldoc.com/perl5.6.1/pod/perlre.html">perldoc
+      perlre</a>"). If you are interested in more detailed
       information about regular expressions and their variants
-      (POSIX regex, Perl regex, <em>etc.</em>) have a look at the
+      (POSIX regex <em>etc.</em>) have a look at the
       following dedicated book on this topic:</p>
 
       <p class="indent">

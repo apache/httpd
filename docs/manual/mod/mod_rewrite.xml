@@ -76,7 +76,7 @@ URLs on the fly</description>
       </p>
 </summary>
 
-<section id="Internal"><title>Interal Processing</title>
+<section id="Internal"><title>Internal Processing</title>
 
       <p>The internal processing of this module is very complex but
       needs to be explained once even to the average user to avoid
@@ -312,7 +312,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-
+<override>FileInfo</override>
 <usage>
 
       <p>The <directive>RewriteOptions</directive> directive sets some
@@ -438,6 +438,8 @@ synchronization</description>
 <default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The choice of different dbm types is available in
+Apache 2.0.41 and later</compatibility>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a
@@ -1024,7 +1026,7 @@ Result:
       <em>CondPattern</em>.</p>
 
       <p><strong>Remember:</strong> <em>CondPattern</em> is a
-      standard <em>Extended Regular Expression</em> with some
+      <em>perl compatible regular expression</em> with some
       additions:</p>
 
       <ol>
@@ -1188,6 +1190,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>The cookie-flag is available in Apache 2.0.40 and later.</compatibility>
 
 <usage>
       <p>The <directive>RewriteRule</directive> directive is the real
@@ -1197,9 +1200,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <strong>important</strong>, because this order is used when
       applying the rules at run-time.</p>
 
-      <p><a id="patterns" name="patterns"><em>Pattern</em></a> can
-      be (for Apache 1.1.x a System V8 and for Apache 1.2.x and
-      later a POSIX) <a id="regexp" name="regexp">regular
+      <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
+      a perl compatible <a id="regexp" name="regexp">regular
       expression</a> which gets applied to the current URL. Here
       ``current'' means the value of the URL when this rule gets
       applied. This may not be the originally requested URL,
@@ -1235,12 +1237,12 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
               (for instance to specify the chars "<code>.[]()</code>" <em>etc.</em>)
 </pre></note>
 
-      <p>For more information about regular expressions either have
-      a look at your local regex(3) manpage or its
-      <code>src/regex/regex.3</code> copy in the Apache 1.3
-      distribution. If you are interested in more detailed
+      <p>For more information about regular expressions have a look at the
+      perl regular expression manpage ("<a
+      href="http://www.perldoc.com/perl5.6.1/pod/perlre.html">perldoc
+      perlre</a>"). If you are interested in more detailed
       information about regular expressions and their variants
-      (POSIX regex, Perl regex, <em>etc.</em>) have a look at the
+      (POSIX regex <em>etc.</em>) have a look at the
       following dedicated book on this topic:</p>
 
       <p class="indent">
