@@ -201,22 +201,20 @@
     <p>To run a really tight ship, you'll want to stop users from
     setting up <code>.htaccess</code> files which can override
     security features you've configured. Here's one way to do
-    it...</p>
+    it.</p>
 
     <p>In the server configuration file, put</p>
 
     <blockquote>
       <code>&lt;Directory /&gt;<br />
        AllowOverride None<br />
-       Options None<br />
-       Allow from all<br />
        &lt;/Directory&gt;<br />
       </code>
     </blockquote>
     Then setup for specific directories
 
-    <p>This stops all overrides, Includes and accesses in all
-    directories apart from those named.</p>
+    <p>This prevents the use of <code>.htaccess</code> files in all
+    directories apart from those specifically enabled.</p>
     <hr />
 
     <h2><a id="protectserverfiles" name="protectserverfiles">
