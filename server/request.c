@@ -1628,12 +1628,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
-       * dir_walk/file_walk values.  We also need to preserve the apr_stat
-       * results into the new parser, which can't happen until the new dir_walk
-       * is taught to recognize the condition, and perhaps we also tag that
-       * symlinks were tested and/or found for r->filename.  
-       */
+#if 0
+    /* XXX When this is reenabled, the cache triggers need to be set to faux
+     * dir_walk/file_walk values.  We also need to preserve the apr_stat
+     * results into the new parser, which can't happen until the new dir_walk
+     * is taught to recognize the condition, and perhaps we also tag that
+     * symlinks were tested and/or found for r->filename.  
+     */
     rnew->per_dir_config = r->per_dir_config;
 
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
@@ -1659,46 +1660,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     }
     else {
         memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
-    }
-
-    if ((res = check_safe_file(rnew))) {
-        rnew->status = res;
-        return rnew;
-    }
-
-    if (rnew->finfo.filetype == APR_LNK
-        && (res = resolve_symlink(rnew->filename, &rnew->finfo, 
-                                  ap_allow_options(rnew), rnew->pool)) != OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                    "Symbolic link not allowed: %s", rnew->filename);
-        rnew->status = res;
-        return rnew;
-    }
-
-    /*
-     * no matter what, if it's a subdirectory, we need to re-run
-     * directory_walk
-     */
-    if (rnew->finfo.filetype == APR_DIR) {
-        if (!(res = ap_directory_walk(rnew)))
-            if (!(res = ap_file_walk(rnew)))
-                res = ap_location_walk(rnew);
-    }
-    else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
-        /*
-         * do a file_walk, if it doesn't change the per_dir_config then
-         * we know that we don't have to redo all the access checks
-         */
-        if (   !(res = ap_file_walk(rnew))
-            && !(res = ap_location_walk(rnew))
-            && (rnew->per_dir_config == r->per_dir_config))
-        {
-            if (   (res = ap_run_type_checker(rnew)) 
-                || (res = ap_run_fixups(rnew))) {
-                rnew->status = res;
-            }
-            return rnew;
-        }  
     }
 #endif
 
@@ -1744,96 +1705,23 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     /*
      * Check for a special case... if there are no '/' characters in new_file
      * at all, and the path was the same, then we are looking at a relative 
-     * lookup in the same directory. That means we won't have to redo 
-     * directory_walk, and we may not even have to redo access checks.
-     * ### Someday we don't even have to redo the entire directory walk,
-     * either, if the base paths match, we can pick up where we leave off.
+     * lookup in the same directory.  Fixup the URI to match.
      */
 
     if (strncmp(rnew->filename, fdir, fdirlen) == 0
            && rnew->filename[fdirlen] 
            && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL
-           && strlen(r->uri) != 0)
+           && r->uri && *r->uri)
     {
         char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-
-        rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
+        rnew->uri = ap_make_full_path(rnew->pool, udir, rnew->filename + fdirlen);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
-
-#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
-       * dir_walk/file_walk values.
-       */
-
-        rnew->per_dir_config = r->per_dir_config;
-
-        /*
-         * If this is an APR_LNK that resolves to an APR_DIR, then 
-         * we will rerun everything anyways... this should be safe.
-         */
-        if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
-            apr_status_t rv;
-            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
-                rnew->finfo.filetype = 0;
-        }
-        else {
-            apr_status_t rv;
-            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
-                rnew->finfo.filetype = 0;
-        }
-
-        if ((res = check_safe_file(rnew))) {
-            rnew->status = res;
-            return rnew;
-        }
-
-        if (rnew->finfo.filetype == APR_LNK
-            && (res = resolve_symlink(rnew->filename, &rnew->finfo, 
-                                      ap_allow_options(rnew), rnew->pool)) != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                        "Symbolic link not allowed: %s", rnew->filename);
-            rnew->status = res;
-            return rnew;
-        }
-
-        /*
-         * no matter what, if it's a subdirectory, we need to re-run
-         * directory_walk
-         */
-        if (rnew->finfo.filetype == APR_DIR) {
-            if (!(res = ap_directory_walk(rnew)))
-                if (!(res = ap_file_walk(rnew)))
-                    res = ap_location_walk(rnew);
-        }
-        else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
-            /*
-             * do a file_walk, if it doesn't change the per_dir_config then
-             * we know that we don't have to redo all the access checks
-             */
-            if (   !(res = ap_file_walk(rnew))
-                && !(res = ap_location_walk(rnew))
-                && (rnew->per_dir_config == r->per_dir_config))
-            {
-                if (   (res = ap_run_type_checker(rnew)) 
-                    || (res = ap_run_fixups(rnew))) {
-                    rnew->status = res;
-                }
-                return rnew;
-            }
-        }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
-                          "symlink doesn't point to a file or directory: %s",
-                          r->filename);
-            res = HTTP_FORBIDDEN;
-        }
-#endif
     }
     else {
-	/* XXX: @@@: What should be done with the parsed_uri values? */
+	/* XXX: @@@: What should be done with the parsed_uri values?
+         * We would be better off stripping down to the 'common' elements
+         * of the path, then reassembling the URI as best as we can.
+         */
 	ap_parse_uri(rnew, new_file);	/* fill in parsed_uri values */
         /*
          * XXX: this should be set properly like it is in the same-dir case
