@@ -300,7 +300,6 @@ typedef int ssl_algo_t;
  */
 
 #define SSL_TKP_GEN        (0)
-#define SSL_TKP_ALLOC      (1)
 #define SSL_TKP_FREE       (2)
 
 #define SSL_TKPIDX_RSA512  (0)
@@ -517,7 +516,6 @@ typedef struct {
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
-    apr_hash_t     *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;

@@ -226,11 +226,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_rand_seed(base_server, p, SSL_RSCTX_STARTUP, "Init: ");
 
     /*
-     *  allocate the temporary RSA keys and DH params
-     */
-    ssl_init_TmpKeysHandle(SSL_TKP_ALLOC, base_server, p);
-
-    /*
      *  initialize servers
      */
     ssl_log(base_server, SSL_LOG_INFO,
@@ -323,11 +318,6 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    ssl_asn1_t *asn1;
-    unsigned char *ptr;
-    long int length;
-    RSA *rsa;
-    DH *dh;
 
     if (action == SSL_TKP_GEN) { /* Generate Keys and Params */
         /* seed PRNG */
@@ -337,119 +327,48 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         ssl_log(s, SSL_LOG_INFO,
                 "Init: Generating temporary RSA private keys (512/1024 bits)");
 
-        if (!(rsa = RSA_generate_key(512, RSA_F4, NULL, NULL))) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR, 
+        /* generate 512 bit RSA key */
+        if (!(mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
+              RSA_generate_key(512, RSA_F4, NULL, NULL)))
+        {
+            ssl_log(s, SSL_LOG_ERROR,
                     "Init: Failed to generate temporary "
                     "512 bit RSA private key");
             ssl_die();
         }
 
-        length = i2d_RSAPrivateKey(rsa, NULL);
-        ptr = ssl_asn1_table_set(mc->tTmpKeys, "RSA:512", length);
-        (void)i2d_RSAPrivateKey(rsa, &ptr); /* 2nd arg increments */
-        RSA_free(rsa);
-
         /* generate 1024 bit RSA key */
-        if (!(rsa = RSA_generate_key(1024, RSA_F4, NULL, NULL))) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR, 
+        if (!(mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
+              RSA_generate_key(1024, RSA_F4, NULL, NULL)))
+        {
+            ssl_log(s, SSL_LOG_ERROR,
                     "Init: Failed to generate temporary "
                     "1024 bit RSA private key");
             ssl_die();
-        }
-
-        length = i2d_RSAPrivateKey(rsa, NULL);
-        ptr = ssl_asn1_table_set(mc->tTmpKeys, "RSA:1024", length);
-        (void)i2d_RSAPrivateKey(rsa, &ptr); /* 2nd arg increments */
-        RSA_free(rsa);
-
-        ssl_log(s, SSL_LOG_INFO,
-                "Init: Configuring temporary DH parameters (512/1024 bits)");
-
-        /* import 512 bit DH param */
-        if (!(dh = ssl_dh_GetTmpParam(512))) {
-            ssl_log(s, SSL_LOG_ERROR,
-                    "Init: Failed to import temporary "
-                    "512 bit DH parameters");
-            ssl_die();
-        }
-
-        length = i2d_DHparams(dh, NULL);
-        ptr = ssl_asn1_table_set(mc->tTmpKeys, "DH:512", length);
-        (void)i2d_DHparams(dh, &ptr); /* 2nd arg increments */
-        DH_free(dh);
-
-        /* import 1024 bit DH param */
-        if (!(dh = ssl_dh_GetTmpParam(1024))) {
-            ssl_log(s, SSL_LOG_ERROR,
-                    "Init: Failed to import temporary "
-                    "1024 bit DH parameters");
-            ssl_die();
-        }
-
-        length = i2d_DHparams(dh, NULL);
-        ptr = ssl_asn1_table_set(mc->tTmpKeys, "DH:1024", length);
-        (void)i2d_DHparams(dh, &ptr); /* 2nd arg increments */
-        DH_free(dh);
-    }
-    else if (action == SSL_TKP_ALLOC) { /* Allocate Keys and Params */
-        ssl_log(s, SSL_LOG_INFO,
-                "Init: Configuring temporary "
-                "RSA private keys (512/1024 bits)");
-
-        /* allocate 512 bit RSA key */
-        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "RSA:512"))) {
-            ptr = asn1->cpData;
-            if (!(mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
-                  d2i_RSAPrivateKey(NULL, &ptr, asn1->nData)))
-            {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Failed to load temporary "
-                        "512 bit RSA private key");
-                ssl_die();
-            }
-        }
-
-        /* allocate 1024 bit RSA key */
-        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "RSA:1024"))) {
-            ptr = asn1->cpData;
-            if (!(mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
-                  d2i_RSAPrivateKey(NULL, &ptr, asn1->nData)))
-            {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Failed to load temporary "
-                        "1024 bit RSA private key");
-                ssl_die();
-            }
         }
 
         ssl_log(s, SSL_LOG_INFO,
                 "Init: Configuring temporary "
                 "DH parameters (512/1024 bits)");
 
-        /* allocate 512 bit DH param */
-        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "DH:512"))) {
-            ptr = asn1->cpData;
-            if (!(mc->pTmpKeys[SSL_TKPIDX_DH512] = 
-                  d2i_DHparams(NULL, &ptr, asn1->nData)))
-            {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Failed to load temporary "
-                        "512 bit DH parameters");
-                ssl_die();
-            }
+        /* generate 512 bit DH param */
+        if (!(mc->pTmpKeys[SSL_TKPIDX_DH512] = 
+              ssl_dh_GetTmpParam(512)))
+        {
+            ssl_log(s, SSL_LOG_ERROR,
+                    "Init: Failed to generate temporary "
+                    "512 bit DH parameters");
+            ssl_die();
         }
 
-        /* allocate 1024 bit DH param */
-        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "DH:1024"))) {
-            ptr = asn1->cpData;
-            if (!(mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
-                  d2i_DHparams(NULL, &ptr, asn1->nData)))
-            {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Failed to load temporary "
-                        "1024 bit DH parameters");
-                ssl_die();
-            }
+        /* generate 1024 bit DH param */
+        if (!(mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
+              ssl_dh_GetTmpParam(1024)))
+        {
+            ssl_log(s, SSL_LOG_ERROR,
+                    "Init: Failed to generate temporary "
+                    "1024 bit DH parameters");
+            ssl_die();
         }
     }
     else if (action == SSL_TKP_FREE) { /* Free Keys and Params */
