@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.14 -->
+<!-- English revision: 1.16 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -136,9 +136,12 @@ HPUX betreiben</page>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
   <modulefile>mod_authn_file.xml</modulefile>
+  <modulefile>mod_authn_default.xml</modulefile>
   <modulefile>mod_authz_dbm.xml</modulefile>
+  <modulefile>mod_authz_default.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
   <modulefile>mod_authz_host.xml</modulefile>
+  <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
