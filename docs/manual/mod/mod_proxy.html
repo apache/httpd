@@ -42,6 +42,8 @@ and other protocols.
 <li><a href="#proxyremote">ProxyRemote</a>
 <li><a href="#proxypass">ProxyPass</a>
 <li><a href="#proxyblock">ProxyBlock</a>
+<li><a href="#noproxy">NoProxy</a>
+<li><a href="#proxydomain">ProxyDomain</a>
 <li><a href="#cacheroot">CacheRoot</a>
 <li><a href="#cachesize">CacheSize</a>
 <li><a href="#cachemaxexpire">CacheMaxExpire</a>
@@ -149,6 +151,133 @@ ProxyBlock *
 </pre>
 
 blocks connections to all sites.
+
+<A name="noproxy"><h2>NoProxy</h2></A>
+<strong>Syntax:</strong> NoProxy { <A HREF="#domain"><em>&lt;Domain&gt;</em></A>
+                                 | <A HREF="#subnet"><em>&lt;SubNet&gt;</em></A>
+				 | <A HREF="#ipaddr"><em>&lt;IpAddr&gt;</em></A>
+				 | <A HREF="#hostname"><em>&lt;Hostname&gt;</em></A>
+				 } <br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> NoProxy is only available in a patch to
+Apache 1.2.1 and later.<p>
+
+This directive is only useful for apache proxy servers within intranets.
+The NoProxy directive specifies a list of subnets, IP addresses, hosts
+and/or domains, separated by spaces. A request to a host which matches
+one or more of these is always served directly, without forwarding to
+the configured ProxyRemote proxy server(s).<br>Example:
+
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+</pre>
+The arguments to the NoProxy directive are one of the following type list:
+   <DL>
+    <!-- ===================== Domain ======================= -->
+    <A NAME="domain">
+    <DT><EM>Domain</EM>
+    <DD>A <EM>Domain</EM> is a partially qualified DNS domain name, preceded
+        by a period.
+        It represents a list of hosts which logically belong to the same DNS
+        domain or zone (i.e. the suffixes of the hostnames are all ending in 
+        <EM>Domain</EM>).<BR>
+		Examples: <SAMP>.com</SAMP>   <SAMP>.apache.org.</SAMP>    <SAMP>.sni.de</SAMP><BR>
+        To distinguish <EM>Domain</EM>s from <A HREF="#hostname"><EM>Hostname</EM></A>s (both
+        syntactically and semantically; a DNS domain can have a DNS A record,
+        too!), <EM>Domain</EM>s are always written
+        with a leading period.<BR>
+        Note: Domain name comparisons are done without regard to the case,
+        and <EM>Domain</EM>s are always assumed to be anchored in the root 
+        of the DNS tree, therefore two domains <SAMP>.MyDomain.com</SAMP> and
+        <SAMP>.mydomain.com.</SAMP> (note the trailing period) are
+        considered equal. Since a domain comparison does not involve a DNS
+	lookup, it is much more efficient than subnet comparison.
+
+    <!-- ===================== SubNet ======================= -->
+    <A NAME="subnet">
+    <DT><EM>SubNet</EM>
+    <DD>A <EM>SubNet</EM> is a partially qualified internet address in
+        numeric (dotted quad) form, optionally followed by a slash and the
+        netmask, specified as the number of significant bits in the
+        <EM>SubNet</EM>. It is used to represent a subnet of hosts which can
+        be reached over a common network interface. In the absence of the
+        explicit net mask it is assumed that omitted (or zero valued)
+        trailing digits specify the mask. (In this case, the netmask can
+        only be multiples of 8 bits wide.)<BR>
+        Examples:
+        <DL>
+         <DT><SAMP>192.168</SAMP> or <SAMP>192.168.0.0</SAMP>
+         <DD>the subnet 192.168.0.0 with a netmask of 16 valid bits
+             (sometimes used in the netmask form <SAMP>255.255.0.0</SAMP>)
+         <DT><SAMP>139.25.112.0/21</SAMP>
+         <DD>the subnet <SAMP>139.25.112.0/21</SAMP> with a netmask of 21
+             valid bits (also used in the form 255.255.248.0)
+        </DL>
+		As a degenerate case, a <EM>SubNet</EM> with 32 valid bits is the
+        equivalent to an <EM>IPAddr</EM>, while a <EM>SubNet</EM> with zero
+        valid bits (e.g., 0.0.0.0/0) is the same as the constant
+        <EM>_Default_</EM>, matching any IP address. 
+
+    <!-- ===================== IPAddr ======================= -->
+    <A NAME="ipaddr">
+    <DT><EM>IPAddr</EM>
+    <DD>A <EM>IPAddr</EM> represents a fully qualified internet address in
+        numeric (dotted quad) form. Usually, this address represents a
+        host, but there need not necessarily be a DNS domain name
+        connected with the address.<BR>
+		Example: 139.25.113.10<BR>
+        Note: An <EM>IPAddr</EM> does not need to be resolved by the DNS system, so
+              it can result in more effective apache performance.<BR>
+<p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a></p>
+
+    <!-- ===================== Hostname ======================= -->
+    <A NAME="hostname">
+    <DT><EM>Hostname</EM>
+    <DD>A <EM>Hostname</EM> is a fully qualified DNS domain name which can
+        be resolved to one or more <A HREF="#ipaddr"><EM>IPAddrs</EM></A> via the DNS domain name service.
+        It represents a logical host (in contrast to <A HREF="#domain"><EM>Domain</EM></A>s, see
+        above) and must be resolvable to at least one <A HREF="#ipaddr"><EM>IPAddr</EM></A> (or
+        often to a list of hosts with different <A HREF="#ipaddr"><EM>IPAddr</EM></A>'s).<BR>
+		Examples: <SAMP>prep.ai.mit.edu</SAMP>
+                  <SAMP>www.apache.org.</SAMP><BR>
+        Note: In many situations, it is more effective to specify an
+        <A HREF="#ipaddr"><EM>IPAddr</EM></A> in place of a <EM>Hostname</EM> since a DNS lookup
+        can be avoided. Name resolution in Apache can take a remarkable deal
+        of time when the connection to the name server uses a slow PPP
+        link.<BR>
+        Note: <EM>Hostname</EM> comparisons are done without regard to the case,
+        and <EM>Hostname</EM>s are always assumed to be anchored in the root
+        of the DNS tree, therefore two hosts <SAMP>WWW.MyDomain.com</SAMP>
+        and <SAMP>www.mydomain.com.</SAMP> (note the trailing period) are
+        considered equal.<BR>
+<p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a></p>
+   </DL>
+
+<A name="proxydomain"><h2>ProxyDomain</h2></A>
+<strong>Syntax:</strong> ProxyDomain <em>&lt;Domain&gt;</em><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> ProxyDomain is only available in a patch to
+Apache 1.2.1 and later.<p>
+
+This directive is only useful for apache proxy servers within intranets.
+The ProxyDomain directive specifies the default domain which the apache
+proxy server will belong to. If a request to a host without a domain name
+is encountered, a redirection response to the same host
+with the configured <em>Domain</em> appended will be generated. 
+<br>Example:
+
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+  ProxyDomain     .mycompany.com
+</pre>
 
 <A name="cacheroot"><h2>CacheRoot</h2></A>
 <strong>Syntax:</strong> CacheRoot <em>&lt;directory&gt;</em><br>
@@ -299,6 +428,7 @@ disables caching completely.<p>
 <li><a href="#startup">Why does Apache start more slowly when using the
         proxy module?</a>
 <li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>
+<li><a href="#intranet">What other functions are useful for an intranet proxy server?</a>
 </ul>
 
 <h2><a name="access">Controlling access to your proxy</a></h2>
@@ -359,6 +489,24 @@ The problem was solved by upgrading to SOCKS 4.3.<p>
 Remember that you'll also have to grant access to your Apache proxy machine by
 permitting connections on the appropriate ports in your SOCKS daemon's
 configuration.<p>
+
+<h2><a name="intranet">What other functions are useful for an intranet proxy server?</a></h2>
+
+<p>An Apache proxy server situated in an intranet needs to forward external
+requests through the company's firewall. However, when it has to access
+resources within the intranet, it can bypass the firewall when accessing
+hosts. The <A HREF="#noproxy">NoProxy</A> directive is useful for specifying
+which hosts belong to the intranet and should be accessed directly.</p>
+
+<p>Users within an intranet tend to omit the local domain name from their
+WWW requests, thus requesting "http://somehost/" instead of
+"http://somehost.my.dom.ain/". Some commercial proxy servers let them get
+away with this and simply serve the request, implying a configured
+local domain. When the <A HREF="#proxydomain">ProxyDomain</A> directive
+is used and the server is <A HREF="#proxyrequests">configured for
+proxy service</A>, Apache can return a redirect response and send the client
+to the correct, fully qualified, server address. This is the preferred method
+since the user's bookmark files will then contain fully qualified hosts.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
