@@ -287,7 +287,7 @@ static int mmap_static_xlat(request_rec *r)
     }
     sconf = get_module_config(r->server->module_config, &mmap_static_module);
     tmp.filename = r->filename;
-    match = bsearch(&tmp, sconf->files->elts, sconf->files->nelts,
+    match = (a_file *)bsearch(&tmp, sconf->files->elts, sconf->files->nelts,
 	sizeof(a_file), file_compare);
     if (match == NULL) {
 	return DECLINED;
@@ -318,7 +318,7 @@ static int mmap_static_handler(request_rec *r)
     tmp.finfo.st_dev = r->finfo.st_dev;
     tmp.finfo.st_ino = r->finfo.st_ino;
     ptmp = &tmp;
-    pmatch = bsearch(&ptmp, sconf->inode_sorted->elts,
+    pmatch = (a_file **)bsearch(&ptmp, sconf->inode_sorted->elts,
 	sconf->inode_sorted->nelts, sizeof(a_file *), inode_compare);
     if (pmatch == NULL) {
 	return DECLINED;
