@@ -123,7 +123,7 @@
 #define ap_select       select
 #else				/* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
-#include "ap_base64.h"
+#include "ap.h"
 #ifdef CHARSET_EBCDIC
 #include "ebcdic.h"
 #endif
