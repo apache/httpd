@@ -84,16 +84,10 @@ top_builddir = $(DEPTH)
 .s.o:
 	$(COMPILE) -c $<
 
-.S.o:
-	$(COMPILE) -c $<
-
 .c.lo:
 	$(APACHE_COMPILE)
 
 .s.lo:
-	$(APACHE_COMPILE)
-
-.S.lo:
 	$(APACHE_COMPILE)
 
 .c.slo:
