@@ -87,10 +87,18 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <code>welcome.fr.html</code> will map onto exactly the same information.
     If more than one extension is given which maps onto the same
     type of meta-information, then the one to the right will be
-    used. For example, if <code>.gif</code> maps to the MIME-type
-    <code>image/gif</code> and <code>.html</code> maps to the MIME-type
-    <code>text/html</code>, then the file <code>welcome.gif.html</code>
-    will be associated with the MIME-type <code>text/html</code>.</p>
+    used, except for languages and content encodings. For example, if
+    <code>.gif</code> maps to the MIME-type <code>image/gif</code> and
+    <code>.html</code> maps to the MIME-type <code>text/html</code>, then the
+    file <code>welcome.gif.html</code> will be associated with the MIME-type
+    <code>text/html</code>.</p>
+
+    <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding"
+    >content encodings</a> are treated accumulative, because one can assign
+    more than one language or encoding to a particular ressource. For example,
+    the file <code>welcome.html.en.de</code> will be delivered with
+    <code>Content-Language: en, de</code> and <code>Content-Type:
+    text/html</code>.</p>
 
     <p>Care should be taken when a file with multiple extensions
     gets associated with both a MIME-type and a handler. This will
@@ -139,7 +147,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <code>.doc</code> extension is associated with the Microsoft
     Word file type, and the <code>.zip</code> extension is
     associated with the pkzip file encoding, then the file
-    <code>Resume.doc.zip</code>would be known to be a pkzip'ed Word
+    <code>Resume.doc.zip</code> would be known to be a pkzip'ed Word
     document.</p>
 
     <p>Apache sends a <code>Content-encoding</code> header with the
