@@ -185,33 +185,9 @@ static apr_status_t unload_module(void *data)
     /* remove the module pointer from the core structure */
     ap_remove_loaded_module(modi->modp);
 
-    /* unload the module space itself */
-    if ((status = apr_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, 
-                      APR_GET_POOL(modi->modp->dynamic_load_handle),
-		      "dso unload failure");
-        return status;
-    }
-
     /* destroy the module information */
     modi->modp = NULL;
     modi->name = NULL;
-    return APR_SUCCESS;
-}
-
-/* 
- * This is the cleanup routine for files loaded by
- * load_file(). Unfortunately we don't keep a record of the filename
- * that was loaded, so we can't report the unload for debug purposes
- * or include the filename in error message.
- */
-
-static apr_status_t unload_file(void *handle)
-{
-    apr_status_t status;
-    
-    if ((status = apr_dso_unload((apr_dso_handle_t *)handle)) != APR_SUCCESS)
-        return status;
     return APR_SUCCESS;
 }
 
@@ -339,8 +315,6 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		 "loaded file %s", filename);
-
-    apr_register_cleanup(cmd->pool, (void *)handle, unload_file, apr_null_cleanup);
 
     return NULL;
 }
