@@ -113,20 +113,23 @@
    **	  Internalized the version string - this string is part
    **     of the Agent: header and the result output.
    **
+   ** Version 2.0.37-dev
+   **     Adopted SSL code by Madhu Mathihalli <madhusudan_mathihalli@hp.com>
+   **     [PATCH] ab with SSL support  Posted Wed, 15 Aug 2001 20:55:06 GMT
+   **     Introduces four 'if (int == value)' tests per non-ssl request.
    **/
-#define AP_AB_BASEREVISION "2.0.36-2"		/* Note: this version
-			string should start with \d+[\d\.]* and be a valid
-			string for an HTTP Agent: header when prefixed with
-			'ApacheBench/'. 
 
-			It should reflect the version of AB - and not that of 
-			the apache server it happens to accompany. And it should 
-			be updated or changed whenever the results are no longer 
-			fundamentally comparable to the results of a previous 
-			version of ab. Either due to a change in the logic of
-			ab - or to due to a change in the distribution it is
-			compiled with (such as an APR change in for example blocking).
-			*/
+/* Note: this version string should start with \d+[\d\.]* and be a valid
+ * string for an HTTP Agent: header when prefixed with 'ApacheBench/'. 
+ * It should reflect the version of AB - and not that of the apache server 
+ * it happens to accompany. And it should be updated or changed whenever 
+ * the results are no longer fundamentally comparable to the results of 
+ * a previous version of ab. Either due to a change in the logic of
+ * ab - or to due to a change in the distribution it is compiled with 
+ * (such as an APR change in for example blocking).
+ */
+#define AP_AB_BASEREVISION "2.0.37-dev"    
+
 /*
  * BUGS:
  *
@@ -186,6 +189,7 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
+#include <openssl/rand.h>
 #else
 /* Libraries for RSAref and SYSSSL */
 #include <rsa.h>
@@ -194,6 +198,7 @@
 #include <pem.h>
 #include <err.h>
 #include <ssl.h>
+#include <rand.h>
 #endif
 #endif
 
@@ -319,6 +324,8 @@ long epipe = 0;			/* number of broken pipe writes */
 #ifdef USE_SSL
 int ssl = 0;
 SSL_CTX *ctx;
+BIO *bio_out,*bio_err;
+static void write_request(struct connection * c);
 #endif
 
 /* store error cases */
@@ -377,7 +384,7 @@ static void apr_err(char *s, apr_status_t rv)
     exit(rv);
 }
 
-#if defined(USE_SSL) && APR_HAS_THREADS
+#if defined(USE_SSL) && USE_THREADS
 /*
  * To ensure thread-safetyness in OpenSSL - work in progress
  */
@@ -450,6 +457,253 @@ void ssl_util_thread_setup(apr_pool_t *p)
  * (small) request out in one go into our new socket buffer
  *
  */
+#ifdef USE_SSL
+long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,long ret)
+{
+    BIO *out;
+
+    out=(BIO *)BIO_get_callback_arg(bio);
+    if (out == NULL) return(ret);
+
+    if (cmd == (BIO_CB_READ|BIO_CB_RETURN))
+    {
+        BIO_printf(out,"read from %08X [%08lX] (%d bytes => %ld (0x%X))\n",
+                bio,argp,argi,ret,ret);
+        BIO_dump(out,argp,(int)ret);
+        return(ret);
+    }
+    else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN))
+    {
+        BIO_printf(out,"write to %08X [%08lX] (%d bytes => %ld (0x%X))\n",
+            bio,argp,argi,ret,ret);
+        BIO_dump(out,argp,(int)ret);
+    }
+    return(ret);
+}
+
+#ifndef RAND_MAX
+#include <limits.h>
+#define RAND_MAX INT_MAX
+#endif
+
+static int ssl_rand_choosenum(int l, int h)
+{
+    int i;
+    char buf[50];
+
+    srand((unsigned int)time(NULL));
+    apr_snprintf(buf, sizeof(buf), "%.0f",
+                 (((double)(rand()%RAND_MAX)/RAND_MAX)*(h-l)));
+    i = atoi(buf)+1;
+    if (i < l) i = l;
+    if (i > h) i = h;
+    return i;
+}
+
+void ssl_rand_seed()
+{
+    int nDone;
+    int n, l;
+    time_t t;
+    pid_t pid;
+    unsigned char stackdata[256];
+
+    /*
+     * seed in the current time (usually just 4 bytes)
+     */
+    t = time(NULL);
+    l = sizeof(time_t);
+    RAND_seed((unsigned char *)&t, l);
+    nDone += l;
+
+    /*
+     * seed in the current process id (usually just 4 bytes)
+     */
+    pid = getpid();
+    l = sizeof(pid_t);
+    RAND_seed((unsigned char *)&pid, l);
+    nDone += l;
+
+    /*
+     * seed in some current state of the run-time stack (128 bytes)
+     */
+    n = ssl_rand_choosenum(0, sizeof(stackdata)-128-1);
+    RAND_seed(stackdata+n, 128);
+    nDone += 128;
+}
+
+int ssl_print_connection_info(bio,ssl)
+BIO *bio;
+SSL *ssl;
+{
+        SSL_CIPHER *c;
+        int alg_bits,bits;
+
+        c=SSL_get_current_cipher(ssl);
+        BIO_printf(bio,"Cipher Suite Protocol   :%s\n", SSL_CIPHER_get_version(c));
+        BIO_printf(bio,"Cipher Suite Name       :%s\n",SSL_CIPHER_get_name(c));
+
+        bits=SSL_CIPHER_get_bits(c,&alg_bits);
+        BIO_printf(bio,"Cipher Suite Cipher Bits:%d (%d)\n",bits,alg_bits);
+
+        return(1);
+}
+
+int ssl_print_cert_info(bio,x509cert)
+BIO *bio;
+X509 *x509cert;
+{
+        X509_NAME *dn;
+        char buf[64];
+
+        BIO_printf(bio,"Certificate version: %d\n",X509_get_version(x509cert)+1);
+
+        BIO_printf(bio,"Valid from: ");
+        ASN1_UTCTIME_print(bio, X509_get_notBefore(x509cert));
+        BIO_printf(bio,"\n");
+
+        BIO_printf(bio,"Valid to  : ");
+        ASN1_UTCTIME_print(bio, X509_get_notAfter(x509cert));
+        BIO_printf(bio,"\n");
+
+        BIO_printf(bio,"Public key is %d bits\n",
+            EVP_PKEY_bits(X509_get_pubkey(x509cert)));
+
+        dn=X509_get_issuer_name(x509cert);
+        X509_NAME_oneline(dn, buf, BUFSIZ);
+        BIO_printf(bio,"The issuer name is %s\n", buf);
+
+        dn=X509_get_subject_name(x509cert);
+        X509_NAME_oneline(dn, buf, BUFSIZ);
+        BIO_printf(bio,"The subject name is %s\n", buf);
+
+        /* dump the extension list too */
+        BIO_printf(bio,"Extension Count: %d\n",X509_get_ext_count(x509cert));
+
+        return(1);
+}
+
+void ssl_start_connect(struct connection * c)
+{
+    BIO *bio;
+    X509 *x509cert;
+    STACK_OF(X509) *sk;
+    int i, count, hdone = 0;
+    apr_status_t rv;
+    char ssl_hostname[80];
+    
+    /* XXX - Verify if it's okay - TBD */
+    if (requests < concurrency)
+        requests = concurrency;
+
+    if (!(started < requests))
+        return;
+
+    c->read = 0;
+    c->bread = 0;
+    c->keepalive = 0;
+    c->cbx = 0;
+    c->gotheader = 0;
+    c->rwrite = 0;
+    if (c->ctx)
+        apr_pool_destroy(c->ctx);
+    apr_pool_create(&c->ctx, cntxt);
+
+    if ((c->ssl=SSL_new(ctx)) == NULL)
+    {
+        BIO_printf(bio_err,"SSL_new failed\n");
+        exit(1);
+    }
+
+    ssl_rand_seed();
+
+    c->start = apr_time_now();
+    memset(ssl_hostname, 0, 80);
+    sprintf(ssl_hostname, "%s:%d", hostname, port);
+
+    if ((bio = BIO_new_connect(ssl_hostname)) == NULL)
+    {
+        BIO_printf(bio_err,"BIO_new_connect failed\n");
+        exit(1);
+    }
+    SSL_set_bio(c->ssl,bio,bio);
+    SSL_set_connect_state(c->ssl);
+
+    if (verbosity >= 4)
+    {
+        BIO_set_callback(bio,ssl_print_cb);
+        BIO_set_callback_arg(bio,bio_err);
+    }
+
+    while (!hdone)
+    {
+        i = SSL_do_handshake(c->ssl);
+
+        switch (SSL_get_error(c->ssl,i))
+        {
+            case SSL_ERROR_NONE:
+                hdone=1;
+                break;
+            case SSL_ERROR_SSL:
+            case SSL_ERROR_SYSCALL:
+                BIO_printf(bio_err,"SSL connection failed\n");
+                err_conn++;
+                c->state = STATE_UNCONNECTED;
+                if (bad++ > 10) {
+                    SSL_free (c->ssl);
+                    BIO_printf(bio_err,"\nTest aborted after 10 failures\n\n");
+                    apr_err("apr_connect()", rv);
+                    exit (1);
+                }
+                break;
+            case SSL_ERROR_WANT_READ:
+            case SSL_ERROR_WANT_WRITE:
+            case SSL_ERROR_WANT_CONNECT:
+                BIO_printf(bio_err, "Waiting .. sleep(1)\n");
+                apr_sleep(1 * APR_USEC_PER_SEC);
+                c->state = STATE_CONNECTING;
+                c->rwrite = 0;
+                break;
+            case SSL_ERROR_ZERO_RETURN:
+                BIO_printf(bio_err,"socket closed\n");
+                break;
+        }
+    }
+    
+    if (verbosity >= 2)
+    {
+        BIO_printf(bio_err, "\n");
+        sk = SSL_get_peer_cert_chain(c->ssl);
+        if ((count = sk_X509_num(sk)) > 0)
+        {
+            for (i=1; i<count; i++)
+            {
+                x509cert = (X509 *)sk_X509_value(sk,i);
+                ssl_print_cert_info(bio_out,x509cert);
+                X509_free(x509cert);
+            }
+        }
+
+        x509cert = SSL_get_peer_certificate(c->ssl);
+        if (x509cert == NULL)
+            BIO_printf(bio_out, "Anon DH\n");
+        else
+        {
+            BIO_printf(bio_out, "Peer certificate\n");
+            ssl_print_cert_info(bio_out,x509cert);
+            X509_free(x509cert);
+        }
+
+        ssl_print_connection_info(bio_err,c->ssl);
+        SSL_SESSION_print(bio_err,SSL_get_session(c->ssl));
+    }
+
+    /* connected first time */
+    started++;
+    write_request(c);
+}
+#endif /* USE_SSL */
+
 static void write_request(struct connection * c)
 {
     do {
@@ -461,6 +715,9 @@ static void write_request(struct connection * c)
 	 * First time round ?
 	 */
 	if (c->rwrite == 0) {
+#ifdef USE_SSL
+            if (ssl != 1)
+#endif
 	    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 0);
 	    c->connect = tnow;
 	    c->rwrite = reqlen;
@@ -474,6 +731,20 @@ static void write_request(struct connection * c)
 	    return;
 	}
 
+#ifdef USE_SSL
+        if (ssl == 1) {
+            apr_size_t e_ssl;
+            e_ssl = SSL_write(c->ssl,request + c->rwrote, l);
+            if (e_ssl != l)
+            {
+                printf("SSL write failed - closing connection\n");
+                close_connection (c);
+                return;
+            }
+            l = e_ssl;
+        }
+        else
+#endif
 	e = apr_send(c->aprsock, request + c->rwrote, &l);
 
 	/*
@@ -482,6 +753,8 @@ static void write_request(struct connection * c)
 	if (l == c->rwrite)
 	    break;
 
+#ifdef USE_SSL
+        if (ssl != 1)
 	if (e != APR_SUCCESS) {
 	    /*
 	     * Let's hope this traps EWOULDBLOCK too !
@@ -493,6 +766,7 @@ static void write_request(struct connection * c)
 	    }
 	    return;
 	}
+#endif
 	c->rwrote += l;
 	c->rwrite -= l;
     } while (1);
@@ -500,6 +774,9 @@ static void write_request(struct connection * c)
     totalposted += c->rwrite;
     c->state = STATE_READ;
     c->endwrite = apr_time_now();
+#ifdef USE_SSL
+    if (ssl != 1)
+#endif
     apr_poll_socket_add(readbits, c->aprsock, APR_POLLIN);
 }
 
@@ -922,6 +1199,13 @@ static void output_html_results(void)
 static void start_connect(struct connection * c)
 {
     apr_status_t rv;
+
+#ifdef USE_SSL
+    if (ssl == 1) {
+        ssl_start_connect(c);
+        return;
+    }
+#endif
     
     if (!(started < requests))
 	return;
@@ -1011,8 +1295,18 @@ static void close_connection(struct connection * c)
 	}
     }
 
+#ifdef USE_SSL
+    if (ssl == 1) {
+        SSL_shutdown(c->ssl);
+        SSL_free(c->ssl);
+    }
+    else {
+#endif
     apr_poll_socket_remove(readbits, c->aprsock);
     apr_socket_close(c->aprsock);
+#ifdef USE_SSL
+    }
+#endif
     c->state = STATE_UNCONNECTED;
 
     /* connect again */
@@ -1032,6 +1326,20 @@ static void read_connection(struct connection * c)
     char respcode[4];		/* 3 digits and null */
 
     r = sizeof(buffer);
+#ifdef USE_SSL
+    if (ssl == 1)
+    {
+        status = SSL_read (c->ssl, buffer, r);
+        if (status <= 0) {
+            good++; c->read = 0;
+            if (status < 0) printf("SSL read failed - closing connection\n");
+            close_connection(c);
+            return;
+        }
+    r = status;
+    }
+    else {
+#endif
     status = apr_recv(c->aprsock, buffer, &r);
     if (APR_STATUS_IS_EAGAIN(status))
 	return;
@@ -1047,6 +1355,9 @@ static void read_connection(struct connection * c)
          * certain number of them before completely failing? -aaron */
         apr_err("apr_recv", status);
     }
+#ifdef USE_SSL
+    }
+#endif
 
     totalread += r;
     if (c->read == 0) {
@@ -1076,7 +1387,7 @@ static void read_connection(struct connection * c)
 	c->cbx += tocopy;
 	space -= tocopy;
 	c->cbuff[c->cbx] = 0;	/* terminate for benefit of strstr */
-	if (verbosity >= 4) {
+        if (verbosity >= 2) {
 	    printf("LOG: header received:\n%s\n", c->cbuff);
 	}
 	s = strstr(c->cbuff, "\r\n\r\n");
@@ -1300,6 +1611,9 @@ static void test(void)
 #endif				/* NOT_ASCII */
 
     /* This only needs to be done once */
+#ifdef USE_SSL
+    if (ssl != 1)
+#endif
     if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
 	!= APR_SUCCESS) {
 	char buf[120];
@@ -1329,6 +1643,11 @@ static void test(void)
 	}
 
 	n = concurrency;
+#ifdef USE_SSL
+        if (ssl == 1)
+            status = APR_SUCCESS;
+        else
+#endif
 	status = apr_poll(readbits, &n, aprtimeout);
 	if (status != APR_SUCCESS)
 	    apr_err("apr_poll", status);
@@ -1344,6 +1663,11 @@ static void test(void)
 	    if (con[i].state == STATE_UNCONNECTED)
 		continue;
 
+#ifdef USE_SSL
+            if (ssl == 1)
+                rv = APR_POLLIN;
+            else
+#endif
 	    apr_poll_revents_get(&rv, con[i].aprsock, readbits);
 	    /*
 	     * Notes: APR_POLLHUP is set after FIN is received on some
@@ -1375,6 +1699,9 @@ static void test(void)
 	     * connection is in STATE_READ or STATE_CONNECTING we'll add the
 	     * socket back in as APR_POLLIN.
 	     */
+#ifdef USE_SSL
+            if (ssl != 1)
+#endif
 	    if (con[i].state == STATE_READ || con[i].state == STATE_CONNECTING)
 		apr_poll_socket_add(readbits, con[i].aprsock, APR_POLLIN);
 
@@ -1398,14 +1725,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.103 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.104 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.103 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.104 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1416,7 +1743,7 @@ static void copyright(void)
 static void usage(const char *progname)
 {
     fprintf(stderr, "Usage: %s [options] [http"
-#if USE_SSL
+#ifdef USE_SSL
 	    "[s]"
 #endif
 	    "://]hostname[:port]/path\n", progname);
@@ -1446,7 +1773,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
-#if USE_SSL
+#ifdef USE_SSL
     fprintf(stderr, "    -s              Use httpS instead of HTTP (SSL)\n");
 #endif
     fprintf(stderr, "    -h              Display usage information (this message)\n");
@@ -1474,7 +1801,7 @@ static int parse_url(char *url)
 #endif
     }
     else
-#if USE_SSL
+#ifdef USE_SSL
     if (strlen(url) > 8 && strncmp(url, "https://", 8) == 0) {
 	url += 8;
 	ssl = 1;
@@ -1614,13 +1941,13 @@ int main(int argc, const char * const argv[])
 
     apr_getopt_init(&opt, cntxt, argc, argv);
     while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
-#if USE_SSL
+#ifdef USE_SSL
 				"s"
 #endif
 				,&c, &optarg)) == APR_SUCCESS) {
 	switch (c) {
 	case 's':
-#if USE_SSL
+#ifdef USE_SSL
         ssl = 1;
         break;
 #else
@@ -1784,12 +2111,17 @@ int main(int argc, const char * const argv[])
     CRYPTO_malloc_init();
     SSL_load_error_strings();
     SSL_library_init();
-    if (!(ctx = SSL_CTX_new(SSLv2_client_method()))) {
+    bio_out=BIO_new_fp(stdout,BIO_NOCLOSE);
+    bio_err=BIO_new_fp(stderr,BIO_NOCLOSE);
+
+    /* TODO: Allow force SSLv2_client_method() (TLSv1?) */
+    if (!(ctx = SSL_CTX_new(SSLv23_client_method()))) {
 	fprintf(stderr, "Could not init SSL CTX");
 	ERR_print_errors_fp(stderr);
 	exit(1);
     }
-#if APR_HAS_THREADS
+    SSL_CTX_set_options(ctx, SSL_OP_ALL);
+#ifdef USE_THREADS
     ssl_util_thread_setup(cntxt);
 #endif
 #endif
