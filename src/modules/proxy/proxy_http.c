@@ -473,8 +473,10 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     if ((datestr = ap_table_get(resp_hdrs, "URI")) != NULL)
 	ap_table_set(resp_hdrs, "URI", proxy_location_reverse_map(r, datestr));
 
- /* If "Pragma: no-cache" set nocache and make reply un-buffered to
-  * ensure timely delivery */
+ /*
+  * If "Pragma: no-cache" set nocache and make reply un-buffered to
+  * ensure timely delivery
+  */
     if (((pragma = ap_table_get(resp_hdrs, "Pragma")) != NULL &&
         ap_proxy_liststr(pragma, "no-cache"))) {
         nocache = 1;
