@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) mod_info assumed that the config files were relative to ServerRoot.
+     [Ken the Rodent]
+
   *) CGI scripts called as an error document resulting from failed
      CGI execution would hang waiting for POST'ed data. [Rob Hartill]
 

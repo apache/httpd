@@ -103,14 +103,24 @@ char *mod_info_html_cmd_string(char *string) {
 	return(ret);
 }
 
-mod_info_config_lines *mod_info_load_config(pool *p, char *filename) {
+mod_info_config_lines *mod_info_load_config(pool *p, char *filename, request_rec *r) {
 	char s[MAX_STRING_LEN];
 	FILE *fp;
 	mod_info_config_lines *new, *ret=NULL, *prev=NULL;
-	char *t,*tt,o;
+	char *t,*tt,o, *msg;
 	
 	fp = pfopen(p,filename,"r");
-	if(!fp) return NULL;
+	if(!fp) {
+	    msg = pstrcat
+		    (
+			r->pool,
+			"mod_info: couldn't open config file ",
+			filename,
+			NULL
+		    );
+	    log_error (msg, r->server);
+	    return NULL;
+	}
 	while(!cfg_getline(s,MAX_STRING_LEN,fp)) {
 		if(*s=='#') continue; /* skip comments */
 		new = palloc(p,sizeof(struct mod_info_config_lines));
@@ -234,7 +244,7 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 
 int display_info(request_rec *r) {
 	module *modp = NULL;
-	char buf[256];
+	char buf[256], *cfname;
 	command_rec *cmd=NULL;
 	handler_rec *hand=NULL;
 	server_rec *serv = r->server;
@@ -267,12 +277,12 @@ int display_info(request_rec *r) {
 	rputs("<html><head><title>Server Information</title></head>\n",r);
 	rputs("<body><h1 align=center>Apache Server Information</h1>\n",r);
 	if(!r->args || strcasecmp(r->args,"list")) {
-		sprintf(buf,"%s/%s",server_root,server_confname);
-		mod_info_cfg_httpd = mod_info_load_config(r->pool,buf);
-		sprintf(buf,"%s/%s",server_root,serv->srm_confname);
-		mod_info_cfg_srm = mod_info_load_config(r->pool,buf);
-		sprintf(buf,"%s/%s",server_root,serv->access_confname);
-		mod_info_cfg_access = mod_info_load_config(r->pool,buf);
+		cfname = server_root_relative (r->pool, server_confname);
+		mod_info_cfg_httpd = mod_info_load_config (r->pool, cfname, r);
+		cfname = server_root_relative (r->pool, serv->srm_confname);
+		mod_info_cfg_srm = mod_info_load_config(r->pool, cfname, r);
+		cfname = server_root_relative (r->pool, serv->access_confname);
+		mod_info_cfg_access = mod_info_load_config (r->pool, cfname, r);
 		if(!r->args) {
 			rputs("<tt><a href=\"#server\">Server Settings</a>, ",r);
 			for(modp = top_module; modp; modp = modp->next) {
