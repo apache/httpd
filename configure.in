@@ -16,9 +16,6 @@ APACHE_SUBST(APACHE_VERSION)
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
 
-dnl We want this one before the checks, so the checks can modify CFLAGS
-test -z "$CFLAGS" && auto_cflags=1
-
 dnl Needed for APACHE_MODULE() to work
 cwd=`pwd`
 
@@ -113,7 +110,7 @@ fi
 
 dnl ## Checking command-line options
 test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "yes" && \
-    CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
 
 APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES
@@ -147,7 +144,7 @@ if test "$apache_need_shared" = "yes"; then
   $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
 fi
 
-CFLAGS="$CFLAGS \`\$(abs_srcdir)/apaci\`"
+EXTRA_CFLAGS="$EXTRA_CFLAGS \`\$(abs_srcdir)/apaci\`"
 
 APACHE_FAST_OUTPUT(apaci Makefile ap/Makefile lib/Makefile main/Makefile
            modules/Makefile os/Makefile)
