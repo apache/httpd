@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) Improve binary compatibility of the core between debug (aka
+     maintainer-mode) and a non-debug compile.
+     [Sander Striker]
+
   *) mod_usertrack: don't set the cookie in subrequests. This works
      around the problem that cookies were set twice during fast internal
      redirects. PR 13211.  [André Malo]

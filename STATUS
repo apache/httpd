@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/08 17:16:07 $]
+Last modified at [$Date: 2003/03/09 00:27:15 $]
 
 Release:
 
@@ -63,24 +63,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    * One step closer to being binary compatible between debug and production
-      (--enable-maintainer-mode or not).
-      include/http_config.h r1.101
-      include/httpd.h r1.195
-      server/util_debug.c r1.10
-      +1: striker, wrowe, thommay, nd
-         nd: util_debug isn't a so cool place for the functions
-         wrowe: yes - it would be cool to have debug flavors in the same
-           files as their non-debug versions - but for macros, then what?
-           Andre - suggest an alternative :-)
-          nd: ehm, just to be clear: I was talking about get/set_module_config.
-              (hmm, are the macros ever used now?). These should go into
-              config.c, imho. It seems, I don't fully understand all the
-              #defines and #undefs that happen there.
-          nd: the recent commit (AP_DEBUG -> !AP_DEBUG) clarified it :)
-              Thanks, Sander for your explanation.
-              Now I'm not sure, whether they should really go elsewhere.
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
