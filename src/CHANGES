@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Recognize lowercase _and_ uppercase `uname' results under
+     SCO OpenServer. [David Coelho <drc@ppt.com>]
+
   *) As duplicate "HTTP/1.0 200 OK" lines within the header seem to be
      a common problem of (mis-administrated?) IIS servers, make the apache
      proxy immune to these errors (and ignore the duplicates, but log

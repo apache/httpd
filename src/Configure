@@ -535,7 +535,7 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	DEF_WANTHSREGEX=no
 	;;
-    *-sco_sv*)
+    *-sco_sv*|*-SCO_SV*)
 	OS='SCO SV'
 	CFLAGS="$CFLAGS -DSCO"
 	LIBS="$LIBS -lPW -lsocket -lmalloc -lcrypt_i"
