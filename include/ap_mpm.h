@@ -183,4 +183,18 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
  */
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
+/* Defining GPROF when compiling uses the moncontrol() function to
+ * disable gprof profiling in the parent, and enable it only for
+ * request processing in children (or in one_process mode).  It's
+ * absolutely required to get useful gprof results under linux
+ * because the profile itimers and such are disabled across a
+ * fork().  It's probably useful elsewhere as well.
+ */
+#ifdef GPROF
+extern void moncontrol(int);
+#define AP_MONCONTROL(x) moncontrol(x)
+#else
+#define AP_MONCONTROL(x)
+#endif
+
 #endif
