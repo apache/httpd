@@ -98,13 +98,13 @@ char *mod_info_html_cmd_string(char *string) {
 	while((*s) && ((t-ret) < sizeof(ret))) {
 		if(*s=='<') { 
 			strncpy(t,"&lt;", end_ret - t);
-			t+=4*sizeof(char);
+			t+=4;
 		} else if(*s=='>') {
 			strncpy(t,"&gt;", end_ret - t);
-			t+=4*sizeof(char);
+			t+=4;
 		} else if(*s=='&') {
 		    	strncpy(t,"&amp;", end_ret - t);
-			t+=5*sizeof(char);
+			t+=5;
 		} else {
 		    *t++=*s;
 		}
