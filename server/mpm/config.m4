@@ -32,9 +32,30 @@ fi
 APACHE_CHECK_SIGWAIT_ONE_ARG
 
 APACHE_FAST_OUTPUT(modules/mpm/Makefile)
+
 MPM_NAME=$apache_cv_mpm
-MPM_DIR=modules/mpm/$MPM_NAME
-MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
+if test "$MPM_NAME" = "prefork" ; then
+    MPM_NAME="mpmt_pthread"
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -DNO_THREADS"
+
+    ac_cv_enable_threads="no"
+    AC_CACHE_SAVE
+fi
+
+if test "$MPM_NAME" = "mpmt_pthread" ; then
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -DMPMT_PTHREAD"
+elif test "$MPM_NAME" = "dexter" ; then
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -DDEXTER"
+fi
+
+if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread"; then
+    MPM_DIR=modules/mpm/mpmt;
+    MPM_LIB=$MPM_DIR/libmpmt.la
+    MPM_NAME="mpmt"
+else
+    MPM_DIR=modules/mpm/$MPM_NAME
+    MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
+fi
 
 APACHE_SUBST(MPM_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
