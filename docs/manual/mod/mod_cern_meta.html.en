@@ -20,7 +20,14 @@ files</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" clas
     meta information files. The directory is usually a 'hidden'
     subdirectory of the directory that contains the file being
     accessed. Set to "<code>.</code>" to look in the same directory
-    as the file.</p>
+    as the file:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>MetaDir .</code></td></tr></table></blockquote>
+
+    <p>Or, to set it to a subdirectory of the directory containing the
+    files:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>MetaDir .meta</code></td></tr></table></blockquote>
 <hr/><h2><a name="MetaFiles">MetaFiles</a> <a name="metafiles">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Activates CERN meta-file processing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MetaFiles on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MetaFiles off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_cern_meta</td></tr></table></td></tr></table>
     <p>Turns on/off Meta file processing on a per-directory basis.</p>
 <hr/><h2><a name="MetaSuffix">MetaSuffix</a> <a name="metasuffix">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>File name suffix for the file containg CERN-style
