@@ -720,8 +720,27 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos); 
                 break;
             }
+
         }
         apr_brigade_cleanup(ctx->bb);
+    }
+
+    /* If we are about to return nothing for a 'blocking' read and we have
+     * some data in our zlib buffer, flush it out so we can return something.
+     */
+    if (block == APR_BLOCK_READ &&
+        APR_BRIGADE_EMPTY(ctx->proc_bb) &&
+        ctx->stream.avail_out < c->bufferSize) {
+        apr_bucket *tmp_heap;
+        apr_size_t len;
+        ctx->stream.next_out = ctx->buffer;
+        len = c->bufferSize - ctx->stream.avail_out;
+
+        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
+        tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                          NULL, f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+        ctx->stream.avail_out = c->bufferSize;
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->proc_bb)) {
