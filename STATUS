@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/12 12:56:17 $]
+Last modified at [$Date: 2003/07/12 13:01:55 $]
 
 Release:
 
@@ -69,13 +69,14 @@ PATCHES TO PORT FROM 2.1
       delimeter. (2616 compliance)
       server/protocol.c: r1.133
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.132&r2=1.133
-      +1: rederpj
+      +1: rederpj, nd (though I think it's actually a bad request, being lenient
+          is probably the best here).
 
     * ap_get_mime_headers(): eliminate the temporary table used to
       combine duplicate headers (performance enhancement)
       server/protocol.c: r1.132
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
-      +1: brianp, jerenkrantz, rederpj
+      +1: brianp, jerenkrantz, rederpj, nd
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
