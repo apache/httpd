@@ -108,9 +108,6 @@
 #include "mod_core.h"
 
 
-#if APR_HAVE_NETDB_H
-#include <netdb.h>
-#endif
 #if APR_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
@@ -182,12 +179,6 @@ typedef struct {
     long maxfwd;
     char maxfwd_set;
 } proxy_server_conf;
-
-struct per_thread_data {
-    struct hostent hpbuf;
-    u_long ipaddr;
-    char *charpbuf[2];
-};
 
 typedef struct {
     conn_rec *connection;

@@ -1061,31 +1061,3 @@ PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c)
         }
     }
 }
-
-#if defined WIN32
-
-static DWORD tls_index;
-
-BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
-{
-    LPVOID memptr;
-
-    switch (reason) {
-    case DLL_PROCESS_ATTACH:
-	tls_index = TlsAlloc();
-    case DLL_THREAD_ATTACH: /* intentional no break */
-	TlsSetValue (tls_index, malloc (sizeof (struct per_thread_data)));
-	break;
-    case DLL_THREAD_DETACH:
-	memptr = TlsGetValue (tls_index);
-	if (memptr) {
-	    free (memptr);
-	    TlsSetValue (tls_index, 0);
-	}
-	break;
-    }
-
-    return TRUE;
-}
-
-#endif
