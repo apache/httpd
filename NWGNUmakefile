@@ -317,11 +317,11 @@ install :: nlms FORCE
 	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
 	-copy docs\cgi-examples\printenv $(INSTALL)\Apache2\cgi-bin\printenv.pl
 	@echo rem copying the docs directories > xc.bat
-	@echo xcopy docs\error $(INSTALL)\Apache2\error /E >> xc.bat
-	@echo xcopy docs\docroot $(INSTALL)\Apache2\htdocs /E >> xc.bat
-	@echo xcopy docs\icons $(INSTALL)\Apache2\icons /E >> xc.bat
-	@echo xcopy docs\man $(INSTALL)\Apache2\man /E >> xc.bat
-	@echo xcopy docs\manual $(INSTALL)\Apache2\manual /E >> xc.bat
+	@echo xcopy docs\error $(INSTALL)\Apache2\error /E /Y >> xc.bat
+	@echo xcopy docs\docroot $(INSTALL)\Apache2\htdocs /E /Y >> xc.bat
+	@echo xcopy docs\icons $(INSTALL)\Apache2\icons /E /Y >> xc.bat
+	@echo xcopy docs\man $(INSTALL)\Apache2\man /E /Y >> xc.bat
+	@echo xcopy docs\manual $(INSTALL)\Apache2\manual /E /Y >> xc.bat
 	$(CMD) xc.bat
 
 
