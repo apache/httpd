@@ -37,6 +37,9 @@ case "$1" in
     "ansi")
 	TLIB=""
 	;;
+    *)
+    	exit
+	;;
 esac
 
 #
