@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.70 $ ($Date: 1997/06/12 11:29:11 $)
+  $Revision: 1.71 $ ($Date: 1997/06/12 15:24:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -569,27 +569,48 @@
   <P>
   It means just what it says: the server was expecting a complete set of
   HTTP headers (one or more followed by a blank line), and didn't get
-  them.  The most common cause of this (aside from people not
-  outputting the required headers at all) a result of an interaction
-  with perl's output buffering.  To make perl flush its buffers 
-  after each output statement, insert the following statements before your
-  first <CODE>print</CODE> or <CODE>write</CODE> statement:
+  them.
+  </P>
+  <P>
+  The most common cause of this problem is the script dying before
+  sending the complete set of headers, or possibly any at all, to the
+  server.  To see if this is the case, try running the script standalone
+  from an interactive session, rather than as a script under the server.
+  If you get error messages, this is almost certainly the cause of the
+  &quot;premature end of script headers&quot; message.
+  </P>
+  <P>
+  The second most common cause of this (aside from people not
+  outputting the required headers at all) is a result of an interaction
+  with Perl's output buffering.  To make Perl flush its buffers 
+  after each output statement, insert the following statements around
+  the <CODE>print</CODE> or <CODE>write</CODE> statements that send your
+  HTTP headers:
   </P>
   <P>
   <DL>
-   <DD><CODE>$cfh = select (STDOUT);<BR>
-    $| = 1;<BR>
-    select ($cfh);</CODE>
+   <DD><CODE>{<BR>
+    &nbsp;local ($oldbar) = $|;<BR>
+    &nbsp;$cfh = select (STDOUT);<BR>
+    &nbsp;$| = 1;<BR>
+    &nbsp;#<BR>
+    &nbsp;# print your HTTP headers here<BR>
+    &nbsp;#<BR>
+    &nbsp;$| = $oldbar;<BR>
+    &nbsp;select ($cfh);<BR>
+    }</CODE>
    </DD>
   </DL>
   </P>
   <P>
   This is generally only necessary when you are calling external 
   programs from your script that send output to stdout, or if there will
-  be along delay between the time the headers are sent and the actual
+  be a long delay between the time the headers are sent and the actual
   content starts being emitted.  To maximise performance, you should
-  turn buffering back <EM>on</EM> (with <CODE>$| = 0</CODE> or the
-  equivalent) after the statements that send the headers.
+  turn buffer-flushing back <EM>off</EM> (with <CODE>$| = 0</CODE> or the
+  equivalent) after the statements that send the headers, as displayed
+  above.
+  </P>
   <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
