@@ -244,7 +244,11 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_load_builtin_engines();
 #endif
+#ifdef OPENSSL_VERSION_NUMBER
+#if OPENSSL_VERSION_NUMBER >= 0x00907001
     OPENSSL_load_builtin_modules();
+#endif
+#endif
     SSL_load_error_strings();
 
     /* Register us to handle mod_log_config %c/%x variables */
