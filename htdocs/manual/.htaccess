@@ -1,0 +1,11 @@
+<Files CVS>
+deny from all
+</Files>
+
+<Files *.pl>
+deny from all
+</Files>
+
+<Files *.html>
+SetHandler server-parsed
+</Files>
