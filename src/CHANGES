@@ -3,7 +3,13 @@ Changes with Apache 1.3
   *) Automatic indexing removed from mod_dir and placed into mod_autoindex.
      This allows the admin to completely remove automatic indexing
      from the server, while still supporting the basic functions of
-     trailing-slash redirects and DirectoryIndex files.  [Dean Gaudet]
+     trailing-slash redirects and DirectoryIndex files.  Note that if
+     you're carrying over an old Configuration file and you use directory
+     indexing then you'll want to add:
+
+     Module autoindex_module	mod_autoindex.o
+
+     before mod_dir in your Configuration.  [Dean Gaudet]
 
   *) popendir/pclosedir created to properly protect directory scanning.
      [Dean Gaudet] PR#525
