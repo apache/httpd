@@ -159,7 +159,7 @@ select="$metafile/basename"/>
 <xsl:template match="related">
 <xsl:text>
 \fbox{\begin{tabular}{rr}
-\begin{minipage}[t]{.4\linewidth}
+\begin{minipage}[t]{.49\linewidth}
 \textbf{</xsl:text>
 <xsl:value-of select="$messages/message[@name='relatedmodules']" />
 <xsl:text>} \\

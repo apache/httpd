@@ -124,7 +124,15 @@ interpreted in pre -->
 <!-- XXX: We need to deal with table headers -->
 
 <xsl:template match="table">
-<xsl:text>\fbox{\begin{tabular}{</xsl:text>
+<xsl:variable name="table-type">
+  <xsl:choose>
+  <xsl:when test="count(tr) &gt; 15">longtable</xsl:when>
+  <xsl:otherwise>tabular</xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
+<xsl:text>\begin{</xsl:text><xsl:value-of select="$table-type"/>
+<xsl:text>}{|</xsl:text>
 <xsl:choose>
 <xsl:when test="columnspec">
   <xsl:for-each select="columnspec/column">
@@ -143,9 +151,12 @@ interpreted in pre -->
   </xsl:for-each>
 </xsl:otherwise>
 </xsl:choose>
-<xsl:text>}</xsl:text>
+<xsl:text>|}\hline
+</xsl:text>
 <xsl:apply-templates select="tr"/>
-<xsl:text>\end{tabular}}
+<xsl:text>\hline\end{</xsl:text>
+<xsl:value-of select="$table-type"/>
+<xsl:text>}
 </xsl:text>
 </xsl:template>
 

@@ -82,6 +82,15 @@
 \begin{document}
 \frontmatter
 \maketitle
+
+\section*{About The PDF Documentation}
+
+This is an early release of the PDF version of the Apache
+Documentation.  It is converted from XML source files, and may contain
+some errors and inconsistencies.  If you have difficulty reading a
+part of this file, please consult instead the HTML version of the
+documentation on the Apache HTTP Server website.
+
 \tableofcontents
 \mainmatter
 </xsl:text>
@@ -261,6 +270,22 @@
  </xsl:choose>
 </xsl:variable>
 
+<xsl:variable name="result7">
+ <xsl:choose>
+ <xsl:when test="contains($result6, '&quot;')">
+   <xsl:call-template name="replace-string">
+    <xsl:with-param name="replace" select="'&quot;'"/>
+    <xsl:with-param name="with" select="'\texttt{&quot;}'"/>
+    <xsl:with-param name="text" select="$result6"/>
+   </xsl:call-template>
+ </xsl:when>
+ <xsl:otherwise>
+   <xsl:value-of select="$result6"/>
+ </xsl:otherwise>
+ </xsl:choose>
+</xsl:variable>
+
+
     <xsl:call-template name="replace-string">
     <xsl:with-param name="replace" select="'_'"/>
     <xsl:with-param name="with" select="'\_'"/>
@@ -292,7 +317,7 @@
                     <xsl:call-template name="replace-string">
                     <xsl:with-param name="replace" select="'&amp;'"/>
                     <xsl:with-param name="with" select="'\&amp;'"/>
-                    <xsl:with-param name="text" select="$result6"/>
+                    <xsl:with-param name="text" select="$result7"/>
                     </xsl:call-template>
                 </xsl:with-param>
                 </xsl:call-template>
