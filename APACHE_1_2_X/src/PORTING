@@ -227,6 +227,9 @@ build for your OS.
       NO_LINGCLOSE:
        Do not use Apache's soft, "lingering" close feature to
        terminate connections.
+      NO_SLACK:
+       Do not use the "slack" fd feature which requires a working fcntl
+       F_DUPFD.
 --
 
   MISC #DEFINES:

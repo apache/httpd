@@ -1326,3 +1326,30 @@ strerror (int err) {
     return (p);
 }
 #endif
+
+
+int ap_slack (int fd, int line)
+{
+#if !defined(F_DUPFD) || defined(NO_SLACK)
+    return fd;
+#else
+    int new_fd;
+
+#ifdef HIGH_SLACK_LINE
+    if (line == AP_SLACK_HIGH) {
+	new_fd = fcntl (fd, F_DUPFD, HIGH_SLACK_LINE);
+	if (new_fd != -1) {
+	    close (fd);
+	    return new_fd;
+	}
+    }
+#endif
+    /* otherwise just assume line == AP_SLACK_LOW */
+    new_fd = fcntl (fd, F_DUPFD, LOW_SLACK_LINE);
+    if (new_fd == -1) {
+      return fd;
+    }
+    close (fd);
+    return new_fd;
+#endif
+}

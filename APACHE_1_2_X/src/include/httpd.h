@@ -268,6 +268,7 @@
 #define DECLINED -1		/* Module declines to handle */
 #define OK 0			/* Module has handled this stage. */
 
+
 /* ----------------------- HTTP Status Codes  ------------------------- */
 
 #define RESPONSE_CODES 38
@@ -711,3 +712,31 @@ char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);
 
 extern time_t restart_time;
+
+/*
+ * Apache tries to keep all of its long term filehandles (such as log files,
+ * and sockets) above this number.  This is to workaround problems in many
+ * third party libraries that are compiled with a small FD_SETSIZE.  There
+ * should be no reason to lower this, because it's only advisory.  If a file
+ * can't be allocated above this number then it will remain in the "slack"
+ * area.
+ *
+ * Only the low slack line is used by default.  If HIGH_SLACK_LINE is defined
+ * then an attempt is also made to keep all non-FILE * files above the high
+ * slack line.  This is to work around a Solaris C library limitation, where it
+ * uses an unsigned char to store the file descriptor.
+ */
+#ifndef LOW_SLACK_LINE
+#define LOW_SLACK_LINE	15
+#endif
+/* #define HIGH_SLACK_LINE	255 */
+
+/*
+ * The ap_slack() function takes a fd, and tries to move it above the indicated
+ * line.  It returns an fd which may or may not have moved above the line, and
+ * never fails.  If the high line was requested and it fails it will also try
+ * the low line.
+ */
+int ap_slack (int fd, int line);
+#define AP_SLACK_LOW	1
+#define AP_SLACK_HIGH	2

@@ -261,6 +261,7 @@ module *find_linked_module (const char *name);
 /* For http_main.c... */
 
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
+void init_modules(pool *p, server_rec *s);
 void setup_prelinked_modules();
 void show_directives();
 void show_modules();

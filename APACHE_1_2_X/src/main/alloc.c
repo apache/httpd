@@ -58,8 +58,7 @@
  * rst --- 4/95 --- 6/95
  */
 
-#include "conf.h"
-#include "alloc.h"
+#include "httpd.h"
 
 #include <stdarg.h>
 
@@ -801,7 +800,10 @@ int popenf(pool *a, const char *name, int flg, int mode)
   block_alarms();
   fd = open(name, flg, mode);
   save_errno = errno;
-  if (fd >= 0) note_cleanups_for_fd (a, fd);
+  if (fd >= 0) {
+    fd = ap_slack (fd, AP_SLACK_HIGH);
+    note_cleanups_for_fd (a, fd);
+  }
   unblock_alarms();
   errno = save_errno;
   return fd;
@@ -846,6 +848,7 @@ FILE *pfopen(pool *a, const char *name, const char *mode)
     desc = open(name, baseFlag | O_APPEND | O_CREAT,
 		S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
     if (desc >= 0) {
+      desc = ap_slack(desc, AP_SLACK_LOW);
       fd = fdopen(desc, mode);
     }
   } else {

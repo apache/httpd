@@ -1077,7 +1077,6 @@ server_rec *init_server_config(pool *p)
 server_rec *read_config(pool *p, pool *ptemp, char *confname)
 {
     server_rec *s = init_server_config(p);
-    module *m;
     
     init_config_globals(p);
     
@@ -1089,12 +1088,19 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
     
     fixup_virtual_hosts (p, s);
     
+    return s;
+}
+    
+
+void init_modules(pool *p, server_rec *s)
+{
+    module *m;
+
     for (m = top_module; m; m = m->next)
         if (m->init)
 	    (*m->init) (s, p);
-    
-    return s;
 }
+
 
 /********************************************************************
  * Configuration directives are restricted in terms of where they may

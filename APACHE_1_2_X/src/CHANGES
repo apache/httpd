@@ -1,5 +1,22 @@
 Changes with Apache 1.2.1
-  
+
+  *) Attempt to work around problems with third party libraries that do not
+     handle high numbered descriptors (examples include bind, and
+     solaris libc).  On all systems apache attempts to keep all permanent
+     descriptors above 15 (called the low slack line).  Solaris users
+     can also benefit from adding -DHIGH_SLACK_LINE=256 to EXTRA_CFLAGS
+     which keeps all non-FILE * descriptors above 255.  On all systems
+     this should make supporting large numbers of vhosts with many open
+     log files more feasible.  If this causes trouble please report it,
+     you can disable this workaround by adding -DNO_SLACK to EXTRA_CFLAGS.
+     [Dean Gaudet] various PRs
+
+  *) Related to the last entry, network sockets are now opened before
+     log files are opened.  The only known case where this can cause
+     problems is under Solaris with many virtualhosts and many Listen
+     directives.  But using -DHIGH_SLACK_LINE=256 described above will
+     work around this problem.  [Dean Gaudet]
+
   *) pregsub had an off-by-1 in its error checking code. [Alexei Kosut]
 
 Changes with Apache 1.2
