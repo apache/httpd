@@ -6384,6 +6384,10 @@ void worker_main(void)
     child_handles = (thread *) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
 	child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
+        if (child_handles[i] == 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, 
+                         "create_thread rc = %d", errno);
+        }
     }
     if (nthreads > max_daemons_limit) {
 	max_daemons_limit = nthreads;
