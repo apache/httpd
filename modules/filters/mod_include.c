@@ -261,7 +261,7 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
     he = h + hl;
 
     T = t->T;
-    x = t->x << 1;
+    x = t->x;
 
     pi = h - 1; /* pi: p initial */
     p = pi + nl; /* compare window right to left. point to the first char */
@@ -270,14 +270,19 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
         skip = p;
         d = x;
         do {
-            d = (d >> 1) & T[(unsigned char) *p--];
+            d &= T[(unsigned char) *p--];
+            if (!d) {
+                break;
+            }
             if ((d & 1)) {
                 if (p != pi)
                     skip = p;
                 else
                     return p - h + 1;
             }
-        } while (d > 1);
+            d >>= 1;
+        } while (d);
+
         pi = skip;
         p = pi + nl;
     }
