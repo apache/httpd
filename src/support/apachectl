@@ -136,7 +136,7 @@ do
 	fi
 	;;
     status)
-	$LYNX $STATUSURL | awk '  { if (/current process/) { print; exit } else print } '
+	$LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
 	;;
     fullstatus)
 	$LYNX $STATUSURL
