@@ -102,7 +102,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        PR: 31418
        jerenkrantz comments: 151493 deletes a chunk and adds a chunk,
           with 153280 moving that added hunk elsewhere.  My brain hurts.
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, pquerna
 
     *) Add a build script to create a solaris package.
        svn rev 124104
@@ -112,7 +112,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        Patch from Eric Covener with tweak by trawick:
        http://httpd.apache.org/~trawick/covener-removecontrolchars-2.0.patch
        (2.1-dev already has these fixes)
-       +1: trawick, jorton
+       +1: trawick, jorton, pquerna
 
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
@@ -189,7 +189,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, pquerna
          nd asks: Sure, you want to drop the return code of ap_pass_brigade?
          jerenkrantz: They already did drop it.  Note that this really isn't
                       a correctness fix; just a perf. fix.  We'd send the EOS
@@ -248,7 +248,7 @@ PATCHES TO BACKPORT FROM TRUNK:
       important members of the subrequest. Especially the proxyreq copying
       is interesting for proxying DirectoryIndex'd resources:
         http://svn.apache.org/viewcvs.cgi?rev=102330&view=rev
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, pquerna
 
     * Win32: Move call to mpm_service_install to the rewrite_args hook
       from the post_config hook.
@@ -258,7 +258,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     * mod_dav: Export functions so that Win32 can use them as was intended.
       svn rev 155345
       http://svn.apache.org/viewcvs?view=rev&rev=155345
-      +1: jerenkrantz
+      +1: jerenkrantz, pquerna
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
