@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Don't disable Nagle algorithm if system doesn't have TCP_NODELAY.
+     [Marc Slemko and Roy Fielding]
+
   *) Fixed problem with mod_cgi-generated internal redirects trying to
      read the request message-body twice. [Archie Cobbs and Roy Fielding]
 

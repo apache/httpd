@@ -1493,28 +1493,27 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
     return conn;
 }
 
-void sock_disable_nagle (int s)
+#if defined(TCP_NODELAY)
+static void sock_disable_nagle (int s)
 {
-    /*
-     * The Nagle algorithm says that we should delay sending partial
+    /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
      * P-HTTP and Nagle's algorithm that have very severe performance
      * penalties.  (Failing to do disable Nagle is not much of a
-     * problem with simple HTTP.)  A better description of these
-     * problems is in preparation; contact me for details.
-     * -John Heidemann <johnh@isi.edu>.
+     * problem with simple HTTP.)
      *
      * In spite of these problems, failure here is not a shooting offense.
      */
     const int just_say_no = 1;
-#ifndef MPE
-/* MPE does not support TCP_NODELAY */
+
     if (0 != setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
-			sizeof(just_say_no)))
+			sizeof just_say_no))
 	fprintf(stderr, "httpd: could not set socket option TCP_NODELAY\n");
-#endif
 }
+#else
+#define sock_disable_nagle(s) /* NOOP */
+#endif
 
 /*****************************************************************
  * Child process main loop.
