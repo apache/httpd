@@ -115,17 +115,12 @@
      of other options available for your pleasure.
 
      For a short impression of what possibilities you have, here is a typical
-     example which compiles Apache with a particular compiler (Pentium-
-     optimized GCC), a statically compiled mod_auth_db module and the two
-     additional modules mod_rewrite and mod_proxy for later loading through
-     the DSO mechanism: 
+     example which compiles Apache for the installation tree /sw/pkg/apache
+     with a particular compiler and flags plus the two additional modules
+     mod_rewrite and mod_proxy for later loading through the DSO mechanism: 
 
-     $ CC="pgcc" OPTIM="-O6 -fstrength-reduce" \
-       INCLUDES="-I/usr/local/db-1.85/include" \
-        LDFLAGS="-L/usr/local/db-1.85/lib" LIBS="-ldb" \
-       ./configure --verbose \
-                   --prefix=/usr/local/apache \
-                   --enable-module=auth_db \
+     $ CC="pgcc" OPTIM="-O6" \
+       ./configure --prefix=/sw/pkg/apache \
                    --enable-module=rewrite --enable-shared=rewrite \
                    --enable-module=proxy   --enable-shared=proxy
 
@@ -331,16 +326,12 @@
        one of the companies and contractors which are listed at
        http://www.apache.org/info/support.cgi
 
-     o If you have any feedback, ideas or suggestions for the Apache server
-       please contact the Apache Group via E-mail at 
-       apache@apache.org
-
      o If you have a concrete bug report for Apache please go to the
        Apache Group Bug Database and submit your report:
        http://bugs.apache.org/
 
      o If you want to participate in actively developing Apache please
-       subscribe to the new-httpd mailing list as described at
+       subscribe to the `new-httpd' mailing list as described at
        http://dev.apache.org/mailing-lists
 
      Thanks for running Apache.
