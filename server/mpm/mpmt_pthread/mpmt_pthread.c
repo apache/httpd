@@ -84,7 +84,7 @@
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
-static char *ap_scoreboard_fname=NULL;
+API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
 static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
