@@ -21,6 +21,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/modules/http \
 			$(AP_WORK)/modules/arch/netware \
 			$(AP_WORK)/modules/ssl \
+			$(AP_WORK)/modules/generators \
 			$(AP_WORK)/srclib/apr/include \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/srclib/apr \
@@ -221,6 +222,8 @@ FILES_nlm_exports = \
 	proxy_module \
 	proxy_hook_scheme_handler \
 	proxy_hook_canon_handler \
+	proxy_hook_pre_request \
+	proxy_hook_post_request \
 	ap_proxy_ssl_enable \
 	ap_proxy_ssl_disable \
 	proxy_run_fixups \
