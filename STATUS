@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/22 22:21:00 $]
+Last modified at [$Date: 2003/06/23 11:16:10 $]
 
 Release:
 
@@ -253,7 +253,7 @@ PATCHES TO PORT FROM 2.1
       second attempt to close the socket, the same descriptor was
       often already in use by another thread for another purpose.
         modules/generators/mod_cgid.c 1.151
-        +1: trawick, brianp
+        +1: trawick, brianp, stoddard
 
 CURRENT RELEASE NOTES:
 
