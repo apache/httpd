@@ -574,7 +574,6 @@ apr_proc_other_child_check
 apr_proc_other_child_read
 apr_proc_other_child_register
 apr_proc_other_child_unregister
-apr_proc_probe_writable_fds
 apr_proc_wait
 apr_proc_wait_all_procs
 apr_procattr_child_err_set
