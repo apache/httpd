@@ -87,14 +87,90 @@
   configuration file.  This syntax is extremely directive-specific, 
   and is described in detail in the directive's definition.  
   Generally, the directive name is followed by a series of one or
-  more arguments.  Optional arguments are enclosed in square brackets.
-  Where an argument can take on more than one possible value, possible
-  values are separated by a vertical bar.  Literal text is presented
-  in the default font, while argument-types for which substitution
-  is necessary are emphasized.  Directives which can take a variable
-  number of arguments will end in "..." indicating that the last
-  argument is repeated.
+  more space-separated arguments.  If an argument contains a space,
+  the argument must be enclosed in double quotes.  Optional arguments
+  are enclosed in square brackets.  Where an argument can take on more
+  than one possible value, the possible values are separated by
+  vertical bars "|".  Literal text is presented in the default font,
+  while argument-types for which substitution is necessary are
+  <em>emphasized</em>.  Directives which can take a variable number of
+  arguments will end in "..." indicating that the last argument is
+  repeated.
   </P>
+
+  <P>
+  Directives use a great number of different argument types.
+  A few common ones are defined below.</p>
+
+<dl> 
+
+<dt><em>URL</em></dt> 
+
+<dd>A complete Uniform Resource Locator including a scheme, hostname,
+and optional pathname as in
+<code>http://www.example.com/path/to/file.html</code></dd>
+
+<dt><em>URL-path</em><dt>
+
+<dd>The part of a <em>url</em> which follows the scheme and hostname
+as in <code>/path/to/file.html</code>.  The <em>url-path</em>
+represents a web-view of a resource, as opposed to a file-system
+view.</dd>
+
+<dt><em>file-path</em></dt>
+
+<dd>The path to a file in the local file-system beginning with the
+root directory as in
+<code>/usr/local/apache/htdocs/path/to/file.html</code>.  Unless
+otherwise specified, a <em>file-path</em> which does not begin with a
+slash will be treated as relative to the <a
+href="core.html#serverroot">ServerRoot</a>.</dd>
+
+<dt><em>directory-path</em></dt>
+
+<dd>The path to a directory in the local file-system beginning with
+the root directory as in
+<code>/usr/local/apache/htdocs/path/to/</code>.
+
+<dt><em>filename</em></dt>
+
+<dd>The name of a file with no accompanying path information as in
+<code>file.html</code>.</dd>
+
+<dt><em>regex</em></dt>
+
+<dd>A <a href="../misc/FAQ.html#regex">regular expression</a>, which
+is a way of describing a pattern to match in text.  The directive
+definition will specify what the <em>regex</em> is matching
+against.</dd>
+
+<dt><em>extension</em></dt>
+
+<dd>In general, this is the part of the <em>filename</em> which
+follows the last dot.  However, Apache recognizes multiple filename
+extensions, so if a <em>filename</em> contains more than one dot, each
+dot-separated part of the filename following the first dot is an
+<em>extension</em>.  For example, the <em>filename</em>
+<code>file.html.en</code> contains two extensions: <code>.html</code>
+and <code>.en</code>.  For Apache directives, you may specify
+<em>extension</em>s with or without the leading dot.  In addition,
+<em>extension</em>s are not case sensitive.</dd>
+
+<dt><em>MIME-type</em></dt>
+
+<dd>A method of describing the format of a file which consists of a
+major format type and a minor format type, separated by a slash
+as in <code>text/html</code>.
+
+<dt><em>env-variable</em></dt>
+
+<dd>The name of an <a href="../env.html">environment variable</a>
+defined in the Apache configuration process.  Note this is not
+necessarily the same as an operating system environment variable.  See
+the <a href="../env.html">environment variable documentation</a> for
+more details.</dd>
+ 
+</dl>
 
   <HR>
   <H2><A NAME="Default">Default</A></H2>
@@ -103,7 +179,9 @@
   from your configuration entirely, the Apache Web server will behave as
   though you set it to a particular value), it is described here.  If
   there is no default value, this section should say
-  &quot;<EM>None</EM>&quot;.
+  &quot;<EM>None</EM>&quot;.  Note that the default listed here is not
+  necessarily the same as the value the directive takes in the
+  default httpd.conf distributed with the server.
   </P>
 
   <HR>
