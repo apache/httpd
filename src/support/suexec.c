@@ -466,8 +466,7 @@ int main(int argc, char *argv[])
 	(gid != dir_info.st_gid) ||
 	(uid != prg_info.st_uid) ||
 	(gid != prg_info.st_gid)) {
-	log_err("target uid/gid (%ld/%ld) mismatch with directory ",
-		"(%ld/%ld) or program (%ld/%ld)\n",
+	log_err("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
 		uid, gid,
 		dir_info.st_uid, dir_info.st_gid,
 		prg_info.st_uid, prg_info.st_gid);
