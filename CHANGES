@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) mod_ssl: Fix FakeBasicAuth for subrequest.  Log an error when an
+     identity spoof is encountered.
+     [Sander Striker]
+
   *) mod_rewrite: Ignore RewriteRules in .htaccess files if the directory
      containing the .htaccess file is requested without a trailing slash.
      PR 20195.  [André Malo]
