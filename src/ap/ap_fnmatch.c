@@ -140,10 +140,13 @@ API_EXPORT(int) ap_fnmatch(const char *pattern, const char *string, int flags)
 	    }
 	    /* FALLTHROUGH */
 	default:
-	    if ((c != *string)
-		|| ((flags & FNM_CASE_BLIND)
-		    && (toupper(c) != toupper(*string)))) {
-		return (FNM_NOMATCH);
+	    if (flags & FNM_CASE_BLIND) {
+	        if (toupper(c) != toupper(*string)) {
+		    return (FNM_NOMATCH);
+		}
+	    }
+	    else if (c != *string) {
+	        return (FNM_NOMATCH);
 	    }
 	    string++;
 	    break;
