@@ -64,7 +64,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida&excl;"
+--><!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida!"
 --><!--#include virtual="include/top.html" -->
 
     El servidor no puede certificar que usted este autorizado
