@@ -1265,7 +1265,10 @@ int core_translate (request_rec *r)
     core_server_config *conf = get_module_config (sconf, &core_module);
   
     if (r->proxyreq) return HTTP_FORBIDDEN;
-    if ((r->uri[0] != '/') && strcmp(r->uri, "*")) return BAD_REQUEST;
+    if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
+	log_printf(r->server, "Invalid URI in request %s", r->the_request);
+	return BAD_REQUEST;
+    }
     
     if (r->server->path &&
 	!strncmp(r->uri, r->server->path, r->server->pathlen) &&
@@ -1301,7 +1304,10 @@ int default_handler (request_rec *r)
     r->allowed |= (1 << M_TRACE);
     r->allowed |= (1 << M_OPTIONS);
 
-    if (r->method_number == M_INVALID) return NOT_IMPLEMENTED;
+    if (r->method_number == M_INVALID) {
+	log_printf(r->server, "Invalid method in request %s", r->the_request);
+	return NOT_IMPLEMENTED;
+    }
     if (r->method_number == M_OPTIONS) return send_http_options(r);
     if (r->method_number == M_PUT) return METHOD_NOT_ALLOWED;
 

@@ -1737,7 +1737,12 @@ int send_parsed_file(request_rec *r)
 
     if (!(allow_options (r) & OPT_INCLUDES)) return DECLINED;
     if (r->method_number != M_GET) return DECLINED;
-    if (r->finfo.st_mode == 0) return NOT_FOUND;
+    if (r->finfo.st_mode == 0) {
+        log_reason("File does not exist",
+            r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
+                : r->filename, r);
+	return NOT_FOUND;
+    }
 	
     if (*state == xbithack_full
 #ifndef __EMX__    

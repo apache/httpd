@@ -1,5 +1,10 @@
 Changes with Apache 1.2
 
+  *) The default handler now logs invalid methods or URIs (i.e. PUT on an
+     object that can't be PUT, or FOOBAR for some method FOOBAR that
+     apache doesn't know about at all).  Log 404s that occur in mod_include.
+     [Paul Sutton, John Van Essen]
+
   *) If a soft timeout (or lingerout) occurs while trying to flush a
      buffer or write inside buff.c or fread'ing from a CGI's output,
      then the timeout would be ignored. [Roy Fielding] PR#373
