@@ -93,6 +93,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_request.h"
 
 typedef struct auth_anon {
     char *password;
@@ -205,7 +206,6 @@ int anon_authenticate_basic_user (request_rec *r)
     char *send_pw;
     char errstr[MAX_STRING_LEN];
     int res=DECLINED;
-    
 
     if ((res=get_basic_auth_pw (r,&send_pw)))
 	return res;
@@ -239,7 +239,7 @@ int anon_authenticate_basic_user (request_rec *r)
 	      (strpbrk(".",send_pw) != NULL))
 	  ) 
 	) {
-      if (sec->auth_anon_logemail) {
+      if (sec->auth_anon_logemail && is_initial_req(r)) {
 	ap_snprintf(errstr, sizeof(errstr), "Anonymous: Passwd <%s> Accepted", 
 			send_pw ? send_pw : "\'none\'");
 	log_error (errstr, r->server );
