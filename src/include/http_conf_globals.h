@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_conf_globals.h,v 1.4 1996/08/20 11:50:42 paul Exp $ */
+/* $Id: http_conf_globals.h,v 1.5 1996/09/23 20:38:51 jim Exp $ */
 
 /* 
  * Process config --- what the process ITSELF is doing
@@ -60,6 +60,7 @@ extern int standalone;
 extern uid_t user_id;
 extern char *user_name;
 extern gid_t group_id;
+extern gid_t group_id_list[NGROUPS_MAX];
 extern int max_requests_per_child;
 extern struct in_addr bind_address;
 extern listen_rec *listeners;
