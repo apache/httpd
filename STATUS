@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/10 20:48:34 $]
+  Last modified at [$Date: 1999/02/14 14:32:57 $]
 
 Release:
 
@@ -47,6 +47,13 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
+
+    * Brian Havard's [PATCH] Improve OS/2 ap_os_canonical_filename()'s
+      behaviour.
+      This allows <Directory proxy:*> directives to work and prevents invalid
+      requests from killing the process.
+        MID: <199902140322.OAA23639@silk.apana.org.au>
+	Status: Jim +1
 
     * Ken's [PATCH] Merge RefererIgnore into mod_log_config
       Allows mod_log_agent and mod_log_referer to be dropped from
