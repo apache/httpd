@@ -369,32 +369,35 @@ char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
 
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
-    char *execuser;
+    core_dir_config *conf;
 
-    
-    core_dir_config *conf = (core_dir_config *)pcalloc(r->pool, sizeof(core_dir_config));
+    conf = (core_dir_config *)pcalloc(r->pool, sizeof(core_dir_config));
     
     conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
 #ifdef RLIMIT_CPU
     if (conf->limit_cpu != NULL)
 	if ((setrlimit (RLIMIT_CPU, conf->limit_cpu)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set CPU usage limit", r->server);
+	    log_unixerr("setrlimit", NULL, "failed to set CPU usage limit",
+			r->server);
 #endif
 #ifdef RLIMIT_NPROC
     if (conf->limit_nproc != NULL)
 	if ((setrlimit (RLIMIT_NPROC, conf->limit_nproc)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set process limit", r->server);
+	    log_unixerr("setrlimit", NULL, "failed to set process limit",
+			r->server);
 #endif
 #ifdef RLIMIT_DATA
     if (conf->limit_mem != NULL)
 	if ((setrlimit (RLIMIT_DATA, conf->limit_mem)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit", r->server);
+	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit",
+			r->server);
 #endif
 #ifdef RLIMIT_VMEM
     if (conf->limit_mem != NULL)
 	if ((setrlimit (RLIMIT_VMEM, conf->limit_mem)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit", r->server);
+	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit",
+			r->server);
 #endif
     
 #ifdef __EMX__    
