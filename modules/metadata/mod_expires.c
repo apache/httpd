@@ -402,9 +402,11 @@ static int add_expires(request_rec *r)
 {
     expires_dir_config *conf;
     char *code;
-    time_t base;
+    char *timestr = NULL;
+    ap_int64_t base;
     time_t additional;
     time_t expires;
+    ap_time_t *finaltime = NULL;
     char age[20];
 
     if (ap_is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
@@ -464,7 +466,7 @@ static int add_expires(request_rec *r)
         /* there's been some discussion and it's possible that 
          * 'access time' will be stored in request structure
          */
-        base = r->request_time;
+        ap_get_curtime(r->request_time, &base);
         additional = atoi(&code[1]);
         break;
     default:
@@ -482,13 +484,18 @@ static int add_expires(request_rec *r)
     tzset();                    /* redundant? called implicitly by localtime, at least 
                                  * under FreeBSD
                                  */
-    ap_table_setn(r->headers_out, "Expires", ap_gm_timestr_822(r->pool, expires));
+    ap_make_time(&finaltime, r->pool);
+    ap_set_curtime(finaltime, expires);
+    ap_timestr(&timestr, finaltime, APR_UTCTIME, r->pool); 
+    ap_table_setn(r->headers_out, "Expires", timestr);
     return OK;
 }
+
 static void register_hooks(void)
 {
     ap_hook_fixups(add_expires,NULL,NULL,HOOK_MIDDLE);
 }
+
 module MODULE_VAR_EXPORT expires_module =
 {
     STANDARD20_MODULE_STUFF,
