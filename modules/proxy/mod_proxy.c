@@ -1778,6 +1778,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_initialize_worker(conf->forward, s);
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            /* Disable address cache for generic forward worker */ 
+            conf->forward->is_address_reusable = 0;
         }
         if (!reverse) {
             reverse = ap_proxy_create_worker(p);
@@ -1788,6 +1790,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_initialize_worker(reverse, s);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            /* Disable address cache for generic reverse worker */ 
+            reverse->is_address_reusable = 0;
         }
         conf->reverse = reverse;
         s = s->next;

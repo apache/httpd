@@ -278,6 +278,10 @@ struct proxy_worker {
     proxy_conn_pool     *cp;        /* Connection pool to use */
     proxy_worker_stat   *s;         /* Shared data */
     void                *opaque;    /* per scheme worker data */
+    int                 is_address_reusable;
+#if APR_HAS_THREADS
+    apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
+#endif
 };
 
 struct proxy_balancer {
@@ -298,6 +302,14 @@ struct proxy_balancer {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
 };
+
+#if APR_HAS_THREADS
+#define PROXY_THREAD_LOCK(x)      apr_thread_mutex_lock((x)->mutex)
+#define PROXY_THREAD_UNLOCK(x)    apr_thread_mutex_unlock((x)->mutex)
+#else
+#define PROXY_THREAD_LOCK(x)      APR_SUCCESS
+#define PROXY_THREAD_UNLOCK(x)    APR_SUCCESS
+#endif
 
 /* hooks */
 

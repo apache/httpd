@@ -1146,6 +1146,13 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     /* Increase the total worker count */
     proxy_lb_workers++;
     init_conn_pool(p, *worker);
+#if APR_HAS_THREADS
+    if (apr_thread_mutex_create(&((*worker)->mutex),
+                APR_THREAD_MUTEX_DEFAULT, p) != APR_SUCCESS) {
+        /* XXX: Do we need to log something here */
+        return "can not create thread mutex";
+    }
+#endif
 
     return NULL;
 }
@@ -1427,6 +1434,8 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     /* Set default parameters */
     if (!worker->retry)
         worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
+    /* By default address is reusable */
+    worker->is_address_reusable = 1;
 
 }
 
@@ -1640,14 +1649,20 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         }
     }
     /* TODO: add address cache for forward proxies */
-    conn->addr = worker->cp->addr;
-    if (r->proxyreq == PROXYREQ_PROXY) {
+    if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
+        !worker->is_address_reusable) {
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
                                     conn->pool);
     }
     else if (!worker->cp->addr) {
+        if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+                         "proxy: lock");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
         /* Worker can have the single constant backend adress.
          * The single DNS lookup is used once per worker.
         * If dynamic change is needed then set the addr to NULL
@@ -1658,6 +1673,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
+        PROXY_THREAD_UNLOCK(worker);
     }
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1675,7 +1691,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                          server_port);
         }
     }
-
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock(r, conf, conn->addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,

@@ -493,7 +493,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: request failed to %pI (%s)",
-                         conn->worker->cp->addr, conn->hostname);
+                         conn->addr, conn->hostname);
             return status;
         }
     }
@@ -573,7 +573,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             if (status != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                              "proxy: pass request data failed to %pI (%s)",
-                         conn->worker->cp->addr, conn->hostname);
+                         conn->addr, conn->hostname);
                 return status;
             }
 
@@ -619,7 +619,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                          "proxy: pass request data failed to %pI (%s)",
-                         conn->worker->cp->addr, conn->hostname);
+                         conn->addr, conn->hostname);
             return status;
         }
 
@@ -631,7 +631,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request data failed to %pI (%s)",
-                      conn->worker->cp->addr, conn->hostname);
+                      conn->addr, conn->hostname);
         return status;
     }
     apr_brigade_length(body_brigade, 0, &transfered);
