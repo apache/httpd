@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/06 17:54:27 $]
+Last modified at [$Date: 2004/03/06 18:31:59 $]
 
 Release:
 
@@ -74,7 +74,8 @@ RELEASE SHOWSTOPPERS:
     but actually resolving the host would not.  To catch the check
     via retcode, you have to specify the NI_NAMEREQD flag.
     jerenkrantz: This was fixed in APR 1.0, but not backported to 0.9.
-                 See post to dev@httpd.
+                 Backported in r1.23.2.2 of srclib/apr/build/apr_network.m4
+                 in APR_0_9_BRANCH.
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
