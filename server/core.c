@@ -983,13 +983,20 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                            " cannot occur within <Limit> section", NULL);
     }
 
-    if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE
-        && cmd->path != NULL) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
-                           " cannot occur within <Directory/Location/Files> "
-                           "section", NULL);
+    if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE) {
+        if (cmd->path != NULL) {
+            return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
+                            " cannot occur within <Directory/Location/Files> "
+                            "section", NULL);
+        }
+        if (cmd->cmd->req_override & EXEC_ON_READ) {
+            /* EXEC_ON_READ must be NOT_IN_DIR_LOC_FILE, if not, it will
+             * (deliberately) segfault below in the individual tests...
+             */
+            return NULL;
+        }
     }
-
+    
     if (((forbidden & NOT_IN_DIRECTORY)
          && ((found = find_parent(cmd->directive, "<Directory"))
              || (found = find_parent(cmd->directive, "<DirectoryMatch"))))
