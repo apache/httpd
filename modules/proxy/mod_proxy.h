@@ -548,13 +548,6 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s);
 /**
- * Close the connection
- * @param conn    connection to close
- * @return        APR_SUCCESS or error code
- */                                         
-PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
-
-/**
  * Make a connection to the backend
  * @param proxy_function calling proxy scheme (http, ajp, ...)
  * @param conn    acquired connection

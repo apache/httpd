@@ -1366,17 +1366,6 @@ static apr_status_t connection_destructor(void *resource, void *params,
     return APR_SUCCESS;
 }
 
-/* Close the connection 
- * The proxy_conn_rec from now on can not be used
- */
-PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
-{
-
-    if (conn->worker && conn->worker->cp)
-        conn->worker->cp->conn = NULL;
-    return connection_destructor(conn, NULL, NULL);
-}
-
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
 {
     apr_status_t rv;
