@@ -165,6 +165,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Fixed mod_ssl's SSLCertificateChain initialization to no longer 
+     skip the first cert of the chain by default.  This misbehavior 
+     was introduced in 2.0.34.  PR 14560  [Madhusudan Mathihalli]
+
   *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
      be started on Unix because of such problems as bad permissions,
      bad shebang line, etc.  [Jeff Trawick]
