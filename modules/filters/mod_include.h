@@ -144,22 +144,22 @@ typedef struct include_filter_ctx {
     states       state;
     long         flags;    /* See the FLAG_XXXXX definitions. */
     int          if_nesting_level;
-    apr_ssize_t  parse_pos;
+    apr_size_t   parse_pos;
     
     ap_bucket   *head_start_bucket;
-    apr_ssize_t  head_start_index;
+    apr_size_t   head_start_index;
 
     ap_bucket   *tag_start_bucket;
-    apr_ssize_t  tag_start_index;
+    apr_size_t   tag_start_index;
 
     ap_bucket   *tail_start_bucket;
-    apr_ssize_t  tail_start_index;
+    apr_size_t   tail_start_index;
 
     char        *combined_tag;
     char        *curr_tag_pos;
-    apr_ssize_t  tag_length;
+    apr_size_t   tag_length;
 
-    apr_ssize_t  error_length;
+    apr_size_t   error_length;
     char         error_str[MAX_STRING_LEN];
     char         time_str[MAX_STRING_LEN];
 
