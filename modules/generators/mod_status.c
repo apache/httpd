@@ -635,7 +635,7 @@ static int status_handler(request_rec *r)
                         }
 #ifndef HAVE_TIMES
                         /* Allow for OS/2 not having CPU stats */
-                        ap_rprintf(r, "]\n %.0f %ld (",
+                        ap_rprintf(r, "]\n %ld %ld (",
 #else
                         ap_rprintf(r, "] u%g s%g cu%g cs%g\n %ld %ld (",
                                    ws_record.times.tms_utime / tick,
@@ -718,7 +718,7 @@ static int status_handler(request_rec *r)
                         
 #ifndef HAVE_TIMES
                         /* Allow for OS/2 not having CPU stats */
-                        ap_rprintf(r, "\n</td><td>%.0f</td><td>%ld",
+                        ap_rprintf(r, "\n</td><td>%ld</td><td>%ld",
 #else
                         ap_rprintf(r, "\n</td><td>%.2f</td><td>%ld</td><td>%ld",
                                    (ws_record.times.tms_utime +
