@@ -42,10 +42,9 @@ document, or in the <CODE>src/CHANGES</CODE> file.
     when necessary.
 
   <LI>The <CODE>-DSERVER_SUBVERSION=\"string\"</CODE> compile-time option has
-   been replaced with the run-time
-   <A HREF="mod/core.html#addversioncomponent"
-   ><SAMP>AddVersionComponent</SAMP></A>
-   directive.
+   been replaced with the run-time API call
+   <CODE>ap_add_version_component()</CODE>.  Compile-time modification of the
+   server identity by the configuration scripts is no longer supported.
   </LI>  
 
   <LI><CODE>mod_dir</CODE> has been split into two pieces
