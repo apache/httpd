@@ -226,6 +226,18 @@ href="#tarball">tarball</a>.  These are referred to as <em>third-party
 modules</em>.<br />
 See: <a href="mod/">Module Index</a></dd>
 
+<dt><a name="modulemagicnumber">Module Magic Number</a> (<a
+name="mmn">MMN</a>)</dt>
+<dd>
+Module Magic Number is a constant defined in the Apache source code
+that is associated with binary compatibility of modules. It is changed
+when internal Apache structures, function calls and other significant
+parts of API change in such a way that binary compatiblity cannot be
+guaranteed any more. On MMN change, all third party modules have to be
+at least recompiled, sometimes even slightly changed in order to work
+with the new version of Apache.
+</dd>
+
 <dt><a name="openssl">OpenSSL</a></dt>
 <dd>The Open Source toolkit for SSL/TLS<br />
     see <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
