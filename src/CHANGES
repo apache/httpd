@@ -1,5 +1,17 @@
 Changes with Apache 1.3b6
-  
+
+  *) Clean up some undocumented behaviour of mod_setenvif related to
+     "merging" two SetEnvIf directives when they match the same header
+     and regex.  Document that mod_setenvif will perform comparisons in
+     the order they appear in the config file.  Optimize mod_setenvif by
+     doing more work at config time rather than at runtime.
+     [Dean Gaudet]
+
+  *) mod_setenvif would incorrectly merge a SetEnvIf and SetEnvIfNoCase (or
+     BrowserMatch and BrowserMatchNoCase) when they matched the same header
+     and regex.  Fix this; but also fix it so that this merging optimization
+     only happens
+
   *) src/include/ap_config.h now wraps it's #define's with #ifndef/#endif's
      to allow for modules to overrule them and to reduce redefinition
      warnings [Jim Jagielski]

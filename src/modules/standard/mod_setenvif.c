@@ -115,11 +115,21 @@
 #include "http_core.h"
 #include "http_log.h"
 
+enum special {
+    SPECIAL_NOT,
+    SPECIAL_REMOTE_ADDR,
+    SPECIAL_REMOTE_HOST,
+    SPECIAL_REMOTE_USER,
+    SPECIAL_REQUEST_URI,
+    SPECIAL_REQUEST_METHOD
+};
 typedef struct {
     char *name;                 /* header name */
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
     table *features;            /* env vars to set (or unset) */
+    enum special special_type : 4;	/* is it a "special" header ? */
+    unsigned icase : 1;		/* ignoring case? */
 } sei_entry;
 
 typedef struct {
@@ -161,6 +171,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     char *var;
     int i;
     int beenhere = 0;
+    unsigned icase;
 
     /* get regex */
     regex = getword_conf(cmd->pool, &args);
@@ -170,33 +181,68 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     }
 
     /*
-     * First, try to merge into an existing entry
+     * If we've already got a sei_entry with the same name we want to
+     * just copy the name pointer... so that later on we can compare
+     * two header names just by comparing the pointers.
      */
 
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         new = &entries[i];
-        if (!strcmp(new->name, fname) && !strcmp(new->regex, regex))
-	    goto gotit;
+	if (!strcasecmp(new->name, fname)) {
+	    fname = new->name;
+	    break;
+	}
     }
 
-    /*
-     * If none was found, create a new entry
+    /* if the last entry has an idential headername and regex then
+     * merge with it
      */
+    i = sconf->conditionals->nelts - 1;
+    icase = cmd->info == ICASE_MAGIC;
+    if (i < 0
+	|| entries[i].name != fname
+	|| entries[i].icase != icase
+	|| strcmp(entries[i].regex, regex)) {
 
-    new = push_array(sconf->conditionals);
-    new->name = fname;
-    new->regex = regex;
-    new->preg = pregcomp(cmd->pool, regex,
-                         (REG_EXTENDED | REG_NOSUB
-			 | (cmd->info == ICASE_MAGIC ? REG_ICASE : 0)));
-    if (new->preg == NULL) {
-        return pstrcat(cmd->pool, cmd->cmd->name,
-                        " regex could not be compiled.", NULL);
+	/* no match, create a new entry */
+
+	new = push_array(sconf->conditionals);
+	new->name = fname;
+	new->regex = regex;
+	new->icase = icase;
+	new->preg = pregcomp(cmd->pool, regex,
+			    (REG_EXTENDED | REG_NOSUB
+			    | (icase ? REG_ICASE : 0)));
+	if (new->preg == NULL) {
+	    return pstrcat(cmd->pool, cmd->cmd->name,
+			    " regex could not be compiled.", NULL);
+	}
+	new->features = make_table(cmd->pool, 2);
+
+	if (!strcasecmp(fname, "remote_addr")) {
+	    new->special_type = SPECIAL_REMOTE_ADDR;
+	}
+	else if (!strcasecmp(fname, "remote_host")) {
+	    new->special_type = SPECIAL_REMOTE_HOST;
+	}
+	else if (!strcasecmp(fname, "remote_user")) {
+	    new->special_type = SPECIAL_REMOTE_USER;
+	}
+	else if (!strcasecmp(fname, "request_uri")) {
+	    new->special_type = SPECIAL_REQUEST_URI;
+	}
+	else if (!strcasecmp(fname, "request_method")) {
+	    new->special_type = SPECIAL_REQUEST_METHOD;
+	}
+	else {
+	    new->special_type = SPECIAL_NOT;
+	}
     }
-    new->features = make_table(cmd->pool, 5);
+    else {
+	new = &entries[i];
+    }
 
-gotit:
-    for( ; ; ) {
+    for (;;) {
 	feature = getword_conf(cmd->pool, &args);
 	if(!*feature)
 	    break;
@@ -265,30 +311,43 @@ static int match_headers(request_rec *r)
                                                            &setenvif_module);
     sei_entry *entries = (sei_entry *) sconf->conditionals->elts;
     table_entry *elts;
-    char *val;
+    const char *val;
     int i, j;
+    char *last_name;
 
+    last_name = NULL;
+    val = NULL;
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         sei_entry *b = &entries[i];
 
-        if (!strcasecmp(b->name, "remote_addr")) {
-            val = r->connection->remote_ip;
-        }
-        else if (!strcasecmp(b->name, "remote_host")) {
-            val = (char *) get_remote_host(r->connection, r->per_dir_config,
-                                           REMOTE_NAME);
-        }
-        else if (!strcasecmp(b->name, "remote_user")) {
-            val = r->connection->user;
-        }
-        else if (!strcasecmp(b->name, "request_uri")) {
-            val = r->uri;
-        }
-        else if (!strcasecmp(b->name, "request_method")) {
-            val = r->method;
-        }
-        else {
-            val = table_get(r->headers_in, b->name);
+	/* Optimize the case where a bunch of directives in a row use the
+	 * same header.  Remember we don't need to strcmp the two header
+	 * names because we made sure the pointers were equal during
+	 * configuration.
+	 */
+	if (b->name != last_name) {
+	    last_name = b->name;
+	    switch (b->special_type) {
+	    case SPECIAL_REMOTE_ADDR:
+		val = r->connection->remote_ip;
+		break;
+	    case SPECIAL_REMOTE_HOST:
+		val =  get_remote_host(r->connection, r->per_dir_config,
+					    REMOTE_NAME);
+		break;
+	    case SPECIAL_REMOTE_USER:
+		val = r->connection->user;
+		break;
+	    case SPECIAL_REQUEST_URI:
+		val = r->uri;
+		break;
+	    case SPECIAL_REQUEST_METHOD:
+		val = r->method;
+		break;
+	    case SPECIAL_NOT:
+		val = table_get(r->headers_in, b->name);
+		break;
+	    }
         }
 
         if (!val) {
