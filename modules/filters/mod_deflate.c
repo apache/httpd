@@ -128,6 +128,7 @@ typedef struct deflate_filter_config_t
 {
     int windowSize;
     int memlevel;
+    int compressionlevel;
     apr_size_t bufferSize;
     char *note_ratio_name;
     char *note_input_name;
@@ -135,6 +136,7 @@ typedef struct deflate_filter_config_t
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
+#define DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION
 #define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
@@ -167,6 +169,7 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
     c->memlevel   = DEFAULT_MEMLEVEL;
     c->windowSize = DEFAULT_WINDOWSIZE;
     c->bufferSize = DEFAULT_BUFFERSIZE;
+    c->compressionlevel = DEFAULT_COMPRESSION;
 
     return c;
 }
@@ -241,6 +244,23 @@ static const char *deflate_set_memlevel(cmd_parms *cmd, void *dummy,
         return "DeflateMemLevel must be between 1 and 9";
 
     c->memlevel = i;
+
+    return NULL;
+}
+
+static const char *deflate_set_compressionlevel(cmd_parms *cmd, void *dummy,
+                                        const char *arg)
+{
+    deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
+                                                    &deflate_module);
+    int i;
+
+    i = atoi(arg);
+
+    if (i < 1 || i > 9)
+        return "Compression Level must be between 1 and 9";
+
+    c->compressionlevel = i;
 
     return NULL;
 }
@@ -354,7 +374,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
 
-        zRC = deflateInit2(&ctx->stream, Z_BEST_SPEED, Z_DEFLATED,
+        zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
                            c->windowSize, c->memlevel,
                            Z_DEFAULT_STRATEGY);
 
@@ -822,6 +842,8 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set the Deflate Buffer Size"),
     AP_INIT_TAKE1("DeflateMemLevel", deflate_set_memlevel, NULL, RSRC_CONF,
                   "Set the Deflate Memory Level (1-9)"),
+    AP_INIT_TAKE1("CompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
+                  "Set the Deflate Compression Level (1-9)"),
     {NULL}
 };
 
