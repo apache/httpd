@@ -147,10 +147,15 @@ Module config_log_module   mod_log_config.o
 ##
 ## Type checking modules
 ##
+## mod_mime_magic determines the type of a file by examining a few bytes
+## of it and testing against a database of filetype signatures.  It is
+## based on the unix file(1) command.
 ## mod_mime maps filename extensions to content types, encodings, and
-## magic type handlers (the latter is obsoleted by mod_actions).
+## "magic" type handlers (the latter is obsoleted by mod_actions, and
+## don't confuse it with the previous module).
 ## mod_negotiation allows content selection based on the Accept* headers.
 
+# Module mime_magic_module   mod_mime_magic.o
 Module mime_module         mod_mime.o
 Module negotiation_module  mod_negotiation.o
 

@@ -204,3 +204,7 @@ LanguagePriority en fr de
 #    3) external redirects
 #ErrorDocument 402 http://some.other_server.com/subscription_info.html
 #
+
+# mod_mime_magic allows the server to use various hints from the file itself
+# to determine its type.
+#MimeMagicFile conf/magic
