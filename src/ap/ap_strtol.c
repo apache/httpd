@@ -88,7 +88,7 @@
  * SUCH DAMAGE.
  */
 
-
+#include "httpd.h"
 #include <limits.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -101,11 +101,8 @@
  * Assumes that the upper and lower case
  * alphabets and digits are each contiguous.
  */
-long
-ap_strtol(nptr, endptr, base)
-	const char *nptr;
-	char **endptr;
-	int base;
+
+API_EXPORT(long) ap_strtol(const char *nptr, char **endptr, int base)
 {
 	const char *s;
 	unsigned long acc;
