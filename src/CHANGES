@@ -1,3 +1,5 @@
+  *) Bring NeXT support up to date. [Takaaki Matsumoto]
+
   *) Bring QNX support up to date. [Ben Laurie]
 
   *) Make virtual hosts default to main server keepalive parameters.

@@ -90,6 +90,10 @@
 #include <time.h>
 #include "scoreboard.h"
 
+#ifdef NEXT
+#include <machine/param.h>
+#endif
+
 #define STATUS_MAXLINE		50
 
 #define KBYTE			1024
@@ -182,7 +186,11 @@ int status_handler (request_rec *r)
     unsigned long my_lres,my_bytes,conn_bytes;
     unsigned short conn_lres;
     unsigned long bcount=0;
+#ifdef NEXT
+    float tick=HZ;
+#else
     float tick=sysconf(_SC_CLK_TCK);
+#endif
 #endif /* STATUS */
     int short_report=0;
     int no_table_report=0;
