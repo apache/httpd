@@ -371,7 +371,7 @@ API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
     ap_SHA1Final(digest, &context);
 
     /* private marker. */
-    ap_cpystrn(out, AP_SHA1PW_ID, AP_SHA1PW_IDLEN);
+    ap_cpystrn(out, AP_SHA1PW_ID, AP_SHA1PW_IDLEN + 1);
 
     /* SHA1 hash is always 20 chars */
     l = ap_base64encode_binary(out + AP_SHA1PW_IDLEN, digest, sizeof(digest));
