@@ -214,7 +214,6 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
      */
     if (context) {
         apr_pool_clear(context->ptrans);
-        context->ptrans = NULL;
         context->next = NULL;
         apr_thread_mutex_lock(qlock);
         if (qtail)
