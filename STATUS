@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/18 15:16:17 $]
+Last modified at [$Date: 2003/09/19 20:06:31 $]
 
 Release:
 
@@ -333,6 +333,11 @@ PATCHES TO PORT FROM 2.1
       such children stopped inheriting the error log handle.
         modules/generators/mod_cgi.c r1.152
         modules/filters/mod_ext_filter.c r1.5
+      +1: trawick
+
+    * Fix mod_info to use the real config file name, not the default
+      config file name.
+        modules/generators/mod_info.c r1.151
       +1: trawick
 
 CURRENT RELEASE NOTES:
