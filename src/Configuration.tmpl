@@ -161,12 +161,19 @@ Rule SHARED_CHAIN=default
 #  actually print-out the code that the modules execute
 #
 # EXPAT:
-#  Apache requires an Expat package and includes James Clark's Expat
-#  package (expat-lite) with the distribution. This determines
-#  whether you want to include the bundled expat-lite library ('yes'),
-#  the system expat ('no') or prefer the system Expat if available but
-#  choose expat-lite if not ('default'). Note that if set to 'no' and
-#  libexpat.a cannot be found, the build will fail.
+#  Include an Expat implementation into Apache, for use by the
+#  modules. James Clark's Expat package (expat-lite) is bundled
+#  with Apache for the convenience of our users. If set to 'yes'
+#  OR set to 'default' and lib/expat-lite is present, then Apache
+#  will look for an appropriate Expat implementation, prefering
+#  a system Expat library but using expat-lite as an alternate.
+#  If set to 'no' OR set to 'default' and the lib/expat-lite directory
+#  is not available, the no Expat will be included.
+
+The "default" is to
+#  include it if the lib/expat-lite/ directory is present. If the
+#  directory is not present, the "default" is to not include any Expat
+#  implementation. 
 #
 
 Rule SOCKS4=no

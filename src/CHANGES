@@ -3,11 +3,6 @@ Changes with Apache 1.3.22
   *) PORT: Support AtheOS (see www.atheos.cx)
      [Rodrigo Parra Novo <rodarvus@terra.com.br>]
 
-  *) Change to the EXPAT rule logic. We can now use the system's expat
-     library if we want, use our own expat-lite or have Configure
-     pick one for us (prefer system, but use expat-lite as a backup).
-     [Jim Jagielski, Greg Stein]
-
   *) The manual directory is still configurable (as enabled by
      the 1.3.21 change), but its default setting was reverted to
      the pre-1.3.21 default as a subdirectory of the DocumentRoot.
