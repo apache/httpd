@@ -15,7 +15,7 @@ PROGRAM_DEPENDENCIES = \
 
 PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)
-phony_targets   = buildmark.c
+phony_targets   = $(srcdir)/buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include install-support
 DISTCLEANFILES  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
@@ -64,12 +64,12 @@ install-support:
 	@echo Installing Support Binaries
 	@test -d $(bindir) || $(mkinstalldirs) $(bindir)
 	@cp -rp $(srcdir)/support/httpd.exp $(bindir)
-	@cp -rp $(srcdir)/support/htpasswd $(bindir)
-	@cp -rp $(srcdir)/support/htdigest $(bindir)
-	@cp -rp $(srcdir)/support/rotatelogs $(bindir)
-	@cp -rp $(srcdir)/support/logresolve $(bindir)
-	@cp -rp $(srcdir)/support/ab $(bindir)
-	
+	@cp -rp $(builddir)/support/htpasswd $(bindir)
+	@cp -rp $(builddir)/support/htdigest $(bindir)
+	@cp -rp $(builddir)/support/rotatelogs $(bindir)
+	@cp -rp $(builddir)/support/logresolve $(bindir)
+	@cp -rp $(builddir)/support/ab $(bindir)
+
 install-other:
 	@test -d $(logdir) || $(mkinstalldirs) $(logdir)
 
