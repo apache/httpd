@@ -1248,14 +1248,22 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             if (!strcmp(tag, "errmsg")) {
-                ap_ssi_parse_string(r, tag_val, ctx->error_str, 
+                if (ctx->error_str_override == NULL) {
+                    ctx->error_str_override = (char *)apr_palloc(ctx->pool,
+                                                              MAX_STRING_LEN);
+                    ctx->error_str = ctx->error_str_override;
+                }
+                ap_ssi_parse_string(r, tag_val, ctx->error_str_override,
                                     MAX_STRING_LEN, 0);
-                ctx->error_length = strlen(ctx->error_str);
             }
             else if (!strcmp(tag, "timefmt")) {
                 apr_time_t date = r->request_time;
-
-                ap_ssi_parse_string(r, tag_val, ctx->time_str, 
+                if (ctx->time_str_override == NULL) {
+                    ctx->time_str_override = (char *)apr_palloc(ctx->pool,
+                                                              MAX_STRING_LEN);
+                    ctx->time_str = ctx->time_str_override;
+                }
+                ap_ssi_parse_string(r, tag_val, ctx->time_str_override,
                                     MAX_STRING_LEN, 0);
                 apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
                                ctx->time_str, 0));
@@ -3025,11 +3033,9 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
             ctx->status = APR_SUCCESS;
 
-            apr_cpystrn(ctx->error_str, conf->default_error_msg, 
-                        sizeof(ctx->error_str));
-            apr_cpystrn(ctx->time_str, conf->default_time_fmt, 
-                        sizeof(ctx->time_str));
-            ctx->error_length = strlen(ctx->error_str);
+            ctx->error_str = conf->default_error_msg;
+            ctx->time_str = conf->default_time_fmt;
+            ctx->pool = f->c->pool;
         }
         else {
             return ap_pass_brigade(f->next, b);

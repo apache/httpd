@@ -59,6 +59,8 @@
 #ifndef _MOD_INCLUDE_H
 #define _MOD_INCLUDE_H 1
 
+#include "apr_pools.h"
+
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
 
@@ -155,9 +157,11 @@ typedef struct include_filter_ctx {
     apr_size_t   directive_length;
     apr_size_t   tag_length;
 
-    apr_size_t   error_length;
-    char         error_str[MAX_STRING_LEN];
-    char         time_str[MAX_STRING_LEN];
+    char         *error_str;
+    char         *error_str_override;
+    char         *time_str;
+    char         *time_str_override;
+    apr_pool_t   *pool;
 
     apr_bucket_brigade *ssi_tag_brigade;
 } include_ctx_t;
@@ -177,7 +181,7 @@ typedef struct include_filter_ctx {
 {                                                                 \
     apr_size_t e_wrt;                                             \
     t_buck = apr_bucket_heap_create(cntx->error_str,              \
-                                  cntx->error_length, 1, &e_wrt); \
+                             strlen(cntx->error_str), 1, &e_wrt); \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                      \
                                                                   \
     if (ins_head == NULL) {                                       \
