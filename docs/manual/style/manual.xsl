@@ -28,10 +28,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
     <h3>Apache HTTP Server Version 2.0</h3>
    </div>
-   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/> <xsl:value-of select="name"/></h1>
+   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/>&nbsp; <xsl:value-of select="name"/></h1>
    <!-- Description and module-headers -->
-   <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
-    <table bgcolor="#ffffff">
+   <table width="100%" bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
+    <table  width="100%" bgcolor="#ffffff">
      <tr><td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span> </td>
          <td><xsl:apply-templates select="description"/></td></tr>
      <tr><td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
@@ -41,7 +41,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
          <td><xsl:value-of select="identifier"/></td></tr>
   </xsl:if>
   <xsl:if test="compatibility">
-     <tr><td><a class="help" href="module-dict.html#Compatibility"
+     <tr><td valign="top" align="left"><a class="help" href="module-dict.html#Compatibility"
        ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
          <td><xsl:apply-templates select="compatibility"/></td>
      </tr>
@@ -176,7 +176,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       name="{$lowername}">Directive</a></h2>
 
 <!-- Directive header -->
-<table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
+<table  width="100%" bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff" width="100%">
   <tr><td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
@@ -206,7 +206,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     </xsl:if>
     </td></tr>
   <xsl:if test="compatibility">
-    <tr><td><a class="help" href="directive-dict.html#Compatibility"
+    <tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility"
       ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
       <td><xsl:value-of select="compatibility"/></td></tr>
   </xsl:if>
@@ -242,7 +242,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="example">
   <blockquote>
-  <table cellpadding="10"><tr><td bgcolor="#eeeeee">
+  <table  width="100%" cellpadding="10"><tr><td bgcolor="#eeeeee">
      <xsl:apply-templates select="title" mode="print"/>
      <code><xsl:apply-templates/></code>
   </td></tr></table>
@@ -256,7 +256,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="note">
   <blockquote>
-  <table><tr><td>
+  <table  width="100%"><tr><td>
    <xsl:choose>
     <xsl:when test="@type='warning'">
      <xsl:attribute name="bgcolor">#ffe5f5</xsl:attribute>
@@ -297,11 +297,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   </xsl:template>
 
   <xsl:template match="module">
-    <code>
-     <a href="{.}.html"><xsl:value-of select="."/></a>
-    </code>
-    <xsl:if test="parent::modulelist">
-      <xsl:if test="not(position()=last())">, </xsl:if>
+    <code><a href="{.}.html"><xsl:value-of select="."/></a></code><xsl:if test="parent::modulelist"><xsl:if test="not(position()=last())">, </xsl:if>
     </xsl:if>
   </xsl:template>
 
