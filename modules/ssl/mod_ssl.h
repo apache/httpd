@@ -344,6 +344,17 @@ typedef enum {
     SSL_CVERIFY_OPTIONAL_NO_CA  = 3
 } ssl_verify_t;
 
+#ifndef X509_V_ERR_CERT_UNTRUSTED
+#define X509_V_ERR_CERT_UNTRUSTED 27
+#endif
+
+#define ssl_verify_error_is_optional(errnum) \
+   ((errnum == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT) \
+    || (errnum == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN) \
+    || (errnum == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY) \
+    || (errnum == X509_V_ERR_CERT_UNTRUSTED) \
+    || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
+
 /*
  * Define the SSL pass phrase dialog types
  */
