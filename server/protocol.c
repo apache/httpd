@@ -90,6 +90,7 @@
 #include "mod_core.h"
 #include "util_charset.h"
 #include "util_ebcdic.h"
+#include "scoreboard.h"
 
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
@@ -901,6 +902,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: URI too long");
             ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
             return r;
@@ -916,6 +918,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
             return r;
@@ -934,6 +937,7 @@ request_rec *ap_read_request(conn_rec *conn)
             r->header_only = 0;
             r->status = HTTP_BAD_REQUEST;
             ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
             return r;
@@ -970,12 +974,14 @@ request_rec *ap_read_request(conn_rec *conn)
 
     if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
         return r;
     }
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
         return NULL;
     }
@@ -997,6 +1003,7 @@ request_rec *ap_read_request(conn_rec *conn)
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             return r;
         }
