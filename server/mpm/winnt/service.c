@@ -448,7 +448,7 @@ static void set_service_description(void)
                                                SERVICE_ALL_ACCESS);
         if (schService) {
             if (ChangeServiceDescription(schService,
-                                         SERVICE_CONFIG_DESCRIPTION,
+                                         1 /* SERVICE_CONFIG_DESCRIPTION */,
                                          &full_description))
                 full_description = NULL;
             CloseServiceHandle(schService);
