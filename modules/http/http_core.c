@@ -59,6 +59,7 @@
 #include "apr_strings.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_lib.h"
+#include "apr_optional.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -77,6 +78,7 @@
 #include "scoreboard.h"
 
 #include "mod_core.h"
+#include "../loggers/mod_log_config.h"
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 					  const char *arg)
@@ -442,8 +444,37 @@ static int http_create_request(request_rec *r)
     return OK;
 }
 
+static const char *log_connection_status(request_rec *r, char *a)
+{
+    ap_http_conn_rec *hconn = ap_get_module_config(r->connection->conn_config,
+                                                &http_module);
+    if (r->connection->aborted)
+        return "X";
+ 
+    if ((r->connection->keepalive) &&
+        ((r->server->keep_alive_max - hconn->keepalives) > 0)) {
+        return "+";
+    }
+ 
+    return "-";
+}
+
+static void http_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
+
+    if (log_pfn_register) {
+        log_pfn_register(p, "c", log_connection_status, 0); 
+    }
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    static const char *const pred[] = { "mod_log_config.c", NULL };    
+
+    ap_hook_pre_config(http_pre_config, pred, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
 			       APR_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
