@@ -1,3 +1,7 @@
+  *) If there was no default MIME type defined, Apache sent Content-type:
+     without a newline, thus swallowing the next header. Changed to send no
+     Content-type: at all.
+
   *) Long overdue revamp of the Cookies module to stop Apache cookies
      colliding with other cookies a site may be using [Mark Cox]
 
