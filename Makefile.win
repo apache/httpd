@@ -397,11 +397,65 @@ _install:
 	copy modules\proxy\$(LONG)\mod_proxy_connect.so "$(INSTDIR)\modules" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.so "$(INSTDIR)\modules" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.so "$(INSTDIR)\modules" <.y
+!IF "$(SHORT)" == "D"
+	copy $(LONG)\Apache.pdb "$(INSTDIR)\bin" <.y
+	copy $(LONG)\libhttpd.pdb "$(INSTDIR)\bin" <.y
+	copy srclib\apr\$(LONG)\libapr.pdb "$(INSTDIR)\bin" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.pdb "$(INSTDIR)\bin" <.y
+	copy modules\aaa\$(LONG)\mod_access.pdb "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth.pdb "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_anon.pdb "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_dbm.pdb "$(INSTDIR)\modules" <.y
+	copy modules\aaa\$(LONG)\mod_auth_digest.pdb "$(INSTDIR)\modules" <.y
+	copy modules\arch\win32\$(LONG)\mod_isapi.pdb "$(INSTDIR)\modules" <.y
+	copy modules\cache\$(LONG)\mod_file_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\dav\fs\$(LONG)\mod_dav_fs.pdb "$(INSTDIR)\modules" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_mem_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_disk_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
+	copy modules\filters\$(LONG)\mod_include.pdb "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_asis.pdb "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_autoindex.pdb "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_cgi.pdb "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_info.pdb "$(INSTDIR)\modules" <.y
+	copy modules\generators\$(LONG)\mod_status.pdb "$(INSTDIR)\modules" <.y
+	copy modules\http\$(LONG)\mod_mime.pdb "$(INSTDIR)\modules" <.y
+	copy modules\loggers\$(LONG)\mod_log_config.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_actions.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_alias.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_dir.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_imap.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_negotiation.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_rewrite.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_speling.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_userdir.pdb "$(INSTDIR)\modules" <.y
+	copy modules\mappers\$(LONG)\mod_vhost_alias.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_cern_meta.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_env.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_expires.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_headers.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_mime_magic.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_setenvif.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_unique_id.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_usertrack.pdb "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy.pdb "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_connect.pdb "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_ftp.pdb "$(INSTDIR)\modules" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_http.pdb "$(INSTDIR)\modules" <.y
+!ENDIF
 !IF EXIST("srclib\openssl")
 	copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules" <.y
 	copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin" <.y
 	copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin" <.y
 	copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin" <.y
+!IF "$(SHORT)" == "D"
+	copy modules\ssl\$(LONG)\mod_ssl.pdb "$(INSTDIR)\modules" <.y
+	copy srclib\openssl\$(SSLBIN)\openssl.pdb "$(INSTDIR)\bin" <.y
+	copy srclib\openssl\$(SSLBIN)\libeay32.pdb "$(INSTDIR)\bin" <.y
+	copy srclib\openssl\$(SSLBIN)\ssleay32.pdb "$(INSTDIR)\bin" <.y
+!ENDIF
 	type << >> "$(INSTDIR)\README.txt"
 
   This binary distribution includes cryptographic software written by
@@ -466,8 +520,14 @@ BEGIN {
 --------------------------------------------------------------------------------
 <<
 	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe" <.y
+!IF "$(SHORT)" == "D"
+	copy support\$(LONG)\abs.pdb "$(INSTDIR)\bin\ab.pdb" <.y
+!ENDIF
 !ELSE
 	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin" <.y
+!IF "$(SHORT)" == "D"
+	copy support\$(LONG)\ab.pdb "$(INSTDIR)\bin" <.y
+!ENDIF
 !ENDIF
 !IF EXIST("srclib\zlib")
 	type << >> "$(INSTDIR)\README.txt"
@@ -492,6 +552,9 @@ BEGIN {
 }
 <<
 	copy modules\filters\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
+!IF "$(SHORT)" == "D"
+	copy modules\filters\$(LONG)\mod_deflate.pdb "$(INSTDIR)\modules" <.y
+!ENDIF
 !ENDIF
 	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin" <.y
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin" <.y
@@ -500,6 +563,15 @@ BEGIN {
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin" <.y
 	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin" <.y
 	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin" <.y
+!IF "$(SHORT)" == "D"
+	copy support\$(LONG)\htdbm.pdb "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\htdigest.pdb "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\htpasswd.pdb "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\logresolve.pdb "$(INSTDIR)\bin" <.y
+	copy support\$(LONG)\rotatelogs.pdb "$(INSTDIR)\bin" <.y
+	copy support\win32\$(LONG)\ApacheMonitor.pdb "$(INSTDIR)\bin" <.y
+	copy support\win32\$(LONG)\wintty.pdb "$(INSTDIR)\bin" <.y
+!ENDIF
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
