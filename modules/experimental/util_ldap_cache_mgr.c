@@ -529,8 +529,8 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
     char *argfmt = "cache=%s&id=%d&off=%d";
     char *scanfmt = "cache=%4s&id=%u&off=%u%1s";
     apr_pool_t *pool = r->pool;
-    util_cache_node_t *p;
-    util_url_node_t *n;
+    util_cache_node_t *p = NULL;
+    util_url_node_t *n = NULL;
 
     util_ald_cache_t *util_ldap_cache = st->util_ldap_cache;
 
@@ -543,12 +543,18 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
         char cachetype[5], lint[2];
         unsigned int id, off;
         int ret;
+        char date_str[APR_CTIME_LEN+1];
 
         if ((3 == sscanf(r->args, scanfmt, cachetype, &id, &off, lint)) &&
             (id < util_ldap_cache->size)) {
 
-            p = util_ldap_cache->nodes[id];
-            n = (util_url_node_t *)p->payload;
+            if ((p = util_ldap_cache->nodes[id]) != NULL) {
+                n = (util_url_node_t *)p->payload;
+                buf = (char*)n->url;
+            }
+            else {
+                buf = "";
+            }
 
             ap_rputs(apr_psprintf(r->pool, 
                      "<p>\n"
@@ -558,10 +564,70 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                      "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%s (%s)</b></font></td>"
                      "</tr>\n"
                      "</table>\n</p>\n",
-                 n->url,
-                 cachetype[0] == 's' ? "Search" : (cachetype[0] == 'c' ? "Compares" : "DNCompares")), r);
+                 buf,
+                 cachetype[0] == 'm'? "Main" : 
+                                  (cachetype[0] == 's' ? "Search" : 
+                                   (cachetype[0] == 'c' ? "Compares" : "DNCompares"))), r);
             
             switch (cachetype[0]) {
+                case 'm':
+                    if (util_ldap_cache->marktime) {
+                        apr_ctime(date_str, util_ldap_cache->marktime);
+                    }
+                    else
+                        date_str[0] = 0;
+
+                    ap_rputs(apr_psprintf(r->pool, 
+                            "<p>\n"
+                            "<table border='0'>\n"
+                            "<tr>\n"
+                            "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Size:</b></font></td>"
+                            "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                            "</tr>\n"
+                            "<tr>\n"
+                            "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Max Entries:</b></font></td>"
+                            "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                            "</tr>\n"
+                            "<tr>\n"
+                            "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b># Entries:</b></font></td>"
+                            "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                            "</tr>\n"
+                            "<tr>\n"
+                            "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark:</b></font></td>"
+                            "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                            "</tr>\n"
+                            "<tr>\n"
+                            "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark Time:</b></font></td>"
+                            "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%s</b></font></td>"
+                            "</tr>\n"
+                            "</table>\n</p>\n",
+                        util_ldap_cache->size,
+                        util_ldap_cache->maxentries,
+                        util_ldap_cache->numentries,
+                        util_ldap_cache->fullmark,
+                        date_str), r);
+
+                    ap_rputs("<p>\n"
+                             "<table border='0'>\n"
+                             "<tr bgcolor='#000000'>\n"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>LDAP URL</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Size</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Max Entries</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b># Entries</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark Time</b></font></td>"
+                             "</tr>\n", r
+                            );
+                    for (i=0; i < util_ldap_cache->size; ++i) {
+                        for (p = util_ldap_cache->nodes[i]; p != NULL; p = p->next) {
+
+                            (*util_ldap_cache->display)(r, util_ldap_cache, p->payload);
+                        }
+                    }
+                    ap_rputs("</table>\n</p>\n", r);
+                    
+
+                    break;
                 case 's':
                     ap_rputs("<p>\n"
                              "<table border='0'>\n"
@@ -635,7 +701,8 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                 );
 
 
-        buf = util_ald_cache_display_stats(r, st->util_ldap_cache, "LDAP URL Cache", NULL);
+        id1 = apr_psprintf(pool, argfmt, "main", 0, 0);
+        buf = util_ald_cache_display_stats(r, st->util_ldap_cache, "LDAP URL Cache", id1);
     
         for (i=0; i < util_ldap_cache->size; ++i) {
             for (p = util_ldap_cache->nodes[i],j=0; p != NULL; p = p->next,j++) {
