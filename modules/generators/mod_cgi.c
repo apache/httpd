@@ -402,8 +402,8 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 
     RAISE_SIGSTOP(CGI_CHILD);
 #ifdef DEBUG_CGI
-    fprintf(dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
-	    r->filename, cld->nph ? "NPH " : "", argv0);
+    fprintf(dbg, "Attempting to exec %s as CGI child (argv0 = %s)\n",
+	    r->filename, argv[0]);
 #endif
 
     if (e_info->prog_type == RUN_AS_CGI) {
@@ -482,6 +482,9 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             }
         }
     }
+#ifdef DEBUG_CGI
+    fclose(dbg);
+#endif
     return (rc);
 }
 
