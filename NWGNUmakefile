@@ -195,11 +195,16 @@ FILES_nlm_objs = \
 	$(OBJDIR)/config.o \
 	$(OBJDIR)/connection.o \
 	$(OBJDIR)/core.o \
+	$(OBJDIR)/core_filters.o \
 	$(OBJDIR)/eoc_bucket.o \
 	$(OBJDIR)/error_bucket.o \
 	$(OBJDIR)/http_core.o \
 	$(OBJDIR)/http_protocol.o \
 	$(OBJDIR)/http_request.o \
+	$(OBJDIR)/byterange_filter.o \
+	$(OBJDIR)/chunk_filter.o \
+	$(OBJDIR)/http_etag.o \
+	$(OBJDIR)/http_filters.o \
 	$(OBJDIR)/listen.o \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \

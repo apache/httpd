@@ -160,13 +160,15 @@ local-extraclean: local-distclean x-local-extraclean
 	    rm -f $(EXTRACLEAN_TARGETS) ; \
 	fi
 
-local-install: $(TARGETS) $(SHARED_TARGETS) $(INSTALL_TARGETS)
+program-install: $(TARGETS) $(SHARED_TARGETS)
 	@if test -n '$(PROGRAMS)'; then \
 	    test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir); \
 	    list='$(PROGRAMS)'; for i in $$list; do \
 	        $(INSTALL_PROGRAM) $$i $(DESTDIR)$(sbindir); \
 	    done; \
 	fi
+
+local-install: program-install $(INSTALL_TARGETS)
 
 # to be filled in by the actual Makefile if extra commands are needed
 x-local-depend x-local-clean x-local-distclean x-local-extraclean:
