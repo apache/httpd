@@ -2567,12 +2567,19 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 {
     int s;
     int one = 1;
+    char addr[512];
+
+    if (server->sin_addr.s_addr != htonl(INADDR_ANY))
+	ap_snprintf(addr, sizeof(addr), "address %s port %d",
+		inet_ntoa(server->sin_addr), ntohs(server->sin_port));
+    else
+	ap_snprintf(addr, sizeof(addr), "port %d", ntohs(server->sin_port));
 
     /* note that because we're about to slack we don't use psocket */
     block_alarms();
     if ((s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "socket: Failed to get a socket, exiting child");
+		    "make_sock: failed to get a socket for %s", addr);
 	unblock_alarms();
 	exit(1);
     }
@@ -2595,7 +2602,6 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     s = ap_slack(s, AP_SLACK_HIGH);
 
     note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
-    unblock_alarms();
 #endif
 
 #ifndef MPE
@@ -2603,8 +2609,10 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #ifndef _OSD_POSIX
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "setsockopt: (SO_REUSEADDR)");
-	exit(1);
+		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
+	close(s);
+	unblock_alarms();
+	return -1;
     }
 #endif /*_OSD_POSIX*/
     one = 1;
@@ -2612,8 +2620,10 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 /* BeOS does not support SO_KEEPALIVE */
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
-		    "setsockopt: (SO_KEEPALIVE)");
-	exit(1);
+		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
+	close(s);
+	unblock_alarms();
+	return -1;
     }
 #endif
 #endif
@@ -2645,7 +2655,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
 		(char *) &server_conf->send_buffer_size, sizeof(int)) < 0) {
 	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
-			"setsockopt: (SO_SNDBUF): Failed to set SendBufferSize, using default");
+			"make_sock: failed to set SendBufferSize for %s, "
+			"using default", addr);
 	    /* not a fatal error */
 	}
     }
@@ -2657,17 +2668,14 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	GETPRIVMODE();
 #endif
     if (bind(s, (struct sockaddr *) server, sizeof(struct sockaddr_in)) == -1) {
-	perror("bind");
+	aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
+	    "make_sock: could not bind to %s", addr);
 #ifdef MPE
 	if (ntohs(server->sin_port) < 1024)
 	    GETUSERMODE();
 #endif
-	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	    fprintf(stderr, "httpd: could not bind to address %s port %d\n",
-		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-	else
-	    fprintf(stderr, "httpd: could not bind to port %d\n",
-		    ntohs(server->sin_port));
+	close(s);
+	unblock_alarms();
 	exit(1);
     }
 #ifdef MPE
@@ -2677,20 +2685,29 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 
     if (listen(s, listenbacklog) == -1) {
 	aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-		    "listen: unable to listen for connections");
+	    "make_sock: unable to listen for connections on %s", addr);
 	close(s);
-#ifdef WORKAROUND_SOLARIS_BUG
 	unblock_alarms();
-#endif
-	return -1;
+	exit(1);
     }
 
 #ifdef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 
     note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
-    unblock_alarms();
 #endif
+    unblock_alarms();
+
+    /* protect various fd_sets */
+    if (s >= FD_SETSIZE) {
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+	    "make_sock: problem listening on %s, filedescriptor (%u) "
+	    "larger than FD_SETSIZE (%u) "
+	    "found, you probably need to rebuild Apache with a "
+	    "larger FD_SETSIZE", addr, s, FD_SETSIZE);
+	close(s);
+	return -1;
+    }
     return s;
 }
 
@@ -3273,6 +3290,15 @@ static void child_main(int child_num_arg)
 
 	note_cleanups_for_fd(ptrans, csd);
 
+	/* protect various fd_sets */
+	if (csd >= FD_SETSIZE) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		"[csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
+		"found, you probably need to rebuild Apache with a "
+		"larger FD_SETSIZE", csd, FD_SETSIZE);
+	    continue;
+	}
+
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -3309,6 +3335,15 @@ static void child_main(int child_num_arg)
 	    dupped_csd = csd;	/* Oh well... */
 	}
 	note_cleanups_for_fd(ptrans, dupped_csd);
+
+	/* protect various fd_sets */
+	if (dupped_csd >= FD_SETSIZE) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+		"[dupped_csd] filedescriptor (%u) larger than FD_SETSIZE (%u) "
+		"found, you probably need to rebuild Apache with a "
+		"larger FD_SETSIZE", dupped_csd, FD_SETSIZE);
+	    continue;
+	}
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 

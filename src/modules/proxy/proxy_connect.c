@@ -161,6 +161,16 @@ int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 	return SERVER_ERROR;
     }
 
+    if (sock >= FD_SETSIZE) {
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+	    "proxy_connect_handler: filedescriptor (%u) "
+	    "larger than FD_SETSIZE (%u) "
+	    "found, you probably need to rebuild Apache with a "
+	    "larger FD_SETSIZE", sock, FD_SETSIZE);
+	pclosesocket(r->pool, sock);
+	return SERVER_ERROR;
+    }
+
     j = 0;
     while (server_hp.h_addr_list[j] != NULL) {
 	memcpy(&server.sin_addr, server_hp.h_addr_list[j],

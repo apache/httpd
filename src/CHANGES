@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) Protect against FD_SETSIZE mismatches.  [Dean Gaudet]
+
   *) Make the shared object compilation command more portable by avoiding
      the direct combination of `-c' & `-o' which is not honored by some
      compilers like UnixWare's cc. [Ralf S. Engelschall]

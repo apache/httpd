@@ -1663,6 +1663,13 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
     bsetflag(fb, B_RD, 0);
     bnonblock(fb, B_RD);
     fd = bfileno(fb, B_RD);
+    if (fd >= FD_SETSIZE) {
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+	    "send body: filedescriptor (%u) larger than FD_SETSIZE (%u) "
+	    "found, you probably need to rebuild Apache with a "
+	    "larger FD_SETSIZE", fd, FD_SETSIZE);
+	return 0;
+    }
 
     soft_timeout("send body", r);
 

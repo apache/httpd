@@ -529,6 +529,7 @@ static int saferead(BUFF *fb, char *buf, int nbyte)
 #endif
 
 
+/* note we assume the caller has ensured that fb->fd_in <= FD_SETSIZE */
 API_EXPORT(void) bhalfduplex(BUFF *fb)
 {
     int rv;
