@@ -402,12 +402,10 @@ start_over:
                       "[%d] auth_ldap authenticate: "
                       "user %s authentication failed; URI %s [%s][%s]",
                       getpid(), user, r->uri, ldc->reason, ldap_err2string(result));
-        if (LDAP_INVALID_CREDENTIALS == result) {
-            return AUTH_DENIED;
-        }
-        else {
-            return AUTH_GENERAL_ERROR;
-        }
+
+        return (LDAP_NO_SUCH_OBJECT == result) ? AUTH_USER_NOT_FOUND: \
+               (LDAP_SECURITY_ERROR(result)) ? AUTH_DENIED: \
+               AUTH_GENERAL_ERROR;
     }
 
     /* mark the user and DN */
