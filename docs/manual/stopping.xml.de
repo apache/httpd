@@ -10,10 +10,10 @@
 <summary>
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
     Apache auf Unix-&#228;hnlichen Systemen. Anwender von Windows NT, 2000
-    und XP sollten <a href="platform/windows.html#winsvc">Ausf&uuml;hren
-    des Apache als Service</a> lesen, w&auml;hrend hingegen Anwender von
-    Windows 9x sowie ME <a href="platform/windows.html#wincons">Ausf&uuml;hren
-	des Apache als Konsolen-Anwendung</a> lesen sollten, um mehr Informationen
+    und XP sollten <a href="platform/windows.html#winsvc">Betreiben
+    des Apache als Dienst</a> lesen, w&auml;hrend hingegen Anwender von
+    Windows 9x sowie ME <a href="platform/windows.html#wincons">Betreiben
+    des Apache als Konsolenanwendung</a> lesen sollten, um mehr Informationen
     zur Handhabung des Apache auf diesen Systemen zu erhalten.</p>
 </summary>
 
