@@ -510,12 +510,12 @@
 <dt><code>--with-berkeley-db[=<em>path</em>]</code></dt>
 
 <dd>If no <em>path</em> is specified, Apache will search for the
-include files and libraries in the usual search paths.  An explict
+include files and libraries in the usual search paths.  An explicit
 <em>path</em> will cause Apache to look in
 <em>path</em><code>/lib</code> and
 <em>path</em><code>/include</code> for the relevant files.  Finally,
 the <em>path</em> may specify specific include and library paths
-seperated by a colon.</dd>
+separated by a colon.</dd>
 </dl>
 </section>
 

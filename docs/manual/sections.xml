@@ -204,7 +204,7 @@ directives can each use shell-style wildcard characters as in
 matches any sequence of characters, "?" matches any single character,
 and "[<em>seq</em>]" matches any character in <em>seq</em>.  The "/"
 character will not be matched by any wildcard; it must be specified
-explictly.</p>
+explicitly.</p>
 
 <p>If even more flexible matching is required, each
 container has a regular-expression (regex) counterpart <directive

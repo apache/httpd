@@ -212,7 +212,7 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
 the server to fetch the appropriate documents, while the
 <directive module="mod_proxy">ProxyPassReverse</directive>
 directive rewrites redirects originating at
-<code>internal.examle.com</code> so that they target the appropriate
+<code>internal.example.com</code> so that they target the appropriate
 directory on the local server.  It is important to note, however, that
 links inside the documents will not be rewritten.  So any absolute
 links on <code>internal.example.com</code> will result in the client

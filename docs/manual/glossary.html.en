@@ -116,7 +116,7 @@ File</a><br /> See: <a href="mod/directives.html">Directive
 Index</a></dd>
 
 <dt><a name="dynamicsharedobject">Dynamic Shared Object</a> <a name="dso">(DSO)</a></dt> <dd><a href="#module">Modules</a> compiled
-seperately from the Apache httpd binary that can be loaded on-demand.<br />
+separately from the Apache httpd binary that can be loaded on-demand.<br />
 See: <a href="dso.html">Dynamic Shared Object Support</a></dd>
 
 <dt><a name="environmentvariable">Environment Variable</a> <a name="env-variable">(env-variable)</a></dt>
@@ -139,7 +139,7 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 data that is sent or received by the server.  Input filters process
 data sent by the client to the server, while output filters process
 documents on the server before they are sent to the client.  For
-examle, the <code>INCLUDES</code> output filter processes documents
+example, the <code>INCLUDES</code> output filter processes documents
 for <a href="#ssi">Server Side Includes</a>.<br /> See: <a href="filter.html">Filters</a></dd>
 
 <dt><a name="fully-qualifieddomain-name">Fully-Qualified
@@ -177,7 +177,7 @@ See: <a href="configuring.html">Configuration Files</a></dd>
 <dt><a name="hypertexttransferprotocol">HyperText Transfer
 Protocol</a> <a name="http">(HTTP)</a></dt> <dd>The standard
 transmission protocol used on the World Wide Web.  Apache implements
-version 1.1 of the protocol, refered to as HTTP/1.1 and defined by <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
+version 1.1 of the protocol, referred to as HTTP/1.1 and defined by <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 <dt><a name="https">HTTPS</a></dt>
 <dd>The HyperText Transport Protocol (Secure), the standard encrypted
@@ -206,7 +206,7 @@ HTTP, the MIME-type is transmitted in the <code>Content-Type</code> <a href="#he
 program.  Much of Apache's functionality is contained in modules that
 you can choose to include or exclude.  Modules that are compiled into
 the Apache httpd binary are called <em>static modules</em>, while
-modules that are stored seperately and can be optionally loaded at
+modules that are stored separately and can be optionally loaded at
 run-time are called <em>dynamic modules</em> or <a href="#dso">DSOs</a>.  Modules that are included by default are called
 <em>base modules</em>.  Many modules are available for Apache that are
 not distributed as part of the Apache HTTP Server <a href="#tarball">tarball</a>.  These are referred to as <em>third-party
@@ -218,7 +218,7 @@ See: <a href="mod/">Module Index</a></dd>
 Module Magic Number is a constant defined in the Apache source code
 that is associated with binary compatibility of modules. It is changed
 when internal Apache structures, function calls and other significant
-parts of API change in such a way that binary compatiblity cannot be
+parts of API change in such a way that binary compatibility cannot be
 guaranteed any more. On MMN change, all third party modules have to be
 at least recompiled, sometimes even slightly changed in order to work
 with the new version of Apache.
@@ -250,7 +250,7 @@ can deliver that content from its cache, rather than requesting it
 from the origin server each time, thereby reducing response time.<br />
 See: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
-<dt><a name="publickey">Public Key</a></dt> <dd>The publically
+<dt><a name="publickey">Public Key</a></dt> <dd>The publicly
 available key in a <a name="publickeycryptography">Public Key
 Cryptography</a> system, used to encrypt messages bound for its owner
 and to decrypt signatures made by its owner.<br />
@@ -260,7 +260,7 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 <dd>The study and application of asymmetric encryption systems, which
 use one key for encryption and another for decryption. A corresponding
 pair of such keys constitutes a key pair. Also called Asymmetric
-Crypography.<br /> See: <a href="ssl/">SSL/TLS Encryption</a></dd>
+Cryptography.<br /> See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="regularexpresion">Regular Expression</a> <a name="regex">(Regex)</a></dt> <dd>A way of
 describing a pattern in text - for example, "all the words that begin with the

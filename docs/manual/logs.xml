@@ -9,7 +9,7 @@
   <summary>
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
-    server as well as any problems that may be occuring. The Apache
+    server as well as any problems that may be occurring. The Apache
     HTTP Server provides very comprehensive and flexible logging
     capabilities. This document describes how to configure its
     logging capabilities, and how to understand what the logs
@@ -308,7 +308,7 @@
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\"" combined<br />
-         CustomLog log/acces_log combined
+         CustomLog log/access_log combined
       </example>
 
       <p>This format is exactly the same as the Common Log Format,

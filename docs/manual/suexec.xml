@@ -31,7 +31,7 @@
     Apache Group and this document.</p>
 
     <p>First, it is assumed that you are using a UNIX
-    derivate operating system that is capable of
+    derivative operating system that is capable of
     <strong>setuid</strong> and <strong>setgid</strong> operations.
     All command examples are given in this regard. Other platforms,
     if they are capable of supporting suEXEC, may differ in their
@@ -305,7 +305,7 @@
       </li>
     </ol>
 
-    <p>This is the standard operation of the the
+    <p>This is the standard operation of the
     suEXEC wrapper's security model. It is somewhat stringent and
     can impose new limitations and guidelines for CGI/SSI design,
     but it was developed carefully step-by-step with security in

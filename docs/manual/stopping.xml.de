@@ -32,9 +32,9 @@
     module="mpm_common">PidFile</directive> steht. Das hei&#223;t, Sie
     sollten es niemals n&#246;tig haben, einem anderen Prozess, als dem
     Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
-    Elternprozess senden k&#246;nnen: <a href="#term"><code>TERM</code></a>,
-    <a href="#hup"><code>HUP</code></a> und
-    <a href="#graceful"><code>USR1</code></a>, die nachfolgend beschrieben
+    Elternprozess senden k&#246;nnen: <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code> und
+    <code><a href="#graceful">USR1</a></code>, die nachfolgend beschrieben
     werden.</p>
 
     <p>Um dem Elternprozess ein Signal zu senden, verwenden Sie einen
