@@ -48,3 +48,6 @@ mod_mime             0x6FC20000    0x00010000
 mod_negotiation      0x6FC10000    0x00010000
 mod_setenvif         0x6FC00000    0x00010000
 mod_userdir          0x6FBF0000    0x00010000
+mod_cache            0x6FBE0000    0x00010000
+mod_disk_cache       0x6FBD0000    0x00010000
+mod_mem_cache        0x6FBC0000    0x00010000
