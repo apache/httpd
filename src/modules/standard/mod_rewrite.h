@@ -105,6 +105,7 @@
 #include <sys/stat.h>
 
     /* Include from the Apache server ... */
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_conf_globals.h"

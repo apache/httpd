@@ -529,7 +529,10 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
 static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
+    const char *error;
 
+    if ((error = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL)
+        return error;
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
