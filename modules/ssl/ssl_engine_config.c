@@ -252,10 +252,8 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
     dc->nVerifyClient          = SSL_CVERIFY_UNSET;
     dc->nVerifyDepth           = UNSET;
 
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     dc->szCACertificatePath    = NULL;
     dc->szCACertificateFile    = NULL;
-#endif
 
     return dc;
 }
@@ -290,10 +288,8 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(nVerifyClient, SSL_CVERIFY_UNSET);
     cfgMergeInt(nVerifyDepth);
 
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
-#endif
 
     return new;
 }
@@ -662,12 +658,22 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
+#define NO_PER_DIR_SSL_CA \
+    "Your ssl library does not have support for per-directory CA"
+
+#define MODSSL_SET_CA(f) \
+    if (cmd->path) \
+        if (MODSSL_HAVE_SSL_SET_CERT_STORE) \
+            dc->f = arg; \
+        else \
+            return NO_PER_DIR_SSL_CA; \
+    else \
+        sc->f = arg \
+
 const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
                                          const char *arg)
 {
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
-#endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -675,16 +681,7 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
-    if (cmd->path) {
-        dc->szCACertificatePath = arg;
-    }
-    else {
-        sc->szCACertificatePath = arg;
-    }
-#else
-    sc->szCACertificatePath = arg;
-#endif
+    MODSSL_SET_CA(szCACertificatePath);
 
     return NULL;
 }
@@ -692,9 +689,7 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
 const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
                                          const char *arg)
 {
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
-#endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -702,16 +697,7 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
-    if (cmd->path) {
-        dc->szCACertificateFile = arg;
-    }
-    else {
-        sc->szCACertificateFile = arg;
-    }
-#else
-    sc->szCACertificateFile = arg;
-#endif
+    MODSSL_SET_CA(szCACertificateFile);
 
     return NULL;
 }
