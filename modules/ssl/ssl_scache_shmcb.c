@@ -721,14 +721,15 @@ static BOOL shmcb_store_session(
     unsigned char *ptr_encoded;
     unsigned int len_encoded;
     time_t expiry_time;
+    unsigned char *session_id = SSL_SESSION_get_session_id(pSession);
 
     ssl_log(s, SSL_LOG_TRACE, "inside shmcb_store_session");
 
     /* Get the header structure, which division this session will fall into etc. */
     shmcb_get_header(shm_segment, &header);
-    masked_index = pSession->session_id[0] & header->division_mask;
+    masked_index = session_id[0] & header->division_mask;
     ssl_log(s, SSL_LOG_TRACE, "session_id[0]=%u, masked index=%u",
-            pSession->session_id[0], masked_index);
+            session_id[0], masked_index);
     if (!shmcb_get_division(header, &queue, &cache, (unsigned int)masked_index)) {
         ssl_log(s, SSL_LOG_ERROR, "shmcb_store_session, " "internal error");
         return FALSE;
@@ -747,7 +748,7 @@ static BOOL shmcb_store_session(
     len_encoded = i2d_SSL_SESSION(pSession, &ptr_encoded);
     expiry_time = timeout;
     if (!shmcb_insert_encoded_session(s, &queue, &cache, encoded,
-                                     len_encoded, pSession->session_id,
+                                     len_encoded, session_id,
                                      expiry_time)) {
         ssl_log(s, SSL_LOG_ERROR, "can't store a session!");
         return FALSE;
@@ -1242,6 +1243,9 @@ static SSL_SESSION *shmcb_lookup_session_id(
          * removal or disabling of forcibly killed sessions. */
         if ((idx->s_id2 == id[1]) && !idx->removed &&
             (shmcb_get_safe_time(&(idx->expires)) > now)) {
+            unsigned int session_id_length;
+            unsigned char *session_id;
+
             ssl_log(s, SSL_LOG_TRACE, "at index %u, found possible "
                     "session match", curr_pos);
             shmcb_cyclic_cton_memcpy(header->cache_data_size,
@@ -1250,13 +1254,16 @@ static SSL_SESSION *shmcb_lookup_session_id(
                                      SSL_SESSION_MAX_DER);
             ptr = tempasn;
             pSession = d2i_SSL_SESSION(NULL, &ptr, SSL_SESSION_MAX_DER);
+            session_id_length = SSL_SESSION_get_session_id_length(pSession);
+            session_id = SSL_SESSION_get_session_id(pSession);
+
             if (pSession == NULL) {
                 ssl_log(s, SSL_LOG_ERROR, "scach2_lookup_"
                         "session_id, internal error");
                 return NULL;
             }
-            if ((pSession->session_id_length == idlen) &&
-                (memcmp(pSession->session_id, id, idlen) == 0)) {
+            if ((session_id_length == idlen) &&
+                (memcmp(session_id, id, idlen) == 0)) {
                 ssl_log(s, SSL_LOG_TRACE, "a match!");
                 return pSession;
             }
@@ -1308,6 +1315,9 @@ static BOOL shmcb_remove_session_id(
         /* Only look into the session further if the second byte of the
          * session_id matches. */
         if (idx->s_id2 == id[1]) {
+            unsigned int session_id_length;
+            unsigned char *session_id;
+
             ssl_log(s, SSL_LOG_TRACE, "at index %u, found possible "
                     "session match", curr_pos);
             shmcb_cyclic_cton_memcpy(header->cache_data_size,
@@ -1321,8 +1331,8 @@ static BOOL shmcb_remove_session_id(
                         "internal error");
                 goto end;
             }
-            if ((pSession->session_id_length == idlen) 
-                 && (memcmp(id, pSession->session_id, idlen) == 0)) {
+            if ((session_id_length == idlen) 
+                 && (memcmp(id, session_id, idlen) == 0)) {
                 ssl_log(s, SSL_LOG_TRACE, "a match!");
                 /* Scrub out this session "quietly" */
                 idx->removed = (unsigned char) 1;
