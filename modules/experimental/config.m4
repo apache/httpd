@@ -18,6 +18,8 @@ cache_util.lo dnl
 dnl #  list of object files for mod_mem_cache
 mem_cache_objs="dnl
 mod_mem_cache.lo dnl
+cache_cache.lo dnl
+cache_pqueue.lo dnl
 cache_hash.lo dnl
 " 
 APACHE_MODULE(cache, dynamic file caching, $cache_objs, , no)
