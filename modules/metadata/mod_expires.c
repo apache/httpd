@@ -229,7 +229,7 @@ static void *create_dir_expires_config(apr_pool_t *p, char *dummy)
     (expires_dir_config *) apr_pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
     new->wildcards = 0;
-    new->expiresdefault = "";
+    new->expiresdefault = NULL;
     new->expiresbytype = apr_table_make(p, 4);
     return (void *) new;
 }
@@ -412,7 +412,7 @@ static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
         new->active = add->active;
     }
 
-    if (add->expiresdefault[0] != '\0') {
+    if (add->expiresdefault != NULL) {
         new->expiresdefault = add->expiresdefault;
     }
     else {
@@ -548,8 +548,7 @@ static apr_status_t expires_filter(ap_filter_t *f,
                 expiry = conf->expiresdefault;
             }
         }
-        /* != '\0' covers the case where ExpiresDefault is not user defined. */
-        if (expiry != NULL && expiry[0] != '\0') {
+        if (expiry != NULL) {
             set_expiration_fields(r, expiry, t);
         }
     }

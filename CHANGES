@@ -2,9 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) mod_expires: Don't report an Internal Server error if ExpiresDefault
-     is used and has not been set in the httpd.conf file. PR: 23748, 24459
-     [Liam Quinn  <liam htmlhelp.com>]
+  *) mod_expires: Initialize ExpiresDefault to NULL instead of "" to
+     avoid reporting an Internal Server error if it is used without
+     having been set in the httpd.conf file. PR: 23748, 24459
+     [Andre Malo, Liam Quinn  <liam htmlhelp.com>]
 
   *) mod_logio: Account for some bytes handed to the network layer prior to
      dropped connections.  [Jeff Trawick]
