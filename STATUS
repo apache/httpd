@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/29 12:08:06 $]
+Last modified at [$Date: 2003/09/29 21:09:46 $]
 
 Release:
 
@@ -77,11 +77,6 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_disk_cache.c.diff?r1=1.46&r2=1.47
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c.diff?r1=1.93&r2=1.94
       +1: rederpj, fielding, trawick
-
-    * Correct the code in ap_check_cache_feshness to check max_age, smax_age,
-      and expires correctly. This is a RFC 2616 compliance issue.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_util.c.diff?r1=1.26&r2=1.27
-      +1: rederpj, stoddard, fielding
 
     * mod_rewrite.c: Fix mod_rewrite's support of the [P] option to send
       rewritten request using "proxy:". The code was adding multiple "proxy:"
