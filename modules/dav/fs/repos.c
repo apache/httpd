@@ -324,7 +324,7 @@ static dav_error * dav_fs_copymove_file(
     }
 
     while (1) {
-	apr_ssize_t len = DAV_FS_COPY_BLOCKSIZE;
+	apr_size_t len = DAV_FS_COPY_BLOCKSIZE;
 	apr_status_t status;
 
 	status = apr_file_read(inf, pbuf->buf, &len);
@@ -853,7 +853,7 @@ static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
 static dav_error * dav_fs_read_stream(dav_stream *stream,
 				      void *buf, apr_size_t *bufsize)
 {
-    if (apr_file_read(stream->f, buf, (apr_ssize_t *)bufsize) != APR_SUCCESS) {
+    if (apr_file_read(stream->f, buf, bufsize) != APR_SUCCESS) {
 	/* ### use something besides 500? */
 	return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "An error occurred while reading from a "
