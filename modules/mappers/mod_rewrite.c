@@ -1402,7 +1402,7 @@ static int hook_fixup(request_rec *r)
     char *cp2;
     const char *ccp;
     char *prefix;
-    int l;
+    apr_size_t l;
     int rulestatus;
     int n;
     char *ofilename;
@@ -1423,6 +1423,18 @@ static int hook_fixup(request_rec *r)
     /* if there are no real (i.e. no RewriteRule directives!)
        per-dir config of us, we return also immediately */
     if (dconf->directory == NULL) {
+        return DECLINED;
+    }
+
+    /*
+     *  .htaccess file is called before really entering the directory, i.e.:
+     *  URL: http://localhost/foo  and .htaccess is located in foo directory
+     *  Ignore such attempts, since they may lead to undefined behaviour.
+     */
+    l = strlen(dconf->directory) - 1;
+    if (r->filename && strlen(r->filename) == l &&
+        (dconf->directory)[l] == '/' &&
+        !strncmp(r->filename, dconf->directory, l)) {
         return DECLINED;
     }
 
