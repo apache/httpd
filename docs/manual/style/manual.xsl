@@ -171,10 +171,10 @@
      select="translate($name, $uppercase, $lowercase)" />
   <!-- Directive heading gets both mixed case and lowercase anchors,
        and includes lt/gt only for "section" directives -->
-  <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if><
-      xsl:value-of select="./name"/><xsl:if test="./@type='section'"
-      >&gt;</xsl:if></a><xsl:text> </xsl:text><
-      a name="{$lowername}">Directive</a></h2>
+  <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if
+      ><xsl:value-of select="./name"/><xsl:if test="./@type='section'"
+      >&gt;</xsl:if></a><xsl:text> </xsl:text><a 
+      name="{$lowername}">Directive</a></h2>
 
 <!-- Directive header -->
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
