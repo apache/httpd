@@ -551,7 +551,7 @@ static void output_results(void)
 	if (gnuplot) {
 	    FILE *out = fopen(gnuplot, "w");
 	    long i;
-	    time_t sttime;
+	    long sttime;
 	    char tmstring[1024];/* XXXX */
 	    if (!out) {
 		perror("Cannot open gnuplot output file");
@@ -1278,14 +1278,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.64 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.65 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.64 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.65 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
