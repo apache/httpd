@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Name-based Virtual Host Support - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Name-based Virtual Host Support</h1>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".."/>
+
+<title>Name-based Virtual Host Support</title>
+
+<summary>
 
 	<p>This document describes when and how to use name-based virtual hosts.</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Name-based vs. IP-based Virtual Hosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#using">Using Name-based Virtual Hosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#">Compatibility with Older Browsers</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="ip-based.html">IP-based Virtual Host Support</a></li><li><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></li><li><a href="mass.html">Dynamically configured mass virtual hosting</a></li><li><a href="examples.html">Virtual Host examples for common setups</a></li><li><a href="examples.html#serverpath">ServerPath configuration example</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="namevip" id="namevip">Name-based vs. IP-based Virtual Hosts</a></h2>
+</summary>
+
+<seealso><a href="ip-based.html">IP-based Virtual Host Support</a></seealso>
+<seealso><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></seealso>
+<seealso><a href="mass.html">Dynamically configured mass virtual hosting</a></seealso>
+<seealso><a href="examples.html">Virtual Host examples for common setups</a></seealso>
+<seealso><a href="examples.html#serverpath">ServerPath configuration example</a></seealso>
+
+<section id="namevip"><title>Name-based vs. IP-based Virtual Hosts</title>
 
 	<p>IP-based virtual hosts use the IP address of the connection to
 	determine the correct virtual host to serve.  Therefore you need to
@@ -43,13 +54,29 @@
 		they are on separate IP addresses.</li>
 	</ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>
+</section>
 
-<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code></li></ul></td></tr></table>
+<section id="using"><title>Using Name-based Virtual Hosts</title>
+
+<related>
+    <modulelist>
+    <module>core</module>
+    </modulelist>
+
+    <directivelist>
+	<directive module="core">DocumentRoot</directive>
+	<directive module="core">NameVirtualHost</directive>
+	<directive module="core">ServerAlias</directive>
+	<directive module="core">ServerName</directive>
+	<directive module="core">ServerPath</directive>
+	<directive module="core">VirtualHost</directive>
+    </directivelist>
+</related>
 
 	<p>To use name-based virtual hosting, you must designate the IP
 	address (and possibly port) on the server that will be accepting
-	requests for the hosts.  This is configured using the <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> directive.
+	requests for the hosts.  This is configured using the <directive
+	module="core">NameVirtualHost</directive> directive.
 	In the normal case where any and all IP addresses on the server should
 	be used, you can use <code>*</code> as the argument to
 	<code>NameVirtualHost</code>.  Note that mentioning an IP address in a
@@ -59,14 +86,16 @@
 	any IP address specified here must be associated with a network interface
 	on the server.</p>
 
-	<p>The next step is to create a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block for
+	<p>The next step is to create a <directive type="section"
+	module="core">VirtualHost</directive> block for
 	each different host that you would like to serve.  The argument to the
 	<code>&lt;VirtualHost&gt;</code> directive should be the same as the
 	argument to the <code>NameVirtualHost</code> directive (ie, an IP
 	address, or <code>*</code> for all addresses).  Inside each
 	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a /
-	<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive to
-	designate which host is served and a <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directive to
+	<directive module="core">ServerName</directive> directive to
+	designate which host is served and a <directive
+	module="core">DocumentRoot</directive> directive to
 	show where in the filesystem the content for that host lives.</p>
 
 	<p>If you are adding virtual hosts to an existing web server, you
@@ -82,7 +111,8 @@
 	<code>www.otherdomain.tld</code>, which points at the same IP address.
 	Then you simply add the following to <code>httpd.conf</code>:</p>
 
-	<div class="example"><pre>
+	<example>
+<pre>
     NameVirtualHost *
 
     &lt;VirtualHost *&gt;
@@ -94,21 +124,22 @@
     ServerName www.otherdomain.tld
     DocumentRoot /www/otherdomain
     &lt;/VirtualHost&gt;
-</pre></div>
+</pre>
+	</example>
 
 	<p>You can alternatively specify an explicit IP address in place of
 	the * in both the <code>NameVirtualHost</code> and
 	<code>&lt;VirtualHost&gt;</code> directives.</p>
 
 	<p>Many servers want to be accessible by more than one name.  This is
-	possible with the <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>
+	possible with the <directive module="core">ServerAlias</directive>
 	directive, placed inside the &lt;VirtualHost&gt; section. For
 	example if you add this to the first &lt;VirtualHost&gt; block
 	above</p>
 
-	<div class="example"><p><code>
+	<example>
 	ServerAlias domain.tld *.domain.tld
-	</code></p></div>
+	</example>
 
 	<p>then requests for all hosts in the <code>domain.tld</code> domain
 	will be served by the <code>www.domain.tld</code> virtual host.  The
@@ -123,7 +154,8 @@
 	<code>&lt;VirtualHost&gt;</code> containers.  Most directives can be
 	placed in these containers and will then change the configuration only
 	of the relevant virtual host.  To find out if a particular directive
-	is allowed, check the <a href="../mod/directive-dict.html#Context">Context</a> of the
+	is allowed, check the <a
+	href="../mod/directive-dict.html#Context">Context</a> of the
 	directive.  Configuration directives set in the <em>main server
 	context</em> (outside any <code>&lt;VirtualHost&gt;</code> container)
 	will be used only if they are not overriden by the virtual host
@@ -148,7 +180,9 @@
 	<code>&lt;VirtualHost&gt;</code> container and list it first in the
 	configuration file.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="" id="">Compatibility with Older Browsers</a></h2>
+</section>
+
+<section id=""><title>Compatibility with Older Browsers</title>
 
     <p>As mentioned earlier, there are some clients
     who do not send the required data for the name-based virtual
@@ -156,12 +190,13 @@
     pages from the first virtual host listed for that IP address
     (the <cite>primary</cite> name-based virtual host).</p>
 
-    <p>There is a possible workaround with the <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>
+    <p>There is a possible workaround with the <directive
+    module="core">ServerPath</directive>
     directive, albeit a slightly cumbersome one:</p>
 
     <p>Example configuration:</p>
 
-    <div class="example"><p><code>
+    <example>
     NameVirtualHost 111.22.33.44<br />
     <br />
     &lt;VirtualHost 111.22.33.44&gt;<br />
@@ -169,7 +204,7 @@
     ServerPath /domain<br />
     DocumentRoot /web/domain<br />
     &lt;/VirtualHost&gt;<br />
- 	  </code></p></div>
+ 	  </example>
 
     <p>What does this mean? It means that a request for any URI
     beginning with "<code>/domain</code>" will be served from the
@@ -193,4 +228,7 @@
     guidelines will, for the most part, ensure that your pages will
     work with all browsers, new and old.</p>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</section>
+</manualpage>
+
+

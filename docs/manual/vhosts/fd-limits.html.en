@@ -1,19 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache Server Virtual Host Support</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">File Descriptor Limits</h1>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>File Descriptor Limits - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>File Descriptor Limits</h1>
 
     <p>When using a large number of Virtual Hosts, Apache may run
     out of available file descriptors (sometimes called <cite>file
@@ -32,46 +23,43 @@
       <li>Your system does not provide the <code>setrlimit()</code>
       system call.</li>
 
-      <li>The <code>setrlimit(RLIMIT_NOFILE)</code> call does not 
+      <li>The <code>setrlimit(RLIMIT_NOFILE)</code> call does not
       function on your system (such as Solaris 2.3)</li>
 
       <li>The number of file descriptors required exceeds the hard
       limit.</li>
-
+      
       <li>Your system imposes other limits on file descriptors,
       such as a limit on stdio streams only using file descriptors
       below 256. (Solaris 2)</li>
     </ol>
-    In the event of problems you can: 
+    In the event of problems you can:
 
     <ul>
       <li>Reduce the number of log files; don't specify log files
-      in the <code><a 
-      href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-      sections, but only log to the main log files. (See <a
-      href="#splitlogs">Splitting up your log files</a>, below, for more
+      in the <code class="directive"><a href="../mod/core.html#&lt;virtualhost&gt;">&lt;VirtualHost&gt;</a></code>
+      sections, but only log to the main log files. (See <a href="#splitlogs">Splitting up your log files</a>, below, for more
       information on doing this.)</li>
 
       <li>
         If you system falls into 1 or 2 (above), then increase the
         file descriptor limit before starting Apache, using a
-        script like 
+        script like
 
-        <blockquote>
+        <div class="example"><p><code>
           <code>#!/bin/sh<br />
            ulimit -S -n 100<br />
            exec httpd</code>
-        </blockquote>
+        </code></p></div>
       </li>
     </ul>
 
-    <p>Please see the <a
-    href="../misc/descriptors.html">Descriptors and Apache</a>
+    <p>Please see the <a href="../misc/descriptors.html">Descriptors and Apache</a>
     document containing further details about file descriptor
     problems and how they can be solved on your operating
     system.</p>
 
-<h2><a name="splitlogs">Splitting up your log files</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="splitlogs" id="splitlogs">Splitting up your log files</a></h2>
 
 <p>If you want to log multiple virtual hosts to the same log file, you
 may want to split up the log files afterwards in order to run
@@ -79,40 +67,35 @@ statistical analysis of the various virtual hosts. This can be
 accomplished in the following manner.</p>
 
 <p>First, you will need to add the virtual host information to the log
-entries. This can be done using the <code><a
-href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
+entries. This can be done using the <code class="directive"><a href="../mod/mod_log_config.html#&#10;logformat">
+LogFormat</a></code>
 directive, and the <code>%v</code> variable. Add this to the beginning
 of your log format string:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
- LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
- CustomLog logs/multiple_vhost_log vhost
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+CustomLog logs/multiple_vhost_log vhost
+</code></p></div>
 
 <p>This will create a log file in the common log format, but with the
 canonical virtual host (whatever appears in the
-<a href="../mod/core.html#servername">ServerName</a> directive) prepended to
-each line. (See <a 
-href="../mod/mod_log_config.html#formats">Custom Log Formats</a> for
+<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive) prepended to
+each line. (See <code class="directive"><a href="../mod/mod_log_config.html#custom log formats">Custom Log Formats</a></code> for
 more about customizing your log files.)</p>
 
 <p>When you wish to split your log file into its component parts (one
-file per virtual host) you can use the program <code><a
-href="../programs/other.html">split-logfile</a></code> to accomplish
+file per virtual host) you can use the program <code><a href="../programs/other.html">split-logfile</a></code> to accomplish
 this. You'll find this program in the <code>support</code> directory
 of the Apache disribution.</p>
 
 <p>Run this program with the command:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee">
-<code>split-logfile &lt; /logs/multiple_vhost_log</code>
-</td></tr></table></blockquote>
+<div class="example"><p><code>
+split-logfile &lt; /logs/multiple_vhost_log
+</code></p></div>
 
 <p>This program, when run with the name of your vhost log file, will
 generate one file for each virtual host that appears in your log file.
 Each file will be called <code>hostname.log</code>.</p>
 
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
