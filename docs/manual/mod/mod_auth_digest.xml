@@ -237,7 +237,7 @@ authentication</description>
     The specified URIs are prefixes, <em>i.e.</em> the client will assume
     that all URIs "below" these are also protected by the same
     username/password. The URIs may be either absolute URIs (<em>i.e.</em>
-    inluding a scheme, host, port, etc) or relative URIs.</p>
+    including a scheme, host, port, etc) or relative URIs.</p>
 
     <p>This directive <em>should</em> always be specified and
     contain at least the (set of) root URI(s) for this space.
