@@ -337,7 +337,7 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
 
 AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
 {
-    int *newmethnum;
+    int *methnum;
 
     if (methods_registry == NULL) {
         ap_method_registry_init(p);
@@ -346,7 +346,15 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
     if (methname == NULL) {
         return M_INVALID;
     }
-
+    
+    /* Check if the method was previously registered.  If it was
+     * return the associated method number.
+     */
+    methnum = (int *)apr_hash_get(methods_registry, methname,
+                                  APR_HASH_KEY_STRING);
+    if (methnum != NULL)
+        return *methnum;
+        
     if (cur_method_number > METHOD_NUMBER_LAST) {
         /* The method registry  has run out of dynamically
          * assignable method numbers. Log this and return M_INVALID.
@@ -358,11 +366,11 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
         return M_INVALID;
     }
 
-    newmethnum  = (int*)apr_palloc(p, sizeof(int));
-    *newmethnum = cur_method_number++;
-    apr_hash_set(methods_registry, methname, APR_HASH_KEY_STRING, newmethnum);
+    methnum = (int *)apr_palloc(p, sizeof(int));
+    *methnum = cur_method_number++;
+    apr_hash_set(methods_registry, methname, APR_HASH_KEY_STRING, methnum);
 
-    return *newmethnum;
+    return *methnum;
 }
 
 /* Get the method number associated with the given string, assumed to
