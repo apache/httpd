@@ -65,7 +65,7 @@ require 'sys/socket.ph';
 $wherelog = "/var/log/graph/";  # Logs will be like "/var/log/graph/960312"
 $server = "localhost";          # Name of server, could be "www.foo.com"
 $port = "80";                   # Port on server
-$request = "/.status?auto";     # Request to send
+$request = "/status/?auto";     # Request to send
 
 sub tcp_connect
 {
