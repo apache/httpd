@@ -1,5 +1,9 @@
 Changes with Apache 2.0.53
 
+  *) Correct handling of certain bucket types in ap_save_brigade, fixing
+     possible segfaults in mod_cgi with #include virtual.  PR 31247.
+     [Joe Orton]
+
   *) Allow for the use of --with-module=foo:bar where the ./modules/foo
      directory is local only. Assumes, of course, that the required
      files are in ./modules/foo, but makes it easier to statically

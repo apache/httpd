@@ -518,7 +518,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **b, apr_pool_t *p)
 {
     apr_bucket *e;
-    apr_status_t rv;
+    apr_status_t rv, srv = APR_SUCCESS;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
@@ -529,15 +529,31 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
     
     APR_RING_FOREACH(e, &(*b)->list, apr_bucket, link) {
         rv = apr_bucket_setaside(e, p);
-        if (rv != APR_SUCCESS
-            /* ### this ENOTIMPL will go away once we implement setaside
-               ### for all bucket types. */
-            && rv != APR_ENOTIMPL) {
-            return rv;
+
+        /* If the bucket type does not implement setaside, then
+         * (hopefully) morph it into a bucket type which does, and set
+         * *that* aside... */
+        if (rv == APR_ENOTIMPL) {
+            const char *s;
+            apr_size_t n;
+
+            rv = apr_bucket_read(e, &s, &n, APR_BLOCK_READ);
+            if (rv == APR_SUCCESS) {
+                rv = apr_bucket_setaside(e, p);
+            }
+        }
+
+        if (rv != APR_SUCCESS) {
+            srv = rv;
+            /* Return an error but still save the brigade if
+             * ->setaside() is really not implemented. */
+            if (rv != APR_ENOTIMPL) {
+                return rv;
+            }
         }
     }
     APR_BRIGADE_CONCAT(*saveto, *b);
-    return APR_SUCCESS;
+    return srv;
 }
 
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, 

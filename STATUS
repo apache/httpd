@@ -178,11 +178,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR 24437
        +1: minfrin, wrowe, jim
 
-    *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.102
-       PR: 31247
-       +1: jorton, trawick, stoddard
-
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
        +1: jorton, trawick
