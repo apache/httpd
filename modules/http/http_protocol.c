@@ -1851,7 +1851,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
  */
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
-    int rv;
+    apr_bucket_brigade *bb;
+    int rv, seen_eos;
 
     /* Sometimes we'll get in a state where the input handling has
      * detected an error where we want to drop the connection, so if
@@ -1864,33 +1865,55 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
         return OK;
     }
 
-    if (r->read_length == 0) {  /* if not read already */
-        if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK))) {
-            return rv;
-        }
-    }
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    seen_eos = 0;
+    do {
+        apr_bucket *bucket;
 
-    /* In order to avoid sending 100 Continue when we already know the
-     * final response status, and yet not kill the connection if there is
-     * no request body to be read, we need to duplicate the test from
-     * ap_should_client_block() here negated rather than call it directly.
-     */
-    if ((r->read_length == 0) && (r->read_chunked || (r->remaining > 0))) {
-        char dumpbuf[HUGE_STRING_LEN];
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
 
-        if (r->expecting_100) {
-            r->connection->keepalive = -1;
-            return OK;
+        if (rv != APR_SUCCESS) {
+            /* FIXME: If we ever have a mapping from filters (apr_status_t)
+             * to HTTP error codes, this would be a good place for them.
+             * 
+             * If we received the special case AP_FILTER_ERROR, it means
+             * that the filters have already handled this error.
+             * Otherwise, we should assume we have a bad request.
+             */
+            if (rv == AP_FILTER_ERROR) {
+                return rv;
+            }
+            else {
+                return HTTP_BAD_REQUEST;
+            }
         }
 
-        while ((rv = ap_get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0) {
-            continue;
-        }
+        APR_BRIGADE_FOREACH(bucket, bb) {
+            const char *data;
+            apr_size_t len;
 
-        if (rv < 0) {
-            return HTTP_BAD_REQUEST;
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
+
+            /* These are metadata buckets. */
+            if (bucket->length == 0) {
+                continue;
+            }
+
+            /* We MUST read because in case we have an unknown-length
+             * bucket or one that morphs, we want to exhaust it.
+             */
+            rv = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            if (rv != APR_SUCCESS) {
+                return HTTP_BAD_REQUEST;
+            }
         }
-    }
+        apr_brigade_cleanup(bb);
+    } while (!seen_eos);
+
     return OK;
 }
 
