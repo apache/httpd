@@ -362,7 +362,7 @@ typedef quad_t rlim_t;
 #define bzero(a,b) memset(a,0,b)
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
 #define HAVE_CRYPT_H
  
