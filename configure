@@ -309,6 +309,15 @@ done
 IFS="$OIFS"
 
 ##
+## Platform-specific defaults
+##
+case $PLATFORM in
+    *-apple-rhapsody*) default_layout="Mac OS X Server";;
+    *-apple-macos*)    default_layout="Mac OS X Server";;
+    *)                 default_layout="Apache";;
+esac
+
+##
 ##  support for the default layout
 ##
 case "$*" in
@@ -316,9 +325,9 @@ case "$*" in
         ;;
     * ) 
         if [ "x$*" = "x" ]; then
-            set -- '--with-layout=Apache'
+            set -- --with-layout="$default_layout"
         else
-            set -- '--with-layout=Apache' "$@"
+            set -- --with-layout="$default_layout" "$@"
         fi
         ;;
 esac
