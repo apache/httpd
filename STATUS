@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/29 12:39:37 $]
+Last modified at [$Date: 2004/06/29 18:15:03 $]
 
 Release:
 
@@ -87,6 +87,40 @@ PATCHES TO BACKPORT FROM 2.1
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
 
+    *) Switch the caching mutexes from reader/writer thread locks to global mutexes
+       to allow for protection across processes rather than just across threads.
+       include/util_ldap.h r1.20
+       modules/experimental/util_ldap.c r1.34, r1.35
+       modules/experimental/util_ldap_cache.c r1.20
+       modules/experimental/util_ldap_cache.h r1.16
+       +1: bnicholes
+       
+    *) Copy the share memory pointers down through the cache hierarchy so that
+       they can be referenced and used in the lower level caches.
+       modules/experimental/util_ldap_cache_mgr.c r1.20
+       +1: bnicholes
+       
+    *) Add a display page to view the URL data of the util_ldap cache
+       modules/experimental/util_ldap_cache.c r1.19
+       modules/experimental/util_ldap_cache_mgr.c r1.19
+       +1: bnicholes
+    
+    *) Get rid of race conditions when manipulating the shared memory cache
+       in util_ldap.
+       modules/experimental/util_ldap.c r1.33
+       modules/experimental/util_ldap_cache.h r1.15
+       modules/experimental/util_ldap_mgr.c r1.18
+       +1: bnicholes
+       
+    *) Enhance the util_ldap cache-info display to show more detail about 
+       the contents and current state of the cache.
+       modules/experimental/util_ldap.c r1.32
+       modules/experimental/util_ldap_cache.c r1.18
+       modules/experimental/util_ldap_cache.h r1.14
+       modules/experimental/util_ldap_cache_mgr.c r1.17
+       include/util_ldap.h r1.19
+       +1: bnicholes
+       
     *) Enable the option to support anonymous shared memory in mod_ldap.
        This makes the cache work on Linux again.
        modules/experimental/util_ldap.c r1.30
