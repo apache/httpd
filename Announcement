@@ -4,40 +4,62 @@ Apache 1.3.9 Released
 The Apache Group is pleased to announce the release of version
 1.3.9 of the Apache HTTP server.
 
-This new Apache version incorporates over 130 significant
-improvements to the server.  Apart from portability and
-security fixes, documentation enhancements, performance
-improvements, and assorted other minor features or fixes
-notable changes are:
+This new Apache version incorporates over 130 significant improvements
+to the server.  Apart from portability and security fixes, documentation
+enhancements, performance improvements, and assorted other minor
+features or fixes notable changes are:
 
- - mod_log_config now supports conditional logging based upon
-   environment variables and support for multiline entries.
+ - A new experimental digest authentication module, compatible with
+   the latest digest-auth standards, has been added to the base package.  
 
- - New CustomLog directive %V: This logs the hostname according to the
-   UseCanonicalName setting (this is the pre-1.3.4 behaviour of %v).
+ - The expat XML parser has been added to allow modules to deal with
+   XML if necessary.
 
- - Enhanced mod_rewrite's mapfile handling: The in-core cache for text
-   and DBM format mapfiles now uses a hash table with LRU functionality.
-   Furthermore map lookups for non-existent keys are now cached as well.
-   The changes drastically improve the performance when large rewrite
-   maps are in use.
+ - The processing on Windows of basic authentication passwords in
+   mod_auth password files has been fixed.  In addition, the SHA1
+   encoding algorithm has been added to those available and
+   known to htpasswd, and passwords on Windows may be longer than
+   the inadvertent 1.3.6 limit of 8 characters.
 
- - Ability to handle DES or MD5 authentication passwords.
- 
- - New <LimitExcept> directive to allow the user to assign authentication
-   control to any HTTP method that is *not* given in the argument list;
-   i.e., the logical negation of the <Limit> directive.
- 
- - Improved content negotiation.
- 
- - New ScriptInterpreterSource directive to enable searching the
-   Win32 registry for script interpreters.
- 
- - The FAQ document was reorganised.
- 
- - Overhauled ApacheBench benchmark program.
- 
- - Several new API functions have been added.
+ - Several problems with mod_access and CIDR addresses have been fixed.
+
+ - Support has been added or enhanced for Tandem, TPF, and
+   the Macintosh OS X platforms.
+
+ - Some processing of Vary response header fields has been corrected.
+
+ - Restarts with "apache -k" on Windows are now honoured immediately,
+   instead of after the system's listen queue is drained.
+
+ - "Expect: 100-continue" processing has been corrected.
+
+ - Script errors on Windows are now copied to the server's error log
+   if the scripts fail; this is closer to the Unix behaviour.
+
+ - Mass-vhosting has been added (see the documentation for module
+   mod_vhost_alias).
+
+ - The server no longer automatically checks for the existence of a
+   valid DocumentRoot for all virtual hosts; this was imposing a
+   significant startup penalty on systems with numerous vhosts.
+   The default behaviour has changed to *not* performing this
+   check, but it can be re-enabled by specifying the "-t" command
+   line option for full configuration testing.
+
+ - "apache -S" on Windows now exits properly after completing the
+   configuration testing.
+
+ - SetEnvIf* directives can now test the values of environment
+   variables as well as request attributes.  In addition,
+   the request protocol and level (e.g., "HTTP/1.1") can now be tested.
+
+ - ReadmeName and HeaderName files (mod_autoindex) are now
+   server-parsable and accessible with MultiViews.
+
+ - AddDescription directives now behave as documented with regard
+   to partial filename matches.
+
+ - The name of the cookie used by mod_usertrack is now customisable.
 
 A complete listing with detailed descriptions is provided in the
 src/CHANGES file.
@@ -94,3 +116,5 @@ Apache on other platforms.  With the continued donation of time
 and resources by individuals and companies, we hope that the Win32
 version of Apache will grow stronger through the 1.3.x release cycle.
 
+
+Thank you for using Apache.
