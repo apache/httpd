@@ -78,7 +78,7 @@
 API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 {
     char sample[120];
-    char *crypt_pw;
+
 
     /* FreeBSD style MD5 string 
      */
@@ -104,8 +104,7 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	 */
 	ap_cpystrn(sample, passwd, sizeof(sample) - 1);
 #else
-	crypt_pw = crypt(passwd, hash);
-	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
+	ap_cpystrn(sample, (char *)crypt(passwd, hash), sizeof(sample) - 1);
 #endif
     }
     return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
