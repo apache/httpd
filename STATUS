@@ -75,7 +75,7 @@ Available Patches:
       A tiny addition for the APACI configure script to provide an easy way
       (like GNU Autoconf) to re-create the configuration
       See: http://www.engelschall.com/sw/apache/ [configstatus]
-      Status: Ralf +1 (for 1.3b7-dev)
+      Status (for 1.3.1-dev): Ralf +1, Martin +1
 
     * Ralf's "<IfDefine>...</IfDefine>":
       This patch adds a useful <IfDefine>...</IfDefine> section to the core
@@ -84,7 +84,15 @@ Available Patches:
       parameters. The parameters are specified on the "httpd" command line via
       -D options.
       See: http://www.engelschall.com/sw/apache/ [ifdefine]
-      Status: Ralf +1 (for 1.3.1-dev)
+      Status (for 1.3.1-dev): Ralf +1
+
+    * Ralf's "substitute some more configuration parameters":
+      This patch lets APACI's configure script determine more configuration
+      parameters (Group, Port, ServerAdmin, ServerName) via some intelligent
+      tests to remove some of the classical hurdles for new users when setting
+      up Apache.
+      See: http://www.engelschall.com/sw/apache/ [substconfparam]
+      Status (for 1.3.1-dev): Ralf +1
 
 In progress:
  
