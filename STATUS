@@ -90,11 +90,6 @@ Available Patches:
 	Message-ID: <x767dg3476.fsf@montana.covalent.net>
 	Status: 
 
-    * Wilfredo Sanchez's PATCH to make Apache buildable for FAT on
-      Rhapsody/OS X.
-	Message-ID: <199810192236.PAA42758@scv4.apple.com>
-	Status: Ken +1 (untested), Martin +1 (untested)
-
     * Amiel Lee Yee's patch to update ap_config.h for DGUX/Intel
       and str[n]casecmp().
 	Message-ID: PR#3247
