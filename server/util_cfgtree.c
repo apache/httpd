@@ -69,6 +69,11 @@ ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current,
             (*parent)->first_child = toadd;
             toadd->parent = *parent;
         }
+        if (child) {
+            /* First item in config file or container is a container */
+            *parent = toadd;
+            return NULL;
+        }
         return toadd;
     }
     current->next = toadd;
