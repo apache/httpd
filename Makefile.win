@@ -13,7 +13,12 @@
 # The default installation directory is \Apache2.0. This can be changed
 # with the INSTDIR macro, for example:
 #
+#
 #   nmake /f Makefile.win INSTDIR="d:\Program Files\Apache" installr
+#
+# The default install port is 80. This can be changed by the with the
+# INSTPORT macro, for example:
+#   nmake /f Makefile.win INSTPORT=80 INSTDIR="d:\Program Files\Apache" installr
 #
 # Note: this does *NOT* change the compiled in default "server root"
 # Also be aware that certain awk's will not accept backslahed names,
@@ -71,6 +76,10 @@ _tryssl:
 !IF "$(INSTDIR)" == ""
 INSTDIR=\Apache2
 !MESSAGE Using default install directory $(INSTDIR)
+!ENDIF 
+!IF "$(INSTPORT)" == ""
+INSTPORT=80
+!MESSAGE Using default install port $(INSTPORT)
 !ENDIF 
 
 !IFNDEF MAKEOPT
@@ -499,14 +508,16 @@ _install:
 	if not exist "$(INSTDIR)\conf\mime.types" \
 	    copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
 	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf"
-	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
+	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)" "$(INSTPORT)"
     BEGIN { 
 	srcfl = ARGV[1];
 	dstfl = ARGV[2];
 	serverroot = ARGV[3];
+	serverport = ARGV[4];
 	gsub( /\\/, "/", serverroot );
 	while ( ( getline < srcfl ) > 0 ) {
 	    gsub( /@@ServerRoot@@/, serverroot );
+	    gsub( /@@Port@@/, serverport );
 	    print $$0 > dstfl;
 	}
     }
