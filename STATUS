@@ -37,35 +37,6 @@ RELEASE SHOWSTOPPERS:
 
 CURRENT VOTES:
 
-    * Promote mod_cache from experimental to non-experimental
-      status (keep issues noted below in EXPERIMENTAL MODULES as
-      items to be addressed as a supported module).
-      +1: jerenkrantz, pquerna, stoddard
-      +0: jim, bnicholes
-      -1:
-          There are a couple of problems that need to be resolved
-      before this module is moved out of experimental. 
-      1) We need to at least review and comment on the RFC violations
-      2) Resolve issue of how to cache page fragements (or perhaps -if- we
-      want to cache page fragements). Today, mod_cache/mod_mem_cache
-      will cache #include 'virtual' requests (but not #include 'file' 
-      requests). This was accomplished by making CACHE_IN a
-      CONTENT_SET-1 filter to force it to run before the SUBREQ_CORE
-      filter.  But now responses cannot be cached that include the
-      effects of having been run through CONTENT_SET filters
-      (mod_deflate, mod_expires, etc).  We could rerun all the
-      CONTENT_SET filters on the cached response, but this will not
-      work in all cases. For example, mod_expires relies on installing
-      the EXPIRATION filter during fixups. Contents served out of
-      mod_cache (out of the quick_handler) bypass -all- the request
-      line server hooks (Ryan really hated this. It is great for
-      performance, but bad because of the complications listed above).
-
-      jerenkrantz: I think it's time.  We've done a *lot* of work to it, and
-                   we think most of the blatant RFC violations are now gone.
-                   mod_cache just belongs in cache/.  There may still be bugs,
-                   but not likely to be major ones.
-
     * httpd-std.conf and friends
 
       a) httpd-std.conf should be tailored by install (from src or
@@ -478,12 +449,20 @@ WISH LIST
 
     * mod_cache: Handle ESI tags.
 
-EXPERIMENTAL MODULES:
-
-    Experimental modules should eventually be be promoted to fully supported
-    status or removed from the repository entirely (ie, the
-    'experiment' failed). This section tracks what needs to happen to 
-    get the modules promoted to fully supported status.
+    * mod_cache: Resolve issue of how to cache page fragements (or perhaps
+      -if- we want to cache page fragements). Today, mod_cache/mod_mem_cache
+      will cache #include 'virtual' requests (but not #include 'file'
+      requests). This was accomplished by making CACHE_IN a
+      CONTENT_SET-1 filter to force it to run before the SUBREQ_CORE
+      filter.  But now responses cannot be cached that include the
+      effects of having been run through CONTENT_SET filters
+      (mod_deflate, mod_expires, etc).  We could rerun all the
+      CONTENT_SET filters on the cached response, but this will not
+      work in all cases. For example, mod_expires relies on installing
+      the EXPIRATION filter during fixups. Contents served out of
+      mod_cache (out of the quick_handler) bypass -all- the request
+      line server hooks (Ryan really hated this. It is great for
+      performance, but bad because of the complications listed above).
 
     mod_cache/mod_mem_cache/mod_disk_cache:
 
@@ -507,6 +486,13 @@ EXPERIMENTAL MODULES:
       to collect status.  Status should be queryable by
       HTTP or SNMP?
       jerenkrantz says: Yawn.  Who cares.
+
+EXPERIMENTAL MODULES:
+
+    Experimental modules should eventually be be promoted to fully supported
+    status or removed from the repository entirely (ie, the
+    'experiment' failed). This section tracks what needs to happen to 
+    get the modules promoted to fully supported status.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
