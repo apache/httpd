@@ -72,6 +72,9 @@
 
 #include "apr_dbm.h"
 
+#define APR_WANT_BYTEFUNC
+#include "apr_want.h"       /* for ntohs and htons */
+
 #include "mod_dav.h"
 #include "repos.h"
 
