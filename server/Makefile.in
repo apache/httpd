@@ -32,14 +32,22 @@ util.lo: test_char.h
 
 EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR) $(APU_INCLUDEDIR) $(top_srcdir)/modules/http
 
-delete-exports: export_files
+# If export_files is a dependency here, but we remove it during this stage,
+# when exports.c is generated, make will not detect that export_files is no
+# longer here and deadlock.  So, export_files can't be a dependency of
+# delete-exports.
+delete-exports:
 	@if test -f exports.c; then \
-	    files=`cat $?`; \
-	    headers="`find $$files -newer exports.c`"; \
-	    if test -n "$$headers"; then \
-	        echo Found newer headers. Will rebuild exports.c.; \
-	        echo rm -f exports.c export_files; \
-	        rm -f exports.c export_files; \
+	    if test -f export_files; then \
+	        files=`cat export_files`; \
+	        headers="`find $$files -newer exports.c`"; \
+	        if test -n "$$headers"; then \
+	           echo Found newer headers. Will rebuild exports.c.; \
+	           echo rm -f exports.c export_files; \
+	           rm -f exports.c export_files; \
+	        fi; \
+	    else \
+	        rm -f exports.c; \
 	    fi; \
 	fi
 
