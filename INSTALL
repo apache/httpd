@@ -53,8 +53,8 @@
         (GCC) from the Free Software Foundation (FSF) is recommended (version
         2.7.2 is fine). If you don't have GCC then at least make sure your
         vendors compiler is ANSI compliant. You can find the homepage of GNU
-        at http://www.gnu.ai.mit.edu/ and the GCC distribution under
-        http://www.gnu.ai.mit.edu/order/ftp.html .
+        at http://www.gnu.org/ and the GCC distribution under
+        http://www.gnu.org/order/ftp.html .
 
      o  Perl 5 Interpreter [OPTIONAL]:
 
