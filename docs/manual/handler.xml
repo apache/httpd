@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>Apache's Handler Use</title>
+
+  <summary>
+    <p>This document describes the use of Apache's Handlers.</p>
+  </summary>
+
+  <section id="definition">
+    <title>What is a Handler</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="mod_mime">SetHandler</directive>
+      </directivelist>
+    </related>
+    
+
+    <p>A "handler" is an internal Apache representation of the
+    action to be performed when a file is called. Generally, files
+    have implicit handlers, based on the file type. Normally, all
+    files are simply served by the server, but certain file types
+    are "handled" separately.</p>
+
+    <p>Apache 1.1 adds the ability to use handlers explicitly.
+    Based on either filename extensions or on location, handlers
+    can be specified without relation to file type. This is
+    advantageous both because it is a more elegant solution, and
+    because it also allows for both a type <strong>and</strong> a
+    handler to be associated with a file. (See also <a
+    href="mod/mod_mime.html#multipleext">Files with Multiple
+    Extensions</a>.)</p>
+
+    <p>Handlers can either be built into the server or included in
+    a module, or they can be added with the <directive 
+    module="mod_actions">Action</directive> directive. The
+    built-in handlers in the standard distribution are as
+    follows:</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: Send the file using the
+      <code>default_handler()</code>, which is the handler used by
+      default to handle static content. (core)</li>
+
+      <li><strong>send-as-is</strong>: Send file with HTTP headers
+      as is. (<module>mod_asis</module>)</li>
+
+      <li><strong>cgi-script</strong>: Treat the file as a CGI
+      script. (<module>mod_cgi</module>)</li>
+
+      <li><strong>imap-file</strong>: Parse as an imagemap rule
+      file. (<module>mod_imap</module>)</li>
+
+      <li><strong>server-info</strong>: Get the server's
+      configuration information. (<module>mod_info</module>)</li>
+
+      <li><strong>server-status</strong>: Get the server's status
+      report. (<module>mod_status</module>)</li>
+
+      <li><strong>type-map</strong>: Parse as a type map file for
+      content negotiation. (<module>mod_negotiation</module>)</li>
+    </ul>
+  </section>
+  <section id="examples">
+    <title>Examples</title>
+
+    <section id="example1">
+      <title>Modifying static content using a CGI script</title>
+
+      <p>The following directives will cause requests for files with
+      the <code>html</code> extension to trigger the launch of the
+      <code>footer.pl</code> CGI script.</p>
+      
+      <example><code>
+        Action add-footer /cgi-bin/footer.pl<br/>
+        AddHandler add-footer .html
+      </code></example>
+
+      <p>Then the CGI script is responsible for sending the
+      originally requested document (pointed to by the
+      <code>PATH_TRANSLATED</code> environment variable) and making
+      whatever modifications or additions are desired.</p>
+ 
+    </section>
+    <section id="example2">
+      <title>Files with HTTP headers</title>
+
+      <p>The following directives will enable the
+      <code>send-as-is</code> handler, which is used for files which
+      contain their own HTTP headers. All files in the
+      <code>/web/htdocs/asis/</code> directory will be processed by
+      the <code>send-as-is</code> handler, regardless of their
+      filename extensions.</p>
+
+      <example><code>
+        &lt;Directory /web/htdocs/asis&gt;<br/>
+        SetHandler send-as-is<br/>
+        &lt;/Directory&gt;
+      </code></example>
+      
+    </section>
+  </section>
+  <section id="programmer">
+    <title>Programmer's Note</title>
+
+    <p>In order to implement the handler features, an addition has
+    been made to the <a href="developer/API.html">Apache API</a> that
+    you may wish to make use of. Specifically, a new record has
+    been added to the <code>request_rec</code> structure:</p>
+<pre>
+    char *handler
+</pre>
+
+    <p>If you wish to have your module engage a handler, you need
+    only to set <code>r-&gt;handler</code> to the name of the
+    handler at any time prior to the <code>invoke_handler</code>
+    stage of the request. Handlers are implemented as they were
+    before, albeit using the handler name instead of a content
+    type. While it is not necessary, the naming convention for
+    handlers is to use a dash-separated word, with no slashes, so
+    as to not invade the media type name-space.</p>
+  </section>
+</manualpage>
+
+
+
+
+

@@ -1,47 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Filters - Apache HTTPD</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">Filters</h1>
-
-    <table border="1">
-      <tr>
-        <td valign="top"><strong>Related Modules</strong><br />
-         <br />
-         <a href="mod/mod_deflate.html">mod_deflate</a><br />
-         <a href="mod/mod_ext_filter.html">mod_ext_filter</a><br />
-         <a href="mod/mod_include.html">mod_include</a><br />
-         </td>
-
-        <td valign="top"><strong>Related Directives</strong><br />
-         <br />
-         <a
-        href="mod/mod_mime.html#addinputfilter">AddInputFilter</a><br />
-         <a
-        href="mod/mod_mime.html#addoutputfilter">AddOutputFilter</a><br />
-         <a
-        href="mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a><br />
-         <a
-        href="mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a><br />
-         <a
-        href="mod/core.html#setinputfilter">SetInputFilter</a><br />
-         <a
-        href="mod/core.html#setoutputfilter">SetOutputFilter</a><br />
-         </td>
-      </tr>
-    </table>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>Filters- Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Filters</h1>
+    <p>This document describes the use of filters in Apache.</p>
+  <ul><li><a href="#filters">Filters</a></li></ul><hr/><h2><a name="filters">Filters</a></h2>
+    
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_deflate.html">mod_deflate</a></code>, <br/><code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>, <br/><code><a href="./mod/mod_include.html">mod_include</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a><br/><a href="./mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a><br/><a href="./mod/mod_ext_filter.html#extfilterdefine" class="directive"><code class="directive">ExtFilterDefine</code></a><br/><a href="./mod/mod_ext_filter.html#extfilteroptions" class="directive"><code class="directive">ExtFilterOptions</code></a><br/><a href="./mod/core.html.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a><br/><a href="./mod/core.html.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a><br/></td></tr></table>
+    
     <p>A <em>filter</em> is a process that is applied to data that
     is sent or received by the server. Data sent by clients to the
     server is processed by <em>input filters</em> while data sent
@@ -53,25 +19,18 @@
     as chunking and byte-range request handling. In addition, modules
     can provide filters that are selectable using run-time
     configuration directives. The set of filters that apply to data
-    can be manipulated with the <code>SetInputFilter</code>,
-    <code>SetOutputFilter</code>, <code>AddInputFilter</code>, and
-    <code>AddOutputFilter</code> directives.</p>
+    can be manipulated with the <a href="./mod/core.html.html#setinputfilter" class="directive"><code class="directive">SetInputFilter</code></a>, <a href="./mod/core.html.html#setoutputfilter" class="directive"><code class="directive">SetOutputFilter</code></a>, <a href="./mod/mod_mime.html#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a>, and <a href="./mod/mod_mime.html#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a> directives.</p>
 
     <p>The following user-selectable filters are currently provided
     with the Apache HTTP Server distribution.</p>
 
-<dl>
-<dt>INCLUDES</dt> <dd>Server-Side Includes processing by <a
-href="mod/mod_include.html">mod_include</a></dd>
-<dt>DEFLATE</dt> <dd>Compress output before sending it to
-the client using <a href="mod/mod_deflate.html">mod_deflate</a></dd>
-</dl>
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd>Server-Side Includes processing by <code><a href="./mod/mod_include.html">mod_include</a></code></dd>
+      <dt>DEFLATE</dt>
+      <dd>Compress output before sending it to the client using <code><a href="./mod/mod_include.html">mod_include</a></code></dd>
+    </dl>
 
-    <p>In addition, the module <a
-    href="mod/mod_ext_filter.html">mod_ext_filter</a> allows
+    <p>In addition, the module <code><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows
     for external programs to be defined as filters.</p>
-
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+  </blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>

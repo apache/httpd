@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>Filters</title>
+
+  <summary>
+    <p>This document describes the use of filters in Apache.</p>
+  </summary>
+
+  <section id="filters">
+    <title>Filters</title>
+    <related>
+      <modulelist>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core.html">SetInputFilter</directive>
+        <directive module="core.html">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+    
+    <p>A <em>filter</em> is a process that is applied to data that
+    is sent or received by the server. Data sent by clients to the
+    server is processed by <em>input filters</em> while data sent
+    by the server to the client is processed by <em>output
+    filters</em>. Multiple filters can be applied to the data, and
+    the order of the filters can be explicitly specified.</p>
+
+    <p>Filters are used internally by Apache to perform functions such
+    as chunking and byte-range request handling. In addition, modules
+    can provide filters that are selectable using run-time
+    configuration directives. The set of filters that apply to data
+    can be manipulated with the <directive module="core.html"
+    >SetInputFilter</directive>, <directive module="core.html"
+    >SetOutputFilter</directive>, <directive module="mod_mime"
+    >AddInputFilter</directive>, and <directive module="mod_mime"
+    >AddOutputFilter</directive> directives.</p>
+
+    <p>The following user-selectable filters are currently provided
+    with the Apache HTTP Server distribution.</p>
+
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd>Server-Side Includes processing by <module>mod_include</module></dd>
+      <dt>DEFLATE</dt>
+      <dd>Compress output before sending it to the client using <module
+      >mod_include</module></dd>
+    </dl>
+
+    <p>In addition, the module <module>mod_ext_filter</module> allows
+    for external programs to be defined as filters.</p>
+  </section>
+</manualpage>
+
+
+
+
