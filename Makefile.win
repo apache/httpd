@@ -252,10 +252,10 @@ _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	-del $(LONG)\buildmark.obj
 	msdev Apache.dsw /USEENV /MAKE \
-		"BuildBin - Win32 $(LONG)"
+		"BuildBin - Win32 $(LONG)" $(CTARGET)
 !IF EXIST("srclib\openssl")
 	msdev Apache.dsw /USEENV /MAKE \
-		"mod_ssl - Win32 $(LONG)"\
+		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
