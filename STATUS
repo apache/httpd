@@ -94,13 +94,6 @@ Available Patches:
 	Message-ID: <19980611171746.A23845@engelschall.com>
 	Status: Ralf +1, Lars +1
 
-    * Configure tweaks to support building outside the source tree, and 
-      add more customizeability for installation layout, by 
-      Wilfredo Sanchez <wsanchez@apple.com>
-	Message-Id: <199806260405.VAA09682@scv4.apple.com>
-	Status: Ralf -1 (because it is too huge, has to be cleaned up and
-		split)
-
     * Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading
