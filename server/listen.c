@@ -28,7 +28,7 @@
 #include "mpm.h"
 #include "mpm_common.h"
 
-ap_listen_rec *ap_listeners = NULL;
+AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
@@ -288,7 +288,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
     return NULL;
 }
 
-static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
+AP_DECLARE(int) ap_listen_open(apr_pool_t *pool, apr_port_t port)
 {
     ap_listen_rec *lr;
     ap_listen_rec *next;
@@ -418,7 +418,7 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
     return num_open ? 0 : -1;
 }
 
-int ap_setup_listeners(server_rec *s)
+AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -434,7 +434,7 @@ int ap_setup_listeners(server_rec *s)
     return num_listeners;
 }
 
-void ap_listen_pre_config(void)
+AP_DECLARE(void) ap_listen_pre_config(void)
 {
     old_listeners = ap_listeners;
     ap_listeners = NULL;
@@ -442,7 +442,7 @@ void ap_listen_pre_config(void)
 }
 
 
-const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
+AP_DECLARE(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
 {
     char *host, *scope_id;
     apr_port_t port;
@@ -474,7 +474,7 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
     return alloc_listener(cmd->server->process, host, port);
 }
 
-const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
+AP_DECLARE(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
 {
     int b;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -492,7 +492,7 @@ const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
+AP_DECLARE(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
                                     const char *arg)
 {
     int s = atoi(arg);

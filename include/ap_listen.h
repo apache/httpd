@@ -63,7 +63,7 @@ AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
 /**
  * Setup all of the defaults for the listener list
  */
-void ap_listen_pre_config(void);
+AP_DECLARE(void) ap_listen_pre_config(void);
 #if !defined(SPMT_OS2_MPM)
 /**
  * Loop through the global ap_listen_rec list and create all of the required
@@ -73,7 +73,7 @@ void ap_listen_pre_config(void);
  * @warning This function is not available to Windows platforms, or the
  * Prefork or SPMT_OS2 MPMs.
  */ 
-int ap_setup_listeners(server_rec *s);
+AP_DECLARE(int) ap_setup_listeners(server_rec *s);
 #endif
 /* Split into two #if's to make the exports scripts easier.
  */
@@ -87,7 +87,7 @@ int ap_setup_listeners(server_rec *s);
  * @warning This function is only available to Windows platforms, or the
  * Prefork or SPMT_OS2 MPMs.
  */
-int ap_listen_open(process_rec *process, apr_port_t port);
+AP_DECLARE(int) ap_listen_open(process_rec *process, apr_port_t port);
 #endif
 
 /* Although these functions are exported from libmain, they are not really
@@ -97,9 +97,9 @@ int ap_listen_open(process_rec *process, apr_port_t port);
  * LISTEN_COMMANDS in their command_rec table so that these functions are
  * called.
  */ 
-const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
-const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
+AP_DECLARE(const char *) ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
+AP_DECLARE(const char *) ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
+AP_DECLARE(const char *) ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
 				    const char *arg);
 
 #define LISTEN_COMMANDS	\
