@@ -1162,7 +1162,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     if ((rr->finfo.filetype != APR_DIR && rr->finfo.filetype != APR_REG)
-        || (rr->status != OK && ap_is_HTTP_SUCCESS(rr->status))) {
+        || !(rr->status == OK || ap_is_HTTP_SUCCESS(rr->status))) {
         ap_destroy_sub_req(rr);
         return (NULL);
     }
