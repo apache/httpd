@@ -245,7 +245,7 @@ proxy_canon_netloc(pool *pool, char **const urlp, char **userp,
 #ifdef WIN32
     if (host[i] == '\0' && (inet_addr(host) == -1))
 #else
-    if (host[i] == '\0' && (inet_addr(host) == -1 || inet_network(host) == -1))
+    if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
 #endif
     {
 	    return "Bad IP address in URL";
@@ -790,7 +790,7 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 	    return "Host not found";
     } else
     {
-	ipaddr = inet_addr(host);
+	ipaddr = ap_inet_addr(host);
 	hp = gethostbyaddr((char *)&ipaddr, sizeof(u_long), AF_INET);
 	if (hp == NULL) {
 	    memset(&hpbuf, 0, sizeof(hpbuf));
@@ -843,7 +843,7 @@ proxy_is_ipaddr(struct dirconn_entry *This)
     unsigned long bits;
 
     /* if the address is given with an explicit netmask, use that */
-    /* Due to a deficiency in inet_addr(), it is impossible to parse */
+    /* Due to a deficiency in ap_inet_addr(), it is impossible to parse */
     /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
     /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
     /* I therefore have to parse the IP address manually: */

@@ -994,13 +994,7 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, unsigned 
 	    || strcmp(w, "255.255.255.255") == 0 ) {
 	my_addr = DEFAULT_VHOST_ADDR;
 	is_an_ip_addr = 1;
-    } else if(
-#ifdef DGUX
-	    ( my_addr = inet_network(w) )
-#else
-	    ( my_addr = inet_addr(w) )
-#endif
-	    != INADDR_NONE ) {
+    } else if ((my_addr = ap_inet_addr(w)) != INADDR_NONE) {
 	is_an_ip_addr = 1;
     }
     if( is_an_ip_addr ) {

@@ -381,6 +381,7 @@ extern char *crypt();
 #define JMP_BUF sigjmp_buf
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#define ap_inet_addr inet_network
 
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
 #define HAVE_SYS_RESOURCE_H
@@ -786,6 +787,10 @@ Sigfunc *signal(int signo, Sigfunc *func);
     select((_a), (int *)(_b), (int *)(_c), (int *)(_d), (_e))
 #else
 #define ap_select	select
+#endif
+
+#ifndef ap_inet_addr
+#define ap_inet_addr inet_addr
 #endif
 
 /* so that we can use inline on some critical functions */

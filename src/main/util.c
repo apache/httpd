@@ -1232,11 +1232,7 @@ unsigned long get_virthost_addr (const char *w, unsigned short *ports) {
 	return htonl(INADDR_ANY);
     }
 	
-#ifdef DGUX
-    my_addr = inet_network(w);
-#else
-    my_addr = inet_addr(w);
-#endif
+    my_addr = ap_inet_addr(w);
     if (my_addr != INADDR_NONE)
     {
 	if (p != NULL) *p = ':';
