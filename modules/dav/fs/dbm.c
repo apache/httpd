@@ -789,4 +789,6 @@ const dav_hooks_db dav_hooks_db_dbm =
     dav_propdb_next_name,
     dav_propdb_get_rollback,
     dav_propdb_apply_rollback,
+
+    NULL /* ctx */
 };

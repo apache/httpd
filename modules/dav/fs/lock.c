@@ -1549,5 +1549,7 @@ const dav_hooks_locks dav_hooks_locks_fs =
     dav_fs_append_locks,
     dav_fs_remove_lock,
     dav_fs_refresh_locks,
-    NULL, /* get_resource */
+    NULL, /* lookup_resource */
+
+    NULL /* ctx */
 };

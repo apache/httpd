@@ -2098,7 +2098,9 @@ static const dav_provider dav_fs_provider =
     &dav_hooks_locks_fs,
     NULL,               /* vsn */
     NULL,               /* binding */
-    NULL                /* search */
+    NULL,               /* search */
+
+    NULL                /* ctx */
 };
 
 void dav_fs_gather_propsets(apr_array_header_t *uris)

@@ -606,6 +606,10 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 ** are handled through the APR_HOOK interface (to allow for multiple liveprop
 ** providers). The core always provides some properties, and then a given
 ** provider will add more properties.
+**
+** Some providers may need to associate a context with the dav_provider
+** structure -- the ctx field is available for storing this context. Just
+** leave it NULL if it isn't required.
 */
 typedef struct {
     const dav_hooks_repository *repos;
@@ -614,6 +618,8 @@ typedef struct {
     const dav_hooks_vsn *vsn;
     const dav_hooks_binding *binding;
     const dav_hooks_search *search;
+
+    void *ctx;
 } dav_provider;
 
 /*
@@ -858,6 +864,12 @@ struct dav_hooks_liveprop
 				  int operation,
 				  void *context,
 				  dav_liveprop_rollback *rollback_ctx);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 };
 
 /*
@@ -1135,6 +1147,12 @@ struct dav_hooks_propdb
                                 dav_deadprop_rollback **prollback);
     dav_error * (*apply_rollback)(dav_db *db,
                                   dav_deadprop_rollback *rollback);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 };
 
 
@@ -1481,6 +1499,12 @@ struct dav_hooks_locks
 				   const dav_locktoken *locktoken,
 				   const dav_resource *start_resource,
 				   const dav_resource **resource);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 };
 
 /* what types of resources can be discovered by dav_get_resource_state() */
@@ -1921,6 +1945,12 @@ struct dav_hooks_repository
 
     /* Get the entity tag for a resource */
     const char * (*getetag)(const dav_resource *resource);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 };
 
 
@@ -2310,6 +2340,12 @@ struct dav_hooks_vsn
 			 int no_auto_merge, int no_checkout,
 			 apr_xml_elem *prop_elem,
 			 ap_filter_t *output);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 };
 
 
@@ -2333,6 +2369,12 @@ struct dav_hooks_binding {
      */
     dav_error * (*bind_resource)(const dav_resource *resource,
 				 dav_resource *binding);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 
 };
 
@@ -2365,6 +2407,12 @@ struct dav_hooks_search {
      */
     dav_error * (*search_resource)(request_rec *r,
 				   dav_response **response);
+
+    /*
+    ** If a provider needs a context to associate with this hooks structure,
+    ** then this field may be used. In most cases, it will just be NULL.
+    */
+    void *ctx;
 
 };
 
