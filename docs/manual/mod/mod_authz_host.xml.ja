@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.2 -->
 
 <name>mod_authz_host</name> 
 
@@ -14,7 +14,8 @@
 <compatibility>Apache 2.0.44 以降</compatibility>
 
 <summary>
-    <p>mod_authz_host により提供されるディレクティブはサーバの特定の部分への
+    <p><module>mod_authz_host</module> により提供されるディレクティブは
+    サーバの特定の部分への
     アクセスを制御するために <directive module="core" type="section"
     >Directory</directive>, <directive module="core"
     type="section">Files</directive>, <directive module="core"
