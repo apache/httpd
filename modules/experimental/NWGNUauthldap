@@ -246,6 +246,7 @@ nlms :: libs $(TARGET_nlm)
 #
 install :: nlms FORCE
 	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\modules\*.*
+	copy charset.conv $(INSTALL)\Apache2\conf\*.*
 
 #
 # Any specialized rules here

@@ -62,6 +62,7 @@
 
 #include <apr_ldap.h>
 #include <apr_strings.h>
+#include <apr_xlate.h>
 
 #include "ap_config.h"
 #if APR_HAVE_UNISTD_H
@@ -116,7 +117,7 @@ typedef struct {
 					   it's the exact string passed by the HTTP client */
 
     int netscapessl;			/* True if Netscape SSL is enabled */
-    int starttls;                       /* True if StartTLS is enabled */
+    int starttls;               /* True if StartTLS is enabled */
 } mod_auth_ldap_config_t;
 
 typedef struct mod_auth_ldap_request_t {
@@ -143,6 +144,59 @@ void *mod_auth_ldap_create_dir_config(apr_pool_t *p, char *d);
 
 /* ---------------------------------------- */
 
+static apr_hash_t *charset_conversions = NULL;
+static char *to_charset = NULL;           /* UTF-8 identifier derived from the charset.conv file */
+
+/* Derive a code page ID give a language name or ID */
+static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
+{
+    int lang_len;
+    int check_short = 0;
+    char *charset;
+    
+    if (!language)          // our default codepage
+        return apr_pstrdup(p, "ISO-8859-1");
+    else
+        lang_len = strlen(language);
+    
+    charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
+
+    if (!charset) {
+        language[2] = '\0';
+        charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
+    }
+
+    if (charset) {
+        charset = apr_pstrdup(p, charset);
+    }
+
+    return charset;
+}
+
+static apr_xlate_t* get_conv_set (request_rec *r)
+{
+    char *lang_line = (char*)apr_table_get(r->headers_in, "accept-language");
+    char *lang;
+    apr_xlate_t *convset;
+
+    if (lang_line) {
+        lang_line = apr_pstrdup(r->pool, lang_line);
+        for (lang = lang_line;*lang;lang++) {
+            if ((*lang == ',') || (*lang == ';')) {
+                *lang = '\0';
+                break;
+            }
+        }
+        lang = derive_codepage_from_lang(r->pool, lang_line);
+
+        if (lang && (apr_xlate_open(&convset, to_charset, lang, r->pool) == APR_SUCCESS)) {
+            return convset;
+        }
+    }
+
+    return NULL;
+}
+
 
 /*
  * Build the search filter, or at least as much of the search filter that
@@ -168,6 +222,33 @@ void mod_auth_ldap_build_filter(char *filtbuf,
                                 mod_auth_ldap_config_t *sec)
 {
     char *p, *q, *filtbuf_end;
+    char *user;
+    apr_xlate_t *convset = NULL;
+    apr_size_t inbytes;
+    apr_size_t outbytes;
+    char *outbuf;
+
+    if (r->user != NULL) {
+        user = apr_pstrdup (r->pool, r->user);
+    }
+    else
+        return;
+
+    if (charset_conversions) {
+        convset = get_conv_set(r);
+    }
+
+    if (convset) {
+        inbytes = strlen(user);
+        outbytes = (inbytes+1)*3;
+        outbuf = apr_pcalloc(r->pool, outbytes);
+
+        /* Convert the user name to UTF-8.  This is only valid for LDAP v3 */
+        if (apr_xlate_conv_buffer(convset, user, &inbytes, outbuf, &outbytes) == APR_SUCCESS) {
+            user = apr_pstrdup(r->pool, outbuf);
+        }
+    }
+
     /* 
      * Create the first part of the filter, which consists of the 
      * config-supplied portions.
@@ -179,7 +260,7 @@ void mod_auth_ldap_build_filter(char *filtbuf,
      * LDAP filter metachars are escaped.
      */
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
-    for (p = r->user, q=filtbuf + strlen(filtbuf);
+    for (p = user, q=filtbuf + strlen(filtbuf);
          *p && q < filtbuf_end; *q++ = *p++) {
         if (strchr("*()\\", *p) != NULL) {
             *q++ = '\\';
@@ -268,6 +349,13 @@ start_over:
 		      "ap_get_basic_auth_pw() returns %d", getpid(), result);
         util_ldap_connection_close(ldc);
         return result;
+    }
+
+    if (r->user == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+		      "[%d] auth_ldap authenticate: no user specified", getpid());
+        util_ldap_connection_close(ldc);
+        return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
     }
 
     /* build the username filter */
@@ -796,6 +884,13 @@ static const char *mod_auth_ldap_add_group_attribute(cmd_parms *cmd, void *confi
     return NULL;
 }
 
+static const char *set_charset_config(cmd_parms *cmd, void *config, const char *arg)
+{
+    ap_set_module_config(cmd->server->module_config, &auth_ldap_module,
+                         (void *)arg);
+    return NULL;
+}
+
 command_rec mod_auth_ldap_cmds[] = {
     AP_INIT_TAKE1("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG, 
                   "URL to define LDAP connection. This should be an RFC 2255 complaint\n"
@@ -870,6 +965,10 @@ command_rec mod_auth_ldap_cmds[] = {
                  (void *)APR_OFFSETOF(mod_auth_ldap_config_t, frontpage_hack), OR_AUTHCFG,
                  "Set to 'on' to support Microsoft FrontPage"),
 
+    AP_INIT_TAKE1("AuthLDAPCharsetConfig", set_charset_config, NULL, RSRC_CONF,
+                  "Character set conversion configuration file. If omitted, character set"
+                  "conversion is disabled."),
+
 #ifdef APU_HAS_LDAP_STARTTLS
     AP_INIT_FLAG("AuthLDAPStartTLS", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(mod_auth_ldap_config_t, starttls), OR_AUTHCFG,
@@ -879,8 +978,67 @@ command_rec mod_auth_ldap_cmds[] = {
     {NULL}
 };
 
+static int auth_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    ap_configfile_t *f;
+    char l[MAX_STRING_LEN];
+    const char *charset_confname = ap_get_module_config(s->module_config,
+                                                      &auth_ldap_module);
+    apr_status_t status;
+
+    if (!charset_confname) {
+        return OK;
+    }
+
+    charset_confname = ap_server_root_relative(p, charset_confname);
+    if (!charset_confname) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+                     "Invalid charset conversion config path %s", 
+                     (const char *)ap_get_module_config(s->module_config,
+                                                        &auth_ldap_module));
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    if ((status = ap_pcfg_openfile(&f, ptemp, charset_confname)) 
+                != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
+                     "could not open charset conversion config file %s.", 
+                     charset_confname);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    charset_conversions = apr_hash_make(p);
+
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+        const char *ll = l;
+        char *lang;
+
+        if (l[0] == '#') {
+            continue;
+        }
+        lang = ap_getword_conf(p, &ll);
+        ap_str_tolower(lang);
+
+        if (ll[0]) {
+            char *charset = ap_getword_conf(p, &ll);
+            apr_hash_set(charset_conversions, lang, APR_HASH_KEY_STRING, charset);
+        }
+    }
+    ap_cfg_closefile(f);
+    
+    to_charset = derive_codepage_from_lang (p, "utf-8");
+    if (to_charset == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
+                     "could not find the UTF-8 charset in the file %s.", 
+                     charset_confname);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    return OK;
+}
+
 static void mod_auth_ldap_register_hooks(apr_pool_t *p)
 {
+    ap_hook_post_config(auth_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_check_user_id(mod_auth_ldap_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker(mod_auth_ldap_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
 }
