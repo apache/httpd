@@ -291,11 +291,11 @@ dnl
 dnl APACHE_LAYOUT(configlayout, layoutname)
 AC_DEFUN(APACHE_LAYOUT,[
   if test ! -f $srcdir/config.layout; then
-    echo "** Error: Layout file $srcdir/../config.layout not found"
+    echo "** Error: Layout file $srcdir/config.layout not found"
     echo "** Error: Cannot use undefined layout '$LAYOUT'"
     exit 1
   fi
-  pldconf=config.pld
+  pldconf=./config.pld
   changequote({,})
   sed -e "1,/[ 	]*<[lL]ayout[ 	]*$2[ 	]*>[ 	]*/d" \
       -e '/[ 	]*<\/Layout>[ 	]*/,$d' \
@@ -354,7 +354,7 @@ if test -z "$LAYOUT"; then
   libexecdir='${prefix}/modules'
   layout_name=Apache
 else  
-  APACHE_LAYOUT($srcdir/../config.layout, $LAYOUT)
+  APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
 fi
 
 AC_MSG_CHECKING(for chosen layout)
