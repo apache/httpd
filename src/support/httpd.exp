@@ -88,6 +88,7 @@ ap_cpystrn
 ap_create_environment
 ap_create_per_dir_config
 ap_create_request_config
+ap_custom_response
 ap_daemons_limit
 ap_daemons_max_free
 ap_daemons_min_free
