@@ -231,10 +231,8 @@ typedef struct {
     array_header *config_logs;
     array_header *server_config_logs;
     table *formats;
-#ifdef NETWARE
     int rotatedaily;
     int rotateinterval;
-#endif
 } multi_log_state;
 
 /*
@@ -256,9 +254,7 @@ typedef struct {
     int outcnt;
     char outbuf[LOG_BUFSIZE];
 #endif
-#ifdef NETWARE
     time_t time_jump;
-#endif
 } config_log_state;
 
 /*
@@ -810,7 +806,6 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     int len = 0;
     array_header *format;
     char *envar;
-#ifdef NETWARE
     int log_fd;
 
     multi_log_state *mls = ap_get_module_config(r->server->module_config,&config_log_module);
@@ -844,7 +839,6 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
             close (log_fd);
         }
     }
-#endif
 
     if (cls->fname == NULL) {
         return DECLINED;
@@ -969,10 +963,8 @@ static void *make_config_log_state(pool *p, server_rec *s)
     mls->server_config_logs = NULL;
     mls->formats = ap_make_table(p, 4);
     ap_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
-#ifdef NETWARE
     mls->rotatedaily = 0;
     mls->rotateinterval = 0;
-#endif
 
     return mls;
 }
@@ -988,14 +980,12 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
     multi_log_state *base = (multi_log_state *) basev;
     multi_log_state *add = (multi_log_state *) addv;
 
-#ifdef NETWARE
     if (add->rotatedaily==0) {
       add->rotatedaily=base->rotatedaily;
     }
     if (add->rotateinterval==0) {
       add->rotateinterval=base->rotateinterval;
     }
-#endif
 
     add->server_config_logs = base->config_logs;
     if (!add->default_format) {
@@ -1080,7 +1070,6 @@ static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
 }
 
-#ifdef NETWARE
 static const char *set_rotate_log_daily(cmd_parms *cmd, void *dummy, int arg)
 {
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
@@ -1108,7 +1097,6 @@ static const char *set_rotate_log_interval(cmd_parms *cmd, void *dummy, char *ar
     mls->rotateinterval = interval;
     return NULL;
 }
-#endif
 
 static const command_rec config_log_cmds[] =
 {
@@ -1121,12 +1109,10 @@ static const command_rec config_log_cmds[] =
      "a log format string (see docs) and an optional format name"},
     {"CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the cookie log"},
-#ifdef NETWARE
     {"LogRotateDaily", set_rotate_log_daily, NULL, RSRC_CONF, FLAG,
      "rotate logs daily (On:Off)"},
     {"LogRotateInterval", set_rotate_log_interval, NULL, RSRC_CONF, TAKE1,
      "rotate logs every NNN minutes"},
-#endif
     {NULL}
 };
 
@@ -1152,7 +1138,6 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
         cls->log_fd = ap_piped_log_write_fd(pl);
     }
     else {
-#ifdef NETWARE
         char * fname;
         struct tm *time_tmp;
         time_t time_now;
@@ -1175,9 +1160,6 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
             } else {
                 fname = ap_server_root_relative(p, cls->fname);
         }
-#else
-        char *fname = ap_server_root_relative(p, cls->fname);
-#endif
             
         if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
