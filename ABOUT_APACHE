@@ -154,15 +154,9 @@ If you'd like to become an active contributor to the Apache project (the
 group of volunteers who vote on changes to the distributed server), then
 you need to start by subscribing to the dev@httpd.apache.org mailing list.
 One warning though: traffic is high, 1000 to 1500 messages/month.
-<<<<<<< ABOUT_APACHE
-To subscribe to the list, send an email to dev-subscribe@httpd.apache.org.
-We recommend reading the list for a while before trying to jump in to 
-development.
-=======
 To subscribe to the list, send "subscribe dev" in the body of
 a message to <dev-subscribe@httpd.apache.org>.  We recommend reading the 
 list for a while before trying to jump in to development.
->>>>>>> 1.6
 
    NOTE: The developer mailing list (dev@httpd.apache.org) is not
    a user support forum; it is for people actively working on development
