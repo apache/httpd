@@ -101,7 +101,9 @@
 #include <signal.h>
 #include <errno.h>
 #include <ctype.h>
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <sys/stat.h>
 
     /* Include from the Apache server ... */
@@ -157,7 +159,7 @@
 #endif
 #if !defined(USE_FCNTL) && !defined(USE_FLOCK)
 #define USE_FLOCK 1
-#if !defined(MPE) && !defined(WIN32) && !defined(__TANDEM)
+#if !defined(MPE) && !defined(WIN32) && !defined(__TANDEM) && !defined(NETWARE)
 #include <sys/file.h>
 #endif
 #ifndef LOCK_UN
