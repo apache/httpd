@@ -5,8 +5,8 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mod_deflate - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_deflate</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Compress content before
-    it is delivered to the client</td></tr><tr><th><a href="module-dict.html#Status">Status:
+                  </a></th><td>Compress content before it is delivered to the
+client</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
                   </a></th><td>deflate_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_deflate.c</td></tr></table><h3>Summary</h3>
@@ -18,38 +18,208 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Enabling Compression</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Enabling Compression</h2>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#recommended">Recommended Configuration</a></li><li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../filter.html">The filter documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="recommended" id="recommended">Recommended Configuration</a></h2>
+    <p>This is a sample configuration for the impatient. But please take
+    the time and read the sections below for a detailed description!</p>
 
-    <p>Compression is implemented by the <code>DEFLATE</code>
-    <a href="../filter.html">filter</a>. The following directive
-    will enable compression for documents in the container where it
-    is placed:</p>
-    <p><strong>Most popular browsers can not handle compression of all content
-        so you may want to set the 'gzip-only-text/html' note to 1 to only 
-        allow html files to be compressed (see below).</strong></p>
-    <p><strong>If you set this to anything but '1' it will be ignored, so you can do
-       negative matches.</strong></p>
+    <div class="example"><p><code>
+      &lt;Location /&gt;<br />
+      <span class="indent">
+        # insert filter<br />
+        SetOutputFilter DEFLATE<br />
+        <br />
+        # Netscape 4.x has some problems...<br />
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        <br />
+        # Netscape 4.06-4.08 have some more problems<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        <br />
+        # fix identity<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # don't bother:<br />
+        SetEnvIfNoCase Request_URI \<br />
+        <span class="indent">
+          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
+        </span>
+        <br />
+        # be verbose about configuration<br />
+        Header append Vary User-Agent env=!dont-vary<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
-<div class="example"><p><code>SetEnv gzip-only-text/html 1<br />
-SetOutputFilter DEFLATE
-</code></p></div>
+    <p>Note, that gzip compression of binary files (<em>e.g.</em> images)
+    usually has only little effect. Therefore in the example above we use
+    an exclusion list of some file types. Alternatively you may use a
+    positive list using <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> or <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> instead of the <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> directive.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="enable" id="enable">Enabling Compression</a></h2>
 
-    <p>Here is an example of enabling compression for the Apache
-    documentation:</p>
+    <h3><a name="output" id="output">Output Compression</a></h3>
+      <p>Compression is implemented by the <code>DEFLATE</code>
+      <a href="../filter.html">filter</a>. The following directive
+      will enable compression for documents in the container where it
+      is placed:</p>
 
-<div class="example"><p><code>
-&lt;Directory "/your-server-root/manual"&gt;<br />
-      SetEnv gzip-only-text/html 1<br />
-      SetOutputFilter DEFLATE<br />
-&lt;/Directory&gt;
-</code></p></div>
+      <div class="example"><p><code>
+        SetOutputFilter DEFLATE
+      </code></p></div>
 
-    <p>For browsers that have problems even with compression of html files,
-    use the <code class="directive">BrowserMatch</code> directive to set the 'no-gzip' note
-    for that particular browser so that no compression will be performed.</p>
+      <p>Some popular browsers cannot handle compression of all content
+      so you may want to set the <code>gzip-only-text/html</code> note to
+      <code>1</code> to only allow html files to be compressed (see
+      below). If you set this to <em>anything but <code>1</code></em> it
+      will be ignored.</p>
+      
+      <p>If you want to restrict the compression to particular MIME types
+      in general, you may use the <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
+      enabling compression only for the html files of the Apache
+      documentation:</p>
+
+      <div class="example"><p><code>
+        &lt;Directory "/your-server-root/manual"&gt;<br />
+        <span class="indent">
+          AddOutputFilterByType DEFLATE text/html<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+
+      <p>For browsers that have problems even with compression of all file
+      types, use the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> directive to set the <code>no-gzip</code>
+      note for that particular browser so that no compression will be
+      performed. You may combine <code>no-gzip</code> with <code>gzip-only-text/html</code> to get the best results. In that case
+      the former overrides the latter. Take a look at the following
+      excerpt from the <a href="#recommended">configuration example</a>
+      defined in the section above:</p>
+
+      <div class="example"><p><code>
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </code></p></div>
+
+      <p>At first we probe for a <code>User-Agent</code> string that
+      indicates a Netscape Navigator version of 4.x. These versions
+      have some big problems to decompress content types different
+      from <code>text/html</code>. The versions 4.06, 4.07 and 4.08 have
+      also sometimes problems to decompress html files. Thus, we
+      completely turn off the deflate filter for them.</p>
+
+      <p>The third <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
+      directive fixes the guessed identity of the user agent, because
+      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
+      but is actually able to handle requested compression. Therefore we
+      match against the additional string "MSIE" (<code>\b</code> means
+      "word boundary") in the <code>User-Agent</code> Header and turn off
+      the restrictions defined before.</p>
+
+      <div class="note"><h3>Note</h3>
+        The <code>DEFLATE</code> filter is always inserted after RESOURCE
+        filters like PHP or SSI. It never touches internal subrequests.
+      </div>
+    
+
+    <h3><a name="input" id="input">Input Decompression</a></h3>
+      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
+      decompressing a gzip compressed request body . In order to activate
+      this feature you have to insert the <code>DEFLATE</code> filter into
+      the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;
+        <span class="indent">
+          SetInputFilter DEFLATE
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+      
+      <p>Now if a request contains a <code>Content-Encoding: gzip</code>
+      header, the body will be automatically decompressed. Ordinary
+      browsers usually don't have the ability to gzip e.g. <code>POST</code>
+      request bodies. However, some special applications actually do
+      support request compression, for instance <a href="http://www.webdav.org">WebDAV</a> clients.</p>
+
+      <div class="warning"><h3>Note on Content-Length</h3>
+        <p>If you evaluate the request body yourself, <em>don't trust
+        the <code>Content-Length</code> header!</em> For example, a
+        wide-spread code to read the request body in perl is:</p>
+
+        <div class="example"><p><code>
+          # WRONG!<br />
+          if (($len = $ENV{'CONTENT_LENGTH'}) &gt; 0) {<br />
+          <span class="indent">
+            read(STDIN, $body, $len);<br />
+          </span>
+          }
+        </code></p></div>
+
+        <p>Since the Content-Length header reflects the length of the
+        incoming data from the client and <em>not</em> the byte count of
+        the decompressed data, you would read too less and cut off the
+        stream.</p>
+
+        <p>Thus, if you want to slurp the whole request body, use for
+        example:</p>
+
+        <div class="example"><p><code>
+          {<br />
+          <span class="indent">
+            local $/; # undef input record separator<br />
+            $body = &lt;STDIN&gt;;<br />
+          </span>
+          }
+        </code></p></div>
+      </div>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
+    <p>Since the <code>DEFLATE</code> output filter actually performs a
+    kind of <a href="../content-negotiation.html">content negotiation</a>,
+    you should take care of caching proxy servers. In order to prevent a
+    proxy cache from delivering the wrong data (<em>e.g.</em> gzip
+    compressed data to a client which doesn't send an appropriate
+    <code>Accept-Encoding</code> header), the origin server
+    (<em>i.e.</em> you) has to indicate the negotiation parameters in the
+    <code>Vary</code> response header.</p>
+
+    <p>If the <code>DEFLATE</code> filter is involved in the request, the
+    following header will be set:</p>
+
+    <div class="example"><p><code>
+      Vary: Accept-Encoding
+    </code></p></div>
+
+    <p>A HTTP compiliant proxy now delivers the cached data to any client,
+    which sends the <em>same</em> <code>Accept-Encoding</code> header as
+    the client, which did the initial request that was cached.</p>
+
+    <p>Fine. But what happens, if you use some special exclusions dependant
+    on, say the <code>User-Agent</code> header? The proxy server doesn't
+    know anything about your server configuration, thus you have to tell
+    him, what you're doing. You have to use the <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>
+    module to add appropriate values to the <code>Vary</code> header, for
+    example:</p>
+
+    <div class="example"><p><code>
+      Header append Vary User-Agent
+    </code></p></div>
+    
+    <p>would result in the following response header:</p>
+
+    <div class="example"><p><code>
+      Vary: Accept-Encoding,User-Agent
+    </code></p></div>
+
+    <p>If your decision about compression depends on other information
+    than request headers (<em>e.g.</em> HTTP version), you have to set the
+    <code>Vary</code> header to the value <code>*</code>. This prevents
+    documents from caching by HTTP compiliant proxies at all.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      Header set Vary *
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Fragment size to be compressed at one time by zlib</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateBufferSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateBufferSize 8096</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -59,17 +229,25 @@ SetOutputFilter DEFLATE
     time.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Places the compression ratio in a note for logging</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateFilterNote <em>notename</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>DeflateFilterNote <var>notename</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_deflate</td></tr></table>
     <p>The <code class="directive">DeflateFilterNote</code> directive
     specifies that a note about compression ratios should be attached
     to the request. The name of the note is the value specified for
-    the directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+    the directive. You can use that note for statistical purposes by
+    adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      DeflateFilterNote ratio<br />
+      <br />
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+      CustomLog logs/deflate_log deflate
+    </code></p></div>
+<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>How much memory should be used by zlib for compression</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateMemLevel <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateMemLevel 9</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -79,11 +257,12 @@ SetOutputFilter DEFLATE
     (a value between 1 and 9).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Zlib compression window size</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateWindowSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DeflateWindowSize 15</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_deflate</td></tr></table>
     <p>The <code class="directive">DeflateWindowSize</code> directive specifies the
-    zlib compression window size (a value between 1 and 15).</p>
+    zlib compression window size (a value between 1 and 15). Generally, the
+    higher the window size, the higher can the compression ratio be expected.</p>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
