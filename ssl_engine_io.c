@@ -265,7 +265,8 @@ static apr_status_t churn (SSLFilterRec *pRec,
 
 	if(len == 0) {
 	    /* Lazy frickin browsers just reset instead of shutting down. */
-            if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret)) {
+            /* also gotta handle timeout of keepalive connections */
+            if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret) || ret == APR_TIMEUP) {
 		if(APR_BRIGADE_EMPTY(pRec->pbbPendingInput))
 		    return APR_EOF;
 		else
