@@ -340,8 +340,13 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 AP_DECLARE_HOOK(int,map_to_storage,(request_rec *r))
 
 /**
- * This hook allows modules to check the authentication information sent with
- * the request.
+ * This hook is used to analyze the request headers, authenticate the user,
+ * and set the user information in the request record (r->user and
+ * r->ap_auth_type). This hook is only run when Apache determines that
+ * authentication/authorization is required for this resource (as determined
+ * by the 'Require' directive). It runs after the access_checker hook, and
+ * before the auth_checker hook.
+ *
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
  * @ingroup hooks
@@ -368,8 +373,11 @@ AP_DECLARE_HOOK(int,fixups,(request_rec *r))
 AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
 
 /**
- * This routine is called to check for any module-specific restrictions placed
- * upon the requested resource.
+ * This hook is used to apply additional access control to this resource.
+ * It runs *before* a user is authenticated, so this hook is really to
+ * apply additional restrictions independent of a user. It also runs
+ * independent of 'Require' directive usage.
+ *
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
  * @ingroup hooks
@@ -377,8 +385,12 @@ AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
 AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
 
 /**
- * This routine is called to check to see if the resource being requested
- * requires authorisation.
+ * This hook is used to check to see if the resource being requested
+ * is available for the authenticated user (r->user and r->ap_auth_type).
+ * It runs after the access_checker and check_user_id hooks. Note that
+ * it will *only* be called if Apache determines that access control has
+ * been applied to this resource (through a 'Require' directive).
+ *
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
  * @ingroup hooks
