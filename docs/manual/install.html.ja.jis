@@ -158,8 +158,8 @@
 <div class="section">
 <h2><a name="download" id="download">ダウンロード</a></h2>
 
-    <p>Apache は <a href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>からダウンロードできますし、
+    <p>Apache は <a href="http://httpd.apache.org/download.cgi">Apache HTTP
+    サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     ここから最新の安定版が手に入ります。</p>
 
@@ -184,7 +184,7 @@
 
 <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
-    <p>次のステップでは、tarball を PGP 署名でテストします。
+    <p>次のステップでは、tarball を PGP 署名でテストします。
     PGP 署名は必ず <a href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
     署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
@@ -238,7 +238,7 @@
     ソースツリーを設定することです。
     これは配布ディレクトリのルートディレクトリにある、
     <code>configure</code> スクリプトで行ないます。
-     (Apache ソースツリーの CVS
+     (Apache ソースツリーの CVS
     版をダウンロードした開発者は、次のステップに進む前に
     <code>autoconf</code> と<code>libtool</code>
     をインストールして <code>buildconf</code>
@@ -346,8 +346,8 @@
     <dl>
       <dt><code>--help</code></dt>
 
-      <dd>使用可能な全オプションなど使い方をプリントします。
-      実際に設定はされません。</dd>
+      <dd>使用可能な全オプションなど使い方をプリントします。
+      実際に設定はされません。</dd>
 
       <dt><code>--quiet</code></dt>
 
@@ -410,8 +410,8 @@
 
 <h3><a name="modules" id="modules">モジュール</a></h3>
 
-    <p>Apache はモジュール化されたサーバです。
-    ごくごく基本的な機能だけが、コアサーバに含まれています。
+    <p>Apache はモジュール化されたサーバです。
+    ごくごく基本的な機能だけが、コアサーバに含まれています。
     拡張機能は様々なモジュールの形で提供されます。
     設定プロセス中では、どんなモジュールをサーバで使うように
     コンパイルするか選ばなければなりません。このマニュアルにある<a href="mod/">モジュールの一覧</a>を
@@ -452,7 +452,7 @@
 
       <dt><code>--disable-<em>MODULE</em></code></dt>
 
-      <dd>通常はコンパイルされてインクルードされる
+      <dd>通常はコンパイルされてインクルードされる
       <em>MODULE</em> モジュールを除去します。</dd>
 
       <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
@@ -501,7 +501,7 @@
     をコンパイルのプロセスで含める必要があります。
     個々のプラットホーム向けのデフォルトの MPM は <a href="mpm.html">MPM 文書</a>に一覧がありますが、
     <code>configure</code> 
-    コマンドで置き換えることができます。</p>
+    コマンドで置き換えることができます。</p>
 
     <dl>
       <dt><code>--with-mpm=<em>NAME</em></code></dt>
@@ -566,7 +566,7 @@
     <p>基本的な設定をするのに、Pentium III/Linux 2.2 
     のシステムでおおよそ 3 分程度かかりますが、
     あらかじめご了承下さい。
-    また、時間はハードウェアや有効にしたモジュールの数に
+    また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
