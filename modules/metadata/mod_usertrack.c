@@ -365,7 +365,7 @@ static const char *set_cookie_domain(cmd_parms *cmd, void *mconfig,
     if (name[0] != '.') {
         return "CookieDomain values must begin with a dot";
     }
-    if (strchr(&name[1], '.') == NULL) {
+    if (ap_strchr_c(&name[1], '.') == NULL) {
         return "CookieDomain values must contain at least one embedded dot";
     }
 
