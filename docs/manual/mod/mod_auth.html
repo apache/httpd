@@ -38,12 +38,14 @@ textual files.
 <strong>Module:</strong> mod_auth<p>
 
 The AuthGroupFile directive sets the name of a textual file containing the list
-of user groups for user authentication. <em>Filename</em> is the absolute path
-to the group file.<p>
+of user groups for user authentication. <em>Filename</em> is the path
+to the group file.  If it is not absolute (<EM>i.e.</EM>, if it
+doesn't begin with a slash), it is treated as relative to the ServerRoot.
+<P>
 Each line of the group file contains a groupname followed by a colon, followed
 by the member usernames separated by spaces. Example:
 <blockquote><code>mygroup: bob joe anne</code></blockquote>
-Note that searching large groups files is <em>very</em> inefficient;
+Note that searching large text files is <em>very</em> inefficient;
 <A HREF="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</A> should
 be used instead.<p>
 
@@ -65,13 +67,17 @@ See also <A HREF="core.html#authname">AuthName</A>,
 
 The AuthUserFile directive sets the name of a textual file containing
 the list of users and passwords for user
-authentication. <em>Filename</em> is the absolute path to the user
-file.<p> Each line of the user file file contains a username followed
+authentication. <em>Filename</em> is the path to the user
+file. If it is not absolute (<EM>i.e.</EM>, if it doesn't begin with a
+slash), it is treated as relative to the ServerRoot.
+<p> Each line of the user file file contains a username followed
 by a colon, followed by the crypt() encrypted password. The behavior
-of multiple occurrences of the same user is undefined.<p> Note that
-searching user groups files is inefficient; <A
-HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A> should be
-used instead.<p>
+of multiple occurrences of the same user is undefined.
+<p> Note that
+searching large text files is <EM>very</EM> inefficient;
+<A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A> should be
+used instead.
+<p>
 
 Security: make sure that the AuthUserFile is stored outside the
 document tree of the web-server; do <em>not</em> put it in the directory that
