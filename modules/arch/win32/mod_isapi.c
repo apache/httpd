@@ -520,7 +520,8 @@ struct isapi_cid {
     isapi_dir_conf           dconf;
     isapi_loaded            *isa;
     request_rec             *r;
-    int                      headers_sent;
+    int                      headers_set;
+    int                      response_sent;
     PFN_HSE_IO_COMPLETION    completion;
     void                    *completion_arg;
     apr_thread_mutex_t      *completed;
@@ -642,6 +643,7 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(r->output_filters, bb);
+    cid->response_sent = 1;
 
     if ((flags & HSE_IO_ASYNC) && cid->completion) {
         if (rv == OK) {
@@ -763,21 +765,36 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     if (stat) {
         cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
                                         &termch, &termarg, stat, head, NULL);
+        cid->ecb->dwHttpStatusCode = cid->r->status;
     }
     else {
         cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
                                         &termch, &termarg, head, NULL);
+        if (cid->ecb->dwHttpStatusCode && cid->r->status == HTTP_OK
+                && cid->ecb->dwHttpStatusCode != HTTP_OK) {
+            /* We tried every way to Sunday to get the status...
+             * so now we fall back on dwHttpStatusCode if it appears
+             * ap_scan_script_header fell back on the default code.
+             * Any other results set dwHttpStatusCode to the decoded 
+             * status value.
+             */
+            cid->r->status = cid->ecb->dwHttpStatusCode;
+            cid->r->status_line = ap_get_status_line(cid->r->status);
+        }
+        else {
+            cid->ecb->dwHttpStatusCode = cid->r->status;
+        }
     }
-    cid->ecb->dwHttpStatusCode = cid->r->status;
-    if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR)
+    if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR) {
         return -1;
+    }
 
     /* If only Status was passed, we consumed nothing 
      */
     if (!head_present)
         return 0;
 
-    cid->headers_sent = 1;
+    cid->headers_set = 1;
 
     /* If all went well, tell the caller we consumed the headers complete 
      */
@@ -816,6 +833,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          */
         apr_table_set (r->headers_out, "Location", buf_data);
         cid->r->status = cid->ecb->dwHttpStatusCode = HTTP_MOVED_TEMPORARILY;
+        cid->r->status_line = ap_get_status_line(cid->r->status);
+        cid->headers_set = 1;
         return 1;
 
     case HSE_REQ_SEND_URL:
@@ -863,6 +882,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             b = apr_bucket_flush_create(c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
+            cid->response_sent = 1;
         }
         return 1;
     }
@@ -1001,8 +1021,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                             strlen(tf->pszStatusCode),
                                             tf->HeadLength);
         }
-        else if (!cid->headers_sent && tf->pHead && tf->HeadLength 
-                                    && *(char*)tf->pHead) {
+        else if (!cid->headers_set && tf->pHead && tf->HeadLength 
+                                   && *(char*)tf->pHead) {
             ate = send_response_header(cid, NULL, (char*)tf->pHead,
                                             0, tf->HeadLength);
             if (ate < 0)
@@ -1054,6 +1074,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
+        cid->response_sent = 1;
 
         /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
          * pass pContect to the HseIO callback.
@@ -1253,6 +1274,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             b = apr_bucket_flush_create(c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
+            cid->response_sent = 1;
         }
         return 1;
     }
@@ -1376,7 +1398,7 @@ apr_status_t isapi_handler (request_rec *r)
     cid->ecb->ConnID = cid;
     cid->isa = isa;
     cid->r = r;
-    cid->r->status = 0;
+    r->status = 0;
     
     cid->ecb->cbSize = sizeof(EXTENSION_CONTROL_BLOCK);
     cid->ecb->dwVersion = isa->report_version;
@@ -1512,29 +1534,53 @@ apr_status_t isapi_handler (request_rec *r)
                                "ISAPI: asynch I/O result HSE_STATUS_PENDING "
                                "from HttpExtensionProc() is not supported: %s",
                                r->filename);
-                 cid->r->status = HTTP_INTERNAL_SERVER_ERROR;
+                 r->status = HTTP_INTERNAL_SERVER_ERROR;
             }
             break;
 
         case HSE_STATUS_ERROR:    
             /* end response if we have yet to do so.
              */
-            cid->r->status = HTTP_INTERNAL_SERVER_ERROR;
+            r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;
 
         default:
             /* TODO: log unrecognized retval for debugging 
              */
-            cid->r->status = HTTP_INTERNAL_SERVER_ERROR;
+             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                           "ISAPI: return code %d from HttpExtensionProc() "
+                           "was not not recognized", rv);
+            r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;
     }
 
-    /* Set the status (for logging) */
-    if (cid->ecb->dwHttpStatusCode) {
-        cid->r->status = cid->ecb->dwHttpStatusCode;
+    /* Flush the response now, including headers-only responses */
+    if (cid->headers_set) {
+        conn_rec *c = r->connection;
+        apr_bucket_brigade *bb;
+        apr_bucket *b;
+        apr_status_t rv;
+
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_eos_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        rv = ap_pass_brigade(r->output_filters, bb);
+        cid->response_sent = 1;
+
+        return OK;  /* NOT r->status or cid->r->status, even if it has changed. */
+    }
+    
+    /* As the client returned no error, and if we did not error out
+     * ourselves, trust dwHttpStatusCode to say something relevant.
+     */
+    if (!ap_is_HTTP_SERVER_ERROR(r->status) && cid->ecb->dwHttpStatusCode) {
+        r->status = cid->ecb->dwHttpStatusCode;
     }
 
-    return cid->r->status;
+    /* For all missing-response situations simply return the status.
+     * and let the core deal respond to the client.
+     */
+    return r->status;
 }
 
 /**********************************************************
