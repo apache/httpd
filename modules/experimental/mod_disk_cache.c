@@ -548,7 +548,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
 
         rv = apr_file_open(&dobj->hfd, dobj->hdrsfile,
                            APR_WRITE | APR_CREATE | APR_EXCL,
-                           0, r->pool);
+                           APR_OS_DEFAULT, r->pool);
         if (rv != APR_SUCCESS) {
             return rv;
         }
