@@ -4,8 +4,8 @@
 <modulesynopsis>
 
 <name>mod_ldap</name>
-<description>LDAP connection pooling and result caching
-services for use by other LDAP modules</description>
+<description>LDAP connection pooling and result caching services for use
+by other LDAP modules</description>
 <status>Experimental</status>
 <sourcefile>util_ldap.c</sourcefile>
 <identifier>ldap_module</identifier>
@@ -25,34 +25,36 @@ services for use by other LDAP modules</description>
 </summary>
 
 <section id="exampleconfig"><title>Example Configuration</title>
+    <p>The following is an example configuration that uses
+    <module>mod_ldap</module> to increase the performance of HTTP Basic
+    authentication provided by <module>mod_auth_ldap</module>.</p>
 
-<p>The following is an example configuration that uses
-<module>mod_ldap</module> to increase the performance of HTTP Basic
-authentication provided by <module>mod_auth_ldap</module>.</p>
-
-<example>
-<pre>
-# Enable the LDAP connection pool and shared memory cache. Enable the
-# LDAP cache status handler. Requires that mod_ldap and mod_auth_ldap
-# be loaded. Change the "yourdomain.example.com" to match your domain.
-
-    LDAPSharedCacheSize 200000
-    LDAPCacheEntries 1024
-    LDAPCacheTTL 600
-    LDAPOpCacheEntries 1024
-    LDAPOpCacheTTL 600
-
-    &lt;Location /ldap-status&gt;
-        SetHandler ldap-status
-        Order deny,allow
-        Deny from all
-        Allow from yourdomain.example.com
-        AuthLDAPEnabled on
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
-        AuthLDAPAuthoritative on
-        require valid-user
-    &lt;/Location&gt;
-</pre></example>
+    <example>
+      # Enable the LDAP connection pool and shared<br />
+      # memory cache. Enable the LDAP cache status<br />
+      # handler. Requires that mod_ldap and mod_auth_ldap<br />
+      # be loaded. Change the "yourdomain.example.com" to<br />
+      # match your domain.<br />
+      <br />
+      LDAPSharedCacheSize 200000<br />
+      LDAPCacheEntries 1024<br />
+      LDAPCacheTTL 600<br />
+      LDAPOpCacheEntries 1024<br />
+      LDAPOpCacheTTL 600<br />
+      <br />
+      &lt;Location /ldap-status&gt;<br />
+      <indent>
+        SetHandler ldap-status<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourdomain.example.com<br />
+        AuthLDAPEnabled on<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPAuthoritative on<br />
+        require valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </section>
 
 <section id="pool"><title>LDAP Connection Pool</title>
@@ -83,82 +85,81 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
     with mod_auth_ldap. In addition, the load on the LDAP server
     will be significantly decreased.</p>
 
-    <p><module>mod_ldap</module> supports two types of LDAP caching during the
-    search/bind phase with a <em>search/bind cache</em> and
+    <p><module>mod_ldap</module> supports two types of LDAP caching during
+    the search/bind phase with a <em>search/bind cache</em> and
     during the compare phase with two <em>operation
     caches</em>. Each LDAP URL that is used by the server has
     its own set of these three caches.</p>
 
-<section id="search-bind"><title>The Search/Bind Cache</title>
+    <section id="search-bind"><title>The Search/Bind Cache</title>
+      <p>The process of doing a search and then a bind is the
+      most time-consuming aspect of LDAP operation, especially if
+      the directory is large. The search/bind cache is used to
+      cache all searches that resulted in successful binds.
+      Negative results (<em>i.e.</em>, unsuccessful searches, or searches
+      that did not result in a successful bind) are not cached.
+      The rationale behind this decision is that connections with
+      invalid credentials are only a tiny percentage of the total
+      number of connections, so by not caching invalid
+      credentials, the size of the cache is reduced.</p>
 
-        <p>The process of doing a search and then a bind is the
-        most time-consuming aspect of LDAP operation, especially if
-        the directory is large. The search/bind cache is used to
-        cache all searches that resulted in successful binds.
-        Negative results (i.e., unsuccessful searches, or searches
-        that did not result in a successful bind) are not cached.
-        The rationale behind this decision is that connections with
-        invalid credentials are only a tiny percentage of the total
-        number of connections, so by not caching invalid
-        credentials, the size of the cache is reduced.</p>
+      <p><module>mod_ldap</module> stores the username, the DN
+      retrieved, the password used to bind, and the time of the bind
+      in the cache. Whenever a new connection is initiated with the
+      same username, <module>mod_ldap</module> compares the password
+      of the new connection with the password in the cache. If the
+      passwords match, and if the cached entry is not too old,
+      <module>mod_ldap</module> bypasses the search/bind phase.</p>
 
-        <p><module>mod_ldap</module> stores the username, the DN
-        retrieved, the password used to bind, and the time of the bind
-        in the cache. Whenever a new connection is initiated with the
-        same username, <module>mod_ldap</module> compares the password
-        of the new connection with the password in the cache. If the
-        passwords match, and if the cached entry is not too old,
-        <module>mod_ldap</module> bypasses the search/bind phase.</p>
+      <p>The search and bind cache is controlled with the <directive
+      module="mod_ldap">LDAPCacheEntries</directive> and <directive
+      module="mod_ldap">LDAPCacheTTL</directive> directives.</p>
+    </section>
 
-        <p>The search and bind cache is controlled with the <directive
-        module="mod_ldap">LDAPCacheEntries</directive> and <directive
-        module="mod_ldap">LDAPCacheTTL</directive> directives.</p>
-</section>
+    <section id="opcaches"><title>Operation Caches</title>
+      <p>During attribute and distinguished name comparison
+      functions, <module>mod_ldap</module> uses two operation caches
+      to cache the compare operations. The first compare cache is
+      used to cache the results of compares done to test for LDAP
+      group membership. The second compare cache is used to cache
+      the results of comparisons done between distinguished
+      names.</p>
 
-<section id="opcaches"><title>Operation Caches</title>
+      <p>The behavior of both of these caches is controlled with
+      the <directive module="mod_ldap">LDAPOpCacheEntries</directive>
+      and <directive module="mod_ldap">LDAPOpCacheTTL</directive>
+      directives.</p>
+    </section>
 
-        <p>During attribute and distinguished name comparison
-        functions, <module>mod_ldap</module> uses two operation caches
-        to cache the compare operations. The first compare cache is
-        used to cache the results of compares done to test for LDAP
-        group membership. The second compare cache is used to cache
-        the results of comparisons done between distinguished
-        names.</p>
+    <section id="monitoring"><title>Monitoring the Cache</title>
+      <p><module>mod_ldap</module> has a content handler that allows
+      administrators to monitor the cache performance. The name of
+      the content handler is <code>ldap-status</code>, so the
+      following directives could be used to access the
+      <module>mod_ldap</module> cache information:</p>
 
-        <p>The behavior of both of these caches is controlled with
-        the <directive module="mod_ldap">LDAPOpCacheEntries</directive>
-        and <directive module="mod_ldap">LDAPOpCacheTTL</directive>
-        directives.</p>
-</section>
+      <example>
+        &lt;Location /server/cache-info&gt;<br />
+        <indent>
+          SetHandler ldap-status<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
 
-<section id="monitoring"><title>Monitoring the Cache</title>
-
-        <p><module>mod_ldap</module> has a content handler that allows
-        administrators to monitor the cache performance. The name of
-        the content handler is <code>ldap-status</code>, so the
-        following directives could be used to access the
-        <module>mod_ldap</module> cache information:</p>
-<example><pre>
-&lt;Location /server/cache-info &gt;
- SetHandler ldap-status
-&lt;/Location&gt;
-</pre></example>
-
-        <p>By fetching the URL
-        <code>http://servername/cache-info</code>, the administrator
-        can get a status report of every cache that is used by
-        <module>mod_ldap</module> cache. Note that if Apache does not
-        support shared memory, then each <code>httpd</code> instance has its
-        own cache, so reloading the URL will result in different
-        information each time, depending on which <code>httpd</code>
-        instance processes the request.</p>
-</section>
+      <p>By fetching the URL <code>http://servername/cache-info</code>,
+      the administrator can get a status report of every cache that is used
+      by <module>mod_ldap</module> cache. Note that if Apache does not
+      support shared memory, then each <code>httpd</code> instance has its
+      own cache, so reloading the URL will result in different
+      information each time, depending on which <code>httpd</code>
+      instance processes the request.</p>
+    </section>
 </section>
 
 <directivesynopsis>
 <name>LDAPSharedCacheSize</name>
 <description>Size in bytes of the shared-memory cache</description>
-<syntax>LDAPSharedCacheSize <em>bytes</em></syntax>
+<syntax>LDAPSharedCacheSize <var>bytes</var></syntax>
 <default>LDAPSharedCacheSize 102400</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -171,7 +172,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 <directivesynopsis>
 <name>LDAPCacheEntries</name>
 <description>Maximum number of entires in the primary LDAP cache</description>
-<syntax>LDAPCacheEntries <em>number</em></syntax>
+<syntax>LDAPCacheEntries <var>number</var></syntax>
 <default>LDAPCacheEntries 1024</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -186,7 +187,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 <directivesynopsis>
 <name>LDAPCacheTTL</name>
 <description>Time that cached items remain valid</description>
-<syntax>LDAPCacheTTL <em>seconds</em></syntax>
+<syntax>LDAPCacheTTL <var>seconds</var></syntax>
 <default>LDAPCacheTTL 600</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -201,7 +202,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 <name>LDAPOpCacheEntries</name>
 <description>Number of entries used to cache LDAP compare 
 operations</description>
-<syntax>LDAPOpCacheEntries <em>number</em></syntax>
+<syntax>LDAPOpCacheEntries <var>number</var></syntax>
 <default>LDAPOpCacheEntries 1024</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -214,9 +215,9 @@ operations</description>
 
 <directivesynopsis>
 <name>LDAPOpCacheTTL</name>
-<description>Time that entries in the operation cache remain 
+<description>Time that entries in the operation cache remain
 valid</description>
-<syntax>LDAPOpCacheTTL <em>seconds</em></syntax>
+<syntax>LDAPOpCacheTTL <var>seconds</var></syntax>
 <default>LDAPOpCacheTTL 600</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -229,7 +230,7 @@ valid</description>
 <directivesynopsis>
 <name>LDAPCertDBPath</name>
 <description>Directory containing certificates for SSL support</description>
-<syntax>LDAPCertDBPath <em>directory-path</em></syntax>
+<syntax>LDAPCertDBPath <var>directory-path</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>

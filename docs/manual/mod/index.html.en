@@ -78,8 +78,8 @@ headers</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Provides a comprehensive overview of the server
 configuration</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
-<dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching
-services for use by other LDAP modules</dd>
+<dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
+by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
 <dt><a href="mod_mem_cache.html">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
