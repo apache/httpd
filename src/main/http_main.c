@@ -116,7 +116,7 @@
    */
 
 # ifdef _DEBUG
-#  ifndef DEBUG_TO_ERROR_LOG
+#  ifdef DEBUG_TO_ERROR_LOG
 #   define APD1(a) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a)
 #   define APD2(a,b) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b)
 #   define APD3(a,b,c) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b,c)
