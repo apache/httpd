@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_file_cache.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
-# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_file_cache.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
+# ADD BASE LINK32 /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_file_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
+# ADD LINK32 /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_file_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
 
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_file_cache.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
-# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_file_cache.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
+# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_file_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
+# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_file_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_file_cache
 
 !ENDIF 
 

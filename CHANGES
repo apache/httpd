@@ -1,4 +1,7 @@
 Changes with Apache 2.0b1
+  *) Begin restructuring scoreboard code to enable adding back in
+     the ability to use IPC other than shared memory.
+     Get mod_status working on Windows again. [Bill Stoddard]
 
   *) Make mod_status work with 2.0.  This will work for prefork,
      mpmt_pthread, and dexter.  [Ryan Bloom]

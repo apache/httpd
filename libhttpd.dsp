@@ -227,6 +227,10 @@ SOURCE=.\server\log.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\scoreboard.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\vhost.c
 # End Source File
 # End Group

@@ -308,7 +308,7 @@ static int status_handler(request_rec *r)
     if (r->header_only)
 	return 0;
 
-    ap_sync_scoreboard_image();
+/*    ap_sync_scoreboard_image(); */
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
         for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
             int indx = (i * HARD_THREAD_LIMIT) + j;

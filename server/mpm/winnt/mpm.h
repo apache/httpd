@@ -59,5 +59,10 @@
 #ifndef APACHE_MPM_H
 #define APACHE_MPM_H
 
+/* mpm.h is the place to make declarations that are MPM specific but that must be 
+ * shared with non-mpm specific code in the server.  Hummm, perhaps we can
+ * move most of this stuff to mpm_common.h?
+ */
+extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_H */

@@ -64,7 +64,11 @@
 #include "http_main.h"
 #include "http_core.h"
 #include "http_config.h"
+/* ToDo: Fix this right */
+#ifndef WIN32
 #include "unixd.h"
+#endif
+
 #include "http_conf_globals.h"
 #include "mpm.h"
 #include "scoreboard.h"
@@ -79,20 +83,33 @@ AP_DECLARE_DATA apr_time_t ap_restart_time = 0;
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
-
 static apr_shmem_t *scoreboard_shm = NULL;
-
+#endif
+/*
+ * ToDo:
+ * This function should be renamed to cleanup_shared
+ * and it should handle cleaning up a scoreboard shared
+ * between processes using any form of IPC (file, shared memory
+ * segment, etc.). Leave it as is now because it is being used
+ * by various MPMs. 
+ */
 apr_status_t ap_cleanup_shared_mem(void *d)
 {
+#if APR_HAD_SHARED_MEMORY
     apr_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     apr_shm_destroy(scoreboard_shm);
-
+#endif
     return APR_SUCCESS;
 }
 
-static void setup_shared_mem(apr_pool_t *p)
+/* ToDo: This function should be made to handle setting up 
+ * a scoreboard shared between processes using any IPC technique, 
+ * not just a shared memory segment
+ */
+static void setup_shared(apr_pool_t *p)
 {
+#if APR_HAD_SHARED_MEMORY
     char buf[512];
     char errmsg[120];
     const char *fname;
@@ -114,26 +131,69 @@ static void setup_shared_mem(apr_pool_t *p)
         apr_shm_destroy(scoreboard_shm);
         exit(APEXIT_INIT);
     }
-    apr_register_cleanup(p, NULL, ap_cleanup_shared_mem, apr_null_cleanup);
     ap_scoreboard_image->global.running_generation = 0;
+#endif
 }
 
-void reopen_scoreboard(apr_pool_t *p)
+AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p)
 {
 }
-#endif   /* APR_SHARED_MEM */
 
-/* Called by parent process */
-void reinit_scoreboard(apr_pool_t *p)
+/* ap_cleanup_scoreboard
+ * 
+ */
+static void ap_cleanup_scoreboard(void *d) {
+    if (ap_scoreboard_image == NULL)
+        return;
+    if (ap_scoreboard_image->global.sb_type == SB_SHARED) {
+        ap_cleanup_shared_mem(NULL);
+    }
+    else {
+        free(ap_scoreboard_image);
+        ap_scoreboard_image = NULL;
+    }
+}
+
+/* ap_create_scoreboard(apr_pool_t*, ap_scoreboard_e t)
+ *
+ * Create or reinit an existing scoreboard. The MPM can control whether
+ * the scoreboard is shared across multiple processes or not
+ */
+AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
 	running_gen = ap_scoreboard_image->global.running_generation;
     if (ap_scoreboard_image == NULL) {
-        setup_shared_mem(p);
+        if (sb_type == SB_SHARED) {
+            setup_shared(p);
+            ap_scoreboard_image->global.sb_type = SB_SHARED;
+        }
+        else {
+            /* A simple malloc will suffice */
+            char buf[512];
+            ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+            if (ap_scoreboard_image == NULL) {
+                apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
+                             ap_server_argv0);
+                perror(buf); /* o.k. since MM sets errno */
+                exit(APEXIT_INIT);            
+            }
+            ap_scoreboard_image->global.sb_type = SB_NOT_SHARED;
+        }
     }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
     ap_scoreboard_image->global.running_generation = running_gen;
+    apr_register_cleanup(p, NULL, ap_cleanup_scoreboard, apr_null_cleanup);
+}
+
+/* ToDo:
+ * reinit_scoreboard should be eliminated when all MPMs migrate to
+ * ap_create_scoreboard()
+ */
+void reinit_scoreboard(apr_pool_t *p)
+{
+    ap_create_scoreboard(p, SB_SHARED);
 }
 
 /* Routines called to deal with the scoreboard image
@@ -147,7 +207,7 @@ void reinit_scoreboard(apr_pool_t *p)
  * anyway.
  */
 
-apr_inline void ap_sync_scoreboard_image(void)
+void ap_sync_scoreboard_image(void)
 {
 }
 
