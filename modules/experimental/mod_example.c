@@ -294,7 +294,7 @@ static void setup_module_cells()
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-        example_pool = ap_make_sub_pool(NULL);
+        ap_create_context(&example_pool, NULL);
     };
     /*
      * Likewise for the ap_table_t of routine/environment pairs we visit outside of
@@ -359,7 +359,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        p = ap_make_sub_pool(example_pool);
+        ap_create_context(&p, example_pool);
         if (trace != NULL) {
             trace = ap_pstrdup(p, trace);
         }
@@ -425,7 +425,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
      */
 #define EXAMPLE_LOG_EACH 0
     if (EXAMPLE_LOG_EACH && (s != NULL)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, s, "mod_example: %s", note);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", note);
     }
 }
 
@@ -626,7 +626,8 @@ static int example_handler(request_rec *r)
 /*
  * All our module initialiser does is add its trace to the log.
  */
-static void example_init(server_rec *s, ap_context_t *p)
+static void example_init(ap_context_t *p, ap_context_t *ptemp, 
+                         ap_context_t *plog, server_rec *s)
 {
 
     char *note;
@@ -657,7 +658,7 @@ static void example_init(server_rec *s, ap_context_t *p)
 /*
  * All our process initialiser does is add its trace to the log.
  */
-static void example_child_init(server_rec *s, ap_context_t *p)
+static void example_child_init(ap_context_t *p, server_rec *s)
 {
 
     char *note;
@@ -1102,6 +1103,58 @@ static const handler_rec example_handlers[] =
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
+/* Which functions are responsible for which hooks in the server.           */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+/* 
+ * Each function our module provides to handle a particular hook is
+ * specified here.  The functions are registered using 
+ * ap_hook_foo(name, predecessors, successors, position)
+ * where foo is the name of the hook.
+ *
+ * The args are as follows:
+ * name         -> the name of the function to call.
+ * predecessors -> a list of modules whose calls to this hook must come 
+ *                 before this module.
+ * successors   -> a list of modules whose calls to this hook must come 
+ *                 after this module.
+ * position     -> The relative position of this module.  One of HOOK_FIRST,
+ *                 HOOK_MIDDLE, or HOOK_LAST.  Most modules will use
+ *                 HOOK_MIDDLE.  If multiple modules use the same relative
+ *                 position, Apache will determine which to call first.
+ *                 If your module relies on another module to run first,
+ *                 or another module running after yours, use the 
+ *                 predecessors and/or successors.
+ */
+static void register_hooks(void)
+{
+    /* module initializer */
+    ap_hook_post_config(example_init, NULL, NULL, HOOK_MIDDLE);
+    /* [2] filename-to-URI translation */
+    ap_hook_translate_name(example_translate_handler, NULL, NULL, HOOK_MIDDLE);
+    /* [5] check/validate user_id */
+    ap_hook_check_user_id(example_check_user_id, NULL, NULL, HOOK_MIDDLE);     
+     /* [6] check user_id is valid *here* */
+    ap_hook_auth_checker(example_auth_checker, NULL, NULL, HOOK_MIDDLE); 
+    /* [4] check access by host address */
+    ap_hook_access_checker(example_access_checker, NULL, NULL, HOOK_MIDDLE);   
+    /* [7] MIME type checker/setter */
+    ap_hook_type_checker(example_type_checker, NULL, NULL, HOOK_MIDDLE);    
+    /* [8] fixups */
+    ap_hook_fixups(example_fixer_upper, NULL, NULL, HOOK_MIDDLE);   
+    /* [10] logger */
+    ap_hook_log_transaction(example_logger, NULL, NULL, HOOK_MIDDLE);         
+    /* [3] header parser */
+    ap_hook_header_parser(example_header_parser, NULL, NULL, HOOK_MIDDLE);     
+    /* process initializer */
+    ap_hook_child_init(example_child_init, NULL, NULL, HOOK_MIDDLE);       
+    /* [1] post read_request handling */
+    ap_hook_post_read_request(example_post_read_request, NULL, NULL, 
+                              HOOK_MIDDLE);
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
 /* Finally, the list of callback routines and data structures that          */
 /* provide the hooks into our module from the other parts of the server.    */
 /*                                                                          */
@@ -1116,31 +1169,11 @@ static const handler_rec example_handlers[] =
  */
 module example_module =
 {
-    STANDARD_MODULE_STUFF,
-    example_init,               /* module initializer */
+    STANDARD20_MODULE_STUFF,
     example_create_dir_config,  /* per-directory config creator */
     example_merge_dir_config,   /* dir config merger */
     example_create_server_config,       /* server config creator */
     example_merge_server_config,        /* server config merger */
     example_cmds,               /* command ap_table_t */
     example_handlers,           /* [7] list of handlers */
-    example_translate_handler,  /* [2] filename-to-URI translation */
-    example_check_user_id,      /* [5] check/validate user_id */
-    example_auth_checker,       /* [6] check user_id is valid *here* */
-    example_access_checker,     /* [4] check access by host address */
-    example_type_checker,       /* [7] MIME type checker/setter */
-    example_fixer_upper,        /* [8] fixups */
-    example_logger,             /* [10] logger */
-#if MODULE_MAGIC_NUMBER >= 19970103
-    example_header_parser,      /* [3] header parser */
-#endif
-#if MODULE_MAGIC_NUMBER >= 19970719
-    example_child_init,         /* process initializer */
-#endif
-#if MODULE_MAGIC_NUMBER >= 19970728
-    example_child_exit,         /* process exit/cleanup */
-#endif
-#if MODULE_MAGIC_NUMBER >= 19970902
-    example_post_read_request   /* [1] post read_request handling */
-#endif
 };
