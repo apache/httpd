@@ -157,65 +157,67 @@ EOHT
 # closure code.
 #
 QUERY:
-    if ($word) {
-	#
-	# Try and open the index file; complain bitterly if we can't.
-	#
-	if (! open (INDEX, "<$INDEX")) {
-	    printf ("Can't find documentation index!");
-	    leave QUERY;
+    {
+	if ($word) {
+	    #
+	    # Try and open the index file; complain bitterly if we can't.
+	    #
+	    if (! open (INDEX, "<$INDEX")) {
+		printf ("Can't find documentation index!");
+		last QUERY;
+	    }
+	    #
+	    # Got it; display the search-results header.
+	    #
+	    printf ($HTML);
+	    #
+	    # Read the entire index in and turn it into an hash for the
+	    # lookup.
+	    #
+	    @index = <INDEX>;
+	    close (INDEX);
+	    chomp (@index);
+	    foreach (@index) {
+		($key, $files) = split (/:/, $_);
+		$Index{$key} = $files;
+	    }
+	    #
+	    # The dictionary is all lowercase words.  Smash our query value
+	    # and try to find it.
+	    #
+	    $word = lc ($word);
+	    if (! exists ($Index{$word})) {
+		printf ("  <P>\n  <EM>Sorry, no matches found.</EM>\n  </P>\n");
+		last QUERY;
+	    }
+	    #
+	    # Found an entry, so turn the hash value (a comma-separated list
+	    # of relative file names) into an array for display.
+	    # Incidentally, tell the user how many there are.
+	    #
+	    @files = split (/,/, $Index{$word});
+	    printf ("  <P>Total of %d match", scalar (@files));
+	    #
+	    # Be smart about plurals.
+	    #
+	    if (scalar (@files) != 1) {
+		printf ("es") ;
+	    }
+	    printf (" found.\n  </P>\n");
+	    #
+	    # Right.  Now display the files as they're listed.
+	    #
+	    printf ("  <OL>\n");
+	    foreach (@files) {
+		printf ("   <LI><A HREF=\"${prefix}$_\">");
+		printf ("<SAMP>$_</SAMP></A>\n");
+		printf ("   </LI>\n");
+	    }
+	    printf ("  </OL>\n");
+	    #
+	    # C'est tout!
+	    #
 	}
-	#
-	# Got it; display the search-results header.
-	#
-	printf ($HTML);
-	#
-	# Read the entire index in and turn it into an hash for the
-	# lookup.
-	#
-	@index = <INDEX>;
-	close (INDEX);
-	chomp (@index);
-	foreach (@index) {
-	    ($key, $files) = split (/:/, $_);
-	    $Index{$key} = $files;
-	}
-	#
-	# The dictionary is all lowercase words.  Smash our query value
-	# and try to find it.
-	#
-	$word = lc ($word);
-	if (! exists ($Index{$word})) {
-	    printf ("  <P>\n  <EM>Sorry, no matches found.</EM>\n  </P>\n");
-	    leave QUERY;
-	}
-	#
-	# Found an entry, so turn the hash value (a comma-separated list
-	# of relative file names) into an array for display.
-	# Incidentally, tell the user how many there are.
-	#
-	@files = split (/,/, $Index{$word});
-	printf ("  <P>Total of %d match", scalar (@files));
-	#
-	# Be smart about plurals.
-	#
-	if (scalar (@files) != 1) {
-	    printf ("es") ;
-	}
-	printf (" found.\n  </P>\n");
-	#
-	# Right.  Now display the files as they're listed.
-	#
-	printf ("  <OL>\n");
-	foreach (@files) {
-	    printf ("   <LI><A HREF=\"${prefix}$_\">");
-	    printf ("<SAMP>$_</SAMP></A>\n");
-	    printf ("   </LI>\n");
-	}
-	printf ("  </OL>\n");
-	#
-	# C'est tout!
-	#
     }
 
 #
