@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.1 $ ($Date: 1999/06/24 15:02:52 $)
+  $Revision: 1.2 $ ($Date: 1999/07/03 22:12:49 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -108,6 +108,9 @@
    <LI><A HREF="#htaccess-work">My <CODE>.htaccess</CODE> files are being
 	ignored.</A>
    </LI>
+   <LI><A HREF="#forbidden">Why do I get a 
+        &quot;<SAMP>Forbidden</SAMP>&quot; message whenever I try to 
+        access a particular directory?</A>
   </OL>
  </LI>
 <!--#endif -->
@@ -559,6 +562,29 @@
    </P>
    <HR>
  </LI>
+ <LI><A NAME="forbidden">
+       <STRONG>Why do I get a &quot;<SAMP>Forbidden</SAMP>&quot; message 
+       whenever I try to access a particular directory?</A>
+   <P>
+   This message is generally caused because either
+   <UL>
+    <LI>The underlying file system permissions do not allow the
+    User/Group under which Apache is running to access the necessary
+    files; or
+    <LI>The Apache configuration has some access restrictions in 
+    place which forbid access to the files.
+   </UL>
+   You can determine which case applies to your situation by checking the
+   error log.
+   </P>
+   <P>
+   In the case where file system permission are at fault, remember
+   that not only must the directory and files in question be readable,
+   but also all parent directories must be at least searchable by the
+   web server in order for the content to be accessible.
+   </P>
+   <HR>
+  </LI>
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->
