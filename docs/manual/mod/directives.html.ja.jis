@@ -206,6 +206,7 @@
 <li><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType</a></li>
 <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
 <li><a href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
+<li><a href="core.html#limitinternalrecursion">LimitInternalRecursion</a></li>
 <li><a href="core.html#limitrequestbody">LimitRequestBody</a></li>
 <li><a href="core.html#limitrequestfields">LimitRequestFields</a></li>
 <li><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize</a></li>

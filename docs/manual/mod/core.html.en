@@ -61,6 +61,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li>
@@ -1562,6 +1563,40 @@ except the named ones</td></tr>
       &lt;LimitExcept&gt;
     </code></p></div>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine maximum number of internal redirects and nested
+subrequests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitInternalRecursion <var>number</var> [<var>number</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitInternalRecursion 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.47 and later</td></tr>
+</table>
+    <p>An internal redirect happens, for example, when using the <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> directive, which internally
+    redirects the original request to a CGI script. A subrequest is Apache's
+    mechanism to find out what would happen for some URI if it were requested.
+    For example, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> uses subrequests to look for the
+    files listed in the <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
+    directive.</p>
+
+    <p><code class="directive">LimitInternalRecursion</code> prevents the server
+    from crashing when entering an infinite loop of internal redirects or
+    subrequests. Such loops are usually caused by misconfigurations.</p>
+
+    <p>The directive stores two different limits, which are evaluated on
+    per-request basis. The first <var>number</var> is the maximum number of
+    internal redirects, that may follow each other. The second <var>number</var>
+    determines, how deep subrequests may be nested. If you specify only one
+    <var>number</var>, it will be assigned to both limits.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      LimitInternalRecursion 5
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
