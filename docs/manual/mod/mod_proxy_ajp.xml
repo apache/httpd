@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.3 $ -->
+<!-- $Revision: 1.4 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,6 +47,8 @@
     </note>
 </summary>
 
+<seealso><module>mod_proxy</module></seealso>
+
 <section id="overviewprotocol"><title>Overview of the protocol</title>
     <p>The <code>AJP13</code> protocol is packet-oriented.  A binary format
     was presumably chosen over the more readable plain text for reasons of
@@ -62,10 +64,10 @@
     cause more connections to be open at once.</p>
     <p>Once the web server has opened a connection to the servlet container,
     the connection can be in one of the following states:</p>
-    <p><ul>
+    <ul>
     <li> Idle <br/> No request is being handled over this connection. </li>
     <li> Assigned <br/> The connecton is handling a specific request.</li>
-    </ul></p>
+    </ul>
     <p>Once a connection is assigned to handle a particular request, the basic
     request informaton (e.g. HTTP headers, etc) is sent over the connection in
     a highly condensed form (e.g. common strings are encoded as integers).
@@ -74,7 +76,7 @@
     separate packet immediately after.</p>
     <p>At this point, the servlet container is presumably ready to start
     processing the request.  As it does so, it can send the
-    following messages back to the web server:
+    following messages back to the web server:</p>
     <ul>
     <li>SEND_HEADERS <br/>Send a set of headers back to the browser.</li>
     <li>SEND_BODY_CHUNK <br/>Send a chunk of body data back to the browser.
@@ -85,7 +87,7 @@
     request (for uploaded files, for example).  (Note: this is unrelated to
     HTTP chunked tranfer).</li>
     <li>END_RESPONSE <br/> Finish the request-handling cycle.</li>
-    </ul></p>
+    </ul>
     <p>Each message is accompanied by a differently formatted packet of data.
     See Response Packet Structures below for details.</p>
 </section>
@@ -99,7 +101,7 @@
     making that so (on the C side).  If anyone with a better knowledge of
     socket calls can step in, that would be great.</p>
     <p>There are four data types in the protocol: bytes, booleans,
-    integers and strings.
+    integers and strings.</p>
     <dl>
     <dt><strong>Byte</strong></dt><dd>A single byte.</dd>
     <dt><strong>Boolean</strong></dt>
@@ -122,7 +124,7 @@
       C code can pass around references into a single buffer, without copying.
       if the \0 was missing, the C code would have to copy things out in order
       to get its notion of a string.</dd>
-    </dl></p>
+    </dl>
 
   <section><title>Packet Size</title>
     <p>According to much of the code, the max packet size is <code>
@@ -136,7 +138,7 @@
     ASCII code for B).  After those first two bytes, there is an integer
     (encoded as above) with the length of the payload.  Although this might
     suggest that the maximum payload could be as large as 2^16, in fact, the
-    code sets the maximum to be 8K.
+    code sets the maximum to be 8K.</p>
     <table>
       <tr>
         <td colspan="6"><em>Packet Format (Server->Container)</em></td>
@@ -176,13 +178,14 @@
         <td colspan="2">Data Length (n)</td>
         <td>Data</td>
       </tr>
-    </table></p>
+    </table>
     <p>For most packets, the first byte of the payload encodes the type of
      message.  The exception is for request body packets sent from the server to
      the container -- they are sent with a standard packet header (<code>
      0x1234</code> and then length of the packet), but without any prefix code
      after that.</p>
-     <p>The web server can send the following messages to the servlet container:
+     <p>The web server can send the following messages to the servlet
+     container:</p>
     <table>
       <tr>
         <td>Code</td>
@@ -216,14 +219,14 @@
         <td>Data</td>
         <td>Size (2 bytes) and corresponding body data.</td>
       </tr>
-    </table></p>
+    </table>
     <p>To ensure some basic security, the container will only actually do the
     <code>Shutdown</code> if the request comes from the same machine on which
     it's hosted.</p>
     <p>The first <code>Data</code> packet is send immediatly after the
     <code>Forward Request</code> by the web server.</p>
     <p>The servlet container can send the following types of messages to the
-    webserver:
+    webserver:</p>
     <table>
       <tr>
         <td>Code</td>
@@ -259,7 +262,7 @@
         <td>CPong Reply</td>
         <td>The reply to a CPing request</td>
       </tr>
-    </table></p>
+    </table>
     <p>Each of the above messages has a different internal structure, detailed
     below.</p>
   </section>
@@ -311,7 +314,7 @@ attribute_value := (string)
   </section>
   <section><title>Method</title>
     <p>The HTTP method, encoded as a single byte:</p>
-    <p><table>
+    <table>
       <tr><td>Command Name</td><td>Code</td></tr>
       <tr><td>OPTIONS</td><td>1</td></tr>
       <tr><td>GET</td><td>2</td></tr>
@@ -340,7 +343,7 @@ attribute_value := (string)
       <tr><td>MERGE</td><td>25</td></tr>
       <tr><td>BASELINE_CONTROL</td><td>26</td></tr>
       <tr><td>MKACTIVITY</td><td>27</td></tr>
-    </table></p>
+    </table>
     <p>Later version of ajp13, will transport 
     additional methods, even if they are not in this list.</p>
   </section>
@@ -359,7 +362,7 @@ attribute_value := (string)
     it is encoded normally (as a string, with prefixed length).  The list of
     common headers <code>sc_req_header_name</code>and their codes
     is as follows (all are case-sensitive):</p>
-    <p><table>
+    <table>
       <tr><td>Name</td><td>Code value</td><td>Code name</td></tr>
       <tr><td>accept</td><td>0xA001</td><td>SC_REQ_ACCEPT</td></tr>
       <tr><td>accept-charset</td><td>0xA002</td><td>SC_REQ_ACCEPT_CHARSET
@@ -381,7 +384,7 @@ attribute_value := (string)
       <tr><td>pragma</td><td>0xA00C</td><td>SC_REQ_PRAGMA</td></tr>
       <tr><td>referer</td><td>0xA00D</td><td>SC_REQ_REFERER</td></tr>
       <tr><td>user-agent</td><td>0xA00E</td><td>SC_REQ_USER_AGENT</td></tr>
-    </table></p>
+    </table>
     <p>The Java code that reads this grabs the first two-byte integer and if
     it sees an <code>'0xA0'</code> in the most significant
     byte, it uses the integer in the second byte as an index into an array of
@@ -405,7 +408,7 @@ attribute_value := (string)
     sends them in the order listed below).  A special terminating code is
     sent to signal the end of the list of optional attributes. The list of
     byte codes is:</p>
-    <p><table>
+    <table>
       <tr><td>Information</td><td>Code Value</td><td>Note</td></tr>
       <tr><td>?context</td><td>0x01</td><td>Not currently implemented
       </td></tr>
@@ -422,7 +425,7 @@ attribute_value := (string)
       attribute follows)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td></td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>request_terminator</td></tr>
-    </table></p>
+    </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
     currently set by the C code, and most of the Java code completely ignores
     whatever is sent over for those fields (and some of it will actually break
@@ -493,7 +496,7 @@ AJP13_GET_BODY_CHUNK :=
     encoded the same way the request header names are. See header_encoding above
     for details about how the the codes are distinguished from the strings.<br />
     The codes for common headers are:</p>
-    <p><table>
+    <table>
       <tr><td>Name</td><td>Code value</td></tr>
       <tr><td>Content-Type</td><td>0xA001</td></tr>
       <tr><td>Content-Language</td><td>0xA002</td></tr>
@@ -506,7 +509,7 @@ AJP13_GET_BODY_CHUNK :=
       <tr><td>Servlet-Engine</td><td>0xA009</td></tr>
       <tr><td>Status</td><td>0xA00A</td></tr>
       <tr><td>WWW-Authenticate</td><td>0xA00B</td></tr>
-    </table></p>
+    </table>
     <p> After the code or the string header name, the header value is
     immediately encoded.</p>
   </section>
@@ -531,6 +534,5 @@ AJP13_GET_BODY_CHUNK :=
   </section>
 </section>
 
-<seealso><module>mod_proxy</module></seealso>
 
 </modulesynopsis>
