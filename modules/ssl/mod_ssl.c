@@ -83,7 +83,7 @@ static const command_rec ssl_config_cmds[] = {
                 "(`none', `file:/path/to/file')")
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
-                "(`builtin', `exec:/path/to/program')")
+                "(`builtin', `|/path/to/pipe_program`, or `exec:/path/to/cgi_program')")
     SSL_CMD_SRV(SessionCache, TAKE1,
                 "SSL Session Cache storage "
                 "(`none', `dbm:/path/to/file')")

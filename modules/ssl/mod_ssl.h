@@ -395,7 +395,8 @@ typedef enum {
 typedef enum {
     SSL_PPTYPE_UNSET   = UNSET,
     SSL_PPTYPE_BUILTIN = 0,
-    SSL_PPTYPE_FILTER  = 1
+    SSL_PPTYPE_FILTER  = 1,
+	SSL_PPTYPE_PIPE    = 2
 } ssl_pphrase_t;
 
 /*
@@ -721,7 +722,6 @@ void         ssl_scache_shmcb_status(server_rec *, pool *, void (*)(char *, void
 
 /*  Pass Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
-int          ssl_pphrase_Handle_CB(char *, int, int, void *);
 
 /*  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetTmpParam(int);
