@@ -391,19 +391,29 @@ static int proxy_handler(request_rec *r)
             }
         }
 
-/* otherwise, try it direct */
-/* N.B. what if we're behind a firewall, where we must use a proxy or
- * give up??
- */
+    /* otherwise, try it direct */
+    /* N.B. what if we're behind a firewall, where we must use a proxy or
+     * give up??
+     */
+
     /* handle the scheme */
-    if (r->method_number == M_CONNECT)
+    if (r->method_number == M_CONNECT) {
         return ap_proxy_connect_handler(r, cr, url, NULL, 0);
-    if (strcasecmp(scheme, "http") == 0)
+    }
+    if (strcasecmp(scheme, "http") == 0) {
         return ap_proxy_http_handler(r, cr, url, NULL, 0);
-    if (strcasecmp(scheme, "ftp") == 0)
+    }
+    if (strcasecmp(scheme, "ftp") == 0) {
         return ap_proxy_ftp_handler(r, cr, url);
-    else
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, r,
+                    "proxy: No protocol handler was valid for the URL %s. "
+                    "If you are using a DSO version of mod_proxy, make sure "
+                    "the proxy submodules are included in the configuration "
+                    "using LoadModule.", r->uri);
         return HTTP_FORBIDDEN;
+    }
 }
 
 /* -------------------------------------------------------------- */
