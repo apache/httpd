@@ -180,9 +180,12 @@ static void *merge_mime_dir_configs(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct,
-                            char *ext)
+static const char *add_type(cmd_parms *cmd, void *m_, const char *ct_,
+                            const char *ext)
 {
+    mime_dir_config *m=m_;
+    char *ct=ap_pstrdup(cmd->pool,ct_);
+
     if (*ext == '.')
 	++ext;
 	
@@ -191,9 +194,12 @@ static const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct,
     return NULL;
 }
 
-static const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
-                                char *ext)
+static const char *add_encoding(cmd_parms *cmd, void *m_, const char *enc_,
+				const char *ext)
 {
+    mime_dir_config *m=m_;
+    char *enc=ap_pstrdup(cmd->pool,enc_);
+
     if (*ext == '.')
         ++ext;
     ap_str_tolower(enc);
@@ -201,9 +207,12 @@ static const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
     return NULL;
 }
 
-static const char *add_charset(cmd_parms *cmd, mime_dir_config *m,
-			       char *charset, char *ext)
+static const char *add_charset(cmd_parms *cmd, void *m_, const char *charset_,
+			       const char *ext)
 {
+    mime_dir_config *m=m_;
+    char *charset=ap_pstrdup(cmd->pool,charset_);
+
     if (*ext == '.') {
 	++ext;
     }
@@ -212,9 +221,12 @@ static const char *add_charset(cmd_parms *cmd, mime_dir_config *m,
     return NULL;
 }
 
-static const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
-                                char *ext)
+static const char *add_language(cmd_parms *cmd, void *m_, const char *lang_,
+                                const char *ext)
 {
+    mime_dir_config *m=m_;
+    char *lang=ap_pstrdup(cmd->pool,lang_);
+
     if (*ext == '.') {
 	++ext;
     }
@@ -223,9 +235,12 @@ static const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
     return NULL;
 }
 
-static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
-                               char *ext)
+static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
+                               const char *ext)
 {
+    mime_dir_config *m=m_;
+    char *hdlr=ap_pstrdup(cmd->pool,hdlr_);
+
     if (*ext == '.')
         ++ext;
     ap_str_tolower(hdlr);
@@ -238,7 +253,7 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
  * will keep the association from being inherited, as well, but not
  * from being re-added at a subordinate level.
  */
-static const char *remove_handler(cmd_parms *cmd, void *m, char *ext)
+static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
 {
     mime_dir_config *mcfg = (mime_dir_config *) m;
     handlers_info *hand;
@@ -255,37 +270,39 @@ static const char *remove_handler(cmd_parms *cmd, void *m, char *ext)
  * the name of its config file, so...
  */
 
-static const char *set_types_config(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_types_config(cmd_parms *cmd, void *dummy,
+				    const char *arg)
 {
-    ap_set_module_config(cmd->server->module_config, &mime_module, arg);
+    ap_set_module_config(cmd->server->module_config, &mime_module,
+			 (void *)arg);
     return NULL;
 }
 
 static const command_rec mime_cmds[] =
 {
-    {"AddType", add_type, NULL, OR_FILEINFO, ITERATE2,
-     "a mime type followed by one or more file extensions"},
-    {"AddEncoding", add_encoding, NULL, OR_FILEINFO, ITERATE2,
-     "an encoding (e.g., gzip), followed by one or more file extensions"},
-    {"AddCharset", add_charset, NULL, OR_FILEINFO, ITERATE2,
-     "a charset (e.g., iso-2022-jp), followed by one or more file extensions"},
-    {"AddLanguage", add_language, NULL, OR_FILEINFO, ITERATE2,
-     "a language (e.g., fr), followed by one or more file extensions"},
-    {"AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
-     "a handler name followed by one or more file extensions"},
-    {"ForceType", ap_set_string_slot_lower, 
-     (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO, TAKE1, 
-     "a media type"},
-    {"RemoveHandler", remove_handler, NULL, OR_FILEINFO, ITERATE,
-     "one or more file extensions"},
-    {"SetHandler", ap_set_string_slot_lower, 
-     (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO, TAKE1, 
-     "a handler name"},
-    {"TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
-     "the MIME types config file"},
-    {"DefaultLanguage", ap_set_string_slot,
-     (void*)XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO, TAKE1,
-     "language to use for documents with no other language file extension" },
+AP_INIT_ITERATE2("AddType", add_type, NULL, OR_FILEINFO, 
+     "a mime type followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddEncoding", add_encoding, NULL, OR_FILEINFO,
+     "an encoding (e.g., gzip), followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddCharset", add_charset, NULL, OR_FILEINFO,
+     "a charset (e.g., iso-2022-jp), followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddLanguage", add_language, NULL, OR_FILEINFO,
+     "a language (e.g., fr), followed by one or more file extensions"),
+AP_INIT_ITERATE2("AddHandler", add_handler, NULL, OR_FILEINFO,
+     "a handler name followed by one or more file extensions"),
+AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower, 
+     (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
+     "a media type"),
+AP_INIT_ITERATE("RemoveHandler", remove_handler, NULL, OR_FILEINFO,
+     "one or more file extensions"),
+AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
+     (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
+     "a handler name"),
+AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
+     "the MIME types config file"),
+AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
+     (void*)XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
+     "language to use for documents with no other language file extension"),
     {NULL}
 };
 

@@ -1097,13 +1097,15 @@ API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
 }
 
 API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
-						char *struct_ptr, char *arg)
+							 void *struct_ptr,
+							 const char *arg_)
 {
     /* This one's pretty generic... */
+    char *arg=ap_pstrdup(cmd->pool,arg_);
 
     int offset = (int) (long) cmd->info;
     ap_str_tolower(arg);
-    *(char **) (struct_ptr + offset) = arg;
+    *(char **) ((char *)struct_ptr + offset) = arg;
     return NULL;
 }
 

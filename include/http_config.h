@@ -131,6 +131,8 @@ typedef union {
     { directive, { .take2=func }, mconfig, where, TAKE2, help }
 # define AP_INIT_TAKE12(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, TAKE12, help }
+# define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
+    { directive, { .take2=func }, mconfig, where, ITERATE2, help }
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE23, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
@@ -366,7 +368,8 @@ API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 
 API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
 						   const char *);
-API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, 
+							 void *, const char *);
 API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, char *, int);
 API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);
 
