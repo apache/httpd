@@ -1332,7 +1332,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
         r->connection->keepalive = -1;
     }
     else
-        protocol = SERVER_PROTOCOL;
+        protocol = AP_SERVER_PROTOCOL;
 
 #ifdef CHARSET_EBCDIC
     ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
@@ -1775,7 +1775,7 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         /* sending 100 Continue interim response */
-        ap_rvputs(r, SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
+        ap_rvputs(r, AP_SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
                   NULL);
         ap_rflush(r);
     }
