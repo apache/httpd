@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/20 00:15:31 $]
+Last modified at [$Date: 2002/11/20 21:28:21 $]
 
 Release:
 
@@ -69,7 +69,7 @@ CURRENT VOTES:
       modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
       or 3.0).
         +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard, jwoolley,
-            rbowen, rederpj
+            rbowen, rederpj, jim
          0: 
         -1: 
 
@@ -77,7 +77,7 @@ CURRENT VOTES:
       (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
       resolution is adopted.
         +1: wrowe, aaron, trawick, stoddard, jwoolley, rbowen, gregames,
-            rederpj
+            rederpj, jim
          0: jerenkrantz
         -1: 
 
@@ -88,14 +88,14 @@ CURRENT VOTES:
       patches are (generally) first applied to the development branch,
       tested, and then (after vote) applied to the stable branch.
         +1: wrowe, jerenkrantz, aaron, trawick, stoddard, jwoolley, rbowen,
-            gregames, rederpj
+            gregames, rederpj, jim
          0: 
         -1: 
 
     * Branch APACHE_2_0_BRANCH today, changing the version in CVS HEAD
       to 2.1.0-dev.
         +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard, jwoolley,
-                                 gregames, rederpj
+                                 gregames, rederpj, jim
         +1 [from HEAD]: 
          0: jerenkrantz
         -1: 
@@ -120,9 +120,12 @@ CURRENT VOTES:
          +1:   striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
-         -1:   Ken, wrowe, jwoolley
+         -1:   Ken, wrowe, jwoolley, jim
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
+           jim - ... assuming that the default configs have been updated
+                     with the required inline docs to explain the
+                     changes
 
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate. Or maybe we should make it a runtime
@@ -132,8 +135,10 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Jim, Justin, wrowe, rederpj
-      Have 2 parents: +1: Jim
+      Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj
+
+      /* The below was a concept on *how* to handle the problem */
+      Have 2 parents: +1: jim
                       -1: Justin, wrowe, rederpj
                       +0: Martin (while standing by, could it do
                                   something useful?)
@@ -141,7 +146,7 @@ CURRENT VOTES:
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS, striker, wrowe
       +0:   BrianP, Aaron (mutex contention is looking better with the
-            latest code, let's continue tuning and testing), rederpj
+            latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
