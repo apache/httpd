@@ -475,6 +475,10 @@ static void imap_url(request_rec *r, char *base, char *value, char *url)
 	  }
 
 	  value += 2;      /* jump over the '..' that we found in the value */
+      } else if (directory) {
+	url[0] = '\0';
+	log_reason("invalid directory name in map file", r->uri, r);
+	return;
       }
       
       if (! strncmp(value, "/../", 4) || ! strcmp(value, "/..") )
