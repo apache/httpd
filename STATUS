@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/01 11:36:05 $]
+Last modified at [$Date: 2003/05/01 13:20:33 $]
 
 Release:
 
@@ -186,12 +186,14 @@ PATCHES TO PORT FROM 2.1
       See MessageID: <5.2.0.9.2.20030405165151.01f1fe48@pop3.rowe-clan.net>
       for a complete patch rollup of this and the two following patches.
       +1: wrowe, jim
-      +1 (concept): trawick (working with this as time allows; seeing
-         warnings in our code on RH 8 with OpenSSL 0.9.6b; I expect
-         that overall we're better off and need to commit this and
-         then tweak later with smaller, easier-to-review changes :) 
-         I'll update my vote as soon as I give up trying to find 
-         regression)
+      +1: trawick, if the patch is really 
+          http://www.apache.org/~trawick/20030501.ssl.compat.patch
+          the latest patch in the thread you mention won't apply
+          because of a #include change that went to STABLE later (sorry);
+          that is resolved in the patch, and ssl_toolkit_compat.h
+          r1.32 is in it too...  the more extensive change of "const
+          SSL*" vs. "SSL*" led to new issues which
+          ssl_toolkit_compat.h r1.32 resolves for me on AIX and RH 8.
 
     * mod_ssl compile failure (or maybe warning, depending on
       compiler) with 0.9.7a and later
@@ -204,6 +206,7 @@ PATCHES TO PORT FROM 2.1
                users build with; I hope folks who perhaps are not
                interested in wrowe's extensive compatibility cleanup
                (above) will look at this independently
+      DELETE ME when the SSLC 2.3 compatibility entry above is removed
 
     * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
       os/unix/unixd.c                 r1.57
