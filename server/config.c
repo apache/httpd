@@ -193,8 +193,8 @@ AP_IMPLEMENT_HOOK_VOID(child_init,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, handler, (request_rec *r),
                             (r), DECLINED)
 
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, quick_handler, (request_rec *r),
-                            (r), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, quick_handler, (request_rec *r, int lookup),
+                            (r, lookup), DECLINED)
 
 AP_IMPLEMENT_HOOK_VOID(optional_fn_retrieve, (void), ())
 

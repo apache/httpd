@@ -101,12 +101,13 @@
  * 20020306 (2.0.34-dev) bump for filter type renames.
  * 20020318 (2.0.34-dev) mod_dav's API for REPORT generation changed
  * 20020319 (2.0.34-dev) M_INVALID changed, plus new M_* methods for RFC 3253
+ * 20020327 (2.0.35-dev) Add parameter to quick_handler hook
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020319
+#define MODULE_MAGIC_NUMBER_MAJOR 20020327
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

@@ -1013,9 +1013,13 @@ AP_DECLARE_HOOK(int,handler,(request_rec *r))
  * is run before any other requests hooks are called (location_walk,
  * directory_walk, access checking, et. al.). This hook was added
  * to provide a quick way to serve content from a URI keyed cache.
+ * 
  * @param r The request_rec
+ * @param lookup_uri Controls whether the caller actually wants content or not.
+ * lookup is set when the quick_handler is called out of 
+ * ap_sub_req_lookup_uri()
  */
-AP_DECLARE_HOOK(int,quick_handler,(request_rec *r))
+AP_DECLARE_HOOK(int,quick_handler,(request_rec *r, int lookup_uri))
 
 /**
  * Retrieve the optional functions for each module.
