@@ -225,7 +225,6 @@ typedef struct {
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
-void reinit_scoreboard(apr_pool_t *p);
 apr_status_t ap_cleanup_scoreboard(void *d);
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
