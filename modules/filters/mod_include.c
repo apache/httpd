@@ -2530,14 +2530,9 @@ static const command_rec includes_cmds[] =
     {NULL}
 };
 
-static void includes_register_filter(request_rec *r)
-{
-    ap_add_filter("INCLUDES", NULL, r);
-}
-
 static void register_hooks(void)
 {
-    ap_hook_insert_filter(includes_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_register_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
 module MODULE_VAR_EXPORT includes_module =
