@@ -778,7 +778,7 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri,
     return apr_psprintf(p, "%s://%s:%u%s", ap_http_method(r), host, port, uri);
 }
 
-AP_DECLARE(unsigned long) ap_get_limit_req_body(const request_rec *r)
+AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
 {
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
@@ -2093,6 +2093,7 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
 {
     core_dir_config *conf=conf_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+    char *errp;
     if (err != NULL) {
         return err;
     }
@@ -2101,7 +2102,10 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
      *      Instead we have an idiotic define in httpd.h that prevents
      *      it from being used even when it is available. Sheesh.
      */
-    conf->limit_req_body = (unsigned long)strtol(arg, (char **)NULL, 10);
+    conf->limit_req_body = (apr_off_t)strtol(arg, &errp, 10);
+    if (*errp != '\0') {
+        return "LimitRequestBody requires a non-negative integer.";
+    }
     return NULL;
 }
 

@@ -1,4 +1,8 @@
 Changes with Apache 2.0.30-dev
+
+  *) Fix LimitRequestBody directive by placing it in the HTTP
+     filter.  [Justin Erenkrantz]
+
   *) Fix mod_proxy seg fault when the proxied server returns 
      an HTTP/0.9 response or a bogus status line.
      [Adam Sussman]

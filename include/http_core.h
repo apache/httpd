@@ -234,9 +234,9 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
  * Return the limit on bytes in request msg body 
  * @param r The current request
  * @return the maximum number of bytes in the request msg body
- * @deffunc unsigned long ap_get_limit_req_body(const request_rec *r)
+ * @deffunc apr_off_t ap_get_limit_req_body(const request_rec *r)
  */
-AP_DECLARE(unsigned long) ap_get_limit_req_body(const request_rec *r);
+AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r);
 
 /**
  * Return the limit on bytes in XML request msg body
@@ -471,7 +471,7 @@ typedef struct {
 #ifdef RLIMIT_NPROC
     struct rlimit *limit_nproc;
 #endif
-    unsigned long limit_req_body;  /* limit on bytes in request msg body */
+    apr_off_t limit_req_body;      /* limit on bytes in request msg body */
     long limit_xml_body;           /* limit on bytes in XML request msg body */
 
     /* logging options */

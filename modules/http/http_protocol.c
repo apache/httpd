@@ -510,6 +510,8 @@ static long get_chunk_size(char *);
 
 typedef struct http_filter_ctx {
     apr_off_t remaining;
+    apr_off_t limit;
+    apr_off_t limit_used;
     enum {
         BODY_NONE,
         BODY_LENGTH,
@@ -536,6 +538,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         const char *tenc, *lenp;
         f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
+        ctx->remaining = 0;
+        ctx->limit_used = 0;
+        ctx->limit = ap_get_limit_req_body(f->r);
 
         tenc = apr_table_get(f->r->headers_in, "Transfer-Encoding");
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
@@ -561,6 +566,18 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (*pos == '\0') {
                 ctx->state = BODY_LENGTH;
                 ctx->remaining = atol(lenp);
+            }
+            
+            /* If we have a limit in effect and we know the C-L ahead of
+             * time, stop it here if it is invalid. 
+             */ 
+            if (ctx->limit && ctx->limit < ctx->remaining) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, f->r,
+                          "Requested content-length of %" APR_OFF_T_FMT 
+                          " is larger than the configured limit"
+                          " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
+                ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, f->r);
+                return APR_EGENERAL;
             }
         }
     }
@@ -618,6 +635,22 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (ctx->state != BODY_NONE) {
         ctx->remaining -= *readbytes;
+    }
+
+    /* We have a limit in effect. */
+    if (ctx->limit) {
+        /* FIXME: Note that we might get slightly confused on chunked inputs
+         * as we'd need to compensate for the chunk lengths which may not
+         * really count.  This seems to be up for interpretation.  */
+        ctx->limit_used += *readbytes;
+        if (ctx->limit < ctx->limit_used) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, f->r,
+                          "Read content-length of %" APR_OFF_T_FMT 
+                          " is larger than the configured limit"
+                          " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
+            ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, f->r);
+            return APR_EGENERAL;
+        }
     }
 
     return APR_SUCCESS;
@@ -1283,7 +1316,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
-    apr_off_t max_body;
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -1322,16 +1354,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         && (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "%s with body is not allowed for %s", r->method, r->uri);
-        return HTTP_REQUEST_ENTITY_TOO_LARGE;
-    }
-
-    max_body = ap_get_limit_req_body(r);
-    if (max_body && (r->remaining > max_body)) {
-        /* XXX shouldn't we enforce this for chunked encoding too? */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Request content-length of %s is larger than "
-                      "the configured limit of %" APR_OFF_T_FMT, lenp,
-                      max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
