@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.13) -->
+<!-- English Revision: 1.13 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -61,7 +61,7 @@
     すべてのインターフェースの与えられたポート番号を
     listen します。 IP アドレスがポート番号と同時に与えられた場合は、
     サーバは与えられたポートとインターフェースを listen します。
-    複数の Listen ディレクティブを用いて
+    複数の <directive module="mpm_common">Listen</directive> ディレクティブを用いて
     いくつかの listen するアドレスとポートを指定できます。
     サーバはリストされたアドレスやポートからのすべてのリクエストに
     対して応答します。</p>
@@ -112,7 +112,8 @@
     の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
     IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
     IPv4 マップの IPv6 アドレスを使用する必要があり、
-    <code>--enable-v4-mapped</code> configure オプションを指定します。</p>
+    <code>--enable-v4-mapped</code> <a href="programs/configure.html">configure</a>
+    オプションを指定します。</p>
 
     <p><code>--enable-v4-mapped</code> は、
     FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
@@ -132,7 +133,8 @@
     <p>条件を満たすプラットホームで、Apache が
     IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
     (つまり IPv4 マップのアドレスを無効にしたい場合)
-    は、<code>--disable-v4-mapped</code> configure
+    は、<code>--disable-v4-mapped</code>
+    <a href="programs/configure.html">configure</a>
     オプションを指定して、次のように個別指定の
     <directive module="mpm_common">Listen</directive>
     ディレクティブを使用してください。
@@ -143,7 +145,8 @@
   <section id="virtualhost">
     <title>バーチャルホストに対してどう働くのか</title>
 
-    <p>Listen でバーチャルホストが実装されるわけではありません。
+    <p><directive module="mpm_common">Listen</directive>
+    でバーチャルホストが実装されるわけではありません。
     Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
     教えるだけです。
     <directive module="core" type="section">VirtualHost</directive>
