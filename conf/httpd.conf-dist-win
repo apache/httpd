@@ -158,22 +158,6 @@ ThreadsPerChild 50
 #BindAddress *
 
 #
-# Apache Modules compiled into the standard Windows build
-#
-# The following modules are bound into the standard Apache binary distribution
-# for Windows.  To change the standard behavior, uncomment the following lines 
-# and modify the list of those specific modules to be enabled in the server.
-#
-# WARNING: This is an advanced option that may render your server inoperable!
-# Do not use these directives without expert guidance.
-#
-#ClearModuleList
-#AddModule mod_so.c mod_mime.c mod_access.c mod_auth.c mod_negotiation.c
-#AddModule mod_include.c mod_autoindex.c mod_dir.c mod_cgi.c mod_userdir.c
-#AddModule mod_alias.c mod_env.c mod_log_config.c mod_asis.c mod_imap.c
-#AddModule mod_actions.c mod_setenvif.c mod_isapi.c
-
-#
 # Dynamic Shared Object (DSO) Support
 #
 # To be able to use the functionality of a module which was built as a DSO you
@@ -186,6 +170,9 @@ ThreadsPerChild 50
 #
 # Note: The order in which modules are loaded is important.  Don't change
 # the order below without expert advice.
+#
+# Example:
+# LoadModule foo_module modules/mod_foo.so
 #
 #LoadModule vhost_alias_module modules/mod_vhost_alias.so
 #LoadModule mime_magic_module modules/mod_mime_magic.so
@@ -203,6 +190,54 @@ ThreadsPerChild 50
 #LoadModule headers_module modules/mod_headers.so
 #LoadModule usertrack_module modules/mod_usertrack.so
 #LoadModule unique_id_module modules/mod_unique_id.so
+
+#
+#  Reconstruction of the complete module list from all available modules
+#  (static and shared ones) to achieve correct module execution order.
+#
+# The modules listed below, without a corresponding LoadModule directive,
+# are static bound into the standard Apache binary distribution for Windows.
+#
+# Note: The order in which modules are loaded is important.  Don't change
+# the order below without expert advice.
+#
+# [WHENEVER YOU CHANGE THE LOADMODULE SECTION ABOVE, UPDATE THIS TOO!]
+ClearModuleList
+AddModule mod_vhost_alias.c
+AddModule mod_env.c
+AddModule mod_log_config.c
+#AddModule mod_mime_magic.c
+AddModule mod_mime.c
+AddModule mod_negotiation.c
+#AddModule mod_status.c
+#AddModule mod_info.c
+AddModule mod_include.c
+AddModule mod_autoindex.c
+AddModule mod_dir.c
+AddModule mod_isapi.c
+AddModule mod_cgi.c
+AddModule mod_asis.c
+AddModule mod_imap.c
+AddModule mod_actions.c
+#AddModule mod_speling.c
+AddModule mod_userdir.c
+AddModule mod_alias.c
+#AddModule mod_rewrite.c
+AddModule mod_access.c
+AddModule mod_auth.c
+#AddModule mod_auth_anon.c
+#AddModule mod_auth_dbm.c
+#AddModule mod_auth_digest.c
+#AddModule mod_digest.c
+#AddModule mod_proxy.c
+#AddModule mod_cern_meta.c
+#AddModule mod_expires.c
+#AddModule mod_headers.c
+#AddModule mod_usertrack.c
+#AddModule mod_unique_id.c
+AddModule mod_so.c
+AddModule mod_setenvif.c
+
 
 #
 # ExtendedStatus controls whether Apache will generate "full" status
