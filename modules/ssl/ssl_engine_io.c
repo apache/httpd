@@ -171,7 +171,7 @@ static int bio_bucket_write(BIO *bio, const char *in, int inl)
      */
     BIO_clear_retry_flags(bio);
 
-    if (!b->length && (inl < (sizeof(b->buffer) - b->blen))) {
+    if (!b->length && (inl + b->blen < sizeof(b->buffer))) {
         /* the first two SSL_writes (of 1024 and 261 bytes)
          * need to be in the same packet (vec[0].iov_base)
          */
