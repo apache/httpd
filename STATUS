@@ -79,12 +79,12 @@ PATCHES TO BACKPORT FROM 2.1
        making many doomed ap_pass_brigade calls
        http://svn.apache.org/viewcvs?view=rev&rev=125166
        PR: 32699
-       +1: jorton
+       +1: jorton, jerenkrantz
 
     *) mod_proxy: abort if client-connection is aborted.
        http://issues.apache.org/bugzilla/attachment.cgi?id=14046
        PR: 32443
-       +1: jorton, stoddard
+       +1: jorton, stoddard, jerenkrantz
 
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
@@ -101,12 +101,14 @@ PATCHES TO BACKPORT FROM 2.1
        If the <modtype>-subdirectory doesn't exist it will be created and
        populated with a standard Makefile.in
        svn rev 124600
-       +1: erikabele
+       +1: erikabele, jerenkrantz
 
     *) modules/config5.m4: for a static module, use a filename with a
        lib prefix, see also rev 102381 of acinclude.m4
        svn rev 124599
-       +1: erikabele
+       jerenkrantz says: r102381 makes DSOs follow this convention by not using
+                         mod_*.  This just makes static modules follow.
+       +1: erikabele, jerenkrantz
 
     *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
               as handled for other variables originally fixed in bug 9223.
@@ -119,6 +121,7 @@ PATCHES TO BACKPORT FROM 2.1
        http://www.apache.org/~jim/mod_dumpio.c
        +1: jim
        -0: nd (suggests the experimental directory instead)
+           jerenkrantz (ditto)
 
     *) Fix the RPM spec file so that an RPM build now works. An RPM
        build now requires system installations of APR and APR-util.
@@ -137,12 +140,12 @@ PATCHES TO BACKPORT FROM 2.1
     *) Add charset to the painfully old example CGI scripts.
        [These should really be replaced with proper encoding of the output.]
        svn rev 111580
-       +1: fielding, erikabele
+       +1: fielding, erikabele, jerenkrantz
 
     *) conf: Remove AddDefaultCharset from the default configuration because
        setting a site-wide default does more harm than good. PR 23421.
        svn rev 111581
-       +1: fielding, erikabele
+       +1: fielding, erikabele, jerenkrantz
 
     *) mpm/winnt/child.c: thread_num is long, aught to use %ld not %d for logs
        svn rev 106653
@@ -299,7 +302,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_proxy: Respect errors reported by pre_connection hooks.
       http://svn.apache.org/viewcvs?view=rev&rev=111304
-      +1: trawick
+      +1: trawick, jerenkrantz
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
@@ -389,8 +392,9 @@ PATCHES TO BACKPORT FROM 2.1
       +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
     
     * support/check_forensic: Fix tempfile usage
-      svn rev 125495
-      +1: thommay
+      svn rev 125495, 126224
+      jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
+      +1: thommay (125495 only), jerenkrantz
 
 CURRENT RELEASE NOTES:
 
