@@ -135,10 +135,13 @@ static void make_cookie(request_rec *r)
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
     clock_t mpe_times;
     struct tms mpe_tms;
-#elif !defined(WIN32) && !defined(NETWARE)
+#elif !defined(WIN32)
     struct timeval tv;
+#ifdef NETWARE
     time_t tz = 0;
+#else
     struct timezone tz = {0, 0};
+#endif /* defined(NETWARE) */
 #endif
     /* 1024 == hardcoded constant */
     char cookiebuf[1024];
