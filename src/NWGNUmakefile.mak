@@ -37,8 +37,13 @@ XDEFINES	+= \
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
-			XDCData $(NWOS)\apache.xdc \
 			$(EOLIST)
+
+ifdef MULTIPROC
+XLFLAGS		+= \
+		XDCData $(NWOS)\apache.xdc \
+		$(EOLIST)
+endif			
 
 #
 # These values will be appended to the correct variables based on the value of

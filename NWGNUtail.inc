@@ -263,7 +263,7 @@ ifneq "$(FILES_nlm_exports)" ""
 	@echo Export $(foreach export,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_exports))),$(subst /,\,$(export))) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif	
 ifneq "$(strip $(XLFLAGS))" ""
-	@echo $(XLFLAGS) >> $(OBJDIR)\$(NLM_NAME)_link.def
+	@echo $(strip $(XLFLAGS)) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
 #ifndef XDCFOUND
 #	@echo XDCData $(NWOS)\apache.xdc >> $(OBJDIR)\$(NLM_NAME)_link.def
