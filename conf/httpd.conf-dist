@@ -700,6 +700,7 @@ ServerSignature On
     AddLanguage sv .se
     AddLanguage cz .cz
     AddLanguage ru .ru
+    AddLanguage zh-tw .tw
     AddLanguage tw .tw
     AddCharset Big5         .Big5    .big5
     AddCharset WINDOWS-1251 .cp-1251
