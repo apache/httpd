@@ -279,7 +279,7 @@ static int should_proxy_garbage_coll(request_rec *r)
     const struct cache_conf *conf = &pconf->cache;
 
     const char *cachedir = conf->root;
-    char *filename = ap_palloc(r->pool, strlen(cachedir) + strlen( DOT_TIME ) +1);
+    char *filename;
     struct stat buf;
     int timefd;
     time_t every = conf->gcinterval;
@@ -287,6 +287,8 @@ static int should_proxy_garbage_coll(request_rec *r)
 
     if (cachedir == NULL || every == -1)
         return 0;
+
+    filename = ap_palloc(r->pool, strlen(cachedir) + strlen( DOT_TIME ) +1);
 
     garbage_now = time(NULL);
     /* Usually, the modification time of <cachedir>/.time can only increase.
