@@ -59,10 +59,51 @@
 #include "httpd.h"
 #include "http_log.h"
 #include "apr_strings.h"
+#include "arch/win32/fileio.h"
+#include "arch/win32/misc.h"
 
 #include <stdarg.h>
 #include <time.h>
 #include <stdlib.h>
+
+
+AP_DECLARE(apr_status_t) ap_os_proc_filepath(char **binpath, apr_pool_t *p)
+{
+    apr_wchar_t wbinpath[APR_PATH_MAX];
+
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE 
+    {
+        apr_size_t binlen;
+        apr_size_t wbinlen;
+        apr_status_t rv;
+        if (!GetModuleFileNameW(NULL, wbinpath, sizeof(wbinpath) 
+                                              / sizeof(apr_wchar_t))) {
+            return apr_get_os_error();
+        }
+        wbinlen = wcslen(wbinpath) + 1;
+        binlen = (wbinlen - 1) * 3 + 1;
+        *binpath = apr_palloc(p, binlen);
+        rv = apr_conv_ucs2_to_utf8(wbinpath, &wbinlen, *binpath, &binlen);
+        if (rv != APR_SUCCESS)
+            return rv;
+        else if (wbinlen)
+            return APR_ENAMETOOLONG;
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        /* share the same scratch buffer */
+        char *pathbuf = (char*) wbinpath;
+        if (!GetModuleFileName(NULL, pathbuf, sizeof(wbinpath))) {
+            return apr_get_os_error();
+        }
+        *binpath = apr_pstrdup(p, pathbuf);
+    }
+#endif
+    return APR_SUCCESS;
+}
 
 
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
