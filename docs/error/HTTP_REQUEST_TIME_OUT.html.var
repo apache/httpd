@@ -42,11 +42,11 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Request time-out!"
+--><!--#set var="TITLE" value="&iexcl;La solicitud ha excedido el tiempo de espera permitido&excl;"
 --><!--#include virtual="include/top.html" -->
 
-	El servidor ha cerrado la conecci&oacute;n de red 
-	debido a que el buscador no termino la solicitud
+	El servidor ha cerrado la conexi&oacute;n de red 
+	debido a que el navegador no termin&oacute; la solicitud
 	dentro del tiempo especificado.
     
 <!--#include virtual="include/bottom.html" -->

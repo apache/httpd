@@ -42,7 +42,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="No acceptable object found!"
+--><!--#set var="TITLE" value="&iexcl;No se encontr&oacute; ning&uacute; objeto aceptable&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	Una representaci&oacute;n apropiada de los recursos 

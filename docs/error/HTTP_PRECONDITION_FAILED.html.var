@@ -40,11 +40,11 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Precondition failed!"
+--><!--#set var="TITLE" value="&iexcl;Precondici&oacute;n err&oacute;nea&excl;"
 --><!--#include virtual="include/top.html" -->
 
-	La precondicion para que exista una 
-	conecci&oacute;n al URL solicitado es falsa.
+	La precondici&oacute;n para que exista una 
+	conexi&oacute;n a la direcci&oacute;n solicitada es falsa.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

@@ -39,7 +39,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Unsupported media type!"
+--><!--#set var="TITLE" value="&iexcl;Tipo de datos no soportados&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	Los datos de su solicitud no se encuentran en

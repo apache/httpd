@@ -70,7 +70,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Access forbidden!"
+--><!--#set var="TITLE" value="&iexcl;Acceso prohibido&excl;"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
