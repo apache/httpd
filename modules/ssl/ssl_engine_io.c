@@ -1091,7 +1091,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             outctx->rc = APR_EAGAIN;
             return SSL_ERROR_WANT_READ;
         }
-        else if (ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
+        else if (ERR_GET_LIB(ERR_peek_error()) == ERR_LIB_SSL &&
+                 ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
             /*
              * The case where OpenSSL has recognized a HTTP request:
              * This means the client speaks plain HTTP on our HTTPS port.
