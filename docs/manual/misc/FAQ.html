@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.20 $ ($Date: 1997/04/12 03:40:38 $)
+$Revision: 1.21 $ ($Date: 1997/04/12 04:49:10 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -341,7 +341,8 @@ $Revision: 1.20 $ ($Date: 1997/04/12 03:40:38 $)
     <P>
     (Substitute the appropiate locations for your
     <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
-    <SAMP>core</SAMP> files.)
+    <SAMP>core</SAMP> files.  You may have to use <SAMP>gdb</SAMP>
+    instead of <SAMP>dbx</SAMP>.)
     </P>
    </LI>
   </OL>
@@ -614,7 +615,9 @@ $Revision: 1.20 $ ($Date: 1997/04/12 03:40:38 $)
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
-   <LI>Spread your operation across multiple server processes and/or ports
+   <LI>Spread your operation across multiple server processes (using
+       <A HREF="../mod/core.html#listen">Listen</A> for example,
+       but see the first point) and/or ports
    </LI>
   </OL>
   <P>
