@@ -97,7 +97,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
+#if APR_HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
 
 /* OpenSSL headers */
 #include <openssl/ssl.h>
@@ -510,8 +512,8 @@ typedef struct {
  */
 #endif /* XXX */
 typedef struct {
-#if 0 /* XXX */
     BOOL          bSSLRequired;
+#if 0 /* XXX */
     array_header *aRequirement;
     ssl_opt_t     nOptions;
     ssl_opt_t     nOptionsAdd;
