@@ -345,6 +345,10 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                         NULL, mc->pPool);
     
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
+        /* For a name-based segment, remove it first in case of a
+         * previous unclean shutdown. */
+        apr_shm_remove(mc->szSessionCacheDataFile, mc->pPool);
+        
         rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
                             mc->nSessionCacheDataSize, 
                             mc->szSessionCacheDataFile,
