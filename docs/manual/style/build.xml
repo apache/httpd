@@ -18,7 +18,8 @@
              destdir="../mod/"
            extension=".html"
                style="./manual.en.xsl"
-            includes="*.xml">
+            includes="*.xml"
+            excludes="allmodules.xml">
       <mapper type="glob" from="*.xml" to="*.html.en"/>
       <param name="relative-path" expression="."/>
     </style>
@@ -26,7 +27,8 @@
              destdir="../mod/"
            extension=".html"
                style="./manual.ja.xsl"
-            includes="*.xml.ja">
+            includes="*.xml.ja"
+            excludes="allmodules.xml.ja">
       <mapper type="glob" from="*.xml.ja" to="*.html.ja.jis"/>
       <param name="relative-path" expression="."/>
     </style>
@@ -49,5 +51,14 @@
       <param name="relative-path" expression="."/>
     </style>
 
+  </target>
+  <target name="validate"
+      description="Validate the XML source files">
+      <!-- Validate almost all XML files in all languages -->
+      <xmlvalidate lenient="false" failonerror="false" warn="true">
+          <fileset dir="../"
+                   includes="**/*.xml **/*.xml.*"
+                   excludes="mod/allmodules.xml mod/allmodules.xml.* style/**"/>
+      </xmlvalidate>
   </target>
 </project>
