@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_groupfile - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<div id="page-content">
+<div id="preamble"><h1>아파치 모듈 mod_authz_groupfile</h1>
+<div class="toplang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/mod_authz_groupfile.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>일반 문자파일을 이용한 그룹 권한부여</td></tr>
+<tr><th><a href="module-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>authz_groupfile_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_authz_groupfile.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">지원:</a></th><td>아파치 2.1 이후부터</td></tr></table>
+<h3>요약</h3>
+
+    <p>이 모듈은 인증한 사용자의 그룹권한으로 웹사이트의 일부를
+    접근할 수 있는지 결정하여 권한부여를 한다.
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>과 기능이 비슷하다.</p>
+</div>
+<div id="quickview"><h3 class="directives">지시어들</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
+</ul>
+<h3>참고</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>인증에 사용할 사용자 그룹 목록을 저장하는 문자파일명을
+지정한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_authz_groupfile</td></tr>
+</table>
+    <p><code class="directive">AuthGroupFile</code> 지시어는 사용자
+    인증에 사용할 사용자 그룹 목록을 저장하는 문자파일명을
+    지정한다. <var>File-path</var>는 그룹파일 경로이다. 절대경로를
+    사용하지 않으면 <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>의 상대경로로 받아들인다.</p>
+
+    <p>그룹파일의 각 줄에는 그룹명, 콜론, 공백으로 구분한
+    사용자명들이 순서대로 나온다.</p>
+
+    <div class="example"><h3>예제:</h3><p><code>
+      mygroup: bob joe anne
+    </code></p></div> 
+
+    <p>많은 그룹을 저장한 큰 문자파일을 검색하는 것은 <em>매우</em>
+    비효율적임을 주의하라. <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>이 더 성능이 좋다.</p>
+
+    <div class="warning"><h3>보안</h3>
+      <p><code class="directive">AuthGroupFile</code>이 웹서버의 문서들
+      밖에 위치함을 확인하라. 이 파일을 보호할 디렉토리 안에
+      같이 두지 <em>마라</em>. 그렇지 않으면, 클라이언트가
+      <code class="directive">AuthGroupFile</code>을 다운로드할 수 있다.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzGroupFileAuthoritative" id="AuthzGroupFileAuthoritative">AuthzGroupFileAuthoritative</a> <a name="authzgroupfileauthoritative" id="authzgroupfileauthoritative">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>권한부여를 저수준 모듈로 넘겨줄지 여부</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthzGroupFileAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AuthzGroupFileAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_authz_groupfile</td></tr>
+</table>
+    <p><code class="directive">AuthzGroupFileAuthoritative</code> 지시어를
+    직접 <code>Off</code>로 설정하면 해당 사용자 아이디에 대한
+    <strong>그룹이 없는</strong> 경우 그룹 권한부여를
+    (<code>modules.c</code> 파일에서 정의한) 저수준 모듈로
+    넘겨준다.</p>
+
+    <p>기본적으로 제어를 넘기지않고, 모르는 그룹의 경우 인증
+    필요 응답을 한다. 이 지시어를 설정하지않으면 시스템이 안전하게
+    유지되며, NCSA 웹서버와 같이 동작한다.</p>
+
+    <div class="warning"><h3>보안</h3>
+      <p>사용자가 자신의 .htaccess 파일을 사용하게 되는지 살펴보고,
+      이런 행동을 허용할지 결정하라. 일반적으로 여러가지 방법으로
+      접근할 수 있는 데이터베이스를 보호하는 것보다 하나의
+      <code>.htpasswd</code> 파일을 보호하는 것이 더 쉽다.</p>
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/mod/mod_authz_groupfile.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
+</body></html>
