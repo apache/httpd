@@ -189,14 +189,12 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
 #define bio_is_renegotiating(bio) \
 (((int)BIO_get_callback_arg(bio)) == SSL_ST_RENEGOTIATE)
 
-static apr_status_t churn (SSLFilterRec *pRec,
-        apr_read_type_e eReadType, apr_off_t *readbytes)
+static apr_status_t churn(SSLFilterRec *pRec,
+        ap_input_mode_t eMode, apr_off_t *readbytes)
 {
     conn_rec *c = pRec->pInputFilter->c;
     apr_pool_t *p = c->pool;
     apr_bucket *pbktIn;
-    ap_input_mode_t eMode = (eReadType == APR_BLOCK_READ) 
-                            ? AP_MODE_BLOCKING : AP_MODE_NONBLOCKING;
 
     if(APR_BRIGADE_EMPTY(pRec->pbbInput)) {
 	ap_get_brigade(pRec->pInputFilter->next,pRec->pbbInput,eMode,readbytes);
@@ -211,26 +209,28 @@ static apr_status_t churn (SSLFilterRec *pRec,
 	char buf[1024];
 	apr_status_t ret;
 
-	if(APR_BUCKET_IS_EOS(pbktIn)) {
+	if (APR_BUCKET_IS_EOS(pbktIn)) {
 	    break;
 	}
 
 	/* read filter */
-	ret=apr_bucket_read(pbktIn,&data,&len,eReadType);
+	ret = apr_bucket_read(pbktIn, &data, &len, (apr_read_type_e)eMode);
 
-        if (!(eReadType == APR_NONBLOCK_READ && APR_STATUS_IS_EAGAIN(ret))) {
+        if (!(eMode == AP_MODE_NONBLOCKING && APR_STATUS_IS_EAGAIN(ret))) {
             /* allow retry */
             APR_BUCKET_REMOVE(pbktIn);
         }
 
-	if(ret == APR_SUCCESS && len == 0 && eReadType == APR_BLOCK_READ)
-	    ret=APR_EOF;
+	if (ret == APR_SUCCESS && len == 0 && eMode == AP_MODE_BLOCKING)
+	    ret = APR_EOF;
 
-	if(len == 0) {
-	    /* Lazy frickin browsers just reset instead of shutting down. */
+        if (len == 0) {
+            /* Lazy frickin browsers just reset instead of shutting down. */
             /* also gotta handle timeout of keepalive connections */
-            if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret) || ret == APR_TIMEUP) {
-		if(APR_BRIGADE_EMPTY(pRec->pbbPendingInput))
+            if (ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret) ||
+                ret == APR_TIMEUP)
+            {
+                if (APR_BRIGADE_EMPTY(pRec->pbbPendingInput))
 		    return APR_EOF;
 		else
 		    /* Next time around, the incoming brigade will be empty,
@@ -239,11 +239,11 @@ static apr_status_t churn (SSLFilterRec *pRec,
 		    return APR_SUCCESS;
 	    }
 		
-	    if(eReadType != APR_NONBLOCK_READ)
+	    if (eMode != AP_MODE_NONBLOCKING)
 		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
 			     "Read failed in ssl input filter");
 
-	    if ((eReadType == APR_NONBLOCK_READ) &&
+	    if ((eMode == AP_MODE_NONBLOCKING) &&
                 (APR_STATUS_IS_SUCCESS(ret) || APR_STATUS_IS_EAGAIN(ret)))
             {
                 /* In this case, we have data in the output bucket, or we were
@@ -302,7 +302,7 @@ static apr_status_t churn (SSLFilterRec *pRec,
            /* Once we've read something, we can move to non-blocking mode (if
             * we weren't already).
             */
-            eReadType = APR_NONBLOCK_READ;
+            eMode = AP_MODE_NONBLOCKING;
 	}
 
 	ret=churn_output(pRec);
@@ -374,9 +374,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOu
                                         ap_input_mode_t eMode, apr_off_t *readbytes)
 {
     apr_status_t ret;
-    SSLFilterRec *pRec        = f->ctx;
-    apr_read_type_e eReadType = 
-        (eMode == AP_MODE_BLOCKING) ? APR_BLOCK_READ : APR_NONBLOCK_READ;
+    SSLFilterRec *pRec = f->ctx;
 
     /* XXX: we don't currently support peek */
     if (eMode == AP_MODE_PEEK) {
@@ -384,8 +382,8 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOu
     }
 
     /* churn the state machine */
-    ret = churn(pRec,eReadType,readbytes);
-    if(ret != APR_SUCCESS)
+    ret = churn(pRec, eMode, readbytes);
+    if (ret != APR_SUCCESS)
 	return ret;
 
     /* XXX: shame that APR_BRIGADE_FOREACH doesn't work here */
