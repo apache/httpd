@@ -1438,7 +1438,7 @@ static void perform_idle_server_maintenance(void)
             else {
                 /* slot is still in use - back of the bus
                  */
-            free_slots[free_length] = i;
+                free_slots[free_length] = i;
             }
             ++free_length;
         }
