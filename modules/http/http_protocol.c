@@ -1134,7 +1134,7 @@ static char *make_allow(request_rec *r)
          * Append all of the elements of r->allowed_methods->method_list
          */
         for (i = 0; i < r->allowed_methods->method_list->nelts; ++i) {
-            list = apr_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
+            list = apr_pstrcat(r->pool, list, ",", xmethod[i], NULL);
         }
     }
 
