@@ -2288,9 +2288,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
             send_it = 1;
         }
-        rv = ap_bucket_read(e, &ignored, &length, AP_BLOCK_READ);
-        if (rv != APR_SUCCESS) {
-            return rv;
+        if (e->length == -1) { /* if length unknown */
+            rv = ap_bucket_read(e, &ignored, &length, AP_BLOCK_READ);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+        }
+        else {
+            length = e->length;
         }
         r->bytes_sent += length;
     }
