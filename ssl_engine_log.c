@@ -170,7 +170,7 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     char str[1024];
     char *nstr;
     apr_size_t len;
-    apr_exploded_time_t t;
+    apr_time_exp_t t;
     va_list ap;
     int add;
     int i;
