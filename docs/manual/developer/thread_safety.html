@@ -21,6 +21,59 @@
     either as thread safety problems can lead to subtle race conditons that
     may only show up in certain conditions under heavy load.</p>
 
+      <h2>Global and static variables</h2>
+
+      <p>When writing your module or when trying to determine if a module or
+      3rd party library is thread safe there are some common things to keep in mind.
+      First, you need to recognize that in a threaded model each individual thread 
+      has its own program counter, stack and registers.  Local variables live on the
+      stack, so those are fine.  You need to watch out for any static or global
+      variables.  This doesn't mean that you are absolutely not allowed to use static
+      or global variables.  There are times when you actually want something to affect
+      all threads, but generally you need to avoid using them if you want your code to
+      be thread safe.</p>
+   
+      <p>In the case where you have a global variable that needs to be global and
+      accessed by all threads, be very careful when you update it.  If, for example,
+      it is an incrementing counter, you need to atomically increment it to avoid
+      race conditions with other threads.  You do this using a mutex (mutual exclusion).
+      Lock the mutex, read the current value, increment it and write it back and then unlock
+      the mutex.  Any other thread that wants to modify the value has to first check the mutex
+      and block until it is cleared.</p>
+
+      <p>If you are using APR, have a look at the apr_atomic_* functions and the apr_thread_mutex_*
+      functions.  [would probably be a good idea to add an example here]</p>
+
+      <h2>errno</h2>
+
+      <p>This is a common global variable that holds the error number of the last error that occurred.
+      If one thread calls a low-level function that sets errno and then another thread checks it, we
+      are bleeding error numbers from one thread into another.  To solve this, make sure your module
+      or library defines _REENTRANT or is compiled with -D_REENTRANT.  This will make errno a per-thread
+      variable and should hopefully be transparent to the code.  It does this by doing something like this:
+<pre>#define errno (*(__errno_location()))</pre>
+      which means that accessing errno will call __errno_location() which is provided by the libc.  Setting
+      _REENTRANT also forces redefinition of some other functions to their *_r equivalents and sometimes
+      changes the common getc/putc macros into safer function calls.  Check your libc documentation for
+      specifics.  Instead of, or in addition to _REENTRANT the symbols that may affect this are 
+      _POSIX_C_SOURCE, _THREAD_SAFE, _SVID_SOURCE, and _BSD_SOURCE.</p>
+
+      <h2>Common standard troublesome functions</h2>
+
+      <p>Not only do things have to be thread safe, but they also have to be reentrant.  
+      <b>strtok()</b> is an obvious one.  You call it the first time with your delimiter which
+      it then remembers and on each subsequent call it returns the next token.  Obviously if
+      multiple threads are calling it you will have a problem.  Most systems have a reentrant version
+      of of the function called <b>strtok_r()</b> where you pass in an extra argument which contains
+      an allocated char * which the function will use instead of its own static storage for maintaining
+      the tokenizing state.  If you are using APR you can use <b>apr_strtok()</b>.</p>
+
+      <p><b>crypt()</b> is another function that tends to not be reentrant, so if you run across calls
+      to that function in a library, watch out.  On some systems it is reentrant though, so it is not
+      always a problem.  If your system has <b>crypt_r()</b> chances are you should be using that, or
+      if possible simply avoid the whole mess by using md5 instead.  [I don't see an apr_crypt() function.]</p>
+
+
     <h1>Common 3rd Party Libraries</h1>
     <p>The following is a list of common libraries that are used by 3rd party
     Apache modules.  You can check to see if your module is using a potentially
