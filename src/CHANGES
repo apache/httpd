@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Add a "default-handler" handler that calls the default_hander()
+     function which is normally called for static content.  This allows
+     you to override a specific handler.  [Marc Slemko]
+
   *) Further simplify checking for absolute paths by replacing an
      hard-coded syntax check with a call to a routine we already created to
      do this.  [Ken Parzygnat <kparz@raleigh.ibm.com>] PR#2976, 3074

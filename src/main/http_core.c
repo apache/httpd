@@ -2879,6 +2879,7 @@ static int default_handler(request_rec *r)
 
 static const handler_rec core_handlers[] = {
 { "*/*", default_handler },
+{ "default-handler", default_handler },
 { NULL }
 };
 
