@@ -24,6 +24,13 @@ Changes with Apache 1.2
   *) Fix suexec segfault when group doesn't exist. [Gregory Neil Shapiro]
      PR#367, 368, 354, 453
 
+  *) Fix the above fix: if suexec is enabled, avoid destroying r->url
+     while obtaining the /~user and save the username in a separate data
+     area so that it won't be overwritten by the call to getgrgid(), and
+     fix some misuse of the pool string allocation functions.  Also fixes
+     a general problem with parsing URL query info into args for CGI scripts.
+     [Roy Fielding] PR#339, 367, 354, 453
+
   *) Fix IRIX warning about bzero undefined. [Marc Slemko]
   
   *) Fix problem with <Directory proxy:...>. [Martin Kraemer] PR#271

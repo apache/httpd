@@ -72,37 +72,29 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-char **create_argv(request_rec *r, char *av0, ...)
+static char **create_argv(pool *p, char *path, char *user, char *group,
+                          char *av0, const char *reqargs)
 {
-    int idx;
     char **av;
-    char *t, *arg;
-    va_list args;
+    char *t;
+    char *args = pstrdup(p, reqargs);
+    int idx = 0;
 
-    av = (char **)palloc(r->pool, APACHE_ARG_MAX);
+    av = (char **)palloc(p, APACHE_ARG_MAX * sizeof(char *));
     
-    av[0] = av0;
-    idx = 1;
+    if (path)
+        av[idx++] = path;
+    if (user)
+        av[idx++] = user;
+    if (group)
+        av[idx++] = group;
+
+    av[idx++] = av0;
     
-    va_start(args, av0);
-    while ((arg = va_arg(args, char *)) != NULL) {
-	if ((t = strtok(arg, "+")) == NULL)
-	    break;
-	
+    while ((idx < APACHE_ARG_MAX) && ((t = strtok(args, "+")) != NULL)) {
 	unescape_url(t);
-	av[idx] = escape_shell_cmd(r->pool, t);
-	idx++;
-	if (idx >= APACHE_ARG_MAX-1) break;
-	
-	while ((t = strtok(NULL, "+")) != NULL) {
-	    unescape_url(t);
-	    assert(idx < APACHE_ARG_MAX);
-	    av[idx] = escape_shell_cmd(r->pool, t);
-	    idx++;
-	    if (idx >= APACHE_ARG_MAX-1) break;
-	}
+	av[idx++] = escape_shell_cmd(p, t);
     }
-    va_end(args);
 
     av[idx] = NULL;
     return av;
@@ -401,7 +393,8 @@ void send_size(size_t size, request_rec *r) {
 }
 
 #ifdef __EMX__
-char **create_argv_cmd(pool *p, char *av0, const char *args, char *path) {
+static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
+{
     register int x,n;
     char **av;
     char *w;
@@ -432,13 +425,8 @@ char **create_argv_cmd(pool *p, char *av0, const char *args, char *path) {
 
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
-    char *execuser;
-    core_dir_config *conf;
-    struct passwd *pw;
-    struct group *gr;
-    char *grpname;
-    
-    conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+    core_dir_config *conf =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
     /* the fd on r->server->error_log is closed, but we need somewhere to
      * put the error messages from the log_* functions. So, we use stderr,
@@ -525,7 +513,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	char *emxtemp;
             
 	/* For OS/2 place the variables in the current
-	   enviornment then it will be inherited. This way
+	   environment so that they will be inherited. This way
 	   the program will also get all of OS/2's other SETs. */
 	for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
 	    putenv(emxtemp);
@@ -536,45 +524,56 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
 	}
 	else
-	    execv(r->filename, create_argv(r, argv0, r->args, (void *)NULL));
+	    execv(r->filename,
+	          create_argv(r->pool, NULL, NULL, NULL, argv0, r->args));
     }
     }
 #else
     if ( suexec_enabled &&
 	 ((r->server->server_uid != user_id) ||
 	  (r->server->server_gid != group_id) ||
-	  (!strncmp("/~", r->uri, 2))) ) {
+	  (!strncmp("/~",r->uri,2))) ) {
 
-        if (!strncmp("/~",r->uri,2)) {
-            r->uri += 2;
-            if ((pw = getpwnam (getword_nc (r->pool, &r->uri, '/'))) == NULL) {
-		log_unixerr("getpwnam", NULL, "invalid username", r->server);
-		return;
+	char *execuser, *grpname;
+	struct passwd *pw;
+	struct group *gr;
+
+	if (!strncmp("/~",r->uri,2)) {
+	    gid_t user_gid;
+	    char *username = pstrdup(r->pool, r->uri + 2);
+	    int pos = ind(username, '/');
+
+	    if (pos >= 0) username[pos] = '\0';
+
+	    if ((pw = getpwnam(username)) == NULL) {
+	        log_unixerr("getpwnam",username,"invalid username",r->server);
+	        return;
 	    }
-            r->uri -= 2;
-            if ((gr = getgrgid (pw->pw_gid)) == NULL) {
-		if ((grpname = palloc (r->pool, 16)) == NULL) 
-		    return;
-		else
-		    ap_snprintf(grpname, sizeof(grpname), "%d\0", pw->pw_gid);
+	    execuser = pstrcat(r->pool, "~", pw->pw_name, NULL);
+	    user_gid = pw->pw_gid;
+
+	    if ((gr = getgrgid(user_gid)) == NULL) {
+	        if ((grpname = palloc (r->pool, 16)) == NULL) 
+	            return;
+	        else
+	            ap_snprintf(grpname, 16, "%d", user_gid);
 	    }
-            else
-		grpname = gr->gr_name;
-	execuser = (char *) palloc (r->pool, (sizeof(pw->pw_name) + 1));
-	execuser = pstrcat (r->pool, "~", pw->pw_name, NULL);
-        }
+	    else
+	        grpname = gr->gr_name;
+	}
 	else {
 	    if ((pw = getpwuid (r->server->server_uid)) == NULL) {
 		log_unixerr("getpwuid", NULL, "invalid userid", r->server);
 		return;
 	    }
-            if ((gr = getgrgid (r->server->server_gid)) == NULL) {
+	    execuser = pstrdup(r->pool, pw->pw_name);
+
+	    if ((gr = getgrgid (r->server->server_gid)) == NULL) {
 		log_unixerr("getgrgid", NULL, "invalid groupid", r->server);
 		return;
 	    }
-	    execuser = (char *) palloc (r->pool, sizeof(pw->pw_name)); 
-            execuser = pw->pw_name;
-        }
+	    grpname = gr->gr_name;
+	}
   
   	if (shellcmd)
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
@@ -583,9 +582,10 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
   	else {
-	    execve(SUEXEC_BIN,
-		   create_argv(r, SUEXEC_BIN, execuser, grpname, argv0, r->args, (void *)NULL),
-		   env);
+	    execve(SUEXEC_BIN, 
+		   create_argv(r->pool, SUEXEC_BIN, execuser, grpname,
+	                       argv0, r->args),
+	           env);
 	}
     }
     else {
@@ -596,7 +596,9 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execle(r->filename, argv0, NULL, env);
 
 	else
-	    execve(r->filename, create_argv(r, argv0, r->args, (void *)NULL), env);
+	    execve(r->filename,
+	           create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
+	           env);
     }
 #endif
 }

@@ -56,10 +56,6 @@
 #define APACHE_ARG_MAX 512
 #endif
 
-char **create_argv(request_rec *r, char *av0, ...);
-#ifdef __EMX__
-char **create_argv_cmd(pool *p, char *av0, const char *args, char *path);
-#endif
 char **create_environment(pool *p, table *t);
 int find_path_info(char *uri, char *path_info);
 void add_cgi_vars(request_rec *r);
