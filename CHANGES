@@ -38,9 +38,6 @@ Changes with Apache 2.1.0-dev
      SSL library used at run-time, rather than at compile-time.
      PR: 23956  [Eric Seidel <eseidel apple.com>]
 
-  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
-     into the errorlog.  [André Malo]
-
   *) mod_logio: Account for some bytes handed to the network layer prior to
      dropped connections.  [Jeff Trawick]
 
@@ -56,9 +53,6 @@ Changes with Apache 2.1.0-dev
   *) mod_auth_ldap: Fix some segfaults in the cache logic.  PR 18756.
      [Matthieu Estrade <apache moresecurity.org>]
 
-  *) mod_autoindex: Restore the ability to add a description for
-     directories that don't contain an index file.  [André Malo]
-
   *) mod_autoindex: Add 'XHTML' option in order to allow switching between
      HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
 
@@ -68,9 +62,6 @@ Changes with Apache 2.1.0-dev
   *) mod_setenvif: Fix the regex optimizer, which under circumstances
      treated the supplied regex as literal string. PR 24219.
      [André Malo]
-
-  *) mod_autoindex / core: Don't fail to show filenames containing
-     special characters like '%'. PR 13598.  [André Malo]
 
   *) mod_ssl: Fix segfault on a non-SSL request if the the 'c' log
      format code is used. PR 22741. [Gary E. Miller <gem rellim.com>]
@@ -259,6 +250,12 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.49
 
+  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
+     into the errorlog.  [André Malo]
+
+  *) mod_autoindex / core: Don't fail to show filenames containing
+     special characters like '%'. PR 13598.  [André Malo]
+ 
   *) mod_status: Report total CPU time accurately when using a threaded
      MPM.  PR 23795.  [Jeff Trawick]
 
