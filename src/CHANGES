@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) Revert to the 1.3.3 way of getting the server name from the
+     scoreboard, with a modification to make it respect the
+     UseCanonicalName setting. This makes things work better with
+     mass vhosting setups. [Cliff Woolley <jwoolley@wlu.edu>]
+
   *) Add --suexec-umask option to configure, and severity levels
      to suexec log messages.  Also clarify a couple of those messages,
      which were perhaps a bit too cryptic.  [Ken Coar] PR#4178
