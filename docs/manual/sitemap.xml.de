@@ -184,7 +184,7 @@ HPUX betreiben</page>
   <modulefile>mpm_common.xml.de</modulefile>
   <modulefile>beos.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
-  <modulefile>mpm_winnt.xml</modulefile>
+  <modulefile>mpm_winnt.xml.de</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml.de</modulefile>

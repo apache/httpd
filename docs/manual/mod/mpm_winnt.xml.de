@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English revision: 1.4.2.1 -->
+
+<modulesynopsis>
+
+<name>mpm_winnt</name>
+<description> Das Multi-Processing-Modul ist optimiert d&uuml;r
+  Windows NT.</description>
+<status>MPM</status>
+<sourcefile>mpm_winnt.c</sourcefile>
+<identifier>mpm_winnt_module</identifier>
+
+<summary>
+    <p>Dieses Multi-Processing-Modul (MPM) ist die Voreinstellung
+    f&uuml;r das Betriebssystem Windows NT. Es verwendet einen einzelnen
+    Steuerprozess, der einen einzelnen Kindprozess startet, welcher
+    wiederum Threads zur Bedienung von Anfragen erstellt.</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+
+</modulesynopsis>
