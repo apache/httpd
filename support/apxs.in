@@ -71,7 +71,8 @@ get_config_vars("$prefix/build/config_vars.mk",\%config_vars);
 my $exec_prefix    = get_vars("exec_prefix");
 my $CFG_TARGET     = get_vars("progname");
 my $CFG_SYSCONFDIR = get_vars("sysconfdir");
-my $CFG_CFLAGS     = get_vars("SHLTCFLAGS");
+my $CFG_CFLAGS     = join ' ', map { get_vars($_) }
+  qw(SHLTCFLAGS CFLAGS NOTEST_CPPFLAGS EXTRA_CPPFLAGS EXTRA_CFLAGS);
 my $includedir     = get_vars("includedir");
 my $CFG_INCLUDEDIR = eval qq("$includedir");
 my $CFG_CC         = get_vars("CC");
