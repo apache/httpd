@@ -1230,7 +1230,7 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #endif
 
 /* Majority of os's want to verify FD_SETSIZE */
-#if !defined(WIN32) && !defined(TPF)
+#if !defined(WIN32) && !defined(TPF) && !defined(NETWARE)
 #define CHECK_FD_SETSIZE
 #endif
 

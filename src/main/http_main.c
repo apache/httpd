@@ -1104,7 +1104,7 @@ typedef struct _TSD {
     unsigned int 	alarm_expiry_time;
 } TSD;
 
-#define get_tsd            TSD* tsd = (TSD*) GetThreadDataAreaPtr();
+#define get_tsd            TSD* tsd = (TSD*) Thread_Data_Area;
 #define current_conn       tsd->current_conn
 #define alarms_blocked     tsd->alarms_blocked
 #define alarm_pending      tsd->alarm_pending
@@ -2194,15 +2194,26 @@ static ap_inline void put_scoreboard_info(int child_num,
 }
 
 /* a clean exit from the parent with proper cleanup */
+#ifdef NETWARE
+void clean_parent_exit(int code) __attribute__((noreturn));
+void clean_parent_exit(int code)
+#else
 static void clean_parent_exit(int code) __attribute__((noreturn));
 static void clean_parent_exit(int code)
+#endif
 {
 #ifdef NETWARE
     AMCSocketCleanup();
+    ap_destroy_pool(pcommands);    
+    free(ap_loaded_modules);    
+    ap_cleanup_method_ptrs();    
+    ap_destroy_pool(pglobal);
+    ap_cleanup_alloc();
     ap_main_finished = TRUE;
-#endif
+#else
     /* Clear the pool - including any registered cleanups */
     ap_destroy_pool(pglobal);
+#endif
     exit(code);
 }
 
@@ -2512,6 +2523,7 @@ int reap_children(ap_wait_t *status)
  * a while...
  */
 
+#ifndef NETWARE
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
 #define INTERVAL_OF_WRITABLE_PROBES 10
@@ -2548,31 +2560,6 @@ static int wait_or_timeout(ap_wait_t *status)
 	}
     }
     return (-1);
-#elif defined(NETWARE)
-    struct timeval tv;
-    int ret = 0;
-
-    ++wait_or_timeout_counter;
-    if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
-	    wait_or_timeout_counter = 0;
-#ifndef NO_OTHER_CHILD
-	    probe_writable_fds();
-#endif
-    }
-
-    if (ret == -1 && errno == EINTR) {
-	    return -1;
-    }
-
-    if (ret > 0) {
-	    return ret;
-    }
-    
-    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
-    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
-    ap_select(0, NULL, NULL, NULL, &tv);
-    return -1;
-
 #else /* WIN32 */
     struct timeval tv;
     int ret;
@@ -2602,7 +2589,7 @@ static int wait_or_timeout(ap_wait_t *status)
     return -1;
 #endif /* WIN32 */
 }
-
+#endif
 
 #if defined(NSIG)
 #define NumSIG NSIG
@@ -3168,7 +3155,7 @@ static int init_suexec(void)
 {
     int result = 0;
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     struct stat wrapper;
 
     if ((stat(SUEXEC_BIN, &wrapper)) != 0) {
@@ -3450,10 +3437,6 @@ static void copy_listeners(pool *p)
     do {
 	listen_rec *nr = malloc(sizeof *nr);
 
-#ifdef NETWARE
-        ThreadSwitch();
-#endif
-	
         if (nr == NULL) {
             fprintf(stderr, "Ouch!  malloc failed in copy_listeners()\n");
             exit(1);
@@ -3552,9 +3535,6 @@ static ap_inline listen_rec *find_ready_listener(fd_set * main_fds)
 
     lr = head_listener;
     do {
-#ifdef NETWARE
-	ThreadSwitch();
-#endif
 	if (FD_ISSET(lr->fd, main_fds)) {
 	    head_listener = lr->next;
 	    return (lr);
@@ -5317,13 +5297,11 @@ static void child_sub_main(int child_num)
     TSD* tsd = NULL;
 
     while(tsd == NULL) {
-        tsd = (TSD*) GetThreadDataAreaPtr();
+        tsd = (TSD*) Thread_Data_Area;
         ThreadSwitchWithDelay();
     }
 
-    SetCurrentNameSpace(4);
-    SetTargetNameSpace(4);
-
+    init_name_space();
     ap_thread_count++;
 #endif
 
@@ -5344,7 +5322,7 @@ static void child_sub_main(int child_num)
 #endif
 
 #ifdef NETWARE
-    tsd = (TSD*) GetThreadDataAreaPtr();
+    tsd = (TSD*) Thread_Data_Area;
 #endif
 
     while (1) {
@@ -5421,9 +5399,6 @@ static void child_sub_main(int child_num)
 	 * until no requests are left or we decide to close.
 	 */
 	while ((r = ap_read_request(current_conn)) != NULL) {
-#ifdef NETWARE
-            ThreadSwitch();
-#endif
             (void) ap_update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
 	    if (r->status == HTTP_OK)
@@ -5488,9 +5463,10 @@ void child_main(int child_num_arg)
      */
 #ifdef NETWARE
     TSD Tsd;
-
+    int *thread_ptr;
     memset(&Tsd, 0, sizeof(TSD));
-	SaveThreadDataAreaPtr(&Tsd);
+    thread_ptr = __get_thread_data_area_ptr();
+    *thread_ptr = (int) &Tsd;
 	child_sub_main((int)child_num_arg);
 #else
     child_sub_main(child_num_arg);
@@ -5650,15 +5626,16 @@ void worker_main(void)
     int clen;
     int csd;
     struct sockaddr_in sa_client;
-    int total_jobs = 0;
     thread **child_handles;
     int rv;
     int i;
     struct timeval tv;
     int my_pid;
-    
     int count_select_errors = 0;
     pool *pchild;
+    module **m;    
+    listen_rec* lr;
+    
 
     pchild = ap_make_sub_pool(pconf);
 
@@ -5690,6 +5667,22 @@ void worker_main(void)
     }
     
     set_signals();
+
+    /* Display listening ports */
+    printf("   Listening on port(s):");
+    lr = ap_listeners;
+    do {
+       printf(" %d", ntohs(lr->local_addr.sin_port));
+       lr = lr->next;
+    } while(lr && lr != ap_listeners);
+    
+    /* Display dynamic modules loaded */
+    printf("\n");    
+    for (m = ap_loaded_modules; *m != NULL; m++) {
+        if (((module*)*m)->dynamic_load_handle) {
+            printf("   Loaded dynamic module %s\n", ap_find_module_name(*m));
+        }
+    }
 
     /*
      * - Initialize allowed_globals
@@ -5779,7 +5772,6 @@ void worker_main(void)
         }
         else {
             add_job(csd);
-            total_jobs++;
         }
     }
       
@@ -5787,8 +5779,7 @@ void worker_main(void)
 
     /* Get ready to shutdown and exit */
     allowed_globals.exit_now = 1;
-    ap_release_mutex(start_mutex);
-
+    
     for (i = 0; i < nthreads; i++) {
         add_job(-1);
     }
@@ -6585,11 +6576,6 @@ void signal_handler(int sig)
     }
     return;
 }
-
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
 #endif
 
 #if defined(NETWARE)
@@ -6613,12 +6599,13 @@ int REALMAIN(int argc, char *argv[])
 
 #ifdef NETWARE
     TSD Tsd;
+    int *thread_ptr;
 
-    SetCurrentNameSpace(4);
-    SetTargetNameSpace(4);
+    init_name_space();
     signal(SIGTERM, signal_handler);
-    memset(&Tsd, 0, sizeof(Tsd));
-    SaveThreadDataAreaPtr(&Tsd);
+    memset(&Tsd, 0, sizeof(TSD));
+    thread_ptr = __get_thread_data_area_ptr();
+    *thread_ptr = (int) &Tsd;    
 #else
     /* Service application
      * Configuration file in registry at:
@@ -6706,6 +6693,11 @@ int REALMAIN(int argc, char *argv[])
 	    signal_to_send = optarg;
 	    break;
 #endif /* WIN32 */
+#ifdef NETWARE
+    case 's':
+        DestroyScreen(GetCurrentScreen());
+        break;
+#endif
 	case 'd':
             optarg = ap_os_canonical_filename(pcommands, optarg);
             if (!ap_os_is_path_absolute(optarg)) {
@@ -6842,13 +6834,15 @@ int REALMAIN(int argc, char *argv[])
 
     post_parse_init();
 
-#ifdef OS2
+#if defined(OS2)
     printf("%s running...\n", ap_get_server_version());
-#endif
-#if defined(WIN32) || defined(NETWARE)
+#elif defined(WIN32)
     if (!child) {
 	printf("%s running...\n", ap_get_server_version());
     }
+#elif defined(NETWARE)
+    clrscr();
+    printf("%s running...\n", ap_get_server_version());
 #endif
 
 #ifndef NETWARE

@@ -300,6 +300,14 @@ static struct {
  */
 static handler_func *method_ptrs;
 
+
+void ap_cleanup_method_ptrs()
+{
+    if (method_ptrs) {
+        free(method_ptrs);
+    }
+}
+
 /* routine to reconstruct all these shortcuts... called after every
  * add_module.
  * XXX: this breaks if modules dink with their methods pointers
@@ -544,7 +552,11 @@ API_EXPORT(void) ap_add_module(module *m)
 	fprintf(stderr, "%s: module \"%s\" is not compatible with this "
 		"version of Apache.\n", ap_server_argv0, m->name);
 	fprintf(stderr, "Please contact the vendor for the correct version.\n");
+#ifdef NETWARE
+        clean_parent_exit(1);
+#else    
 	exit(1);
+#endif
     }
 
     if (m->next == NULL) {
@@ -560,7 +572,11 @@ API_EXPORT(void) ap_add_module(module *m)
 		    " the dynamic\n", ap_server_argv0, m->name);
 	    fprintf(stderr, "module limit was reached. Please increase "
 		    "DYNAMIC_MODULE_LIMIT and recompile.\n");
+#ifdef NETWARE
+            clean_parent_exit(1);
+#else
 	    exit(1);
+#endif
 	}
     }
 
@@ -698,7 +714,11 @@ void ap_setup_prelinked_modules(void)
         sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
     if (ap_loaded_modules == NULL) {
 	fprintf(stderr, "Ouch!  Out of memory in ap_setup_prelinked_modules()!\n");
+#ifdef NETWARE
+        clean_parent_exit(1);
+#else
 	exit(1);
+#endif
     }
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
         *m2++ = *m++;
@@ -1157,7 +1177,11 @@ static void process_command_config(server_rec *s, array_header *arr, pool *p,
 
     if (errmsg) {
         fprintf(stderr, "Syntax error in -C/-c directive:\n%s\n", errmsg);
+#ifdef NETWARE
+        clean_parent_exit(1);
+#else
         exit(1);
+#endif
     }
 
     ap_cfg_closefile(parms.config_file);
@@ -1196,7 +1220,11 @@ void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp
 	perror("fopen");
 	fprintf(stderr, "%s: could not open document config file %s\n",
 		ap_server_argv0, fname);
+#ifdef NETWARE
+        clean_parent_exit(1);
+#else
 	exit(1);
+#endif
     }
 
     errmsg = ap_srm_command_loop(&parms, s->lookup_defaults);
@@ -1205,7 +1233,11 @@ void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp
 	fprintf(stderr, "Syntax error on line %d of %s:\n",
 		parms.config_file->line_number, parms.config_file->name);
 	fprintf(stderr, "%s\n", errmsg);
+#ifdef NETWARE
+        clean_parent_exit(1);
+#else
 	exit(1);
+#endif
     }
 
     ap_cfg_closefile(parms.config_file);
@@ -1639,7 +1671,7 @@ void ap_show_modules(void)
     for (n = 0; ap_loaded_modules[n]; ++n) {
 	printf("  %s\n", ap_loaded_modules[n]->name);
     }
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     printf("suexec: %s\n",
 	   ap_suexec_enabled
 	       ? "enabled; valid wrapper " SUEXEC_BIN

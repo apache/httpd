@@ -172,17 +172,18 @@ MaxRequestsPerChild 0
 # Note: The order is which modules are loaded is important.  Don't change
 # the order below without expert advice.
 
-# LoadModule anon_auth_module modules/authanon
-# LoadModule cern_meta_module modules/cernmeta
-# LoadModule digest_module modules/digest
-# LoadModule expires_module modules/expires
-# LoadModule headers_module modules/headers
-# LoadModule proxy_module modules/proxy
-# LoadModule rewrite_module modules/rewrite
-# LoadModule speling_module modules/speling
-# LoadModule status_module modules/status
-# LoadModule info_module modules/info
-# LoadModule usertrack_module modules/usrtrack
+# LoadModule anon_auth_module modules/authanon.nlm
+# LoadModule cern_meta_module modules/cernmeta.nlm
+# LoadModule digest_module modules/digest.nlm
+# LoadModule expires_module modules/expires.nlm
+# LoadModule headers_module modules/headers.nlm
+# LoadModule proxy_module modules/proxy.nlm
+# LoadModule rewrite_module modules/rewrite.nlm
+# LoadModule speling_module modules/speling.nlm
+# LoadModule status_module modules/status.nlm
+# LoadModule info_module modules/info.nlm
+# LoadModule usertrack_module modules/usrtrack.nlm
+# LoadModule tls_module modules/mod_tls.nlm
 
 #
 # ExtendedStatus controls whether Apache will generate "full" status
@@ -268,7 +269,7 @@ DocumentRoot "sys:/apache/htdocs"
 # Note that "MultiViews" must be named *explicitly* --- "Options All"
 # doesn't give it to you.
 #
-    Options Indexes FollowSymLinks
+    Options Indexes FollowSymLinks MultiViews
 
 #
 # This controls which options the .htaccess files in directories can
@@ -288,7 +289,10 @@ DocumentRoot "sys:/apache/htdocs"
 # UserDir: The name of the directory which is appended onto a user's home
 # directory if a ~user request is received.
 #
-UserDir public_html
+<IfModule mod_userdir.c>
+    UserDir public_html
+</IfModule>
+
 #
 # Control access to UserDir directories.  The following is an example
 # for a site where these directories are restricted to read-only.
@@ -300,23 +304,25 @@ UserDir public_html
 #        Order allow,deny
 #        Allow from all
 #    </Limit>
-#    <Limit PUT DELETE PATCH PROPPATCH MKCOL COPY MOVE LOCK UNLOCK>
+#    <LimitExcept GET POST OPTIONS PROPFIND>
 #        Order deny,allow
 #        Deny from all
-#    </Limit>
+#    </LimitExcept>
 #</Directory>
 
 #
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
 #
-DirectoryIndex index.html
+<IfModule mod_dir.c>
+    DirectoryIndex index.html
+</IfModule>
 
 #
 # AccessFileName: The name of the file to look for in each directory
 # for access control information.
 #
-#AccessFileName .htaccess
+AccessFileName .htaccess
 
 #
 # The following lines prevent .htaccess files from being viewed by
@@ -356,7 +362,9 @@ UseCanonicalName On
 # TypesConfig describes where the mime.types file (or equivalent) is
 # to be found.
 #
-TypesConfig conf/mime.types
+<IfModule mod_mime.c>
+    TypesConfig conf/mime.types
+</IfModule>
 
 #
 # DefaultType is the default MIME type the server will use for a document
@@ -426,7 +434,7 @@ LogFormat "%{User-agent}i" agent
 # define per-<VirtualHost> access logfiles, transactions will be
 # logged therein and *not* in this file.
 #
-#CustomLog logs/access_log common
+CustomLog logs/access_log common
 
 #
 # If you would like to have agent and referer logfiles, uncomment the
@@ -454,39 +462,45 @@ ServerSignature On
 # Aliases: Add here as many aliases as you need (with no limit). The format is 
 # Alias fakename realname
 #
-# Note that if you include a trailing / on fakename then the server will
-# require it to be present in the URL.  So "/icons" isn't aliased in this
-# example, only "/icons/"..
-#
-Alias /icons/ "sys:/apache/icons/"
+<IfModule mod_alias.c>
 
-<Directory "sys:/apache/icons">
-    Options Indexes MultiViews
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-</Directory>
+    #
+    # Note that if you include a trailing / on fakename then the server will
+    # require it to be present in the URL.  So "/icons" isn't aliased in this
+    # example, only "/icons/"..
+    #
+    Alias /icons/ "sys:/apache/icons/"
 
-#
-# ScriptAlias: This controls which directories contain server scripts.
-# ScriptAliases are essentially the same as Aliases, except that
-# documents in the realname directory are treated as applications and
-# run by the server when requested rather than as documents sent to the client.
-# The same rules about trailing "/" apply to ScriptAlias directives as to
-# Alias.
-#
-ScriptAlias /cgi-bin/ "sys:/apache/cgi-bin/"
+    <Directory "sys:/apache/icons">
+        Options Indexes MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
 
-#
-# "sys:/apache/cgi-bin" should be changed to whatever your ScriptAliased
-# CGI directory exists, if you have that configured.
-#
-<Directory "sys:/apache/cgi-bin">
-    AllowOverride None
-    Options None
-    Order allow,deny
-    Allow from all
-</Directory>
+    #
+    # ScriptAlias: This controls which directories contain server scripts.
+    # ScriptAliases are essentially the same as Aliases, except that
+    # documents in the realname directory are treated as applications and
+    # run by the server when requested rather than as documents sent to the client.
+    # The same rules about trailing "/" apply to ScriptAlias directives as to
+    # Alias.
+    #
+    ScriptAlias /cgi-bin/ "sys:/apache/cgi-bin/"
+
+    #
+    # "sys:/apache/cgi-bin" should be changed to whatever your ScriptAliased
+    # CGI directory exists, if you have that configured.
+    #
+    <Directory "sys:/apache/cgi-bin">
+        AllowOverride None
+        Options None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+</IfModule>
+# End of aliases.
 
 #
 # Redirect allows you to tell clients about documents which used to exist in
@@ -498,158 +512,223 @@ ScriptAlias /cgi-bin/ "sys:/apache/cgi-bin/"
 #
 # Directives controlling the display of server-generated directory listings.
 #
+<IfModule mod_autoindex.c>
+
+    #
+    # FancyIndexing is whether you want fancy directory indexing or standard
+    #
+    IndexOptions FancyIndexing
+
+    #
+    # AddIcon* directives tell the server which icon to show for different
+    # files or filename extensions.  These are only displayed for
+    # FancyIndexed directories.
+    #
+    AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+
+    AddIconByType (TXT,/icons/text.gif) text/*
+    AddIconByType (IMG,/icons/image2.gif) image/*
+    AddIconByType (SND,/icons/sound2.gif) audio/*
+    AddIconByType (VID,/icons/movie.gif) video/*
+
+    AddIcon /icons/binary.gif .bin .exe
+    AddIcon /icons/binhex.gif .hqx
+    AddIcon /icons/tar.gif .tar
+    AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+    AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+    AddIcon /icons/a.gif .ps .ai .eps
+    AddIcon /icons/layout.gif .html .shtml .htm .pdf
+    AddIcon /icons/text.gif .txt
+    AddIcon /icons/c.gif .c
+    AddIcon /icons/p.gif .pl .py
+    AddIcon /icons/f.gif .for
+    AddIcon /icons/dvi.gif .dvi
+    AddIcon /icons/uuencoded.gif .uu
+    AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+    AddIcon /icons/tex.gif .tex
+    AddIcon /icons/bomb.gif core
+
+    AddIcon /icons/back.gif ..
+    AddIcon /icons/hand.right.gif README
+    AddIcon /icons/folder.gif ^^DIRECTORY^^
+    AddIcon /icons/blank.gif ^^BLANKICON^^
+
+    #
+    # DefaultIcon is which icon to show for files which do not have an icon
+    # explicitly set.
+    #
+    DefaultIcon /icons/unknown.gif
+
+    #
+    # AddDescription allows you to place a short description after a file in
+    # server-generated indexes.  These are only displayed for FancyIndexed
+    # directories.
+    # Format: AddDescription "description" filename
+    #
+    #AddDescription "GZIP compressed document" .gz
+    #AddDescription "tar archive" .tar
+    #AddDescription "GZIP compressed tar archive" .tgz
+
+    #
+    # ReadmeName is the name of the README file the server will look for by
+    # default, and append to directory listings.
+    #
+    # HeaderName is the name of a file which should be prepended to
+    # directory indexes. 
+    #
+    # The server will first look for name.html and include it if found.
+    # If name.html doesn't exist, the server will then look for name.txt
+    # and include it as plaintext if found.
+    #
+    ReadmeName README
+    HeaderName HEADER
+
+    #
+    # IndexIgnore is a set of filenames which directory indexing should ignore
+    # and not include in the listing.  Shell-style wildcarding is permitted.
+    #
+    IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+
+</IfModule>
+# End of indexing directives.
 
 #
-# FancyIndexing is whether you want fancy directory indexing or standard
+# Document types.
 #
-IndexOptions FancyIndexing
+<IfModule mod_mime.c>
 
-#
-# AddIcon* directives tell the server which icon to show for different
-# files or filename extensions.  These are only displayed for
-# FancyIndexed directories.
-#
-AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+    #
+    # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
+    # information on the fly. Note: Not all browsers support this.
+    # Despite the name similarity, the following Add* directives have nothing
+    # to do with the FancyIndexing customization directives above.
+    #
+    AddEncoding x-compress Z
+    AddEncoding x-gzip gz tgz
 
-AddIconByType (TXT,/icons/text.gif) text/*
-AddIconByType (IMG,/icons/image2.gif) image/*
-AddIconByType (SND,/icons/sound2.gif) audio/*
-AddIconByType (VID,/icons/movie.gif) video/*
+    #
+    # AddLanguage allows you to specify the language of a document. You can
+    # then use content negotiation to give a browser a file in a language
+    # it can understand.  
+    #
+    # Note 1: The suffix does not have to be the same as the language 
+    # keyword --- those with documents in Polish (whose net-standard 
+    # language code is pl) may wish to use "AddLanguage pl .po" to 
+    # avoid the ambiguity with the common suffix for perl scripts.
+    #
+    # Note 2: The example entries below illustrate that in quite
+    # some cases the two character 'Language' abbriviation is not
+    # identical to the two character 'Country' code for its country,
+    # E.g. 'Danmark/dk' versus 'Danish/da'.
+    #
+    # Note 3: In the case of 'ltz' we violate the RFC by using a three char 
+    # specifier. But there is 'work in progress' to fix this and get 
+    # the reference data for rfc1766 cleaned up.
+    #
+    # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
+    # French (fr) - German (de) - Greek-Modern (el)
+    # Italian (it) - Korean (kr) - Norwegian (no)
+    # Portugese (pt) - Luxembourgeois* (ltz)
+    # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
+    # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
+    # Russian (ru)
+    #
+    AddLanguage da .dk
+    AddLanguage nl .nl
+    AddLanguage en .en
+    AddLanguage et .ee
+    AddLanguage fr .fr
+    AddLanguage de .de
+    AddLanguage el .el
+    AddLanguage he .he
+    AddCharset ISO-8859-8 .iso8859-8
+    AddLanguage it .it
+    AddLanguage ja .ja
+    AddCharset ISO-2022-JP .jis
+    AddLanguage kr .kr
+    AddCharset ISO-2022-KR .iso-kr
+    AddLanguage no .no
+    AddLanguage pl .po
+    AddCharset ISO-8859-2 .iso-pl
+    AddLanguage pt .pt
+    AddLanguage pt-br .pt-br
+    AddLanguage ltz .lu
+    AddLanguage ca .ca
+    AddLanguage es .es
+    AddLanguage sv .se
+    AddLanguage cz .cz
+    AddLanguage ru .ru
+    AddCharset WINDOWS-1251 .cp-1251
+    AddCharset CP866        .cp866
+    AddCharset ISO-8859-5   .iso-ru
+    AddCharset KOI8-R       .koi8-r
+    AddCharset UCS-2        .ucs2
+    AddCharset UCS-4        .ucs4
+    AddCharset UTF-8        .utf8
 
-AddIcon /icons/binary.gif .bin .exe
-AddIcon /icons/binhex.gif .hqx
-AddIcon /icons/tar.gif .tar
-AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
-AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
-AddIcon /icons/a.gif .ps .ai .eps
-AddIcon /icons/layout.gif .html .shtml .htm .pdf
-AddIcon /icons/text.gif .txt
-AddIcon /icons/c.gif .c
-AddIcon /icons/p.gif .pl .py
-AddIcon /icons/f.gif .for
-AddIcon /icons/dvi.gif .dvi
-AddIcon /icons/uuencoded.gif .uu
-AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
-AddIcon /icons/tex.gif .tex
-AddIcon /icons/bomb.gif core
+    # LanguagePriority allows you to give precedence to some languages
+    # in case of a tie during content negotiation.
+    #
+    # Just list the languages in decreasing order of preference. We have
+    # more or less alphabetized them here. You probably want to change this.
+    #
+    <IfModule mod_negotiation.c>
+        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ru ltz ca es sv
+    </IfModule>
 
-AddIcon /icons/back.gif ..
-AddIcon /icons/hand.right.gif README
-AddIcon /icons/folder.gif ^^DIRECTORY^^
-AddIcon /icons/blank.gif ^^BLANKICON^^
+    #
+    # AddType allows you to tweak mime.types without actually editing it, or to
+    # make certain files to be certain types.
+    #
+    # For example, the PHP 3.x module (not part of the Apache distribution - see
+    # http://www.php.net) will typically use:
+    #
+    #AddType application/x-httpd-php3 .php3
+    #AddType application/x-httpd-php3-source .phps
+    #
+    # And for PHP 4.x, use:
+    #
+    #AddType application/x-httpd-php .php
+    #AddType application/x-httpd-php-source .phps
 
-#
-# DefaultIcon is which icon to show for files which do not have an icon
-# explicitly set.
-#
-DefaultIcon /icons/unknown.gif
+    AddType application/x-tar .tgz
 
-#
-# AddDescription allows you to place a short description after a file in
-# server-generated indexes.  These are only displayed for FancyIndexed
-# directories.
-# Format: AddDescription "description" filename
-#
-#AddDescription "GZIP compressed document" .gz
-#AddDescription "tar archive" .tar
-#AddDescription "GZIP compressed tar archive" .tgz
+    #
+    # AddHandler allows you to map certain file extensions to "handlers",
+    # actions unrelated to filetype. These can be either built into the server
+    # or added with the Action command (see below)
+    #
+    # If you want to use server side includes, or CGI outside
+    # ScriptAliased directories, uncomment the following lines.
+    #
+    # To use CGI scripts:
+    #
+    #AddHandler cgi-script .cgi
 
-#
-# ReadmeName is the name of the README file the server will look for by
-# default, and append to directory listings.
-#
-# HeaderName is the name of a file which should be prepended to
-# directory indexes. 
-#
-# The server will first look for name.html and include it if found.
-# If name.html doesn't exist, the server will then look for name.txt
-# and include it as plaintext if found.
-#
-ReadmeName README
-HeaderName HEADER
+    #
+    # To use server-parsed HTML files
+    #
+    #AddType text/html .shtml
+    #AddHandler server-parsed .shtml
 
-#
-# IndexIgnore is a set of filenames which directory indexing should ignore
-# and not include in the listing.  Shell-style wildcarding is permitted.
-#
-IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    #
+    # Uncomment the following line to enable Apache's send-asis HTTP file
+    # feature
+    #
+    #AddHandler send-as-is asis
 
-#
-# AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
-# information on the fly. Note: Not all browsers support this.
-# Despite the name similarity, the following Add* directives have nothing
-# to do with the FancyIndexing customization directives above.
-#
-AddEncoding x-compress Z
-AddEncoding x-gzip gz tgz
+    #
+    # If you wish to use server-parsed imagemap files, use
+    #
+    #AddHandler imap-file map
 
-#
-# AddLanguage allows you to specify the language of a document. You can
-# then use content negotiation to give a browser a file in a language
-# it can understand.  Note that the suffix does not have to be the same
-# as the language keyword --- those with documents in Polish (whose
-# net-standard language code is pl) may wish to use "AddLanguage pl .po" 
-# to avoid the ambiguity with the common suffix for perl scripts.
-#
-AddLanguage en .en
-AddLanguage fr .fr
-AddLanguage de .de
-AddLanguage da .da
-AddLanguage el .el
-AddLanguage it .it
+    #
+    # To enable type maps, you might want to use
+    #
+    #AddHandler type-map var
 
-#
-# LanguagePriority allows you to give precedence to some languages
-# in case of a tie during content negotiation.
-# Just list the languages in decreasing order of preference.
-#
-LanguagePriority en fr de
-
-#
-# AddType allows you to tweak mime.types without actually editing it, or to
-# make certain files to be certain types.
-#
-# For example, the PHP3 module (not part of the Apache distribution - see
-# http://www.php.net) will typically use:
-#
-#AddType application/x-httpd-php3 .php3
-#AddType application/x-httpd-php3-source .phps
-
-AddType application/x-tar .tgz
-
-#
-# AddHandler allows you to map certain file extensions to "handlers",
-# actions unrelated to filetype. These can be either built into the server
-# or added with the Action command (see below)
-#
-# If you want to use server side includes, or CGI outside
-# ScriptAliased directories, uncomment the following lines.
-#
-# To use CGI scripts:
-#
-#AddHandler cgi-script .cgi
-
-#
-# To use server-parsed HTML files
-#
-#AddType text/html .shtml
-#AddHandler server-parsed .shtml
-
-#
-# Uncomment the following line to enable Apache's send-asis HTTP file
-# feature
-#
-#AddHandler send-as-is asis
-
-#
-# If you wish to use server-parsed imagemap files, use
-#
-#AddHandler imap-file map
-
-#
-# To enable type maps, you might want to use
-#
-#AddHandler type-map var
+</IfModule>
+# End of document types.
 
 #
 # Action lets you define media types that will execute a script whenever
@@ -692,47 +771,58 @@ AddType application/x-tar .tgz
 #  request will *not* be available to such a script.
 
 #
-# The following directives modify normal HTTP response behavior.
-# The first directive disables keepalive for Netscape 2.x and browsers that
-# spoof it. There are known problems with these browser implementations.
-# The second directive is for Microsoft Internet Explorer 4.0b2
-# which has a broken HTTP/1.1 implementation and does not properly
-# support keepalive when it is used on 301 or 302 (redirect) responses.
+# Customize behaviour based on the browser
 #
-BrowserMatch "Mozilla/2" nokeepalive
-BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+<IfModule mod_setenvif.c>
 
-#
-# The following directive disables HTTP/1.1 responses to browsers which
-# are in violation of the HTTP/1.0 spec by not being able to grok a
-# basic 1.1 response.
-#
-BrowserMatch "RealPlayer 4\.0" force-response-1.0
-BrowserMatch "Java/1\.0" force-response-1.0
-BrowserMatch "JDK/1\.0" force-response-1.0
+    #
+    # The following directives modify normal HTTP response behavior.
+    # The first directive disables keepalive for Netscape 2.x and browsers that
+    # spoof it. There are known problems with these browser implementations.
+    # The second directive is for Microsoft Internet Explorer 4.0b2
+    # which has a broken HTTP/1.1 implementation and does not properly
+    # support keepalive when it is used on 301 or 302 (redirect) responses.
+    #
+    BrowserMatch "Mozilla/2" nokeepalive
+    BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+
+    #
+    # The following directive disables HTTP/1.1 responses to browsers which
+    # are in violation of the HTTP/1.0 spec by not being able to grok a
+    # basic 1.1 response.
+    #
+    BrowserMatch "RealPlayer 4\.0" force-response-1.0
+    BrowserMatch "Java/1\.0" force-response-1.0
+    BrowserMatch "JDK/1\.0" force-response-1.0
+
+</IfModule>
 
 #
 # Allow server status reports, with the URL of http://servername/server-status
 # Change the ".your_domain.com" to match your domain to enable.
 #
-#<Location /server-status>
-#    SetHandler server-status
-#    Order deny,allow
-#    Deny from all
-#    Allow from .your_domain.com
-#</Location>
+<IfModule mod_info.c>
+    <Location /server-status>
+        SetHandler server-status
+        Order deny,allow
+        Deny from all
+        Allow from .your_domain.com
+    </Location>
+</IfModule>
 
 #
 # Allow remote server configuration reports, with the URL of
 #  http://servername/server-info (requires that mod_info.c be loaded).
 # Change the ".your_domain.com" to match your domain to enable.
 #
-#<Location /server-info>
-#    SetHandler server-info
-#    Order deny,allow
-#    Deny from all
-#    Allow from .your_domain.com
-#</Location>
+<IfModule mod_status.c>
+    <Location /server-info>
+        SetHandler server-info
+        Order deny,allow
+        Deny from all
+        Allow from .your_domain.com
+    </Location>
+</IfModule>
 
 #
 # There have been reports of people trying to abuse an old bug from pre-1.1
@@ -794,8 +884,8 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 # If you want to use name-based virtual hosts you need to define at
 # least one IP address (and port number) for them.
 #
-#NameVirtualHost 123.45.67.89:8080
-
+#NameVirtualHost 12.34.56.78:80
+#NameVirtualHost 12.34.56.78
 
 #
 # VirtualHost example:
@@ -811,4 +901,15 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 
 #<VirtualHost _default_:*>
 #</VirtualHost>
+
+#
+# SecureListen is the same as the Listen directive only it
+# ensures the port will be secure.  The second parameter
+# specifies the certificate to use. "SSL CertificateIP" is
+# the default.
+#
+
+<IfModule mod_tls.c>
+    SecureListen 443 "SSL CertificateIP"
+</IfModule>
 

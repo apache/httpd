@@ -262,12 +262,12 @@ static int usage(void)
     fprintf(stderr, " -c  Create a new file.\n");
     fprintf(stderr, " -n  Don't update file; display results on stdout.\n");
     fprintf(stderr, " -m  Force MD5 encryption of the password"
-#if defined(WIN32) || defined(TPF)
+#if defined(WIN32) || defined(TPF) || defined(NETWARE)
 	" (default)"
 #endif
 	".\n");
     fprintf(stderr, " -d  Force CRYPT encryption of the password"
-#if (!(defined(WIN32) || defined(TPF)))
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
 	    " (default)"
 #endif
 	    ".\n");
@@ -276,7 +276,7 @@ static int usage(void)
     fprintf(stderr, " -b  Use the password from the command line rather "
 	    "than prompting for it.\n");
     fprintf(stderr,
-	    "On Windows and TPF systems the '-m' flag is used by default.\n");
+	    "On Windows, TPF and NetWare systems the '-m' flag is used by default.\n");
     fprintf(stderr,
 	    "On all other systems, the '-p' flag will probably not work.\n");
     return ERR_SYNTAX;
@@ -476,14 +476,14 @@ int main(int argc, char *argv[])
 	alg = ALG_APMD5;
 	fprintf(stderr, "Automatically using MD5 format on Windows.\n");
     }
-#elif defined(TPF)
+#elif defined(TPF) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
         fprintf(stderr, "Automatically using MD5 format.\n");
      }
 #endif
 
-#if (!(defined(WIN32) || defined(TPF)))
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
 	fprintf(stderr,"Warning: storing passwords as plain text might "
 		"just not work on this platform.\n");

@@ -92,6 +92,7 @@ typedef struct pool pool;
 typedef struct pool ap_pool;
 
 pool * ap_init_alloc(void);		/* Set up everything */
+void ap_cleanup_alloc(void);
 API_EXPORT(pool *) ap_make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) ap_destroy_pool(pool *);
 

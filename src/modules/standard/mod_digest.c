@@ -390,10 +390,3 @@ module MODULE_VAR_EXPORT digest_module =
     NULL			/* post read-request */
 };
 
-
-#ifdef NETWARE
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
-#endif

@@ -517,7 +517,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
 
     ap_kill_timeout(r);
 
-#if defined(WIN32) || defined(TPF)
+#if defined(WIN32) || defined(TPF) || defined(NETWARE)
     /* works fine under win32, so leave it */
     ap_hard_timeout("proxy send body", r);
     alternate_timeouts = 0;

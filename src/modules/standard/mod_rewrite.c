@@ -2194,7 +2194,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         }
     }
     else if (strcmp(p->pattern, "-l") == 0) {
-#if !defined(OS2) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32)  && !defined(NETWARE)
         if (lstat(input, &sb) == 0) {
             if (S_ISLNK(sb.st_mode)) {
                 rc = 1;
@@ -3109,7 +3109,9 @@ static void open_rewritelog(server_rec *s, pool *p)
     char *fname;
     piped_log *pl;
     int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
-#ifdef WIN32
+#if defined(NETWARE)
+    mode_t rewritelog_mode  = ( S_IREAD|S_IWRITE );
+#elif defined(WIN32)
     mode_t rewritelog_mode  = ( _S_IREAD|_S_IWRITE );
 #else
     mode_t rewritelog_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
@@ -3267,7 +3269,9 @@ static char *current_logtime(request_rec *r)
 ** +-------------------------------------------------------+
 */
 
-#ifdef WIN32
+#if defined(NETWARE)
+#define REWRITELOCK_MODE ( S_IREAD|S_IWRITE )
+#elif defined(WIN32)
 #define REWRITELOCK_MODE ( _S_IREAD|_S_IWRITE )
 #else
 #define REWRITELOCK_MODE ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH )
@@ -4274,12 +4278,5 @@ static int compare_lexicography(char *cpNum1, char *cpNum2)
     }
     return 0;
 }
-
-#ifdef NETWARE
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
-#endif
 
 /*EOF*/

@@ -56,6 +56,7 @@
  */
 
 #include "ap_config.h"
+#include <dirent.h>
 
 void ap_os_dso_init(void)
 {
@@ -68,14 +69,15 @@ void *ap_os_dso_load(const char *path)
     
     moduleName = strrchr(path, '/');
 
-    if (moduleName)
+    if (moduleName) {
         moduleName++;
+    }
     
-    nlmHandle = FindNLMHandle((char*)moduleName);
+    nlmHandle = FindNLMHandleInAddressSpace((char*)moduleName, NULL);
 
     if (nlmHandle == NULL) {
         spawnlp(P_NOWAIT | P_SPAWN_IN_CURRENT_DOMAIN, path, NULL);        
-        nlmHandle = FindNLMHandle((char *)moduleName);
+        nlmHandle = FindNLMHandleInAddressSpace((char*)moduleName, NULL);
     }
 
     return (void *)nlmHandle;
@@ -122,3 +124,9 @@ char *bslash2slash(char* str)
     return str;
 }
 
+void init_name_space()
+{
+    UnAugmentAsterisk(TRUE);
+    SetCurrentNameSpace(NW_NS_LONG);
+    SetTargetNameSpace(NW_NS_LONG);
+}

@@ -519,6 +519,12 @@ pool *ap_init_alloc(void)
     return permanent_pool;
 }
 
+void ap_cleanup_alloc()
+{
+    ap_destroy_mutex(alloc_mutex);
+    ap_destroy_mutex(spawn_mutex);
+}
+
 API_EXPORT(void) ap_clear_pool(struct pool *a)
 {
     ap_block_alarms();

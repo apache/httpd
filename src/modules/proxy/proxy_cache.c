@@ -1071,7 +1071,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     buff[35] = ' ';
 
 /* open temporary file */
-#ifndef TPF
+#if !defined(TPF) && !defined(NETWARE)
 #define TMPFILESTR	"/tmpXXXXXX"
     if (conf->cache.root == NULL)
 	return DECLINED;

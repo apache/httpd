@@ -103,7 +103,7 @@ typedef struct info_cfg_lines {
 } info_cfg_lines;
 
 module MODULE_VAR_EXPORT info_module;
-module API_VAR_EXPORT *top_module;
+extern module API_VAR_EXPORT *top_module;
 
 static void *create_info_config(pool *p, server_rec *s)
 {
@@ -694,10 +694,3 @@ module MODULE_VAR_EXPORT info_module =
     NULL                        /* post read-request */
 };
 
-
-#ifdef NETWARE
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
-#endif

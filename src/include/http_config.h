@@ -356,6 +356,7 @@ void ap_child_exit_modules(pool *p, server_rec *s);
 void ap_setup_prelinked_modules(void);
 void ap_show_directives(void);
 void ap_show_modules(void);
+void ap_cleanup_method_ptrs(void);
 
 /* For http_request.c... */
 

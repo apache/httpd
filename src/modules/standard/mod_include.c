@@ -113,7 +113,7 @@ module MODULE_VAR_EXPORT includes_module;
 /* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
 {
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     struct passwd *pw;
 #endif /* ndef WIN32 */
     table *e = r->subprocess_env;
@@ -611,7 +611,7 @@ static int include_cgi(char *s, request_rec *r)
     }
 
     ap_destroy_sub_req(rr);
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     ap_chdir_file(r->filename);
 #endif
 
@@ -733,7 +733,7 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
             if (!error_fmt && ap_run_sub_req(rr)) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
             }
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
             ap_chdir_file(r->filename);
 #endif
             if (error_fmt) {
@@ -889,7 +889,7 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
                 ap_rputs(error, r);
             }
             /* just in case some stooge changed directories */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
             ap_chdir_file(r->filename);
 #endif
         }
@@ -901,7 +901,7 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
                 ap_rputs(error, r);
             }
             /* grumble groan */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
             ap_chdir_file(r->filename);
 #endif
         }
@@ -2178,7 +2178,7 @@ static void send_parsed_content(FILE *f, request_rec *r)
     printing = conditional_status = 1;
     if_nesting = 0;
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     ap_chdir_file(r->filename);
 #endif
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
@@ -2375,7 +2375,7 @@ static int send_parsed_file(request_rec *r)
     }
 
     if ((*state == xbithack_full)
-#if !defined(OS2) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32) && !defined(NETWARE)
     /*  OS/2 dosen't support Groups. */
         && (r->finfo.st_mode & S_IXGRP)
 #endif
@@ -2500,7 +2500,7 @@ static int send_shtml_file(request_rec *r)
 
 static int xbithack_handler(request_rec *r)
 {
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
     return DECLINED;
 #else

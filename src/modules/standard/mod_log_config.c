@@ -183,7 +183,7 @@
 module MODULE_VAR_EXPORT config_log_module;
 
 static int xfer_flags = (O_WRONLY | O_APPEND | O_CREAT);
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
 /* OS/2 dosen't support users and groups */
 static mode_t xfer_mode = (S_IREAD | S_IWRITE);
 #else

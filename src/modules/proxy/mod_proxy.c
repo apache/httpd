@@ -957,9 +957,3 @@ module MODULE_VAR_EXPORT proxy_module =
 };
 
 
-#ifdef NETWARE
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
-#endif
