@@ -606,12 +606,7 @@ int main(int argc, const char * const argv[])
 
     /* The temporary file has all the data, just copy it to the new location.
      */
-#if defined(OS2) || defined(WIN32)
-    str = apr_psprintf(pool, "copy \"%s\" \"%s\"", tn, pwfilename);
-#else
-    str = apr_psprintf(pool, "cp %s %s", tn, pwfilename);
-#endif
-    system(str);
+    apr_file_copy(tn, pwfilename, APR_FILE_SOURCE_PERMS, pool);
     apr_file_close(ftemp);
     return 0;
 }
