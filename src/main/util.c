@@ -100,6 +100,7 @@ API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt)
 
     /* check return code? */
     strftime(ts, MAX_STRING_LEN, fmt, tms);
+    ts[MAX_STRING_LEN - 1] = '\0';
     return pstrdup(p, ts);
 }
 
