@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/28 03:05:38 $]
+Last modified at [$Date: 2003/01/28 03:31:45 $]
 
 Release:
 
@@ -64,9 +64,11 @@ PATCHES TO PORT FROM 2.1
       using the request pool on the cached apr_mmap_t prior to
       serving the response. This fixes segfault observed on
       windows serving mmap cached files.
+      modules/cache/mod_file_cache.c r1.76
       +1: stoddard
  
     * mod_file_cache segfault bugfix. PR 16313.
+      modules/cache/mod_file_cache.c r1.75
      +1: stoddard, orlikowski, striker
 
     * Rewrite how proxy sends its request to allow input bodies to 
@@ -80,6 +82,11 @@ PATCHES TO PORT FROM 2.1
       +1: stoddard, striker, jim
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
+
+    * port "prefer-language". This would be very useful for the distributed
+      documentation.
+      modules/mappers/mod_negotiation.c r1.110
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
