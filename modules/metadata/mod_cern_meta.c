@@ -127,9 +127,9 @@
 
 #define DIR_CMD_PERMS OR_INDEXES
 
-#define DEFAULT_METADIR		".web"
-#define DEFAULT_METASUFFIX	".meta"
-#define DEFAULT_METAFILES	0
+#define DEFAULT_METADIR     ".web"
+#define DEFAULT_METASUFFIX  ".meta"
+#define DEFAULT_METAFILES   0
 
 module AP_MODULE_DECLARE_DATA cern_meta_module;
 
@@ -214,51 +214,50 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
     tmp_headers = apr_table_make(r->pool, 5);
     while (apr_file_gets(w, MAX_STRING_LEN - 1, f) == APR_SUCCESS) {
 
-	/* Delete terminal (CR?)LF */
+    /* Delete terminal (CR?)LF */
+        p = strlen(w);
+        if (p > 0 && w[p - 1] == '\n') {
+            if (p > 1 && w[p - 2] == '\015')
+                w[p - 2] = '\0';
+            else
+                w[p - 1] = '\0';
+        }
 
-	p = strlen(w);
-	if (p > 0 && w[p - 1] == '\n') {
-	    if (p > 1 && w[p - 2] == '\015')
-		w[p - 2] = '\0';
-	    else
-		w[p - 1] = '\0';
-	}
+        if (w[0] == '\0') {
+            return OK;
+        }
 
-	if (w[0] == '\0') {
-	    return OK;
-	}
+        /* if we see a bogus header don't ignore it. Shout and scream */
 
-	/* if we see a bogus header don't ignore it. Shout and scream */
+        if (!(l = strchr(w, ':'))) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                "malformed header in meta file: %s", r->filename);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-	if (!(l = strchr(w, ':'))) {
- 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-			"malformed header in meta file: %s", r->filename);
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
+        *l++ = '\0';
+        while (*l && apr_isspace(*l))
+            ++l;
 
-	*l++ = '\0';
-	while (*l && apr_isspace(*l))
-	    ++l;
+        if (!strcasecmp(w, "Content-type")) {
+            char *tmp;
+            /* Nuke trailing whitespace */
 
-	if (!strcasecmp(w, "Content-type")) {
-	    char *tmp;
-	    /* Nuke trailing whitespace */
+            char *endp = l + strlen(l) - 1;
+            while (endp > l && apr_isspace(*endp))
+            *endp-- = '\0';
 
-	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && apr_isspace(*endp))
-		*endp-- = '\0';
-
-	    tmp = apr_pstrdup(r->pool, l);
-	    ap_content_type_tolower(tmp);
-	    ap_set_content_type(r, tmp);
-	}
-	else if (!strcasecmp(w, "Status")) {
-	    sscanf(l, "%d", &r->status);
-	    r->status_line = apr_pstrdup(r->pool, l);
-	}
-	else {
-	    apr_table_set(tmp_headers, w, l);
-	}
+            tmp = apr_pstrdup(r->pool, l);
+            ap_content_type_tolower(tmp);
+            ap_set_content_type(r, tmp);
+        }
+        else if (!strcasecmp(w, "Status")) {
+            sscanf(l, "%d", &r->status);
+            r->status_line = apr_pstrdup(r->pool, l);
+        }
+        else {
+            apr_table_set(tmp_headers, w, l);
+        }
     }
     apr_table_overlap(r->headers_out, tmp_headers, APR_OVERLAP_TABLES_SET);
     return OK;
@@ -280,18 +279,18 @@ static int add_cern_meta_data(request_rec *r)
     dconf = ap_get_module_config(r->per_dir_config, &cern_meta_module);
 
     if (!dconf->metafiles) {
-	return DECLINED;
+        return DECLINED;
     };
 
     /* if ./.web/$1.meta exists then output 'asis' */
 
     if (r->finfo.filetype == 0) {
-	return DECLINED;
+        return DECLINED;
     };
 
     /* is this a directory? */
     if (r->finfo.filetype == APR_DIR || r->uri[strlen(r->uri) - 1] == '/') {
-	return DECLINED;
+        return DECLINED;
     };
 
     /* what directory is this file in? */
@@ -300,24 +299,24 @@ static int add_cern_meta_data(request_rec *r)
     leading_slash = strchr(scrap_book, '/');
     last_slash = strrchr(scrap_book, '/');
     if ((last_slash != NULL) && (last_slash != leading_slash)) {
-	/* skip over last slash */
-	real_file = last_slash;
-	real_file++;
-	*last_slash = '\0';
+        /* skip over last slash */
+        real_file = last_slash;
+        real_file++;
+        *last_slash = '\0';
     }
     else {
-	/* no last slash, buh?! */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		    "internal error in mod_cern_meta: %s", r->filename);
-	/* should really barf, but hey, let's be friends... */
-	return DECLINED;
+        /* no last slash, buh?! */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "internal error in mod_cern_meta: %s", r->filename);
+        /* should really barf, but hey, let's be friends... */
+        return DECLINED;
     };
 
     metafilename = apr_pstrcat(r->pool, scrap_book, "/",
-			   dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
-			   "/", real_file,
-		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
-			   NULL);
+               dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
+               "/", real_file,
+         dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
+               NULL);
 
     /* It sucks to require this subrequest to complete, because this
      * means people must leave their meta files accessible to the world.
@@ -332,19 +331,19 @@ static int add_cern_meta_data(request_rec *r)
      */
     rr = ap_sub_req_lookup_file(metafilename, r, NULL);
     if (rr->status != HTTP_OK) {
-	ap_destroy_sub_req(rr);
-	return DECLINED;
+    ap_destroy_sub_req(rr);
+        return DECLINED;
     }
     ap_destroy_sub_req(rr);
 
     retcode = apr_file_open(&f, metafilename, APR_READ, APR_OS_DEFAULT, r->pool);
     if (retcode != APR_SUCCESS) {
-	if (APR_STATUS_IS_ENOENT(retcode)) {
-	    return DECLINED;
-	}
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	      "meta file permissions deny server access: %s", metafilename);
-	return HTTP_FORBIDDEN;
+        if (APR_STATUS_IS_ENOENT(retcode)) {
+            return DECLINED;
+        }
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "meta file permissions deny server access: %s", metafilename);
+        return HTTP_FORBIDDEN;
     };
 
     /* read the headers in */
@@ -362,10 +361,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA cern_meta_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_cern_meta_dir_config,/* dir config creater */
-    merge_cern_meta_dir_configs,/* dir merger --- default is to override */
-    NULL,			/* server config */
-    NULL,			/* merge server configs */
-    cern_meta_cmds,		/* command apr_table_t */
-    register_hooks		/* register hooks */
+    create_cern_meta_dir_config, /* dir config creater */
+    merge_cern_meta_dir_configs, /* dir merger --- default is to override */
+    NULL,                        /* server config */
+    NULL,                        /* merge server configs */
+    cern_meta_cmds,              /* command apr_table_t */
+    register_hooks               /* register hooks */
 };
