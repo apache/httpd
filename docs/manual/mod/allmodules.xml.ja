@@ -10,7 +10,7 @@
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_default.xml</modulefile>
+  <modulefile>mod_authn_default.xml.ja</modulefile>
   <modulefile>mod_authn_file.xml.ja</modulefile>
   <modulefile>mod_authz_dbm.xml</modulefile>
   <modulefile>mod_authz_default.xml</modulefile>
@@ -22,7 +22,7 @@
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
   <modulefile>mod_cgi.xml.ja</modulefile>
-  <modulefile>mod_cgid.xml</modulefile>
+  <modulefile>mod_cgid.xml.ja</modulefile>
   <modulefile>mod_charset_lite.xml</modulefile>
   <modulefile>mod_dav.xml.ja</modulefile>
   <modulefile>mod_dav_fs.xml.ja</modulefile>
@@ -32,7 +32,7 @@
   <modulefile>mod_echo.xml.ja</modulefile>
   <modulefile>mod_env.xml.ja</modulefile>
   <modulefile>mod_example.xml</modulefile>
-  <modulefile>mod_expires.xml</modulefile>
+  <modulefile>mod_expires.xml.ja</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_headers.xml.ja</modulefile>

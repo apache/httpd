@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authn_default - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_authn_default</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_default.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authn_default.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>認証フォールバックモジュール</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authn_default_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authn_default.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降</td></tr></table>
+<h3>概要</h3>
+
+    <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> のような認証モジュールを
+    設定しなかった場合は、本モジュールがフォールバックとなります。
+    ユーザから提示されたどんな証書も単に拒否します。</p>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authdefaultauthoritative">AuthDefaultAuthoritative</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDefaultAuthoritative" id="AuthDefaultAuthoritative">AuthDefaultAuthoritative</a> <a name="authdefaultauthoritative" id="authdefaultauthoritative">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>次の低次レベルの認証モジュールに制御を渡すかどうかを
+設定します</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthDefaultAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthDefaultAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authn_default</td></tr>
+</table>
+    <p><code class="directive">AuthDefaultAuthoritative</code> ディレクティブを
+    明示的に <code>Off</code> に設定すると、
+    認証を次の (<code>modules.c</code> ファイルで定義されている)
+    低次レベルのモジュールに渡します。
+    </p>
+
+    <div class="note"><h3>注意</h3>
+      <p><code class="module"><a href="../mod/mod_authn_default.html">mod_authn_default</a></code> 自体が<em>とても低い</em>
+      レベルとして定義されていますので、通常はこれよりも低次の
+      モジュールは存在しません。ですから
+      <code class="directive">AuthDefaultAuthoritative</code> はデフォルト
+      (<code>On</code>) のままにしたほうが良いでしょう。</p>
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authn_default.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authn_default.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
