@@ -164,8 +164,8 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 {
     FILE *f;
 
-    aplog_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, error,
-		r->filename);
+    aplog_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
+		"%s, reason: %s", error, r->filename);
 
     if (!conf->logname ||
 	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)

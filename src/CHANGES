@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
   
+  *) Fix the error logging in mod_cgi; the recent error log changes
+     introduced a bug that prevented it from working correctly.
+     [M.D.Parker] PR#1352
+
   *) Default to USE_FCNTL_SERIALIZED_ACCEPT on HPUX to properly 
      handle multiple Listen directives.  [Marc Slemko] PR#872
 
