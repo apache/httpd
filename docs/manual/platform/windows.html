@@ -17,7 +17,7 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <P>This document explains how to install, configure and run
-   Apache 1.3b6 (or later) under Microsoft Windows. Please note that at
+   Apache 1.3b6 and later under Microsoft Windows. Please note that at
    this time, Windows support is entirely experimental, and is
    recommended only for experienced users. The Apache Group does not
    guarantee that this software will work as documented, or even at
@@ -54,27 +54,23 @@ to help with development, or to track down bugs), see the section on
 
 <H2><A NAME="req">Requirements</A></H2>
 
-<P>Apache 1.3b6 requires the following:</P>
+Apache 1.3 is designed to run on Windows NT 4.0. The binary installer
+will only work in Intel processors. Apache may also run on Windows 95
+and Windows NT 3.5.1, but these have not been tested. In all cases
+TCP/IP networking must be installed.
 
-<UL>
-  <LI>Microsoft Windows NT 4.0<A HREF="#351">*</A>, or Windows 95.
-  <LI>An Intel-based PC-compatible capable of running above OS (exact
-      requirements unknown) with a connection to a TCP/IP network.
-</UL>
+<P>
 
-<P><SMALL><A NAME="351">*</A> Apache may run with Windows NT 3.5.1, but
-   has not been tested.</SMALL></P>
-
-<P>If running on Windows 95, using the "Winsock2" upgrade is recommended
-   but may not be necessary.  If running on NT 4.0, installing Service Pack 2
-   is recommended.</P>
+If running on Windows 95, using the "Winsock2" upgrade is recommended
+but may not be necessary.  If running on NT 4.0, installing Service Pack 2
+is recommended.
 
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
 Apache web server at <A
 HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
-list the current release, any more recent alpha or beta-test release,
+list the current release, any more recent alpha or beta-test releases,
 together with details of mirror web and anonymous ftp sites.</P>
 
 <P>
@@ -82,7 +78,12 @@ together with details of mirror web and anonymous ftp sites.</P>
 You should download the version of Apache for Windows with the
 <CODE>.exe</CODE> extension. This is a single file containing Apache,
 ready to install and run. There may also be a <CODE>.zip</CODE> file
-containing the source code, to compile Apache yourself. 
+containing the source code, to compile Apache yourself.  (If there is
+no <SAMP>.zip</SAMP> file, the source will be available in a
+<SAMP>.tar.gz</SAMP> file but this will contain Unix line endings. You
+will have to convert at least the <SAMP>.mak</SAMP> and
+<SAMP>.dsp</SAMP> files to have DOS line endings before MSVC will
+understand them).
 
 <H2><A NAME="inst">Installing Apache for Windows</A></H2>
 
@@ -106,13 +107,40 @@ ask for:
 
 <P>
 
-<STRONG>Important note for 1.3b6 installs</STRONG>: the installer for
-1.3b6 will overwrite any existing <SAMP>httpd.conf</SAMP>,
-<SAMP>access.conf</SAMP>, <SAMP>srm.conf</SAMP> or
-<SAMP>mime.types</SAMP> files in the <SAMP>conf</SAMP>, and will also
-overwrite your <SAMP>index.html</SAMP> file in the <SAMP>htdocs</SAMP>
-directory. You should copy this files or directories before installing
-Apache 1.3b6, or install into a new directory.
+During the installation, Apache will configure the files in the
+<SAMP>conf</SAMP> directory for your chosen installation
+directory. However if any of the files in this directory already exist
+they will <STRONG>not</STRONG> be overwritten. Instead the new copy of
+the corresponding file will be left with the extension
+<SAMP>.default</SAMP>. So, for example, if
+<SAMP>conf\httpd.conf</SAMP> already exists it will not be altered,
+but the version which would have been installed will be left in
+<SAMP>conf\httpd.conf.default</SAMP>. After the installation has
+finished you should manually check to see what in new in the
+<SAMP>.default</SAMP> file, and if necessary update your existing
+configuration files.
+
+<P>
+
+Also, if you already have a file called <SAMP>htdocs\index.html</SAMP>
+then it will not be overwritten (no <SAMP>index.html.default</SAMP>
+file will be installed either). This should mean it a safe to install
+Apache over an existing installation (but you will have to stop the
+existing server running before doing the installation, then start the
+new one after the installation is finished).
+
+<P>
+
+<BLOCKQUOTE>
+<STRONG>Important note for 1.3b6 installs</STRONG>: the above only
+applies for 1.3b7 and later. In 1.3b6 the installer would overwrite
+any existing <SAMP>httpd.conf</SAMP>, <SAMP>access.conf</SAMP>,
+<SAMP>srm.conf</SAMP> or <SAMP>mime.types</SAMP> files in the
+<SAMP>conf</SAMP>, and will also overwrite your
+<SAMP>index.html</SAMP> file in the <SAMP>htdocs</SAMP> directory. You
+should copy these files or directories before installing Apache 1.3b6
+or install into a new directory.
+</BLOCKQUOTE>
 
 <P>
 
@@ -122,7 +150,7 @@ configured during the install ready for Apache to be run from the
 directory where it was installed, with the documents served from the
 subdirectory <SAMP>htdocs</SAMP>. There are lots of other options
 which should be set before you start really using Apache. However to
-get started the files should work as installed.
+get started quickly the files should work as installed.
 
 <H2><A NAME="inst">Running Apache for Windows</A></H2>
 
@@ -247,11 +275,28 @@ work from the command line.
 
 When working with Apache it is important to know how it will find the
 configuration files. During installation, a registry key will have
-been installed called:
+been installed. For the 1.3 beta releases the key is:
 
 <PRE>
   HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3 beta\ServerRoot
 </PRE>
+
+While for the final 1.3.0 release it is called:
+
+<PRE>
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.0\ServerRoot
+</PRE>
+
+(The use of different keys lets you install later versions without
+affect any previous versions already installed. For example, when
+1.3.1 comes out it will use "1.3.1" instead of "1.3.0" in the registry
+key, so you can install and test 1.3.1 without affecting you existing
+1.3.0 installation. Note however that Windows NT service manager only
+ever allows one service with the same name, so you cannot install the
+newer version as a service whilst the older version is still
+installed).
+
+<P>
 
 The value of this key is the "ServerRoot" directory, containing the
 <SAMP>conf</SAMP> directory. When Apache starts it will read the
