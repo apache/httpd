@@ -1,5 +1,12 @@
 Changes with Apache 1.3.5
 
+  *) Allow apache acting as a proxy server to relay the real
+     reason of a failure to a client rather than the "internal
+     server error" it does currently. The general exposure mechanism
+     can be triggered by any module by setting the "verbose-error-to"
+     note to "*"; this allows more than just proxy errors to be exposed.
+     [Cliff Skolnick, Roy Fielding, Martin Kraemer] Related to PR#3455
+
   *) Moved man pages for ab and apachectrl to section 8.
      [Wilfredo Sanchez, Roy Fielding]
 
@@ -42,7 +49,7 @@ Changes with Apache 1.3.5
 
   *) proxy: The various calls to ap_proxyerror() can return HTTP/1.1 status
      code different from 500. This allows the proxy to, e.g., return
-     "403 Forbidden" for ProxyBlock'ed URL's. [Martin Kraemer]
+     "403 Forbidden" for ProxyBlock'ed URL's. [Martin Kraemer] Related to PR#3455
 
   *) Fix ordering of language variants for the case where the traditional
      negotiation algorithm is being used with multiple language variants

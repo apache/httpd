@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/16 13:44:40 $]
+  Last modified at [$Date: 1999/02/16 14:29:46 $]
 
 Release:
 
@@ -73,11 +73,6 @@ Available Patches:
     * John Bley's [PATCH] malloc checks
         MID: <Pine.SOL.3.91.990202065837.23002A-100000@soc11.acpub.duke.edu>
         Status: Jim -0 (maybe the messages could be more detailed?)
-
-    * Cliff's [PATCH] 500 errors not giving error-notes (related to PR #3455)
-        Message-ID: <Pine.BSF.4.05.9901250208190.7930-100000@lazlo.steam.com>
-        Status: Roy -1 [only because the strncmp may do a NULL compare,
-                        easy to fix and then I'd +1]
 
     * Ralf's [PATCH] Shared Memory Pools
         Message-ID: <19990124134912.A29193@engelschall.com>

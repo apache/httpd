@@ -840,6 +840,10 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 			     "<EM><A HREF=\"", r->uri, "\">",
 			     r->method, "&nbsp;", r->uri, "</A></EM>.<P>\n"
 			     "Reason: <STRONG>", message, "</STRONG>", NULL));
+
+    /* Allow the "error-notes" string to be printed by ap_send_error_response() */
+    ap_table_setn(r->notes, "verbose-error-to", ap_pstrdup(r->pool, "*"));
+
     r->status_line = ap_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
     return statuscode;
 }

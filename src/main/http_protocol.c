@@ -2520,7 +2520,19 @@ void ap_send_error_response(request_rec *r, int recursive_error)
                      "accepted by the server for this resource.\n", fd);
 	    break;
 	default:            /* HTTP_INTERNAL_SERVER_ERROR */
-	    ap_bvputs(fd, "The server encountered an internal error or\n"
+	    /*
+	     * This comparison to expose error-notes could be modified to
+	     * use a configuration directive and export based on that 
+	     * directive.  For now "*" is used to designate an error-notes
+	     * that is totally safe for any user to see (ie lacks paths,
+	     * database passwords, etc.)
+	     */
+	    if (((error_notes = ap_table_get(r->notes, "error-notes")) != NULL)
+		&& (h1 = ap_table_get(r->notes, "verbose-error-to")) != NULL
+		&& (strcmp(h1, "*") == 0)) {
+	        ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	    } else {
+	        ap_bvputs(fd, "The server encountered an internal error or\n"
 	             "misconfiguration and was unable to complete\n"
 	             "your request.<P>\n"
 	             "Please contact the server administrator,\n ",
@@ -2530,6 +2542,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	             "caused the error.<P>\n"
 		     "More information about this error may be available\n"
 		     "in the server error log.<P>\n", NULL);
+	    }
 	 /*
 	  * It would be nice to give the user the information they need to
 	  * fix the problem directly since many users don't have access to
