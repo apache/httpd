@@ -538,6 +538,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
              && r->status != HTTP_NOT_MODIFIED)
             /* if a broken Expires header is present, don't cache it */
             || (exps != NULL && exp == APR_DATE_BAD)
+            /* if query string present but no expiration time, don't cache it
+             * (RFC 2616/13.9)
+             */
+            || (r->args && exps == NULL)
             /* if the server said 304 Not Modified but we have no cache
              * file - pass this untouched to the user agent, it's not for us.
              */

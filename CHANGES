@@ -1,4 +1,8 @@
 Changes with Apache 2.0.41
+  *) mod_cache: Do not cache responses to GET requests with query
+     URLs if the origin server does not explicitly provide an
+     Expires header on the response (RFC 2616 Section 13.9)
+     [Kris Verbeeck krisv@be.ubizen.com]
 
   *) Fix memory leak in core_output_filter.  [Justin Erenkrantz]
 
