@@ -64,6 +64,7 @@
 #include "http_config.h"
 #include "ap_listen.h"
 #include "http_log.h"
+#include "mpm.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -201,7 +202,7 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     ap_listeners = new;
 }
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(PREFORK_MPM)
 static
 #endif
 int ap_listen_open(process_rec *process, unsigned port)
@@ -243,7 +244,7 @@ int ap_listen_open(process_rec *process, unsigned port)
     return num_open ? 0 : -1;
 }
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(PREFORK_MPM)
 int ap_setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
