@@ -78,6 +78,7 @@
 #include "ap_release.h"
 #include "os.h"
 
+#include "apr_general.h"
 #include "apr_tables.h"
 #include "apr_pools.h"
 #include "apr_time.h"
