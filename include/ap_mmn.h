@@ -114,6 +114,7 @@
  * 20020903.2 (2.0.46-dev) add ap_escape_logitem
  * 20020903.3 (2.0.46-dev) allow_encoded_slashes added to core_dir_config
  * 20020903.4 (2.0.47-dev) add ap_is_recursion_limit_exceeded()
+ * 20020903.5 (2.0.49-dev) add ap_escape_errorlog_item()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
@@ -121,7 +122,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20020903
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

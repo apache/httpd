@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
+     into the errorlog.  [André Malo]
+
   *) mod_autoindex / core: Don't fail to show filenames containing
      special characters like '%'. PR 13598.  [André Malo]
  

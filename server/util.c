@@ -1837,6 +1837,70 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
     return ret;
 }
 
+AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
+                                               apr_size_t buflen)
+{
+    unsigned char *d, *ep;
+    const unsigned char *s;
+
+    if (!source || !buflen) { /* be safe */
+        return 0;
+    }
+
+    d = (unsigned char *)dest;
+    s = (const unsigned char *)source;
+    ep = d + buflen - 1;
+
+    for (; d < ep && *s; ++s) {
+
+        if (TEST_CHAR(*s, T_ESCAPE_LOGITEM)) {
+            *d++ = '\\';
+            if (d >= ep) {
+                --d;
+                break;
+            }
+
+            switch(*s) {
+            case '\b':
+                *d++ = 'b';
+                break;
+            case '\n':
+                *d++ = 'n';
+                break;
+            case '\r':
+                *d++ = 'r';
+                break;
+            case '\t':
+                *d++ = 't';
+                break;
+            case '\v':
+                *d++ = 'v';
+                break;
+            case '\\':
+                *d++ = *s;
+                break;
+            case '"': /* no need for this in error log */
+                d[-1] = *s;
+                break;
+            default:
+                if (d >= ep - 2) {
+                    ep = --d; /* break the for loop as well */
+                    break;
+                }
+                c2x(*s, d);
+                *d = 'x';
+                d += 3;
+            }
+        }
+        else {
+            *d++ = *s;
+        }
+    }
+    *d = '\0';
+
+    return (d - (unsigned char *)dest);
+}
+
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
 {
     apr_finfo_t finfo;
