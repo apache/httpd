@@ -270,7 +270,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * of them.  It would have been really nice to test this during
      * global_init ... but oh well.
      */
-    if (cur_unique_id.pid != pid) {
+    if ((pid_t)cur_unique_id.pid != pid) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
@@ -286,7 +286,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
     /* Some systems have very low variance on the low end of their system
      * counter, defend against that.
      */
-    cur_unique_id.counter = tv % APR_USEC_PER_SEC / 10;
+    cur_unique_id.counter = (unsigned short)(tv % APR_USEC_PER_SEC / 10);
 
     /*
      * We must always use network ordering for these bytes, so that
