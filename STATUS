@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/03 16:22:25 $]
+  Last modified at [$Date: 1999/02/06 08:18:45 $]
 
 Release:
 
@@ -11,7 +11,7 @@ Release:
     1.3.1: Tagged and rolled on July 19. Announced and released.
     1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
            
-    2.0  : In pre-alpha development, see apache-2.0 repository
+    2.0  : In pre-alpha development, see apache-2.0 and apache-apr repository
 
 RELEASE SHOWSTOPPERS:
 
@@ -45,9 +45,74 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Roy's [PATCH] Core dump with Language Negotiation?!?
+    * Tony Finch's [PATCH] mod_log_config: support for reliably parsable logs
+      Allows use of C-style backslash escapes in mod_log_config format strings
+        MID: <E108UEU-0000FX-00@fanf.noc.demon.net>
+        Status: 
+
+    * chaz@reliant.com's Configure(modules/Makefile) patch for no modules
+        MID: <199902021944.LAA19314@user2.teleport.com>
+        Status: Roy +1
+
+    * John Bley's [PATCH] malloc checks
+        MID: <Pine.SOL.3.91.990202065837.23002A-100000@soc11.acpub.duke.edu>
+        Status: 
+
+    * Tony Finch's [PATCH] <LimitExcept>
+        Message-ID: <E107LTU-0005ap-00@fanf.noc.demon.net>
+        Status: Roy [looks good, but we might be able to do better by using
+                     the same function as Limit and just checking cmd]
+
+    * Fred's Bug with graceful restarts? Ignore empty pid file
+        Message-ID: <199901290045.QAA07490@scv3.apple.com>
+        Status: Roy +1
+
+    * Dean's [PATCH] etag continued (take 2)
+      Adds strong comparison functions to other checks.
+        MID: <Pine.LNX.3.96dg4.990128015459.16954J-100000@twinlark.arctic.org>
+        Status: Roy needs to fix ap_find_opaque_token() because it doesn't
+                do the right HTTP parsing anyway, so this will probably be
+                folded in at the same time.
+
+    * Cliff's [PATCH] 500 errors not giving error-notes (related to PR #3455)
+        Message-ID: <Pine.BSF.4.05.9901250208190.7930-100000@lazlo.steam.com>
+        Status: Roy -1 [only because the strncmp may do a NULL compare,
+                        easy to fix and then I'd +1]
+
+    * Ralf's [PATCH] Shared Memory Pools
+        Message-ID: <19990124134912.A29193@engelschall.com>
+        Status: Not sure if this is intended for 1.3.x or just feedback
+
+    * Carl Olsen's [PATCH] Added function exports to ApacheCore.def
+        Message-ID: <01BE4668.81DE5F90@host1.colsen.dlci154.adls.cyberramp.net>
+        Status: Roy +1 [update before commit]
+
+    * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
+        Message-ID: <199901192353.PAA15190@scv4.apple.com>
+        Status: 
+
+    * Koen Holtman's [PATCH] mod_negotiation some loose ends
+        Message-ID: <Pine.GSO.3.95a.990125190321.5403B-100000@suncms33.cern.ch>
+        Status: Roy is looking at it.
+
+    * Core dump with Language Negotiation?!?
+
+      o Roy's [PATCH] Adds ap_copyover_table()
         Message-ID: <9901180536.aa11781@paris.ics.uci.edu>
-        Status: Roy +1 Dirkx +1
+        Status: Roy +1, Dirkx +1
+
+      o Martin and Dean's [PATCH] Adds copy semantics to ap_overlap_tables().
+        Message-ID: <19990119223005.A9971@deejai.mch.sni.de>
+        Status: 
+
+      o Dean's minimal [PATCH] Adds ap_pool_join()
+        MID: <Pine.LNX.3.96dg4.990129180920.22674Y-100000@twinlark.arctic.org>
+        Status: Dean +1, Roy +1
+
+    * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
+      ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
+        Message-ID: <18586.916662926@coconut.itojun.org>
+        Status: 
 
     * Tony Finch's [PATCH] to mod_log_config.c to get both the 1.3.3
       behaviour of %v and the 1.3.4 behaviour as %V.
@@ -60,11 +125,7 @@ Available Patches:
 
     * Ralf's adjusted version of Fred's Add strip flags variables
         Message-ID: <19990114084058.A9039@engelschall.com>
-        Status: Ralf +1 Dirkx +1
-
-    * Fred's PATCH: Add strip flags variables in Makefile.tmpl
-        Message-ID: <199901140049.QAA14928@scv4.apple.com>
-        Status: Ralf -0 (see above replacement)
+        Status: Ralf +1, Dirkx +1, Fred +1
 
     * Fred's PATCH: man page section numbers
         Message-ID: <199901140041.QAA05676@scv3.apple.com>
