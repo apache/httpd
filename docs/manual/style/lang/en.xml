@@ -81,4 +81,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Maintained by the</message>
+ <message name="langavail">Available Languages</message>
 </messages>

@@ -81,6 +81,8 @@
                     <xsl:value-of select="title" />
                 </h1>&lf;
 
+                <xsl:call-template name="langavail" />&lf;
+
                 <xsl:apply-templates select="summary" />
             </div>&lf; <!-- /#preamble -->
           

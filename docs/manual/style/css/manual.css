@@ -162,7 +162,7 @@ div#quickview code.directive a:active {
 /* ====================== */
 h1 {
     padding: 0.2em;
-    margin: 0 0 0.5em 0;
+    margin: 0;
     border: 1px solid #405871;
     background-color: inherit;
     color: #036;
@@ -744,6 +744,49 @@ body#index-page div#page-content {
 /* in general */
 p {
     line-height: 1.3em;
+}
+
+/* translations           */
+/* ====================== */
+.toplang {
+    padding: 0;
+    margin: 0.2em 0.2em 1em 0;
+}
+
+.bottomlang {
+    padding: 0;
+    margin: 0 0.2em 0.2em 0;
+}
+
+.toplang p,
+.bottomlang p {
+    font-size: 13px;
+    text-align: right;
+    background-color: inherit;
+    color: #ccc;
+    margin: 0;
+    padding: 0;
+}
+
+.toplang p span,
+.bottomlang p span {
+    background-color: inherit;
+    color: #036;
+}
+
+.toplang p a:link,
+.toplang p a:visited,
+.bottomlang p a:link,
+.bottomlang p a:visited {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.toplang p a:hover,
+.toplang p a:active,
+.bottomlang p a:hover,
+.bottomlang p a:active {
+    font-weight: bold;
 }
 
 /* page footer            */

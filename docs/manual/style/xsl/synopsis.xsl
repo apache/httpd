@@ -99,6 +99,8 @@
                     </xsl:choose>
                 </h1>&lf;
 
+                <xsl:call-template name="langavail" />&lf;
+
                 <!-- Description and module-headers -->
                 <table class="module">
                 <tr>
