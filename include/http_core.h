@@ -575,7 +575,7 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
-#endif
+#endif /* CORE_PRIVATE */
 
 
 /* ----------------------------------------------------------------------
