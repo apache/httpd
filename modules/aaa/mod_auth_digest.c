@@ -690,10 +690,10 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     mm_unlock(client_mm);
 
     if (entry)
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
 		      "get_client(): client %lu found", key);
     else
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
 		      "get_client(): client %lu not found", key);
 
     return entry;
@@ -1015,7 +1015,7 @@ static client_entry *gen_client(const request_rec *r)
     mm_unlock(opaque_mm);
 
     if (!(entry = add_client(op, &new, r->server))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		      "Digest: failed to allocate client entry - ignoring "
 		      "client");
 	return NULL;
@@ -1277,7 +1277,7 @@ static const char *get_hash(request_rec *r, const char *user,
     char *w, *x;
 
     if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		      "Digest: Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
@@ -1308,7 +1308,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
 
 	nc = strtol(snc, &endptr, 16);
 	if (endptr < (snc+strlen(snc)) && !ap_isspace(*endptr)) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid nc %s received - not a number", snc);
 	    return !OK;
 	}
@@ -1317,7 +1317,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
 	    return !OK;
 
 	if (nc != resp->client->nonce_count) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
 			  "nonce-count check failed: %lu != %lu", nc,
 			  resp->client->nonce_count);
 	    return !OK;
@@ -1335,7 +1335,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     char tmp, hash[NONCE_HASH_LEN+1];
 
     if (strlen(resp->nonce) != NONCE_LEN) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nonce %s received - length is not %d",
 		      resp->nonce, NONCE_LEN);
 	note_digest_auth_failure(r, conf, resp, 1);
@@ -1350,7 +1350,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     resp->nonce_time = nonce_time.time;
 
     if (strcmp(hash, resp->nonce+NONCE_TIME_LEN)) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nonce %s received - hash is not %s",
 		      resp->nonce, hash);
 	note_digest_auth_failure(r, conf, resp, 1);
@@ -1359,7 +1359,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     dt = difftime(r->request_time, nonce_time.time);
     if (conf->nonce_lifetime > 0 && dt < 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nonce %s received - user attempted "
 		      "time travel", resp->nonce);
 	note_digest_auth_failure(r, conf, resp, 1);
@@ -1368,7 +1368,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     if (conf->nonce_lifetime > 0) {
 	if (dt > conf->nonce_lifetime) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
 			  "Digest: user %s: nonce expired - sending new nonce",
 			  r->connection->user);
 	    note_digest_auth_failure(r, conf, resp, 1);
@@ -1377,7 +1377,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {
 	if (memcmp(resp->client->last_nonce, resp->nonce, NONCE_LEN)) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
 			  "Digest: user %s: one-time-nonce mismatch - sending "
 			  "new nonce", r->connection->user);
 	    note_digest_auth_failure(r, conf, resp, 1);
@@ -1462,7 +1462,7 @@ static int authenticate_digest_user(request_rec *r)
 	return DECLINED;
 
     if (!ap_auth_name(r)) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
@@ -1488,11 +1488,11 @@ static int authenticate_digest_user(request_rec *r)
 
     if (resp->auth_hdr_sts != VALID) {
 	if (resp->auth_hdr_sts == NOT_DIGEST)
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: client used wrong authentication scheme "
 			  "`%s': %s", resp->scheme, r->uri);
 	else if (resp->auth_hdr_sts == INVALID)
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: missing user, realm, nonce, uri, or digest "
 			  "in authorization header: %s", r->uri);
 	/* else (resp->auth_hdr_sts == NO_HEADER) */
@@ -1519,7 +1519,7 @@ static int authenticate_digest_user(request_rec *r)
 		&& (!d_uri.query || !r_uri->query
 		    || strcmp(d_uri.query, r_uri->query)))
 	    ) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: uri mismatch - <%s> does not match "
 			  "request-uri <%s>", resp->uri,
 			  ap_unparse_uri_components(r->pool, r_uri, 0));
@@ -1528,7 +1528,7 @@ static int authenticate_digest_user(request_rec *r)
     }
 
     if (resp->opaque && resp->opaque_num == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: received invalid opaque - got `%s'",
 		      resp->opaque);
 	note_digest_auth_failure(r, conf, resp, 0);
@@ -1536,7 +1536,7 @@ static int authenticate_digest_user(request_rec *r)
     }
 
     if (strcmp(resp->realm, conf->realm)) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: realm mismatch - got `%s' but expected `%s'",
 		      resp->realm, conf->realm);
 	note_digest_auth_failure(r, conf, resp, 0);
@@ -1546,7 +1546,7 @@ static int authenticate_digest_user(request_rec *r)
     if (resp->algorithm != NULL
 	&& strcasecmp(resp->algorithm, "MD5")
 	&& strcasecmp(resp->algorithm, "MD5-sess")) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: unknown algorithm `%s' received: %s",
 		      resp->algorithm, r->uri);
 	note_digest_auth_failure(r, conf, resp, 0);
@@ -1557,7 +1557,7 @@ static int authenticate_digest_user(request_rec *r)
 	return DECLINED;
 
     if (!(conf->ha1 = get_hash(r, conn->user, conf->realm, conf->pwfile))) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: user `%s' in realm `%s' not found: %s",
 		      conn->user, conf->realm, r->uri);
 	note_digest_auth_failure(r, conf, resp, 0);
@@ -1567,7 +1567,7 @@ static int authenticate_digest_user(request_rec *r)
     if (resp->message_qop == NULL) {
 	/* old (rfc-2069) style digest */
 	if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: user %s: password mismatch: %s", conn->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
@@ -1586,7 +1586,7 @@ static int authenticate_digest_user(request_rec *r)
 	if (!match
 	    && !(conf->qop_list[0] == NULL
 		 && !strcasecmp(resp->message_qop, "auth"))) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid qop `%s' received: %s",
 			  resp->message_qop, r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
@@ -1594,7 +1594,7 @@ static int authenticate_digest_user(request_rec *r)
 	}
 
 	if (strcmp(resp->digest, new_digest(r, resp, conf))) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: user %s: password mismatch: %s", conn->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
@@ -1625,17 +1625,18 @@ static table *groups_for_user(request_rec *r, const char *user,
 {
     configfile_t *f;
     table *grps = ap_make_table(r->pool, 15);
-    pool *sp;
+    ap_context_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
 
     if (!(f = ap_pcfg_openfile(r->pool, grpfile))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		      "Digest: Could not open group file: %s", grpfile);
 	return NULL;
     }
 
-    sp = ap_make_sub_pool(r->pool);
+    if (ap_create_context(&sp, r->pool) != APR_SUCCESS)
+		return NULL;
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
@@ -1718,7 +1719,7 @@ static int digest_check_auth(request_rec *r)
 	    }
 	}
 	else {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		"Digest: access to %s failed, reason: unknown require "
 		"directive \"%s\"", r->uri, reqs[x].requirement);
 	    return DECLINED;
@@ -1728,7 +1729,7 @@ static int digest_check_auth(request_rec *r)
     if (!method_restricted)
 	return OK;
 
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 	"Digest: access to %s failed, reason: user %s not allowed access",
 	r->uri, user);
 
