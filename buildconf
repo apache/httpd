@@ -117,6 +117,11 @@ echo rebuilding $aprutil_configure
     exit 1
 }
 
+echo copying build files
+cp srclib/apr/build/config.guess build
+cp srclib/apr/build/config.sub build
+cp srclib/apr/build/PrintPath build
+
 echo rebuilding $pcre_configure
 (cd srclib/pcre && ${AUTOCONF:-autoconf})
 
