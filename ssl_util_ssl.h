@@ -80,6 +80,10 @@
  */
 #define SSL_SESSION_MAX_DER 1024*10
 
+/* max length for SSL_SESSION_id2sz */
+#define SSL_SESSION_ID_STRING_LEN \
+    ((SSL_MAX_SSL_SESSION_ID_LENGTH + 1) * 2)
+
 /*  
  *  Additional Functions
  */
@@ -100,6 +104,6 @@ BOOL        SSL_load_CrtAndKeyInfo_file(apr_pool_t *, STACK_OF(X509_INFO) *, cha
 BOOL        SSL_load_CrtAndKeyInfo_path(apr_pool_t *, STACK_OF(X509_INFO) *, char *);
 #endif /* SSL_EXPERIMENTAL_PROXY */
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)(char*,int,int,void*));
-char       *SSL_SESSION_id2sz(unsigned char *, int);
+char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
 
 #endif /* __SSL_UTIL_SSL_H__ */

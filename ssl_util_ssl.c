@@ -535,15 +535,15 @@ int SSL_CTX_use_certificate_chain(
 **  _________________________________________________________________
 */
 
-char *SSL_SESSION_id2sz(unsigned char *id, int idlen)
+char *SSL_SESSION_id2sz(unsigned char *id, int idlen,
+                        char *str, int strsize)
 {
-    static char str[(SSL_MAX_SSL_SESSION_ID_LENGTH+1)*2];
     char *cp;
     int n;
 
     cp = str;
     for (n = 0; n < idlen && n < SSL_MAX_SSL_SESSION_ID_LENGTH; n++) {
-        apr_snprintf(cp, sizeof(str)-(cp-str), "%02X", id[n]);
+        apr_snprintf(cp, strsize - (cp-str), "%02X", id[n]);
         cp += 2;
     }
     *cp = NUL;
