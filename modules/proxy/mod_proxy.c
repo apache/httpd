@@ -121,6 +121,13 @@ static const char *set_worker_param(proxy_worker *worker,
         worker->acquire = apr_time_make(0, ival * 1000);
         worker->acquire_set = 1;
      }
+    else if (!strcasecmp(key, "timeout")) {
+        ival = atoi(val);
+        if (ival < 1)
+            return "timeout must be at least one second";
+        worker->timeout = apr_time_from_sec(ival);
+        worker->timeout_set = 1;
+     }
     else {
         return "unknown parameter";
     }
@@ -1231,9 +1238,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL); 
     }
-    if (conf->timeout_set)
+    if ((worker->timeout_set = conf->timeout_set))
         worker->timeout = conf->timeout;
-
+    
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
     for (i = 0; i < arr->nelts; i++) {
