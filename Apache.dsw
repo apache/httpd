@@ -1,4 +1,4 @@
-Microsoft Developer Studio Workspace File, Format Version 5.00
+Microsoft Developer Studio Workspace File, Format Version 6.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 ###############################################################################
@@ -529,6 +529,18 @@ Package=<4>
 ###############################################################################
 
 Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "sdbmlib"=".\lib\sdbm\sdbmlib.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
