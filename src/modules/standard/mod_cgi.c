@@ -432,7 +432,7 @@ int cgi_handler (request_rec *r)
 		strncpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-	    if (fwrite(argsbuffer, 1, len_read, script_out) < len_read) {
+	    if (fwrite(argsbuffer, 1, len_read, script_out) < (size_t)len_read) {
 		/* silly script stopped reading, soak up remaining message */
 	        while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0)
 	            ; /* dump it */
