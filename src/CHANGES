@@ -2,7 +2,7 @@ Changes with Apache 1.3.1
 
   *) mod_usertrack was corrupting the client hostname.  As part of the
      fix, the cookie values were slightly extended to include the
-     fully qualified hostname of the client.  [Dean Gaudet] PR#2366
+     fully qualified hostname of the client.  [Dean Gaudet] PR#2229, 2366
 
   *) Fix a typo in pool debugging code.  [Alvaro Martinez Echevarria]
 
