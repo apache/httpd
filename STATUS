@@ -20,7 +20,7 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
-      PATCH: <199805081628.MAA12929@devsys.jaguNET.com>
+      PATCH: <199805082150.RAA15462@devsys.jaguNET.com>
       Status: Jim +1
         Dean: -0 I really don't like the API change.
 
