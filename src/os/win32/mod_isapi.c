@@ -130,20 +130,23 @@ int isapi_handler (request_rec *r) {
 
     if (!(isapi_handle = LoadLibraryEx(r->filename, NULL,
 				       LOAD_WITH_ALTERED_SEARCH_PATH))) {
-	log_reason("Could not load DLL", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ALERT, r->server,
+		    "Could not load DLL: %s", r->filename);
 	return SERVER_ERROR;
     }
 
     if (!(isapi_version =
 	  (void *)(GetProcAddress(isapi_handle, "GetExtensionVersion")))) {
-	log_reason("DLL could not load GetExtensionVersion()", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ALERT, r->server,
+		    "DLL could not load GetExtensionVersion(): %s", r->filename);
 	FreeLibrary(isapi_handle);
 	return SERVER_ERROR;
     }
 
     if (!(isapi_entry =
 	  (void *)(GetProcAddress(isapi_handle, "HttpExtensionProc")))) {
-	log_reason("DLL could not load HttpExtensionProc()", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ALERT, r->server,
+		    "DLL could not load HttpExtensionProc(): %s", r->filename);
 	FreeLibrary(isapi_handle);
 	return SERVER_ERROR;
     }
@@ -153,7 +156,8 @@ int isapi_handler (request_rec *r) {
     /* Run GetExtensionVersion() */
 
     if ((*isapi_version)(pVer) != TRUE) {
-	log_reason("ISAPI GetExtensionVersion() failed", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ALERT, r->server,
+		    "ISAPI GetExtensionVersion() failed: %s", r->filename);
 	FreeLibrary(isapi_handle);
 	return SERVER_ERROR;
     }
@@ -243,7 +247,8 @@ int isapi_handler (request_rec *r) {
 
     /* Check for a log message - and log it */
     if (ecb->lpszLogData && strcmp(ecb->lpszLogData, ""))
-	log_reason(ecb->lpszLogData, r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s: %s", ecb->lpszLogData, r->filename);
 
     /* All done with the DLL... get rid of it */
     if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
@@ -261,7 +266,8 @@ int isapi_handler (request_rec *r) {
 
 	return OK;
     case HSE_STATUS_PENDING:	/* We don't support this */
-	log_reason("ISAPI asynchronous I/O not supported", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
+		    "ISAPI asynchronous I/O not supported: %s", r->filename);
     case HSE_STATUS_ERROR:
     default:
 	return SERVER_ERROR;
@@ -321,7 +327,8 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
 
     /* We only support synchronous writing */
     if (dwReserved && dwReserved != HSE_IO_SYNC) {
-	log_reason("ISAPI asynchronous I/O not supported", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
+		    "ISAPI asynchronous I/O not supported: %s", r->filename);
 	SetLastError(ERROR_INVALID_PARAMETER);
 	return FALSE;
     }
@@ -401,7 +408,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 	    int p;
 
 	    if (!lf) { /* Huh? Invalid data, I think */
-		log_reason("ISA sent invalid headers", r->filename, r);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "ISA sent invalid headers: %s", r->filename);
 		SetLastError(ERROR);	/* XXX: Find right error */
 		return FALSE;
 	    }
@@ -419,7 +427,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
 	    if (!(value = strchr(data, ':'))) {
 		SetLastError(ERROR);	/* XXX: Find right error */
-		log_reason("ISA sent invalid headers", r->filename, r);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "ISA sent invalid headers", r->filename);
 		return FALSE;
 	    }
 
@@ -492,7 +501,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     /* We don't support all this async I/O, Microsoft-specific stuff */
     case HSE_REQ_IO_COMPLETION:
     case HSE_REQ_TRANSMIT_FILE:
-	log_reason("ISAPI asynchronous I/O not supported", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
+		    "ISAPI asynchronous I/O not supported: %s", r->filename);
     default:
 	SetLastError(ERROR_INVALID_PARAMETER);
 	return FALSE;
