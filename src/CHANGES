@@ -1,5 +1,11 @@
 Changes with Apache 1.3.7
 
+  *) The source is now quad (long long) aware as needed. Specifically,
+     the Configure process determines the correct size of off_t and
+     *void. When the OS/platform/compiler supports quads, ap_snprintf()
+     provides for the 'q' format qualifier (if quads are not available,
+     'q' is silently "demoted" to long). [Jim Jagielski]
+
   *) When the username or password fed to htpasswd is too long, include the
      size limit in the error message.  Also report illegal characters
      (currently only ':') in the username.  Add the size restrictions
