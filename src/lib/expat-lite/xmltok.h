@@ -275,6 +275,7 @@ const ENCODING XMLTOKAPI *XmlGetUtf8InternalEncoding();
 const ENCODING XMLTOKAPI *XmlGetUtf16InternalEncoding();
 int XMLTOKAPI XmlUtf8Encode(int charNumber, char *buf);
 int XMLTOKAPI XmlUtf16Encode(int charNumber, unsigned short *buf);
+int XmlSizeOfUnknownEncoding(void);
 
 int XMLTOKAPI XmlSizeOfUnknownEncoding();
 ENCODING XMLTOKAPI *
