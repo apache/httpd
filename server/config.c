@@ -281,26 +281,26 @@ int ap_invoke_handler(request_rec *r)
     const char *handler;
     const char *p;
     size_t handler_len;
-    int result = HTTP_INTERNAL_SERVER_ERROR;
+    int result;
+    char hbuf[MAX_STRING_LEN];
 
     if (r->handler) {
         handler = r->handler;
-        handler_len = strlen(handler);
     }
     else {
         handler = r->content_type ? r->content_type : ap_default_type(r);
-        if ((p = ap_strchr_c(handler, ';')) != NULL) {
+        if (ap_strchr_c(handler, ';') != NULL) {
+	    apr_cpystrn(hbuf, handler, sizeof hbuf);
+	    handler = hbuf;
+	    p = ap_strchr_c(handler, ';');
 	    /* MIME type arguments */
             while (p > handler && p[-1] == ' ')
 	        --p;		/* strip trailing spaces */
-	    handler_len = p - handler;
-	}
-	else {
-	    handler_len = strlen(handler);
+	    *p='\0';
 	}
     }
 
-    result=ap_run_handler(handler,r);
+    result = ap_run_handler(handler ,r);
 
     if (result == DECLINED && r->handler && r->filename) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
