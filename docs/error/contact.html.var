@@ -3,7 +3,7 @@ Content-type: text/html
 Body:----------de--
  Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
  informieren Sie bitte den
- <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
+ <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
  hier&uuml;ber.
 ----------de--
 
@@ -11,14 +11,14 @@ Content-language: en
 Content-type: text/html
 Body:----------en--
  If you think this is a server error, please contact
- the <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
+ the <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
 ----------en--
 
 Content-language: es
 Content-type: text/html
 Body:----------es--
 Favor de contactar al 
-<A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
+<A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
 en caso de que usted crea que existe un error en el servidor. 
 ----------es--
 
