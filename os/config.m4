@@ -2,12 +2,15 @@ AC_MSG_CHECKING(for target platform)
 
 #PLATFORM=`${CONFIG_SHELL-/bin/sh} $ac_config_guess`
 PLATFORM=`$ac_config_guess`
+LIBPRE=lib
 
 case "$PLATFORM" in
 *beos*)
   OS="beos";;
 *pc-os2_emx*)
-  OS="os2";;
+  OS="os2"
+  LIBPRE=""
+  ;;
 *)
   OS="unix";;
 esac
