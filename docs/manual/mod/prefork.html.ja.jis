@@ -126,7 +126,7 @@
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイドルな子サーバプロセスの最大個数</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxSpareServers <var>number</var><br /></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxSpareServers <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxSpareServers 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>

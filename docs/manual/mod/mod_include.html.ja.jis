@@ -613,7 +613,7 @@ directive]"</code></td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>include 要素を開始する文字列</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSIStartTag "&lt;!--#"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
@@ -636,7 +636,7 @@ directive]"</code></td></tr>
     下の例の様にして SSI ディレクティブを使うことができます:</p>
 
     <div class="example"><h3>違う開始と終了のタグを使った SSI ディレクティブ</h3><p><code>
-      &lt;%#printenv %&gt;
+      &lt;%printenv %&gt;
     </code></p></div>
 
 <h3>参照</h3>
