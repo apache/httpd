@@ -87,6 +87,8 @@ uses</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>

@@ -34,6 +34,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#bs2000account">BS2000Account</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
@@ -169,6 +170,29 @@ BS2000-Maschinen</td></tr>
       jedoch nur dann, wenn Sie explizit
       <code class="directive">CoreDumpDirectory</code> konfigurieren.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a>-<a name="enableexceptionhook" id="enableexceptionhook">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert einen Hook, der nach einem Absturz noch
+Ausnahmefehler behandeln lassen kann</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar seit Version 2.0.49</td></tr>
+</table>
+    <p>Diese Direktive ist aus Sicherheitsgründen nur verfügbar,
+    wenn der Server mit der Option <code>--enable-exception-hook</code>
+    konfiguriert wurde. Sie aktiviert einen Hook, der es externen Modulen
+    erlaubt, sich dort einzuhängen und nach dem Absturz eines
+    Kindprozesses noch Aktionen durchzuführen.</p>
+
+    <p>Es existieren bereits zwei Module, <code>mod_whatkilledus</code> und
+    <code>mod_backtrace</code>, welchen diesen Hook verwenden. Lesen Sie
+    bitte auf Jeff Trawicks <a href="http://www.apache.org/~trawick/exception_hook.html">EnableExceptionHook-Seite</a> für weitere Informationen dazu.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
