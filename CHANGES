@@ -1,5 +1,17 @@
 Changes with Apache 2.0.51
 
+  *) util_ldap: Switched the lock types on the shared memory cache 
+     from thread reader/writer locks to global mutexes in order to 
+     provide cross process cache protection. [Brad Nicholes]
+     
+  *) util_ldap: Reworked the cache locking scheme to eliminate duplicate 
+     cache entries in the credentials cache due to race conditions.
+     [Brad Nicholes]
+     
+  *) util_ldap: Enhanced the util_ldap cache-info display to show more 
+     detail about the contents and current state of the cache. 
+     [Brad Nicholes]
+     
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
 

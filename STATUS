@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 20:56:42 $]
+Last modified at [$Date: 2004/08/04 23:19:59 $]
 
 Release:
 
@@ -156,41 +156,6 @@ PATCHES TO BACKPORT FROM 2.1
          ssl_private.h r1.7
        +1: trawick
 
-    *) Switch the caching mutexes from reader/writer thread locks to global
-       mutexes to allow for protection across processes rather than just
-       across threads.
-         include/util_ldap.h r1.20
-         modules/experimental/util_ldap.c r1.34, r1.35
-         modules/experimental/util_ldap_cache.c r1.20
-         modules/experimental/util_ldap_cache.h r1.16
-       +1: bnicholes, minfrin, jjclar
-       
-    *) Copy the share memory pointers down through the cache hierarchy so that
-       they can be referenced and used in the lower level caches.
-         modules/experimental/util_ldap_cache_mgr.c r1.20
-       +1: bnicholes, minfrin, jjclar
-       
-    *) Add a display page to view the URL data of the util_ldap cache
-         modules/experimental/util_ldap_cache.c r1.19
-         modules/experimental/util_ldap_cache_mgr.c r1.19
-       +1: bnicholes, minfrin, jjclar
-    
-    *) Get rid of race conditions when manipulating the shared memory cache
-       in util_ldap.
-         modules/experimental/util_ldap.c r1.33
-         modules/experimental/util_ldap_cache.h r1.15
-         modules/experimental/util_ldap_mgr.c r1.18
-       +1: bnicholes, minfrin, jjclar
-       
-    *) Enhance the util_ldap cache-info display to show more detail about 
-       the contents and current state of the cache.
-         modules/experimental/util_ldap.c r1.32
-         modules/experimental/util_ldap_cache.c r1.18
-         modules/experimental/util_ldap_cache.h r1.14
-         modules/experimental/util_ldap_cache_mgr.c r1.17
-         include/util_ldap.h r1.19
-       +1: bnicholes, minfrin, jjclar
-       
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
        +1: ake, trawick, nd, stoddard
