@@ -174,6 +174,7 @@ MaxRequestsPerChild 0
 # LoadModule cern_meta_module modules/cernmeta.nlm
 # LoadModule digest_module modules/digest.nlm
 # LoadModule expires_module modules/expires.nlm
+# LoadModule log_forensic_module modules/forensic.nlm
 # LoadModule headers_module modules/headers.nlm
 # LoadModule proxy_module modules/proxy.nlm
 # LoadModule rewrite_module modules/rewrite.nlm
