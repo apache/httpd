@@ -280,7 +280,7 @@ conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
 
 
 conn_rec *ap_new_apr_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
-			    const ap_socket_t *conn_socket, long id)
+                                ap_socket_t *conn_socket, long id)
 {
     struct sockaddr_in *sa_local, *sa_remote;
 
