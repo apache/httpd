@@ -821,16 +821,23 @@ static jmp_buf wait_timeout_buf;
 static int wait_or_timeout_retval = -1;
 
 static void longjmp_out_of_alarm (int sig) {
+#ifdef NEXT
     longjmp (wait_timeout_buf, 1);
+#else
+    siglongjmp (wait_timeout_buf, 1);
+#endif
 }
 
 int wait_or_timeout (int *status)
 {
     wait_or_timeout_retval = -1;
     
+#if defined(NEXT)
     if (setjmp(wait_timeout_buf) != 0) {
+#else 
+    if (sigsetjmp(wait_timeout_buf, 1) != 0) {
+#endif
 	errno = ETIMEDOUT;
-	alarm(0);
 	return wait_or_timeout_retval;
     }
     
