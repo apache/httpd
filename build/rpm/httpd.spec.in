@@ -17,8 +17,8 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache Software License
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
-BuildPrereq: db4-devel, expat-devel, findutils, perl, pkgconfig
-Requires: /etc/mime.types, gawk, /usr/share/magic.mime, /usr/bin/find
+BuildPrereq: openldap-devel, db3-devel, expat-devel, findutils, perl, pkgconfig
+Requires: gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
@@ -125,7 +125,13 @@ EOF
 	--with-suexec-logfile=%{_localstatedir}/log/httpd/suexec.log \
 	--with-suexec-bin=%{_sbindir}/suexec \
 	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
-        --with-egd --with-devrandom \
+        --with-devrandom \
+        --with-ldap --enable-ldap --enable-auth-ldap \
+        --enable-cache --enable-disk-cache --enable-mem-cache \
+	--enable-ssl --with-ssl \
+	--enable-deflate --enable-cgid \
+	--enable-proxy --enable-proxy-connect \
+	--enable-proxy-http --enable-proxy-ftp \
 	$*
 
 make %{?_smp_mflags}
@@ -133,11 +139,7 @@ popd
 }
 
 # Only bother enabling optional modules for main build.
-mpmbuild prefork --enable-mods-shared=all \
-	--enable-ssl --with-ssl \
-	--enable-deflate --enable-cgid \
-	--enable-proxy --enable-proxy-connect \
-	--enable-proxy-http --enable-proxy-ftp
+mpmbuild prefork --enable-mods-shared=all
 
 # To prevent most modules being built statically into httpd.worker, 
 # easiest way seems to be enable them shared.
@@ -236,7 +238,6 @@ install -m644 ./build/rpm/httpd.logrotate \
 # Remove unpackaged files
 rm -rf $RPM_BUILD_ROOT%{_libdir}/libapr{,util}.{a,la} \
        $RPM_BUILD_ROOT%{_libdir}/APRVARS $RPM_BUILD_ROOT%{_libdir}/*.exp \
-       $RPM_BUILD_ROOT/etc/httpd/conf/mime.types \
        $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.exp \
        $RPM_BUILD_ROOT%{_bindir}/ap?-config \
        $RPM_BUILD_ROOT%{_sbindir}/{checkgid,dbmmanage,envvars*} \
@@ -301,6 +302,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/httpd/conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/*.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/magic
+%config(noreplace) %{_sysconfdir}/httpd/conf/mime.types
 
 %config %{_sysconfdir}/logrotate.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/httpd
@@ -375,6 +377,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/libtool
 
 %changelog
+* Sat Apr 5 2003 Graham Leggett <minfrin@apache.org> 2.0.46-dev
+- Moved mime.types back to the default location.
+- Added mod_ldap and friends, mod_cache and friends.
+- Added openldap dependancy.
+
 * Sun Mar 30 2003 Graham Leggett <minfrin@apache.org> 2.0.45-1
 - Created generic Apache rpm spec file from that donated by Redhat.
 - Removed Redhat specific patches and boilerplate files.
