@@ -2069,10 +2069,10 @@ void winnt_rewrite_args(process_rec *process)
          * after logging begins, and the failure can land in the log.
          */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-            service_to_start_success = mpm_service_to_start(&service_name);
+            service_to_start_success = mpm_service_to_start(&service_name,
+                                                            process->pool);
             if (service_to_start_success == APR_SUCCESS) {
                 service_set = APR_SUCCESS;
-                ap_open_stderr_log(process->pool);
             }
         }
     }
@@ -2270,7 +2270,8 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             {
                 if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) 
                 {
-                    rv = mpm_service_to_start(&service_name);
+                    rv = mpm_service_to_start(&service_name,
+                                              server->process->pool);
                     if (rv != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                                      "%s: Unable to start the service manager.",

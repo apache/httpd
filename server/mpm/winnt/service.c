@@ -381,26 +381,33 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     
     if (globdat.hServiceStatus)
     {
-        if (currentState == SERVICE_RUNNING)
-            globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
-        else
-	    globdat.ssStatus.dwControlsAccepted = 0;
-        
-        globdat.ssStatus.dwCurrentState = currentState;
-        globdat.ssStatus.dwWin32ExitCode = exitCode;
-        
-        if ( ( currentState == SERVICE_RUNNING ) ||
-             ( currentState == SERVICE_STOPPED ) )
-        {
+        if (currentState == SERVICE_RUNNING) {
             globdat.ssStatus.dwWaitHint = 0;
             globdat.ssStatus.dwCheckPoint = 0;
+            globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
         }
-        else
-        {
+        else if (currentState == SERVICE_STOPPED) {
+            globdat.ssStatus.dwWaitHint = 0;
+            globdat.ssStatus.dwCheckPoint = 0;
+            if (!exitCode && globdat.ssStatus.dwCurrentState 
+                                           != SERVICE_STOP_PENDING) {
+                /* An unexpected exit?  Better to error! */
+                exitCode = 1;
+            }
+            if (exitCode) {
+                globdat.ssStatus.dwWin32ExitCode =ERROR_SERVICE_SPECIFIC_ERROR;
+                globdat.ssStatus.dwServiceSpecificExitCode = exitCode;
+            }
+        }
+        else {
+            globdat.ssStatus.dwCheckPoint = ++checkPoint;
+	    globdat.ssStatus.dwControlsAccepted = 0;
             if(waitHint)
                 globdat.ssStatus.dwWaitHint = waitHint;
-            globdat.ssStatus.dwCheckPoint = ++checkPoint;
         }
+
+        globdat.ssStatus.dwCurrentState = currentState;
+        
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
     }
     return(rv);
@@ -482,120 +489,17 @@ static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
     if (dwCtrlCode == SERVICE_CONTROL_STOP)
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-        globdat.ssStatus.dwCurrentState = SERVICE_STOP_PENDING;
-        ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 3000);
+        ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 30000);
         return;
     }
     if (dwCtrlCode == SERVICE_APACHE_RESTART)
     {
         ap_signal_parent(SIGNAL_PARENT_RESTART);
-        globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
-        ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
+        ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
         return;
     }
     
     ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);            
-}
-
-
-long __stdcall service_stderr_thread(LPVOID hPipe)
-{
-    HANDLE hPipeRead = (HANDLE) hPipe;
-    HANDLE hEventSource;
-    char errbuf[256], *errread = errbuf;
-    const char *errarg[9];
-    DWORD errres;
-    HKEY hk;
-    
-    errarg[0] = "The Apache service named";
-    errarg[1] = mpm_display_name;
-    errarg[2] = "reported the following error:\r\n>>>";
-    errarg[3] = errbuf;
-    errarg[4] = NULL;
-    errarg[5] = NULL;
-    errarg[6] = NULL;
-    errarg[7] = NULL;
-    errarg[8] = NULL;
-    
-    /* What are we going to do in here, bail on the user?  not. */
-    if (!RegCreateKey(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services"
-                      "\\EventLog\\Application\\Apache Service", &hk)) 
-    {
-        /* The stock message file */
-        char *netmsgkey = "%SystemRoot%\\System32\\netmsg.dll";
-        DWORD dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | 
-                       EVENTLOG_INFORMATION_TYPE; 
- 
-        RegSetValueEx(hk, "EventMessageFile", 0, REG_EXPAND_SZ,
-                          (LPBYTE) netmsgkey, strlen(netmsgkey) + 1);
-        
-        RegSetValueEx(hk, "TypesSupported", 0, REG_DWORD,
-                          (LPBYTE) &dwData, sizeof(dwData));
-        RegCloseKey(hk);
-    }
-
-    hEventSource = RegisterEventSource(NULL, "Apache Service");
-
-    while (ReadFile(hPipeRead, errread, 
-                    sizeof(errbuf) - (errread - errbuf) - 1, &errres, NULL))
-    {
-        if (errres)
-        {
-            /* NULL terminate */
-            errread[errres] = '\0';
-
-            /* Process complete lines */
-            while (*errread) 
-            {
-                char *erreol;
-                int errlen;
-
-                /* Trim leading whitespace */
-                errread = errbuf;
-                while (apr_isspace(*errread)) {
-                    ++errread;
-                }
-                if (!*errread) {
-                    errread = errbuf;
-                    *errread = '\0';
-                    continue;
-                }
-                /* Find eol, but only re-Read if the buffer is unfilled */
-                erreol = strchr(errread, '\n');
-                if (!erreol && (errread > errbuf)) {
-                    errlen = strlen(errbuf);
-                    memmove(errbuf, errread, errlen + 1);
-                    errread = errbuf + errlen;
-                    continue;
-                }
-                *erreol = '\0';
-
-                /* Generic message: '%1 %2 %3 %4 %5 %6 %7 %8 %9'
-                 * The event code in netmsg.dll is 3299
-                 */
-                ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
-                            3299, NULL, 9, 0, errarg, NULL);
-                
-                if (!erreol) {
-                    errread = errbuf;
-                    *errread = '\0';
-                    continue;
-                }
-                errread = erreol + 1;
-            }
-        }
-    }
-
-    if ((errres = GetLastError()) != ERROR_BROKEN_PIPE) {
-        apr_snprintf(errbuf, sizeof(errbuf),
-                     "Win32 error %d reading stderr pipe stream\r\n", 
-                     GetLastError());
-
-        ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
-                    3299, NULL, 9, 0, errarg, NULL);
-    }
-    CloseHandle(hPipeRead);
-    return 0;
 }
 
 
@@ -607,20 +511,14 @@ extern apr_array_header_t *mpm_new_argv;
 
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
-    HANDLE waitfor[2];
-    HANDLE hPipeRead = NULL;
-    HANDLE hPipeWrite = NULL;
-    HANDLE hDup;
-    HANDLE thread;
-    DWORD  threadid;
     const char *ignored;
 
     /* args and service names live in the same pool */
     mpm_service_set_name(mpm_new_argv->pool, &ignored, argv[0]);
 
+    memset(&globdat.ssStatus, 0, sizeof(globdat.ssStatus));
     globdat.ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
     globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
-    globdat.ssStatus.dwServiceSpecificExitCode = 0;
     globdat.ssStatus.dwCheckPoint = 1;
 
     if (!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
@@ -629,71 +527,9 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                      NULL, "Failure registering service handler");
         return;
     }
+
     /* Report status, no errors, and buy 3 more seconds */
-    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 3000);
-    
-    /* Create a pipe to send stderr messages to the system error log 
-     */
-    if (CreatePipe(&hPipeRead, &hPipeWrite, NULL, 0)) 
-    {
-        HANDLE hProc = GetCurrentProcess();
-        if (DuplicateHandle(hProc, hPipeWrite, hProc, &hDup,
-                            0, TRUE, GENERIC_WRITE))
-        {
-            CloseHandle(hPipeWrite);
-            hPipeWrite = hDup;
-            thread = (HANDLE) _beginthreadex(NULL, 0, service_stderr_thread, 
-                                             (LPVOID) hPipeRead, 0, &threadid);
-            if (thread)
-            {
-                FILE *fl, flip;
-                int fd;
-
-                CloseHandle(thread);
-	
-                /* Flush, commit and close stderr.  This is typically a noop
-                 * in Win2K/XP since services start with NULL std handles,
-                 * but is required for NT 4.0 and a decent saftey anyways.
-                 */
-                fflush(stderr);
-                _commit(2 /* stderr */);
-                fclose(stderr);
-
-                /* The fdopen mode "wcb" is write, binary, so that simple 
-                 * strings are not buffered for \n -> crlf munging, and
-                 * commit-on-write.  Used setvbuf to assure no buffering.
-                 */
-                if (((fd = _open_osfhandle((long) hPipeWrite, 
-                                           _O_WRONLY | _O_BINARY) != -1)
-                        && (dup2(fd, 2 /* stderr */) == 0)
-                        && ((fl = _fdopen(2 /* stderr */, "wcb")) != NULL))) {
-                    _close(fd);
-                    flip = *stderr;
-                    *stderr = *fl;
-                    *fl = flip;
-                    setvbuf(stderr, NULL, _IONBF, 0);
-                }
-
-                /* The code above _will_ corrupt the StdHandle... 
-                 * and we must do so anyways.  We set this up only
-                 * after we initialized the posix stderr API.
-                 */
- 		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
-            }
-            else
-            {
-                CloseHandle(hPipeRead);
-                CloseHandle(hPipeWrite);
-                hPipeWrite = NULL;
-            }            
-        }
-        else
-        {
-            CloseHandle(hPipeRead);
-            CloseHandle(hPipeWrite);
-            hPipeWrite = NULL;
-        }            
-    }
+    ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
 
     /* We need to append all the command arguments passed via StartService() 
      * to our running service... which just got here via the SCM...
@@ -724,12 +560,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
      */
     SetEvent(globdat.service_init);
 
-    waitfor[0] = globdat.service_term;
-    waitfor[1] = globdat.mpm_thread;
-    WaitForMultipleObjects(2, waitfor, FALSE, INFINITE);
-
-    /* The process is ready to terminate, or already has */
-    CloseHandle(hPipeWrite);
+    WaitForSingleObject(globdat.service_term, INFINITE);
 }
 
 
@@ -751,7 +582,6 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
                      "Error starting service control dispatcher");
     }
 
-    globdat.service_thread_id = 0;
     return (rv);
 }
 
@@ -835,17 +665,22 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 
 void service_stopped(void)
 {
+    DWORD rv;
+
     /* Still have a thread & window to clean up, so signal now */
-    if (globdat.service_thread_id)
+    if (globdat.service_thread)
     {
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
         {
-            ReportStatusToSCMgr(SERVICE_STOPPED,    // service state
-                                NO_ERROR,           // exit code
-                                0);                 // wait hint
+            /* Stop logging to the event log */
+            mpm_nt_eventlog_stderr_flush();
 
             /* Cause the service_nt_main_fn to complete */
-            SetEvent(globdat.service_term);
+            ReleaseMutex(globdat.service_term);
+
+            ReportStatusToSCMgr(SERVICE_STOPPED, // service state
+                                NO_ERROR,        // exit code
+                                0);              // wait hint
         }
         else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
         {
@@ -859,12 +694,15 @@ void service_stopped(void)
 }
 
 
-apr_status_t mpm_service_to_start(const char **display_name)
+apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
 {
     HANDLE hProc = GetCurrentProcess();
     HANDLE hThread = GetCurrentThread();
     HANDLE waitfor[2];
 
+     /* GetCurrentThread returns a psuedo-handle, we need
+      * a real handle for another thread to wait upon.
+      */
     if (!DuplicateHandle(hProc, hThread, hProc, &(globdat.mpm_thread),
                          0, FALSE, DUPLICATE_SAME_ACCESS)) {
         return APR_ENOTHREAD;
@@ -872,13 +710,16 @@ apr_status_t mpm_service_to_start(const char **display_name)
     
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
+        mpm_nt_eventlog_stderr_open(mpm_display_name, p);
+
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
-        globdat.service_term = CreateEvent(NULL, FALSE, FALSE, NULL);
-        if (globdat.service_init)
-            globdat.service_thread = (HANDLE) _beginthreadex(NULL, 0, 
-                                                  service_nt_dispatch_thread, 
-                                                  NULL, 0, 
-                                                  &globdat.service_thread_id);
+        globdat.service_term = CreateMutex(NULL, TRUE, NULL);
+        if (!globdat.service_init || !globdat.service_term) {
+             return APR_EGENERAL;
+        }
+
+        globdat.service_thread = CreateThread(NULL, 0, service_nt_dispatch_thread, 
+                                              NULL, 0, &globdat.service_thread_id);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
@@ -886,31 +727,28 @@ apr_status_t mpm_service_to_start(const char **display_name)
             return GetLastError();
 
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
-        if (globdat.service_init)
-            globdat.service_thread = (HANDLE) _beginthreadex(NULL, 0,
-                                                  monitor_service_9x_thread, 
-                                                  (LPVOID) mpm_service_name, 0,
-                                                  &globdat.service_thread_id);
-    }
-
-    if (globdat.service_init && globdat.service_thread) 
-    {
-        waitfor[0] = globdat.service_init;
-        waitfor[1] = globdat.service_thread;
-    
-        /* Wait for controlling thread init or termination */
-        if (WaitForMultipleObjects(2, waitfor, FALSE, 10000) != WAIT_OBJECT_0) {
-            CloseHandle(globdat.service_thread);
-            CloseHandle(globdat.mpm_thread);
-            return APR_ENOTHREAD;
+        if (!globdat.service_init) {
+            return APR_EGENERAL;
         }
+
+        globdat.service_thread = CreateThread(NULL, 0, monitor_service_9x_thread, 
+                                              (LPVOID) mpm_service_name, 0,
+                                              &globdat.service_thread_id);
     }
 
-    if (globdat.service_thread_id)
-        atexit(service_stopped);
-    else if (globdat.service_thread)
-        CloseHandle(globdat.service_thread);
+    if (!globdat.service_thread) {
+        return APR_ENOTHREAD;
+    }
 
+    waitfor[0] = globdat.service_init;
+    waitfor[1] = globdat.service_thread;
+
+    /* Wait for controlling thread init or termination */
+    if (WaitForMultipleObjects(2, waitfor, FALSE, 10000) != WAIT_OBJECT_0) {
+        return APR_ENOTHREAD;
+    }
+
+    atexit(service_stopped);
     *display_name = mpm_display_name; 
     return APR_SUCCESS;
 }
@@ -934,7 +772,7 @@ void mpm_service_stopping(void)
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
         ReportStatusToSCMgr(SERVICE_STOP_PENDING, // service state
                             NO_ERROR,             // exit code
-                            3000);                // wait hint
+                            30000);               // wait hint
 }
 
 
