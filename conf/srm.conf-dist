@@ -99,8 +99,8 @@ AccessFileName .htaccess
 # be sure to make the corresponding changes here.
 
 <Files .htaccess>
-    Order allow,deny
-    Deny from all
+order allow,deny
+deny from all
 </Files>
 
 # TypesConfig describes where the mime.types file (or equivalent) is
