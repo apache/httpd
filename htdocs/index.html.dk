@@ -16,7 +16,7 @@
   </H1>
   <P>
   Hvis de kan se denne side, så har dem som ejer dette domain lige
-  installeret <A HREF="http://www.apache.org/">Apache Web Serveren</A>.
+  installeret <A HREF="http://www.apache.org/httpd">Apache Web Serveren</A>.
   De må nu placere web sider i dette directory og fjerne denne side, eller
   peje serveren på et andet directory.
   </P>
