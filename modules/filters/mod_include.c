@@ -1756,7 +1756,7 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                             SSI_EXPAND_DROP_NAME);
         if (tag[0] == 'f') {
             /* XXX: Port to apr_filepath_merge
@@ -1902,8 +1902,7 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
             apr_size_t e_len;
 
             val = get_include_var(ap_ssi_parse_string(ctx, tag_val, NULL,
-                                                      MAX_STRING_LEN,
-                                                      SSI_EXPAND_DROP_NAME),
+                                                      0, SSI_EXPAND_DROP_NAME),
                                   ctx);
 
             if (val) {
@@ -2018,8 +2017,7 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                            ctx->time_str, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
-            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL,
-                                                MAX_STRING_LEN,
+            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                 SSI_EXPAND_DROP_NAME);
             if (!strcmp(parsed_string, "bytes")) {
                 ctx->flags |= SSI_FLAG_SIZE_IN_BYTES;
@@ -2082,7 +2080,7 @@ static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                             SSI_EXPAND_DROP_NAME);
 
         if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
@@ -2169,7 +2167,7 @@ static apr_status_t handle_flastmod(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                             SSI_EXPAND_DROP_NAME);
 
         if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
@@ -2451,7 +2449,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
         }
 
         if (!strcmp(tag, "var")) {
-            var = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
+            var = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                       SSI_EXPAND_DROP_NAME);
         }
         else if (!strcmp(tag, "value")) {
@@ -2465,8 +2463,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 break;
             }
 
-            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL,
-                                                MAX_STRING_LEN,
+            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                 SSI_EXPAND_DROP_NAME);
             apr_table_setn(r->subprocess_env, apr_pstrdup(p, var),
                            apr_pstrdup(p, parsed_string));
