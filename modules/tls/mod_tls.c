@@ -235,7 +235,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
 			     "Read failed in tls_in_filter");
 	    assert(eReadType == APR_NONBLOCK_READ);
-	    assert(ret == APR_SUCCESS || ret == APR_STATUS_IS_EAGAIN(ret));
+	    assert(ret == APR_SUCCESS || APR_STATUS_IS_EAGAIN(ret));
 	    /* In this case, we have data in the output bucket, or we were
 	     * non-blocking, so returning nothing is fine.
 	     */
