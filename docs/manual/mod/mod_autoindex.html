@@ -373,10 +373,14 @@ The FancyIndexing directive sets the FancyIndexing option for a directory.
 preference.
 </P>
 <BLOCKQUOTE>
- <STRONG>Note that the <SAMP>FancyIndexing</SAMP> and
+ <STRONG>Note that in versions of Apache prior to 1.3.2, the
+ <SAMP>FancyIndexing</SAMP> and
  <SAMP>IndexOptions</SAMP> directives will override each other. You
  should use <SAMP>IndexOptions&nbsp;FancyIndexing</SAMP> in preference
- to the standalone <SAMP>FancyIndexing</SAMP> directive.</STRONG>
+ to the standalone <SAMP>FancyIndexing</SAMP> directive.
+ As of Apache 1.3.2, a standalone <SAMP>FancyIndexing</SAMP> directive
+ is combined with any <SAMP>IndexOptions</SAMP> directive already
+ specified for the current scope.</STRONG>
 </BLOCKQUOTE>
 <HR>
 
