@@ -107,6 +107,7 @@ API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
  * These are used by mod_so.c
  */
 #define ap_os_dso_handle_t  HINSTANCE
+#define ap_os_dso_init()
 #define ap_os_dso_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
 #define ap_os_dso_unload(l) FreeLibrary(l)
 #define ap_os_dso_sym(h,s)  GetProcAddress(h,s)
