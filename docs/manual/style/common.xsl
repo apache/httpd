@@ -15,8 +15,8 @@
 
  <xsl:variable name="path">
  <xsl:choose>
- <xsl:when test="*/relative-path/@href">
-     <xsl:value-of select="*/relative-path/@href"/>
+ <xsl:when test="*/relativepath/@href">
+     <xsl:value-of select="*/relativepath/@href"/>
  </xsl:when>
  <xsl:otherwise>
   <xsl:value-of select="'..'"/>
