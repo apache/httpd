@@ -1588,7 +1588,7 @@ static int proxy_status_hook(request_rec *r, int flags)
                  "<th>SSes</th><th>Timeout</th>"
                  "</tr>\n<tr>", r);                
         ap_rvputs(r, "<td>", balancer->sticky, NULL);
-        ap_rprintf(r, "</td><td>%d %d sec</td>\n", i,
+        ap_rprintf(r, "</td><td>%d</td>\n",
                    apr_time_sec(balancer->timeout));
         ap_rputs("</table>\n", r);
         ap_rputs("\n\n<table border=\"0\"><tr>"
