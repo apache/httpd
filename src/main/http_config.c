@@ -720,8 +720,15 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
     FILE *cfg;
     const char *errmsg;
     cmd_parms parms;
+    struct stat finfo;
     
     fname = server_root_relative (p, fname);
+
+    if (!(strcmp(fname, server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
+	!(strcmp(fname, server_root_relative(p, ACCESS_CONFIG_FILE)))) {
+	if (stat(fname, &finfo) == -1)
+	    return;
+    }
     
     /* GCC's initialization extensions are soooo nice here... */
     

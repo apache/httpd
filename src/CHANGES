@@ -1,5 +1,8 @@
 Changes with Apache 1.2b3:
 
+  *) Remove requirement for ResourceConfig/AccessConfig if not using
+     the three config file layout. [Randy Terbush]
+
   *) Add PASV mode to mod_proxy FTP handler. [Chuck Murcko]
 
   *) Changes to suexec wrapper to fix the following problems:
