@@ -6,7 +6,7 @@
 # This script falls under the Apache License.
 # See http://www.apache.org/docs/LICENSE
 
-OS=`./config.guess`
+OS=`./srclib/apr/build/config.guess`
 CONFIGPARAM="--with-layout=BinaryDistribution --prefix=`pwd`/bindist"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
