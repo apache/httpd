@@ -1723,7 +1723,7 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     server_rec *main_server = cmd->server, *s;
     const char *errmsg;
     char *endp = strrchr(arg, '>');
-    ap_context_t *p = cmd->pool, *ptemp = cmd->temp_pool;
+    ap_context_t *p = cmd->pool;
     const char *old_end_token;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
