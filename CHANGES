@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Add ability to htpasswd (via -5) to produce non-obfuscated MD5 hashes.
+     [Justin Erenkrantz]
+
   *) Rewrite of aaa modules to an authn/authz model.
      [Dirk-Willem van Gulik, Justin Erenkrantz]
   
