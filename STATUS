@@ -111,6 +111,7 @@ Committed Code Changes:
     * Marc's [PATCH] define to allow passing of Authorization header
     * Roy's [PATCH] protocol/1399: failing to read body
     * PR#1082, 1282, 1499, 1553: unixware cleanup
+    * mod_spelling added to win32 build
 
 Available Patches:
 
@@ -337,7 +338,6 @@ Win32 specific issues:
 
     * modules that need to be made to work on win32
         - mod_example isn't multithreadreded
-	- mod_speling
 	- mod_unique_id (needs mt changes)
 	- mod_auth_db.c  (do we want to even try this?  We should have some
           db of some sort... what else can we pick from under win32?)
