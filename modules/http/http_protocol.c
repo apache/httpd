@@ -540,8 +540,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    /* just get out of the way of this thing. */
-    if (mode == AP_MODE_EATCRLF) {
+    /* just get out of the way of things we don't want. */
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
         return ap_get_brigade(f->next, b, mode, block, readbytes);
     }
 
