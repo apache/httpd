@@ -5,7 +5,7 @@ AC_INIT(main/http_main.c)
 AM_INIT_AUTOMAKE(apache, 2.0-dev)
 
 dnl This would be in src/include, but I think I've found an autoheader bug
-AM_CONFIG_HEADER(ap_config_auto.h)
+AM_CONFIG_HEADER(include/ap_config_auto.h)
 
 dnl ## This is the central place where Apache's version should be kept.
 
