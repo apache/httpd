@@ -92,6 +92,14 @@ extern "C" {
  */
 
 /**
+ * An internal handler used by the ap_process_request, all sub request mechanisms
+ * and the redirect mechanism.
+ * @param r The request, subrequest or internal redirect to pre-process
+ * @return The return code for the request
+ */
+AP_DECLARE(int) ap_process_request_internal(request_rec *r);
+
+/**
  * Create a sub request from the given URI.  This sub request can be
  * inspected to find information about the requested URI
  * @param new_file The URI to lookup
