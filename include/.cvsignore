@@ -1,3 +1,11 @@
 ap_config_auto.h
 ap_config_auto.h.in
 ap_config_layout.h
+mod_cgi.h
+mod_core.h
+mod_dav.h
+mod_include.h
+mod_proxy.h
+mpm.h
+mpm_default.h
+os.h
