@@ -319,29 +319,17 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	else if (!strcasecmp(w, "None")) {
 	    opts = 0;
 	}
-	else if (!strncasecmp(w, "IconWidth", 9)) {
-	    if (strchr(w, '=') != NULL) {
-		const char *x = ap_pstrdup(cmd->pool, w);
-		char *val;
-		val = ap_getword(cmd->pool, &x, '=');
-		val = ap_getword(cmd->pool, &x, '=');
-		d_cfg->icon_width = atoi(val);
-	    }
-	    else {
-		d_cfg->icon_width = DEFAULT_ICON_WIDTH;
-	    }
+	else if (!strcasecmp(w, "IconWidth")) {
+	    d_cfg->icon_width = DEFAULT_ICON_WIDTH;
 	}
-	else if (!strncasecmp(w, "IconHeight", 10)) {
-	    if (strchr(w, '=') != NULL) {
-		const char *x = ap_pstrdup(cmd->pool, w);
-		char *val;
-		val = ap_getword(cmd->pool, &x, '=');
-		val = ap_getword(cmd->pool, &x, '=');
-		d_cfg->icon_height = atoi(val);
-	    }
-	    else {
-		d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
-	    }
+	else if (!strncasecmp(w, "IconWidth=", 10)) {
+	    d_cfg->icon_width = atoi(&w[10]);
+	}
+	else if (!strcasecmp(w, "IconHeight")) {
+	    d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
+	}
+	else if (!strncasecmp(w, "IconHeight=", 11)) {
+	    d_cfg->icon_height = atoi(&w[11]);
 	}
 	else {
 	    return "Invalid directory indexing option";
