@@ -221,7 +221,7 @@ now, here are some examples of what you can do with SSI</p>
 <h3><a name="today'sdate">Today's date</a></h3>
 
 <pre>
-        &lt;!--#echo var=DATE_LOCAL --&gt;
+        &lt;!--#echo var="DATE_LOCAL" --&gt;
 </pre>
 
 <p>The <code>echo</code> element just spits out the value of a
@@ -236,7 +236,7 @@ attribute, to modify that formatting.</p>
 
 <pre>
         &lt;!--#config timefmt="%A %B %d, %Y" --&gt;
-        Today is &lt;!--#echo var=DATE_LOCAL --&gt;
+        Today is &lt;!--#echo var="DATE_LOCAL" --&gt;
 </pre>
 
 <h3><a name="modificationdateofthefile">Modification date of the
