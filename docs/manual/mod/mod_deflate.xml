@@ -290,7 +290,7 @@ client</description>
 <directivesynopsis>
 <name>DeflateCompressionLevel</name>
 <description>How much compression do we apply to the output</description>
-<syntax>DeflateCompressionLevel<var>value</var></syntax>
+<syntax>DeflateCompressionLevel <var>value</var></syntax>
 <default>Zlib's default</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
