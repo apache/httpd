@@ -204,7 +204,7 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
               "</title>\n", NULL);
     if (d->style_sheet != NULL) {
         ap_rvputs(r, "  <link rel=\"stylesheet\" href=\"", d->style_sheet,
-                "\" type=\"text/css\"", xhtml ? "/>\n" : ">\n", NULL);
+                "\" type=\"text/css\"", xhtml ? " />\n" : ">\n", NULL);
     }
     ap_rvputs(r, " </head>\n <body>\n", NULL);
 }
