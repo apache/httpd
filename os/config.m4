@@ -11,7 +11,7 @@ case $host in
   ;;
 bs2000*)
   OS="unix"
-  OS_DIR=bs2000  # only the OS_DIR is platform specific.
+  OS_DIR=$OS
   ;;
 *cygwin*)
   OS="cygwin"
