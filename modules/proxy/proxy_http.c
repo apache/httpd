@@ -120,6 +120,487 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
     apr_table_unset(headers, "Connection");
 }
 
+static void add_te_chunked(apr_pool_t *p,
+                           apr_bucket_alloc_t *bucket_alloc,
+                           apr_bucket_brigade *header_brigade)
+{
+    apr_bucket *e;
+    char *buf;
+    const char te_hdr[] = "Transfer-Encoding: chunked" CRLF;
+
+    buf = apr_pmemdup(p, te_hdr, sizeof(te_hdr)-1);
+    ap_xlate_proto_to_ascii(buf, sizeof(te_hdr)-1);
+
+    e = apr_bucket_pool_create(buf, sizeof(te_hdr)-1, p, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+}
+
+static void add_cl(apr_pool_t *p,
+                   apr_bucket_alloc_t *bucket_alloc,
+                   apr_bucket_brigade *header_brigade,
+                   const char *cl_val)
+{
+    apr_bucket *e;
+    char *buf;
+
+    buf = apr_pstrcat(p, "Content-Length: ",
+                      cl_val,
+                      CRLF,
+                      NULL);
+    ap_xlate_proto_to_ascii(buf, strlen(buf));
+    e = apr_bucket_pool_create(buf, strlen(buf), p, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+}
+
+#define ASCII_CRLF  "\015\012"
+#define ASCII_ZERO  "\060"
+
+static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
+                              apr_bucket_brigade *header_brigade)
+{
+    apr_bucket *e;
+
+    /* add empty line at the end of the headers */
+    e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+}
+
+static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
+                                 request_rec *r, proxy_conn_rec *conn,
+                                 conn_rec *origin, apr_bucket_brigade *b,
+                                 int flush)
+{
+    apr_status_t status;
+    apr_off_t transferred;
+
+    if (flush) {
+        apr_bucket *e = apr_bucket_flush_create(bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+    }
+    apr_brigade_length(b, 0, &transferred);
+    if (transferred != -1)
+        conn->worker->s->transferred += transferred;
+    status = ap_pass_brigade(origin->output_filters, b);
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                     "proxy: pass request data failed to %pI (%s)",
+                     conn->addr, conn->hostname);
+        return status;
+    }
+    apr_brigade_cleanup(b);
+    return APR_SUCCESS;
+}
+
+static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
+                                           request_rec *r,
+                                           proxy_conn_rec *conn,
+                                           conn_rec *origin,
+                                           apr_bucket_brigade *header_brigade)
+{
+    int seen_eos = 0;
+    apr_size_t hdr_len;
+    apr_off_t bytes;
+    apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
+    apr_bucket_brigade *b, *input_brigade;
+    apr_bucket *e;
+
+    input_brigade = apr_brigade_create(p, bucket_alloc);
+
+    do {
+        char chunk_hdr[20];  /* must be here due to transient bucket. */
+
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+
+        /* If this brigade contains EOS, either stop or remove it. */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            seen_eos = 1;
+
+            /* As a shortcut, if this brigade is simply an EOS bucket,
+             * don't send anything down the filter chain.
+             */
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
+                break;
+            }
+
+            /* We can't pass this EOS to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            apr_bucket_delete(e);
+        }
+
+        apr_brigade_length(input_brigade, 1, &bytes);
+
+        hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
+                               "%" APR_UINT64_T_HEX_FMT CRLF, 
+                               (apr_uint64_t)bytes);
+        
+        ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
+        e = apr_bucket_transient_create(chunk_hdr, hdr_len,
+                                        bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(input_brigade, e);
+        
+        /*
+         * Append the end-of-chunk CRLF
+         */
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+        
+        if (header_brigade) {
+            /* we never sent the header brigade, so go ahead and
+             * take care of that now
+             */
+            add_te_chunked(p, bucket_alloc, header_brigade);
+            terminate_headers(bucket_alloc, header_brigade);
+            b = header_brigade;
+            APR_BRIGADE_CONCAT(b, input_brigade);
+            header_brigade = NULL;
+        }
+        else {
+            b = input_brigade;
+        }
+        
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 0);
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+    } while (!seen_eos);
+
+    if (header_brigade) {
+        /* we never sent the header brigade because there was no request body;
+         * send it now without T-E
+         */
+        terminate_headers(bucket_alloc, header_brigade);
+        b = header_brigade;
+    }
+    else {
+        if (!APR_BRIGADE_EMPTY(input_brigade)) {
+            /* input brigade still has an EOS which we can't pass to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
+            apr_bucket_delete(e);
+        }
+        e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
+                                       /* <trailers> */
+                                       ASCII_CRLF,
+                                       5, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+        b = input_brigade;
+    }
+    
+    status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
+    return status;
+}
+
+static apr_status_t stream_reqbody_cl(apr_pool_t *p,
+                                      request_rec *r,
+                                      proxy_conn_rec *conn,
+                                      conn_rec *origin,
+                                      apr_bucket_brigade *header_brigade,
+                                      const char *old_cl_val)
+{
+    int seen_eos = 0;
+    apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
+    apr_bucket_brigade *b, *input_brigade;
+    apr_bucket *e;
+
+    input_brigade = apr_brigade_create(p, bucket_alloc);
+
+    do {
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+
+        /* If this brigade contains EOS, either stop or remove it. */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            seen_eos = 1;
+
+            /* As a shortcut, if this brigade is simply an EOS bucket,
+             * don't send anything down the filter chain.
+             */
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
+                break;
+            }
+
+            /* We can't pass this EOS to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            apr_bucket_delete(e);
+        }
+
+        if (header_brigade) {
+            /* we never sent the header brigade, so go ahead and
+             * take care of that now
+             */
+            add_cl(p, bucket_alloc, header_brigade, old_cl_val);
+            terminate_headers(bucket_alloc, header_brigade);
+            b = header_brigade;
+            APR_BRIGADE_CONCAT(b, input_brigade);
+            header_brigade = NULL;
+        }
+        else {
+            b = input_brigade;
+        }
+        
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 0);
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+    } while (!seen_eos);
+
+    if (header_brigade) {
+        /* we never sent the header brigade since there was no request
+         * body; send it now, and only specify C-L if client specified
+         * C-L: 0
+         */
+        if (!strcmp(old_cl_val, "0")) {
+            add_cl(p, bucket_alloc, header_brigade, old_cl_val);
+        }
+        terminate_headers(bucket_alloc, header_brigade);
+        b = header_brigade;
+    }
+    else {
+        /* need to flush any pending data */
+        b = input_brigade; /* empty now; pass_brigade() will add flush */
+    }
+    status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
+    return status;
+}
+
+#define MAX_MEM_SPOOL 16384
+
+static apr_status_t spool_reqbody_cl(apr_pool_t *p,
+                                     request_rec *r,
+                                     proxy_conn_rec *conn,
+                                     conn_rec *origin,
+                                     apr_bucket_brigade *header_brigade)
+{
+    int seen_eos = 0;
+    apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
+    apr_bucket_brigade *body_brigade, *input_brigade;
+    apr_bucket *e;
+    apr_off_t bytes, bytes_spooled = 0, fsize = 0;
+    apr_file_t *tmpfile = NULL;
+
+    body_brigade = apr_brigade_create(p, bucket_alloc);
+    input_brigade = apr_brigade_create(p, bucket_alloc);
+
+    do {
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                HUGE_STRING_LEN);
+
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+
+        /* If this brigade contains EOS, either stop or remove it. */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            seen_eos = 1;
+
+            /* As a shortcut, if this brigade is simply an EOS bucket,
+             * don't send anything down the filter chain.
+             */
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
+                break;
+            }
+
+            /* We can't pass this EOS to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            apr_bucket_delete(e);
+        }
+
+        apr_brigade_length(input_brigade, 1, &bytes);
+
+        if (bytes_spooled + bytes > MAX_MEM_SPOOL) {
+            /* can't spool any more in memory; write latest brigade to disk;
+             * what we read into memory before reaching our threshold will
+             * remain there; we just write this and any subsequent data to disk
+             */
+            if (tmpfile == NULL) {
+                const char *temp_dir;
+                char *template;
+
+                status = apr_temp_dir_get(&temp_dir, p);
+                if (status != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                                 "proxy: search for temporary directory failed");
+                    return status;
+                }
+                apr_filepath_merge(&template, temp_dir,
+                                   "modproxy.tmp.XXXXXX",
+                                   APR_FILEPATH_NATIVE, p);
+                status = apr_file_mktemp(&tmpfile, template, 0, p);
+                if (status != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                                 "proxy: creation of temporary file in directory %s failed",
+                                 temp_dir);
+                    return status;
+                }
+            }
+            for (e = APR_BRIGADE_FIRST(input_brigade);
+                 e != APR_BRIGADE_SENTINEL(input_brigade);
+                 e = APR_BUCKET_NEXT(e)) {
+                const char *data;
+                apr_size_t bytes_read, bytes_written;
+
+                apr_bucket_read(e, &data, &bytes_read, APR_BLOCK_READ);
+                status = apr_file_write_full(tmpfile, data, bytes_read, &bytes_written);
+                if (status != APR_SUCCESS) {
+                    const char *tmpfile_name;
+
+                    if (apr_file_name_get(&tmpfile_name, tmpfile) != APR_SUCCESS) {
+                        tmpfile_name = "(unknown)";
+                    }
+                    ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                                 "proxy: write to temporary file %s failed",
+                                 tmpfile_name);
+                    return status;
+                }
+                AP_DEBUG_ASSERT(bytes_read == bytes_written);
+                fsize += bytes_written;
+            }
+            apr_brigade_cleanup(input_brigade);
+        }
+        else {
+            APR_BRIGADE_CONCAT(body_brigade, input_brigade);
+        }
+        
+        bytes_spooled += bytes;
+
+    } while (!seen_eos);
+
+    if (bytes_spooled) {
+        add_cl(p, bucket_alloc, header_brigade, apr_off_t_toa(p, bytes_spooled));
+    }
+    terminate_headers(bucket_alloc, header_brigade);
+    APR_BRIGADE_CONCAT(header_brigade, body_brigade);
+    if (tmpfile) {
+        /* For platforms where the size of the file may be larger than
+         * that which can be stored in a single bucket (where the
+         * length field is an apr_size_t), split it into several
+         * buckets: */
+        if (sizeof(apr_off_t) > sizeof(apr_size_t)
+            && fsize > AP_MAX_SENDFILE) {
+            e = apr_bucket_file_create(tmpfile, 0, AP_MAX_SENDFILE, p,
+                                       bucket_alloc);
+            while (fsize > AP_MAX_SENDFILE) {
+                apr_bucket *ce;
+                apr_bucket_copy(e, &ce);
+                APR_BRIGADE_INSERT_TAIL(header_brigade, ce);
+                e->start += AP_MAX_SENDFILE;
+                fsize -= AP_MAX_SENDFILE;
+            }
+            e->length = (apr_size_t)fsize; /* Resize just the last bucket */
+        }
+        else {
+            e = apr_bucket_file_create(tmpfile, 0, (apr_size_t)fsize, p,
+                                       bucket_alloc);
+        }
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+    }
+    status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
+    return status;
+}
+
+static apr_status_t send_request_body(apr_pool_t *p,
+                                      request_rec *r,
+                                      proxy_conn_rec *conn,
+                                      conn_rec *origin,
+                                      apr_bucket_brigade *header_brigade,
+                                      int force10)
+{
+    enum {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL} rb_method = RB_INIT;
+    const char *old_cl_val, *te_val;
+    int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
+    apr_status_t status;
+
+    /* send CL or use chunked encoding?
+     *
+     * . CL is the most friendly to the origin server since it is the
+     *   most widely supported
+     * . CL stinks if we don't know the length since we have to buffer
+     *   the data in memory or on disk until we get the entire data
+     *
+     * special cases to check for:
+     * . if we're using HTTP/1.0 to origin server, then we must send CL
+     * . if client sent C-L and there are no input resource filters, the
+     *   the body size can't change so we send the same CL and stream the
+     *   body
+     * . if client used chunked or proxy-sendchunks is set, we'll use
+     *   chunked
+     *
+     * normal case:
+     *   we have to compute content length by reading the entire request
+     *   body; if request body is not small, we'll spool the remaining input
+     *   to a temporary file
+     *
+     * special envvars to override the normal decision:
+     * . proxy-sendchunks
+     *   use chunked encoding; not compatible with force-proxy-request-1.0
+     * . proxy-sendcl
+     *   spool the request body to compute C-L
+     * . proxy-sendunchangedcl
+     *   use C-L from client and spool the request body
+     */
+    old_cl_val = apr_table_get(r->headers_in, "Content-Length");
+    cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
+
+    if (!force10
+        && !cl_zero
+        && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
+        rb_method = RB_STREAM_CHUNKED;
+    }
+    else if (!cl_zero
+             && apr_table_get(r->subprocess_env, "proxy-sendcl")) {
+        rb_method = RB_SPOOL_CL;
+    }
+    else {
+        if (old_cl_val &&
+            (r->input_filters == r->proto_input_filters
+             || cl_zero
+             || apr_table_get(r->subprocess_env, "proxy-sendunchangedcl"))) {
+            rb_method = RB_STREAM_CL;
+        }
+        else if (force10) {
+            rb_method = RB_SPOOL_CL;
+        }
+        else if ((te_val = apr_table_get(r->headers_in, "Transfer-Encoding"))
+                  && !strcasecmp(te_val, "chunked")) {
+            rb_method = RB_STREAM_CHUNKED;
+        }
+        else {
+            rb_method = RB_SPOOL_CL;
+        }
+    }
+
+    switch(rb_method) {
+    case RB_STREAM_CHUNKED:
+        status = stream_reqbody_chunked(p, r, conn, origin, header_brigade);
+        break;
+    case RB_STREAM_CL:
+        status = stream_reqbody_cl(p, r, conn, origin, header_brigade, old_cl_val);
+        break;
+    case RB_SPOOL_CL:
+        status = spool_reqbody_cl(p, r, conn, origin, header_brigade);
+        break;
+    default:
+        ap_assert(1 != 1);
+    }
+
+    return status;
+}
+
 static
 apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_conn_rec *conn, conn_rec *origin, 
@@ -129,17 +610,15 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 {
     conn_rec *c = r->connection;
     char *buf;
-    apr_bucket *e, *last_header_bucket = NULL;
+    apr_bucket *e;
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
-    int counter, seen_eos, send_chunks;
+    int counter;
     apr_status_t status;
-    apr_bucket_brigade *header_brigade, *body_brigade, *input_brigade;
-    apr_off_t transferred = 0;
+    apr_bucket_brigade *header_brigade;
+    int force10;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
-    body_brigade = apr_brigade_create(p, origin->bucket_alloc);
-    input_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
     /*
      * Send the HTTP/1.1 request to the remote server
@@ -167,17 +646,20 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     /* By default, we can not send chunks. That means we must buffer
      * the entire request before sending it along to ensure we have
-     * the correct Content-Length attached.
+     * the correct Content-Length attached.  A special case is when
+     * the client specifies Content-Length and there are no filters
+     * which muck with the request body.  In that situation, we don't
+     * have to buffer the entire request and can still send the
+     * Content-Length.  Another special case is when the client
+     * specifies a C-L of 0.  Pass that through as well.
      */
-    send_chunks = 0;
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+        force10 = 1;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
-        if (apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
-            send_chunks = 1;
-        }
+        force10 = 0;
     }
     if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
         apr_table_unset(r->headers_in, "Connection");
@@ -307,8 +789,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
 
-            /* We have no way of knowing whether this Content-Length will
-             * be accurate, so we must not include it.
+            /* We'll add appropriate Content-Length later, if appropriate.
              */
             || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
         /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
@@ -345,187 +826,14 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
 
-    /* If we can send chunks, do so! */
-    if (send_chunks) {
-        const char te_hdr[] = "Transfer-Encoding: chunked" CRLF;
-
-        buf = apr_pmemdup(p, te_hdr, sizeof(te_hdr)-1);
-        ap_xlate_proto_to_ascii(buf, sizeof(te_hdr)-1);
-
-        e = apr_bucket_pool_create(buf, sizeof(te_hdr)-1, p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    }
-    else {
-        last_header_bucket = APR_BRIGADE_LAST(header_brigade);
-    }
-
-    /* add empty line at the end of the headers */
-#if APR_CHARSET_EBCDIC
-    e = apr_bucket_immortal_create("\015\012", 2, c->bucket_alloc);
-#else
-    e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1, c->bucket_alloc);
-#endif
-    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    e = apr_bucket_flush_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    
-    apr_brigade_length(header_brigade, 0, &transferred);
-    if (transferred != -1)
-        conn->worker->s->transferred += transferred;
-    if (send_chunks) {
-        status = ap_pass_brigade(origin->output_filters, header_brigade);
-
-        if (status != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                         "proxy: request failed to %pI (%s)",
-                         conn->addr, conn->hostname);
-            return status;
-        }
-    }
-
     /* send the request data, if any. */
-    seen_eos = 0;
-    do {
-        char chunk_hdr[20];  /* must be here due to transient bucket. */
-
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-
-        /* If this brigade contain EOS, either stop or remove it. */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-            seen_eos = 1;
-
-            /* As a shortcut, if this brigade is simply an EOS bucket,
-             * don't send anything down the filter chain.
-             */
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade))) {
-                break;
-            }
-
-            /* We can't pass this EOS to the output_filters. */
-            e = APR_BRIGADE_LAST(input_brigade);
-            apr_bucket_delete(e);
-        }
-
-        if (send_chunks) {
-#define ASCII_CRLF  "\015\012"
-#define ASCII_ZERO  "\060"
-            apr_size_t hdr_len;
-            apr_off_t bytes;
-
-            apr_brigade_length(input_brigade, 1, &bytes);
-
-            hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
-                                   "%" APR_UINT64_T_HEX_FMT CRLF, 
-                                   (apr_uint64_t)bytes);
-
-            ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
-            e = apr_bucket_transient_create(chunk_hdr, hdr_len,
-                                            body_brigade->bucket_alloc);
-            APR_BRIGADE_INSERT_HEAD(input_brigade, e);
-
-            /*
-             * Append the end-of-chunk CRLF
-             */
-            e = apr_bucket_immortal_create(ASCII_CRLF, 2, c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(input_brigade, e);
-        }
-        else {
-            /* The send_chunks case does not need to be setaside, but this
-             * case does because we may have transient buckets that may get
-             * overwritten in the next iteration of the loop.
-             */
-            e = APR_BRIGADE_FIRST(input_brigade);
-            while (e != APR_BRIGADE_SENTINEL(input_brigade)) {
-                apr_bucket_setaside(e, p);
-                e = APR_BUCKET_NEXT(e);
-            }
-        }
-
-        e = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
-
-        APR_BRIGADE_CONCAT(body_brigade, input_brigade);
-
-        if (send_chunks) {
-            status = ap_pass_brigade(origin->output_filters, body_brigade);
-
-            if (status != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                             "proxy: pass request data failed to %pI (%s)",
-                         conn->addr, conn->hostname);
-                return status;
-            }
-
-            apr_brigade_cleanup(body_brigade);
-        }
-
-    } while (!seen_eos);
-
-    if (send_chunks) {
-        e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
-                                       /* <trailers> */
-                                       ASCII_CRLF, 5, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(body_brigade, e);
-        e = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(body_brigade, e);
-    }
-
-    if (!send_chunks) {
-        apr_off_t bytes;
-
-        apr_brigade_length(body_brigade, 1, &bytes);
-
-        if (bytes) {
-            const char *cl_hdr = "Content-Length", *cl_val;
-            cl_val = apr_off_t_toa(p, bytes);
-            buf = apr_pstrcat(p, cl_hdr, ": ", cl_val, CRLF, NULL);
-            ap_xlate_proto_to_ascii(buf, strlen(buf));
-            e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-            APR_BUCKET_INSERT_AFTER(last_header_bucket, e);
-        }
-        else {
-            /* A client might really have sent a C-L of 0.  Pass it on. */
-            const char *cl_hdr = "Content-Length", *cl_val;
-
-            cl_val = apr_table_get(r->headers_in, cl_hdr);
-            if (cl_val && cl_val[0] == '0' && cl_val[1] == 0) {
-                buf = apr_pstrcat(p, cl_hdr, ": ", cl_val, CRLF, NULL);
-                ap_xlate_proto_to_ascii(buf, strlen(buf));
-                e = apr_bucket_pool_create(buf, strlen(buf), p,
-                                           c->bucket_alloc);
-                APR_BUCKET_INSERT_AFTER(last_header_bucket, e);
-            }
-        }
-        status = ap_pass_brigade(origin->output_filters, header_brigade);
-        if (status != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                         "proxy: pass request data failed to %pI (%s)",
-                         conn->addr, conn->hostname);
-            return status;
-        }
-
-        apr_brigade_cleanup(header_brigade);
-    }
-
-    status = ap_pass_brigade(origin->output_filters, body_brigade);
-
+    status = send_request_body(p, r, conn, origin, header_brigade, force10);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request data failed to %pI (%s)",
-                      conn->addr, conn->hostname);
+                     conn->addr, conn->hostname);
         return status;
     }
-    apr_brigade_length(body_brigade, 0, &transferred);
-    if (transferred != -1)
-        conn->worker->s->transferred += transferred;
-
-    apr_brigade_cleanup(body_brigade);
     return APR_SUCCESS;
 }
 
