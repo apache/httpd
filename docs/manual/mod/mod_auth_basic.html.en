@@ -62,16 +62,17 @@ lower level modules</td></tr>
     <strong>no userID</strong> or <strong>rule</strong> matching the
     supplied userID. If there is a userID and/or rule specified, the usual
     password and access checks will be applied and a failure will give
-    an Authorization Required reply.</p>
+    an "Authentication Required" reply.</p>
 
     <p>So if a userID appears in the database of more than one module;
     or if a valid <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     directive applies to more than one module; then the first module
     will verify the credentials; and no access is passed on;
-    regardless of the AuthAuthoritative setting.</p>
+    regardless of the <code class="directive">AuthBasicAuthoritative</code>
+    setting.</p>
 
     <p>By default control is not passed on and an unknown userID or
-    rule will result in an Authorization Required reply. Not setting
+    rule will result in an "Authentication Required" reply. Not setting
     it thus keeps the system secure and forces an NCSA compliant
     behaviour.</p>
 

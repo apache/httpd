@@ -94,15 +94,16 @@ passwords for authentication</td></tr>
     the user file.</p>
 
     <p>The user file is keyed on the username. The value for a user is
-    the <code>crypt()</code> encrypted password, optionally followed
-    by a colon and arbitrary data. The colon and the data following it
-    will be ignored by the server.</p>
+    the encrypted password, optionally followed by a colon and arbitrary
+    data. The colon and the data following it will be ignored by the
+    server.</p>
 
-    <p>Security: make sure that the
-    <code class="directive">AuthDBMUserFile</code> is stored outside the
-    document tree of the web-server; do <em>not</em> put it in the
-    directory that it protects. Otherwise, clients will be able to
-    download the <code class="directive">AuthDBMUserFile</code>.</p>
+    <div class="warning"><h3>Security:</h3>
+      <p>Make sure that the <code class="directive">AuthDBMUserFile</code> is stored
+      outside the document tree of the web-server; do <em>not</em> put it in
+      the directory that it protects. Otherwise, clients will be able to
+      download the <code class="directive">AuthDBMUserFile</code>.</p>
+    </div>
 
     <p>Important compatibility note: The implementation of
     <code>dbmopen</code> in the apache modules reads the string length of
