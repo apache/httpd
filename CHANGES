@@ -2,6 +2,10 @@ Changes with Apache 2.1.4
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) util_ldap: Keep track of the number of attributes retrieved from 
+     LDAP so that all the values can be properly cached even if the 
+     value is NULL. PR 33901 [Brad Nicholes]
+  
   *) mod_cache: Fix error where incoming Cache-Control would be ignored.
      [Justin Erenkrantz]
 
