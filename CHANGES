@@ -1,4 +1,7 @@
 Changes with Apache 2.0.15-dev
+  *) Fix bug in the Unix threaded.c MPM that allowed child processes
+     to fork() new child processes. 
+     [Bill Stoddard]
 
   *) Fix a major security problem with double-reverse lookup checking.  
      Previously, a client connecting over IPv4 would not be matched 
