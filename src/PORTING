@@ -223,6 +223,14 @@ build for your OS.
 	     is defined, a file-based scoreboard will be used and
 	     SCOREBOARD_FILE will automatically be defined >>
 
+     USE_POSIX_SCOREBOARD:
+      Defined on QNX currently where the shared memory scoreboard follows
+      the POSIX 1003.4 spec.
+    
+     USE_OS2_SCOREBOARD:
+      Defined on OS2, uses OS2 primitives to construct shared memory for
+      the scoreboard.
+
      USE_LONGJMP:
       Define to use the longjmp() call instead of siglongjmp()
       (as well as setjmp() instead of sigsetjmp()).

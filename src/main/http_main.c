@@ -171,16 +171,14 @@ void force_library_loading(void) {
 long _stksize = 32768;
 #endif
 
-#ifdef __EMX__
+#ifdef USE_OS2_SCOREBOARD
     /* Add MMAP style functionality to OS/2 */
-#ifdef USE_MMAP_SCOREBOARD
 #define INCL_DOSMEMMGR
 #include <os2.h>
 #include <umalloc.h>
 #include <stdio.h>
 caddr_t create_shared_heap(const char *, size_t);
 caddr_t get_shared_heap(const char *);
-#endif
 #endif
 
 DEF_Explain
@@ -1320,8 +1318,6 @@ static int reap_other_child(int pid, int status)
  * malloc. But let the routines that follow, think that you have
  * shared memory (so they use memcpy etc.)
  */
-#undef USE_MMAP_SCOREBOARD
-#define USE_MMAP_SCOREBOARD 1
 
 void reinit_scoreboard(pool *p)
 {
@@ -1343,20 +1339,55 @@ API_EXPORT(void) sync_scoreboard_image()
 
 
 #else /* MULTITHREAD */
-#if defined(USE_MMAP_SCOREBOARD)
+#if defined(USE_OS2_SCOREBOARD)
 
-#ifdef QNX
-static void cleanup_shared_mem(void *d)
+/* The next two routines are used to access shared memory under OS/2.  */
+/* This requires EMX v09c to be installed.                           */
+
+caddr_t create_shared_heap(const char *name, size_t size)
 {
-    shm_unlink(scoreboard_fname);
+    ULONG rc;
+    void *mem;
+    Heap_t h;
+
+    rc = DosAllocSharedMem(&mem, name, size,
+			   PAG_COMMIT | PAG_READ | PAG_WRITE);
+    if (rc != 0)
+	return NULL;
+    h = _ucreate(mem, size, !_BLOCK_CLEAN, _HEAP_REGULAR | _HEAP_SHARED,
+		 NULL, NULL);
+    if (h == NULL)
+	DosFreeMem(mem);
+    return (caddr_t) h;
 }
-#endif
+
+caddr_t get_shared_heap(const char *Name)
+{
+
+    PVOID BaseAddress;		/* Pointer to the base address of
+				   the shared memory object */
+    ULONG AttributeFlags;	/* Flags describing characteristics
+				   of the shared memory object */
+    APIRET rc;			/* Return code */
+
+    /* Request read and write access to */
+    /*   the shared memory object       */
+    AttributeFlags = PAG_WRITE | PAG_READ;
+
+    rc = DosGetNamedSharedMem(&BaseAddress, Name, AttributeFlags);
+
+    if (rc != 0) {
+	printf("DosGetNamedSharedMem error: return code = %ld", rc);
+	return 0;
+    }
+
+    return BaseAddress;
+}
 
 static void setup_shared_mem(pool *p)
 {
     caddr_t m;
 
-#ifdef __EMX__
     char errstr[MAX_STRING_LEN];
     int rc;
 
@@ -1370,8 +1401,26 @@ static void setup_shared_mem(pool *p)
     if (rc != 0) {
 	fprintf(stderr, "httpd: Could not uopen() newly created OS/2 Shared memory pool.\n");
     }
+    scoreboard_image = (scoreboard *) m;
+    scoreboard_image->global.exit_generation = 0;
+}
 
-#elif defined(QNX)
+void reopen_scoreboard(pool *p)
+{
+    caddr_t m;
+    int rc;
+
+    m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
+    if (m == 0) {
+	fprintf(stderr, "httpd: Could not find existing OS/2 Shared memory pool.\n");
+	exit(1);
+    }
+
+    rc = _uopen((Heap_t) m);
+    scoreboard_image = (scoreboard *) m;
+}
+
+#elif defined(USE_POSIX_SCOREBOARD)
 /* 
  * POSIX 1003.4 style
  *
@@ -1400,6 +1449,15 @@ static void setup_shared_mem(pool *p)
  * June 5, 1997, 
  * Igor N. Kovalenko -- infoh@mail.wplus.net
  */
+
+static void cleanup_shared_mem(void *d)
+{
+    shm_unlink(scoreboard_fname);
+}
+
+static void setup_shared_mem(pool *p)
+{
+    caddr_t m;
     int fd;
 
     fd = shm_open(scoreboard_fname, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
@@ -1421,8 +1479,21 @@ static void setup_shared_mem(pool *p)
     }
     close(fd);
     register_cleanup(p, NULL, cleanup_shared_mem, null_cleanup);
+    scoreboard_image = (scoreboard *) m;
+    scoreboard_image->global.exit_generation = 0;
+}
 
-#elif defined(MAP_ANON) || defined(MAP_FILE)
+void reopen_scoreboard(pool *p)
+{
+}
+
+#elif defined(USE_MMAP_SCOREBOARD)
+
+static void setup_shared_mem(pool *p)
+{
+    caddr_t m;
+
+#if defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
 #ifdef CONVEXOS11
     /*
@@ -1471,6 +1542,10 @@ static void setup_shared_mem(pool *p)
 #endif
     scoreboard_image = (scoreboard *) m;
     scoreboard_image->global.exit_generation = 0;
+}
+
+void reopen_scoreboard(pool *p)
+{
 }
 
 #elif defined(USE_SHMGET_SCOREBOARD)
@@ -1560,6 +1635,10 @@ static void setup_shared_mem(pool *p)
     scoreboard_image->global.exit_generation = 0;
 }
 
+void reopen_scoreboard(pool *p)
+{
+}
+
 #else
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
@@ -1602,6 +1681,19 @@ static void cleanup_scoreboard_file(void *foo)
 {
     unlink(scoreboard_fname);
 }
+
+void reopen_scoreboard(pool *p)
+{
+    if (scoreboard_fd != -1)
+	pclosef(p, scoreboard_fd);
+
+    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
+    if (scoreboard_fd == -1) {
+	perror(scoreboard_fname);
+	fprintf(stderr, "Cannot open scoreboard file:\n");
+	clean_child_exit(1);
+    }
+}
 #endif
 
 /* Called by parent process */
@@ -1632,38 +1724,6 @@ void reinit_scoreboard(pool *p)
     memset((char *) scoreboard_image, 0, sizeof(*scoreboard_image));
     scoreboard_image->global.exit_generation = exit_gen;
     force_write(scoreboard_fd, scoreboard_image, sizeof(*scoreboard_image));
-#endif
-}
-
-/* called by child */
-void reopen_scoreboard(pool *p)
-{
-#ifdef SCOREBOARD_FILE
-    if (scoreboard_fd != -1)
-	pclosef(p, scoreboard_fd);
-
-    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
-    if (scoreboard_fd == -1) {
-	perror(scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
-	clean_child_exit(1);
-    }
-#else
-#ifdef __EMX__
-#ifdef USE_MMAP_SCOREBOARD
-    caddr_t m;
-    int rc;
-
-    m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
-    if (m == 0) {
-	fprintf(stderr, "httpd: Could not find existing OS/2 Shared memory pool.\n");
-	exit(1);
-    }
-
-    rc = _uopen((Heap_t) m);
-    scoreboard_image = (scoreboard *) m;
-#endif
-#endif
 #endif
 }
 
@@ -2836,6 +2896,12 @@ static void show_compile_settings(void)
 #ifdef USE_SHMGET_SCOREBOARD
     printf(" -D USE_SHMGET_SCOREBOARD\n");
 #endif
+#ifdef USE_OS2_SCOREBOARD
+    printf(" -D USE_OS2_SCOREBOARD\n");
+#endif
+#ifdef USE_POSIX_SCOREBOARD
+    printf(" -D USE_POSIX_SCOREBOARD\n");
+#endif
 #ifdef USE_MMAP_FILES
     printf(" -D USE_MMAP_FILES\n");
 #ifdef MMAP_SEGMENT_SIZE
@@ -3933,53 +3999,6 @@ int main(int argc, char *argv[])
     }
     exit(0);
 }
-
-#ifdef __EMX__
-#ifdef USE_MMAP_SCOREBOARD
-/* The next two routines are used to access shared memory under OS/2.  */
-/* This requires EMX v09c to be installed.                           */
-
-caddr_t create_shared_heap(const char *name, size_t size)
-{
-    ULONG rc;
-    void *mem;
-    Heap_t h;
-
-    rc = DosAllocSharedMem(&mem, name, size,
-			   PAG_COMMIT | PAG_READ | PAG_WRITE);
-    if (rc != 0)
-	return NULL;
-    h = _ucreate(mem, size, !_BLOCK_CLEAN, _HEAP_REGULAR | _HEAP_SHARED,
-		 NULL, NULL);
-    if (h == NULL)
-	DosFreeMem(mem);
-    return (caddr_t) h;
-}
-
-caddr_t get_shared_heap(const char *Name)
-{
-
-    PVOID BaseAddress;		/* Pointer to the base address of
-				   the shared memory object */
-    ULONG AttributeFlags;	/* Flags describing characteristics
-				   of the shared memory object */
-    APIRET rc;			/* Return code */
-
-    /* Request read and write access to */
-    /*   the shared memory object       */
-    AttributeFlags = PAG_WRITE | PAG_READ;
-
-    rc = DosGetNamedSharedMem(&BaseAddress, Name, AttributeFlags);
-
-    if (rc != 0) {
-	printf("DosGetNamedSharedMem error: return code = %ld", rc);
-	return 0;
-    }
-
-    return BaseAddress;
-}
-#endif
-#endif
 
 #else /* ndef MULTITHREAD */
 

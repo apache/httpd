@@ -585,7 +585,7 @@ int initgroups(char *, int);
 #define HAVE_SYS_SELECT_H 1
 #include <unix.h>
 #define HAVE_MMAP 1
-#define USE_MMAP_SCOREBOARD
+#define USE_POSIX_SCOREBOARD
 #define HAVE_SYSLOG 1
 
 #elif defined(LYNXOS)
@@ -637,8 +637,7 @@ typedef int rlim_t;
 #define chdir _chdir2
 #include <sys/time.h>
 #define MAXSOCKETS 4096
-#define HAVE_MMAP 1
-#define USE_MMAP_SCOREBOARD
+#define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
 
 #elif defined(__MACHTEN__)
