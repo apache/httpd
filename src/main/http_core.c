@@ -143,6 +143,7 @@ static void *create_core_dir_config(pool *a, char *dir)
     conf->limit_nproc = NULL;
 #endif
 
+    conf->limit_req_body = 0;
     conf->sec = ap_make_array(a, 2, sizeof(void *));
 
     return (void *)conf;
@@ -253,6 +254,9 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     }
 #endif
 
+    if (new->limit_req_body) {
+        conf->limit_req_body = new->limit_req_body;
+    }
     conf->sec = ap_append_arrays(a, base->sec, new->sec);
 
     if (new->satisfy != SATISFY_NOSPEC) {
@@ -2527,8 +2531,10 @@ static const command_rec core_cmds[] = {
 #endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
-{ "LimitRequestBody", set_limit_req_body, NULL, RSRC_CONF|ACCESS_CONF|OR_ALL,
-  TAKE1, "Limit (in bytes) on maximum size of request message body" },
+{ "LimitRequestBody", set_limit_req_body,
+  (void*)XtOffsetOf(core_dir_config, limit_req_body),
+  RSRC_CONF|ACCESS_CONF|OR_ALL, TAKE1,
+  "Limit (in bytes) on maximum size of request message body" },
 { NULL },
 };
 
