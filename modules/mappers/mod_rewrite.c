@@ -2990,8 +2990,10 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
 
     /* write out the request key */
 #ifdef NO_WRITEV
-    ap_write(fpin, key, strlen(key));
-    ap_write(fpin, "\n", 1);
+    nbytes = strlen(key);
+    ap_write(fpin, key, &nbytes);
+    nbytes = 1;
+    ap_write(fpin, "\n", &nbytes);
 #else
     iova[0].iov_base = key;
     iova[0].iov_len = strlen(key);
@@ -3330,6 +3332,11 @@ static void rewritelock_create(server_rec *s, ap_context_t *p)
 
 static ap_status_t rewritelock_remove(void *data)
 {
+    /* only operate if a lockfile is used */
+    if (lockname == NULL || *(lockname) == '\0') {
+        return;
+    }
+
     /* destroy the rewritelock */
     ap_destroy_lock (rewrite_map_lock);
     rewrite_map_lock = NULL;
