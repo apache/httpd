@@ -651,7 +651,7 @@ static void add_job(int sock)
     new_job->next = NULL;
     new_job->sock = sock;
 
-    apr_lock_aquire(allowed_globals.jobmutex);
+    apr_lock_acquire(allowed_globals.jobmutex);
 
     if (allowed_globals.jobtail != NULL)
 	allowed_globals.jobtail->next = new_job;
@@ -670,7 +670,7 @@ static int remove_job(void)
     int sock;
 
     acquire_semaphore(allowed_globals.jobsemaphore);
-    apr_lock_aquire(allowed_globals.jobmutex);
+    apr_lock_acquire(allowed_globals.jobmutex);
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
         apr_lock_release(allowed_globals.jobmutex);
@@ -1089,7 +1089,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
      * but only if we are not in the process of shutting down
      */
     if (!shutdown_in_progress) {
-        apr_lock_aquire(allowed_globals.jobmutex);
+        apr_lock_acquire(allowed_globals.jobmutex);
         context->lr->count--;
         if (context->lr->count < 2) {
             SetEvent(maintenance_event);
@@ -1284,7 +1284,7 @@ static void child_main()
      * start_mutex is used to ensure that only one child ever
      * goes into the listen/accept loop at once.
      */
-    status = apr_lock_aquire(start_mutex);
+    status = apr_lock_acquire(start_mutex);
     if (status != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
@@ -1389,7 +1389,7 @@ static void child_main()
         workers_may_exit = 1;
 
         /* Unblock threads blocked on the completion port */
-        apr_lock_aquire(allowed_globals.jobmutex);
+        apr_lock_acquire(allowed_globals.jobmutex);
         while (g_blocked_threads > 0) {
             ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                          "Child %d: %d threads blocked on the completion port", my_pid, g_blocked_threads);

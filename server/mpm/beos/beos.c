@@ -344,7 +344,7 @@ static int32 worker_thread(void * dummy)
 
     apr_pool_create(&ptrans, tpool);
 
-    apr_lock_aquire(worker_thread_count_mutex);
+    apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count++;
     apr_lock_release(worker_thread_count_mutex);
 
@@ -363,7 +363,7 @@ static int32 worker_thread(void * dummy)
         (void) ap_update_child_status(0, child_slot, SERVER_READY,
                                       (request_rec*)NULL);
 
-        apr_lock_aquire(accept_mutex);
+        apr_lock_acquire(accept_mutex);
         while (!this_worker_should_exit) {
             apr_int16_t event;
             apr_status_t ret = apr_poll(pollset, &srv, -1);
@@ -433,7 +433,7 @@ static int32 worker_thread(void * dummy)
 
     ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
     
-    apr_lock_aquire(worker_thread_count_mutex);
+    apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     apr_lock_release(worker_thread_count_mutex);
 

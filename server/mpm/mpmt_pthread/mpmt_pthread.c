@@ -477,10 +477,10 @@ static void * worker_thread(void * dummy)
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
                                       (request_rec *) NULL);
-        if ((rv = SAFE_ACCEPT(apr_lock_aquire(accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_lock_acquire(accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock_aquire failed. Attempting to shutdown "
+                         "apr_lock_acquire failed. Attempting to shutdown "
                          "process gracefully.");
             workers_may_exit = 1;
         }
