@@ -67,8 +67,9 @@
 **  _________________________________________________________________
 */
 
+#include "..\..\modules\loggers\mod_log_config.h"
+static void  ssl_ext_mlc_register(apr_pool_t *p);
 #if 0 /* XXX */
-static void  ssl_ext_mlc_register(void);
 static void  ssl_ext_mlc_unregister(void);
 static void  ssl_ext_mr_register(void);
 static void  ssl_ext_mr_unregister(void);
@@ -78,10 +79,10 @@ static void  ssl_ext_ms_register(void);
 static void  ssl_ext_ms_unregister(void);
 #endif /* XXX */
 
-void ssl_ext_register(void)
+void ssl_ext_register(apr_pool_t *p)
 {
+    ssl_ext_mlc_register(p);
 #if 0 /* XXX */
-    ssl_ext_mlc_register();
     ssl_ext_mr_register();
     ssl_ext_mp_register();
     ssl_ext_ms_register();
@@ -100,7 +101,6 @@ void ssl_ext_unregister(void)
     return;
 }
 
-#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -115,15 +115,20 @@ static char *ssl_ext_mlc_log_x(request_rec *r, char *a);
  * register us for the mod_log_config function registering phase
  * to establish %{...}c and to be able to expand %{...}x variables.
  */
-static void ssl_ext_mlc_register(void)
+static void ssl_ext_mlc_register(apr_pool_t *p)
 {
-    ap_hook_register("ap::mod_log_config::log_c",
-                     ssl_ext_mlc_log_c, AP_HOOK_NOCTX);
-    ap_hook_register("ap::mod_log_config::log_x",
-                     ssl_ext_mlc_log_x, AP_HOOK_NOCTX);
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
+
+    if (log_pfn_register) {
+        log_pfn_register(p, "c", ssl_ext_mlc_log_c, 0);
+        log_pfn_register(p, "x", ssl_ext_mlc_log_x, 0);
+    }
     return;
 }
 
+#if 0 /* XXX - We don't really need this (do we???) */
 static void ssl_ext_mlc_unregister(void)
 {
     ap_hook_unregister("ap::mod_log_config::log_c",
@@ -132,6 +137,7 @@ static void ssl_ext_mlc_unregister(void)
                        ssl_ext_mlc_log_x);
     return;
 }
+#endif /* XXX */
 
 /*
  * implement the %{..}c log function
@@ -141,7 +147,7 @@ static char *ssl_ext_mlc_log_c(request_rec *r, char *a)
 {
     char *result;
 
-    if (ap_ctx_get(r->connection->client->ctx, "ssl") == NULL)
+    if (apr_table_get(r->connection->notes, "ssl") == NULL)
         return NULL;
     result = NULL;
     if (strEQ(a, "version"))
@@ -155,7 +161,7 @@ static char *ssl_ext_mlc_log_c(request_rec *r, char *a)
     else if (strEQ(a, "errcode"))
         result = "-";
     else if (strEQ(a, "errstr"))
-        result = ap_ctx_get(r->connection->client->ctx, "ssl::verify::error");
+        result = (char *)apr_table_get(r->connection->notes, "ssl::verify::error");
     if (result != NULL && result[0] == NUL)
         result = NULL;
     return result;
@@ -170,7 +176,7 @@ static char *ssl_ext_mlc_log_x(request_rec *r, char *a)
     char *result;
 
     result = NULL;
-    if (ap_ctx_get(r->connection->client->ctx, "ssl") != NULL)
+    if (apr_table_get(r->connection->notes, "ssl") != NULL)
         result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
     if (result != NULL && result[0] == NUL)
         result = NULL;
@@ -183,6 +189,7 @@ static char *ssl_ext_mlc_log_x(request_rec *r, char *a)
 **  _________________________________________________________________
 */
 
+#if 0 /* XXX */
 static char *ssl_ext_mr_lookup_variable(request_rec *r, char *var);
 
 /*

@@ -702,8 +702,8 @@ long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
 
 /*  Extensions  */
+void         ssl_ext_register(apr_pool_t *p);
 #if 0 /* XXX */
-void         ssl_ext_register(void);
 void         ssl_ext_unregister(void);
 #endif
 
