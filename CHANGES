@@ -1,5 +1,12 @@
 Changes with Apache 2.0.16-dev
 
+  *) Move ap_set_last_modified to the core.  This is a potentially 
+     controversial change, because this is kind of HTTP specific.  However
+     many protocols should be able to take advantage of this kind of
+     information.  I expect that headers will need one more layer of
+     indirection for multi-protocol work, but this is a small step in
+     the right direction.  [Ryan Bloom]
+
   *) Enable mod_status by default.  This matches what Apache 1.3 does.
      [Ed Korthof]
 
