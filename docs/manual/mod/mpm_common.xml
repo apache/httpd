@@ -826,6 +826,53 @@ and later</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ThreadStackSize</name>
+<description>The size in bytes of the stack used by threads handling 
+client connections</description> 
+<syntax>ThreadStackSize <var>size</var></syntax>
+<default>65536 on NetWare; varies on other operating systems</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>perchild</module>
+<module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>ThreadStackSize</directive> directive sets the 
+    size of the stack (for autodata) of threads which handle client
+    connections and call modules to help process those connections.  
+    In most cases the operating system default for stack size is 
+    reasonable, but there are some conditions where it may need to be 
+    adjusted:</p>
+
+    <ul>
+      <li>On platforms with a relatively small default thread stack size
+      (e.g., HP-UX), Apache may crash when using some third-party modules
+      which use a relatively large amount of autodata storage.  Those
+      same modules may have worked fine on other platforms where the
+      default thread stack size is larger.  This type of crash is
+      resolved by setting <directive>ThreadStackSize</directive> to a 
+      value higher than the operating system default.  This type of 
+      adjustment is necessary only if the provider of the third-party 
+      module specifies that it is required, or if diagnosis of an Apache 
+      crash indicates that the thread stack size was too small.</li>
+
+      <li>On platforms where the default thread stack size is 
+      significantly larger than necessary for the web server
+      configuration, a higher number of threads per child process
+      will be achievable if <directive>ThreadStackSize</directive> is
+      set to a value lower than the operating system default.  This type
+      of adjustment should only be made in a test environment which allows
+      the full set of web server processing can be exercised, as there
+      may be infrequent requests which require more stack to process.
+      A change in the web server configuration can invalidate the
+      current <directive>ThreadStackSize</directive> setting.</li>
+    </ul>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>User</name>
 <description>The userid under which the server will answer
 requests</description>
@@ -889,53 +936,6 @@ requests</description>
       it is actually a no-op there and only exists for compatibility
       reasons.</p>
     </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>WorkerStackSize</name>
-<description>The size in bytes of the stack used by threads handling 
-client connections</description> 
-<syntax>WorkerStackSize <var>size</var></syntax>
-<default>varies by operating system</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>perchild</module><module>threadpool</module>
-<module>worker</module>
-</modulelist>
-<compatibility>Available in Apache 2.1 and later</compatibility>
-
-<usage>
-    <p>The <directive>WorkerStackSize</directive> directive sets the 
-    size of the stack (for autodata) of threads which handle client
-    connections and call modules to help process those connections.  
-    In most cases the operating system default for stack size is 
-    reasonable, but there are some conditions where it may need to be 
-    adjusted:</p>
-
-    <ul>
-      <li>On platforms with a relatively small default thread stack size
-      (e.g., HP-UX), Apache may crash when using some third-party modules
-      which use a relatively large amount of autodata storage.  Those
-      same modules may have worked fine on other platforms where the
-      default thread stack size is larger.  This type of crash is
-      resolved by setting <directive>WorkerStackSize</directive> to a 
-      value higher than the operating system default.  This type of 
-      adjustment is necessary only if the provider of the third-party 
-      module specifies that it is required, or if diagnosis of an Apache 
-      crash indicates that the thread stack size was too small.</li>
-
-      <li>On platforms where the default thread stack size is 
-      significantly larger than necessary for the web server
-      configuration, a higher number of threads per child process
-      will be achievable if <directive>WorkerStackSize</directive> is
-      set to a value lower than the operating system default.  This type
-      of adjustment should only be made in a test environment which allows
-      the full set of web server processing can be exercised, as there
-      may be infrequent requests which require more stack to process.
-      A change in the web server configuration can invalidate the
-      current <directive>WorkerStackSize</directive> setting.</li>
-    </ul>
 </usage>
 </directivesynopsis>
 

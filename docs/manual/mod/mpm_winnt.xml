@@ -54,7 +54,7 @@ NT.</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>WorkerStackSize</name>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 
 <directivesynopsis>

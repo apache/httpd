@@ -51,8 +51,8 @@ more than one multi-processing module (MPM)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workerstacksize">WorkerStackSize</a></li>
 </ul>
 </div>
 
@@ -791,6 +791,50 @@ and later</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The size in bytes of the stack used by threads handling 
+client connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>65536 on NetWare; varies on other operating systems</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
+</table>
+    <p>The <code class="directive">ThreadStackSize</code> directive sets the 
+    size of the stack (for autodata) of threads which handle client
+    connections and call modules to help process those connections.  
+    In most cases the operating system default for stack size is 
+    reasonable, but there are some conditions where it may need to be 
+    adjusted:</p>
+
+    <ul>
+      <li>On platforms with a relatively small default thread stack size
+      (e.g., HP-UX), Apache may crash when using some third-party modules
+      which use a relatively large amount of autodata storage.  Those
+      same modules may have worked fine on other platforms where the
+      default thread stack size is larger.  This type of crash is
+      resolved by setting <code class="directive">ThreadStackSize</code> to a 
+      value higher than the operating system default.  This type of 
+      adjustment is necessary only if the provider of the third-party 
+      module specifies that it is required, or if diagnosis of an Apache 
+      crash indicates that the thread stack size was too small.</li>
+
+      <li>On platforms where the default thread stack size is 
+      significantly larger than necessary for the web server
+      configuration, a higher number of threads per child process
+      will be achievable if <code class="directive">ThreadStackSize</code> is
+      set to a value lower than the operating system default.  This type
+      of adjustment should only be made in a test environment which allows
+      the full set of web server processing can be exercised, as there
+      may be infrequent requests which require more stack to process.
+      A change in the web server configuration can invalidate the
+      current <code class="directive">ThreadStackSize</code> setting.</li>
+    </ul>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The userid under which the server will answer
@@ -850,50 +894,6 @@ requests</td></tr>
       it is actually a no-op there and only exists for compatibility
       reasons.</p>
     </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="WorkerStackSize" id="WorkerStackSize">WorkerStackSize</a> <a name="workerstacksize" id="workerstacksize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The size in bytes of the stack used by threads handling 
-client connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>WorkerStackSize <var>size</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>varies by operating system</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
-</table>
-    <p>The <code class="directive">WorkerStackSize</code> directive sets the 
-    size of the stack (for autodata) of threads which handle client
-    connections and call modules to help process those connections.  
-    In most cases the operating system default for stack size is 
-    reasonable, but there are some conditions where it may need to be 
-    adjusted:</p>
-
-    <ul>
-      <li>On platforms with a relatively small default thread stack size
-      (e.g., HP-UX), Apache may crash when using some third-party modules
-      which use a relatively large amount of autodata storage.  Those
-      same modules may have worked fine on other platforms where the
-      default thread stack size is larger.  This type of crash is
-      resolved by setting <code class="directive">WorkerStackSize</code> to a 
-      value higher than the operating system default.  This type of 
-      adjustment is necessary only if the provider of the third-party 
-      module specifies that it is required, or if diagnosis of an Apache 
-      crash indicates that the thread stack size was too small.</li>
-
-      <li>On platforms where the default thread stack size is 
-      significantly larger than necessary for the web server
-      configuration, a higher number of threads per child process
-      will be achievable if <code class="directive">WorkerStackSize</code> is
-      set to a value lower than the operating system default.  This type
-      of adjustment should only be made in a test environment which allows
-      the full set of web server processing can be exercised, as there
-      may be infrequent requests which require more stack to process.
-      A change in the web server configuration can invalidate the
-      current <code class="directive">WorkerStackSize</code> setting.</li>
-    </ul>
 
 </div>
 </div>

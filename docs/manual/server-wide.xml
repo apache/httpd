@@ -94,7 +94,7 @@ the basic operations of the server.</p>
         <directive module="core">RLimitCPU</directive>
         <directive module="core">RLimitMEM</directive>
         <directive module="core">RLimitNPROC</directive>
-        <directive module="mpm_netware">ThreadStackSize</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
       </directivelist>
     </related>
 
@@ -110,7 +110,7 @@ the basic operations of the server.</p>
     this will control resources used by CGI scripts and SSI exec
     commands.</p>
 
-    <p>The <directive module="mpm_netware">ThreadStackSize</directive> directive
-    is used only on Netware to control the stack size.</p>
+    <p>The <directive module="mpm_common">ThreadStackSize</directive>
+    directive is used with some platforms to control the stack size.</p>
   </section>
 </manualpage>

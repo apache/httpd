@@ -63,8 +63,8 @@ requests to be assigned a variety of different userids</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#workerstacksize">WorkerStackSize</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">

@@ -362,7 +362,7 @@
         This directive limits the total number of work threads to a maximum
         value. The recommended default is <code>ThreadsPerChild 250</code>.</p>
 
-        <p><code class="directive"><a href="../mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code> -
+        <p><code class="directive"><a href="../mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> -
         This directive tells the server what size of stack to use
         for the individual worker thread. The recommended default
         is <code>ThreadStackSize 65536</code>.</p>

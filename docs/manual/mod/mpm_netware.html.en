@@ -71,7 +71,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 </ul>
 <h3>See also</h3>
 <ul class="seealso">
@@ -98,21 +98,6 @@
     <div class="example"><p><code>
       MaxThreads 512
     </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the stack size for each thread</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ThreadStackSize 65536</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
-</table>
-    <p>This directive tells the server what stack size to use for
-    each of the running threads. If you ever get a stack overflow
-    you will need to bump this number to a higher setting.</p>
 
 </div>
 </div>
