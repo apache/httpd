@@ -442,6 +442,9 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
      * rr->pool.
      */
     apr_pool_join(r->pool, rr->pool);
+    r->proxyreq = rr->proxyreq;
+    r->no_cache = (r->no_cache && rr->no_cache);
+    r->no_local_copy = (r->no_local_copy && rr->no_local_copy);
     r->mtime = rr->mtime;
     r->uri = rr->uri;
     r->filename = rr->filename;
