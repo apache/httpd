@@ -312,20 +312,16 @@ static void setup_module_cells () {
  *
  * If the call occurs within a request context (i.e., we're passed a request
  * record), we put the trace into the request pool and attach it to the
- * request via the request_config mechanism.  Otherwise, the trace gets added
- * to the static (non-request-specific)  list.
+ * request via the notes mechanism.  Otherwise, the trace gets added
+ * to the static (non-request-specific) list.
  *
- * Note that this method is not a formal part of the API.  The use of the
- * request_config field in the request_rec record is not currently defined.
- * However, the only defined method of maintaining per-request information,
- * the r->notes table, is string-oriented and can't conveniently handle
- * arbitrary data.
- *
- * In any other context, what we're doing here - accessing components outside
- * our scope, like the main request - would be considered a technical
- * violation of the API.  However, we can do what we want with undefined
- * aspects, as long as we're prepared for them to have undefined results.
+ * Note that the r->notes table is only for storing strings; if you need to
+ * maintain per-request data of any other type, you need to use another
+ * mechanism.
  */
+
+#define TRACE_NOTE "example-trace"
+
 static void trace_add
 	(server_rec *s, request_rec *r, example_config *mconfig,
 	 const char *note) {
@@ -334,9 +330,7 @@ static void trace_add
     char    *addon;
     char    *where;
     pool    *p;
-    char    **ctrace;
-    request_rec
-	    *req = r;
+    char    *trace_copy;
     example_config
 	    *rconfig;
 
@@ -348,33 +342,10 @@ static void trace_add
      * Now, if we're in request-context, we use the request pool.
      */
     if (r != NULL) {
-	/*
-	 * Make sure that we're storing our trace in the main request; we want
-	 * to track all activities for subrequests as well.
-	 */
-	if (req->main != NULL) {
-	    req = req->main;
+	p = r->pool;
+	if ((trace_copy = table_get (r->notes, TRACE_NOTE)) == NULL) {
+	    trace_copy = "";
 	}
-	p = req->pool;
-	/*
-	 * Find our per-request configuration record, which holds the trace
-	 * of activities specific to the request  itself.
-	 */
-	rconfig = (example_config *) get_module_config
-					(req->request_config, &example_module);
-	/*
-	 * If there isn't one, create one and add it.
-	 */
-	if (rconfig == NULL) {
-	    rconfig = pcalloc (req->pool, sizeof(example_config));
-	    set_module_config (req->request_config, &example_module, rconfig);
-	    rconfig->trace = NULL;
-	}
-	/*
-	 * Note that the trace data from this call go into the per-request
-	 * list, not the static one.
-	 */
-	 ctrace = &rconfig->trace;
     } else {
 	/*
 	 * We're not in request context, so the trace gets attached to our
@@ -398,7 +369,7 @@ static void trace_add
 	    destroy_pool (example_subpool);
 	}
 	example_subpool = p;
-	ctrace = &trace;
+	trace_copy = trace;
     }
     /*
      * If we weren't passed a configuration record, we can't figure out to
@@ -414,7 +385,7 @@ static void trace_add
      * this particular combination before.  The table is allocated in the
      * module's private pool, which doesn't get destroyed.
      */
-    if (req == NULL) {
+    if (r == NULL) {
 	char	*key;
 
 	key = pstrcat (p, note, ":", where, NULL);
@@ -448,8 +419,13 @@ static void trace_add
 		    "   </LI>\n",
 		    NULL
 		);
-    sofar = (*ctrace == NULL) ? "" : *ctrace;
-    *ctrace = pstrcat (p, sofar, addon, NULL);
+    sofar = (trace_copy == NULL) ? "" : trace_copy;
+    trace_copy = pstrcat (p, sofar, addon, NULL);
+    if (r != NULL) {
+	table_set (r->notes, TRACE_NOTE, trace_copy);
+    } else {
+	trace = trace_copy;
+    }
     /*
      * You *could* uncomment the following if you wanted to see the calling
      * sequence reported in the server's error_log, but beware - almost all of
@@ -533,7 +509,6 @@ static int example_handler
 	    *rcfg;
 
     dcfg = our_dconfig (r);
-    rcfg = our_rconfig (r);
     trace_add (r->server, r, dcfg, "example_handler()");
     /*
      * We're about to start sending content, so we need to force the HTTP
@@ -603,7 +578,7 @@ static int example_handler
 	(
 	    r,
 	    "  <H2>Request-specific callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
-	    rcfg->trace
+	    table_get (r->notes, TRACE_NOTE)
 	);
     rputs ("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
     rputs ("  <UL>\n", r);
