@@ -58,7 +58,8 @@
 /* ### make this visible for direct manipulation?
  * ### use a hash table
  */
-static ap_filter_rec_t *registered_filters = NULL;
+static ap_filter_rec_t *registered_output_filters = NULL;
+static ap_filter_rec_t *registered_input_filters = NULL;
 
 /* NOTE: Apache's current design doesn't allow a pool to be passed thu,
    so we depend on a global to hold the correct pool
@@ -79,13 +80,15 @@ static ap_filter_rec_t *registered_filters = NULL;
 
 static apr_status_t filter_cleanup(void *ctx)
 {
-    registered_filters = NULL;
+    registered_output_filters = NULL;
+    registered_input_filters = NULL;
     return APR_SUCCESS;
 }
 
-API_EXPORT(void) ap_register_filter(const char *name,
-                                    ap_filter_func filter_func,
-                                    ap_filter_type ftype)
+static void ap_register_filter(const char *name,
+                        ap_filter_func filter_func,
+                        ap_filter_type ftype,
+                        ap_filter_rec_t *reg_filter_list)
 {
     ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
 
@@ -93,15 +96,31 @@ API_EXPORT(void) ap_register_filter(const char *name,
     frec->filter_func = filter_func;
     frec->ftype = ftype;
 
-    frec->next = registered_filters;
-    registered_filters = frec;
+    frec->next = reg_filter_list;
+    reg_filter_list = frec;
 
     apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
+API_EXPORT(void) ap_register_input_filter(const char *name,
+                                    ap_filter_func filter_func,
+                                    ap_filter_type ftype)
+{
+    ap_register_filter(name, filter_func, ftype, 
+                       registered_input_filters);
+}                                                                    
+
+API_EXPORT(void) ap_register_output_filter(const char *name,
+                                    ap_filter_func filter_func,
+                                    ap_filter_type ftype)
+{
+    ap_register_filter(name, filter_func, ftype, 
+                       registered_output_filters);
+}
+
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 {
-    ap_filter_rec_t *frec = registered_filters;
+    ap_filter_rec_t *frec = registered_output_filters;
 
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {

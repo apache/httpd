@@ -814,9 +814,6 @@ struct request_rec {
     /** A flag to determine if the eos bucket has been sent yet
      *  @defvar int eos_sent */
     int eos_sent;
-    /** A list of output filters to be used for this request 
-     *  @defvar ap_filter_t *filters */
-    struct ap_filter_t *input_filters;
 
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
@@ -881,6 +878,9 @@ struct conn_rec {
     /** send note from one module to another, must remain valid for all
      *  requests on this conn */
     apr_table_t *notes;
+    /** A list of input filters to be used for this request 
+     *  @defvar ap_filter_t *filters */
+    struct ap_filter_t *input_filters;
 };
 
 /* Per-vhost config... */

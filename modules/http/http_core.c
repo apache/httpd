@@ -3167,8 +3167,8 @@ static void register_hooks(void)
      * request-processing time.
      */
     ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
-    ap_register_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
+    ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
 }
 
 API_VAR_EXPORT module core_module = {

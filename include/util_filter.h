@@ -250,16 +250,27 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade 
  * The filter's callback and type should be passed.
  */
 /**
- * Register a filter for later use.  This allows modules to name their filter
- * functions for later addition to a specific request
+ * Register an input filter for later use.  This allows modules to name their 
+ * filter functions for later addition to a specific request
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
  * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @deffunc void ap_register_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
+ * @deffunc void ap_register_input_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
  */
-API_EXPORT(void) ap_register_filter(const char *name,
-                                    ap_filter_func filter_func,
-                                    ap_filter_type ftype);
+API_EXPORT(void) ap_register_input_filter(const char *name,
+                                          ap_filter_func filter_func,
+                                          ap_filter_type ftype);
+/**
+ * Register an output filter for later use.  This allows modules to name their 
+ * filter functions for later addition to a specific request
+ * @param name The name to attach to the filter function
+ * @param filter_func The filter function to name
+ * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
+ * @deffunc void ap_register_output_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
+ */
+API_EXPORT(void) ap_register_output_filter(const char *name,
+                                           ap_filter_func filter_func,
+                                           ap_filter_type ftype);
 
 /*
  * ap_add_filter():

@@ -2542,7 +2542,7 @@ static const command_rec includes_cmds[] =
 
 static void register_hooks(void)
 {
-    ap_register_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
+    ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
 module MODULE_VAR_EXPORT includes_module =
