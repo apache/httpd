@@ -50,16 +50,21 @@ lcopy()
 PERL=no-perl5-on-this-system
 perls='perl5 perl'
 path=`echo $PATH | sed -e 's/:/ /g'`
+found_perl=0
  
 for dir in ${path} ;  do
   for pperl in ${perls} ; do
     if test -f "${dir}/${pperl}" ; then
       if `${dir}/${pperl} -v >/dev/null 2>&1` ; then
         PERL="${dir}/${pperl}"
+        found_perl=1
         break
       fi
     fi
   done
+  if test $found_perl = 1 ; then
+    break
+  fi
 done
  
 if [ .$1 = . ]
