@@ -105,7 +105,7 @@ typedef struct util_ldap_connection_t {
     const char *bindpw;                 /* Password to bind to server (can be NULL) */
 
     int netscapessl;                    /* True if use Netscape SSL connection */
-    const char *certtdb;                /* Path to Netscape CA database */
+    const char *certdb;                 /* Path to Netscape CA database */
 
     int starttls;                       /* True if StartTLS is enabled */
     int withtls;                        /* True if StartTLS on this connection */
