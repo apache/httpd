@@ -854,7 +854,7 @@ static const char *
     ap_get_module_config(parms->server->module_config, &proxy_module);
     long s = atol(arg);
 
-    psf->io_buffer_size = MAX(s, AP_IOBUFSIZE);
+    psf->io_buffer_size = ((s > AP_IOBUFSIZE) ? s : AP_IOBUFSIZE);
     psf->io_buffer_size_set = 1;
     return NULL;
 }

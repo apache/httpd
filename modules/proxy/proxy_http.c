@@ -781,10 +781,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
         }
 
-        /* cookies are special: they must not be merged (stupid browsers) */
-        ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie");
-        ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie2");
-
         r->sent_bodyct = 1;
         /* Is it an HTTP/0.9 response? If so, send the extra data */
         if (backasswards) {
