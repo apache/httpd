@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/30 17:41:58 $]
+Last modified at [$Date: 2003/10/02 14:35:17 $]
 
 Release:
 
@@ -269,6 +269,12 @@ PATCHES TO PORT FROM 2.1
       config file name.
         modules/generators/mod_info.c r1.151
       +1: trawick
+
+    * mod_cgid: fix a hash table corruption problem which could
+      result in the wrong script being cleaned up at the end of a
+      request.
+        modules/generators/mod_cgid.c r1.157
+      +1: trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
