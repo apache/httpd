@@ -2914,89 +2914,77 @@ static int default_handler(request_rec *r)
     return OK;
 }
 
-/* This is an incredibly stupid chunking filter.  This will need to be somewhat
- * smart about when it actually sends the data, but this implements some sort
- * of chunking for right now.
+/*
+ * Turn a bucket brigade into a properly-formatted HTTP/1.1 chunk
+ * before passing it down to the next filter.
+ */
+static apr_status_t pass_chunk(ap_filter_t *f, ap_bucket_brigade *b,
+			       apr_off_t bytes, int eos)
+{
+    char chunk_hdr[20]; /* enough space for the snprintf below */
+    size_t hdr_len;
+    ap_bucket *e;
+
+    if (bytes == 0) {
+	return APR_SUCCESS;
+    }
+    hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr), "%qx" CRLF, bytes);
+    e = ap_bucket_create_transient(chunk_hdr, hdr_len);
+    AP_RING_INSERT_HEAD(&b->list, e, link);
+    if (eos) {
+	/* any trailer should go between the last two CRLFs */
+	e = ap_bucket_create_immortal(CRLF "0" CRLF CRLF, 7);
+	AP_RING_INSERT_BEFORE(AP_RING_LAST(&b->list), e, link);
+    } else {
+	e = ap_bucket_create_immortal(CRLF, 2);
+	AP_RING_INSERT_TAIL(&b->list, e, link);
+    }
+    return ap_pass_brigade(f->next, b);
+}
+
+/*
+ * HTTP/1.1 chunked transfer encoding filter.
  */
 static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
-    ap_bucket *dptr = b->head, *lb, *next, *tail;
-    int len = 0, cur_len;
-    char lenstr[sizeof("ffffffff\r\n")];
-    const char *cur_str;
-    int hit_eos = 0;
-    apr_status_t rv = APR_SUCCESS;
+    ap_bucket_brigade *more = NULL;
+    ap_bucket *e;
+    apr_status_t rv;
 
-    while (dptr) {
-        if (dptr->type == AP_BUCKET_EOS) {
-            hit_eos = 1;
-            break;
-        } 
-        else if (dptr->length == -1) { /* indeterminate (e.g., a pipe) */
-            dptr->read(dptr, &cur_str, &cur_len, 0);
-            if (cur_len) {
-                len += cur_len;
-                /* write out what we have so far */
-                apr_snprintf(lenstr, sizeof(lenstr), "%x\r\n", len);
-                lb = ap_bucket_create_transient(lenstr, strlen(lenstr));
-                lb->next = b->head;
-                lb->next->prev = lb;
-                b->head = lb;
-                next = dptr->next;
-                tail = b->tail;
-                b->tail = ap_bucket_create_transient("\r\n", 2);
-                dptr->next = b->tail;
-                b->tail->prev = dptr;
-                rv = ap_pass_brigade(f->next, b);
-                if (rv != APR_SUCCESS) {
-                    return rv;
-                }
-                /* start a new brigade */
-                len = 0;
-                b = ap_brigade_create(f->r->pool);
-                dptr = next;
-                b->head = dptr;
-                b->tail = tail;
-            }
-            else {
-                dptr = dptr->next;
-            }
-        }
-        else {
-            len += dptr->length;
-            dptr = dptr->next;
-        }
+    for (more = NULL; b; b = more, more = NULL) {
+	apr_off_t bytes = 0;
+	int eos = 0;
+	AP_RING_FOREACH(e, &b->list, ap_bucket, link) {
+	    if (e->type == AP_BUCKET_EOS) {
+		/* assume it is the last one in the brigade */
+		eos = 1;
+		break;
+	    }
+	    else if (e->length == -1) { /* indeterminate (e.g., a pipe) */
+		const char *data;
+		apr_ssize_t len;
+		rv = e->read(e, &data, &len, 1);
+		if (rv != APR_SUCCESS) {
+		    return rv;
+		}
+		bytes += len;
+		more = ap_brigade_split(b, AP_RING_NEXT(e, link));
+		break;
+	    }
+	    else {
+		bytes += e->length;
+	    }
+	}
+	/*
+	 * XXX: if there aren't very many bytes at this point it may
+	 * be a good idea to set them aside and return for more.
+	 */
+	rv = pass_chunk(f, b, bytes, eos);
+	if (rv != APR_SUCCESS || eos) {
+	    return rv;
+	}
     }
-    if (len) {
-        apr_snprintf(lenstr, sizeof(lenstr), "%x\r\n", len);
-        lb = ap_bucket_create_transient(lenstr, strlen(lenstr));
-        lb->next = b->head;
-        lb->next->prev = lb;
-        b->head = lb;
-        lb = ap_bucket_create_transient("\r\n", 2);
-        if (hit_eos) {
-            b->tail->prev->next = lb;
-            lb->prev = b->tail->prev;
-            b->tail->prev = lb;
-            lb->next = b->tail;
-        }
-        else {
-            ap_brigade_append_buckets(b, lb);
-        }
-    }
-    if (hit_eos) {
-        lb = ap_bucket_create_transient("0\r\n\r\n", 5);
-        if (b->tail->prev) {
-            b->tail->prev->next = lb;
-        }
-        lb->prev = b->tail->prev;
-        b->tail->prev = lb;
-        lb->next = b->tail;
-        if (b->head == b->tail) {
-            b->head = lb;
-        }
-    }
-    return ap_pass_brigade(f->next, b);
+    return APR_SUCCESS;
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job
@@ -3017,11 +3005,11 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 #endif
     apr_status_t rv;
     apr_ssize_t bytes_sent = 0;
-    ap_bucket *dptr = b->head;
+    ap_bucket *e;
     int len = 0, written;
     const char *str;
-
-#if 0
+    
+#if 0 /* XXX: bit rot! */
     /* This will all be needed once BUFF is removed from the code */
     /* At this point we need to discover if there was any data saved from
      * the last call to core_filter.
@@ -3042,16 +3030,19 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     } 
     else {
 #endif
-    while (dptr->read(dptr, &str, &len, 0) != AP_END_OF_BRIGADE) {
-        if ((rv = ap_bwrite(f->r->connection->client, str, len, &written))
-            != APR_SUCCESS) {
+    AP_RING_FOREACH(e, &b->list, ap_bucket, link) {
+	rv = e->read(e, &str, &len, 0);
+	if (rv != APR_SUCCESS) {
             return rv;
         }
-        dptr = dptr->next;
-        bytes_sent += written;
-        if (!dptr) {
-            break;
+	if (len == AP_END_OF_BRIGADE) {
+	    break;
+	}
+        rv = ap_bwrite(f->r->connection->client, str, len, &written);
+	if (rv != APR_SUCCESS) {
+            return rv;
         }
+        bytes_sent += written;
     }
     ap_brigade_destroy(b);
     /* This line will go away as soon as the BUFFs are removed */

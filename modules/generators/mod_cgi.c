@@ -656,8 +656,8 @@ static int cgi_handler(request_rec *r)
 	ap_send_http_header(r);
 	if (!r->header_only) {
             bb = ap_brigade_create(r->pool);
-            ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
-            ap_brigade_append_buckets(bb, ap_bucket_create_eos());
+            ap_brigade_add_bucket(bb, ap_bucket_create_pipe(script_in));
+            ap_brigade_add_bucket(bb, ap_bucket_create_eos());
 	}
         ap_pass_brigade(r->filters, bb);
 
@@ -667,8 +667,8 @@ static int cgi_handler(request_rec *r)
 
     if (script_in && nph) {
         bb = ap_brigade_create(r->pool);
-        ap_brigade_append_buckets(bb, ap_bucket_create_pipe(script_in));
-        ap_brigade_append_buckets(bb, ap_bucket_create_eos());
+        ap_brigade_add_bucket(bb, ap_bucket_create_pipe(script_in));
+        ap_brigade_add_bucket(bb, ap_bucket_create_eos());
         ap_pass_brigade(r->filters, bb);
     }
 

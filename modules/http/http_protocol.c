@@ -1329,7 +1329,7 @@ static void end_output_stream(request_rec *r)
     ap_bucket_brigade *bb;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_eos());
+    ap_brigade_add_bucket(bb, ap_bucket_create_eos());
     ap_pass_brigade(r->filters, bb);
 }
 
@@ -2519,7 +2519,7 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
      * until after the commit to actually write the code.
      */
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_mmap(mm, 0, mm->size));
+    ap_brigade_add_bucket(bb, ap_bucket_create_mmap(mm, 0, mm->size));
     ap_pass_brigade(r->filters, bb);
 
     return mm->size; /* XXX - change API to report apr_status_t? */
@@ -2535,7 +2535,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
         return EOF;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_transient(&c2, 1)); 
+    ap_brigade_add_bucket(bb, ap_bucket_create_transient(&c2, 1)); 
     ap_pass_brigade(r->filters, bb);
 
     return c;
@@ -2553,7 +2553,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
     len = strlen(str);
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_transient(str, len));
+    ap_brigade_add_bucket(bb, ap_bucket_create_transient(str, len));
     ap_pass_brigade(r->filters, bb);
 
     return len;
@@ -2569,7 +2569,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
         return 0;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_transient(buf, nbyte)); 
+    ap_brigade_add_bucket(bb, ap_bucket_create_transient(buf, nbyte)); 
     ap_pass_brigade(r->filters, bb);
     return nbyte;
 }
