@@ -394,8 +394,14 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
         { NULL, NULL }
     };
 
-    /* Prevent holding open the (nonexistant) console */
+    /* Prevent holding open the (nonexistant) console and allow us past
+     * the first NT service to parse the service's args in apache_main() 
+     */
+	ap_server_argv0 = argv[0];
     real_exit_code = 0;
+
+    /* keep the server from going to any real effort, since we know */
+    is_service = 1;
 
     globdat.main_fn = main_fn;
     globdat.stop_event = create_event(0, 0, "apache-signal");
@@ -502,9 +508,13 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     DWORD  threadid;
     SECURITY_ATTRIBUTES sa = {0};  
     
-    ap_server_argv0 = globdat.name = argv[0];
-
-    is_service = 1;
+	argv = (char**) memcpy(malloc((argc + 3) * sizeof(char*)), 
+		                   argv, argc * sizeof(char*));
+	argv[argc++] = "-n";
+	argv[argc++] = argv[0];
+	argv[argc] = NULL;
+    argv[0] = ap_server_argv0;
+	ap_server_argv0 = globdat.name = argv[0];
 
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(globdat.name, 
                                                              service_ctrl)))
@@ -560,9 +570,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     }
 
     service_cd();
-    if( service_init() ) 
-        /* Arguments are ok except for \! */
-        globdat.exit_status = (*globdat.main_fn)( argc, argv );
+    globdat.exit_status = globdat.main_fn( argc, argv );
 
     if (hPipeWrite)
         CloseHandle(hPipeWrite);

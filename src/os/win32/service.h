@@ -81,7 +81,6 @@ BOOL isProcessService();
 BOOL isValidService(char *display_name);
 void InstallService(char *display_name, char *conf);
 void RemoveService(char *display_name);
-int service_init();
 int send_signal_to_service(char *display_name, char *sig);
 BOOL isWindowsNT(void);
 void ap_start_console_monitor(void);

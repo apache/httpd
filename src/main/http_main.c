@@ -2836,6 +2836,7 @@ static void signal_parent(int type)
      * "apache-signal" event here.
      */
 
+    /* XXX: This is no good, can't we please die in -X mode :-? */
     if (one_process) {
 	return;
     }
@@ -6633,22 +6634,6 @@ void post_parse_init()
     set_group_privs();
 }
 
-int service_init()
-{
-    common_init();
- 
-    ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
-    if (ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
-                                     ap_server_argv0))
-        return FALSE;
-
-    ap_setup_prelinked_modules();
-    server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
-    ap_log_pid(pconf, ap_pid_fname);
-    post_parse_init();
-    return TRUE;
-}
-
 
 #ifdef NETWARE
 extern char *optarg;
@@ -6690,13 +6675,15 @@ int REALMAIN(int argc, char *argv[])
     int is_child_of_service = 0;
     char *signal_to_send = NULL;
 
-    /* Service application under WinNT */
-    if (isWindowsNT()) 
+    /* Service application under WinNT the first time through only...
+     * service_main immediately resets real_exit_code to zero
+     */
+    if (real_exit_code && isWindowsNT()) 
     {
         if (((argc == 1) && isProcessService()) 
             || ((argc == 2) && !strcmp(argv[1], "--ntservice")))
         {
-            service_main(master_main, argc, argv);
+            service_main(apache_main, argc, argv);
             clean_parent_exit(0);
         }
     }
@@ -6789,6 +6776,10 @@ int REALMAIN(int argc, char *argv[])
 	case 'k':
             if (!strcasecmp(optarg, "stop"))
                 signal_to_send = "shutdown";
+            else if (!strcasecmp(optarg, "install"))
+                install = 1;
+            else if (!strcasecmp(optarg, "uninstall"))
+                install = -1;
             else
                 signal_to_send = optarg;
 	    break;
@@ -6873,6 +6864,7 @@ int REALMAIN(int argc, char *argv[])
     }       /* while  */
 
 #ifdef WIN32
+
     if (!service_name && install) {
         service_name = DEFAULTSERVICENAME;
     }
@@ -7031,12 +7023,21 @@ int REALMAIN(int argc, char *argv[])
 #ifdef WIN32
         if (child)
             ap_start_child_console(is_child_of_service);
+        else
+            ap_start_console_monitor();
 #endif
 	worker_main();
 	ap_destroy_mutex(start_mutex);
 	destroy_event(exit_event);
     } 
 #ifdef WIN32
+    /* Windows NT service second time around ... we have all the overrides 
+     * from the NT SCM, so go to town and return to the SCM when we quit.
+     */
+    if (isWindowsNT() && isProcessService())
+    {
+        master_main(argc, argv);
+    }
     else if (service_name && signal_to_send && !isWindowsNT()
              && !strcasecmp(signal_to_send, "start")) {
         /* service95_main will call master_main() */

@@ -1,5 +1,13 @@
 Changes with Apache 1.3.15
 
+  *) WinNT/2K can be started from the Services control panel adding
+     whatever args are desired (e.g. -D ARG) in the 'Start Parameters'
+     box of the start service dialog.  These will be passed on and
+     recognized by the service as it starts.  [William Rowe]
+
+  *) Support -k install/-k uninstall on Win32 for compatibility with 
+     Apache 2.0.  [William Rowe]
+
   *) mod_cgi on Win32 and Netware now does a more effective job of
      capturing all stderr output from user's scripts.  PR6161
      [Hardy Braunsdorf <hardy.braunsdorf@metechnology.com>, Will Rowe]
