@@ -119,6 +119,7 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "util_filter.h"
+#include "http_protocol.h"
 
 /* format_tag_hash is initialized during pre-config */
 static apr_hash_t *format_tag_hash;
