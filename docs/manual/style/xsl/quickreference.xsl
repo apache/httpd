@@ -49,7 +49,7 @@
               <xsl:with-param name="directives" select="$directives"/>
             </xsl:call-template>
           </xsl:variable>
-          
+
           <table id="legend">
 
 <xsl:text>
@@ -110,7 +110,7 @@
 
       </body>
     </html>
-  </xsl:template> 
+  </xsl:template>
 
 
   <!--                                                     -->
@@ -145,8 +145,20 @@
         </td>
 
         <td>
-          <xsl:value-of select="substring(substring-after(concat(default,' '),name),1,20)"/>
-          <xsl:if test="string-length(substring-after(concat(default,' '),name)) &gt; 20">
+          <xsl:variable name="default">
+            <xsl:choose>
+              <xsl:when test="count(default[count(br) &gt; 0]) &gt; 0">
+                <xsl:value-of select="default/child::node()[count(preceding-sibling::*) = 0]"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="default"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+
+          <xsl:value-of select="substring(substring-after(concat($default,' '),name),1,20)"/>
+          <xsl:if test="string-length(substring-after(concat($default,' '),name)) &gt; 20
+                     or count(default[count(br) &gt; 0]) &gt; 0">
             <xsl:text> +</xsl:text>
           </xsl:if>
         </td>
