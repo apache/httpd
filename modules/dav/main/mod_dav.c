@@ -813,6 +813,7 @@ static int dav_method_get(request_rec *r)
 {
     dav_resource *resource;
     dav_error *err;
+    int status;
 
     /* This method should only be called when the resource is not
      * visible to Apache. We will fetch the resource from the repository,
@@ -834,6 +835,12 @@ static int dav_method_get(request_rec *r)
                              "Unable to set up HTTP headers.",
                              err);
         return dav_handle_err(r, err, NULL);
+    }
+
+    /* Handle conditional requests */
+    status = ap_meets_conditions(r);
+    if (status) {
+      return status;
     }
 
     if (r->header_only) {
