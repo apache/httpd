@@ -1089,14 +1089,6 @@ typedef int rlim_t;
 #include <process.h>
 #endif
 
-#ifdef WIN32
-#include "../include/hsregex.h"
-#elif defined(AP_USE_HSREGEX)
-#include "hsregex.h"
-#else
-#include <regex.h>
-#endif
-
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #ifdef SUNOS4

@@ -1,26 +1,25 @@
-# Microsoft Developer Studio Project File - Name="gen_uri_delims" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="dftables" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 5.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=gen_uri_delims - Win32 Debug
+CFG=dftables - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "gen_uri_delims.mak".
+!MESSAGE NMAKE /f "dftables.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "gen_uri_delims.mak" CFG="gen_uri_delims - Win32 Debug"
+!MESSAGE NMAKE /f "dftables.mak" CFG="dftables - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "gen_uri_delims - Win32 Release" (based on\
+!MESSAGE "dftables - Win32 Release" (based on\
  "Win32 (x86) Console Application")
-!MESSAGE "gen_uri_delims - Win32 Debug" (based on\
- "Win32 (x86) Console Application")
+!MESSAGE "dftables - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +28,7 @@ CFG=gen_uri_delims - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "gen_uri_delims - Win32 Release"
+!IF  "$(CFG)" == "dftables - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -39,7 +38,7 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "gen_uri_delims_R"
+# PROP Intermediate_Dir "dftables_R"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
@@ -53,7 +52,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386
 
-!ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
+!ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -63,7 +62,7 @@ LINK32=link.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "gen_uri_delims_D"
+# PROP Intermediate_Dir "dftables_D"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
@@ -81,14 +80,80 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "gen_uri_delims - Win32 Release"
-# Name "gen_uri_delims - Win32 Debug"
+# Name "dftables - Win32 Release"
+# Name "dftables - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\gen_uri_delims.c
+SOURCE=.\dftables.c
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hw"
+# Begin Source File
+
+SOURCE=.\config.hw
+
+!IF  "$(CFG)" == "dftables - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\config.hw
+
+".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Creating pcre config.h from config.hw 
+	copy .\config.hw .\config.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\config.hw
+
+".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Creating pcre config.h from config.hw 
+	copy .\config.hw .\config.h 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\internal.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\pcre.hw
+
+!IF  "$(CFG)" == "dftables - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\pcre.hw
+
+".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Creating pcre.h from pcre.hw 
+	copy .\pcre.hw .\pcre.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\pcre.hw
+
+".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	echo Creating pcre.h from pcre.hw 
+	copy .\pcre.hw .\pcre.h 
+	
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # End Target

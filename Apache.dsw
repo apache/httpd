@@ -36,13 +36,13 @@ Package=<4>
     Project_Dep_Name ap
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name regex
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name gen_test_char
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name pcreposix
     End Project Dependency
 }}}
 
@@ -390,6 +390,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "dftables"=".\lib\pcre\dftables.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -477,7 +489,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "regex"=".\regex\regex.dsp" - Package Owner=<4>
+Project: "pcre"=".\lib\pcre\pcre.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -486,8 +498,20 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name dftables
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "pcreposix"=".\lib\pcre\pcreposix.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
