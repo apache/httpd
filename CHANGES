@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) Performance enhancements for mod_setenvif  [Brian Pane]
+
   *) Fix a mod_ssl build problem on OS/390.  [Jeff Trawick]
 
   *) Fixed If-Modified-Since on Win32, which would give false positives
