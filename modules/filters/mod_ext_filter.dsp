@@ -11,7 +11,7 @@ CFG=mod_ext_filter - Win32 Release
 !MESSAGE NMAKE /f "mod_ext_filter.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For ext_filter:
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "mod_ext_filter.mak" CFG="mod_ext_filter - Win32 Release"
 !MESSAGE 
