@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.14 (outdated: 1.15) -->
+<!-- English Revision: 1.16 (outdated: 1.15) -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -178,7 +178,19 @@
       kann jedoch mit der Direktive <directive
       module="mod_mime">MultiviewsMatch</directive> wiederhergestellt
       werden.</li>
-     </ul>
+
+      <li>(<em>Ab Version 2.0.51</em>)
+        <p><code>ErrorHeader</code> war eine Fehlbennung, weshalb die
+          Funktionalit&auml;t dieser Direktive mit der
+          <directive module="mod_headers">Header</directive>-Anweisung
+          zusammengelegt wurde. Verwenden Sie stattdessen</p>
+
+      <example>
+        Header always set foo bar
+      </example>
+
+      <p>um den gleichen Effekt zu erzielen..</p></li>
+</ul>
   </section>
 
   <section id="misc">
