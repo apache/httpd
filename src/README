@@ -140,3 +140,87 @@ http_main.c --- System startup, restart, and accepting connections;
 alloc.c --- allocation of all resources which might have to be reclaimed
   eventually, including memory, files, and child processes.
 
+ =================================================
+List of various #defines used in the code:
+The Apache code, specifically in conf.h, uses a variety of #defines to
+control how the code is compiled and what options are available for each
+support OS. The following list provides a short list and description
+of these #defines.
+
+--
+
+ NEED_*:
+  If the particular OS doesn't supply the specified function, we use the
+  Apache-supplied version (in util.c). 
+
+    NEED_STRERROR:
+    NEED_STRDUP:
+    NEED_STRCASECMP:
+    NEED_STRNCASECMP:
+    NEED_INITGROUPS:
+    NEED_WAITPID:
+    NEED_STRERROR:
+--
+
+ HAVE_*:
+  Does this OS have/support this capablity?
+
+    HAVE_GMTOFF:
+      Define if the OS's tm struct has the tm_gmtoff element
+
+    HAVE_RESOURCE:
+      Define if the OS supports the getrlimit()/setrlimit() functions
+
+    HAVE_MMAP:
+      Define if the OS supports the BSD mmap() call. This is used by various
+      OSs to allow the scoreboard file to be held in shared mmapped-memory
+      instead of a real file.
+
+    HAVE_SHMGET:
+      Define if the OS has the SysV-based shmget() family of shared-memory
+      functions. Used to allow the scoreboard to live in a shared-memory
+      slot instead of a real file.
+
+    HAVE_CRYPT_H:
+      Define if the OS has the <crypt.h> header file.
+
+    HAVE_SYS_SELECT_H:
+      Define if the OS has the <sys/select.h> header file.
+--
+
+ USE_*:
+  These #defines are used for functions and ability that aren't exactly
+  required but should be used.
+
+     USE_FCNTL_SERIALIZED_ACCEPT:
+      Define if the OS requires a mutex "lock" around the socket accept()
+      call. Use fcntl() locking.
+
+     USE_FLOCK_SERIALIZED_ACCEPT:
+      Define if the OS requires a mutex "lock" around the socket accept()
+      call. Use flock() locking (fcntl() is expensive on some OSs, esp.
+      when using NFS).
+
+     USE_LONGJMP:
+      use the longjmp() call instead of siglongjmp()
+--
+
+  NO_*:
+   These are defined if the OS does NOT have the specified function or if
+   we should not use it.
+
+      NO_KILLPG:
+      NO_SETSID:
+      NO_USE_SIGACTION:
+       Do not use the sigaction() call, even if we have it.
+--
+
+  MISC #DEFINES:
+   Various other #defines used in the code.
+
+      JMP_BUF:
+       The variable-type for siglongjmp() or longjmp() call.
+
+      MOVEBREAK:
+       Amount to move sbrk() breakpoint, if required, before attaching
+       shared-memory segment.

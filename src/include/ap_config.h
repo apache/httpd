@@ -54,6 +54,7 @@
 
 /*
  * conf.h: system-dependant #defines and includes...
+ * See README for a list of what these mean
  */
 
 #ifndef QNX
@@ -62,8 +63,8 @@
 
 /* Define one of these according to your system. */
 #if defined(SUNOS4)
-#define HAS_GMTOFF
-#define HAVE_RESOURCE 1
+#define HAVE_GMTOFF
+#define HAVE_RESOURCE
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(char *pw, char *salt);
@@ -73,29 +74,29 @@ char *crypt(char *pw, char *salt);
 #define NEED_STRERROR
 
 #elif defined(SOLARIS2)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_RESOURCE 1
+#define HAVE_RESOURCE
 #define bzero(a,b) memset(a,0,b)
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
 #define HAVE_CRYPT_H
 
 #elif defined(IRIX)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
  
 #elif defined(HPUX)
-#define HAVE_RESOURCE 1
-#undef HAS_GMTOFF
+#define HAVE_RESOURCE
+#undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
 #ifndef _HPUX_SOURCE
@@ -106,14 +107,14 @@ char *crypt(char *pw, char *salt);
 #define HAVE_MMAP
 
 #elif defined(AIX)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define NEED_SELECT_H
+#define HAVE_SYS_SELECT_H
 #define JMP_BUF sigjmp_buf
 
 #elif defined(ULTRIX)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define ULTRIX_BRAIN_DEATH
@@ -125,7 +126,7 @@ char *crypt(char *pw, char *salt);
 #define JMP_BUF sigjmp_buf
 
 #elif defined(OSF1)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
@@ -133,7 +134,7 @@ char *crypt(char *pw, char *salt);
 #define HAVE_CRYPT_H
 
 #elif defined(SEQUENT)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
@@ -142,7 +143,7 @@ char *crypt(char *pw, char *salt);
 #elif defined(NEXT)
 #include <libc.h>
 typedef unsigned short mode_t;
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
@@ -186,16 +187,16 @@ typedef int pid_t;
 #define NO_USE_SIGACTION
 
 #elif defined(LINUX)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
 #define JMP_BUF sigjmp_buf
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #include <sys/time.h>     
 
 #elif defined(SCO)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_INITGROUPS
@@ -207,8 +208,8 @@ typedef int pid_t;
 
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1
-#define NEED_SELECT_H
-#define FCNTL_SERIALIZED_ACCEPT
+#define HAVE_SYS_SELECT_H
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
 #define SecureWare
 
@@ -218,18 +219,18 @@ extern int strcasecmp(const char *,const char *);
 extern int strncasecmp(const char *,const char *,unsigned);
 
 #elif defined(CONVEXOS)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #define NEED_STRDUP
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 
 #elif defined(AUX)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_STRDUP
 #define JMP_BUF sigjmp_buf
 /* fcntl() locking is expensive with NFS */
-#undef FLOCK_SERIALIZED_ACCEPT
+#undef USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define MOVEBREAK		0x4000000
 /* These are to let -Wall compile more cleanly */
@@ -246,7 +247,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define JMP_BUF sigjmp_buf
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 /* A lot of SVR4 systems need this */
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(DGUX)
 #define NO_KILLPG
@@ -258,16 +259,16 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define JMP_BUF sigjmp_buf
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 /* A lot of SVR4 systems need this */
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(__NetBSD__)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 
 #elif defined(UTS21)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_WAITPID
@@ -278,13 +279,13 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #include <sys/types.h>
 
 #elif defined(APOLLO)
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define timezone	_bky_timezone
 
 #elif defined(__FreeBSD__) || defined(__bsdi__)
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
@@ -318,9 +319,9 @@ extern int strncasecmp(const char *,const char *,unsigned);
 /* Unknown system - Edit these to match */
 #else
 #ifdef BSD
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #else
-#undef HAS_GMTOFF
+#undef HAVE_GMTOFF
 #endif
 /* NO_KILLPG is set on systems that don't have killpg */
 #undef NO_KILLPG
@@ -333,9 +334,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 /* Do we have sys/resource.h; assume that BSD does. */
 #ifndef HAVE_RESOURCE
 #ifdef BSD
-#define HAVE_RESOURCE 1
-#else
-#define HAVE_RESOURCE 0
+#define HAVE_RESOURCE
 #endif
 #endif /* HAVE_RESOURCE */
 
@@ -363,7 +362,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/socket.h>
-#ifdef NEED_SELECT_H
+#ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 #include <ctype.h>
@@ -383,7 +382,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #include <memory.h>
 #endif
 
-#if HAVE_RESOURCE
+#ifdef HAVE_RESOURCE
 #include <sys/resource.h>
 #ifdef SUNOS4
 int getrlimit( int, struct rlimit *);
