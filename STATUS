@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/17 19:38:13 $]
+  Last modified at [$Date: 2003/10/18 12:30:52 $]
 
 Release:
 
@@ -63,7 +63,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
    * ap_die() should see if it needs to drop the connection before
      replacing r->status with 302
      Message-ID: <3F904295.6060701@attglobal.net>
-        +1: jeff
+        +1: jeff, roy
 
    * fix wording of warning for ErrorDocument 401 full-URL
      Message-ID: <3F8BE7D2.6060209@attglobal.net>
