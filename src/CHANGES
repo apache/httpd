@@ -6,9 +6,10 @@ Changes with Apache 1.3.18
      relative path or a relative path on any platform using an '*' now
      emits an error when httpd.conf is first parsed.  [William Rowe]
 
-  *) Apache/Win32 no longer holds open the console on error, except if
-     the internal -w flag is specified as a shortcut argument.  Corrected
-     bug that -t test config didn't hold the console open on "SYNTAX OK".
+  *) Apache/Win32 no longer holds open the console on error, unless invoked
+     by a shortcut with the new -w option.  [William Rowe]
+
+  *) The Win32 -t test config now holds the console open on "SYNTAX OK".
      [William Rowe]
 
   *) Apache on Win9x now ensures the service is stopped before removal.
