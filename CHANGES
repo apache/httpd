@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
+     size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
+
   *) The whole codebase was relicensed and is now available under
      the Apache License, Version 2.0 (http://www.apache.org/licenses).
      [Apache Software Foundation]

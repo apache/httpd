@@ -540,7 +540,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         int i;
 
         for (len = 0, i = 0; i < arr->nelts; i++) {
-            len += strlen(elts[i].key) + strlen(elts[i].val) + 2;
+            len += strlen(elts[i].key) + strlen(elts[i].val) + 3;
         }
   
         if (*buf_size < len + 1) {
