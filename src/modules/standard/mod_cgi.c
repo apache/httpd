@@ -389,7 +389,7 @@ int cgi_handler (request_rec *r)
     cld.debug = conf->logname ? 1 : 0;
     
     if (!(child_pid =
-	  spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
+	  spawn_child_err (r->pool, cgi_child, (void *)&cld,
 			   nph ? just_wait : kill_after_timeout,
 #ifdef __EMX__
 			   &script_out, &script_in, &script_err))) {
@@ -450,7 +450,7 @@ int cgi_handler (request_rec *r)
 	kill_timeout (r);
     }
     
-    pfclose (r->connection->pool, script_out);
+    pfclose (r->pool, script_out);
     
     /* Handle script return... */
     if (script_in && !nph) {
@@ -496,8 +496,8 @@ int cgi_handler (request_rec *r)
 	while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
 	  continue;
 	kill_timeout (r);
-	pfclose (r->connection->pool, script_in);
-	pfclose (r->connection->pool, script_err);
+	pfclose (r->pool, script_in);
+	pfclose (r->pool, script_err);
     }
 
     if (nph) {

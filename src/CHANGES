@@ -1,5 +1,8 @@
 Changes with Apache 1.2b3:
 
+  *) Fix error in mod_cgi which could cause resources not to be properly
+     freed, or worse. [Dean Gaudet]
+
   *) Fix find_string() NULL pointer dereference. [Howard Fear]
 
   *) Add set_flag_slot() at the request of Dirk and others.
