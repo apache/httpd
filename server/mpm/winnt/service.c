@@ -84,7 +84,8 @@ static struct
     HANDLE mpm_thread;       /* primary thread handle of the apache server */
     HANDLE service_thread;   /* thread service/monitor handle */
     DWORD  service_thread_id;/* thread service/monitor ID */
-    HANDLE signal_monitor;   /* service monitor thread signal event */
+    HANDLE service_init;     /* controller thread init mutex */
+    HANDLE service_term;     /* NT service thread kill signal */
     SERVICE_STATUS ssStatus;
     SERVICE_STATUS_HANDLE hServiceStatus;
 } globdat;
@@ -227,7 +228,6 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Could not register window class for WatchWindow");
-        SetEvent(globdat.signal_monitor);
         globdat.service_thread_id = 0;
         return 0;
     }
@@ -243,7 +243,6 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Could not create WatchWindow");
-        SetEvent(globdat.signal_monitor);
         globdat.service_thread_id = 0;
         return 0;
     }
@@ -253,7 +252,8 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
      * watch the message queue while the window lives.
      */
     FreeConsole();
-    SetEvent((HANDLE) globdat.signal_monitor);
+    SetEvent(globdat.service_init);
+
     while (GetMessage(&msg, NULL, 0, 0)) 
     {
         if (msg.message == WM_CLOSE)
@@ -608,18 +608,12 @@ extern apr_array_header_t *mpm_new_argv;
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
     HANDLE waitfor[2];
-    HANDLE hCurrentProcess;
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
-    HANDLE hPipeReadDup;
+    HANDLE hDup;
     HANDLE thread;
     DWORD  threadid;
-    SECURITY_ATTRIBUTES sa;
     const char *ignored;
-
-    sa.nLength = sizeof(sa);
-    sa.bInheritHandle = TRUE;
-    sa.lpSecurityDescriptor = NULL;
 
     /* args and service names live in the same pool */
     mpm_service_set_name(mpm_new_argv->pool, &ignored, argv[0]);
@@ -633,21 +627,21 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Failure registering service handler");
-        PulseEvent(globdat.signal_monitor);
         return;
     }
     /* Report status, no errors, and buy 3 more seconds */
     ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 3000);
     
-    /* Create a pipe to send stderr messages to the system error log */
-    hCurrentProcess = GetCurrentProcess();
-    if (CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) 
+    /* Create a pipe to send stderr messages to the system error log 
+     */
+    if (CreatePipe(&hPipeRead, &hPipeWrite, NULL, 0)) 
     {
-        if (DuplicateHandle(hCurrentProcess, hPipeRead, hCurrentProcess,
-                            &hPipeReadDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+        HANDLE hProc = GetCurrentProcess();
+        if (DuplicateHandle(hProc, hPipeWrite, hProc, &hDup,
+                            0, TRUE, GENERIC_WRITE))
         {
-            CloseHandle(hPipeRead);
-            hPipeRead = hPipeReadDup;
+            CloseHandle(hPipeWrite);
+            hPipeWrite = hDup;
             thread = CreateThread(NULL, 0, service_stderr_thread, 
                                   (LPVOID) hPipeRead, 0, &threadid);
             if (thread)
@@ -656,7 +650,6 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                 int fd;
 
                 CloseHandle(thread);
- 		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
 	
                 /* Flush, commit and close stderr.  This is typically a noop
                  * in Win2K/XP since services start with NULL std handles,
@@ -680,6 +673,12 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                     *fl = flip;
                     setvbuf(stderr, NULL, _IONBF, 0);
                 }
+
+                /* The code above _will_ corrupt the StdHandle... 
+                 * and we must do so anyways.  We set this up only
+                 * after we initialized the posix stderr API.
+                 */
+ 		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
             }
             else
             {
@@ -723,9 +722,9 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     /* Let the main thread continue now... but hang on to the
      * signal_monitor event so we can take further action
      */
-    PulseEvent(globdat.signal_monitor);
+    SetEvent(globdat.service_init);
 
-    waitfor[0] = globdat.signal_monitor;
+    waitfor[0] = globdat.service_term;
     waitfor[1] = globdat.mpm_thread;
     WaitForMultipleObjects(2, waitfor, FALSE, INFINITE);
 
@@ -846,7 +845,7 @@ void service_stopped(void)
                                 0);                 // wait hint
 
             /* Cause the service_nt_main_fn to complete */
-            SetEvent(globdat.signal_monitor);
+            SetEvent(globdat.service_term);
         }
         else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
         {
@@ -862,14 +861,20 @@ void service_stopped(void)
 
 apr_status_t mpm_service_to_start(const char **display_name)
 {
+    HANDLE hProc = GetCurrentProcess();
+    HANDLE hThread = GetCurrentThread();
     HANDLE waitfor[2];
 
-    globdat.mpm_thread = GetCurrentThread();
+    if (!DuplicateHandle(hProc, hThread, hProc, &(globdat.mpm_thread),
+                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+        return APR_ENOTHREAD;
+    }
     
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        globdat.signal_monitor = CreateEvent(NULL, FALSE, FALSE, NULL);
-        if (globdat.signal_monitor)
+        globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
+        globdat.service_term = CreateEvent(NULL, FALSE, FALSE, NULL);
+        if (globdat.service_init)
             globdat.service_thread = CreateThread(NULL, 0, 
                                                   service_nt_dispatch_thread, 
                                                   NULL, 0, 
@@ -880,22 +885,23 @@ apr_status_t mpm_service_to_start(const char **display_name)
         if (!RegisterServiceProcess(0, 1)) 
             return GetLastError();
 
-        globdat.signal_monitor = CreateEvent(NULL, FALSE, FALSE, NULL);
-        if (globdat.signal_monitor)
+        globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
+        if (globdat.service_init)
             globdat.service_thread = CreateThread(NULL, 0,
                                                   monitor_service_9x_thread, 
                                                   (LPVOID) mpm_service_name, 0, 
                                                   &globdat.service_thread_id);
     }
 
-    if (globdat.signal_monitor && globdat.service_thread) 
+    if (globdat.service_init && globdat.service_thread) 
     {
-        waitfor[0] = globdat.signal_monitor;
+        waitfor[0] = globdat.service_init;
         waitfor[1] = globdat.service_thread;
     
-        /* SetEvent(globdat.signal_monitor) to clean up the SCM thread */
-        if (WaitForMultipleObjects(2, waitfor, FALSE, 30000) != WAIT_OBJECT_0) {
+        /* Wait for controlling thread init or termination */
+        if (WaitForMultipleObjects(2, waitfor, FALSE, 10000) != WAIT_OBJECT_0) {
             CloseHandle(globdat.service_thread);
+            CloseHandle(globdat.mpm_thread);
             return APR_ENOTHREAD;
         }
     }
