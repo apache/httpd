@@ -881,7 +881,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     }
 
     if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !send_it) {
-        return ap_save_brigade(f, &ctx->saved, &b, r->pool);
+        return ap_save_brigade(f, &ctx->saved, &b, (r->main) ? r->main->pool : r->pool);
     }
 
     /* We will compute a content length if:
