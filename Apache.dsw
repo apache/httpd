@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+Project: "Apache"=.\Apache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -24,7 +24,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ApacheMonitor"=".\support\win32\ApacheMonitor.dsp" - Package Owner=<4>
+Project: "ApacheMonitor"=.\support\win32\ApacheMonitor.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -42,7 +42,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "BuildBin"=".\BuildBin.dsp" - Package Owner=<4>
+Project: "BuildBin"=.\BuildBin.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -240,7 +240,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
+Project: "InstallBin"=.\InstallBin.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -255,7 +255,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ab"=".\support\ab.dsp" - Package Owner=<4>
+Project: "ab"=.\support\ab.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -273,7 +273,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "abs"=".\support\abs.dsp" - Package Owner=<4>
+Project: "abs"=.\support\abs.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -291,7 +291,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr"=".\srclib\apr\apr.dsp" - Package Owner=<4>
+Project: "apr"=.\srclib\apr\apr.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -336,7 +336,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "dftables"=".\srclib\pcre\dftables.dsp" - Package Owner=<4>
+Project: "dftables"=.\srclib\pcre\dftables.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -348,7 +348,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "gen_test_char"=".\server\gen_test_char.dsp" - Package Owner=<4>
+Project: "gen_test_char"=.\server\gen_test_char.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -375,7 +375,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "htdbm"=".\support\htdbm.dsp" - Package Owner=<4>
+Project: "htdbm"=.\support\htdbm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -393,7 +393,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+Project: "htdigest"=.\support\htdigest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -411,7 +411,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
+Project: "htpasswd"=.\support\htpasswd.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -429,7 +429,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "libapr"=".\srclib\apr\libapr.dsp" - Package Owner=<4>
+Project: "libapr"=.\srclib\apr\libapr.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -516,7 +516,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "libhttpd"=".\libhttpd.dsp" - Package Owner=<4>
+Project: "libhttpd"=.\libhttpd.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -543,7 +543,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
+Project: "logresolve"=.\support\logresolve.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -561,7 +561,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_actions"=".\modules\mappers\mod_actions.dsp" - Package Owner=<4>
+Project: "mod_actions"=.\modules\mappers\mod_actions.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -582,7 +582,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_alias"=".\modules\mappers\mod_alias.dsp" - Package Owner=<4>
+Project: "mod_alias"=.\modules\mappers\mod_alias.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -603,7 +603,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_asis"=".\modules\generators\mod_asis.dsp" - Package Owner=<4>
+Project: "mod_asis"=.\modules\generators\mod_asis.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -624,7 +624,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_auth_basic"=".\modules\aaa\mod_auth_basic.dsp" - Package Owner=<4>
+Project: "mod_auth_basic"=.\modules\aaa\mod_auth_basic.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -645,7 +645,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_auth_digest"=".\modules\aaa\mod_auth_digest.dsp" - Package Owner=<4>
+Project: "mod_auth_digest"=.\modules\aaa\mod_auth_digest.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -666,31 +666,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authn_anon"=".\modules\aaa\mod_authn_anon.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_basic
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_authn_dbm"=".\modules\aaa\mod_authn_dbm.dsp" - Package Owner=<4>
+Project: "mod_authn_anon"=.\modules\aaa\mod_authn_anon.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -714,7 +690,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authn_default"=".\modules\aaa\mod_authn_default.dsp" - Package Owner=<4>
+Project: "mod_authn_dbm"=.\modules\aaa\mod_authn_dbm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -738,7 +714,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authn_file"=".\modules\aaa\mod_authn_file.dsp" - Package Owner=<4>
+Project: "mod_authn_default"=.\modules\aaa\mod_authn_default.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -762,7 +738,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_dbm"=".\modules\aaa\mod_authz_dbm.dsp" - Package Owner=<4>
+Project: "mod_authn_file"=.\modules\aaa\mod_authn_file.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -786,7 +762,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_default"=".\modules\aaa\mod_authz_default.dsp" - Package Owner=<4>
+Project: "mod_authz_dbm"=.\modules\aaa\mod_authz_dbm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -810,7 +786,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_groupfile"=".\modules\aaa\mod_authz_groupfile.dsp" - Package Owner=<4>
+Project: "mod_authz_default"=.\modules\aaa\mod_authz_default.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -834,7 +810,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_host"=".\modules\aaa\mod_authz_host.dsp" - Package Owner=<4>
+Project: "mod_authz_groupfile"=.\modules\aaa\mod_authz_groupfile.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -858,7 +834,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_user"=".\modules\aaa\mod_authz_user.dsp" - Package Owner=<4>
+Project: "mod_authz_host"=.\modules\aaa\mod_authz_host.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -882,7 +858,31 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_autoindex"=".\modules\generators\mod_autoindex.dsp" - Package Owner=<4>
+Project: "mod_authz_user"=.\modules\aaa\mod_authz_user.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_autoindex"=.\modules\generators\mod_autoindex.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -903,7 +903,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_bucketeer"=".\modules\test\mod_bucketeer.dsp" - Package Owner=<4>
+Project: "mod_bucketeer"=.\modules\test\mod_bucketeer.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -924,7 +924,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_cache"=".\modules\experimental\mod_cache.dsp" - Package Owner=<4>
+Project: "mod_cache"=.\modules\experimental\mod_cache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -945,7 +945,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_cern_meta"=".\modules\metadata\mod_cern_meta.dsp" - Package Owner=<4>
+Project: "mod_cern_meta"=.\modules\metadata\mod_cern_meta.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -966,7 +966,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_cgi"=".\modules\generators\mod_cgi.dsp" - Package Owner=<4>
+Project: "mod_cgi"=.\modules\generators\mod_cgi.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -987,7 +987,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_charset_lite"=".\modules\experimental\mod_charset_lite.dsp" - Package Owner=<4>
+Project: "mod_charset_lite"=.\modules\experimental\mod_charset_lite.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1008,7 +1008,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dav"=".\modules\dav\main\mod_dav.dsp" - Package Owner=<4>
+Project: "mod_dav"=.\modules\dav\main\mod_dav.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1029,7 +1029,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dav_fs"=".\modules\dav\fs\mod_dav_fs.dsp" - Package Owner=<4>
+Project: "mod_dav_fs"=.\modules\dav\fs\mod_dav_fs.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1053,7 +1053,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_deflate"=".\modules\filters\mod_deflate.dsp" - Package Owner=<4>
+Project: "mod_deflate"=.\modules\filters\mod_deflate.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1074,7 +1074,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dir"=".\modules\mappers\mod_dir.dsp" - Package Owner=<4>
+Project: "mod_dir"=.\modules\mappers\mod_dir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1095,325 +1095,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_disk_cache"=".\modules\experimental\mod_disk_cache.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_cache
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_echo"=".\modules\echo\mod_echo.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_env"=".\modules\metadata\mod_env.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_expires"=".\modules\metadata\mod_expires.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_ext_filter"=".\modules\filters\mod_ext_filter.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_file_cache"=".\modules\cache\mod_file_cache.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_headers"=".\modules\metadata\mod_headers.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_ident"=".\modules\metadata\mod_ident.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_imap"=".\modules\mappers\mod_imap.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_include"=".\modules\filters\mod_include.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_info"=".\modules\generators\mod_info.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_isapi"=".\modules\arch\win32\mod_isapi.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_log_config"=".\modules\loggers\mod_log_config.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_log_forensic"=".\modules\loggers\mod_log_forensic.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_logio"=".\modules\loggers\mod_logio.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_mem_cache"=".\modules\experimental\mod_mem_cache.dsp" - Package Owner=<4>
+Project: "mod_disk_cache"=.\modules\experimental\mod_disk_cache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1437,7 +1119,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_mime"=".\modules\http\mod_mime.dsp" - Package Owner=<4>
+Project: "mod_echo"=.\modules\echo\mod_echo.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1458,7 +1140,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_mime_magic"=".\modules\metadata\mod_mime_magic.dsp" - Package Owner=<4>
+Project: "mod_env"=.\modules\metadata\mod_env.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1479,7 +1161,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_negotiation"=".\modules\mappers\mod_negotiation.dsp" - Package Owner=<4>
+Project: "mod_expires"=.\modules\metadata\mod_expires.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1500,7 +1182,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy"=".\modules\proxy\mod_proxy.dsp" - Package Owner=<4>
+Project: "mod_ext_filter"=.\modules\filters\mod_ext_filter.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1521,7 +1203,325 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy_connect"=".\modules\proxy\mod_proxy_connect.dsp" - Package Owner=<4>
+Project: "mod_file_cache"=.\modules\cache\mod_file_cache.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_headers"=.\modules\metadata\mod_headers.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_ident"=.\modules\metadata\mod_ident.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_imap"=.\modules\mappers\mod_imap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_include"=.\modules\filters\mod_include.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_info"=.\modules\generators\mod_info.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_isapi"=.\modules\arch\win32\mod_isapi.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_log_config"=.\modules\loggers\mod_log_config.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_log_forensic"=.\modules\loggers\mod_log_forensic.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_logio"=.\modules\loggers\mod_logio.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_mem_cache"=.\modules\experimental\mod_mem_cache.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cache
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_mime"=.\modules\http\mod_mime.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_mime_magic"=.\modules\metadata\mod_mime_magic.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_negotiation"=.\modules\mappers\mod_negotiation.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy"=.\modules\proxy\mod_proxy.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy_ajp"=.\modules\proxy\mod_proxy_ajp.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1545,7 +1545,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy_ftp"=".\modules\proxy\mod_proxy_ftp.dsp" - Package Owner=<4>
+Project: "mod_proxy_balancer"=.\modules\proxy\mod_proxy_balancer.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1569,7 +1569,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy_http"=".\modules\proxy\mod_proxy_http.dsp" - Package Owner=<4>
+Project: "mod_proxy_connect"=.\modules\proxy\mod_proxy_connect.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1593,7 +1593,55 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_rewrite"=".\modules\mappers\mod_rewrite.dsp" - Package Owner=<4>
+Project: "mod_proxy_ftp"=.\modules\proxy\mod_proxy_ftp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy_http"=.\modules\proxy\mod_proxy_http.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_rewrite"=.\modules\mappers\mod_rewrite.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1614,7 +1662,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_setenvif"=".\modules\metadata\mod_setenvif.dsp" - Package Owner=<4>
+Project: "mod_setenvif"=.\modules\metadata\mod_setenvif.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1635,7 +1683,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_speling"=".\modules\mappers\mod_speling.dsp" - Package Owner=<4>
+Project: "mod_speling"=.\modules\mappers\mod_speling.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1656,7 +1704,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_ssl"=".\modules\ssl\mod_ssl.dsp" - Package Owner=<4>
+Project: "mod_ssl"=.\modules\ssl\mod_ssl.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1677,7 +1725,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_status"=".\modules\generators\mod_status.dsp" - Package Owner=<4>
+Project: "mod_status"=.\modules\generators\mod_status.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1698,7 +1746,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_unique_id"=".\modules\metadata\mod_unique_id.dsp" - Package Owner=<4>
+Project: "mod_unique_id"=.\modules\metadata\mod_unique_id.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1719,7 +1767,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_userdir"=".\modules\mappers\mod_userdir.dsp" - Package Owner=<4>
+Project: "mod_userdir"=.\modules\mappers\mod_userdir.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1740,7 +1788,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_usertrack"=".\modules\metadata\mod_usertrack.dsp" - Package Owner=<4>
+Project: "mod_usertrack"=.\modules\metadata\mod_usertrack.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1761,7 +1809,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_version"=".\modules\metadata\mod_version.dsp" - Package Owner=<4>
+Project: "mod_version"=.\modules\metadata\mod_version.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1782,7 +1830,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_vhost_alias"=".\modules\mappers\mod_vhost_alias.dsp" - Package Owner=<4>
+Project: "mod_vhost_alias"=.\modules\mappers\mod_vhost_alias.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1803,7 +1851,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "pcre"=".\srclib\pcre\pcre.dsp" - Package Owner=<4>
+Project: "pcre"=.\srclib\pcre\pcre.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1818,7 +1866,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "pcreposix"=".\srclib\pcre\pcreposix.dsp" - Package Owner=<4>
+Project: "pcreposix"=.\srclib\pcre\pcreposix.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1833,7 +1881,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
+Project: "rotatelogs"=.\support\rotatelogs.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1851,7 +1899,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "util_ldap"=".\modules\ldap\util_ldap.dsp" - Package Owner=<4>
+Project: "util_ldap"=.\modules\ldap\util_ldap.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1872,7 +1920,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "wintty"=".\support\win32\wintty.dsp" - Package Owner=<4>
+Project: "wintty"=.\support\win32\wintty.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
