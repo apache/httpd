@@ -677,7 +677,8 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
  * @return Error string on failure, NULL on success
  * @deffunc char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool, cmd_parms *parms, ap_directive_t **current, ap_directive_t **curr_parent, char *orig_directive)
 */
-const char * ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
+AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p, 
+                                  apr_pool_t *temp_pool,
                                   cmd_parms *parms,
                                   ap_directive_t **current,
                                   ap_directive_t **curr_parent,
@@ -840,7 +841,7 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server);
  * @param p The pool to allocate the config vector out of
  * @return The config vector
  */
-AP_DECLARE(ap_conf_vector_t*) ap_create_request_config(apr_pool_t *p);
+AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_request_config(apr_pool_t *p);
 
 /**
  * Setup the config vector for per dir module configs
@@ -856,7 +857,7 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p);
  * @param base The base directory config structure
  * @param new_conf The new directory config structure
  */
-ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
+AP_CORE_DECLARE(ap_conf_vector_t*) ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
                                            ap_conf_vector_t *new_conf);
 
@@ -866,7 +867,7 @@ ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
  * @param p The pool to allocate the config vector out of
  * @return The config vector
  */
-ap_conf_vector_t *ap_create_conn_config(apr_pool_t *p);
+AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
@@ -879,7 +880,8 @@ ap_conf_vector_t *ap_create_conn_config(apr_pool_t *p);
  * @param access_name The list of possible names for .htaccess files
  * int The status of the current request
  */
-int ap_parse_htaccess(ap_conf_vector_t **result, request_rec *r, int override,
+AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result, 
+                      request_rec *r, int override,
                       const char *path, const char *access_name);
 
 /**
@@ -902,7 +904,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *ho
  * @param p Pool for general allocation
  * @param ptem Pool for temporary allocation
  */
-void ap_process_resource_config(server_rec *s, const char *fname, 
+AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname, 
                  ap_directive_t **conftree, apr_pool_t *p, apr_pool_t *ptemp);
 
 /**
@@ -922,7 +924,7 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
  * @param r The current request
  * @return The status of the current request
  */
-int ap_invoke_handler(request_rec *r);
+AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r);
 
 /* for mod_perl */
 
