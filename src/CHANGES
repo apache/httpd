@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Added ceiling on file size for memory mapped files.
+     [John Giannandrea <jg@meer.net>] PR#4122
+
   *) Fix ndbm.h include problems with brain-dead glibc >= 2.1 which 
      has ndbm.h in a non-standard db1/ subdir. PR#4431, PR#4528
      [Henri Gomez <gomez@slib.fr>, Ralf S. Engelschall] 

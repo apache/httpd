@@ -90,6 +90,9 @@
 #endif
 #endif
 #endif
+#ifndef MMAP_LIMIT
+#define MMAP_LIMIT              (4*1024*1024)
+#endif
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -3032,6 +3035,7 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     ap_block_alarms();
     if ((r->finfo.st_size >= MMAP_THRESHOLD)
+	&& (r->finfo.st_size < MMAP_LIMIT)
 	&& (!r->header_only || (d->content_md5 & 1))) {
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
