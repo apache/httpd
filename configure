@@ -754,6 +754,7 @@ do
                            module_mmap_static=no # not all platforms have mmap()
                            module_so=no          # not all platforms have dlopen()
                            module_example=no     # only for developers
+			   module_auth_digest=no # experimental
                            module_log_agent=no   # deprecated
                            module_log_referer=no # deprecated
                            ;;
