@@ -861,7 +861,7 @@ AuthType Basic<br>
 AuthName somedomain<br>
 AuthUserFile /web/users<br>
 AuthGroupFile /web/groups<br>
-Limit &lt;GET POST&gt;<br>
+&lt;Limit GET POST&gt;<br>
 require group admin<br>
 &lt;/Limit&gt;
 </code></blockquote>
@@ -958,10 +958,13 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A
 
 <A name="satisfy"><h2>Satisfy</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
-<strong>Syntax:</strong><br>
+<strong>Syntax:</strong> Satisfy <em>'any' or 'all'</em><br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> Satisfy is only available in Apache 1.2 and later<p>
+
+Access policy if both allow and require used. The parameter can be either
+<em>'all'</em> or <em>'any'</em>.
 
 <p><hr>
 
@@ -1026,7 +1029,7 @@ were <code>monster.wibble.com</code>.<p><hr>
 <strong>Compatibility:</strong> ServerPath is only available in Apache
 1.1 and later.<p>
 
-The ServerAlias directive sets the legacy URL pathname for a host, for
+The ServerPath directive sets the legacy URL pathname for a host, for
 use with <a href="../host.html">Host-header based virtual hosts</a>.
 <hr>
 
@@ -1040,7 +1043,8 @@ use with <a href="../host.html">Host-header based virtual hosts</a>.
 The ServerRoot directive sets the directory in which the server lives.
 Typically it will contain the subdirectories <code>conf/</code> and
 <code>logs/</code>. Relative paths for other configuration files are taken
-as relative to this directory.<p><hr>
+as relative to this directory.<br>
+See also <a href="../invoking.html">the <code>-d</code> option to httpd</a>.<p><hr>
 
 <A name="servertype"><h2>ServerType directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt ServerType} directive&gt; -->
@@ -1146,7 +1150,9 @@ dangers are.<p><hr>
 <strong>Syntax:</strong> &lt;VirtualHost <em>addr</em>[:<em>port</em>]&gt; ...
 &lt;/VirtualHost&gt; <br>
 <strong>Context:</strong> server config<br>
-<strong>Status:</strong> Core. <p>
+<strong>Status:</strong> Core.<br>
+<strong>Compatibility:</strong> Non-IP address-based Virtual Hosting is
+only available in Apache 1.2 and later.<p>
 
 &lt;VirtualHost&gt; and &lt;/VirtualHost&gt; are used to enclose a group of
 directives which will apply only to a particular virtual host.
@@ -1169,13 +1175,13 @@ TransferLog logs/host.foo.com-access_log <br>
 &lt;/VirtualHost&gt;
 </code></blockquote>
 
-Currently, each VirtualHost must correspond to a different IP address for
-the server, so the server machine must be configured to accept IP packets for
-multiple addresses. If the machine does not have multiple network interfaces,
-then this can be accomplished with the <code>ifconfig alias</code> command
-(if your OS supports it), or with kernel patches like
-<A HREF="../misc/vif-info.html">VIF</A> (for SunOS(TM) 4.1.x).<p>
-
+Each VirtualHost must correspond to a different IP address or a
+different host name for the server, in the latter case the server
+machine must be configured to accept IP packets for multiple
+addresses. (If the machine does not have multiple network interfaces,
+then this can be accomplished with the <code>ifconfig alias</code>
+command (if your OS supports it), or with kernel patches like <A
+HREF="../misc/vif-info.html">VIF</A> (for SunOS(TM) 4.1.x)).<p>
 
 <p><strong>See also:</strong>
 <A HREF="../virtual-host.html">Information on Virtual Hosts.
