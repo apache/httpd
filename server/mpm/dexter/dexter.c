@@ -1598,7 +1598,7 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     max_threads = atoi(arg);
-    if (max_threads >= HARD_THREAD_LIMIT) {
+    if (max_threads > HARD_THREAD_LIMIT) {
        fprintf(stderr, "WARNING: detected MaxThreadsPerChild set higher than\n");
        fprintf(stderr, "HARD_THREAD_LIMIT. Resetting to %d\n", HARD_THREAD_LIMIT);
        max_threads = HARD_THREAD_LIMIT;
