@@ -58,18 +58,7 @@
 
 /* HTTP routines for Apache proxy */
 
-#define CORE_PRIVATE
-
 #include "mod_proxy.h"
-#include "apr_strings.h"
-#include "apr_buckets.h"
-#include "util_filter.h"
-#include "ap_config.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "http_core.h"
-#include "http_connection.h"
-#include "util_date.h"
 
 /*
  * Canonicalise http-like URLs.

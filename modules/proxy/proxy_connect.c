@@ -59,12 +59,11 @@
 /* CONNECT method for Apache proxy */
 
 #include "mod_proxy.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "apr_strings.h"
 
+#if 0
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
+#endif
 #endif
 
 /*  
@@ -79,13 +78,6 @@
  * If proxyhost and proxyport are set, we send a CONNECT to 
  * the specified proxy..  
  *
- * FIXME: this is bad, because it does its own socket I/O
- *        instead of using the I/O in buff.c.  However,
- *        the I/O in buff.c blocks on reads, and because
- *        this function doesn't know how much data will
- *        be sent either way (or when) it can't use blocking
- *        I/O.  This may be very implementation-specific
- *        (to Linux).  Any suggestions?
  * FIXME: this doesn't log the number of bytes sent, but
  *        that may be okay, since the data is supposed to
  *        be transparent. In fact, this doesn't log at all

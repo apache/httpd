@@ -65,11 +65,7 @@
 
 /*
 
-   Note that the Explain() stuff is not yet complete.
    Also note numerous FIXMEs and CHECKMEs which should be eliminated.
-
-   If TESTING is set, then garbage collection doesn't delete ... probably a good
-   idea when hacking.
 
    This code is once again experimental!
 
@@ -83,12 +79,32 @@
 
  */
 
-#define TESTING	0
-#undef EXPLAIN
+#define CORE_PRIVATE
 
+#include "apr.h"
 #include "apr_compat.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
+#include "apr_buckets.h"
+#include "apr_md5.h"
+#include "apr_pools.h"
+#include "apr_strings.h"
+
+#include "util_filter.h"
+#include "util_date.h"
+#include "util_uri.h"
+#include "httpd.h"
+#include "http_config.h"
+#include "http_protocol.h"
+#include "ap_config.h"
+#include "http_log.h"
+#include "http_main.h"
+#include "http_core.h"
+#include "http_connection.h"
+#include "http_vhost.h"
+#include "http_request.h"
+#include "mod_core.h"
+
 
 #if APR_HAVE_NETDB_H
 #include <netdb.h>
@@ -103,10 +119,6 @@
 #include <arpa/inet.h>
 #endif
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_protocol.h"
-
 
 extern module AP_MODULE_DECLARE_DATA proxy_module;
 
@@ -116,15 +128,13 @@ enum enctype {
     enc_path, enc_search, enc_user, enc_fpath, enc_parm
 };
 
-#define HDR_APP (0)		/* append header, for proxy_add_header() */
-#define HDR_REP (1)		/* replace header, for proxy_add_header() */
-
 #if APR_CHARSET_EBCDIC
 #define CRLF   "\r\n"
 #else /*APR_CHARSET_EBCDIC*/
 #define CRLF   "\015\012"
 #endif /*APR_CHARSET_EBCDIC*/
 
+#if 0
 #define	DEFAULT_FTP_DATA_PORT	20
 #define	DEFAULT_FTP_PORT	21
 #define	DEFAULT_GOPHER_PORT	70
@@ -135,11 +145,15 @@ enum enctype {
 #define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
 #define DEFAULT_CACHE_COMPLETION (0.9)
+#endif
+
+#if 0
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 struct proxy_services {
     const char *scheme;
     int port;
 };
+#endif
 
 /* static information about a remote proxy */
 struct proxy_remote {
@@ -212,10 +226,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 /* proxy_ftp.c */
 
-#if FTP
 int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url);
-#endif
+int ap_proxy_ftp_handler(request_rec *r, char *url);
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb, ap_input_mode_t mode);
 
 /* proxy_http.c */
 
