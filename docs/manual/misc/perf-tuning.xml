@@ -483,6 +483,62 @@
 
     <section>
 
+      <title>Atomic Operations</title>
+
+      <p>Some modules, such as <module>mod_cache</module> and
+      recent development builds of the worker MPM, use APR's
+      atomic API.  This API provides atomic operations that can
+      be used for lightweight thread synchronization.</p>
+
+      <p>By default, APR implements these operations using the
+      most efficient mechanism available on each target
+      OS/CPU platform.  Many modern CPUs, for example, have
+      an instruction that does an atomic compare-and-swap (CAS)
+      operation in hardware.  On some platforms, however, APR
+      defaults to a slower, mutex-based implementation of the
+      atomic API in order to ensure compatibility with older
+      CPU models that lack such instructions.  If you are
+      building Apache for one of these platforms, and you plan
+      to run only on newer CPUs, you can select a faster atomic
+      implementation at build time by configuring Apache with
+      the <code>--enable-nonportable-atomics</code> option:</p>
+
+      <example>
+        ./buildconf<br />
+        ./configure --with-mpm=worker --enable-nonportable-atomics=yes
+      </example>
+
+      <p>The <code>--enable-nonportable-atomics</code> option is
+      relevant for the following platforms:</p>
+
+      <ul>
+
+        <li>Solaris on SPARC<br />
+            By default, APR uses mutex-based atomics on Solaris/SPARC.
+            If you configure with <code>--enable-nonportable-atomics</code>,
+            however, APR generates code that uses a SPARC v8plus opcode for
+            fast hardware compare-and-swap.  If you configure Apache with
+            this option, the atomic operations will be more efficient
+            (allowing for lower CPU utilization and higher concurrency),
+            but the resulting executable will run only on UltraSPARC
+            chips.
+        </li>
+
+        <li>Linux on x86<br />
+            By default, APR uses mutex-based atomics on Linux.  If you
+            configure with <code>--enable-nonportable-atomics</code>,
+            however, APR generates code that uses a 486 opcode for fast
+            hardware compare-and-swap.  This will result in more efficient
+            atomic operations, but the resulting executable will run only
+            on 486 and later chips (and not on 386).
+        </li>
+
+      </ul>
+
+    </section>
+
+    <section>
+
       <title>mod_status and ExtendedStatus On</title>
 
       <p>If you include <module>mod_status</module> and you also set
