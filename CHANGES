@@ -1,11 +1,25 @@
 Changes with Apache 2.0.32-dev
 
+  *) mod_negotiation: ForceLanguagePriority now uses 'Prefer' as the
+     default if the directive is not specified.  This mirrors older
+     behavior without changes to the httpd.conf.  [William Rowe]
+
+  *) Win32: solve the win32 service problems in 2.0.31-alpha, by fixing
+     the service, mpm and logging code, and bugs in apr_file_open_stderr 
+     and apr_file_dup2 functions.  Win2K/XP services have no handles 
+     associated for stdin/out/err, which caused unpredictable behavior
+     in the prior release.  [William Rowe, Bill Stoddard]
+
+  *) Win32: simplify the Application Event Log messages, since there isn't
+     likely to be 'more information in the error log' before an error log
+     has been opened.  [William Rowe]
+
+  *) Win32: substantial cleanup to the mpm_winnt code for legibility and
+     to follow the program flow of other MPMs.  [Ryan Bloom, William Rowe]
+
   *) Win32: apache -k shutdown now behaves like apache -k stop.
      [Bill Stoddard]
 
-  *) Win32: Get apache -k restart -n apache2 working reliably again.
-     [Bill Stoddard]
- 
   *) Remove all signals from the worker MPM's child process.  Instead,
      the parent uses the Pipe of Death for all communication with the
      child processes.  [Ryan Bloom]
