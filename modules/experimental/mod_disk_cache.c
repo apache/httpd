@@ -63,7 +63,7 @@
 #include "http_log.h"
 #include "util_filter.h"
 
-module MODULE_VAR_EXPORT disk_cache_module;
+module AP_MODULE_DECLARE_DATA disk_cache_module;
 
 static int disk_serve(request_rec *r)
 {
@@ -145,7 +145,7 @@ static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
     } 
     APR_BRIGADE_FOREACH(e, bb) {
         const char *str;
-        apr_ssize_t length;
+        apr_size_t length;
 
         apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
         apr_file_write(ctx->fd, str, &length);
@@ -162,7 +162,7 @@ static void disk_cache_register_hook(apr_pool_t *p)
     ap_hook_serve_cache(disk_serve, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT disk_cache_module = {
+module AP_MODULE_DECLARE_DATA disk_cache_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,        		/* merge per-directory config structures */
