@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Modified the cache code to be header-location agnostic. Also
+     fixed a number of other cache code bugs related to PR 15852.
+     Includes a patch submitted by Sushma Rai <rsushma@novell.com>.
+     This fixes mod_mem_cache but not mod_disk_cache yet so I'm not
+     closing the PR since that is what they are using. [Paul J. Reder]
+
   *) Switch to APR 1.0 API.
 
   *) Modify ap_get_client_block() to note if it has seen EOS.
