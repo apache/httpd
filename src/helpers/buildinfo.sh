@@ -1,7 +1,7 @@
 #!/bin/sh
 ##
 ##  buildinfo.sh -- Determine Build Information
-##  Written by Ralf S. Engelschall <rse@apache.org>
+##  Initially written by Ralf S. Engelschall <rse@apache.org>
 ##  for the Apache's Autoconf-style Interface (APACI) 
 ##
 #

@@ -2,8 +2,7 @@
 ##
 ##  fmn.sh -- find a modules (structure) name
 ##
-##  Extracted from the Configure script by
-##  Ralf S. Engelschall <rse@apache.org> for use with 
+##  Extracted from the Configure script for use with
 ##  Apache's Autoconf-style Interface (APACI).
 ##
 #

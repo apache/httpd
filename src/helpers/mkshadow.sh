@@ -2,7 +2,7 @@
 ##
 ##  mkshadow.sh -- create a shadow tree
 ##
-##  Written by Ralf S. Engelschall <rse@apache.org>
+##  Initialy written by Ralf S. Engelschall <rse@apache.org>
 ##  for the shadow tree generation option (--shadow) of 
 ##  Apache's Autoconf-style Interface (APACI) 
 ##

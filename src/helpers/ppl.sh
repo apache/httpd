@@ -4,7 +4,7 @@
 ##            `tr' and `fmt' because these tools are different
 ##            between Unix platforms
 ##
-##  Written by Ralf S. Engelschall <rse@apache.org>
+##  Initially written by Ralf S. Engelschall <rse@apache.org>
 ##  for pretty printing lists in the --help option of
 ##  Apache's Autoconf-style Interface (APACI)
 ##

@@ -1,7 +1,8 @@
 #!/bin/sh
 ##
 ##  findcpp.sh -- Find out how to _directly_ run the C Pre-Processor (CPP)
-##  Written by Ralf S. Engelschall for the Apache configuration mechanism
+##  Initially written by Ralf S. Engelschall for the Apache configuration
+##   mechanism
 ##
 #
 # This script falls under the Apache License.

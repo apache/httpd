@@ -7,6 +7,8 @@
 # addition: Any changes or additions to this script should be
 # Emailed to the Apache group (apache@apache.org).
 #
+# Initially written by Jim Jagielski for the Apache configuration mechanism
+#
 # Be as similar to the output of config.guess/config.sub
 # as possible.
 

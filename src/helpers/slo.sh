@@ -1,7 +1,7 @@
 #!/bin/sh
 ##
 ##  slo.h -- (S)eparate (L)inker (O)ptions by library class
-##  Written by Ralf S. Engelschall <rse@apache.org>
+##  Initially written by Ralf S. Engelschall <rse@apache.org>
 ##
 #
 # This script falls under the Apache License.
