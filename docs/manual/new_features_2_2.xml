@@ -80,6 +80,23 @@
           their file name and line number.  The module also 
           shows the order of all request hooks and additional
           build information, similar to <code>httpd -V</code>.</dd>
+
+      <dt><module>mod_ssl</module></dt>
+      <!-- Need Info on SSLEngine Support? -->
+      <dd>Added a support for 
+         <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, which 
+         allows connections to upgrade from clear text to TLS encryption.</dd>
+    </dl>
+  </section>
+
+  <section id="programs">
+    <title>Program Enhancements</title>
+    <dl>
+      <dt><program>httpd</program></dt>
+      <dd>A new command line option <code>-M</code> has been added that
+      lists all modules that are loaded based on the current
+      configuration. Unlike the <code>-l</code> option, this list
+      includes DSOs loaded via <module>mod_so</module>.</dd>
     </dl>
   </section>
 
