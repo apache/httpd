@@ -247,7 +247,7 @@ is available only in Apache 2.0</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>]</code></td></tr>
+[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -289,6 +289,16 @@ is available only in Apache 2.0</td></tr></table>
     <code>set</code> a <var>value</var> is given as the third argument. If
     <var>value</var> contains spaces, it should be surrounded by double
     quotes. For unset, no <var>value</var> should be given.</p>
+
+    <p>When the <code class="directive">RequestHeader</code> directive is used with the
+    <code>add</code>, <code>append</code>, or <code>set</code> argument, a
+    fourth argument may be used to specify conditions under which the action
+    will be taken. If the <a href="../env.html">environment variable</a>
+    specified in the <code>env=...</code> argument exists (or if the environment
+    variable does not exist and <code>env=!...</code> is specified) then the
+    action specified by the <code class="directive">RequestHeader</code> directive will
+    take effect. Otherwise, the directive will have no effect on the
+    request.</p>
 
     <p>The <code class="directive">RequestHeader</code> directive is processed
     just before the request is run by its handler in the fixup phase.
