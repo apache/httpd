@@ -526,7 +526,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
-AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
+AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
 
 /**
  * Get the method number associated with the given string, assumed to
