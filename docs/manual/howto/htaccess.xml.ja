@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='iso-2022-jp' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<manualpage metafile="htaccess.xml.meta">
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
+<!-- English revision: 1.9 -->
+
+<title>Apache チュートリアル: .htaccess ファイル</title>
+
+<summary>
+<p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
+提供します。</p>
+</summary>
+
+<section id="related"><title>.htaccess ファイル</title>
+    <related>
+        <modulelist>
+            <module>core</module>
+            <module>mod_authn_file</module>
+            <module>mod_authz_groupfile</module>
+            <module>mod_cgi</module>
+            <module>mod_include</module>
+            <module>mod_mime</module>
+        </modulelist>
+
+        <directivelist>
+            <directive module="core">AccessFileName</directive>
+            <directive module="core">AllowOverride</directive>
+            <directive module="core">Options</directive>
+            <directive module="mod_mime">AddHandler</directive>
+            <directive module="core">SetHandler</directive>
+            <directive module="core">AuthType</directive>
+            <directive module="core">AuthName</directive>
+            <directive module="mod_authn_file">AuthUserFile</directive>
+            <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+            <directive module="core">Require</directive>
+        </directivelist>
+
+    </related>
+</section>
+
+<section id="what">
+<title>.htaccess ファイルとは何か/その使い方</title>
+
+    <p><code>.htaccess</code> ファイル (「分散設定ファイル」) は
+    ディレクトリ毎に設定を変更する方法を提供します。ディレクティブの
+    書かれたファイルをディレクトリに置くことで、そのディレクトリとその
+    サブディレクトリすべてにディレクティブを適用させることができます。</p>
+
+    <note><title>注:</title>
+      <p><code>.htaccess</code> ファイルを別の名前にしたい場合は、
+      <directive module="core">AccessFileName</directive> ディレクティブを
+      使って変更することができます。例えば、そのファイルを <code>.config</code> 
+      という名前にしたい場合は、以下の設定をサーバ設定ファイルに入れることが
+      できます:</p>
+
+      <example>
+        AccessFileName .config
+      </example>
+    </note>
+
+    <p>これらのファイルに書くことのできるディレクティブは <directive
+    module="core">AllowOverride</directive> ディレクティブにより決まります。
+    このディレクティブは、<code>.htaccess</code> ファイルに
+    書かれたディレクティブの中で、、
+    どのディレクティブが適用されるかをカテゴリー単位で指定します。
+    <code>.htaccess</code> に書くことのできるディレクティブであれば、
+    説明文書には「上書き」という項目があり、.htaccess に書くことができるように
+    なるための <directive 
+    module="core">AllowOverride</directive> の値が指定されています。</p>
+
+    <p>例えば、<directive
+    module="core">AddDefaultCharset</directive> ディレクティブの説明を
+    見ると、<code>.htaccess</code> ファイルでの使用が許可されていることが
+    わかります。 (ディレクティブの概要の所にある「コンテキスト」と書かれている
+    行を見てください。) <a
+    href="../mod/directive-dict.html#Context">上書き</a>と書かれている行には
+    <code>FileInfo</code> とあります。ですから、<code>.htaccess</code> 中の
+    このディレクティブが有効になるためには、少なくとも
+    <code>AllowOverride FileInfo</code> が設定されている必要があります。</p>
+
+    <example><title>例:</title>
+      <table>
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Context">コンテキスト:</a></td>
+          <td>サーバ設定ファイル,バーチャルホスト,ディレクトリ,.htaccess</td>
+        </tr>
+
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Override">上書き:</a></td>
+          <td>FileInfo</td>
+        </tr>
+      </table>
+    </example>
+
+    <p>あるディレクティブを <code>.htaccess</code> ファイルに書くことができるか
+    どうかわからないときは、そのディレクティブの説明を探して、".htaccess"
+    のための「コンテキスト」の行を調べてください。</p>
+    </section>
+
+    <section id="when"><title>いつ .htaccess ファイルを使う(使わない)か。</title>
+
+    <p>一般的に、サーバの主設定ファイルにアクセスできない場合を除いて、
+    <code>.htaccess</code> ファイルの使用は極力避けてください。
+    世の中には、例えば、ユーザ認証は常に <code>.htaccess</code> ファイルで
+    行なわなければならない、という誤解が広まっていますが、まったくそんなことは
+    ありません。ユーザ認証の設定はサーバ主設定ファイルに書くことができ、
+    実際、その方がより良い設定方法です。</p>
+
+    <p><code>.htaccess</code> ファイルはコンテンツ提供者がディレクトリ毎の
+    設定を行ないたいけれど、サーバシステムの root アクセス権限を持っていない
+    という場合にのみ使うべきものです。サーバ管理者が頻繁に設定変更を行ないたくは
+    ない、というときには個々のユーザが <code>.htaccess</code> ファイルを使って
+    自分で設定の変更を行なうことを許可した方が良いときもあるでしょう。
+    これは特に、ISP が複数のユーザのサイトを一つのマシンでホストしていて、
+    各ユーザが設定の変更をできるようにしたいようなときにあてはまります。</p>
+
+    <p>しかし、普通は可能であれば <code>.htaccess</code> ファイルの使用は
+    避けてください。<code>.htaccess</code> ファイルに書こうと考えるような
+    すべての設定は、サーバの主設定ファイルの <directive module="core"
+    type="section">Directory</directive> セクションで同じように行なうことが
+    できます。</p>
+
+    <p><code>.htaccess</code> ファイルの使用を避ける理由は主に二つあります。</p>
+
+    <p>一つ目はサーバの性能の問題です。<directive 
+    module="core">AllowOverride</directive> ディレクティブが
+    <code>.htaccess</code> ファイルの設定を許可している場合は、Apache は
+    各ディレクトリで <code>.htaccess</code> ファイルを探します。
+    ですから、<code>.htaccess</code> ファイルを許可すると、実際に使用しているか
+    どうかに関わらず、性能の低下を招くことになります! また、<code>.htaccess</code>
+    ファイルは文書がリクエストされる度に読み込まれます。</p>
+
+    <p>さらに、Apache は適用すべきディレクティブを集めるために、すべての
+    上位のディレクトリの <code>.htaccess</code> ファイルを探す必要があることにも
+    注意してください。(<a href="#how">ディレクティブが適用される方法</a>を
+    参照してください。)ですから、<code>/www/htdocs/example</code> にある
+    ファイルがリクエストされたときは、Apache は以下のファイルを調べます。</p>
+
+    <example>
+      /.htaccess<br />
+      /www/.htaccess<br />
+      /www/htdocs/.htaccess<br />
+      /www/htdocs/example/.htaccess
+    </example>
+
+    <p>ですから、そのディレクトリのそれぞれのファイルへのアクセスに対して、
+    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
+    アクセスが行なわれることになります。(これは、<code>.htaccess</code> が
+    <code>/</code> に対して有効になっているときの場合で、普通はそうなって
+    いないことに注意してください。)</p>
+
+    <p>二つ目はセキュリティです。ユーザにサーバの設定を変更することを
+    許可することになりますので、あなた自身が管理できない変更をされる
+    恐れがあります。ユーザにこの特権を与えるのが良いのかどうか、十分
+    検討してください。また、ユーザに与える権限が必要なものよりも少なすぎると、
+    余分な技術サポート報告を受け取るようになる可能性が高いことにも
+    注意してください。確実に、ユーザにどの程度の権限を与えたか明確に告げるように
+    してください。<directive module="core">AllowOverride</directive> に
+    何を設定したかということと、関連する文書を示すことで、
+    後々の混乱をぐっと減らすことが
+    できます。</p>
+
+    <p>ところで、ディレクティブの書かれた <code>.htaccess</code> を
+    <code>/www/htdocs/example</code> に置くことと、同じディレクティブを
+    主サーバ設定の Directory セクション
+    <code>&lt;Directory /www/htdocs/example&gt;</code> に書くことは
+    完全に等価です:</p>
+
+    <p><code>/www/htdocs/example</code> の <code>.htaccess</code> ファイル:</p>
+
+    <example><title><code>/www/htdocs/example</code> の .htaccess ファイルの
+    内容</title>
+        AddType text/example .exm
+    </example>
+
+    <example><title><code>httpd.conf のセクション</code>
+    file</title>
+      &lt;Directory /www/htdocs/example&gt;<br />
+      <indent>
+        AddType text/example .exm<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>しかし、この設定はサーバ設定ファイルに書いた方がパフォーマンスの
+    低下が少なくなります。ファイルがリクエストされる度に
+    読み込まれる代わりに、Apache の起動時に 1 回だけ読み込めば
+    よくなるからです。</p>
+
+    <p><directive module="core">AllowOverride</directive> ディレクティブの
+    値を <code>none</code> に設定することで <code>.htaccess</code> ファイル
+    の使用を完全に無効にすることができます。</p>
+
+    <example>
+      AllowOverride None
+    </example>
+</section>
+
+<section id="how"><title>ディレクティブの適用のされ方</title>
+
+    <p><code>.htaccess</code> ファイルの設定ディレクティブは <code>.htaccess</code>
+    ファイルの存在するディレクトリと、そのサブディレクトリすべてに適用されます。
+    しかし、上の階層のディレクトリにも <code>.htaccess</code> ファイルが
+    存在するかもしれないことを覚えておくことは大切です。ディレクティブは現れる
+    順番に適用されます。ですから、あるディレクトリの <code>.htaccess</code> は
+    ディレクトリツリーのより上の階層の <code>.htaccess</code> ファイルの
+    設定を上書きするかもしれません。そして、その <code>.htaccess</code> も
+    より上の階層で書かれたディレクティブを上書きしたり、主サーバ設定ファイル
+    そのものの設定を上書きしたりしているかもしれません。</p>
+
+    <p>例:</p>
+
+    <p>ディレクトリ <code>/www/htdocs/example1</code> に以下の内容の
+    <code>.htaccess</code> ファイルがあります:</p>
+
+    <example>
+       Options +ExecCGI
+    </example>
+
+    <p>(注: <code>.htaccess</code>
+    ファイルで "<directive
+    module="core">Options</directive>" ディレクティブが有効になるためには、
+    "<code>AllowOverride Options</code>" を有効にする必要があります。)</p>
+
+    <p>ディレクトリ <code>/www/htdocs/example1/example2</code> には
+    以下のような <code>.htaccess</code> ファイルがあります:</p>
+
+    <example>
+       Options Includes
+    </example>
+
+    <p>二つめの <code>.htaccess</code> により、ディレクトリ
+    <code>/www/htdocs/example1/example2</code> では CGI の実行は
+    許可されません。これは、<code>Options Includes</code> のみが
+    効力を持ち、それがすべての以前の設定を上書きするからです。</p>
+</section>
+
+<section id="auth"><title>認証の例</title>
+
+    <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
+    知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
+    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
+    これは正しくありません。主サーバ設定ファイルの <directive
+    module="core" type="section">Directory</directive> セクションに
+    認証用のディレクティブを書く方が推奨される方法で、<code>.htaccess</code>
+    ファイルは主サーバ設定ファイルを変更できないときにのみ使用すべきです。
+    いつ <code>.htaccess</code> ファイルを使うべきで、いつ使うべきではないかに
+    ついては <a 
+    href="#when">上</a>を参照してください。</p>
+
+    <p>以上のことをふまえた上で、もし <code>.htaccess</code> の使用が
+    まだ必要だと思う場合は、次のようなものが望みのことをしてくれるかも
+    しれません。</p>
+
+    <p><code>.htaccess</code> ファイルの内容:</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Password Required"<br />
+      AuthUserFile /www/passwords/password.file<br />
+      AuthGroupFile /www/passwords/group.file<br />
+      Require Group admins
+    </example>
+
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride AuthConfig</code> が有効でなくてはならないことに
+    注意してください。</p>
+
+    <p>認証と承認については <a href="auth.html">認証チュートリアル</a>を
+    参照してください。</p>
+</section>
+
+<section id="ssi"><title>SSI の例</title>
+
+    <p>もう一つの <code>.htaccess</code> ファイルのよくある利用法は
+    特定のディレクトリで SSI を有効にすることです。これは、望みのディレクトリの
+    <code>.htaccess</code> ファイルに以下の設定ディレクティブを書くことで
+    達成できます:</p>
+
+    <example>
+       Options +Includes<br />
+       AddType text/html shtml<br />
+       AddHandler server-parsed shtml
+    </example>
+
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride Options</code> と <code>AllowOverride
+    FileInfo</code> が有効になっている必要があることに注意してください。</p>
+
+    <p>よりまとまった SSI の説明は <a href="ssi.html">SSI チュートリアル</a>を
+    参照してください。</p>
+</section>
+
+<section id="cgi"><title>CGI の例</title>
+
+    <p>最後に、特定のディレクトリで CGI プログラムの実行を許可したいことが
+    あるでしょう。これは以下の設定で行なうことができます:</p>
+
+    <example>
+       Options +ExecCGI<br />
+       AddHandler cgi-script cgi pl
+    </example>
+
+    <p>もしくは、あるディレクトリのすべてのファイルが CGI プログラムと
+    みなされるようにしたいなら、以下の設定で実現することができます:</p>
+
+    <example>
+       Options +ExecCGI<br />
+       SetHandler cgi-script
+    </example>
+
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride Options</code> と <code>AllowOverride
+    FileInfo</code> が有効である必要があることに注意してください。</p>
+
+    <p>CGI プログラムと設定のよりまとまった説明は <a
+    href="cgi.html">CGI チュートリアル</a>を参照してください。</p>
+
+</section>
+
+<section id="troubleshoot"><title>問題解決</title>
+
+    <p>設定ディレクティブを <code>.htaccess</code> ファイルに書いたけれども、
+    期待した効果が得られないときには、いくつかの原因が考えられます。</p>
+
+    <p>一番よくあることは、設定ディレクティブが考慮されるようには
+    <directive module="core">AllowOverride</directive> が設定されていない
+    というものです。該当のファイルのスコープに <code>AllowOverride None</code>
+    が設定されていないことを確認してください。これを調べるための良い方法は、
+    <code>.htaccess</code> ファイルにごみを書いて、リロードすることです。
+    サーバのエラーが生成されないときは、ほぼ確実に <code>AllowOverride
+    None</code> が設定されている状態になっています。</p>
+
+    <p>そうではなく、文書をアクセスしようとしたときにエラーが発生している
+    ときは、Apache のエラーログを調べてください。<code>.htaccess</code> ファイルで
+    使用されたディレクティブが許可されていない、ということを知らせている
+    可能性が高いです。または、構文の間違いがあることを述べているかもしれません。
+    その場合にはまずそれを修正する必要があります。</p>
+
+</section>
+
+</manualpage>

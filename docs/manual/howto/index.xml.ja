@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="iso-2022-jp" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.4 -->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>How-To / チュートリアル</title>
+
+  <section id="howto">
+
+    <title>How-To / チュートリアル</title>
+
+    <dl>
+      <dt>認証</dt>
+      <dd>
+        <p>認証とは、誰かが自分は誰であるかを名乗っているものを検証する
+        処理のことです。承認とは、誰かが望みの場所に辿り着けたり、
+        望みの情報を手に入れたりすることを許可する処理のことです。</p>
+
+        <p>参照: <a href="auth.html">認証、承認、アクセス制御</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>CGI による動的コンテンツ</dt>
+      <dd>
+        <p>CGI (Common Gateway Interface) はウェブサーバが外部のコンテンツ
+        生成プログラムとどのように相互動作をするかを定義します。
+        その外部プログラムは通常 CGI プログラムや CGI スクリプトと呼ばれます。
+        CGI はウェブサイトに動的なコンテンツを追加するための、
+        一番単純でよく使われている方法です。この文書は Apache ウェブサーバに
+        CGI を設定し、CGI プログラムを書き始めるためのイントロダクションです。</p>
+
+        <p>参照: <a href="cgi.html">CGI: 動的コンテンツ</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt><code>.htaccess</code> ファイル</dt>
+      <dd>
+        <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更するための
+        方法を提供します。設定ディレクティブが書かれたファイルが、あるドキュメント
+        ディレクトリに置かれると、ディレクティブはそのディレクトリと
+        すべてのサブディレクトリに適用されます。</p>
+
+        <p>参照: <a href="htaccess.html"><code>.htaccess</code> ファイル</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Server Side Includes イントロダクション</dt>
+      <dd>
+        <p>SSI (Server Side Includes) は HTML ページ中に書かれるディレクティブで、
+        ページが送られる時にサーバにより評価されます。これにより、ページ全体を
+        CGI プログラムで生成したり、他の動的な技術を使うことなく、既存の HTML
+        ページに動的に生成された内容を付加することができます。</p>
+
+        <p>参照: <a href="ssi.html">Server Side Includes (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>ユーザ毎のウェブディレクトリ</dt>
+      <dd>
+        <p>複数ユーザの存在するシステムでは、それぞれのユーザは <directive
+        module="mod_userdir">UserDir</directive> ディレクティブを使うことによって
+        ホームディレクトリ上にウェブサイトを作成することができます。
+        URL <code>http://example.com/~username/</code> を訪れた人は
+        ユーザ "<code>username</code>" のホームディレクトリの、<directive
+        module="mod_userdir">UserDir</directive> ディレクティブで指定された
+       サブディレクトリからコンテンツを得ることになります。</p>
+
+        <p>参照: <a href="public_html.html"
+        >ユーザウェブディレクトリ (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>
+
+
