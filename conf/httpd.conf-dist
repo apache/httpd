@@ -622,7 +622,7 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 # to do with the FancyIndexing customization directives above.
 #
 AddEncoding x-compress Z
-AddEncoding x-gzip gz
+AddEncoding x-gzip gz tgz
 
 #
 # AddLanguage allows you to specify the language of a document. You can
@@ -655,6 +655,8 @@ LanguagePriority en fr de
 #
 #AddType application/x-httpd-php3 .php3
 #AddType application/x-httpd-php3-source .phps
+
+AddType application/x-tar .tgz
 
 #
 # AddHandler allows you to map certain file extensions to "handlers",
