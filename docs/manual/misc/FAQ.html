@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.107 $ ($Date: 1998/02/14 13:06:25 $)
+  $Revision: 1.108 $ ($Date: 1998/02/18 21:07:25 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -265,6 +265,13 @@
     than 1.2.0 and suddenly I have problems with Apache dying randomly
     or not restarting properly</a>
    </li>
+   <li><a href="#redhat-htm">I'm using RedHat Linux and my .htm files are showing
+    up as html source rather than being formatted!</a>
+   </li>
+   <li><a href="#glibc-crypt">I'm using RedHat Linux 5.0, or some other glibc
+     based Linux system, and I get errors with the <code>crypt</code> function when
+     I attempt to build Apache 1.2.</a>
+    </li>
   </OL>
  </LI>
 </UL>
@@ -2231,6 +2238,33 @@
     <hr>
 
   </li>
+
+  <li><a name="redhat-htm"><strong>I'm using RedHat Linux and my .htm files are showing
+    up as html source rather than being formatted!</strong></a>
+
+    <p>RedHat messed up and forgot to put a content type for <code>.htm</code>
+    files into <code>/etc/mime.types</code>.  Edit <code>/etc/mime.types</code>,
+    find the line containing <code>html</code> and add <code>htm</code> to it.
+    Then restart your httpd server:
+    <pre>
+	kill -HUP `cat /var/run/httpd.pid`
+    </pre>
+    Then <b>clear your browsers' caches</b>.  (Many browsers won't re-examine
+    the content type after they've reloaded a page.)
+    </p>
+    <hr>
+
+  <li><a name="glibc-crypt"><strong>I'm using RedHat Linux 5.0, or some other glibc
+    based Linux system, and I get errors with the <code>crypt</code> function when
+    I attempt to build Apache 1.2.</strong></a>
+
+    <p>glibc puts the crypt function into a separate library.  Edit your
+    <code>src/Configuration</code> file and set this:
+    <pre>
+	EXTRA_LIBS=-lcrypt
+    </pre>
+    </p>
+    <hr>
 
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
