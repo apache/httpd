@@ -94,7 +94,7 @@ connections.  If this is off then mod_status will not work properly.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork, mpm_winnt</p>
 
 <p>This controls the directory to which Apache attempts to switch
 before dumping core.  The default is in the <A
@@ -125,7 +125,7 @@ you can use this directive to place it in a different location.<P><HR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork</p>
 
 The Group directive sets the group under which the server will answer requests.
 In order to use this directive, the stand-alone server must be run initially
@@ -175,7 +175,7 @@ considerations.<P><HR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork, mpm_winnt</p>
 
 <p>The PidFile directive sets the file to which the server records the
 process id of the daemon. If the filename does not begin with a slash
@@ -210,7 +210,7 @@ Listen [<EM>IP-address</EM>:]<EM>port number</EM><BR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork, mpm_winnt</p>
 
 
 <P>The Listen directive instructs Apache to listen to only specific IP
@@ -279,7 +279,7 @@ interfaces and port numbers, use
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork, mpm_winnt</p>
 
 <P>The maximum length of the queue of pending connections.  Generally no
 tuning is needed or desired, however on some systems it is desirable
@@ -312,7 +312,7 @@ use exactly what is specified as the backlog, but use a number based on
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork</p>
 
 <p>The LockFile directive sets the path to the lockfile used when
 Apache is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
@@ -352,7 +352,7 @@ server will try to create.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, prefork</p>
 
 <P>The MaxClients directive sets the limit on the number of child
 processes that will be created to serve requests.  When the server is
@@ -394,7 +394,7 @@ href="#threadsperchild">ThreadsPerChild</a>.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, prefork, perchild, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, prefork, perchild, mpm_winnt</p>
 
 <p>The MaxRequestsPerChild directive sets the limit on the number of requests
 that an individual child server process will handle. After MaxRequestsPerChild
@@ -424,7 +424,7 @@ behavior to limit the number of <EM>connections</EM> per child.
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 10 (Perchild) or 500 (Mpmt_pthread) </CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 10 (Perchild) or 500 (threaded) </CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -436,13 +436,13 @@ behavior to limit the number of <EM>connections</EM> per child.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild</p>
+><STRONG>Module:</STRONG></A> threaded, perchild</p>
 
 <P>Maximum number of idle threads.  Different MPMs deal with this directive
 differently.  Perchild monitor the number of idle threads on a
 per-child basis.  If there are too many idle threads in that child, the server
 will begin to kill threads within that child.</P>
-<P>Mpmt_pthread deals with idle threads on a server-wide basis.  If there are 
+<P>threaded deals with idle threads on a server-wide basis.  If there are 
 too many idle threads in the server then child processes are killed 
 until the number of idle threads is less than this number.</p>
 
@@ -471,7 +471,7 @@ until the number of idle threads is less than this number.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild</p>
+><STRONG>Module:</STRONG></A> threaded, perchild</p>
 
 <P>Maximum number of threads per child.  For MPMs with a variable
 number of threads per child, this directive sets the maximum number of
@@ -491,7 +491,7 @@ the server.</p>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 5 (Perchild) or 250 (Mpmt_pthread) </CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 5 (Perchild) or 250 (threaded) </CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -503,14 +503,14 @@ the server.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild</p>
+><STRONG>Module:</STRONG></A> threaded, perchild</p>
 
 <P>Minimum number of idle threads to handle request spikes.  Different MPMs 
 deal with this directive differently.  Perchild monitor the number 
 of idle threads on a per-child basis.  If there aren't enough idle threads in 
 that child, the server will begin to create new threads within that child.  
 </P>
-<P>Mpmt_pthread deals with idle threads on a server-wide basis.  If there 
+<P>threaded deals with idle threads on a server-wide basis.  If there 
 aren't enough idle threads in the server then child processes are created 
 until the number of idle threads is greater than number.</p>
 
@@ -572,7 +572,7 @@ large enough to handle the requests for the entire site.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork</p>
 
 <p>The ScoreBoardFile directive is required on some architectures to place
 a file that the server will use to communicate between its children and
@@ -610,7 +610,7 @@ about log file placement and
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork, mpm_winnt</p>
 
 The server will set the TCP buffer size to the number of bytes
 specified. Very useful to increase past standard OS defaults on high
@@ -640,7 +640,7 @@ fast pipes)
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, prefork</p>
 
 <p>The StartServers directive sets the number of child server processes created
 on startup. As the number of processes is dynamically controlled depending
@@ -698,13 +698,13 @@ reason to adjust this parameter.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, mpm_winnt</p>
+><STRONG>Module:</STRONG></A> threaded, mpm_winnt</p>
 
 <P>This directive sets the number of threads created by each child
 process.  The child creates these threads at startup and never creates
 more.  if using an MPM like mpmt_winnt, where there is only one child process,
 this number should be high enough to handle the entire load of the server.
-If using an MPM like mpmt_pthread, where there are multiple child processes,
+If using an MPM like threaded, where there are multiple child processes,
 the total number of threads should be high enough to handle the common load
 on the server.</p>
 
@@ -732,7 +732,7 @@ on the server.</p>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mpmt_pthread, perchild, prefork</p>
+><STRONG>Module:</STRONG></A> threaded, perchild, prefork</p>
 
 The User directive sets the userid as which the server will answer requests.
 In order to use this directive, the standalone server must be run initially

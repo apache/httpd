@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libmpmt_pthread.la
-LTLIBRARY_SOURCES = mpmt_pthread.c
-
-include $(top_srcdir)/build/ltlib.mk

@@ -58,10 +58,10 @@
 #include "scoreboard.h"
 #include "unixd.h"
 
-#ifndef APACHE_MPM_MPMT_PTHREAD_H
-#define APACHE_MPM_MPMT_PTHREAD_H
+#ifndef APACHE_MPM_THREADED_H
+#define APACHE_MPM_THREADED_H
 
-#define MPMT_PTHREAD_MPM
+#define THREADED_MPM
 
 #define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
@@ -75,4 +75,4 @@ extern unsigned int ap_my_pid;
 extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
-#endif /* APACHE_MPM_MPMT_PTHREAD_H */
+#endif /* APACHE_MPM_THREADED_H */

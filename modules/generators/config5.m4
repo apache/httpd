@@ -13,7 +13,7 @@ APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
 
 LTFLAGS="$LTFLAGS -export-dynamic"
 
-if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter"; then
+if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
 # if we are using a threaded MPM, we will get better performance with
 # mod_cgid, so make it the default.
     APACHE_MODULE(cgid, CGI scripts, , , yes)

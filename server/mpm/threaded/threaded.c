@@ -1155,7 +1155,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void mpmt_pthread_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+static void threaded_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach = 0;
@@ -1189,11 +1189,11 @@ static void mpmt_pthread_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_poo
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void mpmt_pthread_hooks(apr_pool_t *p)
+static void threaded_hooks(apr_pool_t *p)
 {
     one_process = 0;
 
-    ap_hook_pre_config(mpmt_pthread_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(threaded_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 
@@ -1370,7 +1370,7 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const command_rec mpmt_pthread_cmds[] = {
+static const command_rec threaded_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
 AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
@@ -1396,14 +1396,14 @@ AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA mpm_mpmt_pthread_module = {
+module AP_MODULE_DECLARE_DATA mpm_threaded_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    mpmt_pthread_cmds,		/* command apr_table_t */
-    mpmt_pthread_hooks		/* register_hooks */
+    threaded_cmds,		/* command apr_table_t */
+    threaded_hooks		/* register_hooks */
 };
 
