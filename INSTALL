@@ -144,7 +144,7 @@
      additional modules mod_rewrite and mod_speling for later loading
      through the DSO mechanism:
 
-     $ CC="pgcc" OPTIM="-O2" \
+     $ CC="pgcc" CFLAGS="-O2" \
        ./configure --prefix=/sw/pkg/apache \
                    --enable-rewrite=shared \
                    --enable-speling=shared
@@ -155,14 +155,14 @@
 
      Reference:
 
-     $ [CC=...]        [CFLAGS_SHLIB=...]           [TARGET=...]
-       [OPTIM=...]     [LD_SHLIB=...]
-       [CFLAGS=...]    [LDFLAGS_SHLIB=...]        
-       [INCLUDES=...]  [LDFLAGS_SHLIB_EXPORT=...] 
-       [LDFLAGS=...]   [RANLIB=...]  
-       [LIBS=...]      [DEPS=...]
-       [NOTEST_CFLAGS=...]
-       [NOTEST_LDFLAGS=...]
+     $ [CC=...]        [TARGET=...]
+       [CPPFLAGS=...]  [NOTEST_CPPFLAGS=...]
+       [CFLAGS=...]    [NOTEST_CFLAGS=...]
+       [CXXFLAGS=...]  [NOTEST_CXXFLAGS=...]
+       [LDFLAGS=...]   [NOTEST_LDFLAGS=...]
+       [LIBS=...]      [NOTEST_LIBS=...]
+       [INCLUDES=...]  [SHLIB_PATH=...] 
+
        ./configure
            [--quiet]         [--prefix=DIR]            [--enable-NAME=(shared)]
            [--verbose]       [--exec-prefix=PREFIX]    [--disable-NAME]
@@ -183,14 +183,18 @@
                              [--without-support]       [--suexec-gidmin=GID]
                              [--without-confadjust]    [--suexec-safepath=PATH]
                              [--without-execstrip]
-			     [--server-uid=UID]        [--with-maintainter-mode]
+			     [--server-uid=UID]
 			     [--server-gid=GID]
 
-     Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
-     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and
-     TARGET environment variables to override and expand the corresponding
-     default entries as determined by configure. Use NOTEST_CFLAGS
-     and NOTEST_LDFLAGS to add entries that should be used only during
+                             [--enable-maintainter-mode]
+                             [--enable-debug]
+
+     Use the CC, CPPFLAGS, CFLAGS, CXXFLAGS, LDFLAGS, LIBS, INCLUDES,
+     SHLIB_PATH and TARGET environment variables to override or expand the
+     corresponding default entries as determined by configure.
+
+     Use NOTEST_CPPFLAGS, NOTEST_CFLAGS, NOTEST_CXXFLAGS, NOTEST_LDFLAGS,
+     and NOTEST_LIBS to add entries that should only be used during
      the actual build and compilation of Apache, such as -Werror.
 
      Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to
@@ -458,7 +462,7 @@
        subscribe to the `new-httpd' mailing list as described at
        http://www.apache.org/foundation/mailinglists.html
 
-     Thanks for running Apache.
+     Thanks for running Apache httpd.
 
                                           The Apache Group
                                           http://www.apache.org/

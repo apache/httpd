@@ -1,6 +1,5 @@
 if test "$MPM_NAME" = "spmt_os2" ; then
     AC_CACHE_SAVE
     APACHE_FAST_OUTPUT(server/mpm/$MPM_NAME/Makefile)
-    CFLAGS="$CFLAGS -Zmt"
-    LDFLAGS="$LDFLAGS -Zmt"
+    APR_ADDTO(CFLAGS,-Zmt)
 fi

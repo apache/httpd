@@ -58,6 +58,6 @@ dnl	;;
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
         ;;
   esac
-  APR_DOEXTRA
+
 fi
 ])

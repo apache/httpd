@@ -15,7 +15,7 @@ APACHE_MODULE(dav, WebDAV protocol handling, $dav_objects, , $dav_enable)
 if test "$enable_dav" != "no"; then
   apache_need_expat=yes
 
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/$modpath_current"
+  APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 fi
 
 

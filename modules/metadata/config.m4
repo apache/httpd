@@ -18,6 +18,6 @@ APACHE_MODULE(usertrack, user-session tracking, , , , [
 APACHE_MODULE(unique_id, per-request unique ids)
 APACHE_MODULE(setenvif, basing ENV vars on headers, , , yes)
 
-LTFLAGS="$LTFLAGS -export-dynamic"
+APR_ADDTO(LTFLAGS,-export-dynamic)
 
 APACHE_MODPATH_FINISH

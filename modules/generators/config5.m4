@@ -11,7 +11,7 @@ APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
               other_targets=suexec ] )
 
-LTFLAGS="$LTFLAGS -export-dynamic"
+APR_ADDTO(LTFLAGS,-export-dynamic)
 
 if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
 # if we are using a threaded MPM, we will get better performance with

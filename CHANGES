@@ -1,5 +1,14 @@
 Changes with Apache 2.0.18-dev
 
+  *) Completely revamp configure so that it preserves the standard make
+     variables CPPFLAGS, CFLAGS, CXXFLAGS, LDFLAGS and LIBS by moving
+     the configure additions to EXTRA_* variables.  Also, allow the user
+     to specify NOTEST_* values for all of the above, which eliminates the
+     need for THREAD_CPPFLAGS, THREAD_CFLAGS, and OPTIM.  Fix the setting
+     of INCLUDES and EXTRA_INCLUDES.  Check flags as they are added to
+     avoid pointless duplications.  Fix the order in which flags are given
+     on the compile and link lines.  [Roy Fielding]
+
   *) Get mod_tls to compile/work better on Windows.  PR #7612
      [Bernhard Schrenk <b.schrenk@improx.com>]
 
