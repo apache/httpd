@@ -970,7 +970,7 @@ hash(const char *it, char *val)
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
 
     MD5Init(&context);
-    MD5Update(&context, it, strlen(it));
+    MD5Update(&context, (const unsigned char *)it, strlen(it));
     MD5Final(digest, &context);
 
 /* encode 128 bits as 22 characters, using a modified uuencoding */

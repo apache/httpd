@@ -203,6 +203,13 @@ typedef int pid_t;
 
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1
+#define NEED_SELECT_H
+
+/* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
+consts. Sigh. */
+extern int strcasecmp(const char *,const char *);
+extern int strncasecmp(const char *,const char *,unsigned);
+extern char *rindex(const char *,char);
 
 #elif defined(CONVEXOS)
 #define HAS_GMTOFF
