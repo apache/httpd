@@ -81,8 +81,8 @@ _tryssl:
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
-!IF EXIST("modules\experimental\mod_deflate.mak")
-	cd modules\experimental
+!IF EXIST("modules\filters\mod_deflate.mak")
+	cd modules\filters
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_deflate.so
 	cd ..\..
 !ELSE
@@ -208,11 +208,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\filters
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
-	cd ..\..
-	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\generators
@@ -459,7 +459,7 @@ _install:
    }
 }
 <<
-	copy modules\experimental\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
+	copy modules\filters\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
 !ENDIF
 	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin" <.y
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin" <.y
