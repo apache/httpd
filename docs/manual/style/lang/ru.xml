@@ -52,7 +52,7 @@
  <message name="apachetitle">- HTTP сервер Apache</message>
  <message name="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
  <message name="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
- <message name="search">Search</message> <!-- search button -->
+ <message name="search">Google Search</message> <!-- search button -->
  <message name="index">Оглавление</message> <!-- deprecated -->
  <message name="home">На главную страницу</message> <!-- deprecated -->
 

@@ -51,13 +51,53 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-          <form method="post" action="http://search.apache.org/"><p>
-            <input type="hidden" name="what" value="httpd.apache.org" />
-            <input type="hidden" name="results" value="20" />
-            <input type="hidden" name="version" value="2" />
-            <input type="text" name="keyword" size="20" />
-            <xsl:text> </xsl:text>
-            <input type="submit" value="{$messages/message[@name='search']}" />
+          <form action="http://www.google.com/search" method="get"><p>
+          <!-- search google: -->
+          <!-- with all of the words -->
+          <input type="text" value="" name="as_q" />
+          <xsl:text> </xsl:text>
+          <input type="submit" value="{$messages/message[@name='search']}" />
+
+          <!-- the specified number of results -->
+          <input type="hidden" name="num" value="10" />
+
+          <!-- the current displayed language -->
+          <input type="hidden" name="hl" value="{$messages/@lang}" />
+
+          <!-- the current document encoding for input (?) -->
+          <input type="hidden" name="ie" value="{$output-encoding}" />
+
+          <!-- (submit the original button and name) -->
+          <input type="hidden" name="btnG" value="Google Search" />
+
+          <!-- including the exact phrase "Apache 2.0" -->
+          <input type="hidden" value="Apache 2.0" name="as_epq" />
+
+          <!-- with at least one of the words (none) -->
+          <input type="hidden" value="" name="as_oq" />
+
+          <!-- without the phrase "List-Post" (to exclude the mail archives) -->
+          <input type="hidden" value="&quot;List-Post&quot;" name="as_eq" />
+
+          <!-- return results written in (any) language -->
+          <input type="hidden" name="lr" value="" />
+
+          <!-- and any format -->
+          <input type="hidden" name="as_ft" value="i" />
+          <input type="hidden" name="as_filetype" value="" />
+
+          <!-- updated anytime -->
+          <input type="hidden" name="as_qdr" value="all" />
+
+          <!-- where the result appears anywhere in the document -->
+          <input type="hidden" name="as_occt" value="any" />
+
+          <!-- only from httpd.apache.org -->
+          <input type="hidden" name="as_dt" value="i" />
+          <input type="hidden" name="as_sitesearch" value="httpd.apache.org" />
+
+          <!-- turn off "safe" mode -->
+          <input type="hidden" name="safe" value="off" />
           </p></form>
 
 <xsl:text>

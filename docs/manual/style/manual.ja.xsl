@@ -12,6 +12,7 @@
 
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="messages" select="document('lang/ja.xml')/messages"/>
+<xsl:variable name="output-encoding" select="'iso-2022-jp'" />
 
 <!-- Now get the real guts of the stylesheet -->
 <xsl:include href="xsl/common.xsl"/>
