@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/01 14:10:51 $]
+Last modified at [$Date: 2003/02/04 19:06:49 $]
 
 Release:
 
@@ -73,7 +73,7 @@ PATCHES TO PORT FROM 2.1
           jerenkrantz (should be fixed, but I don't have time to do this)
 
     * port "prefer-language". This would be very useful for the distributed
-      documentation.
+      documentation. (better explanation follows)
       modules/mappers/mod_negotiation.c r1.110
       +1: nd
 
@@ -88,7 +88,7 @@ PATCHES TO PORT FROM 2.1
 
     * Fix to apr_file_open() parms in mod_cern_meta for PR 12353
       modules/metadata/mod_cern_meta.c: r1.40 
-      +1: trawick
+      +1: trawick, nd
 
 CURRENT RELEASE NOTES:
 
