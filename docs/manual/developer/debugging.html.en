@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Debugging Memory Allocation in APR - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Debugging Memory Allocation in APR</h1>
+    <p>The allocation mechanism's within APR have a number of debugging modes
+    that can be used to assist in finding memory problems. This document
+    describes the modes available and gives instructions on activating
+    them.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#options">Available debugging options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#combo">Allowable Combinations</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#howto">Activating Debugging Options</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Available debugging options</a></h2>
+    <h3><a name="alloc_debug" id="alloc_debug">Allocation Debugging - ALLOC_DEBUG</a></h3>
+    
+
+      <div class="note">Debugging support: Define this to enable code which
+      helps detect re-use of <code>free()</code>d memory and other such
+      nonsense.</div>
+
+      <p>The theory is simple. The <code>FILL_BYTE</code> (<code>0xa5</code>)
+      is written over all <code>malloc</code>'d memory as we receive it, and
+      is written over everything that we free up during a
+      <code>clear_pool</code>. We check that blocks on the free list always
+      have the <code>FILL_BYTE</code> in them, and we check during
+      <code>palloc()</code> that the bytes still have <code>FILL_BYTE</code>
+      in them. If you ever see garbage URLs or whatnot containing lots
+      of <code>0xa5</code>s then you know something used data that's been
+      freed or uninitialized.</p>
+    
+
+    <h3><a name="alloc_use_malloc" id="alloc_use_malloc">Malloc Support - ALLOC_USE_MALLOC</a></h3>
+    
+
+      <div class="note">If defined all allocations will be done with
+      <code>malloc()</code> and <code>free()</code>d appropriately at the
+      end.</div>
+
+      <p>This is intended to be used with something like Electric
+      Fence or Purify to help detect memory problems. Note that if
+      you're using efence then you should also add in <code>ALLOC_DEBUG</code>.
+      But don't add in <code>ALLOC_DEBUG</code> if you're using Purify because
+      <code>ALLOC_DEBUG</code> would hide all the uninitialized read errors
+      that Purify can diagnose.</p>
+    
+
+    <h3><a name="pool_debug" id="pool_debug">Pool Debugging - POOL_DEBUG</a></h3>
+      <div class="note">This is intended to detect cases where the wrong pool is
+      used when assigning data to an object in another pool.</div>
+
+      <p>In particular, it causes the <code>table_{set,add,merge}n</code>
+      routines to check that their arguments are safe for the
+      <code>apr_table_t</code> they're being placed in. It currently only works
+      with the unix multiprocess model, but could be extended to others.</p>
+    
+
+    <h3><a name="make_table_profile" id="make_table_profile">Table Debugging - MAKE_TABLE_PROFILE</a></h3>
+    
+
+      <div class="note">Provide diagnostic information about make_table() calls
+      which are possibly too small.</div>
+
+      <p>This requires a recent gcc which supports
+      <code>__builtin_return_address()</code>. The error_log output will be a
+      message such as:</p>
+      <div class="example"><p><code>
+        table_push: apr_table_t created by 0x804d874 hit limit of 10
+      </code></p></div>
+
+      <p>Use <code>l *0x804d874</code> to find the
+      source that corresponds to. It indicates that a <code>apr_table_t</code>
+      allocated by a call at that address has possibly too small an
+      initial <code>apr_table_t</code> size guess.</p>
+    
+
+    <h3><a name="alloc_stats" id="alloc_stats">Allocation Statistics -  ALLOC_STATS</a></h3>
+    
+
+      <div class="note">Provide some statistics on the cost of allocations.</div>
+
+      <p>This requires a bit of an understanding of how alloc.c works.</p>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="combo" id="combo">Allowable Combinations</a></h2>
+
+    <p>Not all the options outlined above can be activated at the
+    same time. the following table gives more information.</p>
+
+    <table class="bordered"><tr class="header"><th />
+        <th>ALLOC DEBUG</th>
+        <th>ALLOC USE MALLOC</th>
+        <th>POOL DEBUG</th>
+        <th>MAKE TABLE PROFILE</th>
+        <th>ALLOC STATS</th></tr>
+<tr><th>ALLOC DEBUG</th>
+        <td>-</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr class="odd"><th>ALLOC USE MALLOC</th>
+        <td>No</td><td>-</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><th>POOL DEBUG</th>
+        <td>Yes</td><td>No</td><td>-</td><td>Yes</td><td>Yes</td></tr>
+<tr class="odd"><th>MAKE TABLE PROFILE</th>
+        <td>Yes</td><td>No</td><td>Yes</td><td>-</td><td>Yes</td></tr>
+<tr><th>ALLOC STATS</th>
+        <td>Yes</td><td>No</td><td>Yes</td><td>Yes</td><td>-</td></tr>
+</table>
+
+    <p>Additionally the debugging options are not suitable for
+    multi-threaded versions of the server. When trying to debug
+    with these options the server should be started in single
+    process mode.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="howto" id="howto">Activating Debugging Options</a></h2>
+
+    <p>The various options for debugging memory are now enabled in
+    the <code>apr_general.h</code> header file in APR. The various options are
+    enabled by uncommenting the define for the option you wish to
+    use. The section of the code currently looks like this
+    (<em>contained in srclib/apr/include/apr_pools.h</em>)</p>
+
+    <div class="example"><p><code>
+      /*<br />
+      #define ALLOC_DEBUG<br />
+      #define POOL_DEBUG<br />
+      #define ALLOC_USE_MALLOC<br />
+      #define MAKE_TABLE_PROFILE<br />
+      #define ALLOC_STATS<br />
+      */<br />
+      <br />
+      typedef struct ap_pool_t {<br />
+      <span class="indent">
+        union block_hdr *first;<br />
+        union block_hdr *last;<br />
+        struct cleanup *cleanups;<br />
+        struct process_chain *subprocesses;<br />
+        struct ap_pool_t *sub_pools;<br />
+        struct ap_pool_t *sub_next;<br />
+        struct ap_pool_t *sub_prev;<br />
+        struct ap_pool_t *parent;<br />
+        char *free_first_avail;<br />
+      </span>
+      #ifdef ALLOC_USE_MALLOC<br />
+      <span class="indent">
+        void *allocation_list;<br />
+      </span>
+      #endif<br />
+      #ifdef POOL_DEBUG<br />
+      <span class="indent">
+        struct ap_pool_t *joined;<br />
+      </span>
+      #endif<br />
+      <span class="indent">
+        int (*apr_abort)(int retcode);<br />
+        struct datastruct *prog_data;<br />
+      </span>
+      } ap_pool_t;
+    </code></p></div>
+
+    <p>To enable allocation debugging simply move the <code>#define
+    ALLOC_DEBUG</code> above the start of the comments block and rebuild
+    the server.</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>In order to use the various options the server <strong>must</strong>
+    be rebuilt after editing the header file.</p>
+    </div>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
