@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 19:57:29 $]
+Last modified at [$Date: 2004/08/04 20:00:38 $]
 
 Release:
 
@@ -88,6 +88,11 @@ PATCHES TO BACKPORT FROM 2.1
                        i'm also of the opinion that these should not be
                        backported at all, but rather be the 'key feature'
                        motivating a 2.2 release.)
+       jerenkrantz: +0.5.  What Cliff said.  Plus, the changes aren't just
+                    scoped to mod_cache - there's a number of other fixes
+                    elsewhere (APR has some fixes too).  So, 2.2 bundled
+                    with APR 1.0 (or some variant of that) will be the first
+                    release to work 'correctly.'
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
