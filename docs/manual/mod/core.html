@@ -31,10 +31,12 @@ always available.
 <li><A HREF="#clearmodulelist">ClearModuleList</A>
 <li><A HREF="#defaulttype">DefaultType</A>
 <li><A HREF="#directory">&lt;Directory&gt;</A>
+<li><A HREF="#directorymatch">&lt;DirectoryMatch&gt;</A>
 <li><A HREF="#documentroot">DocumentRoot</A>
 <li><A HREF="#errordocument">ErrorDocument</A>
 <li><A HREF="#errorlog">ErrorLog</A>
 <li><A HREF="#files">&lt;Files&gt;</A>
+<li><A HREF="#filesmatch">&lt;FilesMatch&gt;</A>
 <li><A HREF="#group">Group</A>
 <li><A HREF="#hostnamelookups">HostNameLookups</A>
 <li><A HREF="#identitycheck">IdentityCheck</A>
@@ -45,6 +47,7 @@ always available.
 <li><A HREF="#listen">Listen</A>
 <li><A HREF="#listenbacklog">ListenBacklog</A>
 <li><A HREF="#location">&lt;Location&gt;</A>
+<li><A HREF="#locationmatch">&lt;LocationMatch&gt;</A>
 <li><A HREF="#lockfile">LockFile</A>
 <li><A HREF="#maxclients">MaxClients</A>
 <li><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</a>
@@ -305,7 +308,9 @@ Extended regular expressions can also be used, with the addition of the
    &lt;Directory ~ &quot;^/www/.*/[0-9]{3}&quot;&gt;
 </pre>
 
-would match directories in /www/ that consisted of three numbers.<p>
+would match directories in /www/ that consisted of three numbers. In
+Apache 1.3 and later, it is reccomended to use
+<a href="#directorymatch">&lt;DirectoryMatch&gt;</a> instead.<p>
 
 <p>If multiple directory sections match the directory (or its parents) containing
 a document, then the directives are applied in the order of shortest match
@@ -356,6 +361,26 @@ The directory sections typically occur in the access.conf file, but they
 may appear in any configuration file. &lt;Directory&gt; directives cannot
 nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> section.
 <p><hr>
+
+<h2><A name="directorymatch">&lt;DirectoryMatch&gt;</A></h2>
+<strong>Syntax:</strong> &lt;DirectoryMatch <em>regex</em>&gt; ... &lt;/DirectoryMatch&gt; <br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Core.<br>
+<strong>Compatibility:</strong> Available in Apache 1.3 and later
+
+<p>&lt;DirectoryMatch&gt; and &lt;/DirectoryMatch&gt; are used to enclose a group of
+directives which will apply only to the named directory and sub-directories
+of that directory, the same as <a
+href="#directory">&lt;Directory&gt;</a>. However, it takes as an
+argument a regular expression. For example:</p>
+
+<pre>
+   &lt;DirectoryMatch &quot;^/www/.*/[0-9]{3}&quot;&gt;
+</pre>
+
+<p>would match directories in /www/ that consisted of three numbers.</p>
+
+<hr>
 
 <h2><A NAME="documentroot">DocumentRoot directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt DocumentRoot} directive&gt; -->
@@ -478,7 +503,9 @@ the <code>~</code> character. For example:</p>
    &lt;Files ~ &quot;\.(gif|jpe?g|png)$&quot;&gt;
 </pre>
 
-would match most common Internet graphics formats.
+would match most common Internet graphics formats. In Apache 1.3 and
+later, <a href="#filesmatch">&lt;FilesMatch&gt;</a> is perferred,
+however.
 
 <p>Note that unlike <a
 href="#directory"><code>&lt;Directory&gt;</code></a> and <a
@@ -490,6 +517,26 @@ file-by-file level. When used in an .htaccess file, if the
 the directory being applied will be prefixed automatically.
 
 <p> <hr>
+
+<h2><A name="filesmatch">&lt;FilesMatch&gt;</A></h2>
+<strong>Syntax:</strong> &lt;FilesMatch <em>regex</em>&gt;
+... &lt;/Files&gt;<br>
+<strong>Context:</strong> server config, virtual host, htaccess<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> only available in Apache
+1.3 and above.<p>
+
+<p>The &lt;FilesMatch&gt; directive provides for access control by
+filename, just as the <a href="#files">&lt;Files&gt;</a> directive
+does. However, it accepts a regular expression. For example:</p>
+
+<pre>
+   &lt;FilesMatch &quot;\.(gif|jpe?g|png)$&quot;&gt;
+</pre>
+
+<p>would match most common Internet graphics formats.</p>
+
+<hr>
 
 <h2><A name="group">Group directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
@@ -732,7 +779,8 @@ the
 </pre>
 
 <p>would match URLs that contained the substring "/extra/data" or
-"/special/data".</p>
+"/special/data". However, in Apache 1.3 and above, use of <a
+href="#locationmatch">&lt;LocationMatch&gt;</a> is perferred.</p>
 
 <p>The <code>Location</code> functionality is especially useful when
 combined with the <code><a
@@ -747,6 +795,29 @@ from browsers at foo.com, you might use:
     allow from .foo.com
     &lt;/Location&gt;
 </pre>
+<hr>
+
+<h2><a name="locationmatch">&lt;LocationMatch&gt;</a></h2>
+
+<strong>Syntax:</strong> &lt;LocationMatch <em>regex</em>&gt;
+... &lt;/LocationMatch&gt;<br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> Location is only available in Apache
+1.3 and later.<p>
+
+<p>The &lt;LocationMatch&gt; directive provides for access control by
+URL, in an identical manner to <a
+href="#location">&lt;Location&gt;</a>. However, it takes a regular
+expression as an argument instead of a simple string. For example:</p>
+
+<pre>
+   &lt;LocationMatch &quot;/(extra|special)/data&quot;&gt;
+</pre>
+
+<p>would match URLs that contained the substring "/extra/data" or
+"/special/data".</p>
+
 <hr>
 
 <H2><A NAME="lockfile">LockFile directive</A></H2>
