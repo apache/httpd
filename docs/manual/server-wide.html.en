@@ -1,134 +1,60 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Server-Wide Configuration - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Server-Wide Configuration</h1>
+<p>This document explains some of the directives provided by
+the <code><a href="./mod/core.html">core</a></code> server which are used to configure
+the basic operations of the server.</p>
+<ul><li><a href="#identification">Server Identification</a></li><li><a href="#locations">File Locations</a></li><li><a href="#resource">Limiting Resource Usage</a></li></ul><hr><h2><a name="identification">Server Identification</a></h2>
+    
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/core.html#servername" class="directive"><code class="directive">ServerName</code></a><br><a href="./mod/core.html#serveradmin" class="directive"><code class="directive">ServerAdmin</code></a><br><a href="./mod/core.html#serversignature" class="directive"><code class="directive">ServerSignature</code></a><br><a href="./mod/core.html#servertokens" class="directive"><code class="directive">ServerTokens</code></a><br><a href="./mod/core.html#usecanonicalname" class="directive"><code class="directive">UseCanonicalName</code></a><br></td></tr></table>
 
-    <title>Server-Wide Configuration</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+    <p>The <a href="./mod/core.html#serveradmin" class="directive"><code class="directive">ServerAdmin</code></a> and
+    <a href="./mod/core.html#servertokens" class="directive"><code class="directive">ServerTokens</code></a> directives
+    control what information about the server will be presented
+    in server-generated documents such as error messages. The
+    <a href="./mod/core.html#servertokens" class="directive"><code class="directive">ServerTokens</code></a> directive
+    sets the value of the Server HTTP response header field.</p>
 
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+    <p>The <a href="./mod/core.html#servername" class="directive"><code class="directive">ServerName</code></a> and
+    <a href="./mod/core.html#usecanonicalname" class="directive"><code class="directive">UseCanonicalName</code></a>
+    directives are used by the server to determine how to construct
+    self-referential URLs. For example, when a client requests a
+    directory, but does not include the trailing slash in the
+    directory name, Apache must redirect the client to the full
+    name including the trailing slash so that the client will
+    correctly resolve relative references in the document.</p>
+  <h2><a name="locations">File Locations</a></h2>
+    
 
-    <h1 align="center">Server-Wide Configuration</h1>
-
-    <p>This document explains some of the directives provided by
-    the <a href="mod/core.html">core</a> server which are used to
-    configure the basic operations of the server.</p>
-
-    <ul>
-      <li><a href="#identification">Server Identification</a></li>
-
-      <li><a href="#locations">File Locations</a></li>
-
-      <li><a href="#resource">Limiting Resource Usage</a></li>
-    </ul>
-    <hr />
-
-    <h2><a id="identification" name="identification">Server
-    Identification</a></h2>
-
-    <table border="1">
-      <tr>
-        <td valign="top"><strong>Related Directives</strong><br />
-         <br />
-         <a href="mod/core.html#servername">ServerName</a><br />
-         <a href="mod/core.html#serveradmin">ServerAdmin</a><br />
-         <a
-        href="mod/core.html#serversignature">ServerSignature</a><br />
-         <a
-        href="mod/core.html#servertokens">ServerTokens</a><br />
-         <a
-        href="mod/core.html#usecanonicalname">UseCanonicalName</a><br />
-         </td>
-      </tr>
-    </table>
-
-    <p>The <code>ServerAdmin</code> and <code>ServerTokens</code>
-    directives control what information about the server will be
-    presented in server-generated documents such as error messages.
-    The <code>ServerTokens</code> directive sets the value of the
-    Server HTTP response header field.</p>
-
-    <p>The <code>ServerName</code> and
-    <code>UseCanonicalName</code> directives are used by the server
-    to determine how to construct self-referential URLs. For
-    example, when a client requests a directory, but does not
-    include the trailing slash in the directory name, Apache must
-    redirect the client to the full name including the trailing
-    slash so that the client will correctly resolve relative
-    references in the document.</p>
-    <hr />
-
-    <h2><a id="locations" name="locations">File Locations</a></h2>
-
-    <table border="1">
-      <tr>
-        <td valign="top"><strong>Related Directives</strong><br />
-         <br />
-         <a
-        href="mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a><br />
-         <a
-        href="mod/core.html#documentroot">DocumentRoot</a><br />
-         <a href="mod/core.html#errorlog">ErrorLog</a><br />
-         <a href="mod/core.html#lockfile">Lockfile</a><br />
-         <a href="mod/core.html#pidfile">PidFile</a><br />
-         <a
-        href="mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a><br />
-         <a href="mod/core.html#serverroot">ServerRoot</a><br />
-         </td>
-      </tr>
-    </table>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/mpm_common.html#coredumpdirectory" class="directive"><code class="directive">CoreDumpDirectory</code></a><br><a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a><br><a href="./mod/core.html#errorlog" class="directive"><code class="directive">ErrorLog</code></a><br><a href="./mod/mpm_common.html#lockfile" class="directive"><code class="directive">LockFile</code></a><br><a href="./mod/mpm_common.html#pidfile" class="directive"><code class="directive">PidFile</code></a><br><a href="./mod/mpm_common.html#scoreboardfile" class="directive"><code class="directive">ScoreBoardFile</code></a><br><a href="./mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a><br></td></tr></table>
 
     <p>These directives control the locations of the various files
     that Apache needs for proper operation. When the pathname used
-    does not begin with a slash "/", the files are located relative
-    to the <code>ServerRoot</code>. Be careful about locating files
-    in paths which are writable by non-root users. See the <a
-    href="misc/security_tips.html">security tips</a> documentation
-    for more details.</p>
-    <hr />
+    does not begin with a slash (/), the files are located relative
+    to the <a href="./mod/core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>. Be careful
+    about locating files in paths which are writable by non-root users.
+    See the <a href="misc/security_tips.html#serverroot">security tips</a>
+    documentation for more details.</p>
+  <h2><a name="resource">Limiting Resource Usage</a></h2>
+    
 
-    <h2><a id="resource" name="resource">Limiting Resource
-    Usage</a></h2>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/core.html#limitrequestbody" class="directive"><code class="directive">LimitRequestBody</code></a><br><a href="./mod/core.html#limitrequestfields" class="directive"><code class="directive">LimitRequestFields</code></a><br><a href="./mod/core.html#limitrequestfieldsize" class="directive"><code class="directive">LimitRequestFieldsize</code></a><br><a href="./mod/core.html#limitrequestline" class="directive"><code class="directive">LimitRequestLine</code></a><br><a href="./mod/core.html#rlimitcpu" class="directive"><code class="directive">RLimitCPU</code></a><br><a href="./mod/core.html#rlimitmem" class="directive"><code class="directive">RLimitMEM</code></a><br><a href="./mod/core.html#rlimitnproc" class="directive"><code class="directive">RLimitNPROC</code></a><br><a href="./mod/mpm_netware.html#threadstacksize" class="directive"><code class="directive">ThreadStackSize</code></a><br></td></tr></table>
 
-    <table border="1">
-      <tr>
-        <td valign="top"><strong>Related Directives</strong><br />
-         <br />
-         <a
-        href="mod/core.html#limitrequestbody">LimitRequestBody</a><br />
-         <a
-        href="mod/core.html#limitrequestfields">LimitRequestFields</a><br />
-         <a
-        href="mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a><br />
-         <a
-        href="mod/core.html#limitrequestline">LimitRequestLine</a><br />
-         <a href="mod/core.html#rlimitcpu">RLimitCPU</a><br />
-         <a href="mod/core.html#rlimitmem">RLimitMEM</a><br />
-         <a href="mod/core.html#rlimitnproc">RLimitNPROC</a><br />
-         <a
-        href="mod/core.html#threadstacksize">ThreadStackSize</a><br />
-         </td>
-      </tr>
-    </table>
+    <p>The <code class="directive">LimitRequest</code>*
+    directives are used to place limits on the amount of resources
+    Apache will use in reading requests from clients. By limiting
+    these values, some kinds of denial of service attacks can be
+    mitigated.</p>
 
-    <p>The <code>LimitRequest</code>* directives are used to place
-    limits on the amount of resources Apache will use in reading
-    requests from clients. By limiting these values, some kinds of
-    denial of service attacks can be mitigated.</p>
+    <p>The <code class="directive">RLimit</code>* directives
+    are used to limit the amount of resources which can be used by
+    processes forked off from the Apache children. In particular,
+    this will control resources used by CGI scripts and SSI exec
+    commands.</p>
 
-    <p>The <code>RLimit</code>* directives are used to limit the
-    amount of resources which can be used by processes forked off
-    from the Apache children. In particular, this will control
-    resources used by CGI scripts and SSI exec commands.</p>
-
-    <p>The <code>ThreadStackSize</code> directive is used only on
-    Netware to control the stack size.</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+    <p>The <a href="./mod/mpm_netware.html#threadstacksize" class="directive"><code class="directive">ThreadStackSize</code></a> directive
+    is used only on Netware to control the stack size.</p>
+  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
