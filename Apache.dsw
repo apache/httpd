@@ -69,6 +69,234 @@ Package=<4>
 
 ###############################################################################
 
+Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Apache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_anon
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_dbm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cern_meta
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_expires
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_file_cache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_headers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_rewrite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_speling
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_status
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_usertrack
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htpasswd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name rotatelogs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htdigest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name logresolve
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ab
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name pcreposix
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav_fs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ab"=".\support\ab.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "aprlib"=".\lib\apr\aprlib.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "aprlibdll"=".\lib\apr\aprlibdll.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dftables"=".\lib\pcre\dftables.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "install"=".\os\win32\installer\installdll\install.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_auth_anon"=".\os\win32\mod_auth_anon.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -139,6 +367,51 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_dav"=".\os\win32\mod_dav.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_dav_fs"=".\os\win32\mod_dav_fs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sdbmlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav
     End Project Dependency
 }}}
 
@@ -301,273 +574,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheCoreDll
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlibdll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Apache
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_anon
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_dbm
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_digest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_cern_meta
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_expires
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_file_cache
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_headers
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_rewrite
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_speling
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_status
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_usertrack
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name htpasswd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name rotatelogs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name htdigest
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name logresolve
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ab
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCoreDll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name pcreposix
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name xmlparse
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "ab"=".\support\ab.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "aprlib"=".\lib\apr\aprlib.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "aprlibdll"=".\lib\apr\aprlibdll.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "dftables"=".\lib\pcre\dftables.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCore
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "install"=".\os\win32\installer\installdll\install.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name aprlib
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_dav"=".\os\win32\mod_dav.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name ApacheCoreDll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprlibdll
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_dav_fs"=".\os\win32\mod_dav_fs.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name xmlparse
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ApacheCoreDll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprlibdll
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name sdbmlib
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_dav
     End Project Dependency
 }}}
 
