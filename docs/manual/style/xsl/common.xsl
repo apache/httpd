@@ -66,6 +66,9 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </xsl:comment>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <title>
         <xsl:choose>
           <xsl:when test="name">
@@ -80,15 +83,30 @@
         <xsl:text> </xsl:text>
         <xsl:value-of select="$messages/message[@name='apachetitle']"/>
       </title>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link title="Main stylesheet"  type="text/css" media="all" rel="stylesheet"
              href="{$path}/style/css/manual.css" />
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link title="No Sidebar - Default font size" type="text/css" media="all"
              rel="alternate stylesheet" 
              href="{$path}/style/css/manual-loose-100pc.css"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link type="text/css" media="print"
              rel="stylesheet"
              href="{$path}/style/css/manual-print.css"/>
       
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </head>
   </xsl:template>
@@ -100,14 +118,27 @@
   <!--                                                            -->
   <xsl:template name="top">
     <div id="page-header">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <xsl:call-template name="super-menu" />
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <p class="apache">
         <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
       </p>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <img src="{$path}/images/feather.gif" alt="" />
     </div> <!-- /page-header -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
     <div class="up">
       <a href="./">
@@ -118,35 +149,41 @@
       </a>
     </div>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     <div id="path">
 
-          <a href="http://www.apache.org/">
-            <xsl:value-of select="$messages/message[@name='apache']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/">
-            <xsl:value-of select="$messages/message[@name='http-server']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/docs-project/">
-            <xsl:value-of select="$messages/message[@name='documentation']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="{$path}/">
-            <xsl:value-of select="$messages/message[@name='version']"/>
-          </a>
-          <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
-            <xsl:text> &gt; </xsl:text>
-            <a href="./">
-              <xsl:value-of select="$messages/message[@name='modules']"/>
-            </a>
-          </xsl:if>
-          <xsl:if test="parentdocument/text()">
-            <xsl:text> &gt; </xsl:text>
-            <a href="{parentdocument/@href}">
-              <xsl:value-of select="parentdocument"/>
-            </a>
-          </xsl:if>
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+      <a href="http://www.apache.org/">
+        <xsl:value-of select="$messages/message[@name='apache']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="http://httpd.apache.org/">
+        <xsl:value-of select="$messages/message[@name='http-server']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="http://httpd.apache.org/docs-project/">
+        <xsl:value-of select="$messages/message[@name='documentation']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="{$path}/">
+        <xsl:value-of select="$messages/message[@name='version']"/>
+      </a>
+      <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
+        <xsl:text> &gt; </xsl:text>
+        <a href="./">
+          <xsl:value-of select="$messages/message[@name='modules']"/>
+        </a>
+      </xsl:if>
+      <xsl:if test="parentdocument/text()">
+        <xsl:text> &gt; </xsl:text>
+        <a href="{parentdocument/@href}">
+          <xsl:value-of select="parentdocument"/>
+        </a>
+      </xsl:if>
     </div> <!-- /path -->
   </xsl:template>
   <!-- /top -->
@@ -157,12 +194,19 @@
   <!--                                                            -->
   <xsl:template name="bottom">
     <div id="footer">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <p class="apache">
         <xsl:value-of select="$messages/message[@name='maintainedby']"/>
         <xsl:text> </xsl:text>
         <a href="http://httpd.apache.org/docs-project/"
           >Apache HTTP Server Documentation Project</a>
       </p>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <xsl:call-template name="super-menu"/>
 
@@ -178,7 +222,13 @@
 
     <xsl:call-template name="toplink"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     <div class="section">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <!-- Section heading -->
       <h2>
@@ -243,7 +293,7 @@
         <xsl:apply-templates select="title" mode="print"/>
       </xsl:if>
     </h4>
-    
+
     <!-- Section body -->
     <xsl:apply-templates/>
 
@@ -292,6 +342,10 @@
           <xsl:apply-templates select="title" mode="print"/>
         </a>
       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     </xsl:if>
 
     <xsl:if test="not(@id)">
@@ -310,6 +364,10 @@
         </xsl:if>
         -->
       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     </xsl:if>
 
   </xsl:template>
@@ -321,27 +379,25 @@
   <!--                                                            -->
   <xsl:template name="super-menu">
     <p class="menu">
-
-          <a href="{$path}/mod/">
-            <xsl:value-of select="$messages/message[@name='modules']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/mod/directives.html">
-            <xsl:value-of select="$messages/message[@name='directives']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/faq/">
-            <xsl:value-of select="$messages/message[@name='faq']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/glossary.html">
-            <xsl:value-of select="$messages/message[@name='glossary']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/sitemap.html">
-            <xsl:value-of select="$messages/message[@name='sitemap']"/>
-          </a>
-
+      <a href="{$path}/mod/">
+        <xsl:value-of select="$messages/message[@name='modules']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/mod/directives.html">
+        <xsl:value-of select="$messages/message[@name='directives']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/faq/">
+        <xsl:value-of select="$messages/message[@name='faq']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/glossary.html">
+        <xsl:value-of select="$messages/message[@name='glossary']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/sitemap.html">
+        <xsl:value-of select="$messages/message[@name='sitemap']"/>
+      </a>
     </p>
   </xsl:template>
   <!-- /super-menu -->
