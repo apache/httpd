@@ -529,6 +529,49 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
                               int strip_white);
 
+/*
+** XML namespace handling
+**
+** This structure tracks namespace declarations (xmlns:prefix="URI").
+** It maintains a many-to-one relationship of URIs-to-prefixes. In other
+** words, a URI may be defined by multiple prefixes, but any specific
+** prefix will specify only one URI.
+**
+** Prefixes using the "g###" pattern can be generated automatically if
+** the caller does not have specific prefix requirements.
+*/
+typedef struct {
+    apr_pool_t *pool;
+    apr_hash_t *uri_prefix;     /* map URIs to an available prefix */
+    apr_hash_t *prefix_uri;     /* map all prefixes to their URIs */
+    int count;                  /* counter for "g###" prefixes */
+} dav_xmlns_info;
+
+/* create an empty dav_xmlns_info structure */
+DAV_DECLARE(dav_xmlns_info *) dav_xmlns_create(apr_pool_t *pool);
+
+/* add a specific prefix/URI pair. the prefix/uri should have a lifetime
+   at least that of xmlns->pool */
+DAV_DECLARE(void) dav_xmlns_add(dav_xmlns_info *xi,
+                                const char *prefix, const char *uri);
+
+/* add a URI (if not present); any prefix is acceptable and is returned.
+   the uri should have a lifetime at least that xmlns->pool */
+DAV_DECLARE(const char *) dav_xmlns_add_uri(dav_xmlns_info *xi,
+                                            const char *uri);
+
+/* return the URI for a specified prefix (or NULL if the prefix is unknown) */
+DAV_DECLARE(const char *) dav_xmlns_get_uri(dav_xmlns_info *xi,
+                                            const char *prefix);
+
+/* return an available prefix for a specified URI (or NULL if the URI
+   is unknown) */
+DAV_DECLARE(const char *) dav_xmlns_get_prefix(dav_xmlns_info *xi,
+                                               const char *uri);
+
+/* generate xmlns declarations (appending into the given text) */
+DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
+                                     apr_text_header *phdr);
 
 /* --------------------------------------------------------------------
 **
