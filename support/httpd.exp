@@ -355,7 +355,6 @@ apr_array_pstrcat
 apr_bind
 apr_bytes_in_free_blocks
 apr_bytes_in_pool
-apr_canonical_error
 apr_child_init_lock
 apr_cleanup_for_exec
 apr_clear_poll_sockets
