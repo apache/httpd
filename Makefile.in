@@ -180,7 +180,7 @@ install-include:
 	@cp -p $(srcdir)/modules/http/mod_core.h $(DESTDIR)$(includedir)
 	@cp -p $(srcdir)/modules/proxy/mod_proxy.h $(DESTDIR)$(includedir)
 	@cp -p $(srcdir)/modules/ssl/mod_ssl.h $(DESTDIR)$(includedir)
-	@cp -p $(srcdir)/srclib/pcre/pcre*.h $(DESTDIR)$(includedir)
+	@cp -p $(builddir)/srclib/pcre/pcre.h $(DESTDIR)$(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(DESTDIR)$(includedir)
 	@chmod 644 $(DESTDIR)$(includedir)/*.h
 
