@@ -137,6 +137,9 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     return a;
 }
 
+/* need prototype for overlap check */
+static int alias_matches(const char *uri, const char *alias_fakename);
+
 static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
                                       const char *f, const char *r,
                                       int use_regex)
@@ -145,6 +148,8 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     alias_server_conf *conf = ap_get_module_config(s->module_config,
                                                    &alias_module);
     alias_entry *new = apr_array_push(conf->aliases);
+    alias_entry *entries = (alias_entry *)conf->aliases->elts;
+    int i;
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
 
@@ -164,6 +169,26 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     }
     new->fake = f;
     new->handler = cmd->info;
+
+    /* check for overlapping (Script)Alias directives
+     * and throw a warning if found one
+     */
+    if (!use_regex) {
+        for (i = 0; i < conf->aliases->nelts - 1; ++i) {
+            alias_entry *p = &entries[i];
+
+            if (!p->regexp && alias_matches(f, p->fake) > 0) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                             "The %s command in line %d will probably never "
+                             "match. Check previous %sAlias commands for "
+                             "overlappings.", cmd->cmd->name,
+                             cmd->directive->line_num,
+                             p->handler ? "Script" : "");
+
+                break; /* one warning per alias should be sufficient */
+            }
+        }
+    }
 
     return NULL;
 }
