@@ -802,13 +802,8 @@ static int dav_method_get(request_rec *r)
 	return result;
     }
     else {
-	dav_stream_mode mode;
 	dav_stream *stream;
-	dav_error *err;
 	void *buffer;
-        int has_range;
-        apr_off_t range_start;
-        apr_off_t range_end;
 
 	/* set up the HTTP headers for the response */
 	if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
@@ -818,31 +813,11 @@ static int dav_method_get(request_rec *r)
 	    return dav_handle_err(r, err, NULL);
 	}
 
-        /* use plain READ mode unless we see a Content-Range */
-	mode = DAV_MODE_READ;
-
-        /* process the Content-Range header (if present) */
-        has_range = dav_parse_range(r, &range_start, &range_end);
-        if (has_range) {
-            /* use a read mode which is seekable */
-            mode = DAV_MODE_READ_SEEKABLE;
-
-            /* prep the output */
-            r->status = HTTP_PARTIAL_CONTENT;
-            apr_table_setn(r->headers_out,
-                          "Content-Range",
-                          apr_psprintf(r->pool,
-                                       "bytes %" APR_OFF_T_FMT
-                                       "-%" APR_OFF_T_FMT "/*",
-                                       range_start, range_end));
-            ap_set_content_length(r, range_end - range_start + 1);
-        }
-
         if (r->header_only) {
             return DONE;
         }
 
-	if ((err = (*resource->hooks->open_stream)(resource, mode,
+	if ((err = (*resource->hooks->open_stream)(resource, DAV_MODE_READ,
                                                    &stream)) != NULL) {
 	    /* ### assuming FORBIDDEN is probably not quite right... */
 	    err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
@@ -853,27 +828,9 @@ static int dav_method_get(request_rec *r)
 	    return dav_handle_err(r, err, NULL);
 	}
 
-        if (has_range
-            && (err = (*resource->hooks->seek_stream)(stream,
-                                                      range_start)) != NULL) {
-            err = dav_push_error(r->pool, err->status, 0,
-                                 "Could not seek to beginning of the "
-                                 "specified Content-Range.", err);
-            return dav_handle_err(r, err, NULL);
-        }
-
 	buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	while (1) {
-	    apr_size_t amt;
-
-            if (!has_range)
-                amt = DAV_READ_BLOCKSIZE;
-            else if ((range_end - range_start + 1) > DAV_READ_BLOCKSIZE)
-                amt = DAV_READ_BLOCKSIZE;
-            else {
-                /* note: range_end - range_start is an ssize_t */
-                amt = (apr_size_t)(range_end - range_start + 1);
-            }
+	    apr_size_t amt = DAV_READ_BLOCKSIZE;
 
 	    if ((err = (*resource->hooks->read_stream)(stream, buffer,
                                                        &amt)) != NULL) {
@@ -887,24 +844,11 @@ static int dav_method_get(request_rec *r)
 		/* ### what to do with this error? */
 		break;
 	    }
-
-            if (has_range) {
-                range_start += amt;
-                if (range_start > range_end)
-                    break;
-            }
 	}
 
 	if (err != NULL)
 	    return dav_handle_err(r, err, NULL);
 
-        /*
-        ** ### range_start should equal range_end+1. if it doesn't, then
-        ** ### we did not send enough data to the client. the client will
-        ** ### hang (and timeout) waiting for the data.
-        **
-        ** ### what to do? abort the connection?
-        */
 	return DONE;
     }
 
