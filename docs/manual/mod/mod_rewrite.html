@@ -774,14 +774,24 @@ from the HTTP request. Example: <TT>%{HTTP:Proxy-Connection}</TT>
 is the value of the HTTP header ``<TT>Proxy-Connection:</TT>''.
 
 <P>
-<LI>There is the special format: <TT>%{LA-U:url}</TT>
-for look-aheads like <TT>-U</TT>. This performs a internal sub-request to
-look-ahead for the final value of <EM>url</EM>.
+<LI>There is the special format <TT>%{LA-U:variable}</TT> for look-aheads
+which perform an internal (URL-based) sub-request to determine the final value
+of <EM>variable</EM>. Use this when you want to use a variable for rewriting
+which actually is set later in an API phase and thus is not available at the
+current stage. For instance when you want to rewrite according to the
+<TT>REMOTE_USER</TT> variable from within the per-server context
+(<TT>httpd.conf</TT> file) you have to use <TT>%{LA-U:REMOTE_USER}</TT>
+because this variable is set by the authorization phases which come
+<EM>after</EM> the URL translation phase where mod_rewrite operates. On the
+other hand, because mod_rewrite implements its per-directory context
+(<TT>.htaccess</TT> file) via the Fixup phase of the API and because the
+authorization phases come <EM>before</EM> this phase, you just can use
+<TT>%{REMOTE_USER}</TT> there.
 
 <P>
-<LI>There is the special format: <TT>%{LA-F:file}</TT>
-for look-aheads like <TT>-F</TT>. This performs a internal sub-request to
-look-ahead for the final value of <EM>file</EM>.
+<LI>There is the special format: <TT>%{LA-F:variable}</TT> which perform an
+internal (filename-based) sub-request to determine the final value of
+<EM>variable</EM>. This is the most of the time the same as LA-U above.
 </OL>
 
 <P>
