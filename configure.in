@@ -128,12 +128,14 @@ abs_builddir=`pwd`
 dnl If the source dir is not equal to the build dir, 
 dnl then we are running in VPATH mode.
 
+APR_ADDTO(INCLUDES, [-I.])
+
 if test "$abs_builddir" != "$abs_srcdir"; then
   USE_VPATH=1
-  APR_ADDTO(INCLUDES, [-I. -I\$(srcdir) -I\$(top_builddir)/os/\$(OS_DIR) -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_builddir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_builddir)/modules/http -I\$(top_srcdir)/modules/http -I\$(top_builddir)/modules/proxy -I\$(top_srcdir)/modules/proxy -I\$(top_builddir)/modules/filters -I\$(top_srcdir)/modules/filters -I\$(top_builddir)/include -I\$(top_srcdir)/include])
-else
-  APR_ADDTO(INCLUDES, [-I. -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include])
+  APR_ADDTO(INCLUDES, [-I\$(srcdir) -I\$(top_builddir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_builddir)/include])
 fi
+
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include])
 
 echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
 
