@@ -2,7 +2,7 @@ Changes with Apache 1.3.5
 
   *) PORT: Switch back to using fcntl() locking on Linux -- instabilities
      have been reported with flock() locking (probably related to kernel
-     version).  [Dean Gaudet] PR#3531
+     version).  [Dean Gaudet] PR#2723, 3531
 
   *) Using APACI, the main config file (usually httpd.conf) was
      not being adjusted as $(TARGET).conf. [Wilfredo Sanchez
