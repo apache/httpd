@@ -403,6 +403,7 @@ apr_fprintf
 apr_full_read
 apr_full_write
 apr_getaddrinfo
+apr_getnameinfo
 apr_get_dir_filename
 apr_get_filedata
 apr_get_hostname
