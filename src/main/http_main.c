@@ -322,11 +322,14 @@ static void lingering_close (request_rec *r)
 
     kill_timeout(r);     /* Remove any leftover timeouts */
 
-    /* Close our half of the connection --- send client a FIN */
+    /* Close our half of the connection --- send client a FIN and
+     * set the socket to non-blocking for later reads.
+     */
 
-    if ((shutdown(sd, 1)) != 0) {
+    if (((shutdown(sd, 1)) != 0) || (fcntl(sd, F_SETFL, FNDELAY) == -1)) {
 	/* if it fails, no need to go through the rest of the routine */
-	log_unixerr("shutdown", NULL, "lingering_close", r->server);
+	if (errno != ENOTCONN)
+	    log_unixerr("shutdown", NULL, "lingering_close", r->server);
 	close(sd);
 	return;
     }
@@ -348,12 +351,16 @@ static void lingering_close (request_rec *r)
     hard_timeout("lingering_close", r);
 
     do {
-	/* If keep_alive_timeout is too low, using it as a timeout
-	 * can cause undesirable behavior so pick some pseudo-arbitrary
-	 * minimum value, currently 10 seconds.  These parameters are
-         * reset on each pass, since they may be changed by select.
-	 */
-        tv.tv_sec  = max(r->server->keep_alive_timeout, 10);
+        /* We use a 1 second timeout because current (Feb 97) browsers
+         * fail to close a connection after the server closes it.  Thus,
+         * to avoid keeping the child busy, we are only lingering long enough
+         * for a client that is actively sending data on a connection.
+         * This should be sufficient unless the connection is massively
+         * losing packets, in which case we might have missed the RST anyway.
+         * These parameters are reset on each pass, since they might be
+         * changed by select.
+         */
+        tv.tv_sec  = 1;
         tv.tv_usec = 0;
         read_rv    = 0;
         fds_read   = fds;

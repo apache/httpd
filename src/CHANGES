@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) Reduced timeout on lingering close, removed possibility of a blocked
+     read causing the child to hang, and stopped logging of errors if
+     the socket is not connected (reset by client).  [Roy Fielding]
+
   *) Extensive performance improvements. Cleaned up inefficient use of
      auto initializers, multiple is_matchexp calls on a static string,
      and excessive merging of response_code_strings. [Dean Gaudet]
