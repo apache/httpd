@@ -136,9 +136,9 @@ by the values as follows:
 %...r:          First line of request
 %...s:          Status.  For requests that got internally redirected, this
                 is status of the *original* request --- %...&gt;s for the last.
-%...t:          Time, in common log format time format
+%...t:          Time, in common log format time format (standard english format)
 %...{format}t:  The time, in the form given by format, which should
-                be in strftime(3) format.
+                be in strftime(3) format. (potentially localised)
 %...T:          The time taken to serve the request, in seconds.
 %...u:          Remote user (from auth; may be bogus if return status (%s) is 401)
 %...U:          The URL path requested.
