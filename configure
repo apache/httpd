@@ -821,12 +821,12 @@ if [ ".$confadjust" = .1 ]; then
     hostname="`echo $hostname | sed -e 's/\..*//'`"
     domainname="";
     if [ -f /etc/resolv.conf ]; then
-        domainname="`egrep '^[ 	]*domain' /etc/resolv.conf |\
+        domainname="`egrep '^[ 	]*domain' /etc/resolv.conf | head -1 |\
                      sed -e 's/.*domain//' -e 's/^[ 	]*//' \
                          -e 's/^ *//' -e 's/^	*//' \
                          -e 's/^\.//' -e 's/^/./'`"
         if [ ".$domainname" = . ]; then
-            domainname="`egrep '^[ 	]*search' /etc/resolv.conf |\
+            domainname="`egrep '^[ 	]*search' /etc/resolv.conf | head -1 |\
                          sed -e 's/.*search//' -e 's/^[ 	]*//' \
                              -e 's/^ *//' -e 's/^	*//' \
                              -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
