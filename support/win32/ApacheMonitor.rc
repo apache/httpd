@@ -55,7 +55,7 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_MSG_APPRUNNING      "Apache monitor is allready started"
+    IDS_MSG_APPRUNNING      "Apache monitor is already started"
     IDS_MSG_ERROR           "Error"
     IDS_MSG_RUNNINGALL      "Running all Apache services"
     IDS_MSG_RUNNING         "Running %d from %d Apache services"
