@@ -1999,16 +1999,14 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs =
     dav_fs_patch_rollback,
 };
 
-
-const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r)
+static const dav_provider dav_fs_provider =
 {
-    return &dav_hooks_locks_fs;
-}
-
-const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r)
-{
-    return &dav_hooks_db_dbm;
-}
+    &dav_hooks_repository_fs,
+    &dav_hooks_db_dbm,
+    &dav_hooks_locks_fs,
+    &dav_hooks_liveprop_fs,
+    NULL
+};
 
 void dav_fs_gather_propsets(apr_array_header_t *uris)
 {
@@ -2046,5 +2044,5 @@ void dav_fs_register(apr_pool_t *p)
     }
 
     /* register the repository provider */
-    dav_register_repository(p, "filesystem", &dav_hooks_repository_fs);
+    dav_register_provider(p, "filesystem", &dav_fs_provider);
 }

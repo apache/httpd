@@ -216,52 +216,31 @@ apr_table_t *dav_get_dir_params(const request_rec *r)
     return conf->d_params;
 }
 
+static const dav_provider * dav_get_provider(request_rec *r)
+{
+    dav_dir_conf *conf;
+
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    /* assert: conf->provider != NULL
+       (otherwise, DAV is disabled, and we wouldn't be here */
+
+    /* ### assert that we find it? (return value != NULL) */
+    return dav_lookup_provider(conf->provider);
+}
+
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
 {
-    void *data;
-    const dav_hooks_locks *hooks;
-
-    (void) apr_get_userdata(&data, DAV_KEY_LOCK_HOOKS, r->pool);
-    if (data == NULL) {
-        hooks = ap_run_get_lock_hooks(r);
-        (void) apr_set_userdata(hooks, DAV_KEY_LOCK_HOOKS, apr_null_cleanup,
-                               r->pool);
-    }
-    else
-        hooks = data;
-    return hooks;
+    return dav_get_provider(r)->locks;
 }
 
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r)
 {
-    void *data;
-    const dav_hooks_db *hooks;
-
-    (void) apr_get_userdata(&data, DAV_KEY_PROPDB_HOOKS, r->pool);
-    if (data == NULL) {
-        hooks = ap_run_get_propdb_hooks(r);
-        (void) apr_set_userdata(hooks, DAV_KEY_PROPDB_HOOKS, apr_null_cleanup,
-                               r->pool);
-    }
-    else
-        hooks = data;
-    return hooks;
+    return dav_get_provider(r)->propdb;
 }
 
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
 {
-    void *data;
-    const dav_hooks_vsn *hooks;
-
-    (void) apr_get_userdata(&data, DAV_KEY_VSN_HOOKS, r->pool);
-    if (data == NULL) {
-        hooks = ap_run_get_vsn_hooks(r);
-        (void) apr_set_userdata(hooks, DAV_KEY_VSN_HOOKS, apr_null_cleanup,
-                               r->pool);
-    }
-    else
-        hooks = data;
-    return hooks;
+    return dav_get_provider(r)->vsn;
 }
 
 /*
@@ -279,6 +258,14 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
     }
     else {
         conf->provider = apr_pstrdup(cmd->pool, arg1);
+    }
+    if (conf->provider != NULL
+        && dav_lookup_provider(conf->provider) == NULL) {
+
+        /* by the time they use it, the provider should be loaded and
+           registered with us. */
+        return apr_psprintf(cmd->pool,
+                            "Unknown DAV provider: %s", conf->provider);
     }
 
     return NULL;
@@ -610,7 +597,7 @@ static int dav_get_resource(request_rec *r, int target_allowed,
 {
     void *data;
     dav_dir_conf *conf;
-    const dav_hooks_repository *repos_hooks;
+    const dav_provider *provider;
     const char *workspace = NULL;
     const char *target_selector = NULL;
     int is_label = 0;
@@ -625,8 +612,8 @@ static int dav_get_resource(request_rec *r, int target_allowed,
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
-    /* assert: provider != NULL */
-    repos_hooks = dav_lookup_repository(conf->provider);
+    /* assert: conf->provider != NULL */
+    provider = dav_lookup_provider(conf->provider);
 
     /* get any workspace header */
     if ((result = dav_get_workspace(r, &workspace)) != OK)
@@ -641,8 +628,8 @@ static int dav_get_resource(request_rec *r, int target_allowed,
     }
 
     /* resolve the resource */
-    *res_p = (*repos_hooks->get_resource)(r, conf->dir, workspace,
-                                          target_selector, is_label);
+    *res_p = (*provider->repos->get_resource)(r, conf->dir, workspace,
+                                              target_selector, is_label);
     if (*res_p == NULL) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3269,19 +3256,10 @@ module MODULE_VAR_EXPORT dav_module =
 };
 
 AP_HOOK_STRUCT(
-    AP_HOOK_LINK(get_lock_hooks)
-    AP_HOOK_LINK(get_propdb_hooks)
-    AP_HOOK_LINK(get_vsn_hooks)
     AP_HOOK_LINK(gather_propsets)
     AP_HOOK_LINK(find_liveprop)
     AP_HOOK_LINK(insert_all_liveprops)
     )
-AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_locks *, get_lock_hooks,
-                            (request_rec *r), (r), NULL);
-AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_db *, get_propdb_hooks,
-                            (request_rec *r), (r), NULL);
-AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_vsn *, get_vsn_hooks,
-                            (request_rec *r), (r), NULL);
 AP_IMPLEMENT_HOOK_VOID(gather_propsets, (apr_array_header_t *uris), (uris))
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, find_liveprop,
                             (request_rec *r,
