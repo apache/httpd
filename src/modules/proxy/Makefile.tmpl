@@ -56,7 +56,7 @@ depend:
 
 #Dependencies
 
-$(OBJS): Makefile
+$(OBJS) $(SHLIB_OBJS): Makefile
 
 # DO NOT REMOVE
 mod_proxy.o: mod_proxy.c mod_proxy.h $(INCDIR)/httpd.h \
