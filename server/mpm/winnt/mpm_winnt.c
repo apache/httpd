@@ -364,7 +364,7 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     }
     return NULL;
 }
-static int setup_listeners(ap_context_t *pconf, server_rec *s)
+static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -373,7 +373,7 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     /* Setup the listeners */
     FD_ZERO(&listenfds);
 
-    if (ap_listen_open(pconf, s->port)) {
+    if (ap_listen_open(s->process, s->port)) {
        return 0;
     }
     for (lr = ap_listeners; lr; lr = lr->next) {
@@ -393,7 +393,7 @@ static int setup_listeners(ap_context_t *pconf, server_rec *s)
     return num_listeners;
 }
 
-static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
+static int setup_inherited_listeners(server_rec *s)
 {
     WSAPROTOCOL_INFO WSAProtocolInfo;
     HANDLE pipe;
@@ -409,7 +409,7 @@ static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
 
     if (ap_listeners == NULL) {
         ap_listen_rec *lr;
-        lr = malloc(sizeof(ap_listen_rec));
+        lr = ap_palloc(s->process->pool, sizeof(ap_listen_rec));
         if (!lr)
             return 0;
         lr->sd = NULL;
@@ -1037,10 +1037,10 @@ static void worker_main()
 
     /* start_mutex obtained, continue into the select() loop */
     if (one_process) {
-        setup_listeners(pconf, server_conf);
+        setup_listeners(server_conf);
     } else {
         /* Get listeners from the parent process */
-        setup_inherited_listeners(pconf, server_conf);
+        setup_inherited_listeners(server_conf);
     }
 
     if (listenmaxfd == INVALID_SOCKET) {
@@ -1391,7 +1391,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     HANDLE process_handles[MAX_PROCESSES];
     HANDLE process_kill_events[MAX_PROCESSES];
 
-    setup_listeners(pconf, s);
+    setup_listeners(s);
 
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
