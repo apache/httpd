@@ -63,3 +63,9 @@
 #define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
 #define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
 
+/* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
+ * Always increases along the same track as the source branch.
+ * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
+ */
+#define APACHE_RELEASE 20000009
+

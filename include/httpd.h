@@ -381,12 +381,6 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 AP_DECLARE(const char *) ap_get_server_built(void);
 
-/* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
- * Always increases along the same track as the source branch.
- * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
- */
-#define APACHE_RELEASE 20000009
-
 #define DECLINED -1		/* Module declines to handle */
 #define DONE -2			/* Module has served the response completely 
 				 *  - it's safe to die() with no more output
