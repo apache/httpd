@@ -29,6 +29,7 @@ always available.
 <li><A HREF="#errorlog">ErrorLog</A>
 <li><A HREF="#files">&lt;Files&gt;</A>
 <li><A HREF="#group">Group</A>
+<li><A HREF="#hostnamelookups">HostNameLookups</A>
 <li><A HREF="#identitycheck">IdentityCheck</A>
 <li><A HREF="#ifmodule">&lt;IfModule&gt;</A>
 <li><A HREF="#keepalive">KeepAlive</A>
@@ -463,6 +464,22 @@ properly configured <A HREF="../suexec.html">SUEXEC wrapper</A>.<p>
 
 SECURITY: See <A HREF="#user">User</A> for a discussion of the security
 considerations.<p><hr>
+
+<A name="hostnamelookups"><h2>HostNameLookups directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
+<strong>Syntax:</strong> HostNameLookups <em>boolean</em><br>
+<strong>Default:</strong> <code>HostNameLookups on</code><br>
+<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> core<p>
+
+This directive enables DNS lookups so that host names can be logged.
+Having this directive set <code>on</code> also enables the use of names
+in &lt;Limit&gt; blocks for access control.<p>
+
+Heavily loaded sites should set this directive <code>off</code>, since DNS
+lookups can take considerable amounts of time. The utility <i>logresolve</i>,
+provided in the <i>/support</i> directory, can be used to look up host names
+from logged IP addresses offline.<p><hr>
 
 <A name="identitycheck"><h2>IdentityCheck directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
