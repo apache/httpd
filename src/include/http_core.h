@@ -125,6 +125,8 @@ typedef char overrides_t;
 typedef struct {
     char *d;
     allow_options_t opts;
+    allow_options_t opts_add;
+    allow_options_t opts_remove;
     overrides_t override;
     
     /* MIME typing --- the core doesn't do anything at all with this,

@@ -87,6 +87,7 @@ void *create_core_dir_config (pool *a, char *dir)
     else conf->d = pstrcat (a, dir, "/", NULL);
 
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
+    conf->opts_add = conf->opts_remove = OPT_NONE;
     conf->override = dir ? OR_UNSET : OR_ALL;
 
     conf->content_md5 = 2;
@@ -123,6 +124,9 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     conf->r = new->r;
     
     if (new->opts != OPT_UNSET) conf->opts = new->opts;
+    if (new->opts_add) conf->opts |= new->opts_add;
+    if (new->opts_remove) conf->opts &= ~(new->opts_remove);
+
     if (new->override != OR_UNSET) conf->override = new->override;
     if (new->default_type) conf->default_type = new->default_type;
     
@@ -469,31 +473,50 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 
 const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
-    d->opts = OPT_NONE;
+    char opt;
+    int first = 1;
+    char action;
+
     while(l[0]) {
         char *w = getword_conf(cmd->pool, &l);
+	action = '\0';
+
+	if (*w == '+' || *w == '-')
+	    action = *(w++);
+	else if (first) {
+  	    d->opts = OPT_NONE;
+            first = 0;
+        }
+	    
 	if(!strcasecmp(w,"Indexes"))
-	    d->opts |= OPT_INDEXES;
+	    opt = OPT_INDEXES;
 	else if(!strcasecmp(w,"Includes"))
-	    d->opts |= OPT_INCLUDES;
+	    opt = OPT_INCLUDES;
 	else if(!strcasecmp(w,"IncludesNOEXEC"))
-	    d->opts |= (OPT_INCLUDES | OPT_INCNOEXEC);
+	    opt = (OPT_INCLUDES | OPT_INCNOEXEC);
 	else if(!strcasecmp(w,"FollowSymLinks"))
-	    d->opts |= OPT_SYM_LINKS;
+	    opt = OPT_SYM_LINKS;
 	else if(!strcasecmp(w,"SymLinksIfOwnerMatch"))
-	    d->opts |= OPT_SYM_OWNER;
+	    opt = OPT_SYM_OWNER;
 	else if(!strcasecmp(w,"execCGI"))
-	    d->opts |= OPT_EXECCGI;
+	    opt = OPT_EXECCGI;
 	else if (!strcasecmp(w,"MultiViews"))
-	    d->opts |= OPT_MULTI;
+	    opt = OPT_MULTI;
 	else if (!strcasecmp(w,"RunScripts")) /* AI backcompat. Yuck */
-	    d->opts |= OPT_MULTI|OPT_EXECCGI;
+	    opt = OPT_MULTI|OPT_EXECCGI;
 	else if(!strcasecmp(w,"None")) 
-	    d->opts = OPT_NONE;
+	    opt = OPT_NONE;
 	else if(!strcasecmp(w,"All")) 
-	    d->opts = OPT_ALL;
+	    opt = OPT_ALL;
 	else 
 	    return pstrcat (cmd->pool, "Illegal option ", w, NULL);
+
+	if (action == '-')
+	    d->opts_remove |= opt;
+	else if (action == '+')
+	    d->opts_add |= opt;
+	else
+	  d->opts |= opt;
     }
 
     return NULL;
