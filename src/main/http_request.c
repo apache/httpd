@@ -1051,12 +1051,18 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
     }
 
     /*
+     * We need to ensure that r->connection->keepalive is valid in
+     * order to determine if we can discard the request body below.
+     */
+    ap_set_keepalive(r);
+
+    /*
      * If we want to keep the connection, be sure that the request body
      * (if any) has been read.
      */
     if ((r->status != HTTP_NOT_MODIFIED) && (r->status != HTTP_NO_CONTENT)
         && !ap_status_drops_connection(r->status)
-        && r->connection && (r->connection->keepalive != -1)) {
+        && r->connection && (r->connection->keepalive > 0)) {
 
         (void) ap_discard_request_body(r);
     }

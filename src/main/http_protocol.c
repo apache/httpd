@@ -391,6 +391,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
     int wimpy = ap_find_token(r->pool,
                            ap_table_get(r->headers_out, "Connection"), "close");
     const char *conn = ap_table_get(r->headers_in, "Connection");
+    const char *herebefore = ap_table_get(r->notes, "ap_set_keepalive-called");
 
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
@@ -442,7 +443,17 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = 1;
-        r->connection->keepalives++;
+	/*
+	 * ap_set_keepalive could be called multiple times (eg: in
+	 * ap_die() followed by ap_send_http_header()) during this
+	 * one single request. To ensure that we don't incorrectly
+	 * increment the keepalives counter for each call, we
+	 * use notes to store a state flag.
+	 */
+	if (!herebefore) {
+            r->connection->keepalives++;
+            ap_table_setn(r->notes, "ap_set_keepalive-called", "1");
+	}
 
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
