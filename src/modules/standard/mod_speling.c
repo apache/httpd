@@ -455,8 +455,10 @@ static int check_speling(request_rec *r)
 
                 /* The format isn't very neat... */
                 t = ap_pstrcat(p, t, "<li><a href=\"", url,
-			       variant[i].name, r->path_info, "\">",
 			       variant[i].name, r->path_info,
+			       r->parsed_uri.query ? "?" : "",
+			       r->parsed_uri.query ? r->parsed_uri.query : "",
+			       "\">", variant[i].name, r->path_info,
 			       r->parsed_uri.query ? "?" : "",
 			       r->parsed_uri.query ? r->parsed_uri.query : "",
 			       "</a> (",
