@@ -68,11 +68,16 @@
 #include "http_config.h"
 #include "http_log.h"
 
+typedef struct handlers_info {
+    char *name;
+} handlers_info;
+
 typedef struct {
     table *forced_types;        /* Additional AddTyped stuff */
     table *encoding_types;      /* Added with AddEncoding... */
     table *language_types;      /* Added with AddLanguage... */
     table *handlers;            /* Added with AddHandler...  */
+    array_header *handlers_remove;     /* List of handlers to remove */
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -89,6 +94,7 @@ static void *create_mime_dir_config(pool *p, char *dummy)
     new->encoding_types = ap_make_table(p, 4);
     new->language_types = ap_make_table(p, 4);
     new->handlers = ap_make_table(p, 4);
+    new->handlers_remove = ap_make_array(p, 4, sizeof(handlers_info));
 
     new->type = NULL;
     new->handler = NULL;
@@ -101,7 +107,14 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
     mime_dir_config *new =
-    (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
+	(mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
+    int i;
+    handlers_info *hand;
+
+    hand = (handlers_info *) add->handlers_remove->elts;
+    for (i = 0; i < add->handlers_remove->nelts; i++) {
+	ap_table_unset(base->handlers, hand[i].name);
+    }
 
     new->forced_types = ap_overlay_tables(p, add->forced_types,
                                        base->forced_types);
@@ -158,6 +171,24 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config * m, char *hdlr,
     return NULL;
 }
 
+/*
+ * Note handler names that should be un-added for this location.  This
+ * will keep the association from being inherited, as well, but not
+ * from being re-added at a subordinate level.
+ */
+static const char *remove_handler(cmd_parms *cmd, void *m, char *ext)
+{
+    mime_dir_config *mcfg = (mime_dir_config *) m;
+    handlers_info *hand;
+
+    if (*ext == '.') {
+	++ext;
+    }
+    hand = (handlers_info *) ap_push_array(mcfg->handlers_remove);
+    hand->name = ap_pstrdup(cmd->pool, ext);
+    return NULL;
+}
+
 /* The sole bit of server configuration that the MIME module has is
  * the name of its config file, so...
  */
@@ -181,6 +212,8 @@ static const command_rec mime_cmds[] =
     {"ForceType", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO, TAKE1, 
      "a media type"},
+    {"RemoveHandler", remove_handler, NULL, OR_FILEINFO, ITERATE,
+     "one or more file extensions"},
     {"SetHandler", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO, TAKE1, 
      "a handler name"},

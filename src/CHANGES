@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Add a 'RemoveHandler' directive which will selectively remove
+     all handler associations for the specified file extensions.
+     [Ryan Bloom <rbbloom@us.ibm.com>] PR#1799.
+
   *) Properly handle & allow "nul" and ".*/null" in AccessConfig and
      ResourceConfig directives on Win32.  Also add a note to the effect
      of 'useless User directive ignored on Win32' to the errorlog if

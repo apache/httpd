@@ -168,18 +168,6 @@ Needs patch:
 	In particular this affects the correctness of the proxy and the
 	vhost mechanism.
 
-    * PR#1799: we need to add a "default" or "none" handler to deal with
-	filenames such as foo.map.gif which aren't image maps, and shouldn't
-	be considered such.  See discussion in
-	<Pine.LNX.3.96dg4.980220010131.20009H-100000@twinlark.arctic.org>
-	<Pine.LNX.3.96.980220095126.10974A-100000@ecstasy.localnet>
-	<34ED6E5A.29555AB8@Golux.Com>
-	<34EECEB1.5AD015CF@Golux.Com>
-	(feb98 archives)
-	Jim: I thought that we decided "default", although Ken
-	     thought it ugly
-	Ken: I just don't like using "Add" when reverting something; not a -1
-
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
 
