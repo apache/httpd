@@ -65,45 +65,6 @@
 
 beosd_config_rec beosd_config;
 
-void beosd_detach(void)
-{
-    pid_t pgrp;
-
-    chdir("/");
-
-    RAISE_SIGSTOP(DETACH);
-
-    if ((pgrp = setsid()) == -1) {
-	perror("setsid");
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "%s: setsid failed", ap_server_argv0);
-	exit(1);
-    }
-
-    /* close out the standard file descriptors */
-    if (freopen("/dev/null", "r", stdin) == NULL) {
-        char buf[120];
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "%s: unable to replace stdin with /dev/null: %s",
-		ap_server_argv0, apr_strerror(errno, buf, sizeof(buf)));
-	/* continue anyhow -- note we can't close out descriptor 0 because we
-	 * have nothing to replace it with, and if we didn't have a descriptor
-	 * 0 the next file would be created with that value ... leading to
-	 * havoc.
-	 */
-    }
-    if (freopen("/dev/null", "w", stdout) == NULL) {
-        char buf[120];
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "%s: unable to replace stdout with /dev/null: %s",
-		ap_server_argv0, apr_strerror(errno, buf, sizeof(buf)));
-    }
-    /* stderr is a tricky one, we really want it to be the error_log,
-     * but we haven't opened that yet.  So leave it alone for now and it'll
-     * be reopened moments later.
-     */
-}
-
 /* Set group privileges.
  *
  * Note that we use the username as set in the config files, rather than
@@ -111,9 +72,9 @@ void beosd_detach(void)
  * with different sets of groups for each.
  */
 
+#if B_BEOS_VERSION < 0x0460
 static int set_group_privs(void)
 {
-#if B_BEOS_VERSION < 0x0460
 
     if (!geteuid()) {
 	char *name;
@@ -146,22 +107,24 @@ static int set_group_privs(void)
 
 	/* Reset `groups' attributes. */
 
+#ifdef HAVE_INITGROUPS
 	if (initgroups(name, beosd_config.group_id) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"initgroups: unable to set groups for User %s "
 			"and Group %u", name, (unsigned)beosd_config.group_id);
 	    return -1;
 	}
-    }
 #endif
+    }
     return 0;
 }
+#endif
 
 
 int beosd_setup_child(void)
 {
     /* TODO: revisit the whole issue of users/groups for BeOS as
-     * R4.5.2 and below doesn't really have much concept of them.
+     * R5 and below doesn't really have much concept of them.
      */
 
     return 0;
@@ -177,20 +140,6 @@ const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg)
 
     beosd_config.user_name = arg;
     beosd_config.user_id = ap_uname2id(arg);
-#if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
-    if (beosd_config.user_id == 0) {
-	return "Error:\tApache has not been designed to serve pages while\n"
-		"\trunning as root.  There are known race conditions that\n"
-		"\twill allow any local user to read any file on the system.\n"
-		"\tIf you still desire to serve pages as root then\n"
-		"\tadd -DBIG_SECURITY_HOLE to the EXTRA_CFLAGS line in your\n"
-		"\tsrc/Configuration file and rebuild the server.  It is\n"
-		"\tstrongly suggested that you instead modify the User\n"
-		"\tdirective in your httpd.conf file to list a non-root\n"
-		"\tuser.\n";
-    }
-#endif
-
     return NULL;
 }
 
