@@ -897,6 +897,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             char line[30];
             apr_bucket_brigade *bb;
             apr_size_t len = 30;
+            apr_off_t brigade_length;
 
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
@@ -904,9 +905,19 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                 APR_BLOCK_READ, 0);
 
             if (rv == APR_SUCCESS) {
-                rv = apr_brigade_flatten(bb, line, &len);
+                /* We have to check the length of the brigade we got back.
+                 * We will not accept partial lines.
+                 */
+                rv = apr_brigade_length(bb, 1, &brigade_length);
+                if (rv == APR_SUCCESS
+                    && brigade_length > f->r->server->limit_req_line) {
+                    rv = APR_ENOSPC;
+                }
                 if (rv == APR_SUCCESS) {
-                    ctx->remaining = get_chunk_size(line);
+                    rv = apr_brigade_flatten(bb, line, &len);
+                    if (rv == APR_SUCCESS) {
+                        ctx->remaining = get_chunk_size(line);
+                    }
                 }
             }
             apr_brigade_cleanup(bb);
