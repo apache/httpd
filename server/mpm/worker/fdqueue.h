@@ -74,9 +74,11 @@
 typedef struct fd_queue_info_t fd_queue_info_t;
 
 apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
-                                  apr_pool_t *pool);
-apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info);
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info);
+                                  apr_pool_t *pool, int max_idlers);
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
+                                    apr_pool_t *pool_to_recycle);
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
+                                          apr_pool_t **recycled_pool);
 apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info);
 
 struct fd_queue_elem_t {
@@ -94,17 +96,13 @@ struct fd_queue_t {
     apr_thread_mutex_t *one_big_mutex;
     apr_thread_cond_t  *not_empty;
     apr_thread_cond_t  *not_full;
-    apr_pool_t        **recycled_pools;
-    int                 num_recycled;
     int                 terminated;
 };
 typedef struct fd_queue_t fd_queue_t;
 
 apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
-apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
-                           apr_pool_t **recycled_pool);
-apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
-                          apr_pool_t *recycled_pool);
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p);
+apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p);
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
 apr_status_t ap_queue_term(fd_queue_t *queue);
 
