@@ -27,8 +27,8 @@
       <dt>Multiprotocol Support</dt>
 
       <dd>Apache now has some of the infrastructure in place to
-      support serving multiple protocols. mod_echo has been written
-      as an example.</dd>
+      support serving multiple protocols. <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> has
+      been written as an example.</dd>
 
       <dt>Better support for non-Unix
       platforms</dt>
