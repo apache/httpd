@@ -239,8 +239,11 @@
 
 /* good old state hostname */
 #define STATE_UNCONNECTED 0
-#define STATE_CONNECTING  1
-#define STATE_READ        2
+#define STATE_CONNECTING  1     /* TCP connect initiated, but we don't
+                                 * know if it worked yet
+                                 */
+#define STATE_CONNECTED   2     /* we know TCP connect completed */
+#define STATE_READ        3
 
 #define CBUFFSIZE (2048)
 
@@ -680,7 +683,7 @@ void ssl_start_connect(struct connection * c)
             case SSL_ERROR_WANT_CONNECT:
                 BIO_printf(bio_err, "Waiting .. sleep(1)\n");
                 apr_sleep(apr_time_from_sec(1));
-                c->state = STATE_CONNECTING;
+                c->state = STATE_CONNECTED;
                 c->rwrite = 0;
                 break;
             case SSL_ERROR_ZERO_RETURN:
@@ -1268,7 +1271,7 @@ static void start_connect(struct connection * c)
 	    c->state = STATE_CONNECTING;
 	    c->rwrite = 0;
             new_pollfd.desc_type = APR_POLL_SOCKET;
-            new_pollfd.reqevents = APR_POLLOUT | APR_POLLIN;
+            new_pollfd.reqevents = APR_POLLOUT;
             new_pollfd.desc.s = c->aprsock;
             new_pollfd.client_data = c;
 	    apr_pollset_add(readbits, &new_pollfd);
@@ -1293,6 +1296,7 @@ static void start_connect(struct connection * c)
     }
 
     /* connected first time */
+    c->state = STATE_CONNECTED;
     started++;
     write_request(c);
 }
@@ -1751,8 +1755,34 @@ static void test(void)
 		start_connect(c);
 		continue;
 	    }
-	    if (rv & APR_POLLOUT)
-		write_request(c);
+	    if (rv & APR_POLLOUT) {
+                if (c->state == STATE_CONNECTING) {
+                    apr_pollfd_t remove_pollfd;
+                    rv = apr_connect(c->aprsock, destsa);
+                    remove_pollfd.desc_type = APR_POLL_SOCKET;
+                    remove_pollfd.desc.s = c->aprsock;
+                    apr_pollset_remove(readbits, &remove_pollfd);
+                    if (rv != APR_SUCCESS) {
+                        apr_socket_close(c->aprsock);
+                        err_conn++;
+                        if (bad++ > 10) {
+                            fprintf(stderr,
+                                    "\nTest aborted after 10 failures\n\n");
+                            apr_err("apr_connect()", rv);
+                        }
+                        c->state = STATE_UNCONNECTED;
+                        start_connect(c);
+                        continue;
+                    }
+                    else {
+                        c->state = STATE_CONNECTED;
+                        write_request(c);
+                    }
+                }
+                else {
+                    write_request(c);
+                }
+            }
 
 	    /*
 	     * When using a select based poll every time we check the bits
@@ -1764,8 +1794,7 @@ static void test(void)
 #ifdef USE_SSL
             if (ssl != 1)
 #endif
-	    if (c->state == STATE_READ ||
-                c->state == STATE_CONNECTING) {
+                if (c->state == STATE_READ) {
                     apr_pollfd_t new_pollfd;
                     new_pollfd.desc_type = APR_POLL_SOCKET;
                     new_pollfd.reqevents = APR_POLLIN;
@@ -1793,14 +1822,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.129 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.130 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.129 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.130 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
