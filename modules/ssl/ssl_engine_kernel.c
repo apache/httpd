@@ -755,7 +755,7 @@ int ssl_hook_Access(request_rec *r)
                                        SSL_get_ex_data_X509_STORE_CTX_idx(),
                                        (char *)ssl);
 
-            if (!X509_verify_cert(&cert_store_ctx)) {
+            if (!modssl_X509_verify_cert(&cert_store_ctx)) {
                 ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR, 
                         "Re-negotiation verification step failed");
             }
