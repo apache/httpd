@@ -1,16 +1,31 @@
 Changes with Apache 1.3b3
 
-  *) PORT: AIX now uses USE_FCNTL_SERIALIZED_ACCEPT. PR#849
-     PORT: i386 AIX does not have memmove. PR#1267
-     PORT: HPUX now defaults to using Spencer regex.  PR#482, 1246
-     PORT: Some versions of netbsd don't automatically define
-	    __NetBSD__.  Workaround by defining NETBSD. PR#977
-     PORT: Unixware 2.x requires -lgen for syslog. PR#1249
-     PORT: Ultrix appears to not have syslog.
-     PORT: Basic Gemini port (treat it like unixware212).
-     PORT: All SVR4 systems now use NET_SIZE_T = size_t, and
+  *) PORT: AIX now uses USE_FCNTL_SERIALIZED_ACCEPT.
+	[David Bronder <David-Bronder@uiowa.edu>] PR#849
+
+  *) PORT: i386 AIX does not have memmove.
+     [David Schuler <schuld@btv.ibm.com>] PR#1267
+
+  *) PORT: HPUX now defaults to using Spencer regex.
+     [Philippe Vanhaesendonck <pvanhaes@be.oracle.com>,
+     Omar Del Rio <al112263@academ01.lag.itesm.mx>] PR#482, 1246
+
+  *) PORT: Some versions of netbsd don't automatically define
+	    __NetBSD__.  Workaround by defining NETBSD.
+     [Chris Craft <ccraft@cncc.cc.co.us>] PR#977
+
+  *) PORT: Unixware 2.x requires -lgen for syslog.
+     [Hans Snijder <hs@meganet.nl>] PR#1249
+
+  *) PORT: Ultrix appears to not have syslog.
+     [Lars Eilebrecht <Lars.Eilebrecht@unix-ag.org>]
+
+  *) PORT: Basic Gemini port (treat it like unixware212).
+     ["Pavel Yakovlev (Paul McHacker)" <hac@tomcat.olly.ru>]
+
+  *) PORT: All SVR4 systems now use NET_SIZE_T = size_t, and
 	    use HAVE_SHMGET.
-     [various]
+     [Martin Kraemer]
 
   *) Various improvements in detecting config file errors (missing closing
      directives for <Directory>, <Files> etc. blocks, prohibiting global
@@ -20,7 +35,7 @@ Changes with Apache 1.3b3
 
   *) Add support to suexec wrapper program for mod_unique_id's UNIQUE_ID
      variable to provide this one to suexec'd CGIs, too.
-	 [Ralf S. Engelschall] PR#1284
+     [M.D.Parker <mdpc@netcom.com>] PR#1284
 
   *) New support tool: src/support/split-logfile, a sample Perl script which
      splits up a combined access log into separate files based on the
