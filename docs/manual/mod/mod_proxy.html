@@ -375,10 +375,11 @@ internally converted into a proxy request to
 The ! directive is usefull in situations where you don't want to reverse-proxy
 a subdirectory. eg.
 <PRE>
-        ProxyPass /mirror/foo http://foo.com
         ProxyPass /mirror/foo/i !
+        ProxyPass /mirror/foo http://foo.com
 </PRE>
 will proxy all requests to /mirror/foo to foo.com EXCEPT requests made to /mirror/foo/i
+<b>NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</b>
 </P>
 <HR>
 
