@@ -133,6 +133,13 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 122711
        +1: minfrin
        -0: jorton: users could rely on it working as-is; make it conditional?
+       minfrin: The existing spec file in the tree does not work, so not
+                applying this patch means we have no RPMs at all.
+
+                I am strongly against making this conditional - a bundled APR
+                prevents other packages from being installed correctly, or
+                it leads to stupid situations like the sunfreeware packaged
+                subversion client depending on httpd. This mess must end.
 
     *) Add charset to the painfully old example CGI scripts.
        [These should really be replaced with proper encoding of the output.]
