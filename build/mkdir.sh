@@ -23,6 +23,8 @@ for file in ${1+"$@"} ; do
         pathcomp="$pathcomp$d"
         case "$pathcomp" in
             -* ) pathcomp=./$pathcomp ;;
+            ?: ) pathcomp="$pathcomp/" 
+                 continue ;;
         esac
         if test ! -d "$pathcomp"; then
             echo "mkdir $pathcomp" 1>&2
