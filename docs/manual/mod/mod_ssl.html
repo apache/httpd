@@ -1,38 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<title>Apache module mod_ssl</title>
-<style type="text/css"><!--
-#H {
-}
-#D {
-    background-color: #f0f0f0;
-}
---></style>
-</head>
-
-
-<body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-vlink="#000080" alink="#FF0000">
-<!--#include virtual="header.html" -->
-
-
-<h1 align="CENTER">Module mod_ssl</h1>
-
-<p>This module provides strong cryptography using the Secure Sockets
-Layer (SSL) and Transport Layer Security (TLS) protocols.</p>
-
-<p><a href="module-dict.html#Status"
-rel="Help"><strong>Status:</strong></a> Extension<br />
-<a href="module-dict.html#SourceFile"
-rel="Help"><strong>Source File:</strong></a>
-mod_ssl.c<br />
-<a href="module-dict.html#ModuleIdentifier"
-rel="Help"><strong>Module Identifier:</strong></a>
-ssl_module</p>
-
-<h2>Summary</h2>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_ssl - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ssl</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Strong cryptography using the Secure Sockets
+Layer (SSL) and Transport Layer Security (TLS) protocols</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>ssl_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache
 HTTP Server.  It was contributed by Ralf S. Engeschall based on his
 mod_ssl project and originally derived from work by Ben Laurie.</p>
@@ -42,42 +13,14 @@ to provide the cryptography engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
+</summary><h2>Directives</h2><ul><li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li><li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li><li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li><li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li><li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li><li><a href="#sslcertificatefile">SSLCertificateFile</a></li><li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li><li><a href="#sslciphersuite">SSLCipherSuite</a></li><li><a href="#sslengine">SSLEngine</a></li><li><a href="#ssllog">SSLLog</a></li><li><a href="#sslloglevel">SSLLogLevel</a></li><li><a href="#sslmutex">SSLMutex</a></li><li><a href="#ssloptions">SSLOptions</a></li><li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li><li><a href="#sslprotocol">SSLProtocol</a></li><li><a href="#sslrandomseed">SSLRandomSeed</a></li><li><a href="#sslrequire">SSLRequire</a></li><li><a href="#sslrequiressl">SSLRequireSSL</a></li><li><a href="#sslsessioncache">SSLSessionCache</a></li><li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li><li><a href="#sslverifyclient">SSLVerifyClient</a></li><li><a href="#sslverifydepth">SSLVerifyDepth</a></li></ul><h2><a name="ToC25">Environment Variables</a></h2>
 
-<h2>Directives</h2>
-
-<ul>
-<li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><a href="#sslmutex">SSLMutex</a></li>
-<li><a href="#sslrandomseed">SSLRandomSeed</a></li>
-<li><a href="#sslsessioncache">SSLSessionCache</a></li>
-<li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
-<li><a href="#sslengine">SSLEngine</a></li>
-<li><a href="#sslprotocol">SSLProtocol</a></li>
-<li><a href="#sslciphersuite">SSLCipherSuite</a></li>
-<li><a href="#sslcertificatefile">SSLCertificateFile</a></li>
-<li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
-<li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
-<li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
-<li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
-<li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
-<li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
-<li><a href="#sslverifyclient">SSLVerifyClient</a></li>
-<li><a href="#sslverifydepth">SSLVerifyDepth</a></li>
-<li><a href="#ssllog">SSLLog</a></li>
-<li><a href="#sslloglevel">SSLLogLevel</a></li>
-<li><a href="#ssloptions">SSLOptions</a></li>
-<li><a href="#sslrequiressl">SSLRequireSSL</a></li>
-<li><a href="#sslrequire">SSLRequire</a></li>
-</ul>
-
-<h2><a name="ToC25">Environment Variables</a></h2>
-This module provides a lot of SSL information as additional environment
+<p>This module provides a lot of SSL information as additional environment
 variables to the SSI and CGI namespace. The generated variables are listed in
 the table below. For backward compatibility the information can
-be made available under different names, too. Look in the <a
-href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
-compatibility variables.
-<p>
+be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
+compatibility variables.</p>
+
 <div align="center">
 <a name="table4"></a>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
@@ -87,9 +30,9 @@ compatibility variables.
 <tr><td valign="top" align="center" bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
 <tr id="H">
- <td><b>Variable Name:</b></td>
- <td><b>Value Type:</b></td>
- <td><b>Description:</b></td>
+ <td><strong>Variable Name:</strong></td>
+ <td><strong>Value Type:</strong></td>
+ <td><strong>Description:</strong></td>
 </tr>
 <tr id="D"><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
 <tr id="H"><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
@@ -111,8 +54,8 @@ compatibility variables.
 <tr id="H"><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
 <tr id="D"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr id="H"><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_CERT_CHAIN</code><i>n</i></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><tt>NONE</tt>, <tt>SUCCESS</tt>, <tt>GENEROUS</tt> or <tt>FAILED:</tt><i>reason</i></td></tr>
+<tr id="D"><td><code>SSL_CLIENT_CERT_CHAIN</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
 <tr id="D"><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
 <tr id="H"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
 <tr id="D"><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
@@ -131,737 +74,138 @@ compatibility variables.
 </tr></table>
 </td></tr></table>
 </div>
-<p>
-<br>
 <h2><a name="ToC26">Custom Log Formats</a></h2>
-When mod_ssl is built into Apache or at least loaded (under DSO situation)
-additional functions exist for the <a
-href="../mod_log_config.html#formats">Custom Log Format</a> of <a
-href="../mod_log_config.html">mod_log_config</a>. First there is an additional
-``<code>%{</code><em>varname</em><code>}x</code>'' eXtension format function
-which can be used to expand any variables provided by any module, especially
-those provided by mod_ssl which can you find in the above table.
+
+<p>When <code><a href="mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
+loaded (under DSO situation) additional functions exist for the <a href="../mod_log_config.html#formats">Custom Log Format</a> of 
+<code><a href="mod_log_config.html">mod_log_config</a></code>. First there is an
+additional ``<code>%{</code><em>varname</em><code>}x</code>''
+eXtension format function which can be used to expand any variables
+provided by any module, especially those provided by mod_ssl which can
+you find in the above table.</p>
 <p>
 For backward compatibility there is additionally a special
 ``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
-provided. Information about this function is provided in the <a
-href="../ssl/ssl_compat.html">Compatibility</a> chapter.
+provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 <p>
-Example:
-<blockquote>
-<pre>
+Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
-</pre>
-</blockquote>
-
-<hr>
-<!-- SSLPassPhraseDialog -------------------------------------------->
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA Certificates 
+for Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCACertificateFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<br>
-
-<h2><a name="sslpassphrasedialog">SSLPassPhraseDialog</a> directive</h2>
+This directive sets the <em>all-in-one</em> file where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
+with. These are used for Client Authentication. Such a file is simply the
+concatenation of the various PEM-encoded Certificate files, in order of
+preference. This can be used alternatively and/or additionally to 
+<a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a>.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA Certificates for 
+Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCACertificatePath <em>directory-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLPassPhraseDialog</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of pass phrase dialog for encrypted private keys</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLPassPhraseDialog</code> <em>type</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLPassPhraseDialog builtin</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This directive sets the directory where you keep the Certificates of
+Certification Authorities (CAs) whose clients you deal with. These are used to
+verify the client certificate on Client Authentication.</p>
 <p>
-When Apache starts up it has to read the various Certificate (see <a
-href="#SSLCertificateFile">SSLCertificateFile</a>) and Private Key (see <a
-href="#SSLCertificateKeyFile">SSLCertificateKeyFile</a>) files of the
-SSL-enabled virtual servers. Because for security reasons the Private Key
-files are usually encrypted, mod_ssl needs to query the administrator for a
-Pass Phrase in order to decrypt those files. This query can be done in two ways
-which can be configured by <em>type</em>:
-<ul>
-<li><code>builtin</code>
-    <p>
-    This is the default where an interactive terminal dialog occurs at startup
-    time just before Apache detaches from the terminal. Here the administrator
-    has to manually enter the Pass Phrase for each encrypted Private Key file.
-    Because a lot of SSL-enabled virtual hosts can be configured, the
-    following reuse-scheme is used to minimize the dialog: When a Private Key
-    file is encrypted, all known Pass Phrases (at the beginning there are
-    none, of course) are tried. If one of those known Pass Phrases succeeds no
-    dialog pops up for this particular Private Key file. If none succeeded,
-    another Pass Phrase is queried on the terminal and remembered for the next
-    round (where it perhaps can be reused).
-    <p>
-    This scheme allows mod_ssl to be maximally flexible (because for N encrypted
-    Private Key files you <em>can</em> use N different Pass Phrases - but then
-    you have to enter all of them, of course) while minimizing the terminal
-    dialog (i.e. when you use a single Pass Phrase for all N Private Key files
-    this Pass Phrase is queried only once).
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you can't just place the Certificate files
+there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with mod_ssl to accomplish this task.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA CRLs for 
+Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCARevocationFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<li><code>exec:/path/to/program</code>
-    <p>
-    Here an external program is configured which is called at startup for each
-    encrypted Private Key file. It is called with two arguments (the first is
-    of the form ``<code>servername:portnumber</code>'', the second is either
-    ``<code>RSA</code>'' or ``<code>DSA</code>''), which indicate for which
-    server and algorithm it has to print the corresponding Pass Phrase to
-    <code>stdout</code>. The intent is that this external program first runs
-    security checks to make sure that the system is not compromised by an
-    attacker, and only when these checks were passed successfully it provides
-    the Pass Phrase.
-    <p>
-    Both these security checks, and the way the Pass Phrase is determined, can
-    be as complex as you like. Mod_ssl just defines the interface: an
-    executable program which provides the Pass Phrase on <code>stdout</code>.
-    Nothing more or less! So, if you're really paranoid about security, here
-    is your interface. Anything else has to be left as an exercise to the
-    administrator, because local security requirements are so different.
-    <p>
-    The reuse-algorithm above is used here, too. In other words: The external
-    program is called only once per unique Pass Phrase.
-</ul>
+This directive sets the <em>all-in-one</em> file where you can
+assemble the Certificate Revocation Lists (CRL) of Certification
+Authorities (CA) whose <em>clients</em> you deal with. These are used
+for Client Authentication.  Such a file is simply the concatenation of
+the various PEM-encoded CRL files, in order of preference. This can be
+used alternatively and/or additionally to <a href="#sslcarevocationpath" class="directive"><code class="directive">SSLCARevocationPath</code></a>.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Directory of PEM-encoded CA CRLs for 
+Client Auth</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCARevocationPath <em>directory-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-Example:
-<blockquote>
-<pre>
-SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
-</pre>
-</blockquote>
-<hr /><!-- SSLMutex ------------------------------------------------------->
+This directive sets the directory where you keep the Certificate Revocation
+Lists (CRL) of Certification Authorities (CAs) whose clients you deal with.
+These are used to revoke the client certificate on Client Authentication.</p>
 <p>
-<br>
-<a name="SSLMutex"></a>
-<h2><a name="sslmutex">SSLMutex</a> directive</h2>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you have not only to place the CRL files there.
+Additionally you have to create symbolic links named
+<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with <code><a href="mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCertificateChainFile">SSLCertificateChainFile</a> <a name="sslcertificatechainfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>File of PEM-encoded Server CA Certificates</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCertificateChainFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLMutex</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Semaphore for internal mutual exclusion of operations</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLMutex</code> <em>type</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLMutex none</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This directive sets the optional <em>all-in-one</em> file where you can
+assemble the certificates of Certification Authorities (CA) which form the
+certificate chain of the server certificate. This starts with the issuing CA
+certificate of of the server certificate and can range up to the root CA
+certificate. Such a file is simply the concatenation of the various
+PEM-encoded CA Certificate files, usually in certificate chain order.</p>
 <p>
-This configures the SSL engine's semaphore (aka. lock) which is used for mutual
-exclusion of operations which have to be done in a synchronized way between the
-pre-forked Apache server processes. This directive can only be used in the
-global server context because it's only useful to have one global mutex.
+This should be used alternatively and/or additionally to <a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a> for explicitly
+constructing the server certificate chain which is sent to the browser
+in addition to the server certificate. It is especially useful to
+avoid conflicts with CA certificates when using client
+authentication. Because although placing a CA certificate of the
+server certificate chain into <a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a> has the same effect
+for the certificate chain construction, it has the side-effect that
+client certificates issued by this same CA certificate are also
+accepted on client authentication. That's usually not one expect.</p>
 <p>
-The following Mutex <em>types</em> are available:
-<ul>
-<li><code>none</code>
-    <p>
-    This is the default where no Mutex is used at all. Use it at your own
-    risk. But because currently the Mutex is mainly used for synchronizing
-    write access to the SSL Session Cache you can live without it as long
-    as you accept a sometimes garbled Session Cache. So it's not recommended
-    to leave this the default. Instead configure a real Mutex.
+But be careful: Providing the certificate chain works only if you are using a
+<em>single</em> (either RSA <em>or</em> DSA) based server certificate. If you are
+using a coupled RSA+DSA certificate pair, this will work only if actually both
+certificates use the <em>same</em> certificate chain. Else the browsers will be
+confused in this situation.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded X.509 Certificate file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCertificateFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<li><code>file:/path/to/mutex</code>
-    <p>
-    This is the portable and (under Unix) always provided Mutex variant where
-    a physical (lock-)file is used as the Mutex. Always use a local disk
-    filesystem for <code>/path/to/mutex</code> and never a file residing on a
-    NFS- or AFS-filesystem. Note: Internally, the Process ID (PID) of the
-    Apache parent process is automatically appended to
-    <code>/path/to/mutex</code> to make it unique, so you don't have to worry
-    about conflicts yourself. Notice that this type of mutex is not available
-    under the Win32 environment. There you <i>have</i> to use the semaphore
-    mutex.
+This directive points to the PEM-encoded Certificate file for the server and
+optionally also to the corresponding RSA or DSA Private Key file for it
+(contained in the same file). If the contained Private Key is encrypted the
+Pass Phrase dialog is forced at startup time. This directive can be used up to
+two times (referencing different filenames) when both a RSA and a DSA based
+server certificate is used in parallel.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Server PEM-encoded Private Key file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCertificateKeyFile <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<li><code>sem</code>
-    <p>
-    This is the most elegant but also most non-portable Mutex variant where a
-    SysV IPC Semaphore (under Unix) and a Windows Mutex (under Win32) is used
-    when possible. It is only available when the underlying platform
-    supports it.
-</ul>
-<p>
-Example:
-<blockquote>
-<pre>
-SSLMutex file:/usr/local/apache/logs/ssl_mutex
-</pre>
-</blockquote>
-<hr /><!-- SSLRandomSeed -------------------------------------------------->
-<p>
-<br>
-<a name="SSLRandomSeed"></a>
-<h2><a name="sslrandomseed">SSLRandomSeed</a> directive</h2>
-<p>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLRandomSeed</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Pseudo Random Number Generator (PRNG) seeding source</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRandomSeed</code> <em>context</em> <em>source</em> [<em>bytes</em>]</td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>none</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.2 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This configures one or more sources for seeding the Pseudo Random Number
-Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
-<code>startup</code>) and/or just before a new SSL connection is established
-(<em>context</em> is <code>connect</code>). This directive can only be used
-in the global server context because the PRNG is a global facility.
-<p>
-The following <em>source</em> variants are available:
-<ul>
-<li><code>builtin</code>
-    <p> This is the always available builtin seeding source. It's usage
-    consumes minimum CPU cycles under runtime and hence can be always used
-    without drawbacks. The source used for seeding the PRNG contains of the
-    current time, the current process id and (when applicable) a randomly
-    choosen 1KB extract of the inter-process scoreboard structure of Apache.
-    The drawback is that this is not really a strong source and at startup
-    time (where the scoreboard is still not available) this source just
-    produces a few bytes of entropy. So you should always, at least for the
-    startup, use an additional seeding source.
-<p>
-<li><code>file:/path/to/source</code>
-    <p>
-    This variant uses an external file <code>/path/to/source</code> as the
-    source for seeding the PRNG. When <em>bytes</em> is specified, only the
-    first <em>bytes</em> number of bytes of the file form the entropy (and
-    <em>bytes</em> is given to <code>/path/to/source</code> as the first
-    argument). When <em>bytes</em> is not specified the whole file forms the
-    entropy (and <code>0</code> is given to <code>/path/to/source</code> as
-    the first argument). Use this especially at startup time, for instance
-    with an available <code>/dev/random</code> and/or
-    <code>/dev/urandom</code> devices (which usually exist on modern Unix
-    derivates like FreeBSD and Linux).
-    <p>
-    <em>But be careful</em>: Usually <code>/dev/random</code> provides only as
-    much entropy data as it actually has, i.e. when you request 512 bytes of
-    entropy, but the device currently has only 100 bytes available two things
-    can happen: On some platforms you receive only the 100 bytes while on
-    other platforms the read blocks until enough bytes are available (which
-    can take a long time). Here using an existing <code>/dev/urandom</code> is
-    better, because it never blocks and actually gives the amount of requested
-    data. The drawback is just that the quality of the received data may not
-    be the best.
-    <p>
-    On some platforms like FreeBSD one can even control how the entropy is
-    actually generated, i.e. by which system interrupts. More details one can
-    find under <i>rndcontrol(8)</i> on those platforms. Alternatively, when
-    your system lacks such a random device, you can use tool
-    like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
-    (Entropy Gathering Daemon) and run it's client program with the
-    <code>exec:/path/to/program/</code> variant (see below) or use
-    <code>egd:/path/to/egd-socket</code> (see below).
-<p>
-<li><code>exec:/path/to/program</code>
-    <p>
-    This variant uses an external executable <code>/path/to/program</code> as
-    the source for seeding the PRNG. When <em>bytes</em> is specified, only the
-    first <em>bytes</em> number of bytes of its <code>stdout</code> contents
-    form the entropy. When <em>bytes</em> is not specified, the entirety of
-    the data produced on <code>stdout</code> form the entropy. Use this only
-    at startup time when you need a very strong seeding with the help of an
-    external program (for instance as in the example above with the
-    <code>truerand</code> utility you can find in the mod_ssl distribution
-    which is based on the AT&amp;T <em>truerand</em> library). Using this in
-    the connection context slows down the server too dramatically, of course.
-    So usually you should avoid using external programs in that context.
-<p>
-<li><code>egd:/path/to/egd-socket</code> (Unix only)
-    <p>
-    This variant uses the Unix domain socket of the
-    external Entropy Gathering Daemon (EGD) (see <a
-    href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
-    /crypto/</a>) to seed the PRNG. Use this if no random device exists
-    on your platform.
-</ul>
-<p>
-Example:
-<blockquote>
-<pre>
-SSLRandomSeed startup builtin
-SSLRandomSeed startup file:/dev/random
-SSLRandomSeed startup file:/dev/urandom 1024
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16
-SSLRandomSeed connect builtin
-SSLRandomSeed connect file:/dev/random
-SSLRandomSeed connect file:/dev/urandom 1024
-</pre>
-</blockquote>
-<hr /><!-- SSLSessionCache ------------------------------------------------>
-<p>
-<br>
-<a name="SSLSessionCache"></a>
-<h2><a name="sslsessioncache">SSLSessionCache</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLSessionCache</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of the global/inter-process SSL Session Cache</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLSessionCache</code> <em>type</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLSessionCache none</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This configures the storage type of the global/inter-process SSL Session
-Cache. This cache is an optional facility which speeds up parallel request
-processing. For requests to the same server process (via HTTP keep-alive),
-OpenSSL already caches the SSL session information locally. But because modern
-clients request inlined images and other data via parallel requests (usually
-up to four parallel requests are common) those requests are served by
-<em>different</em> pre-forked server processes. Here an inter-process cache
-helps to avoid unneccessary session handshakes.
-<p>
-The following two storage <em>type</em>s are currently supported:
-<ul>
-<li><code>none</code>
-    <p>
-    This is the default and just disables the global/inter-process Session
-    Cache. There is no drawback in functionality, but a noticeable speed
-    penalty can be observed.
-<p>
-<li><code>dbm:/path/to/datafile</code>
-    <p>
-    This makes use of a DBM hashfile on the local disk to synchronize the
-    local OpenSSL memory caches of the server processes. The slight increase
-    in I/O on the server results in a visible request speedup for your
-    clients, so this type of storage is generally recommended.
-<p>
-<li><code>shm:/path/to/datafile</code>[<code>(</code><i>size</i><code>)</code>]
-    <p>
-    This makes use of a high-performance hash table (approx. <i>size</i> bytes
-    in size) inside a shared memory segment in RAM (established via
-    <code>/path/to/datafile</code>) to synchronize the local OpenSSL memory
-    caches of the server processes. This storage type is not available on all
-    platforms. See the mod_ssl <code>INSTALL</code> document for details on
-    how to build Apache+EAPI with shared memory support.
-</ul>
-<p>
-Examples:
-<blockquote>
-<pre>
-SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
-SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
-</pre>
-</blockquote>
-<hr /><!-- SSLSessionCacheTimeout ----------------------------------------->
-<p>
-<br>
-<a name="SSLSessionCacheTimeout"></a>
-<h2><a name="sslsessioncachetimeout">SSLSessionCacheTimeout</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLSessionCacheTimeout</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Number of seconds before an SSL session expires in the Session Cache</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLSessionCacheTimeout</code> <em>seconds</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLSessionCacheTimeout 300</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the timeout in seconds for the information stored in the
-global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
-It can be set as low as 15 for testing, but should be set to higher
-values like 300 in real life.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLSessionCacheTimeout 600
-</pre>
-</blockquote>
-<hr /><!-- SSLEngine ------------------------------------------------------>
-<p>
-<br>
-<a name="SSLEngine"></a>
-<h2><a name="sslengine">SSLEngine</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLEngine</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> SSL Engine Operation Switch</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLEngine</code> <em>on|off</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLEngine off</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive toggles the usage of the SSL/TLS Protocol Engine. This is
-usually used inside a &lt;VirtualHost&gt; section to enable SSL/TLS for a
-particular virtual host. By default the SSL/TLS Protocol Engine is disabled
-for both the main server and all configured virtual hosts.
-<p>
-Example:
-<blockquote>
-<pre>
-&lt;VirtualHost _default_:443&gt;
-SSLEngine on
-...
-&lt;/VirtualHost&gt;
-</pre>
-</blockquote>
-<hr /><!-- SSLProtocol ---------------------------------------------------->
-<p>
-<br>
-<a name="SSLProtocol"></a>
-<h2><a name="sslprotocol">SSLProtocol</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLProtocol</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Configure usable SSL protocol flavors</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLProtocol</code> [+-]<em>protocol</em> ...</td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLProtocol all</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> Options</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.2 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive can be used to control the SSL protocol flavors mod_ssl should
-use when establishing its server environment. Clients then can only connect
-with one of the provided protocols.
-<p>
-The available (case-insensitive) <em>protocol</em>s are:
-<ul>
-<li><code>SSLv2</code>
-    <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
-    original SSL protocol as designed by Netscape Corporation.
-<p>
-<li><code>SSLv3</code>
-    <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 3.0. It is the
-    successor to SSLv2 and the currently (as of February 1999) de-facto
-    standardized SSL protocol from Netscape Corporation. It's supported by
-    almost all popular browsers.
-<p>
-<li><code>TLSv1</code>
-    <p>
-    This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and currently (as of February 1999) still under
-    construction by the Internet Engineering Task Force (IETF). It's still
-    not supported by any popular browsers.
-<p>
-<li><code>All</code>
-    <p>
-    This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convinient way for enabling all protocols except one when used in
-    combination with the minus sign on a protocol as the example above shows.
-</ul>
-<p>
-Example:
-<blockquote>
-<pre>
-#   enable SSLv3 and TLSv1, but not SSLv2
-SSLProtocol all -SSLv2
-</pre>
-</blockquote>
-<hr /><!-- SSLCipherSuite ------------------------------------------------->
-<p>
-<br>
-<a name="SSLCipherSuite"></a>
-<h2><a name="sslciphersuite">SSLCipherSuite</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCipherSuite</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Cipher Suite available for negotiation in SSL handshake</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCipherSuite</code> <em>cipher-spec</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This directive points to the PEM-encoded Private Key file for the
+server. If the Private Key is not combined with the Certificate in the
+<code class="directive">SSLCertificateFile</code>, use this additional directive to
+point to the file with the stand-alone Private Key. When
+<code class="directive">SSLCertificateFile</code> is used and the file
+contains both the Certificate and the Private Key this directive need
+not be used. But we strongly discourage this practice.  Instead we
+recommend you to separate the Certificate and the Private Key. If the
+contained Private Key is encrypted, the Pass Phrase dialog is forced
+at startup time. This directive can be used up to two times
+(referencing different filenames) when both a RSA and a DSA based
+private key is used in parallel.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Cipher Suite available for negotiation in SSL 
+handshake</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLCipherSuite <em>cipher-spec</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
 This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
@@ -870,29 +214,30 @@ directive can be used both in per-server and per-directory context. In
 per-server context it applies to the standard SSL handshake when a connection
 is established. In per-directory context it forces a SSL renegotation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
-response is sent.
+response is sent.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
-attributes plus a few extra minor ones:
+attributes plus a few extra minor ones:</p>
 <ul>
 <li><em>Key Exchange Algorithm</em>:<br>
     RSA or Diffie-Hellman variants.
-<p>
+</li>
 <li><em>Authentication Algorithm</em>:<br>
     RSA, Diffie-Hellman, DSS or none.
-<p>
+</li>
 <li><em>Cipher/Encryption Algorithm</em>:<br>
     DES, Triple-DES, RC4, RC2, IDEA or none.
-<p>
+</li>
 <li><em>MAC Digest Algorithm</em>:<br>
     MD5, SHA or SHA1.
+</li>
 </ul>
-An SSL cipher can also be an export cipher and is either a SSLv2 or SSLv3/TLSv1
+<p>An SSL cipher can also be an export cipher and is either a SSLv2 or SSLv3/TLSv1
 cipher (here TLSv1 is equivalent to SSLv3). To specify which ciphers to use,
 one can either specify all the Ciphers, one at a time, or use aliases to
 specify the preference and order for the ciphers (see <a href="#table1">Table
-1</a>).
-<p>
+1</a>).</p>
+
 <div align="center">
 <a name="table1"></a>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
@@ -901,7 +246,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
 <tr><td valign="top" align="center" bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="D"><td><b>Tag</b></td> <td><b>Description</b></td>
+<tr id="D"><td><strong>Tag</strong></td> <td><strong>Description</strong></td></tr>
 <tr id="H"><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr id="D"><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
 <tr id="H"><td><code>kDHr</code></td>   <td>Diffie-Hellman key exchange with RSA key</td></tr>
@@ -912,7 +257,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 <tr id="H"><td><code>aRSA</code></td>   <td>RSA authentication</td></tr>
 <tr id="D"><td><code>aDSS</code></td>   <td>DSS authentication</td> </tr>
 <tr id="H"><td><code>aDH</code></td>    <td>Diffie-Hellman authentication</td></tr>
-<tr id="D"><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr></tr>
+<tr id="D"><td colspan="2"><em>Cipher Encoding Algorithm:</em></td></tr>
 <tr id="H"><td><code>eNULL</code></td>  <td>No encoding</td>         </tr>
 <tr id="D"><td><code>DES</code></td>    <td>DES encoding</td>        </tr>
 <tr id="H"><td><code>3DES</code></td>   <td>Triple-DES encoding</td> </tr>
@@ -950,14 +295,14 @@ to specify the order and ciphers you wish to use. To speed this up
 there are also aliases (<code>SSLv2, SSLv3, TLSv1, EXP, LOW, MEDIUM,
 HIGH</code>) for certain groups of ciphers. These tags can be joined
 together with prefixes to form the <em>cipher-spec</em>. Available
-prefixes are:
+prefixes are:</p>
 <ul>
-<li>none: add cipher to list
-<li><code>+</code>: add ciphers to list and pull them to current location in list
-<li><code>-</code>: remove cipher from list (can be added later again)
-<li><code>!</code>: kill cipher from list completely (can <b>not</b> be added later again)
+<li>none: add cipher to list</li>
+<li><code>+</code>: add ciphers to list and pull them to current location in list</li>
+<li><code>-</code>: remove cipher from list (can be added later again)</li>
+<li><code>!</code>: kill cipher from list completely (can <strong>not</strong> be added later again)</li>
 </ul>
-A simpler way to look at all of this is to use the ``<code>openssl ciphers
+<p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
 correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
 is ``<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>'' which
@@ -965,8 +310,8 @@ means the following: first, remove from consideration any ciphers that do not
 authenticate, i.e. for SSL only the Anonymous Diffie-Hellman ciphers. Next,
 use ciphers using RC4 and RSA. Next include the high, medium and then the low
 security ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to the
-end of the list.
-<blockquote>
+end of the list.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 <pre>
 $ openssl ciphers -v 'ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP'
 NULL-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=SHA1
@@ -977,17 +322,11 @@ EXP-RC4-MD5             SSLv3 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 EXP-RC2-CBC-MD5         SSLv2 Kx=RSA(512) Au=RSA  Enc=RC2(40)   Mac=MD5  export
 EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 </pre>
-</blockquote>
-The complete list of particular RSA &amp; DH ciphers for SSL is given in <a
-href="#table2">Table 2</a>.
-<p>
-Example:
-<blockquote>
-<pre>
+</code></td></tr></table></blockquote>
+<p>The complete list of particular RSA &amp; DH ciphers for SSL is given in <a href="#table2">Table 2</a>.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
-</pre>
-</blockquote>
-<p>
+</code></td></tr></table></blockquote>
 <div align="center">
 <a name="table2"></a>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
@@ -996,7 +335,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
 <tr><td valign="top" align="center" bgcolor="#ffffff">
 <table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="D"><td><b>Cipher-Tag</b></td> <td><b>Protocol</b></td> <td><b>Key Ex.</b></td> <td><b>Auth.</b></td> <td><b>Enc.</b></td> <td><b>MAC</b></td> <td><b>Type</b></td> </tr>
+<tr id="D"><td><strong>Cipher-Tag</strong></td> <td><strong>Protocol</strong></td> <td><strong>Key Ex.</strong></td> <td><strong>Auth.</strong></td> <td><strong>Enc.</strong></td> <td><strong>MAC</strong></td> <td><strong>Type</strong></td> </tr>
 <tr id="H"><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr id="D"><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td>&nbsp;</td> </tr>
 <tr id="H"><td><code>DES-CBC3-MD5</code></td> <td>SSLv2</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>MD5</td> <td>&nbsp; </td> </tr>
@@ -1033,867 +372,120 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </tr></table>
 </td></tr></table>
 </div>
-<hr /><!-- SSLCertificateFile --------------------------------------------->
+</usage><hr/><h2><a name="SSLEngine">SSLEngine</a> <a name="sslengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>SSL Engine Operation Switch</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLEngine on|off</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLEngine off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<br>
-<a name="SSLCertificateFile"></a>
-<h2><a name="sslcertificatefile">SSLCertificateFile</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCertificateFile</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Server PEM-encoded X.509 Certificate file</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateFile</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive points to the PEM-encoded Certificate file for the server and
-optionally also to the corresponding RSA or DSA Private Key file for it
-(contained in the same file). If the contained Private Key is encrypted the
-Pass Phrase dialog is forced at startup time. This directive can be used up to
-two times (referencing different filenames) when both a RSA and a DSA based
-server certificate is used in parallel.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
-</pre>
-</blockquote>
-<hr /><!-- SSLCertificateKeyFile ------------------------------------------>
-<p>
-<br>
-<a name="SSLCertificateKeyFile"></a>
-<h2><a name="sslcertificatekeyfile">SSLCertificateKeyFile</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCertificateKeyFile</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Server PEM-encoded Private Key file</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateKeyFile</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive points to the PEM-encoded Private Key file for the server. If
-the Private Key is not combined with the Certificate in the
-<code>SSLCertificateFile</code>, use this additional directive to point to the
-file with the stand-alone Private Key. When <code>SSLCertificateFile</code>
-is used and the file contains both the Certificate and the Private Key this
-directive need not be used. But we strongly discourage this practice.
-Instead we recommend you to separate the Certificate and the Private Key. If
-the contained Private Key is encrypted, the Pass Phrase dialog is forced at
-startup time. This directive can be used up to two times (referencing
-different filenames) when both a RSA and a DSA based private key is used in
-parallel.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
-</pre>
-</blockquote>
-<hr /><!-- SSLCertificateChainFile ---------------------------------------->
-<p>
-<br>
-<a name="SSLCertificateChainFile"></a>
-<h2><a name="sslcertificatechainfile">SSLCertificateChainFile</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCertificateChainFile</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of PEM-encoded Server CA Certificates</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateChainFile</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3.6 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the optional <em>all-in-one</em> file where you can
-assemble the certificates of Certification Authorities (CA) which form the
-certificate chain of the server certificate. This starts with the issuing CA
-certificate of of the server certificate and can range up to the root CA
-certificate. Such a file is simply the concatenation of the various
-PEM-encoded CA Certificate files, usually in certificate chain order.
-<p>
-This should be used alternatively and/or additionally to <a
-href="#SSLCACertificatePath">SSLCACertificatePath</a> for explicitly
-constructing the server certificate chain which is sent to the browser in
-addition to the server certificate. It is especially useful to avoid conflicts
-with CA certificates when using client authentication. Because although
-placing a CA certificate of the server certificate chain into <a
-href="#SSLCACertificatePath">SSLCACertificatePath</a> has the same effect for
-the certificate chain construction, it has the side-effect that client
-certificates issued by this same CA certificate are also accepted on client
-authentication. That's usually not one expect.
-<p>
-But be careful: Providing the certificate chain works only if you are using a
-<i>single</i> (either RSA <i>or</i> DSA) based server certificate. If you are
-using a coupled RSA+DSA certificate pair, this will work only if actually both
-certificates use the <i>same</i> certificate chain. Else the browsers will be
-confused in this situation.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
-</pre>
-</blockquote>
-<hr /><!-- SSLCACertificatePath ------------------------------------------->
-<p>
-<br>
-<a name="SSLCACertificatePath"></a>
-<h2><a name="sslcacertificatepath">SSLCACertificatePath</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCACertificatePath</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Directory of PEM-encoded CA Certificates for Client Auth.</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCACertificatePath</code> <em>directory</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the directory where you keep the Certificates of
-Certification Authorities (CAs) whose clients you deal with. These are used to
-verify the client certificate on Client Authentication.
-<p>
-The files in this directory have to be PEM-encoded and are accessed through
-hash filenames. So usually you can't just place the Certificate files
-there: you also have to create symbolic links named
-<i>hash-value</i><tt>.N</tt>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with mod_ssl to accomplish this task.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
-</pre>
-</blockquote>
-<hr /><!-- SSLCACertificateFile ------------------------------------------->
-<p>
-<br>
-<a name="SSLCACertificateFile"></a>
-<h2><a name="sslcacertificatefile">SSLCACertificateFile</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCACertificateFile</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of concatenated PEM-encoded CA Certificates for Client Auth.</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCACertificateFile</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> file where you can assemble the
-Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
-with. These are used for Client Authentication. Such a file is simply the
-concatenation of the various PEM-encoded Certificate files, in order of
-preference. This can be used alternatively and/or additionally to <a
-href="#SSLCACertificatePath">SSLCACertificatePath</a>.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
-</pre>
-</blockquote>
-<hr /><!-- SSLCARevocationPath -------------------------------------------->
-<p>
-<br>
-<a name="SSLCARevocationPath"></a>
-<h2><a name="sslcarevocationpath">SSLCARevocationPath</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCARevocationPath</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Directory of PEM-encoded CA CRLs for Client Auth.</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCARevocationPath</code> <em>directory</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the directory where you keep the Certificate Revocation
-Lists (CRL) of Certification Authorities (CAs) whose clients you deal with.
-These are used to revoke the client certificate on Client Authentication.
-<p>
-The files in this directory have to be PEM-encoded and are accessed through
-hash filenames. So usually you have not only to place the CRL files there.
-Additionally you have to create symbolic links named
-<i>hash-value</i><tt>.rN</tt>. And you should always make sure this directory
-contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with mod_ssl to accomplish this task.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
-</pre>
-</blockquote>
-<hr /><!-- SSLCARevocationFile -------------------------------------------->
-<p>
-<br>
-<a name="SSLCARevocationFile"></a>
-<h2><a name="sslcarevocationfile">SSLCARevocationFile</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLCARevocationFile</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of concatenated PEM-encoded CA CRLs for Client Auth.</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCARevocationFile</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> file where you can assemble the
-Certificate Revocation Lists (CRL) of Certification Authorities (CA) whose
-<em>clients</em> you deal with. These are used for Client Authentication.
-Such a file is simply the concatenation of the various PEM-encoded CRL
-files, in order of preference. This can be used alternatively and/or
-additionally to <a href="#SSLCARevocationPath">SSLCARevocationPath</a>.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
-</pre>
-</blockquote>
-<hr /><!-- SSLVerifyClient ------------------------------------------------->
-<p>
-<br>
-<a name="SSLVerifyClient"></a>
-<h2><a name="sslverifyclient">SSLVerifyClient</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLVerifyClient</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of Client Certificate verification</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLVerifyClient</code> <em>level</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLVerifyClient none</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets the Certificate verification level for the Client
-Authentication. Notice that this directive can be used both in per-server and
-per-directory context. In per-server context it applies to the client
-authentication process used in the standard SSL handshake when a connection is
-established. In per-directory context it forces a SSL renegotation with the
-reconfigured client verification level after the HTTP request was read but
-before the HTTP response is sent.
-<p>
-The following levels are available for <em>level</em>:
-<ul>
-<li><strong>none</strong>:
-     no client Certificate is required at all
-<li><strong>optional</strong>:
-     the client <em>may</em> present a valid Certificate
-<li><strong>require</strong>:
-     the client <em>has to</em> present a valid Certificate
-<li><strong>optional_no_ca</strong>:
-     the client may present a valid Certificate<br>
-     but it need not to be (successfully) verifiable.
-</ul>
-In practice only levels <strong>none</strong> and <strong>require</strong> are
-really interesting, because level <strong>optional</strong> doesn't work with
-all browsers and level <strong>optional_no_ca</strong> is actually against the
-idea of authentication (but can be used to establish SSL test pages, etc.)
-<p>
-Example:
-<blockquote>
-<pre>
-SSLVerifyClient require
-</pre>
-</blockquote>
-<hr /><!-- SSLVerifyDepth ------------------------------------------------->
-<p>
-<br>
-<a name="SSLVerifyDepth"></a>
-<h2><a name="sslverifydepth">SSLVerifyDepth</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLVerifyDepth</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Maximum depth of CA Certificates in Client Certificate verification</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLVerifyDepth</code> <em>number</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLVerifyDepth 1</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<p>
-This directive sets how deeply mod_ssl should verify before deciding that the
-clients don't have a valid certificate. Notice that this directive can be
-used both in per-server and per-directory context. In per-server context it
-applies to the client authentication process used in the standard SSL
-handshake when a connection is established. In per-directory context it forces
-a SSL renegotation with the reconfigured client verification depth after the
-HTTP request was read but before the HTTP response is sent.
-<p>
-The depth actually is the maximum number of intermediate certificate issuers,
-i.e. the number of CA certificates which are max allowed to be followed while
-verifying the client certificate. A depth of 0 means that self-signed client
-certificates are accepted only, the default depth of 1 means the client
-certificate can be self-signed or has to be signed by a CA which is directly
-known to the server (i.e. the CA's certificate is under
-<code>SSLCACertificatePath</code>), etc.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLVerifyDepth 10
-</pre>
-</blockquote>
-<hr /><!-- SSLLog --------------------------------------------------------->
-<p>
-<br>
-<a name="SSLLog"></a>
-<h2><a name="ssllog">SSLLog</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLLog</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Where to write the dedicated SSL engine logfile</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLLog</code> <em>filename</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This directive toggles the usage of the SSL/TLS Protocol Engine. This
+is usually used inside a <a href="core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for a
+particular virtual host. By default the SSL/TLS Protocol Engine is
+disabled for both the main server and all configured virtual hosts.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+&lt;VirtualHost _default_:443&gt;<br>
+SSLEngine on<br>
+...<br>
+&lt;/VirtualHost&gt;
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLLog">SSLLog</a> <a name="ssllog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Where to write the dedicated SSL engine logfile</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLLog <em>file-path</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
 This directive sets the name of the dedicated SSL protocol engine logfile.
 Error type messages are additionally duplicated to the general Apache error
 log file (directive <code>ErrorLog</code>). Put this somewhere where it cannot
 be used for symlink attacks on a real server (i.e. somewhere where only root
-can write). If the <em>filename</em> does not begin with a slash
+can write). If the <em>file-path</em> does not begin with a slash
 ('<code>/</code>') then it is assumed to be relative to the <em>Server
-Root</em>. If <em>filename</em> begins with a bar ('<code>|</code>') then the
+Root</em>. If <em>file-path</em> begins with a bar ('<code>|</code>') then the
 following string is assumed to be a path to an executable program to which a
 reliable pipe can be established. The directive should occur only once per
-virtual server config.
-<p>
-Example:
-<blockquote>
-<pre>
+virtual server config.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLLog /usr/local/apache/logs/ssl_engine_log
-</pre>
-</blockquote>
-<hr /><!-- SSLLogLevel ---------------------------------------------------->
-<p>
-<br>
-<a name="SSLLogLevel"></a>
-<h2><a name="sslloglevel">SSLLogLevel</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLLogLevel</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Logging level for the dedicated SSL engine logfile</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLLogLevel</code> <em>level</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLLogLevel none</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLLogLevel">SSLLogLevel</a> <a name="sslloglevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Logging level for the dedicated SSL engine 
+logfile</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLLogLevel <em>level</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLLogLevel none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
 This directive sets the verbosity degree of the dedicated SSL protocol engine
 logfile. The <em>level</em> is one of the following (in ascending order where
-higher levels include lower levels):
+higher levels include lower levels):</p>
 <ul>
 <li><code>none</code><br>
     no dedicated SSL logging is done, but messages of level
     ``<code>error</code>'' are still written to the general Apache error
     logfile.
-<p>
+</li>
 <li><code>error</code><br>
     log messages of error type only, i.e. messages which show fatal situations
     (processing is stopped). Those messages are also duplicated to the
     general Apache error logfile.
-<p>
+</li>
 <li><code>warn</code><br>
     log also warning messages, i.e. messages which show non-fatal problems
     (processing is continued).
-<p>
+</li>
 <li><code>info</code><br>
     log also informational messages, i.e. messages which show major
     processing steps.
-<p>
+</li>
 <li><code>trace</code><br>
     log also trace messages, i.e. messages which show minor processing steps.
-<p>
+</li>
 <li><code>debug</code><br>
     log also debugging messages, i.e. messages which show development and
     low-level I/O information.
+</li>
 </ul>
-<p>
-Example:
-<blockquote>
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLLogLevel warn
-</pre>
-</blockquote>
-<hr /><!-- SSLOptions ----------------------------------------------------->
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLMutex">SSLMutex</a> <a name="sslmutex">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Semaphore for internal mutual exclusion of 
+operations</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLMutex <em>type</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLMutex none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<br>
-<a name="SSLOptions"></a>
-<h2><a name="ssloptions">SSLOptions</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLOptions</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Configure various SSL engine run-time options</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLOptions</code> [+-]<em>option</em> ...</td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> Options</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This configures the SSL engine's semaphore (aka. lock) which is used for mutual
+exclusion of operations which have to be done in a synchronized way between the
+pre-forked Apache server processes. This directive can only be used in the
+global server context because it's only useful to have one global mutex.</p>
+<p>
+The following Mutex <em>types</em> are available:</p>
+<ul>
+<li><code>none</code>
+    <p>
+    This is the default where no Mutex is used at all. Use it at your own
+    risk. But because currently the Mutex is mainly used for synchronizing
+    write access to the SSL Session Cache you can live without it as long
+    as you accept a sometimes garbled Session Cache. So it's not recommended
+    to leave this the default. Instead configure a real Mutex.</p></li>
+<li><code>file:/path/to/mutex</code>
+    <p>
+    This is the portable and (under Unix) always provided Mutex variant where
+    a physical (lock-)file is used as the Mutex. Always use a local disk
+    filesystem for <code>/path/to/mutex</code> and never a file residing on a
+    NFS- or AFS-filesystem. Note: Internally, the Process ID (PID) of the
+    Apache parent process is automatically appended to
+    <code>/path/to/mutex</code> to make it unique, so you don't have to worry
+    about conflicts yourself. Notice that this type of mutex is not available
+    under the Win32 environment. There you <em>have</em> to use the semaphore
+    mutex.</p></li>
+<li><code>sem</code>
+    <p>
+    This is the most elegant but also most non-portable Mutex variant where a
+    SysV IPC Semaphore (under Unix) and a Windows Mutex (under Win32) is used
+    when possible. It is only available when the underlying platform
+    supports it.</p></li>
+</ul>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLMutex file:/usr/local/apache/logs/ssl_mutex
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLOptions">SSLOptions</a> <a name="ssloptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure various SSL engine run-time options</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLOptions [+|-]<em>option</em> ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
 This directive can be used to control various run-time options on a
-per-directory basis. Normally, if multiple <code>SSLOptions</code> could
-apply to a directory, then the most specific one is taken completely; the
-options are not merged. However if <em>all</em> the options on the
-<code>SSLOptions</code> directive are preceded by a plus (<code>+</code>) or
-minus (<code>-</code>) symbol, the options are merged. Any options preceded by
-a <code>+</code> are added to the options currently in force, and any options
-preceded by a <code>-</code> are removed from the options currently in force.
+per-directory basis. Normally, if multiple <code>SSLOptions</code>
+could apply to a directory, then the most specific one is taken
+completely; the options are not merged. However if <em>all</em> the
+options on the <code>SSLOptions</code> directive are preceded by a
+plus (<code>+</code>) or minus (<code>-</code>) symbol, the options
+are merged. Any options preceded by a <code>+</code> are added to the
+options currently in force, and any options preceded by a
+<code>-</code> are removed from the options currently in force.</p>
 <p>
-The available <em>option</em>s are:
+The available <em>option</em>s are:</p>
 <ul>
 <li><code>StdEnvVars</code>
     <p>
@@ -1901,27 +493,27 @@ The available <em>option</em>s are:
     environment variables are created. This per default is disabled for
     performance reasons, because the information extraction step is a
     rather expensive operation. So one usually enables this option for
-    CGI and SSI requests only.
-<p>
+    CGI and SSI requests only.</p>
+</li>
 <li><code>CompatEnvVars</code>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created for backward compatibility to other Apache SSL solutions. Look in
     the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details
-    on the particular variables generated.
-<p>
+    on the particular variables generated.</p>
+</li>
 <li><code>ExportCertData</code>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created: <code>SSL_SERVER_CERT</code>, <code>SSL_CLIENT_CERT</code> and
-    <code>SSL_CLIENT_CERT_CHAIN</code><i>n</i> (with <i>n</i> = 0,1,2,..).
+    <code>SSL_CLIENT_CERT_CHAIN</code><em>n</em> (with <em>n</em> = 0,1,2,..).
     These contain the PEM-encoded X.509 Certificates of server and client for
     the current HTTPS connection and can be used by CGI scripts for deeper
     Certificate checking. Additionally all other certificates of the client
     certificate chain are provided, too. This bloats up the environment a
     little bit which is why you have to use this option to enable it on
-    demand.
-<p>
+    demand.</p>
+</li>
 <li><code>FakeBasicAuth</code>
     <p>
     When this option is enabled, the Subject Distinguished Name (DN) of the
@@ -1935,187 +527,252 @@ The available <em>option</em>s are:
     ``<code>xxj31ZMTZzkVA</code>'', which is the DES-encrypted version of the
     word `<code>password</code>''. Those who live under MD5-based encryption
     (for instance under FreeBSD or BSD/OS, etc.) should use the following MD5
-    hash of the same word: ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.
-<p>
+    hash of the same word: ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+</li>
 <li><code>StrictRequire</code>
     <p>
-    This <i>forces</i> forbidden access when <code>SSLRequireSSL</code> or
+    This <em>forces</em> forbidden access when <code>SSLRequireSSL</code> or
     <code>SSLRequire</code> successfully decided that access should be
     forbidden. Usually the default is that in the case where a ``<code>Satisfy
     any</code>'' directive is used, and other access restrictions are passed,
     denial of access due to <code>SSLRequireSSL</code> or
     <code>SSLRequire</code> is overridden (because that's how the Apache
-    <tt>Satisfy</tt> mechanism should work.) But for strict access restriction
+    <code>Satisfy</code> mechanism should work.) But for strict access restriction
     you can use <code>SSLRequireSSL</code> and/or <code>SSLRequire</code> in
     combination with an ``<code>SSLOptions +StrictRequire</code>''. Then an
     additional ``<code>Satisfy Any</code>'' has no chance once mod_ssl has
-    decided to deny access.
-<p>
+    decided to deny access.</p>
+</li>
 <li><code>OptRenegotiate</code>
     <p>
     This enables optimized SSL connection renegotiation handling when SSL
     directives are used in per-directory context. By default a strict
-    scheme is enabled where <i>every</i> per-directory reconfiguration of
-    SSL parameters causes a <i>full</i> SSL renegotiation handshake. When this
+    scheme is enabled where <em>every</em> per-directory reconfiguration of
+    SSL parameters causes a <em>full</em> SSL renegotiation handshake. When this
     option is used mod_ssl tries to avoid unnecessary handshakes by doing more
     granular (but still safe) parameter checks. Nevertheless these granular
     checks sometimes maybe not what the user expects, so enable this on a
-    per-directory basis only, please.
+    per-directory basis only, please.</p>
+</li>
+</ul>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLOptions +FakeBasicAuth -StrictRequire<br>
+&lt;Files ~ "\.(cgi|shtml)$"&gt;<br>
+    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData<br>
+&lt;Files&gt;
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of pass phrase dialog for encrypted private 
+keys</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLPassPhraseDialog <em>type</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLPassPhraseDialog builtin</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+When Apache starts up it has to read the various Certificate (see
+<a href="#sslcertificatefile" class="directive"><code class="directive">SSLCertificateFile</code></a>) and
+Private Key (see <a href="#sslcertificatekeyfile" class="directive"><code class="directive">SSLCertificateKeyFile</code></a>) files of the
+SSL-enabled virtual servers. Because for security reasons the Private
+Key files are usually encrypted, mod_ssl needs to query the
+administrator for a Pass Phrase in order to decrypt those files. This
+query can be done in two ways which can be configured by
+<em>type</em>:</p>
+<ul>
+<li><code>builtin</code>
+    <p>
+    This is the default where an interactive terminal dialog occurs at startup
+    time just before Apache detaches from the terminal. Here the administrator
+    has to manually enter the Pass Phrase for each encrypted Private Key file.
+    Because a lot of SSL-enabled virtual hosts can be configured, the
+    following reuse-scheme is used to minimize the dialog: When a Private Key
+    file is encrypted, all known Pass Phrases (at the beginning there are
+    none, of course) are tried. If one of those known Pass Phrases succeeds no
+    dialog pops up for this particular Private Key file. If none succeeded,
+    another Pass Phrase is queried on the terminal and remembered for the next
+    round (where it perhaps can be reused).</p>
+    <p>
+    This scheme allows mod_ssl to be maximally flexible (because for N encrypted
+    Private Key files you <em>can</em> use N different Pass Phrases - but then
+    you have to enter all of them, of course) while minimizing the terminal
+    dialog (i.e. when you use a single Pass Phrase for all N Private Key files
+    this Pass Phrase is queried only once).</p></li>
+
+<li><code>exec:/path/to/program</code>
+    <p>
+    Here an external program is configured which is called at startup for each
+    encrypted Private Key file. It is called with two arguments (the first is
+    of the form ``<code>servername:portnumber</code>'', the second is either
+    ``<code>RSA</code>'' or ``<code>DSA</code>''), which indicate for which
+    server and algorithm it has to print the corresponding Pass Phrase to
+    <code>stdout</code>. The intent is that this external program first runs
+    security checks to make sure that the system is not compromised by an
+    attacker, and only when these checks were passed successfully it provides
+    the Pass Phrase.</p>
+    <p>
+    Both these security checks, and the way the Pass Phrase is determined, can
+    be as complex as you like. Mod_ssl just defines the interface: an
+    executable program which provides the Pass Phrase on <code>stdout</code>.
+    Nothing more or less! So, if you're really paranoid about security, here
+    is your interface. Anything else has to be left as an exercise to the
+    administrator, because local security requirements are so different.</p>
+    <p>
+    The reuse-algorithm above is used here, too. In other words: The external
+    program is called only once per unique Pass Phrase.</p></li>
 </ul>
 <p>
-Example:
-<blockquote>
-<pre>
-SSLOptions +FakeBasicAuth -StrictRequire
-&lt;Files ~ "\.(cgi|shtml)$"&gt;
-    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData
-&lt;Files&gt;
-</pre>
-</blockquote>
-<hr /><!-- SSLRequireSSL -------------------------------------------------->
+Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLProtocol">SSLProtocol</a> <a name="sslprotocol">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure usable SSL protocol flavors</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProtocol all</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-<br>
-<a name="SSLRequireSSL"></a>
-<h2><a name="sslrequiressl">SSLRequireSSL</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLRequireSSL</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Deny access when SSL is not used for the HTTP request</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRequireSSL</code></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+This directive can be used to control the SSL protocol flavors mod_ssl should
+use when establishing its server environment. Clients then can only connect
+with one of the provided protocols.</p>
 <p>
-This directive forbids access unless HTTP over SSL (i.e. HTTPS) is enabled for
-the current connection. This is very handy inside the SSL-enabled virtual
-host or directories for defending against configuration errors that expose
-stuff that should be protected. When this directive is present all requests
-are denied which are not using SSL.
+The available (case-insensitive) <em>protocol</em>s are:</p>
+<ul>
+<li><code>SSLv2</code>
+    <p>
+    This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
+    original SSL protocol as designed by Netscape Corporation.</p></li>
+
+<li><code>SSLv3</code>
+    <p>
+    This is the Secure Sockets Layer (SSL) protocol, version 3.0. It is the
+    successor to SSLv2 and the currently (as of February 1999) de-facto
+    standardized SSL protocol from Netscape Corporation. It's supported by
+    almost all popular browsers.</p></li>
+
+<li><code>TLSv1</code>
+    <p>
+    This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
+    successor to SSLv3 and currently (as of February 1999) still under
+    construction by the Internet Engineering Task Force (IETF). It's still
+    not supported by any popular browsers.</p></li>
+
+<li><code>All</code>
+    <p>
+    This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
+    convinient way for enabling all protocols except one when used in
+    combination with the minus sign on a protocol as the example above 
+    shows.</p></li>
+</ul>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+#   enable SSLv3 and TLSv1, but not SSLv2<br>
+SSLProtocol all -SSLv2
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Pseudo Random Number Generator (PRNG) seeding 
+source</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLRandomSeed <em>context</em> <em>source</em> 
+[<em>bytes</em>]</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
-Example:
-<blockquote>
-<pre>
-SSLRequireSSL
-</pre>
-</blockquote>
-<hr /><!-- SSLRequire ----------------------------------------------------->
+This configures one or more sources for seeding the Pseudo Random Number
+Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
+<code>startup</code>) and/or just before a new SSL connection is established
+(<em>context</em> is <code>connect</code>). This directive can only be used
+in the global server context because the PRNG is a global facility.</p>
 <p>
-<br>
-<a name="SSLRequire"></a>
-<h2><a name="sslrequire">SSLRequire</a> directive</h2>
-<table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
-<tr>
-<td>
-<table bgcolor="white" width="600" cellspacing="0" cellpadding="5" border="0" summary="">
-<tr>
-<td>
-<table cellspacing="0" cellpadding="1" border="0" summary="">
-<tr><td>
-<font face="Arial,Helvetica"><b>Name:</b></font></a> </td><td> <b>SSLRequire</b></td></tr>
-<tr><td>
-<font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Allow access only when an arbitrarily complex boolean expression is true</td></tr>
-<tr><td><a
- href="directive-dict.html#Syntax"
- rel="Help"
-><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRequire</code> <em>expression</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Default"
- rel="Help"
-><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
-<tr><td><a
- href="directive-dict.html#Context"
- rel="Help"
-><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> directory, .htaccess</td></tr>
-<tr><td><a
- href="directive-dict.html#Override"
- rel="Help"
-><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
-<tr><td><a
- href="directive-dict.html#Status"
- rel="Help"
-><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
-<tr><td><a
- href="directive-dict.html#Module"
- rel="Help"
-><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
-<tr><td><a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+The following <em>source</em> variants are available:</p>
+<ul>
+<li><code>builtin</code>
+    <p> This is the always available builtin seeding source. It's usage
+    consumes minimum CPU cycles under runtime and hence can be always used
+    without drawbacks. The source used for seeding the PRNG contains of the
+    current time, the current process id and (when applicable) a randomly
+    choosen 1KB extract of the inter-process scoreboard structure of Apache.
+    The drawback is that this is not really a strong source and at startup
+    time (where the scoreboard is still not available) this source just
+    produces a few bytes of entropy. So you should always, at least for the
+    startup, use an additional seeding source.</p></li>
+<li><code>file:/path/to/source</code>
+    <p>
+    This variant uses an external file <code>/path/to/source</code> as the
+    source for seeding the PRNG. When <em>bytes</em> is specified, only the
+    first <em>bytes</em> number of bytes of the file form the entropy (and
+    <em>bytes</em> is given to <code>/path/to/source</code> as the first
+    argument). When <em>bytes</em> is not specified the whole file forms the
+    entropy (and <code>0</code> is given to <code>/path/to/source</code> as
+    the first argument). Use this especially at startup time, for instance
+    with an available <code>/dev/random</code> and/or
+    <code>/dev/urandom</code> devices (which usually exist on modern Unix
+    derivates like FreeBSD and Linux).</p>
+    <p>
+    <em>But be careful</em>: Usually <code>/dev/random</code> provides only as
+    much entropy data as it actually has, i.e. when you request 512 bytes of
+    entropy, but the device currently has only 100 bytes available two things
+    can happen: On some platforms you receive only the 100 bytes while on
+    other platforms the read blocks until enough bytes are available (which
+    can take a long time). Here using an existing <code>/dev/urandom</code> is
+    better, because it never blocks and actually gives the amount of requested
+    data. The drawback is just that the quality of the received data may not
+    be the best.</p>
+    <p>
+    On some platforms like FreeBSD one can even control how the entropy is
+    actually generated, i.e. by which system interrupts. More details one can
+    find under <em>rndcontrol(8)</em> on those platforms. Alternatively, when
+    your system lacks such a random device, you can use tool
+    like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
+    (Entropy Gathering Daemon) and run it's client program with the
+    <code>exec:/path/to/program/</code> variant (see below) or use
+    <code>egd:/path/to/egd-socket</code> (see below).</p></li>
+
+<li><code>exec:/path/to/program</code>
+    <p>
+    This variant uses an external executable
+    <code>/path/to/program</code> as the source for seeding the
+    PRNG. When <em>bytes</em> is specified, only the first
+    <em>bytes</em> number of bytes of its <code>stdout</code> contents
+    form the entropy. When <em>bytes</em> is not specified, the
+    entirety of the data produced on <code>stdout</code> form the
+    entropy. Use this only at startup time when you need a very strong
+    seeding with the help of an external program (for instance as in
+    the example above with the <code>truerand</code> utility you can
+    find in the mod_ssl distribution which is based on the AT&amp;T
+    <em>truerand</em> library). Using this in the connection context
+    slows down the server too dramatically, of course.  So usually you
+    should avoid using external programs in that context.</p></li>
+<li><code>egd:/path/to/egd-socket</code> (Unix only)
+    <p>
+    This variant uses the Unix domain socket of the
+    external Entropy Gathering Daemon (EGD) (see <a href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
+    /crypto/</a>) to seed the PRNG. Use this if no random device exists
+    on your platform.</p></li>
+</ul>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLRandomSeed startup builtin<br>
+SSLRandomSeed startup file:/dev/random<br>
+SSLRandomSeed startup file:/dev/urandom 1024<br>
+SSLRandomSeed startup exec:/usr/local/bin/truerand 16<br>
+SSLRandomSeed connect builtin<br>
+SSLRandomSeed connect file:/dev/random<br>
+SSLRandomSeed connect file:/dev/urandom 1024<br>
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLRequire">SSLRequire</a> <a name="sslrequire">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Allow access only when an arbitrarily complex 
+boolean expression is true</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLRequire <em>expression</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
 <p>
 This directive specifies a general access requirement which has to be
 fulfilled in order to allow access. It's a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
-containing any number of access checks.
+containing any number of access checks.</p>
 <p>
 The <em>expression</em> must match the following syntax (given as a BNF
-grammar notation):
+grammar notation):</p>
 <blockquote>
 <pre>
-expr     ::= "<b>true</b>" | "<b>false</b>"
-           | "<b>!</b>" expr
-           | expr "<b>&&</b>" expr
-           | expr "<b>||</b>" expr
-           | "<b>(</b>" expr "<b>)</b>"
+expr     ::= "<strong>true</strong>" | "<strong>false</strong>"
+           | "<strong>!</strong>" expr
+           | expr "<strong>&amp;&amp;</strong>" expr
+           | expr "<strong>||</strong>" expr
+           | "<strong>(</strong>" expr "<strong>)</strong>"
            | comp
 
-comp     ::= word "<b>==</b>" word | word "<b>eq</b>" word
-           | word "<b>!=</b>" word | word "<b>ne</b>" word
-           | word "<b>&lt;</b>"  word | word "<b>lt</b>" word
-           | word "<b>&lt;=</b>" word | word "<b>le</b>" word
-           | word "<b>&gt;</b>"  word | word "<b>gt</b>" word
-           | word "<b>&gt;=</b>" word | word "<b>ge</b>" word
-           | word "<b>in</b>" "<b>{</b>" wordlist "<b>}</b>"
-           | word "<b>=~</b>" regex
-           | word "<b>!~</b>" regex
+comp     ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
+           | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
+           | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
+           | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
+           | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
+           | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+           | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+           | word "<strong>=~</strong>" regex
+           | word "<strong>!~</strong>" regex
 
 wordlist ::= word
-           | wordlist "<b>,</b>" word
+           | wordlist "<strong>,</strong>" word
 
 word     ::= digit
            | cstring
@@ -2124,38 +781,34 @@ word     ::= digit
 
 digit    ::= [0-9]+
 cstring  ::= "..."
-variable ::= "<b>%{</b>" varname "<b>}</b>"
-function ::= funcname "<b>(</b>" funcargs "<b>)</b>"
+variable ::= "<strong>%{</strong>" varname "<strong>}</strong>"
+function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"
 </pre>
 </blockquote>
-while for <code>varname</code> any variable from <a href="#table3">Table 3</a>
-can be used. Finally for <code>funcname</code> the following functions
-are available:
+<p>while for <code>varname</code> any variable from <a href="#table3">Table 3</a> can be used. Finally for
+<code>funcname</code> the following functions are available:</p>
 <ul>
 <li><code>file(</code><em>filename</em><code>)</code>
     <p>
     This function takes one string argument and expands to the contents of the
     file. This is especially useful for matching this contents against a
-    regular expression, etc.
+    regular expression, etc.</p>
+</li>
 </ul>
-Notice that <em>expression</em> is first parsed into an internal machine
+<p>Notice that <em>expression</em> is first parsed into an internal machine
 representation and then evaluated in a second step. Actually, in Global and
 Per-Server Class context <em>expression</em> is parsed at startup time and
 at runtime only the machine representation is executed. For Per-Directory
 context this is different: here <em>expression</em> has to be parsed and
-immediately executed for every request.
-<p>
-Example:
-<blockquote>
-<pre>
-SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \
-            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \
-            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \
-            and %{TIME_WDAY} >= 1 and %{TIME_WDAY} <= 5 \
-            and %{TIME_HOUR} >= 8 and %{TIME_HOUR} <= 20       ) \
+immediately executed for every request.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br>
+            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \<br>
+            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \<br>
+            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5 \<br>
+            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br>
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
-</pre>
-</blockquote>
+</code></td></tr></table></blockquote>
 <div align="center">
 <a name="table3"></a>
 <table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
@@ -2177,7 +830,7 @@ HTTP:headername        SERVER_NAME           TIME_MIN
 THE_REQUEST            SERVER_PORT           TIME_SEC
 REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
 REQUEST_SCHEME         REMOTE_ADDR           TIME
-REQUEST_URI            REMOTE_USER           ENV:<b>variablename</b>
+REQUEST_URI            REMOTE_USER           ENV:<strong>variablename</strong>
 REQUEST_FILENAME
 </pre>
 <em>SSL-related variables:</em>
@@ -2217,7 +870,7 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
                        SSL_CLIENT_A_SIG       SSL_SERVER_A_SIG
                        SSL_CLIENT_A_KEY       SSL_SERVER_A_KEY
                        SSL_CLIENT_CERT        SSL_SERVER_CERT
-                       SSL_CLIENT_CERT_CHAIN<b>n</b>
+                       SSL_CLIENT_CERT_CHAIN<strong>n</strong>
                        SSL_CLIENT_VERIFY
 </pre>
 </td></tr></table>
@@ -2225,9 +878,114 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 </tr></table>
 </td></tr></table>
 </div>
- <p><!--#include virtual="footer.html" -->
-    </p>
-  </body>
-</html>
-</body>
-</html>
+</usage><hr/><h2><a name="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Deny access when SSL is not used for the 
+HTTP request</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLRequireSSL</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+This directive forbids access unless HTTP over SSL (i.e. HTTPS) is enabled for
+the current connection. This is very handy inside the SSL-enabled virtual
+host or directories for defending against configuration errors that expose
+stuff that should be protected. When this directive is present all requests
+are denied which are not using SSL.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLRequireSSL
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of the global/inter-process SSL Session 
+Cache</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLSessionCache <em>type</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLSessionCache none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+This configures the storage type of the global/inter-process SSL Session
+Cache. This cache is an optional facility which speeds up parallel request
+processing. For requests to the same server process (via HTTP keep-alive),
+OpenSSL already caches the SSL session information locally. But because modern
+clients request inlined images and other data via parallel requests (usually
+up to four parallel requests are common) those requests are served by
+<em>different</em> pre-forked server processes. Here an inter-process cache
+helps to avoid unneccessary session handshakes.</p>
+<p>
+The following two storage <em>type</em>s are currently supported:</p>
+<ul>
+<li><code>none</code>
+    <p>
+    This is the default and just disables the global/inter-process Session
+    Cache. There is no drawback in functionality, but a noticeable speed
+    penalty can be observed.</p></li>
+<li><code>dbm:/path/to/datafile</code>
+    <p>
+    This makes use of a DBM hashfile on the local disk to synchronize the
+    local OpenSSL memory caches of the server processes. The slight increase
+    in I/O on the server results in a visible request speedup for your
+    clients, so this type of storage is generally recommended.</p></li>
+<li><code>shm:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
+    <p>
+    This makes use of a high-performance hash table (approx. <em>size</em> bytes
+    in size) inside a shared memory segment in RAM (established via
+    <code>/path/to/datafile</code>) to synchronize the local OpenSSL memory
+    caches of the server processes. This storage type is not available on all
+    platforms. See the mod_ssl <code>INSTALL</code> document for details on
+    how to build Apache+EAPI with shared memory support.</p></li>
+</ul>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Examples</strong></p><code>
+SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br>
+SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a name="sslsessioncachetimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Number of seconds before an SSL session expires
+in the Session Cache</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLSessionCacheTimeout <em>seconds</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLSessionCacheTimeout 300</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+This directive sets the timeout in seconds for the information stored in the
+global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
+It can be set as low as 15 for testing, but should be set to higher
+values like 300 in real life.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLSessionCacheTimeout 600
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Type of Client Certificate verification</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLVerifyClient <em>level</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLVerifyClient none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+This directive sets the Certificate verification level for the Client
+Authentication. Notice that this directive can be used both in per-server and
+per-directory context. In per-server context it applies to the client
+authentication process used in the standard SSL handshake when a connection is
+established. In per-directory context it forces a SSL renegotation with the
+reconfigured client verification level after the HTTP request was read but
+before the HTTP response is sent.</p>
+<p>
+The following levels are available for <em>level</em>:</p>
+<ul>
+<li><strong>none</strong>:
+     no client Certificate is required at all</li>
+<li><strong>optional</strong>:
+     the client <em>may</em> present a valid Certificate</li>
+<li><strong>require</strong>:
+     the client <em>has to</em> present a valid Certificate</li>
+<li><strong>optional_no_ca</strong>:
+     the client may present a valid Certificate<br>
+     but it need not to be (successfully) verifiable.</li>
+</ul>
+<p>In practice only levels <strong>none</strong> and
+<strong>require</strong> are really interesting, because level
+<strong>optional</strong> doesn't work with all browsers and level
+<strong>optional_no_ca</strong> is actually against the idea of
+authentication (but can be used to establish SSL test pages, etc.)</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLVerifyClient require
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Maximum depth of CA Certificates in Client 
+Certificate verification</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SSLVerifyDepth <em>number</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLVerifyDepth 1</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table><usage>
+<p>
+This directive sets how deeply mod_ssl should verify before deciding that the
+clients don't have a valid certificate. Notice that this directive can be
+used both in per-server and per-directory context. In per-server context it
+applies to the client authentication process used in the standard SSL
+handshake when a connection is established. In per-directory context it forces
+a SSL renegotation with the reconfigured client verification depth after the
+HTTP request was read but before the HTTP response is sent.</p>
+<p>
+The depth actually is the maximum number of intermediate certificate issuers,
+i.e. the number of CA certificates which are max allowed to be followed while
+verifying the client certificate. A depth of 0 means that self-signed client
+certificates are accepted only, the default depth of 1 means the client
+certificate can be self-signed or has to be signed by a CA which is directly
+known to the server (i.e. the CA's certificate is under
+<a href="#sslcacertificatepath" class="directive"><code class="directive">SSLCACertificatePath</code></a>), etc.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLVerifyDepth 10
+</code></td></tr></table></blockquote>
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
