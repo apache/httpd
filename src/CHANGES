@@ -1,5 +1,10 @@
 Changes with Apache 1.2b8
 
+  *) Fixed status of response when POST is received for a nonexistant URL
+     (was sending 405, now 404) and when any method is sent with a
+     full-URI that doesn't match the server and the server is not acting
+     as a proxy (was sending 501, now 403).  [Roy Fielding]
+
   *) Host port changed to unsigned short. [Ken Coar] PR #276
 
   *) Fix typo in command definition of AuthAuthoritative. [Ken Coar] PR #246

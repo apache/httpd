@@ -1264,7 +1264,7 @@ int core_translate (request_rec *r)
     void *sconf = r->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
   
-    if (r->proxyreq) return NOT_IMPLEMENTED;
+    if (r->proxyreq) return HTTP_FORBIDDEN;
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) return BAD_REQUEST;
     
     if (r->server->path &&
@@ -1303,7 +1303,7 @@ int default_handler (request_rec *r)
 
     if (r->method_number == M_INVALID) return NOT_IMPLEMENTED;
     if (r->method_number == M_OPTIONS) return send_http_options(r);
-    if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
+    if (r->method_number == M_PUT) return METHOD_NOT_ALLOWED;
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
 	log_reason("File does not exist",
@@ -1311,6 +1311,7 @@ int default_handler (request_rec *r)
 		: r->filename, r);
 	return NOT_FOUND;
     }
+    if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
 	
     if ((errstatus = set_last_modified (r, r->finfo.st_mtime))
 	|| (errstatus = set_content_length (r, r->finfo.st_size)))
