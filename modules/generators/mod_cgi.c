@@ -474,8 +474,6 @@ static int cgi_handler(request_rec *r)
 	    dbpos = 0;
 	}
 
-	ap_hard_timeout("copy script args", r);
-
 	while ((len_read =
 		ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) {
 	    if (conf->logname) {
@@ -488,7 +486,6 @@ static int cgi_handler(request_rec *r)
 		memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-	    ap_reset_timeout(r);
 	    if (ap_bwrite(script_out, argsbuffer, len_read) < len_read) {
 		/* silly script stopped reading, soak up remaining message */
 		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
@@ -500,7 +497,6 @@ static int cgi_handler(request_rec *r)
 
 	ap_bflush(script_out);
 
-	ap_kill_timeout(r);
     }
 
     ap_bclose(script_out);
@@ -525,16 +521,12 @@ static int cgi_handler(request_rec *r)
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    ap_hard_timeout("read from script", r);
 	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 		continue;
 	    }
 	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 		continue;
 	    }
-	    ap_kill_timeout(r);
-
-
 	    /* This redirect needs to be a GET no matter what the original
 	     * method was.
 	     */
@@ -563,11 +555,9 @@ static int cgi_handler(request_rec *r)
 	}
 	ap_bclose(script_in);
 
-	ap_soft_timeout("soaking script stderr", r);
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	    continue;
 	}
-	ap_kill_timeout(r);
 	ap_bclose(script_err);
     }
 

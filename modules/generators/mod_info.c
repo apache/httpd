@@ -376,7 +376,6 @@ static int display_info(request_rec *r)
     if (r->header_only) {
         return 0;
     }
-    ap_hard_timeout("send server info", r);
 
     ap_rputs(DOCTYPE_HTML_3_2
 	     "<html><head><title>Server Information</title></head>\n", r);
@@ -641,7 +640,6 @@ static int display_info(request_rec *r)
     ap_rputs(ap_psignature("",r), r);
     ap_rputs("</body></html>\n", r);
     /* Done, turn off timeout, close file and return */
-    ap_kill_timeout(r);
     return 0;
 }
 
