@@ -1,4 +1,4 @@
-PCRE version 3.2 12-May-2000
+PCRE version 3.9 02-Jan-2002
 
 /^[\w]+/
     *** Failers
@@ -112,4 +112,5 @@ No match
     école
 No match
 
+/ End of testinput4 /
 
