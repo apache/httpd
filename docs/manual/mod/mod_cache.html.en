@@ -26,18 +26,17 @@
     </dl>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
-<h2>Directives</h2><ul><li><a href="#cachedefaultexpire">CacheDefaultExpire</a></li><li><a href="#cachedisable">CacheDisable</a></li><li><a href="#cacheenable">CacheEnable</a></li><li><a href="#cacheforcecompletion">CacheForceCompletion</a></li><li><a href="#cacheforcecompletion">CacheForceCompletion</a></li><li><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li><li><a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li><li><a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li><li><a href="#cachemaxexpire">CacheMaxExpire</a></li><li><a href="#cacheon">CacheOn</a></li></ul><h2><a name="related">Related Modules and Directives</a></h2>
+<h2>Directives</h2><ul><li><a href="#cachedefaultexpire">CacheDefaultExpire</a></li><li><a href="#cachedisable">CacheDisable</a></li><li><a href="#cacheenable">CacheEnable</a></li><li><a href="#cacheforcecompletion">CacheForceCompletion</a></li><li><a href="#cacheforcecompletion">CacheForceCompletion</a></li><li><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li><li><a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li><li><a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li><li><a href="#cachemaxexpire">CacheMaxExpire</a></li></ul><h2><a name="related">Related Modules and Directives</a></h2>
     <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code><br><code><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="../mod/mod_disk_cache.html#cacheroot" class="directive"><code class="directive">CacheRoot</code></a><br><a href="../mod/mod_disk_cache.html#cachesize" class="directive"><code class="directive">CacheSize</code></a><br><a href="../mod/mod_disk_cache.html#cachegcinterval" class="directive"><code class="directive">CacheGcInterval</code></a><br><a href="../mod/mod_disk_cache.html#cachedirlevels" class="directive"><code class="directive">CacheDirLevels</code></a><br><a href="../mod/mod_disk_cache.html#cachedirlength" class="directive"><code class="directive">CacheDirLength</code></a><br><a href="../mod/mod_disk_cache.html#cacheexpirycheck" class="directive"><code class="directive">CacheExpiryCheck</code></a><br><a href="../mod/mod_disk_cache.html#cacheminfilesize" class="directive"><code class="directive">CacheMinFileSize</code></a><br><a href="../mod/mod_disk_cache.html#cachemaxfilesize" class="directive"><code class="directive">CacheMaxFileSize</code></a><br><a href="../mod/mod_disk_cache.html#cachetimemargin" class="directive"><code class="directive">CacheTimeMargin</code></a><br><a href="../mod/mod_disk_cache.html#cachegcdaily" class="directive"><code class="directive">CacheGcDaily</code></a><br><a href="../mod/mod_disk_cache.html#cachegcunused" class="directive"><code class="directive">CacheGcUnused</code></a><br><a href="../mod/mod_disk_cache.html#cachegcclean" class="directive"><code class="directive">CacheGcClean</code></a><br><a href="../mod/mod_disk_cache.html#cachegcmemusage" class="directive"><code class="directive">CacheGcMemUsage</code></a><br><a href="../mod/mod_mem_cache.html#mcachesize" class="directive"><code class="directive">MCacheSize</code></a><br><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount" class="directive"><code class="directive">MCacheMaxObjectCount</code></a><br><a href="../mod/mod_mem_cache.html#mcacheminobjectsize" class="directive"><code class="directive">MCacheMinObjectSize</code></a><br><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize" class="directive"><code class="directive">MCacheMaxObjectSize</code></a><br><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm" class="directive"><code class="directive">MCacheRemovalAlgorithm</code></a><br></td></tr></table>
 <h2>Sample Configuration</h2>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Sample httpd.conf</strong></p><code>
 # <br>
-# Sample Cache Configuration  <br>
+# Sample Cache Configuration <br>
 # <br>
-LoadModule cache_module modules/mod_cache.so  <br>
-&lt;IfModule mod_cache.c&gt;<br>
-   CacheOn On<br>
-<p></p>
-   #LoadModule disk_cache_module modules/mod_disk_cache.so <br>
+LoadModule cache_module modules/mod_cache.so <br>
+&lt;IfModule mod_cache.c&gt; <br>
+<br>
+#LoadModule disk_cache_module modules/mod_disk_cache.so <br>
    &lt;IfModule mod_disk_cache.c&gt; <br>
       CacheRoot c:/cacheroot <br>
       CacheSize 256 <br> 
@@ -176,17 +175,4 @@ This feature is currently <em>not</em> implemented.
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     CacheMaxExpire 604800
     </code></td></tr></table></blockquote>
-<hr><h2><a name="CacheOn">CacheOn</a> <a name="cacheon">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
-                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>CacheOn</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
-                  </a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
-                  </a></td><td>mod_cache</td></tr></table></td></tr></table>
-    <p>
-    </p>
-
-
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  CacheOn
-</code></td></tr></table></blockquote>
 <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
