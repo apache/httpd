@@ -162,14 +162,13 @@ typedef enum {
 typedef struct {
     const char *default_error_msg;
     const char *default_time_fmt;
+    const char *undefined_echo;
     xbithack_t  xbithack;
 } include_dir_config;
 
 typedef struct {
     const char *default_start_tag;
     const char *default_end_tag;
-    const char *undefined_echo;
-    apr_size_t  undefined_echo_len;
 } include_server_config;
 
 /* main parser states */
@@ -239,6 +238,9 @@ struct ssi_internal_ctx {
     arg_item_t   *argv;          /* all arguments */
 
     backref_t    *re;            /* NULL if there wasn't a regex yet */
+
+    const char   *undefined_echo;
+    apr_size_t    undefined_echo_len;
 
 #ifdef DEBUG_INCLUDE
     struct {
@@ -1866,16 +1868,12 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 e_len = strlen(echo_text);
             }
             else {
-                include_server_config *sconf;
-
-                sconf = ap_get_module_config(r->server->module_config,
-                                             &include_module);
-                echo_text = sconf->undefined_echo;
-                e_len = sconf->undefined_echo_len;
+                echo_text = ctx->intern->undefined_echo;
+                e_len = ctx->intern->undefined_echo_len;
             }
 
             APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(
-                                    apr_pstrmemdup(ctx->pool, echo_text, e_len),
+                                    apr_pmemdup(ctx->pool, echo_text, e_len),
                                     e_len, ctx->pool, f->c->bucket_alloc));
         }
         else if (!strcmp(tag, "encoding")) {
@@ -3620,6 +3618,8 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                              strlen(intern->start_seq));
         intern->end_seq = sconf->default_end_tag;
         intern->end_seq_len = strlen(intern->end_seq);
+        intern->undefined_echo = conf->undefined_echo;
+        intern->undefined_echo_len = strlen(conf->undefined_echo);
     }
 
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
@@ -3739,6 +3739,7 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 
     result->default_error_msg = DEFAULT_ERROR_MSG;
     result->default_time_fmt  = DEFAULT_TIME_FORMAT;
+    result->undefined_echo    = DEFAULT_UNDEFINED_ECHO;
     result->xbithack          = DEFAULT_XBITHACK;
 
     return result;
@@ -3751,8 +3752,6 @@ static void *create_includes_server_config(apr_pool_t *p, server_rec *server)
     result = apr_palloc(p, sizeof(include_server_config));
     result->default_end_tag    = DEFAULT_END_SEQUENCE;
     result->default_start_tag  = DEFAULT_START_SEQUENCE;
-    result->undefined_echo     = DEFAULT_UNDEFINED_ECHO;
-    result->undefined_echo_len = sizeof(DEFAULT_UNDEFINED_ECHO) - 1;
 
     return result; 
 }
@@ -3820,11 +3819,8 @@ static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig,
 static const char *set_undefined_echo(cmd_parms *cmd, void *mconfig,
                                       const char *msg)
 {
-    include_server_config *conf;
-
-    conf = ap_get_module_config(cmd->server->module_config, &include_module);
+    include_dir_config *conf = mconfig;
     conf->undefined_echo = msg;
-    conf->undefined_echo_len = strlen(msg);
 
     return NULL;
 }
@@ -3892,7 +3888,7 @@ static const command_rec includes_cmds[] =
                   "SSI Start String Tag"),
     AP_INIT_TAKE1("SSIEndTag", set_default_end_tag, NULL, RSRC_CONF,
                   "SSI End String Tag"),
-    AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, OR_ALL,
                   "String to be displayed if an echoed variable is undefined"),
     {NULL}
 };
