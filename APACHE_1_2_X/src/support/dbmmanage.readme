@@ -1,0 +1,7 @@
+
+Two versions of the dbmmanage script are included with this release.
+One is the old faithful version, which should continue to work if you've
+been using it; the other is a newer cut, which can be easily modified to
+support the newer extended crypt routines which are present on some
+systems (including 4.4BSD derivatives); this newer version is, for the
+nonce, experimental...
