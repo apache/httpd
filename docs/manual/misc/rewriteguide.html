@@ -354,14 +354,13 @@ drwxrwxr-x  12 netsw  users    512 Aug  3 20:15 Typesetting/
 drwxrwxr-x  10 netsw  users    512 Jul  9 14:08 X11/
 </PRE><P>
 
-In July 1996 I decided to make this 350 MB archive public to the world via a
-nice Web interface (<A HREF="http://net.sw.engelschall.com/net.sw/"><CODE>
-http://net.sw.engelschall.com/net.sw/</CODE></a>). "Nice" means that I wanted to
-offer a interface where you can browse directly through the archive hierarchy.
+In July 1996 I decided to make this archive public to the world via a
+nice Web interface. "Nice" means that I wanted to
+offer an interface where you can browse directly through the archive hierarchy.
 And "nice" means that I didn't wanted to change anything inside this hierarchy
 - not even by putting some CGI scripts at the top of it.  Why? Because the
 above structure should be later accessible via FTP as well, and I didn't
-want any Web or CGI stuuf to be there.
+want any Web or CGI stuff to be there.
 
 <P>
 <DT><STRONG>Solution:</STRONG>
@@ -390,7 +389,7 @@ The <CODE>DATA/</CODE> subdirectory holds the above directory structure, i.e.  t
 real <STRONG><EM>net.sw</EM></STRONG> stuff and gets automatically updated via
 <CODE>rdist</CODE> from time to time. 
 
- The second part of the problem remains: how to link these two structures
+The second part of the problem remains: how to link these two structures
 together into one smooth-looking URL tree? We want to hide the <CODE>DATA/</CODE>
 directory from the user while running the appropriate CGI scripts for the
 various URLs. 
