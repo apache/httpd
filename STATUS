@@ -53,6 +53,7 @@ Committed:
     * Dean's [PATCH] more useful warning message for fcntl() lock failure
     * Dean's [PATCH] ap_snprintf should be more sane (fwd)
     * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
+    * [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
 
 Available:
 
@@ -67,10 +68,6 @@ Available:
     * Ken's [PATCH] for PR#1195 (" in realm names)
 	<34A13B2C.EAD80C05@Golux.Com>
 	Status: Ken +1, Dean +1, Jim +1
-
-    * Dean's [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
-	<Pine.LNX.3.95dg3.971216000231.213J-100000@twinlark.arctic.org>
-	Status: Dean +1, Martin +1, Jim +1
 
     * Dean's [PATCH] fix Rasmus' chunking error
 	<Pine.LNX.3.95dg3.971220143033.544I-100000@twinlark.arctic.org>

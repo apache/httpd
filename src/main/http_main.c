@@ -2227,12 +2227,7 @@ void detach(void)
 #endif /* ndef WIN32 or __EMX__ */
 }
 
-/* Reset group privileges, after rereading the config files
- * (our uid may have changed, and if so, we want the new perms).
- *
- * Don't reset the uid yet --- we do that only in the child process,
- * so as not to lose any root privs.  But we can set the group stuff
- * now, once, as opposed to once per each new child.
+/* Set group privileges.
  *
  * Note that we use the username as set in the config files, rather than
  * the lookup of to uid --- the same uid may have multiple passwd entries,
@@ -2776,6 +2771,7 @@ void child_main(int child_num_arg)
     reopen_scoreboard(pchild);
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
+    set_group_privs();
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
     if (geteuid() == 1 && user_id > 1) {
@@ -3309,8 +3305,8 @@ void standalone_main(int argc, char **argv)
 	server_conf = read_config(pconf, ptrans, server_confname);
 	setup_listeners(pconf);
 	open_logs(server_conf, pconf);
+	log_pid(pconf, pid_fname);
 	init_modules(pconf, server_conf);
-	set_group_privs();
 	SAFE_ACCEPT(accept_mutex_init(pconf));
 	if (!is_graceful) {
 	    reinit_scoreboard(pconf);
@@ -3323,7 +3319,6 @@ void standalone_main(int argc, char **argv)
 #endif
 
 	set_signals();
-	log_pid(pconf, pid_fname);
 
 	if (daemons_max_free < daemons_min_free + 1)	/* Don't thrash... */
 	    daemons_max_free = daemons_min_free + 1;

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) Move the gid switching code into the child so that log files
+     and pid files are opened with the root gid.
+     [Gregory A Lundberg <lundberg@vr.net>]
+
   *) WIN32: Check for binaries by looking for the executable header
      instead of counting control characters.
 	 [Jim Patterson <Jim.Patterson@Cognos.COM>] PR#1340
