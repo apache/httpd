@@ -98,6 +98,8 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 </td></tr><tr><td>
 <a href="mpm.html">Multi-Processing Modules (MPMs)</a>
 </td></tr><tr><td>
+<a href="programs/">Server and Supporting Programs</a>
+</td></tr><tr><td>
 <A HREF="dso.html">Dynamic Shared Object (DSO) Support</A>
 </td></tr></table>
 
