@@ -43,7 +43,6 @@ tutorial</a></seealso>
 <name>UserDir</name>
 <description>Location of the user-specific directories</description>
 <syntax>UserDir <em>directory-filename</em></syntax>
-<default>UserDir public_html</default>
 <contextlist><context>server config</context> <context>virtual
 host</context></contextlist>
 
@@ -146,6 +145,11 @@ to http://www.foo.com/bob/one/two.html.</p>
 Apache cannot determine if the redirect succeeded or not, so if you have
 the redirect earlier in the list, that will always be the alternative
 that is used.</p>
+
+<p>User directory substitution is not active by default in versions
+2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
+was assumed if no <directive module="mod_userdir">UserDir</directive>
+directive was present.</p>
 
 </usage>
 
