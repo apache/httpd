@@ -810,7 +810,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         return HTTP_NOT_IMPLEMENTED;
 
     /* We break the URL into host, port, path-search */
-    if(r->parsed_uri.hostname==NULL){
+    if (r->parsed_uri.hostname == NULL) {
         if (APR_SUCCESS != apr_uri_parse(p, url, &uri)) {
             return ap_proxyerror(r, HTTP_BAD_REQUEST,
                 apr_psprintf(p, "URI cannot be parsed: %s", url));
@@ -818,12 +818,13 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         connectname = uri.hostname;
         connectport = uri.port;
         path = apr_pstrdup(p, uri.path);
-    } else {
+    }
+    else {
         connectname = r->parsed_uri.hostname;
         connectport = r->parsed_uri.port;
         path = apr_pstrdup(p, r->parsed_uri.path);
     }
-    if (connectport==0) {
+    if (connectport == 0) {
         connectport = apr_uri_port_of_scheme("ftp");
     }
     path = (path != NULL && path[0] != '\0') ? &path[1] : "";
