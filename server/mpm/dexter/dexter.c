@@ -68,7 +68,6 @@
 #include "unixd.h"
 #include "iol_socket.h"
 #include "ap_listen.h"
-#include "acceptlock.h"
 #include "mpm_default.h"
 #include "dexter.h"
 #include "scoreboard.h"
@@ -103,11 +102,7 @@ static struct {
     unsigned char status;
 } child_table[HARD_SERVER_LIMIT];
 
-#if 0
-#define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
-#else
 #define SAFE_ACCEPT(stmt) do {stmt;} while (0)
-#endif
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -118,7 +113,6 @@ static struct {
  * many child processes in this MPM.
  */
 int max_daemons_limit = -1;
-
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -176,6 +170,11 @@ static pthread_attr_t worker_thread_attr;
 /* Keep track of the number of idle worker threads */
 static int idle_thread_count;
 static pthread_mutex_t idle_thread_count_mutex;
+
+/* Locks for accept serialization */
+static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
+static ap_lock_t *process_accept_mutex;
+static char *lock_fname;
 
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
@@ -851,6 +850,7 @@ static void *worker_thread(void *arg)
     int thread_just_started = 1;
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
+    ap_status_t rv;
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
     ap_create_context(&tpool, thread_pool_parent);
@@ -874,12 +874,18 @@ static void *worker_thread(void *arg)
         else {
             thread_just_started = 0;
         }
-        SAFE_ACCEPT(intra_mutex_on(0));
+        pthread_mutex_lock(&thread_accept_mutex);
         if (workers_may_exit) {
-            SAFE_ACCEPT(intra_mutex_off(0));
+            pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
-        SAFE_ACCEPT(accept_mutex_on(0));
+        if ((rv = ap_lock(process_accept_mutex)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                         "ap_lock failed. Attempting to shutdown "
+                         "process gracefully.");
+            workers_may_exit = 1;
+        }
+
         while (!workers_may_exit) {
             srv = poll(listenfds, num_listenfds + 1, -1);
 
@@ -927,13 +933,16 @@ static void *worker_thread(void *arg)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_status_t rv;
-
             if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "ap_accept");
             }
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            if ((rv = ap_unlock(process_accept_mutex)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                             "ap_unlock failed. Attempting to shutdown "
+                             "process gracefully.");
+                workers_may_exit = 1;
+            }
+            pthread_mutex_unlock(&thread_accept_mutex);
 	    pthread_mutex_lock(&idle_thread_count_mutex);
             if (idle_thread_count > min_spare_threads) {
                 idle_thread_count--;
@@ -947,8 +956,13 @@ static void *worker_thread(void *arg)
             process_socket(ptrans, csd, conn_id);
             requests_this_child--;
 	} else {
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            if ((rv = ap_unlock(process_accept_mutex)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                             "ap_unlock failed. Attempting to shutdown "
+                             "process gracefully.");
+                workers_may_exit = 1;
+            }
+            pthread_mutex_unlock(&thread_accept_mutex);
 	    pthread_mutex_lock(&idle_thread_count_mutex);
             idle_thread_count--;
             pthread_mutex_unlock(&idle_thread_count_mutex);
@@ -979,6 +993,7 @@ static void child_main(int child_num_arg)
     int signal_received;
     int i;
     ap_listen_rec *lr;
+    ap_status_t rv;
 
     my_pid = getpid();
     child_num = child_num_arg;
@@ -986,8 +1001,12 @@ static void child_main(int child_num_arg)
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    SAFE_ACCEPT(intra_mutex_init(pchild, 1));
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
+    rv = ap_child_init_lock(&process_accept_mutex, lock_fname, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                     "Couldn't initialize cross-process lock in child");
+        ap_clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     if (unixd_setup_child()) {
 	ap_clean_child_exit(APEXIT_CHILDFATAL);
@@ -1285,6 +1304,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
+    ap_status_t rv;
 
     pconf = _pconf;
     server_conf = s;
@@ -1310,7 +1330,19 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         return 1;
     }
     ap_log_pid(pconf, ap_pid_fname);
-    SAFE_ACCEPT(accept_mutex_init(pconf, 1));
+
+    /* Initialize cross-process accept lock */
+    lock_fname = ap_psprintf(_pconf, "%s.%lu",
+                             ap_server_root_relative(_pconf, lock_fname),
+                             my_pid);
+    rv = ap_create_lock(&process_accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+                   lock_fname, _pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "Couldn't create cross-process lock");
+        return 1;
+    }
+
     if (!is_graceful) {
         reinit_scoreboard(pconf);
     }
@@ -1452,7 +1484,7 @@ static void dexter_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t 
     max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
     max_threads = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_lock_fname = DEFAULT_LOCKFILE;
+    lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_dexter_set_maintain_connection_status(1);
 
@@ -1487,7 +1519,7 @@ static const char *set_lockfile(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    ap_lock_fname = arg;
+    lock_fname = arg;
     return NULL;
 }
 static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg) 
