@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/02 23:27:07 $]
+Last modified at [$Date: 2004/04/03 20:32:14 $]
 
 Release:
 
@@ -71,6 +71,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_rewrite no longer turns forward proxy requests into reverse proxy
+       requests. PR 28125
+         modules/mappers/mod_rewrite.c: r1.255
+       +1: nd
 
     *) util_ldap_connection_find() locks each cached connection while 
        testing to see if it matches the specified criteria.  But then 
