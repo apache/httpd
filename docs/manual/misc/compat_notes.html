@@ -57,10 +57,9 @@ client problems</A> page.
 <P>
 <LI><CODE>exec cgi=""</CODE> produces reasonable <STRONG>malformed
   header</STRONG> responses when used to invoke non-CGI scripts.<BR>
-  The NCSA code ignores the missing header. (bad idea)<BR> Solution:
-  write CGI to the CGI spec or use <CODE>exec cmd=""</CODE> instead.
-  <P>We might add <CODE>virtual</CODE> support to <CODE>exec
-  cmd</CODE> to make up for this difference.
+  The NCSA code ignores the missing header. (bad idea)
+  <BR>Solution: write CGI to the CGI spec and use
+  <CODE>include&nbsp;virtual</CODE>, or use <CODE>exec cmd=""</CODE> instead.
 
 <P>
 <LI>Icons for FancyIndexing broken - well, no, they're not broken,
