@@ -75,7 +75,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
                                    struct exploded_time_cache_element *cache,
                                    int use_gmt)
 {
-    apr_int64_t seconds = t / APR_USEC_PER_SEC;
+    apr_int64_t seconds = apr_time_sec(t);
     struct exploded_time_cache_element *cache_element =
         &(cache[seconds % TIME_CACHE_SIZE]);
     struct exploded_time_cache_element cache_element_snapshot;
@@ -157,7 +157,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
         memcpy(&(cache_element->xt), xt, sizeof(apr_time_exp_t));
         cache_element->t_validate = seconds;
     }
-    xt->tm_usec = (int)(t % APR_USEC_PER_SEC);
+    xt->tm_usec = (int)apr_time_usec(t);
     return APR_SUCCESS;
 }
 
