@@ -19,7 +19,7 @@
    IBM's EBCDIC-based
    <A HREF="http://www.s390.ibm.com/products/tpf/tpfhp.html">TPF</A>
    (Transaction Processing Facility) operating system.
-   Unless otherwise noted TPF version 4.1 PUT08 and APAR PJ25589 are required.
+   Unless otherwise noted TPF version 4.1 PUT09 is required.
    <BR><BR>
    Refer to htdocs/manual/<A HREF="install-tpf.html">install-tpf.html</A>
    for step-by-step installation instructions.
@@ -37,14 +37,9 @@
 <P>
    The distributed configuration files (httpd.conf-dist and
    mime.types, both located in the conf subdirectory)
-   work on TPF with only a couple of operating system specific changes
-   to httpd.conf:<BR>
-   <UL>
-   <LI>ServerType needs to be "inetd" on pre-PUT09 systems.
-   <LI>Performance considerations may dictate setting KeepAlive to "Off"
-       (the default is "On") or lowering the Timeout value from the default
-       300 seconds (5 minutes) in order to reduce the number of active ECBs on your system.
-   </UL>
+   work on TPF.  Performance considerations may dictate setting KeepAlive to "Off"
+   (the default is "On") or lowering the Timeout value from the default
+   300 seconds (5 minutes) in order to reduce the number of active ECBs on your system.
 </P>
 
 <A NAME="whats_available">&nbsp;</A>
@@ -58,8 +53,12 @@
 
    <multicol COLS=3><UL>
    <LI>alloc.c
+   <LI>ap_base64.c
+   <LI>ap_checkpass.c
    <LI>ap_cpystrn.c
    <LI>ap_fnmatch.c
+   <LI>ap_md5c.c
+   <LI>ap_sha1.c
    <LI>ap_signal.c
    <LI>ap_slack.c
    <LI>ap_snprintf.c
@@ -68,18 +67,20 @@
    <LI>ebcdic.c
    <LI>gen_test.char.c
    <LI>gen_uri_delims.c
+   <LI>htpasswd.c <i><small>(requires PUT10)</small></i>
    <LI>http_config.c
    <LI>http_core.c
    <LI>http_log.c
-   <LI>http_main.c <A HREF="#note_1"> <i><small>(see note 1)</small></i></A>
+   <LI>http_main.c
    <LI>http_protocol.c
    <LI>http_request.c
-   <LI>http_vhost.c <i><small>(requires PUT9)</small></i>
+   <LI>http_vhost.c
    <LI>logresolve.c <i><small>(requires PUT10)</small></i>
-   <LI>mod_access.c <A HREF="#note_2"> <i><small>(see note 2)</small></i></A>
+   <LI>mod_access.c <A HREF="#notes"> <i><small>(see note 1)</small></i></A>
    <LI>mod_actions.c
    <LI>mod_alias.c
    <LI>mod_asis.c
+   <LI>mod_auth.c
    <LI>mod_auth_anon.c
    <LI>mod_autoindex.c
    <LI>mod_cern_meta.c
@@ -90,7 +91,7 @@
    <LI>mod_expires.c
    <LI>mod_headers.c
    <LI>mod_imap.c
-   <LI>mod_include.c <A HREF="#note_3"> <i><small>(see note 3)</small></i></A>
+   <LI>mod_include.c <A HREF="#notes"> <i><small>(see note 2)</small></i></A>
    <LI>mod_info.c
    <LI>mod_log_agent.c
    <LI>mod_log_config.c
@@ -99,57 +100,54 @@
    <LI>mod_mime_magic.c
    <LI>mod_negotiation.c
    <LI><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put.c</A>
+          <i> <small>(third party module)</small></i>
    <LI>mod_setenvif.c
    <LI>mod_speling.c
    <LI>mod_status.c
+   <LI>mod_tpf_shm_static.c <i><small>(third party module, requires PUT10)</small></i>
    <LI>mod_unique_id.c <i><small>(requires PUT10)</small></i>
    <LI>mod_userdir.c
    <LI>mod_usertrack.c
    <LI>os.c
    <LI>os-inline.c
    <LI>regular expression parser
+   <LI>regular expression test tool <i><small>(requires PUT10)</small></i>
+   <LI>rfc1413.c
    <LI>rotatelogs.c <i><small>(requires PUT10)</small></i>
    <LI>util.c
    <LI>util_date.c
+   <LI>util_md5.c
    <LI>util_script.c
    <LI>util_uri.c
    </UL></MULTICOL>
-   <br><b>Notes:</b>
-      <A NAME="note_1">&nbsp;</A>
+   <b>Notes:</b>
+      <A NAME="notes"></A>
    <ol>
-      <li>"Standalone" mode requires TPF version 4.1 PUT09
-   <A NAME="note_2">&nbsp;</A>
       <li>Use of mod_access directives &quot;<tt>allow from</tt>&quot; &amp; &quot;<tt>deny from</tt>&quot;
           with host <i>names</i> (verses ip addresses) requires TPF version 4.1 PUT10
-      <A NAME="note_3">&nbsp;</A>
       <li>CGI execution requires TPF version 4.1 PUT10
    </ol>
 
 <H3>Components/modules not yet supported on TPF:</H3>
 
-   <multicol COLS=3><UL>
-   <LI>ap_md5c.c
-   <LI>htpasswd.c
-   <LI>mod_auth.c
+   <UL>
+   <LI>htdigest.c
+   <LI>lib/expat-lite
    <LI>mod_digest.c
-   <LI>mod_mmap_static.c
-   <LI>mod_proxy.c
    <LI>mod_rewrite.c
-   <LI>proxy_cache.c
-   <LI>proxy_connect.c
-   <LI>proxy_ftp.c
-   <LI>proxy_http.c
-   <LI>proxy_util.c
-   <LI>rfc1413.c
-   <LI>util_md5.c
-   </UL></MULTICOL>
+   <LI>mod_vhost_alias.c
+   <LI>proxy server code
+   </UL>
 
 <H3>Components/modules that don't apply or that probably won't ever be available on TPF:</H3>
 
    <multicol COLS=3><UL>
+   <LI>ab.c
+   <LI>ap_getpass.c
    <LI>mod_auth_db.c
    <LI>mod_auth_dbm.c
    <LI>mod_auth_db.module
+   <LI>mod_mmap_static.c
    <LI>mod_so.c
    <LI>suexec.c
    </UL></MULTICOL>
@@ -172,13 +170,13 @@
       <LI>bypass the use of <CODE>ap_block_alarms()</CODE> &amp;
          <CODE>ap_unblock_alarms()</CODE>
       <LI>add <CODE>tpf_process_signals()</CODE> calls
-      <LI>add <CODE>select()</CODE> calls in buff.c to prevent blocking.
+      <LI>add <CODE>select()</CODE> calls to prevent blocking.
       </UL>
    <BR>
    </UL>
 
    <H3>Find that function...</H3>
-   <P>Some simple functions &amp; definitions needed to be added
+   <P>Some simple functions &amp; definitions initially needed to be added
       on TPF, such as <CODE>FD_SET()</CODE>.
       We've put these in src/os/tpf/os.h for now.
    </P>
