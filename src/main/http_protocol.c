@@ -237,6 +237,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
         long tlength = 0;
 	int ret;
 	
+        r->byterange = 2;
         r->boundary = ap_psprintf(r->pool, "%lx%lx",
 				r->request_time, (long) getpid());
         do {
@@ -245,11 +246,12 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
 	} while (ret == 1);
 	/* If an error occured processing one of the range specs, we
 	 * must fail */
-	if (ret < 0)
+	if (ret < 0) {
+	    r->byterange = 0;
 	    return 0;
+	}
         ap_table_setn(r->headers_out, "Content-Length",
 	    ap_psprintf(r->pool, "%ld", tlength));
-        r->byterange = 2;
     }
 
     r->status = PARTIAL_CONTENT;
