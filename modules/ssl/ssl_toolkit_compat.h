@@ -70,6 +70,9 @@
 #define X509_CRL_get_REVOKED(x)    ((x)->crl->revoked)
 #define X509_REVOKED_get_serialNumber(xs) (xs->serialNumber)
 
+#define modssl_set_verify(ssl, verify, cb) \
+    SSL_set_verify(ssl, verify)
+
 #endif
 
 /* BEGIN GENERATED SECTION */
@@ -98,5 +101,10 @@
 /* END GENERATED SECTION */
 
 #endif /* OPENSSL_VERSION_NUMBER */
+
+#ifndef modssl_set_verify
+#define modssl_set_verify(ssl, verify, cb) \
+    SSL_set_verify(ssl, verify, cb)
+#endif
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
