@@ -55,7 +55,7 @@
  *
  */
 
-/* * base64 encoder/decoder. Origianly part of main/util.c
+/* base64 encoder/decoder. Originally part of main/util.c
  * but moved here so that support/ab and ap_sha1.c could
  * use it. This mean (re)moving the ap_palloc()s. And adding
  * ugly 'len' functions. Which is quite a nasty cost.
