@@ -519,7 +519,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
             return status;
         }
 
-        /* If this brigade contain EOS, either stop or remove it. */
+        /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
 
