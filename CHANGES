@@ -1,4 +1,10 @@
 Changes with Apache 2.0.37
+
+  *) Fix an unusual set of ./configure arguments that could cause
+     mod_http to be built as a DSO, which it currently doesn't
+     support.  PR 9244.
+     [Cliff Woolley, Robin Johnson <robbat2@orbis-terrarum.net>]
+
   *) Win32: Fix bug in apr_sendfile() that caused incorrect operation
      of the %X, %b and %B logformat options. PR 8253, 8996.
      [Bill Stoddard]
