@@ -81,6 +81,7 @@
      * The ServerRoot directive now removes trailing slashes.
      * Restore functionality broken by the mod_rewrite security fix:
        The mod_rewrite string arithmetic is corrected for rewrite map.
+     * Some possible segfault conditions have been fixed.
        
    The main new features include:
      * New configuration error reporting if the UserDir argument is set
