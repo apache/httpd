@@ -278,35 +278,35 @@ Negotiation</a></li>
         <td>Media Type</td>
 
         <td>Browser indicates preferences with the <code>Accept</code>
-	header field. Each item can have an associated quality factor.
-        Variant description can also have a quality factor (the
-        "qs" parameter).</td>
+        header field. Each item can have an associated quality factor.
+        Variant description can also have a quality factor (the "qs"
+        parameter).</td>
       </tr>
 
       <tr valign="top">
         <td>Language</td>
 
         <td>Browser indicates preferences with the
-	<code>Accept-Language</code> header field. Each item can
-	have a quality factor. Variants can be associated with none,
-	one or more than one language.</td>
+        <code>Accept-Language</code> header field. Each item can have
+        a quality factor. Variants can be associated with none, one or
+        more than one language.</td>
       </tr>
 
       <tr valign="top">
         <td>Encoding</td>
 
         <td>Browser indicates preference with the
-	<code>Accept-Encoding</code> header field. Each item can have
-	a quality factor.</td>
+        <code>Accept-Encoding</code> header field. Each item can have
+        a quality factor.</td>
       </tr>
 
       <tr valign="top">
         <td>Charset</td>
 
         <td>Browser indicates preference with the
-	<code>Accept-Charset</code> header field. Each item can have a
-	quality factor. Variants can indicate a charset as a parameter
-	of the media type.</td>
+        <code>Accept-Charset</code> header field. Each item can have a
+        quality factor. Variants can indicate a charset as a parameter
+        of the media type.</td>
       </tr>
     </table>
 
@@ -334,9 +334,9 @@ Negotiation</a></li>
 
         <ol>
           <li>Multiply the quality factor from the <code>Accept</code>
-	  header with the quality-of-source factor for this variants
-	  media type, and select the variants with the highest
-	  value.</li>
+          header with the quality-of-source factor for this variants
+          media type, and select the variants with the highest
+          value.</li>
 
           <li>Select the variants with the highest language quality
           factor.</li>
@@ -344,19 +344,19 @@ Negotiation</a></li>
           <li>Select the variants with the best language match,
           using either the order of languages in the
           <code>Accept-Language</code> header (if present), or else
-	  the order of languages in the <code>LanguagePriority</code>
-	  directive (if present).</li>
+          the order of languages in the <code>LanguagePriority</code>
+          directive (if present).</li>
 
           <li>Select the variants with the highest 'level' media
           parameter (used to give the version of text/html media
           types).</li>
 
           <li>Select variants with the best charset media
-	  parameters, as given on the <code>Accept-Charset</code>
-	  header line.  Charset ISO-8859-1 is acceptable unless
-	  explicitly excluded. Variants with a <code>text/*</code>
-	  media type but not explicitly associated with a particular
-	  charset are assumed to be in ISO-8859-1.</li>
+          parameters, as given on the <code>Accept-Charset</code>
+          header line.  Charset ISO-8859-1 is acceptable unless
+          explicitly excluded. Variants with a <code>text/*</code>
+          media type but not explicitly associated with a particular
+          charset are assumed to be in ISO-8859-1.</li>
 
           <li>Select those variants which have associated charset
           media parameters that are <em>not</em> ISO-8859-1. If
