@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/17 19:01:14 $]
+Last modified at [$Date: 2003/02/17 19:58:06 $]
 
 Release:
 
@@ -136,7 +136,7 @@ PATCHES TO PORT FROM 2.1
 
     * Rework ap_xml_parse_input to work with bucket brigades.  PR 16134.
       server/util_xml.c: r1.22
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
