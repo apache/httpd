@@ -4156,7 +4156,7 @@ static void add_cookie(request_rec *r, char *s)
             /* FIX: use cached time similar to how logging does it */
             request_rec *rmain = r;
             char *notename;
-            char *data;
+            void *data;
             while (rmain->main) {
                 rmain = rmain->main;
             }
