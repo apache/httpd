@@ -41,16 +41,16 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\logresolve" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Zi /I "..\include" /I "..\os\win32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\logresolve_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /map /machine:I386
-# ADD LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /map /machine:I386
+# ADD BASE LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /opt:ref
+# ADD LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386 /opt:ref
 
 !ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
 
@@ -66,15 +66,15 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fd"Debug\logresolve" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fd"Debug\logresolve_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /map /debug /machine:I386
-# ADD LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /map /debug /machine:I386
+# ADD BASE LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386
+# ADD LINK32 wsock32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386
 
 !ENDIF 
 

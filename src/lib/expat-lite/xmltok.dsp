@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir "."
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllexport) /Fd"Release\xmltok" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Zi /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllexport) /Fd"Release\xmltok_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
-# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
+# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok /opt:ref
+# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok /opt:ref
 
 !ELSEIF  "$(CFG)" == "xmltok - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir "."
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllexport) /Fd"Debug\xmltok" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D XMLTOKAPI=__declspec(dllexport) /Fd"Debug\xmltok_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
-# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
+# ADD BASE LINK32 /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
+# ADD LINK32 /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"..\..\os\win32\BaseAddr.ref",xmltok
 
 !ENDIF 
 

@@ -41,16 +41,16 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /c
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fd"Release\Apache" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /c
+# ADD CPP /nologo /MD /W3 /O2 /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fd"Release\Apache_src" /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /map /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /map /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386 /opt:ref
+# ADD LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386 /opt:ref
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
@@ -66,15 +66,15 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /Fd"Debug\Apache" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /Fd"Debug\Apache_src" /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /map /debug /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /map /debug /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
+# ADD LINK32 /nologo /subsystem:console /incremental:no /debug /machine:I386
 
 !ENDIF 
 
