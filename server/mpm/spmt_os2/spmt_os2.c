@@ -71,7 +71,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
-#include "iol_socket.h"
+#include "ap_iol.h"
 #include "apr_portable.h"
 #include "mpm_common.h"
 

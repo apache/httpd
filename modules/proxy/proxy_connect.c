@@ -61,7 +61,7 @@
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
-#include "iol_socket.h"
+#include "ap_iol.h"
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>        /* for IRIX, FD_SET calls bzero() */
