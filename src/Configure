@@ -576,7 +576,7 @@ echo "#### End of Configure created section ####">> Makefile.config
 cat Makefile.config >> Makefile
 sed -e "s#@@Configuration@@#$file#" "$makefile_tmpl" >>Makefile
 awk >>Makefile <$tmpfile \
-   '($3 ~ /modules\//) { printf "%s: modules/last-built ; @cat /dev/null\n\n", $3, $3}'
+   '($1 == "Module" && $3 ~ /modules\//) { printf "%s: modules/last-built ; @cat /dev/null\n\n", $3, $3}'
 cat Makefile.config ../support/Makefile.tmpl > ../support/Makefile
 
 cat << EOF > modules/Makefile
