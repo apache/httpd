@@ -109,16 +109,6 @@ PATCHES TO BACKPORT FROM TRUNK:
        svn rev 126565
        +1: bnicholes, trawick (no need for APLOG_NOERRNO in Apache >=2)
 
-    *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
-       using the proper accessor function; matters only in some
-       pathological cases with OpenSSL global variables not getting
-       reset during reloads but is fatal in such cases.
-       http://svn.apache.org/viewcvs?view=rev&rev=111241
-       PR: 32529
-       jerenkrantz chimes in: X509_STORE_CTX_get_app_data is a macro around
-                              X509_STORE_CTX_get_ex_data(ctx,0).
-       +1: jorton, trawick, jerenkrantz
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
