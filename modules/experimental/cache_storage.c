@@ -110,7 +110,7 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
  */
 int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size)
 {
-    cache_handle_t *h = apr_pcalloc(r->pool, sizeof(h));
+    cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
     const char *next = types;
     const char *type;
     char *key;
