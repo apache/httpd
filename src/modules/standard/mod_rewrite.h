@@ -127,8 +127,15 @@
      * so we also need to know the file extension
      */
 #ifndef NO_DBM_REWRITEMAP
+#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
+    && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+#include <db1/ndbm.h>
+#else
 #include <ndbm.h>
-#if defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
+#endif
+#if defined(DBM_SUFFIX)
+#define NDBM_FILE_SUFFIX DBM_SUFFIX
+#elif defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
 #define NDBM_FILE_SUFFIX ".db"
 #else
 #define NDBM_FILE_SUFFIX ".pag"

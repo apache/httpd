@@ -74,7 +74,12 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
+    && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+#include <db1/ndbm.h>
+#else
 #include <ndbm.h>
+#endif
 #include "ap_md5.h"
 
 /*
