@@ -1,5 +1,26 @@
-Microsoft Developer Studio Workspace File, Format Version 5.00
+Microsoft Developer Studio Workspace File, Format Version 6.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
 
 ###############################################################################
 
@@ -69,6 +90,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "ab"=".\support\ab.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "apr"=".\srclib\apr\apr.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -89,6 +128,84 @@ Package=<5>
 
 Package=<4>
 {{{
+}}}
+
+###############################################################################
+
+Project: "dftables"=".\srclib\pcre\dftables.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_test_char"=".\server\gen_test_char.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gen_uri_delims"=".\server\gen_uri_delims.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -121,78 +238,6 @@ Package=<4>
 ###############################################################################
 
 Project: "libexpat"=".\srclib\expat-lite\libexpat.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "dftables"=".\srclib\pcre\dftables.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "pcre"=".\srclib\pcre\pcre.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name dftables
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "pcreposix"=".\srclib\pcre\pcreposix.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name pcre
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "gen_test_char"=".\server\gen_test_char.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprutil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "gen_uri_delims"=".\server\gen_uri_delims.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -237,7 +282,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -245,15 +290,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -349,7 +385,7 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
-    End Project Dependency    
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
     End Project Dependency
@@ -453,24 +489,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_proxy"=".\modules\proxy\mod_proxy.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_rewrite"=".\modules\mappers\mod_rewrite.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -543,7 +561,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ab"=".\support\ab.dsp" - Package Owner=<4>
+Project: "pcre"=".\srclib\pcre\pcre.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -552,16 +570,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprutil
+    Project_Dep_Name dftables
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+Project: "pcreposix"=".\srclib\pcre\pcreposix.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -570,41 +585,8 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name apr
+    Project_Dep_Name pcre
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprutil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprutil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
 }}}
 
 ###############################################################################
