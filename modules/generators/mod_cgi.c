@@ -433,7 +433,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
         ((rc = apr_procattr_detach_set(procattr,
                                         e_info->detached)) != APR_SUCCESS) ||
         ((rc = apr_procattr_addrspace_set(procattr,
-                                        e_info->detached)) != APR_SUCCESS) ||
+                                        e_info->addrspace)) != APR_SUCCESS) ||
         ((rc = apr_procattr_child_errfn_set(procattr, cgi_child_errfn)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
@@ -790,6 +790,7 @@ static int cgi_handler(request_rec *r)
     e_info.bb          = NULL;
     e_info.ctx         = NULL;
     e_info.next        = NULL;
+    e_info.addrspace   = 0;
 
     /* build the command line */
     if ((rv = cgi_build_command(&command, &argv, r, p, &e_info)) != APR_SUCCESS) {
@@ -1057,6 +1058,7 @@ static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     e_info.bb          = &bb;
     e_info.ctx         = ctx;
     e_info.next        = f->next;
+    e_info.addrspace   = 0;
 
     if ((rv = cgi_build_command(&command, &argv, r, r->pool,
                                 &e_info)) != APR_SUCCESS) {

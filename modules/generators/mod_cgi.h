@@ -31,6 +31,7 @@ typedef struct {
     apr_bucket_brigade **bb;
     include_ctx_t       *ctx;
     ap_filter_t         *next;
+    apr_int32_t          addrspace;
 } cgi_exec_info_t;
 
 /**
