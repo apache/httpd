@@ -351,7 +351,7 @@ application/x-director		dcr dir dxr
 application/x-dvi		dvi
 application/x-futuresplash	spl
 application/x-gtar		gtar
-application/x-gzip		gz tgz
+application/x-gzip
 application/x-hdf		hdf
 application/x-javascript	js
 application/x-koan		skp skd skt skm
