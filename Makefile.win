@@ -252,7 +252,7 @@ _install:
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
 	copy ABOUT_APACHE "$(INSTDIR)"
-	copy CHANGES"$(INSTDIR)"
+	copy CHANGES "$(INSTDIR)"
 	copy INSTALL "$(INSTDIR)"
 	copy LICENSE "$(INSTDIR)"
 	copy README "$(INSTDIR)"
@@ -281,6 +281,46 @@ _install:
 	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
+	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE"
+	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS"
+
+ Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
+
+ This binary distribution includes the minimal components of OpenSSL required
+ to support mod_ssl and mod_tls for Apache HTTP Server version 2.0 (further
+ details are available in OPENSSL-README.)  For the complete list of CHANGES 
+ to this and later versions of OpenSSL, please refer to the definative source,
+ <http://www.openssl.org/news/changelog.html>, or see the CHANGES file in the
+ full binary or source distribution package from <http://www.openssl.org/>.
+
+--------------------------------------------------------------------------------
+<<
+	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README"
+
+ Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
+
+ This binary installation of OpenSSL is a limited distribution of the documents
+ LICENSE, NEWS and README (prefixed by OPENSSL-), and the runtime files
+
+   libeay32.dll
+   ssleay32.dll
+   openssl.exe
+
+ These are the minimal libraries and tools required to use mod_ssl or mod_tls
+ as distributed with Apache HTTP Server version 2.0.  No library files, headers
+ or sources are distributed with this binary distribution.  Please refer to the
+ <http://www.openssl.org/> site for complete source or binary distributions.
+
+ The Apache HTTP Project only supports the binary distribution of these files
+ and development of the mod_ssl and mod_tls modules.  We cannot provide support
+ assistance for using or configuring the OpenSSL package or these modules.
+ Please refer all installation and configuration questions to the appropriate
+ forum, such as the user supported newsgroups comp.infosystems.www.servers.unix
+ or comp.infosystems.www.servers.ms-windows, or see the support options listed
+ at <http://www.openssl.org/support/>.
+
+--------------------------------------------------------------------------------
+<<
 !ENDIF
         copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
         copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
