@@ -299,7 +299,7 @@ EXPORTS
 ;	ap_snprintf   @292
 	;ap_suexec_enabled  @293 
 ;	ap_table_do   @294
-	apache_main   @295
+;	apache_main   @295
 	asis_module   @296
 	auth_module   @297
 	autoindex_module  @298 
@@ -400,3 +400,14 @@ EXPORTS
         ap_bread_core @395
         ap_bwrite_core @396
 	ap_mpm_init_complete @397
+
+;       Exclusively provided for http_main.c
+        ap_register_hooks @398
+        ap_prelinked_modules @399
+        ap_preloaded_modules @400
+        ap_post_config_hook @401
+        ap_run_pre_config @402
+        ap_run_rewrite_args @403
+        ap_show_directives @404
+        ap_show_modules @405
+        ap_util_uri_init @406

@@ -121,7 +121,7 @@ API_EXPORT(char *) ap_unparse_uri_components(ap_pool_t *p, const uri_components 
 API_EXPORT(int) ap_parse_uri_components(ap_pool_t *p, const char *uri, uri_components *uptr);
 API_EXPORT(int) ap_parse_hostinfo_components(ap_pool_t *p, const char *hostinfo, uri_components *uptr);
 /* called by the core in main() */
-extern void ap_util_uri_init(void);
+API_EXPORT(void) ap_util_uri_init(void);
 
 #ifdef __cplusplus
 }
