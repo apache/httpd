@@ -41,8 +41,11 @@ decmips:
 decaxp:
 	make all CC=cc
 
-sco:
+sco5:
 	make all CC=cc
+
+sco3:
+	make all CC=cc EXTRA_LIB=-lcrypt_i
 
 
 tar: htpasswd unescape
