@@ -1031,12 +1031,6 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
 
     fname = ap_server_root_relative(p, fname);
 
-    if (!(strcmp(fname, ap_server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
-	!(strcmp(fname, ap_server_root_relative(p, ACCESS_CONFIG_FILE)))) {
-	if (ap_stat(&finfo, fname, p) != APR_SUCCESS)   
-	    return;
-    }
-
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if((ap_server_pre_read_config->nelts || ap_server_post_read_config->nelts) &&
        !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
@@ -1175,8 +1169,6 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *host
     s->server_admin = NULL;
     s->server_hostname = NULL;
     s->error_fname = NULL;
-    s->srm_confname = NULL;
-    s->access_confname = NULL;
     s->timeout = 0;
     s->keep_alive_timeout = 0;
     s->keep_alive = -1;
@@ -1224,12 +1216,6 @@ static void fixup_virtual_hosts(ap_context_t *p, server_rec *main_server)
 	if (virt->server_admin == NULL)
 	    virt->server_admin = main_server->server_admin;
 
-	if (virt->srm_confname == NULL)
-	    virt->srm_confname = main_server->srm_confname;
-
-	if (virt->access_confname == NULL)
-	    virt->access_confname = main_server->access_confname;
-
 	if (virt->timeout == 0)
 	    virt->timeout = main_server->timeout;
 
@@ -1271,8 +1257,6 @@ static server_rec *init_server_config(process_rec *process, ap_context_t *p)
     s->server_hostname = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
     s->loglevel = DEFAULT_LOGLEVEL;
-    s->srm_confname = RESOURCE_CONFIG_FILE;
-    s->access_confname = ACCESS_CONFIG_FILE;
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;
     s->limit_req_fieldsize = DEFAULT_LIMIT_REQUEST_FIELDSIZE;
     s->limit_req_fields = DEFAULT_LIMIT_REQUEST_FIELDS;
@@ -1307,8 +1291,6 @@ server_rec *ap_read_config(process_rec *process, ap_context_t *ptemp, const char
     process_command_config(s, ap_server_pre_read_config, p, ptemp);
 
     ap_process_resource_config(s, confname, p, ptemp);
-    ap_process_resource_config(s, s->srm_confname, p, ptemp);
-    ap_process_resource_config(s, s->access_confname, p, ptemp);
 
     process_command_config(s, ap_server_post_read_config, p, ptemp);
 

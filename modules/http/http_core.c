@@ -1767,14 +1767,6 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     }
     cmd->end_token = old_end_token;
 
-    if (s->srm_confname) {
-	ap_process_resource_config(s, s->srm_confname, p, ptemp);
-    }
-
-    if (s->access_confname) {
-	ap_process_resource_config(s, s->access_confname, p, ptemp);
-    }
-    
     if (errmsg == end_virtualhost_section) {
 	return NULL;
     }
@@ -2379,12 +2371,6 @@ static const command_rec core_cmds[] = {
 { "ErrorLog", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, error_fname), RSRC_CONF, TAKE1,
   "The filename of the error log" },
-{ "AccessConfig", set_server_string_slot,
-  (void *)XtOffsetOf (server_rec, access_confname), RSRC_CONF, TAKE1,
-  "The filename of the access config file" },
-{ "ResourceConfig", set_server_string_slot,
-  (void *)XtOffsetOf (server_rec, srm_confname), RSRC_CONF, TAKE1,
-  "The filename of the resource config file" },
 { "ServerAlias", set_server_alias, NULL, RSRC_CONF, RAW_ARGS,
   "A name or names alternately used to access the server" },
 { "ServerPath", set_serverpath, NULL, RSRC_CONF, TAKE1,
