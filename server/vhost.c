@@ -223,14 +223,13 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     }
 
     if (strcmp(host, "*") == 0) {
-        rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
-        my_addr->sa.sin.sin_addr.s_addr = htonl(INADDR_ANY);
+        rv = apr_sockaddr_info_get(&my_addr, "0.0.0.0", APR_INET, port, 0, p);
+        ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
     }
     else if (strcasecmp(host, "_default_") == 0
         || strcmp(host, "255.255.255.255") == 0) {
-        rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
+        rv = apr_sockaddr_info_get(&my_addr, "255.255.255.255", APR_INET, port, 0, p);
         ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
-        my_addr->sa.sin.sin_addr.s_addr = DEFAULT_VHOST_ADDR;
     }
     else {
         rv = apr_sockaddr_info_get(&my_addr, host, APR_UNSPEC, port, 0, p);
@@ -411,9 +410,7 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
         server_addr_rec *sar = trav->sar;
         apr_sockaddr_t *cur = sar->host_addr;
 
-        if (cur->sa.sin.sin_port == 0 ||
-            sa->sa.sin.sin_port == 0  ||
-            cur->sa.sin.sin_port == sa->sa.sin.sin_port) {
+        if (cur->port == 0 || sa->port == 0 || cur->port == sa->port) {
             if (apr_sockaddr_equal(cur, sa)) {
                 return trav;
             }
@@ -444,12 +441,12 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
     char buf[MAX_STRING_LEN];
     apr_sockaddr_t *ha = ic->sar->host_addr;
 
-    if (ha->sa.sin.sin_family == APR_INET &&
+    if (ha->family == APR_INET &&
         ha->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR) {
         len = apr_snprintf(buf, sizeof(buf), "_default_:%u",
                            ic->sar->host_port);
     }
-    else if (ha->sa.sin.sin_family == APR_INET &&
+    else if (ha->family == APR_INET &&
              ha->sa.sin.sin_addr.s_addr == INADDR_ANY) {
         len = apr_snprintf(buf, sizeof(buf), "*:%u",
                            ic->sar->host_port);
