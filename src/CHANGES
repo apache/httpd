@@ -1,4 +1,7 @@
 Changes with Apache 1.3.13
+  *) Win32: Add dependency checking to the CreateService call to ensure 
+     TCPIP and AFP (winsock) are started before Apache.
+     [William Rowe <wrowe@lnd.com>]
 
   *) FAQ changes related to tidying up historical documents on the web site.
      [Joshua Slive <slive@finance.commerce.ubc.ca>]

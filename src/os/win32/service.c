@@ -221,18 +221,26 @@ void InstallService(char *display_name, char *conf)
 	   "OpenSCManager failed");
     }
     else {
+    /* Added dependencies for the following: TCPIP, AFD
+     * AFD is the winsock handler, TCPIP is self evident
+     *
+     * RPCSS is the Remote Procedure Call (RPC) Locator
+     * required for DCOM communication.  I am far from
+     * convinced we should toggle this, but be warned that
+     * future apache modules or ISAPI dll's may depend on it.
+     */
         schService = CreateService(
             schSCManager,               // SCManager database
             service_name,               // name of service
             display_name,               // name to display
             SERVICE_ALL_ACCESS,         // desired access
             SERVICE_WIN32_OWN_PROCESS,  // service type
-            SERVICE_AUTO_START,       // start type
+            SERVICE_AUTO_START,         // start type
             SERVICE_ERROR_NORMAL,       // error control type
             szQuotedPath,               // service's binary
             NULL,                       // no load ordering group
             NULL,                       // no tag identifier
-            NULL,       // dependencies
+            "Tcpip\0Afd\0",             // dependencies
             NULL,                       // LocalSystem account
             NULL);                      // no password
 
