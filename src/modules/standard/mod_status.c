@@ -474,7 +474,7 @@ int status_handler (request_rec *r)
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
-		    rprintf(r,"<td>%s<td>%s</tr>\n\n",
+		    rprintf(r,"<td>%s<td nowrap>%s</tr>\n\n",
 			score_record.client, score_record.request);
 		}	/* no_table_report */
 	    }		/* !short_report */
