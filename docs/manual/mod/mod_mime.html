@@ -29,12 +29,12 @@ which determines how the document will be processed within the server.
 
 <P>
 
-The directives <A HREF="#addencoding">AddEncoding</A>, <A
-HREF="#addhandler">AddHandler</A>, <A
-HREF="#addlanguage">AddLanguage</A> and <A HREF="#addtype">AddType</A>
+The directives <a href="#addcharset">AddCharset</a>,
+<A HREF="#addencoding">AddEncoding</A>, <A HREF="#addhandler">AddHandler</A>,
+<A HREF="#addlanguage">AddLanguage</A> and <A HREF="#addtype">AddType</A>
 are all used to map file extensions onto the meta-information for that
-file.  Respectively they set the content-encoding, handler,
-content-language and MIME-type (content-type) of documents.  The
+file.  Respectively they set the character set, content-encoding, handler,
+content-language, and MIME-type (content-type) of documents.  The
 directive <A HREF="#typesconfig">TypesConfig</A> is used to specify a
 file which also maps extensions onto MIME types. The directives <A
 HREF="#forcetype">ForceType</A> and <A
@@ -86,6 +86,7 @@ mod_imap imagemap file.
 
 <H2>Directives</H2>
 <UL>
+<li><a href="#addcharset">AddCharset</a></li>
 <LI><A HREF="#addencoding">AddEncoding</A>
 <LI><A HREF="#addhandler">AddHandler</A>
 <LI><A HREF="#addlanguage">AddLanguage</A>
@@ -98,6 +99,60 @@ mod_imap imagemap file.
 </UL>
 <HR>
 
+<H2><A NAME="addcharset">AddCharset</A></H2>
+<A HREF="directive-dict.html#Syntax" REL="Help"
+><STRONG>Syntax:</STRONG></A> AddCharset <i>charset extension
+ [extension...]</i><br>
+<A HREF="directive-dict.html#Context" REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime
+<br>
+<A HREF="directive-dict.html#Compatibility" REL="Help"
+><STRONG>Compatibility:</STRONG></A> AddCharset is only available in Apache
+1.3.10 and later
+
+<P>
+The AddCharset directive maps the given filename extensions to the
+specified content charset. <i>charset</i> is the MIME charset
+parameter of filenames containing <i>extension</i>.  This mapping is
+added to any already in force, overriding any mappings that already
+exist for the same <i>extension</i>.
+</P>
+<P>
+Example:
+<pre>
+    AddLanguage ja .ja
+    AddCharset EUC-JP .euc
+    AddCharset ISO-2022-JP .jis
+    AddCharset SHIFT_JIS .sjis
+</pre>
+
+<P>
+Then the document <samp>xxxx.ja.jis</samp> will be treated as being a
+Japanese document whose charset is ISO-2022-JP (as will the document
+<samp>xxxx.jis.ja</samp>). Although the content charset is reported to
+the client, the browser is unlikely to use this information. The
+AddCharset directive is more useful for
+<A HREF="../content-negotiation.html">content negotiation</A>, where
+the server returns one from several documents based on the client's
+charset preference.
+</P>
+<P>
+<STRONG>See also</STRONG>: <A HREF="mod_negotiation.html">mod_negotiation</A>
+</P>
+
+<hr>
 
 <H2><A NAME="addencoding">AddEncoding</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddEncoding} directive&gt; -->
