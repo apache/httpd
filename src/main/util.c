@@ -1457,10 +1457,13 @@ API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *str)
     s = (const unsigned char *)str;
     for (; *s; ++s) {
 
-#if defined(OS2) || defined(WIN32) || defined(NETWARE)
-	/* Don't allow '&' in parameters under OS/2. */
-	/* This can be used to send commands to the shell. */
-	if (*s == '&') {
+#if defined(WIN32) || defined(OS2)
+        /* 
+         * Newlines to Win32/OS2 CreateProcess() are ill advised.
+         * Convert them to spaces since they are effectively white
+         * space to most applications
+         */
+	if (*s == '\r' || *s == '\n') {
 	    *d++ = ' ';
 	    continue;
 	}
@@ -2113,6 +2116,72 @@ API_EXPORT(char *) ap_uuencode(pool *p, char *string)
     return ap_pbase64encode(p, string);
 }
 
+#if defined(OS2) || defined(WIN32)
+/* quotes in the string are doubled up.
+ * Used to escape quotes in args passed to OS/2's cmd.exe
+ * and Win32's command.com
+ */
+API_EXPORT(char *) ap_double_quotes(pool *p, const char *str)
+{
+    int num_quotes = 0;
+    int len = 0;
+    char *quote_doubled_str, *dest;
+    
+    while (str[len]) {
+        if (str[len++] == '\"') {
+            num_quotes++;
+        }
+    }
+    
+    quote_doubled_str = ap_palloc(p, len + num_quotes + 1);
+    dest = quote_doubled_str;
+    
+    while (*str) {
+        if (*str == '\"')
+            *(dest++) = '\"';
+        *(dest++) = *(str++);
+    }
+    
+    *dest = 0;
+    return quote_doubled_str;
+}
+
+/*
+ * If ap_caret_escape_args resembles ap_escape_shell_cmd, it aught to.
+ * Taken verbatim so we can trust the integrety of this function.
+ */
+API_EXPORT(char *) ap_caret_escape_args(pool *p, const char *str)
+{
+    char *cmd;
+    unsigned char *d;
+    const unsigned char *s;
+
+    cmd = ap_palloc(p, 2 * strlen(str) + 1);	/* Be safe */
+    d = (unsigned char *)cmd;
+    s = (const unsigned char *)str;
+    for (; *s; ++s) {
+
+        /* 
+         * Newlines to Win32/OS2 CreateProcess() are ill advised.
+         * Convert them to spaces since they are effectively white
+         * space to most applications
+         */
+	if (*s == '\r' || *s == '\n') {
+	    *d++ = ' ';
+            continue;
+	}
+
+	if (TEST_CHAR(*s, T_ESCAPE_SHELL_CMD)) {
+	    *d++ = '^';
+	}
+	*d++ = *s;
+    }
+    *d = '\0';
+
+    return cmd;
+}
+#endif
+
 #ifdef OS2
 void os2pathname(char *path)
 {
@@ -2138,32 +2207,6 @@ void os2pathname(char *path)
 
     strcpy(path, newpath);
 };
-
-/* quotes in the string are doubled up.
- * Used to escape quotes in args passed to OS/2's cmd.exe
- */
-char *ap_double_quotes(pool *p, char *str)
-{
-    int num_quotes = 0;
-    int len = 0;
-    char *quote_doubled_str, *dest;
-    
-    while (str[len]) {
-        num_quotes += str[len++] == '\"';
-    }
-    
-    quote_doubled_str = ap_palloc(p, len + num_quotes + 1);
-    dest = quote_doubled_str;
-    
-    while (*str) {
-        if (*str == '\"')
-            *(dest++) = '\"';
-        *(dest++) = *(str++);
-    }
-    
-    *dest = 0;
-    return quote_doubled_str;
-}
 #endif
 
 

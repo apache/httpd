@@ -442,3 +442,5 @@ EXPORTS
         ap_update_child_status @434
         ap_sendwithtimeout @435
         ap_recvwithtimeout @436
+        ap_caret_escape_args @437
+        ap_double_quotes @438

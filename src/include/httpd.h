@@ -1051,9 +1051,13 @@ API_EXPORT(char *) ap_pbase64encode(pool *p, char *string);
 API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
 
+#if defined(OS2) || defined(WIN32)
+API_EXPORT(char *) ap_double_quotes(pool *p, const char *str);
+API_EXPORT(char *) ap_caret_escape_args(pool *p, const char *str);
+#endif
+
 #ifdef OS2
 void os2pathname(char *path);
-char *ap_double_quotes(pool *p, char *str);
 #endif
 
 API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
