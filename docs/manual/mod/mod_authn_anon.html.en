@@ -69,7 +69,7 @@
     following properties:</p>
 
     <ul>
-      <li>It insists that the user enters a userId.
+      <li>It insists that the user enters a userID.
       (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserId</a></code>)</li>
 
       <li>It insists that the user enters a password.
@@ -81,10 +81,10 @@
 
       <li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
-      sensitive.</li>
+      sensitive. (<code class="directive"><a href="#anonymous">Anonymous</a></code></li>
 
       <li>And the Email addresses entered in the passwd field are
-      logged to the error log file
+      logged to the error log file.
       (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
     </ul>
 
@@ -113,7 +113,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies userIDs that areallowed access without
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies userIDs that are allowed access without
 password verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous <var>user</var> [<var>user</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
