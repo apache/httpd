@@ -1,4 +1,7 @@
 Changes with Apache 2.0.37
+  *) Win32: Fix bug in apr_sendfile() that caused incorrect operation
+     of the %X, %b and %B logformat options. PR 8253, 8996.
+     [Bill Stoddard]
 
   *) If content-encoding is already present, do not run deflate (PR 9222)
      [Kazuhisa ASADA <kaz@asada.sytes.net>]
