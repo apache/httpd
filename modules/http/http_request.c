@@ -91,28 +91,6 @@
 #include <stdarg.h>
 #endif
 
-static void add_required_filters(request_rec *r)
-{
-    ap_filter_t *f = r->output_filters;
-    int has_core = 0, has_content = 0, has_http_header = 0;
-    while (f) {
-        if(!strcasecmp(f->frec->name, "CORE"))
-            has_core = 1; 
-        else if(!strcasecmp(f->frec->name, "CONTENT_LENGTH"))
-            has_content = 1; 
-        else if(!strcasecmp(f->frec->name, "HTTP_HEADER")) 
-            has_http_header = 1;
-        f = f->next;
-    }
-    if(!has_core) 
-        ap_add_output_filter("CORE", NULL, r, r->connection);
-    if(!has_content)
-        ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
-    if(!has_http_header) 
-        ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
-
-}
-
 /*****************************************************************
  *
  * Mainline request processing...
@@ -127,8 +105,6 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
      * to obtain the original error, but when adding the required_filters,
      * we need to do so against the one we came in with.  So, save it.
      */
-    request_rec *cur = r;
-
     if (type == AP_FILTER_ERROR) {
         return;
     }
@@ -229,7 +205,6 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
                         custom_response);
         }
     }
-    add_required_filters(cur);
     ap_send_error_response(r, recursive_error);
 }
 
