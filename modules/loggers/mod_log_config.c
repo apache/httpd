@@ -181,11 +181,14 @@
 
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_hash.h"
+#include "apr_optional.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
 #include "ap_config.h"
+#include "mod_log_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"          /* For REMOTE_NAME */
@@ -206,6 +209,7 @@ module AP_MODULE_DECLARE_DATA log_config_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
+static apr_hash_t *log_hash;
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
  * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
@@ -271,10 +275,8 @@ typedef struct {
  * Note that many of these could have ap_sprintfs replaced with static buffers.
  */
 
-typedef const char *(*item_key_func) (request_rec *, char *);
-
 typedef struct {
-    item_key_func func;
+    ap_log_handler_fn_t *func;
     char *arg;
     int condition_sense;
     int want_orig;
@@ -526,132 +528,11 @@ static const char *log_child_pid(request_rec *r, char *a)
 {
     return apr_psprintf(r->pool, "%ld", (long) getpid());
 }
-static const char *log_connection_status(request_rec *r, char *a)
-{
-#ifdef AP_HTTP_ENABLED
-    ap_http_conn_rec *hconn = ap_get_module_config(r->connection->conn_config, 
-                                                &http_module);
-#endif
-    if (r->connection->aborted)
-        return "X";
 
-#ifdef AP_HTTP_ENABLED
-    if ((r->connection->keepalive) &&
-        ((r->server->keep_alive_max - hconn->keepalives) > 0)) {
-        return "+";
-    }
-#endif
-
-    return "-";
-}
 /*****************************************************************
  *
  * Parsing the log format string
  */
-
-static struct log_item_list {
-    char ch;
-    item_key_func func;
-    int want_orig_default;
-} log_item_keys[] = {
-
-    {
-        'h', log_remote_host, 0
-    },
-    {   
-        'a', log_remote_address, 0 
-    },
-    {   
-        'A', log_local_address, 0 
-    },
-    {
-        'l', log_remote_logname, 0
-    },
-    {
-        'u', log_remote_user, 0
-    },
-    {
-        't', log_request_time, 0
-    },
-    {
-        'T', log_request_duration, 1
-    },
-    {
-        'r', log_request_line, 1
-    },
-    {
-        'f', log_request_file, 0
-    },
-    {
-        'U', log_request_uri, 1
-    },
-    {
-        's', log_status, 1
-    },
-    {
-        'b', clf_log_bytes_sent, 0
-    },
-    {
-        'B', log_bytes_sent, 0
-    },
-    {
-        'i', log_header_in, 0
-    },
-    {
-        'o', log_header_out, 0
-    },
-    {
-        'n', log_note, 0
-    },
-    {
-        'e', log_env_var, 0
-    },
-    {
-        'V', log_server_name, 0
-    },
-    {
-        'v', log_virtual_host, 0
-    },
-    {
-        'p', log_server_port, 0
-    },
-    {
-        'P', log_child_pid, 0
-    },
-    {
-        'H', log_request_protocol, 0
-    },
-    {
-        'm', log_request_method, 0
-    },
-    {
-        'q', log_request_query, 0
-    },
-    {
-        'c', log_connection_status, 0
-    },
-    {
-        'C', log_cookie, 0
-    },
-    {
-        'D', log_request_duration_microseconds, 1
-    },
-    {
-        '\0'
-    }
-};
-
-static struct log_item_list *find_log_func(char k)
-{
-    int i;
-
-    for (i = 0; log_item_keys[i].ch; ++i)
-        if (k == log_item_keys[i].ch) {
-            return &log_item_keys[i];
-        }
-
-    return NULL;
-}
 
 static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
                                    const char **sa)
@@ -718,6 +599,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
 static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
+    ap_log_handler *handler;
 
     if (*s != '%') {
         return parse_log_misc_string(p, it, sa);
@@ -731,7 +613,6 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
     while (*s) {
         int i;
-        struct log_item_list *l;
 
         switch (*s) {
         case '!':
@@ -779,8 +660,8 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
             break;
 
         default:
-            l = find_log_func(*s++);
-            if (!l) {
+            handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);
+            if (!handler) {
                 char dummy[2];
 
                 dummy[0] = s[-1];
@@ -788,9 +669,9 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
                 return apr_pstrcat(p, "Unrecognized LogFormat directive %",
                                dummy, NULL);
             }
-            it->func = l->func;
+            it->func = handler->func;
             if (it->want_orig == -1) {
-                it->want_orig = l->want_orig_default;
+                it->want_orig = handler->want_orig_default;
             }
             *sa = s;
             return NULL;
@@ -1260,11 +1141,61 @@ static void init_child(apr_pool_t *p, server_rec *s)
 #endif
 }
 
+static void ap_register_log_handler(apr_pool_t *p, char *tag, 
+                                    ap_log_handler_fn_t *handler, int def)
+{
+    ap_log_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
+    log_struct->func = handler;
+    log_struct->want_orig_default = def;
+
+    apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
+}
+
+static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+
+    log_hash = apr_hash_make(p);
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
+
+    if (log_pfn_register) {
+        log_pfn_register(p, "h", log_remote_host, 0);
+        log_pfn_register(p, "a", log_remote_address, 0 );
+        log_pfn_register(p, "A", log_local_address, 0 );
+        log_pfn_register(p, "l", log_remote_logname, 0);
+        log_pfn_register(p, "u", log_remote_user, 0);
+        log_pfn_register(p, "t", log_request_time, 0);
+        log_pfn_register(p, "f", log_request_file, 0);
+        log_pfn_register(p, "b", clf_log_bytes_sent, 0);
+        log_pfn_register(p, "B", log_bytes_sent, 0);
+        log_pfn_register(p, "i", log_header_in, 0);
+        log_pfn_register(p, "o", log_header_out, 0);
+        log_pfn_register(p, "n", log_note, 0);
+        log_pfn_register(p, "e", log_env_var, 0);
+        log_pfn_register(p, "V", log_server_name, 0);
+        log_pfn_register(p, "v", log_virtual_host, 0);
+        log_pfn_register(p, "p", log_server_port, 0);
+        log_pfn_register(p, "P", log_child_pid, 0);
+        log_pfn_register(p, "H", log_request_protocol, 0);
+        log_pfn_register(p, "m", log_request_method, 0);
+        log_pfn_register(p, "q", log_request_query, 0);
+        log_pfn_register(p, "C", log_cookie, 0);
+        log_pfn_register(p, "r", log_request_line, 1);
+        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
+        log_pfn_register(p, "T", log_request_duration, 1);
+        log_pfn_register(p, "U", log_request_uri, 1);
+        log_pfn_register(p, "s", log_status, 1);
+    }
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(log_pre_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(init_child,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_open_logs(init_config_log,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,APR_HOOK_MIDDLE);
+
+    APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
 }
 
 module AP_MODULE_DECLARE_DATA log_config_module =

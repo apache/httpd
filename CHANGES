@@ -1,4 +1,12 @@
-Changes with Apache 2.0.17-dev
+Changes with Apache 2.0.18-dev
+
+  *) Allow modules to specify their own logging tags.  This basically
+     allows a module to tell mod_log_config that when %x is encountered
+     a specific function should be called.  Currently, x can be any single
+     character.  It may be more useful to make this a string at some point.
+     [Ryan Bloom]
+
+Changes with Apache 2.0.17
 
   *) If a higher-level filter handles the the byterange aspects of a
      request, then the byterange filter should not try to redo the
