@@ -1,6 +1,6 @@
 #!/bin/sh
 exstat=1
-trap 'rm -f Makefile testlib; exit $exstat' 0 1 2 3 15
+trap 'rm -f Makefile dummy; exit $exstat' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This one exists simply to test for the existance of
@@ -28,7 +28,7 @@ fi
 # Get makefile settings and build a basic Makefile
 #
 cd ./helpers
-rm -f testlib
+rm -f dummy
 cat ../Makefile.config > Makefile
 cat <<EOF >> Makefile
 CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
@@ -36,16 +36,16 @@ LIBS=\$(EXTRA_LIBS) \$(LIBS1)
 INCLUDES=\$(INCLUDES1) \$(EXTRA_INCLUDES)
 LDFLAGS=\$(LDFLAGS1) \$(EXTRA_LDFLAGS)
 
-testlib:
-	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) helpers/testlib.c -o testlib -l$1
+dummy:
+	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy -l$1
 
 EOF
 
 # Now run that Makefile
-make testlib > /dev/null 2<&1
+make dummy > /dev/null 2<&1
 
-# And see if testlib exists, if so, then we assume the 
+# And see if dummy exists, if so, then we assume the 
 # library we are testing for exists
-if [ -f testlib ]; then
+if [ -f dummy ]; then
     exstat=0
 fi
