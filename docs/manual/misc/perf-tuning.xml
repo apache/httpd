@@ -127,9 +127,9 @@
       server machine, in order that this activity not adversely affect
       server performance.</p>
 
-      <p>If you use any <code><directive module="access">Allow</directive> 
+      <p>If you use any <code><directive module="mod_access">Allow</directive> 
       from domain</code> or <code><directive 
-      module="access">Deny</directive> from domain</code> 
+      module="mod_access">Deny</directive> from domain</code> 
       directives (i.e., using a hostname, or a domain name, rather than
       an IP address) then you will pay for
       a double reverse DNS lookup (a reverse, followed by a forward
@@ -462,7 +462,7 @@
         not actually using. If you have built the modules as <a
         href="../dso.html">DSOs</a>, eliminating modules is a simple
         matter of commenting out the associated <directive
-        module="so">LoadModule</directive> directive for that module.
+        module="mod_so">LoadModule</directive> directive for that module.
         This allows you to experiment with removing modules, and seeing
         if your site still functions in their absense.</p>
 

@@ -389,7 +389,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_digest.html">mod_digest</a></code></td>
+        <td><code>mod_digest</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
@@ -449,13 +449,13 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_log_agent.html">mod_log_agent</a></code></td>
+        <td><code>mod_log_agent</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></td>
+        <td><code>mod_log_config</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
