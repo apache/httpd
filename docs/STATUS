@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/05/05 20:00:15 $
+Last modified: $Date: 2001/05/07 00:44:33 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -7,8 +7,11 @@ apache-docs mailing list by mailing to
 apache-docs-subscribe@apache.org
 
 - modules docs
-    - mod_cgid: A first draft has been posted by Joshua.
     - mod_suexec: no documentation yet.
+    - mod_include: the "INCLUDES_MAGIC_TYPE" x-server-parsed-html
+      appears to have been removed from mod_include, but it is still
+      present in mod_negotiation, mod_autoindex, and httpd.h.
+      Should it be removed from the docs for mod_include?
 
 - man pages
     - Some of the man pages need to be updated for 2.0.  At least
