@@ -349,7 +349,7 @@ int directory_walk (request_rec *r)
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
 	int overrides_here;
-        void *this_conf, *htaccess_conf = NULL;
+        void *htaccess_conf = NULL;
 	char *test_dirname_tail;
 	int j;
 
@@ -373,6 +373,7 @@ int directory_walk (request_rec *r)
 	    void *entry_config = sec[j];
 	    core_dir_config *entry_core;
 	    char *entry_dir;
+	    void *this_conf;
 
 	    if (!entry_config) continue;
 	    
