@@ -193,6 +193,23 @@ void add_common_vars(request_rec *r)
     }
 }
 
+/* This "cute" little function comes about because the path info on
+ * filenames and URLs aren't always the same. So we take the two,
+ * and find as much of the two that match as possible.
+ */
+
+static int find_path_info (char *uri, char *path_info)
+{
+    int lu = strlen(uri);
+    int lp = strlen(path_info);
+
+    while (lu-- && lp-- && uri[lu] == path_info[lp]);
+
+    while (uri[lu] != '\0' && uri[lu] != '/')
+	lu++;
+
+    return lu;
+}
 
 void add_cgi_vars(request_rec *r)
 {
@@ -212,11 +229,11 @@ void add_cgi_vars(request_rec *r)
     if (!r->path_info || !*r->path_info || !strcmp (r->protocol, "INCLUDED")) {
         table_set (e, "SCRIPT_NAME", r->uri);
     } else {
-        int path_info_start = strlen (r->uri) - strlen (r->path_info);
-	
-	r->uri[path_info_start] = '\0';
-	table_set (e, "SCRIPT_NAME", r->uri);
-	r->uri[path_info_start] = '/';
+	int path_info_start = find_path_info (r->uri, r->path_info);
+
+	table_set (e, "SCRIPT_NAME", pstrndup(r->pool, r->uri,
+					      path_info_start));
+	table_set (e, "PATH_INFO", r->uri + path_info_start);
     }
 	
     if (r->path_info && r->path_info[0]) {
@@ -228,8 +245,6 @@ void add_cgi_vars(request_rec *r)
 	request_rec *pa_req = sub_req_lookup_uri(
 				    escape_uri(r->pool, r->path_info), r);
       
-        table_set (e, "PATH_INFO", r->path_info);
-
 	/* Don't bother destroying pa_req --- it's only created in
 	 * child processes which are about to jettison their address
 	 * space anyway.  BTW, we concatenate filename and path_info
