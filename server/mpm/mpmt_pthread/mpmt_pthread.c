@@ -1665,8 +1665,7 @@ module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     NULL,			/* type_checker */
     NULL,			/* pre-run fixups */
     NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL			/* post_read_request */
+    NULL			/* register hooks */
 };
 
 /* force Expat to be linked into the server executable */
