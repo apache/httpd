@@ -326,5 +326,5 @@ esac
 # At this point we gone through all the one's
 # we know of: Punt
 
-echo "${MACHINE}-whatever-${SYSTEM}|${RELEASE}|${VERSION}" 
+echo "${MACHINE}-whatever-${SYSTEM},${RELEASE},${VERSION}" 
 exit 0
