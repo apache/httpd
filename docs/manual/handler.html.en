@@ -139,7 +139,7 @@
     Note</a></h2>
 
     <p>In order to implement the handler features, an addition has
-    been made to the <a href="misc/API.html">Apache API</a> that
+    been made to the <a href="developer/API.html">Apache API</a> that
     you may wish to make use of. Specifically, a new record has
     been added to the <code>request_rec</code> structure:</p>
 <pre>
