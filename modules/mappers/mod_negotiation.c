@@ -2621,7 +2621,7 @@ static int handle_multi(request_rec *r)
 
     /* BLECH --- don't multi-resolve non-ordinary files */
 
-    if (!S_ISREG(sub_req->finfo.protection)) {
+    if (sub_req->finfo.filetype != APR_REG) {
         res = NOT_FOUND;
         goto return_from_multi;
     }

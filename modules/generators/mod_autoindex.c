@@ -953,7 +953,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	&& (rr = ap_sub_req_lookup_uri(header_fname, r))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
-	&& S_ISREG(rr->finfo.protection)) {
+	&& rr->finfo.filetype == APR_REG) {
 	/*
 	 * Check for the two specific cases we allow: text/html and
 	 * text/anything-else.  The former is allowed to be processed for
@@ -1036,7 +1036,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 	&& (rr = ap_sub_req_lookup_uri(readme_fname, r))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
-	&& S_ISREG(rr->finfo.protection)) {
+	&& rr->finfo.filetype == APR_REG) {
 	/*
 	 * Check for the two specific cases we allow: text/html and
 	 * text/anything-else.  The former is allowed to be processed for
@@ -1163,7 +1163,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 
 	if (rr->finfo.protection != 0) {
 	    p->lm = rr->finfo.mtime;
-	    if (S_ISDIR(rr->finfo.protection)) {
+	    if (rr->finfo.filetype == APR_DIR) {
 	        if (!(p->icon = find_icon(d, rr, 1))) {
 		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
 		}

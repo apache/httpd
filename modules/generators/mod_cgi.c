@@ -482,7 +482,7 @@ static int cgi_handler(request_rec *r)
 
 #if defined(OS2) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
-    if (r->finfo.st_mode == 0) {
+    if (r->finfo.protection == 0) {
         struct stat statbuf;
         char *newfile;
 
@@ -500,7 +500,7 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
-    if (S_ISDIR(r->finfo.protection))
+    if (r->finfo.filetype == APR_DIR)
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
 

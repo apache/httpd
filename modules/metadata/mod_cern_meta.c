@@ -314,7 +314,7 @@ static int add_cern_meta_data(request_rec *r)
     };
 
     /* is this a directory? */
-    if (S_ISDIR(r->finfo.protection) || r->uri[strlen(r->uri) - 1] == '/') {
+    if (r->finfo.filetype == APR_DIR || r->uri[strlen(r->uri) - 1] == '/') {
 	return DECLINED;
     };
 

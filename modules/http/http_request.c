@@ -116,12 +116,13 @@ IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
 static int check_safe_file(request_rec *r)
 {
 
-    if (r->finfo.protection == 0         /* doesn't exist */
-        || S_ISDIR(r->finfo.protection)
-        || S_ISREG(r->finfo.protection)
-        || S_ISLNK(r->finfo.protection)) {
+    if (r->finfo.protection == 0      /* doesn't exist */
+        || r->finfo.filetype == APR_DIR
+        || r->finfo.filetype == APR_REG
+        || r->finfo.filetype == APR_LNK) {
         return OK;
     }
+
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                 "object is not a file, directory or symlink: %s",
                 r->filename);
@@ -272,8 +273,9 @@ static int get_path_info(request_rec *r)
              * contents of that directory for a multi_match, so the PATH_INFO
              * argument starts with the component after that.
              */
-            if (S_ISDIR(r->finfo.protection) && last_cp) {
+            if (r->finfo.filetype == APR_DIR && last_cp) {
                 r->finfo.protection = 0;   /* No such file... */
+                r->finfo.filetype = APR_NOFILE;   /* No such file... */
                 cp = last_cp;
             }
 
@@ -286,8 +288,8 @@ static int get_path_info(request_rec *r)
 	 */
 	r->finfo.protection = 0;
 
-#if defined(ENOENT) && defined(ENOTDIR)
-        if (errno == ENOENT || errno == ENOTDIR) {
+#if defined(APR_ENOENT) && defined(APR_ENOTDIR)
+        if (rv == APR_ENOENT || rv == APR_ENOTDIR) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
@@ -297,10 +299,10 @@ static int get_path_info(request_rec *r)
                 --cp;
         }
         else {
-#if defined(EACCES)
-            if (errno != EACCES)
+#if defined(APR_EACCES)
+            if (rv != APR_EACCES)
 #endif
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                             "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
@@ -355,6 +357,7 @@ static int directory_walk(request_rec *r)
     if (r->filename == NULL) {
         r->filename = ap_pstrdup(r->pool, r->uri);
         r->finfo.protection = 0;   /* Not really a file... */
+        r->finfo.filetype = APR_NOFILE;
         r->per_dir_config = per_dir_defaults;
 
         return OK;
@@ -436,7 +439,7 @@ static int directory_walk(request_rec *r)
     if (test_filename[test_filename_len - 1] == '/')
         --num_dirs;
 
-    if (S_ISDIR(r->finfo.protection))     
+    if (r->finfo.filetype == APR_DIR)
         ++num_dirs;
 
     /*
@@ -571,7 +574,7 @@ static int directory_walk(request_rec *r)
      * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
      * you would *not* get the 403.
      */
-    if (!S_ISDIR(r->finfo.protection) 
+    if (r->finfo.filetype != APR_DIR
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "Symbolic link not allowed: %s", r->filename);
@@ -875,7 +878,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * no matter what, if it's a subdirectory, we need to re-run
          * directory_walk
          */
-        if (S_ISDIR(rnew->finfo.protection)) {  
+        if (rnew->finfo.filetype == APR_DIR) {
             res = directory_walk(rnew);
             if (!res) {
                 res = file_walk(rnew);
