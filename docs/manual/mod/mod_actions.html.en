@@ -21,7 +21,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_actions</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_actions.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/mod_actions.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -33,7 +34,7 @@ media type or request method.</td></tr>
 <h3>Summary</h3>
 
     <p>This module has two directives. The <code class="directive"><a href="#action">Action</a></code> directive lets you run CGI
-    scripts whenever a file of a certain type is requested. The
+    scripts whenever a file of a certain MIME content type is requested. The
     <code class="directive"><a href="#script">Script</a></code> directive lets
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
@@ -75,7 +76,7 @@ introduced in Apache 2.1</td></tr>
     passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      # Requests for files of a particular type:<br />
+      # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
       # Files of a particular file extension<br />
@@ -154,7 +155,8 @@ method.</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_actions.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/mod_actions.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
