@@ -576,9 +576,9 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
  * @param buf An optional error string to put in the bucket.
  * @param p A pool to allocate out of.
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_make_error(apr_bucket *b, int error, const char *buf, apr_pool_t *p)
+ * @deffunc apr_bucket *ap_bucket_error_make(apr_bucket *b, int error, const char *buf, apr_pool_t *p)
  */
-AP_DECLARE(apr_bucket *) ap_bucket_make_error(apr_bucket *b, int error,
+AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
                 const char *buf, apr_pool_t *p);
 
 /**
@@ -587,9 +587,9 @@ AP_DECLARE(apr_bucket *) ap_bucket_make_error(apr_bucket *b, int error,
  * @param buf An optional error string to put in the bucket.
  * @param p A pool to allocate out of.
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_create_error(int error, const char *buf, apr_pool_t *p)
+ * @deffunc apr_bucket *ap_bucket_error_create(int error, const char *buf, apr_pool_t *p)
  */
-AP_DECLARE(apr_bucket *) ap_bucket_create_error(int error,
+AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error,
                 const char *buf, apr_pool_t *p);
 
 #ifdef __cplusplus
