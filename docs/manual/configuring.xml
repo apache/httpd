@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.10 $ -->
+<!-- $Revision: 1.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -108,7 +108,7 @@ HTTP server.</p>
     directive.
     Otherwise, Apache must be recompiled to add or remove modules.
     Configuration directives may be included conditional on a
-    presence of a particular module by enclosing them in an<directive
+    presence of a particular module by enclosing them in an <directive
     module="core" type="section">IfModule</directive> block.</p>
 
     <p>To see which modules are currently compiled into the server,
