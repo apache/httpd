@@ -227,7 +227,7 @@ void ap_time_process_request(int child_num, int thread_num, int status);
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 AP_DECLARE_DATA extern int ap_extended_status;
-AP_DECLARE_DATA apr_time_t ap_restart_time;
+AP_DECLARE_DATA extern apr_time_t ap_restart_time;
 
 AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
