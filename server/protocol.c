@@ -778,6 +778,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             || (rv == APR_SUCCESS 
                 && len > (apr_size_t)r->server->limit_req_fieldsize)) {
             r->status = HTTP_BAD_REQUEST;
+            /* insure ap_escape_html will terminate correctly */
+            field[r->server->limit_req_fieldsize] = '\0';
             apr_table_setn(r->notes, "error-notes",
                            apr_pstrcat(r->pool,
                                        "Size of a request header field "
