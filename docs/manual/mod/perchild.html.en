@@ -31,8 +31,10 @@ requests to be assigned a variety of different userids</td></tr>
 <h3>Summary</h3>
 
     <div class="warning">
-      This MPM does not currently work on most platforms.  Work is ongoing
-      to make it functional.
+      This module is not functional.  Development of this module is not
+      complete and is not currently active.  Do not use
+      <code class="module"><a href="../mod/perchild.html">perchild</a></code> unless you are a programmer willing to
+      help fix it.
     </div>
 
     <p>This Multi-Processing Module (MPM) implements a hybrid
