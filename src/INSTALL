@@ -1,3 +1,13 @@
+***
+*** Building the Apache Web server absolutely REQUIRES an ANSI C-compliant
+*** compiler.  If your compiler does not meet this requirement, don't
+*** even bother trying to build the server; it won't work.
+***
+*** The server may or may not build correctly with a C++ compiler.  Making
+*** it compilable with C++ is not a goal at this point, so if it doesn't
+*** work please use a normal ANSI C compiler instead.
+***
+
 This release of Apache supports the notion of "optional modules".
 However, the server has to know which modules are compiled into it, in
 order for those modules to be effective; this requires generation of a
