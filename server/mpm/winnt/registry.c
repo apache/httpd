@@ -225,7 +225,7 @@ ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, const char *nam
 			 &nSize);	/* for size of "value" */
 
     if (rv == ERROR_FILE_NOT_FOUND)
-        rv = APR_NOTFOUND;
+        rv = APR_ENOFILE;
 
     RegCloseKey(hKey);
 
@@ -265,7 +265,7 @@ ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *nam
 			 &nSize);		/* for size of "value" */
 
     if (rv == ERROR_FILE_NOT_FOUND) {
-        rv = APR_NOTFOUND;
+        rv = APR_ENOFILE;
     }
     else if (rv != ERROR_SUCCESS) {
 	return_error(rv);
