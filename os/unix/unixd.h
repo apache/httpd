@@ -105,7 +105,7 @@ typedef struct {
     gid_t group_id;
     int suexec_enabled;
 } unixd_config_rec;
-extern unixd_config_rec unixd_config;
+AP_DECLARE_DATA extern unixd_config_rec unixd_config;
 
 AP_DECLARE(int) unixd_setup_child(void);
 AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp);
