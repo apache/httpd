@@ -1,6 +1,6 @@
 
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
-	ApacheCoreOS2.def
+	ApacheCoreOS2.def buildmarked.c
 DISTCLEAN_TARGETS = httpd.exp
 EXTRACLEAN_TARGETS = export_files exports.c export_vars.h
 
@@ -13,13 +13,18 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	connection.c listen.c \
 	mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c exports.c buildmark.c \
+	util_filter.c exports.c buildmarked.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
+PHONY_TARGETS = $(srcdir)/buildmark.c
+
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
+
+buildmarked.c: $(srcdir)/buildmark.c
+	cp $(srcdir)/buildmark.c $@
 
 gen_test_char_OBJECTS = gen_test_char.lo util_debug.lo
 gen_test_char: $(gen_test_char_OBJECTS)
