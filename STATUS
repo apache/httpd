@@ -299,16 +299,16 @@ Open issues:
     * What prefixes to use for the renaming:
 
         - Apache provided general functions (e.g., ap_cpystrn)
-            ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim, Randy
+            ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Roy, Randy
 
         - Public API functions (e.g., palloc)
             ap_xxx:    +1: Ralf, Roy, Dean, Randy, Martin, Brian
-            apapi_xxx: +1: Ken, Paul, Jim
+            apapi_xxx: +1: Ken, Paul
 
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
             ap_xxx:    +1: Roy, Dean, Randy, Martin, Brian
-            apx_xxx:   +1: Ralf, Jim
+            apx_xxx:   +1: Ralf
             appri_xxx: +1: Paul, Ken
 
         - Public API module structure variables (e.g.,
@@ -316,7 +316,7 @@ Open issues:
           mod_so, etc and have to be exported:
             ..._module:+1: Roy [status quo], Dean
             ap_xxx:    +1:
-            apm_xxx:   +1: Ralf, Jim
+            apm_xxx:   +1: Ralf
 
         Notes: 
             - Ralf: My opinion for my decisions are the following ones: 
@@ -386,16 +386,6 @@ Open issues:
             - Randy: I agree with Dean 100%. The work created to
               keep this straight far outweighs any gain this
               could give. 
-
-            - Jim: We should make some sort of logical effort to
-              keep things straight and organized. This does nothing
-	      to indicate in the code what is API, and what
-	      isn't. In my mind, we should use prefixed not JUST
-	      to prevent namespace collisions, but also to
-	      "define" the type function. The very fact that we
-	      _have_ the above different "types" of functions
-	      indicates to me that we should have some logical
-	      namespace for them.
 
             - Ralf: I agree with Jim that although the short ap_
               prefix is good for API functions, it shouldn't be
