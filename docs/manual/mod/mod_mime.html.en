@@ -501,7 +501,7 @@ MultiviewsMatch Handlers Filters
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>RemoveCharset is
@@ -524,7 +524,7 @@ RemoveCharset .html .shtml
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>RemoveEncoding
@@ -561,7 +561,7 @@ AddType text/plain .asc
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveHandler
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>RemoveHandler is
@@ -593,7 +593,7 @@ RemoveHandler .html
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveInputFilter
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>RemoveInputFilter is only available in Apache 
@@ -613,7 +613,7 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveLanguage
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>RemoveLanguage
@@ -632,7 +632,7 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveOutputFilter
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -656,7 +656,7 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveType
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
