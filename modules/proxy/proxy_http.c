@@ -1002,7 +1002,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if ((!r->header_only) &&                   /* not HEAD request */
             !interim_response &&                   /* not any 1xx response */
             (r->status != HTTP_NO_CONTENT) &&      /* not 204 */
-            (r->status != HTTP_RESET_CONTENT) &&   /* not 205 */
             (r->status != HTTP_NOT_MODIFIED)) {    /* not 304 */
 
             /* We need to copy the output headers and treat them as input
@@ -1117,7 +1116,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             r->status = HTTP_OK;
             /* Discard body, if one is expected */
             if ((status != HTTP_NO_CONTENT) && /* not 204 */
-                (status != HTTP_RESET_CONTENT) && /* not 205 */
                 (status != HTTP_NOT_MODIFIED)) { /* not 304 */
                ap_discard_request_body(rp);
            }
