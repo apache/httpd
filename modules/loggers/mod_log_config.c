@@ -507,7 +507,7 @@ static const char *log_request_time(request_rec *r, char *a)
 #else
         apr_time_t request_time = r->request_time;
 #endif
-        unsigned t_seconds = (unsigned)(request_time / APR_USEC_PER_SEC);
+        unsigned t_seconds = (unsigned)apr_time_sec(request_time);
         unsigned i = t_seconds & TIME_CACHE_MASK;
         memcpy(cached_time, &(request_time_cache[i]), sizeof(*cached_time));
         if ((t_seconds != cached_time->t) ||
@@ -544,8 +544,8 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%qd", (apr_time_now() - r->request_time) 
-                                             / APR_USEC_PER_SEC);
+    apr_time_t duration = apr_time_now() - r->request_time;
+    return apr_psprintf(r->pool, "%qd", apr_time_sec(duration));
 }
 
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
