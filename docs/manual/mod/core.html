@@ -38,6 +38,7 @@ always available.
 <li><A HREF="#listen">Listen</A>
 <li><A HREF="#location">&lt;Location&gt;</A>
 <li><A HREF="#maxclients">MaxClients</A>
+<li><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</a>
 <li><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
 <li><A HREF="#maxspareservers">MaxSpareServers</A>
 <li><A HREF="#minspareservers">MinSpareServers</A>
@@ -544,8 +545,10 @@ simple multiple-module tests.
 <P> <hr>
 
 <h2><a name="keepalive">KeepAlive</a></h2>
-<strong>Syntax:</strong> KeepAlive <em>max-requests</em><br>
-<strong>Default:</strong> <code>KeepAlive 5</code><br>
+<strong>Syntax: (Apache 1.1)</strong> KeepAlive <em>max-requests</em><br>
+<strong>Default: (Apache 1.1)</strong> <code>KeepAlive 5</code><br>
+<strong>Syntax: (Apache 1.2)</strong> KeepAlive <em>on/off</em><br>
+<strong>Default: (Apache 1.2)</strong> <code>KeepAlive On</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Core<br>
 <strong>Compatibility:</strong> KeepAlive is only available in Apache
@@ -553,10 +556,16 @@ simple multiple-module tests.
 
 This directive enables
 <a href="../keepalive.html">Keep-Alive</a>
-support. Set <em>max-requests</em>
+support.
+
+<p><strong>Apache 1.1</strong>: Set <em>max-requests</em>
 to the maximum number of requests you want Apache to entertain per
 request. A limit is imposed to prevent a client from hogging your
 server resources. Set this to <code>0</code> to disable support.
+
+<p><strong>Apache 1.2 and later</strong>: Set to "On" to enable
+persistent connections, "Off" to disable. See also the <a
+href="#maxkeepaliverequests">MaxKeepAliveRequests</a> directive.</p>
 
 <h2><a name="keepalivetimeout">KeepAliveTimeout</a></h2>
 <strong>Syntax:</strong> KeepAliveTimeout <em>seconds</em><br>
@@ -676,6 +685,20 @@ from browsers at foo.com, you might use:
 The MaxClients directive sets the limit on the number of simultaneous
 requests that can be supported; not more than this number of child server
 processes will be created.<p><hr>
+
+<A name="maxkeepaliverequests"><h2>MaxKeepAliveRequests</h2></A>
+<strong>Syntax:</strong> MaxKeepAliveRequests <em>number</em><br>
+<strong>Default:</strong> <code>MaxKeepAliveRequests</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> Only available in Apache
+1.2 and later.
+
+<p>The MaxKeepAliveRequests directive limits the number of requests
+allowed per connection when <a href="#keepalive">KeepAlive</a> is
+on. If it is set to "<code>0</code>," unlimited requests will be
+allowed. We reccomend that this setting is kept to a high value, for
+maximum server peformance.
 
 <A name="maxrequestsperchild"><h2>MaxRequestsPerChild directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt MaxRequestsPerChild} directive&gt; -->
