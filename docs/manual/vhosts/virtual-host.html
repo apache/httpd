@@ -66,11 +66,11 @@ single daemon which supports all the virtual hosts.
 Use multiple daemons when:
 <UL>
 <LI>The different virtual hosts need very different httpd configurations, such
-   as different values for: <A HREF="mod/core.html#servertype">ServerType</A>,
-   <A HREF="mod/core.html#user">User</A>,
-   <A HREF="mod/core.html#group">Group</A>,
-   <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A> or
-   <A HREF="mod/core.html#serverroot">ServerRoot</A>.
+   as different values for: <A HREF="../mod/core.html#servertype">ServerType</A>,
+   <A HREF="../mod/core.html#user">User</A>,
+   <A HREF="../mod/core.html#group">Group</A>,
+   <A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A> or
+   <A HREF="../mod/core.html#serverroot">ServerRoot</A>.
 <LI>The machine does not process a very high request rate.
 </UL>
 Use a single daemon when:
@@ -83,7 +83,7 @@ Use a single daemon when:
 <H2>Setting up multiple daemons</H2>
 Create a separate httpd installation for each virtual host.
 For each installation, use the
-<A HREF="mod/core.html#bindaddress">BindAddress</A> directive in the
+<A HREF="../mod/core.html#bindaddress">BindAddress</A> directive in the
 configuration
 file to select which IP address (or virtual host) that daemon services.
 <EM>E.g.</EM>,
@@ -92,13 +92,13 @@ This hostname can also be given as an IP address.
 
 <H2>Setting up a single daemon</H2>
 For this case, a single httpd will service requests for all the virtual hosts.
-The <A HREF="mod/core.html#virtualhost">VirtualHost</A> directive in the
+The <A HREF="../mod/core.html#virtualhost">VirtualHost</A> directive in the
  configuration file is used to set the values of
-<A HREF="mod/core.html#serveradmin">ServerAdmin</A>,
-<A HREF="mod/core.html#servername">ServerName</A>,
-<A HREF="mod/core.html#documentroot">DocumentRoot</A>,
-<A HREF="mod/core.html#errorlog">ErrorLog</A> and
-<A HREF="mod/mod_log_config.html#transferlog">TransferLog</A> configuration
+<A HREF="../mod/core.html#serveradmin">ServerAdmin</A>,
+<A HREF="../mod/core.html#servername">ServerName</A>,
+<A HREF="../mod/core.html#documentroot">DocumentRoot</A>,
+<A HREF="../mod/core.html#errorlog">ErrorLog</A> and
+<A HREF="../mod/mod_log_config.html#transferlog">TransferLog</A> configuration
 directives to different values for each virtual host.
 <EM>E.g.</EM>,
 <BLOCKQUOTE><CODE>
@@ -125,24 +125,24 @@ This VirtualHost hostnames can also be given as IP addresses.
 
 Almost <STRONG>ANY</STRONG> configuration directive can be put
 in the VirtualHost directive, with the exception of
-<A HREF="mod/core.html#servertype">ServerType</A>,
-<A HREF="mod/core.html#user">User</A>,
-<A HREF="mod/core.html#group">Group</A>,
-<A HREF="mod/core.html#startservers">StartServers</A>,
-<A HREF="mod/core.html#maxspareservers">MaxSpareServers</A>,
-<A HREF="mod/core.html#minspareservers">MinSpareServers</A>,
-<A HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>,
-<A HREF="mod/core.html#bindaddress">BindAddress</A>,
-<A HREF="mod/core.html#pidfile">PidFile</A>,
-<A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A>, and
-<A HREF="mod/core.html#serverroot">ServerRoot</A>.
+<A HREF="../mod/core.html#servertype">ServerType</A>,
+<A HREF="../mod/core.html#user">User</A>,
+<A HREF="../mod/core.html#group">Group</A>,
+<A HREF="../mod/core.html#startservers">StartServers</A>,
+<A HREF="../mod/core.html#maxspareservers">MaxSpareServers</A>,
+<A HREF="../mod/core.html#minspareservers">MinSpareServers</A>,
+<A HREF="../mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>,
+<A HREF="../mod/core.html#bindaddress">BindAddress</A>,
+<A HREF="../mod/core.html#pidfile">PidFile</A>,
+<A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A>, and
+<A HREF="../mod/core.html#serverroot">ServerRoot</A>.
 
 <P>
 
 <EM>SECURITY:</EM> When specifying where to write log files, be aware
 of some security risks which are present if anyone other than the
 user that starts Apache has write access to the directory where they
-are written.  See the <A HREF="misc/security_tips.html">security
+are written.  See the <A HREF="../misc/security_tips.html">security
 tips</A> document for details.
 
 <P>
