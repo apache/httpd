@@ -162,30 +162,6 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static apr_status_t cleanup_file_cache(void *sconfv)
-{
-    a_server_config *sconf = sconfv;
-    apr_pool_t *p = apr_hash_pool_get(sconf->fileht);
-    a_file *file;
-    apr_hash_index_t *hi;
-
-    /* Iterate over the file hash table and clean up each entry */
-    for (hi = apr_hash_first(p, sconf->fileht); hi; hi=apr_hash_next(hi)) {
-        apr_hash_this(hi, NULL, NULL, (void **)&file);
-#if APR_HAS_MMAP
-        if (file->is_mmapped) { 
-	    apr_mmap_delete(file->mm);
-        } 
-#endif 
-#if APR_HAS_SENDFILE
-        if (!file->is_mmapped) {
-            apr_file_close(file->file); 
-        }
-#endif
-    }
-    return APR_SUCCESS;
-}
-
 static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 {
     a_server_config *sconf;
@@ -234,13 +210,11 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
 #if APR_HAS_MMAP
     if (mmap) {
-        apr_mmap_t *mm;
-
         /* MMAPFile directive. MMAP'ing the file
          * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
          * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
          */
-        if ((rc = apr_mmap_create(&mm, fd, 0, 
+        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, 
                                   (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
@@ -249,13 +223,6 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
             return;
         }
         apr_file_close(fd);
-        /* We want to cache a duplicate apr_mmap_t to pass to each
-         * request so that nothing in the request will ever think that
-         * it's allowed to delete the mmap, since the "refcount" will
-         * never reach zero. */
-        /* XXX: the transfer_ownership flag on this call
-         * will go away soon.. it's ignored right now. */
-        apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
         new_file->is_mmapped = TRUE;
     }
 #endif
@@ -273,11 +240,6 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     apr_hash_set(sconf->fileht, new_file->filename, strlen(new_file->filename), new_file);
-
-    if (apr_hash_count(sconf->fileht) == 1) {
-	/* first one, register the cleanup */
-	apr_pool_cleanup_register(cmd->pool, sconf, cleanup_file_cache, apr_pool_cleanup_null);
-    }
 }
 
 static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *filename)
@@ -349,9 +311,11 @@ static int mmap_handler(request_rec *r, a_file *file)
 #if APR_HAS_MMAP
     conn_rec *c = r->connection;
     apr_bucket *b;
+    apr_mmap_t *mm;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    b = apr_bucket_mmap_create(file->mm, 0, (apr_size_t)file->finfo.size,
+    apr_mmap_dup(&mm, file->mm, r->pool, 0);
+    b = apr_bucket_mmap_create(mm, 0, (apr_size_t)file->finfo.size,
                                c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create(c->bucket_alloc);

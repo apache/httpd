@@ -1,4 +1,9 @@
 Changes with Apache 2.0.45
+  *) mod_file_cache: fix segfault serving mmaped cached files.
+     [Bill Stoddard]
+
+  *) mod_file_cache: fixed a segfault when multiple MMapFile directives
+     were used.  PR 16313.  [Cliff Woolley]
 
   *) Fix a nasty segfault in mmap_bucket_setaside() caused by passing
      an incompatible pointer type to mmap_bucket_destroy(void*).
