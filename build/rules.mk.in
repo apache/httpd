@@ -107,7 +107,7 @@ shared-build: shared-build-recursive
 
 all-recursive install-recursive depend-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
-	list='$(SUBDIRS)'; \
+	list=' $(BUILD_SUBDIRS) $(SUBDIRS)'; \
 	for i in $$list; do \
 	    if test -d "$$i"; then \
 		target="$$otarget"; \
@@ -128,7 +128,7 @@ all-recursive install-recursive depend-recursive:
 
 clean-recursive distclean-recursive extraclean-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
-	list='$(SUBDIRS) $(CLEAN_SUBDIRS)'; \
+	list='$(CLEAN_SUBDIRS) $(SUBDIRS)'; \
 	for i in $$list; do \
 	    if test -d "$$i"; then \
 		target="$$otarget"; \

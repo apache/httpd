@@ -1,4 +1,6 @@
 
-SUBDIRS = apr apr-util $(AP_LIB_DIRS) pcre
+SUBDIRS = $(AP_LIB_DIRS) pcre
+BUILD_SUBDIRS = apr apr-util
+CLEAN_SUBDIRS = apr-util apr
 
 include $(top_srcdir)/build/rules.mk
