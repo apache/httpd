@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\gen_test_char.pdb" /machine:I386
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\gen_test_char.pdb" /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\gen_test_char.pdb" /machine:I386 /opt:ref
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"

@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib /nologo /subsystem:windows /dll /incremental:no /machine:I386 /base:"0x1c0f0000"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib /nologo /subsystem:windows /dll /incremental:no /machine:I386 /base:"0x1c0f0000"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib /nologo /subsystem:windows /dll /incremental:no /machine:I386 /base:"0x1c0f0000" /opt:ref
 
 !ELSEIF  "$(CFG)" == "Win9xConHook - Win32 Debug"
 

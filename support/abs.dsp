@@ -50,16 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /machine:I386 /libpath:"../srclib/openssl/out32dll"
-# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /debug /debugtype:both /machine:I386 /pdbtype:sept /libpath:"../srclib/openssl/out32dll"
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\abs.so
-SOURCE="$(InputPath)"
-
-".\Release\abs.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\abs.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"../srclib/openssl/out32dll" /opt:ref
 
 !ELSEIF  "$(CFG)" == "abs - Win32 Debug"
 

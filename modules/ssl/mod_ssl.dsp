@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_ssl.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so
-# ADD LINK32 kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_ssl.so" /pdbtype:sept /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\mod_ssl.so
-SOURCE="$(InputPath)"
-
-".\Release\mod_ssl.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_ssl.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_ssl.so" /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
 

@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_status.so" /base:@..\..\os\win32\BaseAddr.ref,mod_status.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_status.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_status.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\mod_status.so
-SOURCE="$(InputPath)"
-
-".\Release\mod_status.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_status.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_status.so" /base:@..\..\os\win32\BaseAddr.ref,mod_status.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_status - Win32 Debug"
 
