@@ -191,7 +191,6 @@ static apr_thread_mutex_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_proc_mutex_t *accept_mutex;
-static const char *lock_fname;
 
 #ifdef NO_SERIALIZED_ACCEPT
 #define SAFE_ACCEPT(stmt) APR_SUCCESS
@@ -829,7 +828,7 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
 
-    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, lock_fname,
+    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname,
                                                pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -1294,10 +1293,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
-                             ap_server_root_relative(_pconf, lock_fname),
-                             ap_my_pid);
-    rv = apr_proc_mutex_create_np(&accept_mutex, lock_fname, 
+    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
+                                 ap_server_root_relative(_pconf, ap_lock_fname),
+                                 ap_my_pid);
+    rv = apr_proc_mutex_create_np(&accept_mutex, ap_lock_fname, 
                                   ap_accept_lock_mech, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -1501,7 +1500,7 @@ static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    lock_fname = DEFAULT_LOCKFILE;
+    ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 

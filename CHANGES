@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) The worker MPM now respects the LockFile setting, needed to
+     avoid locking problems with NFS.  [Jeff Trawick]
+
   *) Fix segfault when worker MPM receives SIGHUP.
      [Ian Holsman, Aaron Bannert, Justin Erenkrantz]
 
