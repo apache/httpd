@@ -386,10 +386,6 @@ SOURCE=.\server\request.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\util_debug.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\vhost.c
 # End Source File
 # End Group
