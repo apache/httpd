@@ -1608,6 +1608,45 @@ au&szlig;er den genannten</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LimitInternalRecursion</name>
+<description>Bestimmt die maximale Anzahl interner Umleitungen und 
+  verschachtelter Unteranfragen</description>
+<syntax>LimitInternalRecursion <var>Zahl</var> [<var>Zahl</var>]</syntax>
+<default>LimitInternalRecursion 10</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Verf&uuml;gbar ab Apache 2.0.47</compatibility>
+
+<usage>
+    <p>Eine interne Umleitung erfolgt beispielsweise, wenn die Direktive
+    <directive module="mod_actions">Action</directive> verwendet wird, welche
+    die Originalanfrage intern zu einem CGI-Skript weiterleitet. Eine
+    Unteranfrage <transnote>engl. Subrequest</transnote> ist ein Mechanismus des
+    Apache, um herauszufinden, was bei einer URI geschehen w&uuml;rde, w&auml;re
+    sie angefordert worden. <module>mod_dir</module> z.B. verwendet
+    Unteranfragen, um nach den Dateien zu suchen, die in der <directive
+    module="mod_dir">DirectoryIndex</directive>-Anweisung aufgef&uuml;hrt
+    sind.</p>
+    
+    <p><directive>LimitInternalRecursion</directive> bewahrt den Server vor
+      einem Absturz, wenn er in eine Endlosschleife aus internen Umleitungen
+      oder Unteranfragen hineinl&auml;uft. Derartige Schleifen werden
+      gew&ouml;hnlich durch Fehlkonfiguration verursacht.</p>
+
+    <p>Die Direktive setzt zwei verschiedene Begrenzungen, welche je Anfrage
+      ausgewertet werden. Die erste <var>Zahl</var> bestimmt die maximale
+      Anzahl der Umleitungen, die aufeinander folgen d&uuml;rfen. Die zweite
+      <var>Zahl</var> legt fest, wie tief Unteranfragen ineinander
+      verschachtelt werden d&uuml;rfen. Wenn Sie lediglich eine <var>Zahl</var>
+      angeben, wird sie beiden Begrenzungen zugewiesen.</p>
+
+    <example><title>Beispiel</title>
+      LimitInternalRecursion 5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LimitRequestBody</name>
 <description>Begrenzt die Gesamtgr&ouml;&szlig;e des vom Client gesendeten
 HTTP-Request-Body</description>
