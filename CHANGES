@@ -2,6 +2,10 @@ Changes with Apache 2.1.2-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgi: Ensure that all stderr is logged for a script which returns
+     a Location header to generate a non-local redirect.  PR 20111.
+     [Joe Orton]
+
   *) Added the Event MPM to more efficiently handle clients during a 
      Keep Alive request.
      [Paul Querna, Greg Ames]
