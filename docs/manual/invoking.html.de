@@ -85,8 +85,8 @@
     feststellt, schreibt er entweder eine Nachricht, die das Problem
     näher schildert, auf die Konsole oder ins <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, bevor er sich selbst beendet.
     Eine der häufigsten Fehlermeldungen ist "<code>Unable
-    to bind to Port ...</code>" ("Kann nicht an Port ... binden").
-    Diese Meldung wird üblicherweise verursacht:</p>
+    to bind to Port ...</code>" <span class="transnote">(<em>Anm.d.Ü.:</em> "Kann nicht an Port ...
+    binden")</span>. Diese Meldung wird üblicherweise verursacht:</p>
 
     <ul>
       <li>entweder durch den Versuch, den Server an einem privilegierten
