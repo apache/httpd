@@ -354,7 +354,7 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=no
 	;;
     *-solaris2*)
-    	SOLVER=`echo $PLAT | sed -e 's/^.*solaris2.//'`
+    	SOLVER=`echo $PLAT | sed 's/^.*solaris2.//'`
 	OS="Solaris $SOLVER"
 	CFLAGS="$CFLAGS -DSOLARIS2=$SOLVER"
 	LIBS="$LIBS -lsocket -lnsl"
@@ -818,7 +818,7 @@ done
 
 # create modules.c
 
-sed -e 's/_module//' $tmpfile | awk >modules.c '
+sed 's/_module//' $tmpfile | awk >modules.c '
     BEGIN {
 	modules[n++] = "core"
 	pmodules[pn++] = "core"
@@ -1033,7 +1033,7 @@ for moddir in $AUTODIRS ; do
 	echo "Creating Makefile in $moddir"
 
 	cat Makefile.config > $moddir/Makefile
-	basedir=`echo $moddir | sed 's|^[^/]*/||g'`
+	basedir=`echo $moddir | sed 's/^[^/]*\///g'`
 	awk >> $moddir/Makefile < $tmpfile '
 	    BEGIN {
 		printf "OBJS="

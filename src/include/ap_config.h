@@ -104,7 +104,11 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 /*#define USE_FCNTL_SERIALIZED_ACCEPT*/
 /*#define USE_SYSVSEM_SERIALIZED_ACCEPT*/
+#if SOLARIS2 < 250
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#else
 #define USE_PTHREAD_SERIALIZED_ACCEPT
+#endif
 #define NEED_UNION_SEMUN
 #define HAVE_MMAP
 #define USE_MMAP_FILES
