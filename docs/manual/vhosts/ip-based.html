@@ -41,9 +41,9 @@
       does not want anyone at company2 to be able to read their
       data except via the web. In this case you would need two
       daemons, each running with different <a
-      href="../mod/core.html#user">User</a>, <a
-      href="../mod/core.html#group">Group</a>, <a
-      href="../mod/core.html#listen">Listen</a>, and <a
+      href="../mod/mpm_common.html#user">User</a>, <a
+      href="../mod/mpm_common.html#group">Group</a>, <a
+      href="../mod/mpm_common.html#listen">Listen</a>, and <a
       href="../mod/core.html#serverroot">ServerRoot</a>
       settings.</li>
 
@@ -51,7 +51,7 @@
       href="../misc/descriptors.html">file descriptor
       requirements</a> of listening to every IP alias on the
       machine. It's only possible to <a
-      href="../mod/core.html#listen">Listen</a> to the "wildcard"
+      href="../mod/mpm_common.html#listen">Listen</a> to the "wildcard"
       address, or to specific addresses. So if you have a need to
       listen to a specific address for whatever reason, then you
       will need to listen to all specific addresses. (Although one
@@ -72,7 +72,7 @@
     <h2>Setting up multiple daemons</h2>
     Create a separate httpd installation for each virtual host. For
     each installation, use the <a
-    href="../mod/core.html#listen">Listen</a> directive in the
+    href="../mod/mpm_common.html#listen">Listen</a> directive in the
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g. 
 <pre>
@@ -122,8 +122,8 @@
     href="../mod/directive-dict.html#Context">Context</a> using the
     <a href="../mod/directives.html">directive index</a>.</p>
 
-    <p><a href="../mod/core.html#user">User</a> and <a
-    href="../mod/core.html#group">Group</a> may be used inside a
+    <p><a href="../mod/mpm_common.html#user">User</a> and <a
+    href="../mod/mpm_common.html#group">Group</a> may be used inside a
     VirtualHost directive if the <a href="../suexec.html">suEXEC
     wrapper</a> is used.</p>
 
