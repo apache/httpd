@@ -226,13 +226,17 @@ static const command_rec cern_meta_cmds[] =
     {NULL}
 };
 
-/* XXX: another O(n^2) attack here */
+/* XXX: this is very similar to ap_scan_script_header_err_core...
+ * are the differences deliberate, or just a result of bit rot?
+ */
 static int scan_meta_file(request_rec *r, FILE *f)
 {
     char w[MAX_STRING_LEN];
     char *l;
     int p;
+    table *tmp_headers;
 
+    tmp_headers = ap_make_table(r->pool, 5);
     while (fgets(w, MAX_STRING_LEN - 1, f) != NULL) {
 
 	/* Delete terminal (CR?)LF */
@@ -278,9 +282,10 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	    r->status_line = ap_pstrdup(r->pool, l);
 	}
 	else {
-	    ap_table_set(r->headers_out, w, l);
+	    ap_table_set(tmp_headers, w, l);
 	}
     }
+    ap_overlap_tables(r->headers_out, tmp_headers, AP_OVERLAP_TABLES_SET);
     return OK;
 }
 

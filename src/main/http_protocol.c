@@ -713,77 +713,18 @@ static int read_request_line(request_rec *r)
     return 1;
 }
 
-/* Curse libc and the fact that it doesn't guarantee a stable sort.  We
- * have to enforce stability ourselves by using the order field. -djg
- */
-typedef struct {
-    char *key;
-    char *val;
-    unsigned order;
-} mime_key;
-
-static int sort_mime_headers(const void *va, const void *vb)
-{
-    const mime_key *a = va;
-    const mime_key *b = vb;
-    int r;
-
-    r = strcasecmp(a->key, b->key);
-    if (r) {
-	return r;
-    }
-    return (signed)a->order - (signed)b->order;
-}
-
-/* XXX: could use ap_overlap_tables here... which generalizes this code */
 static void get_mime_headers(request_rec *r)
 {
     char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
     conn_rec *c = r->connection;
     char *value;
     char *copy;
-    pool *tmp;
-    array_header *arr;
-    mime_key *new_key;
-    mime_key *first;
-    mime_key *last;
-    mime_key *end;
-    char *strp;
-    unsigned order;
     int len;
     unsigned int fields_read = 0;
+    table *tmp_headers;
 
-    /* The array will store the headers in a way that we can merge them
-     * later in O(n*lg(n))... rather than deal with various O(n^2)
-     * operations.
-     */
-    tmp = ap_make_sub_pool(r->pool);
-    arr = ap_make_array(tmp, 50, sizeof(mime_key));
-    order = 0;
-
-    /* If headers_in is non-empty (i.e. we're parsing a trailer) then
-     * we have to merge.  Have I mentioned that I think this is a lame part
-     * of the HTTP standard?  Anyhow, we'll cheat, and just pre-seed our
-     * array with the existing headers... and take advantage of the much
-     * faster merging here. -djg
-     */
-    if (!ap_is_empty_table(r->headers_in)) {
-	array_header *t_arr;
-	table_entry *t;
-	table_entry *t_end;
-
-	t_arr = ap_table_elts(r->headers_in);
-	t = (table_entry *)t_arr->elts;
-	t_end = t + t_arr->nelts;
-	while (t < t_end) {
-	    new_key = ap_push_array(arr);
-	    new_key->order = order++;
-	    new_key->key = t->key;
-	    new_key->val = t->val;
-	    ++t;
-	}
-	ap_clear_table(r->headers_in);
-    }
+    /* We'll use ap_overlap_tables later to merge these into r->headers_in. */
+    tmp_headers = ap_make_table(r->pool, 50);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -797,7 +738,6 @@ static void get_mime_headers(request_rec *r)
             ap_table_setn(r->notes, "error-notes",
                           "The number of request header fields exceeds "
                           "this server's limit.<P>\n");
-            ap_destroy_pool(tmp);
             return;
         }
         /* getline returns (size of max buffer - 1) if it fills up the
@@ -809,7 +749,6 @@ static void get_mime_headers(request_rec *r)
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
                 "<PRE>\n", field, "</PRE>\n", NULL));
-            ap_destroy_pool(tmp);
             return;
         }
         copy = ap_palloc(r->pool, len + 1);
@@ -820,7 +759,6 @@ static void get_mime_headers(request_rec *r)
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Request header field is missing colon separator.<P>\n"
                 "<PRE>\n", copy, "</PRE>\n", NULL));
-            ap_destroy_pool(tmp);
             return;
         }
 
@@ -831,60 +769,10 @@ static void get_mime_headers(request_rec *r)
 
         /* XXX: should strip trailing whitespace as well */
 
-	/* Notice that key and val are actually in r->pool... this is a slight
-	 * optimization to handle the normal case, where we don't have twits
-	 * trying to exploit the server.  In the abnormal case where twits are
-	 * trying to exploit the server by causing it to do header merging
-	 * and other such nonsense we consume twice as much memory as we
-	 * could optimally.  Oh well.  -djg
-	 */
-	new_key = ap_push_array(arr);
-	new_key->order = order++;
-	new_key->key = copy;
-	new_key->val = value;
+	ap_table_addn(tmp_headers, copy, value);
     }
 
-    /* Now we have to merge headers. */
-    qsort(arr->elts, arr->nelts, sizeof(mime_key), sort_mime_headers);
-
-    /* Now iterate over the array and build r->headers_in. */
-    first = (mime_key *)arr->elts;
-    end = first + arr->nelts;
-    while (first < end) {
-	last = first + 1;
-	if (last == end
-	    || strcasecmp(first->key, last->key)) {
-	    ap_table_addn(r->headers_in, first->key, first->val);
-	    first = last;
-	}
-	else {
-	    /* Have to merge some headers.  Let's re-use the order field,
-	     * since it's handy... we'll store the length of val there.
-	     */
-	    first->order = strlen(first->val);
-	    len = first->order;
-	    do {
-		last->order = strlen(last->val);
-		len += 2 + last->order;
-		++last;
-	    } while (last < end
-		    && !strcasecmp(first->key, last->key));
-	    /* last points one past the last header to merge */
-	    value = ap_palloc(r->pool, len + 1);
-	    strp = value;
-	    for (;;) {
-		memcpy(strp, first->val, first->order);
-		strp += first->order;
-		++first;
-		if (first == last) break;
-		*strp++ = ',';
-		*strp++ = ' ';
-	    }
-	    *strp = 0;
-	    ap_table_addn(r->headers_in, (first-1)->key, value);
-	}
-    }
-    ap_destroy_pool(tmp);
+    ap_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
 }
 
 request_rec *ap_read_request(conn_rec *conn)

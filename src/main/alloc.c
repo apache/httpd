@@ -1386,6 +1386,163 @@ API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), v
     va_end(vp);
 }
 
+/* Curse libc and the fact that it doesn't guarantee a stable sort.  We
+ * have to enforce stability ourselves by using the order field.  If it
+ * provided a stable sort then we wouldn't even need temporary storage to
+ * do the work below. -djg
+ *
+ * ("stable sort" means that equal keys retain their original relative
+ * ordering in the output.)
+ */
+typedef struct {
+    char *key;
+    char *val;
+    int order;
+} overlap_key;
+
+static int sort_overlap(const void *va, const void *vb)
+{
+    const overlap_key *a = va;
+    const overlap_key *b = vb;
+    int r;
+
+    r = strcasecmp(a->key, b->key);
+    if (r) {
+	return r;
+    }
+    return a->order - b->order;
+}
+
+/* prefer to use the stack for temp storage for overlaps smaller than this */
+#ifndef AP_OVERLAP_TABLES_ON_STACK
+#define AP_OVERLAP_TABLES_ON_STACK	(512)
+#endif
+
+API_EXPORT(void) ap_overlap_tables(table *a, const table *b, unsigned flags)
+{
+    overlap_key cat_keys_buf[AP_OVERLAP_TABLES_ON_STACK];
+    overlap_key *cat_keys;
+    int nkeys;
+    table_entry *e;
+    table_entry *last_e;
+    overlap_key *left;
+    overlap_key *right;
+    overlap_key *last;
+
+    nkeys = a->a.nelts + b->a.nelts;
+    if (nkeys < AP_OVERLAP_TABLES_ON_STACK) {
+	cat_keys = cat_keys_buf;
+    }
+    else {
+	/* XXX: could use scratch free space in a or b's pool instead...
+	 * which could save an allocation in b's pool.
+	 */
+	cat_keys = ap_palloc(b->a.pool, sizeof(overlap_key) * nkeys);
+    }
+
+    nkeys = 0;
+
+    /* Create a list of the entries from a concatenated with the entries
+     * from b.
+     */
+    e = (table_entry *)a->a.elts;
+    last_e = e + a->a.nelts;
+    while (e < last_e) {
+	cat_keys[nkeys].key = e->key;
+	cat_keys[nkeys].val = e->val;
+	cat_keys[nkeys].order = nkeys;
+	++nkeys;
+	++e;
+    }
+
+    e = (table_entry *)b->a.elts;
+    last_e = e + b->a.nelts;
+    while (e < last_e) {
+	cat_keys[nkeys].key = e->key;
+	cat_keys[nkeys].val = e->val;
+	cat_keys[nkeys].order = nkeys;
+	++nkeys;
+	++e;
+    }
+
+    qsort(cat_keys, nkeys, sizeof(overlap_key), sort_overlap);
+
+    /* Now iterate over the sorted list and rebuild a.
+     * Start by making sure it has enough space.
+     */
+    a->a.nelts = 0;
+    if (a->a.nalloc < nkeys) {
+	a->a.elts = ap_palloc(a->a.pool, a->a.elt_size * nkeys * 2);
+	a->a.nalloc = nkeys * 2;
+    }
+
+    /*
+     * In both the merge and set cases we retain the invariant:
+     *
+     * left->key, (left+1)->key, (left+2)->key, ..., (right-1)->key
+     * are all equal keys.  (i.e. strcasecmp returns 0)
+     *
+     * We essentially need to find the maximal
+     * right for each key, then we can do a quick merge or set as
+     * appropriate.
+     */
+
+    if (flags & AP_OVERLAP_TABLES_MERGE) {
+	left = cat_keys;
+	last = left + nkeys;
+	while (left < last) {
+	    right = left + 1;
+	    if (right == last
+		|| strcasecmp(left->key, right->key)) {
+		ap_table_addn(a, left->key, left->val);
+		left = right;
+	    }
+	    else {
+		char *strp;
+		char *value;
+		size_t len;
+
+		/* Have to merge some headers.  Let's re-use the order field,
+		 * since it's handy... we'll store the length of val there.
+		 */
+		left->order = strlen(left->val);
+		len = left->order;
+		do {
+		    right->order = strlen(right->val);
+		    len += 2 + right->order;
+		    ++right;
+		} while (right < last
+			&& !strcasecmp(left->key, right->key));
+		/* right points one past the last header to merge */
+		value = ap_palloc(a->a.pool, len + 1);
+		strp = value;
+		for (;;) {
+		    memcpy(strp, left->val, left->order);
+		    strp += left->order;
+		    ++left;
+		    if (left == right) break;
+		    *strp++ = ',';
+		    *strp++ = ' ';
+		}
+		*strp = 0;
+		ap_table_addn(a, (left-1)->key, value);
+	    }
+	}
+    }
+    else {
+	left = cat_keys;
+	last = left + nkeys;
+	while (left < last) {
+	    right = left + 1;
+	    while (right < last && !strcasecmp(left->key, right->key)) {
+		++right;
+	    }
+	    ap_table_addn(a, (right-1)->key, (right-1)->val);
+	    left = right;
+	}
+    }
+}
+
 /*****************************************************************
  *
  * Managing generic cleanups.  

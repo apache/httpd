@@ -188,10 +188,9 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t)
     return env;
 }
 
-/* XXX: this could use ap_overlap_tables */
 API_EXPORT(void) ap_add_common_vars(request_rec *r)
 {
-    table *e = r->subprocess_env;
+    table *e;
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
@@ -200,10 +199,14 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     char *env_temp;
 #endif
     const char *host;
-
     array_header *hdrs_arr = ap_table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
     int i;
+
+    /* use a temporary table which we'll overlap onto
+     * r->subprocess_env later
+     */
+    e = ap_make_table(r->pool, 25 + hdrs_arr->nelts);
 
     /* First, add environment vars from headers... this is as per
      * CGI specs, though other sorts of scripting interfaces see
@@ -221,10 +224,10 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	 */
 
 	if (!strcasecmp(hdrs[i].key, "Content-type")) {
-	    ap_table_setn(e, "CONTENT_TYPE", hdrs[i].val);
+	    ap_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
 	}
 	else if (!strcasecmp(hdrs[i].key, "Content-length")) {
-	    ap_table_setn(e, "CONTENT_LENGTH", hdrs[i].val);
+	    ap_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
 	}
 	/*
 	 * You really don't want to disable this check, since it leaves you
@@ -238,7 +241,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	}
 #endif
 	else {
-	    ap_table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+	    ap_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
 	}
     }
 
@@ -248,54 +251,56 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot")) {
-        ap_table_setn(e, "SystemRoot", env_temp);         
+        ap_table_addn(e, "SystemRoot", env_temp);         
     }
     if (env_temp = getenv("COMSPEC")) {
-        ap_table_setn(e, "COMSPEC", env_temp);            
+        ap_table_addn(e, "COMSPEC", env_temp);            
     }
     if (env_temp = getenv("WINDIR")) {
-        ap_table_setn(e, "WINDIR", env_temp);
+        ap_table_addn(e, "WINDIR", env_temp);
     }
 #endif
 
-    ap_table_setn(e, "PATH", env_path);
-    ap_table_setn(e, "SERVER_SOFTWARE", ap_get_server_version());
-    ap_table_setn(e, "SERVER_NAME", ap_get_server_name(r));
-    ap_table_setn(e, "SERVER_PORT",
+    ap_table_addn(e, "PATH", env_path);
+    ap_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
+    ap_table_addn(e, "SERVER_NAME", ap_get_server_name(r));
+    ap_table_addn(e, "SERVER_PORT",
 		  ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
     host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
-	ap_table_setn(e, "REMOTE_HOST", host);
+	ap_table_addn(e, "REMOTE_HOST", host);
     }
-    ap_table_setn(e, "REMOTE_ADDR", c->remote_ip);
-    ap_table_setn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
-    ap_table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
-    ap_table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
+    ap_table_addn(e, "REMOTE_ADDR", c->remote_ip);
+    ap_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
+    ap_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
+    ap_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    ap_table_setn(e, "REMOTE_PORT",
+    ap_table_addn(e, "REMOTE_PORT",
 		  ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
     if (c->user) {
-	ap_table_setn(e, "REMOTE_USER", c->user);
+	ap_table_addn(e, "REMOTE_USER", c->user);
     }
     if (c->ap_auth_type) {
-	ap_table_setn(e, "AUTH_TYPE", c->ap_auth_type);
+	ap_table_addn(e, "AUTH_TYPE", c->ap_auth_type);
     }
     rem_logname = ap_get_remote_logname(r);
     if (rem_logname) {
-	ap_table_setn(e, "REMOTE_IDENT", ap_pstrdup(r->pool, rem_logname));
+	ap_table_addn(e, "REMOTE_IDENT", ap_pstrdup(r->pool, rem_logname));
     }
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
         if (r->prev->args) {
-	    ap_table_setn(e, "REDIRECT_QUERY_STRING", r->prev->args);
+	    ap_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
 	}
 	if (r->prev->uri) {
-	    ap_table_setn(e, "REDIRECT_URL", r->prev->uri);
+	    ap_table_addn(e, "REDIRECT_URL", r->prev->uri);
 	}
     }
+
+    ap_overlap_tables(r->subprocess_env, e, AP_OVERLAP_TABLES_SET);
 }
 
 /* This "cute" little function comes about because the path info on
@@ -411,6 +416,12 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 }
 
 
+static int set_cookie_doo_doo(void *v, const char *key, const char *val)
+{
+    ap_table_addn(v, key, val);
+    return 1;
+}
+
 API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data)
@@ -419,6 +430,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     char *w, *l;
     int p;
     int cgi_status = HTTP_OK;
+    table *merge;
+    table *cookie_table;
 
     if (buffer) {
 	*buffer = '\0';
@@ -426,6 +439,18 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     w = buffer ? buffer : x;
 
     ap_hard_timeout("read script header", r);
+
+    /* temporary place to hold headers to merge in later */
+    merge = ap_make_table(r->pool, 10);
+
+    /* The HTTP specification says that it is legal to merge duplicate
+     * headers into one.  Some browsers that support Cookies don't like
+     * merged headers and prefer that each Set-Cookie header is sent
+     * separately.  Lets humour those browsers by not merging.
+     * Oh what a pain it is.
+     */
+    cookie_table = ap_make_table(r->pool, 2);
+    ap_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out, "Set-Cookie", NULL);
 
     while (1) {
 
@@ -466,6 +491,12 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_kill_timeout(r);
 	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
 		cond_status = ap_meets_conditions(r);
+	    }
+	    ap_overlap_tables(r->err_headers_out, merge,
+		AP_OVERLAP_TABLES_MERGE);
+	    if (!ap_is_empty_table(cookie_table)) {
+		r->err_headers_out = ap_overlay_tables(r->pool,
+		    r->err_headers_out, cookie_table);
 	    }
 	    return cond_status;
 	}
@@ -538,17 +569,11 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_update_mtime(r, mtime);
 	    ap_set_last_modified(r);
 	}
-	/* The HTTP specification says that it is legal to merge duplicate
-	 * headers into one.  Some browsers that support Cookies don't like
-	 * merged headers and prefer that each Set-Cookie header is sent
-	 * separately.  Lets humour those browsers.
-	 */
 	else if (!strcasecmp(w, "Set-Cookie")) {
-	    ap_table_add(r->err_headers_out, w, l);
+	    ap_table_add(cookie_table, w, l);
 	}
 	else {
-	    /* XXX: there is an O(n^2) space attack possible here */
-	    ap_table_merge(r->err_headers_out, w, l);
+	    ap_table_add(merge, w, l);
 	}
     }
 }

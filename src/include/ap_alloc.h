@@ -199,7 +199,7 @@ API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table
     int i;
 
     for (i = 0; i < barr->nelts; ++i) {
-	if (merge) {
+	if (flags & AP_OVERLAP_TABLES_MERGE) {
 	    ap_table_mergen(a, belt[i].key, belt[i].val);
 	}
 	else {
@@ -214,7 +214,9 @@ API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table
     in an ancestor of a's pool.  In practice b and a are usually from
     the same pool.
 */
-API_EXPORT(void) ap_overlap_tables(table *a, const table *b, int merge);
+#define AP_OVERLAP_TABLES_SET	(0)
+#define AP_OVERLAP_TABLES_MERGE	(1)
+API_EXPORT(void) ap_overlap_tables(table *a, const table *b, unsigned flags);
 
 /* XXX: these know about the definition of struct table in alloc.c.  That
  * definition is not here because it is supposed to be private, and by not
