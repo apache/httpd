@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/01 20:02:28 $
+Last modified: $Date: 2003/04/05 18:36:27 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -190,18 +190,8 @@ faq/support.html
 
 # Perhaps these should be left in html to allow the developers to
 # play with them
+# nope. in order to create other formats, we need 'em as xml. --nd
 developer/API.html
-developer/debugging.html
-developer/documenting.html
-developer/filters.html
-developer/footer.html
-developer/header.html
-developer/hooks.html
-developer/index.html
-developer/layeredio.html
-developer/request.html
-developer/thread_safety.html
-developer/modules.html.en
 
 # converting from nroff to xml
 programs/ab.html
