@@ -743,7 +743,10 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
-    char* field;
+    char *last_field = NULL;
+    apr_size_t last_len;
+    apr_size_t alloc_len = 0;
+    char *field;
     char *value;
     apr_size_t len;
     int fields_read = 0;
@@ -758,10 +761,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
      */
     while(1) {
         apr_status_t rv;
+        int folded = 0;
 
         field = NULL;
         rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
-                         &len, r, 1, bb);
+                         &len, r, 0, bb);
 
         /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
          * finding the end-of-line.  This is only going to happen if it
@@ -787,39 +791,83 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
+        if (last_field != NULL) {
+            if ((len > 0) && (*field == '\t')) {
+                /* This line is a continuation of the preceding line(s),
+                 * so append it to the line that we've set aside.
+                 * Note: this uses a power-of-two allocator to avoid
+                 * doing O(n) allocs and using O(n^2) space for
+                 * continuations that span many many lines.
+                 */
+                if (last_len + len > alloc_len) {
+                    char *fold_buf;
+                    alloc_len += alloc_len;
+                    if (last_len + len > alloc_len) {
+                        alloc_len = last_len + len;
+                    }
+                    fold_buf = (char *)apr_palloc(r->pool, alloc_len);
+                    memcpy(fold_buf, last_field, last_len);
+                    last_field = fold_buf;
+                }
+                memcpy(last_field + last_len, field, len +1); /* +1 for nul */
+                last_len += len;
+                folded = 1;
+            }
+            else {
+
+                if (r->server->limit_req_fields
+                    && (++fields_read > r->server->limit_req_fields)) {
+                    r->status = HTTP_BAD_REQUEST;
+                    apr_table_setn(r->notes, "error-notes",
+                                   "The number of request header fields "
+                                   "exceeds this server's limit.");
+                    return;
+                }
+
+                if (!(value = strchr(last_field, ':'))) { /* Find ':' or    */
+                    r->status = HTTP_BAD_REQUEST;      /* abort bad request */
+                    apr_table_setn(r->notes, "error-notes",
+                                   apr_pstrcat(r->pool,
+                                               "Request header field is "
+                                               "missing ':' separator.<br />\n"
+                                               "<pre>\n",
+                                               ap_escape_html(r->pool,
+                                                              last_field),
+                                               "</pre>\n", NULL));
+                    return;
+                }
+
+                *value = '\0';
+                ++value;
+                while (*value == ' ' || *value == '\t') {
+                    ++value;            /* Skip to start of value   */
+                }
+
+                apr_table_addn(tmp_headers, last_field, value);
+
+                /* reset the alloc_len so that we'll allocate a new
+                 * buffer if we have to do any more folding: we can't
+                 * use the previous buffer because its contents are
+                 * now part of tmp_headers
+                 */
+                alloc_len = 0;
+
+            } /* end if current line is not a continuation starting with tab */
+        }
+
         /* Found a blank line, stop. */
         if (len == 0) {
             break;
         }
 
-        if (r->server->limit_req_fields
-            && (++fields_read > r->server->limit_req_fields)) {
-            r->status = HTTP_BAD_REQUEST;
-            apr_table_setn(r->notes, "error-notes",
-                           "The number of request header fields exceeds "
-                           "this server's limit.");
-            return;
+        /* Keep track of this line so that we can parse it on
+         * the next loop iteration.  (In the folded case, last_field
+         * has been updated already.)
+         */
+        if (!folded) {
+            last_field = field;
+            last_len = len;
         }
-
-        if (!(value = strchr(field, ':'))) {    /* Find the colon separator */
-            r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
-            apr_table_setn(r->notes, "error-notes",
-                           apr_pstrcat(r->pool,
-                                       "Request header field is missing "
-                                       "colon separator.<br />\n"
-                                       "<pre>\n",
-                                       ap_escape_html(r->pool, field),
-                                       "</pre>\n", NULL));
-            return;
-        }
-
-        *value = '\0';
-        ++value;
-        while (*value == ' ' || *value == '\t') {
-            ++value;            /* Skip to start of value   */
-        }
-
-        apr_table_addn(tmp_headers, field, value);
     }
 
     apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
