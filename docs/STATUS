@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/12/07 19:45:10 $
+Last modified: $Date: 2001/12/07 19:54:00 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -12,6 +12,11 @@ http://apache-server.com/tutorials/ATdocs-project.html for an excellent
 tutorial on how to get started with making your contribution.
 
               ------------------------------
+
+- IPv6: need to update some directives to show correct syntax for IPv6
+    - Listen
+    - NameVirtualHost/VirtualHost
+    - Allow/Deny
 
 - modules docs
     - mod_suexec: very little documentation
