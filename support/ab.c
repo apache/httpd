@@ -872,10 +872,11 @@ static void output_results(void)
 	/* work out connection times */
 	long i;
 	apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
+        apr_time_t meancon, meantot, meand, meanwait;
         apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX, 
                             minwait = AB_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
-        apr_interval_time_t meancon = 0, meantot = 0, meand = 0, meanwait = 0;
+        apr_interval_time_t mediancon = 0, mediantot = 0, mediand = 0, medianwait = 0;
         double sdtot = 0, sdcon = 0, sdd = 0, sdwait = 0;
 
 	for (i = 0; i < requests; i++) {
@@ -895,21 +896,22 @@ static void output_results(void)
 	    totald += s.time - s.ctime;
 	    totalwait += s.waittime;
 	}
-	totalcon /= requests;
-	total /= requests;
-	totald /= requests;
-	totalwait /= requests;
+    meancon = totalcon / requests;
+    meantot = total / requests;
+    meand = totald / requests;
+    meanwait = totalwait / requests;
 
+    /* calculating the sample variance: the sum of the squared deviations, divided by n-1 */
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
-            double a;
-            a = ((double)s.time - total);
+        double a;
+        a = ((double)s.time - meantot);
             sdtot += a * a;
-	    a = ((double)s.ctime - totalcon);
+	    a = ((double)s.ctime - meancon);
 	    sdcon += a * a;
-	    a = ((double)s.time - (double)s.ctime - totald);
+	    a = ((double)s.time - (double)s.ctime - meand);
 	    sdd += a * a;
-	    a = ((double)s.waittime - totalwait);
+	    a = ((double)s.waittime - meanwait);
 	    sdwait += a * a;
 	}
 
@@ -951,31 +953,31 @@ static void output_results(void)
 	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) compradre);
 	if ((requests > 1) && (requests % 2))
-	    meancon = (stats[requests / 2].ctime + stats[requests / 2 + 1].ctime) / 2;
+	    mediancon = (stats[requests / 2].ctime + stats[requests / 2 + 1].ctime) / 2;
 	else
-	    meancon = stats[requests / 2].ctime;
+	    mediancon = stats[requests / 2].ctime;
 
 	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) compri);
 	if ((requests > 1) && (requests % 2))
-	    meand = (stats[requests / 2].time + stats[requests / 2 + 1].time \
+	    mediand = (stats[requests / 2].time + stats[requests / 2 + 1].time \
 	    -stats[requests / 2].ctime - stats[requests / 2 + 1].ctime) / 2;
 	else
-	    meand = stats[requests / 2].time - stats[requests / 2].ctime;
+	    mediand = stats[requests / 2].time - stats[requests / 2].ctime;
 
 	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) compwait);
 	if ((requests > 1) && (requests % 2))
-	    meanwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
+	    medianwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
 	else
-	    meanwait = stats[requests / 2].waittime;
+	    medianwait = stats[requests / 2].waittime;
 
 	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) comprando);
 	if ((requests > 1) && (requests % 2))
-	    meantot = (stats[requests / 2].time + stats[requests / 2 + 1].time) / 2;
+	    mediantot = (stats[requests / 2].time + stats[requests / 2 + 1].time) / 2;
 	else
-	    meantot = stats[requests / 2].time;
+	    mediantot = stats[requests / 2].time;
 
 	printf("\nConnection Times (ms)\n");
 
@@ -983,18 +985,18 @@ static void output_results(void)
 #define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %4d %5.1f %6" APR_TIME_T_FMT " %7" APR_TIME_T_FMT "\n"
 	    printf("              min  mean[+/-sd] median   max\n");
 	    printf("Connect:    " CONF_FMT_STRING, 
-                   mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
+                   mincon, (int) (meancon + 0.5), sdcon, mediancon, maxcon);
 	    printf("Processing: " CONF_FMT_STRING,
-		   mind, (int) (totald + 0.5), sdd, meand, maxd);
+		   mind, (int) (meand + 0.5), sdd, mediand, maxd);
 	    printf("Waiting:    " CONF_FMT_STRING,
-	           minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
+	           minwait, (int) (meanwait + 0.5), sdwait, medianwait, maxwait);
 	    printf("Total:      " CONF_FMT_STRING,
-		   mintot, (int) (total + 0.5), sdtot, meantot, maxtot);
+		   mintot, (int) (meantot + 0.5), sdtot, mediantot, maxtot);
 #undef CONF_FMT_STRING
 
-#define     SANE(what,avg,mean,sd) \
+#define     SANE(what,mean,median,sd) \
               { \
-                double d = (double)avg - mean; \
+                double d = (double)mean - median; \
                 if (d < 0) d = -d; \
                 if (d > 2 * sd ) \
                     printf("ERROR: The median and mean for " what " are more than twice the standard\n" \
@@ -1003,21 +1005,20 @@ static void output_results(void)
                     printf("WARNING: The median and mean for " what " are not within a normal deviation\n" \
                            "        These results are probably not that reliable.\n"); \
             }
-	    SANE("the initial connection time", totalcon, meancon, sdcon);
-	    SANE("the processing time", totald, meand, sdd);
-	    SANE("the waiting time", totalwait, meanwait, sdwait);
-	    SANE("the total time", total, meantot, sdtot);
+	    SANE("the initial connection time", meancon, mediancon, sdcon);
+	    SANE("the processing time", meand, mediand, sdd);
+	    SANE("the waiting time", meanwait, medianwait, sdwait);
+	    SANE("the total time", meantot, mediantot, sdtot);
 	}
 	else {
 	    printf("              min   avg   max\n");
 #define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %5" APR_TIME_T_FMT "%5" APR_TIME_T_FMT "\n"
 	    printf("Connect:    " CONF_FMT_STRING, 
-                   mincon, totalcon / requests, maxcon);
-	    printf("Processing: " CONF_FMT_STRING, mintot - mincon, 
-                   (total / requests) - (totalcon / requests), 
-                   maxtot - maxcon);
+                mincon, meancon, maxcon);
+	    printf("Processing: " CONF_FMT_STRING, 
+                mintot - mincon, meantot - meancon,  maxtot - maxcon);
 	    printf("Total:      " CONF_FMT_STRING, 
-                   mintot, total / requests, maxtot);
+                mintot, meantot, maxtot);
 #undef CONF_FMT_STRING
 	}
 
@@ -1489,7 +1490,6 @@ static void read_connection(struct connection * c)
     if (c->keepalive && (c->bread >= c->length)) {
 	/* finished a keep-alive connection */
 	good++;
-	doneka++;
 	/* save out time */
 	if (good == 1) {
 	    /* first time here */
@@ -1501,6 +1501,7 @@ static void read_connection(struct connection * c)
 	}
 	if (done < requests) {
 	    struct data s;
+	    doneka++;
 	    if (done && heartbeatres && !(done % heartbeatres)) {
 		fprintf(stderr, "Completed %ld requests\n", done);
 		fflush(stderr);
@@ -1518,8 +1519,8 @@ static void read_connection(struct connection * c)
 	c->gotheader = 0;
 	c->cbx = 0;
 	c->read = c->bread = 0;
+	c->start = c->connect = apr_time_now();	/* zero connect time with keep-alive */
 	write_request(c);
-	c->start = c->connect;	/* zero connect time with keep-alive */
     }
 }
 
@@ -1786,14 +1787,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.142 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.143 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.142 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.143 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
