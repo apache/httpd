@@ -63,6 +63,37 @@
 
 #include <stdarg.h>
 
+/* debugging support, define this to enable code which helps detect re-use
+ * of freed memory and other such nonsense.
+ *
+ * The theory is simple.  The FILL_BYTE (0xa5) is written over all malloc'd
+ * memory as we receive it, and is written over everything that we free up
+ * during a clear_pool.  We check that blocks on the free list always
+ * have the FILL_BYTE in them, and we check during palloc() that the bytes
+ * still have FILL_BYTE in them.  If you ever see garbage URLs or whatnot
+ * containing lots of 0xa5s then you know something used data that's been
+ * freed.
+ */
+/* #define ALLOC_DEBUG */
+
+/* debugging support, if defined all allocations will be done with
+ * malloc and free()d appropriately at the end.  This is intended to be
+ * used with something like Electric Fence or Purify to help detect
+ * memory problems.  Note that if you're using efence then you should also
+ * add in ALLOC_DEBUG.  But don't add in ALLOC_DEBUG if you're using Purify
+ * because ALLOC_DEBUG would hide all the uninitialized read errors that
+ * Purify can diagnose.
+ */
+/* #define ALLOC_USE_MALLOC */
+
+#ifdef ALLOC_USE_MALLOC
+#undef BLOCK_MINFREE
+#undef BLOCK_MINALLOC
+#define BLOCK_MINFREE	0
+#define BLOCK_MINALLOC	0
+#endif
+
+
 /*****************************************************************
  *
  * Managing free storage blocks...
@@ -98,6 +129,28 @@ union block_hdr *block_freelist = NULL;
 mutex *alloc_mutex = NULL;
 mutex *spawn_mutex = NULL;
 
+#ifdef ALLOC_DEBUG
+#define FILL_BYTE	((char)(0xa5))
+
+#define debug_fill(ptr,size)	((void)memset((ptr), FILL_BYTE, (size)))
+
+static ap_inline void debug_verify_filled(const char *ptr,
+    const char *endp, const char *error_msg)
+{
+    for (; ptr < endp; ++ptr) {
+	if (*ptr != FILL_BYTE) {
+	    fputs(error_msg, stderr);
+	    abort();
+	    exit(1);
+	}
+    }
+}
+
+#else
+#define debug_fill(a,b)
+#define debug_verify_filled(a,b,c)
+#endif
+
 
 /* Get a completely new block from the system pool. Note that we rely on
    malloc() to provide aligned memory. */
@@ -111,6 +164,7 @@ union block_hdr *malloc_block(int size)
 	fprintf(stderr, "Ouch!  malloc failed in malloc_block()\n");
 	exit(1);
     }
+    debug_fill(blok, size + sizeof(union block_hdr));
     blok->h.next = NULL;
     blok->h.first_avail = (char *) (blok + 1);
     blok->h.endp = size + blok->h.first_avail;
@@ -138,6 +192,14 @@ void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 
 void free_blocks(union block_hdr *blok)
 {
+#ifdef ALLOC_USE_MALLOC
+    union block_hdr *next;
+
+    for (; blok; blok = next) {
+	next = blok->h.next;
+	free(blok);
+    }
+#else
     /* First, put new blocks at the head of the free list ---
      * we'll eventually bash the 'next' pointer of the last block
      * in the chain to point to the free blocks we already had.
@@ -161,19 +223,20 @@ void free_blocks(union block_hdr *blok)
     while (blok->h.next != NULL) {
 	chk_on_blk_list(blok, old_free_list);
 	blok->h.first_avail = (char *) (blok + 1);
+	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
 	blok = blok->h.next;
     }
 
     chk_on_blk_list(blok, old_free_list);
     blok->h.first_avail = (char *) (blok + 1);
+    debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
 
     /* Finally, reset next pointer to get the old free blocks back */
 
     blok->h.next = old_free_list;
     (void) release_mutex(alloc_mutex);
+#endif
 }
-
-
 
 
 /* Get a new block, from our own free list if possible, from the system
@@ -193,6 +256,8 @@ union block_hdr *new_block(int min_size)
 	if (min_size + BLOCK_MINFREE <= blok->h.endp - blok->h.first_avail) {
 	    *lastptr = blok->h.next;
 	    blok->h.next = NULL;
+	    debug_verify_filled(blok->h.first_avail, blok->h.endp,
+		"Ouch!  Someone trounced a block on the free list!\n");
 	    return blok;
 	}
 	else {
@@ -204,9 +269,11 @@ union block_hdr *new_block(int min_size)
     /* Nope. */
 
     min_size += BLOCK_MINFREE;
-    return malloc_block((min_size > BLOCK_MINALLOC) ? min_size : BLOCK_MINALLOC);
+    blok = malloc_block((min_size > BLOCK_MINALLOC) ? min_size : BLOCK_MINALLOC);
+    debug_verify_filled(blok->h.first_avail, blok->h.endp,
+	"Ouch!  Someone trounced a block on the free list!\n");
+    return blok;
 }
-
 
 
 /* Accounting */
@@ -248,6 +315,9 @@ struct pool {
     struct pool *sub_prev;
     struct pool *parent;
     char *free_first_avail;
+#ifdef ALLOC_USE_MALLOC
+    void *allocation_list;
+#endif
 };
 
 pool *permanent_pool;
@@ -271,7 +341,7 @@ API_EXPORT(struct pool *) make_sub_pool(struct pool *p)
 
     (void) acquire_mutex(alloc_mutex);
 
-    blok = new_block(0);
+    blok = new_block(POOL_HDR_BYTES);
     new_pool = (pool *) blok->h.first_avail;
     blok->h.first_avail += POOL_HDR_BYTES;
 
@@ -318,6 +388,20 @@ API_EXPORT(void) clear_pool(struct pool *a)
 
     a->last = a->first;
     a->first->h.first_avail = a->free_first_avail;
+    debug_fill(a->first->h.first_avail,
+	a->first->h.endp - a->first->h.first_avail);
+
+#ifdef ALLOC_USE_MALLOC
+    {
+	void *c, *n;
+
+	for (c = a->allocation_list; c; c = n) {
+	    n = *(void **)c;
+	    free(c);
+	}
+	a->allocation_list = NULL;
+    }
+#endif
 
     unblock_alarms();
 }
@@ -357,6 +441,23 @@ API_EXPORT(long) bytes_in_free_blocks(void)
 
 API_EXPORT(void *) palloc(struct pool *a, int reqsize)
 {
+#ifdef ALLOC_USE_MALLOC
+    int size = reqsize + CLICK_SZ;
+    void *ptr;
+
+    block_alarms();
+    ptr = malloc(size);
+    if (ptr == NULL) {
+	fputs("Ouch!  Out of memory!\n", stderr);
+	exit(1);
+    }
+    debug_fill(ptr, size); /* might as well get uninitialized protection */
+    *(void **)ptr = a->allocation_list;
+    a->allocation_list = ptr;
+    unblock_alarms();
+    return (char *)ptr + CLICK_SZ;
+#else
+
     /* Round up requested size to an even number of alignment units (core clicks)
      */
 
@@ -377,6 +478,8 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
     new_first_avail = first_avail + size;
 
     if (new_first_avail <= blok->h.endp) {
+	debug_verify_filled(first_avail, blok->h.endp,
+	    "Ouch!  Someone trounced past the end of their allocation!\n");
 	blok->h.first_avail = new_first_avail;
 	return (void *) first_avail;
     }
@@ -399,6 +502,7 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
     blok->h.first_avail += size;
 
     return (void *) first_avail;
+#endif
 }
 
 API_EXPORT(void *) pcalloc(struct pool *a, int size)
