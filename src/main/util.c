@@ -1542,7 +1542,7 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long ap_get_virthost_addr(const char *w, unsigned short *ports)
+unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
 {
     struct hostent *hep;
     unsigned long my_addr;
