@@ -63,17 +63,13 @@
 extern "C" {
 #endif
 
-extern MODULE_VAR_EXPORT const char *ap_server_argv0;
-extern API_VAR_EXPORT const char *ap_server_root;
+extern API_EXPORT_VAR const char *ap_server_argv0;
+extern API_EXPORT_VAR const char *ap_server_root;
 
 /* for -C, -c and -D switches */
-extern ap_array_header_t *ap_server_pre_read_config;
-extern ap_array_header_t *ap_server_post_read_config;
-extern ap_array_header_t *ap_server_config_defines;
-
-#ifdef WIN32
-API_EXPORT(int) apache_main(int argc, char *argv[]);
-#endif
+extern API_EXPORT_VAR ap_array_header_t *ap_server_pre_read_config;
+extern API_EXPORT_VAR ap_array_header_t *ap_server_post_read_config;
+extern API_EXPORT_VAR ap_array_header_t *ap_server_config_defines;
 
 #ifdef __cplusplus
 }

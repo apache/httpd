@@ -85,6 +85,14 @@
 #include "http_vhost.h"
 #include "util_cfgtree.h"
 
+API_EXPORT_VAR const char *ap_server_argv0;
+
+API_EXPORT_VAR const char *ap_server_root;
+
+API_EXPORT_VAR ap_array_header_t *ap_server_pre_read_config;
+API_EXPORT_VAR ap_array_header_t *ap_server_post_read_config;
+API_EXPORT_VAR ap_array_header_t *ap_server_config_defines;
+
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(header_parser)
 	    AP_HOOK_LINK(post_config)
@@ -92,14 +100,16 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(child_init)
 )
 
-AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_VOID(post_config,
-		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
-		    (pconf,plog,ptemp,s))
-AP_IMPLEMENT_HOOK_VOID(open_logs,
-		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
-		    (pconf,plog,ptemp,s))
-AP_IMPLEMENT_HOOK_VOID(child_init,(ap_pool_t *pchild, server_rec *s),(pchild,s))
+AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,header_parser,
+                          (request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_VOID(API_EXPORT,post_config,
+		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp,
+                        server_rec *s),(pconf,plog,ptemp,s))
+AP_IMPLEMENT_HOOK_VOID(API_EXPORT,open_logs,
+		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, 
+                        server_rec *s),(pconf,plog,ptemp,s))
+AP_IMPLEMENT_HOOK_VOID(API_EXPORT,child_init,
+                       (ap_pool_t *pchild, server_rec *s),(pchild,s))
 
 /****************************************************************
  *
@@ -116,8 +126,8 @@ static int total_modules = 0;
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
-API_VAR_EXPORT module *top_module = NULL;
-API_VAR_EXPORT module **ap_loaded_modules=NULL;
+API_EXPORT_VAR module *top_module = NULL;
+API_EXPORT_VAR module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (ap_pool_t *, char *);
@@ -356,9 +366,6 @@ int ap_invoke_handler(request_rec *r)
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
-int g_bDebugHooks;
-const char *g_szCurrentHookName;
-
 void ap_register_hooks(module *m)
     {
     if(m->register_hooks)
@@ -531,6 +538,8 @@ void ap_setup_prelinked_modules(process_rec *process)
 {
     module **m;
     module **m2;
+
+    g_pHookPool=process->pconf;
 
     /*
      *  Initialise total_modules variable and module indices
@@ -1550,6 +1559,15 @@ void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m)
     if (m->create_dir_config)
         ap_set_module_config(s->lookup_defaults, m,
                              (*m->create_dir_config)(p, NULL));
+}
+
+void ap_run_rewrite_args(process_rec *process)
+{
+    module *m;
+
+    for (m = top_module; m; m = m->next)
+        if (m->rewrite_args)
+            (*m->rewrite_args) (process);
 }
 
 void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)

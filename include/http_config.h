@@ -364,11 +364,11 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 #ifdef CORE_PRIVATE
 
-extern API_VAR_EXPORT module *top_module;
+extern API_EXPORT_VAR module *top_module;
 
 extern module *ap_prelinked_modules[];
 extern module *ap_preloaded_modules[];
-extern API_VAR_EXPORT module **ap_loaded_modules;
+extern API_EXPORT_VAR module **ap_loaded_modules;
 
 /* For mod_so.c... */
 
@@ -421,12 +421,12 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 #endif
 
   /* Hooks */
-AP_DECLARE_HOOK(int,header_parser,(request_rec *))
-AP_DECLARE_HOOK(void,post_config,
+AP_DECLARE_HOOK(API_EXPORT,int,header_parser,(request_rec *))
+AP_DECLARE_HOOK(API_EXPORT,void,post_config,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
-AP_DECLARE_HOOK(void,open_logs,
+AP_DECLARE_HOOK(API_EXPORT,void,open_logs,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
-AP_DECLARE_HOOK(void,child_init,(ap_pool_t *pchild, server_rec *s))
+AP_DECLARE_HOOK(API_EXPORT,void,child_init,(ap_pool_t *pchild, server_rec *s))
 
 #ifdef __cplusplus
 }

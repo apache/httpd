@@ -180,7 +180,7 @@
 #include <limits.h>
 #endif
 
-module MODULE_VAR_EXPORT config_log_module;
+module MODULE_EXPORT_VAR config_log_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static ap_fileperms_t xfer_perms = APR_OS_DEFAULT;
@@ -1143,7 +1143,7 @@ static void register_hooks(void)
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT config_log_module =
+module MODULE_EXPORT_VAR config_log_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */

@@ -83,7 +83,7 @@
  * HKLM\Software\[Vendor]\[Software]\[Version]\ServerRoot
  */
 
-#include "os.h"
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
 

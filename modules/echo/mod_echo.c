@@ -62,7 +62,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 
-API_VAR_EXPORT module echo_module;
+API_EXPORT_VAR module echo_module;
 
 typedef struct
     {
@@ -121,7 +121,7 @@ static void register_hooks(void)
     ap_hook_process_connection(process_echo_connection,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-API_VAR_EXPORT module echo_module = {
+API_EXPORT_VAR module echo_module = {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */

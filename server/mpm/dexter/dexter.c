@@ -1456,7 +1456,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_dexter_module = {
+module MODULE_EXPORT_VAR mpm_dexter_module = {
     MPM20_MODULE_STUFF,
     dexter_pre_config,          /* run hook before the configuration is read */ 
     NULL,			/* create per-directory config structure */

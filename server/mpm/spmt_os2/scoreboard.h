@@ -195,7 +195,7 @@ typedef struct {
 
 API_EXPORT(int) ap_exists_scoreboard_image(void);
 
-API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
+API_EXPORT_VAR extern scoreboard *ap_scoreboard_image;
 
 
 /* for time_process_request() in http_main.c */

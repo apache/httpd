@@ -88,13 +88,13 @@
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
-API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
+API_EXPORT_VAR char *ap_scoreboard_fname=NULL;
 static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
-API_VAR_EXPORT int ap_extended_status = 0;
+API_EXPORT_VAR int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
@@ -1475,7 +1475,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
+module MODULE_EXPORT_VAR mpm_mpmt_pthread_module = {
     MPM20_MODULE_STUFF,
     mpmt_pthread_pre_config,    /* run hook before the configuration is read */
     NULL,			/* create per-directory config structure */

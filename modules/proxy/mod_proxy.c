@@ -880,7 +880,7 @@ static const command_rec proxy_cmds[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT proxy_module =
+module MODULE_EXPORT_VAR proxy_module =
 {
     STANDARD_MODULE_STUFF,
     proxy_init,			/* initializer */

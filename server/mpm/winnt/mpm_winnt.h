@@ -67,7 +67,7 @@ extern int ap_extended_status;
 extern void clean_child_exit(int);
 
 typedef void (CALLBACK *ap_completion_t)();
-API_VAR_EXPORT ap_completion_t ap_mpm_init_complete;
+API_EXPORT_VAR ap_completion_t ap_mpm_init_complete;
 
 API_EXPORT(void) ap_start_shutdown(void);
 
