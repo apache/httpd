@@ -805,8 +805,6 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *) basev;
     multi_log_state *add = (multi_log_state *) addv;
-    const char *format;
-    const char *dummy;
 
     add->server_config_logs = base->config_logs;
     if (!add->default_format) {
@@ -814,29 +812,6 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
         add->default_format = base->default_format;
     }
     add->formats = ap_overlay_tables(p, base->formats, add->formats);
-
-    if (add->default_format_string) {
-	format = ap_table_get(add->formats, add->default_format_string);
-	if (format) {
-	    add->default_format = parse_log_string(p, format, &dummy);
-	}
-    }    
-
-    if (add->config_logs) {
-	config_log_state *clsarray = (config_log_state *) add->config_logs->elts;
-	int i;
-
-	for (i = 0; i < add->config_logs->nelts; ++i) {
-	    config_log_state *cls = &clsarray[i];
-
-	    if (cls->format_string) {
-		format = ap_table_get(add->formats, cls->format_string);
-		if (format) {
-		    cls->format = parse_log_string(p, format, &dummy);
-		}
-	    }
-	}
-    }
 
     return add;
 }
@@ -957,6 +932,14 @@ static config_log_state *open_multi_logs(server_rec *s, pool *p)
                                              &config_log_module);
     config_log_state *clsarray;
     const char *dummy;
+    const char *format;
+
+    if (mls->default_format_string) {
+	format = ap_table_get(mls->formats, mls->default_format_string);
+	if (format) {
+	    mls->default_format = parse_log_string(p, format, &dummy);
+	}
+    }    
 
     if (!mls->default_format) {
         mls->default_format = parse_log_string(p, DEFAULT_LOG_FORMAT, &dummy);
@@ -967,6 +950,13 @@ static config_log_state *open_multi_logs(server_rec *s, pool *p)
         for (i = 0; i < mls->config_logs->nelts; ++i) {
             config_log_state *cls = &clsarray[i];
 
+	    if (cls->format_string) {
+		format = ap_table_get(mls->formats, cls->format_string);
+		if (format) {
+		    cls->format = parse_log_string(p, format, &dummy);
+		}
+	    }
+
             cls = open_config_log(s, p, cls, mls->default_format);
         }
     }
@@ -974,6 +964,13 @@ static config_log_state *open_multi_logs(server_rec *s, pool *p)
         clsarray = (config_log_state *) mls->server_config_logs->elts;
         for (i = 0; i < mls->server_config_logs->nelts; ++i) {
             config_log_state *cls = &clsarray[i];
+
+	    if (cls->format_string) {
+		format = ap_table_get(mls->formats, cls->format_string);
+		if (format) {
+		    cls->format = parse_log_string(p, format, &dummy);
+		}
+	    }
 
             cls = open_config_log(s, p, cls, mls->default_format);
         }
