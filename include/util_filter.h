@@ -65,6 +65,7 @@ extern "C" {
 
 #include "httpd.h"
 #include "apr.h"
+#include "ap_buckets.h"
 
 /*
  * FILTER CHAIN
@@ -114,7 +115,7 @@ typedef struct ap_filter_t ap_filter_t;
  * next/prev to insert/remove/replace elements in the bucket list, but
  * the types and values of the individual buckets should not be altered.
  */
-typedef apr_status_t (*ap_filter_func)();
+typedef apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
 
 /*
  * ap_filter_type:
@@ -162,11 +163,24 @@ typedef enum {
 struct ap_filter_t {
     ap_filter_func filter_func;
 
-    void *ctx;
+    ap_bucket_brigade *ctx;
 
     ap_filter_type ftype;
     ap_filter_t *next;
+    request_rec *r;
 };
+
+/* This function just passes the current bucket brigade down to the next
+ * filter on the filter stack.  When a filter actually writes to the network
+ * (usually either core or SSL), that filter should return the number of bytes
+ * actually written and it will get propogated back up to the handler.  If
+ * nobody writes the data to the network, then this function will most likely
+ * seg fault.  I haven't come up with a good way to detect that case yet, and
+ * it should never happen.  Regardless, it's an unrecoverable error for the
+ * current request.  I would just rather it didn't take out the whole child
+ * process.  
+ */
+API_EXPORT(int) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
 
 /*
  * ap_register_filter():
@@ -192,27 +206,28 @@ API_EXPORT(void) ap_register_filter(const char *name,
  * calls to ap_add_filter). If the current filter chain contains filters
  * from another request, then this filter will be added before those other
  * filters.
+ * 
+ * To re-iterate that last comment.  This function is building a FIFO
+ * list of filters.  Take note of that when adding your filter to the chain.
  */
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
 
+/* The next two filters are for abstraction purposes only.  They could be
+ * done away with, but that would require that we break modules if we ever
+ * want to change our filter registration method.  The basic idea, is that
+ * all filters have a place to store data, the ctx pointer.  These functions
+ * fill out that pointer with a bucket brigade, and retrieve that data on
+ * the next call.  The nice thing about these functions, is that they
+ * automatically concatenate the bucket brigades together for you.  This means
+ * that if you have already stored a brigade in the filters ctx pointer, then
+ * when you add more it will be tacked onto the end of that brigade.  When
+ * you retrieve data, if you pass in a bucket brigade to the get function,
+ * it will append the current brigade onto the one that you are retrieving.
+ */ 
+API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
+                                                  ap_bucket_brigade **b);
+API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b);    
 
-/*
- * Things to do later:
- * Add parameters to ap_filter_func type.  Those parameters will be something
- *     like:
- *         (request_rec *r, ap_filter_t *filter, ap_data_list *the_data)
- *      obviously, the request_rec is the current request, and the filter
- *      is the current filter stack.  The data_list is a bucket list or
- *      bucket_brigade, but I am trying to keep this patch neutral.  (If this
- *      comment breaks that, well sorry, but the information must be there
- *      somewhere.  :-)
- *
- * Add a function like ap_pass_data.  This function will basically just
- * call the next filter in the chain, until the current filter is NULL.  If the
- * current filter is NULL, that means that nobody wrote to the network, and
- * we have a HUGE bug, so we need to return an error and log it to the 
- * log file.
- */
 #ifdef __cplusplus
 }
 #endif

@@ -104,7 +104,7 @@ API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldnam
 API_EXPORT(void) ap_basic_http_header(request_rec *r);
 
 /**
- * Send the Status-Line and header fields for HTTP response 
+ * Send the Status-Line and header fields for HTTP response
  * @param l The current request
  * @deffunc void ap_send_http_header(request_rec *l)
  */
@@ -114,6 +114,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *l);
 
 API_EXPORT(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
+
+/* Finish up stuff after a request */
 
 /**
  * Called at completion of sending the response.  It sends the terminating

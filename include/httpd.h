@@ -614,7 +614,6 @@ struct request_rec {
     /* Info about the request itself... we begin with stuff that only
      * protocol.c should ever touch...
      */
-
     /** First line of request, so we can log it */
     char *the_request;
     /** HTTP/0.9, "simple" request */

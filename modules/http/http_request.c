@@ -1279,6 +1279,12 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
+    /* We need to flush the data out at this point.  We probably only want to
+     * do this on the main request, but this is fine for an initial patch.
+     * Once we look into this more, we won't flush sub-requests.
+     */
+    ap_rflush(r);
+
     /* Take care of little things that need to happen when we're done */
     ap_finalize_request_protocol(r);
 }

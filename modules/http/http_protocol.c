@@ -64,6 +64,8 @@
  */
 
 #define CORE_PRIVATE
+#include "ap_buckets.h"
+#include "util_filter.h"
 #include "ap_config.h"
 #include "apr_strings.h"
 #include "httpd.h"
@@ -1869,8 +1871,6 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         apr_table_addn(r->headers_out, "Expires", date);
     }
 
-    /* Send the entire apr_table_t of header fields, terminated by an empty line. */
-
     apr_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
 
@@ -2512,101 +2512,84 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
-    size_t total_bytes_sent = 0;
-    int n;
-    apr_ssize_t w;
-    char *addr;
+    size_t bytes_sent = 0;
+    ap_bucket_brigade *bb = NULL;
     
-    if (length == 0)
-        return 0;
+    /* WE probably need to do something to make sure we are respecting the
+     * offset and length.  I think I know how to do this, but I will wait
+     * until after the commit to actually write the code.
+     */
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, 
+                            ap_bucket_mmap_create(mm, mm->size, &bytes_sent));
+    bytes_sent = ap_pass_brigade(r->filters, bb);
 
-
-    length += offset;
-    while (!r->connection->aborted && offset < length) {
-        if (length - offset > MMAP_SEGMENT_SIZE) {
-            n = MMAP_SEGMENT_SIZE;
-        }
-        else {
-            n = length - offset;
-        }
-
-        apr_mmap_offset((void**)&addr, mm, offset);
-        w = ap_rwrite(addr, n, r);
-        if (w < 0)
-            break;
-        total_bytes_sent += w;
-        offset += w;
-    }
-
-    SET_BYTES_SENT(r);
-    return total_bytes_sent;
+    return bytes_sent;
 }
 #endif /* USE_MMAP_FILES */
 
 API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
+    ap_bucket_brigade *bb = NULL;
+    apr_ssize_t written;
+
     if (r->connection->aborted)
         return EOF;
 
-    if (ap_bputc(c, r->connection->client) < 0) {
-        check_first_conn_error(r, "rputc", 0);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_transient_create(&c, 1, &written)); 
+    ap_pass_brigade(r->filters, bb);
+
     return c;
 }
 
 API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 {
-    int rcode;
+    ap_bucket_brigade *bb = NULL;
+    apr_ssize_t written;
 
     if (r->connection->aborted)
         return EOF;
     
-    rcode = ap_bputs(str, r->connection->client);
-    if (rcode < 0) {
-        check_first_conn_error(r, "rputs", 0);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
-    return rcode;
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, 
+                           ap_bucket_transient_create(str, strlen(str), &written)); 
+    ap_pass_brigade(r->filters, bb);
+
+    return written;
 }
 
 API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
-    apr_ssize_t n;
-    apr_status_t rv;
+    ap_bucket_brigade *bb = NULL;
+    apr_ssize_t written;
 
     if (r->connection->aborted)
         return EOF;
 
-    /* ### should loop to avoid partial writes */
-    rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
-    if (rv != APR_SUCCESS) {
-        check_first_conn_error(r, "rwrite", rv);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
-    return n;
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_transient_create(buf, nbyte, &written)); 
+    ap_pass_brigade(r->filters, bb);
+    return written;
 }
 
 API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    int n;
+    ap_bucket_brigade *bb = NULL;
+    apr_ssize_t written;
 
     if (r->connection->aborted)
         return EOF;
 
-    n = ap_vbprintf(r->connection->client, fmt, va);
-
-    if (n < 0) {
-        check_first_conn_error(r, "vrprintf", 0);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
-    return n;
+    bb = ap_brigade_create(r->pool);
+    written = ap_brigade_vprintf(bb, fmt, va);
+    ap_pass_brigade(r->filters, bb);
+    return written;
 }
 
+/* TODO:  Make ap pa_bucket_vprintf that printfs directly into a
+ * bucket.
+ */
 API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 {
     va_list va;
@@ -2616,46 +2599,35 @@ API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
         return EOF;
 
     va_start(va, fmt);
-    n = ap_vbprintf(r->connection->client, fmt, va);
+    n = ap_vrprintf(r, fmt, va);
     va_end(va);
 
-    if (n < 0) {
-        check_first_conn_error(r, "rprintf", 0);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
     return n;
 }
 
 API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
+    ap_bucket_brigade *bb = NULL;
+    apr_ssize_t written;
     va_list va;
-    int n;
 
     if (r->connection->aborted)
         return EOF;
-
+    bb = ap_brigade_create(r->pool);
     va_start(va, r);
-    n = ap_vbputstrs(r->connection->client, va);
+    written = ap_brigade_vputstrs(bb, va);
     va_end(va);
-
-    if (n < 0) {
-        check_first_conn_error(r, "rvputs", 0);
-        return EOF;
-    }
-
-    SET_BYTES_SENT(r);
-    return n;
+    ap_pass_brigade(r->filters, bb);
+    return written;
 }
 
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
-    apr_status_t rv;
+    ap_bucket_brigade *bb;
 
-    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
-        check_first_conn_error(r, "rflush", rv);
-        return EOF;
-    }
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_eos_create());
+    ap_pass_brigade(r->filters, bb);
     return 0;
 }
 

@@ -72,6 +72,8 @@
 #include "util_md5.h"
 #include "apr_fnmatch.h"
 #include "http_connection.h"
+#include "ap_buckets.h"
+#include "util_filter.h"
 #include "util_ebcdic.h"
 #include "mpm.h"
 #ifdef HAVE_NETDB_H
@@ -86,6 +88,10 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
+
+/* Make sure we don't write less than 4096 bytes at any one time.
+ */
+#define MIN_SIZE_TO_WRITE  4096
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
@@ -2909,6 +2915,65 @@ static int default_handler(request_rec *r)
     return OK;
 }
 
+/* Default filter.  This filter should almost always be used.  It's only job
+ * is to send the headers if they haven't already been sent, and then send
+ * the actual data.  To send the data, we create an iovec out of the bucket
+ * brigade and then call the iol's writev function.  On platforms that don't
+ * have writev, we have the problem of creating a lot of potentially small
+ * packets that we are sending to the network.
+ *
+ * This can be solved later by making the buckets buffer everything into a
+ * single memory block that can be written using write (on those systems
+ * without writev only !)
+ */
+static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    ap_bucket *dptr = b->head;
+    apr_ssize_t bytes_sent;
+    int len = 0, written;
+    const char *str;
+
+#if 0
+    /* This will all be needed once BUFF is removed from the code */
+    /* At this point we need to discover if there was any data saved from
+     * the last call to core_filter.
+     */
+    b = ap_get_saved_data(f, &b);
+
+    /* It is very obvious that we need to make sure it makes sense to send data
+     * out at this point.
+     */
+    dptr = b->head; 
+    while (dptr) { 
+        len += ap_get_bucket_len(dptr);
+        dptr = dptr->next;
+    }
+    if (len < MIN_SIZE_TO_WRITE && b->tail->color != AP_BUCKET_EOS) {
+        ap_save_data_to_filter(f, &b);
+        return 0;
+    } 
+    else {
+#endif
+    while (dptr->read(dptr, &str, &len, 0) != AP_END_OF_BRIGADE) {
+        ap_bwrite(f->r->connection->client, str, len, &written);
+        dptr = dptr->next;
+        bytes_sent += written;
+        if (!dptr) {
+            break;
+        }
+    }
+    ap_brigade_destroy(b);
+    /* This line will go away as soon as the BUFFs are removed */
+    if (len == AP_END_OF_BRIGADE) {
+        ap_bflush(f->r->connection->client);
+    }
+    return bytes_sent;
+#if 0
+    }
+#endif
+}
+
 static const handler_rec core_handlers[] = {
 { "*/*", default_handler },
 { "default-handler", default_handler },
@@ -2931,6 +2996,11 @@ static const char *core_method(const request_rec *r)
 static unsigned short core_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
+static void core_register_filter(request_rec *r)
+{
+    ap_add_filter("CORE", NULL, r);
+}
+
 static void register_hooks(void)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);
@@ -2943,6 +3013,14 @@ static void register_hooks(void)
     /* FIXME: I suspect we can eliminate the need for these - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
+
+    /* This is kind of odd, and it would be cool to clean it up a bit.
+     * The first function just registers the core's register_filter hook.
+     * The other associates a global name with the filter defined
+     * by the core module.
+     */
+    ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION);
 }
 
 API_VAR_EXPORT module core_module = {
