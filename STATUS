@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/23 17:09:02 $]
+Last modified at [$Date: 2002/07/23 17:23:41 $]
 
 Release:
 
@@ -66,7 +66,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive
+         +1:   trawick, slive, gregames
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir 
