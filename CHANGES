@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Delete some make-generated files in the server directory during 
+     "make clean" processing.  PR 26552.  [Jeff Trawick]
+
   *) Keep focus of ITERATE and ITERATE2 on the current module when
      the module chooses to return DECLINE_CMD for the directive.
      PR 22299.  [Geoffrey Young <geoff apache.org>]
