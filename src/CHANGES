@@ -1,3 +1,5 @@
+Changes with Apache 1.3.18
+
 Changes with Apache 1.3.17
 
   *) Normalize the Netware path names to close a potential security
