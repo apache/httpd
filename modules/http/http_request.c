@@ -305,6 +305,7 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 static request_rec *internal_internal_redirect(const char *new_uri,
 					       request_rec *r) {
     int access_status;
+    ap_filter_t *f;
     request_rec *new = (request_rec *) apr_pcalloc(r->pool,
 						   sizeof(request_rec));
 
@@ -369,6 +370,22 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 
     new->output_filters  = new->proto_output_filters;
     new->input_filters   = new->proto_input_filters;
+
+    f = new->input_filters;
+    while (f) {
+        if (f->r == r) {
+            f->r = new;
+        }
+        f = f->next;
+    }
+
+    f = new->output_filters;
+    while (f) {
+        if (f->r == r) {
+            f->r = new;
+        }
+        f = f->next;
+    }
 
     ap_add_input_filter("HTTP_IN", NULL, new, new->connection);
 
