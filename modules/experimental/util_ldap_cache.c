@@ -66,7 +66,7 @@
 
 #ifdef APU_HAS_LDAP
 
-
+#define MODLDAP_SHMEM_CACHE "/tmp/mod_ldap_cache"
 
 
 /* ------------------------------------------------------------------ */
@@ -295,7 +295,14 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize)
 #if APR_HAS_SHARED_MEMORY
     apr_status_t result;
 
-    result = apr_shm_create(&util_ldap_shm, reqsize, "/tmp/ldap_cache", pool);
+    result = apr_shm_create(&util_ldap_shm, reqsize, MODLDAP_SHMEM_CACHE, pool);
+    if (result == EEXIST) {
+        /*
+         * The cache could have already been created (i.e. we may be a child process).  See
+         * if we can attach to the existing shared memory
+         */
+        result = apr_shm_attach(&util_ldap_shm, MODLDAP_SHMEM_CACHE, pool);
+    } 
     if (result != APR_SUCCESS) {
         return result;
     }
