@@ -1149,7 +1149,14 @@ if [ "x$using_shlib" = "x1" ] ; then
 	*-apple-rhapsody* | *-apple-darwin* )
 	    LD_SHLIB="cc"
 	    CFLAGS_SHLIB=""
-	    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
+	    case "$PLAT" in
+		*-apple-darwin1.4 )
+		    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress -flat_namespace'
+		    ;;
+		* )
+		    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
+		    ;;
+	    esac
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=0
