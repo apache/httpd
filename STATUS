@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/17 18:04:15 $]
+Last modified at [$Date: 2001/05/17 19:37:34 $]
 
 Release:
 
@@ -65,6 +65,18 @@ DAEDALUS 2.0 PROBLEMS:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
+
+    * There is a big leak of MMAPs that occurs in modules such as
+      mod_file_cache that needs to be taken care of.  Several
+      potential solutions were tossed about on new-httpd and apr-dev
+      in late April/early May.  Perhaps the cleanest proposed
+      approaches were the following:
+          - dup the cached apr_file_t into the request pool on each
+            request so that the MMAP is created in the request pool
+          - just cache the FD, not the whole apr_file_t.  Build the apr_file_t
+            and its apr_bucket_file in the request pool.
+          - add an extra parameter to apr_bucket_file_create() which is the
+            pool that an MMAP (if any) for that file should be created in
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
