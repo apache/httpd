@@ -506,7 +506,10 @@ to the specified group, and will instead continue to run as the group of the
 original user. <p>
 
 Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">SUEXEC wrapper</A>.<p>
+properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
+When used inside a &lt;VirtualHost&gt; in this manner, only the group
+that CGIs are run as is affected.  Non-CGI requests are still processed
+as the group specified in the main Group directive.<p>
 
 SECURITY: See <A HREF="#user">User</A> for a discussion of the security
 considerations.<p><hr>
@@ -1291,7 +1294,10 @@ that original user. If you do start the server as root, then it is normal
 for the parent process to remain running as root.<p>
 
 Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">SUEXEC wrapper</A>.<p>
+properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
+When used inside a &lt;VirtualHost&gt; in this manner, only the user
+that CGIs are run as is affected.  Non-CGI requests are still processed
+with the user specified in the main User directive.<p>
 
 SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
 <code>root</code> unless you know exactly what you are doing, and what the
