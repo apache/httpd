@@ -1,5 +1,12 @@
 Changes with Apache 2.0.51
 
+  *) mod_autoindex: Don't truncate the directory listing if a stat()
+     call fails (for instance on a >2Gb file).  PR 17357.
+     [Joe Orton]
+
+  *) Makefile fix: httpd is linked against LIBS given to the
+     'make' invocation.  PR 7882.  [Joe Orton]
+
   *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
      [Eider Oliveira <eider bol.com.br>]
 
@@ -76,7 +83,7 @@ Changes with Apache 2.0.51
      This makes the cache work on Linux again. [Graham Leggett]
 
   *) Enable special ErrorDocument value 'default' which restores the
-     canned server response for the scope of the directive
+     canned server response for the scope of the directive.
      [Geoffrey Young, Andre Malo]
 
   *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 12:12:00 $]
+Last modified at [$Date: 2004/08/26 13:01:17 $]
 
 Release:
 
@@ -93,17 +93,6 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
        PR: 30134
        +1: jorton, trawick
-
-    *) Build fix: ensure httpd is linked against user-supplied LIBS during make.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/Makefile.in?r1=1.138&r2=1.139
-       PR: 7882
-       +1: jorton, stoddard, trawick
-
-    *) mod_autoindex: Don't truncate directory listing when a stat call fails.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_autoindex.c?r1=1.132&r2=1.133
-       PR: 17357
-       +1: jorton, stoddard (stat fails when file size > 2GB even if
-           large file support is enabled), trawick
 
     *) unixd_accept: Eliminate now-unnecessary apr_os_sock_get() call.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/os/unix/unixd.c?r1=1.66&r2=1.67
