@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.85 $ -->
+<!-- $Revision: 1.86 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -213,14 +213,14 @@ response without an explicit character set</description>
 
     <note type="warning"><title>Note</title>
       <p>Enabling filters with <directive>AddOutputFilterByType</directive>
-      may fail partially or completely in some cases. For expample, no
+      may fail partially or completely in some cases. For example, no
       filters are applied if the MIME-type could not be determined  and falls
       back to the <directive module="core">DefaultType</directive> setting,
       even if the <directive module="core">DefaultType</directive> is the
       same.</p>
 
       <p>However, if you want to make sure, that the filters will be
-      applied, assign the content type to a resource explicitely, for
+      applied, assign the content type to a resource explicitly, for
       example with <directive module="mod_mime">AddType</directive> or
       <directive module="core">ForceType</directive>. Setting the
       content type within a (non-nph) CGI script is also safe.</p>
@@ -255,7 +255,7 @@ be passed through</description>
 
     <note><title>Note</title>
       <p>Allowing encoded slashes does <em>not</em> imply <em>decoding</em>.
-      Occurences of <code>%2F</code> or <code>%5C</code> (<em>only</em> on
+      Occurrences of <code>%2F</code> or <code>%5C</code> (<em>only</em> on
       according systems) will be left as such in the otherwise decoded URL
       string.</p>
     </note>
@@ -813,7 +813,7 @@ Location</a></seealso>
     static file -- Apache uses sendfile to deliver the file contents
     without ever reading the file if the OS supports it.</p>
 
-    <p>This sendfile mechanism avoids seperate read and send operations,
+    <p>This sendfile mechanism avoids separate read and send operations,
     and buffer allocations. But on some platforms or within some
     filesystems, it is better to disable this feature to avoid
     operational problems:</p>
@@ -933,7 +933,7 @@ in case of an error</description>
     the type of error, but in general, if you make your error document
     greater than 512 bytes, then MSIE will show the server-generated
     error rather than masking it.  More information is available in
-    Microsoft Knowledgebase article <a
+    Microsoft Knowledge Base article <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
     >Q294807</a>.</p>
 
@@ -985,7 +985,7 @@ in case of an error</description>
     <p>SECURITY: See the <a
     href="../misc/security_tips.html#serverroot">security tips</a>
     document for details on why your security could be compromised
-    if the directory where logfiles are stored is writable by
+    if the directory where log files are stored is writable by
     anyone other than the user that starts the server.</p>
     <note type="warning"><title>Note</title>
       <p>When entering a file path on non-Unix platforms, care should be taken
@@ -1199,7 +1199,7 @@ MIME content-type</description>
     logged (and passed to CGIs/SSIs in <code>REMOTE_HOST</code>).
     The value <code>Double</code> refers to doing double-reverse
     DNS lookup. That is, after a reverse lookup is performed, a forward
-    lookup is then performed on that result. At least one of the ip
+    lookup is then performed on that result. At least one of the IP
     addresses in the forward lookup must match the original
     address. (In "tcpwrappers" terminology this is called
     <code>PARANOID</code>.)</p>
@@ -2077,7 +2077,7 @@ hosting</description>
     <note><title>Note</title>
       <p>Note, that the "main server" and any <code>_default_</code> servers
       will <strong>never</strong> be served for a request to a
-      <directive>NameVirtualHost</directive> IP Address (unless for some
+      <directive>NameVirtualHost</directive> IP address (unless for some
       reason you specify <directive>NameVirtualHost</directive> but then
       don't define any <directive>VirtualHost</directive>s for that
       address).</p>
@@ -2426,7 +2426,7 @@ processes launched by Apache children</description>
 
     <note><title>Note</title>
       <p>If CGI processes are <strong>not</strong> running
-      under userids other than the web server userid, this directive
+      under user ids other than the web server user id, this directive
       will limit the number of processes that the server itself can
       create. Evidence of this situation will be indicated by
       <strong><code>cannot fork</code></strong> messages in the
@@ -2608,9 +2608,9 @@ itself</description>
     <p>The <directive>ServerName</directive> directive sets the hostname and
     port that the server uses to identify itself.  This is used when
     creating redirection URLs. For example, if the name of the
-    machine hosting the webserver is <code>simple.example.com</code>,
+    machine hosting the web server is <code>simple.example.com</code>,
     but the machine also has the DNS alias <code>www.example.com</code>
-    and you wish the webserver to be so identified, the following
+    and you wish the web server to be so identified, the following
     directive should be used:</p>
 
     <example>
@@ -2620,7 +2620,8 @@ itself</description>
     <p>If no <directive>ServerName</directive> is specified, then the
     server attempts to deduce the hostname by performing a reverse
     lookup on the IP address. If no port is specified in the
-    servername, then the server will use the port from the incoming
+    <directive>ServerName</directive>, then the server will use the port
+    from the incoming
     request. For optimal reliability and predictability, you should
     specify an explicit hostname and port using the
     <directive>ServerName</directive> directive.</p>
@@ -3085,7 +3086,7 @@ hostname or IP address</description>
     <note type="warning"><title>Security</title>
     <p>See the <a href="../misc/security_tips.html">security tips</a>
     document for details on why your security could be compromised if the
-    directory where logfiles are stored is writable by anyone other
+    directory where log files are stored is writable by anyone other
     than the user that starts the server.</p>
     </note>
 </usage>
