@@ -58,10 +58,13 @@
 
 /* HTTP routines for Apache proxy */
 
+#define CORE_PRIVATE
+
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
 #include "http_core.h"
+#include "http_connection.h"
 #include "util_date.h"
 
 /*
@@ -180,11 +183,10 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     apr_table_entry_t *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
-    BUFF *f;
     char buffer[HUGE_STRING_LEN];
+    char *buffer2;
     char portstr[32];
     apr_pool_t *p = r->pool;
-    const long int zero = 0L;
     int destport = 0;
     char *destportstr = NULL;
     const char *urlptr = NULL;
@@ -192,7 +194,9 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     apr_ssize_t cntr;
     apr_file_t *cachefp = NULL;
     char *buf;
-    int rbb;
+    conn_rec *origin;
+    ap_bucket *e;
+    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -274,24 +278,24 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 				desthost, NULL));
     }
 
-    clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
+    origin = ap_new_apr_connection(r->pool, r->server, sock, 0);
+    ap_add_output_filter("CORE", NULL, NULL, origin);
 
-    f = ap_bcreate(p, B_RDWR);
-    ap_bpush_socket(f, sock);
+    clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
 
     buf = apr_pstrcat(r->pool, r->method, " ", proxyhost ? url : urlptr,
                       " HTTP/1.0" CRLF, NULL);
-    rbb = strlen(buf);
-    apr_send(sock, buf, &rbb);
+    e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
+    AP_BRIGADE_INSERT_TAIL(bb, e);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, ":", destportstr, CRLF, NULL);
-        rbb = strlen(buf);
-        apr_send(sock, buf, &rbb);
+        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
+        AP_BRIGADE_INSERT_TAIL(bb, e);
     }
     else {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, CRLF, NULL);
-        rbb = strlen(buf);
-        apr_send(sock, buf, &rbb);
+        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
+        AP_BRIGADE_INSERT_TAIL(bb, e);
     }
 
     if (conf->viaopt == via_block) {
@@ -333,67 +337,80 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
         buf = apr_pstrcat(r->pool, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
-        rbb = strlen(buf);
-        apr_send(sock, buf, &rbb);
+        e = ap_bucket_create_pool(buf, strlen(buf), r->pool);
+        AP_BRIGADE_INSERT_TAIL(bb, e);
 
     }
 
-    rbb = strlen(CRLF);
-    apr_send(sock, CRLF, &rbb);
+    e = ap_bucket_create_pool(CRLF, strlen(CRLF), r->pool);
+    AP_BRIGADE_INSERT_TAIL(bb, e);
+    e = ap_bucket_create_flush();
+    AP_BRIGADE_INSERT_TAIL(bb, e);
+
+    ap_pass_brigade(origin->output_filters, bb);
 /* send the request data, if any. */
 
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
-            cntr = i;
-            apr_send(sock, buffer, &cntr);
+            e = ap_bucket_create_pool(buffer, i, r->pool);
+            AP_BRIGADE_INSERT_TAIL(bb, e);
         }
     }
-#if 0  /* This doesn't make any sense until we convert the raw socket calls
-        * to filters.
-        */
-    ap_bflush(f);
-#endif
+    /* Flush the data to the origin server */
+    e = ap_bucket_create_flush();
+    AP_BRIGADE_INSERT_TAIL(bb, e);
+    ap_pass_brigade(origin->output_filters, bb);
 
-    len = ap_bgets(buffer, sizeof buffer - 1, f);
+    ap_add_input_filter("HTTP", NULL, NULL, origin);
+    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
+
+    ap_brigade_destroy(bb);
+    bb = ap_brigade_create(r->pool);
+    
+    /* Tell http_filter to grab the data one line at a time. */
+    origin->remain = 0;
+
+    ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
+    ap_bucket_read(AP_BRIGADE_FIRST(bb), (const char **)&buffer2, &len, AP_BLOCK_READ);
     if (len == -1) {
-	ap_bclose(f);
+	apr_close_socket(sock);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	     "ap_bgets() - proxy receive - Error reading from remote server %s (length %d)",
+	     "ap_get_brigade() - proxy receive - Error reading from remote server %s (length %d)",
 	     proxyhost ? proxyhost : desthost, len);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     } else if (len == 0) {
-	ap_bclose(f);
+	apr_close_socket(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Document contains no data");
     }
 
 /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
-    if (ap_checkmask(buffer, "HTTP/#.# ###*")) {
+    if (ap_checkmask(buffer2, "HTTP/#.# ###*")) {
 	int major, minor;
-	if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
+	if (2 != sscanf(buffer2, "HTTP/%u.%u", &major, &minor)) {
 	    major = 1;
 	    minor = 0;
 	}
 
 /* If not an HTTP/1 message or if the status line was > 8192 bytes */
-	if (buffer[5] != '1' || buffer[len - 1] != '\n') {
-	    ap_bclose(f);
+	if (buffer2[5] != '1' || buffer2[len - 1] != '\n') {
+	    apr_close_socket(sock);
 	    return HTTP_BAD_GATEWAY;
 	}
 	backasswards = 0;
-	buffer[--len] = '\0';
+	buffer2[--len] = '\0';
 
-	buffer[12] = '\0';
-	r->status = atoi(&buffer[9]);
-	buffer[12] = ' ';
-	r->status_line = apr_pstrdup(p, &buffer[9]);
+	buffer2[12] = '\0';
+	r->status = atoi(&buffer2[9]);
+	buffer2[12] = ' ';
+	r->status_line = apr_pstrdup(p, &buffer2[9]);
 
 /* read the headers. */
 /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
 /* Also, take care with headers with multiple occurences. */
 
-	resp_hdrs = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, f);
+	resp_hdrs = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, origin);
 	if (resp_hdrs == NULL) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
 		 "proxy: Bad HTTP/%d.%d header returned by %s (%s)",
@@ -475,21 +492,17 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
 
-#if 0
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-#endif
 
-/* We don't set byte count this way anymore.  I think this can be removed
- * cleanly now.
-    ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
-*/
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
         cntr = len;
 	apr_send(r->connection->client_socket, buffer, &cntr);
         cntr = len;
+        e = ap_bucket_create_heap(buffer, cntr, 0, NULL);
+        AP_BRIGADE_INSERT_TAIL(bb, e);
         if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing extra data to cache");
@@ -497,25 +510,25 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	}
     }
 
-#ifdef CHARSET_EBCDIC
-    /* What we read/write after the header should not be modified
-     * (i.e., the cache copy is ASCII, not EBCDIC, even for text/html)
-     */
-    ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-    ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-#endif
-
-	/* send body */
-	/* if header only, then cache will be NULL */
-	/* HTTP/1.0 tells us to read to EOF, rather than content-length bytes */
+    /* send body */
+    /* if header only, then cache will be NULL */
+    /* HTTP/1.0 tells us to read to EOF, rather than content-length bytes */
     if (!r->header_only) {
-		proxy_completion pc;
-		pc.content_length = content_length;
-		pc.cache_completion = conf->cache_completion;
-		ap_proxy_send_fb(&pc, f, r, c);
+        proxy_completion pc;
+        pc.content_length = content_length;
+        pc.cache_completion = conf->cache_completion;
+ 
+        origin->remain = content_length;
+        while (ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
+            if (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(bb))) {
+                ap_pass_brigade(r->output_filters, bb);
+                break;
+            }
+            ap_pass_brigade(r->output_filters, bb);
+        }
     }
 
-    ap_bclose(f);
+    apr_close_socket(sock);
     if(c) ap_proxy_cache_update(c);
     return OK;
 }

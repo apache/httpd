@@ -496,6 +496,8 @@ void ap_finalize_sub_req_protocol(request_rec *sub_r);
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
+AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
+
 /**
  * Get the method number associated with the given string, assumed to
  * contain an HTTP method.  Returns M_INVALID if not recognized.

@@ -56,13 +56,17 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#define CORE_PRIVATE
+
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
+#include "http_core.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "util_uri.h"
 #include "util_date.h"	/* get ap_checkmask() decl. */
 #include "apr_md5.h"
+#include "apr_pools.h"
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -364,63 +368,32 @@ const char *
     return q;
 }
 
-
-/* NOTE: This routine is taken from http_protocol::getline()
- * because the old code found in the proxy module was too
- * difficult to understand and maintain.
- */
-/* Get a line of protocol input, including any continuation lines
- * caused by MIME folding (or broken clients) if fold != 0, and place it
- * in the buffer s, of size n bytes, without the ending newline.
- *
- * Returns -1 on error, or the length of s.
- *
- * Note: Because bgets uses 1 char for newline and 1 char for NUL,
- *       the most we can get is (n - 2) actual characters if it
- *       was ended by a newline, or (n - 1) characters if the line
- *       length exceeded (n - 1).  So, if the result == (n - 1),
- *       then the actual input line exceeded the buffer length,
- *       and it would be a good idea for the caller to puke 400 or 414.
- */
-static int proxy_getline(char *s, int n, BUFF *in, int fold)
+static request_rec *make_fake_req(conn_rec *c)
 {
-    char *pos, next;
-    int retval;
-    int total = 0;
+    request_rec *r = apr_pcalloc(c->pool, sizeof(*r));
+    core_request_config *req_cfg;
 
-    pos = s;
+    r->pool            = c->pool;
+    r->status          = HTTP_OK;
 
-    do {
-        retval = ap_bgets(pos, n, in);     /* retval == -1 if error, 0 if EOF */
+    r->headers_in      = apr_make_table(r->pool, 50);
+    r->subprocess_env  = apr_make_table(r->pool, 50);
+    r->headers_out     = apr_make_table(r->pool, 12);
+    r->err_headers_out = apr_make_table(r->pool, 5);
+    r->notes           = apr_make_table(r->pool, 5);
 
-        if (retval <= 0)
-            return ((retval < 0) && (total == 0)) ? -1 : total;
+    r->read_body       = REQUEST_NO_BODY;
+    r->connection      = c;
+    r->output_filters  = c->output_filters;
+    r->input_filters   = c->input_filters;
 
-        /* retval is the number of characters read, not including NUL      */
+    r->request_config  = ap_create_request_config(r->pool);
+    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
+    req_cfg->bb = ap_brigade_create(r->pool);
+    ap_set_module_config(r->request_config, &core_module, req_cfg);
 
-        n -= retval;            /* Keep track of how much of s is full     */
-        pos += (retval - 1);    /* and where s ends                        */
-        total += retval;        /* and how long s has become               */
-
-        if (*pos == '\n') {     /* Did we get a full line of input?        */
-            *pos = '\0';
-            --total;
-            ++n;
-        }
-        else
-            return total;       /* if not, input line exceeded buffer size */
-
-        /* Continue appending if line folding is desired and
-         * the last line was not empty and we have room in the buffer and
-         * the next line begins with a continuation character.
-         */
-    } while (fold && (retval != 1) && (n > 1)
-                  && (next = ap_blookc(in))
-                  && ((next == ' ') || (next == '\t')));
-
-    return total;
+    return r;
 }
-
 
 /*
  * Reads headers from a buffer and returns an array of headers.
@@ -429,12 +402,13 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
+apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_rec *c)
 {
     apr_table_t *resp_hdrs;
     int len;
     char *value, *end;
     char field[MAX_STRING_LEN];
+    request_rec *rr = make_fake_req(c);
 
     resp_hdrs = ap_make_table(r->pool, 20);
 
@@ -442,7 +416,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF 
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), or we timeout.
      */
-    while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
+    while ((len = ap_getline(buffer, size, rr, 1)) > 0) {
 	
 	if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
@@ -479,7 +453,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF 
 
 	/* the header was too long; at the least we should skip extra data */
 	if (len >= size - 1) { 
-	    while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
+	    while ((len = ap_getline(field, MAX_STRING_LEN, r, 1))
 		    >= MAX_STRING_LEN - 1) {
 		/* soak up the extra data */
 	    }
