@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/17 16:39:19 $]
+Last modified at [$Date: 2003/05/17 17:14:04 $]
 
 Release:
 
@@ -188,19 +188,6 @@ PATCHES TO PORT FROM 2.1
       support/htpasswd.c: r1.70
       docs/manual/programs/htpasswd.xml r1.3
       +1: thommay, nd
-
-    * Fix a VPATH build issue - our command lines can sometimes hit the wall
-      against the shell's max command line length.  We had a number of needless
-      paths included in VPATH builds; this change drops a number of -I'ncluded
-      module paths containing no .h files.
-      configure.in r1.251
-      +1: wrowe, nd, jerenkrantz
-
-    * Fix a VPATH build install bug - the special.mk file was never installed 
-      (because we didn't rewrite it to the VPATH from the sourcepath), so copy 
-      any sourcepath\build\*.mk files along with the vpath\build\*.mk files.
-      Makefile.in r1.130, 1.131 (undid minor breakage)
-      +1: wrowe, nd, jerenkrantz
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
