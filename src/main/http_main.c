@@ -3577,7 +3577,6 @@ int main(int argc, char *argv[])
 
 #ifdef __EMX__
     printf("%s \n", SERVER_VERSION);
-    printf("OS/2 port by Garey Smiley <garey@slink.com> \n");
 #endif
 
     suexec_enabled = init_suexec();
@@ -4390,12 +4389,10 @@ __declspec(dllexport)
 
 #ifdef __EMX__
     printf("%s \n", SERVER_VERSION);
-    printf("OS/2 port by Garey Smiley <garey@slink.com> \n");
 #endif
 #ifdef WIN32
     if (!child) {
 	printf("%s \n", SERVER_VERSION);
-	printf("WIN32 port by Ambarish Malpani <ambarish@valicert.com> and the Apache Group.\n");
     }
 #endif
     if (!child && run_as_service) {
