@@ -23,9 +23,8 @@
 
  Here is a short overview of the source files:
 
-   Makefile.tmpl ........... Makefile template for Unix  platform
-   libssl.module ........... stub called from the Apache config mechanism
-   libssl.version .......... file containing the mod_ssl version information
+   Makefile.in ............. Makefile template for Unix platform
+   config.m4 ............... Autoconf stub for the Apache config mechanism
    mod_ssl.c ............... main source file containing API structures
    mod_ssl.h ............... common header file of mod_ssl
    ssl_engine_compat.c ..... backward compatibility support
