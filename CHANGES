@@ -2,6 +2,10 @@ Changes with Apache 2.0.37
 
 Changes with Apache 2.0.36
 
+  *) Fix some minor formatting issues with ab. Part of this is
+     in reference to PR 8544, the rest I noticed while testing
+     the PR fix. [Paul J. Reder]
+
   *) Fix a case where an invalid pass phrase is entered and an
      error message is given, but the prompt is not shown again.
      This left the user in an ambiguous state. PR 8320 [Paul J. Reder]
