@@ -62,6 +62,7 @@ Committed Code Changes:
     * Ralf's configure fix to avoid side-effects in Configure on exported vars
     * Ralf's fix for the install-config target to get correct ScoreBoardFile
     * Dynamic Shared Object (DSO) support for OpenBSD 2.x
+    * Ralf's enhanced "make install" carefulness for mime.types+magic files
 
 Available Patches:
 

@@ -368,8 +368,16 @@ install-config:
 			echo "[PRESERVING EXISTING CONFIG FILE: $(sysconfdir)/$$conf]"; \
 		fi; \
 	done
-	$(CP) $(ROOT)/conf/mime.types $(sysconfdir)/mime.types
-	$(CP) $(ROOT)/conf/magic $(sysconfdir)/magic
+	-@for conf in mime.types magic; do \
+		echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf.default"; \
+		$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf.default; \
+		if [ ! -f "$(sysconfdir)/$$conf" ]; then \
+			echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf"; \
+			$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf; \
+		else \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(sysconfdir)/$$conf]"; \
+		fi; \
+	done
 	@echo "<=== [config]"
 
 
