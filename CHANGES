@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_log_config: Fix %b log format to write really "-" when 0 bytes
+     were sent (e.g. with 304 or 204 response codes).  [Astrid Keßler]
+
   *) Fix a bug, where mod_deflate sometimes unconditionally compressed the
      content if the Accept-Encoding header contained only other tokens than
      "gzip" (such as "deflate"). PR 21523.  [Joe Orton, André Malo]
