@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Remove the Win32 script-processing exception from mod_cgi, and
+     roll build_command_line/build_argv_list into a unified, overrideable
+     ap_cgi_build_command optional function.  [William Rowe]
+
   *) Rewrite find_start_sequence to use a better search algorithm
      to find the start tag.  [Justin Erenkrantz]
 
