@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/27 03:55:31 $]
+Last modified at [$Date: 2002/02/27 04:53:58 $]
 
 Release:
 
@@ -82,6 +82,7 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Graceful restart is broken in the worker MPM.
         Message-ID: <m3g03tnrkv.fsf@rdu163-40-092.nc.rr.com>
+      Justin asks: "Is this fixed?  I can't reproduce now."
 
 CURRENT VOTES:
 
