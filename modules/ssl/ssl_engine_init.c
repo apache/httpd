@@ -729,6 +729,20 @@ static int ssl_server_import_key(server_rec *s,
         ssl_die();
     }
 
+    /*
+     * XXX: wonder if this is still needed, this is old todo doc.
+     * (see http://www.psy.uq.edu.au/~ftp/Crypto/ssleay/TODO.html)
+     */
+    if ((pkey_type == EVP_PKEY_DSA) && sc->pPublicCert[idx]) {
+        EVP_PKEY *pubkey = X509_get_pubkey(sc->pPublicCert[idx]);
+
+        if (pubkey && EVP_PKEY_missing_parameters(pubkey)) {
+            EVP_PKEY_copy_parameters(pubkey, pkey);
+            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                    "Copying DSA parameters from private key to certificate");
+        }
+    }
+
     sc->pPrivateKey[idx] = pkey;
 
     return TRUE;
@@ -804,7 +818,6 @@ void ssl_init_ConfigureServer(server_rec *s,
 {
     const char *rsa_id, *dsa_id;
     const char *vhost_id = sc->szVHostID;
-    EVP_PKEY *pkey;
     SSL_CTX *ctx;
     int i;
     int have_rsa, have_dsa;
@@ -860,23 +873,6 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server private key found?!");
         ssl_die();
-    }
-
-    /*
-     * Optionally copy DSA parameters for certificate from private key
-     * (see http://www.psy.uq.edu.au/~ftp/Crypto/ssleay/TODO.html)
-     */
-    if (sc->pPublicCert[SSL_AIDX_DSA] &&
-        sc->pPrivateKey[SSL_AIDX_DSA])
-    {
-        pkey = X509_get_pubkey(sc->pPublicCert[SSL_AIDX_DSA]);
-
-        if (pkey && (EVP_PKEY_key_type(pkey) == EVP_PKEY_DSA) &&
-            EVP_PKEY_missing_parameters(pkey))
-        {
-            EVP_PKEY_copy_parameters(pkey,
-                                     sc->pPrivateKey[SSL_AIDX_DSA]);
-        }
     }
 }
 
