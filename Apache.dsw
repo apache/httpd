@@ -227,9 +227,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name mod_auth_ldap
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name util_ldap
-    End Project Dependency
 }}}
 
 ###############################################################################
