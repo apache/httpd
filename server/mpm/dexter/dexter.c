@@ -743,8 +743,11 @@ static void process_socket(ap_context_t *p, ap_socket_t *sock, long conn_id)
     conn_rec *current_conn;
     ap_iol *iol;
     int csd;
+    ap_status_t rv;
 
-    ap_get_os_sock(&csd, sock);
+    if ((rv = ap_get_os_sock(&csd, sock)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "ap_get_os_sock");
+    }
     sock_disable_nagle(csd);
 
     iol = unix_attach_socket(csd);
@@ -923,7 +926,11 @@ static void *worker_thread(void *arg)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(&csd, sd, ptrans);
+            ap_status_t rv;
+
+            if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "ap_accept");
+            }
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
 	    pthread_mutex_lock(&idle_thread_count_mutex);
