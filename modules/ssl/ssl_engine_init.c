@@ -953,6 +953,10 @@ apr_status_t ssl_init_ModuleKill(void *data)
      */
     for (; s != NULL; s = s->next) {
         sc = mySrvConfig(s);
+        if (sc->pRevocationStore != NULL) {
+            X509_STORE_free(sc->pRevocationStore);
+            sc->pRevocationStore = NULL;
+        }
         if (sc->pPublicCert[SSL_AIDX_RSA] != NULL) {
             X509_free(sc->pPublicCert[SSL_AIDX_RSA]);
             sc->pPublicCert[SSL_AIDX_RSA] = NULL;
