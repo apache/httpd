@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) BufferLogs are now run-time enabled, and the log_config now has 2 new
+     callbacks to allow a 3rd party module to actually do the writing of the
+     log file [Ian Holsman]
+
   *) Correct ISAPIReadAheadBuffer to default to 49152, per mod_isapi docs.
      [André Malo, Astrid Keßler <kess@kess-net.de>]
 
