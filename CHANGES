@@ -1,5 +1,7 @@
 Changes with Apache 2.0b1
 
+  *) Get perchild building again. [Ryan Bloom]
+
   *) Don't disable threads just because we are using the prefork MPM.
      If somebody wants to compile without threads, they must now add
      --disable-threads to the configure command line.  [Ryan Bloom]
