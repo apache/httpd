@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/28 01:24:53 $]
+Last modified at [$Date: 2003/02/28 14:06:29 $]
 
 Release:
 
@@ -62,7 +62,7 @@ PATCHES TO PORT FROM 2.1
 
     * Win32: Avoid busy wait when all worker threads are busy.
       server/mpm/winnt/child.c r1.12
-      +1: stoddard
+      +1: stoddard, trawick (if you bring r1.13 also :) )
           nd: +1 on concept. Cannot verify the implementation
               (lacking knowledge), sorry.
       -1:
