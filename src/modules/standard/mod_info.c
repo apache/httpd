@@ -163,7 +163,7 @@ static mod_info_config_lines *mod_info_load_config(pool *p, char *filename, requ
 			filename,
 			NULL
 		    );
-	    log_error (msg, r->server);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, msg);
 	    return NULL;
 	}
 	while(!cfg_getline(s,MAX_STRING_LEN,fp)) {
