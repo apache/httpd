@@ -22,7 +22,7 @@
 <title>Bedienung des Apache HTTP Servers</title>
 <page href="install.html">Kompilieren und Installieren</page>
 <page href="invoking.html">Apache starten</page>
-<page href="stopping.html">Stoppen und Neustarten des Servers</page>
+<page href="stopping.html">Beenden und Neustarten des Servers</page>
 <page href="configuring.html">Konfigurationsdateien</page>
 <page href="sections.html">Konfigurationsabschnitte</page>
 <page href="server-wide.html">Serverweite Konfiguration</page>
@@ -209,4 +209,3 @@ HPUX betreiben</page>
 </category>
 
 </sitemap>
-
