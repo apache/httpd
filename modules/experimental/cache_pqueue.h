@@ -78,21 +78,21 @@ typedef struct cache_pqueue_t cache_pqueue_t;
  * @param a the element
  * @return  the score (the lower the score the longer it is kept int the queue)
  */
-typedef long cache_pqueue_set_priority(long queue_clock, void*a);
-typedef long cache_pqueue_get_priority(void*a);
+typedef long (*cache_pqueue_set_priority)(long queue_clock, void *a);
+typedef long (*cache_pqueue_get_priority)(void *a);
 
 /** callback function to get a position of a element */
-typedef apr_ssize_t cache_pqueue_getpos(void *a);
+typedef apr_ssize_t (*cache_pqueue_getpos)(void *a);
 
 /**
  * callback function to set a position of a element
  * @param a   the element
  * @param pos the position to set it to
  */
-typedef void cache_pqueue_setpos(void *a, apr_ssize_t pos);
+typedef void (*cache_pqueue_setpos)(void *a, apr_ssize_t pos);
 
 /** debug callback function to print a entry */
-typedef void cache_pqueue_print_entry(FILE *out, void *a);
+typedef void (*cache_pqueue_print_entry)(FILE *out, void *a);
 
 /**
  * initialize the queue
@@ -106,7 +106,7 @@ typedef void cache_pqueue_print_entry(FILE *out, void *a);
  * @Return the handle or NULL for insufficent memory
  */
 cache_pqueue_t *cache_pq_init(apr_ssize_t n,
-                              cache_pqueue_get_priority *pri,
+                              cache_pqueue_get_priority pri,
                               cache_pqueue_getpos get,
                               cache_pqueue_setpos set);
 /**
