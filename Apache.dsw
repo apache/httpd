@@ -18,7 +18,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "BuildBin"=".\build\BuildBin.dsp" - Package Owner=<4>
+Project: "BuildBin"=".\BuildBin.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
