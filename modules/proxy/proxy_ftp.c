@@ -555,7 +555,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     int i = 0, j, len, rc;
     int one = 1;
     char *size = NULL;
-    apr_size_t readbytes = -1;
+    apr_off_t readbytes = -1;
 
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;

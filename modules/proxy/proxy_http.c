@@ -752,7 +752,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
         (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
 
 	const char *buf;
-	apr_size_t readbytes;
+	apr_off_t readbytes;
 
 	/* if chunked - insert DECHUNK filter */
 	if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
