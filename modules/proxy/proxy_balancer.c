@@ -42,14 +42,15 @@ static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
     double median, ffactor = 0.0;
     proxy_runtime_worker *workers;    
 #if PROXY_HAS_SCOREBOARD
-    lb_score *score = NULL;
+    lb_score *score;
 #else
-    void *score = NULL;
+    void *score;
 #endif
 
     workers = (proxy_runtime_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
+        score = NULL;
 #if PROXY_HAS_SCOREBOARD
         /* Get scoreboard slot */
         if (ap_scoreboard_image)
