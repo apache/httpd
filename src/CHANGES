@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) NetWare: Implemented the real ap_os_case_canonical_filename()
+      function that retrieves the accurately cased path and file
+      name from the file system. [Brad Nicholes bnicholes@novell.com]
+
   *) Fix the longstanding bug that errors (returned by src/Configure)
      would not be noticed by the top level configure script.
      That was bad for automated configurations. [Martin Kraemer]
