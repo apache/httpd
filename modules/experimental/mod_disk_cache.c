@@ -344,7 +344,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     /* open temporary file */
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
-    rv = apr_file_mktemp(&tmpfile, dobj->tempfile, 0, r->pool);
+    rv = apr_file_mktemp(&tmpfile, dobj->tempfile,  
+                         APR_CREATE | APR_READ | APR_WRITE | APR_EXCL, r->pool);
 
     /* Populate the cache handle */
     h->cache_obj = obj;
