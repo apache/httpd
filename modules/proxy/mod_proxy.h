@@ -131,6 +131,7 @@ typedef struct {
     apr_array_header_t *workers;
     apr_array_header_t *balancers;
     proxy_worker       *forward;    /* forward proxy worker */
+    proxy_worker       *reverse;    /* reverse "module-driven" proxy worker */
     const char *domain;     /* domain name to use in absence of a domain name in the request */
     int req;                /* true if proxy requests are enabled */
     char req_set;
