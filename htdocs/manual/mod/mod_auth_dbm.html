@@ -24,7 +24,7 @@ DBM files. See the <A HREF="auth_dbm.html">DBM user documentation</a>.
 
 <A name="authdbmgroupfile"><h2>AuthDbmGroupFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthDbmGroupFile} directive&gt; -->
-<strong>Syntax:</strong> AuthGroupFile <em>filename</em><br>
+<strong>Syntax:</strong> AuthDBMGroupFile <em>filename</em><br>
 <Strong>Context:</strong> directory, .htaccess<br>
 <Strong>Override:</strong> AuthConfig<br>
 <strong>Status:</strong> Extension<br>
@@ -41,7 +41,31 @@ be no whitespace within the value, and it must never contain any colons.<p>
 Security: make sure that the AuthDBMGroupFile is stored outside the
 document tree of the webserver; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
-AuthDBMGroupFile.<p>
+AuthDBMGroupFile unless otherwise protected.<p>
+
+Combining Group and Password DBM files: In some cases it is easier to
+manage a single database which contains both the password and group
+details for each user. This simplifies any support programs that need
+to be written: they now only have to deal with writing to and locking
+a single DBM file. This can be accomplished by first setting the group
+and password files to point to the same DBM:<p>
+
+<blockquote><code>
+AuthDBMGroupFile /www/userbase<br>
+AuthDBMUserFile /www/userbase
+</code></blockquote>
+
+The key for the single DBM is the username. The value consists of <p>
+
+<blockquote><code>
+Unix Crypted Password : List of Groups [ : (ignored) ]
+</code></blockquote>
+
+The password section contains the Unix crypt() password as before. This is
+followed by a colon and the comma separated list of groups. Other data may
+optionally be left in the DBM file after another colon; it is ignored by the
+authentication module. This is what www.telescope.org uses for its combined
+password and group database. <p>
 
 See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
@@ -58,14 +82,24 @@ See also <A HREF="core.html#authname">AuthName</A>,
 The AuthDBMUserFile directive sets the name of a DBM file containing the list
 of users and passwords for user authentication. <em>Filename</em> is the
 absolute path to the user file.<p>
-The user file is keyed on the username. The value for a user is the crypt()
-encrypted password, optionally followed by a colon and arbitrary data.
-The colon and the data following it will be ignored by the server.<p>
+
+The user file is keyed on the username. The value for a user is the
+crypt() encrypted password, optionally followed by a colon and
+arbitrary data.  The colon and the data following it will be ignored
+by the server.<p>
 
 Security: make sure that the AuthDBMUserFile is stored outside the
 document tree of the webserver; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
 AuthDBMUserFile.<p>
+
+Important compatibility note: The implementation of "dbmopen" in the
+apache modules reads the string length of the hashed values from the
+DBM data structures, rather than relying upon the string being
+NULL-appended. Some applications, such as the Netscape web server,
+rely upon the string being NULL-appended, so if you are having trouble
+using DBM files interchangeably between applications this may be a
+part of the problem. <p>
 
 See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
