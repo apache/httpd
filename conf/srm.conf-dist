@@ -91,6 +91,11 @@ IndexIgnore .??* *~ *# HEADER* README* RCS
 
 AccessFileName .htaccess
 
+# TypesConfig describes where the mime.types file (or equivalent) is
+# to be found.
+
+TypesConfig conf/mime.types
+
 # DefaultType is the default MIME type for documents which the server
 # cannot find the type of from filename extensions.
 
