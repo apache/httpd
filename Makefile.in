@@ -96,10 +96,6 @@ install-other:
 install-include:
 	@echo Installing header files
 	@test -d $(includedir)     || $(MKINSTALLDIRS) $(includedir)
-	@test -d $(includedir)/xml || $(MKINSTALLDIRS) $(includedir)
-	@test -d $(includedir)/pcre || $(MKINSTALLDIRS) $(includedir)
-	@test -d $(includedir)/apr || $(MKINSTALLDIRS) $(includedir)
-	@test -d $(includedir)/apr-util || $(MKINSTALLDIRS) $(includedir)
 	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
