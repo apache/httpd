@@ -2859,7 +2859,7 @@ static int default_handler(request_rec *r)
 	    }
 	    else {
 		ap_off_t offset;
-		long length;
+		ap_size_t length;
 		while (ap_each_byterange(r, &offset, &length)) {
 		    ap_send_mmap(mm, r, offset, length);
 		}
