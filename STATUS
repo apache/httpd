@@ -1,9 +1,11 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/14 11:13:56 $]
+Last modified at [$Date: 2000/12/17 03:08:43 $]
 
 Release:
 
-    2.0a9   : ???
+    2.0b1   : Scheduled to release December 22, 2000
+	rbb volunteers to be RM
+    2.0a9   : released December 12, 2000
     2.0a8   : released November 20, 2000
     2.0a7   : released October 8, 2000
     2.0a6   : released August 18, 2000
@@ -72,6 +74,21 @@ RELEASE SHOWSTOPPERS:
     * release distros do not include a "test" dir. don't put it in the
       top-level SUBDIRS list, but definitely get it cleaned for the
       dev guys.  (Greg volunteers)
+
+    * The installed layout needs to be fixed.  This means that the header
+      files need to be installed in the correct location.  Expect a message 
+      in a few minutes with my opinion for how this should look.
+	Status: rbb volunteers
+
+    * The instructions for rolling a release need to be updated for
+      2.0.
+	Status: rbb volunteers
+
+    * binbuild.sh may need to be updated.  I haven't looked into this, but I
+      would be surprised if it works.
+	Status: rbb volunteers
+
+    * Apache.org needs to start running Apache 2.0 if at all possible.
 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
