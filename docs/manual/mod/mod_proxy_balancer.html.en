@@ -62,149 +62,110 @@ load balancing </td></tr>
 <h2><a name="scheduler" id="scheduler">Load balancer scheduler algorithm</a></h2>
     
     <p>The idea behind this scheduler is the following:</p>
-    <p><strong>lbfactor</strong> is <em>how much we expect this worker
+
+    <p><dfn>lbfactor</dfn> is <em>how much we expect this worker
     to work</em>, or <em>the workers's work quota</em>.</p>
-    <p><strong>lbstatus</strong> is <em>how urgent this worker has to work
+
+    <p><dfn>lbstatus</dfn> is <em>how urgent this worker has to work
     to fulfill its quota of work</em>.</p>
-    <p>The <strong>worker</strong> is a member of the load balancer,
-    usually a remote host serving one of the supported protocols</p> 
+
+    <p>The <dfn>worker</dfn> is a member of the load balancer,
+    usually a remote host serving one of the supported protocols.</p>
+
     <p>We distribute each worker's work quota to the worker, and then look
     which of them needs to work most urgently (biggest lbstatus).  This
     worker is then selected for work, and its lbstatus reduced by the
     total work quota we distributed to all workers.  Thus the sum of all
     lbstatus does not change.(*)</p>
+
     <p>If some workers are disabled, the others will
     still be scheduled correctly.</p>
+
     <p>If a balancer is configured as follows:</p>
     
-        
-<code>
-  <table>
-    <tr>
-        <td width="80">worker</td>
-        <td width="30" style="text-align: right;">a</td>
-        <td width="30" style="text-align: right;">b</td>
-        <td width="30" style="text-align: right;">c</td>
-        <td width="30" style="text-align: right;">d</td>
-    </tr>
-    <tr>
-        <td>lbfactor</td>
-        <td style="text-align: right;">25</td>
-        <td style="text-align: right;">25</td>
-        <td style="text-align: right;">25</td>
-        <td style="text-align: right;">25</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-    </tr>
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td>
+        <td class="data">25</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td></tr>
+</table>
 
-  </table>
-</code>    
-    <p>And b gets disabled, the following schedule is produced:</p>
-<code>
-  <table>
-    <tr>
-        <td width="80">lbstatus</td>
-        <td width="30" style="text-align: right;">-50</td>
-        <td width="30" style="text-align: right;">0</td>
-        <td width="30" style="text-align: right;">25</td>
-        <td width="30" style="text-align: right;">25</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-25</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">-25</td>
-        <td style="text-align: right;">50</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-    </tr>
-    <tr>
-        <td colspan="5">(repeat)</td>
-    </tr>
-  </table>
-</code>
+    <p>And <var>b</var> gets disabled, the following schedule is produced:</p>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th>
+        <th class="data">c</th>
+        <th class="data">d</th></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-50</td>
+        <td class="data">0</td>
+        <td class="data">25</td>
+        <td class="data">25</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-25</td>
+        <td class="data">0</td>
+        <td class="data">-25</td>
+        <td class="data">50</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td>
+        <td class="data">0</td></tr>
+<tr><td class="data" colspan="5">(repeat)</td></tr>
+</table>
+
     <p>That is it schedules: a c d a c d a c d ...</p>
     <p>The following asymmetric configuration works as one would expect:</p>
-<code>
-  <table>
-    <tr>
-        <td width="80">worker</td>
-        <td width="30" style="text-align: right;">a</td>
-        <td width="30" style="text-align: right;">b</td>
-    </tr>
-    <tr>
-        <td>lbfactor</td>
-        <td style="text-align: right;">70</td>
-        <td style="text-align: right;">30</td>
-    </tr>
-    <tr>
-        <td colspan="3">&nbsp;</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-30</td>
-        <td style="text-align: right;">30</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">40</td>
-        <td style="text-align: right;">-40</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">10</td>
-        <td style="text-align: right;">-10</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-20</td>
-        <td style="text-align: right;">20</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-50</td>
-        <td style="text-align: right;">50</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">20</td>
-        <td style="text-align: right;">-20</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-10</td>
-        <td style="text-align: right;">10</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">-40</td>
-        <td style="text-align: right;">40</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">30</td>
-        <td style="text-align: right;">-30</td>
-    </tr>
-    <tr>
-        <td>lbstatus</td>
-        <td style="text-align: right;">0</td>
-        <td style="text-align: right;">0</td>
-    </tr>
-    <tr>
-        <td colspan="3">(repeat)</td>
-    </tr>
-  </table>
-</code>
+
+    <table><tr><th>worker</th>
+        <th class="data">a</th>
+        <th class="data">b</th></tr>
+<tr><th>lbfactor</th>
+        <td class="data">70</td>
+        <td class="data">30</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-30</td>
+        <td class="data">30</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">40</td>
+        <td class="data">-40</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">10</td>
+        <td class="data">-10</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-20</td>
+        <td class="data">20</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-50</td>
+        <td class="data">50</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">20</td>
+        <td class="data">-20</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-10</td>
+        <td class="data">10</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">-40</td>
+        <td class="data">40</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">30</td>
+        <td class="data">-30</td></tr>
+<tr><th>lbstatus</th>
+        <td class="data">0</td>
+        <td class="data">0</td></tr>
+<tr><td class="data" colspan="3">(repeat)</td></tr>
+</table>
 
     <p>That is after 10 schedules, the schedule repeats and 7 a are selected
     with 3 b interspersed.</p>
