@@ -279,112 +279,115 @@ void unixd_pre_config(void)
 
 const char *ap_sys_siglist[NumSIG];
 
+#define store_str(array,index,string) \
+(ap_assert(index < (sizeof(array)/sizeof(array[0]))),array[index]=string)
+
 void unixd_siglist_init(void)
 {
     int sig;
 
     ap_sys_siglist[0] = "Signal 0";
 #ifdef SIGHUP
-    ap_sys_siglist[SIGHUP] = "Hangup";
+    store_str(ap_sys_siglist,SIGHUP,"Hangup");
 #endif
 #ifdef SIGINT
-    ap_sys_siglist[SIGINT] = "Interrupt";
+    store_str(ap_sys_siglist,SIGINT,"Interrupt");
 #endif
 #ifdef SIGQUIT
-    ap_sys_siglist[SIGQUIT] = "Quit";
+    store_str(ap_sys_siglist,SIGQUIT,"Quit");
 #endif
 #ifdef SIGILL
-    ap_sys_siglist[SIGILL] = "Illegal instruction";
+    store_str(ap_sys_siglist,SIGILL,"Illegal instruction");
 #endif
 #ifdef SIGTRAP
-    ap_sys_siglist[SIGTRAP] = "Trace/BPT trap";
+    store_str(ap_sys_siglist,SIGTRAP,"Trace/BPT trap");
 #endif
 #ifdef SIGIOT
-    ap_sys_siglist[SIGIOT] = "IOT instruction";
+    store_str(ap_sys_siglist,SIGIOT,"IOT instruction");
 #endif
 #ifdef SIGABRT
-    ap_sys_siglist[SIGABRT] = "Abort";
+    store_str(ap_sys_siglist,SIGABRT,"Abort");
 #endif
 #ifdef SIGEMT
-    ap_sys_siglist[SIGEMT] = "Emulator trap";
+    store_str(ap_sys_siglist,SIGEMT,"Emulator trap");
 #endif
 #ifdef SIGFPE
-    ap_sys_siglist[SIGFPE] = "Arithmetic exception";
+    store_str(ap_sys_siglist,SIGFPE,"Arithmetic exception");
 #endif
 #ifdef SIGKILL
-    ap_sys_siglist[SIGKILL] = "Killed";
+    store_str(ap_sys_siglist,SIGKILL,"Killed");
 #endif
 #ifdef SIGBUS
-    ap_sys_siglist[SIGBUS] = "Bus error";
+    store_str(ap_sys_siglist,SIGBUS,"Bus error");
 #endif
 #ifdef SIGSEGV
-    ap_sys_siglist[SIGSEGV] = "Segmentation fault";
+    store_str(ap_sys_siglist,SIGSEGV,"Segmentation fault");
 #endif
 #ifdef SIGSYS
-    ap_sys_siglist[SIGSYS] = "Bad system call";
+    store_str(ap_sys_siglist,SIGSYS,"Bad system call");
 #endif
 #ifdef SIGPIPE
-    ap_sys_siglist[SIGPIPE] = "Broken pipe";
+    store_str(ap_sys_siglist,SIGPIPE,"Broken pipe");
 #endif
 #ifdef SIGALRM
-    ap_sys_siglist[SIGALRM] = "Alarm clock";
+    store_str(ap_sys_siglist,SIGALRM,"Alarm clock");
 #endif
 #ifdef SIGTERM
-    ap_sys_siglist[SIGTERM] = "Terminated";
+    store_str(ap_sys_siglist,SIGTERM,"Terminated");
 #endif
 #ifdef SIGUSR1
-    ap_sys_siglist[SIGUSR1] = "User defined signal 1";
+    store_str(ap_sys_siglist,SIGUSR1,"User defined signal 1");
 #endif
 #ifdef SIGUSR2
-    ap_sys_siglist[SIGUSR2] = "User defined signal 2";
+    store_str(ap_sys_siglist,SIGUSR2,"User defined signal 2");
 #endif
 #ifdef SIGCLD
-    ap_sys_siglist[SIGCLD] = "Child status change";
+    store_str(ap_sys_siglist,SIGCLD,"Child status change");
 #endif
 #ifdef SIGCHLD
-    ap_sys_siglist[SIGCHLD] = "Child status change";
+    store_str(ap_sys_siglist,SIGCHLD,"Child status change");
 #endif
 #ifdef SIGPWR
-    ap_sys_siglist[SIGPWR] = "Power-fail restart";
+    store_str(ap_sys_siglist,SIGPWR,"Power-fail restart");
 #endif
 #ifdef SIGWINCH
-    ap_sys_siglist[SIGWINCH] = "Window changed";
+    store_str(ap_sys_siglist,SIGWINCH,"Window changed");
 #endif
 #ifdef SIGURG
-    ap_sys_siglist[SIGURG] = "urgent socket condition";
+    store_str(ap_sys_siglist,SIGURG,"urgent socket condition");
 #endif
 #ifdef SIGPOLL
-    ap_sys_siglist[SIGPOLL] = "Pollable event occurred";
+    store_str(ap_sys_siglist,SIGPOLL,"Pollable event occurred");
 #endif
 #ifdef SIGIO
-    ap_sys_siglist[SIGIO] = "socket I/O possible";
+    store_str(ap_sys_siglist,SIGIO,"socket I/O possible");
 #endif
 #ifdef SIGSTOP
-    ap_sys_siglist[SIGSTOP] = "Stopped (signal)";
+    store_str(ap_sys_siglist,SIGSTOP,"Stopped (signal)");
 #endif
 #ifdef SIGTSTP
-    ap_sys_siglist[SIGTSTP] = "Stopped";
+    store_str(ap_sys_siglist,SIGTSTP,"Stopped");
 #endif
 #ifdef SIGCONT
-    ap_sys_siglist[SIGCONT] = "Continued";
+    store_str(ap_sys_siglist,SIGCONT,"Continued");
 #endif
 #ifdef SIGTTIN
-    ap_sys_siglist[SIGTTIN] = "Stopped (tty input)";
+    store_str(ap_sys_siglist,SIGTTIN,"Stopped (tty input)");
 #endif
 #ifdef SIGTTOU
-    ap_sys_siglist[SIGTTOU] = "Stopped (tty output)";
+    store_str(ap_sys_siglist,SIGTTOU,"Stopped (tty output)");
 #endif
 #ifdef SIGVTALRM
-    ap_sys_siglist[SIGVTALRM] = "virtual timer expired";
+    store_str(ap_sys_siglist,SIGVTALRM,"virtual timer expired");
 #endif
 #ifdef SIGPROF
-    ap_sys_siglist[SIGPROF] = "profiling timer expired";
+    store_str(ap_sys_siglist,SIGPROF,"profiling timer expired");
 #endif
 #ifdef SIGXCPU
-    ap_sys_siglist[SIGXCPU] = "exceeded cpu limit";
+    store_str(ap_sys_siglist,SIGXCPU,"exceeded cpu limit");
 #endif
 #ifdef SIGXFSZ
-    ap_sys_siglist[SIGXFSZ] = "exceeded file size limit";
+    store_str(ap_sys_siglist,SIGXFSZ,"exceeded file size limit");
 #endif
     for (sig=0; sig < sizeof(ap_sys_siglist)/sizeof(ap_sys_siglist[0]); ++sig)
         if (ap_sys_siglist[sig] == NULL)
