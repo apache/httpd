@@ -39,7 +39,7 @@
  * that one of these matches the original address.
  */
 
-#include "ap_config.h"
+#include "apr_lib.h"
 #include <stdio.h>
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
