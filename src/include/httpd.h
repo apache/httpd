@@ -889,6 +889,7 @@ API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
 API_EXPORT(char *) ap_uudecode(pool *, const char *);
+API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
 #ifdef OS2
 void os2pathname(char *path);
 #endif

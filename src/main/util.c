@@ -1726,6 +1726,28 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
     return bufplain;
 }
 
+static const char basis_64[] = 
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
+ 
+API_EXPORT(char *) ap_uuencode(pool *a, char *string) 
+{ 
+    int i, len = strlen(string); 
+    char *p; 
+    char *encoded = (char *) ap_pcalloc(a, (len+2) / 3 * 4); 
+ 
+    p = encoded; 
+    for (i = 0; i < len; i += 3) { 
+        *p++ = basis_64[string[i] >> 2]; 
+        *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)]; 
+        *p++ = basis_64[((string[i + 1] & 0xF) << 2) | ((int) (string[i + 2] & 0xC0) >> 6)]; 
+        *p++ = basis_64[string[i + 2] & 0x3F]; 
+    } 
+    *p-- = '\0'; 
+    *p-- = '='; 
+    *p-- = '='; 
+    return encoded; 
+} 
+
 #ifdef OS2
 void os2pathname(char *path)
 {
