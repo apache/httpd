@@ -114,6 +114,10 @@ URI: index.html.sv
 Content-language: sv
 Content-type: text/html
 
+URI: index.html.zh-cn.gb2312
+Content-language: zh-CN
+Content-type: text/html;charset=GB2312
+
 URI: index.html.zh-tw.big5
 Content-language: tw, zh-TW
 Content-type: text/html;charset=Big5

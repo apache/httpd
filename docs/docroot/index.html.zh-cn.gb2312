@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 FINAL//EN">
+<HTML>
+<head>
+<title>安装Apache的测试页面</title>
+</head>
+<!-- Background white, links blue (unvisited), navy (visited), red
+(active) -->
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+vlink="#000080" alink="#FF0000">
+<p>您能看见这个页面，说明<a
+href="http://www.apache.org/foundation/preFAQ.html">Apache web
+server</a> 已经安装成功。您可以在这个目录中增加内容，或者把这个页面替换掉。</p>
+
+<hr width="50%" size="8" />
+<h2 align="center">这不是你想看见的页面吧?</h2>
+
+<p>之所以会看见这个页面，是因为网站管理员改变了这个站点的设置。
+如果有疑问，请<strong>咨询维护此站点的人员。</strong>
+Apache软件基金会, 即此站点所使用的网站服务器软件的开发者，
+不负责此站点的维护工作，也无法为您解决设置上的问题。</p>
+
+<hr width="50%" size="8" />
+<p>Apache <a href="../manual/">文档</a>已经包含在此发行版中。</p>
+
+<p>您可以在使用Apache的网站服务器上，自由地使用下面的图片。感谢使用Apache！</p>
+
+<div align="center"><img src="apache_pb.gif" alt="" /></div>
+</body>
+</html>
