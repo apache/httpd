@@ -6135,7 +6135,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     pCommand = ap_psprintf(p, "\"%s\" -Z %s -f \"%s\"", buf, exit_event_name, ap_server_confname);  
 
     for (i = 1; i < argc; i++) {
-        pCommand = ap_psprintf(p, "%s \"%s\"",pCommand, argv[i]); 
+        pCommand = ap_pstrcat(p, pCommand, " \"", argv[i], "\"", NULL);
     }
 
     /* Create a pipe to send socket info to the child */
