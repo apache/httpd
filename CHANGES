@@ -66,6 +66,10 @@ features:
        directory listings have been updated. In addition, the Powered by
        Apache (apache_pb.gif) logo has been included.
 
+  *) Log Rotation
+	New support utility to allow log rotation without shutting down the
+	server. See support/rotatelogs.c.
+
 NEW AUTHENTICATION MODULES:
 
 Note: These modules are not compiled into the server by default, as
