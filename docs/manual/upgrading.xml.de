@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.6.2.1 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -16,8 +16,8 @@
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
 </summary>
-<seealso><a href="new_features_2_0.html">Neue Funktionen in
-  Version 2.0</a></seealso>
+<seealso><a href="new_features_2_0.html">Übersicht der neuen Funktionen
+in Apache 2.0</a></seealso>
 
   <section id="compile-time">
     <title>&#196;nderungen der Konfiguration bei der Kompilierung</title>

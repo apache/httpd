@@ -14,7 +14,8 @@
   href="new_features_2_0.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.</p>
 </summary>
-<seealso><a href="new_features_2_0.html">New Features in 2.0</a></seealso>
+<seealso><a href="new_features_2_0.html">Overview of new features in
+Apache 2.0</a></seealso>
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
