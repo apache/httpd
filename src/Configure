@@ -913,14 +913,14 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=2
             ;;
-	*-apple-rhapsody*)
-	    LD_SHLIB="cc"
+        *-apple-rhapsody*)
+            LD_SHLIB="cc"
             CFLAGS_SHLIB=""
             LDFLAGS_SHLIB="-bundle -undefined suppress"
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=0
-	    #DEF_SHARED_CORE=yes
-	    ;;
+            DEF_SHARED_CORE=yes
+            ;;
         *-solaris2*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
