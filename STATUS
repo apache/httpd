@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul, Jim, Martin, Ralf, Randy
+         +1: Roy, Dean, Paul, Jim, Martin, Ralf, Randy, Brian
          +0:
          -1:
 
@@ -135,6 +135,11 @@ Available Patches:
       nature of usage of the name "Apache" in derived products
 	Status: Ken +1, Paul +1, Ben +1, Jim +1, Randy +1, Roy +1,
 		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1, Dean +1
+	        Brian +1
+
+    * Dean's patch to speed up os_escape_path 
+	<Pine.LNX.3.96dg4.980226221531.25145P-100000@twinlark.arctic.org>
+	Status: Brian +1
 
 In progress:
 
@@ -203,6 +208,11 @@ Open issues:
 	maintainer friendly, because we aren't, and won't be,
 	the only one's to maintain this.
 
+        Brian - can we compromise by using the "HIDE" system to
+        expand out *all* prefixes in the cpp?  This would still affect
+        people during debugging, but would avoid the CTS-inducing
+        effect of typing "apapi" over and over.
+
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
       so we need to watch the library ordering.
@@ -240,10 +250,6 @@ Open issues:
 
     * Marc's socket options like source routing (kill them?)
 	Marc, Dean, Martin say Yes
-
-    * Marc's [BUG] include virtual and SCRIPT_NAME w/path_info
-	<Pine.BSF.3.95.970928122038.21692C-100000@alive.znep.com>
-	Dean says: please put this in the bugdb
 
     * Ken's PR#1053: an error when accessing a negotiated document
       explicitly names the variant selected.  Should it do so, or should
@@ -290,7 +296,7 @@ Open issues:
 	Proposal: the next release should be named 1.3b6, and labelled "release
 	    candidate on unix, beta on NT".  The release after that will be
 	    called 1.3.0 "stable on unix, beta on NT".
-	    +1: Jim, Ralf, Randy
+	    +1: Jim, Ralf, Randy, Brian
 	    +0: Dean
 
             Notes:
