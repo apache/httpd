@@ -121,8 +121,6 @@ static int shutdown_in_progress = 0;
 static unsigned int g_blocked_threads = 0;
 static int ap_max_requests_per_child=0;
 
-static char *ap_pid_fname = NULL;
-
 static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
 static HANDLE restart_event;	/* used to signal the parent to restart */
 static HANDLE exit_event;       /* used by parent to signal the child to exit */
@@ -2040,19 +2038,6 @@ static void winnt_hooks(apr_pool_t *p)
 /* 
  * Command processors 
  */
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
 
 static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg) 
 {
@@ -2081,38 +2066,6 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
     return NULL;
 }
 
-
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_max_requests_per_child = atoi(arg);
-
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
-{
-    apr_finfo_t finfo;
-    const char *fname;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
-        || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
-			  " does not exist or is not a directory", NULL);
-    }
-    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
-    return NULL;
-}
-
 /* Stub functions until this MPM supports the connection status API */
 
 AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, \
@@ -2134,14 +2087,8 @@ AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
 
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS
-{ "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
-    "A file for logging the server process ID"},
 { "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, TAKE1,
   "Number of threads each child creates" },
-{ "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves before dying." },
-{ "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
-  "The location of the directory Apache changes to before dumping core" },
 { NULL }
 };
 
