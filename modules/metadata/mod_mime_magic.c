@@ -2149,7 +2149,6 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
     apr_pool_t *child_context = cntxt;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
-    apr_socket_t *sock;
 
     env = ap_create_environment(child_context, r->subprocess_env);
 
