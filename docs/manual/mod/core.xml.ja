@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.92 -->
+<!-- English Revision: 1.46.2.39 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -293,12 +293,12 @@
       <dd>
 
       認証に関するディレクティブの使用を許可する (<directive
-      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
-      <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
-      <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
+      module="mod_auth_dbm">AuthDBMGroupFile</directive>,
+      <directive module="mod_auth_dbm">AuthDBMUserFile</directive>,
+      <directive module="mod_auth">AuthGroupFile</directive>,
       <directive module="core">AuthName</directive>, 
       <directive module="core">AuthType</directive>, <directive
-      module="mod_authn_file">AuthUserFile</directive>, <directive
+      module="mod_auth">AuthUserFile</directive>, <directive
       module="core">Require</directive> <em>など。</em>)。</dd>
 
       <dt>FileInfo</dt>
@@ -337,19 +337,16 @@
 
       <dd>
       ホストへのアクセス制御を行うためのディレクティブの使用を許可する (<directive
-      module="mod_authz_host">Allow</directive>, <directive
-      module="mod_authz_host">Deny</directive>, <directive
-      module="mod_authz_host">Order</directive>).</dd>
+      module="mod_access">Allow</directive>, <directive
+      module="mod_access">Deny</directive>, <directive
+      module="mod_access">Order</directive>).</dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt>Options</dt>
 
       <dd>
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<directive module="core">Options</directive> と
-      <directive module="mod_include">XBitHack</directive>)。
-      <directive module="core">Options</directive> で設定するオプション
-      を、(空白を含めない) コンマ区切りのリストにして等号の後に続けることで
-      設定できます。</dd>
+      <directive module="mod_include">XBitHack</directive>)。</dd>
     </dl>
 
     <p>例:</p>
@@ -386,8 +383,8 @@
     このディレクティブは
     <directive module="core">AuthType</directive> ディレクティブや
     <directive module="core">Require</directive> ディレクティブと、
-    <directive module="mod_authn_file">AuthUserFile</directive> や
-    <directive module="mod_authz_groupfile">AuthGroupFile</directive> などのディレクティブと
+    <directive module="mod_auth">AuthUserFile</directive> や
+    <directive module="mod_auth">AuthGroupFile</directive> などのディレクティブと
     一緒に利用する必要があります。</p>
 
    <p>例えば:</p>
@@ -419,8 +416,8 @@
     このディレクティブは <directive
     module="core">AuthName</directive>ディレクティブや
     <directive module="core">Require</directive> ディレクティブと、
-    <directive module="mod_authn_file">AuthUserFile</directive> や <directive
-    module="mod_authz_groupfile">AuthGroupFile</directive> などのディレクティブと
+    <directive module="mod_auth">AuthUserFile</directive> や <directive
+    module="mod_auth">AuthGroupFile</directive> などのディレクティブと
     一緒に利用する必要があります。</p>
 </usage>
 <seealso><a href="../howto/auth.html">認証、承認、アクセス制御</a></seealso>
@@ -718,10 +715,7 @@ module="core">Directory</directive></seealso>
 
     <p>この場合、
     <code>http://www.my.host.com/index.html</code> へのアクセスがあれば
-    <code>/usr/web/index.html</code> が返されます。
-    <var>directory-path</var> が絶対パスでない場合は、
-    <directive module="core">ServerRoot</directive> 
-    からの相対パスとみなされます。</p>
+    <code>/usr/web/index.html</code> が返されます。</p>
 
     <p><directive>DocumentRoot</directive> は最後のスラッシュ無しで
     指定する必要があります。</p>
@@ -1198,7 +1192,7 @@ module="core">Directory</directive></seealso>
     結果の IP アドレスの中にオリジナルのアドレスと一致するものがなければ
     なりません。("tcpwrappers" の用語では PARANOID と呼ばれています。)</p>
 
-    <p><module>mod_authz_host</module> でホスト名によるアクセス
+    <p><module>mod_access</module> でホスト名によるアクセス
     制御を行なう場合には、
     設定の如何によらず 2 重の逆引きが実行されます。
     これは、セキュリティを保つために必要です。
@@ -1222,6 +1216,34 @@ module="core">Directory</directive></seealso>
     href="../programs/logresolve.html">logresolve</a> ユーティリティにより、
     Apache の動作とは別に、ログに残されている IP アドレスからホスト名を
     ルックアップすることが可能です。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IdentityCheck</name>
+<description>リモートユーザの RFC1413 によるアイデンティティのロギングを
+有効にする</description>
+<syntax>IdentityCheck On|Off</syntax>
+<default>IdentityCheck Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>このディレクティブは、クライアントマシン上で
+    identd やそれに類似したデーモンが動作しているときに、
+    それぞれの接続に対して RFC 1413 に準処したリモートユーザの
+    名前のロギングを行なうようにします。
+    この情報は、アクセスログに収集されます。</p>
+
+    <p>ここで得られた情報は簡単なユーザ追跡に使う以外は、
+    まったく信頼するべきではありません。</p>
+
+    <p>すべてのリクエストに対してルックアップが行なわれますので、
+    深刻な遅延の問題を起こすかもしれないことに注意してください。
+    (訳注: 例えばクライアント側に) ファイアウォールがあると、
+    ルックアップが失敗し、各リクエストに 30 秒の遅延が加わることに
+    なる可能性があります。
+    従って、一般的にはインターネットからアクセス可能なパブリックなサーバで
+    有益なものではありません。</p>
 </usage>
 </directivesynopsis>
 
@@ -1287,13 +1309,12 @@ module="core">Directory</directive></seealso>
 <name>IfModule</name>
 <description>モジュールの存在するかしないかに応じて処理される
 ディレクティブを囲む</description>
-<syntax>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
+<syntax>&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</syntax>     
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-<compatibility>モジュール識別子はバージョン 2.1 以降で使用可能。</compatibility>
 
 <usage>
     <p><code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
@@ -1310,24 +1331,24 @@ module="core">Directory</directive></seealso>
     次の二つの形式のうちの一つをとります。</p>
 
     <ul>
-      <li><var>module</var></li>
+      <li><var>module name</var></li>
 
-      <li>!<var>module</var></li>
+      <li>!<var>module name</var></li>
     </ul>
 
-    <p>前者の場合は、<var>module</var> と名付けられたモジュールが
+    <p>前者の場合は、<var>module name</var> と名付けられたモジュールが
     Apache に組み込まれていれば
     (コンパイル済みのものと、<directive
     module="mod_so">LoadModule</directive> を利用して
     動的に読み込んだものの両方)、
     開始と終了の間のディレクティブが処理されます。
-    後者の場合は逆で、<var>module</var> が組み込まれて<strong>いない</strong>
+    後者の場合は逆で、<var>module name</var> が組み込まれて<strong>いない</strong>
     場合に処理されます。</p>
 
-    <p><var>module</var> 引数は、モジュール識別子か
+    <p><var>module name</var> 引数は、
     コンパイルをした時のモジュールのファイル名です。
-    例えば、<code>rewrite_module</code> は識別子で
-    <code>mod_rewrite.c</code> はファイル名です。
+    例えば、
+    <code>mod_rewrite.c</code> です。
     モジュールが複数のソースファイルから構成されている場合は、文字列
     <code>STANDARD20_MODULE_STUFF</code> があるファイルの名前を
     使ってください。</p>
@@ -2297,8 +2318,8 @@ module="core">Directory</directive></seealso>
     <p><directive>Require</directive> は、正しく動作するためには <directive
     module="core">AuthName</directive> 及び <directive module="core"
     >AuthType</directive> ディレクティブや、
-    (ユーザとグループを指定するために) <directive module="mod_authn_file"
-    >AuthUserFile</directive> 及び <directive module="mod_authz_groupfile"
+    (ユーザとグループを指定するために) <directive module="mod_auth"
+    >AuthUserFile</directive> 及び <directive module="mod_auth"
     >AuthGroupFile</directive>
     といったディレクティブと共に
     指定する必要があります。
@@ -2323,7 +2344,7 @@ module="core">Directory</directive></seealso>
 
 </usage>
 <seealso><directive module="core">Satisfy</directive></seealso>
-<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_access</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2443,7 +2464,7 @@ module="core">Directory</directive></seealso>
 </compatibility>
 
 <usage>
-    <p><directive module="mod_authz_host">Allow</directive> と
+    <p><directive module="mod_access">Allow</directive> と
     <directive module="core">Require</directive> の両方が使われているときの
     アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
     です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
@@ -2476,7 +2497,7 @@ module="core">Directory</directive></seealso>
     適用されるメソッドを制限することが
     できるようになりました。</p>
 </usage>
-   <seealso><directive module="mod_authz_host">Allow</directive></seealso>
+   <seealso><directive module="mod_access">Allow</directive></seealso>
    <seealso><directive module="core">Require</directive></seealso>
 </directivesynopsis>
 
@@ -2504,7 +2525,7 @@ module="core">Directory</directive></seealso>
       #!C:/Perl/bin/perl.exe
     </example>
 
-    <p>もしくは、<code>perl</code> が <code>PATH</code> にある場合は単に:</p>
+    <p>もしくは、perl が <code>PATH</code> にある場合は単に:</p>
 
     <example>
       #!perl
@@ -2546,22 +2567,14 @@ module="core">Directory</directive></seealso>
 <name>ServerAdmin</name>
 <description>サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</description>
-<syntax>ServerAdmin <var>email-address</var>|<var>URL</var></syntax>
+<syntax>ServerAdmin <var>email-address</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p><directive>ServerAdmin</directive> は、クライアントに返すさまざまな
     エラーメッセージ中に記述する、
-    問合せアドレスを設定します。与えられた引数を <code>httpd</code> が
-    URL と認識しない場合は、<var>email-address</var> だと解釈して、
-    ハイパーリンクのターゲットに <code>mailto:</code> を付けます。
-    実際には、ここには電子メールアドレスを使うことが推奨されています。
-    多くの CGI スクリプトはそうなっていることを仮定しています。
-    URL を使う場合は、あなたの管理下にある別サーバを指すようにしてください。
-    そうでないと、エラーが起こったときに連絡をすることができなくなって
-    しまいます。
-</p>
+    電子メールアドレスを設定します。</p>
 
     <p>その際、これのために専用のアドレスを設定するのが良いでしょう。
     例えば、</p>
