@@ -209,12 +209,56 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
 
+static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
+                                 modssl_ctx_t *add,
+                                 modssl_ctx_t *mrg)
+{
+    cfgMerge(sc, NULL);
+
+    cfgMerge(ssl_ctx, NULL);
+
+    cfgMerge(pks, NULL);
+    cfgMerge(pkp, NULL);
+
+    cfgMerge(protocol, SSL_PROTOCOL_ALL);
+
+    cfgMerge(pphrase_dialog_type, SSL_PPTYPE_UNSET);
+    cfgMergeString(pphrase_dialog_path);
+
+    cfgMergeString(cert_chain);
+
+    cfgMerge(crl_path, NULL);
+    cfgMerge(crl_file, NULL);
+    cfgMerge(crl, NULL);
+
+    cfgMergeString(auth.ca_cert_path);
+    cfgMergeString(auth.ca_cert_file);
+    cfgMergeString(auth.cipher_suite);
+    cfgMergeInt(auth.verify_depth);
+    cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
+}
+
+static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
+                                        modssl_ctx_t *add,
+                                        modssl_ctx_t *mrg)
+{
+    int i;
+
+    modssl_ctx_cfg_merge(base, add, mrg);
+
+    for (i = 0; i < SSL_AIDX_MAX; i++) {
+        cfgMergeString(pks->cert_files[i]);
+        cfgMergeString(pks->key_files[i]);
+        cfgMerge(pks->certs[i], NULL);
+        cfgMerge(pks->keys[i], NULL);
+    }
+}
+
 /*
  *  Merge per-server SSL configurations
  */
 void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 {
-    int i;
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
@@ -229,26 +273,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
 
-    cfgMergeString(server->auth.ca_cert_path);
-    cfgMergeString(server->auth.ca_cert_file);
-    cfgMergeString(server->cert_chain);
-    cfgMergeString(server->auth.cipher_suite);
-    cfgMergeInt(server->auth.verify_depth);
-    cfgMerge(server->auth.verify_mode, SSL_CVERIFY_UNSET);
-    cfgMerge(server->pphrase_dialog_type, SSL_PPTYPE_UNSET);
-    cfgMergeString(server->pphrase_dialog_path);
-    cfgMerge(server->protocol, SSL_PROTOCOL_ALL);
-    cfgMerge(server->ssl_ctx, NULL);
-    cfgMerge(server->crl_path, NULL);
-    cfgMerge(server->crl_file, NULL);
-    cfgMerge(server->crl, NULL);
-
-    for (i = 0; i < SSL_AIDX_MAX; i++) {
-        cfgMergeString(server->pks->cert_files[i]);
-        cfgMergeString(server->pks->key_files[i]);
-        cfgMerge(server->pks->certs[i], NULL);
-        cfgMerge(server->pks->keys[i], NULL);
-    }
+    modssl_ctx_cfg_merge_server(base->server, add->server, mrg->server);
 
     return mrg;
 }
