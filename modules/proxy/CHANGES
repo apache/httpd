@@ -1,9 +1,15 @@
 
 mod_proxy changes for httpd 2.0.18-dev
 
+  *) Reorganize ap_proxy_string_read() internally to not process eos
+     buckets.
+     [Chuck Murcko <chuck@topsail.org>]
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
   *) Remove result code check for FTP QUIT command. Some servers send
      nothing at all back in response to QUIT.
      [Chuck Murcko <chuck@topsail.org>]
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
 
   *) Reverse previous patch since the core reverted.
      [Chuck Murcko <chuck@topsail.org>]
@@ -130,9 +136,12 @@ mod_proxy changes for httpd 2.0.18-dev
 mod_proxy changes for 2.0.14 alpha
 
   *) removed ProxyNoCache and ProxyCacheForceCompletion config directives,
-     since we no longer directly cache from this module [Chuck Murcko]
+     since we no longer directly cache from this module
+     [Chuck Murcko <chuck@topsail.org>]
 
-  *) removed cache [Chuck Murcko]
+  *) removed cache
+     [Chuck Murcko <chuck@topsail.org>]
 
-  *) initial rerebuild for 2.0 [Chuck Murcko]
+  *) initial rerebuild for 2.0
+     [Chuck Murcko <chuck@topsail.org>]
 
