@@ -1109,7 +1109,7 @@ void winnt_rewrite_args(process_rec *process)
         parent_pid = (DWORD) atol(pid);
 
         /* Prevent holding open the (nonexistant) console */
-        real_exit_code = 0;
+        ap_real_exit_code = 0;
 
         /* The parent is responsible for providing the
          * COMPLETE ARGUMENTS REQUIRED to the child.
@@ -1182,11 +1182,11 @@ void winnt_rewrite_args(process_rec *process)
         switch (optbuf[1]) {
 
         /* Shortcuts; include the -w option to hold the window open on error.
-         * This must not be toggled once we reset real_exit_code to 0!
+         * This must not be toggled once we reset ap_real_exit_code to 0!
          */
         case 'w':
-            if (real_exit_code)
-                real_exit_code = 2;
+            if (ap_real_exit_code)
+                ap_real_exit_code = 2;
             break;
 
         case 'n':

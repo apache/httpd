@@ -110,11 +110,11 @@ apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
  * the service.h header, so we best assume it's an error to exit from
  * _any_ other module.
  *
- * If real_exit_code is reset to 0, it will not be set or trigger this
+ * If ap_real_exit_code is reset to 0, it will not be set or trigger this
  * behavior on exit.  All service and child processes are expected to
  * reset this flag to zero to avoid undesireable side effects.
  */
-AP_DECLARE_DATA int real_exit_code = 1;
+AP_DECLARE_DATA int ap_real_exit_code = 1;
 
 void hold_console_open_on_error(void)
 {
@@ -129,7 +129,7 @@ void hold_console_open_on_error(void)
     INPUT_RECORD in;
     char count[16];
     
-    if (!real_exit_code)
+    if (!ap_real_exit_code)
         return;
     hConIn = GetStdHandle(STD_INPUT_HANDLE);
     hConErr = GetStdHandle(STD_ERROR_HANDLE);
@@ -711,7 +711,7 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
     HANDLE waitfor[2];
 
     /* Prevent holding open the (hidden) console */
-    real_exit_code = 0;
+    ap_real_exit_code = 0;
 
      /* GetCurrentThread returns a psuedo-handle, we need
       * a real handle for another thread to wait upon.

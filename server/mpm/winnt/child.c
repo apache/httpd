@@ -69,7 +69,7 @@ static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE qwait_event = NULL;
 
 
-AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
+void mpm_recycle_completion_context(PCOMP_CONTEXT context)
 {
     /* Recycle the completion context.
      * - clear the ptrans pool
@@ -94,7 +94,7 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
     }
 }
 
-AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
+PCOMP_CONTEXT mpm_get_completion_context(void)
 {
     apr_status_t rv;
     PCOMP_CONTEXT context = NULL;
@@ -190,8 +190,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
     return context;
 }
 
-AP_DECLARE(apr_status_t) mpm_post_completion_context(PCOMP_CONTEXT context, 
-                                                     io_state_e state)
+apr_status_t mpm_post_completion_context(PCOMP_CONTEXT context, 
+                                         io_state_e state)
 {
     LPOVERLAPPED pOverlapped;
     if (context)
