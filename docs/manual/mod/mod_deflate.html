@@ -56,8 +56,12 @@
     <a href="../filter.html">filter</a>.  The following directive
     will enable compression for documents in the container where it
     is placed:</p>
+    <p><strong>Most popular browsers can not handle compression of all content
+        so you may want to enable the 'gzip-only-text/html' note (see below)
+    </strong></p>
 
     <blockquote>
+      <code>SetEnv gzip-only-text/html 1</code><br />
       <code>SetOutputFilter DEFLATE</code>
     </blockquote>
 
@@ -66,6 +70,7 @@
 
     <blockquote>
       <code>&lt;Directory "/your-server-root/manual"&gt;<br />
+      SetEnv gzip-only-text/html 1<br />
       SetOutputFilter DEFLATE</code><br />
       <em>leave the existing directives as-is</em><br />
       <code>&lt;/Directory&gt;</code>
