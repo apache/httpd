@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Changes to enable server-parsed mod_autoindex Header and
+     Readme files. [Raymond S Brand <rsbx@rsbx.net>]
+
   *) Add back support for UseCanonicalName in <Directory> containers
      [Manoj Kasichainula]
 

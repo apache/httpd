@@ -108,9 +108,6 @@
 
 module MODULE_VAR_EXPORT includes_module;
 
-/* just need some arbitrary non-NULL pointer which can't also be a request_rec */
-#define NESTED_INCLUDE_MAGIC	(&includes_module)
-
 /* ------------------------ Environment function -------------------------- */
 
 /* XXX: could use ap_table_overlap here */
@@ -745,10 +742,7 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
                 ap_rputs(error, r);
             }
 
-	    /* destroy the sub request if it's not a nested include */
-            if (rr != NULL
-		&& ap_get_module_config(rr->request_config, &includes_module)
-		    != NESTED_INCLUDE_MAGIC) {
+	    if (rr != NULL) {
 		ap_destroy_sub_req(rr);
             }
         }
@@ -2375,6 +2369,53 @@ static int send_parsed_file(request_rec *r)
         return OK;
     }
 
+#define SUB_REQ_STRING	"Sub request to mod_include"
+#define PARENT_STRING	"Parent request to mod_include"
+
+    if (ap_table_get(r->notes, SUB_REQ_STRING)) {
+	/*
+	 * The note is a flag to mod_include that this request
+	 * should be treated as if it was a subrequest originating
+	 * in the handle_include() procedure of mod_include.
+	 */
+
+	/*
+	 * There is no good way to pass the parent request_rec to mod_include.
+	 * Tables only take string values and there is nowhere appropriate in
+	 * in the request_rec that can safely be used. So, search for the
+	 * parent note by walking up the r->main list of subrequests, and at
+	 * each level walking back through any internal redirects. This is
+	 * the same request walking that mod_include uses in the procedure
+	 * handle_include().
+	 */
+	request_rec *p = r->main;
+	request_rec *q = p;
+
+	while (q) {
+	    if (ap_table_get(q->notes, PARENT_STRING)) {
+		/* Kludge --- See below */
+		ap_set_module_config(r->request_config, &includes_module, q);
+
+		/* Create the initial environment in the parent */
+		ap_add_common_vars(q);
+		ap_add_cgi_vars(q);
+		add_include_vars(q, DEFAULT_TIME_FORMAT);
+
+		/* Cleanup - This should allow this technique to nest */
+		ap_table_unset(r->notes, SUB_REQ_STRING);
+		ap_table_unset(q->notes, PARENT_STRING);
+		break;
+	    }
+	    if (q->prev != NULL) {
+		q = q->prev;
+	    }
+	    else {
+		p = p->main;
+		q = p;
+	    }
+	}
+    }
+
     if ((parent = ap_get_module_config(r->request_config, &includes_module))) {
 	/* Kludge --- for nested includes, we want to keep the subprocess
 	 * environment of the base document (for compatibility); that means
@@ -2410,9 +2451,16 @@ static int send_parsed_file(request_rec *r)
     send_parsed_content(f, r);
 
     if (parent) {
-	/* signify that the sub request should not be killed */
-	ap_set_module_config(r->request_config, &includes_module,
-	    NESTED_INCLUDE_MAGIC);
+	/*
+	 * All the work is finished for this subrequest. The following
+	 * makes it safe for the creator of the subrequest to destroy it
+	 * via ap_destroy_sub_req() once the call to ap_run_sub_req()
+	 * returns. This is required since the original pool of the
+	 * subrequest has been merged into the pool of the parent request
+	 * of the subrequest (see Kludge above). The alternative is to
+	 * NOT destroy the subrequest.
+	 */
+	r->pool = ap_make_sub_pool(r->pool);
     }
 
     ap_kill_timeout(r);
