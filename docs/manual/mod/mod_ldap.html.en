@@ -38,21 +38,30 @@ by other LDAP modules</td></tr>
     apr-util. This is achieved by adding the <code>--with-ldap</code>
     flag to the <code>./configure</code> script when building
     Apache.</p>
+
+    <p>SSL support requires that <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> be linked
+    with one of the following LDAP SDKs: <a href="http://www.openldap.org/">
+    OpenLDAP SDK</a> (both 1.x and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
+    Novell LDAP SDK</a> or the <a href="http://www.iplanet.com/downloads/developer/">
+    iPlanet(Netscape)</a> SDK.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ldapcertdbpath">LDAPCertDBPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedca">LDAPTrustedCA</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedcatype">LDAPTrustedCAType</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#exampleconfig">Example Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pool">LDAP Connection Pool</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cache">LDAP Cache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usingssltls">Using SSL</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -184,6 +193,51 @@ by other LDAP modules</td></tr>
       information each time, depending on which <code>httpd</code>
       instance processes the request.</p>
     
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usingssltls" id="usingssltls">Using SSL</a></h2>
+
+    <p>The ability to create an SSL connections to an LDAP server 
+    is defined by the directives <code class="directive"><a href="#&#10;    ldaptrustedca">
+    LDAPTrustedCA</a></code> and <code class="directive"><a href="#&#10;    ldaptrustedcatype">
+    LDAPTrustedCAType</a></code>. These directives specify the certificate
+    file or database and the certificate type. Whenever the LDAP url
+    includes <em>ldaps://</em>, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> will establish
+    a secure connection to the LDAP server.</p>
+
+    <div class="example"><p><code>
+      # Establish an SSL LDAP connection. Requires that <br />
+      # mod_ldap and mod_auth_ldap be loaded. Change the <br />
+      # "yourdomain.example.com" to match your domain.<br />
+      <br />
+      LDAPTrustedCA /certs/certfile.der<br />
+      LDAPTrustedCAType DER_FILE<br />
+      <br />
+      &lt;Location /ldap-status&gt;<br />
+      <span class="indent">
+        SetHandler ldap-status<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourdomain.example.com<br />
+        AuthLDAPEnabled on<br />
+        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPAuthoritative on<br />
+        require valid-user<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <p>If <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> is linked against the
+    Netscape/iPlanet LDAP SDK, it will not talk to any SSL server
+    unless that server has a certificate signed by a known Certificate
+    Authority. As part of the configuration
+    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> needs to be told where it can find
+    a database containing the known CAs. This database is in the same
+    format as Netscape Communicator's <code>cert7.db</code>
+    database. The easiest way to get this file is to start up a fresh
+    copy of Netscape, and grab the resulting
+    <code>$HOME/.netscape/cert7.db</code> file.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a> <a name="ldapcacheentries" id="ldapcacheentries">Directive</a></h2>
@@ -214,24 +268,6 @@ by other LDAP modules</td></tr>
     <p>Specifies the time (in seconds) that an item in the
     search/bind cache remains valid. The default is 600 seconds (10
     minutes).</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPCertDBPath" id="LDAPCertDBPath">LDAPCertDBPath</a> <a name="ldapcertdbpath" id="ldapcertdbpath">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory containing certificates for SSL support</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPCertDBPath <var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-</table>
-    <p>This directive is only valid if Apache has been linked
-    against the Netscape/iPlanet Directory SDK.</p>
-
-    <p>It specifies in which directory <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
-    should look for the certificate authorities database for SSL
-    support. There should be a file named <code>cert7.db</code> in that
-    directory.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -277,6 +313,36 @@ valid</td></tr>
 </table>
     <p>Specifies the number of bytes to specify for the shared
     memory cache. The default is 100kb.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPTrustedCA" id="LDAPTrustedCA">LDAPTrustedCA</a> <a name="ldaptrustedca" id="ldaptrustedca">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the file containing the trusted Certificate Authority certificate or database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedCA <var>directory-path/filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>It specifies the directory path and file name of the trusted CA
+    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> should use when establishing an SSL
+    connection to an LDAP server. If using the Netscape/iPlanet Directory
+    SDK, the file name should be <code>cert7.db</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPTrustedCAType" id="LDAPTrustedCAType">LDAPTrustedCAType</a> <a name="ldaptrustedcatype" id="ldaptrustedcatype">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the type of the Certificate Authority file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedCAType <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>The following types are supported:<br />
+          DER_FILE      - file in binary DER format<br />
+          BASE64_FILE   - file in Base64 format<br />
+          CERT7_DB_PATH - Netscape certificate database file ")</p>
 
 </div>
 </div>
