@@ -267,17 +267,30 @@ static void wakeup_listener(void)
 
 static void signal_threads(int mode)
 {
+    static int prev_mode = 0;
+    
+    if (prev_mode == mode) {
+        return;
+    }
+    prev_mode = mode;
+
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
     wakeup_listener();
 
+    /* for ungraceful termination, let the workers exit now;
+     * for graceful termination, the listener thread will notify the
+     * workers to exit once it has stopped accepting new connections
+     */
+    if (mode == ST_UNGRACEFUL) {
+        workers_may_exit = 1;
+        ap_queue_interrupt_all(worker_queue);
+    }
+
     /* XXX: This will happen naturally on a graceful, and we don't care 
      * otherwise.
     ap_queue_signal_all_wakeup(worker_queue); */
-
-    workers_may_exit = 1;
-    ap_queue_interrupt_all(worker_queue);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -798,6 +811,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     ap_update_child_status_from_indexes(process_slot, thread_slot, 
                                         (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
                                         (request_rec *) NULL);
+    ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
     kill(ap_my_pid, SIGTERM);
@@ -832,6 +846,12 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         last_ptrans = NULL;
 
         if (rv != APR_SUCCESS) {
+            /* We get APR_EOF during a graceful shutdown once all the connections
+             * accepted by this server process have been handled.
+             */
+            if (rv == APR_EOF) {
+                break;
+            }
             /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
              * from an explicit call to ap_queue_interrupt_all(). This allows
              * us to unblock threads stuck in ap_queue_pop() when a shutdown

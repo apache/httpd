@@ -140,6 +140,8 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
         return rv;
     }
 
+    AP_DEBUG_ASSERT(!queue->terminated);
+    
     while (ap_queue_full(queue)) {
         apr_thread_cond_wait(queue->not_full, queue->one_big_mutex);
     }
@@ -191,13 +193,20 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
 
     /* Keep waiting until we wake up and find that the queue is not empty. */
     if (ap_queue_empty(queue)) {
-        apr_thread_cond_wait(queue->not_empty, queue->one_big_mutex);
+        if (!queue->terminated) {
+            apr_thread_cond_wait(queue->not_empty, queue->one_big_mutex);
+        }
         /* If we wake up and it's still empty, then we were interrupted */
         if (ap_queue_empty(queue)) {
             if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
                 return rv;
             }
-            return APR_EINTR;
+            if (queue->terminated) {
+                return APR_EOF; /* no more elements ever again */
+            }
+            else {
+                return APR_EINTR;
+            }
         }
     } 
     
@@ -236,3 +245,20 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
     return APR_SUCCESS;
 }
 
+apr_status_t ap_queue_term(fd_queue_t *queue)
+{
+    apr_status_t rv;
+
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    /* we must hold one_big_mutex when setting this... otherwise,
+     * we could end up setting it and waking everybody up just after a 
+     * would-be popper checks it but right before they block
+     */
+    queue->terminated = 1;
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    return ap_queue_interrupt_all(queue);
+}
