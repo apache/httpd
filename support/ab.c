@@ -1100,9 +1100,9 @@ static void output_html_results(void)
 	   "<td colspan=2 %s>%d</td></tr>\n",
 	   trstring, tdstring, tdstring, concurrency);
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
-	   "<td colspan=2 %s>%qd.%03qd seconds</td></tr>\n",
-	   trstring, tdstring, tdstring, (long long)apr_time_sec(timetaken),
-           (long long)apr_time_usec(timetaken));
+	   "<td colspan=2 %s>%qd.%03ld seconds</td></tr>\n",
+	   trstring, tdstring, tdstring, apr_time_sec(timetaken),
+           (long)apr_time_usec(timetaken));
     printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
 	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, done);
@@ -1725,14 +1725,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.106 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.107 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.106 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.107 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
