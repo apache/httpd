@@ -68,8 +68,6 @@
 **  _________________________________________________________________
 */
 
-/* XXX THIS STUFF NEEDS A MAJOR CLEANUP -RSE XXX */
-
 /* this custom BIO allows us to hook SSL_write directly into 
  * an apr_bucket_brigade and use transient buckets with the SSL
  * malloc-ed buffer, rather than copying into a mem BIO.
@@ -77,7 +75,7 @@
  * rather than buffering up the entire response in the mem BIO.
  *
  * when SSL needs to flush (e.g. SSL_accept()), it will call BIO_flush()
- * which will trigger a call to bio_bucket_ctrl() -> BIO_bucket_flush().
+ * which will trigger a call to bio_filter_out_ctrl() -> bio_filter_out_flush().
  * so we only need to flush the output ourselves if we receive an
  * EOS or FLUSH bucket. this was not possible with the mem BIO where we
  * had to flush all over the place not really knowing when it was required
@@ -91,50 +89,48 @@ typedef struct {
     apr_size_t length;
     char buffer[AP_IOBUFSIZE];
     apr_size_t blen;
-} BIO_bucket_t;
+} bio_filter_out_ctx_t;
 
-static BIO_bucket_t *BIO_bucket_new(SSLFilterRec *frec, conn_rec *c)
+static bio_filter_out_ctx_t *bio_filter_out_ctx_new(SSLFilterRec *frec, conn_rec *c)
 {
-    BIO_bucket_t *b = apr_palloc(c->pool, sizeof(*b));
+    bio_filter_out_ctx_t *outctx = apr_palloc(c->pool, sizeof(*outctx));
 
-    b->frec = frec;
-    b->c = c;
-    b->bb = apr_brigade_create(c->pool, c->bucket_alloc);
-    b->blen = 0;
-    b->length = 0;
+    outctx->frec = frec;
+    outctx->c = c;
+    outctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    outctx->blen = 0;
+    outctx->length = 0;
 
-    return b;
+    return outctx;
 }
 
-#define BIO_bucket_ptr(bio) (BIO_bucket_t *)bio->ptr
-
-static int BIO_bucket_flush(BIO *bio)
+static int bio_filter_out_flush(BIO *bio)
 {
-    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
     apr_bucket *e;
 
-    if (!(b->blen || b->length)) {
+    if (!(outctx->blen || outctx->length)) {
         return APR_SUCCESS;
     }
 
-    if (b->blen) {
-        e = apr_bucket_transient_create(b->buffer, b->blen,
-                                        b->bb->bucket_alloc);
+    if (outctx->blen) {
+        e = apr_bucket_transient_create(outctx->buffer, outctx->blen,
+                                        outctx->bb->bucket_alloc);
         /* we filled this buffer first so add it to the 
          * head of the brigade
          */
-        APR_BRIGADE_INSERT_HEAD(b->bb, e);
-        b->blen = 0;
+        APR_BRIGADE_INSERT_HEAD(outctx->bb, e);
+        outctx->blen = 0;
     }
 
-    b->length = 0;
-    e = apr_bucket_flush_create(b->bb->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(b->bb, e);
+    outctx->length = 0;
+    e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
 
-    return ap_pass_brigade(b->frec->pOutputFilter->next, b->bb);
+    return ap_pass_brigade(outctx->frec->pOutputFilter->next, outctx->bb);
 }
 
-static int bio_bucket_new(BIO *bio)
+static int bio_filter_new(BIO *bio)
 {
     bio->shutdown = 1;
     bio->init = 1;
@@ -144,7 +140,7 @@ static int bio_bucket_new(BIO *bio)
     return 1;
 }
 
-static int bio_bucket_free(BIO *bio)
+static int bio_filter_free(BIO *bio)
 {
     if (bio == NULL) {
         return 0;
@@ -156,15 +152,15 @@ static int bio_bucket_free(BIO *bio)
     return 1;
 }
 	
-static int bio_bucket_read(BIO *bio, char *out, int outl)
+static int bio_filter_out_read(BIO *bio, char *out, int outl)
 {
     /* this is never called */
     return -1;
 }
 
-static int bio_bucket_write(BIO *bio, const char *in, int inl)
+static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
-    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+    bio_filter_out_ctx_t *b = (bio_filter_out_ctx_t *)(bio->ptr);
 
     /* when handshaking we'll have a small number of bytes.
      * max size SSL will pass us here is about 16k.
@@ -194,18 +190,18 @@ static int bio_bucket_write(BIO *bio, const char *in, int inl)
         b->length += inl;
         APR_BRIGADE_INSERT_TAIL(b->bb, bucket);
 
-        BIO_bucket_flush(bio);
+        bio_filter_out_flush(bio);
     }
 
     return inl;
 }
 
-static long bio_bucket_ctrl(BIO *bio, int cmd, long num, void *ptr)
+static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
     long ret = 1;
     char **pptr;
 
-    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+    bio_filter_out_ctx_t *b = (bio_filter_out_ctx_t *)(bio->ptr);
 
     switch (cmd) {
       case BIO_CTRL_RESET:
@@ -237,7 +233,7 @@ static long bio_bucket_ctrl(BIO *bio, int cmd, long num, void *ptr)
         ret = (long)(b->blen + b->length);
         break;
       case BIO_CTRL_FLUSH:
-        ret = (BIO_bucket_flush(bio) == APR_SUCCESS);
+        ret = (bio_filter_out_flush(bio) == APR_SUCCESS);
         break;
       case BIO_CTRL_DUP:
         ret = 1;
@@ -256,37 +252,32 @@ static long bio_bucket_ctrl(BIO *bio, int cmd, long num, void *ptr)
     return ret;
 }
 
-static int bio_bucket_gets(BIO *bio, char *buf, int size)
+static int bio_filter_out_gets(BIO *bio, char *buf, int size)
 {
     /* this is never called */
     return -1;
 }
 
-static int bio_bucket_puts(BIO *bio, const char *str)
+static int bio_filter_out_puts(BIO *bio, const char *str)
 {
     /* this is never called */
     return -1;
 }
 
-static BIO_METHOD bio_bucket_method = {
+static BIO_METHOD bio_filter_out_method = {
     BIO_TYPE_MEM,
-    "APR bucket brigade",
-    bio_bucket_write,
-    bio_bucket_read,
-    bio_bucket_puts,
-    bio_bucket_gets,
-    bio_bucket_ctrl,
-    bio_bucket_new,
-    bio_bucket_free,
+    "APR output filter",
+    bio_filter_out_write,
+    bio_filter_out_read,     /* read is never called */
+    bio_filter_out_puts,     /* puts is never called */
+    bio_filter_out_gets,     /* gets is never called */
+    bio_filter_out_ctrl,
+    bio_filter_new,
+    bio_filter_free,
 #ifdef OPENSSL_VERSION_NUMBER
     NULL /* sslc does not have the callback_ctrl field */
 #endif
 };
-
-static BIO_METHOD *BIO_s_bucket(void)
-{
-    return &bio_bucket_method;
-}
 
 typedef struct {
     int length;
@@ -302,15 +293,10 @@ typedef struct {
     apr_read_type_e block;
     apr_bucket_brigade *bb;
     char_buffer_t cbuf;
-} BIO_bucket_in_t;
-
-typedef struct {
-    BIO_bucket_in_t inbio;
-    char_buffer_t cbuf;
     apr_pool_t *pool;
     char buffer[AP_IOBUFSIZE];
     SSLFilterRec *frec;
-} ssl_io_input_ctx_t;
+} bio_filter_in_ctx_t;
 
 /*
  * this char_buffer api might seem silly, but we don't need to copy
@@ -346,41 +332,47 @@ static int char_buffer_write(char_buffer_t *buffer, char *in, int inl)
     return inl;
 }
 
-/*
- * this is the function called by SSL_read()
- */
-#define BIO_bucket_in_ptr(bio) (BIO_bucket_in_t *)bio->ptr
-
 static apr_status_t brigade_consume(apr_bucket_brigade *bb,
                                     apr_read_type_e block,
                                     char *c, apr_size_t *len)
 {
     apr_size_t actual = 0;
+    apr_status_t status;
  
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *b = APR_BRIGADE_FIRST(bb);
         const char *str;
-        apr_status_t status;
         apr_size_t str_len;
         apr_size_t consume;
 
+        /* Justin points out this is an http-ism that might
+         * not fit if brigade_consume is added to APR.  Perhaps
+         * apr_bucket_read(eos_bucket) should return APR_EOF?
+         * Then this becomes mainline instead of a one-off.
+         */
         if (APR_BUCKET_IS_EOS(b)) {
-            *len = 0;
-            return APR_EOF;
+            status = APR_EOF;
+            break;
         }
 
+        /* The reason I'm not offering brigade_consume yet
+         * across to apr-util is that the following call
+         * illustrates how borked that API really is.  For
+         * this sort of case (caller provided buffer) it
+         * would be much more trivial for apr_bucket_consume
+         * to do all the work that follows, based on the
+         * particular characteristics of the bucket we are 
+         * consuming here.
+         */
         status = apr_bucket_read(b, &str, &str_len, block);
         
         if (status != APR_SUCCESS) {
-            if (status == APR_EOF) {
+            if (APR_STATUS_IS_EOF(status)) {
                 /* This stream bucket was consumed */
-                APR_BUCKET_REMOVE(b);
-                apr_bucket_destroy(b);
+                apr_bucket_delete(b);
                 continue;
             }
-
-            *len = actual;
-            return status;
+            break;
         }
 
         if (str_len > 0) {
@@ -399,8 +391,7 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
         if (b->start >= 0) {
             if (consume >= b->length) {
                 /* This physical bucket was consumed */
-                APR_BUCKET_REMOVE(b);
-                apr_bucket_destroy(b);
+                apr_bucket_delete(b);
             }
             else {
                 /* Only part of this physical bucket was consumed */
@@ -417,16 +408,19 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
     }
 
     *len = actual;
-    return APR_SUCCESS;
+    return status;
 }
 
-static int bio_bucket_in_read(BIO *bio, char *in, int inl)
+/*
+ * this is the function called by SSL_read()
+ */
+static int bio_filter_in_read(BIO *bio, char *in, int inl)
 {
-    BIO_bucket_in_t *inbio = BIO_bucket_in_ptr(bio);
-    apr_read_type_e block = inbio->block;
-    SSLConnRec *sslconn = myConnConfig(inbio->f->c);
+    bio_filter_in_ctx_t *ctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    apr_read_type_e block = ctx->block;
+    SSLConnRec *sslconn = myConnConfig(ctx->f->c);
 
-    inbio->rc = APR_SUCCESS;
+    ctx->rc = APR_SUCCESS;
 
     /* OpenSSL catches this case, so should we. */
     if (!in)
@@ -436,47 +430,47 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
      * OpenSSL calls BIO_flush() at the appropriate times for
      * the other protocols.
      */
-    if ((SSL_version(inbio->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
-        BIO_bucket_flush(inbio->wbio);
+    if ((SSL_version(ctx->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
+        bio_filter_out_flush(ctx->wbio);
     }
 
     BIO_clear_retry_flags(bio);
 
-    if (!inbio->bb) {
-        inbio->rc = APR_EOF;
+    if (!ctx->bb) {
+        ctx->rc = APR_EOF;
         return -1;
     }
 
-    if (APR_BRIGADE_EMPTY(inbio->bb)) {
+    if (APR_BRIGADE_EMPTY(ctx->bb)) {
 
-        inbio->rc = ap_get_brigade(inbio->f->next, inbio->bb,
+        ctx->rc = ap_get_brigade(ctx->f->next, ctx->bb,
                                    AP_MODE_READBYTES, block, 
                                    inl);
 
         /* Not a problem, there was simply no data ready yet.
          */
-        if (APR_STATUS_IS_EAGAIN(inbio->rc) || APR_STATUS_IS_EINTR(inbio->rc)
-               || (inbio->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(inbio->bb))) {
+        if (APR_STATUS_IS_EAGAIN(ctx->rc) || APR_STATUS_IS_EINTR(ctx->rc)
+               || (ctx->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(ctx->bb))) {
             BIO_set_retry_read(bio);
             return 0;
         }
 
-        if (inbio->rc != APR_SUCCESS) {
+        if (ctx->rc != APR_SUCCESS) {
             /* Unexpected errors discard the brigade */
-            apr_brigade_cleanup(inbio->bb);
-            inbio->bb = NULL;
+            apr_brigade_cleanup(ctx->bb);
+            ctx->bb = NULL;
             return -1;
         }
     }
 
-    inbio->rc = brigade_consume(inbio->bb, block, in, &inl);
+    ctx->rc = brigade_consume(ctx->bb, block, in, &inl);
 
-    if (inbio->rc == APR_SUCCESS) {
+    if (ctx->rc == APR_SUCCESS) {
         return inl;
     }
 
-    if (APR_STATUS_IS_EAGAIN(inbio->rc) 
-            || APR_STATUS_IS_EINTR(inbio->rc)) {
+    if (APR_STATUS_IS_EAGAIN(ctx->rc) 
+            || APR_STATUS_IS_EINTR(ctx->rc)) {
         BIO_set_retry_read(bio);
         return inl;
     }
@@ -484,10 +478,10 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
     /* Unexpected errors and APR_EOF clean out the brigade.
      * Subsequent calls will return APR_EOF.
      */
-    apr_brigade_cleanup(inbio->bb);
-    inbio->bb = NULL;
+    apr_brigade_cleanup(ctx->bb);
+    ctx->bb = NULL;
 
-    if ((inbio->rc == APR_EOF) && inl) {
+    if (APR_STATUS_IS_EOF(ctx->rc) && inl) {
         /* Provide the results of this read pass,
          * without resetting the BIO retry_read flag
          */
@@ -498,25 +492,20 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
 }
 
 
-static BIO_METHOD bio_bucket_in_method = {
+static BIO_METHOD bio_filter_in_method = {
     BIO_TYPE_MEM,
-    "APR input bucket brigade",
+    "APR input filter",
     NULL,                       /* write is never called */
-    bio_bucket_in_read,
+    bio_filter_in_read,
     NULL,                       /* puts is never called */
     NULL,                       /* gets is never called */
     NULL,                       /* ctrl is never called */
-    bio_bucket_new,
-    bio_bucket_free,
+    bio_filter_new,
+    bio_filter_free,
 #ifdef OPENSSL_VERSION_NUMBER
     NULL /* sslc does not have the callback_ctrl field */
 #endif
 };
-
-static BIO_METHOD *BIO_s_in_bucket(void)
-{
-    return &bio_bucket_in_method;
-}
 
 static const char ssl_io_filter[] = "SSL/TLS Filter";
 
@@ -608,7 +597,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
          * These types do not require translation by OpenSSL.  
          */
         if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
-            if ((status = BIO_bucket_flush(ctx->pbioWrite)) != APR_SUCCESS) {
+            if ((status = bio_filter_out_flush(ctx->pbioWrite)) != APR_SUCCESS) {
                 return status;
             }
 
@@ -625,7 +614,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
                 break;
             }
             else {
-                /* BIO_bucket_flush() already passed down a flush bucket
+                /* bio_filter_out_flush() already passed down a flush bucket
                  * if there was any data to be flushed.
                  */
                 apr_bucket_delete(bucket);
@@ -649,7 +638,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     return status;
 }
 
-static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
+static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
                                       char *buf,
                                       apr_size_t *len)
 {
@@ -661,13 +650,13 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
 
     if ((bytes = char_buffer_read(&ctx->cbuf, buf, wanted))) {
         *len = bytes;
-        if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+        if (ctx->mode == AP_MODE_SPECULATIVE) {
             /* We want to rollback this read. */
             ctx->cbuf.value -= bytes;
             ctx->cbuf.length += bytes;
             return APR_SUCCESS;
         } 
-        if ((*len >= wanted) || ctx->inbio.mode == AP_MODE_GETLINE) {
+        if ((*len >= wanted) || ctx->mode == AP_MODE_GETLINE) {
             return APR_SUCCESS;
         }
     }
@@ -682,23 +671,23 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
 
         if (rc > 0) {
             *len += rc;
-            if (ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+            if (ctx->mode == AP_MODE_SPECULATIVE) {
                 char_buffer_write(&ctx->cbuf, buf, rc);
             }
-            return ctx->inbio.rc;
+            return ctx->rc;
         }
         else if (rc == 0) {
             /* If EAGAIN, we will loop given a blocking read,
              * otherwise consider ourselves at EOF.
              */
-            if (APR_STATUS_IS_EAGAIN(ctx->inbio.rc)
-                    || APR_STATUS_IS_EINTR(ctx->inbio.rc)) {
-                if (ctx->inbio.block == APR_NONBLOCK_READ) {
+            if (APR_STATUS_IS_EAGAIN(ctx->rc)
+                    || APR_STATUS_IS_EINTR(ctx->rc)) {
+                if (ctx->block == APR_NONBLOCK_READ) {
                     break;
                 }
             }
             else {
-                ctx->inbio.rc = APR_EOF;
+                ctx->rc = APR_EOF;
                 break;
             }
         }
@@ -714,14 +703,14 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotation which is handled implicitly by OpenSSL.)
                  */
-                if (ctx->inbio.block == APR_NONBLOCK_READ) {
-                    ctx->inbio.rc = APR_EAGAIN;
+                if (ctx->block == APR_NONBLOCK_READ) {
+                    ctx->rc = APR_EAGAIN;
                     break; /* non fatal error */
                 }
             }
             if (ssl_err == SSL_ERROR_SYSCALL) {
                 conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
-                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->inbio.rc, c->base_server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->rc, c->base_server,
                             "SSL filter error reading data");
                 break;
             }
@@ -730,21 +719,21 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
                  * Log SSL errors and any unexpected conditions.
                  */
                 conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
-                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->inbio.rc, c->base_server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->rc, c->base_server,
                             "SSL library error reading data");
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
-                if (ctx->inbio.rc == APR_SUCCESS) {
-                    ctx->inbio.rc = APR_EGENERAL;
+                if (ctx->rc == APR_SUCCESS) {
+                    ctx->rc = APR_EGENERAL;
                 }
                 break;
             }
         }
     }
-    return ctx->inbio.rc;
+    return ctx->rc;
 }
 
-static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
+static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *ctx,
                                          char *buf,
                                          apr_size_t *len)
 {
@@ -811,8 +800,8 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
 
 static void ssl_io_filter_disable(ap_filter_t *f)
 {
-    ssl_io_input_ctx_t *ctx = f->ctx;
-    ctx->inbio.ssl = NULL;
+    bio_filter_in_ctx_t *ctx = f->ctx;
+    ctx->ssl = NULL;
     ctx->frec->pssl = NULL;
 }
 
@@ -857,12 +846,12 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
                                         apr_off_t readbytes)
 {
     apr_status_t status;
-    ssl_io_input_ctx_t *ctx = f->ctx;
+    bio_filter_in_ctx_t *ctx = f->ctx;
 
     apr_size_t len = sizeof(ctx->buffer);
     int is_init = (mode == AP_MODE_INIT);
 
-    if (!ctx->inbio.ssl) {
+    if (!ctx->ssl) {
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
@@ -872,8 +861,8 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_ENOTIMPL;
     }
 
-    ctx->inbio.mode = mode;
-    ctx->inbio.block = block;
+    ctx->mode = mode;
+    ctx->block = block;
 
     /* XXX: we could actually move ssl_hook_process_connection to an
      * ap_hook_process_connection but would still need to call it for
@@ -893,8 +882,8 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    if (ctx->inbio.mode == AP_MODE_READBYTES || 
-        ctx->inbio.mode == AP_MODE_SPECULATIVE) {
+    if (ctx->mode == AP_MODE_READBYTES || 
+        ctx->mode == AP_MODE_SPECULATIVE) {
         /* Protected from truncation, readbytes < MAX_SIZE_T 
          * FIXME: No, it's *not* protected.  -- jre */
         if (readbytes < len) {
@@ -902,7 +891,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         }
         status = ssl_io_input_read(ctx, ctx->buffer, &len);
     }
-    else if (ctx->inbio.mode == AP_MODE_GETLINE) {
+    else if (ctx->mode == AP_MODE_GETLINE) {
         status = ssl_io_input_getline(ctx, ctx->buffer, &len);
     }
     else {
@@ -926,21 +915,20 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
                                     SSL *ssl)
 {
-    ssl_io_input_ctx_t *ctx;
+    bio_filter_in_ctx_t *ctx;
 
     ctx = apr_palloc(c->pool, sizeof(*ctx));
 
     frec->pInputFilter = ap_add_input_filter(ssl_io_filter, ctx, NULL, c);
 
-    frec->pbioRead = BIO_new(BIO_s_in_bucket());
-    frec->pbioRead->ptr = (void *)&ctx->inbio;
+    frec->pbioRead = BIO_new(&bio_filter_in_method);
+    frec->pbioRead->ptr = (void *)ctx;
 
     ctx->frec = frec;
-    ctx->inbio.ssl = ssl;
-    ctx->inbio.wbio = frec->pbioWrite;
-    ctx->inbio.f = frec->pInputFilter;
-    ctx->inbio.bb = apr_brigade_create(c->pool, c->bucket_alloc);
-    ctx->inbio.cbuf.length = 0;
+    ctx->ssl = ssl;
+    ctx->wbio = frec->pbioWrite;
+    ctx->f = frec->pInputFilter;
+    ctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
     ctx->cbuf.length = 0;
 
@@ -974,8 +962,8 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     filter->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                    filter, NULL, c);
 
-    filter->pbioWrite       = BIO_new(BIO_s_bucket());
-    filter->pbioWrite->ptr  = (void *)BIO_bucket_new(filter, c);
+    filter->pbioWrite       = BIO_new(&bio_filter_out_method);
+    filter->pbioWrite->ptr  = (void *)bio_filter_out_ctx_new(filter, c);
 
     ssl_io_input_add_filter(filter, c, ssl);
 
