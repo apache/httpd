@@ -1,5 +1,10 @@
 Changes with Apache 2.0.21-dev
 
+  *) Add two functions to allow modules to access random parts of the
+     scoreboard.  This allows modules compiled for one MPM to access the
+     scoreboard, even if it the server was compiled for another MPM.
+     [Harrie Hazewinkel <harrie@covalent.net>]
+
 Changes with Apache 2.0.20
 
   *) Fix problem in content-length filter where the filter would
