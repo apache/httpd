@@ -63,7 +63,7 @@ EXTRA_INCLUDES=
 #
 # The Configure script currently has only limited built-in
 # knowledge on how to compile shared objects because this is
-# heavily platform-dependend. The current state is this:
+# heavily platform-dependent. The current state is this:
 #
 # Out-of-the-box supported platforms:
 #   Linux, FreeBSD, Solaris, SunOS, IRIX, OSF1, UnixWare
@@ -109,8 +109,10 @@ EXTRA_INCLUDES=
 #
 # IRIXNIS:
 #  Only takes effect if Configure determines that you are running
-#  SGI IRIX. If you are, and you are using NIS, you should set this
-#  to 'yes'
+#  SGI IRIX.  If you are using a (ancient) 4.x version of IRIX, you
+#  need this if you are using NIS and Apache needs access to it for
+#  things like mod_userdir.  This is not required on 5.x and later
+#  and you should not enable it on such systems.
 #
 # IRIXN32:
 #  If you are running a version of IRIX and Configure detects
