@@ -26,6 +26,7 @@ APACHE_MODULE(authz_host, host-based authorization control, , , yes)
 APACHE_MODULE(authz_groupfile, 'require group' authorization control, , , yes)
 APACHE_MODULE(authz_user, 'require user' authorization control, , , yes)
 APACHE_MODULE(authz_dbm, DBM-based authorization control, , , most)
+APACHE_MODULE(authz_owner, 'require file-owner' authorization control, , , most)
 
 dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
