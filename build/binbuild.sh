@@ -7,7 +7,9 @@
 # See http://www.apache.org/docs/LICENSE
 
 OS=`./srclib/apr/build/config.guess`
-CONFIGPARAM="--with-layout=BinaryDistribution --prefix=`pwd`/bindist"
+BUILD_DIR="`pwd`/bindist"
+DEFAULT_DIR="/usr/local/apache2"
+CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
 VER=`echo $APDIR |sed s/httpd-//`
@@ -107,8 +109,8 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "script \"install-bindist.sh\" in the top-level directory of the distribution." && \
   echo " " && \
   echo "The script takes the ServerRoot directory into which you want to install" && \
-  echo "Apache as an option. If you ommit the option the default path" && \
-  echo "\"/usr/local/apache\" is used." && \
+  echo "Apache as an option. If you omit the option the default path" && \
+  echo "\"$DEFAULT_DIR\" is used." && \
   echo "Make sure you have write permissions in the target directory, e.g. switch" && \
   echo "to user \"root\" before you execute the script." && \
   echo " " && \
@@ -187,7 +189,7 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo " " && \
   echo "if [ .\$1 = . ]" && \
   echo "then" && \
-  echo "  SR=/usr/local/apache" && \
+  echo "  SR=$DEFAULT_DIR" && \
   echo "else" && \
   echo "  SR=\$1" && \
   echo "fi" && \
@@ -208,9 +210,10 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "if [ -d \$SR/conf ]" && \
   echo "then" && \
   echo "  echo \"[Preserving existing configuration files.]\"" && \
-  echo "  cp bindist/conf/*.default \$SR/conf/" && \
+  echo "  cp bindist/conf/*-std.conf \$SR/conf/" && \
   echo "else" && \
   echo "  lcopy bindist/conf \$SR/conf 750 640" && \
+  echo "  sed -e \"s%$DEFAULT_DIR%\$SR%\" \$SR/conf/httpd-std.conf > \$SR/conf/httpd.conf" && \
   echo "fi" && \
   echo "if [ -d \$SR/htdocs ]" && \
   echo "then" && \
@@ -229,8 +232,8 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
   echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
-  echo "sed -e \"s%/usr/local/apache%\$SR%\" \$SR/conf/httpd-std.conf > \$SR/conf/httpd.conf" && \
-  echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR -R \$SR/libexec\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
+  echo "sed -e \"s%$DEFAULT_DIR%\$SR%\" \\" && \
+  echo "        -e \"s%^HTTPD=.*\$%HTTPD=\\\"\$SR/bin/httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
   echo "echo \"Ready.\"" && \
   echo "echo \" +--------------------------------------------------------+\"" && \
@@ -253,15 +256,15 @@ cp README.bindist ../httpd-$VER-$OS.README
 ) > install-bindist.sh
 chmod 755 install-bindist.sh
 
-sed -e "s%\"htdocs%\"/usr/local/apache/htdocs%" \
-    -e "s%\"icons%\"/usr/local/apache/icons%" \
-    -e "s%\"cgi-bin%\"/usr/local/apache/cgi-bin%" \
-    -e "s%\"proxy%\"/usr/local/apache/proxy%" \
+sed -e "s%$BUILD_DIR%$DEFAULT_DIR%" \
     -e "s%^ServerAdmin.*%ServerAdmin you@your.address%" \
     -e "s%#ServerName.*%#ServerName localhost%" \
-    -e "s%Port 8080%Port 80%" \
     bindist/conf/httpd-std.conf > bindist/conf/httpd.conf
-cp bindist/conf/httpd.conf bindist/conf/httpd.conf.default
+cp bindist/conf/httpd.conf bindist/conf/httpd-std.conf
+
+sed -e "s%$BUILD_DIR%$DEFAULT_DIR%" \
+    bindist/bin/apachectl > bindist/bin/apachectl.tmp
+mv bindist/bin/apachectl.tmp bindist/bin/apachectl
 
 echo "Creating distribution archive and readme file..."
  
