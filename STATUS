@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 20:02:20 $]
+Last modified at [$Date: 2004/05/21 21:43:51 $]
 
 Release:
 
@@ -76,7 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
        is NULL.
        modules/experimental/util_ldap_cache.c r1.16
        PR 26686 [Jari Ahonen <jah@progress.com>]
-       +1: jim
+       +1: jim, trawick
 
     *) Quotes cannot be used around require group and require dn
        directives, update the documentation to reflect this. Also add
@@ -86,13 +86,13 @@ PATCHES TO BACKPORT FROM 2.1
        docs/manual/mod/mod_auth_ldap.xml r1.18
        modules/experimental/mod_auth_ldap.c r1.27
        PR 19304
-       +1: minfrin, jim
+       +1: minfrin, jim, trawick
 
     *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
        from escaping filters twice when the backslash character is used.
        modules/experimental/mod_auth_ldap.c r1.25
        PR 24437 [Jess Holle <jessh@ptc.com>]
-       +1: minfrin, jim
+       +1: minfrin, jim, trawick
 
     *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
        functions leave the connections in a sane state after errors have
@@ -103,7 +103,7 @@ PATCHES TO BACKPORT FROM 2.1
        modules/experimental/mod_auth_ldap.c r1.24
        modules/experimental/util_ldap.c r1.18
        PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134, 27271       
-       +1: minfrin, jim
+       +1: minfrin, jim, trawick
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
@@ -125,7 +125,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26
-       +1: madhum, jorton
+       +1: madhum, jorton, trawick
 
     *) mod_cgi: Handle stderr output during script execution
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
