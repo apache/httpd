@@ -5,6 +5,7 @@ Makefile
 *.mak
 rotatelogs
 htpasswd
+htdbm
 htdigest
 unescape
 inc2shtml
