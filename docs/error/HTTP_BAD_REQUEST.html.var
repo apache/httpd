@@ -41,10 +41,10 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Bad request!"
+--><!--#set var="TITLE" value="&iexcl;Solicitud err&oacute;nea&excl;"
 --><!--#include virtual="include/top.html" -->
 
-	El buscador ha solicitado una operaci&oacute;n
+	El navegador ha solicitado una operaci&oacute;n
 	que no puede ser procesada por el servidor.
 
 <!--#include virtual="include/bottom.html" -->

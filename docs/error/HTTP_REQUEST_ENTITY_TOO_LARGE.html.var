@@ -44,7 +44,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Request entity too large!"
+--><!--#set var="TITLE" value="&iexcl;Entidad solicitada demasiado larga&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	Los recursos establecidos no permiten peticiones con

@@ -64,21 +64,21 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Authentication required!"
+--><!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida&excl;"
 --><!--#include virtual="include/top.html" -->
 
     El servidor no puede certificar que usted este autorizado
-    para accesar el URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Usted pudo suministrar informaci&oacute;n incorrecta accidentalmente
-    (ejem. una contrase&ntilde;a inv&aacute;lida) o, el buscador no sabe 
+    para acceder al enlace "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Usted pudo suministrar informaci&oacute;n err&oacute;nea accidentalmente
+    (ejem. una contrase&ntilde;a inv&aacute;lida) o, el navegador no sabe 
     como suministrar la informaci&oacute;n requerida.
 
   <!--#include virtual="include/spacer.html" -->
 
     En caso de que a usted le este permitido el uso del
-    documento requerido, le solicitamos de la manera mas atenta
-    que porfavor vuelva a intentar la operaci&oacute;n suministrando
-    nuevamente su numero de identificaci&oacute;n y su contrase&ntilde;a.
+    documento requerido, le solicitamos de la manera m&aacute;s atenta
+    que por favor vuelva a intentar la operaci&oacute;n suministrando
+    nuevamente su identificador y su contrase&ntilde;a.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

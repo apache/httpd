@@ -24,7 +24,7 @@ the <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-Favor de contactar al 
+Por favor contacte con el 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>
 en caso de que usted crea que existe un error en el servidor.
 ----------es--

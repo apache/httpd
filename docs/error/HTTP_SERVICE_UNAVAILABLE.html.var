@@ -45,15 +45,15 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Service unavailable!"
+--><!--#set var="TITLE" value="&iexcl;Servicio no disponible&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	El servidor no puede atender su solicitud por
 	el momento debido a problemas de mantenimiento
 	o de capacidad.
 
-	Le solicitamos que porfavor repita la operaci&oacute;n
-	mas tarde.
+	Le solicitamos que por favor repita la operaci&oacute;n
+	m&aacute;s tarde.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

@@ -84,25 +84,25 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Object not found!"
+--><!--#set var="TITLE" value="&iexcl;Objeto no encontrado&excl;"
 --><!--#include virtual="include/top.html" -->
 
-    El URL requerido no ha sido localizado en
+    El enlace requerido no ha sido localizado en
     este servidor.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    El URL en la
+    El enlace en la
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
-    referida</a> parece tener algun error o estar fuera de tiempo. Porfavor
+    referente</a> parece tener algun error o ha expirado. Por favor
     comunique al autor de
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la
-    p&aacute;gina</a> acerca del error.
+    p&aacute;gina</a> el error.
 
   <!--#else -->
 
-    Si usted provisiono el URL de manera manual le solicitamos
-    que porfavor revise los datos e intente de nuevo.
+    Si usted proporcion&oacute; el enlace de manera manual le solicitamos
+    que por favor revise los datos e intentelo de nuevo.
 
   <!--#endif -->
 
