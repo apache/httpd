@@ -6664,8 +6664,7 @@ int REALMAIN(int argc, char *argv[])
     char *cp;
     char *s;
     int conf_specified = 0;
-    char cwd[MAX_STRING_LEN];
-
+    
 #ifdef WIN32
     jmp_buf reparse_args;
     char *service_name = NULL;
@@ -6708,31 +6707,39 @@ int REALMAIN(int argc, char *argv[])
 
     common_init();
     ap_setup_prelinked_modules();
-    
+
+    /* initialize ap_server_root to the directory of the executable, in case
+     * the user chooses a relative path for the -d serverroot arg a bit later
+     */
+
 #ifdef NETWARE
     if(!*ap_server_root) {
         ap_cpystrn(ap_server_root, bslash2slash(remove_filename(argv[0])),
                    sizeof(ap_server_root));
     }
-
-    /* NetWare doesn't have a concept of a current working directory so we
-     * initialize cwd to the startup directory for the executible, in case
-     * the user chooses a relative path for the -d serverroot arg a bit later
-     */
-    ap_cpystrn(cwd, ap_server_root, sizeof(cwd));
-    if (cwd[strlen(cwd)-1] != '/')
-	strcat (cwd, "/");
-    chdir (cwd);
-#else
-    if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
-       ap_log_error(APLOG_MARK,APLOG_EMERG|APLOG_WIN32ERROR, NULL,
-       "GetCurrentDirectory() failure");
-       return -1;
-    }
-
-    ap_cpystrn(cwd, ap_os_canonical_filename(pcommands, cwd), sizeof(cwd));
-    ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
 #endif
+
+#ifdef WIN32
+    if(!*ap_server_root) {
+        if (GetModuleFileName(NULL, ap_server_root, sizeof(ap_server_root))) {
+            ap_cpystrn(ap_server_root,
+                       ap_os_canonical_filename(pcommands, ap_server_root), 
+                       sizeof(ap_server_root));
+            if (ap_os_is_path_absolute(ap_server_root) 
+                    && strchr(ap_server_root, '/'))
+                *strrchr(ap_server_root, '/') = '\0';
+            else 
+                *ap_server_root = '\0';
+        }
+    }
+#endif
+
+    /* Fallback position if argv[0] wasn't deciphered
+     */
+    if (!*ap_server_root)
+        ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+
+    chdir (ap_server_root);
 
 #ifdef WIN32
     /* If this is a service, we will need to fall back here and 
@@ -6821,14 +6828,14 @@ int REALMAIN(int argc, char *argv[])
 	case 'd':
             optarg = ap_os_canonical_filename(pcommands, optarg);
             if (!ap_os_is_path_absolute(optarg)) {
-	        optarg = ap_pstrcat(pcommands, cwd, optarg, NULL);
-                ap_getparents(optarg);
+	        optarg = ap_pstrcat(pcommands, ap_server_root, "/", 
+                                    optarg, NULL);
             }
-            if (optarg[strlen(optarg)-1] != '/')
-                optarg = ap_pstrcat(pcommands, optarg, "/", NULL);
-            ap_cpystrn(ap_server_root,
-                       optarg,
-                       sizeof(ap_server_root));
+            ap_cpystrn(ap_server_root, optarg, sizeof(ap_server_root));
+            ap_getparents(ap_server_root);
+            ap_no2slash(ap_server_root);
+            if (ap_server_root[strlen(ap_server_root)-1] == '/')
+                ap_server_root[strlen(ap_server_root)-1] = '\0';
 	    break;
 	case 'f':
             ap_cpystrn(ap_server_confname,
@@ -6955,30 +6962,24 @@ int REALMAIN(int argc, char *argv[])
     }
 #endif
 
-    /* ServerConfFile is found in this order:
-     * (1) -f or -n
-     * (2) [-d]/SERVER_CONFIG_FILE
-     * (3) ./SERVER_CONFIG_FILE
-     * (4) [Registry: HKLM\Software\[product]\ServerRoot]/SERVER_CONFIG_FILE
-     * (5) /HTTPD_ROOT/SERVER_CONFIG_FILE
+    /* ServerRoot/ServerConfFile are found in this order:
+     * (1) serverroot set to Apache.exe's path, or HTTPD_ROOT if unparsable
+     * (2) arguments are grabbed for the -n named service, if given
+     * (3) the -d argument is taken from the given command line
+     * (4) the -d argument is taken from the service's default args
+     * (5) the -f argument is taken from the given command line
+     * (6) the -f argument is taken from the service's default args
+     * (7) if -f is omitted, then initialized to SERVER_CONFIG_FILE
+     * (8) if ap_server_confname is not absolute, then merge it to serverroot
      */
-     
-    if (!conf_specified) {
+    
+    if (!conf_specified)
         ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
-        if (access(ap_server_root_relative(pcommands, ap_server_confname), 0)) {
-#ifdef WIN32
-            ap_registry_get_server_root(pconf, ap_server_root, sizeof(ap_server_root));
-#endif
-            if (!*ap_server_root)
-                ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
-            ap_cpystrn(ap_server_root, ap_os_canonical_filename(pcommands, ap_server_root),
-                       sizeof(ap_server_root));
-        }
-    }
 
-    ap_cpystrn(ap_server_confname,
-               ap_server_root_relative(pcommands, ap_server_confname),
-               sizeof(ap_server_confname));
+    if (!ap_os_is_path_absolute(ap_server_confname))
+        ap_cpystrn(ap_server_confname,
+                   ap_server_root_relative(pcommands, ap_server_confname),
+                   sizeof(ap_server_confname));
     ap_getparents(ap_server_confname);
     ap_no2slash(ap_server_confname);
     
