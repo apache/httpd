@@ -1,3 +1,10 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+Pokud si myslíte, ¾e toto je chyba serveru, kontaktujte, prosím,
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmastera</a>.
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--

@@ -1,3 +1,32 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Chyba serveru!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Nastala vnitøní chyba a server nebyl schopen
+    dokonèit Vá¹ po¾adavek.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Chybová zpráva
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Nastala vnitøní chyba a server nebyl schopen
+    dokonèit Vá¹ po¾adavek. Buï je server
+    pøetí¾en, nebo do¹lo k&nbsp;chybì v&nbsp;CGI skriptu.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--

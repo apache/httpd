@@ -1,3 +1,30 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Zdroj ji¾ není dále dostupný!"
+--><!--#include virtual="include/top.html" -->
+
+    Po¾adované URL ji¾ není na tomto serveru k dispozici, ani není k dispozici
+    ¾ádná adresa k pøesmìrování.
+
+  <!--#if expr="$HTTP_REFERER" -->
+  
+    Informujte, prosím, autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
+    stránky</a>, ¾e odkaz je zastaralý.
+   
+  <!--#else -->
+  
+    Pokud jste následovali odkaz z&nbsp;cizí stránky, kontaktujte, prosím,
+    jejího autora.
+
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--

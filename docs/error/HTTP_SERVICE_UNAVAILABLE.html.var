@@ -1,3 +1,18 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Slu¾ba není dostupná!"
+--><!--#include virtual="include/top.html" -->
+
+    Server doèasnì nemù¾e zpracovat Vá¹ po¾adavek
+    kvùli údr¾bì nebo kapacitním problémùm.
+    Zkuste to, prosím, pozdìji.
+
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
