@@ -25,10 +25,6 @@ Changes with Apache 2.1.0-dev
   *) Forward port of mod_actions' ability to handle arbitrary methods
      with the Script directive.  [André Malo]
 
-  *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
-     not specified. Now it assumes "/" as already documented. PR 16937.
-     [André Malo]
-
   *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
      be started on Unix because of such problems as bad permissions,
      bad shebang line, etc.  [Jeff Trawick]
@@ -108,6 +104,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
+     not specified. Now it assumes "/" as already documented. PR 16937.
+     [André Malo]
 
   *) Try to log an error if a piped log program fails.  Try to
      restart a piped log program in more failure situations.  Fix an
