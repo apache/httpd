@@ -221,6 +221,7 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
     /* Store it away so we can get it later. */
     dobj->disk_info = disk_info;
 
+    info->status = disk_info.status;
     info->date = disk_info.date;
     info->expire = disk_info.expire;
     info->request_time = disk_info.request_time;

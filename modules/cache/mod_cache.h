@@ -241,7 +241,15 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
  */
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
 
-CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r);
+/**
+ * Merge in cached headers into the response
+ * @param h cache_handle_t
+ * @param r request_rec
+ * @param preserve_orig If 1, the values in r->headers_out are preserved.
+ *        Otherwise, they are overwritten by the cached value.
+ */
+CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
+                                            int preserve_orig);
 
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
