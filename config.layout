@@ -60,3 +60,20 @@
     logfiledir:    logs
     proxycachedir: proxy
 </Layout>
+
+#   Apple's Mac OS X Server Layout
+<Layout Rhapsody>
+    prefix:        /Local/Library/WebServer
+    exec_prefix:   /usr
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    /System/Library/Apache/Modules
+    mandir:        $exec_prefix/share/man
+    sysconfdir:    $prefix/Configuration
+    datadir:       $prefix
+    includedir:    /System/Library/Frameworks/Apache.framework/Versions/1.3/Headers
+    localstatedir: /private/var
+    runtimedir:    $prefix/Logs
+    logfiledir:    $prefix/Logs
+    proxycachedir: $prefix/ProxyCache
+</Layout>

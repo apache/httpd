@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Add Apple's Mac OS X Server Layout "Rhapsody" to config.layout.
+     [Wilfredo Sanchez]
+
   *) Add cgidir, htdocsdir, iconsdir variables to Makefile.tmpl in order
      to make platform installations easier.  [Wilfredo Sanchez]
 
