@@ -115,6 +115,12 @@ by other LDAP modules</dd>
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>
 <dt><a href="mod_proxy.html" id="P" name="P">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd>
+<dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
+<code>CONNECT</code> request handling</dd>
+<dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
