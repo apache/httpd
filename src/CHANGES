@@ -1,5 +1,11 @@
 Changes with Apache 1.3.17
 
+  *) Fixed translate_userdir() in MOD_USERDIR.C so that it correctly
+     recognizes NetWare absolute paths.  This fixes the problem where
+     MOD_USERDIR was trying to redirect to an absolute NetWare path
+     rather than opening the file at the specified location.  This 
+     patch fixes PR5826 & 6283. [Brad Nicholes <BNICHOLES@novell.com>]
+
   *) Fixed ap_os_is_path_absolute() in OS.H so that it can tell the
      between a NetWare path (SYS:/path) and a URL (HTTP://path).
      [Brad Nicholes <BNICHOLES@novell.com>]

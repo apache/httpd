@@ -257,12 +257,18 @@ static int translate_userdir(request_rec *r)
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
+#ifdef NETWARE        
+        int is_absolute = ap_os_is_path_absolute(userdir);
+#endif		
 
         if (strchr(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
 	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
             if (x) {
+#ifdef NETWARE 
+                if (strchr(x, ':') && !is_absolute )
+#else
 #ifdef HAVE_DRIVE_LETTERS
                 /*
                  * Crummy hack. Need to figure out whether we have been
@@ -276,6 +282,7 @@ static int translate_userdir(request_rec *r)
 #else
                 if (strchr(x, ':'))
 #endif /* def HAVE_DRIVE_LETTERS */
+#endif /* NETWARE */
 		{
                     redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     ap_table_setn(r->headers_out, "Location", redirect);
@@ -287,7 +294,11 @@ static int translate_userdir(request_rec *r)
             else
                 filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
+#ifdef NETWARE
+        else if (strchr(userdir, ':') && !is_absolute ) {
+#else        
         else if (strchr(userdir, ':')) {
+#endif
             redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
             ap_table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
