@@ -375,18 +375,22 @@ static void xlate_register_filter(request_rec *r)
 static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
 {
     ap_bucket_brigade *bb;
+    ap_bucket *b;
 
     bb = ap_brigade_create(f->r->pool);
-    AP_BRIGADE_INSERT_TAIL(bb, ap_bucket_create_transient(tmp, len));
+    b = ap_bucket_create_transient(tmp, len);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     return ap_pass_brigade(f->next, bb);
 }
 
 static apr_status_t send_eos(ap_filter_t *f)
 {
     ap_bucket_brigade *bb;
+    ap_bucket *b;
 
     bb = ap_brigade_create(f->r->pool);
-    AP_BRIGADE_INSERT_TAIL(bb, ap_bucket_create_eos());
+    b = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     return ap_pass_brigade(f->next, bb);
 }
 
