@@ -750,6 +750,9 @@ typedef quad_t rlim_t;
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST sys_siglist
+#if (defined(__FreeBSD_version) && (__FreeBSD_version >= 400000))
+#define NET_SIZE_T socklen_t
+#endif
 
 #elif defined(QNX)
 #ifndef crypt
