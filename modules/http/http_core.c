@@ -3117,7 +3117,7 @@ static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
             destroy_me = NULL;
         }
         if (AP_BUCKET_IS_EOS(e)  || AP_BUCKET_IS_FILE(e) ||
-            AP_BUCKET_IS_PIPE(e)) {
+            AP_BUCKET_IS_PIPE(e) || AP_BUCKET_IS_FLUSH(e)) {
             pass_the_brigade = 1;
         }
         else {
@@ -3441,7 +3441,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_EOS(e)) {
+        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_EOS(e) && !AP_BUCKET_IS_FLUSH(e)) {
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;
         }
