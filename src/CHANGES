@@ -1,5 +1,12 @@
 Changes with Apache 1.3.23
 
+  *) NetWare: Added mod_unique_id to the project file.  
+     [Brad Nicholes bnicholes@novell.com]
+
+  *) NetWare: Fixed a link problem with mod_vhost_alias so that it
+     exports the correct MODULE structure. PR 8598  
+     [Brad Nicholes bnicholes@novell.com]
+
   *) Unix: The generated install script for binary distributions,
      install-bindist.sh, now makes DSO files executable, like
      make install.  This allows a binary distribution to work on 
