@@ -572,7 +572,8 @@ void send_http_header(request_rec *r)
 
     bputs("\015\012",fd);
 
-    bflush(r->connection->client);  /* only if kept-alive??? */
+    if (c->keepalive)
+	bflush(r->connection->client);  /* For bugs in Netscape, perhaps */
 
     bsetopt(fd, BO_BYTECT, &zero);
     r->sent_bodyct = 1;		/* Whatever follows is real body stuff... */
