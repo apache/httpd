@@ -67,7 +67,8 @@
 #include "ap_config.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
-#include "../os/win32/iol_socket.h"
+#include "service.h"
+#include "iol_socket.h"
 #include "winnt.h"
 
 
@@ -1555,11 +1556,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
      */
-#if 1
-//    ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
-#else
-//    service_set_status(SERVICE_START_PENDING);
-#endif
+    service_set_status(SERVICE_START_PENDING);
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
@@ -1569,11 +1566,8 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             goto die_now;
         }
     }
-#if 1
-//    ReportStatusToSCMgr(SERVICE_RUNNING, NO_ERROR, 3000);
-#else
-//    service_set_status(SERVICE_RUNNING);
-#endif
+    service_set_status(SERVICE_RUNNING);
+
     restart_pending = shutdown_pending = 0;
     
     /* Wait for shutdown or restart events or for child death */
@@ -1769,11 +1763,8 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         if (!restart) {
             ap_log_pid(pconf, ap_pid_fname);
-#if 1
-//            ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
-#else
-//            service_set_status(SERVICE_START_PENDING);
-#endif
+
+            service_set_status(SERVICE_START_PENDING);
             AMCSocketInitialize();
 //            setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         
@@ -1827,11 +1818,8 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
             AMCSocketCleanup();
-#if 1
-//            ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 3000);
-#else
-//            service_set_status(SERVICE_STOPPED);
-#endif
+
+            service_set_status(SERVICE_STOPPED);
         }
     }
     return !restart;
