@@ -1716,14 +1716,6 @@ echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
 echo "" >> Makefile
 
 ####################################################################
-## Now add -DSERVER_SUBVERSION if $SUBVERSION is set
-##
-if [ "x$SUBVERSION" != "x" ] ; then
-        SUBVERSION=`echo $SUBVERSION | sed 's/^ +//'`
-	CFLAGS="$CFLAGS -DSERVER_SUBVERSION=\\\"$SUBVERSION\\\""
-fi
-
-####################################################################
 ## Determine GNU Make variant because
 ## it uses ugly looking built-in directory walk messages
 ## while we are already using our own messages
@@ -1793,16 +1785,29 @@ fi
 ## ap_config_auto.h so they are available to external modules needing to
 ## include Apache header files.
 ##
-for cflag in $CFLAGS; do
-	echo $cflag | sed 's/\\\"/\"/g' >>$tmpconfig ;
+TEXTRA_CFLAGS=`egrep '^EXTRA_CFLAGS=' Makefile.config | tail -1 |\
+               sed -e 's;^EXTRA_CFLAGS=;;' -e 's;\`.*\`;;'`
+tmpstr=`echo $CFLAGS $TEXTRA_CFLAGS |\
+        sed -e 's;[ 	]-;!-;g' -e 's/\\\"/\"/g' -e 's/\([^\\]\)"/\1/g'`
+OIFS="$IFS" IFS='!'
+for cflag in $tmpstr; do
+    echo "$cflag" >>$tmpconfig
 done
+IFS="$OIFS"
 awk >>$AP_CONFIG_AUTO_H <$tmpconfig '
-	/^-D.*/ {
-		define = substr($1, 3, length($1)-2)
-		split(define, parts, "=")
-		printf ("\n/* build flag: %s */\n", $0)
-		printf ("#ifndef %s\n#define %s %s\n#endif\n", parts[1],parts[1],parts[2])
-	}
+    /^-D.*/ {
+        i = index($0, "=")
+        if (i > 0) {
+            define = substr($0, 3, i-3)
+            value  = substr($0, i+1, length($0)-i)
+        }
+        else {
+            define = substr($0, 3, length($0)-2)
+            value  = "1";
+        }
+        printf ("\n/* build flag: %s */\n", $0)
+        printf ("#ifndef %s\n#define %s %s\n#endif\n", define, define, value)
+    }
 '
 
 # finish header file

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) In src/Configure remove the SERVER_SUBVERSION support (already deprecated
+     since 1.3b7) and make whitespace handling more robust (it failed horrible
+     when whitespaces were present in the arguments of -D options).
+     [Ralf S. Engelschall] PR#3240
+
   *) Add APACI --shadow=DIR variant (in addition to --shadow). This now first
      creates an external package shadow tree in DIR before the local build
      shadow tree is generated under DIR. This way one can have the extracted
