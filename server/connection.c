@@ -199,10 +199,14 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
 {
+    apr_status_t rc;
     ap_update_vhost_given_ip(c);
 
-    ap_run_pre_connection(c, csd);
-
+    rc = ap_run_pre_connection(c, csd);
+    if (rc != OK && rc != DONE) {
+        c->aborted = 1;
+    }
+    
     if (!c->aborted) {
         ap_run_process_connection(c);
     }
