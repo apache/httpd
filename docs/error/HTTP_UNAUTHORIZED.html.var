@@ -1,3 +1,24 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Po¾adována autentizace!"
+--><!--#include virtual="include/top.html" -->
+
+    Server nemohl ovìøit, ¾e jste autorizován(a) k&nbsp;pøístupu
+    k&nbsp;URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Buï jste dodal(a) neplatné povìøení (napø. chybné heslo) nebo Vá¹
+    prohlí¾eè neumí dodat po¾adované ovìøení.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    V&nbsp;pøípadì, ¾e smíte po¾adovat tento dokument, zkontrolujte, prosím,
+    Va¹i u¾ivatelskou identifikaci a heslo a zkuste to znovu.
+
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
