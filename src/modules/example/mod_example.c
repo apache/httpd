@@ -364,6 +364,14 @@ static int example_handler
     r->content_type = "text/html";
     soft_timeout ("send example call trace", r);
     send_http_header (r);
+    /*
+     * If we're only supposed to send header information (HEAD request), we're
+     * already there.
+     */
+    if (r->header_only) {
+	kill_timeout (r);
+	return OK;
+    }
 
     /*
      * Now send our actual output.  Since we tagged this as being
