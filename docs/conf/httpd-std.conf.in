@@ -363,32 +363,6 @@ DocumentRoot "@exp_htdocsdir@"
 </Directory>
 
 #
-# UserDir: The name of the directory that is appended onto a user's home
-# directory if a ~user request is received.  Note that you must also set
-# the default access control for these directories, as in the example below.
-#
-<IfModule userdir_module>
-    UserDir public_html
-</IfModule>
-
-#
-# Control access to UserDir directories.  The following is an example
-# for a site where these directories are restricted to read-only.
-#
-#<Directory /home/*/public_html>
-#    AllowOverride FileInfo AuthConfig Limit Indexes
-#    Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
-#    <Limit GET POST OPTIONS PROPFIND>
-#        Order allow,deny
-#        Allow from all
-#    </Limit>
-#    <LimitExcept GET POST OPTIONS PROPFIND>
-#        Order deny,allow
-#        Deny from all
-#    </LimitExcept>
-#</Directory>
-
-#
 # DirectoryIndex: sets the file that Apache will serve if a directory
 # is requested.
 #
@@ -806,6 +780,9 @@ ServerSignature On
 
 # Language settings
 # Include @relsysconfdir@/extra/httpd-languages.conf
+
+# User home directories
+# Include @relsysconfdir@/extra/httpd-userdir.conf
 
 #
 # Secure (SSL/TLS) connections
