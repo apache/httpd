@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 15:26:13 $]
+Last modified at [$Date: 2004/06/11 15:35:22 $]
 
 Release:
 
@@ -115,7 +115,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
-       +1: ake, trawick, nd
+       +1: ake, trawick, nd, stoddard
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -126,7 +126,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Disable AcceptEx on Win9x systems automatically. (broken in 2.0.49)
        PR 28529
          server/mpm/winnt/mpm_winnt.c: 1.311
-       +1: nd, trawick
+       +1: nd, trawick, stoddard
 
     *) export ap_set_sub_req_protocol and ap_finalize_sub_req_protocol on Win32 and NetWare.
        (should be a minor MMN bump). PR 28523.
