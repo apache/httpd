@@ -211,7 +211,9 @@ apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, const char *n
     if (rv != ERROR_SUCCESS)
 	return_error(rv);
 
-    *ppValue = apr_palloc(p, nSize);
+    *ppValue = apr_palloc(p, nSize + 1);
+    (*ppValue)[nSize] = '\0';
+
     rv = RegQueryValueEx(hKey, 
 			 name,		/* key name */
 			 NULL,		/* reserved */
