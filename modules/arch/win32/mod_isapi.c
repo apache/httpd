@@ -1239,14 +1239,14 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     char *fspec;
     
     fspec = ap_server_root_relative(cmd->pool, filename);
-    if (apr_stat(&tmp, fspec, 
-                 APR_FINFO_TYPE, cmd->temp_pool) != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+    if ((rv = apr_stat(&tmp, fspec, 
+                 APR_FINFO_TYPE, cmd->temp_pool)) != APR_SUCCESS) { 
+	ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
 	    "ISAPI: unable to stat(%s), skipping", filename);
 	return NULL;
     }
     if (tmp.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
 	    "ISAPI: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
