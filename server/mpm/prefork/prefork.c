@@ -141,7 +141,7 @@ static int ap_daemons_limit=0;      /* MaxClients */
 static int server_limit = DEFAULT_SERVER_LIMIT;
 static int first_server_limit;
 static int changed_limit_at_restart;
-
+static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
 
 /*
@@ -235,6 +235,8 @@ static void chdir_for_gprof(void)
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
+    mpm_state = AP_MPMQ_STOPPING;
+
     if (pchild) {
 	apr_pool_destroy(pchild);
     }
@@ -331,6 +333,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
             *result = server_limit;
+            return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = mpm_state;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
@@ -497,6 +502,10 @@ static void child_main(int child_num_arg)
     apr_bucket_alloc_t *bucket_alloc;
     int last_poll_idx = 0;
 
+    mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
+                                  * child initializes
+                                  */
+    
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
     requests_this_child = 0;
@@ -549,6 +558,8 @@ static void child_main(int child_num_arg)
         (void) apr_pollset_add(pollset, &pfd);
     }
 
+    mpm_state = AP_MPMQ_RUNNING;
+    
     bucket_alloc = apr_bucket_alloc_create(pchild);
 
     while (!die_now) {
@@ -931,6 +942,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
+        mpm_state = AP_MPMQ_STOPPING;
         return 1;
     }
 
@@ -945,12 +957,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock; "
                          "check User and Group directives");
+            mpm_state = AP_MPMQ_STOPPING;
             return 1;
         }
     }
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
+            mpm_state = AP_MPMQ_STOPPING;
             return 1;
         }
         /* fix the generation number in the global score; we just got a new,
@@ -1004,6 +1018,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #endif
     restart_pending = shutdown_pending = 0;
 
+    mpm_state = AP_MPMQ_RUNNING;
+    
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
         apr_exit_why_e exitwhy;
@@ -1020,6 +1036,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	if (pid.pid != -1) {
             processed_status = ap_process_child_status(&pid, exitwhy, status);
             if (processed_status == APEXIT_CHILDFATAL) {
+                mpm_state = AP_MPMQ_STOPPING;
                 return 1;
             }
 
@@ -1086,6 +1103,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #endif /*TPF */
     }
     } /* one_process */
+
+    mpm_state = AP_MPMQ_STOPPING;
 
     if (shutdown_pending) {
 	/* Time to gracefully shut down:
@@ -1187,6 +1206,8 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     int no_detach, debug, foreground;
     apr_status_t rv;
 
+    mpm_state = AP_MPMQ_STARTING;
+
     debug = ap_exists_config_define("DEBUG");
 
     if (debug) {
@@ -1249,7 +1270,10 @@ static void prefork_hooks(apr_pool_t *p)
 #endif
 
     ap_hook_open_logs(prefork_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
-    ap_hook_pre_config(prefork_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    /* we need to set the MPM state before other pre-config hooks use MPM query
+     * to retrieve it, so register as REALLY_FIRST
+     */
+    ap_hook_pre_config(prefork_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
