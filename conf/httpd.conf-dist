@@ -913,30 +913,31 @@ ServerSignature On
 ### Section 3: Virtual Hosts
 #
 # VirtualHost: If you want to maintain multiple domains/hostnames on your
-# machine you can setup VirtualHost containers for them.
+# machine you can setup VirtualHost containers for them. Most configurations
+# use only name-based virtual hosts so the server doesn't need to worry about
+# IP addresses. This is indicated by the asterisks in the directives below.
+#
 # Please see the documentation at <URL:http://www.apache.org/docs/vhosts/>
 # for further details before you try to setup virtual hosts.
+#
 # You may use the command line option '-S' to verify your virtual host
 # configuration.
 
 #
-# If you want to use name-based virtual hosts you need to define at
-# least one IP address (and port number) for them.
+# Use name-based virtual hosting.
 #
-#NameVirtualHost 12.34.56.78:80
-#NameVirtualHost 12.34.56.78
+#NameVirtualHost *
 
 #
 # VirtualHost example:
 # Almost any Apache directive may go into a VirtualHost container.
+# The first VirtualHost section is used for requests without a known
+# server name.
 #
-#<VirtualHost ip.address.of.host.some_domain.com>
-#    ServerAdmin webmaster@host.some_domain.com
-#    DocumentRoot /www/docs/host.some_domain.com
-#    ServerName host.some_domain.com
-#    ErrorLog logs/host.some_domain.com-error_log
-#    CustomLog logs/host.some_domain.com-access_log common
-#</VirtualHost>
-
-#<VirtualHost _default_:*>
+#<VirtualHost *>
+#    ServerAdmin webmaster@dummy-host.example.com
+#    DocumentRoot /www/docs/dummy-host.example.com
+#    ServerName dummy-host.example.com
+#    ErrorLog logs/dummy-host.example.com-error_log
+#    CustomLog logs/dummy-host.example.com-access_log common
 #</VirtualHost>
