@@ -1,5 +1,7 @@
 Changes with Apache 2.0.23-dev
 
+  *) Use the prefork MPM by default on Unix.  [various]
+
   *) mod_rewrite: Fix the line ending on some non-Unix systems for 
      messages written to the rewrite log.  
      [Richard Labennett <rlabenn@us.ibm.com>]
