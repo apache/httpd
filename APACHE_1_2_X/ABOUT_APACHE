@@ -67,16 +67,17 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group, 1 June 1997
+Current Apache Group in alphabetical order as of 1 August 1997:
 
    Brian Behlendorf       Organic Online, California 
    Ken Coar               Process Software Corporation, New England, USA 
    Mark J. Cox            UKWeb, UK 
+   Ralf S. Engelschall    Munich, Germany.
    Roy T. Fielding        UC Irvine, California 
    Dean Gaudet            Steam Tunnel Operations, California 
    Rob Hartill            Internet Movie DB, UK 
    Jim Jagielski          jaguNET ISP, Maryland 
-   Alexei Kosut           Nueva High School, California 
+   Alexei Kosut           Stanford University, California 
    Ben Laurie             Freelance Consultant, UK 
    Chuck Murcko           The Topsail Group, Pennsylvania 
    Aram W. Mirzadeh       Qosina Corporation, New York 
@@ -99,8 +100,7 @@ Other major contributors
    Paul Richards (convinced the group to use remote CVS after 1.0),
    Kevin Hughes (creator of all those nifty icons),
    Henry Spencer (author of the regex library), Garey Smiley (OS/2 port),
-   Ralf S. Engelschall (mod_rewrite), Howard Fear (mod_include),
-   Florent Guillaume (language negotiation).
+   Howard Fear (mod_include), Florent Guillaume (language negotiation)
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
