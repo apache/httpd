@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_log_referer.c,v 1.4 1996/08/20 11:51:16 paul Exp $ */
+/* $Id: mod_log_referer.c,v 1.5 1996/11/03 20:33:17 brian Exp $ */
 
 
 #include "httpd.h"
@@ -84,7 +84,7 @@ void *make_referer_log_state (pool *p, server_rec *s)
     return (void *)cls;
 }
 
-char *set_referer_log (cmd_parms *parms, void *dummy, char *arg)
+const char *set_referer_log (cmd_parms *parms, void *dummy, char *arg)
 {
     referer_log_state *cls = get_module_config (parms->server->module_config,
 					       &referer_log_module);
@@ -93,7 +93,7 @@ char *set_referer_log (cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-char *add_referer_ignore (cmd_parms *parms, void *dummy, char *arg)
+const char *add_referer_ignore (cmd_parms *parms, void *dummy, char *arg)
 {
   char **addme;
   referer_log_state *cls = get_module_config (parms->server->module_config,

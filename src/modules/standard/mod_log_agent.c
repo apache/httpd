@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_log_agent.c,v 1.3 1996/08/20 11:51:14 paul Exp $ */
+/* $Id: mod_log_agent.c,v 1.4 1996/11/03 20:33:16 brian Exp $ */
 
 
 #include "httpd.h"
@@ -83,7 +83,7 @@ void *make_agent_log_state (pool *p, server_rec *s)
     return (void *)cls;
 }
 
-char *set_agent_log (cmd_parms *parms, void *dummy, char *arg)
+const char *set_agent_log (cmd_parms *parms, void *dummy, char *arg)
 {
     agent_log_state *cls = get_module_config (parms->server->module_config,
 					       &agent_log_module);
