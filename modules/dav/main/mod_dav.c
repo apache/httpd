@@ -1019,7 +1019,7 @@ static int dav_method_put(request_rec *r)
 
     if (err2 != NULL) {
         /* just log a warning */
-        err2 = dav_push_error(r->pool, err->status, 0,
+        err2 = dav_push_error(r->pool, err2->status, 0,
                               "The PUT was successful, but there "
                               "was a problem automatically checking in "
                               "the resource or its parent collection.",

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/07 10:31:51 $]
+Last modified at [$Date: 2004/06/07 10:41:00 $]
 
 Release:
 
@@ -203,17 +203,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 27758
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/aaa/mod_auth_digest.c?r1=1.86&r2=1.87
        +1: geoff, nd
-
-    *) mod_dav: Fix a segfault in an autoversioning error path.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.106&r2=1.107
-       PR: 29148
-       +1: jorton, trawick, nd
-
-    *) mod_dav: Fix a 2518 compliance issue which affects Eclipse; give a 409 
-       rather than a 403 for a MKCOL with a missing intermediate collection
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/repos.c?r1=1.80&r2=1.81
-       PR: 29034
-       +1: jorton, trawick, nd
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106

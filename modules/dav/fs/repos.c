@@ -987,6 +987,11 @@ static dav_error * dav_fs_create_collection(dav_resource *resource)
                              "There is not enough storage to create "
                              "this collection.");
     }
+    else if (APR_STATUS_IS_ENOENT(status)) {
+        return dav_new_error(ctx->pool, HTTP_CONFLICT, 0,
+                             "Cannot create collection; intermediate "
+                             "collection does not exist.");
+    }
     else if (status != APR_SUCCESS) {
         /* ### refine this error message? */
         return dav_new_error(ctx->pool, HTTP_FORBIDDEN, 0,
