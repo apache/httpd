@@ -394,8 +394,9 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
 
         if (value)
             return "Header echo takes two arguments";
-        else if (cmd->info != &hdr_out)
-            return "Header echo only valid on Header directive";
+        else if (cmd->info != &hdr_out && cmd->info != &hdr_err)
+            return "Header echo only valid on Header and ErrorHeader "
+                   "directives";
         else {
             regex = ap_pregcomp(cmd->pool, hdr, REG_EXTENDED | REG_NOSUB);
             if (regex == NULL) {
