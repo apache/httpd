@@ -176,7 +176,10 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
                         cmd->cmd->name, NULL);
         return error;
     }
-    while ((feature = getword_conf(cmd->pool, &cmdline))) {
+    for( ; ; ) {
+	feature = getword_conf(cmd->pool, &cmdline);
+	if(!*feature)
+	    break;
         beenhere++;
 
         /*
@@ -196,7 +199,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
                 else {
                     table_set(b->features, var, "1");
                 }
-                return NULL;
+		goto next;
             }
         }
 
@@ -226,6 +229,8 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
         else {
             table_set(new->features, var, "1");
         }
+    next:
+	continue;
     }
 
     if (!beenhere) {
