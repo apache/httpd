@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.47 1996/10/26 03:47:47 fielding Exp $
+# $Id: Configuration.tmpl,v 1.48 1996/11/01 14:59:51 pcs Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -199,6 +199,11 @@ Module browser_module      mod_browser.o
 ## secure Basic Auth used by the other modules.
 
 # Module digest_module       mod_digest.o
+
+## The headers module can set arbitrary HTTP response headers,
+## in server, vhost, access.conf or .htaccess configs
+
+# Module headers_module      mod_headers.o
 
 ## Outright experiments --- mod_dld defines commands which
 ## allows other modules to be loaded in at runtime, 
