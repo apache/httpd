@@ -3190,7 +3190,7 @@ static const command_rec includes_cmds[] =
     {NULL}
 };
 
-static int xbithack_handler(request_rec *r)
+static int include_fixup(request_rec *r)
 {
 #if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
@@ -3201,17 +3201,28 @@ static int xbithack_handler(request_rec *r)
     conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
                                                 &include_module);
  
-    if (*conf->xbithack == xbithack_off) {
-        return DECLINED;
+    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) 
+    {
+        if (!r->content_type || !*r->content_type) {
+            r->content_type = "text/html";
+        }
+        r->handler = "default-handler";
+    }
+    else 
+    {
+        if (strcmp(r->handler, "text/html")) {
+            return DECLINED;
+        }
+    
+        if (*conf->xbithack == xbithack_off) {
+            return DECLINED;
+        }
+
+        if (!(r->finfo.protection & APR_UEXECUTE)) {
+            return DECLINED;
+        }
     }
 
-    if (strcmp(r->handler, "text/html")) {
-        return DECLINED;
-    }
-    if (!(r->finfo.protection & APR_UEXECUTE)) {
-        return DECLINED;
-    }
- 
     /* We always return declined, because the default handler will actually
      * serve the file.  All we have to do is add the filter.
      */
@@ -3220,23 +3231,13 @@ static int xbithack_handler(request_rec *r)
 #endif
 }
 
-static void insert_filter(request_rec *r)
-{
-    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) {
-        ap_add_output_filter("INCLUDES", NULL, r, r->connection);
-        r->content_type = "text/html";
-        r->handler = "default-handler";
-    }
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_ssi_get_tag_and_value);
     APR_REGISTER_OPTIONAL_FN(ap_ssi_parse_string);
     APR_REGISTER_OPTIONAL_FN(ap_register_include_handler);
     ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_handler(xbithack_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_filter(insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(include_fixup, NULL, NULL, APR_HOOK_LAST);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
