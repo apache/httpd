@@ -309,6 +309,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 static int add_cern_meta_data(request_rec *r)
 {
     char *metafilename;
+    char *leading_slash;
     char *last_slash;
     char *real_file;
     char *scrap_book;
@@ -337,10 +338,10 @@ static int add_cern_meta_data(request_rec *r)
 
     /* what directory is this file in? */
     scrap_book = apr_pstrdup(r->pool, r->filename);
-    /* skip leading slash, recovered in later processing */
-    scrap_book++;
+
+    leading_slash = strchr(scrap_book, '/');
     last_slash = strrchr(scrap_book, '/');
-    if (last_slash != NULL) {
+    if ((last_slash != NULL) && (last_slash != leading_slash)) {
 	/* skip over last slash */
 	real_file = last_slash;
 	real_file++;
@@ -354,7 +355,7 @@ static int add_cern_meta_data(request_rec *r)
 	return DECLINED;
     };
 
-    metafilename = apr_pstrcat(r->pool, "/", scrap_book, "/",
+    metafilename = apr_pstrcat(r->pool, scrap_book, "/",
 			   dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
 			   "/", real_file,
 		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
