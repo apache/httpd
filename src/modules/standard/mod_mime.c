@@ -75,9 +75,9 @@
  */
 #define ap_isascii(c) ((OS_ASC(c) & 0x80) == 0)
 
-typedef struct handlers_info {
+typedef struct attrib_info {
     char *name;
-} handlers_info;
+} attrib_info;
 
 typedef struct {
     table *forced_types;        /* Additional AddTyped stuff */
@@ -85,7 +85,9 @@ typedef struct {
     table *charset_types;	/* Added with AddCharset... */
     table *language_types;      /* Added with AddLanguage... */
     table *handlers;            /* Added with AddHandler...  */
-    array_header *handlers_remove;     /* List of handlers to remove */
+    array_header *handlers_remove; /* List of handlers to remove */
+    array_header *types_remove;	/* List of MIME types to remove */
+    array_header *encodings_remove; /* List of encodings to remove */
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -122,7 +124,9 @@ static void *create_mime_dir_config(pool *p, char *dummy)
     new->charset_types = ap_make_table(p, 4);
     new->language_types = ap_make_table(p, 4);
     new->handlers = ap_make_table(p, 4);
-    new->handlers_remove = ap_make_array(p, 4, sizeof(handlers_info));
+    new->handlers_remove = ap_make_array(p, 4, sizeof(attrib_info));
+    new->types_remove = ap_make_array(p, 4, sizeof(attrib_info));
+    new->encodings_remove = ap_make_array(p, 4, sizeof(attrib_info));
 
     new->type = NULL;
     new->handler = NULL;
@@ -138,23 +142,31 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     mime_dir_config *new =
         (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
     int i;
-    handlers_info *hand;
-
-    hand = (handlers_info *) add->handlers_remove->elts;
-    for (i = 0; i < add->handlers_remove->nelts; i++) {
-        ap_table_unset(base->handlers, hand[i].name);
-    }
+    attrib_info *suffix;
 
     new->forced_types = ap_overlay_tables(p, add->forced_types,
-					 base->forced_types);
+					  base->forced_types);
     new->encoding_types = ap_overlay_tables(p, add->encoding_types,
-                                         base->encoding_types);
+					    base->encoding_types);
     new->charset_types = ap_overlay_tables(p, add->charset_types,
 					   base->charset_types);
     new->language_types = ap_overlay_tables(p, add->language_types,
-                                         base->language_types);
+					    base->language_types);
     new->handlers = ap_overlay_tables(p, add->handlers,
-                                   base->handlers);
+				      base->handlers);
+
+    suffix = (attrib_info *) add->handlers_remove->elts;
+    for (i = 0; i < add->handlers_remove->nelts; i++) {
+        ap_table_unset(base->handlers, suffix[i].name);
+    }
+    suffix = (attrib_info *) add->types_remove->elts;
+    for (i = 0; i < add->types_remove->nelts; i++) {
+        ap_table_unset(base->forced_types, suffix[i].name);
+    }
+    suffix = (attrib_info *) add->encodings_remove->elts;
+    for (i = 0; i < add->encodings_remove->nelts; i++) {
+        ap_table_unset(base->encoding_types, suffix[i].name);
+    }
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
@@ -225,13 +237,47 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
 static const char *remove_handler(cmd_parms *cmd, void *m, char *ext)
 {
     mime_dir_config *mcfg = (mime_dir_config *) m;
-    handlers_info *hand;
+    attrib_info *suffix;
 
     if (*ext == '.') {
         ++ext;
     }
-    hand = (handlers_info *) ap_push_array(mcfg->handlers_remove);
-    hand->name = ap_pstrdup(cmd->pool, ext);
+    suffix = (attrib_info *) ap_push_array(mcfg->handlers_remove);
+    suffix->name = ap_pstrdup(cmd->pool, ext);
+    return NULL;
+}
+
+/*
+ * Just like the previous function, except that it records encoding
+ * associations to be undone.
+ */
+static const char *remove_encoding(cmd_parms *cmd, void *m, char *ext)
+{
+    mime_dir_config *mcfg = (mime_dir_config *) m;
+    attrib_info *suffix;
+
+    if (*ext == '.') {
+        ++ext;
+    }
+    suffix = (attrib_info *) ap_push_array(mcfg->encodings_remove);
+    suffix->name = ap_pstrdup(cmd->pool, ext);
+    return NULL;
+}
+
+/*
+ * Similar to the previous functions, except that it deals with filename
+ * suffix/MIME-type associations.
+ */
+static const char *remove_type(cmd_parms *cmd, void *m, char *ext)
+{
+    mime_dir_config *mcfg = (mime_dir_config *) m;
+    attrib_info *suffix;
+
+    if (*ext == '.') {
+        ++ext;
+    }
+    suffix = (attrib_info *) ap_push_array(mcfg->types_remove);
+    suffix->name = ap_pstrdup(cmd->pool, ext);
     return NULL;
 }
 
@@ -261,6 +307,10 @@ static const command_rec mime_cmds[] =
      (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO, TAKE1, 
      "a media type"},
     {"RemoveHandler", remove_handler, NULL, OR_FILEINFO, ITERATE,
+     "one or more file extensions"},
+    {"RemoveEncoding", remove_encoding, NULL, OR_FILEINFO, ITERATE,
+     "one or more file extensions"},
+    {"RemoveType", remove_type, NULL, OR_FILEINFO, ITERATE,
      "one or more file extensions"},
     {"SetHandler", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO, TAKE1, 

@@ -93,7 +93,9 @@ mod_imap imagemap file.
 <LI><A HREF="#addtype">AddType</A>
 <LI><A HREF="#defaultlanguage">DefaultLanguage</A>
 <LI><A HREF="#forcetype">ForceType</A>
+<LI><A HREF="#removeencoding">RemoveEncoding</A>
 <LI><A HREF="#removehandler">RemoveHandler</A>
+<LI><A HREF="#removetype">RemoveType</A>
 <LI><A HREF="#sethandler">SetHandler</A>
 <LI><A HREF="#typesconfig">TypesConfig</A>
 </UL>
@@ -468,12 +470,66 @@ had a directory full of GIF files, but did not want to label them all with
 <P>Note that this will override any filename extensions that might determine
 the media type.</P><HR>
 
+<H2><A NAME="removeencoding">RemoveEncoding</A></H2>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RemoveEncoding <i>extension [extension ...]</i><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> RemoveEncoding is only available in Apache
+1.3.13 and later.<P>
+
+<P>
+The <SAMP>RemoveEncoding</SAMP> directive removes any
+encoding associations for files with the given extensions.
+This allows <CODE>.htaccess</CODE> files in subdirectories to undo
+any associations inherited from parent directories or the server
+config files.  An example of its use might be:
+</P>
+<DL>
+ <DT><CODE>/foo/.htaccess:</CODE></DT>
+ <DD><CODE>AddEncoding x-gzip .gz</CODE>
+     <br>
+     <code>AddType text/plain .asc</code>
+     <br>
+     <code>&lt;Files *.gz.asc&gt;</code>
+     <br>
+     <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding .gz</code>
+     <br>
+     <code>&lt;/Files&gt;</code></dd>
+</DL>
+<P>
+This will cause <code>foo.gz</code> to mark as being encoded with the
+gzip method, but <code>foo.gz.asc</code> as an unencoded plaintext file.
+</P>
+<p>
+<b>Note:</b>RemoveEncoding directives are processed <i>after</i> any
+AddEncoding directives, so it is possible they may undo the effects
+of the latter if both occur within the same directory configuration.
+</p>
+<HR>
+
 <H2><A NAME="removehandler">RemoveHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> RemoveHandler <EM>extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> RemoveHandler <EM>extension [extension ...]</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -511,6 +567,53 @@ This has the effect of returning <SAMP>.html</SAMP> files in the
 files, rather than as candidates for parsing (see the
 <A HREF="mod_include.html"><SAMP>mod_include</SAMP></A> module).
 </P>
+<HR>
+
+<H2><A NAME="removetype">RemoveType</A></H2>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RemoveType <i>extension [extension ...]</i><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> RemoveType is only available in Apache
+1.3.13 and later.<P>
+
+<P>
+The <SAMP>RemoveType</SAMP> directive removes any
+MIME type associations for files with the given extensions.
+This allows <CODE>.htaccess</CODE> files in subdirectories to undo
+any associations inherited from parent directories or the server
+config files.  An example of its use might be:
+</P>
+<DL>
+ <DT><CODE>/foo/.htaccess:</CODE></DT>
+ <DD><CODE>RemoveType .cgi</CODE></dd>
+</DL>
+<P>
+This will remove any special handling of <code>.cgi</code> files in the
+<code>/foo/</code> directory and any beneath it, causing the files to be
+treated as being of the <a href="core.html#defaulttype">default type</a>.
+</P>
+<p>
+<b>Note:</b><code>RemoveType</code> directives are processed <i>after</i> any
+<code>AddType</code> directives, so it is possible they may undo the effects
+of the latter if both occur within the same directory configuration.
+</p>
 <HR>
 
 <H2><A NAME="sethandler">SetHandler</A></H2>
