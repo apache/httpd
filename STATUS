@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/08 00:31:19 $]
+Last modified at [$Date: 2002/01/08 16:37:52 $]
 
 Release:
 
@@ -141,12 +141,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
               (or at least, it is not isolated to a problem in worker).
               I'll list some of the problems I'm seeing in case someone
               else wants to pick up where I've left off:
-               - The parent process goes into a loop consuming lots of CPU.
-                 It has to do with how waitpid() and apr_sleep() are called
-                 from within server_main_loop(). ktrace/kdump output shows
-                 some weird stuff happening with poll() and suspiciously
-                 small timeout values (apr_sleep() is implemented with
-                 select() which is implemented with poll()).
                - Delivery of just about any signal to one of the child
                  processes will send it into an infinite loop as well.
                - Even though the parent is spinning out of control,
@@ -170,13 +164,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                    waking up the threads on a select().  Yum.  And, I bet 
                    those decrementing select calls have to do with the 
                    scheduler.  Time to brush up on our OS fundamentals.
-
-      David says:  Having spent a fair bit of time tracking this further, it
-                   seems that FreeBSD's thread_kern_poll gets into a situation
-                   where it polls for the kern_pipe and gets a hit (so the
-                   timeout becomes an irrelevancy) but the pipe never seems to
-                   be read and so successive calls simply return and the cpu
-                   usage grows. Time to flag this to the FreeBSD team.
 
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.

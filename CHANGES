@@ -1,5 +1,10 @@
 Changes with Apache 2.0.30-dev
 
+  *) Fix the main bug for FreeBSD and threaded MPM's. There are
+     still issues (see STATUS) but at least the server will now
+     run without crashing the machine.
+     [David Reid, Aaron Bannert, Justin Erenkrantz]
+
   *) Fix a typo in mod_deflate's m4 config section.
      [albert chin (china@thewrittenword.com)]
 
