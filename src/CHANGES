@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) Fixed problem where a busy server could hang when restarting
+     after being sent a SIGHUP due to child processes not exiting.
+     [Marc Slemko]
+
   *) Modify mod_include escaping so a '\' only signifies an escaped
      character if the next character is one that needs
      escaping.  [Ben Laurie]
