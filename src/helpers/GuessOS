@@ -187,7 +187,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-unknown-ultrix"; exit 0
 	;;
 
-    SINIX*)
+    SINIX-?:* | ReliantUNIX-?:*)
 	echo "${MACHINE}-sni-sysv4"; exit 0
 	;;
 
