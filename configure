@@ -121,8 +121,8 @@ OIFS="$IFS" IFS=':'
 for dir in $PATH; do
     OIFS2="$IFS" IFS="$DIFS"
     for exe in perl5 perl miniperl; do
-        if test -f "$dir/$exe"; then
-            if test -x "$dir/$exe"; then
+        if [ -f "$dir/$exe" ]; then
+            if [ -x "$dir/$exe" ]; then
                 PERL="$dir/$exe"
                 break 2
             fi
