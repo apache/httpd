@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/23 00:58:09 $]
+Last modified at [$Date: 2003/01/23 16:49:56 $]
 
 Release:
 
@@ -59,6 +59,7 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * mod_file_cache segfault bugfix. PR 16313.
+     +1: stoddard
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       +1: nd
