@@ -230,7 +230,7 @@
  * Example: "Apache/1.1b3 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_VERSION "Apache/1.1b3-dev" /* SEE COMMENTS ABOOE */
+#define SERVER_VERSION "Apache/1.1b3-dev" /* SEE COMMENTS ABOVE */
 
 #define SERVER_PROTOCOL "HTTP/1.0"
 #define SERVER_SUPPORT "http://www.apache.org/"
