@@ -1,7 +1,7 @@
 /*
  * logresolve 1.1
  *
- * Tom Rathborne - tomr@uunet.ca - http://www.uunet.ca/~tomr/
+ * Tom Rathborne - tomr@aceldama.com - http://www.aceldama.com/~tomr/
  * UUNET Canada, April 16, 1995
  *
  * Rewritten by David Robinson. (drtr@ast.cam.ac.uk)
