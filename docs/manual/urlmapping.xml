@@ -160,7 +160,7 @@
     implemented by the <directive
     module="mod_alias">Redirect</directive> directive. For example, if
     the contents of the directory <code>/foo/</code> under the
-    <directive module="mod_core">DocumentRoot</directive> are moved
+    <directive module="core">DocumentRoot</directive> are moved
     to the new directory <code>/bar/</code>, you can instruct clients
     to request the content at the new location as follows:</p>
 
