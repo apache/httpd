@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.142 $ ($Date: 1999/02/21 00:16:36 $)
+  $Revision: 1.143 $ ($Date: 1999/02/21 20:35:12 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1094,6 +1094,44 @@
    <A HREF="http://bugs.apache.org/index/full/2312">problem report #2312</A>.
    </P>
    <HR>
+ </LI>
+
+ <LI><A NAME="redhat">
+      <STRONG>I'm using RedHat Linux and I have problems with httpd
+      dying randomly or not restarting properly</STRONG>
+     </A>
+
+  <P>
+  RedHat Linux versions 4.x (and possibly earlier) RPMs contain
+  various nasty scripts which do not stop or restart Apache properly.
+  These can affect you even if you're not running the RedHat supplied
+  RPMs.
+  </P>
+  <P>
+  If you're using the default install then you're probably running
+  Apache 1.1.3, which is outdated.  From RedHat's ftp site you can
+  pick up a more recent RPM for Apache 1.2.x.  This will solve one of
+  the problems.
+  </P>
+  <P>
+  If you're using a custom built Apache rather than the RedHat RPMs
+  then you should <CODE>rpm -e apache</CODE>.  In particular you want
+  the mildly broken <CODE>/etc/logrotate.d/apache</CODE> script to be
+  removed, and you want the broken <CODE>/etc/rc.d/init.d/httpd</CODE>
+  (or <CODE>httpd.init</CODE>) script to be removed.  The latter is
+  actually fixed by the apache-1.2.5 RPMs but if you're building your
+  own Apache then you probably don't want the RedHat files.
+  </P>
+  <P>
+  We can't stress enough how important it is for folks, <EM>especially
+  vendors</EM> to follow the <A HREF="../stopping.html">stopping Apache
+  directions</A> given in our documentation.  In RedHat's defense,
+  the broken scripts were necessary with Apache 1.1.x because the
+  Linux support in 1.1.x was very poor, and there were various race
+  conditions on all platforms.  None of this should be necessary with
+  Apache 1.2 and later.
+  </P>
+  <HR>
  </LI>
 
  <LI><A NAME="stopping">
