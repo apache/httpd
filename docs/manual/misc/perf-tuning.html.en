@@ -386,6 +386,44 @@
 
     
 
+    <h3>Choosing an MPM</h3>
+
+      
+
+      <p>Apache 2.x supports pluggable concurrency models, called
+      <a href="../mpm.html">Multi-Processing Modules</a> (MPMs).
+      When building Apache, you must choose an MPM to use.  There
+      are platform-specific MPMs for some platforms:
+      <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>,
+      <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, and <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>.  For
+      general Unix-type systems, there are several MPMs from which
+      to choose.  The choice of MPM can affect the speed and scalability
+      of the httpd:</p>
+
+      <ul>
+
+        <li>The <code class="module"><a href="../mod/worker.html">worker</a></code> MPM uses multiple child
+        processes with many threads each.  Each thread handles
+        one connection at a time.  Worker generally is a good
+        choice for high-traffic servers because it has a smaller
+        memory footprint than the prefork MPM.</li>
+
+        <li>The <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM uses multiple child
+        processes with one thread each.  Each process handles
+        one connection at a time.  On many systems, prefork is
+        comparable in speed to worker, but it uses more memory.
+        Prefork's threadless design has advantages over worker
+        in some situations: it can be used with non-thread-safe
+        third-party modules, and it is easier to debug on platforms
+        with poor thread debugging support.</li>
+
+      </ul>
+
+      <p>For more information on these and other MPMs, please
+      see the MPM <a href="../mpm.html">documentation</a>.</p>
+
+    
+
     <h3>mod_status and ExtendedStatus On</h3>
 
       
