@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/06 22:59:22 $]
+Last modified at [$Date: 2001/08/07 14:36:45 $]
 
 Release:
 
@@ -330,10 +330,6 @@ put them into 'the next release':
       Additional status for XBitHack directive
 	Status: 
 
-    * PR#161: mod_dir
-      Questionable performace of mod_dir() with negotiation
-	Status: 
-
     * PR#362: mod_proxy
       Mod_proxy doesn't allow change of error pages
 	Status: 
@@ -437,10 +433,6 @@ put them into 'the next release':
       Allow for Last-Modified: without resorting to XBitHack
 	Status: 
 
-    * PR#1156: config
-      insufficent AllowOverrides granularity for autoindexing
-	Status: 
-
     * PR#1158: apache-api
       improvements to child spawning API
 	Status: 
@@ -465,7 +457,7 @@ put them into 'the next release':
       there is no way to keep per-connection per-module state
 	Status: 
 
-    * PR#1263: mod_dir
+    * PR#1263: mod_autoexec
       Add frame-safe anchor attribute to mod_autoindex links
 	Status: 
 
@@ -507,10 +499,6 @@ put them into 'the next release':
       ProxyRemote proxy requests fail authentication by firewall
 	Status: 
 
-    * PR#1574: mod_autoindex
-      ReadmeName and HeaderName don't allow for server-parsed html.
-	Status: 
-
     * PR#1582: mod_rewrite
       mod_rewrite forms REQUEST_URI different than mod_cgi does
 	Status: 
@@ -531,10 +519,6 @@ put them into 'the next release':
     * PR#1809: mod_auth-any
       Suggestion for improving authentication modules and core source
       code, problem with 401 and ErrorDocument
-	Status: 
-
-    * PR#1855: mod_autoindex
-      More Control over autoindex layout
 	Status: 
 
     * PR#1878: mod_proxy
@@ -664,10 +648,6 @@ put them into 'the next release':
       cannot limit some HTTP methods
 	Status: 
 
-    * PR#3026: mod_autoindex
-      No way to change ReadmeName/HeaderName suffixes.
-	Status: 
-
     * PR#3143: apache-api
       No module specific data hook for per-connection data
 	Status: 
@@ -675,10 +655,6 @@ put them into 'the next release':
     * PR#3191: mod_negotiation
       no way to set global quality-of-source (qs) coneg values
       with multiviews
-	Status: 
-
-    * PR#3430: mod_negotiation
-      Enhancement: MultiViews, Multi-Language Documents
 	Status: 
 
     * PR#3568: mod_proxy
@@ -691,10 +667,6 @@ put them into 'the next release':
 
     * PR#3605: mod_proxy
       Some anonymous FTP URLs ask for authentication
-	Status: 
-
-    * PR#3654: mod_autoindex
-      BORDER=0 makes Icons look nicer (FancyIndexing)
 	Status: 
 
     * PR#3677: general
@@ -732,11 +704,6 @@ put them into 'the next release':
       AllowOverride should have a 'CheckNone' and 'AllowNone' argument
       instead of only 'None'
 	Status: 
-
-    * PR#6347: mod_mime
-      MIME types for MNG and JNG files need adding to mime.types and
-      the mime.types and magic files
-	Status: Waiting for IANA types to be defined
 
 Other bugs that need fixing:
 
