@@ -906,8 +906,6 @@ struct conn_rec {
     /** A list of output filters to be used for this connection
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *output_filters;
-    /** bytes left to read in the current request body */
-    long remaining;
 };
 
 /* Per-vhost config... */

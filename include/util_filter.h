@@ -74,6 +74,12 @@ extern "C" {
 #define AP_NOBODY_WROTE         -1
 #define AP_NOBODY_READ          -2
 
+/* Input filtering macros */
+#define AP_GET_LINE                0  /* Get one line from the next filter */
+#define AP_GET_ANY_AMOUNT         -1  /* Get as much data as the next filter
+                                       * is willing to give up.
+                                       */
+
 /*
  * FILTER CHAIN
  *
@@ -125,7 +131,12 @@ typedef struct ap_filter_t ap_filter_t;
  *
  * The return value of a filter should be an APR status value.
  */
-typedef apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
+typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
+typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length);
+typedef union ap_filter_func {
+    ap_out_filter_func out_func;
+    ap_in_filter_func in_func;
+} ap_filter_func;
 
 /*
  * ap_filter_type:
@@ -232,10 +243,19 @@ struct ap_filter_t {
  * filter doesn't write to the network, then AP_NOBODY_READ is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
+ * @param length The maximum amount of data to be returned from the next
+ *               lowest filter.  If filter a requests 15 bytes
+ *               from the filter b, that doesn't stop the b
+ *               from requesting 30 bytes from filter c.  It just
+ *               stops b from returning more that 15 bytes to a.  The other
+ *               15 must be stored by b.  A value of AP_GET_LINE (0) tells 
+ *               the filter to only ever return a single line.  A value of
+ *               AP_GET_ANY_AMOUNT (-1) tells a filter to return everything
+ *               it has.
  * @return apr_status_t value
- * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
+ * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, int length)
  */
-API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
+API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket, int length);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
@@ -264,10 +284,10 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade 
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
  * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @deffunc void ap_register_input_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
+ * @deffunc void ap_register_input_filter(const char *name, ap_in_filter_func filter_func, ap_filter_type ftype)
  */
 API_EXPORT(void) ap_register_input_filter(const char *name,
-                                          ap_filter_func filter_func,
+                                          ap_in_filter_func filter_func,
                                           ap_filter_type ftype);
 /*
  * ap_register_output_filter():
@@ -285,10 +305,10 @@ API_EXPORT(void) ap_register_input_filter(const char *name,
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
  * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @deffunc void ap_register_output_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
+ * @deffunc void ap_register_output_filter(const char *name, ap_out_filter_func filter_func, ap_filter_type ftype)
  */
 API_EXPORT(void) ap_register_output_filter(const char *name,
-                                           ap_filter_func filter_func,
+                                           ap_out_filter_func filter_func,
                                            ap_filter_type ftype);
 
 /*

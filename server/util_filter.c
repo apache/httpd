@@ -103,18 +103,22 @@ static void register_filter(const char *name,
 }
 
 API_EXPORT(void) ap_register_input_filter(const char *name,
-                                          ap_filter_func filter_func,
+                                          ap_in_filter_func filter_func,
                                           ap_filter_type ftype)
 {
-    register_filter(name, filter_func, ftype, 
+    ap_filter_func f;
+    f.in_func = filter_func;
+    register_filter(name, f, ftype, 
                     &registered_input_filters);
 }                                                                    
 
 API_EXPORT(void) ap_register_output_filter(const char *name,
-                                           ap_filter_func filter_func,
+                                           ap_out_filter_func filter_func,
                                            ap_filter_type ftype)
 {
-    register_filter(name, filter_func, ftype, 
+    ap_filter_func f;
+    f.out_func = filter_func;
+    register_filter(name, f, ftype, 
                     &registered_output_filters);
 }
 
@@ -191,10 +195,11 @@ API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx,
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
-API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, 
+                                        ap_bucket_brigade *bb, int length)
 {
     if (next) {
-        return next->frec->filter_func(next, bb);
+        return next->frec->filter_func.in_func(next, bb, length);
     }
     return AP_NOBODY_READ;
 }
@@ -210,7 +215,7 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
         if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS && next->r) {
             next->r->eos_sent = 1;
         }
-        return next->frec->filter_func(next, bb);
+        return next->frec->filter_func.out_func(next, bb);
     }
     return AP_NOBODY_WROTE;
 }
