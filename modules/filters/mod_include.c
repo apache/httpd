@@ -851,7 +851,8 @@ static int include_cmd(char *s, request_rec *r)
     }
 
     if ((ap_createprocattr_init(&procattr, r->pool) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr, 0, 1, 0) != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, APR_NO_PIPE, 
+                           APR_FULL_BLOCK, APR_NO_PIPE) != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
