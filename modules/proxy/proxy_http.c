@@ -796,7 +796,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
             	     "proxy: start body send");
     
             /* read the body, pass it to the output filters */
-            while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &readbytes) == APR_SUCCESS) {
+            while (ap_get_brigade(rp->input_filters, bb, AP_MODE_NONBLOCKING, &readbytes) == APR_SUCCESS) {
+#if DEBUGGING
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            	     "proxy (PID %d): readbytes: %#x", getpid(), readbytes);
+#endif
                 if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
             	ap_pass_brigade(r->output_filters, bb);
             	break;
