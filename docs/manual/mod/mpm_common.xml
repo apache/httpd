@@ -13,7 +13,7 @@ more than one multi-processing module (MPM)</description>
 <description>Sets the directory where Apache attempts to
 switch before dumping core</description>
 <syntax>CoreDumpDirectory <em>directory</em></syntax>
-<default>CoreDumpDirectory <em>ServerRoot</em></default>
+<default>See usage for the default setting</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
