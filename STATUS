@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/10 18:51:50 $]
+Last modified at [$Date: 2004/04/10 21:00:02 $]
 
 Release:
 
@@ -71,6 +71,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_rewrite: Fix confused map cache (with maps in different VHs using
+       the same name). PR 26462. (2.0 + 1.3)
+       A patch for 1.3 is here (2.0 goes similar):
+       <http://www.apache.org/~nd/mod_rewrite-confusion-1.3.patch>
+         modules/mappers/mod_rewrite.c: r1.256
+       +1: nd
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
