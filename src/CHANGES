@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fixed examples in mod_rewrite.html document. 
+     [Youichirou Koga <y-koga@jp.FreeBSD.org>, Ralf S. Engelschall] PR#2756
+
   *) Allow ap_read_request errors to propagate through the normal request
      handling loop so that the connection can be properly closed with
      lingering_close, thus avoiding a potential TCP reset that would
