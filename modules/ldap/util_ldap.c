@@ -310,14 +310,17 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         }
 
         /* switch on SSL/TLS */
-        apr_ldap_set_option(ldc->pool, ldc->ldap, 
-                            APR_LDAP_OPT_TLS, &ldc->secure, &(result));
-        if (LDAP_SUCCESS != result->rc) {
-            ldap_unbind_s(ldc->ldap);
-            ldc->ldap = NULL;
-            ldc->bound = 0;
-            ldc->reason = result->reason;
-            return(result->rc);
+        if (!apr_is_empty_array(ldc->client_certs)) {
+
+            apr_ldap_set_option(ldc->pool, ldc->ldap, 
+                                APR_LDAP_OPT_TLS, &ldc->secure, &(result));
+            if (LDAP_SUCCESS != result->rc) {
+                ldap_unbind_s(ldc->ldap);
+                ldc->ldap = NULL;
+                ldc->bound = 0;
+                ldc->reason = result->reason;
+                return(result->rc);
+            }
         }
 
         /* Set the alias dereferencing option */
