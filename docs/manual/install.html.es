@@ -25,15 +25,11 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 
     <p>Este documento explica cómo compilar e instalar Apache en
-    sistemas Unix y tipo Unix. Para obtener información sobre
-    cómo compilar e instalar en Windows, consulte la sección
+    sistemas Unix y tipo Unix. Si lo que busca es información sobre
+    cómo compilar e instalar Apache en Windows, consulte la sección
     <a href="platform/windows.html">Usar Apache en Microsoft
     Windows</a>. Para otras plataformas, consulte la
     documentación sobre <a href="platform/">plataformas</a>.</p>
@@ -124,8 +120,8 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
     <p><em>NN</em> hay que reemplazarlo por el número de la
     versión menor, y <em>PREFIX</em> hay que reemplazarlo por la
     ruta en la que se va a instalar Apache. Si no especifica
-    ningún valor en <em>PREFIX</em>, el valor por defecto que se
-    toma es <code>/usr/local/apache2</code>.</p>
+    ningún valor en <em>PREFIX</em>, el valor que se usa
+    por defecto es <code>/usr/local/apache2</code>.</p>
 
     <p>Cada parte del proceso de configuración e instalación
     se describe detalladamente más abajo, empezando por los
@@ -134,7 +130,7 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
 <div class="section">
 <h2><a name="requirements" id="requirements">Requisitos</a></h2>
 
-    <p>Estos son los requisitos necesarios para compilar Apache:</p>
+    <p>Requisitos necesarios para compilar Apache:</p>
   
     <dl>
       <dt>Espacio en disco</dt> <dd>Compruebe que tiene disponibles al
@@ -151,15 +147,16 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
       Foundation (FSF)</a> (con la versión 2.7.2 es
       suficiente). Si no tiene instaldo el GCC, entonces compruebe que
       el compilador que va a utilizar cumple con los estándares
-      ANSI. Además, su <code>PATH</code> debe contener la
-      ubicación donde de encuentran las herramientas básicas
-      para compilar tales como <code>make</code>.</dd>
+      ANSI. Además, su variable de entorno <code>PATH</code> debe
+      contener la ubicación en la que se encuentran las
+      herramientas básicas para compilar, como por ejemplo
+      <code>make</code>.</dd>
 
       <dt>Ajuste exacto del reloj del sistema</dt> <dd>Los elementos
       del protocolo HTTP están expresados según la hora del
-      dia. Por eso, si quiere puede investigar como instalar alguna
-      utilidad para sincronizar la hora de su sistema. Para esto,
-      normalmente, se usan los programas <code>ntpdate</code> o
+      día. Por eso, si quiere puede investigar como instalar
+      alguna utilidad para sincronizar la hora de su sistema. Para
+      esto, normalmente, se usan los programas <code>ntpdate</code> o
       <code>xntpd</code>, que están basados en el protocolo
       Network Time Protocol (NTP). Consulte el grupo de noticias <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
       y el <a href="http://www.eecis.udel.edu/~ntp/">sitio web de NTP
@@ -167,18 +164,20 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
       servidores públicos de tiempo.</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a> [OPCIONAL]</dt>
-      <dd>Para algunos de los scripts de soporte como <a href="programs/apxs.html">apxs</a> o <a href="programs/dbmmanage.html">dbmmanage</a> (que están
-      escritos en Perl) es necesario el intérprete de Perl 5 (las
-      versiones 5.003 o posteriores son suficientes). Si el script
-      `<code>configure</code>' no encuentra ese intérprete
-      tampoco pasa nada. Aún puede compilar e instalar Apache
-      2.0. Lo único que ocurrirá es que esos scripts de
-      soporte no podrán ser usados. Si usted tiene varios
-      interpretes de Perl instalados (quizás Perl 4 porque estaba
-      ya incluido en su distribución de Linux y Perl 5 porque lo
-      ha instalado usted), entonces se recomienda usar la opción
-      <code>--with-perl</code> para asegurarse de que
-      <code>./configure</code> usa el intérprete correcto.</dd>
+      <dd>Para algunos de los scripts de soporte como
+      <code class="program"><a href="./programs/apxs.html">apxs</a></code> o <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (que
+      están escritos en Perl) es necesario el intérprete de
+      Perl 5 (las versiones 5.003 o posteriores son suficientes). Si
+      el script <code class="program"><a href="./programs/configure.html">configure</a></code> no encuentra ese
+      intérprete tampoco pasa nada. Aún puede compilar e
+      instalar Apache 2.0. Lo único que ocurrirá es que esos
+      scripts de soporte no podrán ser usados. Si usted tiene
+      varios interpretes de Perl instalados (quizás Perl 4 porque
+      estaba ya incluido en su distribución de Linux y Perl 5
+      porque lo ha instalado usted), entonces se recomienda usar la
+      opción <code>--with-perl</code> para asegurarse de que
+      <code class="program"><a href="./programs/configure.html">configure</a></code> usa el intérprete
+      correcto.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -230,7 +229,7 @@ directorios</a></h2>
 
     <p>El siguiente paso es configurar la estructura de directorios
     para su plataforma y sus necesidades personales. Esto se hace
-    usando el script <code>configure</code> incluido en el directorio
+    usando el script <code class="program"><a href="./programs/configure.html">configure</a></code> incluido en el directorio
     raiz de la distribución que acaba de descargar. (Los
     desarrolladores que se descarguen la versión del CVS de la
     estructura de directorios necesitarán tener instalados
@@ -242,7 +241,7 @@ directorios</a></h2>
     <p>Para configurar la estructura de directorios a partir del
     código fuente usando las opciones por defecto, solo tiene que
     ejecutar <code>./configure</code>. Para cambiar las opciones por
-    defecto, <code>configure</code> acepta una serie de variables y
+    defecto, <code class="program"><a href="./programs/configure.html">configure</a></code> acepta una serie de variables y
     opciones por la línea de comandos.</p>
 
     <p>La opción más importante es <code>--prefix</code> que
@@ -268,17 +267,17 @@ directorios</a></h2>
     igual manera, puede desactivar alguno de los módulos que
     vienen por defecto en la selección basica con la opción
     <code>--disable-<var>module</var></code>.  Tenga cuidado cuando
-    use estas opciones, porque <code>configure</code> no le
+    use estas opciones, porque <code class="program"><a href="./programs/configure.html">configure</a></code> no le
     avisará si el módulo que especifica no existe;
     simplemente ignorará esa opción.</p>
 
     <p>Además, a veces es necesario pasarle al script
-    <code>configure</code> información adicional sobre donde esta
-    su compilador, librerias o ficheros de cabecera.  Esto se puede
-    hacer, tanto pasando variables de entorno, como pasandole opciones
-    a <code>configure</code> a través de la línea de
-    comandos.  Para más información, consulte la <a href="programs/configure.html">página de ayuda del script
-    configure</a>.</p>
+    <code class="program"><a href="./programs/configure.html">configure</a></code> información adicional sobre
+    donde está su compilador, librerías o ficheros de cabecera.  Esto
+    se puede hacer, tanto pasando variables de entorno, como pasándole
+    opciones a <code class="program"><a href="./programs/configure.html">configure</a></code> a través de la
+    línea de comandos.  Para más información, consulte
+    la página de ayuda de <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
     <p>Para que se haga una idea sobre las posibilidades que tiene,
     aquí tiene un ejemplo típico que configura Apache para
@@ -294,14 +293,14 @@ directorios</a></h2>
        --enable-speling=shared
 </code></p></div>
 
-    <p>Cuando se ejecuta <code>configure</code> se comprueban que
-    características o funcionalidades están disponibles en
-    su sistema y se crean los Makefiles que serán usados luego
+    <p>Cuando se ejecuta <code class="program"><a href="./programs/configure.html">configure</a></code> se comprueban
+    que características o funcionalidades están disponibles
+    en su sistema y se crean los Makefiles que serán usados luego
     para compilar el servidor. Esto tardará algunos minutos.</p>
 
     <p>La información sobre todas las opciones de
-    <code>configure</code> está disponible en el <a href="programs/configure.html">Manual del script
-    configure</a>.</p>
+    <code class="program"><a href="./programs/configure.html">configure</a></code> está disponible en la
+    página de ayuda de <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -387,10 +386,10 @@ prrevia</a></h2>
     log, o archivos de configuración.  Además, los
     desarrolladores hacen todos los esfuerzos posibles para evitar
     cambios que generen incompatibilidades en las opciones de
-    <code>configure</code>, en la configuración de la
+    <code class="program"><a href="./programs/configure.html">configure</a></code>, en la configuración de la
     ejecución o en la interfaz de programación de
     módulos. En la mayor parte de los casos debe poder usar un
-    comando <code>configure</code> idéntico, un fichero de
+    comando <code class="program"><a href="./programs/configure.html">configure</a></code> idéntico, un fichero de
     configuracién idéntico, y todos sus módulos deben
     seguir funcionando.  (Esto es válido solo para versiones
     posteriores a la 2.0.41; las versiones anteriores contienen
@@ -400,7 +399,7 @@ prrevia</a></h2>
     instalación, la actualización es más fácil
     incluso.  El fichero <code>config.nice</code> que está en el
     directorio raiz de la estructura de directorios antigua contiene
-    exactamente el comando <code>configure</code> que usted usó
+    exactamente el comando <code class="program"><a href="./programs/configure.html">configure</a></code> que usted usó
     para configurar la estructura de directorios de Apache.  Entonces,
     para actualizar su instalación de una versóon a la
     siguinete, solo tiene que copiar el archivo

@@ -49,8 +49,8 @@
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
 available</dd>
-<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
-more than one multi-processing module (MPM)</dd>
+<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Es una colección de directivas que están implementadas
+en más de un módulo de multiprocesamiento (MPM)</dd>
 <dt><a href="beos.html">beos</a></dt><dd>Este módulo de muiltiprocesamiento está
 optimizado para BeOS.</dd>
 <dt><a href="leader.html">leader</a></dt><dd>Variante experimental del MPM estándar
