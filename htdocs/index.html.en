@@ -33,7 +33,6 @@ The Apache <A HREF="manual/index.html">documentation</A> has been included with 
 <P>
 You are free to use the image below on an Apache-powered web server.  Thanks for using Apache!
 
-<P ALIGN="CENTER">
-<IMG SRC="apache_pb.gif" ALT="">
+<DIV ALIGN="CENTER"><IMG SRC="apache_pb.gif" ALT=""></DIV>
 </BODY>
 </HTML>
