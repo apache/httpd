@@ -139,6 +139,7 @@ static int decl_die(int status, char *phase, request_rec *r)
  */
 AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 {
+    int file_req = (r->main && r->filename);
     int access_status;
 
     /* Ignore embedded %2F's in path for proxy requests */
@@ -151,11 +152,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
 
-    /* File-specific requests with no 'true' URI are a huge pain... they 
-     * cannot bubble through the next several steps.  Only subrequests may 
-     * have an empty uri, otherwise let translate_name kill the request.
+    /* All file subrequests are a huge pain... they cannot bubble through the 
+     * next several steps.  Only file subrequests are allowed an empty uri, 
+     * otherwise let translate_name kill the request.
      */
-    if (!r->main || (r->uri && r->uri[0]))
+    if (!file_req)
     {
         if ((access_status = ap_location_walk(r))) {
             return access_status;
@@ -179,7 +180,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Excluding file-specific requests with no 'true' URI...
      */
-    if (!r->main || (r->uri && r->uri[0]))
+    if (!file_req)
     {
         /* Rerun the location walk, which overrides any map_to_storage config.
          */
