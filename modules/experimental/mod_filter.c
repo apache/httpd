@@ -77,9 +77,17 @@ struct ap_filter_provider_t {
     ap_filter_provider_t *next;
 };
 
+/** we need provider_ctx to save ctx values set by providers in filter_init */
+typedef struct provider_ctx provider_ctx;
+struct provider_ctx {
+    ap_filter_provider_t *provider;
+    void *ctx;
+    provider_ctx *next;
+};
 typedef struct {
     ap_out_filter_func func;
     void *fctx;
+    provider_ctx *init_ctx;
 } harness_ctx;
 
 typedef struct mod_filter_chain {
@@ -119,30 +127,43 @@ static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
 static int filter_init(ap_filter_t *f)
 {
     ap_filter_provider_t *p;
+    provider_ctx *pctx;
     int err;
     ap_filter_rec_t *filter = f->frec;
 
-    f->ctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx));
+    harness_ctx *fctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx));
     for (p = filter->providers; p; p = p->next) {
         if (p->frec->filter_init_func) {
+            f->ctx = NULL;
             if ((err = p->frec->filter_init_func(f)) != OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "filter_init for %s failed", p->frec->name);
                 return err;   /* if anyone errors out here, so do we */
             }
+            if (f->ctx != NULL) {
+                /* the filter init function set a ctx - we need to record it */
+                pctx = apr_pcalloc(f->r->pool, sizeof(provider_ctx));
+                pctx->provider = p;
+                pctx->ctx = f->ctx;
+                pctx->next = fctx->init_ctx;
+                fctx->init_ctx = pctx;
+            }
         }
     }
-
+    f->ctx = fctx;
     return OK;
 }
 
-static ap_out_filter_func filter_lookup(request_rec *r, ap_filter_rec_t *filter)
+static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
     const char *str = NULL;
     char *str1;
     int match;
     unsigned int proto_flags;
+    request_rec *r = f->r;
+    harness_ctx *ctx = f->ctx;
+    provider_ctx *pctx;
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
@@ -290,12 +311,18 @@ static ap_out_filter_func filter_lookup(request_rec *r, ap_filter_rec_t *filter)
                 apr_table_setn(r->headers_in, "Range", filter->range);
             }
 #endif
-            return provider->frec->filter_func.out_func;
+            for (pctx = ctx->init_ctx; pctx; pctx = pctx->next) {
+                if (pctx->provider == provider) {
+                    ctx->fctx = pctx->ctx ;
+                }
+            }
+            ctx->func = provider->frec->filter_func.out_func;
+            return 1;
         }
     }
 
     /* No provider matched */
-    return NULL;
+    return 0;
 }
 
 static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
@@ -336,8 +363,7 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
             }
         }
 #endif
-        ctx->func = filter_lookup(f->r, filter);
-        if (!ctx->func) {
+        if (!filter_lookup(f, filter)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -367,7 +393,7 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
     ap_filter_rec_t *filter = apr_hash_get(cfg->live_filters, fname,
                                            APR_HASH_KEY_STRING);
 
-    if (!provider) {
+    if (!filter) {
         return "FilterProtocol: No such filter";
     }
 
