@@ -334,7 +334,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
         xsname = X509_get_subject_name(xs);
         cp = X509_NAME_oneline(xsname, NULL, 0);
         result = apr_pstrdup(p, cp);
-        free(cp);
+        modssl_free(cp);
         resdup = FALSE;
     }
     else if (strlen(var) > 5 && strcEQn(var, "S_DN_", 5)) {
@@ -346,7 +346,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
         xsname = X509_get_issuer_name(xs);
         cp = X509_NAME_oneline(xsname, NULL, 0);
         result = apr_pstrdup(p, cp);
-        free(cp);
+        modssl_free(cp);
         resdup = FALSE;
     }
     else if (strlen(var) > 5 && strcEQn(var, "I_DN_", 5)) {

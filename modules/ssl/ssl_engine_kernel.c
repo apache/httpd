@@ -968,7 +968,7 @@ int ssl_hook_UserCheck(request_rec *r)
         X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
         sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
-        free(cp);
+        modssl_free(cp);
     }
 
     clientdn = (char *)sslconn->client_dn;
@@ -1299,11 +1299,11 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
                      iname ? iname : "-unknown-");
 
         if (sname) {
-            free(sname);
+            modssl_free(sname);
         }
 
         if (iname) {
-            free(iname);
+            modssl_free(iname);
         }
     }
 
@@ -1555,7 +1555,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
                                  "Certificate with serial %ld (0x%lX) "
                                  "revoked per CRL from issuer %s",
                                  serial, serial, cp);
-                    free(cp);
+                    modssl_free(cp);
                 }
 
                 X509_STORE_CTX_set_error(ctx, X509_V_ERR_CERT_REVOKED);
@@ -1593,6 +1593,7 @@ static void modssl_proxy_info_log(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  SSLPROXY_CERT_CB_LOG_FMT "%s, sending %s", 
                  sc->vhost_id, msg, dn ? dn : "-uknown-");
+    modssl_free(dn);
 }
 
 /*

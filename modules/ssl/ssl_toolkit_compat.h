@@ -105,6 +105,8 @@
 
 #define modssl_set_cipher_list SSL_set_cipher_list
 
+#define modssl_free OPENSSL_free
+
 #define EVP_PKEY_reference_inc(pkey) \
    CRYPTO_add(&((pkey)->references), +1, CRYPTO_LOCK_X509_PKEY)
 
@@ -147,6 +149,8 @@
 
 #define modssl_set_cipher_list(ssl, l) \
    SSL_set_cipher_list(ssl, (char *)l)
+
+#define modssl_free free
 
 #ifndef PEM_F_DEF_CALLBACK
 #define PEM_F_DEF_CALLBACK PEM_F_DEF_CB
