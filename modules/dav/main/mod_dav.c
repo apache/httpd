@@ -352,6 +352,7 @@ static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
 static int dav_error_response(request_rec *r, int status, const char *body)
 {
     r->status = status;
+    r->status_line = ap_get_status_line(status);
     r->content_type = "text/html";
 
     /* since we're returning DONE, ensure the request body is consumed. */
@@ -3328,6 +3329,8 @@ static int dav_method_checkout(request_rec *r)
             else {
                 const ap_xml_elem *child = aset->first_child;
 
+                activities = apr_make_array(r->pool, 1, sizeof(const char *));
+
                 for (; child != NULL; child = child->next) {
                     if (child->ns == AP_XML_NS_DAV_ID
                         && strcmp(child->name, "href") == 0) {
@@ -3367,7 +3370,8 @@ static int dav_method_checkout(request_rec *r)
     /* Check the state of the resource: must be a file or collection,
      * must be versioned, and must not already be checked out.
      */
-    if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
+    if (resource->type != DAV_RESOURCE_TYPE_REGULAR
+        && resource->type != DAV_RESOURCE_TYPE_VERSION) {
 	return dav_error_response(r, HTTP_CONFLICT,
 				  "Cannot checkout this type of resource.");
     }
