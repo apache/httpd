@@ -82,8 +82,8 @@ APR_HOOK_STRUCT(
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
-                     (apr_pool_t *p, apr_socket_t *csd, int my_child_num),
-                     (p, csd, my_child_num), NULL)
+                     (apr_pool_t *p, apr_socket_t *csd, int conn_id),
+                     (p, csd, conn_id), NULL)
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -221,52 +221,4 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
 
     ap_run_process_connection(c);
 
-}
-
-/* Clearly some of this stuff doesn't belong in a generalised connection
-   structure, but for now...
-*/
-
-AP_CORE_DECLARE(conn_rec *)ap_core_new_connection(apr_pool_t *p, 
-                            server_rec *server, apr_socket_t *inout, 
-                            core_net_rec *net, long id)
-{
-    conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
-    apr_status_t rv;
-
-    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(id), 
-                                  SERVER_BUSY_READ, (request_rec *) NULL);
-
-    /* Got a connection structure, so initialize what fields we can
-     * (the rest are zeroed out by pcalloc).
-     */
-
-    conn->conn_config=ap_create_conn_config(p);
-    conn->notes = apr_table_make(p, 5);
-
-    conn->pool = p;
-    if ((rv = apr_socket_addr_get(&conn->local_addr, APR_LOCAL, inout)) 
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_LOCAL)");
-        apr_socket_close(inout);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&conn->local_ip, conn->local_addr);
-    if ((rv = apr_socket_addr_get(&conn->remote_addr, APR_REMOTE, inout))
-        != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_socket_addr_get(APR_REMOTE)");
-        apr_socket_close(inout);
-        return NULL;
-    }
-    apr_sockaddr_ip_get(&conn->remote_ip, conn->remote_addr);
-    conn->base_server = server;
-    net->client_socket = inout;
-
-    conn->id = id;
-
-    apr_pool_cleanup_register(p, net, ap_lingering_close, apr_pool_cleanup_null);
-
-    return conn;
 }
