@@ -131,6 +131,8 @@ typedef struct autoindex_config_struct {
 
     char *default_icon;
     int opts;
+    int incremented_opts;
+    int decremented_opts;
     int name_width;
     int name_adjust;
     int icon_width;
@@ -294,6 +296,10 @@ static const char *fancy_indexing(cmd_parms *cmd, void *d, int arg)
 
     cfg = (autoindex_config_rec *) d;
     curopts = cfg->opts;
+    if (curopts & NO_OPTIONS) {
+	return "FancyIndexing directive conflicts with existing "
+	       "IndexOptions None";
+    }
     newopts = (arg ? (curopts | FANCY_INDEXING) : (curopts & ~FANCY_INDEXING));
     cfg->opts = newopts;
     return NULL;
@@ -302,51 +308,97 @@ static const char *fancy_indexing(cmd_parms *cmd, void *d, int arg)
 static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 {
     char *w;
-    int opts = 0;
+    int opts;
+    int opts_add;
+    int opts_remove;
+    char action;
     autoindex_config_rec *d_cfg = (autoindex_config_rec *) d;
 
+    opts = d_cfg->opts;
+    opts_add = d_cfg->incremented_opts;
+    opts_remove = d_cfg->decremented_opts;
     while (optstr[0]) {
+	int option = 0;
+
 	w = ap_getword_conf(cmd->pool, &optstr);
+	if ((*w == '+') || (*w == '-')) {
+	    action = *(w++);
+	}
+	else {
+	    action = '\0';
+	}
 	if (!strcasecmp(w, "FancyIndexing")) {
-	    opts |= FANCY_INDEXING;
+	    option = FANCY_INDEXING;
 	}
 	else if (!strcasecmp(w, "IconsAreLinks")) {
-	    opts |= ICONS_ARE_LINKS;
+	    option = ICONS_ARE_LINKS;
 	}
 	else if (!strcasecmp(w, "ScanHTMLTitles")) {
-	    opts |= SCAN_HTML_TITLES;
+	    option = SCAN_HTML_TITLES;
 	}
 	else if (!strcasecmp(w, "SuppressLastModified")) {
-	    opts |= SUPPRESS_LAST_MOD;
+	    option = SUPPRESS_LAST_MOD;
 	}
 	else if (!strcasecmp(w, "SuppressSize")) {
-	    opts |= SUPPRESS_SIZE;
+	    option = SUPPRESS_SIZE;
 	}
 	else if (!strcasecmp(w, "SuppressDescription")) {
-	    opts |= SUPPRESS_DESC;
+	    option = SUPPRESS_DESC;
 	}
 	else if (!strcasecmp(w, "SuppressHTMLPreamble")) {
-	    opts |= SUPPRESS_PREAMBLE;
+	    option = SUPPRESS_PREAMBLE;
 	}
         else if (!strcasecmp(w, "SuppressColumnSorting")) {
-            opts |= SUPPRESS_COLSORT;
+            option = SUPPRESS_COLSORT;
 	}
 	else if (!strcasecmp(w, "None")) {
+	    if (action != '\0') {
+		return "Cannot combine '+' or '-' with 'None' keyword";
+	    }
 	    opts = NO_OPTIONS;
+	    opts_add = 0;
+	    opts_remove = 0;
 	}
 	else if (!strcasecmp(w, "IconWidth")) {
-	    d_cfg->icon_width = DEFAULT_ICON_WIDTH;
+	    if (action != '-') {
+		d_cfg->icon_width = DEFAULT_ICON_WIDTH;
+	    }
+	    else {
+		d_cfg->icon_width = 0;
+	    }
 	}
 	else if (!strncasecmp(w, "IconWidth=", 10)) {
+	    if (action != '\0') {
+		return "Cannot combine '+' or '-' with IconWidth=n";
+	    }
 	    d_cfg->icon_width = atoi(&w[10]);
 	}
 	else if (!strcasecmp(w, "IconHeight")) {
-	    d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
+	    if (action != '-') {
+		d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
+	    }
+	    else {
+		d_cfg->icon_height = 0;
+	    }
 	}
 	else if (!strncasecmp(w, "IconHeight=", 11)) {
+	    if (action != '\0') {
+		return "Cannot combine '+' or '-' with IconHeight=n";
+	    }
 	    d_cfg->icon_height = atoi(&w[11]);
 	}
+	else if (!strcasecmp(w, "NameWidth")) {
+	    if (action != '-') {
+		return "NameWidth with no value may only appear as "
+		       "'-NameWidth'";
+	    }
+	    d_cfg->name_width = DEFAULT_NAME_WIDTH;
+	    d_cfg->name_adjust = 0;
+	}
 	else if (!strncasecmp(w, "NameWidth=", 10)) {
+	    if (action != '\0') {
+		return "Cannot combine '+' or '-' with NameWidth=n";
+	    }
 	    if (w[10] == '*') {
 		d_cfg->name_adjust = 1;
 	    }
@@ -362,10 +414,25 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	else {
 	    return "Invalid directory indexing option";
 	}
+	if (action == '\0') {
+	    opts |= option;
+	    opts_add = 0;
+	    opts_remove = 0;
+	}
+	else if (action == '+') {
+	    opts_add |= option;
+	    opts_remove &= ~option;
+	}
+	else {
+	    opts_remove |= option;
+	    opts_add &= ~option;
+	}
     }
     if ((opts & NO_OPTIONS) && (opts & ~NO_OPTIONS)) {
 	return "Cannot combine other IndexOptions keywords with 'None'";
     }
+    d_cfg->incremented_opts = opts_add;
+    d_cfg->decremented_opts = opts_remove;
     d_cfg->opts = opts;
     return NULL;
 }
@@ -418,6 +485,8 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->hdr_list = ap_make_array(p, 4, sizeof(struct item));
     new->rdme_list = ap_make_array(p, 4, sizeof(struct item));
     new->opts = 0;
+    new->incremented_opts = 0;
+    new->decremented_opts = 0;
 
     return (void *) new;
 }
@@ -441,10 +510,31 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     new->icon_list = ap_append_arrays(p, add->icon_list, base->icon_list);
     new->rdme_list = ap_append_arrays(p, add->rdme_list, base->rdme_list);
     if (add->opts & NO_OPTIONS) {
+	/*
+	 * If the current directory says 'no options' then we also
+	 * clear any incremental mods from being inheritable.
+	 */
 	new->opts = NO_OPTIONS;
+	new->incremented_opts = 0;
+	new->decremented_opts = 0;
     }
     else {
-	new->opts = base->opts | add->opts;
+	new->incremented_opts = (base->incremented_opts 
+				 | add->incremented_opts)
+	                        & ~add->decremented_opts;
+	new->decremented_opts = (base->decremented_opts
+				 | add->decremented_opts);
+	/*
+	 * We've got some local settings, so make sure we don't inadvertently
+	 * inherit an IndexOptions None from above.
+	 */
+	new->opts = ((base->opts | add->opts) & ~NO_OPTIONS);
+	/*
+	 * We're guaranteed that there'll be no overlap between
+	 * the add-options and the remove-options.
+	 */
+	new->opts |= new->incremented_opts;
+	new->opts &= ~new->decremented_opts;
     }
     new->name_width = add->name_width;
     new->name_adjust = add->name_adjust;

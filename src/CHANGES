@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Add +/- incremental prefixes to IndexOptions keywords, and
+     enable merging of multiple IndexOptions directives.  [Ken Coar]
+
   *) PORT: Allow GuessOS to recognize Unixware 7.0.1 [Steve Cameron
      <steve.cameron@compaq.com>]
 
