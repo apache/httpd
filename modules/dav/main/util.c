@@ -1166,7 +1166,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                                             "\" submitted a locktoken created "
                                             "by user \"",
                                             lock->auth_user, "\".", NULL);
-                        return dav_new_error(p, HTTP_UNAUTHORIZED, 0, errmsg);
+                        return dav_new_error(p, HTTP_FORBIDDEN, 0, errmsg);
                     }
 
                     /*
