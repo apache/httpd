@@ -725,7 +725,7 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
 
     if (!conf->logname) {
         return apr_pstrcat(cmd->pool, "Invalid ScriptLog path ",
-                           arg1, NULL);
+                           arg, NULL);
     }
     return NULL; 
 } 
