@@ -378,7 +378,7 @@ case "$PLAT" in
 	esac
 	DBM_LIB=""
 	case "$SOLVER" in
-	    2[0123]*)
+	    2[01234]*)
 		DEF_WANTHSREGEX=yes
 		;;
 	    *)
