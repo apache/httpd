@@ -233,29 +233,29 @@ int ap_thread_count = 0;
 BOOL ap_main_finished = FALSE;
 unsigned int ap_thread_stack_size = 65536;
 #endif
-int ap_standalone=0;
+API_VAR_EXPORT int ap_standalone=0;
 int ap_configtestonly=0;
 int ap_docrootcheck=1;
-uid_t ap_user_id=0;
-char *ap_user_name=NULL;
-gid_t ap_group_id=0;
+API_VAR_EXPORT uid_t ap_user_id=0;
+API_VAR_EXPORT char *ap_user_name=NULL;
+API_VAR_EXPORT gid_t ap_group_id=0;
 #ifdef MULTIPLE_GROUPS
 gid_t group_id_list[NGROUPS_MAX];
 #endif
-int ap_max_requests_per_child=0;
-int ap_threads_per_child=0;
-int ap_excess_requests_per_child=0;
-char *ap_pid_fname=NULL;
-char *ap_scoreboard_fname=NULL;
+API_VAR_EXPORT int ap_max_requests_per_child=0;
+API_VAR_EXPORT int ap_threads_per_child=0;
+API_VAR_EXPORT int ap_excess_requests_per_child=0;
+API_VAR_EXPORT char *ap_pid_fname=NULL;
+API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
 char *ap_lock_fname;
-char *ap_server_argv0=NULL;
+API_VAR_EXPORT char *ap_server_argv0=NULL;
 struct in_addr ap_bind_address;
-int ap_daemons_to_start=0;
-int ap_daemons_min_free=0;
-int ap_daemons_max_free=0;
-int ap_daemons_limit=0;
+API_VAR_EXPORT int ap_daemons_to_start=0;
+API_VAR_EXPORT int ap_daemons_min_free=0;
+API_VAR_EXPORT int ap_daemons_max_free=0;
+API_VAR_EXPORT int ap_daemons_limit=0;
 time_t ap_restart_time=0;
-int ap_suexec_enabled = 0;
+API_VAR_EXPORT int ap_suexec_enabled = 0;
 int ap_listenbacklog;
 int ap_dump_settings = 0;
 API_VAR_EXPORT int ap_extended_status = 0;
@@ -288,7 +288,7 @@ listen_rec *ap_listeners;
 static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
-char ap_server_confname[MAX_STRING_LEN]="";
+API_VAR_EXPORT char ap_server_confname[MAX_STRING_LEN]="";
 char ap_coredump_dir[MAX_STRING_LEN];
 
 array_header *ap_server_pre_read_config;

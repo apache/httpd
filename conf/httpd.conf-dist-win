@@ -176,6 +176,7 @@ ThreadsPerChild 50
 #LoadModule proxy_module modules/ApacheModuleProxy.dll
 #LoadModule rewrite_module modules/ApacheModuleRewrite.dll
 #LoadModule speling_module modules/ApacheModuleSpeling.dll
+#LoadModule info_module modules/ApacheModuleInfo.dll
 #LoadModule status_module modules/ApacheModuleStatus.dll
 #LoadModule usertrack_module modules/ApacheModuleUserTrack.dll
 

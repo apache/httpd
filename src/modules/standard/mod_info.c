@@ -103,7 +103,7 @@ typedef struct info_cfg_lines {
 } info_cfg_lines;
 
 module MODULE_VAR_EXPORT info_module;
-extern module *top_module;
+module API_VAR_EXPORT *top_module;
 
 static void *create_info_config(pool *p, server_rec *s)
 {
