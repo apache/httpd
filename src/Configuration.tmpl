@@ -164,7 +164,6 @@ Module common_log_module   mod_log_common.o
 Module asis_module        mod_asis.o
 Module imap_module        mod_imap.o
 Module action_module      mod_actions.o
-Module proxy_module       mod_proxy.o
 Module cern_meta_module   mod_cern_meta.o
 Module env_module         mod_env.o
 Module anon_auth_module   mod_auth_anon.o
@@ -199,6 +198,11 @@ Module status_module	mod_status.o
 
 # Module dld_module     mod_dld.o
 # Module cookies_module mod_cookies.o
+
+# Even more finally, the proxy module. Incomplete, buggy and possibly dangerous
+# Use it at your own risk.
+
+# Module proxy_module       mod_proxy.o
 
 # Finally, this is a *replacement* for mod_log_common which 
 # supports a LogFormat directive which allows you to specify what
