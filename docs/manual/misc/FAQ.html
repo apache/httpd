@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.131 $ ($Date: 1998/09/30 15:19:00 $)
+  $Revision: 1.132 $ ($Date: 1998/10/19 04:59:36 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -79,6 +79,8 @@
 <!--   (A: you can't but "satisfy any; allow from all" can be close -->
 <!-- - '400 malformed request' on Win32 might mean stale proxy; see -->
 <!--   PR #2300.                                                    -->
+<!-- - "expected </Directory> saw </Directory" due to buggy AIX     -->
+<!--   compiler.                                                    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -187,9 +189,6 @@
         working correctly?</A>
    </LI>
    <LI><A HREF="#SSL-i">Why doesn't Apache include SSL?</A>
-   </LI>
-   <LI><A HREF="#HPUX-core">Why do I get core dumps under HPUX using
-        HP's ANSI C compiler?</A>
    </LI>
    <LI><A HREF="#midi">How do I get Apache to send a MIDI file so the
         browser can play it?</A>
@@ -1426,18 +1425,6 @@
   article about
   <A HREF="http://www.apacheweek.com/features/ssl" REL="Help"
   ><CITE>Apache and Secure Transactions</CITE></A>.
-  </P>
-  <HR>
- </LI>
-
- <LI><A NAME="HPUX-core">
-       <STRONG>Why do I get core dumps under HPUX using HP's ANSI
-       C compiler?</STRONG>
-      </A>
-  <P>
-  We have had numerous reports of Apache dumping core when compiled
-  with HP's ANSI C compiler using optimization.  Disabling the compiler
-  optimization has fixed these problems.
   </P>
   <HR>
  </LI>
