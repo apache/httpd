@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Reverted a minor optimization in mod_ssl.c that used the vhost ID
+     as the session id context rather that a MD5 hash of that vhost ID,
+     because it caused very long vhost id's to be unusable with mod_ssl.
+     PR 8572.  [Cliff Woolley]
+
   *) Fix the link to the description of the CoredumpDirectory 
      directive in the server-wide document.  PR 8643.  [Jeff Trawick]
 
