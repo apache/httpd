@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Better DSO flags recognition on NetBSD platforms using ELF.
+     [Todd Vierling <tv@pobox.com>] PR#4310
+
   *) Always log months in english format for %t in mod_log_config.
      [Petr Lampa <lampa@fee.vutbr.cz>] PR#4366, 679
 

@@ -985,16 +985,15 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
-	alpha-*-netbsd*|mips-*-netbsd*|powerpc-*-netbsd*)
-	    CFLAGS_SHLIB="-fpic -DPIC"
-	    LDFLAGS_SHLIB="-shared"
-	    LDFLAGS_SHLIB_EXPORT=""
-	    SHLIB_SUFFIX_DEPTH=2
-	    ;;
 	*-netbsd*)
-	    CFLAGS_SHLIB="-fpic -DPIC"
-	    LDFLAGS_SHLIB="-Bshareable"
-	    LDFLAGS_SHLIB_EXPORT=""
+	    CFLAGS_SHLIB="-fPIC -DPIC"
+	    if echo __ELF__ | ${CC} -E - | grep -q __ELF__; then
+		LDFLAGS_SHLIB="-Bshareable"
+		LDFLAGS_SHLIB_EXPORT=""
+	    else
+		LDFLAGS_SHLIB="-shared"
+		LDFLAGS_SHLIB_EXPORT="-Wl,-E"
+	    fi
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
 	*-bsdi3)
