@@ -461,6 +461,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                         *s = new_buffer;
                     }
 
+                    last_char += next_len;
                     bytes_handled += next_len;
                 }
             }
