@@ -700,7 +700,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                     continue;  /* Blocking and nothing yet?  Try again. */
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
+                    ap_log_error(APLOG_MARK, APLOG_INFO, inctx->rc, c->base_server,
                                 "SSL input filter read failed.");
                 }
             }
@@ -708,9 +708,9 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                 /*
                  * Log SSL errors and any unexpected conditions.
                  */
-                ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
-                            "SSL library in error reading data");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+                ap_log_error(APLOG_MARK, APLOG_INFO, inctx->rc, c->base_server,
+                            "SSL library error %d reading data", ssl_err);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
             }
             if (inctx->rc == APR_SUCCESS) {
@@ -805,16 +805,16 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             outctx->rc = APR_EAGAIN;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, outctx->rc, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
                         "SSL output filter write failed.");
         }
         else /* if (ssl_err == SSL_ERROR_SSL) */ {
             /*
              * Log SSL errors
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, outctx->rc, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
                          "SSL library error %d writing data", ssl_err);
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
         }
         if (outctx->rc == APR_SUCCESS) {
             outctx->rc = APR_EGENERAL;
@@ -829,7 +829,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             reason = "likely due to failed renegotiation";
         }
 
-        ap_log_error(APLOG_MARK, APLOG_ERR, outctx->rc, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
                      "failed to write %d of %d bytes (%s)",
                      len - (apr_size_t)res, len, reason);
 
@@ -870,11 +870,11 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     switch (status) {
       case HTTP_BAD_REQUEST:
             /* log the situation */
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                          f->c->base_server,
                          "SSL handshake failed: HTTP spoken on HTTPS port; "
                          "trying to send HTML error page");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, f->c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, f->c->base_server);
 
             sslconn->non_ssl_request = 1;
             ssl_io_filter_disable(f);
@@ -1010,7 +1010,7 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
 
     c = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
     if ((ret = ssl_filter_io_shutdown(filter_ctx, c, 0)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
+        ap_log_error(APLOG_MARK, APLOG_INFO, ret, NULL,
                      "SSL filter error shutting down I/O");
     }
 
@@ -1040,10 +1040,10 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
 
     if (sslconn->is_proxy) {
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                          c->base_server,
                          "SSL Proxy connect failed");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
             return ssl_filter_io_shutdown(filter_ctx, c, 1);
         }
 
@@ -1087,7 +1087,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             return HTTP_BAD_REQUEST;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rc, c->base_server,
                          "SSL handshake interrupted by system "
                          "[Hint: Stop button pressed in browser?!]");
         }
@@ -1095,12 +1095,12 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             /*
              * Log SSL errors and any unexpected conditions.
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rc, c->base_server,
                          "SSL library error %d in handshake "
                          "(server %s, client %s)", ssl_err,
                          ssl_util_vhostid(c->pool, c->base_server),
                          c->remote_ip ? c->remote_ip : "unknown");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
         }
         if (inctx->rc == APR_SUCCESS) {
@@ -1129,24 +1129,24 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
              * optional_no_ca doesn't appear to work as advertised
              * in 1.x
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                          c->base_server,
                          "SSL client authentication failed, "
                          "accepting certificate based on "
                          "\"SSLVerifyClient optional_no_ca\" "
                          "configuration");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
         }
         else {
             const char *error = sslconn->verify_error ?
                 sslconn->verify_error :
                 X509_verify_cert_error_string(verify_result);
 
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                          c->base_server,
                          "SSL client authentication failed: %s",
                          error ? error : "unknown");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
             return ssl_filter_io_shutdown(filter_ctx, c, 1);
         }
@@ -1168,7 +1168,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     if ((sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) &&
         !sslconn->client_cert)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
                      "No acceptable peer certificate available");
 
         return ssl_filter_io_shutdown(filter_ctx, c, 1);
