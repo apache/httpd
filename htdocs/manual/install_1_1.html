@@ -6,15 +6,10 @@
 
 <BODY>
 <!--#include virtual="header.html" -->
-<h1>Compiling and Installing Apache 1.2</h1>
-If you wish to download and install an earlier version of Apache please
-read <a href="install_1_1.html">Compiling and Installing Apache 1.1</a>.
-
+<h1>Compiling and Installing Apache</h1>
 <h2>Downloading Apache</h2>
 Information on the latest version of Apache can be found on the Apache
-web server at 
-<a href="http://www.apache.org/">http://www.apache.org/</a>. 
-This will list the current release,
+web server at http://www.apache.org/. This will list the current release,
 any more recent beta-test release, together with details of mirror
 web and anonymous ftp sites.
 
@@ -24,63 +19,52 @@ However, the server has to know which modules are compiled into it, in
 order for those modules to be effective; this requires generation of a
 short bit of code (`<code>modules.c</code>') which simply has a list of them.
 <p>
-It is also necessary to choose the correct options for your platform.
-
+If you are satisfied with our standard module set, and expect to
+continue to be satisfied with it, then you can just edit the stock
+<code>Makefile</code> and compile as you have been doing previously.  If you
+would
+like to select optional modules, however, you need to run the
+configuration script.
+<p>
 To do this:
 <ol>
-<li>
-Copy the file "<code>Configuration.tmpl</code>" to 
-"<code>Configuration</code>" and then edit
-"<code>Configuration</code>".  This contains the list and settings of various
-"Rules" and an additional section at the bottom which
-lists the modules which have been compiled in, and also names the
-files containing them.  You will need to:
-<ul>
-<p><LI> Adjust the Rules and <code>EXTRA_CFLAGS|LIBS|LFLAGS|INCLUDES</code> if
-      you feel so inclined.
+<li>Edit the file `<code>Configuration</code>'.  This contains the per-machine
+config settings of the Makefile, and also an additional section at
+the bottom which lists the modules which have been compiled in, and
+also names the files containing them.  You will need to:
+<ol>
+<li> Select a compiler and compilation options as appropriate to
+your machine.
+<li> Uncomment lines corresponding to those optional modules you wish
+to include (among the Module lines at the bottom of the file)
+or add new lines corresponding to custom modules you have written.
+<p>
+Note that DBM auth has to be explicitly configured in, if you want
+it; just uncomment the corresponding line.
+</ol>
+<li> Run the `Configure' script:
+<blockquote><code>
+% Configure<br>
+Using 'Configuration' as config file<br>
+%</code></blockquote>
 
-<p><li> Uncomment lines corresponding to those optional modules you wish
-      to include (among the Module lines at the bottom of the file),
-      or add new lines corresponding to custom modules you have written.
-      (See <a href="misc/API.html">API.html</a> for preliminary docs on how to do that).	
-</ul><p>
-      Note that DBM auth has to be explicitly configured in, if you want
-      it --- just uncomment the corresponding line.
+This generates new versions of the Makefile and of modules.c.  If
+you want to maintain multiple configurations, you can say, e.g.,
+<blockquote><code>
+% Configure -file Configuration.ai<br>
+Using alternate config file Configuration.ai<br>
+%</code></blockquote>
 
-
-<p><li> Run the "<code>Configure</code>" script:
-<blockquote><pre>
-      % Configure
-      Using 'Configuration' as config file
-       + configured for <whatever> platform
-       + setting C compiler to <whatever> *
-       + setting C compiler optimization-level to <whatever> *
-      %
-</pre></blockquote>
-   This generates new versions of the Makefile and of modules.c.  (If
-   you want to maintain multiple configurations, you can say, e.g.,
-<blockquote><pre>
-      % Configure -file Configuration.ai
-      Using alternate config file Configuration.ai
-       + configured for <whatever> platform
-       + setting C compiler to <whatever> *
-       + setting C compiler optimization-level to <whatever> *
-      % 
-</pre></blockquote><p>
-*: Depending on Configuration and your system, Configure
-       make not print these lines. That's OK
-
-<p><li> Type "<code>make</code>".
+<li>Type `make'.
 <p>
 The modules we place in the Apache distribution are the ones we have
 tested and are used regularly by various members of the Apache
 development group.  Additional modules contributed by members or third
 parties with specific needs or functions are available at
-<a href="http://www.apache.org/dist/contrib/modules/"><URL:http://www.apache.org/dist/contrib/modules/></a>.
-There are
-instructions on that page for linking these modules into the
-core Apache code.
+<A HREF="http://www.apache.org/dist/contrib/modules/">&lt;URL:http://www.apache.org/dist/contrib/modules/&gt;</A>.  There are instructions on that page for
+linking these modules into the core Apache code.
 </ol>
+
 <h2>Installing Apache</h2>
 After compilation, you will have a binary called `httpd' in the
 <code>src/</code> directory.  A binary distribution of Apache will supply this
