@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/30 00:08:25 $]
+Last modified at [$Date: 2003/06/03 22:14:41 $]
 
 Release:
 
@@ -195,6 +195,12 @@ PATCHES TO PORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
+
+    * mod_dav: backport the "streamy" PROPFIND response.
+        modules/dav/main/mod_dav.c 1.94
+        modules/dav/main/mod_dav.h 1.67
+        +1: gstein, sander
+
 
 CURRENT RELEASE NOTES:
 
