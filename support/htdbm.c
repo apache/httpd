@@ -201,7 +201,7 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
     return APR_SUCCESS;
 }
 
-static apr_status_t) htdbm_open(htdbm_t *htdbm) 
+static apr_status_t htdbm_open(htdbm_t *htdbm) 
 {
     if (htdbm->create)
         return apr_dbm_open(&htdbm->dbm, htdbm->filename, APR_DBM_RWCREATE, 
