@@ -529,7 +529,7 @@ API_EXPORT(void) ap_no2slash(char *name)
 
     s = d = name;
 
-#ifdef WIN32
+#ifdef HAVE_UNC_PATHS
     /* Check for UNC names.  Leave leading two slashes. */
     if (s[0] == '/' && s[1] == '/')
         *d++ = *s++;
@@ -563,6 +563,14 @@ API_EXPORT(void) ap_no2slash(char *name)
  */
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+    if (!n) {
+        *d = '/';
+        *++d = '\0';
+        return (d);
+    }
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
+
     for (;;) {
 	if (*s == '\0' || (*s == '/' && (--n) == 0)) {
 	    *d = '/';
