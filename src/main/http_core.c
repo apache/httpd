@@ -1637,7 +1637,7 @@ const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg, cha
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_AS);
 #elif defined(RLIMIT_DATA)
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_DATA);
-#else defined(RLIMIT_VMEM)
+#elif defined(RLIMIT_VMEM)
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_VMEM);
 #endif
     return NULL;
