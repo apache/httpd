@@ -258,10 +258,10 @@ Available Patches:
       worth adding it by weighting on the advantages and disadvantages.
       
       Votes for including APACI (in general): 
-         Ralf +1, Dean +1
+         Ralf +1, Dean +1, Roy +1
 
       Votes for commit variants:
-         CV1: Ralf +1, Dean +1
+         CV1: Ralf +1, Dean +1, Roy +1
          CV2: Ralf +0
 
 Concepts:
@@ -308,7 +308,7 @@ Closed issues:
       changes to be committed without prior review.
 
     * Guidelines for commit-then-review are documented at
-      <http://dev.apache.org/guidelines.html#ctr>
+      <http://dev.apache.org/guidelines.html>
 
     * The "apache" CVS module has been renamed to "apache-1.2" and the
       "apachen" module to "apache-1.3".  "apache-1.3" has been copied
@@ -321,26 +321,19 @@ Open issues:
     * Provide consistant prefixes; suggestions:
 
       Apache provided general functions (e.g., ap_cpystrn)
-	ap_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul +1
+	ap_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul +1, Roy +1
 
       Public API functions (e.g., palloc)
-	apapi_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul, Dean
+	apapi_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul, Dean, Roy
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: Brian +1, Dean
+	appri_xxx: Brian +1, Dean, Roy
 	httpd_xxx: Ken +1
 	apint_xxx: Ralf +1 (int = internal)
-
-    * Ken's [POLL] apachen/patches directory
-      Shall we experiment with allowing patches to be distributed for
-      voting through cvs, by creating a directory under the source tree
-      and putting them there?  Please vote.
-	<34B8EE39.43F32BE0@Golux.Com>
-	Status: Ken +1, Randy 0, Dean 0, Jim +1, Paul 0, Martin +1, Ralf 0
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
@@ -397,7 +390,7 @@ Open issues:
 	  field is r->content_languages.  Heck it's not even mentioned in
 	  apache-devsite/mmn.txt when we got content_languages (note the s!).
 	  The proposal is to remove r->content_language:
-	    Status: Dean +1, Paul +1
+	    Status: Dean +1, Paul +1, Roy +1
 
 	- child_exit() is redundant, it can be implemented via cleanups.  It is
 	  not "symmetric" in the sense that there is no exit API method to go
@@ -406,7 +399,7 @@ Open issues:
 	  mod_mmap_static, and mod_php3 for example).  The proposal is to
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
-	    Status: Dean +1, Rasmus +1, Paul +1
+	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1
 
 Win32 specific issues:
 
