@@ -434,7 +434,7 @@ install-include:
 		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/; \
 		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os-inline.c $(root)$(includedir)/"; \
 		$(CP) $(TOP)/$(SRC)/$${osdir}/os-inline.c $(root)$(includedir)/
-	chmod 644 $(root)$(includedir)/*.h
+	chmod 644 $(root)$(includedir)/*.h $(root)$(includedir)/xml/*.h
 	@echo "<=== [include]"
 
 #   create an initial document root containing the Apache manual,
