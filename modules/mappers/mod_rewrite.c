@@ -159,13 +159,6 @@
 
 #endif /* REWRITELOG_DISABLED */
 
-
-/*
- * The key in the r->notes apr_table_t wherein we store our accumulated
- * Vary values, and the one used for per-condition checks in a chain.
- */
-#define VARY_KEY "rewrite-Vary"
-
 /* remembered mime-type for [T=...] */
 #define REWRITE_FORCED_MIMETYPE_NOTEVAR "rewrite-forced-mimetype"
 
@@ -394,8 +387,9 @@ typedef struct {
     backrefinfo *briRC;
     const char  *uri;
     const char  *vary_this;
+    const char  *vary;
     char        *perdir;
-} exp_ctx;
+} rewrite_ctx;
 
 /*
  * +-------------------------------------------------------+
@@ -1572,7 +1566,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 /*
  * lookup a HTTP header and set VARY note
  */
-static const char *lookup_header(const char *name, exp_ctx *ctx)
+static const char *lookup_header(const char *name, rewrite_ctx *ctx)
 {
     const char *val = apr_table_get(ctx->r->headers_in, name);
 
@@ -1590,7 +1584,7 @@ static const char *lookup_header(const char *name, exp_ctx *ctx)
  * lookahead helper function
  * Determine the correct URI path in perdir context
  */
-static APR_INLINE const char *la_u(exp_ctx *ctx)
+static APR_INLINE const char *la_u(rewrite_ctx *ctx)
 {
     rewrite_perdir_conf *conf;
 
@@ -1608,7 +1602,7 @@ static APR_INLINE const char *la_u(exp_ctx *ctx)
 /*
  * generic variable lookup
  */
-static char *lookup_variable(char *var, exp_ctx *ctx)
+static char *lookup_variable(char *var, rewrite_ctx *ctx)
 {
     const char *result;
     request_rec *r = ctx->r;
@@ -2022,7 +2016,7 @@ static APR_INLINE char *find_char_in_curlies(char *s, int c)
  * are interpreted by a later expansion, producing results that
  * were not intended by the administrator.
  */
-static char *do_expand(char *input, exp_ctx *ctx)
+static char *do_expand(char *input, rewrite_ctx *ctx)
 {
     result_list *result, *current;
     result_list sresult[SMALL_EXPANSION];
@@ -2216,7 +2210,7 @@ static char *do_expand(char *input, exp_ctx *ctx)
 /*
  * perform all the expansions on the environment variables
  */
-static void do_expand_env(data_item *env, exp_ctx *ctx)
+static void do_expand_env(data_item *env, rewrite_ctx *ctx)
 {
     char *name, *val;
 
@@ -2298,7 +2292,7 @@ static void add_cookie(request_rec *r, char *s)
     return;
 }
 
-static void do_expand_cookie(data_item *cookie, exp_ctx *ctx)
+static void do_expand_cookie(data_item *cookie, rewrite_ctx *ctx)
 {
     while (cookie) {
         add_cookie(ctx->r, do_expand(cookie->data, ctx));
@@ -3354,7 +3348,7 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
 /*
  * Apply a single rewriteCond
  */
-static int apply_rewrite_cond(rewritecond_entry *p, exp_ctx *ctx)
+static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 {
     char *input = do_expand(p->input, ctx);
     apr_finfo_t sb;
@@ -3467,22 +3461,20 @@ static int apply_rewrite_cond(rewritecond_entry *p, exp_ctx *ctx)
 /*
  *  Apply a single RewriteRule
  */
-static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
-                              char *perdir)
+static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 {
     char *uri;
     char *output;
-    const char *vary;
     char *newuri;
     regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
-    exp_ctx *ctx = NULL;
-    int failed;
     apr_array_header_t *rewriteconds;
     rewritecond_entry *conds;
     rewritecond_entry *c;
     int i;
     int rc;
+    request_rec *r = ctx->r;
+    char *perdir = ctx->perdir;
 
     /*
      *  Initialisation
@@ -3530,18 +3522,14 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     }
 
     /*
-     *  Else create the RewriteRule `regsubinfo' structure which
-     *  holds the substitution information.
+     * init context data for this particular rule
      */
-    ctx            = apr_palloc(r->pool, sizeof(*ctx));
-    ctx->r         = r;
-    ctx->perdir    = perdir;
     ctx->uri       = uri;
     ctx->vary_this = NULL;
 
-    ctx->briRR  = apr_palloc(r->pool, sizeof(*ctx->briRR));
+    ctx->briRR = apr_palloc(r->pool, sizeof(*ctx->briRR));
     if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
-        /*  empty info on negative patterns  */
+        /* empty info on negative patterns  */
         ctx->briRR->source = "";
         ctx->briRR->nsub   = 0;
     }
@@ -3552,11 +3540,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                sizeof(regmatch));
     }
 
-    /*
-     *  Initiallally create the RewriteCond backrefinfo with
-     *  empty backrefinfo, i.e. not subst parts
-     *  (this one is adjusted inside apply_rewrite_cond() later!!)
-     */
     ctx->briRC = apr_pcalloc(r->pool, sizeof(*ctx->briRC));
     ctx->briRC->source = "";
     ctx->briRC->nsub   = 0;
@@ -3570,7 +3553,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     rewriteconds = p->rewriteconds;
     conds = (rewritecond_entry *)rewriteconds->elts;
-    failed = 0;
+
     for (i = 0; i < rewriteconds->nelts; i++) {
         c = &conds[i];
         rc = apply_rewrite_cond(c, ctx);
@@ -3599,35 +3582,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
             }
         }
         else {
-            /*
-             *  The "AND" case, i.e. no "or" flag,
-             *  so a single failure means total failure.
+            /* The "AND" case, i.e. no "or" flag,
+             * so a single failure means total failure.
              */
             if (rc == 0) {
-                failed = 1;
-                break;
+                return 0;
             }
         }
         if (ctx->vary_this) {
-            apr_table_merge(r->notes, VARY_KEY, ctx->vary_this);
+            ctx->vary = ctx->vary
+                        ? apr_pstrcat(r->pool, ctx->vary, ", ", ctx->vary_this,
+                                      NULL)
+                        : ctx->vary_this;
             ctx->vary_this = NULL;
         }
-    }
-    /*  if any condition fails the complete rule fails  */
-    if (failed) {
-        apr_table_unset(r->notes, VARY_KEY);
-        ctx->vary_this = NULL;
-        return 0;
-    }
-
-    /*
-     * Regardless of what we do next, we've found a match.  Check to see
-     * if any of the request header fields were involved, and add them
-     * to the Vary field of the response.
-     */
-    if ((vary = apr_table_get(r->notes, VARY_KEY)) != NULL) {
-        apr_table_merge(r->headers_out, "Vary", vary);
-        apr_table_unset(r->notes, VARY_KEY);
     }
 
     /*
@@ -3781,6 +3749,11 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
     int changed;
     int rc;
     int s;
+    rewrite_ctx *ctx;
+
+    ctx = apr_palloc(r->pool, sizeof(*ctx));
+    ctx->perdir = perdir;
+    ctx->r = r;
 
     /*
      *  Iterate over all existing rules
@@ -3806,8 +3779,18 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
         /*
          *  Apply the current rule.
          */
-        rc = apply_rewrite_rule(r, p, perdir);
+        ctx->vary = NULL;
+        rc = apply_rewrite_rule(p, ctx);
+
         if (rc) {
+            /* Regardless of what we do next, we've found a match. Check to see
+             * if any of the request header fields were involved, and add them
+             * to the Vary field of the response.
+             */
+            if (ctx->vary) {
+                apr_table_merge(r->headers_out, "Vary", ctx->vary);
+            }
+
             /*
              *  Indicate a change if this was not a match-only rule.
              */
