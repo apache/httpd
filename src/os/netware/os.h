@@ -122,7 +122,7 @@ typedef int gid_t;
 #define _getch(c) getch(c)
 
 #define opendir_411(p) os_opendir(p)
-#define openir(p) os_opendir(p)
+#define opendir(p) os_opendir(p)
 DIR *os_opendir (const char *pathname);
 
 #define readdir_411(p) os_readdir(p)
