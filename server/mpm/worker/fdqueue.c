@@ -130,9 +130,10 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info)
         rv = apr_thread_cond_wait(queue_info->wait_for_idler,
                                   queue_info->idlers_mutex);
         if (rv != APR_SUCCESS) {
-            rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-            if (rv != APR_SUCCESS) {
-                return rv;
+            apr_status_t rv2;
+            rv2 = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+            if (rv2 != APR_SUCCESS) {
+                return rv2;
             }
             return rv;
         }
