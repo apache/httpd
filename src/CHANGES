@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Fix suexec segfault when group doesn't exist. [Gregory Neil Shapiro]
+     PR#367, 368, 354, 453
+
   *) Fix IRIX warning about bzero undefined. [Marc Slemko]
   
   *) Fix problem with <Directory proxy:...>. [Martin Kraemer] PR#271

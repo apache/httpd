@@ -294,18 +294,24 @@ int main(int argc, char *argv[])
     /*
      * Error out if the target group name is invalid.
      */
-    if ((gr = getgrnam(target_gname)) == NULL) {
-	log_err("invalid target group name: (%s)\n", target_gname);
-	exit(106);
+    if (strspn(target_gname, "1234567890") != strlen(target_gname)) {
+	if ((gr = getgrnam(target_gname)) == NULL) {
+	    log_err("invalid target group name: (%s)\n", target_gname);
+	    exit(106);
+	}
+	gid = gr->gr_gid;
+	actual_gname = strdup(gr->gr_name);
+    }
+    else {
+	gid = atoi(target_gname);
+	actual_gname = strdup(target_gname);
     }
 
     /*
      * Save these for later since initgroups will hose the struct
      */
     uid = pw->pw_uid;
-    gid = gr->gr_gid;
     actual_uname = strdup(pw->pw_name);
-    actual_gname = strdup(gr->gr_name);
     target_homedir = strdup(pw->pw_dir);
 
     /*

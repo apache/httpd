@@ -436,6 +436,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
     core_dir_config *conf;
     struct passwd *pw;
     struct group *gr;
+    char *grpname;
     
     conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
@@ -551,7 +552,14 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 		return;
 	    }
             r->uri -= 2;
-            gr = getgrgid (pw->pw_gid);
+            if ((gr = getgrgid (pw->pw_gid)) == NULL) {
+		if ((grpname = palloc (r->pool, 16)) == NULL) 
+		    return;
+		else
+		    ap_snprintf(grpname, sizeof(grpname), "%d\0", pw->pw_gid);
+	    }
+	    else
+		grpname = gr->gr_name;
             execuser = (char *) palloc (r->pool, (sizeof(pw->pw_name) + 1));
             execuser = pstrcat (r->pool, "~", pw->pw_name, NULL);
         }
@@ -569,14 +577,14 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
         }
   
   	if (shellcmd)
-	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name, argv0, NULL, env);
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
   	else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
-	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name, argv0, NULL, env);
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
   	else {
 	    execve(SUEXEC_BIN,
-		   create_argv(r, SUEXEC_BIN, execuser, gr->gr_name, argv0, r->args, (void *)NULL),
+		   create_argv(r, SUEXEC_BIN, execuser, grpname, argv0, r->args, (void *)NULL),
 		   env);
 	}
     }
