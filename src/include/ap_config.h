@@ -262,6 +262,7 @@ typedef int rlim_t;
 #define NO_KILLPG
 #undef  NO_SETSID
 #define HAVE_SYSLOG
+#define AP_ENABLE_EXCEPTION_HOOK
 
 #elif defined(AIX)
 #undef HAVE_GMTOFF
