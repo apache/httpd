@@ -167,6 +167,10 @@ case "$PLAT" in
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
+	# if we're using the HPUX compiler, add a few flags.
+	if [ "$CC" = "cc" ]; then
+	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+	fi
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
