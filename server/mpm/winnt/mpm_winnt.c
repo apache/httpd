@@ -2348,6 +2348,5 @@ AP_MODULE_DECLARE_DATA module mpm_winnt_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     winnt_cmds,		        /* command apr_table_t */
-    NULL,			/* handlers */
     winnt_hooks 		/* register_hooks */
 };

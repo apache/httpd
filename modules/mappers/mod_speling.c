@@ -564,6 +564,5 @@ module AP_MODULE_DECLARE_DATA speling_module =
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
     speling_cmds,               /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

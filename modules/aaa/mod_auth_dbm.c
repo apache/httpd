@@ -349,6 +349,5 @@ module AP_MODULE_DECLARE_DATA dbm_auth_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     dbm_auth_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks              /* register hooks */
 };

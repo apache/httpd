@@ -116,7 +116,7 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static int handle_dir(const char *handler,request_rec *r)
+static int handle_dir(request_rec *r)
 {
     dir_config_rec *d;
     char *dummy_ptr[1];
@@ -124,7 +124,7 @@ static int handle_dir(const char *handler,request_rec *r)
     int num_names;
     int error_notfound = 0;
 
-    if(strcmp(handler,DIR_MAGIC_TYPE))
+    if(strcmp(r->handler,DIR_MAGIC_TYPE))
 	return DECLINED;
 
     d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,

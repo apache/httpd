@@ -379,6 +379,5 @@ module AP_MODULE_DECLARE_DATA so_module = {
    so_sconf_create,		/* server config */
    NULL,			    /* merge server config */
    so_cmds,			    /* command apr_table_t */
-   NULL,			    /* handlers */
    NULL				    /* register hooks */
 };

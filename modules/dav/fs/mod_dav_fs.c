@@ -138,6 +138,5 @@ module AP_MODULE_DECLARE_DATA dav_fs_module =
     dav_fs_create_server_config,	/* server config */
     dav_fs_merge_server_config,	/* merge server config */
     dav_fs_cmds,		/* command table */
-    NULL,                       /* handlers */
     register_hooks,             /* register hooks */
 };

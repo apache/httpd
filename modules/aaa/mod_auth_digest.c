@@ -2070,7 +2070,6 @@ module AP_MODULE_DECLARE_DATA digest_auth_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     digest_cmds,		/* command table */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };
 

@@ -3788,6 +3788,10 @@ static int dav_handler(request_rec *r)
 {
     dav_dir_conf *conf;
 
+    if (strcmp(r->handler, "dav-handler")) {
+	return DECLINED;
+    }
+
     /* quickly ignore any HTTP/0.9 requests */
     if (r->assbackwards) {
 	return DECLINED;
@@ -4004,6 +4008,7 @@ static int dav_type_checker(request_rec *r)
 
 static void register_hooks(void)
 {
+    ap_hook_handler(dav_handler, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_type_checker(dav_type_checker, NULL, NULL, AP_HOOK_FIRST);
 
@@ -4044,12 +4049,6 @@ static const command_rec dav_cmds[] =
     { NULL }
 };
 
-static const handler_rec dav_handlers[] =
-{
-    {"dav-handler", dav_handler},
-    { NULL }
-};
-
 module DAV_DECLARE_DATA dav_module =
 {
     STANDARD20_MODULE_STUFF,
@@ -4058,7 +4057,6 @@ module DAV_DECLARE_DATA dav_module =
     dav_create_server_config,	/* server config */
     dav_merge_server_config,	/* merge server config */
     dav_cmds,			/* command table */
-    dav_handlers,		/* handlers */
     register_hooks,             /* register hooks */
 };
 

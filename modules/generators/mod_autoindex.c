@@ -1660,12 +1660,12 @@ static int index_directory(request_rec *r,
 
 /* The formal handler... */
 
-static int handle_autoindex(const char *handler,request_rec *r)
+static int handle_autoindex(request_rec *r)
 {
     autoindex_config_rec *d;
     int allow_opts;
 
-    if(strcmp(handler,DIR_MAGIC_TYPE))
+    if(strcmp(r->handler,DIR_MAGIC_TYPE))
 	return DECLINED;
 
     allow_opts = ap_allow_options(r);

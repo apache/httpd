@@ -422,6 +422,10 @@ static int file_cache_handler(request_rec *r)
     int errstatus;
     int rc = OK;
 
+    if (strcmp(r->handler, "*.*")) {
+        return DECLINED;
+    }
+
     /* we don't handle anything but GET */
     if (r->method_number != M_GET) return DECLINED;
 
@@ -473,6 +477,7 @@ AP_INIT_ITERATE("mmapfile", mmapfile, NULL, RSRC_CONF,
 
 static void register_hooks(void)
 {
+    ap_hook_handler(file_cache_handler, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(file_cache_post_config, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_translate_name(file_cache_xlat, NULL, NULL, AP_HOOK_MIDDLE);
     /* This trick doesn't work apparently because the translate hooks
@@ -483,12 +488,6 @@ static void register_hooks(void)
 
 }
 
-static const handler_rec file_cache_handlers[] =
-{
-    { "*/*", file_cache_handler },
-    { NULL }
-};
-
 module AP_MODULE_DECLARE_DATA file_cache_module =
 {
     STANDARD20_MODULE_STUFF,
@@ -497,6 +496,5 @@ module AP_MODULE_DECLARE_DATA file_cache_module =
     create_server_config,     /* create per-server config structure */
     NULL,                     /* merge per-server config structures */
     file_cache_cmds,          /* command handlers */
-    file_cache_handlers,      /* handlers */
     register_hooks            /* register hooks */
 };

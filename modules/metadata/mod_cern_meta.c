@@ -397,6 +397,5 @@ module AP_MODULE_DECLARE_DATA cern_meta_module =
     NULL,			/* server config */
     NULL,			/* merge server configs */
     cern_meta_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -730,7 +730,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
  * 
  * Actual cgid handling... 
  */ 
-static int cgid_handler(const char *handler, request_rec *r) 
+static int cgid_handler(request_rec *r) 
 { 
     int retval, nph, dbpos = 0; 
     char *argv0, *dbuf = NULL; 
@@ -746,7 +746,7 @@ static int cgid_handler(const char *handler, request_rec *r)
     apr_file_t *tempsock = NULL;
     apr_size_t nbytes;
 
-    if(strcmp(handler,CGI_MAGIC_TYPE) && strcmp(handler,"cgi-script"))
+    if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
 	return DECLINED;
 
     if (r->method_number == M_OPTIONS) { 

@@ -2971,7 +2971,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 
 static int do_nothing(request_rec *r) { return OK; }
 
-static int default_handler(const char *handler, request_rec *r)
+static int default_handler(request_rec *r)
 {
     ap_bucket_brigade *bb;
     ap_bucket *e;
@@ -2994,8 +2994,8 @@ static int default_handler(const char *handler, request_rec *r)
      * have a / in the middle, which probably captures the original
      * intent, but may cause problems at first - Ben 7th Jan 01
      */
-    if(strcmp(handler,"request-handler")
-       && ap_strcmp_match(handler,"*/*"))
+    if(strcmp(r->handler,"default-handler")
+       && ap_strcmp_match(r->handler,"*/*"))
 	return DECLINED;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
