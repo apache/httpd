@@ -1044,14 +1044,14 @@ static void timeout(int sig)
 	if (sig == SIGPIPE) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 			current_conn->server,
-			"(client %s) stopped connection before %s completed",
+			"[client %s] stopped connection before %s completed",
 			current_conn->remote_ip,
 			timeout_name ? timeout_name : "request");
 	}
 	else {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 			current_conn->server,
-			"(client %s) %s timed out",
+			"[client %s] %s timed out",
 			current_conn->remote_ip,
 			timeout_name ? timeout_name : "request");
 	}
