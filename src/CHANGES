@@ -1,3 +1,5 @@
+Changes with Apache 1.3b3
+
 Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) TestCompile was not passing $LIBS [Dean Gaudet]
