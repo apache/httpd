@@ -131,6 +131,7 @@ a directory</td></tr>
     the path in the link, it would point to the wrong path.</li>
     <li><code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> will be evaluated
     <em>only</em> for directories requested with trailing slash.</li>
+    <li>Relative URL references inside html pages will work correctly.</li>
     </ul>
 
     <p>Well, if you don't want this effect <em>and</em> the reasons above don't
