@@ -266,7 +266,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
         rc = apr_file_open(&s->error_log, fname, 
-                      APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                      APR_APPEND | APR_READ | APR_WRITE | APR_CREATE | APR_INHERIT,
                       APR_OS_DEFAULT, p);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 

@@ -206,7 +206,7 @@
 
 module AP_MODULE_DECLARE_DATA log_config_module;
 
-static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
+static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_INHERIT);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
 

@@ -207,7 +207,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 	return;
     }
 
-    rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
+    rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD | APR_INHERIT,
                        APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
