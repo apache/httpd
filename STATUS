@@ -2,12 +2,18 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.0: Current plan is to roll the tarball June 1 (~5pm eastern)
-           and then release it on the 5th. The tarball will be the
-           current CVS tree (1.3b8-dev) as of that date/time.
-           Jim will roll and tag on the 1st. Everyone should test
-           the tarball so we're sure the tarball is ready for the 5th.
-           Jim will announce as well.
+    1.3.0: Tagged and rolled on June 1.
+           
+           Plan now is to release it on the 5th.  Everyone should test the
+           tarball so we're sure the tarball is ready for the 5th.  Jim will
+           announce as well.  Already known successful platform tests for the
+           1.3.0 tarball follow:
+
+           o Linux / Red Hat 5.0, 5.1       Manoj Kasichainula
+           o Linux / Debian 2.0 (hamm)      Alvaro Martinez Echevarria
+           o Linux / Debian 1.3.1           Ralf S. Engelschall
+           o FreeBSD 2.2.6                  Ralf S. Engelschall
+           o FreeBSD 3.0-CURRENT            Ralf S. Engelschall
 
     1.3b7: Tagged and Released 26/5/98.
 
