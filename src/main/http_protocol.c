@@ -773,13 +773,16 @@ void get_mime_headers(request_rec *r)
 
 request_rec *read_request(conn_rec *conn)
 {
-    request_rec *r = (request_rec *) pcalloc(conn->pool, sizeof(request_rec));
+    request_rec *r;
     int access_status;
+    pool *p;
 
+    p = make_sub_pool(conn->pool);
+    r = pcalloc(p, sizeof(request_rec));
+    r->pool            = p;
     r->connection      = conn;
     conn->server       = conn->base_server;
     r->server          = conn->server;
-    r->pool            = make_sub_pool(conn->pool);
 
     conn->keptalive    = conn->keepalive == 1;
     conn->keepalive    = 0;

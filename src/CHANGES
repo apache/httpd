@@ -1,4 +1,6 @@
 Changes with Apache 1.3b4
+  
+  *) Fix a memory leak on keep-alive connections.  [Igor Tatarinov]
 
   *) Added mod_so module to support dynamic loading of modules on Unix
      (like mod_dld for Win32). This replaces mod_dld.c. Use SharedModule
