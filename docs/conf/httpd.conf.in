@@ -203,10 +203,10 @@ DocumentRoot "@exp_htdocsdir@"
 # The following lines prevent .htaccess and .htpasswd files from being 
 # viewed by Web clients. 
 #
-<Files ~ "^\.ht">
+<FilesMatch "^\.ht">
     Order allow,deny
     Deny from all
-</Files>
+</FilesMatch>
 
 <IfModule mime_module>
     #
@@ -279,8 +279,6 @@ LogLevel warn
     #
     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
     LogFormat "%h %l %u %t \"%r\" %>s %b" common
-    LogFormat "%{Referer}i -> %U" referer
-    LogFormat "%{User-agent}i" agent
 
     <IfModule logio_module>
       # You need to enable mod_logio.c to use %I and %O
@@ -297,30 +295,28 @@ LogLevel warn
     CustomLog @rel_logfiledir@/access_log common
 
     #
-    # If you would like to have agent and referer logfiles, uncomment the
-    # following directives.
-    #
-    #CustomLog @rel_logfiledir@/referer_log referer
-    #CustomLog @rel_logfiledir@/agent_log agent
-
-    #
-    # If you prefer a single logfile with access, agent, and referer information
+    # If you prefer a logfile with access, agent, and referer information
     # (Combined Logfile Format) you can use the following directive.
     #
     #CustomLog @rel_logfiledir@/access_log combined
 </IfModule>
 
 <IfModule alias_module>
+    # Redirect allows you to tell clients about documents that used to 
+    # exist in your server's namespace, but do not anymore. The client 
+    # will make a new request for the document at its new location.
+    # Example:
+    # Redirect permanent /foo http://www.example.com/bar
+
+    # Aliases map web paths into filesystem paths and are used to
+    # access content that does not live under the DocumentRoot.
+    # Example:
+    # Alias /webpath /full/filesystem/path
     #
-    # Aliases: Add here as many aliases as you need (with no limit). The format is 
-    # Alias fakename realname
-    #
-    # Note that if you include a trailing / on fakename then the server will
-    # require it to be present in the URL.  So "/icons" isn't aliased in this
-    # example, only "/icons/".  If the fakename is slash-terminated, then the 
-    # realname must also be slash terminated, and if the fakename omits the 
-    # trailing slash, the realname must also omit it.
-    #
+    # If you include a trailing / on /webpath then the server will
+    # require it to be present in the URL.  You will also likely
+    # need to provide a <Directory> section to allow access to
+    # the filesystem path.
 
     #
     # This should be changed to the ServerRoot/manual/.  The alias provides
@@ -378,14 +374,6 @@ LogLevel warn
     Order allow,deny
     Allow from all
 </Directory>
-
-#
-# Redirect allows you to tell clients about documents which used to exist in
-# your server's namespace, but do not anymore. This allows you to tell the
-# clients where to look for the relocated document.
-# Example:
-# Redirect permanent /foo http://www.example.com/bar
-
 
 <IfModule mime_module>
 
