@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 96955:106090 (outdated) -->
+<!-- English Revision: 96955:151405 (outdated) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
