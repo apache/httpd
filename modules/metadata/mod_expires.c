@@ -242,7 +242,7 @@ static const char *set_expiresactive(cmd_parms *cmd, void *in_dir_config, int ar
     dir_config->active = ACTIVE_ON;
     if (arg == 0) {
         dir_config->active = ACTIVE_OFF;
-    };
+    }
     return NULL;
 }
 
@@ -263,7 +263,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
     if ((code[0] == 'A') || (code[0] == 'M')) {
         *real_code = (char *)code;
         return NULL;
-    };
+    }
 
     /* <base> [plus] {<num> <type>}*
      */
@@ -281,14 +281,14 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
     else {
         return apr_pstrcat(p, "bad expires code, unrecognised <base> '",
                        word, "'", NULL);
-    };
+    }
 
     /* [plus]
      */
     word = ap_getword_conf(p, &code);
     if (!strncasecmp(word, "plus", 1)) {
         word = ap_getword_conf(p, &code);
-    };
+    }
 
     /* {<num> <type>}*
      */
@@ -301,7 +301,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
         else {
             return apr_pstrcat(p, "bad expires code, numeric value expected <num> '",
                            word, "'", NULL);
-        };
+        }
 
         /* <type>
          */
@@ -311,7 +311,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
         }
         else {
             return apr_pstrcat(p, "bad expires code, missing <type>", NULL);
-        };
+        }
 
         factor = 0;
         if (!strncasecmp(word, "years", 1)) {
@@ -338,14 +338,14 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
         else {
             return apr_pstrcat(p, "bad expires code, unrecognised <type>",
                            "'", word, "'", NULL);
-        };
+        }
 
         modifier = modifier + factor * num;
 
         /* next <num>
          */
         word = ap_getword_conf(p, &code);
-    };
+    }
 
     *real_code = apr_psprintf(p, "%c%d", base, modifier);
 
@@ -361,7 +361,7 @@ static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
         apr_table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
-    };
+    }
     return apr_pstrcat(cmd->pool,
                  "'ExpiresByType ", mime, " ", code, "': ", response, NULL);
 }
@@ -375,7 +375,7 @@ static const char *set_expiresdefault(cmd_parms *cmd, void *in_dir_config,
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
         dir_config->expiresdefault = real_code;
         return NULL;
-    };
+    }
     return apr_pstrcat(cmd->pool,
                    "'ExpiresDefault ", code, "': ", response, NULL);
 }
@@ -436,7 +436,7 @@ static int add_expires(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "internal error: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
-    };
+    }
 
     if (conf->active != ACTIVE_ON)
         return DECLINED;
@@ -464,7 +464,7 @@ static int add_expires(request_rec *r)
 
         if (code[0] == '\0')
             return OK;
-    };
+    }
 
     /* we have our code */
 
@@ -493,7 +493,7 @@ static int add_expires(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "internal error: bad expires code: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
-    };
+    }
 
     expires = base + additional;
     apr_table_mergen(r->headers_out, "Cache-Control",
