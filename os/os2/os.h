@@ -62,7 +62,6 @@
 #define PLATFORM "OS/2"
 
 /* going away shortly... */
-#define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
 #define CASE_BLIND_FILESYSTEM
