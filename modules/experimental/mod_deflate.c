@@ -57,9 +57,9 @@
 
 /*
  * mod_deflate.c: Perform deflate transfer-encoding on the fly
- * 
+ *
  * Written by Ian Holsman (IanH@apache.org)
- * 
+ *
  */
 
 #include "httpd.h"
@@ -72,6 +72,7 @@
 #include "http_request.h"
 
 #include "zlib.h"
+
 #ifdef HAVE_ZUTIL_H
 #include "zutil.h"
 #else
@@ -82,39 +83,39 @@
  * header), so this is straight from zlib 1.1.3's zutil.h.
  */
 #ifdef OS2
-#  define OS_CODE  0x06
+#define OS_CODE  0x06
 #endif
 
 #ifdef WIN32 /* Window 95 & Windows NT */
-#  define OS_CODE  0x0b
+#define OS_CODE  0x0b
 #endif
 
 #if defined(VAXC) || defined(VMS)
-#  define OS_CODE  0x02
+#define OS_CODE  0x02
 #endif
 
 #ifdef AMIGA
-#  define OS_CODE  0x01
+#define OS_CODE  0x01
 #endif
 
 #if defined(ATARI) || defined(atarist)
-#  define OS_CODE  0x05
+#define OS_CODE  0x05
 #endif
 
 #if defined(MACOS) || defined(TARGET_OS_MAC)
-#  define OS_CODE  0x07
+#define OS_CODE  0x07
 #endif
 
 #ifdef __50SERIES /* Prime/PRIMOS */
-#  define OS_CODE  0x0F
+#define OS_CODE  0x0F
 #endif
 
 #ifdef TOPS20
-#  define OS_CODE  0x0a
+#define OS_CODE  0x0a
 #endif
 
 #ifndef OS_CODE
-#  define OS_CODE  0x03  /* assume Unix */
+#define OS_CODE  0x03  /* assume Unix */
 #endif
 #endif
 
@@ -129,7 +130,7 @@ typedef struct deflate_filter_config_t
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
-#define DEFAULT_WINDOWSIZE -15        
+#define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
 #define FILTER_BUFSIZE 8096
 
@@ -154,8 +155,9 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
 
     return c;
 }
-static const char *deflate_set_window_size(cmd_parms * cmd, void *dummy, 
-                                           const char* arg)
+
+static const char *deflate_set_window_size(cmd_parms *cmd, void *dummy,
+                                           const char *arg)
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
@@ -163,7 +165,7 @@ static const char *deflate_set_window_size(cmd_parms * cmd, void *dummy,
 
     i = atoi(arg);
 
-    if (i < 1 || i > 15) 
+    if (i < 1 || i > 15)
         return "DeflateWindowSize must be between 1 and 15";
 
     c->windowSize = i * -1;
@@ -171,8 +173,8 @@ static const char *deflate_set_window_size(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
-static const char *deflate_set_note(cmd_parms * cmd, void *dummy, 
-                                    const char* arg)
+static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
+                                    const char *arg)
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
@@ -181,8 +183,8 @@ static const char *deflate_set_note(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
-static const char *deflate_set_memlevel(cmd_parms * cmd, void *dummy, 
-                                        const char* arg)
+static const char *deflate_set_memlevel(cmd_parms *cmd, void *dummy,
+                                        const char *arg)
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
@@ -190,7 +192,7 @@ static const char *deflate_set_memlevel(cmd_parms * cmd, void *dummy,
 
     i = atoi(arg);
 
-    if (i < 1 || i > 9) 
+    if (i < 1 || i > 9)
         return "DeflateMemLevel must be between 1 and 9";
 
     c->memlevel = i;
@@ -199,7 +201,7 @@ static const char *deflate_set_memlevel(cmd_parms * cmd, void *dummy,
 }
 
 /* magic header */
-static int deflate_magic[2] = { 0x1f, 0x8b };        
+static int deflate_magic[2] = { 0x1f, 0x8b };
 
 typedef struct deflate_ctx_t
 {
@@ -209,7 +211,7 @@ typedef struct deflate_ctx_t
     apr_bucket_brigade *bb;
 } deflate_ctx;
 
-static apr_status_t deflate_out_filter(ap_filter_t *f, 
+static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
     apr_bucket *e;
@@ -235,8 +237,18 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* some browsers might have problems, so set no-gzip 
-         * (with browsermatch) for them */
+        /* Some browsers might have problems with content types
+         * other than text/html, so set gzip-only-text/html
+         * (with browsermatch) for them
+         */
+        if (strncmp(r->content_type, "text/html", 9)
+            && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
+            return ap_pass_brigade(f->next, bb);
+        }
+
+        /* some browsers might have problems, so set no-gzip
+         * (with browsermatch) for them
+         */
         if (apr_table_get(r->subprocess_env, "no-gzip")) {
             return ap_pass_brigade(f->next, bb);
         }
@@ -258,7 +270,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         token = ap_get_token(r->pool, &accepts, 0);
         while (token && token[0] && strcmp(token, "gzip")) {
             /* skip token */
-            accepts++; 
+            accepts++;
             token = ap_get_token(r->pool, &accepts, 0);
         }
 
@@ -287,9 +299,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                         zRC, r->uri);
             return ap_pass_brigade(f->next, bb);
         }
+
         buf = apr_psprintf(r->pool, "%c%c%c%c%c%c%c%c%c%c", deflate_magic[0],
-                           deflate_magic[1], Z_DEFLATED, 0 /*flags */ , 0, 0, 
-                           0, 0 /*time */ , 0 /*xflags */ , OS_CODE);
+                           deflate_magic[1], Z_DEFLATED, 0 /* flags */ , 0, 0,
+                           0, 0 /* time */ , 0 /* xflags */ , OS_CODE);
         e = apr_bucket_pool_create(buf, 10, r->pool);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
@@ -326,15 +339,18 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 }
 
                 zRC = deflate(&ctx->stream, Z_FINISH);
+
                 if (deflate_len == 0 && zRC == Z_BUF_ERROR) {
                     zRC = Z_OK;
                 }
 
                 done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
+
                 if (zRC != Z_OK && zRC != Z_STREAM_END) {
                     break;
                 }
             }
+
             putLong(crc_array, ctx->crc);
             putLong(len_array, ctx->stream.total_in);
 
@@ -355,16 +371,17 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
             if (c->noteName) {
-                 if (ctx->stream.total_in > 0) {
+                if (ctx->stream.total_in > 0) {
                     int total;
 
                     total = ctx->stream.total_out * 100 / ctx->stream.total_in;
 
-                    apr_table_setn(r->notes, c->noteName, 
+                    apr_table_setn(r->notes, c->noteName,
                                    apr_itoa(r->pool, total));
-                 } else {
+                }
+                else {
                     apr_table_setn(r->notes, c->noteName, "-");
-                 }
+                }
             }
 
             deflateEnd(&ctx->stream);
@@ -373,35 +390,39 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
-            /* Okay, we've seen the EOS.  
+            /* Okay, we've seen the EOS.
              * Time to pass it along down the chain.
              */
             return ap_pass_brigade(f->next, ctx->bb);
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            /* XXX FIX: do we need the Content-Size set, or can we stream?  
-             * we should be able to stream */
-            /* ignore flush buckets for the moment.. we can't stream as we 
-             * need the size ;( */
+            /* XXX FIX: do we need the Content-Size set, or can we stream?
+             * we should be able to stream
+             */
+
+            /* Ignore flush buckets for the moment.. we can't stream as we
+             * need the size ;(
+             */
             continue;
         }
 
         /* read */
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+
         /* This crc32 function is from zlib. */
         ctx->crc = crc32(ctx->crc, (const Bytef *)data, len);
 
         /* write */
-        ctx->stream.next_in = (unsigned char *)data; /* we just lost const-ness,
-                                              but we'll just have to trust zlib */
+        ctx->stream.next_in = (unsigned char *)data; /* We just lost const-ness,
+                                                      * but we'll just have to
+                                                      * trust zlib */
         ctx->stream.avail_in = len;
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = FILTER_BUFSIZE;
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-
                 ctx->stream.next_out = ctx->buffer;
                 len = FILTER_BUFSIZE - ctx->stream.avail_out;
 
@@ -416,6 +437,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 return APR_EGENERAL;
         }
     }
+
     return APR_SUCCESS;
 }
 
@@ -428,7 +450,7 @@ static void register_hooks(apr_pool_t * p)
 static const command_rec deflate_filter_cmds[] = {
     AP_INIT_TAKE1("DeflateFilterNote", deflate_set_note, NULL, RSRC_CONF,
                   "Set a note to report on compression ratio"),
-    AP_INIT_TAKE1("DeflateWindowSize", deflate_set_window_size, NULL, 
+    AP_INIT_TAKE1("DeflateWindowSize", deflate_set_window_size, NULL,
                   RSRC_CONF, "Set the Deflate window size (1-15)"),
     AP_INIT_TAKE1("DeflateMemLevel", deflate_set_memlevel, NULL, RSRC_CONF,
                   "Set the Deflate Memory Level (1-9)"),
