@@ -618,9 +618,6 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         cp++;
     }
 
-    /* now be careful: Under the POSIX regex library
-       we can compile the pattern for case insensitive matching,
-       under the old V8 library we have to do it self via a hack */
     if (newcond->flags & CONDFLAG_NOCASE) {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
               == NULL);
@@ -724,12 +721,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->pattern = apr_pstrdup(cmd->pool, cp);
     newrule->regexp  = regexp;
 
-    /*  arg2: the output string
-     *  replace the $<N> by \<n> which is needed by the currently
-     *  used Regular Expression library
-     *
-     * TODO: Is this still required for PCRE?  If not, does it *work* with PCRE?
-     */
+    /*  arg2: the output string */
     newrule->output = apr_pstrdup(cmd->pool, a2);
 
     /* now, if the server or per-dir config holds an
