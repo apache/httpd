@@ -1,4 +1,7 @@
 Changes with Apache 2.0.31-dev
+
+  *) Remove mod_auth_db.  [Justin Erenkrantz]
+
   *) Do not install unnecessary pcre headers like config.h and internal.h.
      [Joe Orton <joe@manyfish.co.uk>]
 

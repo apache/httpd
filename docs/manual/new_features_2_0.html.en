@@ -184,7 +184,8 @@
 
       <dt><strong>mod_auth_db</strong></dt>
 
-      <dd>Now supports Berkeley DB 3.0</dd>
+      <dd>Has been removed in favor of mod_auth_dbm with the AuthDBMType
+      directive.</dd>
 
       <dt><strong>mod_proxy</strong></dt>
 

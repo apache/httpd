@@ -182,10 +182,6 @@
       <a href="mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a>
       unterst&uuml;tzt.</dd>
 
-      <dt><strong>mod_auth_db</strong></dt>
-
-      <dd>Berkeley DB 3.0 wird jetzt unterst&uuml;tzt</dd>
-
       <dt><strong>mod_proxy</strong></dt>
 
       <dd>Neue &lt;Proxy&gt;-Konfigurationssektionen bringen eine besser

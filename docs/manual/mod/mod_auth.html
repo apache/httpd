@@ -31,9 +31,8 @@
     <p>This module allows the use of HTTP Basic Authentication to
     restrict access by looking up users in plain text password and
     group files. Similar functionality and greater scalability is
-    provided by <a href="mod_auth_dbm.html">mod_auth_dbm</a> and <a
-    href="mod_auth_db.html">mod_auth_db</a>. HTTP Digest
-    Authentication is provided by <a
+    provided by <a href="mod_auth_dbm.html">mod_auth_dbm</a>.
+    HTTP Digest Authentication is provided by <a
     href="mod_auth_digest.html">mod_auth_digest</a>.</p>
 
     <h2>Directives</h2>
@@ -186,10 +185,8 @@
     AuthAuthoritative setting.</p>
 
     <p>A common use for this is in conjunction with one of the
-    database modules; such as <a
-    href="mod_auth_db.html"><code>mod_auth_db.c</code></a>, <a
-    href="mod_auth_dbm.html"><code>mod_auth_dbm.c</code></a>,
-    <code>mod_auth_msql.c</code>, and <a
+    database modules; such as <a href="mod_auth_dbm.html"><code
+    >mod_auth_dbm.c</code></a>, <code>mod_auth_msql.c</code>, and <a
     href="mod_auth_anon.html"><code>mod_auth_anon.c</code></a>.
     These modules supply the bulk of the user credential checking;
     but a few (administrator) related accesses fall through to a
