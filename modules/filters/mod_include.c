@@ -1645,12 +1645,9 @@ enum token_type {
 };
 struct token {
     enum token_type type;
-    char value[MAX_STRING_LEN];
+    char* value;
 };
 
-/* there is an implicit assumption here that string is at most MAX_STRING_LEN-1
- * characters long...
- */
 static const char *get_ptoken(request_rec *r, const char *string, 
                               struct token *token, int *unmatched)
 {
@@ -1658,6 +1655,8 @@ static const char *get_ptoken(request_rec *r, const char *string,
     int next = 0;
     char qs = 0;
     int tkn_fnd = 0;
+
+    token->value = NULL;
 
     /* Skip leading white space */
     if (string == (char *) NULL) {
@@ -1735,6 +1734,8 @@ static const char *get_ptoken(request_rec *r, const char *string,
         break;
     }
     /* We should only be here if we are in a string */
+    token->value = apr_palloc(r->pool, strlen(string) + 2); /* 2 for ch plus
+                                                               trailing null */
     if (!qs) {
         token->value[next++] = ch;
     }
