@@ -669,6 +669,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             ctx->stream.next_in = (unsigned char *)data;
             ctx->stream.avail_in = len;
 
+            zRC = Z_OK;
+
             while (ctx->stream.avail_in != 0) {
                 if (ctx->stream.avail_out == 0) {
                     apr_bucket *tmp_heap;
