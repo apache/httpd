@@ -106,7 +106,23 @@ API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
 API_EXPORT(int) ap_some_auth_required(request_rec *r);
 API_EXPORT(int) ap_is_initial_req(request_rec *r);
 API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
-
+/**
+ * Add one or more methods to the list permitted to access the resource.
+ * Usually executed by the content handler before the response header is
+ * sent, but sometimes invoked at an earlier phase if a module knows it
+ * can set the list authoritatively.  Note that the methods are ADDED
+ * to any already permitted unless the reset flag is non-zero.  The
+ * list is used to generate the Allow response header field when it
+ * is needed.
+ * @param   r     The pointer to the request identifying the resource.
+ * @param   reset Boolean flag indicating whether this list should
+ *                completely replace any current settings.
+ * @param   ...   A NULL-terminated list of strings, each identifying a
+ *                method name to add.
+ * @return  None.
+ * @deffunc void ap_allow_methods(request_rec *r, int reset, ...)
+ */
+API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...);
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
 void ap_process_request(request_rec *);

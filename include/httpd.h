@@ -666,6 +666,7 @@ struct request_rec {
      *  handler can't be installed by mod_actions. </PRE>
      */
     int allowed;		/* Allowed methods - for 405, OPTIONS, etc */
+    apr_array_header_t *allowed_xmethods; /* Array of extension methods */
 
     /** byte count in stream is for body */
     int sent_bodyct;

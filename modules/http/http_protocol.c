@@ -1572,23 +1572,41 @@ static void terminate_header(request_rec *r)
  */
 static char *make_allow(request_rec *r)
 {
-    return 2 + apr_pstrcat(r->pool,
-                   (r->allowed & (1 << M_GET))       ? ", GET, HEAD" : "",
-                   (r->allowed & (1 << M_POST))      ? ", POST"      : "",
-                   (r->allowed & (1 << M_PUT))       ? ", PUT"       : "",
-                   (r->allowed & (1 << M_DELETE))    ? ", DELETE"    : "",
-                   (r->allowed & (1 << M_CONNECT))   ? ", CONNECT"   : "",
-                   (r->allowed & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
-                   (r->allowed & (1 << M_PATCH))     ? ", PATCH"     : "",
-                   (r->allowed & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
-                   (r->allowed & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
-                   (r->allowed & (1 << M_MKCOL))     ? ", MKCOL"     : "",
-                   (r->allowed & (1 << M_COPY))      ? ", COPY"      : "",
-                   (r->allowed & (1 << M_MOVE))      ? ", MOVE"      : "",
-                   (r->allowed & (1 << M_LOCK))      ? ", LOCK"      : "",
-                   (r->allowed & (1 << M_UNLOCK))    ? ", UNLOCK"    : "",
-                   ", TRACE",
-                   NULL);
+    char *list;
+
+    list = apr_pstrcat(r->pool,
+		       (r->allowed & (1 << M_GET))       ? ", GET, HEAD" : "",
+		       (r->allowed & (1 << M_POST))      ? ", POST"      : "",
+		       (r->allowed & (1 << M_PUT))       ? ", PUT"       : "",
+		       (r->allowed & (1 << M_DELETE))    ? ", DELETE"    : "",
+		       (r->allowed & (1 << M_CONNECT))   ? ", CONNECT"   : "",
+		       (r->allowed & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
+		       (r->allowed & (1 << M_PATCH))     ? ", PATCH"     : "",
+		       (r->allowed & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
+		       (r->allowed & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
+		       (r->allowed & (1 << M_MKCOL))     ? ", MKCOL"     : "",
+		       (r->allowed & (1 << M_COPY))      ? ", COPY"      : "",
+		       (r->allowed & (1 << M_MOVE))      ? ", MOVE"      : "",
+		       (r->allowed & (1 << M_LOCK))      ? ", LOCK"      : "",
+		       (r->allowed & (1 << M_UNLOCK))    ? ", UNLOCK"    : "",
+		       ", TRACE",
+		       NULL);
+    if ((r->allowed & (1 << M_INVALID)) && (r->allowed_xmethods->nelts)) {
+	int i;
+	char **xmethod = (char **) r->allowed_xmethods->elts;
+
+	/*
+	 * Append all of the elements of r->allowed_xmethods
+	 */
+	for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
+	    list = ap_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
+	}
+    }
+    /*
+     * Space past the leading ", ".  Wastes two bytes, but that's better
+     * than futzing around to find the actual length.
+     */
+    return list + 2;
 }
 
 API_EXPORT(int) ap_send_http_trace(request_rec *r)
