@@ -543,7 +543,7 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
  * @param m The module structure of the module to add
  * @param p The pool of the same lifetime as the module
  */
-AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p);
+AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p);
 
 /**
  * Remove a module from the server.  There are some caveats:
@@ -559,7 +559,7 @@ AP_DECLARE(void) ap_remove_module(module *m);
  * @param m The module structure of the module to add
  * @param p The pool with the same lifetime as the module
  */
-AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p);
+AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p);
 /**
  * Remove a module fromthe chained modules list and the list of loaded modules
  * @param m the module structure of the module to remove
@@ -740,7 +740,7 @@ AP_DECLARE(void) ap_single_module_configure(apr_pool_t *p, server_rec *s,
  * Add all of the prelinked modules into the loaded module list
  * @param process The process that is currently running the server
  */
-AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process);
+AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process);
 
 /**
  * Show the preloaded configuration directives, the help string explaining
@@ -865,9 +865,11 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
  * @param p Pool for general allocation
  * @param ptem Pool for temporary allocation
  */
-AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname, 
-                                            ap_directive_t **conftree, 
-                                            apr_pool_t *p, apr_pool_t *ptemp);
+AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp);
 
 /**
  * Process all directives in the config tree

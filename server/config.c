@@ -404,7 +404,7 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
+AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
 {
     /* This could be called from a LoadModule httpd.conf command,
      * after the file has been linked and the module structure within it
@@ -412,14 +412,10 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
      */
 
     if (m->version != MODULE_MAGIC_NUMBER_MAJOR) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "%s: module \"%s\" is not compatible with this "
-                     "version of Apache (found %d, need %d).",
-                     ap_server_argv0, m->name, m->version,
-                     MODULE_MAGIC_NUMBER_MAJOR);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Please contact the vendor for the correct version.");
-        exit(1);
+        return apr_psprintf(p, "Module \"%s\" is not compatible with this "
+                            "version of Apache (found %d, need %d). Please "
+                            "contact the vendor for the correct version.",
+                            m->name, m->version, MODULE_MAGIC_NUMBER_MAJOR);
     }
 
     if (m->next == NULL) {
@@ -432,13 +428,10 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
         dynamic_modules++;
 
         if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "%s: module \"%s\" could not be loaded, because"
-                         " the dynamic", ap_server_argv0, m->name);
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "module limit was reached. Please increase "
-                         "DYNAMIC_MODULE_LIMIT and recompile.");
-            exit(1);
+            return apr_psprintf(p, "Module \"%s\" could not be loaded, "
+                                "because the dynamic module limit was "
+                                "reached. Please increase "
+                                "DYNAMIC_MODULE_LIMIT and recompile.", m->name);
         }
     }
 
@@ -470,6 +463,8 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
      *  It doesn't appear to be
      */
     ap_register_hooks(m, p);
+
+    return NULL;
 }
 
 /*
@@ -517,14 +512,18 @@ AP_DECLARE(void) ap_remove_module(module *m)
     total_modules--;
 }
 
-AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p)
+AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p)
 {
     module **m;
+    const char *error;
 
     /*
      *  Add module pointer to top of chained module list
      */
-    ap_add_module(mod, p);
+    error = ap_add_module(mod, p);
+    if (error) {
+        return error;
+    }
 
     /*
      *  And module pointer to list of loaded modules
@@ -538,6 +537,8 @@ AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p)
         ;
     *m++ = mod;
     *m = NULL;
+
+    return NULL;
 }
 
 AP_DECLARE(void) ap_remove_loaded_module(module *mod)
@@ -570,10 +571,11 @@ AP_DECLARE(void) ap_remove_loaded_module(module *mod)
     *m = NULL;
 }
 
-AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
+AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
 {
     module **m;
     module **m2;
+    const char *error;
 
     apr_hook_global_pool=process->pconf;
 
@@ -591,8 +593,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
         sizeof(module *) * (total_modules + DYNAMIC_MODULE_LIMIT + 1));
 
     if (ap_loaded_modules == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Ouch!  Out of memory in ap_setup_prelinked_modules()!");
+        return "Ouch! Out of memory in ap_setup_prelinked_modules()!";
     }
 
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
@@ -603,10 +604,16 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
     /*
      *   Initialize chain of linked (=activate) modules
      */
-    for (m = ap_prelinked_modules; *m != NULL; m++)
-        ap_add_module(*m, process->pconf);
+    for (m = ap_prelinked_modules; *m != NULL; m++) {
+        error = ap_add_module(*m, process->pconf);
+        if (error) {
+            return error;
+        }
+    }
 
     apr_hook_sort_all();
+
+    return NULL;
 }
 
 AP_DECLARE(const char *) ap_find_module_name(module *m)
@@ -1359,9 +1366,11 @@ static int arr_elts_close(void *param)
     return 0;
 }
 
-static void process_command_config(server_rec *s, apr_array_header_t *arr,
-                                   ap_directive_t **conftree, apr_pool_t *p,
-                                   apr_pool_t *ptemp)
+static const char *process_command_config(server_rec *s,
+                                          apr_array_header_t *arr,
+                                          ap_directive_t **conftree,
+                                          apr_pool_t *p,
+                                          apr_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1381,14 +1390,14 @@ static void process_command_config(server_rec *s, apr_array_header_t *arr,
                                             arr_elts_getstr, arr_elts_close);
 
     errmsg = ap_build_config(&parms, p, ptemp, conftree);
+    ap_cfg_closefile(parms.config_file);
+
     if (errmsg) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Syntax error in -C/-c directive:" APR_EOL_STR "%s",
-                     errmsg);
-        exit(1);
+        return apr_pstrcat(p, "Syntax error in -C/-c directive: ", errmsg,
+                           NULL);
     }
 
-    ap_cfg_closefile(parms.config_file);
+    return NULL;
 }
 
 typedef struct {
@@ -1403,15 +1412,16 @@ static int fname_alphasort(const void *fn1, const void *fn2)
     return strcmp(f1->fname,f2->fname);
 }
 
-static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
-                                              ap_directive_t **conftree,
-                                              apr_pool_t *p,
-                                              apr_pool_t *ptemp,
-                                              unsigned depth)
+static const char *process_resource_config_nofnmatch(server_rec *s,
+                                                     const char *fname,
+                                                     ap_directive_t **conftree,
+                                                     apr_pool_t *p,
+                                                     apr_pool_t *ptemp,
+                                                     unsigned depth)
 {
     cmd_parms parms;
     ap_configfile_t *cfp;
-    const char *errmsg;
+    const char *error;
 
     if (ap_is_directory(p, fname)) {
         apr_dir_t *dirp;
@@ -1420,14 +1430,13 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
         apr_array_header_t *candidates = NULL;
         fnames *fnew;
         apr_status_t rv;
-        char errmsg[120], *path = apr_pstrdup(p, fname);
+        char *path = apr_pstrdup(p, fname);
 
         if (++depth > AP_MAX_INCLUDE_DIR_DEPTH) {
-            fprintf(stderr, "%s: Directory %s exceeds the maximum include "
-                    "directory nesting level of %u. You have probably a "
-                    "recursion somewhere.\n", ap_server_argv0, path,
-                    AP_MAX_INCLUDE_DIR_DEPTH);
-            exit(1);
+            return apr_psprintf(p, "Directory %s exceeds the maximum include "
+                                "directory nesting level of %u. You have "
+                                "probably a recursion somewhere.", path,
+                                AP_MAX_INCLUDE_DIR_DEPTH);
         }
 
         /*
@@ -1437,10 +1446,9 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
          */
         rv = apr_dir_open(&dirp, path, p);
         if (rv != APR_SUCCESS) {
-            fprintf(stderr, "%s: could not open config directory %s: %s\n",
-                    ap_server_argv0, path,
-                    apr_strerror(rv, errmsg, sizeof errmsg));
-            exit(1);
+            char errmsg[120];
+            return apr_psprintf(p, "Could not open config directory %s: %s",
+                                path, apr_strerror(rv, errmsg, sizeof errmsg));
         }
 
         candidates = apr_array_make(p, 1, sizeof(fnames));
@@ -1464,12 +1472,16 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
              */
             for (current = 0; current < candidates->nelts; ++current) {
                 fnew = &((fnames *) candidates->elts)[current];
-                process_resource_config_nofnmatch(s, fnew->fname, conftree, p,
-                                                  ptemp, depth);
+                error = process_resource_config_nofnmatch(s, fnew->fname,
+                                                          conftree, p, ptemp,
+                                                          depth);
+                if (error) {
+                    return error;
+                }
             }
         }
 
-        return;
+        return NULL;
     }
 
     /* GCC's initialization extensions are soooo nice here... */
@@ -1480,35 +1492,28 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
     if (ap_pcfg_openfile(&cfp, p, fname) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "%s: could not open document config file %s",
-                     ap_server_argv0, fname);
-        exit(1);
+        return apr_pstrcat(p, "Could not open document config file ",
+                           fname, NULL);
     }
 
     parms.config_file = cfp;
-
-    errmsg = ap_build_config(&parms, p, ptemp, conftree);
-
-    if (errmsg != NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Syntax error on line %d of %s:",
-                     parms.err_directive->line_num,
-                     parms.err_directive->filename);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "%s", errmsg);
-        exit(1);
-    }
-
+    error = ap_build_config(&parms, p, ptemp, conftree);
     ap_cfg_closefile(cfp);
 
-    return;
+    if (error) {
+        return apr_psprintf(p, "Syntax error on line %d of %s: %s",
+                            parms.err_directive->line_num,
+                            parms.err_directive->filename, error);
+    }
+
+    return NULL;
 }
 
-AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
-                                            ap_directive_t **conftree,
-                                            apr_pool_t *p,
-                                            apr_pool_t *ptemp)
+AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp)
 {
     /* XXX: lstat() won't work on the wildcard pattern...
      */
@@ -1520,11 +1525,12 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
         apr_finfo_t finfo;
 
         if (apr_stat(&finfo, fname, APR_FINFO_LINK | APR_FINFO_TYPE, p) != APR_SUCCESS)
-            return;
+            return NULL;
     }
 
     if (!apr_fnmatch_test(fname)) {
-        process_resource_config_nofnmatch(s, fname, conftree, p, ptemp, 0);
+        return process_resource_config_nofnmatch(s, fname, conftree, p, ptemp,
+                                                 0);
     }
     else {
         apr_dir_t *dirp;
@@ -1533,7 +1539,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
         apr_array_header_t *candidates = NULL;
         fnames *fnew;
         apr_status_t rv;
-        char errmsg[120], *path = apr_pstrdup(p, fname), *pattern = NULL;
+        char *path = apr_pstrdup(p, fname), *pattern = NULL;
 
         pattern = ap_strrchr(path, '/');
 
@@ -1542,21 +1548,18 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
         *pattern++ = '\0';
 
         if (apr_fnmatch_test(path)) {
-            fprintf(stderr, "%s: wildcard patterns not allowed in Include "
-                    "%s\n", ap_server_argv0, fname);
-            exit(1);
+            return apr_pstrcat(p, "Wildcard patterns not allowed in Include ",
+                               fname, NULL);
         }
 
         if (!ap_is_directory(p, path)){ 
-            fprintf(stderr, "%s: Include directory '%s' not found",
-                    ap_server_argv0, path);
-            exit(1);
+            return apr_pstrcat(p, "Include directory '", path, "' not found",
+                               NULL);
         }
 
         if (!apr_fnmatch_test(pattern)) {
-            fprintf(stderr, "%s: must include a wildcard pattern "
-                    "for Include %s\n", ap_server_argv0, fname);
-            exit(1);
+            return apr_pstrcat(p, "Must include a wildcard pattern for "
+                               "Include ", fname, NULL);
         }
 
         /*
@@ -1566,10 +1569,9 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
          */
         rv = apr_dir_open(&dirp, path, p);
         if (rv != APR_SUCCESS) {
-            fprintf(stderr, "%s: could not open config directory %s: %s\n",
-                    ap_server_argv0, path,
-                    apr_strerror(rv, errmsg, sizeof errmsg));
-            exit(1);
+            char errmsg[120];
+            return apr_psprintf(p, "Could not open config directory %s: %s",
+                                path, apr_strerror(rv, errmsg, sizeof errmsg));
         }
 
         candidates = apr_array_make(p, 1, sizeof(fnames));
@@ -1586,6 +1588,8 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
 
         apr_dir_close(dirp);
         if (candidates->nelts != 0) {
+            const char *error;
+
             qsort((void *) candidates->elts, candidates->nelts,
                   sizeof(fnames), fname_alphasort);
 
@@ -1595,13 +1599,17 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
              */
             for (current = 0; current < candidates->nelts; ++current) {
                 fnew = &((fnames *) candidates->elts)[current];
-                process_resource_config_nofnmatch(s, fnew->fname, conftree, p,
-                                                  ptemp, 0);
+                error = process_resource_config_nofnmatch(s, fnew->fname,
+                                                          conftree, p,
+                                                          ptemp, 0);
+                if (error) {
+                    return error;
+                }
             }
         }
     }
 
-    return;
+    return NULL;
 }
 
 AP_DECLARE(int) ap_process_config_tree(server_rec *s,
@@ -1848,15 +1856,20 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                                        const char *filename,
                                        ap_directive_t **conftree)
 {
-    const char *confname;
+    const char *confname, *error;
     apr_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
 
     init_config_globals(p);
 
     /* All server-wide config files now have the SAME syntax... */
-    process_command_config(s, ap_server_pre_read_config, conftree,
-                           p, ptemp);
+    error = process_command_config(s, ap_server_pre_read_config, conftree,
+                                   p, ptemp);
+    if (error) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
+                     ap_server_argv0, error);
+        return NULL;
+    }
 
     /* process_command_config may change the ServerRoot so
      * compute this config file name afterwards.
@@ -1867,13 +1880,24 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
                      APR_EBADPATH, NULL, "Invalid config file path %s",
                      filename);
-        exit(1);
+        return NULL;
     }
 
-    ap_process_resource_config(s, confname, conftree, p, ptemp);
+    error = ap_process_resource_config(s, confname, conftree, p, ptemp);
+    if (error) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
+                     "%s: %s", ap_server_argv0, error);
+        return NULL;
+    }
 
-    process_command_config(s, ap_server_post_read_config, conftree,
-                           p, ptemp);
+    error = process_command_config(s, ap_server_post_read_config, conftree,
+                                   p, ptemp);
+
+    if (error) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
+                     ap_server_argv0, error);
+        return NULL;
+    }
 
     return s;
 }
