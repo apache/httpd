@@ -569,14 +569,16 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
     
     switch (cmd->args_how) {
     case RAW_ARGS:
-        return (*cmd->func) (parms, mconfig, args);
+        return ((const char * (*)(cmd_parms *, void *, const char *))
+		(*cmd->func)) (parms, mconfig, args);
 
     case NO_ARGS:
 	if (*args != 0)
 	    return pstrcat (parms->pool, cmd->name, " takes no arguments",
 			    NULL);
 
-	return (*cmd->func) (parms, mconfig);
+	return ((const char * (*)(cmd_parms *, void *))
+		(*cmd->func)) (parms, mconfig);
 	
     case TAKE1:
 	w = getword_conf (parms->pool, &args);
@@ -585,7 +587,8 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes one argument",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w);
+	return ((const char * (*)(cmd_parms *, void *, const char *))
+		(*cmd->func)) (parms, mconfig, w);
 	
     case TAKE2:
 
@@ -596,7 +599,8 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes two arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, w2);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *))(*cmd->func)) (parms, mconfig, w, w2);
 	
     case TAKE12:
 
@@ -607,7 +611,9 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes 1-2 arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, *w2 ? w2 : NULL);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *))(*cmd->func)) (parms, mconfig, w,
+		*w2 ? w2 : NULL);
 	
     case TAKE3:
 
@@ -619,7 +625,9 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *, const char *))(*cmd->func)) (parms,
+		mconfig, w, w2, w3);
 	
     case TAKE23:
 
@@ -631,7 +639,9 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *, const char *))(*cmd->func)) (parms,
+		mconfig, w, w2, w3);
 	
     case TAKE123:
 
@@ -643,7 +653,9 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes one, two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *, const char *))(*cmd->func)) (parms,
+		mconfig, w, w2, w3);
 	
     case TAKE13:
 
@@ -655,12 +667,15 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " takes one or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return (*cmd->func) (parms, mconfig, w, w2, w3);
+	return ((const char * (*)(cmd_parms *, void *, const char *,
+		const char *, const char *))(*cmd->func)) (parms,
+		mconfig, w, w2, w3);
 	
     case ITERATE:
 
 	while (*(w = getword_conf (parms->pool, &args)) != '\0')
-	    if ((errmsg = (*cmd->func) (parms, mconfig, w)))
+	    if ((errmsg = ((const char * (*)(cmd_parms *, void *,
+			    const char *))(*cmd->func)) (parms, mconfig, w)))
 	        return errmsg;
 
 	return NULL;
@@ -676,7 +691,9 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	  
 
 	while (*(w2 = getword_conf (parms->pool, &args)) != '\0')
-	    if ((errmsg = (*cmd->func) (parms, mconfig, w, w2)))
+	    if ((errmsg = ((const char * (*)(cmd_parms *, void *,
+			    const char *, const char *))(*cmd->func)) (parms,
+			    mconfig, w, w2)))
 	        return errmsg;
 
 	return NULL;
@@ -689,7 +706,8 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
 	    return pstrcat (parms->pool, cmd->name, " must be On or Off",
 			    NULL);
 
-	return (*cmd->func) (parms, mconfig, strcasecmp (w, "off") != 0);
+	return ((const char * (*)(cmd_parms *, void *, int))
+		(*cmd->func)) (parms, mconfig, strcasecmp (w, "off") != 0);
 
     default:
 
