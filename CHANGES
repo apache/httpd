@@ -1,5 +1,17 @@
 Changes with Apache 2.0.19-dev
 
+  *) Fix problem with threaded MPM.  The problem was that if each child
+     process was busy serving a single long-lived request and the server
+     was sent a graceful restart signal, the server would stop serving
+     requests.  This would happen because each child process would wait to
+     die until the last thread was done, and the parent wouldn't spawn any
+     new children until a process died.  Now, the parent looks at the fact
+     that the children are dying gracefully, and starts new children.
+     Those new children only start enough threads to compliment the number
+     of threads in the other child process that shares the same spot in
+     the scoreboard.  In this way, we make sure to never go over
+     MaxClients.  [Ryan Bloom]
+
   *) modified mod_negotiation and mod_autoindex to speed up by almost a
      factor of two on apr_dir_read()-enhanced platforms, such as Win32
      and OS2, by calling ap_sub_request_lookup_dirent() with the results
