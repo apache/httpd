@@ -505,7 +505,19 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, void *struct_pt
  * @return An error string or NULL on success
  */
 AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, const char *arg);
-
+/**
+ * Generic command handling function to respond with cmd->help as an error
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive
+ * @return The cmd->help value as the error string
+ * @tip This allows simple declarations such as;
+ * <pre>
+ *     AP_INIT_RAW_ARGS("Foo", ap_set_deprecated, NULL, OR_ALL, 
+ *         "The Foo directive is no longer supported, use Bar"),
+ * </pre>
+ */
+AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, void *struct_ptr, const char *arg);
 /**
  * For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise

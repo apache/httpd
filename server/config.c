@@ -362,7 +362,7 @@ AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
      * added by a module and registered.
      */
     if (methnum != M_INVALID) {
-	return  (cmd->limited & (1<<methnum));
+	return !!(cmd->limited & (1<<methnum));
     }
 
     return 0; /* not found */
@@ -1169,6 +1169,14 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
 	p = ap_make_full_path(cmd->pool, ap_server_root, arg);
     *(char **) ((char*)struct_ptr + offset) = p;
     return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd,
+						  void *struct_ptr,
+						  const char *arg)
+{
+    /* This one's really generic... */
+    return cmd->cmd->errmsg;
 }
 
 /*****************************************************************
