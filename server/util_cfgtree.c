@@ -73,6 +73,7 @@ ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current,
         }
         else {
             (*parent)->first_child = toadd;
+            toadd->parent = *parent;
         }
         return toadd;
     }
@@ -83,7 +84,7 @@ ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current,
         *parent = toadd;
         return NULL;
     }
-    return conf_tree;
+    return toadd;
 }
 
 
