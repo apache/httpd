@@ -19,7 +19,7 @@
     <code>cgi-script</code> (Apache 1.1 or later) will be treated
     as a CGI script, and run by the server, with its output being
     returned to the client. Files acquire this type either by
-    having a name containing an extension defined by the 
+    having a name containing an extension defined by the
     <directive module="mod_mime">AddType</directive> directive, or by being
     in a <directive module="mod_alias">ScriptAlias</directive>
     directory.</p>
@@ -34,7 +34,7 @@
     our tutorial on <a href="../howto/cgi.html">Dynamic Content
     With CGI</a>.</p>
 
-    <p>When using a multi-threaded MPM under unix, the module 
+    <p>When using a multi-threaded MPM under unix, the module
     <module>mod_cgid</module> should be used in place of
     this module. At the user level, the two modules are essentially
     identical.</p>
@@ -131,7 +131,8 @@
 <name>ScriptLog</name>
 <description>Location of the CGI script error logfile</description>
 <syntax>ScriptLog <em>file-path</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
 
@@ -169,7 +170,8 @@
 <description>Size limit of the CGI script logfile</description>
 <syntax>ScriptLogLength <em>bytes</em></syntax>
 <default>ScriptLogLength 10385760</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
 
@@ -190,7 +192,8 @@
 in the scriptlog</description>
 <syntax>ScriptLogBuffer <em>bytes</em></syntax>
 <default>ScriptLogBuffer 1024</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
 
