@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- French Translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="dso.xml.meta">
+
+  <title>Support des objets partagés dynamiques (DSO)</title>
+
+  <summary>
+    <p>Le serveur HTTP Apache est un programme modulaire permettant à
+    l'administrateur de choisir les fonctionnalités qu'il souhaite 
+    activer, au moyen de modules. Les modules peuvent être intégrés
+    dans le programme binaire <code>httpd</code> au moment de la 
+    compilation. Il est également possible de compiler à part des 
+    modules en tant qu'objets dynamiques partagés (Dynamic Shared 
+    Objects&nbsp;: DSOs) existant séparément du fichier binaire principal 
+    <code>httpd</code>. Les modules DSO peuvent être compilés en même 
+    temps que le serveur, ou après, au moyen de l'outil Apache pour 
+    les extensions (<program>apxs</program>).</p>
+
+    <p>Ce document décrit les principes de fonctionnement des modules DSO, et
+    montre comment les utiliser.</p>
+  </summary>
+
+
+<section id="implementation"><title>Implémentation</title>
+
+<related>
+<modulelist>
+<module>mod_so</module>
+</modulelist>
+<directivelist>
+<directive module="mod_so">LoadModule</directive>
+</directivelist>
+</related>
+
+    <p>Le support DSO servant à charger des modules Apache, est lui-même 
+    codé dans un module, nommé <module>mod_so</module>, qui doit être 
+    compilé dans le noyau d'Apache. Ce module, ainsi que le module 
+    <module>core</module>, sont les deux seuls modules qui ne peuvent 
+    être compilés séparément d'Apache. En pratique, tous les autres 
+    modules d'Apache peuvent être compilés en tant que modules DSO, 
+    en passant au script <code>configure</code> l'option 
+    <code>--enable-<em>module</em>=shared</code>, comme précisé dans 
+    la <a href="install.html">documentation d'installation</a>. Après 
+    qu'un module ait été compilé en DSO (nommé 
+    <code>mod_monmodule.so</code>), il est possible d'utiliser la 
+    directive de <module>mod_so</module>&nbsp;: <directive module="mod_so"
+    >LoadModule</directive> dans le fichier <code>httpd.conf</code>, 
+    afin qu'Apache charge ledit module au démarrage ou redémarrage du 
+    serveur.</p>
+
+    <p>Afin de simplifier la création de fichiers DSO pour les 
+    modules Apache (et en particulier les modules tiers), un nouveau 
+    programme de support a été ajouté&nbsp;: <a href="programs/apxs.html"
+    >apxs</a> (<em>APache eXtenSion</em>). Ce programme peut être 
+    utilisé pour créer des modules DSO <em>en se passant de</em> 
+    l'arborescence source d'Apache. L'idée en est simple&nbsp;: lors de 
+    l'installation d'Apache, la commande <code>make install</code> 
+    positionne les fichiers d'en-têtes C d'Apache, ainsi que les 
+    options du compilateur et les options propres à la plate-forme 
+    dans le programme <code>apxs</code>. Ceci permet à l'utilisateur 
+    de compiler ses modules Apache, au moyen de <code>apxs</code>, 
+    sans disposer de l'arborescence source d'Apache et sans devoir 
+    manipuler les options de compilation ou les options propres à 
+    sa plate-forme.</p>
+</section>
+
+<section id="usage"><title>Résumé sur l'utilisation des DSO</title>
+
+    <p>Voici un résumé bref des fonctionnalités DSO d'Apache 2.0&nbsp;:</p>
+
+    <ol>
+      <li>
+        Pour compiler et installer un module Apache <em>distribué 
+        avec Apache</em>, par exemple <code>mod_foo.c</code>, en tant 
+        que DSO, sous le nom <code>mod_foo.so</code>&nbsp;:
+
+<example>
+$ ./configure --prefix=/path/to/install --enable-foo=shared<br />
+$ make install
+</example>
+      </li>
+
+      <li>
+        Pour compiler et installer un module Apache <em>fourni par un 
+        tiers</em>, par exemple <code>mod_foo.c</code>, en tant que DSO, 
+        sous le nom <code>mod_foo.so</code>&nbsp;:
+
+<example>
+$ ./configure --add-module=module_type:/chemin/vers/le/tiers/mod_foo.c --enable-foo=shared<br />
+$ make install
+</example>
+      </li>
+
+      <li>
+        Pour configurer Apache afin qu'il puisse accepter les modules DSO&nbsp;:
+
+<example>
+$ ./configure --enable-so<br />
+$ make install
+</example>
+      </li>
+
+      <li>
+        Pour compiler et installer un module Apache <em>fourni par un 
+        tiers</em>, par exemple <code>mod_foo.c</code>, en tant que 
+        DSO, et sans disposer de l'arborescence source d'Apache 
+        (utilisation d'<a href="programs/apxs.html">apxs</a>)&nbsp;:
+
+<example>
+$ cd /chemin/vers/le/tiers<br />
+$ apxs -c mod_foo.c<br />
+$ apxs -i -a -n foo mod_foo.la
+</example>
+      </li>
+    </ol>
+
+    <p>Dans tous les cas, une fois qu'un module a été compilé en tant 
+    que DSO, vous devrez utiliser la directive 
+    <directive module="mod_so">LoadModule</directive> dans le 
+    fichier <code>httpd.conf</code> afin qu'Apache active le module.</p>
+</section>
+
+<section id="background"><title>Contexte</title>
+
+    <p>Sur les systèmes récents, dérivés d'Unix, il existe un procédé 
+    élégant, habituellement appelé chargement dynamique d'objets 
+    partagés DSO,  permettant de compiler un morceau de code sous un 
+    format spécial, et de pouvoir le charger en temps réel dans 
+    l'espace d'adressage d'un programme exécutable.</p>
+    
+    <p>Ce chargement peut être réalisé de deux manières&nbsp;: 
+    automatiquement, grâce à un programme système nommé <code>ld.so</code> 
+    lors du démarrage d'un exécutable, ou manuellement depuis un programme 
+    en exécution via une interface programmée au moyen des appels 
+    systèmes <code>dlopen()/dlsym()</code> du "chargeur" Unix</p>
+    
+    <p>Dans le premier cas, il est courant d'appeler les DSO des 
+    <em>bibliothèques partagées</em> ou des <em>bibliothèques DSO</em>&nbsp;; 
+    on les nomme <code>libfoo.so</code> ou <code>libfoo.so.1.2</code>. 
+    Elles sont toutes placées dans un répertoire système (souvent 
+    <code>/usr/lib</code>) et sont liées par les programmes exécutables 
+    lors de la compilation de ces derniers, en précisant au moment de 
+    la compilation l'option <code>-lfoo</code> à la commande de link 
+    (linker command). Cette manière de procéder insère les références 
+    des bibliothèques dans le coeur des programmes, afin qu'au moment 
+    du démarrage du programme, le "chargeur" Unix puisse trouver 
+    <code>libfoo.so</code> dans <code>/usr/lib</code>, ou bien dans 
+    les chemins codés en dur au moyen de l'option de link <code>-R</code>, 
+    ou dans un chemin configuré au moyen de la variable d'environnement 
+    <code>LD_LIBRARY_PATH</code>. Tous les symboles non résolus présents 
+    dans le programme sont alors résolus au moyen de DSO.</p>
+
+    <p>Les symboles propres au programme exécutable ne sont généralement 
+    pas référencés par le DSO (puisque c'est une bibliothèque de code 
+    générique), et donc aucune résolution ne doit être suivie au delà 
+    de ce point. Le programme exécutable n'a pas de travail particulier 
+    à faire pour résoudre les symboles des DSO, puisque c'est le 
+    "chargeur" Unix qui s'occupe de cette tâche. (En réalité, le code 
+    utilisé pour invoquer <code>ld.so</code> fait partie du code de 
+    démarrage run-time, qui est lié à chaque programme exécutable 
+    non statique). L'avantage du chargement dynamique des bibliothèques 
+    de code générique est évident&nbsp;: le code n'est conservé qu'à un seul 
+    endroit du disque, dans une bibliothèque système comme 
+    <code>libc.so</code>, ce qui permet de gagner de l'espace disque 
+    pour chaque programme.</p>
+
+    <p>Dans le second cas, les DSO sont appelés <em>objets partagés</em> 
+    ou <em>fichiers DSO</em> et on peut leur attribuer une extension au 
+    choix (bien que leur nom soit habituellement <code>foo.so</code>). 
+    Ces fichiers résident normalement dans un répertoire propre au 
+    programme qui les utilise, et ils ne sont pas liés de manière 
+    automatique au programme qui les appelle. Celui-ci les charge en 
+    temps réel lors de son exécution, au moyen de <code>dlopen()</code>. 
+    À cet instant, aucune résolution des symboles du DSO n'est réalisée. 
+    C'est le "chargeur" Unix qui réalise la tâche de résoudre les 
+    symboles non résolus du DSO, à partir du jeu de symboles exportés 
+    par le programme et ses bibliothèques DSO (en particulier, tous 
+    les symboles de l'omniprésente <code>libc.so</code>). Ainsi, le DSO 
+    gagne la connaissance des symboles du programme exécutable, comme 
+    s'il lui avait été lié statiquement au départ.</p>
+    
+    <p>Enfin, pour tirer parti de l'API DSO, l'exécutable doit résoudre 
+    les symboles propres au DSO via <code>dlsym()</code>, pour les 
+    utiliser plus tard dans les tables de répartition (NdT&nbsp;: "dispatch 
+    tables"), <em>etc.</em> En d'autres termes, le programme exécutable 
+    doit résoudre lui-même chaque symbole pour utiliser chacun d'entre 
+    eux. L'avantage de ce mécanisme est que les parties optionnelles 
+    d'un programme ne sont pas chargées (et donc, n'encombrent pas la 
+    mémoire) avant que le programme n'en ait effectivement besoin. 
+    Quand elles deviennent nécessaires, ces parties du programme peuvent 
+    être chargées dynamiquement pour étendre les fonctionnalités du 
+    programme.</p>
+
+    <p>Bien que ce fonctionnement de DSO puisse paraître simple à 
+    comprendre, il existe au moins une difficulté d'implémentation&nbsp;: 
+    permettre au DSO de résoudre les symboles du programme quand un DSO 
+    est utilisé pour étendre un programme. Pourquoi cela&nbsp;? Parce que la 
+    "résolution à l'envers" des symboles DSO à partir des symboles du 
+    programme exécutable est contraire au principe de conception des 
+    bibliothèques (où, rappelons-le, la bibliothèque ne sait rien du 
+    programme qui l'utilise)&nbsp;; cette "résolution à l'envers" n'est pas 
+    standardisée, et n'existe pas sur toutes les plates-formes. En 
+    pratique, les symboles globaux d'un programme exécutable ne sont 
+    que rarement réexportés vers un DSO, et donc ne sont pas accessibles. 
+    Celui qui veut pouvoir étendre les fonctionnalités d'un programme 
+    dynamiquement, lors de l'exécution, doit trouver un moyen de forcer 
+    le programme de liaison à exporter tous les symboles globaux de ce 
+    programme.</p>
+
+    <p>L'approche par bibliothèques partagées est de loin la plus courante
+    parce que c'est celle pour laquelle les mécanismes DSO ont été conçus&nbsp;; 
+    elle est donc utilisée par presque toutes les bibliothèques du système
+    d'exploitation. De l'autre coté, l'utilisation des objets partagés reste 
+    une approche marginale.</p>
+    
+    <p>Depuis 1998, seules quelques solutions logiciels existantes 
+    utilisent le mécanisme des DSO pour étendre leurs fonctionnalités 
+    en cours exécution&nbsp;: Perl 5 (via son "XS mechanism" et le module 
+    DynaLoader), Netscape Server, <em>etc.</em> Depuis la version 1.3, 
+    Apache a rejoint ce groupe, car Apache utilise une approche 
+    modulaire pour étendre ses fonctionnalités, et utilise de manière 
+    interne des mécanismes de répartition par liste pour lier des 
+    modules externes à son noyau. Apache était vraiment prédestiné, 
+    par concept, à utiliser les DSO pour charger ses modules en temps 
+    réel.</p>
+</section>
+
+<section id="advantages"><title>Avantages et Inconvénients</title>
+
+    <p>Les possibilités des DSO décrites ci-avant présentent les
+    avantages suivants&nbsp;:</p>
+
+    <ul>
+      <li>Le paquetage du serveur est plus flexible lors de son exécution, 
+      car les processus du serveur central peuvent être étendus pendant 
+      son exécution, au moyen de la directive 
+      <directive module="mod_so">LoadModule</directive>, dans 
+      <code>httpd.conf</code>, plutôt que forcer les utilisateurs à 
+      recompiler le serveur pour modifier ses fonctionnalités. Par 
+      exemple, ce mode de fonctionnement permet de faire tourner 
+      plusieurs instances du serveur (version standard &amp; SSL 
+      version, version minimaliste &amp; étendue [mod_perl, PHP3], 
+      <em>etc.</em>) au moyen d'une seule installation d'Apache.</li>
+
+      <li>Il est très facile d'étendre les fonctionnalités du serveur 
+      de base, même après son installation. Ceci est d'un grand secours 
+      aux mainteneurs des paquets qui peuvent facilement créer des 
+      paquets pour l'installation de base d'Apache et d'autres paquets 
+      différents pour les extensions, comme PHP3, mod_perl, 
+      mod_fastcgi, <em>etc.</em></li>
+
+      <li>Facilité de développement des modules Apache&nbsp;; grâce aux outils
+      DSO/<code>apxs</code>, ce travail est faisable sans l'arborescence 
+      source d'Apache, et ne nécessite qu'une commande <code>apxs -i</code> 
+      suivi d'un <code>apachectl restart</code> pour ajouter au serveur 
+      déjà en marche les fonctionnalités du module développé.</li>
+    </ul>
+
+    <p>Les inconvénients liés à l'utilisation des DSO&nbsp;:</p>
+
+    <ul>
+      <li>Les mécanismes de DSO ne sont pas portables sur toutes les
+      plates-formes, car tous les systèmes d'exploitation ne supportent 
+      pas le chargement dynamique de code dans l'espace d'adressage d'un 
+      programme en marche.</li>
+
+      <li>Le serveur est à peu prêt 20% plus lent au démarrage, à cause de la
+      charge prise par le "chargeur" Unix de la résolution des symboles.</li>
+
+      <li>Le serveur est à peu prêt 5% plus lent en fonctionnement sur 
+      certaines plates-formes parce que le code indépendant de la 
+      position ("position independent code" - PIC) requiert parfois des 
+      tours de passe-passe en assembleur pour l'adressage relatif, ce qui 
+      n'est pas toujours aussi rapide que l'adressage absolu.</li>
+
+      <li>Les modules DSO ne pouvant pas être liés à d'autres bibliothèques 
+      DSO (<code>ld -lfoo</code>) sur toutes les plates-formes (par 
+      exemple, les plates-formes basées sur a.out ne le permettent pas, 
+      alors que celles basées sur ELF le permettent), il n'est pas possible
+      d'utiliser les mécanismes de DSO pour tous les modules. En d'autres
+      termes, les modules compilés en tant que fichiers DSO sont limités 
+      à l'utilisation des symboles exportés par le noyau d'Apache, par 
+      la bibliothèque C (<code>libc</code>) et toute autre bibliothèque 
+      dynamique ou statique utilisée par le noyau d'Apache, ou par des 
+      archives de bibliothèques statiques (<code>libfoo.a</code>) qui 
+      contiennent du code indépendant de la position. Les seuls moyens 
+      d'utiliser du code à l'extérieur d'un fichier DSO sont, soit de 
+      s'assurer que le noyau d'Apache contienne une référence vers ce 
+      code, soit de charger ce code au moyen de <code>dlopen()</code>.</li>
+    </ul>
+
+</section>
+</manualpage>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- French Translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="dns-caveats.xml.meta">
+
+  <title>Problèmes DNS avec Apache</title>
+
+  <summary>
+    <p>L'ensemble de cette page pourrait se résumer à la phrase&nbsp;: ne 
+    jamais configurer Apache de telle sorte qu'il s'appuie sur des 
+    résolutions DNS pour parcourir ses fichiers de configuration. 
+    Une telle configuration risque d'engendrer des problèmes de 
+    fiabilité (le serveur peut ne pas démarrer), des attaques de type 
+    déni et de vol de service (comme par exemple des utilisateurs volant 
+    les hits d'autres utilisateurs).</p>
+  </summary>
+
+  <section id="example">
+    <title>Un exemple simple</title>
+
+    <example>
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>Pour qu'Apache fonctionne correctement, il a absolument besoin 
+    de deux informations pour chacun de ses serveurs virtuels&nbsp;:
+    <directive module="core">ServerName</directive> ainsi qu'au moins une
+    adresse IP à laquelle le serveur s'attachera pour répondre.
+    L'exemple ci-dessus ne précise pas l'adresse IP, si bien qu'Apache doit
+    utiliser le DNS pour trouver l'adresse de <code>www.abc.dom</code>. 
+    Si, pour une raison ou une autre, le DNS ne fonctionne pas au moment 
+    où Apache lit ses fichiers de configuration, le serveur virtuel 
+    <strong>ne sera pas configuré</strong>. Il sera incapable de répondre 
+    aux requêtes. Jusqu'à la version 1.2, Apache refusait même de 
+    démarrer dans ce cas de figure.</p>
+
+    <p>Prenons le cas où l'adresse de <code>www.abc.dom</code> est 10.0.0.1 
+    et considérons cet extrait de configuration&nbsp;:</p>
+
+    <example>
+      &lt;VirtualHost 10.0.0.1&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>Cette fois, Apache a besoin d'utiliser la résolution DNS 
+    inversée pour déterminer le nom <code>ServerName</code> de ce 
+    serveur virtuel. Si cette résolution n'aboutit pas, le serveur 
+    virtuel sera partiellement mis hors service (jusqu'à la version 
+    1.2, Apache refusait même de démarrer dans ce cas de figure). Si 
+    le serveur virtuel est un serveur basé sur un nom (name-based), 
+    il sera totalement hors service, mais s'il s'agit d'un serveur 
+    par IP (IP-based), il fonctionnera correctement. Cependant, dans 
+    le cas où Apache doit générer une adresse complète URL en 
+    s'appuyant sur le nom du serveur, il échouera à fournir une 
+    adresse valide.</p>
+
+    <p>Voici un extrait de configuration qui résout ces deux problèmes&nbsp;:</p>
+
+    <example>
+      &lt;VirtualHost 10.0.0.1&gt; <br />
+      ServerName www.abc.dom <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </example>
+  </section>
+
+  <section id="denial">
+    <title>Déni de Service</title>
+
+    <p>Il existe (au moins) deux problèmes possibles de déni de service.
+    Les versions d'Apache antérieures à 1.2 ne démarreront pas si 
+    l'une des deux requêtes DNS citées ci-dessus n'aboutissent pas pour 
+    un de vos serveurs virtuels. Dans certains cas, les entrées DNS 
+    sont hors de contrôle de l'administrateur Web&nbsp;; par exemple si 
+    <code>abc.dom</code> appartient à un de vos clients qui a la 
+    maîtrise de son propre DNS, celui-ci peut empêcher votre serveur 
+    Web (avant la version 1.2) de démarrer, simplement en effaçant 
+    l'enregistrement <code>www.abc.dom</code> du DNS.</p>
+    
+    <p>L'autre problème possible est bien plus pernicieux. Dans la 
+    configuration suivante&nbsp;:</p>
+
+    <example>
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt; <br />
+      <br />
+      &lt;VirtualHost www.def.dom&gt; <br />
+      &nbsp;&nbsp;ServerAdmin webguy@def.dom <br />
+      &nbsp;&nbsp;DocumentRoot /www/def <br />
+      &lt;/VirtualHost&gt;
+    </example>
+
+    <p>Supposons que <code>www.abc.dom</code> ait l'adresse 10.0.0.1, 
+    et que <code>www.def.dom</code> ait l'adresse 10.0.0.2. Supposons 
+    également que <code>def.com</code> ait la main sur son DNS. 
+    Cette configuration peut permettre à <code>def.dom</code> de 
+    détourner vers son serveur tout le trafic destiné à 
+    <code>abc.dom</code>. Pour ce faire, il doit simplement
+    positionner le champ DNS de <code>www.def.dom</code> sur 10.0.0.1, 
+    et rien ne peut l'empêcher de faire, puisqu'il a la main sur 
+    son DNS.</p>
+
+    <p>Les requêtes à destination de 10.0.0.1 (incluant celles dont 
+    l'URL contient <code>http://www.abc.com/tout_et_n_importe_quoi</code>) 
+    seront envoyées au serveur virtuel de <code>def.dom</code>. Une 
+    bonne compréhension des mécanismes internes d'Apache concernant 
+    la gestion des serveur virtuels est requise. 
+    <a href="vhosts/details.html">Ce document</a> explique ce 
+    fonctionnement.</p>
+  </section>
+
+  <section id="main">
+    <title>L'Adresse du "serveur principal"</title>
+
+    <p>L'implémentation du support des serveur virtuels <a 
+    href="vhosts/name-based.html">par nom</a> depuis Apache 1.1 suppose
+    qu'Apache connaisse la ou les adresse(s) IP sur lesquelles le serveur 
+    écoute. Pour déterminer cette adresse, Apache utilise soit la 
+    directive globale <directive module="core">ServerName</directive> 
+    (si elle est présente), soit un appel à la fonction C 
+    <code>gethostname</code> (cet appel renvoie le même résultat 
+    que la commande "hostname" entrée sur une ligne de commande). 
+    Une résolution DNS est alors effectuée sur l'adresse obtenue. 
+    Pour l'instant, il n'existe aucun moyen de contourner cette 
+    requête DNS.</p>
+
+    <p>Pour se prémunir du cas où cette résolution DNS échouerait à 
+    cause de la défaillance du serveur DNS, le nom d'hôte peut être 
+    ajouté dans <code>/etc/hosts</code> (il y est probablement déjà). 
+    Assurez vous que votre machine est configurée pour lire ce fichier 
+    <code>/etc/hosts</code> en cas de défaillance du serveur DNS. 
+    Pour cela, selon votre système d'exploitation, il vous faudra configurer 
+    <code>/etc/resolv.conf</code> ou <code>/etc/nsswitch.conf</code>.</p>
+
+    <p>Au cas où votre serveur n'a pas besoin de réaliser des requêtes 
+    DNS pour d'autres raisons que de démarrer Apache, il est possible 
+    que vous puissiez vous en sortir en positionnant la variable 
+    d'environnement <code>HOSTRESORDER</code> sur "local". Ceci dépend 
+    cependant de votre système d'exploitation et des librairies de 
+    résolution DNS que vous utilisez. Ceci affecte également le 
+    comportement des scripts CGIs, à moins que vous n'utilisiez 
+    <module>mod_env</module> pour contrôler leur environnement. La 
+    meilleure solution est de consulter les pages "man" ou les FAQs 
+    spécifiques à votre système d'exploitation.</p>
+  </section>
+
+  <section id="tips">
+    <title>Comment éviter ces problèmes</title>
+
+    <ul>
+      <li>
+        spécifier les adresses IP dans les 
+        <directive module="core">VirtualHost</directive>
+      </li>
+
+      <li>
+        spécifier les adresses IP au moyen de
+        <directive module="mpm_common">Listen</directive>
+      </li>
+
+      <li>
+        s'assurer que tous les serveurs virtuels spécifient explicitement 
+        leur <directive module="core">ServerName</directive>
+      </li>
+
+      <li>créer un serveur virtuel <code>&lt;VirtualHost _default_:*&gt;</code>
+      qui ne sert aucune page</li>
+    </ul>
+  </section>
+
+  <section id="appendix">
+    <title>Appendice: Perspectives futures</title>
+
+    <p>Les problèmes liés au DNS sont très indésirables. À partir 
+    d'Apache 1.2, nous avons travaillé à ce qu'Apache démarre même 
+    dans le cas où les requêtes DNS échouent, mais ce n'est pas 
+    forcément la meilleure des solutions. En tous cas, obliger 
+    l'administrateur à spécifier explicitement des adresses IP est 
+    également très indésirable sur le réseau Internet tel qu'il 
+    existe actuellement, où le nombre d'adresses IP commence à manquer.</p>
+    
+    <p>Une réponse possible au problème de vol de trafic décrit ci-avant
+    pourrait être de réaliser une résolution inverse DNS sur l'adresse IP 
+    renvoyée par la première requête, et de comparer les deux noms 
+    obtenus -- lorsqu'ils sont différents, le serveur virtuel serait 
+    désactivé. Ceci suppose que la configuration pour la résolution 
+    inverse DNS soit faite correctement (c'est une chose à laquelle 
+    les administrateurs DNS commencent à s'habituer, en raison de 
+    l'utilisation de plus en plus répandue des requêtes DNS 
+    "double-reverse" par les serveurs FTP et les filtrages 
+    "TCP wrappers").</p>
+    
+    <p>Dans tous les cas de figures, il ne semble pas possible de 
+    démarrer de façon fiable un serveur virtuel quand la requête 
+    DNS a échoué, à moins de recourir à l'utilisation d'adresses 
+    IP fixes. Des solutions partielles, telles que désactiver des 
+    portions de la configuration selon les tâches attribuées au 
+    serveur Web, risquent d'être pires que ne pas démarrer du tout.</p>
+    
+    <p>Au fur et à mesure que HTTP/1.1 se répand, et que les navigateurs 
+    et les serveurs mandataires envoient l'en-tête <code>Host</code>, 
+    il devient possible d'éviter complètement l'utilisation de serveurs 
+    virtuels par IP. Dans ce cas, les serveurs Web n'ont plus aucun 
+    besoin de réaliser des requêtes DNS lors de leur démarrage. Au 1er 
+    mars 1997, ces fonctionnalités ne sont pas suffisamment déployées pour 
+    que des serveurs Web sensibles les mettent en oeuvre (NdT&nbsp;: cette 
+    remarque est aujourd'hui complètement dépassée, HTTP/1.1 est 
+    désormais supporté par l'immense majorité des navigateurs et 
+    des serveurs mandataires).</p>
+  </section>
+</manualpage>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- French Translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="filter.xml.meta">
+
+  <title>Filtres</title>
+
+  <summary>
+    <p>Ce document explique le fonctionnement des filtres avec Apache.</p>
+  </summary>
+
+  <section id="filters">
+    <title>Filtres</title>
+    <related>
+      <modulelist>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+
+    <p>On appelle <em>filtre</em> un processus qui s'applique aux 
+    données reçues ou envoyées par le serveur. Les <em>filtres en 
+    entrée (input filters)</em> servent à filtrer les données envoyées 
+    par les clients vers le serveur, tandis que les <em>filtres en sortie 
+    (output filters)</em> traitent les données envoyées par le 
+    serveur vers un client. Il est possible d'appliquer plusieurs 
+    filtres sur un flux de données, et l'ordre de ces filtres est 
+    configurable.</p>
+    
+    <p>Apache utilise des filtres en interne pour gérer les «&nbsp;grosses&nbsp;» 
+    requêtes ou les requêtes partielles (NdT sur "byte-range"&nbsp;: 
+    requêtes portant seulement sur une partie d'un fichier, partie 
+    spécifiée par un pointeur de départ, et un pointeur de fin). 
+    Certains modules permettent en plus d'utiliser des filtres en 
+    utilisant des directives de configuration. Les filtres sont utilisables 
+    au moyen des directives
+    <directive module="core">SetInputFilter</directive>,
+    <directive module="core">SetOutputFilter</directive>,
+    <directive module="mod_mime">AddInputFilter</directive>,
+    <directive module="mod_mime">AddOutputFilter</directive>,
+    <directive module="mod_mime">RemoveInputFilter</directive>, et
+    <directive module="mod_mime">RemoveOutputFilter</directive>
+    .</p>
+
+    <p>Les filtres listés ci-après sont fournis dans le paquetage Apache et
+    sont utilisables par tout administrateur.</p>
+
+    <dl>
+      <dt>INCLUDES</dt>
+      <dd>Gestion des "Server-Side Includes" grâce au module 
+      <module>mod_include</module></dd>
+      <dt>DEFLATE</dt>
+      <dd>Compression des données avant leur envoi au client (filtre en 
+      sortie) au moyen de <module>mod_deflate</module>
+      </dd>
+    </dl>
+
+    <p>Le module <module>mod_ext_filter</module> permet également 
+    d'utiliser des programmes externes à Apache en tant que filtres.</p>
+  </section>
+</manualpage>
