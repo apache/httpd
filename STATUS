@@ -44,6 +44,7 @@ Showstoppers:
 
 Committed Code Changes:
 
+    * HP-UX 11 port by Jeff Earickson
     * Lars' Configure fix to avoid confusing message under APACI control
     * Ralf's Configure fix for AWK's failing with "string to long" error
     * Ralf's fix for stderr logging to make sure default loglevel is honored

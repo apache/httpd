@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Added HP-UX 11 patches [Jeff Earickson <jaearick@colby.edu>]
+
   *) If you start apache with the -S command line option it will dump
      out the parsed vhost settings.  This is useful for folks trying
      to figure out what is wrong with their vhost configuration.
