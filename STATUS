@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/24 21:30:18 $]
+  Last modified at [$Date: 1999/03/25 15:30:01 $]
 
 Release:
 
@@ -96,6 +96,10 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * John Giannadrea's patch for ceiling on file size for mmap (PR#4122)
+	Message-ID: <19990325094501.5997.qmail@hyperreal.org>
+	Status: Ken +1
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
