@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/10 19:30:43 $]
+Last modified at [$Date: 2001/08/10 20:16:54 $]
 
 Release:
 
@@ -29,87 +29,6 @@ on related projects:
     * srclib/apr/STATUS
     * srclib/apr-util/STATUS
     * docs/STATUS
-
-DAEDALUS 2.0 PROBLEMS:
-
-    * mod_cgid and suexec have a problem co-existing.  suexec sees a null
-      command string sometimes.
-
-    * core dump from 20010418 running 2_0_16
-
-      /usr/local/apache2b/corefiles/httpd.core.2
-      #0  0x2813a3c8 in kill () from /usr/lib/libc.so.4
-      #1  0x2817609e in abort () from /usr/lib/libc.so.4
-      #2  0x8065299 in ap_log_assert (szExp=0x80aaa60 "total_bytes_left > 0 && tmplen > 0", szFile=0x80aa2aa "core.c", nLine=2555)
-          at log.c:562
-      #3  0x8075227 in sendfile_it_all (c=0x81470fc, fd=0x814759c, hdtr=0xbfbff670, file_offset=1929216, file_bytes_left=261949, 
-          total_bytes_left=261949, flags=0) at core.c:2555
-      #4  0x80761e2 in core_output_filter (f=0x814737c, b=0x814764c) at core.c:3172
-      #5  0x806d227 in ap_pass_brigade (next=0x814737c, bb=0x81e80fc) at util_filter.c:240
-      #6  0x805e696 in check_pipeline_flush (r=0x820803c) at http_request.c:388
-      #7  0x805e707 in ap_process_request (r=0x820803c) at http_request.c:432
-      #8  0x805a1a9 in ap_process_http_connection (c=0x81470fc) at http_core.c:280
-      #9  0x806bc60 in ap_run_process_connection (c=0x81470fc) at connection.c:82
-      #10 0x806be84 in ap_process_connection (c=0x81470fc) at connection.c:216
-      #11 0x805fbba in child_main (child_num_arg=272) at prefork.c:807
-      #12 0x805fd20 in make_child (s=0x80c64fc, slot=272) at prefork.c:880
-      #13 0x805ffec in perform_idle_server_maintenance () at prefork.c:1021
-      #14 0x80603d1 in ap_mpm_run (_pconf=0x80c600c, plog=0x80f300c, s=0x80c64fc) at prefork.c:1191
-      #15 0x80660cd in main (argc=1, argv=0xbfbffadc) at main.c:425
-      #16 0x8059bf9 in _start ()
-
-      The input data (received in one read from TCP layer):
-
-      GET /log4j/jakarta-log4j-1.1b2.zip HTTP/1.0
-      Via: 1.0 MDRPRXY01, 1.0 NS2
-      Connection: Keep-Alive
-      User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 4.0)
-      Host: jakarta.apache.org
-      Accept: application/vnd.ms-excel, application/msword, application/vnd.ms-powerpoint, image/gif, image/x-xbitmap, image/jpeg,
-      image/pjpeg, */*
-      Accept-Language: en-us,tscii;q=0.5
-      Referer: http://jakarta.apache.org/log4j/docs/download.html
-      Accept-Encoding: gzip, deflate
-
-      The confusion was because apr_sendfile() returned APR_SUCCESS
-      but zero bytes sent.  Presumably the FreeBSD kernel sendfile()
-      did the same thing (not 100% sure).
-
-      Also happened on 20010605...
-
-      /usr/local/apache2b-vhost-trap/corefiles/httpd.core.12
-
-      GET /builds/jakarta-turbine/release/2.1/tdk-2.1.zip HTTP/1.1
-      Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg,
-      application/vnd.ms-powerpoint, application/vnd.ms-excel, 
-      application/msword, */*
-      Referer: http://jakarta.apache.org/builds/jakarta-turbine/release/2.1/
-      Accept-Language: en-gb
-      Accept-Encoding: gzip, deflate
-      User-Agent: Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)
-      Host: jakarta.apache.org
-      Connection: Keep-Alive
-
-      Again, it would seem that FreeBSD sendfile() returned rc 0 with
-      no bytes sent.  (Other eyes welcome, of course... make sure you
-      look at 2_0_16 sources.)
-
-    * core dump from 20010521 and 20010529 running 2_0_16 - the "3030" problem
-
-      /usr/local/apache/corefiles/httpd.core.6
-      #0  0x80987e8 in apr_cvt (arg=1.3980432860952889e-76,
-                                ndigits=808464432, decpt=0x30303030, 
-                                sign=0x30303030, eflag=808464432,
-                                buf=0x30303030 <Address 0x30303030 out of bounds>) at apr_snprintf.c:177
-      #1  0x30303030 in ?? ()
-      Cannot access memory at address 0x30303030. 
-
-      In both coredumps the request is /server-status?auto.
-
-      It is unclear whether the apr_*printf function was passed bad
-      data or it screwed up on its own.  0x30 is '0'.  There is a
-      string of 200-300 '0' characters in the dump, apparently
-      overlaying enough of the stack to cause serious problems :)
 
 RELEASE SHOWSTOPPERS:
 
@@ -176,6 +95,10 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * daedalus: mod_cgid and suexec have a problem co-existing.  suexec 
+      sees a null command string sometimes.  The problem happens when
+      you access bugs.apache.org, then click on the "search the bug db"
+      button.
 
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
