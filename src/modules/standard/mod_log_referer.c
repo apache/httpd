@@ -116,7 +116,7 @@ static int referer_log_child (void *cmd)
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    int child_pid = 0;
+    int child_pid = 1;
 
     cleanup_for_exec();
     signal (SIGHUP, SIG_IGN);
@@ -132,7 +132,6 @@ static int referer_log_child (void *cmd)
 #endif
     perror ("execl");
     fprintf (stderr, "Exec of shell for logging failed!!!\n");
-    exit (1);
     return(child_pid);
 }
 

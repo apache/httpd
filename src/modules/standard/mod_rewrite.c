@@ -2282,20 +2282,18 @@ static void open_rewritelog(server_rec *s, pool *p)
 /* Child process code for 'RewriteLog "|..."' */
 static int rewritelog_child(void *cmd)
 {
-    int child_pid = 0;
+    int child_pid = 1;
 
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
 #if defined(WIN32)
     child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
-    exit(1);
     return(child_pid);
 }
 
@@ -2435,21 +2433,19 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 /* child process code */
 static int rewritemap_program_child(void *cmd)
 {
-    int child_pid = 0;
+    int child_pid = 1;
     
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
 #if defined(WIN32)
     child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
-    exit(1);
-    return(0);
+    return(child_pid);
 }
 
 

@@ -1187,7 +1187,7 @@ int spawn_child_err (pool *p, int (*func)(void *), void *data,
     signal (SIGCHLD, SIG_DFL);	/* Was that it? */
     
     func (data);
-    exit (0);			/* Should never get here... */
+    exit (1);			/* Should never get here... */
   }
 
   /* Parent process */
