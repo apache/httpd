@@ -316,7 +316,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
 int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
     int n, err;
-    conn_rec *c = SSL_get_app_data (pRec->pssl);
+    conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
 
     if (!SSL_is_init_finished(pRec->pssl))
     {

@@ -474,7 +474,7 @@ int ssl_hook_ReadReq(request_rec *r)
      */
     ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
     if (ssl != NULL) {
-        apctx = SSL_get_app_data2(ssl);
+        apctx = (apr_table_t *)SSL_get_app_data2(ssl);
         apr_table_setn(apctx, "ssl::request_rec", (const char *)r);
     }
 
@@ -822,7 +822,7 @@ int ssl_hook_Access(request_rec *r)
      * restriction on the certificate chain).
      */
     if (dc->nVerifyDepth != UNSET) {
-        apctx = SSL_get_app_data2(ssl);
+        apctx = (apr_table_t *)SSL_get_app_data2(ssl);
         if ((vp = (void *)apr_table_get(apctx, "ssl::verify::depth")) != NULL)
             n = (int)AP_CTX_PTR2NUM(vp);
         else

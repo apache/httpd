@@ -320,10 +320,9 @@ SSLModConfigRec *
 ssl_util_getmodconfig_ssl(
     SSL *ssl, const char *key)
 {
-    conn_rec *c;
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = NULL;
      
-    c = SSL_get_app_data(ssl);
     if (c != NULL)
         mc = ssl_util_getmodconfig(c->base_server, key);
     return mc;
