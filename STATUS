@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/25 17:05:56 $]
+Last modified at [$Date: 2002/04/25 17:20:59 $]
 
 Release:
 
@@ -76,7 +76,7 @@ CURRENT VOTES:
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff
+      +1:   Justin, Ian, Cliff, BillS
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
@@ -370,17 +370,57 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Fix the worker MPM to use POD to kill child processes instead
       of ap_os_killpg, regardless of how they should die. (Ryan Bloom)
 
-    * mod_cache: handle cache_control: no_cache "field_name" to enable 
-      cacheing the response w/o header "field_name"
-      See RFC2616 section 14.9.1
-
     * Scoreboard structures could be changed in the future such that
       proper alignment is not maintained, leading to segfaults on 
       some systems.  Cliff posted a patch to deal with this issue but
       later recanted. See this message to dev@apr.apache.org:
       Message-ID: <Pine.LNX.4.44.0203011354090.16457-200000@deepthought
                   .cs.virginia.edu>
-     
+
+EXPERIMENTAL MODULES:
+    Experimental modules should eventually be be promoted to fully supported
+    status of removed from the repository entirely (ie, the
+    'experiment' failed). This section tracks what needs to happen to 
+    get the modules promoted to fully supported status.
+
+    mod_cache/mod_mem_cache/mod_disk_cache:
+    * mod_cache: handle cache_control: no_cache "field_name" to enable 
+      cacheing the response w/o header "field_name"
+      See RFC2616 section 14.9.1
+
+    * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
+
+    * mod_disk_cache: Implement garbage collection
+
+    * mod_mem_cache/mod_disk_cache interoperability:  Some cache
+      directive names are the same which precludes using mod_mem_cache
+      and mod_disk_cache concurrently.
+
+    * mod_mem_cache: Config directive to enable caching open file
+      descriptors or caching the content in malloc'ed storage.
+
+    * mod_mem_cache/mod_disk_cache: Need to be able to query cache
+      status (num of entries, cache object properties, etc.).
+      mod_status could be extended to query optional hooks defined
+      by modules for the purpose of reporting module status.
+      mod_cache (et. al.) could define optional hooks that are called
+      to collect status.  Status should be queryable by
+      HTTP or SNMP?
+
+    * mod_mem_cache: garbage collection. One strategy is to simply
+      remove stale entries as we attempt to serve them. Another
+      strategy is to kick off a GC thread that traverses the cache
+      and preemptively remove stale entries.  How to manage a 
+      cache that is full? Do LRU GC? Other? Bueller?
+
+    * mod_mem_cache/mod_disk_cache: Complete implementing config
+      directives. 
+
+    * Sample config for mod_cache/mod_mem_cache/mod_disk_cache for
+      inclusion into httpd.conf.
+
+    * mod_cache/mod_mem_cache/mod_disk_cache: Documentation.
+
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
 
