@@ -104,7 +104,7 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     scoreboard_size += sizeof(process_score) * server_limit;
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
     if (lb_limit)
-        scoreboard_size += sizeof(lb_score) * server_limit * lb_limit;
+        scoreboard_size += sizeof(lb_score) * lb_limit;
 
     return scoreboard_size;
 }
@@ -130,13 +130,8 @@ void ap_init_scoreboard(void *shared_score)
         more_storage += thread_limit * sizeof(worker_score);
     }
     if (lb_limit) {
-        ap_scoreboard_image->balancers = 
-            (lb_score **)((char*)ap_scoreboard_image + sizeof(scoreboard) +
-                               server_limit * sizeof(worker_score *));
-        for (i = 0; i < server_limit; i++) {
-            ap_scoreboard_image->balancers[i] = (lb_score *)more_storage;
-            more_storage += lb_limit * sizeof(lb_score);
-        }
+        ap_scoreboard_image->balancers = (lb_score *)more_storage;
+        more_storage += lb_limit * sizeof(lb_score);
     }    
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
@@ -287,10 +282,8 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         }
         /* Clean up the lb workers data */
         if (lb_limit) {
-            for (i = 0; i < server_limit; i++) {
-                memset(ap_scoreboard_image->balancers[i], 0,
-                       sizeof(lb_score) * lb_limit);
-            }
+            memset(ap_scoreboard_image->balancers, 0,
+                   sizeof(lb_score) * lb_limit);
         }        
         return OK;
     }
@@ -495,11 +488,10 @@ AP_DECLARE(global_score *) ap_get_scoreboard_global()
     return ap_scoreboard_image->global;
 }
 
-AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int child_num, int lb_num)
+AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num)
 {
-    if (((child_num < 0) || (server_limit < child_num)) ||
-        ((lb_num < 0) || (lb_limit < lb_num))) {
+    if (((lb_num < 0) || (lb_limit < lb_num))) {
         return(NULL); /* Out of range */
     }
-    return &ap_scoreboard_image->balancers[child_num][lb_num];
+    return &ap_scoreboard_image->balancers[lb_num];
 }

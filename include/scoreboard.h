@@ -153,7 +153,7 @@ typedef struct {
     global_score *global;
     process_score *parent;
     worker_score **servers;
-    lb_score     **balancers;
+    lb_score     *balancers;
 } scoreboard;
 
 typedef struct ap_sb_handle_t ap_sb_handle_t;
@@ -179,7 +179,7 @@ void ap_time_process_request(int child_num, int thread_num, int status);
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
 AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
-AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int child_num, int lb_num);
+AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num);
 
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
