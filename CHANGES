@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_autoindex / core: Don't fail to show filenames containing
+     special characters like '%'. PR 13598.  [André Malo]
+ 
   *) mod_status: Report total CPU time accurately when using a threaded
      MPM.  PR 23795.  [Jeff Trawick]
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/14 14:18:35 $]
+Last modified at [$Date: 2003/12/14 16:21:43 $]
 
 Release:
 
@@ -291,11 +291,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
-
-    * Let mod_autoindex show filenames containing special characters.
-      PR 13598.
-        server/request.c: r1.130
-      +1: nd, ianh, trawick
 
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
