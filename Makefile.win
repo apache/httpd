@@ -104,7 +104,7 @@ _tryzlib:
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
-INSTDIR=\Apache21
+INSTDIR=g:\built\httpd-2.1-$(SHORT)
 !ENDIF
 !IF "$(SERVERNAME)" == ""
 SERVERNAME=localhost
@@ -202,7 +202,6 @@ _build:
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f pcreposix.mak       CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd server
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -615,7 +614,6 @@ BEGIN {
 	xcopy docs\docroot 	"$(INSTDIR)\htdocs" /d < .a
 	xcopy docs\icons 	"$(INSTDIR)\icons" /s /d < .a
 	xcopy docs\manual 	"$(INSTDIR)\manual" /s /d < .a
-	xcopy srclib\pcre\pcre*.h 			"$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\xml\expat\lib\expat.h 	"$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr\include\*.h 			"$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
@@ -624,10 +622,6 @@ BEGIN {
 	copy srclib\apr\Lib$(SHORT)\apr_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil_src.pdb "$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcre.lib 		"$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcre_src.pdb 	"$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib 	"$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcreposix_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml_src.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
