@@ -777,13 +777,13 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /*   120 Service ready in nnn minutes. */
     /*   220 Service ready for new user. */
     /*   421 Service not available, closing control connection. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-    if (i == -1) {
+		 "proxy: FTP: %d %s", rc, buffer);
+    if (rc == -1) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-    if (i == 120) {
+    if (rc == 120) {
 	/* RFC2616 states:
 	 * 14.37 Retry-After
 	 * 
@@ -800,7 +800,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	}
 	return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, buffer);
     }
-    if (i != 220) {
+    if (rc != 220) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
@@ -826,20 +826,20 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /*       (This may include errors such as command line too long.) */
     /*   501 Syntax error in parameters or arguments. */
     /*   530 Not logged in. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-    if (i == -1) {
+		 "proxy: FTP: %d %s", rc, buffer);
+    if (rc == -1) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-    if (i == 530) {
+    if (rc == 530) {
 	return ftp_unauthorized (r, 1);	/* log it: user name guessing attempt? */
     }
-    if (i != 230 && i != 331) {
+    if (rc != 230 && rc != 331) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
-    if (i == 331) {		/* send password */
+    if (rc == 331) {		/* send password */
 	if (password == NULL) {
 	    return ftp_unauthorized (r, 0);
 	}
@@ -860,22 +860,22 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   501 Syntax error in parameters or arguments. */
 	/*   503 Bad sequence of commands. */
 	/*   530 Not logged in. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-	if (i == -1) {
+		 "proxy: FTP: %d %s", rc, buffer);
+	if (rc == -1) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
-	if (i == 332) {
+	if (rc == 332) {
 	    return ap_proxyerror(r, HTTP_UNAUTHORIZED,
 				 apr_pstrcat(p, "Need account for login: ", buffer, NULL));
 	}
 	/* @@@ questionable -- we might as well return a 403 Forbidden here */
-	if (i == 530) {
+	if (rc == 530) {
 	    return ftp_unauthorized (r, 1); /* log it: passwd guessing attempt? */
 	}
-	if (i != 230 && i != 202) {
+	if (rc != 230 && rc != 202) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
     }
@@ -909,17 +909,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   502 Command not implemented. */
 	/*   530 Not logged in. */
 	/*   550 Requested action not taken. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-	if (i == -1) {
+		 "proxy: FTP: %d %s", rc, buffer);
+	if (rc == -1) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
-	if (i == 550) {
+	if (rc == 550) {
 	    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 	}
-	if (i != 250) {
+	if (rc != 250) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
 
@@ -950,18 +950,18 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /*   501 Syntax error in parameters or arguments. */
     /*   504 Command not implemented for that parameter. */
     /*   530 Not logged in. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: FTP: %d %s", i, buffer);
-    if (i == -1) {
+		 "proxy: FTP: %d %s", rc, buffer);
+    if (rc == -1) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
-    if (i != 200 && i != 504) {
+    if (rc != 200 && rc != 504) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
     /* Allow not implemented */
-    if (i == 504) {
+    if (rc == 504) {
 	parms[0] = '\0';
     }
 
@@ -1003,17 +1003,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   501 Syntax error in parameters or arguments. */
 	/*   502 Command not implemented. */
 	/*   530 Not logged in. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", i, buffer);
-	if (i == -1) {
+		     "proxy: FTP: %d %s", rc, buffer);
+	if (rc == -1) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
-	if (i != 229 && i != 500 && i != 501 && i != 502) {
+	if (rc != 229 && rc != 500 && rc != 501 && rc != 502) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
-	else if (i == 229) {
+	else if (rc == 229) {
 	    char *pstr;
 	    char *tok_cntx;
 
@@ -1091,17 +1091,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   501 Syntax error in parameters or arguments. */
 	/*   502 Command not implemented. */
 	/*   530 Not logged in. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", i, buffer);
-	if (i == -1) {
+		     "proxy: FTP: %d %s", rc, buffer);
+	if (rc == -1) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
 	}
-	if (i != 227 && i != 502) {
+	if (rc != 227 && rc != 502) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 	}
-	else if (i == 227) {
+	else if (rc == 227) {
 	    unsigned int h0, h1, h2, h3, p0, p1;
 	    char *pstr;
 	    char *tok_cntx;
@@ -1278,11 +1278,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	ap_pass_brigade(origin->output_filters, bb);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                      "proxy: FTP: SIZE %s", path);
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof buffer);
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof buffer);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "proxy: FTP: returned status %d with response %s", i, buffer);
-	if (i != 500) {		/* Size command not recognized */
-	    if (i == 550) {	/* Not a regular file */
+                     "proxy: FTP: returned status %d with response %s", rc, buffer);
+	if (rc != 500) {		/* Size command not recognized */
+	    if (rc == 550) {	/* Not a regular file */
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                              "proxy: FTP: SIZE shows this is a directory");
 		parms = "d";
@@ -1294,7 +1294,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 		ap_pass_brigade(origin->output_filters, bb);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                              "proxy: FTP: CWD %s", path);
-		i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+		rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 		/* possible results: 250, 421, 500, 501, 502, 530, 550 */
 		/* 250 Requested file action okay, completed. */
 		/* 421 Service not available, closing control connection. */
@@ -1304,15 +1304,15 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 		/* 530 Not logged in. */
 		/* 550 Requested action not taken. */
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-			     "proxy: FTP: %d %s", i, buffer);
-		if (i == -1) {
+			     "proxy: FTP: %d %s", rc, buffer);
+		if (rc == -1) {
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 					 "Error reading from remote server");
 		}
-		if (i == 550) {
+		if (rc == 550) {
 		    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 		}
-		if (i != 250) {
+		if (rc != 250) {
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
 		}
 		path = "";
@@ -1345,17 +1345,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /*   501 Syntax error in parameters or arguments. */
     /*   502 Command not implemented. */
     /*   550 Requested action not taken. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-				 "proxy: FTP: %d %s", i, buffer);
-    if (i == -1 || i == 421) {
+				 "proxy: FTP: %d %s", rc, buffer);
+    if (rc == -1 || rc == 421) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
-    if (i == 550) {
+    if (rc == 550) {
 	return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
     }
-    if (i == 257) {
+    if (rc == 257) {
 	const char *dirp = buffer;
 	apr_table_set(r->notes, "Directory-PWD", ap_getword_conf(r->pool, &dirp));
     }
@@ -1453,17 +1453,17 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   501 Syntax error in parameters or arguments. */
 	/*   502 Command not implemented. */
 	/*   550 Requested action not taken. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-				 "proxy: FTP: %d %s", i, buffer);
-	if (i == -1 || i == 421) {
+				 "proxy: FTP: %d %s", rc, buffer);
+	if (rc == -1 || rc == 421) {
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
 	}
-	if (i == 550) {
+	if (rc == 550) {
 	    return ap_proxyerror(r, HTTP_NOT_FOUND, buffer);
 	}
-	if (i == 257) {
+	if (rc == 257) {
 	    const char *dirp = buffer;
 	    apr_table_set(r->notes, "Directory-PWD", ap_getword_conf(r->pool, &dirp));
 	}

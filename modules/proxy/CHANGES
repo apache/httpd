@@ -1,6 +1,8 @@
 
 mod_proxy changes for httpd 2.0.18-dev
 
+  *) FTP return code variable cleanup; fixed problem in login
+
   *) Get PORT working again in the ftp proxy.
      [Victor Orlikowski <v.j.orlikowski@gte.net>]
 
