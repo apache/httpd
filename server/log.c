@@ -339,7 +339,7 @@ static void log_error_core(const char *file, int line, int level,
                            const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN];
-    size_t len;
+    size_t len, errstrlen;
     apr_file_t *logf = NULL;
     const char *referer;
     int level_and_mask = level & APLOG_LEVELMASK;
@@ -439,6 +439,7 @@ static void log_error_core(const char *file, int line, int level,
 	len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"(%d)%s: ", status, apr_strerror(status, buf, sizeof(buf)));
     }
+    errstrlen = len;
     len += apr_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
 
     if (r && (referer = apr_table_get(r->headers_in, "Referer"))) {
@@ -460,7 +461,7 @@ static void log_error_core(const char *file, int line, int level,
 	syslog(level_and_mask, "%s", errstr);
     }
 #endif
-    ap_run_error_log(file, line, level, status, s, r, pool, errstr);
+    ap_run_error_log(file, line, level, status, s, r, pool, errstr + errstrlen);
 }
     
 AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
