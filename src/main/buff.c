@@ -1005,7 +1005,7 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
  * Detect case where we're asked to write a large buffer, and combine our
  * current buffer with it in a single writev()
  */
-    if (fb->outcnt > 0 && nbyte >= fb->bufsiz) {
+    if (fb->outcnt > 0 && nbyte + fb->outcnt >= fb->bufsiz) {
 	return large_write (fb, buf, nbyte);
     }
 #endif
