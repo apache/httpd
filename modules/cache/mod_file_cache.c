@@ -421,6 +421,14 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
     struct iovec iov;
     ap_hdtr_t hdtr;
     ap_hdtr_t *phdtr = &hdtr;
+    ap_int32_t flags = 0;
+
+    if (!r->connection->keepalive) {
+        /* Prepare the socket to be reused. Ignored on systems
+         * that do not support reusing the accept socket
+         */
+        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+    }
 
     /* 
      * We want to send any data held in the client buffer on the
@@ -446,7 +454,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
                      phdtr,
                      &offset,
                      &length,
-                     0);
+                     flags);
     }
     else {
         while (ap_each_byterange(r, &offset, &length)) {
@@ -455,7 +463,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
                          phdtr,
                          &offset,
                          &length,
-                         0);
+                         flags);
             phdtr = NULL;
         }
     }

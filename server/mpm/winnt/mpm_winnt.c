@@ -944,7 +944,6 @@ static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context)
                          "reset_acceptex_context: AcceptEx failed for "
                          "listening socket: %d and accept socket: %d", 
                          nsd, context->accept_socket);
-            context->accept_socket = INVALID_SOCKET;
             return lasterror;
         }
     }
@@ -1071,6 +1070,7 @@ static void worker_main(int child_num)
     while (1) {
         conn_rec *current_conn;
         ap_iol *iol;
+        ap_int32_t disconnected;
 
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1099,8 +1099,20 @@ static void worker_main(int child_num)
                                          child_num);
 
         ap_process_connection(current_conn);
-        ap_lingering_close(current_conn);
-        context->accept_socket = INVALID_SOCKET;
+
+
+        ap_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
+        if (disconnected) {
+            /* Kill the clean-up registered by the iol. We want to leave 
+             * the accept socket open because we are about to try to 
+             * reuse it
+             */
+            ap_bpop_iol(&iol, context->conn_io);
+        }
+        else {
+            context->accept_socket = INVALID_SOCKET;
+            ap_lingering_close(current_conn);
+        }
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
