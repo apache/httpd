@@ -1074,7 +1074,9 @@ static void accept_mutex_cleanup_tpfcore(void *foo)
         coruc(RESOURCE_KEY);
 }
 
-#define accept_mutex_init_tpfcore(x)
+static void accept_mutex_init_tpfcore(pool *foo)
+{
+}
 
 static void accept_mutex_child_init_tpfcore(pool *p)
 {
