@@ -438,6 +438,12 @@ static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
 
 static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p)
 {
+#ifdef WIN32
+    char *quoted_filename = NULL;
+    char *interpreter = NULL;
+    char *arguments = NULL;
+    file_type_e fileType;
+#endif
     char *argv0;
 
     /* Allow suexec's "/" check to succeed */
@@ -446,12 +452,7 @@ static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p
     else
         argv0 = r->filename;
 
-#ifdef WIN32
-    char *quoted_filename = NULL;
-    char *interpreter = NULL;
-    char *arguments = NULL;
-    file_type_e fileType;
-
+#ifdef WIN32 
     *cmd = NULL;
     fileType = ap_get_win32_interpreter(r, &interpreter, &arguments);
 
