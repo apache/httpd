@@ -1341,7 +1341,7 @@ void standalone_main(int argc, char **argv)
     struct sockaddr_in sa_server;
 
     standalone = 1;
-    sd = -1;
+    sd = listenmaxfd = -1;
     
     if (!one_process) detach(); 
     
@@ -1354,13 +1354,16 @@ void standalone_main(int argc, char **argv)
     signal (SIGHUP, SIG_IGN);	/* Until we're done (re)reading config */
     
     if(!one_process)
+    {
 #ifndef NO_KILLPG
-      killpg(pgrp,SIGHUP);	/* Kill 'em off */
+      if (killpg(pgrp,SIGHUP) < 0)    /* Kill 'em off */
 #else
-      kill(-pgrp,SIGHUP);
+      if (kill(-pgrp,SIGHUP) < 0)
 #endif
+        log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
+    }
     
-    if (sd != -1) {
+    if (sd != -1 || listenmaxfd != -1) {
 	reclaim_child_processes(); /* Not when just starting up */
 	log_error ("SIGHUP received.  Attempting to restart", server_conf);
     }
