@@ -2045,18 +2045,18 @@ void send_error_response(request_rec *r, int recursive_error)
         char *h1 = 4 + status_lines[idx];
 
         bvputs(fd, "<HTML><HEAD>\n<TITLE>", title,
-                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
+               "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
                NULL);
 
         switch (status) {
         case REDIRECT:
         case MOVED:
             bvputs(fd, "The document has moved <A HREF=\"",
-                 escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
+                   escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
             break;
         case HTTP_SEE_OTHER:
             bvputs(fd, "The answer to your request is located <A HREF=\"",
-                 escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
+                   escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
             break;
         case HTTP_USE_PROXY:
             bvputs(fd, "This resource is only accessible through the proxy\n",
