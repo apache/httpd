@@ -230,6 +230,14 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
         ? apr_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL)
         : arg;
 
+    if (sconf->vars_present && !cmd->path) {
+        /* if {Set,Pass}Env FOO, UnsetEnv FOO
+         * are in the base config, merge never happens,
+         * unset never happens, so just unset now
+         */
+        apr_table_unset(sconf->vars, arg);
+    }
+
     return NULL;
 }
 
