@@ -340,11 +340,33 @@ static char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *new;
+    struct stat st;
 
     sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
     new = push_array(sconf->rewritemaps);
+
     new->name = a1;
-    new->file = a2;
+    if (strncmp(a2, "txt:", 4) == 0) {
+        new->file = a2+4;
+        new->type = MAPTYPE_TXT;
+    }
+    else if (strncmp(a2, "dbm:", 4) == 0) {
+        new->file = a2+4;
+        new->type = MAPTYPE_DBM;
+    }
+    else if (strncmp(a2, "prg:", 4) == 0) {
+        new->file = a2+4;
+        new->type = MAPTYPE_PRG;
+    }
+    else {
+        new->file = a2;
+        new->type = MAPTYPE_TXT;
+    }
+    new->fpin  = 0;
+    new->fpout = 0;
+
+    if (stat(new->file, &st) == -1)
+        return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->file, NULL);
 
     return NULL;
 }
@@ -658,6 +680,10 @@ static char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key,
              || strcasecmp(key, "S") == 0   ) {
         cfg->skip = atoi(val);
     }
+    else if (   strcasecmp(key, "forbidden") == 0
+             || strcasecmp(key, "F") == 0   ) {
+        cfg->flags |= RULEFLAG_FORBIDDEN;
+    }
     else {
         return pstrcat(p, "RewriteRule: unknown flag '", key, "'\n", NULL);
     }
@@ -676,9 +702,12 @@ static char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key,
 static void init_module(server_rec *s, pool *p)
 {
     /* step through the servers and
-       open eachs rewriting logfile */
-    for (; s; s = s->next)
+       - open eachs rewriting logfile 
+       - open the RewriteMap prg:xxx programs */
+    for (; s; s = s->next) {
         open_rewritelog(s, p);
+        run_rewritemap_programs(s, p);
+    }
 
     /* create the lookup cache */
     cachep = init_cache(p);
@@ -819,6 +848,11 @@ static int hook_uri2file(request_rec *r)
             table_set(r->headers_out, "Location", r->filename);
             rewritelog(r, 1, "redirect to %s [REDIRECT]", r->filename);
             return REDIRECT;
+        }
+        else if (strlen(r->filename) > 10 &&
+                 strncmp(r->filename, "forbidden:", 10) == 0) {
+            /* This URLs is forced to be forbidden for the requester */
+            return FORBIDDEN; 
         }
         else if (strlen(r->filename) > 12 &&
                  strncmp(r->filename, "passthrough:", 12) == 0) {
@@ -1023,6 +1057,11 @@ static int hook_fixup(request_rec *r)
             rewritelog(r, 1, "[per-dir %s] redirect to %s [REDIRECT]", dconf->directory, r->filename);
             return REDIRECT;
         }
+        else if (strlen(r->filename) > 10 &&
+                 strncmp(r->filename, "forbidden:", 10) == 0) {
+            /* This URLs is forced to be forbidden for the requester */
+            return FORBIDDEN; 
+        }
         else {
             /* it was finally rewritten to a local path */
 
@@ -1131,7 +1170,7 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
     for (i = 0; i < rewriterules->nelts; i++) {
         p = &entries[i];
 
-        /* ignore this rule if we are explicitly asked to do so
+        /* ignore this rule on subrequests if we are explicitly asked to do so
            or this is a proxy throughput or a forced redirect rule */
         if (r->main != NULL &&
             (p->flags & RULEFLAG_IGNOREONSUBREQ ||
@@ -1147,6 +1186,12 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
             if (p->flags & RULEFLAG_PASSTHROUGH) {
                 rewritelog(r, 2, "forcing '%s' to get passed through to next URI-to-filename handler", r->filename);
                 r->filename = pstrcat(r->pool, "passthrough:", r->filename, NULL);
+                changed = 1;
+                break;
+            }
+            if (p->flags & RULEFLAG_FORBIDDEN) {
+                rewritelog(r, 2, "forcing '%s' to be forbidden", r->filename);
+                r->filename = pstrcat(r->pool, "forbidden:", r->filename, NULL);
                 changed = 1;
                 break;
             }
@@ -1333,7 +1378,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         /* split out on-the-fly generated QUERY_STRING '....?xxxxx&xxxx...' */
         splitout_queryargs(r);
 
-        /* if a MIME-type should be later forced for this URL, then remeber this */
+        /* if a MIME-type should be later forced for this URL, then remember this */
         if (p->forced_mimetype != NULL) {
             table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, p->forced_mimetype);
             if (perdir == NULL)
@@ -1692,7 +1737,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     char *value;
     struct stat st;
     int i;
-    int rc;
 
     /* get map configuration */
     sconf = r->server->module_config;
@@ -1703,68 +1747,53 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     for (i = 0; i < rewritemaps->nelts; i++) {
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
-            if (strlen(s->file) > 4 && strncmp(s->file, "txt:", 4) == 0) {
-                rc = stat(s->file+4, &st);
-                if (rc == 0) {
-                    value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
-                    if (value == NULL) {
-                        rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                        if ((value = lookup_map_txtfile(r, s->file+4, key)) != NULL) {
-                            rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file+4, key, value);
-                            set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
-                            return value;
-                        }
-                        else {
-                            rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file+4, key);
-                        }
+            if (s->type == MAPTYPE_TXT) {
+                stat(s->file, &st); /* existence was checked at startup! */
+                value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
+                if (value == NULL) {
+                    rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
+                    if ((value = lookup_map_txtfile(r, s->file, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
+                        set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
+                        return value;
                     }
                     else {
-                        rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
                     }
                 }
+                else {
+                    rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                }
             }
-            else if (strlen(s->file) > 4 && strncmp(s->file, "dbm:", 4) == 0) {
+            else if (s->type == MAPTYPE_DBM) {
 #if SUPPORT_DBM_REWRITEMAP
-                rc = stat(s->file+4, &st);
-                if (rc == 0) {
-                    value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
-                    if (value == NULL) {
-                        rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                        if ((value = lookup_map_dbmfile(r, s->file+4, key)) != NULL) {
-                            rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file+4, key, value);
-                            set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
-                            return value;
-                        }
-                        else {
-                            rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file+4, key);
-                        }
+                stat(s->file, &st); /* existence was checked at startup! */
+                value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
+                if (value == NULL) {
+                    rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
+                    if ((value = lookup_map_dbmfile(r, s->file, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
+                        set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
+                        return value;
                     }
                     else {
-                        rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
                     }
+                }
+                else {
+                    rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
                 }
 #else
                 return NULL;
 #endif
             }
-            else {
-                rc = stat(s->file+4, &st);
-                if (rc == 0) {
-                    value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
-                    if (value == NULL) {
-                        rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                        if ((value = lookup_map_txtfile(r, s->file, key)) != NULL) {
-                            rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
-                            set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
-                            return value;
-                        }
-                        else {
-                            rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
-                        }
-                    }
-                    else {
-                        rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
-                    }
+            else if (s->type == MAPTYPE_PRG) {
+                if ((value = lookup_map_program(r, s->fpin, s->fpout, key)) != NULL) {
+                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
+                    return value;
+                }
+                else {
+                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
                 }
             }
         }
@@ -1861,6 +1890,31 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
 }
 #endif
 
+static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
+{
+    static char buf[MAX_STRING_LEN];
+    char c;
+    int i;
+
+    /* write out the request key */
+    sprintf(buf, "%s\n", key);
+    write(fpin, buf, strlen(buf));
+
+    /* read in the response value */
+    i = 0;
+    while (read(fpout, &c, 1) == 1) {
+        if (c == '\n')
+            break;
+        buf[i++] = c;
+    }
+    buf[i] = '\0';
+
+    if (strcasecmp(buf, "NULL") == 0)
+        return NULL;
+    else
+        return pstrdup(r->pool, buf);
+}
+
 
 
 
@@ -1908,6 +1962,7 @@ static void open_rewritelog(server_rec *s, pool *p)
             exit(1);
         }
     }
+    return;
 }
 
 /* Child process code for 'RewriteLog "|..."' */
@@ -1991,6 +2046,64 @@ static char *current_logtime(request_rec *r)
     return pstrdup(r->pool, tstr);
 }
 
+
+
+
+/*
+** +-------------------------------------------------------+
+** |                                                       |
+** |                  program map support
+** |                                                       |
+** +-------------------------------------------------------+
+*/
+
+static void run_rewritemap_programs(server_rec *s, pool *p)
+{
+    rewrite_server_conf *conf;
+    char *fname;
+    FILE *fpin;
+    FILE *fpout;
+    array_header *rewritemaps;
+    rewritemap_entry *entries;
+    rewritemap_entry *map;
+    int i;
+    int rc;
+  
+    conf = get_module_config(s->module_config, &rewrite_module);
+
+    rewritemaps = conf->rewritemaps;
+    entries = (rewritemap_entry *)rewritemaps->elts;
+    for (i = 0; i < rewritemaps->nelts; i++) {
+        map = &entries[i];
+        if (map->type != MAPTYPE_PRG)
+            continue;
+        if (map->file == NULL    ||
+            *(map->file) == '\0' ||
+            map->fpin > 0        ||
+            map->fpout > 0         )
+            continue;
+        fname = server_root_relative(p, map->file);
+        fpin = NULL;
+        fpout = NULL;
+        rc = spawn_child(p, rewritemap_program_child, (void *)map->file, kill_after_timeout, &fpin, &fpout);
+        if (rc == 0 || fpin == NULL || fpout == NULL) {
+            fprintf (stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
+            exit (1);
+        }
+        map->fpin  = fileno(fpin);
+        map->fpout = fileno(fpout);
+    }
+    return;
+}
+
+/* Child process code */
+static void rewritemap_program_child(void *cmd)
+{
+    cleanup_for_exec();
+    signal(SIGHUP, SIG_IGN);
+    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+    exit(1);
+}
 
 
 
@@ -2138,10 +2251,6 @@ static char *lookup_variable(request_rec *r, char *var)
         sprintf(resultbuf, "%d", MODULE_MAGIC_NUMBER);
         result = resultbuf;
     }
-    else if (strcasecmp(var, "PATH") == 0) {
-        if ((result = getenv("PATH")) == NULL)
-            result = DEFAULT_PATH;
-    }
 
     /* underlaying Unix system stuff */
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
@@ -2173,6 +2282,12 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME_WDAY") == 0) {
         MKTIMESTR("%d", tm_wday)
     }
+
+    /* all other env-variables from the parent Apache process */
+    else if (strlen(var) > 4 && strncasecmp(var, "ENV:", 4) == 0) {
+        result = getenv(var+4);
+    }
+
     /* uptime, load average, etc. .. */
 
     if (result == NULL)
@@ -2382,68 +2497,68 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
 static int parseargline(char *str, char **a1, char **a2, char **a3)
 {
     char *cp;
+    int isquoted;
 
-    /*  strip whitespaces */
-    for (cp = str; *cp != '\0' && (*cp == ' ' || *cp == '\t'); cp++)
-        ;
+#define SKIP_WHITESPACE(cp) \
+    for ( ; *cp == ' ' || *cp == '\t'; ) \
+        cp++;
+
+#define CHECK_QUOTATION(cp,isquoted) \
+    isquoted = 0; \
+    if (*cp == '"') { \
+        isquoted = 1; \
+        cp++; \
+    }
+
+#define DETERMINE_NEXTSTRING(cp,isquoted) \
+    for ( ; *cp != '\0'; cp++) { \
+        if (   (isquoted    && (*cp     == ' ' || *cp     == '\t')) \
+            || (*cp == '\\' && (*(cp+1) == ' ' || *(cp+1) == '\t'))) { \
+            cp++; \
+            continue; \
+        } \
+        if (   (!isquoted && (*cp == ' ' || *cp == '\t')) \
+            || (isquoted  && *cp == '"')                  ) \
+            break; \
+    } 
+
+    cp = str;
+    SKIP_WHITESPACE(cp);
 
     /*  determine first argument */
+    CHECK_QUOTATION(cp, isquoted);
     *a1 = cp;
-    for ( ; *cp != '\0'; cp++) {
-        if (*cp == '\\' && *(cp+1) == ' ') {
-            cp++;
-            continue;
-        }
-        if (*cp == ' ' || *cp == '\t')
-            break;
-    }
+    DETERMINE_NEXTSTRING(cp, isquoted);
     if (*cp == '\0')
         return 1;
     *cp++ = '\0';
 
-    /*  strip whitespaces */
-    for ( ; *cp != '\0' && (*cp == ' ' || *cp == '\t'); cp++)
-        ;
+    SKIP_WHITESPACE(cp);
 
     /*  determine second argument */
+    CHECK_QUOTATION(cp, isquoted);
     *a2 = cp;
-    for ( ; *cp != '\0'; cp++) {
-        if (*cp == '\\' && *(cp+1) == ' ') {
-            cp++;
-            continue;
-        }
-        if (*cp == ' ' || *cp == '\t')
-            break;
-    }
-
+    DETERMINE_NEXTSTRING(cp, isquoted);
     if (*cp == '\0') {
-        /* there were only two args */
         *cp++ = '\0';
         *a3 = NULL;
         return 0;
     }
     *cp++ = '\0';
-    /*  strip whitespaces */
-    for ( ; *cp != '\0' && (*cp == ' ' || *cp == '\t'); cp++)
-        ;
+
+    SKIP_WHITESPACE(cp);
+
     /* again check if there are only two arguments */
     if (*cp == '\0') {
         *cp++ = '\0';
         *a3 = NULL;
         return 0;
-
     }
 
     /*  determine second argument */
+    CHECK_QUOTATION(cp, isquoted);
     *a3 = cp;
-    for ( ; *cp != '\0'; cp++) {
-        if (*cp == '\\' && *(cp+1) == ' ') {
-            cp++;
-            continue;
-        }
-        if (*cp == ' ' || *cp == '\t')
-            break;
-    }
+    DETERMINE_NEXTSTRING(cp, isquoted);
     *cp++ = '\0';
 
     return 0;

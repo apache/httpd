@@ -123,6 +123,11 @@
 #define RULEFLAG_NOTMATCH           1<<6
 #define RULEFLAG_PROXY              1<<7
 #define RULEFLAG_PASSTHROUGH        1<<8
+#define RULEFLAG_FORBIDDEN          1<<9
+
+#define MAPTYPE_TXT                 1<<0
+#define MAPTYPE_DBM                 1<<1
+#define MAPTYPE_PRG                 1<<2
 
 #define ENGINE_DISABLED             1<<0
 #define ENGINE_ENABLED              1<<1
@@ -142,7 +147,10 @@
 
 typedef struct {
     char *name;                    /* the name of the map */
-    char *file;                    /* the correspoindign file of the map */
+    char *file;                    /* the file of the map */
+    int   type;                    /* the type of the map */
+    int   fpin;                    /* in  filepointer for program maps */
+    int   fpout;                   /* out filepointer for program maps */
 } rewritemap_entry;
 
 typedef struct {
@@ -209,7 +217,7 @@ typedef struct cachelist {
 } cachelist;
 
 typedef struct cache {
-	pool         *pool;
+    pool         *pool;
     array_header *lists;
 } cache;
 
@@ -272,12 +280,17 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
 #if SUPPORT_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
+static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
 static void  rewritelog_child(void *cmd);
 static void  rewritelog(request_rec *r, int level, char *text, ...);
 static char *current_logtime(request_rec *r);
+
+    /* program map support */
+static void  run_rewritemap_programs(server_rec *s, pool *p);
+static void  rewritemap_program_child(void *cmd);
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf);
