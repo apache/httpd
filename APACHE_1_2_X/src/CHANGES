@@ -1,5 +1,12 @@
 Changes with Apache 1.2.2
 
+  *) "force-response-1.0" now only applies to requests which are HTTP/1.0 to
+     begin with.  "nokeepalive" now works for HTTP/1.1 clients.  Added
+     "downgrade-1.0" which causes Apache to pretend it received a 1.0.
+     Additionally mod_browser now triggers during translate_name to workaround
+     a deficiency in the header_parse phase.
+     [Dean Gaudet] PR#875
+
   *) get_client_block() returns wrong length if policy is 
      REQUEST_CHUNKED_DECHUNK.
      [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#815
