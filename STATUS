@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/06 14:20:49 $]
+  Last modified at [$Date: 1999/06/07 19:42:21 $]
 
 Release:
 
@@ -113,6 +113,7 @@ Available Patches:
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
+	Message-ID: <E10qzDF-0005Ab-00@fanf.noc.demon.net>
 	Status: Dean +1, Randy +1, Lars +1 (if someone writes the docs)
                 Jim +1
 
