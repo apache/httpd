@@ -1,14 +1,16 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org">
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
     <title>Apache module mod_asis</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink=
-  "#000080" alink="#FF0000">
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
     <h1 align="CENTER">Module mod_asis</h1>
@@ -16,12 +18,13 @@
     <p>This module provides for sending files which contain their
     own HTTP headers.</p>
 
-    <p><a href="module-dict.html#Status" rel=
-    "Help"><strong>Status:</strong></a> Base<br>
-    <a href="module-dict.html#SourceFile" rel="Help"><strong>Source
-    File:</strong></a> mod_asis.c<br>
-    <a href="module-dict.html#ModuleIdentifier" rel=
-    "Help"><strong>Module Identifier:</strong></a> asis_module</p>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_asis.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    asis_module</p>
 
     <h2>Summary</h2>
 
@@ -60,22 +63,22 @@
     redirected.</p>
 
     <blockquote>
-      <code>Status: 301 Now where did I leave that URL<br>
-       Location: http://xyz.abc.com/foo/bar.html<br>
-       Content-type: text/html<br>
-      <br>
-       &lt;HTML&gt;<br>
-       &lt;HEAD&gt;<br>
-       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br>
-       &lt;/HEAD&gt;<br>
-       &lt;BODY&gt;<br>
+      <code>Status: 301 Now where did I leave that URL<br />
+       Location: http://xyz.abc.com/foo/bar.html<br />
+       Content-type: text/html<br />
+      <br />
+       &lt;HTML&gt;<br />
+       &lt;HEAD&gt;<br />
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
+       &lt;/HEAD&gt;<br />
+       &lt;BODY&gt;<br />
        &lt;H1&gt;Fred's exceptionally wonderful page has moved
-      to<br>
+      to<br />
        &lt;A
       HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
-      site.<br>
-       &lt;/H1&gt;<br>
-       &lt;/BODY&gt;<br>
+      site.<br />
+       &lt;/H1&gt;<br />
+       &lt;/BODY&gt;<br />
        &lt;/HTML&gt;</code>
     </blockquote>
 
