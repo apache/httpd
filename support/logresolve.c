@@ -39,8 +39,9 @@
  * that one of these matches the original address.
  */
 
-#include "apr.h"
+#include "ap_config.h"
 #include <ctype.h>
+#include <stdio.h>
 
 #if !defined(MPE) && !defined(BEOS) && !defined(WIN32)
 #include <arpa/inet.h>
