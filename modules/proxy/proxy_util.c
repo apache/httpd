@@ -1657,14 +1657,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                            uri->fragment ? "#" : "",
                            uri->fragment ? uri->fragment : "", NULL);
     }
-
+    
+    /* TODO: add address cache for forward proxies */
+    conn->addr = worker->cp->addr;
     if (r->proxyreq == PROXYREQ_PROXY) {
-        err = apr_sockaddr_info_get(&(worker->cp->addr),
+        err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
                                     p);
     }
-    else if (!worker->cp->addr)
+    else if (!worker->cp->addr) {
         /* Worker can have the single constant backend adress.
          * The single DNS lookup is used once per worker.
         * If dynamic change is needed then set the addr to NULL
@@ -1674,7 +1676,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
                                     worker->cp->pool);
-
+        conn->addr = worker->cp->addr;
+    }
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
@@ -1693,7 +1696,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     /* check if ProxyBlock directive on this host */
-    if (OK != ap_proxy_checkproxyblock(r, conf, worker->cp->addr)) {
+    if (OK != ap_proxy_checkproxyblock(r, conf, conn->addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }
@@ -1729,7 +1732,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     apr_status_t rv;
     int connected = 0;
     int loglevel;
-    apr_sockaddr_t *backend_addr = worker->cp->addr;
+    apr_sockaddr_t *backend_addr = conn->addr;
     apr_socket_t *newsock;
     
     if (conn->sock) {
@@ -1833,7 +1836,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               server_rec *s)
 {
     proxy_worker *worker = conn->worker;
-    apr_sockaddr_t *backend_addr = worker->cp->addr;
+    apr_sockaddr_t *backend_addr = conn->addr;
 
     /* The socket is now open, create a new backend server connection 
     * 
