@@ -1861,9 +1861,9 @@ static void lingering_close(request_rec *r)
 
     } while ((select_rv > 0) &&
 #if defined(WIN32) || defined(NETWARE)
-             (recv(lsd, dummybuf, sizeof dummybuf, 0) > 0));
+             (recv(lsd, dummybuf, sizeof(dummybuf), 0) > 0));
 #else
-             (read(lsd, dummybuf, sizeof dummybuf) > 0));
+             (read(lsd, dummybuf, sizeof(dummybuf)) > 0));
 #endif
 
     /* Should now have seen final ack.  Safe to finally kill socket */
