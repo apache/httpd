@@ -904,16 +904,21 @@ char *make_full_path(pool *a, const char *src1, const char *src2) {
     else return pstrcat (a, src1, src2, NULL);
 }
 
+/*
+ * Check for an absoluteURI syntax (see section 3.2 in RFC2068).
+ */
 int is_url(const char *u) {
     register int x;
 
-    for(x=0;u[x] != ':';x++)
-        if((!u[x]) || (!isalpha(u[x])))
+    for (x = 0; u[x] != ':'; x++) {
+        if ((! u[x]) ||
+	    ((! isalpha(u[x])) && (! isdigit(u[x])) &&
+	     (u[x] != '+') && (u[x] != '-') && (u[x] != '.'))) {
             return 0;
+	}
+    }
 
-    if((u[x+1] == '/') && (u[x+2] == '/'))
-        return 1;
-    else return 0;
+    return (x ? 1 : 0);  /* If the first character is ':', it's broken, too */
 }
 
 int can_exec(const struct stat *finfo) {
