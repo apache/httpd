@@ -276,6 +276,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                                              const char *proxyname) {
     int failed=0, new=0;
     apr_status_t rv;
+    apr_socket_t *client_socket;
 
     /* We have determined who to connect to. Now make the connection, supporting
      * a KeepAlive connection.
@@ -290,6 +291,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
      */
     /* see memory note above */
     if (backend->connection) {
+        client_socket = ap_get_module_config(backend->connection->conn_config, &core_module);;
         if ((backend->connection->id == c->id) &&
             (backend->port == p_conn->port) &&
             (backend->hostname) &&
@@ -302,7 +304,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                          " changed (close old socket (%s/%s, %d/%d))", 
                          p_conn->name, backend->hostname, p_conn->port,
                          backend->port);
-            apr_socket_close(backend->connection->client_socket);
+            apr_socket_close(client_socket);
             backend->connection = NULL;
         }
     }
@@ -317,7 +319,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
 
         /* use previous keepalive socket */
         *origin = backend->connection;
-        p_conn->sock = (*origin)->client_socket;
+        p_conn->sock = client_socket;
         new = 0;
 
         /* reset the connection filters */
@@ -412,7 +414,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                      "proxy: socket is connected");
 
         /* the socket is now open, create a new backend server connection */
-        *origin = ap_new_connection(c->pool, r->server, p_conn->sock,
+        *origin = ap_run_create_connection(c->pool, r->server, p_conn->sock,
                                    r->connection->id);
         if (!origin) {
         /* the peer reset the connection already; ap_new_connection() 

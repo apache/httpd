@@ -556,6 +556,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     int one = 1;
     char *size = NULL;
     apr_off_t readbytes = -1;
+    apr_socket_t *origin_sock;
 
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;
@@ -584,6 +585,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	backend->port = 0;
 	ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
     }
+    origin_sock = ap_get_module_config(backend->connection->conn_config, &core_module);
 
 
     /* 
@@ -745,7 +747,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the socket is now open, create a new connection */
-    origin = ap_new_connection(p, r->server, sock, r->connection->id);
+    origin = ap_run_create_connection(p, r->server, sock, r->connection->id);
     if (!origin) {
 	/* the peer reset the connection already; ap_new_connection() 
 	 * closed the socket */
@@ -757,7 +759,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* if a keepalive connection is floating around, close it first! */
     /* we might support ftp keepalives later, but not now... */
     if (backend->connection) {
-	apr_socket_close(backend->connection->client_socket);
+	apr_socket_close(origin_sock);
 	backend->connection = NULL;
     }
 
@@ -1548,7 +1550,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the transfer socket is now open, create a new connection */
-    remote = ap_new_connection(p, r->server, remote_sock, r->connection->id);
+    remote = ap_run_create_connection(p, r->server, remote_sock, r->connection->id);
     if (!remote) {
 	/* the peer reset the connection already; ap_new_connection() 
 	 * closed the socket */
@@ -1597,7 +1599,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	}
     }
     ap_flush_conn(remote);
-    apr_socket_close(remote->client_socket);
+    apr_socket_close(remote_sock);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: FTP: Closing Data connection.");
     rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
@@ -1632,7 +1634,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: %d %s", rc, buffer);
     ap_flush_conn(origin);
-    apr_socket_close(origin->client_socket);
+    apr_socket_close(origin_sock);
     apr_brigade_destroy(bb);
     return OK;
 }

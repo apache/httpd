@@ -128,6 +128,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     apr_status_t err, rv;
     apr_size_t i, o, nbytes;
     char buffer[HUGE_STRING_LEN];
+    apr_socket_t *client_socket = ap_get_module_config(r->connection->conn_config, &core_module);
 
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
@@ -305,10 +306,19 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 		     "proxy: CONNECT: Returning 200 OK Status");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "HTTP/1.0 200 Connection Established" CRLF);
-        apr_send(r->connection->client_socket, buffer, &nbytes);
+        apr_send(client_socket, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+#if 0
+        /* This is safer code, but it doesn't work yet.  I'm leaving it 
+         * here so that I can fix it later.
+         */
         apr_send(r->connection->client_socket, buffer, &nbytes);
+        r->status = HTTP_OK;
+        r->header_only = 1;
+        apr_table_set(r->headers_out, "Proxy-agent: %s", ap_get_server_version());
+        ap_rflush(r);
+#endif
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
@@ -331,7 +341,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* Add client side to the poll */
-    apr_poll_socket_add(pollfd, r->connection->client_socket, APR_POLLIN);
+    apr_poll_socket_add(pollfd, client_socket, APR_POLLIN);
 
     /* Add the server side to the poll */
     apr_poll_socket_add(pollfd, sock, APR_POLLIN);
@@ -359,7 +369,13 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
                     while(i > 0)
                     {
                         nbytes = i;
-			if (apr_send(r->connection->client_socket, buffer + o, &nbytes) != APR_SUCCESS)
+    /* This is just plain wrong.  No module should ever write directly
+     * to the client.  For now, this works, but this is high on my list of
+     * things to fix.  The correct line is:
+     * if ((nbytes = ap_rwrite(buffer + o, nbytes, r)) < 0)
+     * rbb
+     */
+                        if (apr_send(client_socket, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
                         o += nbytes;
                         i -= nbytes;
@@ -372,12 +388,12 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 		break;
 
 
-            apr_poll_revents_get(&pollevent, r->connection->client_socket, pollfd);
+            apr_poll_revents_get(&pollevent, client_socket, pollfd);
             if (pollevent & APR_POLLIN) {
 /*		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                              "proxy: CONNECT: client was set");*/
                 nbytes = sizeof(buffer);
-                if (apr_recv(r->connection->client_socket, buffer, &nbytes) == APR_SUCCESS) {
+                if (apr_recv(client_socket, buffer, &nbytes) == APR_SUCCESS) {
                     o = 0;
                     i = nbytes;
                     while(i > 0)

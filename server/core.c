@@ -3324,6 +3324,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
  
     apr_pool_cleanup_register(ptrans, net, ap_lingering_close, apr_pool_cleanup_null);
  
+    ap_set_module_config(net->c->conn_config, &core_module, csd);
     ap_add_input_filter("CORE_IN", net, NULL, net->c);
     ap_add_output_filter("CORE", net, NULL, net->c);
     return net->c;
