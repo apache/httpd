@@ -220,7 +220,7 @@ static process_rec *create_process(int argc, const char * const *argv)
         /* XXX From the time that we took away the NULL pool->malloc mapping
          *     we have been unable to log here without segfaulting.
          */
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
                      "apr_pool_create() failed to create "
                      "initial context");
         apr_terminate();
