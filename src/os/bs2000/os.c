@@ -102,3 +102,6 @@ int ap_checkconv(struct request_rec *r)
     return convert_to_ascii;
 }
 
+#ifdef HAVE_DLFCN_H
+#include "../unix/os.c"
+#endif
