@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/30 12:32:06 $]
+Last modified at [$Date: 2002/01/30 16:11:10 $]
 
 Release:
 
@@ -39,6 +39,11 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
+
+    * Runtime startup failures don't reliable set the exit status.
+      For instance, try listening to port 80 and starting as non-root;
+      server fails with make_sock and 'no listening sockets' errors
+      but exits with 0 status.  Even with -DONE_PROCESS -DNO_DETACH.
 
     * mod_rewrite's locks (win32) were broken by recent changes to the 
       apr_lock_t api (which we were deprecating in the first place, so
