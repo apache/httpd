@@ -1014,12 +1014,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 
     /* loop through each brigade */
     while (!found) {
-        apr_off_t zero = 0;
         /* get brigade from network one line at a time */
         if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, 
                                                 AP_MODE_GETLINE,
                                                 APR_BLOCK_READ,
-                                                &zero /* readline */))) {
+                                                0))) {
             return rv;
         }
         /* loop through each bucket */

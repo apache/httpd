@@ -94,7 +94,6 @@ static int process_echo_connection(conn_rec *c)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     apr_status_t rv;
-    apr_off_t zero = 0;
     EchoConfig *pConfig = ap_get_module_config(c->base_server->module_config,
                                                &echo_module);
 
@@ -107,7 +106,7 @@ static int process_echo_connection(conn_rec *c)
     for ( ; ; ) {
         /* Get a single line of input from the client */
         if ((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
-                                 APR_BLOCK_READ, &zero) != APR_SUCCESS || 
+                                 APR_BLOCK_READ, 0) != APR_SUCCESS || 
              APR_BRIGADE_EMPTY(bb))) {
             apr_brigade_destroy(bb);
             break;

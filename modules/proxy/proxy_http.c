@@ -840,18 +840,20 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             if ( (conf->error_override ==0) || r->status < 400 ) {
             /* read the body, pass it to the output filters */
-                apr_off_t readbytes;
                 apr_bucket *e;
-                readbytes = AP_IOBUFSIZE;
                 while (ap_get_brigade(rp->input_filters, 
                                       bb, 
                                       AP_MODE_READBYTES, 
                                       APR_BLOCK_READ, 
-                                      &readbytes) == APR_SUCCESS) {
+                                      AP_IOBUFSIZE) == APR_SUCCESS) {
 #if DEBUGGING
+                    {
+                    apr_off_t readbytes;
+                    apr_brigade_length(bb, 0, &readbytes);
                     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
                                  r->server, "proxy (PID %d): readbytes: %#x",
                                  getpid(), readbytes);
+                    }
 #endif
                     if (APR_BRIGADE_EMPTY(bb)) {
                         break;
@@ -868,7 +870,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
                     apr_brigade_cleanup(bb);
-                    readbytes = AP_IOBUFSIZE;
                 }
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,

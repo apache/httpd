@@ -357,7 +357,7 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next,
                                         apr_bucket_brigade *bb, 
                                         ap_input_mode_t mode,
                                         apr_read_type_e block,
-                                        apr_off_t *readbytes)
+                                        apr_off_t readbytes)
 {
     if (next) {
         return next->frec->filter_func.in_func(next, bb, mode, block, 

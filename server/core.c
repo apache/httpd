@@ -2975,7 +2975,7 @@ static int default_handler(request_rec *r)
 
 static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, 
                            ap_input_mode_t mode, apr_read_type_e block,
-                           apr_off_t *readbytes)
+                           apr_off_t readbytes)
 {
     int keptalive = f->c->keepalive == 1;
     apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
@@ -3006,7 +3006,7 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
 static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, 
                              ap_input_mode_t mode, apr_read_type_e block,
-                             apr_off_t *readbytes)
+                             apr_off_t readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -3107,7 +3107,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         /* Force a recompute of the length and force a read-all */
         apr_brigade_length(ctx->b, 1, &total);
         APR_BRIGADE_CONCAT(b, ctx->b);
-        *readbytes = total;
         /* We have read until the brigade was empty, so we know that we 
          * must be EOS. */
         e = apr_bucket_eos_create();
@@ -3120,25 +3119,24 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
-        AP_DEBUG_ASSERT(*readbytes > 0);
+        AP_DEBUG_ASSERT(readbytes > 0);
         
         e = APR_BRIGADE_FIRST(ctx->b);
         rv = apr_bucket_read(e, &str, &len, block);
 
         if (APR_STATUS_IS_EAGAIN(rv)) {
-            *readbytes = 0;
             return APR_SUCCESS;
         }
         else if (rv != APR_SUCCESS) {
             return rv;
         }
 
-        /* We can only return at most what the user asked for. */
-        if (len < *readbytes) {
-            *readbytes = len;
+        /* We can only return at most what we read. */
+        if (len < readbytes) {
+            readbytes = len;
         }
 
-        apr_brigade_partition(ctx->b, *readbytes, &e);
+        apr_brigade_partition(ctx->b, readbytes, &e);
 
         /* Must do split before CONCAT */
         newbb = apr_brigade_split(ctx->b, e);
@@ -3161,7 +3159,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         APR_BRIGADE_CONCAT(ctx->b, newbb);
 
         apr_brigade_length(b, 1, &total);
-        *readbytes = total;
 
         return APR_SUCCESS;
     }
@@ -3172,17 +3169,11 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
      * empty).  We do this by returning whatever we have read.  This may 
      * or may not be bogus, but is consistent (for now) with EOF logic.
      */
-    if (APR_STATUS_IS_EAGAIN(rv) || rv == APR_SUCCESS) {
-        apr_off_t total;
-
-        apr_brigade_length(b, 1, &total);
-        *readbytes = total;
-    }
-    else {
-        return rv;
+    if (APR_STATUS_IS_EAGAIN(rv)) {
+        rv = APR_SUCCESS;
     }
 
-    return APR_SUCCESS;
+    return rv;
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job
