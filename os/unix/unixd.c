@@ -445,7 +445,7 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
             union semun {
                 long val;
                 struct semid_ds *buf;
-                ushort *array;
+                unsigned short *array;
             };
 #endif
             union semun ick;

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/13 18:33:40 $]
+Last modified at [$Date: 2003/11/15 20:04:45 $]
 
 Release:
 
@@ -315,10 +315,6 @@ PATCHES TO BACKPORT FROM 2.1
 
     * EBCDIC: Translate the protocol data...  SHOWSTOPPER
         modules/http/http_protocol.c: r1.469
-      +1: trawick
-
-    * os/unix/unixd.c portability issue (ushort vs. unsigned short)
-        os/unix/unixd.c: r1.61
       +1: trawick
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
