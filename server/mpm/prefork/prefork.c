@@ -214,7 +214,7 @@ static void chdir_for_gprof(void)
 	    apr_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
 	} 
 	dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
-	if(mkdir(dir, 0755) < 0 && !APR_ERROR_IS_EEXIST(errno)) {
+	if(mkdir(dir, 0755) < 0 && errno != EEXIST) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
 			 "gprof: error creating directory %s", dir);
 	}

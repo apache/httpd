@@ -382,6 +382,7 @@ static dav_error * dav_fs_copymove_state(
 {
     apr_finfo_t src_finfo;	/* finfo for source file */
     apr_finfo_t dst_state_finfo;	/* finfo for STATE directory */
+    apr_status_t rv;
     const char *src;
     const char *dst;
 
@@ -399,8 +400,9 @@ static dav_error * dav_fs_copymove_state(
     /* ### do we need to deal with the umask? */
 
     /* ensure that it exists */
-    if (apr_make_dir(dst, APR_OS_DEFAULT, p) != 0) {
-	if (APR_STATUS_IS_EEXIST(errno)) {
+    rv = apr_make_dir(dst, APR_OS_DEFAULT, p);
+    if (rv != APR_SUCCESS) {
+	if (APR_STATUS_IS_EEXIST(rv)) {
 	    /* ### use something besides 500? */
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not create internal state directory");
