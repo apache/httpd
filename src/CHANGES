@@ -1,5 +1,8 @@
 Changes with Apache 1.3.20
 
+  *) Add support for Win32 apxs.  Note that cygwin builders must use a
+     cygwin perl to avoid the MSWin32 handling.  [William Rowe]
+
   *) Changed the initial screen handling for NetWare so that the -s 
      parameter will properly destroy the Apache console screen and switch 
      to the system console screen.  Also removed the call to clrscr() for 

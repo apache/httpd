@@ -211,3 +211,26 @@ A
       print $$0;
     }
 <<
+	awk -f <<script2.awk "support\apxs.pl" $(INSTDIR) >"$(INSTDIR)\bin\apxs.pl"
+    BEGIN {
+          target = ARGV[2];
+          gsub( /\\/, "/", target );
+          delete ARGV[2];
+    }
+    { if ( $$0 ~ /@/) {
+          gsub( /@TARGET@/,            "httpd" ); 
+          gsub( /@CC@/,                "cl" ); 
+          gsub( /@CFLAGS@/,            "-nologo -MD -W3 -O2 -DNDEBUG -DWIN32 -D_WINDOWS -FD" ); 
+          gsub( /@CFLAGS_SHLIB@/,      "-DSHARED_MODULE" ); 
+          gsub( /@LD_SHLIB@/,          "link" ); 
+          gsub( /@LDFLAGS_MOD_SHLIB@/, "-nologo -subsystem:windows -dll -libpath:\"" target "/libexec\" -incremental:no -map -machine:I386" ); 
+          gsub( /@LIBS_SHLIB@/,        "ApacheCore.lib kernel32.lib advapi32.lib wsock32.lib ws2_32.lib" ); 
+          gsub( /@prefix@/,            target  ); 
+          gsub( /@sbindir@/,           target ); 
+          gsub( /@includedir@/,        target "/include" ); 
+          gsub( /@libexecdir@/,        target "/modules" ); 
+          gsub( /@sysconfdir@/,        target "/conf" ); 
+      } 
+      print $$0;
+    }
+<<
