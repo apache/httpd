@@ -36,7 +36,7 @@
                 <xsl:when test="status='Core'">
                   <xsl:value-of select="$messages/message[@name='apachecore']"/>
                 </xsl:when>
-                
+
                 <xsl:when test="name='mpm_common'">
                   <xsl:value-of select="$messages/message[@name='apachempmcommon']"/>
                 </xsl:when>
@@ -113,7 +113,7 @@
                   <a href="module-dict.html#ModuleIdentifier">
                     <xsl:value-of select="$messages/message[@name='moduleidentifier']"/>
                     <xsl:text>:</xsl:text>
-                  </a> 
+                  </a>
                 </th>
                 <td>
                   <xsl:value-of select="identifier"/>
@@ -131,7 +131,7 @@
                   <a href="module-dict.html#SourceFile">
                     <xsl:value-of select="$messages/message[@name='sourcefile']"/>
                     <xsl:text>:</xsl:text>
-                  </a> 
+                  </a>
                 </th>
                 <td>
                   <xsl:value-of select="sourcefile"/>
@@ -270,7 +270,7 @@
 	      <h3>
                   <xsl:value-of select="$messages/message[@name='seealso']"/>
               </h3>
-            
+
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
@@ -388,7 +388,7 @@
               <a href="directive-dict.html#Syntax">
                 <xsl:value-of select="$messages/message[@name='syntax']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <code>
@@ -407,11 +407,11 @@
               <a href="directive-dict.html#Default">
                 <xsl:value-of select="$messages/message[@name='default']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <code>
-                <xsl:value-of select="default"/>
+                <xsl:apply-templates select="default"/>
               </code>
             </td>
           </tr>
@@ -425,7 +425,7 @@
               <a href="directive-dict.html#Context">
                 <xsl:value-of select="$messages/message[@name='context']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <xsl:apply-templates select="contextlist"/>
@@ -442,7 +442,7 @@
               <a href="directive-dict.html#Override">
                 <xsl:value-of select="$messages/message[@name='override']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <xsl:value-of select="override"/>
@@ -458,7 +458,7 @@
               <a href="directive-dict.html#Status">
                 <xsl:value-of select="$messages/message[@name='status']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <xsl:value-of select="../status"/>
@@ -473,7 +473,7 @@
               <a href="directive-dict.html#Module">
                 <xsl:value-of select="$messages/message[@name='module']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <xsl:if test="modulelist">
@@ -496,7 +496,7 @@
               <a href="directive-dict.html#Compatibility">
                 <xsl:value-of select="$messages/message[@name='compatibility']"/>
                 <xsl:text>:</xsl:text>
-              </a> 
+              </a>
             </th>
             <td>
               <xsl:value-of select="compatibility"/>
@@ -559,7 +559,7 @@
   <!--                                                    -->
   <xsl:template match="contextlist">
     <xsl:apply-templates select="context"/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /contextlist -->
 
 
@@ -592,7 +592,7 @@
     <xsl:if test="position() != last()">
       <xsl:text>, </xsl:text>
     </xsl:if>
-  </xsl:template> 
+  </xsl:template>
   <!-- /context -->
 
 
@@ -607,7 +607,7 @@
         <xsl:text>, </xsl:text>
       </xsl:if>
     </xsl:for-each>
-  </xsl:template> 
+  </xsl:template>
   <!-- /modulelist -->
 
 </xsl:stylesheet>

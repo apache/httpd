@@ -30,7 +30,7 @@ usage?, seealso*)>
 
 <!ELEMENT syntax %Inline;>
 
-<!ELEMENT default (#PCDATA)>
+<!ELEMENT default (#PCDATA | br)*>
 
 <!ELEMENT contextlist (context+)+>
 
