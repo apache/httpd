@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Keep the subrequest filter in place when a subrequest is 
+     redirected.  PR 15423.  [Jeff Trawick]
+
   *) Allow SSLMutex to select/use the full range of APR locking
      mechanisms available to it. Also, fix the bug that SSLMutex uses
      APR_LOCK_DEFAULT no matter what.  PR 8122  [Jim Jagielski,
