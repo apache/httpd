@@ -240,6 +240,8 @@ typedef int rlim_t;
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 #define HAVE_SYSLOG
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#define SAFE_UNSERIALIZED_ACCEPT
 
 #elif defined(PARAGON)
 #define HAVE_GMTOFF

@@ -1,5 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) PORT: OSF/1 now uses USE_FLOCK_SERIALIZED_ACCEPT to solve PR#467.
+     The choice of flock vs. fcntl was made based on timings which showed that
+     even on non-NFS, non-exported filesystems fcntl() was an order of
+     magnitude slower.  It also uses SAFE_UNSERIALIZED_ACCEPT so that single
+     socket users will see no difference. [Dean Gaudet] PR#467
+
   *) "File does not exist" error message was erroneously including the
      errno.  [Marc Slemko]
 
