@@ -99,6 +99,17 @@ do
 	    fi
 	    exit 0
 	fi
+
+# Next try without extension (if one was used above)
+	if [ "x$ext" != "x" ]; then
+            if [ $test_exec_flag $path/${program} ] && \
+               [ ! -d $path/${program} ]; then
+                if [ "x$echo" = "xyes" ]; then
+                    echo $path/${program}
+                fi
+                exit 0
+            fi
+        fi
     done
 done
 exit 1
