@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 
   <title>設定ファイル</title>
 
@@ -30,19 +30,11 @@
     メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
     このファイルの位置はコンパイル時に設定されますが、コマンドラインの
     <code>-f</code> フラグにより上書きできます。
-    その上、他の設定ファイルが <directive module="core">Include</directive>
-    ディレクティブによって追加されているかもしれません。
-    どのディレクティブもこれらの設定ファイルのどれにでも入れられます。
+    また、他の設定ファイルを <directive module="core">Include</directive>
+    ディレクティブによって追加でき、ワイルドカードを使用して多数の
+    設定ファイルを追加することができます。
+    どんなディレクティブも、これらの設定ファイルどれにでも入れることができます。
     Apache は起動時か再起動時のみメイン設定ファイルの変更を認識します。</p>
-
-    <p>Apache 1.3.13 の新しい機能として、設定ファイルが実際はディレクトリで
-    あるときにはそのディレクトリで見つかったすべてのファイル
-    (とサブディレクトリ) を解析するというものがあります。利用法としては、
-    バーチャルホストを追加するときに、それぞれのホストに対して小さな設定
-    ファイルを作り、設定ディレクトリに置くというものが挙げられます。
-    こうすると、単にファイルの追加、削除をすることにより全くファイルを
-    編集することなくバーチャルホストの追加、削除ができます。
-    これは自動化をずっと簡単にします。</p>
 
     <p>サーバは MIME
     ドキュメントタイプを含んでいるファイルも読み込みます。ファイル名は
@@ -185,9 +177,7 @@
     ファイルに書けるようにするかを制御することができます。</p>
 
     <p><code>.htaccess</code> ファイルに関する詳しい情報は
-    Ken Coar さんのチュートリアル
-    <a href="http://apache-server.com/tutorials/ATusing-htaccess.html"
-    >Using .htaccess Files with Apache</a> 
+    <a href="howto/htaccess.html">.htaccess チュートリアル</a>
     を参照してください。</p>
   </section>
 </manualpage>
