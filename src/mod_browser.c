@@ -117,9 +117,10 @@ const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
 
     new = push_array(sconf->browsers);
     new->name = name;
-    new->preg = pcalloc(cmd->pool, sizeof(regex_t));
-    if (regcomp(new->preg, name, REG_EXTENDED|REG_NOSUB|cflags))
+    new->preg = pregcomp (cmd->pool, name, REG_EXTENDED|REG_NOSUB|cflags);
+    if (new->preg == NULL) {
 	return "Browser regex could not be compiled.";
+    }
     new->features = make_table(cmd->pool, 5);
 
     var = getword(cmd->pool, &feature, '=');

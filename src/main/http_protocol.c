@@ -626,6 +626,8 @@ int read_request_line (request_rec *r)
             return 0;
 	}
     }
+    /* we've probably got something to do, ignore graceful restart requests */
+    signal (SIGUSR1, SIG_IGN);
     bsetflag( conn->client, B_SAFEREAD, 0 );
     if (len == (HUGE_STRING_LEN - 1)) {
         log_printf(r->server, "request failed for %s, reason: header too long",

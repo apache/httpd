@@ -210,7 +210,8 @@ void note_cleanups_for_file (pool *, FILE *);
 void note_cleanups_for_fd (pool *, int);
 void kill_cleanups_for_fd (pool *p, int fd);
 
-regex_t *pregcomp(pool *p, const char *pattern, int cflags);
+regex_t *pregcomp (pool *p, const char *pattern, int cflags);
+void pregfree (pool *p, regex_t *reg);
 
 /* routines to note closes... file descriptors are constrained enough
  * on some systems that we want to support this.
@@ -236,9 +237,11 @@ int spawn_child_err (pool *, void (*)(void *), void *,
                  FILE **pipe_err);
 #define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)
 
-/* magic numbers --- only one so far, min free bytes in a new pool block */
+/* magic numbers --- min free bytes to consider a free pool block useable,
+ * and the min amount to allocate if we have to go to malloc() */
 
-#define BLOCK_MINFREE 8192     
+#define BLOCK_MINFREE 4096
+#define BLOCK_MINALLOC 8192
 
 /* Finally, some accounting */
 

@@ -185,10 +185,8 @@ union block_hdr *new_block (int min_size)
    * on the free list...
    */
 
-  min_size += BLOCK_MINFREE;
-
   while (blok != NULL) {
-    if (min_size <= blok->h.endp - blok->h.first_avail) {
+    if (min_size + BLOCK_MINFREE <= blok->h.endp - blok->h.first_avail) {
       *lastptr = blok->h.next;
       blok->h.next = NULL;
       return blok;
@@ -201,7 +199,8 @@ union block_hdr *new_block (int min_size)
 
   /* Nope. */
 
-  return malloc_block (min_size);
+  min_size += BLOCK_MINFREE;
+  return malloc_block((min_size > BLOCK_MINALLOC) ? min_size : BLOCK_MINALLOC);
 }
 
 
@@ -896,6 +895,15 @@ regex_t *pregcomp(pool *p, const char *pattern, int cflags) {
     register_cleanup (p, (void *)preg, regex_cleanup, regex_cleanup);
 
     return preg;
+}
+
+
+void pregfree(pool *p, regex_t *reg)
+{
+    block_alarms();
+    regfree (reg);
+    kill_cleanup (p, (void *)reg, regex_cleanup);
+    unblock_alarms();
 }
 
 /*****************************************************************

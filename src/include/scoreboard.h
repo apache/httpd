@@ -71,6 +71,7 @@
 #define SERVER_BUSY_KEEPALIVE 5 /* Waiting for more requests via keepalive */
 #define SERVER_BUSY_LOG 6       /* Logging the request */
 #define SERVER_BUSY_DNS 7       /* Looking up a hostname */
+#define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
 
 typedef struct {
     pid_t pid;

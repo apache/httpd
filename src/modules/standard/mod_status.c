@@ -227,6 +227,7 @@ int status_handler (request_rec *r)
     status[SERVER_BUSY_KEEPALIVE]='K';
     status[SERVER_BUSY_LOG]='L';
     status[SERVER_BUSY_DNS]='D';
+    status[SERVER_GRACEFUL]='G';
 
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
     r->content_type = "text/html";
@@ -279,7 +280,8 @@ int status_handler (request_rec *r)
 	    ready++;
         else if (res == SERVER_BUSY_READ || res==SERVER_BUSY_WRITE || 
 		 res == SERVER_STARTING || res==SERVER_BUSY_KEEPALIVE ||
-		 res == SERVER_BUSY_LOG || res==SERVER_BUSY_DNS)
+		 res == SERVER_BUSY_LOG || res==SERVER_BUSY_DNS ||
+		 res == SERVER_GRACEFUL)
 	    busy++;
 #if defined(STATUS)
         lres = score_record.access_count;
@@ -407,6 +409,7 @@ int status_handler (request_rec *r)
 	rputs("\"<B><code>K</code></B>\" Keepalive (read), \n",r);
 	rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n",r);
 	rputs("\"<B><code>L</code></B>\" Logging, \n",r);
+	rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n",r);
 	rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n",r);
     }
 
@@ -468,6 +471,12 @@ int status_handler (request_rec *r)
 		        case SERVER_DEAD:
 		            rputs("Dead",r);
 		            break;
+			case SERVER_GRACEFUL:
+			    rputs("Graceful",r);
+			    break;
+			default:
+			    rputs("?STATE?",r);
+			    break;
 		    }
 #ifdef __EMX__
                     /* Allow for OS/2 not having CPU stats */
@@ -521,6 +530,12 @@ int status_handler (request_rec *r)
 		        case SERVER_DEAD:
 		            rputs("<td>.",r);
 		            break;
+			case SERVER_GRACEFUL:
+			    rputs("<td>G",r);
+			    break;
+			default:
+			    rputs("<td>?",r);
+			    break;
 		    }
 #ifdef __EMX__
 	            /* Allow for OS/2 not having CPU stats */

@@ -861,19 +861,16 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
 
 int re_check(request_rec *r, char *string, char *rexp) 
 {
-    regex_t compiled;
-    char err_string[MAX_STRING_LEN];
+    regex_t *compiled;
     int regex_error;
 
-    regex_error = regcomp(&compiled, rexp, REG_EXTENDED|REG_NOSUB);
-    if (regex_error) {
-        regerror(regex_error, &compiled, err_string, (size_t)MAX_STRING_LEN);
-        log_printf(r->server,
-            "unable to compile pattern %s [%s]", rexp, err_string);
+    compiled = pregcomp (r->pool, rexp, REG_EXTENDED|REG_NOSUB);
+    if (compiled == NULL) {
+        log_printf(r->server, "unable to compile pattern %s", rexp);
         return -1;
     }
-    regex_error = regexec(&compiled, string, 0, (regmatch_t *)NULL, 0);
-    regfree(&compiled);
+    regex_error = regexec(compiled, string, 0, (regmatch_t *)NULL, 0);
+    pregfree (r->pool, compiled);
     return(!regex_error);
 }
 

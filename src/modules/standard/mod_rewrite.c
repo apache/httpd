@@ -2759,7 +2759,7 @@ static cache *init_cache(pool *p)
     cache *c;
 
     c = (cache *)palloc(p, sizeof(cache));
-    c->pool = make_sub_pool(NULL);
+    c->pool = make_sub_pool(p);
     c->lists = make_array(c->pool, 2, sizeof(cachelist));
     return c;
 }

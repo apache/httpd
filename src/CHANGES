@@ -1,4 +1,16 @@
 Changes with Apache 1.2
+  
+  *) Fix graceful restart on architectures not using scoreboard files
+     (it is still broken on scoreboard-file architectures).
+     Eliminate many signal-related race conditions in both forms of
+     restart, and in SIGTERM.  See htdocs/manual/stopping.html for
+     details on stopping and restarting the parent.
+     [Dean Gaudet]
+
+  *) Fix memory leaks in mod_rewrite, mod_browser, mod_include.  Tune
+     memory allocator to avoid a behaviour that required extra blocks to
+     be allocated.
+     [Dean Gaudet]
 
   *) Allow suexec to access files relative to current directory but not
      above.  (Excluding leading / or any .. directory.)  [Ken Coar]

@@ -73,6 +73,10 @@
  *      Extensive rework for Apache.
  */
 
+/* XXX: systems without HAVE_SHMGET or HAVE_MMAP do not reliably update
+ * the scoreboard because a received signal might interrupt the scoreboard
+ * calls.
+ */
 
 #define CORE_PRIVATE
 
@@ -157,7 +161,6 @@ char server_confname[MAX_STRING_LEN];
 
 server_rec *server_conf;
 JMP_BUF jmpbuffer;
-JMP_BUF restart_buffer;
 int sd;
 static fd_set listenfds;
 static int listenmaxfd;
@@ -175,6 +178,22 @@ pid_t pgrp;
  */
 
 int one_process = 0;
+
+/* small utility macros to make things easier to read */
+
+#ifdef NO_KILLPG
+#define ap_killpg(x, y)		(kill (-(x), (y)))
+#else
+#define ap_killpg(x, y)		(killpg ((x), (y)))
+#endif
+
+#if defined(USE_LONGJMP)
+#define ap_longjmp(x, y)	(longjmp ((x), (y)))
+#define ap_setjmp(x)		(setjmp (x))
+#else
+#define ap_longjmp(x, y)	(siglongjmp ((x), (y)))
+#define ap_setjmp(x)		(sigsetjmp ((x), 1))
+#endif
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
@@ -359,11 +378,7 @@ void timeout(int sig)			/* Also called on SIGPIPE */
     }
     
     if (!current_conn) {
-#if defined(USE_LONGJMP)
-	longjmp(jmpbuffer,1);
-#else
-	siglongjmp(jmpbuffer,1);
-#endif
+	ap_longjmp (jmpbuffer, 1);
     }
     
     if (timeout_req != NULL) dirconf = timeout_req->per_dir_config;
@@ -401,11 +416,8 @@ void timeout(int sig)			/* Also called on SIGPIPE */
 	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
-#if defined(USE_LONGJMP)
-	longjmp(jmpbuffer,1);
-#else
-	siglongjmp(jmpbuffer,1);
-#endif
+
+	ap_longjmp (jmpbuffer, 1);
     }
     else {   /* abort the connection */
         bsetflag(current_conn->client, B_EOUT, 1);
@@ -538,11 +550,7 @@ int sig;
     }
     
     if (!current_conn) {
-#if defined(USE_LONGJMP)
-	longjmp(jmpbuffer,1);
-#else
-	siglongjmp(jmpbuffer,1);
-#endif
+	ap_longjmp (jmpbuffer, 1);
     }
     bsetflag(current_conn->client, B_EOUT, 1);
     current_conn->aborted = 1;
@@ -1172,95 +1180,165 @@ This sorts them out. In fact, this may have been caused by a race condition
 in wait_or_timeout(). But this routine is still useful for systems with no
 waitpid().
 */
-int reap_children()
-    {
-    int status,n;
-    int ret=0;
+int reap_children ()
+{
+    int status, n;
+    int ret = 0;
 
-    for(n=0 ; n < HARD_SERVER_LIMIT ; ++n)
-	if(scoreboard_image->servers[n].status != SERVER_DEAD
-	   && waitpid(scoreboard_image->servers[n].pid,&status,WNOHANG) == -1
-	   && errno == ECHILD)
-	    {
-	    sync_scoreboard_image();
-	    update_child_status(n,SERVER_DEAD,NULL);
-	    ret=1;
-	    }
-    return ret;
+    for (n = 0; n < HARD_SERVER_LIMIT; ++n) {
+	if (scoreboard_image->servers[n].status != SERVER_DEAD
+		&& waitpid (scoreboard_image->servers[n].pid, &status, WNOHANG)
+		    == -1
+		&& errno == ECHILD) {
+	    sync_scoreboard_image ();
+	    update_child_status (n, SERVER_DEAD, NULL);
+	    ret = 1;
+	}
     }
+    return ret;
+}
 #endif
 
 /* Finally, this routine is used by the caretaker process to wait for
  * a while...
  */
 
-#if 1
-
-static int wait_or_timeout(int *status)
-    {
+static int wait_or_timeout ()
+{
 #ifndef NEED_WAITPID
     int ret;
 
-    ret=waitpid(-1,status,WNOHANG);
-    if(ret <= 0)
-	{
-	sleep(1);
+    ret = waitpid (-1, NULL, WNOHANG);
+    if (ret == -1 && errno == EINTR) {
 	return -1;
-	}
+    }
+    if (ret <= 0) {
+	sleep (1);
+	return -1;
+    }
     return ret;
 #else
-    if(!reap_children())
+    if (!reap_children ()) {
 	sleep(1);
+    }
     return -1;
 #endif
-    }
-
-#else
-
-static JMP_BUF wait_timeout_buf;
-
-static void longjmp_out_of_alarm (int sig) {
-#if defined(USE_LONGJMP)
-    longjmp (wait_timeout_buf, 1);
-#else
-    siglongjmp (wait_timeout_buf, 1);
-#endif
 }
 
-int wait_or_timeout (int *status)
+
+void sig_term() {
+    log_error("httpd: caught SIGTERM, shutting down", server_conf);
+    cleanup_scoreboard();
+    ap_killpg (pgrp, SIGKILL);
+    close(sd);
+    exit(1);
+}
+
+void bus_error(void) {
+    char emsg[256];
+
+    ap_snprintf
+	(
+	    emsg,
+	    sizeof(emsg) - 1,
+	    "httpd: caught SIGBUS, attempting to dump core in %s",
+	    server_root
+	);
+    log_error(emsg, server_conf);
+    chdir(server_root);
+    abort();         
+    exit(1);
+}
+
+void seg_fault() {
+    char emsg[256];
+
+    ap_snprintf
+	(
+	    emsg,
+	    sizeof(emsg) - 1,
+	    "httpd: caught SIGSEGV, attempting to dump core in %s",
+	    server_root
+	);
+    log_error(emsg, server_conf);
+    chdir(server_root);
+    abort();
+    exit(1);
+}
+
+void just_die()			/* SIGHUP to child process??? */
 {
-    int wait_or_timeout_retval = -1;
-#ifdef BROKEN_WAIT
-    static int ntimes;
-#endif
-
-#if defined(USE_LONGJMP)
-    if (setjmp(wait_timeout_buf) != 0) {
-#else 
-    if (sigsetjmp(wait_timeout_buf, 1) != 0) {
-#endif
-	errno = ETIMEDOUT;
-	return wait_or_timeout_retval;
-    }
-#ifdef BROKEN_WAIT
-    if(++ntimes == 60)
-	{
-	reap_children();
-	ntimes=0;
-	}
-#endif
-    signal (SIGALRM, longjmp_out_of_alarm);
-    alarm(1);
-#if defined(NEXT)
-    wait_or_timeout_retval = wait((union wait *)status);
-#else
-    wait_or_timeout_retval = wait(status);
-#endif
-    alarm(0);
-    return wait_or_timeout_retval;
+    exit (0);
 }
 
+static int deferred_die;
+
+static void deferred_die_handler ()
+{
+    deferred_die = 1;
+}
+
+/* volatile just in case */
+static volatile int restart_pending;
+static volatile int is_graceful;
+static volatile int generation;
+
+static void restart (int sig)
+{
+    is_graceful = (sig == SIGUSR1);
+    restart_pending = 1;
+}
+
+
+void set_signals()
+{
+#ifndef NO_USE_SIGACTION
+    struct sigaction sa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    if (!one_process) {
+	sa.sa_handler = (void (*)())seg_fault;
+	if (sigaction (SIGSEGV, &sa, NULL) < 0)
+	    log_unixerr ("sigaction(SIGSEGV)", NULL, NULL, server_conf);
+	sa.sa_handler = (void (*)())bus_error;
+	if (sigaction (SIGBUS, &sa, NULL) < 0)
+	    log_unixerr ("sigaction(SIGBUS)", NULL, NULL, server_conf);
+    }
+    sa.sa_handler = (void (*)())sig_term;
+    if (sigaction (SIGTERM, &sa, NULL) < 0)
+	log_unixerr ("sigaction(SIGTERM)", NULL, NULL, server_conf);
+
+    /* wait_or_timeout uses sleep() which could deliver a SIGALRM just as we're
+     * trying to process the restart requests.  That's not good.  restart
+     * cleans out the SIGALRM handler, but this totally avoids the race
+     * condition between when the restart request is made and when the handler
+     * is invoked.
+     *
+     * We also don't want to ignore HUPs and USR1 while we're busy processing
+     * one.
+     */
+    sigaddset (&sa.sa_mask, SIGALRM);
+    sigaddset (&sa.sa_mask, SIGHUP);
+    sigaddset (&sa.sa_mask, SIGUSR1);
+    sa.sa_handler = (void (*)())restart;
+    if (sigaction (SIGHUP, &sa, NULL) < 0)
+	log_unixerr ("sigaction(SIGHUP)", NULL, NULL, server_conf);
+    if (sigaction (SIGUSR1, &sa, NULL) < 0)
+	log_unixerr ("sigaction(SIGUSR1)", NULL, NULL, server_conf);
+#else
+    if(!one_process) {
+	signal (SIGSEGV, (void (*)())seg_fault);
+    	signal (SIGBUS, (void (*)())bus_error);
+    }
+
+    signal (SIGTERM, (void (*)())sig_term);
+    signal (SIGHUP, (void (*)())restart);
+    signal (SIGUSR1, (void (*)())restart);
 #endif
+}
+
 
 /*****************************************************************
  * Here follows a long bunch of generic server bookkeeping stuff...
@@ -1308,55 +1386,6 @@ void detach()
 #endif    
 #endif
 #endif
-}
-
-void sig_term() {
-    log_error("httpd: caught SIGTERM, shutting down", server_conf);
-    cleanup_scoreboard();
-#ifndef NO_KILLPG
-    killpg(pgrp,SIGKILL);
-#else
-    kill(-pgrp,SIGKILL);
-#endif
-    close(sd);
-    exit(1);
-}
-
-void bus_error(void) {
-    char emsg[256];
-
-    ap_snprintf
-	(
-	    emsg,
-	    sizeof(emsg) - 1,
-	    "httpd: caught SIGBUS, attempting to dump core in %s",
-	    server_root
-	);
-    log_error(emsg, server_conf);
-    chdir(server_root);
-    abort();         
-    exit(1);
-}
-
-void seg_fault() {
-    char emsg[256];
-
-    ap_snprintf
-	(
-	    emsg,
-	    sizeof(emsg) - 1,
-	    "httpd: caught SIGSEGV, attempting to dump core in %s",
-	    server_root
-	);
-    log_error(emsg, server_conf);
-    chdir(server_root);
-    abort();
-    exit(1);
-}
-
-void just_die()			/* SIGHUP to child process??? */
-{
-    exit (0);
 }
 
 /* Reset group privileges, after rereading the config files
@@ -1427,71 +1456,6 @@ int init_suexec ()
     }
 
     return (suexec_enabled);
-}
-
-static int is_graceful;
-static int generation;
-
-void restart() {
-    signal (SIGALRM, SIG_IGN);
-    alarm (0);
-    is_graceful=0;
-#if defined(USE_LONGJMP)
-    longjmp(restart_buffer,1);
-#else
-    siglongjmp(restart_buffer,1);
-#endif
-}
-
-void graceful_restart()
-    {
-    scoreboard_image->global.exit_generation=generation;
-    is_graceful=1;
-    update_scoreboard_global();
-#if defined(USE_LONGJMP)
-    longjmp(restart_buffer,1);
-#else
-    siglongjmp(restart_buffer,1);
-#endif
-    }
-
-void set_signals()
-{
-#ifndef NO_USE_SIGACTION
-    struct sigaction sa;
-
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (!one_process) {
-	sa.sa_handler = (void (*)())seg_fault;
-	if (sigaction(SIGSEGV, &sa, NULL) < 0)
-	    log_unixerr("sigaction(SIGSEGV)", NULL, NULL, server_conf);
-	sa.sa_handler = (void (*)())bus_error;
-	if (sigaction(SIGBUS, &sa, NULL) < 0)
-	    log_unixerr("sigaction(SIGBUS)", NULL, NULL, server_conf);
-    }
-    /* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
-    /*  problems will be dealt with in a future release */
-    sa.sa_handler=(void (*)())sig_term;
-    if(sigaction(SIGTERM,&sa,NULL) < 0)
-	log_unixerr("sigaction(SIGTERM)", NULL, NULL, server_conf);
-    sa.sa_handler=(void (*)())restart;
-    if(sigaction(SIGHUP,&sa,NULL) < 0)
-	log_unixerr("sigaction(SIGHUP)", NULL, NULL, server_conf);
-    sa.sa_handler=(void (*)())graceful_restart;
-    if(sigaction(SIGUSR1,&sa,NULL) < 0)
-	log_unixerr("sigaction(SIGUSR1)", NULL, NULL, server_conf);
-#else
-    if(!one_process) {
-	signal(SIGSEGV,(void (*)())seg_fault);
-    	signal(SIGBUS,(void (*)())bus_error);
-    }
-
-    signal(SIGTERM,(void (*)())sig_term);
-    signal(SIGHUP,(void (*)())restart);
-    signal(SIGUSR1,(void (*)())graceful_restart);
-#endif
 }
 
 /*****************************************************************
@@ -1727,11 +1691,7 @@ void child_main(int child_num_arg)
      * Setup the jump buffers so that we can return here after
      * a signal or a timeout (yeah, I know, same thing).
      */
-#if defined(USE_LONGJMP)
-    setjmp(jmpbuffer);
-#else
-    sigsetjmp(jmpbuffer,1);
-#endif
+    ap_setjmp (jmpbuffer);
 #ifndef __EMX__
     signal(SIGURG, timeout);
 #endif    
@@ -1741,6 +1701,12 @@ void child_main(int child_num_arg)
 	BUFF *conn_io;
 	request_rec *r;
       
+	/* Prepare to receive a SIGUSR1 due to graceful restart so that
+	 * we can exit cleanly.  Since we're between connections right
+	 * now it's the right time to exit, but we might be blocked in a
+	 * system call when the graceful restart request is made. */
+	signal (SIGUSR1, (void (*)())just_die);
+
         /*
          * (Re)initialize this child to a pre-connection state.
          */
@@ -1804,10 +1770,20 @@ void child_main(int child_num_arg)
                     continue;
             }
 
-            do {
+	    /* if we accept() something we don't want to die, so we have to
+	     * defer the exit
+	     */
+	    deferred_die = 0;
+	    signal (SIGUSR1, (void (*)())deferred_die_handler);
+            for (;;) {
                 clen = sizeof(sa_client);
                 csd  = accept(sd, &sa_client, &clen);
-            } while (csd < 0 && errno == EINTR);
+		if (csd >= 0 || errno != EINTR) break;
+		if (deferred_die) {
+		    /* we didn't get a socket, and we were told to die */
+		    exit (0);
+		}
+	    }
 
             if (csd >= 0)
                 break;      /* We have a socket ready for reading */
@@ -1822,9 +1798,21 @@ void child_main(int child_num_arg)
 #endif
                 log_unixerr("accept", "(client socket)", NULL, server_conf);
             }
+
+	    /* go around again, safe to die */
+	    signal (SIGUSR1, (void (*)())just_die);
+	    if (deferred_die) {
+		/* ok maybe not, see ya later */
+		exit (0);
+	    }
         }
 
         accept_mutex_off(); /* unlock after "accept" */
+
+	/* We've got a socket, let's at least process one request off the
+	 * socket before we accept a graceful restart request.
+	 */
+	signal (SIGUSR1, SIG_IGN);
 
 	note_cleanups_for_fd(ptrans,csd);
 
@@ -1867,6 +1855,12 @@ void child_main(int child_num_arg)
 
         for (;;) {
             r = read_request(current_conn);
+
+	    /* ok we've read the request... it's a little too late
+	     * to do a graceful restart, so ignore them for now.
+	     */
+	    signal (SIGUSR1, SIG_IGN);
+
             (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
             if (r) process_request(r); /* else premature EOF --- ignore */
@@ -1885,6 +1879,21 @@ void child_main(int child_num_arg)
                 bclose(conn_io);
                 exit(0);
             }
+
+	    /* In case we get a graceful restart while we're blocked
+	     * waiting for the request.
+	     *
+	     * XXX: This isn't perfect, we might actually read the
+	     * request and then just die without saying anything to
+	     * the client.  This can be fixed by using deferred_die
+	     * but you have to teach buff.c about it so that it can handle
+	     * the EINTR properly.
+	     *
+	     * In practice though browsers (have to) expect keepalive
+	     * connections to close before receiving a response because
+	     * of network latencies and server timeouts.
+	     */
+	    signal (SIGUSR1, (void (*)())just_die);
         }
 
         /*
@@ -1921,8 +1930,16 @@ int make_child(server_rec *server_conf, int child_num)
 	child_main (child_num);
     }
 
+    Explain1 ("Starting new child in slot %d", child_num);
+    (void)update_child_status (child_num, SERVER_STARTING, (request_rec *)NULL);
+
     if ((pid = fork()) == -1) {
 	log_unixerr("fork", NULL, "Unable to fork new process", server_conf);
+
+	/* fork didn't succeed. Fix the scoreboard or else
+	 * it will say SERVER_STARTING forever and ever
+	 */
+	(void)update_child_status (child_num, SERVER_DEAD, (request_rec*)NULL);
 
 	/* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
@@ -1933,10 +1950,25 @@ int make_child(server_rec *server_conf, int child_num)
     } 
     
     if (!pid) {
+	/* Disable the restart signal handlers and enable the just_die stuff.
+	 * Note that since restart() just notes that a restart has been
+	 * requested there's no race condition here.
+	 */
 	signal (SIGHUP, (void (*)())just_die);
+	signal (SIGUSR1, (void (*)())just_die);
 	signal (SIGTERM, (void (*)())just_die);
 	child_main (child_num);
     }
+
+    /* If the parent proceeds with a restart before the child has written
+     * their pid into the scoreboard we'll end up "forgetting" about the
+     * child.  So we write the child pid into the scoreboard now.  (This
+     * is safe, because the child is going to be writing the same value
+     * to the same word.)
+     * XXX: this needs to be sync'd to disk in the non shared memory stuff
+     */
+    scoreboard_image->servers[child_num].pid = pid;
+
     return 0;
 }
 
@@ -2076,150 +2108,209 @@ static void close_unused_listeners()
  * Executive routines.
  */
 
-static int num_children = 0;
-
 void standalone_main(int argc, char **argv)
 {
     struct sockaddr_in sa_server;
     int saved_sd;
+    int remaining_children_to_start;
 
     standalone = 1;
     sd = listenmaxfd = -1;
-    
-    if (!one_process) detach(); 
-    
-#if defined(USE_LONGJMP)
-    setjmp(restart_buffer);
-#else
-    sigsetjmp(restart_buffer,1);
-#endif
 
+    is_graceful = 0;
     ++generation;
 
-    signal (SIGHUP, SIG_IGN);	/* Until we're done (re)reading config */
-    
-    if(!one_process && !is_graceful)
-    {
-#ifndef NO_KILLPG
-      if (killpg(pgrp,SIGHUP) < 0)    /* Kill 'em off */
-#else
-      if (kill(-pgrp,SIGHUP) < 0)
-#endif
-        log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
-    }
-    
-    if(is_graceful)
-	{
-	/* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
-	/*  problems will be dealt with in a future release */
-	log_error("SIGUSR1 received.  Doing graceful restart",server_conf);
-	kill_cleanups_for_fd(pconf,sd);
+    if (!one_process) detach (); 
+
+    do {
+	copy_listeners(pconf);
+	saved_sd = sd;
+	if (!is_graceful) {
+	    restart_time = time(NULL);
 	}
-    else if (sd != -1 || listenmaxfd != -1) {
-	reclaim_child_processes(); /* Not when just starting up */
-	log_error ("SIGHUP received.  Attempting to restart", server_conf);
-    }
-    
-    copy_listeners(pconf);
-    saved_sd=sd;
-    restart_time = time(NULL);
-    clear_pool (pconf);
-    ptrans = make_sub_pool (pconf);
-    
-    server_conf = read_config(pconf, ptrans, server_confname); 
-    open_logs(server_conf, pconf);
-    set_group_privs();
-    accept_mutex_init(pconf);
-    reinit_scoreboard(pconf);
-    
-    default_server_hostnames (server_conf);
+	clear_pool (pconf);
+	ptrans = make_sub_pool (pconf);
 
-    if (listeners == NULL) {
-        if(!is_graceful) {
-	    memset((char *) &sa_server, 0, sizeof(sa_server));
-	    sa_server.sin_family=AF_INET;
-	    sa_server.sin_addr=bind_address;
-	    sa_server.sin_port=htons(server_conf->port);
+	server_conf = read_config (pconf, ptrans, server_confname); 
+	open_logs (server_conf, pconf);
+	set_group_privs ();
+	accept_mutex_init (pconf);
+	if (!is_graceful) {
+	    reinit_scoreboard(pconf);
+	}
 
-	    sd = make_sock(pconf, &sa_server);
+	default_server_hostnames (server_conf);
+
+	if (listeners == NULL) {
+	    if (!is_graceful) {
+		memset ((char *)&sa_server, 0, sizeof (sa_server));
+		sa_server.sin_family = AF_INET;
+		sa_server.sin_addr = bind_address;
+		sa_server.sin_port = htons (server_conf->port);
+		sd = make_sock (pconf, &sa_server);
+	    }
+	    else {
+		sd = saved_sd;
+		note_cleanups_for_fd(pconf, sd);
+	    }
 	}
 	else {
-	    sd = saved_sd;
-	    note_cleanups_for_fd(pconf, sd);
+	    listen_rec *lr;
+	    int fd;
+
+	    listenmaxfd = -1;
+	    FD_ZERO (&listenfds);
+	    for (lr = listeners; lr != NULL; lr = lr->next)
+	    {
+		fd = find_listener (lr);
+		if (fd < 0) {
+		    fd = make_sock (pconf, &lr->local_addr);
+		}
+		FD_SET (fd, &listenfds);
+		if (fd > listenmaxfd) listenmaxfd = fd;
+		lr->fd = fd;
+	    }
+	    close_unused_listeners ();
+	    sd = -1;
 	}
-    }
-    else {
-	listen_rec *lr;
-	int fd;
 
-	listenmaxfd = -1;
-	FD_ZERO(&listenfds);
-	for (lr=listeners; lr != NULL; lr=lr->next)
-	{
-	    fd=find_listener(lr);
-	    if(fd < 0)
-		fd = make_sock(pconf, &lr->local_addr);
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd) listenmaxfd = fd;
-	    lr->fd=fd;
+	set_signals ();
+	log_pid (pconf, pid_fname);
+
+	if (daemons_max_free < daemons_min_free + 1) /* Don't thrash... */
+	    daemons_max_free = daemons_min_free + 1;
+
+	/* If we're doing a graceful_restart then we're going to see a lot
+	 * of children exiting immediately when we get into the main loop
+	 * below (because we just sent them SIGUSR1).  This happens pretty
+	 * rapidly... and for each one that exits we'll start a new one until
+	 * we reach at least daemons_min_free.  But we may be permitted to
+	 * start more than that, so we'll just keep track of how many we're
+	 * supposed to start up without the 1 second penalty between each fork.
+	 */
+	remaining_children_to_start = daemons_to_start;
+	if( remaining_children_to_start > daemons_limit ) {
+	    remaining_children_to_start = daemons_limit;
 	}
-	close_unused_listeners();
-	sd = -1;
-    }
+	if (!is_graceful) {
+	    while (remaining_children_to_start) {
+		--remaining_children_to_start;
+		make_child (server_conf, remaining_children_to_start);
+	    }
+	}
 
-    set_signals();
-    log_pid(pconf, pid_fname);
+	log_error ("Server configured -- resuming normal operations",
+	    server_conf);
+	restart_pending = 0;
 
-    num_children = 0;
-    
-    if (daemons_max_free < daemons_min_free + 1) /* Don't thrash... */
-	daemons_max_free = daemons_min_free + 1;
+	while (!restart_pending) {
+	    int child_slot;
+	    int pid = wait_or_timeout ();
 
-    while (num_children < daemons_to_start && num_children < daemons_limit) {
-	make_child(server_conf, num_children++);
-    }
-
-    log_error ("Server configured -- resuming normal operations", server_conf);
-    
-    while (1) {
-	int status, child_slot;
-	int pid = wait_or_timeout(&status);
-	
-	if (pid >= 0) {
-	    /* Child died... note that it's gone in the scoreboard. */
-	    sync_scoreboard_image();
-	    child_slot = find_child_by_pid (pid);
-	    Explain2("Reaping child %d slot %d",pid,child_slot);
-	    if (child_slot >= 0)
-		(void)update_child_status (child_slot, SERVER_DEAD,
-		 (request_rec*)NULL);
-        }
-
-	sync_scoreboard_image();
-	if ((count_idle_servers() < daemons_min_free)
-	 && (child_slot = find_free_child_num()) >= 0
-	 && child_slot < daemons_limit) {
-	    Explain1("Starting new child in slot %d",child_slot);
-	    (void)update_child_status(child_slot,SERVER_STARTING,
-	     (request_rec*)NULL);
-	    if (make_child(server_conf, child_slot) < 0) {
-		/* fork didn't succeed. Fix the scoreboard or else
-		   it will say SERVER_STARTING forever and ever */
-	        (void)update_child_status(child_slot,SERVER_DEAD,
-	             (request_rec*)NULL);
+	    /* XXX: if it takes longer than 1 second for all our children
+	     * to start up and get into IDLE state then we may spawn an
+	     * extra child
+	     */
+	    if (pid >= 0) {
+		/* Child died... note that it's gone in the scoreboard. */
+		sync_scoreboard_image ();
+		child_slot = find_child_by_pid (pid);
+		Explain2 ("Reaping child %d slot %d", pid, child_slot);
+		if (child_slot >= 0) {
+		    (void)update_child_status (child_slot, SERVER_DEAD,
+			(request_rec *)NULL);
+		} else if (is_graceful) {
+		    /* Great, we've probably just lost a slot in the
+		     * scoreboard.  Somehow we don't know about this
+		     * child.
+		     */
+		    log_printf (server_conf,
+			"long lost child came home! (pid %d)", pid );
+		}
+	    } else if (remaining_children_to_start) {
+		/* we hit a 1 second timeout in which none of the previous
+	 	 * generation of children needed to be reaped... so assume
+		 * they're all done, and pick up the slack if any is left.
+		 */
+		while (remaining_children_to_start > 0) {
+		    child_slot = find_free_child_num ();
+		    if (child_slot < 0 || child_slot >= daemons_limit) {
+			remaining_children_to_start = 0;
+			break;
+		    }
+		    if (make_child (server_conf, child_slot) < 0) {
+			remaining_children_to_start = 0;
+			break;
+		    }
+		    --remaining_children_to_start;
+		}
+		/* In any event we really shouldn't do the code below because
+		 * few of the servers we just started are in the IDLE state
+		 * yet, so we'd mistakenly create an extra server.
+		 */
+		continue;
 	    }
 
+	    sync_scoreboard_image ();
+	    if ((remaining_children_to_start
+		    || (count_idle_servers () < daemons_min_free))
+		&& (child_slot = find_free_child_num ()) >= 0
+		&& child_slot < daemons_limit) {
+		make_child (server_conf, child_slot);
+	    }
+	    if (remaining_children_to_start) {
+		--remaining_children_to_start;
+	    }
 	}
 
-	/*
-	if(scoreboard_image->global.please_exit && !count_live_servers())
-#if defined(USE_LONGJMP)
-	    longjmp(restart_buffer,1);
-#else
-	    siglongjmp(restart_buffer,1);
+	/* we've been told to restart */
+
+	if (one_process) {
+	    /* not worth thinking about */
+	    exit (0);
+	}
+
+	if (is_graceful) {
+	    int i;
+
+	    /* USE WITH CAUTION:  Graceful restarts are not known to work
+	    * in various configurations on the architectures we support. */
+	    scoreboard_image->global.exit_generation = generation;
+	    update_scoreboard_global ();
+
+	    log_error ("SIGUSR1 received.  Doing graceful restart",server_conf);
+	    kill_cleanups_for_fd (pconf, sd);
+	    /* kill off the idle ones */
+	    if (ap_killpg(pgrp, SIGUSR1) < 0) {
+		log_unixerr ("killpg SIGUSR1", NULL, NULL, server_conf);
+	    }
+	    /* This is mostly for debugging... so that we know what is still
+	     * gracefully dealing with existing request.
+	     * XXX: clean this up a bit?
+	     */
+	    sync_scoreboard_image();
+	    for (i = 0; i < daemons_limit; ++i ) {
+		if (scoreboard_image->servers[i].status != SERVER_DEAD) {
+		    scoreboard_image->servers[i].status = SERVER_GRACEFUL;
+		}
+	    }
+#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
+	    lseek (scoreboard_fd, 0L, 0);
+	    force_write (scoreboard_fd, (char*)scoreboard_image,
+			sizeof(*scoreboard_image));
 #endif
-	*/
-    }
+	}
+	else {
+	    /* Kill 'em off */
+	    if (ap_killpg (pgrp, SIGHUP) < 0) {
+		log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
+	    }
+	    reclaim_child_processes(); /* Not when just starting up */
+	    log_error ("SIGHUP received.  Attempting to restart", server_conf);
+	}
+	++generation;
+
+    } while (restart_pending);
 
 } /* standalone_main */
 
@@ -2288,7 +2379,7 @@ main(int argc, char *argv[])
 #endif
 
     setup_prelinked_modules();
-    
+
     suexec_enabled = init_suexec();
     server_conf = read_config (pconf, ptrans, server_confname);
     
