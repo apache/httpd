@@ -4,238 +4,255 @@
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="http://www.w3.org/TR/xhtml1/strict">
 
-<!-- Include constants, variables, and macros -->
-<xsl:import href="settings.xsl" />
+  <!--                                                          -->
+  <!-- Please, don't hard-code output strings! Use the language -->
+  <!-- files and the translation "stuff"...                     -->
+  <!--                                                          -->
 
-<xsl:output method="html" encoding="iso-8859-1" indent="no"/>
+  <!-- Include constants, variables, and macros -->
+  <xsl:import href="settings.xsl" />
 
-<xsl:template match="moduleindex">
-<html>
-<head><title><xsl:value-of select="title"/> - Apache HTTP Server</title>
-<link rel="stylesheet" type="text/css" href="../style/manual.css" />
-</head>
-<body>
-  <blockquote>
-   <div align="center">
-    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
-    <h3>Apache HTTP Server Version 2.0</h3>
-   </div>
-   <h1 align="center"><xsl:value-of select="title"/></h1>
-<xsl:apply-templates select="summary" />
-<h2>Core Features and Multi-Processing Modules</h2>
-<dl>
-<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis">
-<xsl:sort select="name"/>
-<xsl:if test="status='MPM' or status='Core'">
-<dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
-<dd><xsl:apply-templates select="description"/></dd>
-</xsl:if>
-</xsl:for-each>
-</dl>
-<h2>Other Modules</h2>
-<dl>
-<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis">
-<xsl:sort select="name"/>
-<xsl:if test="status!='MPM' and status!='Core'">
-<dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
-<dd><xsl:apply-templates select="description"/></dd>
-</xsl:if>
-</xsl:for-each>
-</dl>
-</blockquote>
-<!-- Page footer -->
-<hr />
-<h3 align="center">Apache HTTP Server Version 2.0</h3>
-<a href="./"><img src="../images/index.gif" alt="Index" /></a>
-<a href="../"><img src="../images/home.gif" alt="Home" /></a>
-</body>
-</html>
-</xsl:template>
+  <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
 
+  <!--                              -->
+  <!-- Builds the moduleindex page  -->
+  <!--                              -->
+  <xsl:template match="moduleindex">
+    <html>
+      <head>
+        <title>
+          <xsl:value-of select="title"/><xsl:value-of select="$messages/message[@name='apachetitle']"/>
+        </title>
+        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
+      </head>
+      <body>
+        <blockquote>
+          <div align="center">
+            <img src="../images/sub.gif">
+            <xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='apachedocalt']"/></xsl:attribute></img>
+            <h3><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+          </div>
+          <h1 align="center"><xsl:value-of select="title"/></h1>
+          <xsl:apply-templates select="summary" />
+          <h2><xsl:value-of select="$messages/message[@name='corefeatures']"/></h2>
+          <dl>
+            <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis">
+              <xsl:sort select="name"/>
+              <xsl:if test="status='MPM' or status='Core'">
+                <dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
+                <dd><xsl:apply-templates select="description"/></dd>
+              </xsl:if>
+            </xsl:for-each>
+          </dl>
+          <h2><xsl:value-of select="$messages/message[@name='othermodules']"/></h2>
+          <dl>
+            <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis">
+              <xsl:sort select="name"/>
+              <xsl:if test="status!='MPM' and status!='Core'">
+                <dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
+                <dd><xsl:apply-templates select="description"/></dd>
+              </xsl:if>
+            </xsl:for-each>
+          </dl>
+        </blockquote>
+        <!-- Page footer -->
+        <hr />
+        <h3 align="center"><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+        <a href="./"><img src="../images/index.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='index']"/></xsl:attribute></img></a>
+        <a href="../"><img src="../images/home.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='home']"/></xsl:attribute></img></a>
+      </body>
+    </html>
+  </xsl:template> <!-- /moduleindex -->
 
-<xsl:template match="directiveindex">
-<html>
-<head><title><xsl:value-of select="title"/> - Apache HTTP Server</title>
-<link rel="stylesheet" type="text/css" href="../style/manual.css" />
-</head>
-<body>
-  <blockquote>
-   <div align="center">
-    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
-    <h3>Apache HTTP Server Version 2.0</h3>
-   </div>
-   <h1 align="center"><xsl:value-of select="title"/></h1>
-<xsl:apply-templates select="summary" />
-<ul>
-<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis/directivesynopsis">
-<xsl:sort select="name"/>
-<xsl:if test="not(/modulesynopsis/directivesynopsis/@location)">
-<li><a href="{/modulesynopsis/name}.html#{translate(name,$uppercase,$lowercase)}"
-><xsl:value-of select="name"/></a></li>
-</xsl:if>
-</xsl:for-each>
-</ul>
-</blockquote>
-<!-- Page footer -->
-<hr />
-<h3 align="center">Apache HTTP Server Version 2.0</h3>
-<a href="./"><img src="../images/index.gif" alt="Index" /></a>
-<a href="../"><img src="../images/home.gif" alt="Home" /></a>
-</body>
-</html>
-</xsl:template>
+  <!--                                                    -->
+  <!-- <directiveindex>                                   -->
+  <!-- Builds the directive index page                    -->
+  <!--                                                    -->
+  <xsl:template match="directiveindex">
+    <html>
+      <head>
+        <title>
+          <xsl:value-of select="title"/><xsl:value-of select="$messages/message[@name='apachetitle']"/>
+        </title>
+        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
+      </head>
+      <body>
+        <blockquote>
+          <div align="center">
+            <img src="../images/sub.gif">
+            <xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='apachedocalt']"/></xsl:attribute></img>
+            <h3><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+          </div>
+          <h1 align="center"><xsl:value-of select="title"/></h1>
+          <xsl:apply-templates select="summary" />
+          <ul>
+            <xsl:for-each select="document(modulefilelist/modulefile)/modulesynopsis/directivesynopsis">
+              <xsl:sort select="name"/>
+              <xsl:if test="not(/modulesynopsis/directivesynopsis/@location)">
+                <li><a href="{/modulesynopsis/name}.html#{translate(name,$uppercase,$lowercase)}"><xsl:value-of select="name"/></a></li>
+              </xsl:if>
+            </xsl:for-each>
+          </ul>
+        </blockquote>
+        <!-- Page footer -->
+        <hr />
+        <h3 align="center"><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+        <a href="./"><img src="../images/index.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='index']"/></xsl:attribute></img></a>
+        <a href="../"><img src="../images/home.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='home']"/></xsl:attribute></img></a>
+      </body>
+    </html>
+  </xsl:template> <!-- /directiveindex -->
 
- <!-- Process an entire document into an HTML page -->
- <xsl:template match="modulesynopsis">
-<html>
- <head>
-<xsl:comment>
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     This file is generated from xml source: DO NOT EDIT
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-</xsl:comment>
-  <xsl:apply-templates select="meta"/>
-  <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
-  <link rel="stylesheet" type="text/css" href="../style/manual.css" />
- </head>
- <body>
-  <blockquote>
-   <div align="center">
-    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
-    <h3>Apache HTTP Server Version 2.0</h3>
-   </div>
-   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/><xsl:text> </xsl:text> <xsl:value-of select="name"/></h1>
-   <!-- Description and module-headers -->
-   <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
-    <table bgcolor="#ffffff">
-     <tr><td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span> </td>
-         <td><xsl:apply-templates select="description"/></td></tr>
-     <tr><td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
-         <td><xsl:value-of select="status"/></td></tr>
-  <xsl:if test="identifier">
-     <tr><td><a class="help" href="module-dict.html#ModuleIdentifier"><xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:</a> </td>
-         <td><xsl:value-of select="identifier"/></td></tr>
-  </xsl:if>
-  <xsl:if test="compatibility">
-     <tr><td valign="top" align="left"><a class="help" href="module-dict.html#Compatibility"
-       ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
-         <td><xsl:apply-templates select="compatibility"/></td>
-     </tr>
-    </xsl:if>
-   </table>
- </td></tr></table>
-
-<!-- Summary of module features/usage (1 to 3 paragraphs, optional) -->
-
-<xsl:if test="summary">
-  <h2>Summary</h2>
-  <xsl:apply-templates select="summary"/>
-</xsl:if>
-
-<!-- Index of directives, automatically generated from
-     directivesynopsis/name -->
-
-<h2>Directives</h2>
-
-<xsl:if test="directivesynopsis">
-  <ul>
-     <xsl:for-each select="directivesynopsis">
-       <xsl:sort select="name"/>
-       <xsl:variable name="name">
-         <xsl:value-of select="name"/>
-       </xsl:variable>
-       <xsl:variable name="lowername" 
-         select="translate($name, $uppercase, $lowercase)" />
-       <xsl:if test="not(@location)">
-         <li><a href="#{$lowername}"><xsl:value-of select="name"/></a></li>
-       </xsl:if>
-       <xsl:if test="./@location">
-         <xsl:variable name="location">
-           <xsl:value-of select="./@location"/>
-         </xsl:variable>
-         <xsl:variable name="lowerlocation" 
-           select="translate($location, $uppercase, $lowercase)" />
-         <li><a href="{$lowerlocation}.html#{$lowername}"><xsl:value-of select="name"/></a></li>
-       </xsl:if>
-     </xsl:for-each>
-  </ul>
-</xsl:if>
-<xsl:if test="not(directivesynopsis)">
-  <p>This module provides no directives.</p>
-</xsl:if>
-
-<xsl:if test="seealso">
- <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
- <ul>
-  <xsl:for-each select="seealso">
-   <li><xsl:apply-templates/></li>
-  </xsl:for-each>
- </ul>
-</xsl:if>
-
-<!-- Sections of documentation about the module as a whole -->
-
-<xsl:apply-templates select="section"/>
-
-<hr />
-
-<!-- Directive documentation -->
-
-<xsl:apply-templates select="directivesynopsis">
-  <xsl:sort select="name"/>
-</xsl:apply-templates> 
-
-<!-- Page footer -->
-
-<h3 align="center">Apache HTTP Server Version 2.0</h3>
-<a href="./"><img src="../images/index.gif" alt="Index" /></a>
-<a href="../"><img src="../images/home.gif" alt="Home" /></a>
-
-</blockquote>
-</body>
-</html>
-</xsl:template> <!-- /modulesynopsis -->
-
-
-<!-- Subsections: get a lower level heading -->
-  <xsl:template match="section/section">
-   <xsl:variable name="href">
-      <xsl:value-of select="@id"/>
-    </xsl:variable>
-      <!-- Section heading -->
-    <xsl:if test="@id">
-      <h3><a name="{$href}"><xsl:apply-templates select="./title" mode="print"/></a></h3>
-    </xsl:if>
-    <xsl:if test="not(@id)">
-      <h3><xsl:apply-templates select="./title" mode="print"/></h3>
-    </xsl:if>
-      <!-- Section body -->
-        <xsl:apply-templates/>
-  </xsl:template>
-
-<!-- Process a documentation section -->
-  <xsl:template match="section">
-    <xsl:variable name="href">
-      <xsl:value-of select="@id"/>
-    </xsl:variable>
-      <!-- Section heading -->
-    <xsl:if test="@id">
-      <h2><a name="{$href}"><xsl:apply-templates select="./title" mode="print"/></a></h2>
-    </xsl:if>
-    <xsl:if test="not(@id)">
-      <h2><xsl:apply-templates select="./title" mode="print"/></h2>
-    </xsl:if>
-      <!-- Section body -->
-        <xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="section/title" mode="print">
-    <xsl:apply-templates/>
-  </xsl:template>
-
-  <!-- Don't print the title twice -->
-  <xsl:template match="section/title"></xsl:template>
-
+  <!--                                                    -->
+  <!-- <modulesynopsis>                                   -->
+  <!-- Process an entire document into an HTML page       -->
+  <!--                                                    -->
+  <xsl:template match="modulesynopsis">
+    <html>
+      <head>
+        <!-- Do we need to translate this as well? -->
+        <xsl:comment> 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        </xsl:comment>
+        <xsl:apply-templates select="meta"/>
+        <title>
+          <xsl:value-of select="name"/><xsl:value-of select="$messages/message[@name='apachetitle']"/>
+        </title>
+        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
+      </head>
+      <body>
+        <blockquote>
+          <div align="center">
+            <img src="../images/sub.gif">
+            <xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='apachedocalt']"/></xsl:attribute></img>
+            <h3><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+          </div>
+          <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/><xsl:text> </xsl:text> <xsl:value-of select="name"/></h1>
+          <!-- Description and module-headers -->
+          <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
+            <table bgcolor="#ffffff">
+              <tr>
+                <td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span></td>
+                <td><xsl:apply-templates select="description"/></td>
+              </tr>
+              <tr>
+                <td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a></td>
+                <td><xsl:value-of select="status"/></td>
+              </tr>
+              <xsl:if test="identifier">
+                <tr>
+                  <td><a class="help" href="module-dict.html#ModuleIdentifier"><xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:</a> </td>
+                  <td><xsl:value-of select="identifier"/></td>
+                </tr>
+              </xsl:if>
+              <xsl:if test="compatibility">
+                <tr>
+                  <td valign="top" align="left"><a class="help" href="module-dict.html#Compatibility"><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
+                  <td><xsl:apply-templates select="compatibility"/></td>
+                </tr>
+              </xsl:if>
+            </table>
+          </td></tr></table>
+   
+          <!-- Summary of module features/usage (1 to 3 paragraphs, optional) -->
+   
+          <xsl:if test="summary">
+            <h2><xsl:value-of select="$messages/message[@name='summary']"/></h2>
+            <xsl:apply-templates select="summary"/>
+          </xsl:if>
+   
+          <!-- Index of directives, automatically generated from directivesynopsis/name -->
+          <h2><xsl:value-of select="$messages/message[@name='directives']"/></h2>
+          <xsl:if test="directivesynopsis">
+            <ul>
+              <xsl:for-each select="directivesynopsis">
+                <xsl:sort select="name"/>
+                <xsl:variable name="name"><xsl:value-of select="name"/></xsl:variable>
+                <xsl:variable name="lowername" select="translate($name, $uppercase, $lowercase)" />
+                <xsl:if test="not(@location)">
+                  <li><a href="#{$lowername}"><xsl:value-of select="name"/></a></li>
+                </xsl:if>
+                <xsl:if test="./@location">
+                  <xsl:variable name="location"><xsl:value-of select="./@location"/></xsl:variable>
+                  <xsl:variable name="lowerlocation" select="translate($location, $uppercase, $lowercase)" />
+                  <li><a href="{$lowerlocation}.html#{$lowername}"><xsl:value-of select="name"/></a></li>
+                </xsl:if>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+          <xsl:if test="not(directivesynopsis)">
+            <p><xsl:value-of select="$messages/message[@name='nodirectives']"/></p>
+          </xsl:if>
+   
+          <xsl:if test="seealso">
+            <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
+            <ul>
+              <xsl:for-each select="seealso">
+                <li><xsl:apply-templates/></li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+   
+          <!-- Sections of documentation about the module as a whole -->
+          <xsl:apply-templates select="section"/>
+          <hr />
+   
+          <!-- Directive documentation -->
+          <xsl:apply-templates select="directivesynopsis">
+            <xsl:sort select="name"/>
+          </xsl:apply-templates> 
+   
+        </blockquote>
+        <!-- Page footer -->
+        <h3 align="center"><xsl:value-of select="$messages/message[@name='apachehttpserver']"/></h3>
+        <a href="./"><img src="../images/index.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='index']"/></xsl:attribute></img></a>
+        <a href="../"><img src="../images/home.gif"><xsl:attribute name="alt"><xsl:value-of select="$messages/message[@name='home']"/></xsl:attribute></img></a>
+      </body>
+    </html>
+  </xsl:template><!-- /modulesynopsis -->
+  
+  
+  <!-- Subsections: get a lower level heading -->
+    <xsl:template match="section/section">
+     <xsl:variable name="href">
+        <xsl:value-of select="@id"/>
+      </xsl:variable>
+        <!-- Section heading -->
+      <xsl:if test="@id">
+        <h3><a name="{$href}"><xsl:apply-templates select="./title" mode="print"/></a></h3>
+      </xsl:if>
+      <xsl:if test="not(@id)">
+        <h3><xsl:apply-templates select="./title" mode="print"/></h3>
+      </xsl:if>
+        <!-- Section body -->
+          <xsl:apply-templates/>
+    </xsl:template>
+  
+  <!-- Process a documentation section -->
+    <xsl:template match="section">
+      <xsl:variable name="href">
+        <xsl:value-of select="@id"/>
+      </xsl:variable>
+        <!-- Section heading -->
+      <xsl:if test="@id">
+        <h2><a name="{$href}"><xsl:apply-templates select="./title" mode="print"/></a></h2>
+      </xsl:if>
+      <xsl:if test="not(@id)">
+        <h2><xsl:apply-templates select="./title" mode="print"/></h2>
+      </xsl:if>
+        <!-- Section body -->
+          <xsl:apply-templates/>
+    </xsl:template>
+  
+    <xsl:template match="section/title" mode="print">
+      <xsl:apply-templates/>
+    </xsl:template>
+  
+    <!-- Don't print the title twice -->
+    <xsl:template match="section/title"></xsl:template>
+  
   <xsl:template match="directivesynopsis">
 
   <xsl:if test="not(@location)">
@@ -249,87 +266,126 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if
       ><xsl:value-of select="./name"/><xsl:if test="./@type='section'"
       >&gt;</xsl:if></a><xsl:text> </xsl:text><a 
-      name="{$lowername}">Directive</a></h2>
+      name="{$lowername}"><xsl:value-of select="$messages/message[@name='directive']"/></a></h2>
 
 <!-- Directive header -->
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff">
-  <tr><td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
-    <td><xsl:value-of select="description"/></td></tr>
-  <tr><td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/>:</a> </td>
-    <td><xsl:apply-templates select="syntax"/></td></tr>
+  <tr>
+    <td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
+    <td><xsl:value-of select="description"/></td>
+  </tr>
+  <tr>
+    <td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/>:</a> </td>
+    <td><xsl:apply-templates select="syntax"/></td>
+  </tr>
   <xsl:if test="default">
-    <tr><td><a class="help" href="directive-dict.html#Default"
-      ><xsl:value-of select="$messages/message[@name='default']"/>:</a> </td>
-      <td><code><xsl:value-of select="default"/></code></td></tr>
-  </xsl:if>
-  <tr><td><a class="help" href="directive-dict.html#Context"><xsl:value-of select="$messages/message[@name='context']"/>:</a> </td>
-    <td><xsl:apply-templates select="contextlist"/></td></tr>
-  <xsl:if test="override">
-    <tr><td><a class="help" href="directive-dict.html#Override"
-    ><xsl:value-of select="$messages/message[@name='override']"/>:</a> </td>
-    <td><xsl:value-of select="override"/></td></tr>
-  </xsl:if>
-  <tr><td><a class="help" href="directive-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
-    <td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
-  <tr><td><a class="help" href="directive-dict.html#Module"><xsl:value-of select="$messages/message[@name='module']"/>:</a> </td>
-    <td>
-    <xsl:if test="modulelist"><xsl:apply-templates select="modulelist"/>
-      </xsl:if>
-    <xsl:if test="not(modulelist)">
-      <xsl:value-of select="/modulesynopsis/name"/>
+    <tr>
+      <td><a class="help" href="directive-dict.html#Default"><xsl:value-of select="$messages/message[@name='default']"/>:</a> </td>
+      <td><code><xsl:value-of select="default"/></code></td>
+    </tr>
     </xsl:if>
-    </td></tr>
-  <xsl:if test="compatibility">
-    <tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility"
-      ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
-      <td><xsl:value-of select="compatibility"/></td></tr>
-  </xsl:if>
-</table>
-</td></tr></table>
+      <tr>
+        <td><a class="help" href="directive-dict.html#Context"><xsl:value-of select="$messages/message[@name='context']"/>:</a> </td>
+        <td><xsl:apply-templates select="contextlist"/></td>
+      </tr>
+      <xsl:if test="override">
+        <tr>
+          <td><a class="help" href="directive-dict.html#Override"><xsl:value-of select="$messages/message[@name='override']"/>:</a> </td>
+          <td><xsl:value-of select="override"/></td>
+        </tr>
+        </xsl:if>
+        <tr>
+          <td><a class="help" href="directive-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
+          <td><xsl:value-of select="/modulesynopsis/status"/></td>
+        </tr>
+        <tr>
+          <td><a class="help" href="directive-dict.html#Module"><xsl:value-of select="$messages/message[@name='module']"/>:</a> </td>
+          <td>
+            <xsl:if test="modulelist"><xsl:apply-templates select="modulelist"/></xsl:if>
+            <xsl:if test="not(modulelist)">
+              <xsl:value-of select="/modulesynopsis/name"/>
+            </xsl:if>
+            </td>
+          </tr>
+          <xsl:if test="compatibility">
+            <tr>
+              <td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility"><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
+              <td><xsl:value-of select="compatibility"/></td>
+            </tr>
+          </xsl:if>
+        </table>
+      </td></tr></table>
 
-<xsl:apply-templates select="usage"/>
-<xsl:if test="seealso">
-  <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
-  <ul>
-    <xsl:for-each select="seealso">
-      <li><xsl:apply-templates/></li>
-    </xsl:for-each>
-  </ul>
-</xsl:if>
+      <xsl:apply-templates select="usage"/>
+      <xsl:if test="seealso">
+        <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
+        <ul>
+          <xsl:for-each select="seealso">
+            <li><xsl:apply-templates/></li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+      <hr />
+    </xsl:if> <!-- not(@location) -->
+  </xsl:template> <!-- /directivesynopsis -->
 
-<hr />
-</xsl:if> <!-- not(@location) -->
-</xsl:template> <!-- /directivesynopsis -->
-
+  <!--                                                    -->
+  <!-- <contextlist>                                      -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="contextlist">
     <xsl:apply-templates select="context"/>
-  </xsl:template>
+  </xsl:template> <!-- /contextlist -->
 
+  <!--                                                    -->
+  <!-- <context>                                          -->
+  <!-- Each entry is separeted with a comma               -->
+  <!--                                                    -->
   <xsl:template match="context">
     <xsl:value-of select="." />
     <xsl:if test="not(position()=last())">, </xsl:if>
-  </xsl:template>
+  </xsl:template> <!-- /context -->
 
+  <!--                                                    -->
+  <!-- <modulelist>                                       -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="modulelist">
     <xsl:apply-templates select="module"/>
-  </xsl:template>
+  </xsl:template> <!-- /modulelist -->
 
+  <!--                                                    -->
+  <!-- <example>                                          -->
+  <!-- Examples are set in a "colored" table.             -->
+  <!--                                                    -->
   <xsl:template match="example">
-  <blockquote>
-  <table cellpadding="10"><tr><td bgcolor="#eeeeee">
-     <xsl:apply-templates select="title" mode="print"/>
-     <code><xsl:apply-templates/></code>
-  </td></tr></table>
-  </blockquote>
-  </xsl:template>
+    <blockquote>
+      <table cellpadding="10"><tr><td bgcolor="#eeeeee">
+        <xsl:apply-templates select="title" mode="print"/>
+        <code><xsl:apply-templates/></code>
+      </td></tr></table>
+    </blockquote>
+  </xsl:template> <!-- /example -->
 
+  <!--                                                    -->
+  <!-- <example><title>                                   -->
+  <!--                                                    -->
   <xsl:template match="example/title" mode="print">
-     <p align="center"><strong><xsl:apply-templates/></strong></p>
-  </xsl:template>
+    <p align="center"><strong><xsl:apply-templates/></strong></p>
+  </xsl:template> <!-- /example/title -->
+
+  <!--                                                    -->
+  <!-- <example><title>                                   -->
+  <!--                                                    -->
   <xsl:template match="example/title"></xsl:template>
 
+  <!--                                                    -->
+  <!-- <note>                                             -->
+  <!-- Notes are placed in a table. Uses different back-  -->
+  <!-- ground colors, depending on type of note.          -->
+  <!--                                                    -->
   <xsl:template match="note">
   <blockquote>
   <table><tr><td>
@@ -344,11 +400,22 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      <xsl:apply-templates/>
   </td></tr></table>
   </blockquote>
-  </xsl:template>
+  </xsl:template>  <!-- /note -->
+
+
+  <!--                                                    -->
+  <!-- <note><title>                                      -->
+  <!--                                                    -->
   <xsl:template match="note/title">
      <p align="center"><strong><xsl:apply-templates/></strong></p>
-  </xsl:template>
+  </xsl:template> <!-- /note/title -->
 
+  <!--                                                    -->
+  <!-- <directive>                                        -->
+  <!-- Inserts link to another directive, which might be  -->
+  <!-- in another module. References are converted into   --> 
+  <!-- lower case.                                        -->
+  <!--                                                    -->
   <xsl:template match="directive">
     <xsl:if test="@module">
       <xsl:variable name="module">
@@ -368,31 +435,52 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <xsl:if test="not(@module)">
        <code class="directive"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></code>
     </xsl:if>
-  </xsl:template>
+  </xsl:template> <!-- /directive -->
 
+  <!--                                                    -->
+  <!-- <module>                                           -->
+  <!-- Inserts a link to refereed module                  -->
+  <!--                                                    -->
   <xsl:template match="module">
     <code><a href="{.}.html"><xsl:value-of select="."/></a></code><xsl:if test="parent::modulelist"><xsl:if test="not(position()=last())">, </xsl:if>
     </xsl:if>
-  </xsl:template>
+  </xsl:template> <!-- /module -->
 
-  <!-- These templates just pass through their content -->
+  <!--                                                    -->
+  <!-- <summary>                                          -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="summary">
     <xsl:apply-templates/>
-  </xsl:template>
+  </xsl:template> <!-- /summary -->
 
+  <!--                                                    -->
+  <!-- <description>                                      -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="description">
     <xsl:apply-templates/>
-  </xsl:template>
+  </xsl:template> <!-- /description -->
 
+  <!--                                                    -->
+  <!-- <usage>                                            -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="usage">
     <xsl:apply-templates/>
-  </xsl:template>
+  </xsl:template> <!-- /usage -->
 
+  <!--                                                    -->
+  <!-- <syntax>                                           -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
   <xsl:template match="syntax">
     <xsl:apply-templates/>
-  </xsl:template>
+  </xsl:template> <!-- /syntax -->
 
+  <!--                                                    -->
   <!-- Process everything else by just passing it through -->
+  <!--                                                    -->
   <xsl:template match="*|@*">
     <xsl:copy>
       <xsl:apply-templates select="@*|*|text()"/>
