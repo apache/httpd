@@ -34,6 +34,10 @@ dist.tar:
 	tar cvf dist.tar README INSTALL CHANGES TODO API.html \
 		Configuration Configure Makefile.tmpl Makefile *.h *.c
 
+# Work around broken compilers
+http_bprintf.o:
+	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) $<
+
 #Dependencies
 #Core code
 $(OBJS): Makefile httpd.h alloc.h buff.h conf.h
