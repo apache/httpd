@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) mod_auth_anon required an @ or a . in the email address, not both.
+     [Dirk vanGulik]
+
   *) per_dir_defaults weren't set correctly until directory_walk for
      name-based vhosts.  This fixes an obscure bug with the wrong config
      info being used for vhosts that share the same ip as the server.

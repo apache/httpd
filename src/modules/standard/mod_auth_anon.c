@@ -234,8 +234,9 @@ int anon_authenticate_basic_user (request_rec *r)
 	( (!sec->auth_anon_mustemail) || strlen(send_pw)  ) &&
 	/* does the password look like an email address ? */
 	( (!sec->auth_anon_verifyemail) || 
-	     (strpbrk("@",send_pw) != NULL) || 
-	     (strpbrk(".",send_pw) != NULL) 
+	     ((strpbrk("@",send_pw) != NULL) 
+	      &&
+	      (strpbrk(".",send_pw) != NULL))
 	  ) 
 	) {
       if (sec->auth_anon_logemail) {
