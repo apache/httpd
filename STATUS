@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/13 16:27:33 $]
+Last modified at [$Date: 2003/03/13 19:34:14 $]
 
 Release:
 
@@ -76,13 +76,6 @@ PATCHES TO PORT FROM 2.1
           nd: since it's inherited carefully (namely: not) and has to
               be explicitely turned on, I see no harm with that patch.
               (needs docs anyway!)
-
-    * Win32: Avoid busy wait when all worker threads are busy.
-      server/mpm/winnt/child.c r1.12
-      +1: ake, stoddard, trawick (if you bring r1.13 also :) )
-          nd: +1 on concept. Cannot verify the implementation
-              (lacking knowledge), sorry.
-      -1:
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
