@@ -82,7 +82,7 @@ extern "C" {
  * (e.g., for includes), a module may call for the request to be run
  * by calling run_sub_req.  The space allocated to create sub_reqs can be
  * reclaimed by calling destroy_sub_req --- be sure to copy anything you care
- * about which was allocated in its ap_pool_t elsewhere before doing this.
+ * about which was allocated in its apr_pool_t elsewhere before doing this.
  */
 
 API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
@@ -105,7 +105,7 @@ API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *);
 API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *);
 API_EXPORT(int) ap_some_auth_required(request_rec *r);
 API_EXPORT(int) ap_is_initial_req(request_rec *r);
-API_EXPORT(void) ap_update_mtime(request_rec *r, ap_time_t dependency_mtime);
+API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */

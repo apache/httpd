@@ -69,9 +69,9 @@ typedef struct
     int bEnabled;
     } EchoConfig;
 
-static void *create_echo_server_config(ap_pool_t *p,server_rec *s)
+static void *create_echo_server_config(apr_pool_t *p,server_rec *s)
     {
-    EchoConfig *pConfig=ap_pcalloc(p,sizeof *pConfig);
+    EchoConfig *pConfig=apr_pcalloc(p,sizeof *pConfig);
 
     pConfig->bEnabled=0;
 
@@ -98,7 +98,7 @@ static int process_echo_connection(conn_rec *c)
 
     for( ; ; )
 	{
-	ap_ssize_t r, w;
+	apr_ssize_t r, w;
         (void) ap_bread(c->client,buf,sizeof buf,&r);
 	if(r <= 0)
 	    break;
@@ -128,7 +128,7 @@ API_VAR_EXPORT module echo_module = {
     NULL,			/* merge per-directory config structures */
     create_echo_server_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    echo_cmds,			/* command ap_table_t */
+    echo_cmds,			/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -86,7 +86,7 @@ void ap_reclaim_child_processes(int terminate)
 {
     int i;
     long int waittime = 1024 * 16;      /* in usecs */
-    ap_status_t waitret;
+    apr_status_t waitret;
     int tries;
     int not_dead_yet;
     int max_daemons = ap_get_max_daemons();
@@ -99,19 +99,19 @@ void ap_reclaim_child_processes(int terminate)
          * Set delay with an exponential backoff.
          */
         waittime = waittime * 4;
-        ap_sleep(waittime);
+        apr_sleep(waittime);
 
         /* now see who is done */
         not_dead_yet = 0;
         for (i = 0; i < max_daemons; ++i) {
             pid_t pid = MPM_CHILD_PID(i);
-            ap_proc_t proc;
+            apr_proc_t proc;
 
             if (pid == 0)
                 continue;
 
             proc.pid = pid;
-            waitret = ap_wait_proc(&proc, APR_NOWAIT);
+            waitret = apr_wait_proc(&proc, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
                 MPM_NOTE_CHILD_KILLED(i);
                 continue;
@@ -164,7 +164,7 @@ void ap_reclaim_child_processes(int terminate)
                 break;
             }
         }
-        ap_check_other_child();
+        apr_check_other_child();
         if (!not_dead_yet) {
             /* nothing left to wait for */
             break;
@@ -179,19 +179,19 @@ void ap_reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
+void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
 #if APR_HAS_OTHER_CHILD
-        ap_probe_writable_fds();
+        apr_probe_writable_fds();
 #endif
     }
-    rv = ap_wait_all_procs(ret, status, APR_NOWAIT, p);
-    if (ap_canonical_error(rv) == APR_EINTR) {
+    rv = apr_wait_all_procs(ret, status, APR_NOWAIT, p);
+    if (apr_canonical_error(rv) == APR_EINTR) {
         ret->pid = -1;
         return;
     }
@@ -203,12 +203,12 @@ void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
         return;
     }
 #endif
-    ap_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
+    apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     ret->pid = -1;
     return;
 }
 
-void ap_process_child_status(ap_proc_t *pid, ap_wait_t status)
+void ap_process_child_status(apr_proc_t *pid, ap_wait_t status)
 {
     /* Child died... if it died due to a fatal error,
         * we should simply bail out.

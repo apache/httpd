@@ -79,7 +79,7 @@
  * translation is performed.
  */
  
-ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
+apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
 /* ap_locale_to_ascii, ap_locale_from_ascii
  *
@@ -94,12 +94,12 @@ ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
  * performed (unless a configuration module does something, of course).
  */
 
-ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
+apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
-API_EXPORT(ap_status_t) ap_set_content_xlate(request_rec *r, int output, 
-                                             ap_xlate_t *xlate)
+API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output, 
+                                             apr_xlate_t *xlate)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     if (output) {
         r->rrx->to_net = xlate;

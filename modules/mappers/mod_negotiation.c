@@ -87,27 +87,27 @@
  */
 
 typedef struct {
-    ap_array_header_t *language_priority;
+    apr_array_header_t *language_priority;
 } neg_dir_config;
 
 module MODULE_VAR_EXPORT negotiation_module;
 
-static void *create_neg_dir_config(ap_pool_t *p, char *dummy)
+static void *create_neg_dir_config(apr_pool_t *p, char *dummy)
 {
-    neg_dir_config *new = (neg_dir_config *) ap_palloc(p, sizeof(neg_dir_config));
+    neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
-    new->language_priority = ap_make_array(p, 4, sizeof(char *));
+    new->language_priority = apr_make_array(p, 4, sizeof(char *));
     return new;
 }
 
-static void *merge_neg_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     neg_dir_config *base = (neg_dir_config *) basev;
     neg_dir_config *add = (neg_dir_config *) addv;
-    neg_dir_config *new = (neg_dir_config *) ap_palloc(p, sizeof(neg_dir_config));
+    neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
     /* give priority to the config in the subdirectory */
-    new->language_priority = ap_append_arrays(p, add->language_priority,
+    new->language_priority = apr_append_arrays(p, add->language_priority,
                                            base->language_priority);
     return new;
 }
@@ -115,8 +115,8 @@ static void *merge_neg_dir_configs(ap_pool_t *p, void *basev, void *addv)
 static const char *set_language_priority(cmd_parms *cmd, void *n,
 					 const char *lang)
 {
-    ap_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
-    const char **langp = (const char **) ap_push_array(arr);
+    apr_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
+    const char **langp = (const char **) apr_push_array(arr);
 
     *langp = lang;
     return NULL;
@@ -183,7 +183,7 @@ typedef struct var_rec {
     char *mime_type;            /* MUST be lowercase */
     char *file_name;
     const char *content_encoding;
-    ap_array_header_t *content_languages;   /* list of languages for this variant */
+    apr_array_header_t *content_languages;   /* list of languages for this variant */
     char *content_charset;
     char *description;
 
@@ -222,7 +222,7 @@ typedef struct var_rec {
  */
 
 typedef struct {
-    ap_pool_t *pool;
+    apr_pool_t *pool;
     request_rec *r;
     char *dir_name;
     int accept_q;               /* 1 if an Accept item has a q= param */
@@ -231,12 +231,12 @@ typedef struct {
     /* the array pointers below are NULL if the corresponding accept
      * headers are not present
      */
-    ap_array_header_t *accepts;            /* accept_recs */
-    ap_array_header_t *accept_encodings;   /* accept_recs */
-    ap_array_header_t *accept_charsets;    /* accept_recs */
-    ap_array_header_t *accept_langs;       /* accept_recs */
+    apr_array_header_t *accepts;            /* accept_recs */
+    apr_array_header_t *accept_encodings;   /* accept_recs */
+    apr_array_header_t *accept_charsets;    /* accept_recs */
+    apr_array_header_t *accept_langs;       /* accept_recs */
 
-    ap_array_header_t *avail_vars;         /* available variants */
+    apr_array_header_t *avail_vars;         /* available variants */
 
     int count_multiviews_variants;    /* number of variants found on disk */
 
@@ -323,7 +323,7 @@ static void set_vlist_validator(request_rec *r, request_rec *vlistr)
  * enter the values we recognize into the argument accept_rec
  */
 
-static const char *get_entry(ap_pool_t *p, accept_rec *result,
+static const char *get_entry(apr_pool_t *p, accept_rec *result,
                              const char *accept_line)
 {
     result->quality = 1.0f;
@@ -430,18 +430,18 @@ static const char *get_entry(ap_pool_t *p, accept_rec *result,
  * where charset is only valid in Accept.
  */
 
-static ap_array_header_t *do_header_line(ap_pool_t *p, const char *accept_line)
+static apr_array_header_t *do_header_line(apr_pool_t *p, const char *accept_line)
 {
-    ap_array_header_t *accept_recs;
+    apr_array_header_t *accept_recs;
 
     if (!accept_line) {
         return NULL;
     }
 
-    accept_recs = ap_make_array(p, 40, sizeof(accept_rec));
+    accept_recs = apr_make_array(p, 40, sizeof(accept_rec));
 
     while (*accept_line) {
-        accept_rec *new = (accept_rec *) ap_push_array(accept_recs);
+        accept_rec *new = (accept_rec *) apr_push_array(accept_recs);
         accept_line = get_entry(p, new, accept_line);
     }
 
@@ -452,16 +452,16 @@ static ap_array_header_t *do_header_line(ap_pool_t *p, const char *accept_line)
  * return an array containing the languages of this variant
  */
 
-static ap_array_header_t *do_languages_line(ap_pool_t *p, const char **lang_line)
+static apr_array_header_t *do_languages_line(apr_pool_t *p, const char **lang_line)
 {
-    ap_array_header_t *lang_recs = ap_make_array(p, 2, sizeof(char *));
+    apr_array_header_t *lang_recs = apr_make_array(p, 2, sizeof(char *));
 
     if (!lang_line) {
         return lang_recs;
     }
 
     while (**lang_line) {
-        char **new = (char **) ap_push_array(lang_recs);
+        char **new = (char **) apr_push_array(lang_recs);
         *new = ap_get_token(p, lang_line, 0);
         ap_str_tolower(*new);
         if (**lang_line == ',' || **lang_line == ';') {
@@ -480,16 +480,16 @@ static ap_array_header_t *do_languages_line(ap_pool_t *p, const char **lang_line
 static negotiation_state *parse_accept_headers(request_rec *r)
 {
     negotiation_state *new =
-        (negotiation_state *) ap_pcalloc(r->pool, sizeof(negotiation_state));
+        (negotiation_state *) apr_pcalloc(r->pool, sizeof(negotiation_state));
     accept_rec *elts;
-    ap_table_t *hdrs = r->headers_in;
+    apr_table_t *hdrs = r->headers_in;
     int i;
 
     new->pool = r->pool;
     new->r = r;
     new->dir_name = ap_make_dirstr_parent(r->pool, r->filename);
 
-    new->accepts = do_header_line(r->pool, ap_table_get(hdrs, "Accept"));
+    new->accepts = do_header_line(r->pool, apr_table_get(hdrs, "Accept"));
 
     /* calculate new->accept_q value */
     if (new->accepts) {
@@ -503,13 +503,13 @@ static negotiation_state *parse_accept_headers(request_rec *r)
     }
 
     new->accept_encodings =
-        do_header_line(r->pool, ap_table_get(hdrs, "Accept-Encoding"));
+        do_header_line(r->pool, apr_table_get(hdrs, "Accept-Encoding"));
     new->accept_langs =
-        do_header_line(r->pool, ap_table_get(hdrs, "Accept-Language"));
+        do_header_line(r->pool, apr_table_get(hdrs, "Accept-Language"));
     new->accept_charsets =
-        do_header_line(r->pool, ap_table_get(hdrs, "Accept-Charset"));
+        do_header_line(r->pool, apr_table_get(hdrs, "Accept-Charset"));
 
-    new->avail_vars = ap_make_array(r->pool, 40, sizeof(var_rec));
+    new->avail_vars = apr_make_array(r->pool, 40, sizeof(var_rec));
 
     return new;
 }
@@ -517,7 +517,7 @@ static negotiation_state *parse_accept_headers(request_rec *r)
 
 static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
 {
-    const char *negotiate = ap_table_get(r->headers_in, "Negotiate");
+    const char *negotiate = apr_table_get(r->headers_in, "Negotiate");
     char *tok;
     
     /* First, default to no TCN, no Alternates, and the original Apache
@@ -546,7 +546,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
          * they can send the equivalent 'negotiate: trans, trans' instead
          * to avoid triggering the workaround below. 
          */
-        const char *ua = ap_table_get(r->headers_in, "User-Agent");
+        const char *ua = apr_table_get(r->headers_in, "User-Agent");
 
         if (ua && (strncmp(ua, "Lynx", 4) == 0))
             return;
@@ -614,16 +614,16 @@ static void maybe_add_default_accepts(negotiation_state *neg,
     accept_rec *new_accept;
 
     if (!neg->accepts) {
-        neg->accepts = ap_make_array(neg->pool, 4, sizeof(accept_rec));
+        neg->accepts = apr_make_array(neg->pool, 4, sizeof(accept_rec));
 
-        new_accept = (accept_rec *) ap_push_array(neg->accepts);
+        new_accept = (accept_rec *) apr_push_array(neg->accepts);
         
         new_accept->name = "*/*";
         new_accept->quality = 1.0f;
         new_accept->level = 0.0f;
     }    
 
-    new_accept = (accept_rec *) ap_push_array(neg->accepts);
+    new_accept = (accept_rec *) apr_push_array(neg->accepts);
 
     new_accept->name = CGI_MAGIC_TYPE;
     if (neg->use_rvsa) {
@@ -649,7 +649,7 @@ enum header_state {
     header_eof, header_seen, header_sep
 };
 
-static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
+static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 {
     char *buf_end = buffer + len;
     char *cp;
@@ -658,7 +658,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
     /* Get a noncommented line */
 
     do {
-        if (ap_fgets(buffer, MAX_STRING_LEN, map) != APR_SUCCESS) {
+        if (apr_fgets(buffer, MAX_STRING_LEN, map) != APR_SUCCESS) {
             return header_eof;
         }
     } while (buffer[0] == '#');
@@ -679,10 +679,10 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
     cp += strlen(cp);
 
-    while (ap_getc(&c, map) != APR_EOF) {
+    while (apr_getc(&c, map) != APR_EOF) {
         if (c == '#') {
             /* Comment line */
-            while (ap_getc(&c, map) != EOF && c != '\n') {
+            while (apr_getc(&c, map) != EOF && c != '\n') {
                 continue;
             }
         }
@@ -693,11 +693,11 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
              */
 
             while (c != '\n' && ap_isspace(c)) {
-                if(ap_getc(&c, map) != APR_SUCCESS)
+                if(apr_getc(&c, map) != APR_SUCCESS)
 		    break;
             }
 
-            ap_ungetc(c, map);
+            apr_ungetc(c, map);
 
             if (c == '\n') {
                 return header_seen;     /* Blank line */
@@ -705,7 +705,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
             /* Continuation */
 
-            while (cp < buf_end - 2 && (ap_getc(&c, map)) != EOF && c != '\n') {
+            while (cp < buf_end - 2 && (apr_getc(&c, map)) != EOF && c != '\n') {
                 *cp++ = c;
             }
 
@@ -716,7 +716,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
             /* Line beginning with something other than whitespace */
 
-            ap_ungetc(c, map);
+            apr_ungetc(c, map);
             return header_seen;
         }
     }
@@ -787,8 +787,8 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 static int read_type_map(negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
-    ap_file_t *map = NULL;
-    ap_status_t status;
+    apr_file_t *map = NULL;
+    apr_status_t status;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
@@ -797,7 +797,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if ((status = ap_open(&map, rr->filename, APR_READ,
+    if ((status = apr_open(&map, rr->filename, APR_READ,
                 APR_OS_DEFAULT, neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                       "cannot access type map file: %s", rr->filename);
@@ -845,7 +845,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
                 has_content = 1;
             }
             else if (!strncmp(buffer, "description:", 12)) {
-                char *desc = ap_pstrdup(neg->pool, body);
+                char *desc = apr_pstrdup(neg->pool, body);
                 char *cp;
 
                 for (cp = desc; *cp; ++cp) {
@@ -857,7 +857,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
         }
         else {
             if (*mime_info.file_name && has_content) {
-                void *new_var = ap_push_array(neg->avail_vars);
+                void *new_var = apr_push_array(neg->avail_vars);
 
                 memcpy(new_var, (void *) &mime_info, sizeof(var_rec));
             }
@@ -867,7 +867,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
         }
     } while (hstate != header_eof);
 
-    ap_close(map);
+    apr_close(map);
 
     set_vlist_validator(r, rr);
 
@@ -905,8 +905,8 @@ static int read_types_multi(negotiation_state *neg)
 
     char *filp;
     int prefix_len;
-    ap_dir_t *dirp;
-    ap_status_t status;
+    apr_dir_t *dirp;
+    apr_status_t status;
     struct var_rec mime_info;
     struct accept_rec accept_info;
     void *new_var;
@@ -924,17 +924,17 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if ((status = ap_opendir(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
+    if ((status = apr_opendir(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
 
-    while (ap_readdir(dirp) == APR_SUCCESS) {
+    while (apr_readdir(dirp) == APR_SUCCESS) {
         request_rec *sub_req;
         char *d_name;
 
-        ap_get_dir_filename(&d_name, dirp);
+        apr_get_dir_filename(&d_name, dirp);
         /* Do we have a match? */
 
         if (strncmp(d_name, filp, prefix_len)) {
@@ -973,7 +973,7 @@ static int read_types_multi(negotiation_state *neg)
             ((sub_req->handler) &&
              !strcmp(sub_req->handler, "type-map"))) {
 
-            ap_closedir(dirp);
+            apr_closedir(dirp);
             neg->avail_vars->nelts = 0;
             if (sub_req->status != HTTP_OK) {
                 return sub_req->status;
@@ -984,7 +984,7 @@ static int read_types_multi(negotiation_state *neg)
         /* Have reasonable variant --- gather notes. */
 
         mime_info.sub_req = sub_req;
-        mime_info.file_name = ap_pstrdup(neg->pool, d_name);
+        mime_info.file_name = apr_pstrdup(neg->pool, d_name);
         if (sub_req->content_encoding) {
             mime_info.content_encoding = sub_req->content_encoding;
         }
@@ -995,7 +995,7 @@ static int read_types_multi(negotiation_state *neg)
         get_entry(neg->pool, &accept_info, sub_req->content_type);
         set_mime_fields(&mime_info, &accept_info);
 
-        new_var = ap_push_array(neg->avail_vars);
+        new_var = apr_push_array(neg->avail_vars);
         memcpy(new_var, (void *) &mime_info, sizeof(var_rec));
 
         neg->count_multiviews_variants++;
@@ -1003,7 +1003,7 @@ static int read_types_multi(negotiation_state *neg)
         clean_var_rec(&mime_info);
     }
 
-    ap_closedir(dirp);
+    apr_closedir(dirp);
 
     set_vlist_validator(r, r);
 
@@ -1155,7 +1155,7 @@ static int level_cmp(var_rec *var1, var_rec *var2)
  * to set lang_index.  
  */
 
-static int find_lang_index(ap_array_header_t *accept_langs, char *lang)
+static int find_lang_index(apr_array_header_t *accept_langs, char *lang)
 {
     accept_rec *accs;
     int i;
@@ -1182,7 +1182,7 @@ static int find_lang_index(ap_array_header_t *accept_langs, char *lang)
 
 static int find_default_index(neg_dir_config *conf, char *lang)
 {
-    ap_array_header_t *arr;
+    apr_array_header_t *arr;
     int nelts;
     char **elts;
     int i;
@@ -1456,13 +1456,13 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
 
 static float find_content_length(negotiation_state *neg, var_rec *variant)
 {
-    ap_finfo_t statb;
+    apr_finfo_t statb;
 
     if (variant->bytes == 0) {
         char *fullname = ap_make_full_path(neg->pool, neg->dir_name,
                                            variant->file_name);
 
-        if (ap_stat(&statb, fullname, neg->pool) == APR_SUCCESS) {
+        if (apr_stat(&statb, fullname, neg->pool) == APR_SUCCESS) {
             /* Note, precision may be lost */
             variant->bytes = (float) statb.size;
         }
@@ -1778,7 +1778,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
-             ? ap_array_pstrcat(neg->pool, variant->content_languages, ',')
+             ? apr_array_pstrcat(neg->pool, variant->content_languages, ',')
              : ""),
             variant->source_quality,
             variant->mime_type_quality,
@@ -1848,7 +1848,7 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
-             ? ap_array_pstrcat(neg->pool, variant->content_languages, ',')
+             ? apr_array_pstrcat(neg->pool, variant->content_languages, ',')
              : ""),
             variant->source_quality,
             variant->mime_type_quality,
@@ -2048,7 +2048,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
 static void set_neg_headers(request_rec *r, negotiation_state *neg,
                             int alg_result)
 {
-    ap_table_t *hdrs;
+    apr_table_t *hdrs;
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
     const char *sample_type = NULL;
     const char *sample_language = NULL;
@@ -2058,7 +2058,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     char *qstr;
     char *lenstr;
     long len;
-    ap_array_header_t *arr;
+    apr_array_header_t *arr;
     int max_vlist_array = (neg->avail_vars->nelts * 21);
     int first_variant = 1;
     int vary_by_type = 0;
@@ -2068,13 +2068,13 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     int j;
 
     /* In order to avoid O(n^2) memory copies in building Alternates,
-     * we preallocate a ap_table_t with the maximum substrings possible,
+     * we preallocate a apr_table_t with the maximum substrings possible,
      * fill it with the variant list, and then concatenate the entire array.
      * Note that if you change the number of substrings pushed, you also
      * need to change the calculation of max_vlist_array above.
      */
     if (neg->send_alternates && neg->avail_vars->nelts)
-        arr = ap_make_array(r->pool, max_vlist_array, sizeof(char *));
+        arr = apr_make_array(r->pool, max_vlist_array, sizeof(char *));
     else
         arr = NULL;
 
@@ -2087,7 +2087,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         var_rec *variant = &avail_recs[j];
 
         if (variant->content_languages && variant->content_languages->nelts) {
-            lang = ap_array_pstrcat(r->pool, variant->content_languages, ',');
+            lang = apr_array_pstrcat(r->pool, variant->content_languages, ',');
         }
         else {
             lang = NULL;
@@ -2132,12 +2132,12 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
 
         /* Generate the string components for this Alternates entry */
 
-        *((const char **) ap_push_array(arr)) = "{\"";
-        *((const char **) ap_push_array(arr)) = variant->file_name;
-        *((const char **) ap_push_array(arr)) = "\" ";
+        *((const char **) apr_push_array(arr)) = "{\"";
+        *((const char **) apr_push_array(arr)) = variant->file_name;
+        *((const char **) apr_push_array(arr)) = "\" ";
 
-        qstr = (char *) ap_palloc(r->pool, 6);
-        ap_snprintf(qstr, 6, "%1.3f", variant->source_quality);
+        qstr = (char *) apr_palloc(r->pool, 6);
+        apr_snprintf(qstr, 6, "%1.3f", variant->source_quality);
 
         /* Strip trailing zeros (saves those valuable network bytes) */
         if (qstr[4] == '0') {
@@ -2149,29 +2149,29 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
                 }
             }
         }
-        *((const char **) ap_push_array(arr)) = qstr;
+        *((const char **) apr_push_array(arr)) = qstr;
 
         if (variant->mime_type && *variant->mime_type) {
-            *((const char **) ap_push_array(arr)) = " {type ";
-            *((const char **) ap_push_array(arr)) = variant->mime_type;
-            *((const char **) ap_push_array(arr)) = "}";
+            *((const char **) apr_push_array(arr)) = " {type ";
+            *((const char **) apr_push_array(arr)) = variant->mime_type;
+            *((const char **) apr_push_array(arr)) = "}";
         }
         if (variant->content_charset && *variant->content_charset) {
-            *((const char **) ap_push_array(arr)) = " {charset ";
-            *((const char **) ap_push_array(arr)) = variant->content_charset;
-            *((const char **) ap_push_array(arr)) = "}";
+            *((const char **) apr_push_array(arr)) = " {charset ";
+            *((const char **) apr_push_array(arr)) = variant->content_charset;
+            *((const char **) apr_push_array(arr)) = "}";
         }
         if (lang) {
-            *((const char **) ap_push_array(arr)) = " {language ";
-            *((const char **) ap_push_array(arr)) = lang;
-            *((const char **) ap_push_array(arr)) = "}";
+            *((const char **) apr_push_array(arr)) = " {language ";
+            *((const char **) apr_push_array(arr)) = lang;
+            *((const char **) apr_push_array(arr)) = "}";
         }
         if (variant->content_encoding && *variant->content_encoding) {
             /* Strictly speaking, this is non-standard, but so is TCN */
 
-            *((const char **) ap_push_array(arr)) = " {encoding ";
-            *((const char **) ap_push_array(arr)) = variant->content_encoding;
-            *((const char **) ap_push_array(arr)) = "}";
+            *((const char **) apr_push_array(arr)) = " {encoding ";
+            *((const char **) apr_push_array(arr)) = variant->content_encoding;
+            *((const char **) apr_push_array(arr)) = "}";
         }
 
         /* Note that the Alternates specification (in rfc2295) does
@@ -2192,27 +2192,27 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         if (!(variant->sub_req && variant->sub_req->handler)
             && (len = find_content_length(neg, variant)) != 0) {
 
-            lenstr = (char *) ap_palloc(r->pool, 22);
-            ap_snprintf(lenstr, 22, "%ld", len);
-            *((const char **) ap_push_array(arr)) = " {length ";
-            *((const char **) ap_push_array(arr)) = lenstr;
-            *((const char **) ap_push_array(arr)) = "}";
+            lenstr = (char *) apr_palloc(r->pool, 22);
+            apr_snprintf(lenstr, 22, "%ld", len);
+            *((const char **) apr_push_array(arr)) = " {length ";
+            *((const char **) apr_push_array(arr)) = lenstr;
+            *((const char **) apr_push_array(arr)) = "}";
         }
       
-        *((const char **) ap_push_array(arr)) = "}";
-        *((const char **) ap_push_array(arr)) = ", "; /* trimmed below */
+        *((const char **) apr_push_array(arr)) = "}";
+        *((const char **) apr_push_array(arr)) = ", "; /* trimmed below */
     }
 
     if (neg->send_alternates && neg->avail_vars->nelts) {
         arr->nelts--;                                 /* remove last comma */
-        ap_table_mergen(hdrs, "Alternates",
-                        ap_array_pstrcat(r->pool, arr, '\0'));
+        apr_table_mergen(hdrs, "Alternates",
+                        apr_array_pstrcat(r->pool, arr, '\0'));
     } 
 
     if (neg->is_transparent || vary_by_type || vary_by_language ||
         vary_by_language || vary_by_charset || vary_by_encoding) {
 
-        ap_table_mergen(hdrs, "Vary", 2 + ap_pstrcat(r->pool,
+        apr_table_mergen(hdrs, "Vary", 2 + apr_pstrcat(r->pool,
             neg->is_transparent ? ", negotiate"       : "",
             vary_by_type        ? ", accept"          : "",
             vary_by_language    ? ", accept-language" : "",
@@ -2221,7 +2221,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     }
 
     if (neg->is_transparent) { /* Create TCN response header */
-        ap_table_setn(hdrs, "TCN",
+        apr_table_setn(hdrs, "TCN",
                       alg_result == alg_list ? "list" : "choice");
     }
 }
@@ -2234,22 +2234,22 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
 
 static char *make_variant_list(request_rec *r, negotiation_state *neg)
 {
-    ap_array_header_t *arr;
+    apr_array_header_t *arr;
     int i;
     int max_vlist_array = (neg->avail_vars->nelts * 15) + 2;
 
     /* In order to avoid O(n^2) memory copies in building the list,
-     * we preallocate a ap_table_t with the maximum substrings possible,
+     * we preallocate a apr_table_t with the maximum substrings possible,
      * fill it with the variant list, and then concatenate the entire array.
      */
-    arr = ap_make_array(r->pool, max_vlist_array, sizeof(char *));
+    arr = apr_make_array(r->pool, max_vlist_array, sizeof(char *));
 
-    *((const char **) ap_push_array(arr)) = "Available variants:\n<ul>\n";
+    *((const char **) apr_push_array(arr)) = "Available variants:\n<ul>\n";
 
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
         var_rec *variant = &((var_rec *) neg->avail_vars->elts)[i];
         char *filename = variant->file_name ? variant->file_name : "";
-        ap_array_header_t *languages = variant->content_languages;
+        apr_array_header_t *languages = variant->content_languages;
         char *description = variant->description ? variant->description : "";
 
         /* The format isn't very neat, and it would be nice to make
@@ -2257,44 +2257,44 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
          * Note that if you change the number of substrings pushed, you also
          * need to change the calculation of max_vlist_array above.
          */
-        *((const char **) ap_push_array(arr)) = "<li><a href=\"";
-        *((const char **) ap_push_array(arr)) = filename;
-        *((const char **) ap_push_array(arr)) = "\">";
-        *((const char **) ap_push_array(arr)) = filename;
-        *((const char **) ap_push_array(arr)) = "</a> ";
-        *((const char **) ap_push_array(arr)) = description;
+        *((const char **) apr_push_array(arr)) = "<li><a href=\"";
+        *((const char **) apr_push_array(arr)) = filename;
+        *((const char **) apr_push_array(arr)) = "\">";
+        *((const char **) apr_push_array(arr)) = filename;
+        *((const char **) apr_push_array(arr)) = "</a> ";
+        *((const char **) apr_push_array(arr)) = description;
 
         if (variant->mime_type && *variant->mime_type) {
-            *((const char **) ap_push_array(arr)) = ", type ";
-            *((const char **) ap_push_array(arr)) = variant->mime_type;
+            *((const char **) apr_push_array(arr)) = ", type ";
+            *((const char **) apr_push_array(arr)) = variant->mime_type;
         }
         if (languages && languages->nelts) {
-            *((const char **) ap_push_array(arr)) = ", language ";
-            *((const char **) ap_push_array(arr)) = ap_array_pstrcat(r->pool,
+            *((const char **) apr_push_array(arr)) = ", language ";
+            *((const char **) apr_push_array(arr)) = apr_array_pstrcat(r->pool,
                                                        languages, ',');
         }
         if (variant->content_charset && *variant->content_charset) {
-            *((const char **) ap_push_array(arr)) = ", charset ";
-            *((const char **) ap_push_array(arr)) = variant->content_charset;
+            *((const char **) apr_push_array(arr)) = ", charset ";
+            *((const char **) apr_push_array(arr)) = variant->content_charset;
         }
         if (variant->content_encoding) {
-            *((const char **) ap_push_array(arr)) = ", encoding ";
-            *((const char **) ap_push_array(arr)) = variant->content_encoding;
+            *((const char **) apr_push_array(arr)) = ", encoding ";
+            *((const char **) apr_push_array(arr)) = variant->content_encoding;
         }
-        *((const char **) ap_push_array(arr)) = "\n";
+        *((const char **) apr_push_array(arr)) = "\n";
     }
-    *((const char **) ap_push_array(arr)) = "</ul>\n";
+    *((const char **) apr_push_array(arr)) = "</ul>\n";
 
-    return ap_array_pstrcat(r->pool, arr, '\0');
+    return apr_array_pstrcat(r->pool, arr, '\0');
 }
 
 static void store_variant_list(request_rec *r, negotiation_state *neg)
 {
     if (r->main == NULL) {
-        ap_table_setn(r->notes, "variant-list", make_variant_list(r, neg));
+        apr_table_setn(r->notes, "variant-list", make_variant_list(r, neg));
     }
     else {
-        ap_table_setn(r->main->notes, "variant-list",
+        apr_table_setn(r->main->notes, "variant-list",
                       make_variant_list(r->main, neg));
     }
 }
@@ -2318,7 +2318,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
         status = sub_req->status;
 
         if (status != HTTP_OK && 
-            !ap_table_get(sub_req->err_headers_out, "TCN")) {
+            !apr_table_get(sub_req->err_headers_out, "TCN")) {
             ap_destroy_sub_req(sub_req);
             return status;
         }
@@ -2351,7 +2351,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * for this type of recursive negotiation too.
      */
     if (neg->is_transparent &&
-        ap_table_get(sub_req->err_headers_out, "TCN")) {
+        apr_table_get(sub_req->err_headers_out, "TCN")) {
         return HTTP_VARIANT_ALSO_VARIES;
     }
 
@@ -2394,19 +2394,19 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * problems if a CGI returns an Etag header which also need to be
      * fixed.
      */
-    if ((sub_vary = ap_table_get(sub_req->err_headers_out, "Vary")) != NULL) {
-        ap_table_setn(r->err_headers_out, "Variant-Vary", sub_vary);
+    if ((sub_vary = apr_table_get(sub_req->err_headers_out, "Vary")) != NULL) {
+        apr_table_setn(r->err_headers_out, "Variant-Vary", sub_vary);
 
         /* Move the subreq Vary header into the main request to
          * prevent having two Vary headers in the response, which
          * would be legal but strange.
          */
-        ap_table_setn(r->err_headers_out, "Vary", sub_vary);
-        ap_table_unset(sub_req->err_headers_out, "Vary");
+        apr_table_setn(r->err_headers_out, "Vary", sub_vary);
+        apr_table_unset(sub_req->err_headers_out, "Vary");
     }
     
-    ap_table_setn(r->err_headers_out, "Content-Location",
-                  ap_pstrdup(r->pool, variant->file_name));
+    apr_table_setn(r->err_headers_out, "Content-Location",
+                  apr_pstrdup(r->pool, variant->file_name));
 
     set_neg_headers(r, neg, alg_choice);         /* add Alternates and Vary */
 
@@ -2579,7 +2579,7 @@ static int handle_map_file(request_rec *r)
     }
     udir = ap_make_dirstr_parent(r->pool, r->uri);
     udir = ap_escape_uri(r->pool, udir);
-    ap_internal_redirect(ap_pstrcat(r->pool, udir, best->file_name,
+    ap_internal_redirect(apr_pstrcat(r->pool, udir, best->file_name,
                                     r->path_info, NULL), r);
     return OK;
 }
@@ -2659,12 +2659,12 @@ static int handle_multi(request_rec *r)
     r->finfo = sub_req->finfo;
     r->per_dir_config = sub_req->per_dir_config;
     /* copy output headers from subrequest, but leave negotiation headers */
-    r->notes = ap_overlay_tables(r->pool, sub_req->notes, r->notes);
-    r->headers_out = ap_overlay_tables(r->pool, sub_req->headers_out,
+    r->notes = apr_overlay_tables(r->pool, sub_req->notes, r->notes);
+    r->headers_out = apr_overlay_tables(r->pool, sub_req->headers_out,
                                     r->headers_out);
-    r->err_headers_out = ap_overlay_tables(r->pool, sub_req->err_headers_out,
+    r->err_headers_out = apr_overlay_tables(r->pool, sub_req->err_headers_out,
                                         r->err_headers_out);
-    r->subprocess_env = ap_overlay_tables(r->pool, sub_req->subprocess_env,
+    r->subprocess_env = apr_overlay_tables(r->pool, sub_req->subprocess_env,
                                        r->subprocess_env);
     avail_recs = (var_rec *) neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
@@ -2695,7 +2695,7 @@ static int fix_encoding(request_rec *r)
 {
     const char *enc = r->content_encoding;
     char *x_enc = NULL;
-    ap_array_header_t *accept_encodings;
+    apr_array_header_t *accept_encodings;
     accept_rec *accept_recs;
     int i;
 
@@ -2708,7 +2708,7 @@ static int fix_encoding(request_rec *r)
     }
 
     if ((accept_encodings = do_header_line(r->pool,
-             ap_table_get(r->headers_in, "Accept-Encoding"))) == NULL) {
+             apr_table_get(r->headers_in, "Accept-Encoding"))) == NULL) {
         return DECLINED;
     }
 
@@ -2755,7 +2755,7 @@ module MODULE_VAR_EXPORT negotiation_module =
     merge_neg_dir_configs,      /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    negotiation_cmds,           /* command ap_table_t */
+    negotiation_cmds,           /* command apr_table_t */
     negotiation_handlers,       /* handlers */
     register_hooks              /* register hooks */
 };

@@ -66,10 +66,10 @@
 
 
 /* ensure that our state subdirectory is present */
-void dav_fs_ensure_state_dir(ap_pool_t *p, const char *dirname);
+void dav_fs_ensure_state_dir(apr_pool_t *p, const char *dirname);
 
 /* return the storage pool associated with a resource */
-ap_pool_t *dav_fs_pool(const dav_resource *resource);
+apr_pool_t *dav_fs_pool(const dav_resource *resource);
 
 /* return the full pathname for a resource */
 const char *dav_fs_pathname(const dav_resource *resource);
@@ -87,9 +87,9 @@ dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
 /* DBM functions used by the repository and locking providers */
 extern const dav_hooks_db dav_hooks_db_dbm;
 
-dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
+dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb);
-void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
+void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 			    const char **state1, const char **state2);
 
 /* where is the lock database located? */
@@ -100,12 +100,12 @@ int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
 
-void dav_fs_gather_propsets(ap_array_header_t *uris);
+void dav_fs_gather_propsets(apr_array_header_t *uris);
 int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
                          const dav_hooks_liveprop **hooks);
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr);
 
-void dav_fs_register_uris(ap_pool_t *p);
+void dav_fs_register_uris(apr_pool_t *p);
 
 #endif /* _DAV_FS_REPOS_H_ */

@@ -180,10 +180,10 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
  * but many changes since then.
  *
  */
-API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
+API_EXPORT(apr_time_t) ap_parseHTTPdate(const char *date)
 {
     ap_exploded_time_t ds;
-    ap_time_t result;
+    apr_time_t result;
     int mint, mon;
     const char *monstr, *timstr;
     static const int months[12] =
@@ -295,7 +295,7 @@ API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date)
      */
     ds.tm_usec = 0;
     ds.tm_gmtoff = 0;
-    if (ap_implode_time(&result, &ds) != APR_SUCCESS) 
+    if (apr_implode_time(&result, &ds) != APR_SUCCESS) 
 	return BAD_DATE;
     
     return result;

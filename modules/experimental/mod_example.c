@@ -118,7 +118,7 @@ typedef struct excfg {
  * the same routine/environment.
  */
 static const char *trace = NULL;
-static ap_table_t *static_calls_made = NULL;
+static apr_table_t *static_calls_made = NULL;
 
 /*
  * To avoid leaking memory from pools other than the per-request one, we
@@ -126,8 +126,8 @@ static ap_table_t *static_calls_made = NULL;
  * freed each time we modify the trace.  That way previous layers of trace
  * data don't get lost.
  */
-static ap_pool_t *example_pool = NULL;
-static ap_pool_t *example_subpool = NULL;
+static apr_pool_t *example_pool = NULL;
+static apr_pool_t *example_subpool = NULL;
 
 /*
  * Declare ourselves so the configuration routines can find and know us.
@@ -295,14 +295,14 @@ static void setup_module_cells()
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-        ap_create_pool(&example_pool, NULL);
+        apr_create_pool(&example_pool, NULL);
     };
     /*
-     * Likewise for the ap_table_t of routine/environment pairs we visit outside of
+     * Likewise for the apr_table_t of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
-        static_calls_made = ap_make_table(example_pool, 16);
+        static_calls_made = apr_make_table(example_pool, 16);
     };
 }
 
@@ -315,11 +315,11 @@ static void setup_module_cells()
  * The list can be displayed by the example_handler() routine.
  *
  * If the call occurs within a request context (i.e., we're passed a request
- * record), we put the trace into the request ap_pool_t and attach it to the
+ * record), we put the trace into the request apr_pool_t and attach it to the
  * request via the notes mechanism.  Otherwise, the trace gets added
  * to the static (non-request-specific) list.
  *
- * Note that the r->notes ap_table_t is only for storing strings; if you need to
+ * Note that the r->notes apr_table_t is only for storing strings; if you need to
  * maintain per-request data of any other type, you need to use another
  * mechanism.
  */
@@ -333,7 +333,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     const char *sofar;
     char *addon;
     char *where;
-    ap_pool_t *p;
+    apr_pool_t *p;
     const char *trace_copy;
 
     /*
@@ -345,7 +345,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
      */
     if (r != NULL) {
         p = r->pool;
-        if ((trace_copy = ap_table_get(r->notes, TRACE_NOTE)) == NULL) {
+        if ((trace_copy = apr_table_get(r->notes, TRACE_NOTE)) == NULL) {
             trace_copy = "";
         }
     }
@@ -360,16 +360,16 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        ap_create_pool(&p, example_pool);
+        apr_create_pool(&p, example_pool);
         if (trace != NULL) {
-            trace = ap_pstrdup(p, trace);
+            trace = apr_pstrdup(p, trace);
         }
         /*
          * Now, if we have a sub-pool from before, nuke it and replace with
          * the one we just allocated.
          */
         if (example_subpool != NULL) {
-            ap_destroy_pool(example_subpool);
+            apr_destroy_pool(example_subpool);
         }
         example_subpool = p;
         trace_copy = trace;
@@ -385,14 +385,14 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     where = (where != NULL) ? where : "";
     /*
      * Now, if we're not in request context, see if we've been called with
-     * this particular combination before.  The ap_table_t is allocated in the
+     * this particular combination before.  The apr_table_t is allocated in the
      * module's private pool, which doesn't get destroyed.
      */
     if (r == NULL) {
         char *key;
 
-        key = ap_pstrcat(p, note, ":", where, NULL);
-        if (ap_table_get(static_calls_made, key) != NULL) {
+        key = apr_pstrcat(p, note, ":", where, NULL);
+        if (apr_table_get(static_calls_made, key) != NULL) {
             /*
              * Been here, done this.
              */
@@ -403,17 +403,17 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
              * First time for this combination of routine and environment -
              * log it so we don't do it again.
              */
-            ap_table_set(static_calls_made, key, "been here");
+            apr_table_set(static_calls_made, key, "been here");
         }
     }
-    addon = ap_pstrcat(p, "   <LI>\n", "    <DL>\n", "     <DT><SAMP>",
+    addon = apr_pstrcat(p, "   <LI>\n", "    <DL>\n", "     <DT><SAMP>",
                     note, "</SAMP>\n", "     </DT>\n", "     <DD><SAMP>[",
                     where, "]</SAMP>\n", "     </DD>\n", "    </DL>\n",
                     "   </LI>\n", NULL);
     sofar = (trace_copy == NULL) ? "" : trace_copy;
-    trace_copy = ap_pstrcat(p, sofar, addon, NULL);
+    trace_copy = apr_pstrcat(p, sofar, addon, NULL);
     if (r != NULL) {
-        ap_table_set(r->notes, TRACE_NOTE, trace_copy);
+        apr_table_set(r->notes, TRACE_NOTE, trace_copy);
     }
     else {
         trace = trace_copy;
@@ -563,7 +563,7 @@ static int example_handler(request_rec *r)
     ap_rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
             trace);
     ap_rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
-    ap_rprintf(r, "  <OL>\n%s  </OL>\n", ap_table_get(r->notes, TRACE_NOTE));
+    ap_rprintf(r, "  <OL>\n%s  </OL>\n", apr_table_get(r->notes, TRACE_NOTE));
     ap_rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
     ap_rputs("  <UL>\n", r);
     ap_rprintf(r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
@@ -627,8 +627,8 @@ static int example_handler(request_rec *r)
 /*
  * All our module initialiser does is add its trace to the log.
  */
-static void example_init(ap_pool_t *p, ap_pool_t *ptemp, 
-                         ap_pool_t *plog, server_rec *s)
+static void example_init(apr_pool_t *p, apr_pool_t *ptemp, 
+                         apr_pool_t *plog, server_rec *s)
 {
 
     char *note;
@@ -643,7 +643,7 @@ static void example_init(ap_pool_t *p, ap_pool_t *ptemp,
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = ap_pstrcat(p, "example_init(", sname, ")", NULL);
+    note = apr_pstrcat(p, "example_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -659,7 +659,7 @@ static void example_init(ap_pool_t *p, ap_pool_t *ptemp,
 /*
  * All our process initialiser does is add its trace to the log.
  */
-static void example_child_init(ap_pool_t *p, server_rec *s)
+static void example_child_init(apr_pool_t *p, server_rec *s)
 {
 
     char *note;
@@ -674,7 +674,7 @@ static void example_child_init(ap_pool_t *p, server_rec *s)
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = ap_pstrcat(p, "example_child_init(", sname, ")", NULL);
+    note = apr_pstrcat(p, "example_child_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -690,7 +690,7 @@ static void example_child_init(ap_pool_t *p, server_rec *s)
 /*
  * All our process-death routine does is add its trace to the log.
  */
-static void example_child_exit(server_rec *s, ap_pool_t *p)
+static void example_child_exit(server_rec *s, apr_pool_t *p)
 {
 
     char *note;
@@ -701,7 +701,7 @@ static void example_child_exit(server_rec *s, ap_pool_t *p)
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
-    note = ap_pstrcat(p, "example_child_exit(", sname, ")", NULL);
+    note = apr_pstrcat(p, "example_child_exit(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 }
 
@@ -717,7 +717,7 @@ static void example_child_exit(server_rec *s, ap_pool_t *p)
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_dir_config(ap_pool_t *p, char *dirspec)
+static void *example_create_dir_config(apr_pool_t *p, char *dirspec)
 {
 
     excfg *cfg;
@@ -726,7 +726,7 @@ static void *example_create_dir_config(ap_pool_t *p, char *dirspec)
     /*
      * Allocate the space for our record from the pool supplied.
      */
-    cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
+    cfg = (excfg *) apr_pcalloc(p, sizeof(excfg));
     /*
      * Now fill in the defaults.  If there are any `parent' configuration
      * records, they'll get merged as part of a separate callback.
@@ -738,7 +738,7 @@ static void *example_create_dir_config(ap_pool_t *p, char *dirspec)
      * Finally, add our trace to the callback list.
      */
     dname = (dname != NULL) ? dname : "";
-    cfg->loc = ap_pstrcat(p, "DIR(", dname, ")", NULL);
+    cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
     trace_add(NULL, NULL, cfg, "example_create_dir_config()");
     return (void *) cfg;
 }
@@ -758,11 +758,11 @@ static void *example_create_dir_config(ap_pool_t *p, char *dirspec)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
+static void *example_merge_dir_config(apr_pool_t *p, void *parent_conf,
                                       void *newloc_conf)
 {
 
-    excfg *merged_config = (excfg *) ap_pcalloc(p, sizeof(excfg));
+    excfg *merged_config = (excfg *) apr_pcalloc(p, sizeof(excfg));
     excfg *pconf = (excfg *) parent_conf;
     excfg *nconf = (excfg *) newloc_conf;
     char *note;
@@ -772,7 +772,7 @@ static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
      * than getting merged.
      */
     merged_config->local = nconf->local;
-    merged_config->loc = ap_pstrdup(p, nconf->loc);
+    merged_config->loc = apr_pstrdup(p, nconf->loc);
     /*
      * Others, like the setting of the `congenital' flag, get ORed in.  The
      * setting of that particular flag, for instance, is TRUE if it was ever
@@ -790,7 +790,7 @@ static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = ap_pstrcat(p, "example_merge_dir_config(\"", pconf->loc, "\",\"",
+    note = apr_pstrcat(p, "example_merge_dir_config(\"", pconf->loc, "\",\"",
                    nconf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;
@@ -803,7 +803,7 @@ static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_server_config(ap_pool_t *p, server_rec *s)
+static void *example_create_server_config(apr_pool_t *p, server_rec *s)
 {
 
     excfg *cfg;
@@ -813,7 +813,7 @@ static void *example_create_server_config(ap_pool_t *p, server_rec *s)
      * As with the example_create_dir_config() reoutine, we allocate and fill
      * in an empty record.
      */
-    cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
+    cfg = (excfg *) apr_pcalloc(p, sizeof(excfg));
     cfg->local = 0;
     cfg->congenital = 0;
     cfg->cmode = CONFIG_MODE_SERVER;
@@ -821,7 +821,7 @@ static void *example_create_server_config(ap_pool_t *p, server_rec *s)
      * Note that we were called in the trace list.
      */
     sname = (sname != NULL) ? sname : "";
-    cfg->loc = ap_pstrcat(p, "SVR(", sname, ")", NULL);
+    cfg->loc = apr_pstrcat(p, "SVR(", sname, ")", NULL);
     trace_add(s, NULL, cfg, "example_create_server_config()");
     return (void *) cfg;
 }
@@ -839,11 +839,11 @@ static void *example_create_server_config(ap_pool_t *p, server_rec *s)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_server_config(ap_pool_t *p, void *server1_conf,
+static void *example_merge_server_config(apr_pool_t *p, void *server1_conf,
                                          void *server2_conf)
 {
 
-    excfg *merged_config = (excfg *) ap_pcalloc(p, sizeof(excfg));
+    excfg *merged_config = (excfg *) apr_pcalloc(p, sizeof(excfg));
     excfg *s1conf = (excfg *) server1_conf;
     excfg *s2conf = (excfg *) server2_conf;
     char *note;
@@ -856,11 +856,11 @@ static void *example_merge_server_config(ap_pool_t *p, void *server1_conf,
         (s1conf->cmode == s2conf->cmode) ? s1conf->cmode : CONFIG_MODE_COMBO;
     merged_config->local = s2conf->local;
     merged_config->congenital = (s1conf->congenital | s1conf->local);
-    merged_config->loc = ap_pstrdup(p, s2conf->loc);
+    merged_config->loc = apr_pstrdup(p, s2conf->loc);
     /*
      * Trace our call, including what we were asked to merge.
      */
-    note = ap_pstrcat(p, "example_merge_server_config(\"", s1conf->loc, "\",\"",
+    note = apr_pstrcat(p, "example_merge_server_config(\"", s1conf->loc, "\",\"",
                    s2conf->loc, "\")", NULL);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;

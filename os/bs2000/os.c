@@ -89,7 +89,7 @@ int ap_checkconv(struct request_rec *r)
 		 strncasecmp(type, "message/", 8) == 0)) {
 	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
 			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-	    r->content_type = ap_pstrcat(r->pool, "text/",
+	    r->content_type = apr_pstrcat(r->pool, "text/",
 					 type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1,
 					 NULL);
         else

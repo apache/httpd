@@ -117,7 +117,7 @@ struct ipaddr_chain {
     				 * sharing this address */
 };
 
-/* This defines the size of the hash ap_table_t used for hashing ip addresses
+/* This defines the size of the hash apr_table_t used for hashing ip addresses
  * of virtual hosts.  It must be a power of two.
  */
 #ifndef IPHASH_TABLE_SIZE
@@ -167,7 +167,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void ap_init_vhost_config(ap_pool_t *p)
+void ap_init_vhost_config(apr_pool_t *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -183,7 +183,7 @@ void ap_init_vhost_config(ap_pool_t *p)
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static const char *get_addresses(ap_pool_t *p, const char *w_,
+static const char *get_addresses(apr_pool_t *p, const char *w_,
 				 server_addr_rec ***paddr, unsigned port)
 {
     struct hostent *hep;
@@ -196,7 +196,7 @@ static const char *get_addresses(ap_pool_t *p, const char *w_,
     if (*w_ == 0)
 	return NULL;
 
-    w=ap_pstrdup(p, w_);
+    w=apr_pstrdup(p, w_);
     t = strchr(w, ':');
     if (t) {
 	if (strcmp(t + 1, "*") == 0) {
@@ -225,12 +225,12 @@ static const char *get_addresses(ap_pool_t *p, const char *w_,
 	is_an_ip_addr = 1;
     }
     if (is_an_ip_addr) {
-	sar = ap_pcalloc(p, sizeof(server_addr_rec));
+	sar = apr_pcalloc(p, sizeof(server_addr_rec));
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr.s_addr = my_addr;
 	sar->host_port = port;
-	sar->virthost = ap_pstrdup(p, w);
+	sar->virthost = apr_pstrdup(p, w);
 	return NULL;
     }
 
@@ -243,12 +243,12 @@ static const char *get_addresses(ap_pool_t *p, const char *w_,
     }
 
     for (i = 0; hep->h_addr_list[i]; ++i) {
-	sar = ap_pcalloc(p, sizeof(server_addr_rec));
+	sar = apr_pcalloc(p, sizeof(server_addr_rec));
 	**paddr = sar;
 	*paddr = &sar->next;
 	sar->host_addr = *(struct in_addr *) hep->h_addr_list[i];
 	sar->host_port = port;
-	sar->virthost = ap_pstrdup(p, w);
+	sar->virthost = apr_pstrdup(p, w);
     }
 
     return NULL;
@@ -256,7 +256,7 @@ static const char *get_addresses(ap_pool_t *p, const char *w_,
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(ap_pool_t *p, const char *hostname, server_rec *s)
+const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -291,7 +291,7 @@ const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
 }
 
 
-/* hash ap_table_t statistics, keep this in here for the beta period so
+/* hash apr_table_t statistics, keep this in here for the beta period so
  * we can find out if the hash function is ok
  */
 #ifdef IPHASH_STATISTICS
@@ -322,14 +322,14 @@ static void dump_iphash_statistics(server_rec *main_s)
 	}
     }
     qsort(count, IPHASH_TABLE_SIZE, sizeof(count[0]), iphash_compare);
-    p = buf + ap_snprintf(buf, sizeof(buf),
+    p = buf + apr_snprintf(buf, sizeof(buf),
 		    "iphash: total hashed = %u, avg chain = %u, "
 		    "chain lengths (count x len):",
 		    total, total / IPHASH_TABLE_SIZE);
     total = 1;
     for (i = 1; i < IPHASH_TABLE_SIZE; ++i) {
 	if (count[i - 1] != count[i]) {
-	    p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
+	    p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
 			     total, count[i - 1]);
 	    total = 1;
 	}
@@ -337,7 +337,7 @@ static void dump_iphash_statistics(server_rec *main_s)
 	    ++total;
 	}
     }
-    p += ap_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
+    p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
 		     total, count[IPHASH_TABLE_SIZE - 1]);
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, main_s, buf);
 }
@@ -362,12 +362,12 @@ static ap_inline unsigned hash_inaddr(unsigned key)
 
 
 
-static ipaddr_chain *new_ipaddr_chain(ap_pool_t *p,
+static ipaddr_chain *new_ipaddr_chain(apr_pool_t *p,
 				    server_rec *s, server_addr_rec *sar)
 {
     ipaddr_chain *new;
 
-    new = ap_palloc(p, sizeof(*new));
+    new = apr_palloc(p, sizeof(*new));
     new->names = NULL;
     new->server = s;
     new->sar = sar;
@@ -376,11 +376,11 @@ static ipaddr_chain *new_ipaddr_chain(ap_pool_t *p,
 }
 
 
-static name_chain *new_name_chain(ap_pool_t *p, server_rec *s, server_addr_rec *sar)
+static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec *sar)
 {
     name_chain *new;
 
-    new = ap_palloc(p, sizeof(*new));
+    new = apr_palloc(p, sizeof(*new));
     new->server = s;
     new->sar = sar;
     new->next = NULL;
@@ -395,7 +395,7 @@ static ap_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
     ipaddr_chain *trav;
     unsigned addr;
 
-    /* scan the hash ap_table_t for an exact match first */
+    /* scan the hash apr_table_t for an exact match first */
     addr = server_ip->s_addr;
     bucket = hash_inaddr(addr);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
@@ -425,41 +425,41 @@ static ipaddr_chain *find_default_server(unsigned port)
     return NULL;
 }
 
-static void dump_vhost_config(ap_file_t *f)
+static void dump_vhost_config(apr_file_t *f)
 {
     int i;
     ipaddr_chain *ic;
     name_chain *nc;
     char buf[MAX_STRING_LEN];
 
-    ap_fprintf(f, "VirtualHost configuration:\n");
+    apr_fprintf(f, "VirtualHost configuration:\n");
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
 	for (ic = iphash_table[i]; ic; ic = ic->next) {
 	    if (ic->sar->host_port == 0) {
-		ap_snprintf(buf, sizeof(buf), "%pA:*", &ic->sar->host_addr);
+		apr_snprintf(buf, sizeof(buf), "%pA:*", &ic->sar->host_addr);
 	    }
 	    else {
-		ap_snprintf(buf, sizeof(buf), "%pA:%u", &ic->sar->host_addr,
+		apr_snprintf(buf, sizeof(buf), "%pA:%u", &ic->sar->host_addr,
 		    ic->sar->host_port);
 	    }
 	    if (ic->names == NULL) {
-		ap_fprintf(f, "%-22s %s (%s:%u)\n", buf,
+		apr_fprintf(f, "%-22s %s (%s:%u)\n", buf,
 		    ic->server->server_hostname, ic->server->defn_name,
 		    ic->server->defn_line_number);
 		continue;
 	    }
-	    ap_fprintf(f, "%-22s is a NameVirtualHost\n"
+	    apr_fprintf(f, "%-22s is a NameVirtualHost\n"
 	               "%22s default server %s (%s:%u)\n",
 		       buf, "", ic->server->server_hostname,
 		       ic->server->defn_name, ic->server->defn_line_number);
 	    for (nc = ic->names; nc; nc = nc->next) {
 		if (nc->sar->host_port) {
-		    ap_fprintf(f, "%22s port %u ", "", nc->sar->host_port);
+		    apr_fprintf(f, "%22s port %u ", "", nc->sar->host_port);
 		}
 		else {
-		    ap_fprintf(f, "%22s port * ", "");
+		    apr_fprintf(f, "%22s port * ", "");
 		}
-		ap_fprintf(f, "namevhost %s (%s:%u)\n",
+		apr_fprintf(f, "namevhost %s (%s:%u)\n",
 			nc->server->server_hostname,
 			nc->server->defn_name,
 			nc->server->defn_line_number);
@@ -467,15 +467,15 @@ static void dump_vhost_config(ap_file_t *f)
 	}
     }
     if (default_list) {
-	ap_fprintf(f, "_default_ servers:\n");
+	apr_fprintf(f, "_default_ servers:\n");
 	for (ic = default_list; ic; ic = ic->next) {
 	    if (ic->sar->host_port == 0) {
-		ap_fprintf(f, "port * ");
+		apr_fprintf(f, "port * ");
 	    }
 	    else {
-		ap_fprintf(f, "port %u ", ic->sar->host_port);
+		apr_fprintf(f, "port %u ", ic->sar->host_port);
 	    }
-	    ap_fprintf(f, "server %s (%s:%u)\n",
+	    apr_fprintf(f, "server %s (%s:%u)\n",
 		ic->server->server_hostname, ic->server->defn_name,
 		ic->server->defn_line_number);
 	}
@@ -483,7 +483,7 @@ static void dump_vhost_config(ap_file_t *f)
 }
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
+void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 {
     server_addr_rec *sar;
     int has_default_vhost_addr;
@@ -506,7 +506,7 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
 	iphash_table_tail[i] = &iphash_table[i];
     }
 
-    /* The first things to go into the hash ap_table_t are the NameVirtualHosts
+    /* The first things to go into the hash apr_table_t are the NameVirtualHosts
      * Since name_vhost_list is in the same order that the directives
      * occured in the config file, we'll copy it in that order.
      */
@@ -522,7 +522,7 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
 	 */
     }
 
-    /* The next things to go into the hash ap_table_t are the virtual hosts
+    /* The next things to go into the hash apr_table_t are the virtual hosts
      * themselves.  They're listed off of main_s->next in the reverse
      * order they occured in the config file, so we insert them at
      * the iphash_table_tail but don't advance the tail.
@@ -608,14 +608,14 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
 		    DNS in the VirtualHost statement.  It's disabled
 		    anyhow by the host matching code.  -djg */
 		s->server_hostname =
-		    ap_pstrdup(p, "bogus_host_without_forward_dns");
+		    apr_pstrdup(p, "bogus_host_without_forward_dns");
 	    }
 	    else {
 		struct hostent *h;
 
 		if ((h = gethostbyaddr((char *) &(s->addrs->host_addr),
 					sizeof(struct in_addr), AF_INET))) {
-		    s->server_hostname = ap_pstrdup(p, (char *) h->h_name);
+		    s->server_hostname = apr_pstrdup(p, (char *) h->h_name);
 		}
 		else {
 		    /* again, what can we do?  They didn't specify a
@@ -626,7 +626,7 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
 			    "ServerName",
 			    inet_ntoa(s->addrs->host_addr));
 		    s->server_hostname =
-			ap_pstrdup(p, "bogus_host_without_reverse_dns");
+			apr_pstrdup(p, "bogus_host_without_reverse_dns");
 		}
 	    }
 	}
@@ -663,8 +663,8 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
     dump_iphash_statistics(main_s);
 #endif
     if (getenv("DUMP_VHOSTS")) {
-        ap_file_t *thefile = NULL;
-        ap_open_stderr(&thefile, p);
+        apr_file_t *thefile = NULL;
+        apr_open_stderr(&thefile, p);
 	dump_vhost_config(thefile);
     }
 }
@@ -679,7 +679,7 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
  */
 static void fix_hostname(request_rec *r)
 {
-    char *host = ap_palloc(r->pool, strlen(r->hostname) + 1);
+    char *host = apr_palloc(r->pool, strlen(r->hostname) + 1);
     const char *src;
     char *dst;
 
@@ -726,7 +726,7 @@ bad:
 static int matches_aliases(server_rec *s, const char *host)
 {
     int i;
-    ap_array_header_t *names;
+    apr_array_header_t *names;
 
     /* match ServerName */
     if (!strcasecmp(host, s->server_hostname)) {
@@ -919,7 +919,7 @@ static void check_serverpath(request_rec *r)
 void ap_update_vhost_from_headers(request_rec *r)
 {
     /* must set this for HTTP/1.1 support */
-    if (r->hostname || (r->hostname = ap_table_get(r->headers_in, "Host"))) {
+    if (r->hostname || (r->hostname = apr_table_get(r->headers_in, "Host"))) {
 	fix_hostname(r);
 	if (r->status != HTTP_OK)
 	    return;
@@ -942,7 +942,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     ipaddr_chain *trav;
     unsigned port = ntohs(conn->local_addr.sin_port);
 
-    /* scan the hash ap_table_t for an exact match first */
+    /* scan the hash apr_table_t for an exact match first */
     trav = find_ipaddr(&conn->local_addr.sin_addr, port);
     if (trav) {
 	/* save the name_chain for later in case this is a name-vhost */

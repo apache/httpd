@@ -143,9 +143,9 @@ static void sock_enable_linger(int s)
 void ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
-    ap_time_t start;
-    ap_ssize_t nbytes;
-    ap_status_t rc;
+    apr_time_t start;
+    apr_ssize_t nbytes;
+    apr_status_t rc;
     int timeout;
 
 #ifdef NO_LINGCLOSE
@@ -184,7 +184,7 @@ void ap_lingering_close(conn_rec *c)
      * from peer) or we've exceeded our overall timeout.
      */
     
-    start = ap_now();
+    start = apr_now();
     timeout = MAX_SECS_TO_LINGER;
     for (;;) {
         ap_bsetopt(c->client, BO_TIMEOUT, &timeout);
@@ -193,7 +193,7 @@ void ap_lingering_close(conn_rec *c)
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         /* how much time has elapsed? */
-        timeout = (int)((ap_now() - start) / AP_USEC_PER_SEC);
+        timeout = (int)((apr_now() - start) / AP_USEC_PER_SEC);
         if (timeout >= MAX_SECS_TO_LINGER) break;
 
         /* figure out the new timeout */
@@ -235,7 +235,7 @@ int ap_process_http_connection(conn_rec *c)
 	    break;
 
         ap_update_connection_status(c->id, "Status", "Keepalive");
-	ap_destroy_pool(r->pool);
+	apr_destroy_pool(r->pool);
 
 	if (ap_graceful_stop_signalled())
             break;
@@ -249,28 +249,28 @@ int ap_process_http_connection(conn_rec *c)
    structure, but for now...
 */
 
-conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id)
 {
-    conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
+    conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
      */
 
     conn->conn_config=ap_create_conn_config(p);
-    conn->notes = ap_make_table(p, 5);
+    conn->notes = apr_make_table(p, 5);
 
     conn->pool = p;
     conn->local_addr = *saddr;
-    conn->local_ip = ap_pstrdup(conn->pool,
+    conn->local_ip = apr_pstrdup(conn->pool,
 				inet_ntoa(conn->local_addr.sin_addr));
     conn->base_server = server;
     conn->client = inout;
 
     conn->remote_addr = *remaddr;
-    conn->remote_ip = ap_pstrdup(conn->pool,
+    conn->remote_ip = apr_pstrdup(conn->pool,
 			      inet_ntoa(conn->remote_addr.sin_addr));
     
     conn->id = id;
@@ -280,12 +280,12 @@ conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
 
 
 
-conn_rec *ap_new_apr_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
-                                ap_socket_t *conn_socket, long id)
+conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
+                                apr_socket_t *conn_socket, long id)
 {
     struct sockaddr_in *sa_local, *sa_remote;
 
-    ap_get_local_name(&sa_local, conn_socket);
-    ap_get_remote_name(&sa_remote, conn_socket);
+    apr_get_local_name(&sa_local, conn_socket);
+    apr_get_remote_name(&sa_remote, conn_socket);
     return ap_new_connection(p, server, inout, sa_remote, sa_local, id);
 }

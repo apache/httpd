@@ -86,7 +86,7 @@
 /* content for parsing */
 typedef struct ap_xml_ctx {
     ap_xml_doc *doc;		/* the doc we're parsing */
-    ap_pool_t *p;		/* the pool we allocate from */
+    apr_pool_t *p;		/* the pool we allocate from */
     ap_xml_elem *cur_elem;	/* current element */
 
     int error;			/* an error has occurred */
@@ -162,16 +162,16 @@ static void start_handler(void *userdata, const char *name, const char **attrs)
     if (ctx->error)
 	return;
 
-    elem = ap_pcalloc(ctx->p, sizeof(*elem));
+    elem = apr_pcalloc(ctx->p, sizeof(*elem));
 
     /* prep the element */
-    elem->name = elem_name = ap_pstrdup(ctx->p, name);
+    elem->name = elem_name = apr_pstrdup(ctx->p, name);
 
     /* fill in the attributes (note: ends up in reverse order) */
     while (*attrs) {
-	attr = ap_palloc(ctx->p, sizeof(*attr));
-	attr->name = ap_pstrdup(ctx->p, *attrs++);
-	attr->value = ap_pstrdup(ctx->p, *attrs++);
+	attr = apr_palloc(ctx->p, sizeof(*attr));
+	attr->name = apr_pstrdup(ctx->p, *attrs++);
+	attr->value = apr_pstrdup(ctx->p, *attrs++);
 	attr->next = elem->attr;
 	elem->attr = attr;
     }
@@ -221,7 +221,7 @@ static void start_handler(void *userdata, const char *name, const char **attrs)
 	    quoted = ap_xml_quote_string(ctx->p, attr->value, 1);
 
 	    /* build and insert the new scope */
-	    ns_scope = ap_pcalloc(ctx->p, sizeof(*ns_scope));
+	    ns_scope = apr_pcalloc(ctx->p, sizeof(*ns_scope));
 	    ns_scope->prefix = prefix;
 	    ns_scope->ns = ap_xml_insert_uri(ctx->doc->namespaces, quoted);
 	    ns_scope->emptyURI = *quoted == '\0';
@@ -344,7 +344,7 @@ static void cdata_handler(void *userdata, const char *data, int len)
 	return;
 
     elem = ctx->cur_elem;
-    s = ap_pstrndup(ctx->p, data, len);
+    s = apr_pstrndup(ctx->p, data, len);
 
     if (elem->last_child == NULL) {
 	/* no children yet. this cdata follows the start tag */
@@ -374,9 +374,9 @@ API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
     }
 
     ctx.p = r->pool;
-    ctx.doc = ap_pcalloc(ctx.p, sizeof(*ctx.doc));
+    ctx.doc = apr_pcalloc(ctx.p, sizeof(*ctx.doc));
 
-    ctx.doc->namespaces = ap_make_array(ctx.p, 5, sizeof(const char *));
+    ctx.doc->namespaces = apr_make_array(ctx.p, 5, sizeof(const char *));
     ap_xml_insert_uri(ctx.doc->namespaces, "DAV:");
 
     /* ### we should get the encoding from Content-Encoding */
@@ -400,7 +400,7 @@ API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
 	size_t limit_xml_body = ap_get_limit_xml_body(r);
 
 	/* allocate our working buffer */
-	buffer = ap_palloc(r->pool, AP_XML_READ_BLOCKSIZE);
+	buffer = apr_palloc(r->pool, AP_XML_READ_BLOCKSIZE);
 
 	/* read the body, stuffing it into the parser */
 	while ((len = ap_get_client_block(r, buffer, AP_XML_READ_BLOCKSIZE)) > 0) {
@@ -474,10 +474,10 @@ API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
     return HTTP_BAD_REQUEST;
 }
 
-API_EXPORT(void) ap_text_append(ap_pool_t * p, ap_text_header *hdr,
+API_EXPORT(void) ap_text_append(apr_pool_t * p, ap_text_header *hdr,
                                 const char *text)
 {
-    ap_text *t = ap_palloc(p, sizeof(*t));
+    ap_text *t = apr_palloc(p, sizeof(*t));
 
     t->text = text;
     t->next = NULL;
@@ -508,7 +508,7 @@ API_EXPORT(void) ap_text_append(ap_pool_t * p, ap_text_header *hdr,
 ** quotes is typically set to true for XML strings that will occur within
 ** double quotes -- attribute values.
 */
-API_EXPORT(const char *) ap_xml_quote_string(ap_pool_t *p, const char *s,
+API_EXPORT(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
                                              int quotes)
 {
     const char *scan;
@@ -531,7 +531,7 @@ API_EXPORT(const char *) ap_xml_quote_string(ap_pool_t *p, const char *s,
     if (extra == 0)
 	return s;
 
-    qstr = ap_palloc(p, len + extra + 1);
+    qstr = apr_palloc(p, len + extra + 1);
     for (scan = s, qscan = qstr; (c = *scan) != '\0'; ++scan) {
 	if (c == '<') {
 	    *qscan++ = '&';
@@ -585,7 +585,7 @@ static int text_size(const ap_text *t)
 }
 
 static size_t elem_size(const ap_xml_elem *elem, int style,
-			ap_array_header_t *namespaces, int *ns_map)
+			apr_array_header_t *namespaces, int *ns_map)
 {
     size_t size;
 
@@ -693,7 +693,7 @@ static char *write_text(char *s, const ap_text *t)
 }
 
 static char *write_elem(char *s, const ap_xml_elem *elem, int style,
-			ap_array_header_t *namespaces, int *ns_map)
+			apr_array_header_t *namespaces, int *ns_map)
 {
     const ap_xml_elem *child;
     size_t len;
@@ -781,7 +781,7 @@ static char *write_elem(char *s, const ap_xml_elem *elem, int style,
     return s;
 }
 
-API_EXPORT(void) ap_xml_quote_elem(ap_pool_t *p, ap_xml_elem *elem)
+API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
 {
     ap_text *scan_txt;
     ap_xml_attr *scan_attr;
@@ -815,13 +815,13 @@ API_EXPORT(void) ap_xml_quote_elem(ap_pool_t *p, ap_xml_elem *elem)
 }
 
 /* convert an element to a text string */
-API_EXPORT(void) ap_xml_to_text(ap_pool_t * p, const ap_xml_elem *elem,
-                                int style, ap_array_header_t *namespaces,
+API_EXPORT(void) ap_xml_to_text(apr_pool_t * p, const ap_xml_elem *elem,
+                                int style, apr_array_header_t *namespaces,
                                 int *ns_map, const char **pbuf, size_t *psize)
 {
     /* get the exact size, plus a null terminator */
     size_t size = elem_size(elem, style, namespaces, ns_map) + 1;
-    char *s = ap_palloc(p, size);
+    char *s = apr_palloc(p, size);
 
     (void) write_elem(s, elem, style, namespaces, ns_map);
     s[size - 1] = '\0';
@@ -831,7 +831,7 @@ API_EXPORT(void) ap_xml_to_text(ap_pool_t * p, const ap_xml_elem *elem,
 	*psize = size;
 }
 
-API_EXPORT(const char *) ap_xml_empty_elem(ap_pool_t * p,
+API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t * p,
                                            const ap_xml_elem *elem)
 {
     if (elem->ns == AP_XML_NS_NONE) {
@@ -839,14 +839,14 @@ API_EXPORT(const char *) ap_xml_empty_elem(ap_pool_t * p,
 	 * The prefix (xml...) is already within the prop name, or
 	 * the element simply has no prefix.
 	 */
-	return ap_psprintf(p, "<%s/>" DEBUG_CR, elem->name);
+	return apr_psprintf(p, "<%s/>" DEBUG_CR, elem->name);
     }
 
-    return ap_psprintf(p, "<ns%d:%s/>" DEBUG_CR, elem->ns, elem->name);
+    return apr_psprintf(p, "<ns%d:%s/>" DEBUG_CR, elem->ns, elem->name);
 }
 
 /* return the URI's (existing) index, or insert it and return a new index */
-API_EXPORT(int) ap_xml_insert_uri(ap_array_header_t *uri_array,
+API_EXPORT(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
                                   const char *uri)
 {
     int i;
@@ -857,7 +857,7 @@ API_EXPORT(int) ap_xml_insert_uri(ap_array_header_t *uri_array,
 	    return i;
     }
 
-    pelt = ap_push_array(uri_array);
+    pelt = apr_push_array(uri_array);
     *pelt = uri;		/* assume uri is const or in a pool */
     return uri_array->nelts - 1;
 }

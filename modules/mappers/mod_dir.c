@@ -74,7 +74,7 @@
 module MODULE_VAR_EXPORT dir_module;
 
 typedef struct dir_config_struct {
-    ap_array_header_t *index_names;
+    apr_array_header_t *index_names;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -84,9 +84,9 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     dir_config_rec *d = dummy;
 
     if (!d->index_names) {
-	d->index_names = ap_make_array(cmd->pool, 2, sizeof(char *));
+	d->index_names = apr_make_array(cmd->pool, 2, sizeof(char *));
     }
-    *(const char **)ap_push_array(d->index_names) = arg;
+    *(const char **)apr_push_array(d->index_names) = arg;
     return NULL;
 }
 
@@ -97,18 +97,18 @@ static const command_rec dir_cmds[] =
     {NULL}
 };
 
-static void *create_dir_config(ap_pool_t *p, char *dummy)
+static void *create_dir_config(apr_pool_t *p, char *dummy)
 {
     dir_config_rec *new =
-    (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
+    (dir_config_rec *) apr_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
     return (void *) new;
 }
 
-static void *merge_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    dir_config_rec *new = (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
+    dir_config_rec *new = (dir_config_rec *) apr_pcalloc(p, sizeof(dir_config_rec));
     dir_config_rec *base = (dir_config_rec *) basev;
     dir_config_rec *add = (dir_config_rec *) addv;
 
@@ -129,13 +129,13 @@ static int handle_dir(request_rec *r)
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
         char *ifile;
         if (r->args != NULL)
-            ifile = ap_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
+            ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                             "/", "?", r->args, NULL);
         else
-            ifile = ap_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
+            ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                             "/", NULL);
 
-        ap_table_setn(r->headers_out, "Location",
+        apr_table_setn(r->headers_out, "Location",
                   ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
     }
@@ -146,7 +146,7 @@ static int handle_dir(request_rec *r)
      */
 
     if (r->filename[strlen(r->filename) - 1] != '/') {
-        r->filename = ap_pstrcat(r->pool, r->filename, "/", NULL);
+        r->filename = apr_pstrcat(r->pool, r->filename, "/", NULL);
     }
 
     if (d->index_names) {
@@ -167,9 +167,9 @@ static int handle_dir(request_rec *r)
             char *new_uri = ap_escape_uri(r->pool, rr->uri);
 
             if (rr->args != NULL)
-                new_uri = ap_pstrcat(r->pool, new_uri, "?", rr->args, NULL);
+                new_uri = apr_pstrcat(r->pool, new_uri, "?", rr->args, NULL);
             else if (r->args != NULL)
-                new_uri = ap_pstrcat(r->pool, new_uri, "?", r->args, NULL);
+                new_uri = apr_pstrcat(r->pool, new_uri, "?", r->args, NULL);
 
             ap_destroy_sub_req(rr);
             ap_internal_redirect(new_uri, r);
@@ -183,10 +183,10 @@ static int handle_dir(request_rec *r)
 
             ap_pool_join(r->pool, rr->pool);
             error_notfound = rr->status;
-            r->notes = ap_overlay_tables(r->pool, r->notes, rr->notes);
-            r->headers_out = ap_overlay_tables(r->pool, r->headers_out,
+            r->notes = apr_overlay_tables(r->pool, r->notes, rr->notes);
+            r->headers_out = apr_overlay_tables(r->pool, r->headers_out,
                                             rr->headers_out);
-            r->err_headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
+            r->err_headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
                                                 rr->err_headers_out);
             return error_notfound;
         }
@@ -230,7 +230,7 @@ module MODULE_VAR_EXPORT dir_module = {
     merge_dir_configs,		/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    dir_cmds,			/* command ap_table_t */
+    dir_cmds,			/* command apr_table_t */
     dir_handlers,		/* handlers */
     NULL			/* register hooks */
 };

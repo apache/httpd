@@ -94,7 +94,7 @@ typedef struct {
 } info_entry;
 
 typedef struct {
-    ap_array_header_t *more_info;
+    apr_array_header_t *more_info;
 } info_svr_conf;
 
 typedef struct info_cfg_lines {
@@ -106,21 +106,21 @@ typedef struct info_cfg_lines {
 module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
 
-static void *create_info_config(ap_pool_t *p, server_rec *s)
+static void *create_info_config(apr_pool_t *p, server_rec *s)
 {
-    info_svr_conf *conf = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
+    info_svr_conf *conf = (info_svr_conf *) apr_pcalloc(p, sizeof(info_svr_conf));
 
-    conf->more_info = ap_make_array(p, 20, sizeof(info_entry));
+    conf->more_info = apr_make_array(p, 20, sizeof(info_entry));
     return conf;
 }
 
-static void *merge_info_config(ap_pool_t *p, void *basev, void *overridesv)
+static void *merge_info_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    info_svr_conf *new = (info_svr_conf *) ap_pcalloc(p, sizeof(info_svr_conf));
+    info_svr_conf *new = (info_svr_conf *) apr_pcalloc(p, sizeof(info_svr_conf));
     info_svr_conf *base = (info_svr_conf *) basev;
     info_svr_conf *overrides = (info_svr_conf *) overridesv;
 
-    new->more_info = ap_append_arrays(p, overrides->more_info, base->more_info);
+    new->more_info = apr_append_arrays(p, overrides->more_info, base->more_info);
     return new;
 }
 
@@ -162,7 +162,7 @@ static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_
     return (buf);
 }
 
-static info_cfg_lines *mod_info_load_config(ap_pool_t *p, const char *filename,
+static info_cfg_lines *mod_info_load_config(apr_pool_t *p, const char *filename,
                                             request_rec *r)
 {
     char s[MAX_STRING_LEN];
@@ -183,7 +183,7 @@ static info_cfg_lines *mod_info_load_config(ap_pool_t *p, const char *filename,
         if (*s == '#') {
             continue;           /* skip comments */
         }
-        new = ap_palloc(p, sizeof(struct info_cfg_lines));
+        new = apr_palloc(p, sizeof(struct info_cfg_lines));
         new->next = NULL;
         if (!ret) {
             ret = new;
@@ -194,7 +194,7 @@ static info_cfg_lines *mod_info_load_config(ap_pool_t *p, const char *filename,
 	t = s;
 	new->cmd = ap_getword_conf(p, &t);
 	if (*t) {
-	    new->line = ap_pstrdup(p, t);
+	    new->line = apr_pstrdup(p, t);
 	}
 	else {
 	    new->line = NULL;
@@ -641,7 +641,7 @@ static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name,
     server_rec *s = cmd->server;
     info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
                                                               &info_module);
-    info_entry *new = ap_push_array(conf->more_info);
+    info_entry *new = apr_push_array(conf->more_info);
 
     new->name = name;
     new->info = info;
@@ -669,7 +669,7 @@ module MODULE_VAR_EXPORT info_module =
     NULL,                       /* dir merger --- default is to override */
     create_info_config,         /* server config */
     merge_info_config,          /* merge server config */
-    info_cmds,                  /* command ap_table_t */
+    info_cmds,                  /* command apr_table_t */
     info_handlers,              /* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

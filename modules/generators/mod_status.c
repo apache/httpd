@@ -81,7 +81,7 @@ static int print_status_value(void *data, const char *key, const char *val)
 static int status_handler(request_rec *r)
 {
     int i;
-    ap_array_header_t *server_status;
+    apr_array_header_t *server_status;
     ap_status_table_row_t *status_rows;
 
     r->allowed = (1 << M_GET);
@@ -107,14 +107,14 @@ static int status_handler(request_rec *r)
     ap_rvputs(r, "Server Built: ",
       ap_get_server_built(), "<br>\n<hr>\n", NULL);
     ap_rvputs(r, "Current Time: ",
-      ap_ht_time(r->pool, ap_now(), DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
+      ap_ht_time(r->pool, apr_now(), DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
     ap_rprintf(r, "\n%d connections currently being processed\n",
                server_status->nelts);
 
     status_rows = (ap_status_table_row_t *) server_status->elts;
     for (i = 0; i < server_status->nelts; i++) {
 	ap_rprintf(r, "<h2>Connection %ld</h2>\n", status_rows[i].conn_id);
-        ap_table_do(print_status_value, (void *) r, status_rows[i].data, NULL);
+        apr_table_do(print_status_value, (void *) r, status_rows[i].data, NULL);
     }
     ap_rputs("</body></html>\n", r);
     return 0;

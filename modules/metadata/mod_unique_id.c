@@ -176,14 +176,14 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_total_size,
                       unique_id_rec_size_uu;
 
-static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server)
+static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
 #endif
     char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
-    ap_interval_time_t pause;
+    apr_interval_time_t pause;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -244,14 +244,14 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    pause = (ap_interval_time_t)(1000000 - (ap_now() % AP_USEC_PER_SEC));
-    ap_sleep(pause);
+    pause = (apr_interval_time_t)(1000000 - (apr_now() % AP_USEC_PER_SEC));
+    apr_sleep(pause);
 }
 
-static void unique_id_child_init(ap_pool_t *p, server_rec *s)
+static void unique_id_child_init(apr_pool_t *p, server_rec *s)
 {
     pid_t pid;
-    ap_time_t tv;
+    apr_time_t tv;
 
     /*
      * Note that we use the pid because it's possible that on the same
@@ -283,7 +283,7 @@ static void unique_id_child_init(ap_pool_t *p, server_rec *s)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-    tv = ap_now();
+    tv = apr_now();
     /* Some systems have very low variance on the low end of their system
      * counter, defend against that.
      */
@@ -331,8 +331,8 @@ static int gen_unique_id(request_rec *r)
     /* copy the unique_id if this is an internal redirect (we're never
      * actually called for sub requests, so we don't need to test for
      * them) */
-    if (r->prev && (e = ap_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
-	ap_table_setn(r->subprocess_env, "UNIQUE_ID", e);
+    if (r->prev && (e = apr_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
+	apr_table_setn(r->subprocess_env, "UNIQUE_ID", e);
 	return DECLINED;
     }
     
@@ -361,7 +361,7 @@ static int gen_unique_id(request_rec *r)
     x[k++] = '\0';
     
     /* alloc str and do the uuencoding */
-    str = (char *)ap_palloc(r->pool, unique_id_rec_size_uu + 1);
+    str = (char *)apr_palloc(r->pool, unique_id_rec_size_uu + 1);
     k = 0;
     for (i = 0; i < unique_id_rec_total_size; i += 3) {
         y = x + i;
@@ -375,7 +375,7 @@ static int gen_unique_id(request_rec *r)
     str[k++] = '\0';
 
     /* set the environment variable */
-    ap_table_setn(r->subprocess_env, "UNIQUE_ID", str);
+    apr_table_setn(r->subprocess_env, "UNIQUE_ID", str);
 
     /* and increment the identifier for the next call */
 
@@ -398,7 +398,7 @@ module MODULE_VAR_EXPORT unique_id_module = {
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
-    NULL,                       /* command ap_table_t */
+    NULL,                       /* command apr_table_t */
     NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

@@ -167,7 +167,7 @@ module rndchunk_module = {
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    NULL,			/* command ap_table_t */
+    NULL,			/* command apr_table_t */
     rndchunk_handlers,	        /* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

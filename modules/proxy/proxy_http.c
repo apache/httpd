@@ -104,11 +104,11 @@ int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_p
     return HTTP_BAD_REQUEST;
 
     if (port != def_port)
-    ap_snprintf(sport, sizeof(sport), ":%d", port);
+    apr_snprintf(sport, sizeof(sport), ":%d", port);
     else
     sport[0] = '\0';
 
-    r->filename = ap_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
+    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
            path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
@@ -128,20 +128,20 @@ static const char *proxy_location_reverse_map(request_rec *r, const char *url)
     for (i = 0; i < conf->raliases->nelts; i++) {
         l2 = strlen(ent[i].real);
         if (l1 >= l2 && strncmp(ent[i].real, url, l2) == 0) {
-            u = ap_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+            u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
             return ap_construct_url(r->pool, u, r);
         }
     }
     return url;
 }
 
-/* Clear all connection-based headers from the incoming headers ap_table_t */
-static void clear_connection(ap_pool_t *p, ap_table_t *headers)
+/* Clear all connection-based headers from the incoming headers apr_table_t */
+static void clear_connection(apr_pool_t *p, apr_table_t *headers)
 {
     const char *name;
-    char *next = ap_pstrdup(p, ap_table_get(headers, "Connection"));
+    char *next = apr_pstrdup(p, apr_table_get(headers, "Connection"));
 
-    ap_table_unset(headers, "Proxy-Connection");
+    apr_table_unset(headers, "Proxy-Connection");
     if (!next)
         return;
 
@@ -153,9 +153,9 @@ static void clear_connection(ap_pool_t *p, ap_table_t *headers)
             *next = '\0';
             ++next;
         }
-        ap_table_unset(headers, name);
+        apr_table_unset(headers, name);
     }
-    ap_table_unset(headers, "Connection");
+    apr_table_unset(headers, "Connection");
 }
 
 /*
@@ -173,20 +173,20 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     const char *strp;
     char *strp2;
     const char *desthost;
-    ap_socket_t *sock;
+    apr_socket_t *sock;
     int i, len, backasswards, content_length=-1;
-    ap_array_header_t *reqhdrs_arr;
-    ap_table_t *resp_hdrs=NULL;
-    ap_table_entry_t *reqhdrs;
+    apr_array_header_t *reqhdrs_arr;
+    apr_table_t *resp_hdrs=NULL;
+    apr_table_entry_t *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
     BUFF *f, *cachefp=NULL;
     char buffer[HUGE_STRING_LEN];
     char portstr[32];
-    ap_pool_t *p = r->pool;
+    apr_pool_t *p = r->pool;
     const long int zero = 0L;
     int destport = 0;
-    ap_ssize_t cntr;
+    apr_ssize_t cntr;
     char *destportstr = NULL;
     const char *urlptr = NULL;
     char *datestr, *clen;
@@ -210,11 +210,11 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     destport = DEFAULT_HTTP_PORT;
     strp = strchr(urlptr, '/');
     if (strp == NULL) {
-        desthost = ap_pstrdup(p, urlptr);
+        desthost = apr_pstrdup(p, urlptr);
         urlptr = "/";
     }
     else {
-        char *q = ap_palloc(p, strp - urlptr + 1);
+        char *q = apr_palloc(p, strp - urlptr + 1);
         memcpy(q, urlptr, strp - urlptr);
         q[strp - urlptr] = '\0';
         urlptr = strp;
@@ -239,13 +239,13 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
                                  "Connect to remote machine blocked");
     }
 
-    if ((ap_create_tcp_socket(&sock, r->pool)) != APR_SUCCESS) {
+    if ((apr_create_tcp_socket(&sock, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (conf->recv_buffer_size > 0 && ap_setsocketopt(sock, APR_SO_RCVBUF,conf->recv_buffer_size)) {
+    if (conf->recv_buffer_size > 0 && apr_setsocketopt(sock, APR_SO_RCVBUF,conf->recv_buffer_size)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
     }
@@ -262,7 +262,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
             return DECLINED;    /* try again another way */
         else
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                ap_pstrcat(r->pool, "Could not connect to remote machine: ",
+                apr_pstrcat(r->pool, "Could not connect to remote machine: ",
                     strerror(errno), NULL));
     }
 
@@ -280,24 +280,24 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 
     if (conf->viaopt == via_block) {
         /* Block all outgoing Via: headers */
-        ap_table_unset(r->headers_in, "Via");
+        apr_table_unset(r->headers_in, "Via");
     } else if (conf->viaopt != via_off) {
         /* Create a "Via:" request header entry and merge it */
         i = ap_get_server_port(r);
         if (ap_is_default_port(i,r)) {
             strcpy(portstr,"");
         } else {
-            ap_snprintf(portstr, sizeof portstr, ":%d", i);
+            apr_snprintf(portstr, sizeof portstr, ":%d", i);
         }
         /* Generate outgoing Via: header with/without server comment: */
-        ap_table_mergen(r->headers_in, "Via",
+        apr_table_mergen(r->headers_in, "Via",
                         (conf->viaopt == via_full)
-                        ? ap_psprintf(p, "%d.%d %s%s (%s)",
+                        ? apr_psprintf(p, "%d.%d %s%s (%s)",
                                       HTTP_VERSION_MAJOR(r->proto_num),
                                       HTTP_VERSION_MINOR(r->proto_num),
                                       ap_get_server_name(r), portstr,
                                       AP_SERVER_BASEVERSION)
-                        : ap_psprintf(p, "%d.%d %s%s",
+                        : apr_psprintf(p, "%d.%d %s%s",
                                       HTTP_VERSION_MAJOR(r->proto_num),
                                       HTTP_VERSION_MINOR(r->proto_num),
                                       ap_get_server_name(r), portstr)
@@ -305,7 +305,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     }
 
     reqhdrs_arr = ap_table_elts(r->headers_in);
-    reqhdrs = (ap_table_entry_t *) reqhdrs_arr->elts;
+    reqhdrs = (apr_table_entry_t *) reqhdrs_arr->elts;
     for (i = 0; i < reqhdrs_arr->nelts; i++) {
         if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
             /* Clear out headers not to send */
@@ -361,7 +361,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         buffer[12] = '\0';
         r->status = atoi(&buffer[9]);
         buffer[12] = ' ';
-        r->status_line = ap_pstrdup(p, &buffer[9]);
+        r->status_line = apr_pstrdup(p, &buffer[9]);
 
 /* read the headers. */
 /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
@@ -385,12 +385,12 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
             if (ap_is_default_port(i,r)) {
                 strcpy(portstr,"");
             } else {
-                ap_snprintf(portstr, sizeof portstr, ":%d", i);
+                apr_snprintf(portstr, sizeof portstr, ":%d", i);
             }
             ap_cache_el_header_add(c, "Via", (conf->viaopt == via_full)
-                         ? ap_psprintf(p, "%d.%d %s%s (%s)", major, minor,
+                         ? apr_psprintf(p, "%d.%d %s%s (%s)", major, minor,
                                        ap_get_server_name(r), portstr, AP_SERVER_BASEVERSION)
-                         : ap_psprintf(p, "%d.%d %s%s", major, minor, ap_get_server_name(r), portstr)
+                         : apr_psprintf(p, "%d.%d %s%s", major, minor, ap_get_server_name(r), portstr)
                 );
         }
     }

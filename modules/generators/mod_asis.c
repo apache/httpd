@@ -70,10 +70,10 @@
 
 static int asis_handler(request_rec *r)
 {
-    ap_file_t *f = NULL;
-    ap_status_t status;
+    apr_file_t *f = NULL;
+    apr_status_t status;
     const char *location;
-    ap_size_t nbytes;
+    apr_size_t nbytes;
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -84,7 +84,7 @@ static int asis_handler(request_rec *r)
 	return HTTP_NOT_FOUND;
     }
 
-    if ((status = ap_open(&f, r->filename, APR_READ, 
+    if ((status = apr_open(&f, r->filename, APR_READ, 
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "file permissions deny server access: %s", r->filename);
@@ -92,12 +92,12 @@ static int asis_handler(request_rec *r)
     }
 
     ap_scan_script_header_err(r, f, NULL);
-    location = ap_table_get(r->headers_out, "Location");
+    location = apr_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
 	((r->status == HTTP_OK) || ap_is_HTTP_REDIRECT(r->status))) {
 
-	ap_close(f);
+	apr_close(f);
 
 	/* Internal redirect -- fake-up a pseudo-request */
 	r->status = HTTP_OK;
@@ -105,7 +105,7 @@ static int asis_handler(request_rec *r)
 	/* This redirect needs to be a GET no matter what the original
 	 * method was.
 	 */
-	r->method = ap_pstrdup(r->pool, "GET");
+	r->method = apr_pstrdup(r->pool, "GET");
 	r->method_number = M_GET;
 
 	ap_internal_redirect_handler(location, r);
@@ -117,7 +117,7 @@ static int asis_handler(request_rec *r)
 	ap_send_fd(f, r, 0, r->finfo.size, &nbytes);
     }
 
-    ap_close(f);
+    apr_close(f);
     return OK;
 }
 
@@ -135,7 +135,7 @@ module MODULE_VAR_EXPORT asis_module =
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    NULL,			/* command ap_table_t */
+    NULL,			/* command apr_table_t */
     asis_handlers,		/* handlers */
     NULL			/* register hooks */
 };

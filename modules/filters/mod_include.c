@@ -138,38 +138,38 @@ static void add_include_vars(request_rec *r, char *timefmt)
 #ifndef WIN32
     struct passwd *pw;
 #endif /* ndef WIN32 */
-    ap_table_t *e = r->subprocess_env;
+    apr_table_t *e = r->subprocess_env;
     char *t;
-    ap_time_t date = r->request_time;
+    apr_time_t date = r->request_time;
 
-    ap_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
-    ap_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
-    ap_table_setn(e, "LAST_MODIFIED",
+    apr_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
+    apr_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
+    apr_table_setn(e, "LAST_MODIFIED",
               ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0));
-    ap_table_setn(e, "DOCUMENT_URI", r->uri);
-    ap_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
+    apr_table_setn(e, "DOCUMENT_URI", r->uri);
+    apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
     pw = getpwuid(r->finfo.user);
     if (pw) {
-        ap_table_setn(e, "USER_NAME", ap_pstrdup(r->pool, pw->pw_name));
+        apr_table_setn(e, "USER_NAME", apr_pstrdup(r->pool, pw->pw_name));
     }
     else {
-        ap_table_setn(e, "USER_NAME", ap_psprintf(r->pool, "user#%lu",
+        apr_table_setn(e, "USER_NAME", apr_psprintf(r->pool, "user#%lu",
                     (unsigned long) r->finfo.user));
     }
 #endif /* ndef WIN32 */
 
     if ((t = strrchr(r->filename, '/'))) {
-        ap_table_setn(e, "DOCUMENT_NAME", ++t);
+        apr_table_setn(e, "DOCUMENT_NAME", ++t);
     }
     else {
-        ap_table_setn(e, "DOCUMENT_NAME", r->uri);
+        apr_table_setn(e, "DOCUMENT_NAME", r->uri);
     }
     if (r->args) {
-        char *arg_copy = ap_pstrdup(r->pool, r->args);
+        char *arg_copy = apr_pstrdup(r->pool, r->args);
 
         ap_unescape_url(arg_copy);
-        ap_table_setn(e, "QUERY_STRING_UNESCAPED",
+        apr_table_setn(e, "QUERY_STRING_UNESCAPED",
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 }
@@ -215,7 +215,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
  */
 #define GET_CHAR(f,c,ret,r) \
  { \
-   ap_status_t status = ap_getc(&c, f); \
+   apr_status_t status = apr_getc(&c, f); \
    if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
        if (status != APR_EOF) { \
            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, \
@@ -223,12 +223,12 @@ static void add_include_vars(request_rec *r, char *timefmt)
                         "mod_include."); \
        } \
        FLUSH_BUF(r); \
-       ap_close(f); \
+       apr_close(f); \
        return ret; \
    } \
  }
 
-static int find_string(ap_file_t *in, const char *str, request_rec *r, int printing)
+static int find_string(apr_file_t *in, const char *str, request_rec *r, int printing)
 {
     int x, l = strlen(str), p;
     char outbuf[OUTBUFSIZE];
@@ -261,14 +261,14 @@ static int find_string(ap_file_t *in, const char *str, request_rec *r, int print
 #undef GET_CHAR
 #define GET_CHAR(f,c,r,p) \
  { \
-   ap_status_t status = ap_getc(&c, f); \
+   apr_status_t status = apr_getc(&c, f); \
    if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
        if (status != APR_EOF) { \
            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, \
                         "encountered error in GET_CHAR macro, " \
                         "mod_include."); \
        } \
-       ap_close(f); \
+       apr_close(f); \
        return r; \
    } \
  }
@@ -373,7 +373,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
  * the tag value is html decoded if dodecode is non-zero
  */
 
-static char *get_tag(ap_pool_t *p, ap_file_t *in, char *tag, int tagbuf_len, int dodecode)
+static char *get_tag(apr_pool_t *p, apr_file_t *in, char *tag, int tagbuf_len, int dodecode)
 {
     char *t = tag, *tag_val, c, term;
 
@@ -392,7 +392,7 @@ static char *get_tag(ap_pool_t *p, ap_file_t *in, char *tag, int tagbuf_len, int
                 GET_CHAR(in, c, NULL, p);
             } while (ap_isspace(c));
             if (c == '>') {
-                ap_cpystrn(tag, "done", tagbuf_len);
+                apr_cpystrn(tag, "done", tagbuf_len);
                 return tag;
             }
         }
@@ -419,7 +419,7 @@ static char *get_tag(ap_pool_t *p, ap_file_t *in, char *tag, int tagbuf_len, int
         GET_CHAR(in, c, NULL, p);       /* space before = */
     }
     if (c != '=') {
-        ap_ungetc(c, in);
+        apr_ungetc(c, in);
         return NULL;
     }
 
@@ -456,10 +456,10 @@ static char *get_tag(ap_pool_t *p, ap_file_t *in, char *tag, int tagbuf_len, int
     if (dodecode) {
         decodehtml(tag_val);
     }
-    return ap_pstrdup(p, tag_val);
+    return apr_pstrdup(p, tag_val);
 }
 
-static int get_directive(ap_file_t *in, char *dest, size_t len, ap_pool_t *p)
+static int get_directive(apr_file_t *in, char *dest, size_t len, apr_pool_t *p)
 {
     char *d = dest;
     char c;
@@ -557,7 +557,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		    memcpy(var, start_of_var_name, l);
 		    var[l] = '\0';
 
-		    val = ap_table_get(r->subprocess_env, var);
+		    val = apr_table_get(r->subprocess_env, var);
 		    if (val) {
 			expansion = val;
 			l = strlen(expansion);
@@ -627,7 +627,7 @@ static int include_cgi(char *s, request_rec *r)
 
     rr_status = ap_run_sub_req(rr);
     if (ap_is_HTTP_REDIRECT(rr_status)) {
-        const char *location = ap_table_get(rr->headers_out, "Location");
+        const char *location = apr_table_get(rr->headers_out, "Location");
         location = ap_escape_html(rr->pool, location);
         ap_rvputs(r, "<A HREF=\"", location, "\">", location, "</A>", NULL);
     }
@@ -666,7 +666,7 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(ap_file_t *in, request_rec *r, const char *error, int noexec)
+static int handle_include(apr_file_t *in, request_rec *r, const char *error, int noexec)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -789,7 +789,7 @@ typedef struct {
 
 
 
-static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
+static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
 {
     int numwords, x, idx;
     char *w;
@@ -812,7 +812,7 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
     if (numwords > APACHE_ARG_MAX - 1) {
         numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
     }
-    *argv = (char **) ap_palloc(p, (numwords + 2) * sizeof(char *));
+    *argv = (char **) apr_palloc(p, (numwords + 2) * sizeof(char *));
  
     for (x = 1, idx = 1; x < numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
@@ -830,12 +830,12 @@ static int include_cmd(char *s, request_rec *r)
 {
     include_cmd_arg arg;
     BUFF *script_in;
-    ap_procattr_t *procattr;
-    ap_proc_t *procnew;
-    ap_status_t rc;
-    ap_table_t *env = r->subprocess_env;
+    apr_procattr_t *procattr;
+    apr_proc_t *procnew;
+    apr_status_t rc;
+    apr_table_t *env = r->subprocess_env;
     char **argv;
-    ap_file_t *file = NULL;
+    apr_file_t *file = NULL;
     ap_iol *iol;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
@@ -855,39 +855,39 @@ static int include_cmd(char *s, request_rec *r)
     if (r->path_info && r->path_info[0] != '\0') {
         request_rec *pa_req;
 
-        ap_table_setn(env, "PATH_INFO", ap_escape_shell_cmd(r->pool, r->path_info));
+        apr_table_setn(env, "PATH_INFO", ap_escape_shell_cmd(r->pool, r->path_info));
 
         pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r);
         if (pa_req->filename) {
-            ap_table_setn(env, "PATH_TRANSLATED",
-                      ap_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
+            apr_table_setn(env, "PATH_TRANSLATED",
+                      apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
                               NULL));
         }
     }
 
     if (r->args) {
-        char *arg_copy = ap_pstrdup(r->pool, r->args);
+        char *arg_copy = apr_pstrdup(r->pool, r->args);
 
-        ap_table_setn(env, "QUERY_STRING", r->args);
+        apr_table_setn(env, "QUERY_STRING", r->args);
         ap_unescape_url(arg_copy);
-        ap_table_setn(env, "QUERY_STRING_UNESCAPED",
+        apr_table_setn(env, "QUERY_STRING_UNESCAPED",
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    if ((ap_createprocattr_init(&procattr, r->pool) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr, APR_NO_PIPE, 
+    if ((apr_createprocattr_init(&procattr, r->pool) != APR_SUCCESS) ||
+        (apr_setprocattr_io(procattr, APR_NO_PIPE, 
                            APR_FULL_BLOCK, APR_NO_PIPE) != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
+        (apr_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
 #ifdef RLIMIT_CPU
-        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
 #endif
 #if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
 #endif
 #ifdef RLIMIT_NPROC
-        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
-        (ap_setprocattr_cmdtype(procattr, APR_SHELLCMD) != APR_SUCCESS)) {
+        (apr_setprocattr_cmdtype(procattr, APR_SHELLCMD) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
             "couldn't initialize proc attributes: %s %s", r->filename, s);
@@ -895,9 +895,9 @@ static int include_cmd(char *s, request_rec *r)
     }
     else {
         build_argv_list(&argv, r, r->pool);
-        argv[0] = ap_pstrdup(r->pool, s);
-        procnew = ap_pcalloc(r->pool, sizeof(*procnew));
-        rc = ap_create_process(procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
+        argv[0] = apr_pstrdup(r->pool, s);
+        procnew = apr_pcalloc(r->pool, sizeof(*procnew));
+        rc = apr_create_process(procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -905,7 +905,7 @@ static int include_cmd(char *s, request_rec *r)
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
-            ap_note_subprocess(r->pool, procnew, kill_after_timeout);
+            apr_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             file = procnew->out;
             iol = ap_create_file_iol(file);
@@ -921,7 +921,7 @@ static int include_cmd(char *s, request_rec *r)
     return 0;
 }
 
-static int handle_exec(ap_file_t *in, request_rec *r, const char *error)
+static int handle_exec(apr_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -966,7 +966,7 @@ static int handle_exec(ap_file_t *in, request_rec *r, const char *error)
 
 }
 
-static int handle_echo(ap_file_t *in, request_rec *r, const char *error)
+static int handle_echo(apr_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -979,7 +979,7 @@ static int handle_echo(ap_file_t *in, request_rec *r, const char *error)
             return 1;
         }
         if (!strcmp(tag, "var")) {
-            const char *val = ap_table_get(r->subprocess_env, tag_val);
+            const char *val = apr_table_get(r->subprocess_env, tag_val);
 
             if (val) {
 		if (encode == E_NONE) {
@@ -1022,7 +1022,7 @@ static int handle_echo(ap_file_t *in, request_rec *r, const char *error)
 }
 
 #ifdef USE_PERL_SSI
-static int handle_perl(ap_file_t *in, request_rec *r, const char *error)
+static int handle_perl(apr_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -1061,13 +1061,13 @@ static int handle_perl(ap_file_t *in, request_rec *r, const char *error)
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
+static int handle_config(apr_file_t *in, request_rec *r, char *error, char *tf,
                          int *sizefmt)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
     char parsed_string[MAX_STRING_LEN];
-    ap_table_t *env = r->subprocess_env;
+    apr_table_t *env = r->subprocess_env;
 
     while (1) {
         if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0))) {
@@ -1077,12 +1077,12 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
             parse_string(r, tag_val, error, MAX_STRING_LEN, 0);
         }
         else if (!strcmp(tag, "timefmt")) {
-            ap_time_t date = r->request_time;
+            apr_time_t date = r->request_time;
 
             parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
-            ap_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, tf, 0));
-            ap_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, tf, 1));
-            ap_table_setn(env, "LAST_MODIFIED",
+            apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, tf, 0));
+            apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, tf, 1));
+            apr_table_setn(env, "LAST_MODIFIED",
                       ap_ht_time(r->pool, r->finfo.mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
@@ -1109,7 +1109,7 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
 
 
 static int find_file(request_rec *r, const char *directive, const char *tag,
-                     char *tag_val, ap_finfo_t *finfo, const char *error)
+                     char *tag_val, apr_finfo_t *finfo, const char *error)
 {
     char *to_send = tag_val;
     request_rec *rr = NULL;
@@ -1128,7 +1128,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
-                if (ap_stat(finfo, to_send, rr->pool) != APR_SUCCESS) {
+                if (apr_stat(finfo, to_send, rr->pool) != APR_SUCCESS) {
                     error_fmt = "unable to get information about \"%s\" "
                         "in parsed file %s";
                 }
@@ -1141,7 +1141,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (error_fmt) {
             ret = -1;
-            /* TODO: pass APLOG_NOERRNO if no ap_stat() failure; pass rv from ap_stat()
+            /* TODO: pass APLOG_NOERRNO if no apr_stat() failure; pass rv from apr_stat()
              * otherwise
              */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error_fmt, to_send, r->filename);
@@ -1181,11 +1181,11 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 }
 
 
-static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int sizefmt)
+static int handle_fsize(apr_file_t *in, request_rec *r, const char *error, int sizefmt)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
@@ -1203,7 +1203,7 @@ static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int si
                 }
                 else {
                     int l, x;
-                    ap_snprintf(tag, sizeof(tag), "%" APR_OFF_T_FMT, finfo.size);
+                    apr_snprintf(tag, sizeof(tag), "%" APR_OFF_T_FMT, finfo.size);
                     l = strlen(tag);    /* grrr */
                     for (x = 0; x < l; x++) {
                         if (x && (!((l - x) % 3))) {
@@ -1217,11 +1217,11 @@ static int handle_fsize(ap_file_t *in, request_rec *r, const char *error, int si
     }
 }
 
-static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, const char *tf)
+static int handle_flastmod(apr_file_t *in, request_rec *r, const char *error, const char *tf)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
@@ -1438,19 +1438,19 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
     }         *root, *current, *new;
     const char *parse;
     char buffer[MAX_STRING_LEN];
-    ap_pool_t *expr_pool;
+    apr_pool_t *expr_pool;
     int retval = 0;
 
     if ((parse = expr) == (char *) NULL) {
         return (0);
     }
     root = current = (struct parse_node *) NULL;
-    if (ap_create_pool(&expr_pool, r->pool) != APR_SUCCESS)
+    if (apr_create_pool(&expr_pool, r->pool) != APR_SUCCESS)
 		return 0;
 
     /* Create Parse Tree */
     while (1) {
-        new = (struct parse_node *) ap_palloc(expr_pool,
+        new = (struct parse_node *) apr_palloc(expr_pool,
                                            sizeof(struct parse_node));
         new->parent = new->left = new->right = (struct parse_node *) NULL;
         new->done = 0;
@@ -1736,7 +1736,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             ap_rputs("     Evaluate string\n", r);
 #endif
             parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
-	    ap_cpystrn(current->token.value, buffer, sizeof(current->token.value));
+	    apr_cpystrn(current->token.value, buffer, sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1760,7 +1760,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                 case token_string:
                     parse_string(r, current->left->token.value,
                                  buffer, sizeof(buffer), 0);
-                    ap_cpystrn(current->left->token.value, buffer,
+                    apr_cpystrn(current->left->token.value, buffer,
                             sizeof(current->left->token.value));
 		    current->left->value = (current->left->token.value[0] != '\0');
                     current->left->done = 1;
@@ -1775,7 +1775,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                 case token_string:
                     parse_string(r, current->right->token.value,
                                  buffer, sizeof(buffer), 0);
-                    ap_cpystrn(current->right->token.value, buffer,
+                    apr_cpystrn(current->right->token.value, buffer,
                             sizeof(current->right->token.value));
 		    current->right->value = (current->right->token.value[0] != '\0');
                     current->right->done = 1;
@@ -1822,11 +1822,11 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
-            ap_cpystrn(current->left->token.value, buffer,
+            apr_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
-            ap_cpystrn(current->right->token.value, buffer,
+            apr_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
             if (current->right->token.value[0] == '/') {
                 int len;
@@ -1887,11 +1887,11 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
-            ap_cpystrn(current->left->token.value, buffer,
+            apr_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
-            ap_cpystrn(current->right->token.value, buffer,
+            apr_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
 #ifdef DEBUG_INCLUDE
             ap_rvputs(r, "     Compare (", current->left->token.value,
@@ -1985,11 +1985,11 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
 
     retval = (root == (struct parse_node *) NULL) ? 0 : root->value;
   RETURN:
-    ap_destroy_pool(expr_pool);
+    apr_destroy_pool(expr_pool);
     return (retval);
 }
 
-static int handle_if(ap_file_t *in, request_rec *r, const char *error,
+static int handle_if(apr_file_t *in, request_rec *r, const char *error,
                      int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2032,7 +2032,7 @@ static int handle_if(ap_file_t *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_elif(ap_file_t *in, request_rec *r, const char *error,
+static int handle_elif(apr_file_t *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2083,7 +2083,7 @@ static int handle_elif(ap_file_t *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_else(ap_file_t *in, request_rec *r, const char *error,
+static int handle_else(apr_file_t *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2111,7 +2111,7 @@ static int handle_else(ap_file_t *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_endif(ap_file_t *in, request_rec *r, const char *error,
+static int handle_endif(apr_file_t *in, request_rec *r, const char *error,
                         int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
@@ -2137,7 +2137,7 @@ static int handle_endif(ap_file_t *in, request_rec *r, const char *error,
     }
 }
 
-static int handle_set(ap_file_t *in, request_rec *r, const char *error)
+static int handle_set(apr_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -2164,7 +2164,7 @@ static int handle_set(ap_file_t *in, request_rec *r, const char *error)
                 return -1;
             }
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-            ap_table_setn(r->subprocess_env, var, ap_pstrdup(r->pool, parsed_string));
+            apr_table_setn(r->subprocess_env, var, apr_pstrdup(r->pool, parsed_string));
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2175,12 +2175,12 @@ static int handle_set(ap_file_t *in, request_rec *r, const char *error)
     }
 }
 
-static int handle_printenv(ap_file_t *in, request_rec *r, const char *error)
+static int handle_printenv(apr_file_t *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
-    ap_array_header_t *arr = ap_table_elts(r->subprocess_env);
-    ap_table_entry_t *elts = (ap_table_entry_t *)arr->elts;
+    apr_array_header_t *arr = ap_table_elts(r->subprocess_env);
+    apr_table_entry_t *elts = (apr_table_entry_t *)arr->elts;
     int i;
 
     if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
@@ -2208,7 +2208,7 @@ static int handle_printenv(ap_file_t *in, request_rec *r, const char *error)
 
 /* This is a stub which parses a file descriptor. */
 
-static void send_parsed_content(ap_file_t *f, request_rec *r)
+static void send_parsed_content(apr_file_t *f, request_rec *r)
 {
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
     char timefmt[MAX_STRING_LEN];
@@ -2218,8 +2218,8 @@ static void send_parsed_content(ap_file_t *f, request_rec *r)
     int printing;
     int conditional_status;
 
-    ap_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
-    ap_cpystrn(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt));
+    apr_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
+    apr_cpystrn(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt));
     sizefmt = SIZEFMT_KMG;
 
 /*  Turn printing on */
@@ -2228,11 +2228,11 @@ static void send_parsed_content(ap_file_t *f, request_rec *r)
 
     ap_chdir_file(r->filename);
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
-        char *arg_copy = ap_pstrdup(r->pool, r->args);
+        char *arg_copy = apr_pstrdup(r->pool, r->args);
 
-        ap_table_setn(r->subprocess_env, "QUERY_STRING", r->args);
+        apr_table_setn(r->subprocess_env, "QUERY_STRING", r->args);
         ap_unescape_url(arg_copy);
-        ap_table_setn(r->subprocess_env, "QUERY_STRING_UNESCAPED",
+        apr_table_setn(r->subprocess_env, "QUERY_STRING_UNESCAPED",
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
@@ -2363,9 +2363,9 @@ enum xbithack {
 #define DEFAULT_XBITHACK xbithack_off
 #endif
 
-static void *create_includes_dir_config(ap_pool_t *p, char *dummy)
+static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 {
-    enum xbithack *result = (enum xbithack *) ap_palloc(p, sizeof(enum xbithack));
+    enum xbithack *result = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
     *result = DEFAULT_XBITHACK;
     return result;
 }
@@ -2392,7 +2392,7 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
 
 static int send_parsed_file(request_rec *r)
 {
-    ap_file_t *f = NULL;
+    apr_file_t *f = NULL;
     enum xbithack *state =
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
@@ -2409,12 +2409,12 @@ static int send_parsed_file(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "File does not exist: %s",
                     (r->path_info
-                     ? ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
+                     ? apr_pstrcat(r->pool, r->filename, r->path_info, NULL)
                      : r->filename));
         return HTTP_NOT_FOUND;
     }
 
-    errstatus = ap_open(&f, r->filename, APR_READ|APR_BUFFERED, 0, r->pool);
+    errstatus = apr_open(&f, r->filename, APR_READ|APR_BUFFERED, 0, r->pool);
 
     if (errstatus != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errstatus, r,
@@ -2438,7 +2438,7 @@ static int send_parsed_file(request_rec *r)
     ap_send_http_header(r);
 
     if (r->header_only) {
-        ap_close(f);
+        apr_close(f);
         return OK;
     }
 
@@ -2534,7 +2534,7 @@ module MODULE_VAR_EXPORT includes_module =
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    includes_cmds,              /* command ap_table_t */
+    includes_cmds,              /* command apr_table_t */
     includes_handlers,          /* handlers */
     NULL			/* register hooks */
 };

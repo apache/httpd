@@ -118,7 +118,7 @@ extern "C" {
  * @param s_main The main server
  * @param p The pool to allocate out of
  */
-void ap_open_logs (server_rec *s_main, ap_pool_t *p);
+void ap_open_logs (server_rec *s_main, apr_pool_t *p);
 
 /* 
  * The three primary logging functions, ap_log_error, ap_log_rerror, and 
@@ -147,10 +147,10 @@ void ap_open_logs (server_rec *s_main, ap_pool_t *p);
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, const server_rec *s, const char *fmt, ...) 
+ * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, const server_rec *s, const char *fmt, ...) 
  */
 API_EXPORT(void) ap_log_error(const char *file, int line, int level, 
-                             ap_status_t status, const server_rec *s, 
+                             apr_status_t status, const server_rec *s, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
 
@@ -171,10 +171,10 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, ap_pool_t *p, const char *fmt, ...) 
+ * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, apr_pool_t *p, const char *fmt, ...) 
  */
 API_EXPORT(void) ap_log_perror(const char *file, int line, int level, 
-                             ap_status_t status, ap_pool_t *p, 
+                             apr_status_t status, apr_pool_t *p, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
 
@@ -195,10 +195,10 @@ API_EXPORT(void) ap_log_perror(const char *file, int line, int level,
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, ap_status_t status, request_rec *s, const char *fmt, ...) 
+ * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, request_rec *s, const char *fmt, ...) 
  */
 API_EXPORT(void) ap_log_rerror(const char *file, int line, int level, 
-                               ap_status_t status, const request_rec *s, 
+                               apr_status_t status, const request_rec *s, 
                                const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
 
@@ -214,7 +214,7 @@ API_EXPORT(void) ap_error_log2stderr (server_rec *);
  * @param p The pool to use for logging
  * @param fname The name of the file to log to
  */
-void ap_log_pid (ap_pool_t *p, const char *fname);
+void ap_log_pid (apr_pool_t *p, const char *fname);
 /* These are for legacy code, new code should use ap_log_error,
  * or ap_log_rerror.
  */
@@ -234,16 +234,16 @@ typedef struct piped_log piped_log;
  */
 struct piped_log {
     /** The pool to use for the piped log */
-    ap_pool_t *p;
+    apr_pool_t *p;
     /** The pipe between the server and the logging process */
-    ap_file_t *fds[2];
+    apr_file_t *fds[2];
     /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
      * be hard */
 #ifdef HAVE_RELIABLE_PIPED_LOGS
     /** The name of the program the logging process is running */
     char *program;
     /** The pid of the logging process */
-    ap_proc_t *pid;
+    apr_proc_t *pid;
 #endif
 };
 
@@ -252,9 +252,9 @@ struct piped_log {
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
  * @return The piped log structure
- * @deffunc piped_log *ap_open_piped_log(ap_pool_t *p, const char *program)
+ * @deffunc piped_log *ap_open_piped_log(apr_pool_t *p, const char *program)
  */
-API_EXPORT(piped_log *) ap_open_piped_log (ap_pool_t *p, const char *program);
+API_EXPORT(piped_log *) ap_open_piped_log (apr_pool_t *p, const char *program);
 
 /**
  * Close the piped log and kill the logging process

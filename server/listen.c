@@ -76,33 +76,33 @@ static int ap_listenbacklog;
 static int send_buffer_size;
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
-static ap_status_t make_sock(ap_pool_t *p, ap_listen_rec *server)
+static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 {
-    ap_socket_t *s = server->sd;
+    apr_socket_t *s = server->sd;
     int one = 1;
     char addr[512];
-    ap_status_t stat;
-    ap_uint32_t port;
+    apr_status_t stat;
+    apr_uint32_t port;
     char *ipaddr;
 
-    ap_get_local_port(&port,s);
-    ap_get_local_ipaddr(&ipaddr,s);
-    ap_snprintf(addr, sizeof(addr), "address %s port %u", ipaddr,
+    apr_get_local_port(&port,s);
+    apr_get_local_ipaddr(&ipaddr,s);
+    apr_snprintf(addr, sizeof(addr), "address %s port %u", ipaddr,
 		(unsigned) port);
 
-    stat = ap_setsocketopt(s, APR_SO_REUSEADDR, one);
+    stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
-	ap_close_socket(s);
+	apr_close_socket(s);
 	return stat;
     }
     
-    stat = ap_setsocketopt(s, APR_SO_KEEPALIVE, one);
+    stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
-	ap_close_socket(s);
+	apr_close_socket(s);
 	return stat;
     }
 
@@ -126,7 +126,7 @@ static ap_status_t make_sock(ap_pool_t *p, ap_listen_rec *server)
      * If no size is specified, use the kernel default.
      */
     if (send_buffer_size) {
-	stat = ap_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
+	stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, stat, NULL,
 			"make_sock: failed to set SendBufferSize for %s, "
@@ -135,17 +135,17 @@ static ap_status_t make_sock(ap_pool_t *p, ap_listen_rec *server)
 	}
     }
 
-    if ((stat = ap_bind(s)) != APR_SUCCESS) {
+    if ((stat = apr_bind(s)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 	    "make_sock: could not bind to %s", addr);
-	ap_close_socket(s);
+	apr_close_socket(s);
 	return stat;
     }
 
-    if ((stat = ap_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
+    if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
 	    "make_sock: unable to listen for connections on %s", addr);
-	ap_close_socket(s);
+	apr_close_socket(s);
 	return stat;
     }
 
@@ -155,12 +155,12 @@ static ap_status_t make_sock(ap_pool_t *p, ap_listen_rec *server)
 }
 
 
-static ap_status_t close_listeners_on_exec(void *v)
+static apr_status_t close_listeners_on_exec(void *v)
 {
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	ap_close_socket(lr->sd);
+	apr_close_socket(lr->sd);
 	lr->active = 0;
     }
     return APR_SUCCESS;
@@ -171,14 +171,14 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
-    ap_status_t status;
+    apr_status_t status;
     char *oldaddr;
     unsigned int oldport;
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-        ap_get_local_port(&oldport, (*walk)->sd);
-	ap_get_local_ipaddr(&oldaddr,(*walk)->sd);
+        apr_get_local_port(&oldport, (*walk)->sd);
+	apr_get_local_ipaddr(&oldaddr,(*walk)->sd);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */
 	    new = *walk;
@@ -190,15 +190,15 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     }
 
     /* this has to survive restarts */
-    new = ap_palloc(process->pool, sizeof(ap_listen_rec));
+    new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = ap_create_tcp_socket(&new->sd, process->pool)) != APR_SUCCESS) {
+    if ((status = apr_create_tcp_socket(&new->sd, process->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
                  "make_sock: failed to get a socket for %s", addr);
         return;
     }
-    ap_set_local_port(new->sd, port);
-    ap_set_local_ipaddr(new->sd, addr);
+    apr_set_local_port(new->sd, port);
+    apr_set_local_ipaddr(new->sd, addr);
     new->next = ap_listeners;
     ap_listeners = new;
 }
@@ -208,7 +208,7 @@ static
 #endif
 int ap_listen_open(process_rec *process, unsigned port)
 {
-    ap_pool_t *pconf = process->pconf;
+    apr_pool_t *pconf = process->pconf;
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
@@ -233,14 +233,14 @@ int ap_listen_open(process_rec *process, unsigned port)
 
     /* close the old listeners */
     for (lr = old_listeners; lr; lr = next) {
-	ap_close_socket(lr->sd);
+	apr_close_socket(lr->sd);
 	lr->active = 0;
 	next = lr->next;
 /*	free(lr);*/
     }
     old_listeners = NULL;
 
-    ap_register_cleanup(pconf, NULL, ap_null_cleanup, close_listeners_on_exec);
+    apr_register_cleanup(pconf, NULL, apr_null_cleanup, close_listeners_on_exec);
 
     return num_open ? 0 : -1;
 }
@@ -270,7 +270,7 @@ void ap_listen_pre_config(void)
 
 const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips_)
 {
-    char *ips=ap_pstrdup(cmd->pool, ips_);
+    char *ips=apr_pstrdup(cmd->pool, ips_);
     char *ports;
     unsigned short port;
 

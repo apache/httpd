@@ -144,12 +144,12 @@ typedef struct {
     PFN_HSE_IO_COMPLETION completion;
     PVOID  completion_arg;
     HANDLE complete;
-    ap_status_t retval;
+    apr_status_t retval;
 } isapi_cid;
 
-ap_status_t isapi_handler (request_rec *r)
+apr_status_t isapi_handler (request_rec *r)
 {
-    ap_table_t *e = r->subprocess_env;
+    apr_table_t *e = r->subprocess_env;
     isapi_loaded *isa;
     isapi_cid *cid;
 
@@ -177,8 +177,8 @@ ap_status_t isapi_handler (request_rec *r)
      * should only be performed on the first isapi dll invocation, 
      * not with every HttpExtensionProc()
      */
-    isa = ap_pcalloc(r->pool, sizeof(isapi_module));
-    isa->pVer = ap_pcalloc(r->pool, sizeof(HSE_VERSION_INFO));
+    isa = apr_pcalloc(r->pool, sizeof(isapi_module));
+    isa->pVer = apr_pcalloc(r->pool, sizeof(HSE_VERSION_INFO));
     isa->refcount = 0;
 
     /* TODO: These may need to become overrideable, so that we
@@ -239,8 +239,8 @@ ap_status_t isapi_handler (request_rec *r)
     ap_add_cgi_vars(r);
 
     /* Set up connection structure and ecb */
-    cid = ap_pcalloc(r->pool, sizeof(isapi_cid));
-    cid->ecb = ap_pcalloc(r->pool, sizeof(struct _EXTENSION_CONTROL_BLOCK));
+    cid = apr_pcalloc(r->pool, sizeof(isapi_cid));
+    cid->ecb = apr_pcalloc(r->pool, sizeof(struct _EXTENSION_CONTROL_BLOCK));
     cid->ecb->ConnID = (HCONN)cid;
     /* TODO: Critical section */
     ++isa->refcount;
@@ -256,15 +256,15 @@ ap_status_t isapi_handler (request_rec *r)
     cid->ecb->dwHttpStatusCode = 0;
     strcpy(cid->ecb->lpszLogData, "");
     // TODO: are copies really needed here?
-    cid->ecb->lpszMethod = ap_pstrdup(r->pool, (char*) r->method);
-    cid->ecb->lpszQueryString = ap_pstrdup(r->pool, 
-                                (char*) ap_table_get(e, "QUERY_STRING"));
-    cid->ecb->lpszPathInfo = ap_pstrdup(r->pool, 
-                             (char*) ap_table_get(e, "PATH_INFO"));
-    cid->ecb->lpszPathTranslated = ap_pstrdup(r->pool, 
-                                   (char*) ap_table_get(e, "PATH_TRANSLATED"));
-    cid->ecb->lpszContentType = ap_pstrdup(r->pool, 
-                                (char*) ap_table_get(e, "CONTENT_TYPE"));
+    cid->ecb->lpszMethod = apr_pstrdup(r->pool, (char*) r->method);
+    cid->ecb->lpszQueryString = apr_pstrdup(r->pool, 
+                                (char*) apr_table_get(e, "QUERY_STRING"));
+    cid->ecb->lpszPathInfo = apr_pstrdup(r->pool, 
+                             (char*) apr_table_get(e, "PATH_INFO"));
+    cid->ecb->lpszPathTranslated = apr_pstrdup(r->pool, 
+                                   (char*) apr_table_get(e, "PATH_TRANSLATED"));
+    cid->ecb->lpszContentType = apr_pstrdup(r->pool, 
+                                (char*) apr_table_get(e, "CONTENT_TYPE"));
     /* Set up the callbacks */
     cid->ecb->GetServerVariable = &GetServerVariable;
     cid->ecb->WriteClient = &WriteClient;
@@ -291,7 +291,7 @@ ap_status_t isapi_handler (request_rec *r)
          * But we can be smarter and read up to our 48k and then allow
          * the ISAPI app to read further blocks as desired.
          */
-        long to_read = atol(ap_table_get(e, "CONTENT_LENGTH"));
+        long to_read = atol(apr_table_get(e, "CONTENT_LENGTH"));
         long read;
 
         /* Actually, let's cap it at 48k, until we figure out what
@@ -306,7 +306,7 @@ ap_status_t isapi_handler (request_rec *r)
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
 
-        cid->ecb->lpbData = ap_pcalloc(r->pool, 1 + to_read);
+        cid->ecb->lpbData = apr_pcalloc(r->pool, 1 + to_read);
 
         if ((read = ap_get_client_block(r, cid->ecb->lpbData, to_read)) < 0) {
             if (isa->TerminateExtension) 
@@ -417,7 +417,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
                                LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer)
 {
     request_rec *r = ((isapi_cid *)hConn)->r;
-    ap_table_t *e = r->subprocess_env;
+    apr_table_t *e = r->subprocess_env;
     const char *result;
 
     /* Mostly, we just grab it from the environment, but there are
@@ -428,7 +428,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         /* We don't support NT users, so this is always the same as
          * REMOTE_USER
          */
-        result = ap_table_get(e, "REMOTE_USER");
+        result = apr_table_get(e, "REMOTE_USER");
     }
     else if (!strcasecmp(lpszVariableName, "SERVER_PORT_SECURE")) {
         /* Apache doesn't support secure requests inherently, so
@@ -441,7 +441,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         result = r->uri;
     }
     else {
-        result = ap_table_get(e, lpszVariableName);
+        result = apr_table_get(e, lpszVariableName);
     }
 
     if (result) {
@@ -549,21 +549,21 @@ static char* ComposeHeaders(request_rec *r, char* data)
             while (endp > value && ap_isspace(*endp)) 
                 *endp-- = '\0';
 
-            tmp = ap_pstrdup (r->pool, value);
+            tmp = apr_pstrdup (r->pool, value);
             ap_str_tolower(tmp);
             r->content_type = tmp;
         }
         else if (!strcasecmp(data, "Content-Length")) {
-            ap_table_set(r->headers_out, data, value);
+            apr_table_set(r->headers_out, data, value);
         }
         else if (!strcasecmp(data, "Transfer-Encoding")) {
-            ap_table_set(r->headers_out, data, value);
+            apr_table_set(r->headers_out, data, value);
         }
         else if (!strcasecmp(data, "Set-Cookie")) {
-            ap_table_add(r->err_headers_out, data, value);
+            apr_table_add(r->err_headers_out, data, value);
         }
         else {
-            ap_table_merge(r->err_headers_out, data, value);
+            apr_table_merge(r->err_headers_out, data, value);
         }
 
         /* Reset data */
@@ -594,7 +594,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             /* Set the status to be returned when the HttpExtensionProc()
              * is done.
              */
-            ap_table_set (r->headers_out, "Location", lpvBuffer);
+            apr_table_set (r->headers_out, "Location", lpvBuffer);
             cid->r->status = cid->ecb->dwHttpStatusCode 
                                                    = HTTP_MOVED_TEMPORARILY;
             return TRUE;
@@ -609,17 +609,17 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             }
 
             /* Reset the method to GET */
-            r->method = ap_pstrdup(r->pool, "GET");
+            r->method = apr_pstrdup(r->pool, "GET");
             r->method_number = M_GET;
 
             /* Don't let anyone think there's still data */
-            ap_table_unset(r->headers_in, "Content-Length");
+            apr_table_unset(r->headers_in, "Content-Length");
 
             ap_internal_redirect((char *)lpvBuffer, r);
             return TRUE;
 
         case HSE_REQ_SEND_RESPONSE_HEADER:
-            r->status_line = lpvBuffer ? lpvBuffer : ap_pstrdup(r->pool, "200 OK");
+            r->status_line = lpvBuffer ? lpvBuffer : apr_pstrdup(r->pool, "200 OK");
             sscanf(r->status_line, "%d", &r->status);
             cid->ecb->dwHttpStatusCode = r->status;
 
@@ -636,7 +636,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             }
                         
             /* Make a copy - don't disturb the original */
-            data = ap_pstrdup(r->pool, (char *)lpdwDataType);
+            data = apr_pstrdup(r->pool, (char *)lpdwDataType);
             
             /* Parse them out, or die trying */
             data = ComposeHeaders(r, data);
@@ -661,7 +661,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
         case HSE_REQ_MAP_URL_TO_PATH:
             /* Map a URL to a filename */
-            subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, (char *)lpvBuffer,
+            subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, (char *)lpvBuffer,
                                            *lpdwSize), r);
 
             GetFullPathName(subreq->filename, *lpdwSize - 1, (char *)lpvBuffer, NULL);
@@ -738,7 +738,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             /* TODO: Not quite ready for prime time yet */
 
             /* Map a URL to a filename */
-            subreq = ap_sub_req_lookup_uri(ap_pstrndup(r->pool, (char *)lpvBuffer,
+            subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, (char *)lpvBuffer,
                                            *lpdwSize), r);
 
             GetFullPathName(subreq->filename, *lpdwSize - 1, (char *)lpvBuffer, NULL);
@@ -752,7 +752,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 ((char *)lpvBuffer)[l + 1] = '\0';
             }
 
-            lpdwDataType = (LPDWORD) ap_palloc(r->pool, sizeof(HSE_URL_MAPEX_INFO));
+            lpdwDataType = (LPDWORD) apr_palloc(r->pool, sizeof(HSE_URL_MAPEX_INFO));
             strncpy(((LPHSE_URL_MAPEX_INFO)lpdwDataType)->lpszPath,
                     (char *) lpvBuffer, MAX_PATH);
             ((LPHSE_URL_MAPEX_INFO)lpdwDataType)->dwFlags = 0;
@@ -790,12 +790,12 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
             if (((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus
                 && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus) {
-                r->status_line = ap_pstrndup(r->pool, 
+                r->status_line = apr_pstrndup(r->pool, 
                            ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus,
                            ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus);
             }
             else {
-                r->status_line = ap_pstrdup(r->pool, "200 OK");
+                r->status_line = apr_pstrdup(r->pool, "200 OK");
             }
             sscanf(r->status_line, "%d", &r->status);
             cid->ecb->dwHttpStatusCode = r->status;
@@ -804,7 +804,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader)
             {
                 /* Make a copy - don't disturb the original */
-                data = ap_pstrndup(r->pool, 
+                data = apr_pstrndup(r->pool, 
                            ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader,
                            ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader);
                 
@@ -864,7 +864,7 @@ module isapi_module = {
    NULL,                        /* merge per-dir config */
    NULL,                        /* server config */
    NULL,                        /* merge server config */
-   NULL,                        /* command ap_table_t */
+   NULL,                        /* command apr_table_t */
    isapi_handlers,              /* handlers */
    NULL                         /* register hooks */
 };

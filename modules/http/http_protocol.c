@@ -105,7 +105,7 @@ AP_HOOK_STRUCT(
  * connection.
  */
 static void check_first_conn_error(const request_rec *r, const char *operation,
-                                   ap_status_t status)
+                                   apr_status_t status)
 {
     if (!r->connection->aborted) {
         if (status == 0)
@@ -141,7 +141,7 @@ static int checked_bputstrs(request_rec *r, ...)
 
 static int checked_bflush(request_rec *r)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
         check_first_conn_error(r, "checked_bflush", rv);
@@ -198,7 +198,7 @@ static const char *make_content_type(request_rec *r, const char *type) {
 	 */
 	for (pcset = needcset; *pcset ; pcset++)
 	    if (ap_strcasestr(type, *pcset) != NULL) {
-		type = ap_pstrcat(r->pool, type, "; charset=", 
+		type = apr_pstrcat(r->pool, type, "; charset=", 
 		    conf->add_default_charset_name, NULL);
 		break;
 	    }
@@ -241,7 +241,7 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
 }
 
 static int internal_byterange(int, long *, request_rec *, const char **,
-			      ap_off_t *, ap_size_t *);
+			      apr_off_t *, apr_size_t *);
 
 API_EXPORT(int) ap_set_byterange(request_rec *r)
 {
@@ -261,8 +261,8 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
      * Navigator 2-3 and MSIE 3.
      */
 
-    if (!(range = ap_table_get(r->headers_in, "Range")))
-        range = ap_table_get(r->headers_in, "Request-Range");
+    if (!(range = apr_table_get(r->headers_in, "Range")))
+        range = apr_table_get(r->headers_in, "Request-Range");
 
     if (!range || strncasecmp(range, "bytes=", 6)) {
         return 0;
@@ -272,42 +272,42 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
      * Note that this check will return false (as required) if either
      * of the two etags are weak.
      */
-    if ((if_range = ap_table_get(r->headers_in, "If-Range"))) {
+    if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
         if (if_range[0] == '"') {
-            if (!(match = ap_table_get(r->headers_out, "Etag")) ||
+            if (!(match = apr_table_get(r->headers_out, "Etag")) ||
                 (strcmp(if_range, match) != 0))
                 return 0;
         }
-        else if (!(match = ap_table_get(r->headers_out, "Last-Modified")) ||
+        else if (!(match = apr_table_get(r->headers_out, "Last-Modified")) ||
                  (strcmp(if_range, match) != 0))
             return 0;
     }
 
     if (!ap_strchr_c(range, ',')) {
         /* A single range */
-        if (!parse_byterange(ap_pstrdup(r->pool, range + 6), r->clength,
+        if (!parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
                              &range_start, &range_end))
             return 0;
 
         r->byterange = 1;
 
-        ap_table_setn(r->headers_out, "Content-Range",
-	    ap_psprintf(r->pool, "bytes %ld-%ld/%ld",
+        apr_table_setn(r->headers_out, "Content-Range",
+	    apr_psprintf(r->pool, "bytes %ld-%ld/%ld",
 		range_start, range_end, r->clength));
-        ap_table_setn(r->headers_out, "Content-Length",
-	    ap_psprintf(r->pool, "%ld", range_end - range_start + 1));
+        apr_table_setn(r->headers_out, "Content-Length",
+	    apr_psprintf(r->pool, "%ld", range_end - range_start + 1));
     }
     else {
         /* a multiple range */
-        const char *r_range = ap_pstrdup(r->pool, range + 6);
+        const char *r_range = apr_pstrdup(r->pool, range + 6);
         long tlength = 0;
 
         r->byterange = 2;
-        r->boundary = ap_psprintf(r->pool, "%llx%lx",
+        r->boundary = apr_psprintf(r->pool, "%llx%lx",
 				r->request_time, (long) getpid());
         while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
-        ap_table_setn(r->headers_out, "Content-Length",
-	    ap_psprintf(r->pool, "%ld", tlength));
+        apr_table_setn(r->headers_out, "Content-Length",
+	    apr_psprintf(r->pool, "%ld", tlength));
     }
 
     r->status = HTTP_PARTIAL_CONTENT;
@@ -316,8 +316,8 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
     return 1;
 }
 
-API_EXPORT(int) ap_each_byterange(request_rec *r, ap_off_t *offset,
-				  ap_size_t *length)
+API_EXPORT(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
+				  apr_size_t *length)
 {
     return internal_byterange(1, NULL, r, &r->range, offset, length);
 }
@@ -333,8 +333,8 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, ap_off_t *offset,
  * when done.
  */
 static int internal_byterange(int realreq, long *tlength, request_rec *r,
-                              const char **r_range, ap_off_t *offset,
-			      ap_size_t *length)
+                              const char **r_range, apr_off_t *offset,
+			      apr_size_t *length)
 {
     long range_start, range_end;
     char *range;
@@ -380,7 +380,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
         const char *ct = make_content_type(r, r->content_type);
         char ts[MAX_STRING_LEN];
 
-        ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
+        apr_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
                     r->clength);
         if (realreq)
             (void) checked_bputstrs(r, CRLF "--", r->boundary,
@@ -408,7 +408,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 API_EXPORT(int) ap_set_content_length(request_rec *r, long clength)
 {
     r->clength = clength;
-    ap_table_setn(r->headers_out, "Content-Length", ap_psprintf(r->pool, "%ld", clength));
+    apr_table_setn(r->headers_out, "Content-Length", apr_psprintf(r->pool, "%ld", clength));
     return 0;
 }
 
@@ -416,8 +416,8 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
 {
     int ka_sent = 0;
     int wimpy = ap_find_token(r->pool,
-                           ap_table_get(r->headers_out, "Connection"), "close");
-    const char *conn = ap_table_get(r->headers_in, "Connection");
+                           apr_table_get(r->headers_out, "Connection"), "close");
+    const char *conn = apr_table_get(r->headers_in, "Connection");
 
 #ifdef APACHE_XLATE
     if (r->rrx->to_net && !r->rrx->to_net_sb) {
@@ -426,7 +426,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
          * following logic, as the absence of the Content-Length header
          * may affect the decision on chunked encoding.
          */
-        ap_table_unset(r->headers_out,"Content-Length");
+        apr_table_unset(r->headers_out,"Content-Length");
     }
 #endif /* APACHE_XLATE */
 
@@ -459,9 +459,9 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
         ((r->status == HTTP_NOT_MODIFIED) ||
          (r->status == HTTP_NO_CONTENT) ||
          r->header_only ||
-         ap_table_get(r->headers_out, "Content-Length") ||
+         apr_table_get(r->headers_out, "Content-Length") ||
          ap_find_last_token(r->pool,
-                         ap_table_get(r->headers_out, "Transfer-Encoding"),
+                         apr_table_get(r->headers_out, "Transfer-Encoding"),
                          "chunked") ||
          ((r->proto_num >= HTTP_VERSION(1,1)) &&
 	  (r->chunked = 1))) && /* THIS CODE IS CORRECT, see comment above. */
@@ -472,8 +472,8 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
         !ap_status_drops_connection(r->status) &&
         !wimpy &&
         !ap_find_token(r->pool, conn, "close") &&
-        (!ap_table_get(r->subprocess_env, "nokeepalive") ||
-         ap_table_get(r->headers_in, "Via")) &&
+        (!apr_table_get(r->subprocess_env, "nokeepalive") ||
+         apr_table_get(r->headers_in, "Via")) &&
         ((ka_sent = ap_find_token(r->pool, conn, "keep-alive")) ||
          (r->proto_num >= HTTP_VERSION(1,1)))
        ) {
@@ -485,14 +485,14 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
             if (r->server->keep_alive_max)
-		ap_table_setn(r->headers_out, "Keep-Alive",
-		    ap_psprintf(r->pool, "timeout=%d, max=%d",
+		apr_table_setn(r->headers_out, "Keep-Alive",
+		    apr_psprintf(r->pool, "timeout=%d, max=%d",
                             r->server->keep_alive_timeout, left));
             else
-		ap_table_setn(r->headers_out, "Keep-Alive",
-		    ap_psprintf(r->pool, "timeout=%d",
+		apr_table_setn(r->headers_out, "Keep-Alive",
+		    apr_psprintf(r->pool, "timeout=%d",
                             r->server->keep_alive_timeout));
-            ap_table_mergen(r->headers_out, "Connection", "Keep-Alive");
+            apr_table_mergen(r->headers_out, "Connection", "Keep-Alive");
         }
 
         return 1;
@@ -507,7 +507,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
      * to a HTTP/1.1 client. Better safe than sorry.
      */
     if (!wimpy)
-	ap_table_mergen(r->headers_out, "Connection", "close");
+	apr_table_mergen(r->headers_out, "Connection", "close");
 
     r->connection->keepalive = 0;
 
@@ -521,9 +521,9 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
  * to limit the number of calls to time().  We don't check for futurosity
  * unless the mtime is at least as new as the reference.
  */
-API_EXPORT(ap_time_t) ap_rationalize_mtime(request_rec *r, ap_time_t mtime)
+API_EXPORT(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
 {
-    ap_time_t now;
+    apr_time_t now;
 
     /* For all static responses, it's almost certain that the file was
      * last modified before the beginning of the request.  So there's
@@ -534,15 +534,15 @@ API_EXPORT(ap_time_t) ap_rationalize_mtime(request_rec *r, ap_time_t mtime)
      * were given a time in the future, we return the current time - the
      * Last-Modified can't be in the future.
      */
-    now = (mtime < r->request_time) ? r->request_time : ap_now();
+    now = (mtime < r->request_time) ? r->request_time : apr_now();
     return (mtime > now) ? now : mtime;
 }
 
 API_EXPORT(int) ap_meets_conditions(request_rec *r)
 {
-    const char *etag = ap_table_get(r->headers_out, "ETag");
+    const char *etag = apr_table_get(r->headers_out, "ETag");
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    ap_time_t mtime;
+    apr_time_t mtime;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -560,14 +560,14 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     }
 
     /* XXX: we should define a "time unset" constant */
-    mtime = (r->mtime != 0) ? r->mtime : ap_now();
+    mtime = (r->mtime != 0) ? r->mtime : apr_now();
 
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
      * AND if our strong ETag does not match any entity tag in that field,
      *     respond with a status of 412 (Precondition Failed).
      */
-    if ((if_match = ap_table_get(r->headers_in, "If-Match")) != NULL) {
+    if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
         if (if_match[0] != '*' &&
             (etag == NULL || etag[0] == 'W' ||
              !ap_find_list_item(r->pool, if_match, etag))) {
@@ -580,9 +580,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
          * specified in this field, then the server MUST
          *     respond with a status of 412 (Precondition Failed).
          */
-        if_unmodified = ap_table_get(r->headers_in, "If-Unmodified-Since");
+        if_unmodified = apr_table_get(r->headers_in, "If-Unmodified-Since");
         if (if_unmodified != NULL) {
-            ap_time_t ius = ap_parseHTTPdate(if_unmodified);
+            apr_time_t ius = ap_parseHTTPdate(if_unmodified);
 
             if ((ius != BAD_DATE) && (mtime > ius)) {
                 return HTTP_PRECONDITION_FAILED;
@@ -602,13 +602,13 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      * GET or HEAD allow weak etag comparison, all other methods require
      * strong comparison.  We can only use weak if it's not a range request.
      */
-    if_nonematch = ap_table_get(r->headers_in, "If-None-Match");
+    if_nonematch = apr_table_get(r->headers_in, "If-None-Match");
     if (if_nonematch != NULL) {
         if (r->method_number == M_GET) {
             if (if_nonematch[0] == '*')
                 return HTTP_NOT_MODIFIED;
             if (etag != NULL) {
-                if (ap_table_get(r->headers_in, "Range")) {
+                if (apr_table_get(r->headers_in, "Range")) {
                     if (etag[0] != 'W' &&
                         ap_find_list_item(r->pool, if_nonematch, etag)) {
                         return HTTP_NOT_MODIFIED;
@@ -634,8 +634,8 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      */
     else if ((r->method_number == M_GET)
              && ((if_modified_since =
-                  ap_table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
-        ap_time_t ims = ap_parseHTTPdate(if_modified_since);
+                  apr_table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
+        apr_time_t ims = ap_parseHTTPdate(if_modified_since);
 
 	if ((ims >= mtime) && (ims <= r->request_time)) {
             return HTTP_NOT_MODIFIED;
@@ -672,14 +672,14 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
     weak = ((r->request_time - r->mtime > AP_USEC_PER_SEC) && !force_weak) ? "" : "W/";
 
     if (r->finfo.protection != 0) {
-        etag = ap_psprintf(r->pool,
+        etag = apr_psprintf(r->pool,
                     "%s\"%lx-%lx-%lx\"", weak,
                     (unsigned long) r->finfo.inode,
                     (unsigned long) r->finfo.size,
                     (unsigned long) r->mtime);
     }
     else {
-        etag = ap_psprintf(r->pool, "%s\"%lx\"", weak,
+        etag = apr_psprintf(r->pool, "%s\"%lx\"", weak,
                     (unsigned long) r->mtime);
     }
 
@@ -724,10 +724,10 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
             vlv += 3;
         else
             vlv++;
-        etag = ap_pstrcat(r->pool, variant_etag, ";", vlv, NULL);
+        etag = apr_pstrcat(r->pool, variant_etag, ";", vlv, NULL);
     }
 
-    ap_table_setn(r->headers_out, "ETag", etag);
+    apr_table_setn(r->headers_out, "ETag", etag);
 }
 
 /*
@@ -737,10 +737,10 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
  */
 API_EXPORT(void) ap_set_last_modified(request_rec *r)
 {
-    ap_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
-    char *datestr = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
-    ap_rfc822_date(datestr, mod_time);
-    ap_table_setn(r->headers_out, "Last-Modified", datestr);
+    apr_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
+    char *datestr = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+    apr_rfc822_date(datestr, mod_time);
+    apr_table_setn(r->headers_out, "Last-Modified", datestr);
 }
 
 /* Get the method number associated with the given string, assumed to
@@ -901,7 +901,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 {
     int status = HTTP_OK;
 
-    r->unparsed_uri = ap_pstrdup(r->pool, uri);
+    r->unparsed_uri = apr_pstrdup(r->pool, uri);
 
     if (r->method_number == M_CONNECT) {
 	status = ap_parse_hostinfo_components(r->pool, uri, &r->parsed_uri);
@@ -920,7 +920,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	}
 	r->args = r->parsed_uri.query;
 	r->uri = r->parsed_uri.path ? r->parsed_uri.path
-				    : ap_pstrdup(r->pool, "/");
+				    : apr_pstrdup(r->pool, "/");
 #if defined(OS2) || defined(WIN32)
 	/* Handle path translations for OS/2 and plug security hole.
 	 * This will prevent "http://www.wherever.com/..\..\/" from
@@ -938,7 +938,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	r->args = NULL;
 	r->hostname = NULL;
 	r->status = status;             /* set error status */
-	r->uri = ap_pstrdup(r->pool, uri);
+	r->uri = apr_pstrdup(r->pool, uri);
     }
 }
 
@@ -973,7 +973,7 @@ static int read_request_line(request_rec *r)
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
 	     */
-	    r->request_time = ap_now();
+	    r->request_time = apr_now();
             return 0;
         }
     }
@@ -986,14 +986,14 @@ static int read_request_line(request_rec *r)
      * thread isn't used. - mvsk
 
 #ifdef SIGWINCH
-    ap_signal(SIGWINCH, SIG_IGN);
+    apr_signal(SIGWINCH, SIG_IGN);
 #endif
     */
 
     ap_bsetflag(conn->client, B_SAFEREAD, 0);
 
-    r->request_time = ap_now();
-    r->the_request = ap_pstrdup(r->pool, l);
+    r->request_time = apr_now();
+    r->the_request = apr_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
     ap_update_connection_status(conn->id, "Method", r->method);
     uri = ap_getword_white(r->pool, &ll);
@@ -1014,12 +1014,12 @@ static int read_request_line(request_rec *r)
     if (len > r->server->limit_req_line) {
         r->status    = HTTP_REQUEST_URI_TOO_LARGE;
         r->proto_num = HTTP_VERSION(1,0);
-        r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
+        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
         return 0;
     }
 
     r->assbackwards = (ll[0] == '\0');
-    r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
+    r->protocol = apr_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
     ap_update_connection_status(conn->id, "Protocol", r->protocol);
 
     if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
@@ -1039,10 +1039,10 @@ static void get_mime_headers(request_rec *r)
     char *copy;
     int len;
     unsigned int fields_read = 0;
-    ap_table_t *tmp_headers;
+    apr_table_t *tmp_headers;
 
-    /* We'll use ap_overlap_tables later to merge these into r->headers_in. */
-    tmp_headers = ap_make_table(r->pool, 50);
+    /* We'll use apr_overlap_tables later to merge these into r->headers_in. */
+    tmp_headers = apr_make_table(r->pool, 50);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -1053,7 +1053,7 @@ static void get_mime_headers(request_rec *r)
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
             r->status = HTTP_BAD_REQUEST;
-            ap_table_setn(r->notes, "error-notes",
+            apr_table_setn(r->notes, "error-notes",
                           "The number of request header fields exceeds "
                           "this server's limit.<P>\n");
             return;
@@ -1064,17 +1064,17 @@ static void get_mime_headers(request_rec *r)
          */
         if (len > r->server->limit_req_fieldsize) {
             r->status = HTTP_BAD_REQUEST;
-            ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
+            apr_table_setn(r->notes, "error-notes", apr_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
                 "<PRE>\n", ap_escape_html(r->pool, field), "</PRE>\n", NULL));
             return;
         }
-        copy = ap_palloc(r->pool, len + 1);
+        copy = apr_palloc(r->pool, len + 1);
         memcpy(copy, field, len + 1);
 
         if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
-            ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
+            apr_table_setn(r->notes, "error-notes", apr_pstrcat(r->pool,
                 "Request header field is missing colon separator.<P>\n"
                 "<PRE>\n", ap_escape_html(r->pool, copy), "</PRE>\n", NULL));
             return;
@@ -1085,21 +1085,21 @@ static void get_mime_headers(request_rec *r)
         while (*value == ' ' || *value == '\t')
             ++value;            /* Skip to start of value   */
 
-	ap_table_addn(tmp_headers, copy, value);
+	apr_table_addn(tmp_headers, copy, value);
     }
 
-    ap_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
+    apr_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
 }
 
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
-    ap_pool_t *p;
+    apr_pool_t *p;
     const char *expect;
     int access_status;
 
-    ap_create_pool(&p, conn->pool);
-    r = ap_pcalloc(p, sizeof(request_rec));
+    apr_create_pool(&p, conn->pool);
+    r = apr_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;
     r->server          = conn->base_server;
@@ -1110,11 +1110,11 @@ request_rec *ap_read_request(conn_rec *conn)
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
-    r->headers_in      = ap_make_table(r->pool, 50);
-    r->subprocess_env  = ap_make_table(r->pool, 50);
-    r->headers_out     = ap_make_table(r->pool, 12);
-    r->err_headers_out = ap_make_table(r->pool, 5);
-    r->notes           = ap_make_table(r->pool, 5);
+    r->headers_in      = apr_make_table(r->pool, 50);
+    r->subprocess_env  = apr_make_table(r->pool, 50);
+    r->headers_out     = apr_make_table(r->pool, 12);
+    r->err_headers_out = apr_make_table(r->pool, 5);
+    r->notes           = apr_make_table(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
     r->per_dir_config  = r->server->lookup_defaults;
@@ -1128,7 +1128,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->the_request     = NULL;
 
 #ifdef APACHE_XLATE
-    r->rrx = ap_pcalloc(p, sizeof(struct ap_rr_xlate));
+    r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
     ap_set_content_xlate(r, 1, ap_locale_to_ascii);
     ap_set_content_xlate(r, 0, ap_locale_from_ascii);
 #endif /*APACHE_XLATE*/
@@ -1195,7 +1195,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
         ((r->proto_num == HTTP_VERSION(1,1)) &&
-         !ap_table_get(r->headers_in, "Host"))) {
+         !apr_table_get(r->headers_in, "Host"))) {
         /*
          * Client sent us an HTTP/1.1 or later request without telling us the
          * hostname, either with a full URL or a Host: header. We therefore
@@ -1213,7 +1213,7 @@ request_rec *ap_read_request(conn_rec *conn)
         ap_run_log_transaction(r);
         return r;
     }
-    if (((expect = ap_table_get(r->headers_in, "Expect")) != NULL) &&
+    if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL) &&
         (expect[0] != '\0')) {
         /*
          * The Expect header field was added to HTTP/1.1 after RFC 2068
@@ -1266,10 +1266,10 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->status          = HTTP_OK;
 
     rnew->headers_in      = r->headers_in;
-    rnew->subprocess_env  = ap_copy_table(rnew->pool, r->subprocess_env);
-    rnew->headers_out     = ap_make_table(rnew->pool, 5);
-    rnew->err_headers_out = ap_make_table(rnew->pool, 5);
-    rnew->notes           = ap_make_table(rnew->pool, 5);
+    rnew->subprocess_env  = apr_copy_table(rnew->pool, r->subprocess_env);
+    rnew->headers_out     = apr_make_table(rnew->pool, 5);
+    rnew->err_headers_out = apr_make_table(rnew->pool, 5);
+    rnew->notes           = apr_make_table(rnew->pool, 5);
 
     rnew->expecting_100   = r->expecting_100;
     rnew->read_length     = r->read_length;
@@ -1311,23 +1311,23 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r)
     if (strcasecmp(ap_auth_type(r), "Basic"))
         ap_note_auth_failure(r);
     else
-        ap_table_setn(r->err_headers_out,
+        apr_table_setn(r->err_headers_out,
                   r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
-                  ap_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r), "\"",
+                  apr_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r), "\"",
                           NULL));
 }
 
 API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 {
-    ap_table_setn(r->err_headers_out,
+    apr_table_setn(r->err_headers_out,
 	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
-	    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
+	    apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
 		ap_auth_name(r), r->request_time));
 }
 
 API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
-    const char *auth_line = ap_table_get(r->headers_in,
+    const char *auth_line = apr_table_get(r->headers_in,
                                       r->proxyreq ? "Proxy-Authorization"
                                                   : "Authorization");
     const char *t;
@@ -1510,7 +1510,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
      */
     if (r->proxyreq
         || (r->proto_num == HTTP_VERSION(1,0)
-            && ap_table_get(r->subprocess_env, "force-response-1.0"))) {
+            && apr_table_get(r->subprocess_env, "force-response-1.0"))) {
 
         protocol = "HTTP/1.0";
         r->connection->keepalive = -1;
@@ -1527,13 +1527,13 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     (void) checked_bputstrs(r, protocol, " ", r->status_line, CRLF, NULL);
 
-    date = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
-    ap_rfc822_date(date, r->request_time);
+    date = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+    apr_rfc822_date(date, r->request_time);
     ap_send_header_field(r, "Date", date);
     ap_send_header_field(r, "Server", ap_get_server_version());
 
-    ap_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
-    ap_table_unset(r->headers_out, "Server");
+    apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
+    apr_table_unset(r->headers_out, "Server");
 #ifdef APACHE_XLATE
     AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
 #endif /*APACHE_XLATE*/
@@ -1572,7 +1572,7 @@ static void terminate_header(request_rec *r)
  */
 static char *make_allow(request_rec *r)
 {
-    return 2 + ap_pstrcat(r->pool,
+    return 2 + apr_pstrcat(r->pool,
                    (r->allowed & (1 << M_GET))       ? ", GET, HEAD" : "",
                    (r->allowed & (1 << M_POST))      ? ", POST"      : "",
                    (r->allowed & (1 << M_PUT))       ? ", PUT"       : "",
@@ -1609,7 +1609,7 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
 
     ap_rvputs(r, r->the_request, CRLF, NULL);
 
-    ap_table_do((int (*) (void *, const char *, const char *))
+    apr_table_do((int (*) (void *, const char *, const char *))
                 ap_send_header_field, (void *) r, r->headers_in, NULL);
     ap_rputs(CRLF, r);
 
@@ -1625,11 +1625,11 @@ int ap_send_http_options(request_rec *r)
 
     ap_basic_http_header(r);
 
-    ap_table_setn(r->headers_out, "Content-Length", "0");
-    ap_table_setn(r->headers_out, "Allow", make_allow(r));
+    apr_table_setn(r->headers_out, "Content-Length", "0");
+    apr_table_setn(r->headers_out, "Allow", make_allow(r));
     ap_set_keepalive(r);
 
-    ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
+    apr_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
 
     terminate_header(r);
@@ -1649,12 +1649,12 @@ int ap_send_http_options(request_rec *r)
 static int use_range_x(request_rec *r)
 {
     const char *ua;
-    return (ap_table_get(r->headers_in, "Request-Range") ||
-            ((ua = ap_table_get(r->headers_in, "User-Agent"))
+    return (apr_table_get(r->headers_in, "Request-Range") ||
+            ((ua = apr_table_get(r->headers_in, "User-Agent"))
              && ap_strstr_c(ua, "MSIE 3")));
 }
 
-/* This routine is called by ap_table_do and merges all instances of
+/* This routine is called by apr_table_do and merges all instances of
  * the passed field values into a single array that will be further
  * processed by some later routine.  Originally intended to help split
  * and recombine multiple Vary fields, though it is generic to any field
@@ -1662,15 +1662,15 @@ static int use_range_x(request_rec *r)
  */
 static int uniq_field_values(void *d, const char *key, const char *val)
 {
-    ap_array_header_t *values;
+    apr_array_header_t *values;
     char *start;
     char *e;
     char **strpp;
     int  i;
 
-    values = (ap_array_header_t *)d;
+    values = (apr_array_header_t *)d;
 
-    e = ap_pstrdup(values->cont, val);
+    e = apr_pstrdup(values->cont, val);
 
     do {
         /* Find a non-empty fieldname */
@@ -1699,7 +1699,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
             }
         }
         if (i == values->nelts) {  /* if not found */
-           *(char **)ap_push_array(values) = start;
+           *(char **)apr_push_array(values) = start;
         }
     } while (*e != '\0');
 
@@ -1713,22 +1713,22 @@ static int uniq_field_values(void *d, const char *key, const char *val)
  */
 static void fixup_vary(request_rec *r)
 {
-    ap_array_header_t *varies;
+    apr_array_header_t *varies;
 
-    varies = ap_make_array(r->pool, 5, sizeof(char *));
+    varies = apr_make_array(r->pool, 5, sizeof(char *));
 
     /* Extract all Vary fields from the headers_out, separate each into
      * its comma-separated fieldname values, and then add them to varies
      * if not already present in the array.
      */
-    ap_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
+    apr_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
 		(void *) varies, r->headers_out, "Vary", NULL);
 
     /* If we found any, replace old Vary fields with unique-ified value */
 
     if (varies->nelts > 0) {
-	ap_table_setn(r->headers_out, "Vary",
-		      ap_array_pstrcat(r->pool, varies, ','));
+	apr_table_setn(r->headers_out, "Vary",
+		      apr_array_pstrcat(r->pool, varies, ','));
     }
 }
 
@@ -1765,7 +1765,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * later attempts to set or unset a given fieldname might be bypassed.
      */
     if (!ap_is_empty_table(r->err_headers_out))
-        r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
+        r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
                                         r->headers_out);
 
     /*
@@ -1773,10 +1773,10 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * Since this will have nasty effects on HTTP/1.1 caches, force
      * the response into HTTP/1.0 mode.
      */
-    if (ap_table_get(r->subprocess_env, "force-no-vary") != NULL) {
-	ap_table_unset(r->headers_out, "Vary");
+    if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
+	apr_table_unset(r->headers_out, "Vary");
 	r->proto_num = HTTP_VERSION(1,0);
-	ap_table_set(r->subprocess_env, "force-response-1.0", "1");
+	apr_table_set(r->subprocess_env, "force-response-1.0", "1");
     }
     else {
 	fixup_vary(r);
@@ -1792,42 +1792,42 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     ap_set_keepalive(r);
 
     if (r->chunked) {
-        ap_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
-        ap_table_unset(r->headers_out, "Content-Length");
+        apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
+        apr_table_unset(r->headers_out, "Content-Length");
     }
 
     if (r->byterange > 1)
-        ap_table_setn(r->headers_out, "Content-Type",
-                  ap_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
+        apr_table_setn(r->headers_out, "Content-Type",
+                  apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
                           "byteranges; boundary=", r->boundary, NULL));
-    else ap_table_setn(r->headers_out, "Content-Type", make_content_type(r, 
+    else apr_table_setn(r->headers_out, "Content-Type", make_content_type(r, 
 	r->content_type));
 
     if (r->content_encoding)
-        ap_table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
+        apr_table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
 
     if (r->content_languages && r->content_languages->nelts) {
         for (i = 0; i < r->content_languages->nelts; ++i) {
-            ap_table_mergen(r->headers_out, "Content-Language",
+            apr_table_mergen(r->headers_out, "Content-Language",
                         ((char **) (r->content_languages->elts))[i]);
         }
     }
     else if (r->content_language)
-        ap_table_setn(r->headers_out, "Content-Language", r->content_language);
+        apr_table_setn(r->headers_out, "Content-Language", r->content_language);
 
     /*
      * Control cachability for non-cachable responses if not already set by
      * some other part of the server configuration.
      */
-    if (r->no_cache && !ap_table_get(r->headers_out, "Expires")) {
-	date = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
-        ap_rfc822_date(date, r->request_time);
-        ap_table_addn(r->headers_out, "Expires", date);
+    if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
+	date = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+        apr_rfc822_date(date, r->request_time);
+        apr_table_addn(r->headers_out, "Expires", date);
     }
 
-    /* Send the entire ap_table_t of header fields, terminated by an empty line. */
+    /* Send the entire apr_table_t of header fields, terminated by an empty line. */
 
-    ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
+    apr_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
 
     terminate_header(r);
@@ -1919,8 +1919,8 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 
 API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
-    const char *tenc = ap_table_get(r->headers_in, "Transfer-Encoding");
-    const char *lenp = ap_table_get(r->headers_in, "Content-Length");
+    const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+    const char *lenp = apr_table_get(r->headers_in, "Content-Length");
     unsigned long max_body;
 
     r->read_body = read_policy;
@@ -1976,7 +1976,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
          * from looking at the MIME header. 
          * If no Content-Type header is found, text conversion is assumed.
          */
-        const char *typep = ap_table_get(r->headers_in, "Content-Type");
+        const char *typep = apr_table_get(r->headers_in, "Content-Type");
         int convert_in = (typep == NULL ||
                           strncasecmp(typep, "text/", 5) == 0 ||
                           strncasecmp(typep, "message/", 8) == 0 ||
@@ -2049,11 +2049,11 @@ static long get_chunk_size(char *b)
 API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
     int c;
-    ap_size_t len_to_read;
-    ap_ssize_t len_read;
+    apr_size_t len_to_read;
+    apr_ssize_t len_read;
     long chunk_start = 0;
     unsigned long max_body;
-    ap_status_t rv;
+    apr_status_t rv;
 
     if (!r->read_chunked) {     /* Content-length read */
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
@@ -2108,10 +2108,10 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         if (len_to_read == 0) { /* Last chunk indicated, get footers */
             if (r->read_body == REQUEST_CHUNKED_DECHUNK) {
                 get_mime_headers(r);
-                ap_snprintf(buffer, bufsiz, "%ld", r->read_length);
-                ap_table_unset(r->headers_in, "Transfer-Encoding");
-                ap_table_setn(r->headers_in, "Content-Length",
-                    ap_pstrdup(r->pool, buffer));
+                apr_snprintf(buffer, bufsiz, "%ld", r->read_length);
+                apr_table_unset(r->headers_in, "Transfer-Encoding");
+                apr_table_setn(r->headers_in, "Content-Length",
+                    apr_pstrdup(r->pool, buffer));
                 return 0;
             }
             r->remaining = -1;  /* Indicate footers in-progress */
@@ -2252,13 +2252,13 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 }
 
 #if APR_HAS_SENDFILE
-static ap_status_t static_send_file(ap_file_t *fd, request_rec *r, ap_off_t offset, 
-                                    ap_size_t length, ap_size_t *nbytes) 
+static apr_status_t static_send_file(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+                                    apr_size_t length, apr_size_t *nbytes) 
 {
-    ap_int32_t flags = 0;
-    ap_status_t rv;
+    apr_int32_t flags = 0;
+    apr_status_t rv;
     struct iovec iov;
-    ap_hdtr_t hdtr;
+    apr_hdtr_t hdtr;
 
     ap_bsetopt(r->connection->client, BO_TIMEOUT,
                r->connection->keptalive
@@ -2276,7 +2276,7 @@ static ap_status_t static_send_file(ap_file_t *fd, request_rec *r, ap_off_t offs
     iov.iov_len =  r->connection->client->outcnt;
     r->connection->client->outcnt = 0;
 
-    /* initialize the ap_hdtr_t struct */
+    /* initialize the apr_hdtr_t struct */
     hdtr.headers = &iov;
     hdtr.numheaders = 1;
     hdtr.trailers = NULL;
@@ -2308,13 +2308,13 @@ static ap_status_t static_send_file(ap_file_t *fd, request_rec *r, ap_off_t offs
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(ap_status_t) ap_send_fd(ap_file_t *fd, request_rec *r, ap_off_t offset, 
-                                   ap_size_t length, ap_size_t *nbytes) 
+API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+                                   apr_size_t length, apr_size_t *nbytes) 
 {
-    ap_status_t rv = APR_SUCCESS;
-    ap_size_t total_bytes_sent = 0;
+    apr_status_t rv = APR_SUCCESS;
+    apr_size_t total_bytes_sent = 0;
     register int o;
-    ap_ssize_t n;
+    apr_ssize_t n;
     char buf[IOBUFSIZE];
 
     if ((length == 0) || r->connection->aborted) {
@@ -2344,10 +2344,10 @@ API_EXPORT(ap_status_t) ap_send_fd(ap_file_t *fd, request_rec *r, ap_off_t offse
     /* Either sendfile is not defined or it failed with APR_ENOTIMPL */
     if (offset) {
         /* Seek the file to the offset */
-        rv = ap_seek(fd, APR_SET, &offset);
+        rv = apr_seek(fd, APR_SET, &offset);
         if (rv != APR_SUCCESS) {
             *nbytes = total_bytes_sent;
-            /* ap_close(fd); close the file or let the caller handle it? */
+            /* apr_close(fd); close the file or let the caller handle it? */
             return rv;
         }
     }
@@ -2359,7 +2359,7 @@ API_EXPORT(ap_status_t) ap_send_fd(ap_file_t *fd, request_rec *r, ap_off_t offse
             n = IOBUFSIZE;
         
         do {
-            rv = ap_read(fd, buf, &n);
+            rv = apr_read(fd, buf, &n);
         } while (rv == APR_EINTR && !r->connection->aborted);
 
         /* Is this still the right check? maybe check for n==0 or rv == APR_EOF? */
@@ -2392,9 +2392,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     long total_bytes_sent = 0;
     long zero_timeout = 0;
     register int o;
-    ap_ssize_t n;
-    ap_ssize_t bytes_read;
-    ap_status_t read_rv;
+    apr_ssize_t n;
+    apr_ssize_t bytes_read;
+    apr_status_t read_rv;
 
     if (length == 0) {
         return 0;
@@ -2430,7 +2430,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             (void) ap_rflush(r);
             break;
         }
-        else if (ap_canonical_error(read_rv) != APR_EAGAIN) {
+        else if (apr_canonical_error(read_rv) != APR_EAGAIN) {
             r->connection->aborted = 1;
             break;
         }
@@ -2465,12 +2465,12 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 #endif
 
 /* send data from an in-memory buffer */
-API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
+API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
     size_t total_bytes_sent = 0;
     int n;
-    ap_ssize_t w;
+    apr_ssize_t w;
     char *addr;
     
     if (length == 0)
@@ -2486,7 +2486,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
             n = length - offset;
         }
 
-        ap_mmap_offset((void**)&addr, mm, offset);
+        apr_mmap_offset((void**)&addr, mm, offset);
         w = ap_rwrite(addr, n, r);
         if (w < 0)
             break;
@@ -2530,8 +2530,8 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
 API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
-    ap_ssize_t n;
-    ap_status_t rv;
+    apr_ssize_t n;
+    apr_status_t rv;
 
     if (r->connection->aborted)
         return EOF;
@@ -2606,7 +2606,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
 
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
         check_first_conn_error(r, "rflush", rv);
@@ -2626,7 +2626,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     int status = r->status;
     int idx = ap_index_of_response(status);
     char *custom_response;
-    const char *location = ap_table_get(r->headers_out, "Location");
+    const char *location = apr_table_get(r->headers_out, "Location");
 
     /*
      * It's possible that the Location field might be in r->err_headers_out
@@ -2634,7 +2634,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
      * former.
      */
     if (location == NULL) {
-	location = ap_table_get(r->err_headers_out, "Location");
+	location = apr_table_get(r->err_headers_out, "Location");
     }
     /* We need to special-case the handling of 204 and 304 responses,
      * since they have specific HTTP requirements and do not include a
@@ -2642,12 +2642,12 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
      */
     if (status == HTTP_NOT_MODIFIED) {
         if (!ap_is_empty_table(r->err_headers_out))
-            r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
+            r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
                                                r->headers_out);
         ap_basic_http_header(r);
         ap_set_keepalive(r);
 
-        ap_table_do((int (*)(void *, const char *, const char *)) ap_send_header_field,
+        apr_table_do((int (*)(void *, const char *, const char *)) ap_send_header_field,
                     (void *) r, r->headers_out,
                     "Connection",
                     "Keep-Alive",
@@ -2673,7 +2673,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     }
 
     if (!r->assbackwards) {
-        ap_table_t *tmp = r->headers_out;
+        apr_table_t *tmp = r->headers_out;
 
         /* For all HTTP/1.x responses for which we generate the message,
          * we need to avoid inheriting the "normal status" header fields
@@ -2682,11 +2682,11 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
          */
         r->headers_out = r->err_headers_out;
         r->err_headers_out = tmp;
-        ap_clear_table(r->err_headers_out);
+        apr_clear_table(r->err_headers_out);
 
         if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
             if ((location != NULL) && *location) {
-	        ap_table_setn(r->headers_out, "Location", location);
+	        apr_table_setn(r->headers_out, "Location", location);
             }
             else {
                 location = "";   /* avoids coredump when printing, below */
@@ -2701,7 +2701,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)
             || (status == HTTP_NOT_IMPLEMENTED)) {
-            ap_table_setn(r->headers_out, "Allow", make_allow(r));
+            apr_table_setn(r->headers_out, "Allow", make_allow(r));
         }
 
         ap_send_http_header(r);
@@ -2806,7 +2806,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_BAD_REQUEST:
 	    ap_rputs("Your browser sent a request that "
 	             "this server could not understand.<P>\n", r);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2836,14 +2836,14 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_MULTIPLE_CHOICES:
 	    {
 		const char *list;
-		if ((list = ap_table_get(r->notes, "variant-list")))
+		if ((list = apr_table_get(r->notes, "variant-list")))
 		    ap_rputs(list, r);
 	    }
 	    break;
 	case HTTP_LENGTH_REQUIRED:
 	    ap_rvputs(r, "A request of the requested method ", r->method,
 		      " requires a valid Content-length.<P>\n", NULL);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2856,14 +2856,14 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_rvputs(r, ap_escape_html(r->pool, r->method), " to ",
 		      ap_escape_html(r->pool, r->uri),
 		      " not supported.<P>\n", NULL);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case HTTP_BAD_GATEWAY:
 	    ap_rputs("The proxy server received an invalid" CRLF
 	             "response from an upstream server.<P>" CRLF, r);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2894,7 +2894,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_REQUEST_URI_TOO_LARGE:
 	    ap_rputs("The requested URL's length exceeds the capacity\n"
 	             "limit for this server.<P>\n", r);
-	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2911,7 +2911,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_rvputs(r, "The expectation given in the Expect request-header"
 	              "\nfield could not be met by this server.<P>\n"
 	              "The client sent<PRE>\n    Expect: ",
-	              ap_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
+	              apr_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
 	              "but we only allow the 100-continue expectation.\n",
 	              NULL);
 	    break;
@@ -2958,8 +2958,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	     * that is totally safe for any user to see (ie lacks paths,
 	     * database passwords, etc.)
 	     */
-	    if (((error_notes = ap_table_get(r->notes, "error-notes")) != NULL)
-		&& (h1 = ap_table_get(r->notes, "verbose-error-to")) != NULL
+	    if (((error_notes = apr_table_get(r->notes, "error-notes")) != NULL)
+		&& (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
 		&& (strcmp(h1, "*") == 0)) {
 	        ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
@@ -2984,7 +2984,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	  * which some people consider to be a breach of privacy.  Until we
 	  * can figure out a way to remove the pathname, leave this commented.
 	  *
-	  * if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+	  * if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
 	  *     ap_rvputs(r, error_notes, "<P>\n", NULL);
 	  * }
 	  */

@@ -105,10 +105,10 @@ typedef struct {
 
 } dbm_auth_config_rec;
 
-static void *create_dbm_auth_dir_config(ap_pool_t *p, char *d)
+static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
 {
     dbm_auth_config_rec *sec
-    = (dbm_auth_config_rec *) ap_pcalloc(p, sizeof(dbm_auth_config_rec));
+    = (dbm_auth_config_rec *) apr_pcalloc(p, sizeof(dbm_auth_config_rec));
 
     sec->auth_dbmpwfile = NULL;
     sec->auth_dbmgrpfile = NULL;
@@ -170,7 +170,7 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     d = dbm_fetch(f, q);
 
     if (d.dptr) {
-	pw = ap_palloc(r->pool, d.dsize + 1);
+	pw = apr_palloc(r->pool, d.dsize + 1);
 	strncpy(pw, d.dptr, d.dsize);
 	pw[d.dsize] = '\0';	/* Terminate the string */
     }
@@ -215,7 +215,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
 					      &auth_dbm_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
-    ap_status_t invalid_pw;
+    apr_status_t invalid_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
@@ -237,7 +237,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if (colon_pw) {
 	*colon_pw = '\0';
     }
-    invalid_pw = ap_validate_password(sent_pw, real_pw);
+    invalid_pw = apr_validate_password(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DBM user %s: authentication failure for \"%s\": "
@@ -259,7 +259,7 @@ static int dbm_check_auth(request_rec *r)
     char *user = r->user;
     int m = r->method_number;
 
-    const ap_array_header_t *reqs_arr = ap_requires(r);
+    const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
@@ -326,7 +326,7 @@ module auth_dbm_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    dbm_auth_cmds,		/* command ap_table_t */
+    dbm_auth_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks              /* register hooks */
 };

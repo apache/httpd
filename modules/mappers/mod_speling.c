@@ -103,9 +103,9 @@ typedef struct {
  * bother to have such a function.
  */
 
-static void *mkconfig(ap_pool_t *p)
+static void *mkconfig(apr_pool_t *p)
 {
-    spconfig *cfg = ap_pcalloc(p, sizeof(spconfig));
+    spconfig *cfg = apr_pcalloc(p, sizeof(spconfig));
 
     cfg->enabled = 0;
     return cfg;
@@ -115,7 +115,7 @@ static void *mkconfig(ap_pool_t *p)
  * Respond to a callback to create configuration record for a server or
  * vhost environment.
  */
-static void *create_mconfig_for_server(ap_pool_t *p, server_rec *s)
+static void *create_mconfig_for_server(apr_pool_t *p, server_rec *s)
 {
     return mkconfig(p);
 }
@@ -123,7 +123,7 @@ static void *create_mconfig_for_server(ap_pool_t *p, server_rec *s)
 /*
  * Respond to a callback to create a config record for a specific directory.
  */
-static void *create_mconfig_for_directory(ap_pool_t *p, char *dir)
+static void *create_mconfig_for_directory(apr_pool_t *p, char *dir)
 {
     return mkconfig(p);
 }
@@ -234,8 +234,8 @@ static int check_speling(request_rec *r)
     spconfig *cfg;
     char *good, *bad, *postgood, *url, *fname;
     int filoc, dotloc, urlen, pglen;
-    ap_array_header_t *candidates = NULL;
-    ap_dir_t          *dir;
+    apr_array_header_t *candidates = NULL;
+    apr_dir_t          *dir;
 
     cfg = ap_get_module_config(r->per_dir_config, &speling_module);
     if (!cfg->enabled) {
@@ -275,11 +275,11 @@ static int check_speling(request_rec *r)
     }
 
     /* good = /correct-file */
-    good = ap_pstrndup(r->pool, r->filename, filoc);
+    good = apr_pstrndup(r->pool, r->filename, filoc);
     /* bad = mispelling */
-    bad = ap_pstrdup(r->pool, r->filename + filoc + 1);
+    bad = apr_pstrdup(r->pool, r->filename + filoc + 1);
     /* postgood = mispelling/more */
-    postgood = ap_pstrcat(r->pool, bad, r->path_info, NULL);
+    postgood = apr_pstrcat(r->pool, bad, r->path_info, NULL);
 
     urlen = strlen(r->uri);
     pglen = strlen(postgood);
@@ -290,27 +290,27 @@ static int check_speling(request_rec *r)
     }
 
     /* url = /correct-url */
-    url = ap_pstrndup(r->pool, r->uri, (urlen - pglen));
+    url = apr_pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
-    if (ap_opendir(&dir, good, r->pool) != APR_SUCCESS) {
+    if (apr_opendir(&dir, good, r->pool) != APR_SUCCESS) {
         /* Oops, not a directory... */
         return DECLINED;
     }
 
-    candidates = ap_make_array(r->pool, 2, sizeof(misspelled_file));
+    candidates = apr_make_array(r->pool, 2, sizeof(misspelled_file));
 
     dotloc = ap_ind(bad, '.');
     if (dotloc == -1) {
         dotloc = strlen(bad);
     }
 
-    /* NOTE: ap_get_dir_filename() fills fname with a ap_palloc()ed copy
+    /* NOTE: apr_get_dir_filename() fills fname with a apr_palloc()ed copy
      * of the found directory name already. We don't need to copy it.
      * @@@: Copying *ALL* found file names is wasted energy (and memory)!
      */
-    while (ap_readdir(dir) == APR_SUCCESS &&
-	   ap_get_dir_filename(&fname, dir) == APR_SUCCESS) {
+    while (apr_readdir(dir) == APR_SUCCESS &&
+	   apr_get_dir_filename(&fname, dir) == APR_SUCCESS) {
         sp_reason q;
 
         /*
@@ -319,7 +319,7 @@ static int check_speling(request_rec *r)
          * Do _not_ try to redirect this, it causes a loop!
          */
         if (strcmp(bad, fname) == 0) {
-            ap_closedir(dir);
+            apr_closedir(dir);
             return OK;
         }
 
@@ -330,7 +330,7 @@ static int check_speling(request_rec *r)
         else if (strcasecmp(bad, fname) == 0) {
             misspelled_file *sp_new;
 
-	    sp_new = (misspelled_file *) ap_push_array(candidates);
+	    sp_new = (misspelled_file *) apr_push_array(candidates);
             sp_new->name = fname;
             sp_new->quality = SP_MISCAPITALIZED;
         }
@@ -342,7 +342,7 @@ static int check_speling(request_rec *r)
         else if ((q = spdist(bad, fname)) != SP_VERYDIFFERENT) {
             misspelled_file *sp_new;
 
-	    sp_new = (misspelled_file *) ap_push_array(candidates);
+	    sp_new = (misspelled_file *) apr_push_array(candidates);
             sp_new->name = fname;
             sp_new->quality = q;
         }
@@ -388,14 +388,14 @@ static int check_speling(request_rec *r)
                 && !strncasecmp(bad, fname, dotloc)) {
                 misspelled_file *sp_new;
 
-		sp_new = (misspelled_file *) ap_push_array(candidates);
+		sp_new = (misspelled_file *) apr_push_array(candidates);
                 sp_new->name = fname;
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif
         }
     }
-    ap_closedir(dir);
+    apr_closedir(dir);
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
@@ -404,7 +404,7 @@ static int check_speling(request_rec *r)
         misspelled_file *variant = (misspelled_file *) candidates->elts;
         int i;
 
-        ref = ap_table_get(r->headers_in, "Referer");
+        ref = apr_table_get(r->headers_in, "Referer");
 
         qsort((void *) candidates->elts, candidates->nelts,
               sizeof(misspelled_file), sort_by_quality);
@@ -420,13 +420,13 @@ static int check_speling(request_rec *r)
 	    && (candidates->nelts == 1
 		|| variant[0].quality != variant[1].quality)) {
 
-            nuri = ap_escape_uri(r->pool, ap_pstrcat(r->pool, url,
+            nuri = ap_escape_uri(r->pool, apr_pstrcat(r->pool, url,
 						     variant[0].name,
 						     r->path_info, NULL));
 	    if (r->parsed_uri.query)
-		nuri = ap_pstrcat(r->pool, nuri, "?", r->parsed_uri.query, NULL);
+		nuri = apr_pstrcat(r->pool, nuri, "?", r->parsed_uri.query, NULL);
 
-            ap_table_setn(r->headers_out, "Location",
+            apr_table_setn(r->headers_out, "Location",
 			  ap_construct_url(r->pool, nuri, r));
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS,
@@ -442,11 +442,11 @@ static int check_speling(request_rec *r)
          * returned.
          */
         else {
-            ap_pool_t *p;
-            ap_table_t *notes;
-	    ap_pool_t *sub_pool;
-	    ap_array_header_t *t;
-	    ap_array_header_t *v;
+            apr_pool_t *p;
+            apr_table_t *notes;
+	    apr_pool_t *sub_pool;
+	    apr_array_header_t *t;
+	    apr_array_header_t *v;
 
 
             if (r->main == NULL) {
@@ -458,20 +458,20 @@ static int check_speling(request_rec *r)
                 notes = r->main->notes;
             }
 
-	    if (ap_create_pool(&sub_pool, p) != APR_SUCCESS)
+	    if (apr_create_pool(&sub_pool, p) != APR_SUCCESS)
 		return DECLINED;
 
-	    t = ap_make_array(sub_pool, candidates->nelts * 8 + 8,
+	    t = apr_make_array(sub_pool, candidates->nelts * 8 + 8,
 			      sizeof(char *));
-	    v = ap_make_array(sub_pool, candidates->nelts * 5,
+	    v = apr_make_array(sub_pool, candidates->nelts * 5,
 			      sizeof(char *));
 
             /* Generate the response text. */
 
-	    *(const char **)ap_push_array(t) =
+	    *(const char **)apr_push_array(t) =
 			  "The document name you requested (<code>";
-	    *(const char **)ap_push_array(t) = ap_escape_html(sub_pool, r->uri);
-	    *(const char **)ap_push_array(t) =
+	    *(const char **)apr_push_array(t) = ap_escape_html(sub_pool, r->uri);
+	    *(const char **)apr_push_array(t) =
 			   "</code>) could not be found on this server.\n"
 			   "However, we found documents with names similar "
 			   "to the one you requested.<p>"
@@ -483,24 +483,24 @@ static int check_speling(request_rec *r)
 
 		reason = sp_reason_str[(int) (variant[i].quality)];
                 /* The format isn't very neat... */
-		vuri = ap_pstrcat(sub_pool, url, variant[i].name, r->path_info,
+		vuri = apr_pstrcat(sub_pool, url, variant[i].name, r->path_info,
 				  (r->parsed_uri.query != NULL) ? "?" : "",
 				  (r->parsed_uri.query != NULL)
 				      ? r->parsed_uri.query : "",
 				  NULL);
-		*(const char **)ap_push_array(v) = "\"";
-		*(const char **)ap_push_array(v) = ap_escape_uri(sub_pool, vuri);
-		*(const char **)ap_push_array(v) = "\";\"";
-		*(const char **)ap_push_array(v) = reason;
-		*(const char **)ap_push_array(v) = "\"";
+		*(const char **)apr_push_array(v) = "\"";
+		*(const char **)apr_push_array(v) = ap_escape_uri(sub_pool, vuri);
+		*(const char **)apr_push_array(v) = "\";\"";
+		*(const char **)apr_push_array(v) = reason;
+		*(const char **)apr_push_array(v) = "\"";
 
-		*(const char **)ap_push_array(t) = "<li><a href=\"";
-		*(const char **)ap_push_array(t) = ap_escape_uri(sub_pool, vuri);
-		*(const char **)ap_push_array(t) = "\">";
-		*(const char **)ap_push_array(t) = ap_escape_html(sub_pool, vuri);
-		*(const char **)ap_push_array(t) = "</a> (";
-		*(const char **)ap_push_array(t) = reason;
-		*(const char **)ap_push_array(t) = ")\n";
+		*(const char **)apr_push_array(t) = "<li><a href=\"";
+		*(const char **)apr_push_array(t) = ap_escape_uri(sub_pool, vuri);
+		*(const char **)apr_push_array(t) = "\">";
+		*(const char **)apr_push_array(t) = ap_escape_html(sub_pool, vuri);
+		*(const char **)apr_push_array(t) = "</a> (";
+		*(const char **)apr_push_array(t) = reason;
+		*(const char **)apr_push_array(t) = ")\n";
 
                 /*
                  * when we have printed the "close matches" and there are
@@ -512,31 +512,31 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-		    *(const char **)ap_push_array(t) = 
+		    *(const char **)apr_push_array(t) = 
 				   "</ul>\nFurthermore, the following related "
 				   "documents were found:\n<ul>\n";
                 }
             }
-	    *(const char **)ap_push_array(t) = "</ul>\n";
+	    *(const char **)apr_push_array(t) = "</ul>\n";
 
             /* If we know there was a referring page, add a note: */
             if (ref != NULL) {
-                *(const char **)ap_push_array(t) =
+                *(const char **)apr_push_array(t) =
 			       "Please consider informing the owner of the "
 			       "<a href=\"";
-		*(const char **)ap_push_array(t) = ap_escape_uri(sub_pool, ref);
-                *(const char **)ap_push_array(t) = "\">referring page</a> "
+		*(const char **)apr_push_array(t) = ap_escape_uri(sub_pool, ref);
+                *(const char **)apr_push_array(t) = "\">referring page</a> "
 			       "about the broken link.\n";
 	    }
 
 
-            /* Pass our ap_table_t to http_protocol.c (see mod_negotiation): */
-            ap_table_setn(notes, "variant-list", ap_array_pstrcat(p, t, 0));
+            /* Pass our apr_table_t to http_protocol.c (see mod_negotiation): */
+            apr_table_setn(notes, "variant-list", apr_array_pstrcat(p, t, 0));
 
-	    ap_table_mergen(r->subprocess_env, "VARIANTS",
-			    ap_array_pstrcat(p, v, ','));
+	    apr_table_mergen(r->subprocess_env, "VARIANTS",
+			    apr_array_pstrcat(p, v, ','));
 	  
-	    ap_destroy_pool(sub_pool);
+	    apr_destroy_pool(sub_pool);
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, 0, r,
 			 ref ? "Spelling fix: %s: %d candidates from %s"
@@ -562,7 +562,7 @@ module MODULE_VAR_EXPORT speling_module =
     NULL,                       /* merge per-dir config */
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
-    speling_cmds,               /* command ap_table_t */
+    speling_cmds,               /* command apr_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

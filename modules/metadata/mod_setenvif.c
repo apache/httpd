@@ -139,7 +139,7 @@ typedef struct {
     char *name;                 /* header name */
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
-    ap_table_t *features;            /* env vars to set (or unset) */
+    apr_table_t *features;            /* env vars to set (or unset) */
     ENUM_BITFIELD(              /* is it a "special" header ? */
 	enum special,
 	special_type,4);
@@ -147,7 +147,7 @@ typedef struct {
 } sei_entry;
 
 typedef struct {
-    ap_array_header_t *conditionals;
+    apr_array_header_t *conditionals;
 } sei_cfg_rec;
 
 module MODULE_VAR_EXPORT setenvif_module;
@@ -161,30 +161,30 @@ module MODULE_VAR_EXPORT setenvif_module;
  * the URI has been mapped to a file and we have anything from the
  * .htaccess file and <Directory> and <Files> containers).
  */
-static void *create_setenvif_config(ap_pool_t *p)
+static void *create_setenvif_config(apr_pool_t *p)
 {
-    sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *new = (sei_cfg_rec *) apr_palloc(p, sizeof(sei_cfg_rec));
 
-    new->conditionals = ap_make_array(p, 20, sizeof(sei_entry));
+    new->conditionals = apr_make_array(p, 20, sizeof(sei_entry));
     return (void *) new;
 }
 
-static void *create_setenvif_config_svr(ap_pool_t *p, server_rec *dummy)
+static void *create_setenvif_config_svr(apr_pool_t *p, server_rec *dummy)
 {
     return create_setenvif_config(p);
 }
 
-static void *create_setenvif_config_dir(ap_pool_t *p, char *dummy)
+static void *create_setenvif_config_dir(apr_pool_t *p, char *dummy)
 {
     return create_setenvif_config(p);
 }
 
-static void *merge_setenvif_config(ap_pool_t *p, void *basev, void *overridesv)
+static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    sei_cfg_rec *a = ap_pcalloc(p, sizeof(sei_cfg_rec));
+    sei_cfg_rec *a = apr_pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
-    a->conditionals = ap_append_arrays(p, base->conditionals,
+    a->conditionals = apr_append_arrays(p, base->conditionals,
 				       overrides->conditionals);
     return a;
 }
@@ -222,7 +222,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     /* get regex */
     regex = ap_getword_conf(cmd->pool, &args);
     if (!*regex) {
-        return ap_pstrcat(cmd->pool, "Missing regular expression for ",
+        return apr_pstrcat(cmd->pool, "Missing regular expression for ",
 			  cmd->cmd->name, NULL);
     }
 
@@ -252,7 +252,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
 	/* no match, create a new entry */
 
-	new = ap_push_array(sconf->conditionals);
+	new = apr_push_array(sconf->conditionals);
 	new->name = fname;
 	new->regex = regex;
 	new->icase = icase;
@@ -260,10 +260,10 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 				(REG_EXTENDED | REG_NOSUB
 				 | (icase ? REG_ICASE : 0)));
 	if (new->preg == NULL) {
-	    return ap_pstrcat(cmd->pool, cmd->cmd->name,
+	    return apr_pstrcat(cmd->pool, cmd->cmd->name,
 			      " regex could not be compiled.", NULL);
 	}
-	new->features = ap_make_table(cmd->pool, 2);
+	new->features = apr_make_table(cmd->pool, 2);
 
 	if (!strcasecmp(fname, "remote_addr")) {
 	    new->special_type = SPECIAL_REMOTE_ADDR;
@@ -300,18 +300,18 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
         var = ap_getword(cmd->pool, &feature, '=');
         if (*feature) {
-            ap_table_setn(new->features, var, feature);
+            apr_table_setn(new->features, var, feature);
         }
         else if (*var == '!') {
-            ap_table_setn(new->features, var + 1, "!");
+            apr_table_setn(new->features, var + 1, "!");
         }
         else {
-            ap_table_setn(new->features, var, "1");
+            apr_table_setn(new->features, var, "1");
         }
     }
 
     if (!beenhere) {
-        return ap_pstrcat(cmd->pool, "Missing envariable expression for ",
+        return apr_pstrcat(cmd->pool, "Missing envariable expression for ",
 			  cmd->cmd->name, NULL);
     }
 
@@ -326,7 +326,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
     /* get header name */
     fname = ap_getword_conf(cmd->pool, &args);
     if (!*fname) {
-        return ap_pstrcat(cmd->pool, "Missing header-field name for ",
+        return apr_pstrcat(cmd->pool, "Missing header-field name for ",
 			  cmd->cmd->name, NULL);
     }
     return add_setenvif_core(cmd, mconfig, fname, args);
@@ -368,13 +368,13 @@ static int match_headers(request_rec *r)
 {
     sei_cfg_rec *sconf;
     sei_entry *entries;
-    ap_table_entry_t *elts;
+    apr_table_entry_t *elts;
     const char *val;
     int i, j;
     char *last_name;
 
-    if (ap_table_get(r->notes, SEI_MAGIC_HEIRLOOM) == NULL) {
-	ap_table_set(r->notes, SEI_MAGIC_HEIRLOOM, "post-read done");
+    if (apr_table_get(r->notes, SEI_MAGIC_HEIRLOOM) == NULL) {
+	apr_table_set(r->notes, SEI_MAGIC_HEIRLOOM, "post-read done");
 	sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
 						      &setenvif_module);
     }
@@ -416,9 +416,9 @@ static int match_headers(request_rec *r)
 		val = r->protocol;
 		break;
 	    case SPECIAL_NOT:
-		val = ap_table_get(r->headers_in, b->name);
+		val = apr_table_get(r->headers_in, b->name);
 		if (val == NULL) {
-		    val = ap_table_get(r->subprocess_env, b->name);
+		    val = apr_table_get(r->subprocess_env, b->name);
 		}
 		break;
 	    }
@@ -435,15 +435,15 @@ static int match_headers(request_rec *r)
         }
 
         if (!ap_regexec(b->preg, val, 0, NULL, 0)) {
-	    ap_array_header_t *arr = ap_table_elts(b->features);
-            elts = (ap_table_entry_t *) arr->elts;
+	    apr_array_header_t *arr = ap_table_elts(b->features);
+            elts = (apr_table_entry_t *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {
                 if (!strcmp(elts[j].val, "!")) {
-                    ap_table_unset(r->subprocess_env, elts[j].key);
+                    apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    ap_table_setn(r->subprocess_env, elts[j].key, elts[j].val);
+                    apr_table_setn(r->subprocess_env, elts[j].key, elts[j].val);
                 }
             }
         }
@@ -465,7 +465,7 @@ module MODULE_VAR_EXPORT setenvif_module =
     merge_setenvif_config,      /* dir merger --- default is to override */
     create_setenvif_config_svr, /* server config */
     merge_setenvif_config,      /* merge server configs */
-    setenvif_module_cmds,       /* command ap_table_t */
+    setenvif_module_cmds,       /* command apr_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

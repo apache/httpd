@@ -169,11 +169,11 @@ static bs2_ForkType os_forktype(void)
 
 /* This routine is called by http_core for the BS2000Account directive */
 /* It stores the account name for later use */
-const char *os_set_account(ap_pool_t *p, const char *account)
+const char *os_set_account(apr_pool_t *p, const char *account)
 {
     char account_temp[ACCT_LEN+1];
 
-    ap_cpystrn(account_temp, account, sizeof account_temp);
+    apr_cpystrn(account_temp, account, sizeof account_temp);
 
     /* Make account all upper case */
     ap_str_toupper(account_temp);
@@ -181,7 +181,7 @@ const char *os_set_account(ap_pool_t *p, const char *account)
     /* Pad to length 8 */
     ap_pad(account_temp, sizeof account_temp, ' ');
 
-    bs2000_account = ap_pstrdup(p, account_temp);
+    bs2000_account = apr_pstrdup(p, account_temp);
     return NULL;
 }
 
@@ -226,7 +226,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 	exit(APEXIT_CHILDFATAL);
     }
 
-    ap_cpystrn(username, user_name, sizeof username);
+    apr_cpystrn(username, user_name, sizeof username);
 
     /* Make user name all upper case */
     ap_str_toupper(username);
@@ -269,7 +269,7 @@ pid_t os_fork(const char *user)
 	break;
 
       case bs2_UFORK:
-	ap_cpystrn(username, user, sizeof username);
+	apr_cpystrn(username, user, sizeof username);
 
 	/* Make user name all upper case - for some versions of ufork() */
 	ap_str_toupper(username);

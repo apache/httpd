@@ -70,7 +70,7 @@
 #include "http_connection.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
-#include "ap_listen.h"
+#include "apr_listen.h"
 #include "ap_iol.h"
 #include "apr_portable.h"
 #include "mpm_common.h"
@@ -119,12 +119,12 @@ server_rec *ap_server_conf;
 
 static int one_process = 0;
 
-static ap_pool_t *pconf;		/* Pool for config stuff */
+static apr_pool_t *pconf;		/* Pool for config stuff */
 static scoreboard *ap_scoreboard_image = NULL;
 
 struct thread_globals {
     int child_num;
-    ap_pool_t *pchild;		/* Pool for httpd child stuff */
+    apr_pool_t *pchild;		/* Pool for httpd child stuff */
     int usr1_just_die;
 };
 
@@ -133,7 +133,7 @@ static struct thread_globals **ppthread_globals = NULL;
 #define THREAD_GLOBAL(gvar) ((*ppthread_globals)->gvar)
 
 
-void reinit_scoreboard(ap_pool_t *p)
+void reinit_scoreboard(apr_pool_t *p)
 {
     if (ap_scoreboard_image == NULL) {
         ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
@@ -159,7 +159,7 @@ void cleanup_scoreboard(void)
 static void clean_child_exit(int code)
 {
     if (THREAD_GLOBAL(pchild)) {
-        ap_destroy_pool(THREAD_GLOBAL(pchild));
+        apr_destroy_pool(THREAD_GLOBAL(pchild));
     }
 
     ap_scoreboard_image->servers[THREAD_GLOBAL(child_num)].thread_retval = code;
@@ -168,29 +168,29 @@ static void clean_child_exit(int code)
 
 
 
-static ap_lock_t *accept_mutex = NULL;
+static apr_lock_t *accept_mutex = NULL;
 
-static ap_status_t accept_mutex_child_cleanup(void *foo)
+static apr_status_t accept_mutex_child_cleanup(void *foo)
 {
-    return ap_unlock(accept_mutex);
+    return apr_unlock(accept_mutex);
 }
 
 /*
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(ap_pool_t *p)
+static void accept_mutex_child_init(apr_pool_t *p)
 {
-    ap_register_cleanup(p, NULL, accept_mutex_child_cleanup, ap_null_cleanup);
+    apr_register_cleanup(p, NULL, accept_mutex_child_cleanup, apr_null_cleanup);
 }
 
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_pool_t *p)
+static void accept_mutex_init(apr_pool_t *p)
 {
-    ap_status_t rc = ap_create_lock(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+    apr_status_t rc = apr_create_lock(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -201,7 +201,7 @@ static void accept_mutex_init(ap_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    ap_status_t rc = ap_lock(accept_mutex);
+    apr_status_t rc = apr_lock(accept_mutex);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -212,7 +212,7 @@ static void accept_mutex_on(void)
 
 static void accept_mutex_off(void)
 {
-    ap_status_t rc = ap_unlock(accept_mutex);
+    apr_status_t rc = apr_unlock(accept_mutex);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -270,15 +270,15 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 	}
 	if (r) {
 	    conn_rec *c = r->connection;
-	    ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
+	    apr_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
 				  REMOTE_NOLOOKUP), sizeof(ss->client));
 	    if (r->the_request == NULL) {
-		    ap_cpystrn(ss->request, "NULL", sizeof(ss->request));
+		    apr_cpystrn(ss->request, "NULL", sizeof(ss->request));
 	    } else if (r->parsed_uri.password == NULL) {
-		    ap_cpystrn(ss->request, r->the_request, sizeof(ss->request));
+		    apr_cpystrn(ss->request, r->the_request, sizeof(ss->request));
 	    } else {
 		/* Don't reveal the password in the server-status view */
-		    ap_cpystrn(ss->request, ap_pstrcat(r->pool, r->method, " ",
+		    apr_cpystrn(ss->request, apr_pstrcat(r->pool, r->method, " ",
 					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
 				       sizeof(ss->request));
@@ -308,10 +308,10 @@ void ap_time_process_request(int child_num, int status)
     ss = &ap_scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
-	ss->start_time = ap_now();
+	ss->start_time = apr_now();
     }
     else if (status == STOP_PREQUEST) {
-	ss->stop_time = ap_now();
+	ss->stop_time = apr_now();
     }
 }
 
@@ -367,7 +367,7 @@ static int wait_or_timeout(ap_wait_t *status)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
 #if APR_HAS_OTHER_CHILD
-	ap_probe_writable_fds();
+	apr_probe_writable_fds();
 #endif
     }
 
@@ -716,7 +716,7 @@ int ap_stop_signalled(void)
 
 
 
-static int setup_listen_poll(ap_pool_t *pchild, ap_pollfd_t **listen_poll)
+static int setup_listen_poll(apr_pool_t *pchild, apr_pollfd_t **listen_poll)
 {
     ap_listen_rec *lr;
     int numfds = 0;
@@ -725,10 +725,10 @@ static int setup_listen_poll(ap_pool_t *pchild, ap_pollfd_t **listen_poll)
         numfds++;
     }
 
-    ap_setup_poll(listen_poll, numfds, pchild);
+    apr_setup_poll(listen_poll, numfds, pchild);
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	ap_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
+	apr_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
     }
     return 0;
 }
@@ -739,14 +739,14 @@ static void child_main(void *child_num_arg)
 {
     ap_listen_rec *lr = NULL;
     ap_listen_rec *first_lr = NULL;
-    ap_pool_t *ptrans;
+    apr_pool_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
-    ap_pool_t *pchild;
+    apr_pool_t *pchild;
     parent_score *sc_parent_rec;
     int requests_this_child = 0;
-    ap_pollfd_t *listen_poll;
-    ap_socket_t *csd = NULL;
+    apr_pollfd_t *listen_poll;
+    apr_socket_t *csd = NULL;
     int nsds, rv;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
@@ -762,12 +762,12 @@ static void child_main(void *child_num_arg)
     /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_pool(&pchild, pconf);
-    *ppthread_globals = (struct thread_globals *)ap_palloc(pchild, sizeof(struct thread_globals));
+    apr_create_pool(&pchild, pconf);
+    *ppthread_globals = (struct thread_globals *)apr_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(child_num) = (int)child_num_arg;
     sc_parent_rec = ap_scoreboard_image->parent + THREAD_GLOBAL(child_num);
     THREAD_GLOBAL(pchild) = pchild;
-    ap_create_pool(&ptrans, pchild);
+    apr_create_pool(&ptrans, pchild);
 
     if (setup_listen_poll(pchild, &listen_poll)) {
 	clean_child_exit(1);
@@ -787,7 +787,7 @@ static void child_main(void *child_num_arg)
     while (!ap_stop_signalled()) {
         BUFF *conn_io;
         int srv;
-        ap_socket_t *sd;
+        apr_socket_t *sd;
 
 	/* Prepare to receive a SIGUSR1 due to graceful restart so that
 	 * we can exit cleanly.
@@ -801,7 +801,7 @@ static void child_main(void *child_num_arg)
 
 	current_conn = NULL;
 
-	ap_clear_pool(ptrans);
+	apr_clear_pool(ptrans);
 
 	if ((ap_max_requests_per_child > 0
 	     && requests_this_child++ >= ap_max_requests_per_child)) {
@@ -824,7 +824,7 @@ static void child_main(void *child_num_arg)
 	for (;;) {
 	    if (ap_listeners->next) {
 		/* more than one socket */
-                srv = ap_poll(listen_poll, &nsds, -1);
+                srv = apr_poll(listen_poll, &nsds, -1);
 
 		if (srv != APR_SUCCESS) {
 		    /* Single Unix documents select as returning errnos
@@ -846,13 +846,13 @@ static void child_main(void *child_num_arg)
                 lr = first_lr;
 		
                 do {
-                    ap_int16_t event;
+                    apr_int16_t event;
 
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
 
-                    ap_get_revents(&event, lr->sd, listen_poll);
+                    apr_get_revents(&event, lr->sd, listen_poll);
 
 		    if (event == APR_POLLIN) {
                         first_lr = lr->next;
@@ -875,7 +875,7 @@ static void child_main(void *child_num_arg)
 	     * defer the exit
 	     */
             THREAD_GLOBAL(usr1_just_die) = 0;
-            rv = ap_accept(&csd, sd, ptrans);
+            rv = apr_accept(&csd, sd, ptrans);
 
 	    if (rv == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
@@ -891,7 +891,7 @@ static void child_main(void *child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (ap_canonical_error(rv)) {
+                switch (apr_canonical_error(rv)) {
 #ifdef EPROTO
 		    /* EPROTO on certain older kernels really means
 		     * ECONNABORTED, so we need to ignore it for them.
@@ -972,7 +972,7 @@ static void child_main(void *child_num_arg)
 	if (iol == NULL) {
           ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
                        "error attaching to socket");
-	    ap_close_socket(csd);
+	    apr_close_socket(csd);
 	    continue;
         }
 
@@ -1178,11 +1178,11 @@ static void perform_idle_server_maintenance(void)
  * Executive routines.
  */
 
-int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
+int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
-    ap_status_t status;
+    apr_status_t status;
 
     pconf = _pconf;
     ap_server_conf = s;
@@ -1208,7 +1208,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
                          "Error allocating thread local storage"
                          "Apache is exiting!");
         } else {
-          *ppthread_globals = (struct thread_globals *)ap_palloc(pconf, sizeof(struct thread_globals));
+          *ppthread_globals = (struct thread_globals *)apr_palloc(pconf, sizeof(struct thread_globals));
         }
     }
 
@@ -1254,7 +1254,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	 * extra child
 	 */
 	if (tid >= 0) {
-            ap_proc_t dummyproc;
+            apr_proc_t dummyproc;
             dummyproc.pid = tid;
             ap_process_child_status(&dummyproc, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
@@ -1318,7 +1318,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
         ap_listen_rec *lr;
 
         for (lr = ap_listeners; lr; lr = lr->next) {
-            ap_close_socket(lr->sd);
+            apr_close_socket(lr->sd);
             DosSleep(0);
         }
 
@@ -1408,7 +1408,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void spmt_os2_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
+static void spmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     one_process = !!getenv("ONE_PROCESS");
 
@@ -1422,7 +1422,7 @@ static void spmt_os2_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *pt
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 
-    ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+    apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
 static void spmt_os2_hooks(void)
@@ -1532,7 +1532,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1540,12 +1540,12 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((ap_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
+    if ((apr_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
         (finfo.filetype != APR_DIR)) {
-	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
+	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
     }
-    ap_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
+    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
 }
 
@@ -1588,7 +1588,7 @@ module MODULE_VAR_EXPORT mpm_spmt_os2_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    spmt_os2_cmds,		/* command ap_table_t */
+    spmt_os2_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     spmt_os2_hooks,		/* register_hooks */
 };

@@ -67,8 +67,8 @@ extern "C" {
 
 #include "apr_xlate.h"
 
-extern ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
-extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
+extern apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
+extern apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
 /* Save & Restore the current conversion settings
  *
@@ -85,7 +85,7 @@ extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
  */
 
 #define AP_PUSH_INPUTCONVERSION_STATE(_buff, _newx) \
-        ap_xlate_t *saved_input_xlate; \
+        apr_xlate_t *saved_input_xlate; \
         ap_bgetopt(_buff, BO_RXLATE, &saved_input_xlate); \
         ap_bsetopt(_buff, BO_RXLATE, &(_newx))
 
@@ -93,7 +93,7 @@ extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
         ap_bsetopt(_buff, BO_RXLATE, &saved_input_xlate)
 
 #define AP_PUSH_OUTPUTCONVERSION_STATE(_buff, _newx) \
-        ap_xlate_t *saved_output_xlate; \
+        apr_xlate_t *saved_output_xlate; \
         ap_bgetopt(_buff, BO_WXLATE, &saved_output_xlate); \
         ap_bsetopt(_buff, BO_WXLATE, &(_newx))
 
@@ -103,8 +103,8 @@ extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 /* ap_set_content_xlate() is called by Apache core or a module to set
  * up character set translation (a.k.a. recoding) for content.
  */
-API_EXPORT(ap_status_t) ap_set_content_xlate(request_rec *r, int output,
-                                             ap_xlate_t *xlate);
+API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
+                                             apr_xlate_t *xlate);
 
 #ifdef __cplusplus
 }

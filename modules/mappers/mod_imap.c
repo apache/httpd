@@ -130,10 +130,10 @@ typedef struct {
     char *imap_base;
 } imap_conf_rec;
 
-static void *create_imap_dir_config(ap_pool_t *p, char *dummy)
+static void *create_imap_dir_config(apr_pool_t *p, char *dummy)
 {
     imap_conf_rec *icr =
-    (imap_conf_rec *) ap_palloc(p, sizeof(imap_conf_rec));
+    (imap_conf_rec *) apr_palloc(p, sizeof(imap_conf_rec));
 
     icr->imap_menu = NULL;
     icr->imap_default = NULL;
@@ -142,9 +142,9 @@ static void *create_imap_dir_config(ap_pool_t *p, char *dummy)
     return icr;
 }
 
-static void *merge_imap_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_imap_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    imap_conf_rec *new = (imap_conf_rec *) ap_pcalloc(p, sizeof(imap_conf_rec));
+    imap_conf_rec *new = (imap_conf_rec *) apr_pcalloc(p, sizeof(imap_conf_rec));
     imap_conf_rec *base = (imap_conf_rec *) basev;
     imap_conf_rec *add = (imap_conf_rec *) addv;
 
@@ -374,14 +374,14 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     }
 
     if (!strcasecmp(value, "nocontent") || !strcasecmp(value, "error")) {
-        return ap_pstrdup(r->pool, value);      /* these are handled elsewhere,
+        return apr_pstrdup(r->pool, value);      /* these are handled elsewhere,
                                                 so just copy them */
     }
 
     if (!strcasecmp(value, "referer")) {
-        referer = ap_table_get(r->headers_in, "Referer");
+        referer = apr_table_get(r->headers_in, "Referer");
         if (referer && *referer) {
-	    return ap_pstrdup(r->pool, referer);
+	    return apr_pstrdup(r->pool, referer);
         }
         else {
 	    /* XXX:  This used to do *value = '\0'; ... which is totally bogus
@@ -403,12 +403,12 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     if (*string_pos_const == ':') {
 	/* if letters and then a colon (like http:) */
 	/* it's an absolute URL, so use it! */
-	return ap_pstrdup(r->pool, value);
+	return apr_pstrdup(r->pool, value);
     }
 
     if (!base || !*base) {
         if (value && *value) {
-	    return ap_pstrdup(r->pool, value); /* no base: use what is given */
+	    return apr_pstrdup(r->pool, value); /* no base: use what is given */
         }
 	/* no base, no value: pick a simple default */
 	return ap_construct_url(r->pool, "/", r);
@@ -421,7 +421,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
                     "invalid base directive in map file: %s", r->uri);
         return NULL;
     }
-    my_base = ap_pstrdup(r->pool, base);
+    my_base = apr_pstrdup(r->pool, base);
     string_pos = my_base;
     while (*string_pos) {
         if (*string_pos == '/' && *(string_pos + 1) == '/') {
@@ -493,7 +493,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
                                    with '..' */
 
     if (value && *value) {
-	return ap_pstrcat(r->pool, my_base, value, NULL);
+	return apr_pstrcat(r->pool, my_base, value, NULL);
     }
     return my_base;
 }
@@ -510,7 +510,7 @@ static int imap_reply(request_rec *r, char *redirect)
     }
     if (redirect && *redirect) {
         /* must be a URL, so redirect to it */
-        ap_table_setn(r->headers_out, "Location", redirect);
+        apr_table_setn(r->headers_out, "Location", redirect);
         return HTTP_MOVED_TEMPORARILY;
     }
     return HTTP_INTERNAL_SERVER_ERROR;
@@ -617,7 +617,7 @@ static int imap_handler(request_rec *r)
     char *mapdflt;
     char *closest = NULL;
     double closest_yet = -1;
-    ap_status_t status;
+    apr_status_t status;
 
     double testpoint[2];
     double pointarray[MAXVERTS + 1][2];
@@ -847,7 +847,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "point")) {  /* point */
 
             if (is_closer(testpoint, pointarray, &closest_yet)) {
-		closest = ap_pstrdup(r->pool, value);
+		closest = apr_pstrdup(r->pool, value);
             }
 
             continue;
@@ -916,7 +916,7 @@ module MODULE_VAR_EXPORT imap_module =
     merge_imap_dir_configs,     /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    imap_cmds,                  /* command ap_table_t */
+    imap_cmds,                  /* command apr_table_t */
     imap_handlers,              /* handlers */
     NULL                        /* register hooks */
 };

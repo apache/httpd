@@ -349,7 +349,7 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     rlim_t cur = 0;
     rlim_t max = 0;
 
-    *plimit = (struct rlimit *)ap_pcalloc(cmd->pool, sizeof(**plimit));
+    *plimit = (struct rlimit *)apr_pcalloc(cmd->pool, sizeof(**plimit));
     limit = *plimit;
     if ((getrlimit(type, limit)) != 0)  {
         *plimit = NULL;

@@ -149,15 +149,15 @@ typedef struct moduleinfo {
 } moduleinfo;
 
 typedef struct so_server_conf {
-    ap_array_header_t *loaded_modules;
+    apr_array_header_t *loaded_modules;
 } so_server_conf;
 
-static void *so_sconf_create(ap_pool_t *p, server_rec *s)
+static void *so_sconf_create(apr_pool_t *p, server_rec *s)
 {
     so_server_conf *soc;
 
-    soc = (so_server_conf *)ap_pcalloc(p, sizeof(so_server_conf));
-    soc->loaded_modules = ap_make_array(p, DYNAMIC_MODULE_LIMIT, 
+    soc = (so_server_conf *)apr_pcalloc(p, sizeof(so_server_conf));
+    soc->loaded_modules = apr_make_array(p, DYNAMIC_MODULE_LIMIT, 
                                      sizeof(moduleinfo));
 
     return (void *)soc;
@@ -170,9 +170,9 @@ static void *so_sconf_create(ap_pool_t *p, server_rec *s)
  * This is called as a cleanup function from the core.
  */
 
-static ap_status_t unload_module(void *data)
+static apr_status_t unload_module(void *data)
 {
-    ap_status_t status;
+    apr_status_t status;
     moduleinfo *modi = (moduleinfo*)data;
 
     /* only unload if module information is still existing */
@@ -183,7 +183,7 @@ static ap_status_t unload_module(void *data)
     ap_remove_loaded_module(modi->modp);
 
     /* unload the module space itself */
-    if ((status = ap_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
+    if ((status = apr_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
 		     "dso unload failure");
         return status;
@@ -202,11 +202,11 @@ static ap_status_t unload_module(void *data)
  * or include the filename in error message.
  */
 
-static ap_status_t unload_file(void *handle)
+static apr_status_t unload_file(void *handle)
 {
-    ap_status_t status;
+    apr_status_t status;
     
-    if ((status = ap_dso_unload((ap_dso_handle_t *)handle)) != APR_SUCCESS)
+    if ((status = apr_dso_unload((apr_dso_handle_t *)handle)) != APR_SUCCESS)
         return status;
     return APR_SUCCESS;
 }
@@ -219,9 +219,9 @@ static ap_status_t unload_file(void *handle)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
                                const char *modname, const char *filename)
 {
-    ap_status_t status;
-    ap_dso_handle_t *modhandle;
-    ap_dso_handle_sym_t modsym;
+    apr_status_t status;
+    apr_dso_handle_t *modhandle;
+    apr_dso_handle_sym_t modsym;
     module *modp;
     const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
@@ -247,18 +247,18 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         if (modi->name != NULL && strcmp(modi->name, modname) == 0)
             return NULL;
     }
-    modi = ap_push_array(sconf->loaded_modules);
+    modi = apr_push_array(sconf->loaded_modules);
     modi->name = modname;
 
     /*
      * Load the file into the Apache address space
      */
-    if ((status = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
+    if ((status = apr_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
         char my_error[256];
 
-        return ap_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
+        return apr_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
 			  " into server: ",
-			  ap_dso_error(modhandle, my_error, sizeof(my_error)),
+			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
 			  NULL);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
@@ -269,16 +269,16 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if ((status = ap_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
+    if ((status = apr_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
         char my_error[256];
 
-	return ap_pstrcat(cmd->pool, "Can't locate API module structure `",
+	return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
 			  modname, "' in file ", szModuleFile, ": ", 
-			  ap_dso_error(modhandle, my_error, sizeof(my_error)),
+			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
 			  NULL);
     }
     modp = (module*) modsym;
-    modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
+    modp->dynamic_load_handle = (apr_dso_handle_t *)modhandle;
     modi->modp = modp;
 
     /* 
@@ -286,7 +286,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * 
      */
     if (modp->magic != MODULE_MAGIC_COOKIE) {
-        return ap_pstrcat(cmd->pool, "API module structure `", modname,
+        return apr_pstrcat(cmd->pool, "API module structure `", modname,
                           "' in file ", szModuleFile, " is garbled -"
                           " perhaps this is not an Apache module DSO?", NULL);
     }
@@ -297,11 +297,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     ap_add_loaded_module(modp);
 
     /* 
-     * Register a cleanup in the config ap_pool_t (normally pconf). When
+     * Register a cleanup in the config apr_pool_t (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
-    ap_register_cleanup(cmd->pool, modi, unload_module, ap_null_cleanup);
+    apr_register_cleanup(cmd->pool, modi, unload_module, apr_null_cleanup);
 
     /* 
      * Finally we need to run the configuration process for the module
@@ -318,25 +318,25 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
-    ap_status_t status;
-    ap_dso_handle_t *handle;
+    apr_status_t status;
+    apr_dso_handle_t *handle;
     const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    if ((status = ap_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
+    if ((status = apr_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
         char my_error[256];
 
-	return ap_pstrcat(cmd->pool, "Cannot load ", filename, 
+	return apr_pstrcat(cmd->pool, "Cannot load ", filename, 
 			  " into server: ", 
-			  ap_strerror(status, my_error, sizeof(my_error)),
+			  apr_strerror(status, my_error, sizeof(my_error)),
 			  NULL);
     }
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		 "loaded file %s", filename);
 
-    ap_register_cleanup(cmd->pool, (void *)handle, unload_file, ap_null_cleanup);
+    apr_register_cleanup(cmd->pool, (void *)handle, unload_file, apr_null_cleanup);
 
     return NULL;
 }
@@ -374,7 +374,7 @@ module MODULE_VAR_EXPORT so_module = {
    NULL,			    /* merge per-dir config */
    so_sconf_create,		/* server config */
    NULL,			    /* merge server config */
-   so_cmds,			    /* command ap_table_t */
+   so_cmds,			    /* command apr_table_t */
    NULL,			    /* handlers */
    NULL				    /* register hooks */
 };

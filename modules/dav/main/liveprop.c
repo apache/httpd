@@ -62,18 +62,18 @@
 #include "mod_dav.h"
 
 
-static ap_hash_t *dav_liveprop_uris = NULL;
+static apr_hash_t *dav_liveprop_uris = NULL;
 static int dav_liveprop_count = 0;
 
 
-static ap_status_t dav_cleanup_liveprops(void *ctx)
+static apr_status_t dav_cleanup_liveprops(void *ctx)
 {
     dav_liveprop_uris = NULL;
     dav_liveprop_count = 0;
     return APR_SUCCESS;
 }
 
-void dav_register_liveprop_namespace(ap_pool_t *p, const char *uri)
+void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
 {
     int value;
 
@@ -81,23 +81,23 @@ void dav_register_liveprop_namespace(ap_pool_t *p, const char *uri)
     p = ap_global_hook_pool;
 
     if (dav_liveprop_uris == NULL) {
-        dav_liveprop_uris = ap_make_hash(p);
-        ap_register_cleanup(p, NULL, dav_cleanup_liveprops, ap_null_cleanup);
+        dav_liveprop_uris = apr_make_hash(p);
+        apr_register_cleanup(p, NULL, dav_cleanup_liveprops, apr_null_cleanup);
     }
 
-    value = (int)ap_hash_get(dav_liveprop_uris, uri, 0);
+    value = (int)apr_hash_get(dav_liveprop_uris, uri, 0);
     if (value != 0) {
         /* already registered */
         return;
     }
 
     /* start at 1, and count up */
-    ap_hash_set(dav_liveprop_uris, uri, 0, (void *)++dav_liveprop_count);
+    apr_hash_set(dav_liveprop_uris, uri, 0, (void *)++dav_liveprop_count);
 }
 
 int dav_get_liveprop_ns_index(const char *uri)
 {
-    return (int)ap_hash_get(dav_liveprop_uris, uri, 0);
+    return (int)apr_hash_get(dav_liveprop_uris, uri, 0);
 }
 
 int dav_get_liveprop_ns_count(void)
@@ -105,18 +105,18 @@ int dav_get_liveprop_ns_count(void)
     return dav_liveprop_count;
 }
 
-void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr)
+void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
 {
-    ap_hash_index_t *idx = ap_hash_first(dav_liveprop_uris);
+    apr_hash_index_t *idx = apr_hash_first(dav_liveprop_uris);
 
-    for ( ; idx != NULL; idx = ap_hash_next(idx) ) {
+    for ( ; idx != NULL; idx = apr_hash_next(idx) ) {
         const void *key;
         void *val;
         const char *s;
 
-        ap_hash_this(idx, &key, NULL, &val);
+        apr_hash_this(idx, &key, NULL, &val);
 
-        s = ap_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, key);
+        s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, key);
         ap_text_append(p, phdr, s);
     }
 }

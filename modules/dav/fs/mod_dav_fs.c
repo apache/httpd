@@ -74,19 +74,19 @@ const char *dav_get_lockdb_path(const request_rec *r)
     return conf->lockdb_path;
 }
 
-static void *dav_fs_create_server_config(ap_pool_t *p, server_rec *s)
+static void *dav_fs_create_server_config(apr_pool_t *p, server_rec *s)
 {
-    return ap_pcalloc(p, sizeof(dav_fs_server_conf));
+    return apr_pcalloc(p, sizeof(dav_fs_server_conf));
 }
 
-static void *dav_fs_merge_server_config(ap_pool_t *p,
+static void *dav_fs_merge_server_config(apr_pool_t *p,
                                         void *base, void *overrides)
 {
     dav_fs_server_conf *parent = base;
     dav_fs_server_conf *child = overrides;
     dav_fs_server_conf *newconf;
 
-    newconf = ap_pcalloc(p, sizeof(*newconf));
+    newconf = apr_pcalloc(p, sizeof(*newconf));
 
     newconf->lockdb_path =
         child->lockdb_path ? child->lockdb_path : parent->lockdb_path;

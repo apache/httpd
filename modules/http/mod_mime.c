@@ -96,12 +96,12 @@ typedef struct handlers_info {
 } handlers_info;
 
 typedef struct {
-    ap_table_t *forced_types;        /* Additional AddTyped stuff */
-    ap_table_t *encoding_types;      /* Added with AddEncoding... */
-    ap_table_t *language_types;      /* Added with AddLanguage... */
-    ap_table_t *handlers;            /* Added with AddHandler...  */
-    ap_table_t *charset_types;       /* Added with AddCharset... */       
-    ap_array_header_t *handlers_remove;     /* List of handlers to remove */
+    apr_table_t *forced_types;        /* Additional AddTyped stuff */
+    apr_table_t *encoding_types;      /* Added with AddEncoding... */
+    apr_table_t *language_types;      /* Added with AddLanguage... */
+    apr_table_t *handlers;            /* Added with AddHandler...  */
+    apr_table_t *charset_types;       /* Added with AddCharset... */       
+    apr_array_header_t *handlers_remove;     /* List of handlers to remove */
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -130,17 +130,17 @@ static char tspecial[] = {
 
 module MODULE_VAR_EXPORT mime_module;
 
-static void *create_mime_dir_config(ap_pool_t *p, char *dummy)
+static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
 {
     mime_dir_config *new =
-    (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
+    (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
 
-    new->forced_types = ap_make_table(p, 4);
-    new->encoding_types = ap_make_table(p, 4);
-    new->charset_types = ap_make_table(p, 4);
-    new->language_types = ap_make_table(p, 4);
-    new->handlers = ap_make_table(p, 4);
-    new->handlers_remove = ap_make_array(p, 4, sizeof(handlers_info));
+    new->forced_types = apr_make_table(p, 4);
+    new->encoding_types = apr_make_table(p, 4);
+    new->charset_types = apr_make_table(p, 4);
+    new->language_types = apr_make_table(p, 4);
+    new->handlers = apr_make_table(p, 4);
+    new->handlers_remove = apr_make_array(p, 4, sizeof(handlers_info));
 
     new->type = NULL;
     new->handler = NULL;
@@ -149,29 +149,29 @@ static void *create_mime_dir_config(ap_pool_t *p, char *dummy)
     return new;
 }
 
-static void *merge_mime_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
     mime_dir_config *new =
-        (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
+        (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
     int i;
     handlers_info *hand;
 
     hand = (handlers_info *) add->handlers_remove->elts;
     for (i = 0; i < add->handlers_remove->nelts; i++) {
-        ap_table_unset(base->handlers, hand[i].name);
+        apr_table_unset(base->handlers, hand[i].name);
     }
 
-    new->forced_types = ap_overlay_tables(p, add->forced_types,
+    new->forced_types = apr_overlay_tables(p, add->forced_types,
 					 base->forced_types);
-    new->encoding_types = ap_overlay_tables(p, add->encoding_types,
+    new->encoding_types = apr_overlay_tables(p, add->encoding_types,
                                          base->encoding_types);
-    new->charset_types = ap_overlay_tables(p, add->charset_types,
+    new->charset_types = apr_overlay_tables(p, add->charset_types,
 					   base->charset_types);
-    new->language_types = ap_overlay_tables(p, add->language_types,
+    new->language_types = apr_overlay_tables(p, add->language_types,
                                          base->language_types);
-    new->handlers = ap_overlay_tables(p, add->handlers,
+    new->handlers = apr_overlay_tables(p, add->handlers,
                                    base->handlers);
 
     new->type = add->type ? add->type : base->type;
@@ -186,13 +186,13 @@ static const char *add_type(cmd_parms *cmd, void *m_, const char *ct_,
                             const char *ext)
 {
     mime_dir_config *m=m_;
-    char *ct=ap_pstrdup(cmd->pool,ct_);
+    char *ct=apr_pstrdup(cmd->pool,ct_);
 
     if (*ext == '.')
 	++ext;
 	
     ap_str_tolower(ct);
-    ap_table_setn(m->forced_types, ext, ct);
+    apr_table_setn(m->forced_types, ext, ct);
     return NULL;
 }
 
@@ -200,12 +200,12 @@ static const char *add_encoding(cmd_parms *cmd, void *m_, const char *enc_,
 				const char *ext)
 {
     mime_dir_config *m=m_;
-    char *enc=ap_pstrdup(cmd->pool,enc_);
+    char *enc=apr_pstrdup(cmd->pool,enc_);
 
     if (*ext == '.')
         ++ext;
     ap_str_tolower(enc);
-    ap_table_setn(m->encoding_types, ext, enc);
+    apr_table_setn(m->encoding_types, ext, enc);
     return NULL;
 }
 
@@ -213,13 +213,13 @@ static const char *add_charset(cmd_parms *cmd, void *m_, const char *charset_,
 			       const char *ext)
 {
     mime_dir_config *m=m_;
-    char *charset=ap_pstrdup(cmd->pool,charset_);
+    char *charset=apr_pstrdup(cmd->pool,charset_);
 
     if (*ext == '.') {
 	++ext;
     }
     ap_str_tolower(charset);
-    ap_table_setn(m->charset_types, ext, charset);
+    apr_table_setn(m->charset_types, ext, charset);
     return NULL;
 }
 
@@ -227,13 +227,13 @@ static const char *add_language(cmd_parms *cmd, void *m_, const char *lang_,
                                 const char *ext)
 {
     mime_dir_config *m=m_;
-    char *lang=ap_pstrdup(cmd->pool,lang_);
+    char *lang=apr_pstrdup(cmd->pool,lang_);
 
     if (*ext == '.') {
 	++ext;
     }
     ap_str_tolower(lang);
-    ap_table_setn(m->language_types, ext, lang);
+    apr_table_setn(m->language_types, ext, lang);
     return NULL;
 }
 
@@ -241,12 +241,12 @@ static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
                                const char *ext)
 {
     mime_dir_config *m=m_;
-    char *hdlr=ap_pstrdup(cmd->pool,hdlr_);
+    char *hdlr=apr_pstrdup(cmd->pool,hdlr_);
 
     if (*ext == '.')
         ++ext;
     ap_str_tolower(hdlr);
-    ap_table_setn(m->handlers, ext, hdlr);
+    apr_table_setn(m->handlers, ext, hdlr);
     return NULL;
 }
 
@@ -263,8 +263,8 @@ static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
     if (*ext == '.') {
         ++ext;
     }
-    hand = (handlers_info *) ap_push_array(mcfg->handlers_remove);
-    hand->name = ap_pstrdup(cmd->pool, ext);
+    hand = (handlers_info *) apr_push_array(mcfg->handlers_remove);
+    hand->name = apr_pstrdup(cmd->pool, ext);
     return NULL;
 }
 
@@ -308,22 +308,22 @@ AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
     {NULL}
 };
 
-/* Hash ap_table_t  --- only one of these per daemon; virtual hosts can
+/* Hash apr_table_t  --- only one of these per daemon; virtual hosts can
  * get private versions through AddType...
  */
 
 #define MIME_HASHSIZE (32)
 #define hash(i) (ap_tolower(i) % MIME_HASHSIZE)
 
-static ap_table_t *hash_buckets[MIME_HASHSIZE];
+static apr_table_t *hash_buckets[MIME_HASHSIZE];
 
-static void mime_post_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
+static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     configfile_t *f;
     char l[MAX_STRING_LEN];
     int x;
     const char *types_confname = ap_get_module_config(s->module_config, &mime_module);
-    ap_status_t status;
+    apr_status_t status;
 
     if (!types_confname)
         types_confname = AP_TYPES_CONFIG_FILE;
@@ -337,7 +337,7 @@ static void mime_post_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, se
     }
 
     for (x = 0; x < MIME_HASHSIZE; x++)
-        hash_buckets[x] = ap_make_table(p, 10);
+        hash_buckets[x] = apr_make_table(p, 10);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
         const char *ll = l, *ct;
@@ -349,7 +349,7 @@ static void mime_post_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, se
         while (ll[0]) {
             char *ext = ap_getword_conf(p, &ll);
             ap_str_tolower(ext);   /* ??? */
-            ap_table_setn(hash_buckets[hash(ext[0])], ext, ct);
+            apr_table_setn(hash_buckets[hash(ext[0])], ext, ct);
         }
     }
     ap_cfg_closefile(f);
@@ -415,18 +415,18 @@ static content_type *analyze_ct(request_rec *r, char *s)
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
-    ap_pool_t  * p = r->pool;
+    apr_pool_t  * p = r->pool;
 
     content_type *ctp;
     param *pp, *npp;
 
     /* initialize ctp */
-    ctp = (content_type *) ap_palloc(p, sizeof(content_type));
+    ctp = (content_type *) apr_palloc(p, sizeof(content_type));
     ctp->type = NULL;
     ctp->subtype = NULL;
     ctp->param = NULL;
 
-    tp = ap_pstrdup(p, s);
+    tp = apr_pstrdup(p, s);
 
     mp = tp;
     cp = mp;
@@ -438,7 +438,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		     (const char *) mp);
 	return (NULL);
     }
-    ctp->type = ap_pstrndup(p, mp, cp - mp);
+    ctp->type = apr_pstrndup(p, mp, cp - mp);
     ctp->type = zap_sp(ctp->type);
     if (ctp->type == NULL || *(ctp->type) == '\0' ||
 	strchr(ctp->type, ';') || strchr(ctp->type, ' ') ||
@@ -453,7 +453,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
     mp = cp;
 
     for (; *cp != ';' && *cp != '\0'; cp++);
-    ctp->subtype = ap_pstrndup(p, mp, cp - mp);
+    ctp->subtype = apr_pstrndup(p, mp, cp - mp);
     ctp->subtype = zap_sp(ctp->subtype);
     if ((ctp->subtype == NULL) || (*(ctp->subtype) == '\0') ||
 	strchr(ctp->subtype, ' ') || strchr(ctp->subtype, '\t')) {
@@ -489,7 +489,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		continue;
 	    }
 	    else if (*cp == '=') {
-		attribute = ap_pstrndup(p, mp, cp - mp);
+		attribute = apr_pstrndup(p, mp, cp - mp);
 		attribute = zap_sp(attribute);
 		if (attribute == NULL || *attribute == '\0') {
 		    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
@@ -564,7 +564,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		    }
 		}
 	    }
-	    value = ap_pstrndup(p, mp, cp - mp);
+	    value = apr_pstrndup(p, mp, cp - mp);
 	    value = zap_sp(value);
 	    if (value == NULL || *value == '\0') {
 		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
@@ -572,7 +572,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		return (NULL);
 	    }
 
-	    pp = ap_palloc(p, sizeof(param));
+	    pp = apr_palloc(p, sizeof(param));
 	    pp->attr = attribute;
 	    pp->val = value;
 	    pp->next = NULL;
@@ -629,42 +629,42 @@ static int find_ct(request_rec *r)
         int found = 0;
 
         /* Check for Content-Type */
-        if ((type = ap_table_get(conf->forced_types, ext))
-            || (type = ap_table_get(hash_buckets[hash(*ext)], ext))) {
+        if ((type = apr_table_get(conf->forced_types, ext))
+            || (type = apr_table_get(hash_buckets[hash(*ext)], ext))) {
             r->content_type = type;
             found = 1;
         }
 
 	/* Add charset to Content-Type */
-	if ((type = ap_table_get(conf->charset_types, ext))) {
+	if ((type = apr_table_get(conf->charset_types, ext))) {
 	    charset = type;
 	    found = 1;
 	}
 
         /* Check for Content-Language */
-        if ((type = ap_table_get(conf->language_types, ext))) {
+        if ((type = apr_table_get(conf->language_types, ext))) {
             const char **new;
 
             r->content_language = type;         /* back compat. only */
             if (!r->content_languages)
-                r->content_languages = ap_make_array(r->pool, 2, sizeof(char *));
-            new = (const char **) ap_push_array(r->content_languages);
+                r->content_languages = apr_make_array(r->pool, 2, sizeof(char *));
+            new = (const char **) apr_push_array(r->content_languages);
             *new = type;
             found = 1;
         }
 
         /* Check for Content-Encoding */
-        if ((type = ap_table_get(conf->encoding_types, ext))) {
+        if ((type = apr_table_get(conf->encoding_types, ext))) {
             if (!r->content_encoding)
                 r->content_encoding = type;
             else
-                r->content_encoding = ap_pstrcat(r->pool, r->content_encoding,
+                r->content_encoding = apr_pstrcat(r->pool, r->content_encoding,
                                               ", ", type, NULL);
             found = 1;
         }
 
         /* Check for a special handler, but not for proxy request */
-        if ((type = ap_table_get(conf->handlers, ext))
+        if ((type = apr_table_get(conf->handlers, ext))
 #if 0	
 	/* XXX fix me when the proxy code is updated */
 	    && r->proxyreq == NOT_PROXY) 
@@ -694,25 +694,25 @@ static int find_ct(request_rec *r)
 	char *ct;
 	int override = 0;
 
-	ct = (char *) ap_palloc(r->pool,
+	ct = (char *) apr_palloc(r->pool,
 				sizeof(char) * (strlen(r->content_type) + 1));
 	strcpy(ct, r->content_type);
 
 	if ((ctp = analyze_ct(r, ct))) {
 	    param *pp = ctp->param;
-	    r->content_type = ap_pstrcat(r->pool, ctp->type, "/",
+	    r->content_type = apr_pstrcat(r->pool, ctp->type, "/",
 					 ctp->subtype, NULL);
 	    while (pp != NULL) {
 		if (charset && !strcmp(pp->attr, "charset")) {
 		    if (!override) {
-			r->content_type = ap_pstrcat(r->pool, r->content_type,
+			r->content_type = apr_pstrcat(r->pool, r->content_type,
 						     "; charset=", charset,
 						     NULL);
 			override = 1;
 		    }
 		}
 		else {
-		    r->content_type = ap_pstrcat(r->pool, r->content_type,
+		    r->content_type = apr_pstrcat(r->pool, r->content_type,
 						 "; ", pp->attr,
 						 "=", pp->val,
 						 NULL);
@@ -720,7 +720,7 @@ static int find_ct(request_rec *r)
 		pp = pp->next;
 	    }
 	    if (charset && !override) {
-		r->content_type = ap_pstrcat(r->pool, r->content_type,
+		r->content_type = apr_pstrcat(r->pool, r->content_type,
 					     "; charset=", charset,
 					     NULL);
 	    }
@@ -736,8 +736,8 @@ static int find_ct(request_rec *r)
 
         r->content_language = conf->default_language; /* back compat. only */
         if (!r->content_languages)
-            r->content_languages = ap_make_array(r->pool, 2, sizeof(char *));
-        new = (const char **) ap_push_array(r->content_languages);
+            r->content_languages = apr_make_array(r->pool, 2, sizeof(char *));
+        new = (const char **) apr_push_array(r->content_languages);
         *new = conf->default_language;
     }
 
@@ -766,7 +766,7 @@ module MODULE_VAR_EXPORT mime_module = {
     merge_mime_dir_configs,	/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    mime_cmds,			/* command ap_table_t */
+    mime_cmds,			/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

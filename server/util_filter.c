@@ -66,7 +66,7 @@
  */
 typedef struct ap_filter_rec_t {
     const char *name;
-    ap_filter_func filter_func;
+    apr_filter_func filter_func;
     ap_filter_type ftype;
 
     struct ap_filter_rec_t *next;
@@ -93,17 +93,17 @@ static ap_filter_rec_t *registered_filters = NULL;
                                        || (before_this)->ftype > (f)->ftype)
 
 
-static ap_status_t filter_cleanup(void *ctx)
+static apr_status_t filter_cleanup(void *ctx)
 {
     registered_filters = NULL;
     return APR_SUCCESS;
 }
 
 API_EXPORT(void) ap_register_filter(const char *name,
-                                    ap_filter_func filter_func,
+                                    apr_filter_func filter_func,
                                     ap_filter_type ftype)
 {
-    ap_filter_rec_t *frec = ap_palloc(FILTER_POOL, sizeof(*frec));
+    ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
 
     frec->name = name;
     frec->filter_func = filter_func;
@@ -112,7 +112,7 @@ API_EXPORT(void) ap_register_filter(const char *name,
     frec->next = registered_filters;
     registered_filters = frec;
 
-    ap_register_cleanup(FILTER_POOL, NULL, filter_cleanup, NULL);
+    apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, NULL);
 }
 
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
@@ -121,7 +121,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
-            ap_filter_t *f = ap_pcalloc(r->pool, sizeof(*f));
+            apr_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
 
             f->filter_func = frec->filter_func;
             f->ctx = ctx;
@@ -132,7 +132,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
                 r->filters = f;
             }
             else {
-                ap_filter_t *fscan = r->filters;
+                apr_filter_t *fscan = r->filters;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
                 f->next = fscan->next;

@@ -114,12 +114,12 @@ typedef struct {
 /* util_uri.c */
 API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
 API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r);
-API_EXPORT(struct hostent *) ap_pduphostent(ap_pool_t *p, const struct hostent *hp);
-API_EXPORT(struct hostent *) ap_pgethostbyname(ap_pool_t *p, const char *hostname);
-API_EXPORT(char *) ap_unparse_uri_components(ap_pool_t *p, const uri_components *uptr,
+API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp);
+API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname);
+API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr,
     unsigned flags);
-API_EXPORT(int) ap_parse_uri_components(ap_pool_t *p, const char *uri, uri_components *uptr);
-API_EXPORT(int) ap_parse_hostinfo_components(ap_pool_t *p, const char *hostinfo, uri_components *uptr);
+API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr);
+API_EXPORT(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr);
 /* called by the core in main() */
 API_EXPORT(void) ap_util_uri_init(void);
 

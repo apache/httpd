@@ -108,19 +108,19 @@ int ap_rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */
-static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
+static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 		       const char *rmt_ip, 
 		       char user[RFC1413_USERLEN+1], server_rec *srv)
 {
     unsigned int rmt_port, our_port;
     unsigned int sav_rmt_port, sav_our_port;
-    ap_status_t status;
+    apr_status_t status;
     int i;
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
 #ifdef CHARSET_EBCDIC
-    ap_size_t inbytes_left, outbytes_left;
+    apr_size_t inbytes_left, outbytes_left;
 #endif
 
     /*
@@ -132,10 +132,10 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
      * addresses from the query socket.
      */
 
-    ap_set_local_port(sock, ANY_PORT);
-    ap_set_local_ipaddr(sock, local_ip);
+    apr_set_local_port(sock, ANY_PORT);
+    apr_set_local_ipaddr(sock, local_ip);
 
-    if ((status = ap_bind(sock)) != APR_SUCCESS) {
+    if ((status = apr_bind(sock)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
@@ -145,16 +145,16 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
  * errors from connect usually imply the remote machine doesn't support
  * the service
  */
-    ap_set_remote_port(sock, RFC1413_PORT);
-    ap_set_remote_ipaddr(sock, rmt_ip);
+    apr_set_remote_port(sock, RFC1413_PORT);
+    apr_set_remote_ipaddr(sock, rmt_ip);
                     
-    if (ap_connect(sock, NULL) != APR_SUCCESS)
+    if (apr_connect(sock, NULL) != APR_SUCCESS)
         return -1;
-    ap_get_local_port(&sav_our_port, sock);
-    ap_get_remote_port(&sav_rmt_port, sock);
+    apr_get_local_port(&sav_our_port, sock);
+    apr_get_remote_port(&sav_rmt_port, sock);
 
 /* send the data */
-    buflen = ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
+    buflen = apr_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
 		sav_our_port);
 #ifdef CHARSET_EBCDIC
     inbytes_left = outbytes_left = buflen;
@@ -165,10 +165,10 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
     /* send query to server. Handle short write. */
     i = 0;
     while(i < strlen(buffer)) {
-        ap_ssize_t j = strlen(buffer + i);
-        ap_status_t status;
-	status  = ap_send(sock, buffer+i, &j);
-	if (status != APR_SUCCESS && ap_canonical_error(status) != APR_EINTR) {
+        apr_ssize_t j = strlen(buffer + i);
+        apr_status_t status;
+	status  = apr_send(sock, buffer+i, &j);
+	if (status != APR_SUCCESS && apr_canonical_error(status) != APR_EINTR) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		         "write: rfc1413: error sending request");
 	    return -1;
@@ -191,10 +191,10 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
      * this allows it to work on both ASCII and EBCDIC machines.
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
-        ap_ssize_t j = sizeof(buffer) - 1 - i;
-        ap_status_t status;
-	status = ap_recv(sock, buffer+i, &j);
-	if (status != APR_SUCCESS && ap_canonical_error(status) != APR_EINTR) {
+        apr_ssize_t j = sizeof(buffer) - 1 - i;
+        apr_status_t status;
+	status = apr_recv(sock, buffer+i, &j);
+	if (status != APR_SUCCESS && apr_canonical_error(status) != APR_EINTR) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 			"read: rfc1413: error reading response");
 	    return -1;
@@ -233,14 +233,14 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 /* rfc1413 - return remote user name, given socket structures */
 char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 {
-    ap_status_t status;
+    apr_status_t status;
     static char user[RFC1413_USERLEN + 1];	/* XXX */
     static char *result;
-    static ap_socket_t *sock;
+    static apr_socket_t *sock;
 
     result = FROM_UNKNOWN;
 
-    if ((status = ap_create_tcp_socket(&sock, conn->pool)) != APR_SUCCESS) {
+    if ((status = apr_create_tcp_socket(&sock, conn->pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
@@ -248,7 +248,7 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 
     if (get_rfc1413(sock, conn->local_ip, conn->remote_ip, user, srv) >= 0)
         result = user;
-    ap_close_socket(sock);
+    apr_close_socket(sock);
     conn->remote_logname = result;
 
     return conn->remote_logname;

@@ -117,10 +117,10 @@ typedef struct {
 
 } anon_auth_config_rec;
 
-static void *create_anon_auth_dir_config(ap_pool_t *p, char *d)
+static void *create_anon_auth_dir_config(apr_pool_t *p, char *d)
 {
     anon_auth_config_rec *sec = (anon_auth_config_rec *)
-    ap_pcalloc(p, sizeof(anon_auth_config_rec));
+    apr_pcalloc(p, sizeof(anon_auth_config_rec));
 
     if (!sec)
 	return NULL;		/* no memory... */
@@ -181,7 +181,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
     first = sec->auth_anon_passwords;
 
     if (
-	   (!(sec->auth_anon_passwords = (auth_anon *) ap_palloc(cmd->pool, sizeof(auth_anon)))) ||
+	   (!(sec->auth_anon_passwords = (auth_anon *) apr_palloc(cmd->pool, sizeof(auth_anon)))) ||
            (!(sec->auth_anon_passwords->password = arg))
     )
 	     return "Failed to claim memory for an anonymous password...";
@@ -302,7 +302,7 @@ module MODULE_VAR_EXPORT auth_anon_module =
     NULL,			/* dir merger ensure strictness */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    anon_auth_cmds,		/* command ap_table_t */
+    anon_auth_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

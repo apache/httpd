@@ -92,14 +92,14 @@ typedef struct charset_dir_t {
 
 module charset_lite_module;
 
-static void *create_charset_dir_conf(ap_pool_t *p,char *dummy)
+static void *create_charset_dir_conf(apr_pool_t *p,char *dummy)
 {
-  return ap_pcalloc(p,sizeof(charset_dir_t));
+  return apr_pcalloc(p,sizeof(charset_dir_t));
 }
 
-static void *merge_charset_dir_conf(ap_pool_t *p, void *basev, void *overridesv)
+static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv)
 {
-    charset_dir_t *a = (charset_dir_t *)ap_pcalloc (p, sizeof(charset_dir_t));
+    charset_dir_t *a = (charset_dir_t *)apr_pcalloc (p, sizeof(charset_dir_t));
     charset_dir_t *base = (charset_dir_t *)basev,
         *over = (charset_dir_t *)overridesv;
 
@@ -154,8 +154,8 @@ static const char *add_charset_debug(cmd_parms *cmd, charset_dir_t *dc, int arg)
 static int find_code_page(request_rec *r)
 {
     charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
-    ap_status_t rv;
-    ap_xlate_t *input_xlate, *output_xlate;
+    apr_status_t rv;
+    apr_xlate_t *input_xlate, *output_xlate;
     const char *mime_type;
     int debug = dc->debug == DEBUG;
 

@@ -104,7 +104,7 @@
  *			  short_score split into parent and child pieces
  *			  os_is_absolute_path
  * 19971026 (1.3b3-dev)	- custom config hooks in place
- * 19980126 (1.3b4-dev)	- ap_cpystrn(), table_addn(), table_setn(),
+ * 19980126 (1.3b4-dev)	- apr_cpystrn(), table_addn(), table_setn(),
  *			  table_mergen()
  * 19980201 (1.3b4-dev)	- construct_url()
  *			  prototype server_rec * -> request_rec *
@@ -132,7 +132,7 @@
  * 19980324 (1.3b6-dev)	- API_EXPORT(index_of_response)
  * 19980413 (1.3b6-dev)	- The BIG SYMBOL RENAMING: general ap_ prefix
  *			  (see src/include/compat.h for more details)
- *			  ap_vformatter() API, see src/include/ap.h
+ *			  apr_vformatter() API, see src/include/ap.h
  * 19980507 (1.3b7-dev)	- addition of ap_add_version_component() and
  *			  discontinuation of -DSERVER_SUBVERSION support
  * 19980519 (1.3b7-dev)	- add child_info * to spawn function (as passed to
@@ -168,7 +168,7 @@
  *			  added limit_req_body to core_dir_config and
  *			  ap_get_limit_req_body() to get its value.
  * 19980812 (1.3.2-dev)	- split off MODULE_MAGIC_NUMBER
- * 19980812.2           - add ap_overlap_tables()
+ * 19980812.2           - add apr_overlap_tables()
  * 19980816 (1.3.2-dev)	- change proxy to use tables for headers, change
  *                        struct cache_req to typedef cache_req.
  *                        Delete ap_proxy_get_header(), ap_proxy_add_header(),
@@ -195,7 +195,7 @@
  *                        and added vlist_validator to request_rec.
  * 19990101             - renamed macro escape_uri() to ap_escape_uri()
  *                      - added MODULE_MAGIC_COOKIE to identify module structs
- * 19990103 (1.3.4-dev) - added ap_array_pstrcat()
+ * 19990103 (1.3.4-dev) - added apr_array_pstrcat()
  * 19990105 (1.3.4-dev) - added ap_os_is_filename_valid()
  * 19990106 (1.3.4-dev) - Move MODULE_MAGIC_COOKIE to the end of the
  *                        STANDARD_MODULE_STUFF macro so the version
@@ -205,8 +205,8 @@
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
  *          (1.3.5-dev)
- * 19990108.1           - add ap_MD5Encode() for MD5 password handling.
- * 19990108.2           - add ap_validate_password() and change ap_MD5Encode()
+ * 19990108.1           - add apr_MD5Encode() for MD5 password handling.
+ * 19990108.2           - add apr_validate_password() and change apr_MD5Encode()
  *                        to use a stronger algorithm.
  * 19990108.4           - add ap_size_list_item(), ap_get_list_item(), and
  *                        ap_find_list_item()
@@ -242,13 +242,13 @@
  * specified value.
  * <PRE>
  * Useful for testing for features.
- * For example, suppose you wish to use the ap_overlap_tables
+ * For example, suppose you wish to use the apr_overlap_tables
  *    function.  You can do this:
  * 
  * #if MODULE_MAGIC_AT_LEAST(19980812,2)
- *     ... use ap_overlap_tables()
+ *     ... use apr_overlap_tables()
  * #else
- *     ... alternative code which doesn't use ap_overlap_tables()
+ *     ... alternative code which doesn't use apr_overlap_tables()
  * #endif
  * </PRE>
  * @param major The major module magic number

@@ -126,7 +126,7 @@
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
  */
-API_EXPORT(char *) ap_field_noparam(ap_pool_t *p, const char *intype)
+API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
 {
     const char *semi;
 
@@ -134,19 +134,19 @@ API_EXPORT(char *) ap_field_noparam(ap_pool_t *p, const char *intype)
 
     semi = ap_strchr_c(intype, ';');
     if (semi == NULL) {
-	return ap_pstrdup(p, intype);
+	return apr_pstrdup(p, intype);
     } 
     else {
 	while ((semi > intype) && ap_isspace(semi[-1])) {
 	    semi--;
 	}
-	return ap_pstrndup(p, intype, semi - intype);
+	return apr_pstrndup(p, intype, semi - intype);
     }
 }
 
-API_EXPORT(char *) ap_ht_time(ap_pool_t *p, ap_time_t t, const char *fmt, int gmt)
+API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
 {
-    ap_size_t retcode;
+    apr_size_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
     ap_exploded_time_t xt;
@@ -155,7 +155,7 @@ API_EXPORT(char *) ap_ht_time(ap_pool_t *p, ap_time_t t, const char *fmt, int gm
 	const char *f;
 	char *strp;
 
-        ap_explode_gmt(&xt, t);
+        apr_explode_gmt(&xt, t);
 	/* Convert %Z to "GMT" and %z to "+0000";
 	 * on hosts that do not have a time zone string in struct tm,
 	 * strftime must assume its argument is local time.
@@ -187,13 +187,13 @@ API_EXPORT(char *) ap_ht_time(ap_pool_t *p, ap_time_t t, const char *fmt, int gm
 	fmt = tf;
     }
     else {
-        ap_explode_localtime(&xt, t);
+        apr_explode_localtime(&xt, t);
     }
 
     /* check return code? */
-    ap_strftime(ts, &retcode, MAX_STRING_LEN, fmt, &xt);
+    apr_strftime(ts, &retcode, MAX_STRING_LEN, fmt, &xt);
     ts[MAX_STRING_LEN - 1] = '\0';
-    return ap_pstrdup(p, ts);
+    return apr_pstrdup(p, ts);
 }
 
 /* Roy owes Rob beer. */
@@ -275,30 +275,30 @@ API_EXPORT(int) ap_is_matchexp(const char *str)
  * regfree() doesn't clear it. So we don't allow it.
  */
 
-static ap_status_t regex_cleanup(void *preg)
+static apr_status_t regex_cleanup(void *preg)
 {
     regfree((regex_t *) preg);
     return APR_SUCCESS;
 }
 
-API_EXPORT(regex_t *) ap_pregcomp(ap_pool_t *p, const char *pattern,
+API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags)
 {
-    regex_t *preg = ap_palloc(p, sizeof(regex_t));
+    regex_t *preg = apr_palloc(p, sizeof(regex_t));
 
     if (regcomp(preg, pattern, cflags)) {
 	return NULL;
     }
 
-    ap_register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
+    apr_register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
 
     return preg;
 }
 
-API_EXPORT(void) ap_pregfree(ap_pool_t *p, regex_t * reg)
+API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t * reg)
 {
     regfree(reg);
-    ap_kill_cleanup(p, (void *) reg, regex_cleanup);
+    apr_kill_cleanup(p, (void *) reg, regex_cleanup);
 }
 
 /*
@@ -365,7 +365,7 @@ API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, s
  * AT&T V8 regexp package.
  */
 
-API_EXPORT(char *) ap_pregsub(ap_pool_t *p, const char *input, const char *source,
+API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
 			   size_t nmatch, regmatch_t pmatch[])
 {
     const char *src = input;
@@ -377,7 +377,7 @@ API_EXPORT(char *) ap_pregsub(ap_pool_t *p, const char *input, const char *sourc
     if (!source)
 	return NULL;
     if (!nmatch)
-	return ap_pstrdup(p, src);
+	return apr_pstrdup(p, src);
 
     /* First pass, find the size */
 
@@ -402,7 +402,7 @@ API_EXPORT(char *) ap_pregsub(ap_pool_t *p, const char *input, const char *sourc
 
     }
 
-    dest = dst = ap_pcalloc(p, len + 1);
+    dest = dst = apr_pcalloc(p, len + 1);
 
     /* Now actually fill in the string */
 
@@ -552,7 +552,7 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 /*
  * return the parent directory name including trailing / of the file s
  */
-API_EXPORT(char *) ap_make_dirstr_parent(ap_pool_t *p, const char *s)
+API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 {
     const char *last_slash = ap_strrchr_c(s, '/');
     char *d;
@@ -560,10 +560,10 @@ API_EXPORT(char *) ap_make_dirstr_parent(ap_pool_t *p, const char *s)
 
     if (last_slash == NULL) {
 	/* XXX: well this is really broken if this happens */
-	return (ap_pstrdup(p, "/"));
+	return (apr_pstrdup(p, "/"));
     }
     l = (last_slash - s) + 1;
-    d = ap_palloc(p, l + 1);
+    d = apr_palloc(p, l + 1);
     memcpy(d, s, l);
     d[l] = 0;
     return (d);
@@ -574,7 +574,7 @@ API_EXPORT(char *) ap_make_dirstr_parent(ap_pool_t *p, const char *s)
  * This function is deprecated.  Use one of the preceeding two functions
  * which are faster.
  */
-API_EXPORT(char *) ap_make_dirstr(ap_pool_t *p, const char *s, int n)
+API_EXPORT(char *) ap_make_dirstr(apr_pool_t *p, const char *s, int n)
 {
     register int x, f;
     char *res;
@@ -582,7 +582,7 @@ API_EXPORT(char *) ap_make_dirstr(ap_pool_t *p, const char *s, int n)
     for (x = 0, f = 0; s[x]; x++) {
 	if (s[x] == '/')
 	    if ((++f) == n) {
-		res = ap_palloc(p, x + 2);
+		res = apr_palloc(p, x + 2);
 		memcpy(res, s, x);
 		res[x] = '/';
 		res[x + 1] = '\0';
@@ -591,9 +591,9 @@ API_EXPORT(char *) ap_make_dirstr(ap_pool_t *p, const char *s, int n)
     }
 
     if (s[strlen(s) - 1] == '/')
-	return ap_pstrdup(p, s);
+	return apr_pstrdup(p, s);
     else
-	return ap_pstrcat(p, s, "/", NULL);
+	return apr_pstrcat(p, s, "/", NULL);
 }
 
 API_EXPORT(int) ap_count_dirs(const char *path)
@@ -625,23 +625,23 @@ API_EXPORT(void) ap_chdir_file(const char *file)
      * error... ah well. */
 }
 
-API_EXPORT(char *) ap_getword_nc(ap_pool_t *atrans, char **line, char stop)
+API_EXPORT(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
 {
     return ap_getword(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) ap_getword(ap_pool_t *atrans, const char **line, char stop)
+API_EXPORT(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
 {
     const char *pos = ap_strchr_c(*line, stop);
     char *res;
 
     if (!pos) {
-	res = ap_pstrdup(atrans, *line);
+	res = apr_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = ap_pstrndup(atrans, *line, pos - *line);
+    res = apr_pstrndup(atrans, *line, pos - *line);
 
     while (*pos == stop) {
 	++pos;
@@ -652,12 +652,12 @@ API_EXPORT(char *) ap_getword(ap_pool_t *atrans, const char **line, char stop)
     return res;
 }
 
-API_EXPORT(char *) ap_getword_white_nc(ap_pool_t *atrans, char **line)
+API_EXPORT(char *) ap_getword_white_nc(apr_pool_t *atrans, char **line)
 {
     return ap_getword_white(atrans, (const char **) line);
 }
 
-API_EXPORT(char *) ap_getword_white(ap_pool_t *atrans, const char **line)
+API_EXPORT(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
 {
     int pos = -1, x;
     char *res;
@@ -670,13 +670,13 @@ API_EXPORT(char *) ap_getword_white(ap_pool_t *atrans, const char **line)
     }
 
     if (pos == -1) {
-	res = ap_pstrdup(atrans, *line);
+	res = apr_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = ap_palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos + 1);
+    res = apr_palloc(atrans, pos + 1);
+    apr_cpystrn(res, *line, pos + 1);
 
     while (ap_isspace((*line)[pos]))
 	++pos;
@@ -686,23 +686,23 @@ API_EXPORT(char *) ap_getword_white(ap_pool_t *atrans, const char **line)
     return res;
 }
 
-API_EXPORT(char *) ap_getword_nulls_nc(ap_pool_t *atrans, char **line, char stop)
+API_EXPORT(char *) ap_getword_nulls_nc(apr_pool_t *atrans, char **line, char stop)
 {
     return ap_getword_nulls(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) ap_getword_nulls(ap_pool_t *atrans, const char **line, char stop)
+API_EXPORT(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line, char stop)
 {
     const char *pos = ap_strchr_c(*line, stop);
     char *res;
 
     if (!pos) {
-	res = ap_pstrdup(atrans, *line);
+	res = apr_pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = ap_pstrndup(atrans, *line, pos - *line);
+    res = apr_pstrndup(atrans, *line, pos - *line);
 
     ++pos;
 
@@ -715,9 +715,9 @@ API_EXPORT(char *) ap_getword_nulls(ap_pool_t *atrans, const char **line, char s
  * all honored
  */
 
-static char *substring_conf(ap_pool_t *p, const char *start, int len, char quote)
+static char *substring_conf(apr_pool_t *p, const char *start, int len, char quote)
 {
-    char *result = ap_palloc(p, len + 2);
+    char *result = apr_palloc(p, len + 2);
     char *resp = result;
     int i;
 
@@ -737,12 +737,12 @@ static char *substring_conf(ap_pool_t *p, const char *start, int len, char quote
 #endif
 }
 
-API_EXPORT(char *) ap_getword_conf_nc(ap_pool_t *p, char **line)
+API_EXPORT(char *) ap_getword_conf_nc(apr_pool_t *p, char **line)
 {
     return ap_getword_conf(p, (const char **) line);
 }
 
-API_EXPORT(char *) ap_getword_conf(ap_pool_t *p, const char **line)
+API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line)
 {
     const char *str = *line, *strend;
     char *res;
@@ -789,7 +789,7 @@ API_EXPORT(char *) ap_getword_conf(ap_pool_t *p, const char **line)
  * environment value does not exist, leave the ${ENV}
  * construct alone; it means something else.
  */
-API_EXPORT(const char *) ap_resolve_env(ap_pool_t *p, const char * word)
+API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 {
        char tmp[ MAX_STRING_LEN ];
        const char *s, *e;
@@ -820,7 +820,7 @@ API_EXPORT(const char *) ap_resolve_env(ap_pool_t *p, const char * word)
        } while ((s=ap_strchr_c(word,'$')));
        strcat(tmp,word);
 
-       return ap_pstrdup(p,tmp);
+       return apr_pstrdup(p,tmp);
 }
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
 {
@@ -831,36 +831,36 @@ API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
 }
 
-static ap_status_t cfg_close(void *param)
+static apr_status_t cfg_close(void *param)
 {
-    ap_file_t *cfp = (ap_file_t *) param;
-    return (ap_close(cfp));
+    apr_file_t *cfp = (apr_file_t *) param;
+    return (apr_close(cfp));
 }
 
 static int cfg_getch(void *param)
 {
     char ch;
-    ap_file_t *cfp = (ap_file_t *) param;
-    if (ap_getc(&ch, cfp) == APR_SUCCESS)
+    apr_file_t *cfp = (apr_file_t *) param;
+    if (apr_getc(&ch, cfp) == APR_SUCCESS)
         return ch;
     return (int)EOF;
 }
 
 static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
-    ap_file_t *cfp = (ap_file_t *) param;
-    if (ap_fgets(buf, bufsiz, cfp) == APR_SUCCESS)
+    apr_file_t *cfp = (apr_file_t *) param;
+    if (apr_fgets(buf, bufsiz, cfp) == APR_SUCCESS)
         return buf;
     return NULL;
 }
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, const char *name)
+API_EXPORT(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
 {
     configfile_t *new_cfg;
-    ap_file_t *file = NULL;
-    ap_finfo_t finfo;
-    ap_status_t status;
+    apr_file_t *file = NULL;
+    apr_finfo_t finfo;
+    apr_status_t status;
 #ifdef DEBUG
     char buf[120];
 #endif
@@ -878,17 +878,17 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
         return APR_EACCES;
     }
 
-    status = ap_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    status = apr_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
                 "Opening config file %s (%s)",
                 name, (status != APR_SUCCESS) ? 
-                ap_strerror(status, buf, sizeof(buf)) : "successful");
+                apr_strerror(status, buf, sizeof(buf)) : "successful");
 #endif
     if (status != APR_SUCCESS)
         return status;
 
-    status = ap_getfileinfo(&finfo, file);
+    status = apr_getfileinfo(&finfo, file);
     if (status != APR_SUCCESS)
         return status;
 
@@ -903,13 +903,13 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
-        ap_close(file);
+        apr_close(file);
         return APR_EBADF;
     }
 
-    new_cfg = ap_palloc(p, sizeof(*new_cfg));
+    new_cfg = apr_palloc(p, sizeof(*new_cfg));
     new_cfg->param = file;
-    new_cfg->name = ap_pstrdup(p, name);
+    new_cfg->name = apr_pstrdup(p, name);
     new_cfg->getch = (int (*)(void *)) cfg_getch;
     new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;
     new_cfg->close = (int (*)(void *)) cfg_close;
@@ -920,13 +920,13 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
 
 
 /* Allocate a configfile_t handle with user defined functions and params */
-API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_pool_t *p, const char *descr,
+API_EXPORT(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
     void *param,
     int(*getch)(void *param),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
     int(*close_func)(void *param))
 {
-    configfile_t *new_cfg = ap_palloc(p, sizeof(*new_cfg));
+    configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL, "Opening config handler %s", descr);
 #endif
@@ -1151,7 +1151,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
  * the converted list item (or NULL if none) and the address pointed to by
  * field is shifted to the next non-comma, non-whitespace.
  */
-API_EXPORT(char *) ap_get_list_item(ap_pool_t *p, const char **field)
+API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field)
 {
     const char *tok_start;
     const unsigned char *ptr;
@@ -1165,7 +1165,7 @@ API_EXPORT(char *) ap_get_list_item(ap_pool_t *p, const char **field)
     if ((tok_start = ap_size_list_item(field, &tok_len)) == NULL) {
         return NULL;
     }
-    token = ap_palloc(p, tok_len + 1);
+    token = apr_palloc(p, tok_len + 1);
 
     /* Scan the token again, but this time copy only the good bytes.
      * We skip extra whitespace and any whitespace around a '=', '/',
@@ -1240,7 +1240,7 @@ API_EXPORT(char *) ap_get_list_item(ap_pool_t *p, const char **field)
  * This would be much more efficient if we stored header fields as
  * an array of list items as they are received instead of a plain string.
  */
-API_EXPORT(int) ap_find_list_item(ap_pool_t *p, const char *line, const char *tok)
+API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
 {
     const unsigned char *pos;
     const unsigned char *ptr = (const unsigned char *)line;
@@ -1343,7 +1343,7 @@ API_EXPORT(int) ap_find_list_item(ap_pool_t *p, const char *line, const char *to
  * by whitespace at the caller's option.
  */
 
-API_EXPORT(char *) ap_get_token(ap_pool_t *p, const char **accept_line, int accept_white)
+API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
 {
     const char *ptr = *accept_line;
     const char *tok_start;
@@ -1370,7 +1370,7 @@ API_EXPORT(char *) ap_get_token(ap_pool_t *p, const char **accept_line, int acce
     }
 
     tok_len = ptr - tok_start;
-    token = ap_pstrndup(p, tok_start, tok_len);
+    token = apr_pstrndup(p, tok_start, tok_len);
 
     /* Advance accept_line pointer to the next non-white byte */
 
@@ -1383,7 +1383,7 @@ API_EXPORT(char *) ap_get_token(ap_pool_t *p, const char **accept_line, int acce
 
 
 /* find http tokens, see the definition of token from RFC2068 */
-API_EXPORT(int) ap_find_token(ap_pool_t *p, const char *line, const char *tok)
+API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 {
     const unsigned char *start_token;
     const unsigned char *s;
@@ -1417,7 +1417,7 @@ API_EXPORT(int) ap_find_token(ap_pool_t *p, const char *line, const char *tok)
 }
 
 
-API_EXPORT(int) ap_find_last_token(ap_pool_t *p, const char *line, const char *tok)
+API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
 {
     int llen, tlen, lidx;
 
@@ -1435,13 +1435,13 @@ API_EXPORT(int) ap_find_last_token(ap_pool_t *p, const char *line, const char *t
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
-API_EXPORT(char *) ap_escape_shell_cmd(ap_pool_t *p, const char *str)
+API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
 {
     char *cmd;
     unsigned char *d;
     const unsigned char *s;
 
-    cmd = ap_palloc(p, 2 * strlen(str) + 1);	/* Be safe */
+    cmd = apr_palloc(p, 2 * strlen(str) + 1);	/* Be safe */
     d = (unsigned char *)cmd;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
@@ -1533,13 +1533,13 @@ API_EXPORT(int) ap_unescape_url(char *url)
 	return OK;
 }
 
-API_EXPORT(char *) ap_construct_server(ap_pool_t *p, const char *hostname,
+API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 				    unsigned port, const request_rec *r)
 {
     if (ap_is_default_port(port, r))
-	return ap_pstrdup(p, hostname);
+	return apr_pstrdup(p, hostname);
     else {
-	return ap_psprintf(p, "%s:%u", hostname, port);
+	return apr_psprintf(p, "%s:%u", hostname, port);
     }
 }
 
@@ -1581,9 +1581,9 @@ static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
  * something with a '/' in it (and thus does not prefix "./").
  */
 
-API_EXPORT(char *) ap_escape_path_segment(ap_pool_t *p, const char *segment)
+API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 {
-    char *copy = ap_palloc(p, 3 * strlen(segment) + 1);
+    char *copy = apr_palloc(p, 3 * strlen(segment) + 1);
     const unsigned char *s = (const unsigned char *)segment;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
@@ -1601,9 +1601,9 @@ API_EXPORT(char *) ap_escape_path_segment(ap_pool_t *p, const char *segment)
     return copy;
 }
 
-API_EXPORT(char *) ap_os_escape_path(ap_pool_t *p, const char *path, int partial)
+API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
 {
-    char *copy = ap_palloc(p, 3 * strlen(path) + 3);
+    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
@@ -1632,7 +1632,7 @@ API_EXPORT(char *) ap_os_escape_path(ap_pool_t *p, const char *path, int partial
 
 /* ap_escape_uri is now a macro for os_escape_path */
 
-API_EXPORT(char *) ap_escape_html(ap_pool_t *p, const char *s)
+API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s)
 {
     int i, j;
     char *x;
@@ -1645,9 +1645,9 @@ API_EXPORT(char *) ap_escape_html(ap_pool_t *p, const char *s)
 	    j += 4;
 
     if (j == 0)
-	return ap_pstrndup(p, s, i);
+	return apr_pstrndup(p, s, i);
 
-    x = ap_palloc(p, i + j + 1);
+    x = apr_palloc(p, i + j + 1);
     for (i = 0, j = 0; s[i] != '\0'; i++, j++)
 	if (s[i] == '<') {
 	    memcpy(&x[j], "&lt;", 4);
@@ -1670,27 +1670,27 @@ API_EXPORT(char *) ap_escape_html(ap_pool_t *p, const char *s)
 
 API_EXPORT(int) ap_is_directory(const char *path)
 {
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
 
-    if (ap_stat(&finfo, path, NULL) == -1)
+    if (apr_stat(&finfo, path, NULL) == -1)
 	return 0;		/* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
 }
 
-API_EXPORT(char *) ap_make_full_path(ap_pool_t *a, const char *src1,
+API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
 				  const char *src2)
 {
     register int x;
 
     x = strlen(src1);
     if (x == 0)
-	return ap_pstrcat(a, "/", src2, NULL);
+	return apr_pstrcat(a, "/", src2, NULL);
 
     if (src1[x - 1] != '/')
-	return ap_pstrcat(a, src1, "/", src2, NULL);
+	return apr_pstrcat(a, src1, "/", src2, NULL);
     else
-	return ap_pstrcat(a, src1, src2, NULL);
+	return apr_pstrcat(a, src1, src2, NULL);
 }
 
 /*
@@ -1862,7 +1862,7 @@ unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
 }
 
 
-static char *find_fqdn(ap_pool_t *a, struct hostent *p)
+static char *find_fqdn(apr_pool_t *a, struct hostent *p)
 {
     int x;
 
@@ -1870,14 +1870,14 @@ static char *find_fqdn(ap_pool_t *a, struct hostent *p)
 	for (x = 0; p->h_aliases[x]; ++x) {
 	    if (strchr(p->h_aliases[x], '.') &&
 		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
-		return ap_pstrdup(a, p->h_aliases[x]);
+		return apr_pstrdup(a, p->h_aliases[x]);
 	}
 	return NULL;
     }
-    return ap_pstrdup(a, (void *) p->h_name);
+    return apr_pstrdup(a, (void *) p->h_name);
 }
 
-char *ap_get_local_host(ap_pool_t *a)
+char *ap_get_local_host(apr_pool_t *a)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
@@ -1903,8 +1903,8 @@ char *ap_get_local_host(ap_pool_t *a)
             || (!(server_hostname = find_fqdn(a, p)))) {
             /* Recovery - return the default servername by IP: */
             if (!str && p->h_addr_list[0]) {
-                ap_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
-	        server_hostname = ap_pstrdup(a, str);
+                apr_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
+	        server_hostname = apr_pstrdup(a, str);
                 /* We will drop through to report the IP-named server */
             }
         }
@@ -1915,7 +1915,7 @@ char *ap_get_local_host(ap_pool_t *a)
     }
 
     if (!server_hostname) 
-        server_hostname = ap_pstrdup(a, "127.0.0.1");
+        server_hostname = apr_pstrdup(a, "127.0.0.1");
 
     ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, NULL,
                  "%s: Could not find determine the server's fully qualified "
@@ -1927,24 +1927,24 @@ char *ap_get_local_host(ap_pool_t *a)
 
 /* simple 'pool' alloc()ing glue to ap_base64.c
  */
-API_EXPORT(char *) ap_pbase64decode(ap_pool_t *p, const char *bufcoded)
+API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 {
     char *decoded;
     int l;
 
-    decoded = (char *) ap_palloc(p, 1 + ap_base64decode_len(bufcoded));
+    decoded = (char *) apr_palloc(p, 1 + ap_base64decode_len(bufcoded));
     l = ap_base64decode(decoded, bufcoded);
     decoded[l] = '\0'; /* make binary sequence into string */
 
     return decoded;
 }
 
-API_EXPORT(char *) ap_pbase64encode(ap_pool_t *p, char *string) 
+API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string) 
 { 
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) ap_palloc(p, 1 + ap_base64encode_len(l));
+    encoded = (char *) apr_palloc(p, 1 + ap_base64encode_len(l));
     l = ap_base64encode(encoded, string, l);
     encoded[l] = '\0'; /* make binary sequence into string */
 
@@ -1953,12 +1953,12 @@ API_EXPORT(char *) ap_pbase64encode(ap_pool_t *p, char *string)
 
 /* deprecated names for the above two functions, here for compatibility
  */
-API_EXPORT(char *) ap_uudecode(ap_pool_t *p, const char *bufcoded)
+API_EXPORT(char *) ap_uudecode(apr_pool_t *p, const char *bufcoded)
 {
     return ap_pbase64decode(p, bufcoded);
 }
 
-API_EXPORT(char *) ap_uuencode(ap_pool_t *p, char *string) 
+API_EXPORT(char *) ap_uuencode(apr_pool_t *p, char *string) 
 { 
     return ap_pbase64encode(p, string);
 }
@@ -1990,7 +1990,7 @@ API_EXPORT(void) ap_content_type_tolower(char *str)
 /*
  * Given a string, replace any bare " with \" .
  */
-API_EXPORT(char *) ap_escape_quotes (ap_pool_t *p, const char *instring)
+API_EXPORT(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
 {
     int newlen = 0;
     const char *inchr = instring;
@@ -2015,7 +2015,7 @@ API_EXPORT(char *) ap_escape_quotes (ap_pool_t *p, const char *instring)
 	}
 	inchr++;
     }
-    outstring = ap_palloc(p, newlen + 1);
+    outstring = apr_palloc(p, newlen + 1);
     inchr = instring;
     outchr = outstring;
     /*
