@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Allow configure help strings to work with autoconf 2.50+ and 2.13.
+     [Justin Erenkrantz]
+
   *) Rewrite the input filtering mechanisms to consolidate and reorganize
      code.  In short, core_input_filter does something now and
      ap_http_filter is now only concerned with HTTP.  [Justin Erenkrantz]

@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
-[  --with-mpm=MPM          Choose the process model for Apache to use.
-                          MPM={beos,worker,threaded,prefork,spmt_os2,perchild}],[
+APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
+                          MPM={beos|worker|threaded|prefork|spmt_os2|perchild}),[
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then

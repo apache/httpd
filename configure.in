@@ -248,11 +248,11 @@ initgroups \
 bindprocessor \
 )
 
-AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 80)],
+AC_ARG_WITH(port,APACHE_HELP_STRING(--with-port=PORT,Port on which to listen (default is 80)),
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-port requires a value (the TCP port number)'); else PORT="$withval"; fi],
 	[PORT=80])
 
-AC_ARG_ENABLE(maintainer-mode,[  --enable-maintainer-mode  Turn on debugging and compile time warnings],
+AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings),
 [
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
 ])dnl
@@ -299,41 +299,41 @@ APACHE_SUBST(POST_SHARED_CMDS)
 APACHE_SUBST(shared_build)
 
 AC_ARG_WITH(program-name,
-[  --with-program-name     alternate executable name],[
+APACHE_HELP_STRING(--with-program-name,alternate executable name),[
   progname="$withval" ], [
   progname="httpd"] )
 
 # SuExec parameters
 AC_ARG_WITH(suexec-caller,
-[  --with-suexec-caller    User allowed to call SuExec],[
+APACHE_HELP_STRING(--with-suexec-caller,User allowed to call SuExec),[
   AC_DEFINE_UNQUOTED(AP_HTTPD_USER, "$withval", [User allowed to call SuExec] ) ] )
 
 AC_ARG_WITH(suexec-userdir,
-[  --with-suexec-userdir   User subdirectory],[
+APACHE_HELP_STRING(--with-suexec-userdir,User subdirectory),[
   AC_DEFINE_UNQUOTED(AP_USERDIR_SUFFIX, "$withval", [User subdirectory] ) ] )
 
 AC_ARG_WITH(suexec-docroot,
-[  --with-suexec-docroot   SuExec root directory],[
+APACHE_HELP_STRING(--with-suexec-docroot,SuExec root directory),[
   AC_DEFINE_UNQUOTED(AP_DOC_ROOT, "$withval", [SuExec root directory] ) ] )
 
 AC_ARG_WITH(suexec-uidmin,
-[  --with-suexec-uidmin    Minimal allowed UID],[
+APACHE_HELP_STRING(--with-suexec-uidmin,Minimal allowed UID),[
   AC_DEFINE_UNQUOTED(AP_UID_MIN, $withval, [Minimum allowed UID] ) ] )
 
 AC_ARG_WITH(suexec-gidmin,
-[  --with-suexec-gidmin    Minimal allowed GID],[
+APACHE_HELP_STRING(--with-suexec-gidmin,Minimal allowed GID),[
   AC_DEFINE_UNQUOTED(AP_GID_MIN, $withval, [Minimum allowed GID] ) ] )
 
 AC_ARG_WITH(suexec-logfile,
-[  --with-suexec-logfile   Set the logfile],[
+APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
   AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file] ) ] )
 
 AC_ARG_WITH(suexec-safepath,
-[  --with-suexec-safepath  Set the safepath],[
+APACHE_HELP_STRING(--with-suexec-safepath,Set the safepath),[
   AC_DEFINE_UNQUOTED(AP_SAFE_PATH, "$withval", [safe shell path for SuExec] ) ] )
 
 AC_ARG_WITH(suexec-umask,
-[  --with-suexec-umask     umask for suexec'd process],[
+APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
 dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need

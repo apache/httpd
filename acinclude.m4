@@ -1,4 +1,11 @@
 
+dnl APACHE_HELP_STRING(LHS, RHS)
+dnl Autoconf 2.50 can not handle substr correctly.  It does have 
+dnl AC_HELP_STRING, so let's try to call it if we can.
+dnl Note: this define must be on one line so that it can be properly returned
+dnl as the help string.
+AC_DEFUN(APACHE_HELP_STRING,[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING($1,$2),[  ]$1 substr([                       ],len($1))$2)])dnl
+
 dnl APACHE_SUBST(VARIABLE)
 dnl Makes VARIABLE available in generated files
 dnl (do not use @variable@ in Makefiles, but $(variable))
@@ -200,8 +207,8 @@ dnl            explicit yes/no always overrides.
 dnl
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
-  define([optname],[  --]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
-  AC_ARG_ENABLE(translit($1,_,-),optname() substr([                         ],len(optname()))$2,,enable_$1=ifelse($5,,maybe-all,$5))
+  define([optname],[--]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
+  AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
   _apmod_extra_msg=""
   dnl When --enable-modules=most is set and the module was not explicitly
@@ -312,7 +319,7 @@ dnl APACHE_ENABLE_LAYOUT
 dnl
 AC_DEFUN(APACHE_ENABLE_LAYOUT,[
 AC_ARG_ENABLE(layout,
-[  --enable-layout=LAYOUT],[
+APACHE_HELP_STRING(--enable-layout=LAYOUT,Default file layout),[
   LAYOUT=$enableval
 ])
 
@@ -333,7 +340,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   module_default=yes
 
   AC_ARG_ENABLE(modules,
-  [  --enable-modules=MODULE-LIST],[
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Modules to enable),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most"; then
         module_selection=$i
@@ -344,7 +351,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  [  --enable-mods-shared=MODULE-LIST],[
+  APACHE_HELP_STRING(--enable-mod-shared=MODULE-LIST,Shared modules to enable),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most"; then
         module_selection=$i
@@ -378,7 +385,7 @@ AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
 if test "x$ap_ssltk_base" = "x"; then
   AC_MSG_CHECKING(for SSL/TLS toolkit base)
   ap_ssltk_base=""
-  AC_ARG_WITH(ssl, [  --with-ssl[=DIR]        SSL/TLS toolkit (OpenSSL)], [
+  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,SSL/TLS toolkit (OpenSSL)), [
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       ap_ssltk_base="$withval"
     fi
