@@ -1,0 +1,512 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<title>VirtualHost Examples</title>
+</head>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<h1 ALIGN="CENTER">Virtual Host examples for common setups</h1>
+
+
+<h2>Base configuration</h2>
+
+<ul>
+<li><A HREF="#ip">IP-based vhosts only</A>
+<li><A HREF="#name">Name-based vhosts only</A>
+<li><A HREF="#mixed">Mixed name-/IP-based vhosts</A>
+<li><A HREF="#port">Port-based vhosts</A>
+</ul>
+
+<h2>Additional features</h2>
+
+<ul>
+<li><A HREF="#default">Using <code>_default_</code> vhosts</A>
+<li><A HREF="#migrate">Migrating a named-based vhost to an IP-based vhost</A>
+<li><A HREF="#serverpath">Using the <code>ServerPath</code> directive</A>
+</ul>
+
+<HR>
+
+<h3><A NAME="ip">IP-based vhosts only</A></h3>
+
+<ul>
+
+<li><b>Setup 1:</b>
+    The server machine has two IP addresses (<samp>111.22.33.44</samp>
+    and <samp>111.22.33.55</samp>)
+    which resolve to the names <samp>server.domain.tld</samp> and
+    <samp>www.otherdomain.tld</samp> respectively.
+    The hostname <samp>www.domain.tld</samp> is an alias (CNAME)
+    for <samp>server.domain.tld</samp> and will represent the
+    main server.
+    <p>
+    <b>Server configuration:</b>
+
+
+    <blockquote><pre>
+    ...
+    Port 80
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/otherdomain
+    ServerName www.otherdomain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    <samp>www.otherdomain.tld</samp> can only be reached through the
+    address <samp>111.22.33.55</samp>, while <samp>www.domain.tld</samp>
+    can only be reached through <samp>111.22.33.44</samp>
+    (which represents our main server).
+    </blockquote>
+    <p>
+
+<li><b>Setup 2:</b>
+    Same as setup 1, but we don't want to have a dedicated main server.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    ServerName server.domain.tld
+    
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/otherdomain
+    ServerName www.otherdomain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    The main server can never catch a request, because all IP address
+    of our machine are in use for IP-based virtual hosts
+    (only <samp>localhost</samp> requests can hit the main server).
+    </blockquote>
+    <p>
+    
+<li><b>Setup 3:</b>
+    The server machine has two IP addresses (<samp>111.22.33.44</samp>
+    and <samp>111.22.33.55</samp>)
+    which resolve to the names <samp>server.domain.tld</samp> and
+    <samp>www-cache.domain.tld</samp> respectively.
+    The hostname <samp>www.domain.tld</samp> is an alias (CNAME)
+    for <samp>server.domain.tld</samp> and will represent the
+    main server.
+    <samp>www-cache.domain.tld</samp> will become our proxy-cache 
+    listening on port 8080, while the web server itself uses the default
+    port 80.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    Listen 111.22.33.44:80
+    Listen 111.22.33.55:8080
+    ServerName server.domain.tld
+    
+    &lt;VirtualHost 111.22.33.44:80&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.55:8080&gt;
+    ServerName www-cache.domain.tld
+    ...
+      &lt;Directory proxy:&gt;
+      order deny,allow
+      deny from all
+      allow from 111.22.33
+      &lt;/Directory&gt;
+    &lt;/VirtualHost&gt;
+    </pre>
+    The main server can never catch a request, because all IP addresss
+    (apart from <samp>localhost</samp>) of our machine are in use for IP-based
+    virtual hosts. The web server can only be reached on the first address
+    through port 80 and the proxy only on the second address through port 8080.
+    </blockquote>
+</ul>
+<HR>
+
+<h3><A NAME="name">Name-based vhosts only</A></h3>
+
+<ul>
+
+<li><b>Setup 1:</b>
+    The server machine has one IP address (<samp>111.22.33.44</samp>)
+    which resolves to the name <samp>server.domain.tld</samp>.
+    There are two aliases (CNAMEs) <samp>www.domain.tld</samp> and
+    <samp>www.sub.domain.tld</samp> for the address <samp>111.22.33.44</samp>.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    ServerName server.domain.tld
+
+    NameVirtualHost 111.22.33.44 
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    </pre>
+    Apart from <samp>localhost</samp> there are no unspecified
+    addresses/ports, therefore the main server only serves
+    <samp>localhost</samp> requests. Due to the fact
+    that <samp>www.domain.tld</samp> has the highest priority
+    it can be seen as the <cite>default</cite> or
+    <cite>primary</cite> server.
+    </blockquote>
+    <p>
+   
+<li><b>Setup 2:</b>
+    The server machine has two IP addresses (<samp>111.22.33.44</samp>
+    and <samp>111.22.33.55</samp>)
+    which resolve to the names <samp>server1.domain.tld</samp> and
+    <samp>server2.domain.tld</samp> respectively.
+    The alias <samp>www.domain.tld</samp> should be used for the
+    main server which should also catch any unspecified addresses. 
+    We want to use a virtual host for the alias
+    <samp>www.otherdomain.tld</samp> and one virtual host should
+    catch any request to hostnames of the form
+    <samp>*.sub.domain.tld</samp> with <samp>www.sub.domain.tld</samp>
+    as its server name. The address <samp>111.22.33.55</samp> should be
+    used for the virtual hosts.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    ServerName www.domain.tld
+    DocumentRoot /www/domain
+
+    NameVirtualHost 111.22.33.55
+
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/otherdomain
+    ServerName www.otherdomain.tld
+    ...
+    &lt;/VirtualHost&gt;
+   
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ServerAlias *.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    </pre>
+    Any request to an address other than <samp>111.22.33.55</samp>
+    will be served from the main server. A request to
+    <samp>111.22.33.55</samp> with an unknown or no <code>Host:</code>
+    header will be served from <samp>www.otherdomain.tld</samp>.
+    </blockquote>
+</ul>
+
+<HR>
+
+<h3><A NAME="mixed">Mixed name-/IP-based vhosts</A></h3>
+
+<Ul>
+
+<li><b>Setup:</b>
+    The server machine has three IP addresses (<samp>111.22.33.44</samp>,
+    <samp>111.22.33.55</samp> and <samp>111.22.33.66</samp>)
+    which resolve to the names <samp>server.domain.tld</samp>,
+    <samp>www.otherdomain1.tld</samp> and <samp>www.otherdomain2.tld</samp>
+    respectively.
+    The address <samp>111.22.33.44</samp> should we used for a couple
+    of name-based vhosts and the other addresses for IP-based vhosts. 
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    ServerName server.domain.tld
+
+    NameVirtualHost 111.22.33.44
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+   
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain1
+    ServerName www.sub1.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain2
+    ServerName www.sub2.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+ 
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/otherdomain1
+    ServerName www.otherdomain1.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    
+    &lt;VirtualHost 111.22.33.66&gt;
+    DocumentRoot /www/otherdomain2
+    ServerName www.otherdomain2.tld
+    ...
+    &lt;/VirtualHost&gt;     
+    </pre></blockquote>
+
+</ul>
+
+<HR>
+
+<h3><A NAME="port">Port-based vhosts</A></h3>
+
+<ul>
+
+<li><b>Setup:</b>
+    The server machine has one IP address (<samp>111.22.33.44</samp>)
+    which resolves to the name <samp>www.domain.tld</samp>.
+    If we don't have the option to get another address or alias
+    for our server we can use port-based vhosts if we need
+    a virtual host with a different configuration.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Listen 80
+    Listen 8080
+    ServerName www.domain.tld
+    DocumentRoot /www/domain
+
+    &lt;VirtualHost 111.22.33.44:8080&gt;
+    DocumentRoot /www/domain2
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    A request to <samp>www.domain.tld</samp> on port 80 is served
+    from the main server and a request to port 8080 is served from
+    the virtual host.
+    </blockquote>
+</ul> 
+   
+<HR>
+
+<h3><A NAME="default">Using <code>_default_</code> vhosts</A></h3>
+
+<ul>
+
+<li><b>Setup 1:</b> 
+    Catching <em>every</em> request to any unspecified IP address and port,
+    i.e. an address/port combination that is not used for any other
+    virtual host.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    &lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    Using such a default vhost with a wildcard port effectively
+    prevents any request going to the main server.<br>
+    A default vhost never serves a request that was sent to an
+    address/port that is used for name-based vhosts. If the request
+    contained an unknown or no <code>Host:</code> header it is
+    always served from the primary name-based vhost (the
+    vhost for that address/port appearing first in the configuration
+    file).<br>
+    You can use
+    <A HREF="../mod/mod_alias.html#aliasmatch"><code>AliasMatch</code></A>
+    or
+    <A HREF="../mod/mod_rewrite.html#RewriteRule"><code>RewriteRule</code></A>
+    to rewrite any request to a single information page (or script).
+    </blockquote>
+    <p>
+    
+<li><b>Setup 2:</b> 
+    Same as setup 1, but the server listens on several ports and
+    we want to use a second <code>_default_</code> vhost for port 80.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    &lt;VirtualHost _default_:80&gt;
+    DocumentRoot /www/default80
+    ...
+    &lt;/VirtualHost&gt;
+    
+    &lt;VirtualHost _default_:*&gt;
+    DocumentRoot /www/default
+    ...
+    &lt;/VirtualHost&gt;    
+    </pre>
+    The default vhost for port 80 (which <em>must</em> appear before
+    any default vhost with a wildcard port) catches all requests that
+    were sent to an unspecified IP address. The main server is
+    never used to serve a request.
+    </blockquote>    
+    <p>
+    
+<li><b>Setup 3:</b> 
+    We want to have a default vhost for port 80, but no other default vhosts.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    &lt;VirtualHost _default_:80&gt;
+    DocumentRoot /www/default
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    A request to an unspecified address on port 80 is served from the
+    default vhost any other request to an unspecified address and port
+    is served from the main server.
+    </blockquote>
+
+</ul>
+
+<HR>
+
+<h3><A NAME="migrate">Migrating a name-based vhost to an IP-based vhost</A></h3>
+
+<ul>
+
+<li><b>Setup:</b>
+    The name-based vhost with the hostname
+    <samp>www.otherdomain.tld</samp> (from our <a href="#name">name-based</A>
+    example, setup 2) should get its own IP address.
+    To avoid problems with name servers or proxies who cached the old
+    IP address for the name-based vhost we want to provide both variants
+    during a migration phase.<br>
+    The solution is easy, because we can simply add the new IP address
+    (<samp>111.22.33.66</samp>) to the <code>VirtualHost</code> directive.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    Port 80
+    ServerName www.domain.tld
+    DocumentRoot /www/domain
+
+    NameVirtualHost 111.22.33.55
+
+    &lt;VirtualHost 111.22.33.55 111.22.33.66&gt;
+    DocumentRoot /www/otherdomain
+    ServerName www.otherdomain.tld
+    ...
+    &lt;/VirtualHost&gt;
+   
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ServerAlias *.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    The vhost can now be accessed through the new address (as an IP-based
+    vhost) and through the old address (as a name-based vhost).
+    </blockquote>
+
+</ul>
+
+<HR>
+
+<h3><A NAME="serverpath">Using the <code>ServerPath</code> directive</A></h3>
+
+<ul>
+
+<li><b>Setup:</b>
+    We have a server with two name-based vhosts. In order to match the correct
+    virtual host a client must send the correct <code>Host:</code> header.
+    Old HTTP/1.0 clients do not send such a header and Apache has no clue
+    what vhost the client tried to reach (and serves the request from
+    the primary vhost). To provide as much backward compatibility
+    as possible we create a primary vhost which returns a single page
+    containing links with an URL prefix to the name-based virtual hosts.
+    <p>
+    <b>Server configuration:</b>
+
+    <blockquote><pre>
+    ...
+    NameVirtualHost 111.22.33.44
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    # primary vhost
+    DocumentRoot /www/subdomain
+    RewriteEngine On
+    RewriteRule ^/.* /www/subdomain/index.html
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain/sub1
+    ServerName www.sub1.domain.tld
+    ServerPath /sub1/
+    RewriteEngine On
+    RewriteRule ^(/sub1/.*) /www/subdomain$1 
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain/sub2
+    ServerName www.sub2.domain.tld
+    ServerPath /sub2/
+    RewriteEngine On
+    RewriteRule ^(/sub2/.*) /www/subdomain$1 
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+    Due to the <A HREF="../mod/core.html#serverpath"><code>ServerPath</code></A>
+    directive a request to the
+    URL <samp>http://www.sub1.domain.tld/sub1/</samp> is <em>always</em>
+    served from the sub1-vhost. <br>
+    A request to the URL <samp>http://www.sub1.domain.tld/</samp>
+    is only served from the sub1-vhost if the client sent a correct
+    <code>Host:</code> header.
+    If no <code>Host:</code> header is sent the client gets the
+    information page from the primary host.<br>
+    Please note that there is one oddity: A request to
+    <samp>http://www.sub2.domain.tld/sub1/</samp> is also served from
+    the sub1-vhost if the client sent no <code>Host:</code> header. <br>
+    The <code>RewriteRule</code> directives are used to make sure that
+    a client which sent a correct <code>Host:</code> header can use
+    both URL variants, i.e. with or without URL prefix.
+    </blockquote>
+
+</ul> 
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

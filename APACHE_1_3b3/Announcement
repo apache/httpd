@@ -1,0 +1,37 @@
+Apache 1.3beta3 Released
+------------------------
+
+The Apache Group is pleased to announce the release of the 1.3b3 version
+of Apache, the latest beta release of the Apache web server.
+
+Apache 1.3 offers numerous enhancements, improvements and performance
+boosts over the 1.2 code base. The most visible and noteworthy addition
+is the ability to run Apache under Windows 95 and NT (known as the
+``Win32'' port). 
+
+Apache 1.3b3 under both Win32 and UNIX has undergone extensive testing,
+and is much improved over the previous 1.3b2 release. In particular, the
+1.3b2 release for Win32 was considered a ``developer's version.''  We feel
+confident that the Win32 port is ready for a wider audience, and with that
+in mind, we are providing pre-compiled executables for the Win32 platform,
+as well as a true Win32 environment Installer (InstallShield). This is,
+however, still a beta release and there are known issues that will be
+fixed before the final 1.3 release.
+
+Please be sure to read the CHANGES file and the "New Features with Apache
+1.3" document (at http://www.apache.org/docs/new_features_1_3.html).
+This is particularly important if you are using non-IP based virtual hosts.
+
+Apache has been the most popular web server on the Internet since April
+of 1996. The September 1997 WWW server site survey by Netcraft (see:
+http://www.netcraft.co.uk/Survey/) found that more web servers were
+using Apache than any other software. Apache and its derivatives are run
+on over 49% of all web domains on the Internet.
+
+The Apache project has been organized in an attempt to answer some of
+the concerns regarding active development of a public domain HTTP server
+for UNIX. The goal of this project is to provide a secure, efficient and
+extensible server which provides HTTP services in sync with the current
+HTTP standards.
+
+For more information, please check out http://www.apache.org/
