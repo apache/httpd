@@ -90,7 +90,10 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
 AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, 
 		const char *buf, apr_pool_t *p)
 {
-    apr_bucket_do_create(ap_bucket_error_make(b, error, buf, p));
+    apr_bucket *b = (apr_bucket *)calloc(1, sizeof(*b));
+
+    APR_BUCKET_INIT(b);
+    return ap_bucket_error_make(b, error, buf, p);
 }
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
