@@ -32,6 +32,7 @@ extern "C" {
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
 #include "apr_shm.h"
+#include "apr_optional.h"
 
 /* Scoreboard file, if there is one */
 #ifndef DEFAULT_SCOREBOARD
@@ -118,6 +119,7 @@ struct worker_score {
 typedef struct {
     int             server_limit;
     int             thread_limit;
+    int             lb_limit;
     ap_scoreboard_e sb_type;
     ap_generation_t running_generation;	/* the generation of children which
                                          * should still be serving requests. */
@@ -135,6 +137,13 @@ struct process_score{
                              */
 };
 
+/* stuff which is lb specific */
+typedef struct lb_score lb_score;
+struct lb_score{
+    /* TODO: make a real stuct from this */
+    unsigned char data[1024];
+};
+
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
  * even in forked architectures.  Child created-processes (non-fork) will
  * set up these indicies into the (possibly relocated) shmem records.
@@ -143,6 +152,7 @@ typedef struct {
     global_score *global;
     process_score *parent;
     worker_score **servers;
+    lb_score     **balancers;
 } scoreboard;
 
 typedef struct ap_sb_handle_t ap_sb_handle_t;
@@ -168,6 +178,7 @@ void ap_time_process_request(int child_num, int thread_num, int status);
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
 AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
+AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int child_num, int lb_num);
 
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
@@ -184,6 +195,13 @@ AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
   * @return OK or DECLINE on success; anything else is a error
   */  
 AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
+
+/**
+  * proxy load balancer
+  * @return the number of load balancer workers.
+  */  
+APR_DECLARE_OPTIONAL_FN(int, ap_proxy_lb_workers,
+                        (void));
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

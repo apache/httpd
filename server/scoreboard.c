@@ -59,12 +59,15 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_mpm,
                           (apr_pool_t *p, ap_scoreboard_e sb_type),
                           (p, sb_type),OK,DECLINED)
 
+static APR_OPTIONAL_FN_TYPE(ap_proxy_lb_workers)
+                                *proxy_lb_workers;
+
 struct ap_sb_handle_t {
     int child_num;
     int thread_num;
 };
 
-static int server_limit, thread_limit;
+static int server_limit, thread_limit, lb_limit;
 static apr_size_t scoreboard_size;
 
 /*
@@ -89,9 +92,20 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
 {
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
+
+    if (!proxy_lb_workers)
+        proxy_lb_workers = APR_RETRIEVE_OPTIONAL_FN(ap_proxy_lb_workers);
+    if (proxy_lb_workers)
+        lb_limit = proxy_lb_workers();
+    else
+        lb_limit = 0;
+
     scoreboard_size = sizeof(global_score);
     scoreboard_size += sizeof(process_score) * server_limit;
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
+    if (lb_limit)
+        scoreboard_size += sizeof(lb_score) * server_limit * lb_limit;
+
     return scoreboard_size;
 }
 
@@ -102,7 +116,8 @@ void ap_init_scoreboard(void *shared_score)
     
     ap_calc_scoreboard_size();
     ap_scoreboard_image = 
-        calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
+        calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *) +
+               server_limit * lb_limit * sizeof(lb_score *));
     more_storage = shared_score;
     ap_scoreboard_image->global = (global_score *)more_storage;
     more_storage += sizeof(global_score);
@@ -114,9 +129,19 @@ void ap_init_scoreboard(void *shared_score)
         ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
         more_storage += thread_limit * sizeof(worker_score);
     }
+    if (lb_limit) {
+        ap_scoreboard_image->balancers = 
+            (lb_score **)((char*)ap_scoreboard_image + sizeof(scoreboard) +
+                               server_limit * sizeof(worker_score *));
+        for (i = 0; i < server_limit; i++) {
+            ap_scoreboard_image->balancers[i] = (lb_score *)more_storage;
+            more_storage += lb_limit * sizeof(lb_score);
+        }
+    }    
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
     ap_scoreboard_image->global->thread_limit = thread_limit;
+    ap_scoreboard_image->global->lb_limit     = lb_limit;
 }
 
 /**
@@ -260,6 +285,13 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             memset(ap_scoreboard_image->servers[i], 0,
                    sizeof(worker_score) * thread_limit);
         }
+        /* Clean up the lb workers data */
+        if (lb_limit) {
+            for (i = 0; i < server_limit; i++) {
+                memset(ap_scoreboard_image->balancers[i], 0,
+                       sizeof(lb_score) * lb_limit);
+            }
+        }        
         return OK;
     }
 
@@ -461,4 +493,13 @@ AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
 AP_DECLARE(global_score *) ap_get_scoreboard_global()
 {
     return ap_scoreboard_image->global;
+}
+
+AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int child_num, int lb_num)
+{
+    if (((child_num < 0) || (server_limit < child_num)) ||
+        ((lb_num < 0) || (lb_limit < lb_num))) {
+        return(NULL); /* Out of range */
+    }
+    return &ap_scoreboard_image->balancers[child_num][lb_num];
 }
