@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/27 20:56:13 $]
+Last modified at [$Date: 2002/06/27 21:06:18 $]
 
 Release:
 
@@ -53,6 +53,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    * apr_sendfile() is broken on FreeBSD 4.6-STABLE as of 20020627 (and 
+      presumably more leading edge levels) because of a "fix" in the kernel.
+      Apache 2.0.39 is unreliable on that kernel.
 
 CURRENT VOTES:
 
