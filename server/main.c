@@ -370,6 +370,7 @@ int main(int argc, const char * const argv[])
 	    configtestonly = 1;
 	    break;
 	case 'h':
+	case '?':
 	    usage(process);
 	}
     }
