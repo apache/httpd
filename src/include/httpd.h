@@ -369,6 +369,24 @@ extern "C" {
 #define DEFAULT_LISTENBACKLOG 511
 #endif
 
+/* Limits on the size of various request items.  These limits primarily
+ * exist to prevent simple denial-of-service attacks on a server based
+ * on misuse of the protocol.  The recommended values will depend on the
+ * nature of the server resources -- CGI scripts and database backends
+ * might require large values, but most servers could get by with much
+ * smaller limits than we use below.  The request message body size can
+ * be limited by the per-dir config directive LimitRequestBody.
+ */
+#ifndef AP_LIMIT_REQUEST_LINE
+#define AP_LIMIT_REQUEST_LINE 8192
+#endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
+#ifndef AP_LIMIT_REQUEST_FIELDS
+#define AP_LIMIT_REQUEST_FIELDS 100
+#endif /* default limit on number of request header fields */
+#ifndef AP_LIMIT_REQUEST_FIELDSIZE
+#define AP_LIMIT_REQUEST_FIELDSIZE 8192
+#endif /* default limit on bytes in any one header field  */
+
 /*
  * The below defines the base string of the Server: header. Additional
  * tokens can be added via the ap_add_version_component() API call.
@@ -540,28 +558,6 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define REQUEST_CHUNKED_ERROR    1
 #define REQUEST_CHUNKED_DECHUNK  2
 #define REQUEST_CHUNKED_PASS     3
-
-/* Limits on the size of various request items.  These limits primarily
- * exist to prevent simple denial-of-service attacks on a server based
- * on misuse of the protocol.  The recommended values will depend on the
- * nature of the server resources -- CGI scripts and database backends
- * might require large values, but most servers could get by with much
- * smaller limits than we use below.  These limits can be reset on a
- * per-server basis using the LimitRequestLine, LimitRequestFields,
- * LimitRequestFieldSize, and LimitRequestBody configuration directives.
- */
-#ifndef DEFAULT_LIMIT_REQUEST_LINE
-#define DEFAULT_LIMIT_REQUEST_LINE 8192
-#endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
-#ifndef DEFAULT_LIMIT_REQUEST_FIELDS
-#define DEFAULT_LIMIT_REQUEST_FIELDS 100
-#endif /* default limit on number of header fields */
-#ifndef DEFAULT_LIMIT_REQUEST_FIELDSIZE
-#define DEFAULT_LIMIT_REQUEST_FIELDSIZE 8192
-#endif /* default limit on bytes in any one field  */
-#ifndef DEFAULT_LIMIT_REQUEST_BODY
-#define DEFAULT_LIMIT_REQUEST_BODY 33554432ul
-#endif /* default limit on bytes in request body   */
 
 /* Things which may vary per file-lookup WITHIN a request ---
  * e.g., state of MIME config.  Basically, the name of an object, info
@@ -846,11 +842,6 @@ struct server_rec {
 
     uid_t server_uid;        /* effective user id when calling exec wrapper */
     gid_t server_gid;        /* effective group id when calling exec wrapper */
-
-    unsigned int  limit_req_line;      /* limit on bytes in Request-Line   */
-    unsigned int  limit_req_fields;    /* limit on number of header fields */
-    unsigned long limit_req_fieldsize; /* limit on bytes in any one field  */
-    unsigned long limit_req_body;      /* limit on bytes in request body   */
 };
 
 /* These are more like real hosts than virtual hosts */

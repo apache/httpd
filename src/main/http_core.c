@@ -708,6 +708,14 @@ API_EXPORT(char *) ap_construct_url(pool *p, const char *uri,
     return ap_psprintf(p, "%s://%s:%u%s", ap_http_method(r), host, port, uri);
 }
 
+API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
+{
+    core_dir_config *d =
+      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+    
+    return d->limit_req_body;
+}
+
 /*****************************************************************
  *
  * Commands... this module handles almost all of the NCSA httpd.conf
@@ -2301,6 +2309,22 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
+                                      char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+
+    /* WTF: If strtoul is not portable, then write a replacement.
+     *      Instead we have an idiotic define in httpd.h that prevents
+     *      it from being used even when it is available. Sheesh.
+     */
+    conf->limit_req_body = (unsigned long)strtol(arg, (char **)NULL, 10);
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -2503,6 +2527,8 @@ static const command_rec core_cmds[] = {
 #endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
+{ "LimitRequestBody", set_limit_req_body, NULL, RSRC_CONF|ACCESS_CONF|OR_ALL,
+  TAKE1, "Limit (in bytes) on maximum size of request message body" },
 { NULL },
 };
 

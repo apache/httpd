@@ -3,10 +3,11 @@ Changes with Apache 1.3.2
   *) SECURITY: Eliminate O(n^2) space DoS attacks (and other O(n^2)
      cpu time attacks) in header parsing.  [Dean Gaudet]
 
-  *) SECURITY: Added default limits for various aspects of reading a
+  *) SECURITY: Added compile-time limits for various aspects of reading a
      client request to avoid some simple denial of service attacks,
      including limits on maximum request-line size, number of header
-     fields, size of any one header field, and size of the request
+     fields, and size of any one header field.  Also added a configurable
+     directive LimitRequestBody for limiting the size of the request
      message body.  [Roy Fielding]
 
   *) Make status module aware of DNS and logging states, even if

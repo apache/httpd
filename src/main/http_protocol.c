@@ -626,17 +626,12 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static int read_request_line(request_rec *r)
 {
-    char *l;
-    const char *ll;
+    char l[AP_LIMIT_REQUEST_LINE + 2];  /* getline needs two extra for \n\0 */
+    const char *ll = l;
     const char *uri;
     conn_rec *conn = r->connection;
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     int len;
-    pool *tmp;
-
-    tmp = ap_make_sub_pool(r->pool);
-    l = ap_palloc(tmp, r->server->limit_req_line);
-    ll = l;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -653,10 +648,9 @@ static int read_request_line(request_rec *r)
      * have to block during a read.
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1);
-    while ((len = getline(l, r->server->limit_req_line, conn->client, 0)) <= 0) {
+    while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
         if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
             ap_bsetflag(conn->client, B_SAFEREAD, 0);
-	    ap_destroy_pool(tmp);
             return 0;
         }
     }
@@ -696,11 +690,14 @@ static int read_request_line(request_rec *r)
 
     ap_parse_uri(r, uri);
 
-    if (len >= r->server->limit_req_line - 1) {
+    /* getline returns (size of max buffer - 1) if it fills up the
+     * buffer before finding the end-of-line.  This is only going to
+     * happen if it exceeds the configured limit for a request-line.
+     */
+    if (len >= sizeof(l) - 1) {
         r->status    = HTTP_REQUEST_URI_TOO_LARGE;
         r->proto_num = HTTP_VERSION(1,0);
         r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
-	ap_destroy_pool(tmp);
         return 0;
     }
 
@@ -713,7 +710,6 @@ static int read_request_line(request_rec *r)
     else
 	r->proto_num = HTTP_VERSION(1,0);
 
-    ap_destroy_pool(tmp);
     return 1;
 }
 
@@ -742,20 +738,20 @@ static int sort_mime_headers(const void *va, const void *vb)
 /* XXX: could use ap_overlap_tables here... which generalizes this code */
 static void get_mime_headers(request_rec *r)
 {
+    char field[AP_LIMIT_REQUEST_FIELDSIZE + 2];  /* getline needs two extra */
     conn_rec *c = r->connection;
-    char *copy;
-    int len;
     char *value;
-    unsigned int fields_read = 0;
-    char *field;
-    array_header *arr;
+    char *copy;
     pool *tmp;
+    array_header *arr;
     mime_key *new_key;
-    unsigned order;
     mime_key *first;
     mime_key *last;
     mime_key *end;
     char *strp;
+    unsigned order;
+    int len;
+    unsigned int fields_read = 0;
 
     /* The array will store the headers in a way that we can merge them
      * later in O(n*lg(n))... rather than deal with various O(n^2)
@@ -764,8 +760,6 @@ static void get_mime_headers(request_rec *r)
     tmp = ap_make_sub_pool(r->pool);
     arr = ap_make_array(tmp, 50, sizeof(mime_key));
     order = 0;
-
-    field = ap_palloc(tmp, r->server->limit_req_fieldsize);
 
     /* If headers_in is non-empty (i.e. we're parsing a trailer) then
      * we have to merge.  Have I mentioned that I think this is a lame part
@@ -795,22 +789,25 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, r->server->limit_req_fieldsize,
-			c->client, 1)) > 0) {
+    while ((len = getline(field, sizeof(field), c->client, 1)) > 0) {
 
-        if (++fields_read > r->server->limit_req_fields) {
+        if (++fields_read > AP_LIMIT_REQUEST_FIELDS) {
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes",
                 "Number of request header fields exceeds server limit.<P>\n");
-	    ap_destroy_pool(tmp);
+            ap_destroy_pool(tmp);
             return;
         }
-        if (len >= r->server->limit_req_fieldsize) { 
+        /* getline returns (size of max buffer - 1) if it fills up the
+         * buffer before finding the end-of-line.  This is only going to
+         * happen if it exceeds the configured limit for a field size.
+         */
+        if (len >= sizeof(field) - 1) { 
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
                 "<PRE>\n", field, "</PRE>\n", NULL));
-	    ap_destroy_pool(tmp);
+            ap_destroy_pool(tmp);
             return;
         }
         copy = ap_palloc(r->pool, len + 1);
@@ -821,7 +818,7 @@ static void get_mime_headers(request_rec *r)
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Request header field is missing colon separator.<P>\n"
                 "<PRE>\n", copy, "</PRE>\n", NULL));
-	    ap_destroy_pool(tmp);
+            ap_destroy_pool(tmp);
             return;
         }
 
@@ -830,7 +827,7 @@ static void get_mime_headers(request_rec *r)
         while (*value == ' ' || *value == '\t')
             ++value;            /* Skip to start of value   */
 
-	/* XXX: should strip trailing whitespace as well */
+        /* XXX: should strip trailing whitespace as well */
 
 	/* Notice that key and val are actually in r->pool... this is a slight
 	 * optimization to handle the normal case, where we don't have twits
@@ -1495,6 +1492,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = ap_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = ap_table_get(r->headers_in, "Content-Length");
+    unsigned long max_body;
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -1534,10 +1532,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
                     "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
-    if (r->remaining > r->server->limit_req_body) {
+
+    max_body = ap_get_limit_req_body(r);
+    if (max_body && (r->remaining > max_body)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
           "Request content-length of %s is larger than the configured "
-          "server limit of %lu", lenp, r->server->limit_req_body);
+          "limit of %lu", lenp, max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
@@ -1601,6 +1601,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     int c;
     long len_read, len_to_read;
     long chunk_start = 0;
+    unsigned long max_body;
 
     if (!r->read_chunked) {     /* Content-length read */
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
@@ -1630,10 +1631,11 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
      * caller read pass, since the limit exists just to stop infinite
      * length requests and nobody cares if it goes over by one buffer.
      */
-    if (r->read_length > r->server->limit_req_body) {
+    max_body = ap_get_limit_req_body(r);
+    if (max_body && (r->read_length > max_body)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-          "Chunked request body is larger than the configured "
-          "server limit of %lu", r->server->limit_req_body);
+            "Chunked request body is larger than the configured limit of %lu",
+            max_body);
         r->connection->keepalive = -1;
         return -1;
     }

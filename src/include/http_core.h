@@ -131,6 +131,7 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec *r);
 API_EXPORT(const char *) ap_get_server_name(const request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
+API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
 
 /* Authentication stuff.  This is one of the places where compatibility
@@ -236,6 +237,7 @@ typedef struct {
 #ifdef RLIMIT_NPROC
     struct rlimit *limit_nproc;
 #endif
+    unsigned long limit_req_body;  /* limit on bytes in request msg body */
 
     /* logging options */
     enum { srv_sig_off, srv_sig_on, srv_sig_withmail } server_signature;
