@@ -16,6 +16,7 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "ap_mpm.h"
+#include "scoreboard.h"
 #include "apr_version.h"
 
 #if APR_HAVE_UNISTD_H
@@ -1038,7 +1039,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     memset(*balancer, 0, sizeof(proxy_balancer));
 
     (*balancer)->name = uri;
-    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
+    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
     if (apr_thread_mutex_create(&((*balancer)->mutex),
@@ -1141,7 +1142,9 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     if (port == -1)
         port = apr_uri_port_of_scheme((*worker)->scheme);
     (*worker)->port = port;
-
+    (*worker)->id   = lb_workers;
+    /* Increase the total worker count */
+    ++lb_workers;
     init_conn_pool(p, *worker);
 
     return NULL;
@@ -1152,15 +1155,19 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
 
     proxy_worker *worker;
     worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
+    worker->id = lb_workers;
+    /* Increase the total worker count */
+    ++lb_workers;
     init_conn_pool(p, worker);
 
     return worker;
 }
 
 PROXY_DECLARE(void) 
-ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker)
+ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
+                                proxy_worker *worker)
 {
-    proxy_runtime_worker *runtime;
+    proxy_worker *runtime;
 
 #if PROXY_HAS_SCOREBOARD
     int mpm_daemons;
@@ -1179,10 +1186,8 @@ ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, prox
     }
 #endif
     runtime = apr_array_push(balancer->workers);
-    runtime->w  = worker;
-    runtime->b  = balancer;
+    memcpy(runtime, worker, sizeof(proxy_worker));
     runtime->id = lb_workers;
-    runtime->s  = NULL;
     /* Increase the total runtime count */
     ++lb_workers;
 
@@ -1374,6 +1379,28 @@ static apr_status_t connection_destructor(void *resource, void *params,
     return APR_SUCCESS;
 }
 
+PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
+                                                     proxy_worker *worker)
+{
+#if PROXY_HAS_SCOREBOARD
+    lb_score *score = NULL;
+#else
+    void *score = NULL;
+#endif
+#if PROXY_HAS_SCOREBOARD
+        /* Get scoreboard slot */
+    if (ap_scoreboard_image)
+        score = ap_get_scoreboard_lb(worker->id);
+#endif
+    if (!score)
+        score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
+    worker->s = (proxy_worker_stat *)score;
+    if (worker->route)
+        strcpy(worker->s->route, worker->route);
+    if (worker->redirect)
+        strcpy(worker->s->redirect, worker->redirect);
+}
+
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
 {
     apr_status_t rv;
@@ -1391,7 +1418,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         /* Set min to be lower then smax */
         if (worker->min > worker->smax)
             worker->min = worker->smax; 
-        worker->cp->nfree = worker->hmax;
     }
     else {
         /* This will supress the apr_reslist creation */
@@ -1428,7 +1454,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                       worker->hostname);
     }
     if (rv == APR_SUCCESS)
-        worker->status |= PROXY_WORKER_INITIALIZED;
+        worker->s->status |= PROXY_WORKER_INITIALIZED;
     /* Set default parameters */
     if (!worker->retry)
         worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
@@ -1439,13 +1465,13 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
                                          proxy_worker *worker,
                                          server_rec *s)
 {
-    if (worker->status & PROXY_WORKER_IN_ERROR) {
+    if (worker->s->status & PROXY_WORKER_IN_ERROR) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                     "proxy: %s: retrying the worker for (%s)",
                      proxy_function, worker->hostname);
-        if (apr_time_now() > worker->error_time + worker->retry) {
-            ++worker->retries;
-            worker->status &= ~PROXY_WORKER_IN_ERROR;
+        if (apr_time_now() > worker->s->error_time + worker->retry) {
+            ++worker->s->retries;
+            worker->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: %s: worker for (%s) has been marked for retry",
                          proxy_function, worker->hostname);
@@ -1739,16 +1765,16 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
      * no further connections to the worker could be made
      */
     if (!connected && PROXY_WORKER_IS_USABLE(worker) &&
-        !(worker->status & PROXY_WORKER_IGNORE_ERRORS)) {
-        worker->status |= PROXY_WORKER_IN_ERROR;
-        worker->error_time = apr_time_now();
+        !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
+        worker->s->status |= PROXY_WORKER_IN_ERROR;
+        worker->s->error_time = apr_time_now();
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
             "ap_proxy_connect_backend disabling worker for (%s)",
             worker->hostname);
     }
     else {
-        worker->error_time = 0;
-        worker->retries = 0;
+        worker->s->error_time = 0;
+        worker->s->retries = 0;
     }
     return connected ? OK : DECLINED;
 }
