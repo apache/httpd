@@ -917,7 +917,7 @@ static void child_main(int child_num_arg)
                     NULL, pchild);
 
     apr_threadattr_create(&worker_thread_attr, pchild);
-    apr_threadattr_detach_set(worker_thread_attr);                                     
+    apr_threadattr_detach_set(worker_thread_attr, 1);                                     
     apr_create_signal_thread(&thread, worker_thread_attr, check_signal, pchild);
 
     /* We are creating worker threads right now */

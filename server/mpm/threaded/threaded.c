@@ -657,7 +657,7 @@ static void child_main(int child_num_arg)
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
                     NULL, pchild);
     apr_threadattr_create(&thread_attr, pchild);
-    apr_threadattr_detach_set(thread_attr);
+    apr_threadattr_detach_set(thread_attr, 1);
 
     rv = apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
     if (rv != APR_SUCCESS) {
