@@ -10,8 +10,8 @@
 #define BUFSIZE		65536
 #ifdef MAX_PATH
 #undef MAX_PATH
-#define MAX_PATH	1024
 #endif
+#define MAX_PATH	1024
 
 #include "ap_config.h"
 #include <time.h>
