@@ -1465,8 +1465,8 @@ static int bprintf_flush(ap_vformatter_buff *vbuff)
 	    return -1;
 	}
     }
-    vbuff->curpos = &fb->outbase[fb->outcnt];
-    vbuff->endpos = &fb->outbase[fb->bufsiz];
+    vbuff->curpos = (char *)&fb->outbase[fb->outcnt];
+    vbuff->endpos = (char *)&fb->outbase[fb->bufsiz];
     return 0;
 }
 
@@ -1476,8 +1476,8 @@ API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
     int res;
     struct bprintf_data b;
 
-    b.vbuff.curpos = &fb->outbase[fb->outcnt];
-    b.vbuff.endpos = &fb->outbase[fb->bufsiz];
+    b.vbuff.curpos = (char *)&fb->outbase[fb->outcnt];
+    b.vbuff.endpos = (char *)&fb->outbase[fb->bufsiz];
     b.fb = fb;
     va_start(ap, fmt);
     res = ap_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
@@ -1493,8 +1493,8 @@ API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list ap)
     struct bprintf_data b;
     int res;
 
-    b.vbuff.curpos = &fb->outbase[fb->outcnt];
-    b.vbuff.endpos = &fb->outbase[fb->bufsiz];
+    b.vbuff.curpos = (char *)&fb->outbase[fb->outcnt];
+    b.vbuff.endpos = (char *)&fb->outbase[fb->bufsiz];
     b.fb = fb;
     res = ap_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
     if (res != -1) {
