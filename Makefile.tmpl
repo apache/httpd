@@ -157,6 +157,10 @@ build:
 	@touch $(TOP)/$(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
 
+#   the non-verbose variant for package maintainers
+build-quiet:
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) QUIET=1 build
+
 #   build the standard stuff
 build-std:
 	@cd $(TOP)/$(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ all
