@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/17 15:22:09 $]
+Last modified at [$Date: 2001/05/17 18:04:15 $]
 
 Release:
 
@@ -21,43 +21,6 @@ DAEDALUS 2.0 PROBLEMS:
 
     * mod_cgid and suexec have a problem co-existing.  suexec sees a null
       command string sometimes.
-
-    * core dump from 20010422
-
-      /usr/local/apache2b/corefiles/httpd.core.3
-      #0  0x806724c in check_hostalias (r=0x81fd03c) at vhost.c:891
-      #1  0x8067489 in ap_update_vhost_from_headers (r=0x81fd03c) at vhost.c:978
-      #2  0x806fa92 in ap_read_request (conn=0x81450fc) at protocol.c:946
-      #3  0x805a168 in ap_process_http_connection (c=0x81450fc) at http_core.c:274
-      #4  0x806bc60 in ap_run_process_connection (c=0x81450fc) at connection.c:82
-      #5  0x806be84 in ap_process_connection (c=0x81450fc) at connection.c:216
-      #6  0x805fbba in child_main (child_num_arg=65) at prefork.c:807
-      #7  0x805fd20 in make_child (s=0x80c64fc, slot=65) at prefork.c:880
-      #8  0x805ffec in perform_idle_server_maintenance () at prefork.c:1021
-      #9  0x80603d1 in ap_mpm_run (_pconf=0x80c600c, plog=0x80f300c, s=0x80c64fc) at prefork.c:1191
-      #10 0x80660cd in main (argc=1, argv=0xbfbffdac) at main.c:425
-      #11 0x8059bf9 in _start () 
-
-      The input data (received in one read from TCP layer):
-
-      GET /images/apache_sub.gif HTTP/1.1
-      Accept: */*
-      Referer: http://search.apache.org/index.cgi
-      Accept-Language: en-us
-      Accept-Encoding: gzip, deflate
-      If-Modified-Since: Sat, 02 Dec 1995 21:26:28 GMT
-      If-None-Match: "29e60e-17c3-66972900"
-      User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90)
-      Host: www.apache.org
-      Connection: Keep-Alive
-
-      But Greg added a trap to look for such problems right after they occur and
-      we now have a corefile showing the bad request:
-
-      TRACE / HTTP/1.0
-      Max-Forwards: 0
-
-      The list getting trashed is default_list->names.
 
     * core dump from 20010418
 

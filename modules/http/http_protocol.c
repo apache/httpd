@@ -940,6 +940,8 @@ static char *make_allow(request_rec *r)
 AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 {
     int rv;
+    apr_bucket_brigade *b;
+    header_struct h;
 
     /* Get the original request */
     while (r->prev)
@@ -952,11 +954,14 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 
     /* Now we recreate the request, and echo it back */
 
-    ap_rvputs(r, r->the_request, CRLF, NULL);
-
+    b = apr_brigade_create(r->pool);
+    apr_brigade_putstrs(b, NULL, NULL, r->the_request, CRLF, NULL);
+    h.pool = r->pool;
+    h.bb = b;
     apr_table_do((int (*) (void *, const char *, const char *))
-                form_header_field, (void *) r, r->headers_in, NULL);
-    ap_rputs(CRLF, r);
+                form_header_field, (void *) &h, r->headers_in, NULL);
+    apr_brigade_puts(b, NULL, NULL, CRLF);
+    ap_pass_brigade(r->output_filters, b);
 
     return OK;
 }

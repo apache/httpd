@@ -1,4 +1,10 @@
 Changes with Apache 2.0.18-dev
+
+  *) Fix processing of the TRACE method.  Previously we passed bogus
+     parms to form_header_field() and it overlaid some vhost structures,
+     resulting in a segfault in check_hostalias(). 
+     [Greg Ames, Jeff Trawick]
+
   *) Win32: Add support for reliable piped logs. If the logging process
      goes down, Apache will automatically restart it. This function has 
      been part of Apache on Unix/Linux/BSD since the early v1.3 releases.
