@@ -126,6 +126,7 @@
 
 module MODULE_VAR_EXPORT status_module;
 
+#ifdef STATUS
 /* Format the number of bytes nicely */
 
 static void format_byte_out(request_rec *r,unsigned long bytes)
@@ -149,6 +150,7 @@ static void format_kbyte_out(request_rec *r,unsigned long kbytes)
     else
 	rprintf(r,"%.1f GB",(float)kbytes/MBYTE);
 }
+#endif
 
 static void show_time(request_rec *r,time_t tsecs)
 {
@@ -223,7 +225,8 @@ static int status_handler (request_rec *r)
     int no_table_report=0;
     server_rec *server = r->server;
     short_score score_record;
-    char status[]="??????????";
+    parent_score ps_record;
+    char status[SERVER_NUM_STATUS];
     char stat_buffer[HARD_SERVER_LIMIT];
     clock_t tu,ts,tcu,tcs;
 
@@ -290,9 +293,10 @@ static int status_handler (request_rec *r)
     sync_scoreboard_image();
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
-        score_record = get_scoreboard_info(i);
+	score_record = scoreboard_image->servers[i];
+	ps_record = scoreboard_image->parent[i];
         res = score_record.status;
-	stat_buffer[i] = status[res];
+	stat_buffer[i] = (res == SERVER_UNKNOWN) ? '?' : status[res];
         if (res == SERVER_READY)
 	    ready++;
         else if (res != SERVER_DEAD && res != SERVER_UNKNOWN)
@@ -300,8 +304,7 @@ static int status_handler (request_rec *r)
 #if defined(STATUS)
         lres = score_record.access_count;
 	bytes= score_record.bytes_served;
-        if (lres!=0 || (score_record.status != SERVER_READY
-	  && score_record.status != SERVER_DEAD))
+        if (lres!=0 || (res != SERVER_READY && res != SERVER_DEAD))
 	{
 #ifndef NO_TIMES
 	    tu+=score_record.times.tms_utime;
@@ -444,7 +447,8 @@ static int status_handler (request_rec *r)
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
-        score_record=get_scoreboard_info(i);
+	score_record = scoreboard_image->servers[i];
+	ps_record = scoreboard_image->parent[i];
 
 #if defined(NO_GETTIMEOFDAY)
 #ifndef NO_TIMES
@@ -487,7 +491,7 @@ static int status_handler (request_rec *r)
 			 i,(int)conn_lres,my_lres,lres);
 		    else
 			rprintf(r,"<b>Server %d</b> (%d): %d|%lu|%lu [",
-			 i,(int)score_record.x.pid,(int)conn_lres,my_lres,lres);
+			 i,(int)ps_record.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
@@ -533,7 +537,11 @@ static int status_handler (request_rec *r)
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
 #endif
+#ifdef OPTIMIZE_TIMEOUTS
+			    difftime(nowtime, ps_record.last_rtime),
+#else
 			    difftime(nowtime, score_record.last_used),
+#endif
 			    (long)req_time);
 		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
@@ -552,7 +560,7 @@ static int status_handler (request_rec *r)
 			 i,(int)conn_lres,my_lres,lres);
 		    else
 			rprintf(r,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
-			 i,(int)score_record.x.pid,(int)conn_lres,my_lres,lres);
+			 i,(int)ps_record.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
@@ -597,7 +605,11 @@ static int status_handler (request_rec *r)
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
 #endif
+#ifdef OPTIMIZE_TIMEOUTS
+			    difftime(nowtime, ps_record.last_rtime),
+#else
 			    difftime(nowtime, score_record.last_used),
+#endif
 			    (long)req_time);
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,

@@ -74,6 +74,7 @@
 #define SERVER_BUSY_LOG 6       /* Logging the request */
 #define SERVER_BUSY_DNS 7       /* Looking up a hostname */
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
+#define SERVER_NUM_STATUS 9	/* number of status settings */
 
 /* A "virtual time" is simply a counter that indicates that a child is
  * making progress.  The parent checks up on each child, and when they have
@@ -90,14 +91,9 @@
  */
 typedef unsigned vtime_t;
 
+/* stuff which the children generally write, and the parent mainly reads */
 typedef struct {
-    union {
-	pid_t pid;		/* if it's not DEAD then this is the pid */
-	int free_list;		/* otherwise this is scratch space */
-    } x;
 #ifdef OPTIMIZE_TIMEOUTS
-    vtime_t last_vtime;		/* the last vtime the parent has seen */
-    time_t last_rtime;		/* time(0) of the last change */
     vtime_t cur_vtime;		/* the child's current vtime */
     unsigned short timeout_len;	/* length of the timeout */
 #endif
@@ -119,7 +115,9 @@ typedef struct {
 #ifndef NO_TIMES
     struct tms times;
 #endif
+#ifndef OPTIMIZE_TIMEOUTS
     time_t last_used;
+#endif
     char client[32];	/* Keep 'em small... */
     char request[64];	/* We just want an idea... */
     char vhost[32];     /* What virtual host is being accessed? */
@@ -132,17 +130,28 @@ typedef struct
 				   restart is required */
     } global_score;
 
+/* stuff which the parent generally writes and the children rarely read */
+typedef struct {
+    pid_t pid;
+#ifdef OPTIMIZE_TIMEOUTS
+    time_t last_rtime;		/* time(0) of the last change */
+    vtime_t last_vtime;		/* the last vtime the parent has seen */
+#endif
+} parent_score;
+
 typedef struct
     {
     short_score servers[HARD_SERVER_LIMIT];
+    parent_score parent[HARD_SERVER_LIMIT];
     global_score global;
     } scoreboard;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 
-API_EXPORT(void) sync_scoreboard_image(void);
-API_EXPORT(short_score) get_scoreboard_info(int x);
-API_EXPORT(int) exists_scoreboard_image (void);
+void sync_scoreboard_image(void);
+int exists_scoreboard_image (void);
+
+extern scoreboard *scoreboard_image;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

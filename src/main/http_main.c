@@ -255,7 +255,7 @@ int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
 static int my_child_num;
 #endif
 
-static scoreboard *scoreboard_image = NULL;
+scoreboard *scoreboard_image = NULL;
 
 /* small utility macros to make things easier to read */
 
@@ -1538,7 +1538,7 @@ void cleanup_scoreboard (void)
  * anyway.
  */
 
-API_EXPORT(void) sync_scoreboard_image (void)
+inline void sync_scoreboard_image (void)
 {
 #ifdef SCOREBOARD_FILE
     lseek (scoreboard_fd, 0L, 0);
@@ -1548,7 +1548,7 @@ API_EXPORT(void) sync_scoreboard_image (void)
 
 #endif /* MULTITHREAD */
 
-API_EXPORT(int) exists_scoreboard_image (void)
+int exists_scoreboard_image (void)
 {
     return (scoreboard_image ? 1 : 0);
 }
@@ -1573,17 +1573,14 @@ int update_child_status (int child_num, int status, request_rec *r)
     sync_scoreboard_image();
     ss = &scoreboard_image->servers[child_num];
     old_status = ss->status;
-    ss->x.pid = my_pid;
     ss->status = status;
 #ifdef OPTIMIZE_TIMEOUTS
     ++ss->cur_vtime;
 #endif
 
 #if defined(STATUS)
-#ifdef OPTIMIZE_TIMEOUTS
-    ss->last_used = ss->last_rtime;	/* close enough */
-#else
-    ss->last_used=time(NULL);
+#ifndef OPTIMIZE_TIMEOUTS
+    ss->last_used = time(NULL);
 #endif
     if (status == SERVER_READY || status == SERVER_DEAD) {
 	/*
@@ -1626,11 +1623,6 @@ static void update_scoreboard_global(void)
     force_write(scoreboard_fd,&scoreboard_image->global,
 		sizeof scoreboard_image->global);
 #endif
-}
-
-API_EXPORT(short_score) get_scoreboard_info(int i)
-{
-    return (scoreboard_image->servers[i]);
 }
 
 #if defined(STATUS)
@@ -1709,7 +1701,7 @@ static int find_child_by_pid (int pid)
     int i;
 
     for (i = 0; i < max_daemons_limit; ++i)
-	if (scoreboard_image->servers[i].x.pid == pid)
+	if (scoreboard_image->parent[i].pid == pid)
 	    return i;
 
     return -1;
@@ -1745,13 +1737,13 @@ static void reclaim_child_processes (int start_tries)
 	/* now see who is done */
 	not_dead_yet = 0;
 	for (i = 0; i < max_daemons_limit; ++i) {
-	    int pid = scoreboard_image->servers[i].x.pid;
+	    int pid = scoreboard_image->parent[i].pid;
 
 	    if (pid == my_pid || pid == 0) continue;
 
 	    waitret = waitpid (pid, &status, WNOHANG);
 	    if (waitret == pid || waitret == -1) {
-		scoreboard_image->servers[i].x.pid = 0;
+		scoreboard_image->parent[i].pid = 0;
 		continue;
 	    }
 	    ++not_dead_yet;
@@ -1831,9 +1823,9 @@ int reap_children (void)
 
     for (n = 0; n < max_daemons_limit; ++n) {
 	if (scoreboard_image->servers[n].status != SERVER_DEAD
-	    && waitpid (scoreboard_image->servers[n].x.pid, &status, WNOHANG)
-		== -1
-	    && errno == ECHILD) {
+		&& waitpid (scoreboard_image->parent[n].pid, &status, WNOHANG)
+		    == -1
+		&& errno == ECHILD) {
 	    sync_scoreboard_image ();
 	    update_child_status (n, SERVER_DEAD, NULL);
 	    ret = 1;
@@ -1870,7 +1862,7 @@ static int wait_or_timeout (int *status)
             if(scoreboard_image->servers[pi].status != SERVER_DEAD)
             {
                 e[hi] = pi;
-                h[hi++] = (HANDLE)scoreboard_image->servers[pi].x.pid;
+                h[hi++] = (HANDLE)scoreboard_image->parent[pi].pid;
             }
 
         }
@@ -1880,9 +1872,9 @@ static int wait_or_timeout (int *status)
             if(rv == -1)
                 err = GetLastError();
             if((WAIT_OBJECT_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_OBJECT_0 + hi)))
-                return(scoreboard_image->servers[e[rv - WAIT_OBJECT_0]].x.pid);
+                return(scoreboard_image->parent[e[rv - WAIT_OBJECT_0]].pid);
             else if((WAIT_ABANDONED_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_ABANDONED_0 + hi)))
-                return(scoreboard_image->servers[e[rv - WAIT_ABANDONED_0]].x.pid);
+                return(scoreboard_image->parent[e[rv - WAIT_ABANDONED_0]].pid);
 
         }
     }
@@ -3052,7 +3044,7 @@ void child_main(int child_num_arg)
     }    
 }
 
-static int make_child(server_rec *s, int slot)
+static int make_child(server_rec *s, int slot, time_t now)
 {
     int pid;
 
@@ -3099,14 +3091,15 @@ static int make_child(server_rec *s, int slot)
 	child_main (slot);
     }
 
-    /* If the parent proceeds with a restart before the child has written
-     * their pid into the scoreboard we'll end up "forgetting" about the
-     * child.  So we write the child pid into the scoreboard now.  (This
-     * is safe, because the child is going to be writing the same value
-     * to the same word.)
-     * XXX: this needs to be sync'd to disk in the non shared memory stuff
-     */
-    scoreboard_image->servers[slot].x.pid = pid;
+#ifdef OPTIMIZE_TIMEOUTS
+    scoreboard_image->parent[slot].last_rtime = now;
+#endif
+    scoreboard_image->parent[slot].pid = pid;
+#ifdef SCOREBOARD_FILE
+    lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[slot]), 0);
+    force_write(scoreboard_fd, &scoreboard_image->parent[slot],
+	sizeof(parent_score));
+#endif
 
     return 0;
 }
@@ -3116,12 +3109,13 @@ static int make_child(server_rec *s, int slot)
 static void startup_children (int number_to_start)
 {
     int i;
+    time_t now = time(0);
 
     for (i = 0; number_to_start && i < daemons_limit; ++i ) {
 	if (scoreboard_image->servers[i].status != SERVER_DEAD) {
 	    continue;
 	}
-	if (make_child (server_conf, i) < 0) {
+	if (make_child (server_conf, i, now) < 0) {
 	    break;
 	}
 	--number_to_start;
@@ -3146,26 +3140,30 @@ static void perform_idle_server_maintenance (void)
     int i;
     int to_kill;
     int idle_count;
-    int free_head;
-    int *free_ptr;
-    int free_length;
     short_score *ss;
-#ifdef OPTIMIZE_TIMEOUTS
     time_t now = time(0);
-#endif
+    int free_length;
+    int free_slots[MAX_SPAWN_RATE];
+    int last_non_dead;
 
     /* initialize the free_list */
-    free_head = -1;
-    free_ptr = &free_head;
     free_length = 0;
 
     to_kill = -1;
     idle_count = 0;
+    last_non_dead = -1;
 
     sync_scoreboard_image ();
     for (i = 0; i < daemons_limit; ++i) {
+	if (i >= max_daemons_limit && free_length == idle_spawn_rate) break;
 	ss = &scoreboard_image->servers[i];
 	switch (ss->status) {
+	    /* We consider a starting server as idle because we started it
+	     * at least a cycle ago, and if it still hasn't finished starting
+	     * then we're just going to swamp things worse by forking more.
+	     * So we hopefully won't need to fork more if we count it.
+	     */
+	case SERVER_STARTING:
 	case SERVER_READY:
 	    ++idle_count;
 	    /* always kill the highest numbered child if we have to...
@@ -3179,39 +3177,43 @@ static void perform_idle_server_maintenance (void)
 	case SERVER_DEAD:
 	    /* try to keep children numbers as low as possible */
 	    if (free_length < idle_spawn_rate) {
-		*free_ptr = i;
-		free_ptr = &scoreboard_image->servers[i].x.free_list;
+		free_slots[free_length] = i;
 		++free_length;
 	    }
 	    break;
 	}
+	if (ss->status != SERVER_DEAD) {
+	    last_non_dead = i;
 #ifdef OPTIMIZE_TIMEOUTS
-	if (ss->status != SERVER_DEAD && ss->timeout_len) {
-	    /* if it's a live server, with a live timeout then start checking
-	     * its timeout */
-	    if (ss->cur_vtime != ss->last_vtime) {
-		/* it has made progress, so update its last_rtime, last_vtime */
-		ss->last_rtime = now;
-		ss->last_vtime = ss->cur_vtime;
-	    } else if (ss->last_rtime + ss->timeout_len < now) {
-		/* no progress, and the timeout length has been exceeded */
-		ss->timeout_len = 0;
-		kill (ss->x.pid, SIGALRM);
+	    if (ss->timeout_len) {
+		/* if it's a live server, with a live timeout then
+		 * start checking its timeout */
+		parent_score *ps = &scoreboard_image->parent[i];
+		if (ss->cur_vtime != ps->last_vtime) {
+		    /* it has made progress, so update its last_rtime,
+		     * last_vtime */
+		    ps->last_rtime = now;
+		    ps->last_vtime = ss->cur_vtime;
+		} else if (ps->last_rtime + ss->timeout_len < now) {
+		    /* no progress, and the timeout length has been exceeded */
+		    ss->timeout_len = 0;
+		    kill (ps->pid, SIGALRM);
+		}
 	    }
-	}
 #endif
+	}
     }
+    max_daemons_limit = last_non_dead + 1;
     if (idle_count > daemons_max_free) {
 	/* kill off one child... we use SIGUSR1 because that'll cause it to
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill (scoreboard_image->servers[to_kill].x.pid, SIGUSR1);
+	kill (scoreboard_image->parent[to_kill].pid, SIGUSR1);
 	idle_spawn_rate = 1;
     } else if (idle_count < daemons_min_free) {
 	/* terminate the free list */
-	*free_ptr = -1;
-	if (free_head == -1) {
+	if (free_length == 0) {
 	    /* only report this condition once */
 	    static int reported = 0;
 
@@ -3221,6 +3223,7 @@ static void perform_idle_server_maintenance (void)
 			    " raising the MaxClients setting");
 		reported = 1;
 	    }
+	    idle_spawn_rate = 1;
 	} else {
 	    if (idle_spawn_rate >= 4) {
 		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
@@ -3228,12 +3231,8 @@ static void perform_idle_server_maintenance (void)
 			    "to increase StartServers, or Min/MaxSpareServers)",
 			    idle_spawn_rate);
 	    }
-	    i = 0;
-	    while (i < idle_spawn_rate && free_head != -1) {
-		int slot = free_head;
-		free_head = scoreboard_image->servers[free_head].x.free_list;
-		make_child (server_conf, slot);
-		++i;
+	    for (i = 0; i < free_length; ++i) {
+		make_child (server_conf, free_slots[i], now);
 	    }
 	    /* the next time around we want to spawn twice as many if this
 	     * wasn't good enough, but not if we've just done a graceful
@@ -3358,10 +3357,8 @@ void standalone_main(int argc, char **argv)
 			/* we're still doing a 1-for-1 replacement of dead
 			 * children with new children
 			 */
-			make_child (server_conf, child_slot);
+			make_child (server_conf, child_slot, time(0));
 			--remaining_children_to_start;
-			/* don't perform idle maintenance yet */
-			continue;
 		    }
 #ifndef NO_OTHER_CHILD
 		} else if (reap_other_child (pid, status) == 0) {
@@ -3375,6 +3372,12 @@ void standalone_main(int argc, char **argv)
 		    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
 				"long lost child came home! (pid %d)", pid );
 		}
+		/* Don't perform idle maintenance when a child dies,
+		 * only do it when there's a timeout.  Remember only a
+		 * finite number of children can die, and it's pretty
+		 * pathological for a lot to die suddenly.
+		 */
+		continue;
 	    } else if (remaining_children_to_start) {
 		/* we hit a 1 second timeout in which none of the previous
 	 	 * generation of children needed to be reaped... so assume

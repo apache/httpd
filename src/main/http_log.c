@@ -400,7 +400,6 @@ static int piped_log_spawn (piped_log *pl)
 static void piped_log_maintenance (int reason, void *data, int status)
 {
     piped_log *pl = data;
-    int pid;
 
     switch (reason) {
     case OC_REASON_DEATH:
@@ -464,7 +463,6 @@ static void piped_log_cleanup_for_exec (void *data)
 API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
 {
     piped_log *pl;
-    int pid;
 
     pl = palloc (p, sizeof (*pl));
     pl->p = p;

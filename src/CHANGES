@@ -1,5 +1,12 @@
 Changes with Apache 1.3b1
 
+  *) API: the short_score record has been split into two pieces, one which
+     the parent writes on, and one which the child writes on.  As part of
+     this change the get_scoreboard_info() function was removed, and
+     scoreboard_image was exported.  This change fixes a race condition
+     in filebased scoreboard systems, and speeds up changes involving the
+     scoreboard in earlier 1.3 development.  [Dean Gaudet]
+
   *) API: New register_other_child() API (see http_main.h) which allows
      modules to register children with the parent for maintenance.  It
      is disabled by defining NO_OTHER_CHILD.  [Dean Gaudet]

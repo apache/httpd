@@ -165,6 +165,7 @@
 #include "http_config.h"
 #include "http_core.h" /* For REMOTE_NAME */
 #include "http_log.h"
+#include <limits.h>
 
 module MODULE_VAR_EXPORT config_log_module;
 
@@ -174,6 +175,21 @@ static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
 static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
 #else
 static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+#endif
+
+/* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
+ * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
+ * is guaranteed.  So we'll just guess 512 in the event the system
+ * doesn't have this.  Now, for file writes there is actually no limit,
+ * the entire write is atomic.  Whether all systems implement this
+ * correctly is another question entirely ... so we'll just use PIPE_BUF
+ * because it's probably a good guess as to what is implemented correctly
+ * everywhere.
+ */
+#ifdef PIPE_BUF
+#define LOG_BUFSIZE	PIPE_BUF
+#else
+#define LOG_BUFSIZE	(512)
 #endif
 
 /*
@@ -211,6 +227,10 @@ typedef struct {
     char *fname;
     array_header *format;
     int log_fd;
+#ifdef BUFFERED_LOGS
+    int outcnt;
+    char outbuf[LOG_BUFSIZE];
+#endif
 } config_log_state;
 
 /*
@@ -527,6 +547,16 @@ static char *process_item(request_rec *r, request_rec *orig, log_format_item *it
     return cp ? cp : "-";
 }
 
+#ifdef BUFFERED_LOGS
+static void flush_log (config_log_state *cls)
+{
+    if (cls->outcnt && cls->log_fd != -1) {
+	write (cls->log_fd, cls->outbuf, cls->outcnt);
+	cls->outcnt = 0;
+    }
+}
+#endif
+
 static int config_log_transaction(request_rec *r, config_log_state *cls,
 			   array_header *default_format) {
     array_header *strsa;
@@ -564,8 +594,20 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         strcpy (s, strs[i]);
         s += strlen (strs[i]);
     }
-    
-    write(cls->log_fd, str, strlen(str));
+
+#ifdef BUFFERED_LOGS
+    if (len + cls->outcnt > LOG_BUFSIZE) {
+	flush_log (cls);
+    }
+    if (len >= LOG_BUFSIZE) {
+	write (cls->log_fd, str, len);
+    } else {
+	memcpy (&cls->outbuf[cls->outcnt], str, len);
+	cls->outcnt += len;
+    }
+#else
+    write (cls->log_fd, str, len);
+#endif
 
     return OK;
 }
@@ -608,7 +650,7 @@ static void *make_config_log_state (pool *p, server_rec *s)
 	(multi_log_state *)palloc(p, sizeof (multi_log_state));
     
     mls->config_logs = 
-	make_array(p, 5, sizeof (config_log_state));
+	make_array(p, 1, sizeof (config_log_state));
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
     mls->formats = make_table(p, 4);
@@ -745,6 +787,9 @@ static config_log_state *open_config_log (server_rec *s, pool *p,
             exit(1);
         }
     }
+#ifdef BUFFERED_LOGS
+    cls->outcnt = 0;
+#endif
 
     return cls;
 }
@@ -793,6 +838,32 @@ static void init_config_log (server_rec *s, pool *p)
     for (s = s->next; s; s = s->next) open_multi_logs (s, p);
 }
 
+#ifdef BUFFERED_LOGS
+static void flush_all_logs (server_rec *s, pool *p)
+{
+    multi_log_state *mls;
+    array_header *log_list;
+    config_log_state *clsarray;
+    int i;
+    
+    for (; s; s = s->next) {
+	mls = get_module_config(s->module_config, &config_log_module);
+	log_list = NULL;
+	if (mls->config_logs->nelts) {
+	    log_list = mls->config_logs;
+	} else if (mls->server_config_logs) {
+	    log_list = mls->server_config_logs;
+	}
+	if (log_list) {
+	    clsarray = (config_log_state *)log_list->elts;
+	    for (i = 0; i < log_list->nelts; ++i) {
+		flush_log (&clsarray[i]);
+	    }
+	}
+    }
+}
+#endif
+
 module MODULE_VAR_EXPORT config_log_module = {
    STANDARD_MODULE_STUFF,
    init_config_log,		/* initializer */
@@ -811,6 +882,10 @@ module MODULE_VAR_EXPORT config_log_module = {
    multi_log_transaction,	/* logger */
    NULL,			/* header parser */
    NULL,			/* child_init */
-   NULL,			/* child_exit */
+#ifdef BUFFERED_LOGS
+   flush_all_logs,		/* child_exit */
+#else
+   NULL,
+#endif
    NULL				/* post read-request */
 };
