@@ -181,6 +181,11 @@ static void cleanup_cache_object(cache_object_t *obj)
                 free(mobj->notes[0].hdr);
             free(mobj->notes);
         }
+        if (mobj->req_hdrs) {
+            if (mobj->req_hdrs[0].hdr)
+                free(mobj->req_hdrs[0].hdr);
+            free(mobj->req_hdrs);
+        }
         free(mobj);
     }
     return;
