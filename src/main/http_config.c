@@ -811,7 +811,7 @@ const char *handle_command(cmd_parms *parms, void *config, const char *l)
 	else {
 	    void *mconfig = get_module_config(config, mod);
 	    void *sconfig =
-	    get_module_config(parms->server->module_config, mod);
+		get_module_config(parms->server->module_config, mod);
 
 	    if (!mconfig && mod->create_dir_config) {
 		mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
@@ -840,7 +840,7 @@ const char *srm_command_loop(cmd_parms *parms, void *config)
 	const char *errmsg = handle_command(parms, config, l);
         if (errmsg) {
 	    return errmsg;
-    }
+	}
     }
 
     return NULL;
