@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/14 18:54:20 $]
+Last modified at [$Date: 2002/03/14 21:16:45 $]
 
 Release:
 
@@ -418,6 +418,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       cacheing the response w/o header "field_name"
       See RFC2616 section 14.9.1
 
+    * Scoreboard structures could be changed in the future such that
+      proper alignment is not maintained, leading to segfaults on 
+      some systems.  Cliff posted a patch to deal with this issue but
+      later recanted. See this message to dev@apr.apache.org:
+      Message-ID: <Pine.LNX.4.44.0203011354090.16457-200000@deepthought
+                  .cs.virginia.edu>
+     
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
 
