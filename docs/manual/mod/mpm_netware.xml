@@ -79,6 +79,8 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>StartThreads</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>MaxThreads</name>
@@ -96,20 +98,6 @@
     <example>
       MaxThreads 512
     </example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ThreadStackSize</name>
-<description>Determine the stack size for each thread</description>
-<syntax>ThreadStackSize <var>number</var></syntax>
-<default>ThreadStackSize 65536</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>This directive tells the server what stack size to use for
-    each of the running threads. If you ever get a stack overflow
-    you will need to bump this number to a higher setting.</p>
 </usage>
 </directivesynopsis>
 

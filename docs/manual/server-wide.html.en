@@ -72,7 +72,7 @@ the basic operations of the server.</p>
 <h2><a name="resource" id="resource">Limiting Resource Usage</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
 
     <p>The <code class="directive">LimitRequest</code>*
     directives are used to place limits on the amount of resources
@@ -86,8 +86,8 @@ the basic operations of the server.</p>
     this will control resources used by CGI scripts and SSI exec
     commands.</p>
 
-    <p>The <code class="directive"><a href="./mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code> directive
-    is used only on Netware to control the stack size.</p>
+    <p>The <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
+    directive is used with some platforms to control the stack size.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/server-wide.html" title="English">&nbsp;en&nbsp;</a> |
