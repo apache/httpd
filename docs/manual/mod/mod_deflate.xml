@@ -272,6 +272,7 @@ client</description>
 </directivesynopsis>
 
 <directivesynopsis>
+
 <name>DeflateMemLevel</name>
 <description>How much memory should be used by zlib for compression</description>
 <syntax>DeflateMemLevel <var>value</var></syntax>
@@ -285,6 +286,24 @@ client</description>
     (a value between 1 and 9).</p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>CompressionLevel</name>
+<description>How much compression do we apply to the output</description>
+<syntax>CompressionLevel<var>value</var></syntax>
+<default>Zlib's default</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CompressionLevel</directive> directive specifies
+        what level of compression should be used, the higher the value, 
+        the better the compression, but the more CPU time is required to
+        achieve this.</p>
+    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
 
