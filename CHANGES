@@ -1,14 +1,10 @@
-Changes with Apache 2.0.46
-
-
-
 Changes with Apache 2.0.45
 
   *) Fix possible segfaults under obscure error conditions within the
      cgid daemon.  [Jeff Trawick, William Rowe]
 
-  *) SECURITY []: Close a Denial of Service vulnerability identified by
-     David Endler <DEndler@iDefense.com> affecting all platforms.
+  *) SECURITY [CAN-2003-0132]: Close a Denial of Service vulnerability
+     identified by David Endler <DEndler@iDefense.com> on all platforms.
      Details embargoed until their announcement on 2 April 2003.
 
   *) Added an rpm build script.
