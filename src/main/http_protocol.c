@@ -594,6 +594,22 @@ void parse_uri(request_rec *r, const char *uri)
 	r->args = r->parsed_uri.query;
 	r->uri = r->parsed_uri.path ? r->parsed_uri.path
 				    : pstrdup(r->pool, "/");
+#if defined(__EMX__) || defined(WIN32)
+	/* Handle path translations for OS/2 and plug security hole.
+	 * This will prevent "http://www.wherever.com/..\..\/" from
+	 * returning a directory for the root drive.
+	 */
+	{
+	    char *x;
+
+	    for (x = r->uri; (x = strchr(x, '\\')) != NULL; )
+		*x = '/';
+#ifndef WIN32   /* for OS/2 only: */
+	    /* Fix OS/2 HPFS filename case problem. */
+	    str_tolower(r->uri);
+#endif
+	}
+#endif  /* __EMX__ || WIN32 */
     }
     else {
 	r->args = NULL;
