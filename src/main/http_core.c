@@ -994,9 +994,11 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C %1", NULL);
         }
         else
-            /* Assume any other likes long paths, and knows .cmd
+            /* Assume any other likes long paths, and knows .cmd,
+             * but the entire /c arg should be double quoted, e.g.
+             * "c:\path\cmd.exe" /c ""prog" "arg" "arg""
              */
-            *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C \"%1\"", NULL);
+            *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C \"\"%1\" %*\"", NULL);
         return eFileTypeSCRIPT;
     }
 
