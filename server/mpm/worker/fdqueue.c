@@ -73,7 +73,6 @@ static int ap_queue_full(fd_queue_t *queue)
  */
 static int ap_queue_empty(fd_queue_t *queue)
 {
-    /*return (queue->head == queue->tail);*/
     return (queue->blanks >= queue->bounds - 1);
 }
 
@@ -108,7 +107,7 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
         return FD_QUEUE_FAILURE;
 
     bounds = queue_capacity + 1;
-    queue->head = queue->tail = 0;
+    queue->tail = 0;
     queue->data = apr_palloc(a, bounds * sizeof(fd_queue_elem_t));
     queue->bounds = bounds;
     queue->blanks = queue_capacity;
@@ -144,7 +143,7 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
 
     queue->data[queue->tail].sd = sd;
     queue->data[queue->tail].p = p;
-    queue->tail = (queue->tail + 1) % queue->bounds;
+    queue->tail++;
     queue->blanks--;
 
     pthread_cond_signal(&queue->not_empty);
@@ -164,6 +163,8 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
  */
 apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p) 
 {
+    fd_queue_elem_t *elem;
+
     if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
         return FD_QUEUE_FAILURE;
     }
@@ -180,13 +181,12 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
         }
     } 
     
-    *sd = queue->data[queue->head].sd;
-    *p = queue->data[queue->head].p;
-    queue->data[queue->head].sd = NULL;
-    queue->data[queue->head].p = NULL;
-    if (sd != NULL) {
-        queue->head = (queue->head + 1) % queue->bounds;
-    }
+    queue->tail--;
+    elem = &queue->data[queue->tail];
+    *sd = elem->sd;
+    *p = elem->p;
+    elem->sd = NULL;
+    elem->p = NULL;
     queue->blanks++;
 
     if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
