@@ -135,7 +135,7 @@ Body:----xyz----<br />
 cached by proxy servers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheNegotiatedDocs on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheNegotiatedDocs off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_negotiation</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>The syntax changed in version 2.0.</td></tr></table>

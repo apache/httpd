@@ -153,7 +153,8 @@ Body:----xyz----<br />
 cached by proxy servers</description>
 <syntax>CacheNegotiatedDocs on|off</syntax>
 <default>CacheNegotiatedDocs off</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <compatibility>The syntax changed in version 2.0.</compatibility>
 
 <usage>
