@@ -311,12 +311,12 @@
 #define BAD_GATEWAY         HTTP_BAD_GATEWAY
 #define VARIANT_ALSO_VARIES HTTP_VARIANT_ALSO_VARIES
 
-#define is_HTTP_INFO(x)         ((x >= 100)&&(x < 200))
-#define is_HTTP_SUCCESS(x)      ((x >= 200)&&(x < 300))
-#define is_HTTP_REDIRECT(x)     ((x >= 300)&&(x < 400))
-#define is_HTTP_ERROR(x)        ((x >= 400)&&(x < 600))
-#define is_HTTP_CLIENT_ERROR(x) ((x >= 400)&&(x < 500))
-#define is_HTTP_SERVER_ERROR(x) ((x >= 500)&&(x < 600))
+#define is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
+#define is_HTTP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
+#define is_HTTP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
+#define is_HTTP_ERROR(x)        (((x) >= 400)&&((x) < 600))
+#define is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
+#define is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
 
 #define METHODS 8
