@@ -29,6 +29,17 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
+    * IRIX semctl problem: we should switch from a IPC based to FCNTL based mutex 
+      Status: How volunteers? Dean?
+
+    * Ultrix rlim_t problem: we have to find out why it's now undefined under Ultrix
+      Status: Under repair by Ben Hyde?
+
+    * DB1.x vs. DB2.x problem: we should add DB2.x support to mod_auth_db.c to
+      get rid of glibc2 problems (and FreeBSD ports problems in case the DB2.x
+      package is installed)
+      Status: Under construction by Dan Jacobowitz <drow@false.org>
+
 WIN32 1.3.2 RELEASE SHOWSTOPPERS:
 
     * can not build tarball until someone verifies the final code
