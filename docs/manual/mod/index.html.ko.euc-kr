@@ -107,6 +107,7 @@ HTTP 헤더를 생성한다</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
 보낸다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
+<dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>

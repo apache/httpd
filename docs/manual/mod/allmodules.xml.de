@@ -36,6 +36,7 @@
   <modulefile>mod_expires.xml</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
+  <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
