@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/11 16:53:15 $]
+Last modified at [$Date: 2004/08/11 17:13:51 $]
 
 Release:
 
@@ -82,6 +82,7 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
        PR: 21335
        jorton: +1
+       minfrin: +1
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
@@ -120,12 +121,13 @@ PATCHES TO BACKPORT FROM 2.1
                  capability wait for 2.2 is unfair I think. Agressive
                  backporting will allow more feedback and a shorter
                  dev. time.
+       minfrin: +1
 
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
          modules/experimental/util_ldap.c: 1.36
-       +1: minfrin (this requires the apr-util LDAP overhaul to be ported to
+       +0: minfrin (this requires the apr-util LDAP overhaul to be ported to
                     apr-util v0.9 first)
        -0: jerenkrantz
            jerenkrantz: I don't think we can change the APR 0.9 interfaces.
