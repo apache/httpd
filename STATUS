@@ -2,7 +2,7 @@
 
 Release:
 
-    1.3.4-dev: current
+    1.3.4-dev: current. There is discussion on releasing it "soon"
 
     1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
     1.3.2: Tagged and rolled on Sep. 21. Announced and released on 23rd.
@@ -55,6 +55,10 @@ RELEASE SHOWSTOPPERS:
          Status: Roy +1, Jim +1 (still need to define which modules
 	 	 are built)
 
+    * Win32 device file issues (nul/aux/...)
+
+    * Addition of "cute little icons" to Apache's main icon groups.
+      See <4.1.19981024045505.00a9dce0@hyperreal.org>
 
 Documentation that needs writing:
 
@@ -65,6 +69,20 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
+
+    * Ralf's Build outside of source tree (take 2: alternative solution)
+      ("overrules"  Wilfredo Sanchez's [PATCH] Build outside of source tree)
+        Message-ID: <19981027154021.A24640@engelschall.com>
+	Status: Ralf +1, Jim +1
+
+    * Marc's [PATCH] PR#3323: recursive includes
+        Message-ID: <Pine.BSF.4.03.9810311132540.20832-100000@alive.znep.com>
+	Status: Marc +1, Jim +1 (concept)
+	* Needs more in-depth review *
+
+    * Roy's [PATCH] Enable all WebDAV methods
+        Message-ID: <9810310150.aa15713@paris.ics.uci.edu>
+	Status: Roy +1
 
     * Manoj and Ken Parzygnat's PATCH to support %-expandos from Unix
       on Win32
@@ -99,11 +117,6 @@ Available Patches:
                 Ralf +1 for both Manoj's patch and Roys suggestion with
                         a slight preference for Manoj's patch because the
                         overhead of more entries is not noticeable to me.
-
-    * Wilfredo Sanchez's [PATCH] Build outside of source tree
-        Message-ID: <199810020251.TAA20588@scv2.apple.com>
-        Status: Ralf +1 (conceptual, with question)
-		Martin +1 (for concept)
 
     * Patches for the DSO/mod_perl problem (see below for description):
 
