@@ -306,7 +306,7 @@ static int remove_job(void)
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
         apr_thread_mutex_unlock(allowed_globals.jobmutex);
-	return (-1);
+	return (INVALID_SOCKET);
     }
     job = allowed_globals.jobhead;
     ap_assert(job);
@@ -425,7 +425,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
     while (1) {
         apr_pool_clear(context->ptrans);        
         context->accept_socket = remove_job();
-        if (context->accept_socket == -1) {
+        if (context->accept_socket == INVALID_SOCKET) {
             return NULL;
         }
 	len = sizeof(struct sockaddr);
@@ -543,7 +543,7 @@ static void winnt_accept(void *lr_)
             while (1) {
                 rv = WaitForSingleObject(context->Overlapped.hEvent, 1000);
                 if (rv == WAIT_OBJECT_0) {
-                    if (context->accept_socket == -1) {
+                    if (context->accept_socket == INVALID_SOCKET) {
                         /* socket already closed */
                         break;
                     }
@@ -963,7 +963,7 @@ void child_main(apr_pool_t *pconf)
     /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         for (i = 0; i < threads_created; i++) {
-            add_job(-1);
+            add_job(INVALID_SOCKET);
         }
     }
     else { /* Windows NT/2000 */
