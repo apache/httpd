@@ -57,10 +57,15 @@
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
 
+#define modssl_set_cipher_list SSL_set_cipher_list
+
 /* XXX: add configure check */
 #ifndef HAVE_SSL_SET_STATE
 #define SSL_set_state(ssl, state)
 #endif
+
+#define modssl_set_cipher_list(ssl, l) \
+   SSL_set_cipher_list(ssl, (char *)l)
 
 #if SSLC_VERSION < 0x2000
 
