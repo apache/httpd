@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/11/10 18:20:34 $]
+  Last modified at [$Date: 2001/11/10 20:30:54 $]
 
 Release:
 
@@ -280,8 +280,8 @@ Binaries (1.3.22):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
- 000964804C00-ibm-aix4.3       no      Bill Stoddard
- 9000_715-hp-hpux11.00         no      Jeff Trawick
+ 000964804C00-ibm-aix4.3       yes     Bill Stoddard
+ 9000_715-hp-hpux11.00         yes     Jeff Trawick
  alpha-dec-osf3.0              no      Sameer Parekh
  alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar,
                                        Randy Terbush
@@ -311,7 +311,7 @@ Binaries (1.3.22):
                                        Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i686-unknown-linux2           no      Lars Eilebrecht
- i686-whatever-cygwin          no      Stipe Tolj
+ i686-whatever-cygwin          yes     Stipe Tolj
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
  ia64-whatever-linux22         no      Martin Kraemer
  m68k-apple-aux3.1.1           no      Jim Jagielski
@@ -337,7 +337,7 @@ Binaries (1.3.22):
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
- sun4u-sun-solaris2.280        no      Jeff Trawick
+ sun4u-sun-solaris2.280        yes     Jeff Trawick
  TPF                           no      David McCreedy, Carolyn Weiss
  win32                         yes     William Rowe
  x86-bsdos-3.x                 no      Randy Terbush
