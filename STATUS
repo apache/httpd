@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/03 05:50:40 $]
+Last modified at [$Date: 2002/05/06 07:43:39 $]
 
 Release:
 
@@ -96,10 +96,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       close them all as soon as the listener thread receives the
       signal to shutdown.
       Status: Aaron volunteers
-
-    * Incorrect Content-Range headers or invalid 416 HTTP responses
-      if a filter such as INCLUDES changes the content length.  It may
-      happen only when there are multiple output brigades.
 
     * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
         posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
