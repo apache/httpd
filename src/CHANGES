@@ -1,5 +1,12 @@
+Changes with Apache 1.2b9
+
+  *) add macro for memmove to conf.h for SUNOS4 [Marc Slemko]
+
+  *) Proxy cleanup for transmission errors; avoids core dumps an some
+     of the truncated files. [Chuck Murcko]
+
 Changes with Apache 1.2b8
-    
+
   *) suexec.c doesn't close the log file, allowing CGIs to continue writing
      to it.  [Marc Slemko]
 
