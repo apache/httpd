@@ -145,6 +145,10 @@ static void show_compile_settings(void)
     printf(" -D APR_USE_SYSVSEM_SERIALIZE\n");
 #endif
 
+#if APR_USE_POSIXSEM_SERIALIZE
+    printf(" -D APR_USE_POSIXSEM_SERIALIZE\n");
+#endif
+
 #if APR_USE_FCNTL_SERIALIZE
     printf(" -D APR_USE_FCNTL_SERIALIZE\n");
 #endif
