@@ -97,7 +97,7 @@
  *   only an issue for loopback usage
  */
 
-#define VERSION "1.3"
+#define VERSION "1.3a"
 
 /*  -------------------------------------------------------------------- */
 
@@ -413,13 +413,15 @@ static void output_results(void)
 	    totalcon += s.ctime;
 	    total += s.time;
 	}
-	printf("\nConnnection Times (ms)\n");
-	printf("              min   avg   max\n");
-	printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
-	printf("Processing: %5d %5d %5d\n",
-	       mintot - mincon, (total / requests) - (totalcon / requests),
-	       maxtot - maxcon);
-	printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
+	if (requests > 0) { /* avoid division by zero (if 0 requests) */
+	    printf("\nConnnection Times (ms)\n");
+	    printf("              min   avg   max\n");
+	    printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
+	    printf("Processing: %5d %5d %5d\n",
+		   mintot - mincon, (total / requests) - (totalcon / requests),
+		   maxtot - maxcon);
+	    printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
+	}
     }
 }
 
@@ -521,26 +523,28 @@ static void output_html_results(void)
 	    total += s.time;
 	}
 
-	printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
-	       trstring, tdstring);
-	printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
-	       trstring, tdstring, tdstring, tdstring, tdstring);
-	printf("<tr %s><th %s>Connect:</th>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td></tr>\n",
-	       trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
-	printf("<tr %s><th %s>Processing:</th>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td></tr>\n",
-	       trstring, tdstring, tdstring, mintot - mincon, tdstring,
-	       (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
-	printf("<tr %s><th %s>Total:</th>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td>"
-	       "<td %s>%5d</td></tr>\n",
-	       trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
+	if (requests > 0) { /* avoid division by zero (if 0 requests) */
+	    printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
+		   trstring, tdstring);
+	    printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
+		   trstring, tdstring, tdstring, tdstring, tdstring);
+	    printf("<tr %s><th %s>Connect:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
+	    printf("<tr %s><th %s>Processing:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mintot - mincon, tdstring,
+		   (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
+	    printf("<tr %s><th %s>Total:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
+	}
 	printf("</table>\n");
     }
 }
