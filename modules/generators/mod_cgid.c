@@ -133,7 +133,7 @@ static int daemon_should_exit = 0;
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
 
-/* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
+/* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this 
  * request came through ScriptAlias or not... so the Alias module 
  * leaves a note for us. 
