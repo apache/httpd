@@ -65,7 +65,11 @@ extern "C" {
 
 #include "apr_lib.h"
 
-/*****************************************************************
+/**
+ * @package CORE HTTP Daemon
+ */
+
+/* ****************************************************************
  *
  * The most basic server code is encapsulated in a single module
  * known as the core, which is just *barely* functional enough to
@@ -117,27 +121,125 @@ extern "C" {
 #define SATISFY_ANY 1
 #define SATISFY_NOSPEC 2
 
+/**
+ * Retrieve the value of Options for this request
+ * @param r The current request
+ * @return the Options bitmask
+ * @deffunc int ap_allow_options(request_rec *r)
+ */
 API_EXPORT(int) ap_allow_options (request_rec *);
+/**
+ * Retrieve the value of the AllowOverride for this request
+ * @param r The current request
+ * @return the overrides bitmask
+ * @deffunc int ap_allow_overrides(request_rec *r)
+ */
 API_EXPORT(int) ap_allow_overrides (request_rec *);
+/**
+ * Retrieve the value of the DefaultType directive, or text/plain if not set
+ * @param r The current request
+ * @return The default type
+ * @deffunc const char *ap_default_type(request_rec *r)
+ */
 API_EXPORT(const char *) ap_default_type (request_rec *);     
-API_EXPORT(const char *) ap_document_root (request_rec *); /* Don't use this!  If your request went
-				      * through a Userdir, or something like
-				      * that, it'll screw you.  But it's
-				      * back-compatible...
-				      */
+/**
+ * Retrieve the document root for this server
+ * @param r The current request
+ * @warning Don't use this!  If your request went through a Userdir, or 
+ * something like that, it'll screw you.  But it's back-compatible...
+ * @return The document root
+ * @deffunc const char *ap_document_root(request_rec *r)
+ */
+API_EXPORT(const char *) ap_document_root (request_rec *);
+/**
+ * Lookup the remote client's DNS name or IP address
+ * @param conn The current connection
+ * @param dir_config The directory config vector from the request
+ * @param type The type of lookup to perform.  One of:
+ * <PRE>
+ *     REMOTE_HOST returns the hostname, or NULL if the hostname
+ *                 lookup fails.  It will force a DNS lookup according to the
+ *                 HostnameLookups setting.
+ *     REMOTE_NAME returns the hostname, or the dotted quad if the
+ *                 hostname lookup fails.  It will force a DNS lookup according
+ *                 to the HostnameLookups setting.
+ *     REMOTE_NOLOOKUP is like REMOTE_NAME except that a DNS lookup is
+ *                     never forced.
+ *     REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
+ *                   a double reverse lookup, regardless of the HostnameLookups
+ *                   setting.  The result is the (double reverse checked) 
+ *                   hostname, or NULL if any of the lookups fail.
+ * </PRE>
+ * @return The remote hostname
+ * @deffunc const char *ap_get_remote_host(conn_rec *conn, void *dir_config, int type)
+ */
 API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
+/**
+ * Retrieve the login name of the remote user.  Undef if it could not be
+ * determined
+ * @param r The current request
+ * @return The user logged in to the client machine
+ * @deffunc const char *ap_get_remote_logname(request_rec *r)
+ */
 API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  */
+/**
+ * build a fully qualified URL from the uri and information in the request rec
+ * @param p The pool to allocate the URL from
+ * @param uri The path to the requested file
+ * @param r The current request
+ * @return A fully qualified URL
+ * @deffunc char *ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r)
+ */
 API_EXPORT(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r);
+/**
+ * Get the current server name from the request
+ * @param r The current request
+ * @return the server name
+ * @deffunc const char *ap_get_server_name(request_rec *r)
+ */
 API_EXPORT(const char *) ap_get_server_name(request_rec *r);
+/**
+ * Get the current server port
+ * @param The current request
+ * @return The server's port
+ * @deffunc unsigned ap_get_server_port(const request_rec *r)
+ */
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
+/**
+ * Return the limit on bytes in request msg body 
+ * @param r The current request
+ * @return the maximum number of bytes in the request msg body
+ * @deffunc unsigned long ap_get_limit_req_body(const request_rec *r)
+ */
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
+/**
+ * Return the limit on bytes in XML request msg body
+ * @param r The current request
+ * @return the maximum number of bytes in XML request msg body
+ * @deffunc size_t ap_get_limit_xml_body(const request_rec *r)
+ */
 API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r);
+/**
+ * Install a custom response handler for a given status
+ * @param r The current request
+ * @param status The status for which the custom response should be used
+ * @param string The custom response.  This can be a static string, a file
+ *               or a URL
+ * @deffunc void ap_custom_response(request_rec *r, int status, char *string)
+ */
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
+/**
+ * Check for a definition from the server command line
+ * @param name The define to check for
+ * @return 1 if defined, 0 otherwise
+ * @deffunc int ap_exists_config_define(const char *name)
+ */
 API_EXPORT(int) ap_exists_config_define(const char *name);
+/* FIXME! See STATUS about how */
 API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r);
 
 /* Authentication stuff.  This is one of the places where compatibility
@@ -146,15 +248,48 @@ API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r);
  * to maintain common state for all of them in the core, and make it
  * available to the other modules through interfaces.
  */
-    
-typedef struct {
+typedef struct require_line require_line;
+
+/** A structure to keep track of authorization requirements */
+struct require_line {
+    /** Where the require line is in the config file. */
     int method_mask;
+    /** The complete string from the command line */
     char *requirement;
-} require_line;
+};
      
+/**
+ * Return the type of authorization required for this request
+ * @param r The current request
+ * @return The authorization required
+ * @deffunc const char *ap_auth_type(request_rec *r)
+ */
 API_EXPORT(const char *) ap_auth_type (request_rec *);
+/**
+ * Return the current Authorization realm
+ * @param r The current request
+ * @return The current authorization realm
+ * @deffunc const char *ap_auth_name(request_rec *r)
+ */
 API_EXPORT(const char *) ap_auth_name (request_rec *);     
+/**
+ * How the requires lines must be met.
+ * @param r The current request
+ * @return How the requirements must be met.  One of:
+ * <PRE>
+ *      SATISFY_ANY    -- any of the requirements must be met.
+ *      SATISFY_ALL    -- all of the requirements must be met.
+ *      SATISFY_NOSPEC -- There are no applicable satisfy lines
+ * </PRE>
+ * @deffunc int ap_satisfies(request_rec *r)
+ */
 API_EXPORT(int) ap_satisfies (request_rec *r);
+/**
+ * Retrieve information about all of the requires directives for this request
+ * @param r The current request
+ * @return An array of all requires directives for this request
+ * @deffunc const apr_array_header_t *ap_requires(request_rec *r)
+ */
 API_EXPORT(const apr_array_header_t *) ap_requires (request_rec *);    
 
 #ifdef WIN32
