@@ -210,11 +210,11 @@ static void accept_mutex_on(void)
 
         if (ap_my_generation != 
             ap_scoreboard_image->global->running_generation) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, msg);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, "%s", msg);
             clean_child_exit(0);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, msg);
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "%s", msg);
             exit(APEXIT_CHILDFATAL);
         }
     }
@@ -228,14 +228,14 @@ static void accept_mutex_off(void)
 
         if (ap_my_generation != 
             ap_scoreboard_image->global->running_generation) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, msg);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, "%s", msg);
             /* don't exit here... we have a connection to
              * process, after which point we'll see that the
              * generation changed and we'll exit cleanly
              */
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, msg);
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "%s", msg);
             exit(APEXIT_CHILDFATAL);
         }
     }

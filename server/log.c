@@ -625,9 +625,9 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
          *      based on the last modification time of the pid file.
          */
         ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, p,
-                      apr_psprintf(p, "pid file %s overwritten -- Unclean "
-                                   "shutdown of previous Apache run?",
-                                   fname));
+                      "pid file %s overwritten -- Unclean "
+                      "shutdown of previous Apache run?",
+                      fname);
     }
 
     if ((rv = apr_file_open(&pid_file, fname,
