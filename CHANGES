@@ -1,4 +1,6 @@
 Changes with Apache 2.0b1
+  *) Get "NameVirtualHost *" working in 2.0.  [Ryan Bloom]
+
   *) Return HTTP_RANGE_NOT_SATISFIABLE if the every range requested starts
      after the end of the response. [Ryan Bloom]
 
