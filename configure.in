@@ -13,6 +13,10 @@ AC_CONFIG_HEADER(include/ap_config_auto.h)
 APACHE_VERSION=$VERSION
 APACHE_SUBST(APACHE_VERSION)
 
+dnl
+dnl ## Preload our OS configuration
+APR_PRELOAD
+
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
 

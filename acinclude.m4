@@ -144,6 +144,7 @@ AC_DEFUN(APACHE_ONCE,[
 ])
 
 sinclude(lib/apr/threads.m4)
+sinclude(lib/apr/hints.m4)
 
 dnl
 dnl APACHE_INADDR_NONE
