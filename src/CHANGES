@@ -271,10 +271,7 @@ Changes with Apache 1.3.4
      procedure of mod_rewrite: very long keys were truncated.
      [Ralf S. Engelschall]
 
-  *) There is no longer a _default_ path layout for APACI configure.
-     This means the user _HAS_ to specifiy a path layout _explicitly_.
-
-     Added a generic --with-layout=[FILE:]ID option. ID here is a layout
+  *) Added a generic --with-layout=[FILE:]ID option. ID here is a layout
      identifier, currently "Apache" and "GNU" are pre-defined in the file
      config.layout.  Custom layouts are possible by using FILE:ID as the
      argument where the layout ID is taken from FILE.
