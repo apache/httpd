@@ -119,9 +119,12 @@ typedef struct charset_dir_t {
  */
 typedef struct charset_filter_ctx_t {
     apr_xlate_t *xlate;
+    charset_dir_t *dc;
     ees_t ees;              /* extended error status */
     apr_ssize_t saved;
     char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
+    int ran;                /* has filter instance run before? */
+    int noop;               /* should we pass brigades through unchanged? */
 } charset_filter_ctx_t;
 
 /* charset_req_t is available via r->request_config if any translation is
@@ -297,6 +300,7 @@ static int find_code_page(request_rec *r)
     output_ctx = (charset_filter_ctx_t *)(reqinfo + 1);
 
     reqinfo->dc = dc;
+    output_ctx->dc = dc;
     ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
 
     reqinfo->output_ctx = output_ctx;
@@ -317,6 +321,7 @@ static int find_code_page(request_rec *r)
          * of it.
          */
         input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
+        input_ctx->dc = dc;
         reqinfo->input_ctx = input_ctx;
         rv = apr_xlate_open(&input_ctx->xlate, dc->charset_source, 
                             dc->charset_default, r->pool);
@@ -510,6 +515,100 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
                   "%s", msg);
 }
 
+/* chk_filter_chain() is called once per filter instance; it tries to
+ * determine if the current filter instance should be disabled because
+ * its translation is incompatible with the translation of an existing
+ * instance of the translate filter
+ *
+ * Example bad scenario:
+ *
+ *   configured filter chain for the request:
+ *     INCLUDES XLATEOUT(8859-1->UTS-16)
+ *   configured filter chain for the subrequest:
+ *     XLATEOUT(8859-1->UTS-16)
+ *
+ *   When the subrequest is processed, the filter chain will be
+ *     XLATEOUT(8859-1->UTS-16) XLATEOUT(8859-1->UTS-16)
+ *   This makes no sense, so the instance of XLATEOUT added for the
+ *   subrequest will be noop-ed.
+ *
+ * Example good scenario:
+ *
+ *   configured filter chain for the request:
+ *     INCLUDES XLATEOUT(8859-1->UTS-16)
+ *   configured filter chain for the subrequest:
+ *     XLATEOUT(IBM-1047->8859-1)
+ *
+ *   When the subrequest is processed, the filter chain will be
+ *     XLATEOUT(IBM-1047->8859-1) XLATEOUT(8859-1->UTS-16)
+ *   This makes sense, so the instance of XLATEOUT added for the
+ *   subrequest will be left alone and it will translate from
+ *   IBM-1047->8859-1.
+ */
+static void chk_filter_chain(ap_filter_t *f)
+{
+    ap_filter_t *curf;
+    charset_filter_ctx_t *curctx, *last_xlate_ctx = NULL;
+    int debug = ((charset_filter_ctx_t *)f->ctx)->dc->debug == DEBUG;
+
+    /* walk the filter chain; see if it makes sense for our filter to
+     * do any translation
+     */
+    curf = f->r->output_filters;
+    while (curf) {
+        if (!strcasecmp(curf->frec->name, XLATEOUT_FILTER_NAME) &&
+            curf->ctx) {
+            curctx = (charset_filter_ctx_t *)curf->ctx;
+            if (!last_xlate_ctx) {
+                last_xlate_ctx = curctx;
+            }
+            else {
+                if (strcasecmp(last_xlate_ctx->dc->charset_default,
+                               curctx->dc->charset_source)) {
+                    /* incompatible translation 
+                     * if our filter instance is incompatible with an instance
+                     * already in place, noop our instance
+                     * Notes: 
+                     * . We are only willing to noop our own instance.
+                     * . It is possible to noop another instance which has not
+                     *   yet run, but this is not currently implemented.
+                     *   Hopefully it will not be needed.
+                     * . It is not possible to noop an instance which has 
+                     *   already run.
+                     */
+                    if (last_xlate_ctx == f->ctx) {
+                        last_xlate_ctx->noop = 1;
+                        if (debug) {
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO,
+                                          0, f->r,
+                                          "chk_filter_chain() - disabling "
+                                          "translation %s->%s; existing "
+                                          "translation %s->%s",
+                                          last_xlate_ctx->dc->charset_source,
+                                          last_xlate_ctx->dc->charset_default,
+                                          curctx->dc->charset_source,
+                                          curctx->dc->charset_default);
+                        }
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO,
+                                      0, f->r,
+                                      "chk_filter_chain() - can't disable "
+                                      "translation %s->%s; existing "
+                                      "translation %s->%s",
+                                      last_xlate_ctx->dc->charset_source,
+                                      last_xlate_ctx->dc->charset_default,
+                                      curctx->dc->charset_source,
+                                      curctx->dc->charset_default);
+                    }
+                    break;
+                }
+            }
+        }
+        curf = curf->next;
+    }
+}
+
 /* xlate_filter() handles (almost) arbitrary conversions from one charset 
  * to another...
  * translation is determined in the fixup hook (find_code_page), which is
@@ -548,6 +647,15 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                      (unsigned)dc,
                      dc && dc->charset_source ? dc->charset_source : "(none)",
                      dc && dc->charset_default ? dc->charset_default : "(none)");
+    }
+
+    if (!ctx->ran) {  /* filter never ran before */
+        chk_filter_chain(f);
+        ctx->ran = 1;
+    }
+
+    if (ctx->noop) {
+        return ap_pass_brigade(f->next, bb);
     }
 
     dptr = AP_BRIGADE_FIRST(bb);
