@@ -2099,7 +2099,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
-        ap_add_output_filter("BUFFER", NULL, r, r->connection);
+        /* Disable the buffer filter because it may be masking bugs in the 
+         * bucket brigade code 
+         * ap_add_output_filter("BUFFER", NULL, r, r->connection); */
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
