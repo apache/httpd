@@ -1,12 +1,5 @@
 _chm
 _zip
 _tools
+_dist
 build
-*.zip
-*.chm
-*.tex
-*.aux
-*.out
-*.log
-*.pdf
-*.toc
