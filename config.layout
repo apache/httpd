@@ -190,3 +190,22 @@
     proxycachedir: $localstatedir/proxy
 </Layout>
 
+#   Solaris 8 Layout
+<Layout Solaris>
+    prefix:        /usr/apache
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/bin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $exec_prefix/man
+    sysconfdir:    /etc/apache
+    datadir:       /var/apache
+    iconsdir:      $datadir/icons
+    htdocsdir:     $datadir/htdocs
+    cgidir:        $datadir/cgi-bin
+    includedir:    $exec_prefix/include
+    localstatedir: $prefix
+    runtimedir:    /var/run
+    logfiledir:    $datadir/logs
+    proxycachedir: $datadir/proxy
+</Layout>
