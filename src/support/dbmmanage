@@ -211,7 +211,7 @@ sub genseed {
 	srand (time ^ $$ or time ^ ($$ + ($$ << 15)));
     }
     else {
-        for (qw(-xlwwa -le)) { 
+        for (qw(xlwwa -le)) { 
 	    `ps $_ 2>/dev/null`;
             $psf = $_, last unless $?;
         }
