@@ -317,15 +317,16 @@ a directory</td></tr>
 indexing</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the default ordering of the directory index</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
-extensions to the error log</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
-extensions to the query field</td></tr>
-<tr><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake asynchronous support for isapi callbacks</td></tr>
+<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the error log</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the query field</td></tr>
+<tr><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
+...</a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake asynchronous support for ISAPI callbacks</td></tr>
 <tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Log unsupported feature requests from ISAPI
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <em>size</em></a></td><td> 49152 </td><td>sdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
+<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
 <tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive on|off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
 <tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>seconds</var></a></td><td> 15 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for subsequent
