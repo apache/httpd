@@ -78,7 +78,8 @@ typedef (APR_THREAD_FUNC *PFN_GETEXTENSIONVERSION)(HSE_VERSION_INFO *ver_info);
 
 /* Our internal 'HCONN' representation, always opaque to the user.
  */
-typedef struct isapi_cid isapi_cid, *HCONN;
+typedef struct isapi_cid isapi_cid;
+typedef struct isapi_cid *HCONN;
 
 /* Prototypes of the essential functions exposed by mod_isapi 
  * for the module to communicate with Apache.
@@ -201,7 +202,7 @@ typedef struct HSE_TF_INFO {
 } HSE_TF_INFO;
 
 typedef struct HSE_URL_MAPEX_INFO {
-    char         lpszPath[MAX_PATH];
+    char         lpszPath[260];
     apr_uint32_t dwFlags;
     apr_uint32_t cchMatchingPath;
     apr_uint32_t cchMatchingURL;
@@ -250,6 +251,27 @@ typedef apr_uint32_t (APR_THREAD_FUNC
 #define HSE_STATUS_SUCCESS_AND_KEEP_CONN  2 /* 1 vs 2 Ignored, we choose */
 #define HSE_STATUS_PENDING                3 /* Emulated (thread lock) */
 #define HSE_STATUS_ERROR                  4
+
+/* Anticipated error code for common faults within mod_isapi itself
+ */
+#ifndef ERROR_INSUFFICIENT_BUFFER
+#define ERROR_INSUFFICIENT_BUFFER ENOBUFS
+#endif
+#ifndef ERROR_INVALID_INDEX
+#define ERROR_INVALID_INDEX EINVAL
+#endif
+#ifndef ERROR_INVALID_PARAMETER
+#define ERROR_INVALID_PARAMETER EINVAL
+#endif
+#ifndef ERROR_READ_FAULT
+#define ERROR_READ_FAULT EIO
+#endif
+#ifndef ERROR_WRITE_FAULT
+#define ERROR_WRITE_FAULT EIO
+#endif
+#ifndef ERROR_SUCCESS
+#define ERROR_SUCCESS 0
+#endif
 
 /* Valid flags passed with TerminateExtension()
  */

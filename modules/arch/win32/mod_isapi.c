@@ -308,7 +308,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
      * location, etc) they apply to.
      */
     isa->report_version = MAKELONG(0, 5); /* Revision 5.0 */
-    isa->timeout = INFINITE; /* microsecs */
+    isa->timeout = 300 * 1000000; /* microsecs, not used */
     
     rv = apr_dso_load(&isa->handle, isa->filename, p);
     if (rv)
@@ -515,7 +515,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
  **********************************************************/
 
 /* Our "Connection ID" structure */
-typedef struct isapi_cid {
+struct isapi_cid {
     EXTENSION_CONTROL_BLOCK *ecb;
     isapi_dir_conf           dconf;
     isapi_loaded            *isa;
@@ -524,7 +524,7 @@ typedef struct isapi_cid {
     PFN_HSE_IO_COMPLETION    completion;
     void                    *completion_arg;
     apr_thread_mutex_t      *completed;
-} isapi_cid;
+};
 
 int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid, 
                                        char         *variable_name,
@@ -1158,17 +1158,18 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          */
         if (subreq->path_info && *subreq->path_info) {
             apr_cpystrn(info->lpszPath + info->cchMatchingPath, 
-                        subreq->path_info, MAX_PATH - info->cchMatchingPath);
+                        subreq->path_info, 
+                        sizeof(info->lpszPath) - info->cchMatchingPath);
             info->cchMatchingURL -= strlen(subreq->path_info);
             if (subreq->finfo.filetype == APR_DIR
-                 && info->cchMatchingPath < MAX_PATH - 1) {
+                 && info->cchMatchingPath < sizeof(info->lpszPath) - 1) {
                 /* roll forward over path_info's first slash */
                 ++info->cchMatchingPath;
                 ++info->cchMatchingURL;
             }
         }
         else if (subreq->finfo.filetype == APR_DIR
-                 && info->cchMatchingPath < MAX_PATH - 1) {
+                 && info->cchMatchingPath < sizeof(info->lpszPath) - 1) {
             /* Add a trailing slash for directory */
             info->lpszPath[info->cchMatchingPath++] = '/';
             info->lpszPath[info->cchMatchingPath] = '\0';
