@@ -230,7 +230,7 @@ static int status_handler(request_rec *r)
     char *loc;
     time_t nowtime = time(NULL);
     time_t up_time;
-    int i, res;
+    int i, j, res;
     int ready = 0;
     int busy = 0;
     unsigned long count = 0;
@@ -249,9 +249,9 @@ static int status_handler(request_rec *r)
 #endif
     int short_report = 0;
     int no_table_report = 0;
-    short_score score_record;
+    thread_score score_record;
     parent_score ps_record;
-    char stat_buffer[HARD_SERVER_LIMIT];
+    char stat_buffer[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
     int pid_buffer[HARD_SERVER_LIMIT];
     clock_t tu, ts, tcu, tcs;
     server_rec *vhost;
@@ -307,14 +307,16 @@ static int status_handler(request_rec *r)
 
     ap_sync_scoreboard_image();
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	score_record = ap_scoreboard_image->servers[i];
+    for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
+	score_record = ap_scoreboard_image->servers[i][j];
 	ps_record = ap_scoreboard_image->parent[i];
 	res = score_record.status;
-	stat_buffer[i] = status_flags[res];
+	stat_buffer[i][j] = status_flags[res];
 	pid_buffer[i] = (int) ps_record.pid;
 	if (res == SERVER_READY)
 	    ready++;
-	else if (res != SERVER_DEAD)
+	else if (res != SERVER_DEAD && res != SERVER_ACCEPTING
+	         && res != SERVER_QUEUEING && res != SERVER_STARTING)
 	    busy++;
 	if (ap_extended_status) {
 	    lres = score_record.access_count;
@@ -335,10 +337,11 @@ static int status_handler(request_rec *r)
 	    }
 	}
     }
+    }
 
     up_time = nowtime - ap_restart_time;
 
-    ap_hard_timeout("send status info", r);
+    /* ap_hard_timeout("send status info", r); */
 
     if (!short_report) {
 	ap_rputs(DOCTYPE_HTML_3_2
@@ -422,7 +425,7 @@ static int status_handler(request_rec *r)
     }					/* ap_extended_status */
 
     if (!short_report)
-	ap_rprintf(r, "\n%d requests currently being processed, %d idle servers\n"
+	ap_rprintf(r, "\n%d connections currently being processed, %d idle servers\n"
 		,busy, ready);
     else
 	ap_rprintf(r, "BusyServers: %d\nIdleServers: %d\n", busy, ready);
@@ -435,9 +438,12 @@ static int status_handler(request_rec *r)
 	ap_rputs("Scoreboard: ", r);
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	ap_rputc(stat_buffer[i], r);
-	if ((i % STATUS_MAXLINE == (STATUS_MAXLINE - 1)) && !short_report)
+    for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
+	ap_rputc(stat_buffer[i][j], r);
+	if ((((i * HARD_THREAD_LIMIT) + j) % STATUS_MAXLINE == 
+              (STATUS_MAXLINE - 1)) && !short_report)
 	    ap_rputs("\n", r);
+    }
     }
 
     if (short_report)
@@ -453,22 +459,26 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
 	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
 	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
+	ap_rputs("\"<B><code>A</code></B>\" Accepting on port,<BR>\n", r);
+	ap_rputs("\"<B><code>Q</code></B>\" Queueing connection, \n", r);
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
 	if (!ap_extended_status) {
-	    int j = 0;
+	    int k = 0;
 	    ap_rputs("PID Key: <br>\n", r);
 	    ap_rputs("<PRE>\n", r);
 	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-		if (stat_buffer[i] != '.') {
-		    ap_rprintf(r, "   %d in state: %c ", pid_buffer[i],
-		     stat_buffer[i]);
-		    if (++j >= 3) {
+	    for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
+		if (stat_buffer[i][j] != '.') {
+		    ap_rprintf(r, "   %d,%d in state: %c ", pid_buffer[i], j,
+                        stat_buffer[i][j]);
+		    if (++k >= 3) {
 		    	ap_rputs("\n", r);
-			j = 0;
+			k = 0;
 		    } else
 		    	ap_rputs(",", r);
 		}
+	    }
 	    }
 	    ap_rputs("\n", r);
 	    ap_rputs("</PRE>\n", r);
@@ -482,14 +492,15 @@ static int status_handler(request_rec *r)
 	    else
 #ifdef NO_TIMES
 		/* Allow for OS/2 not having CPU stats */
-		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
+		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>TID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
 #else
-		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
+		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>TID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Client<th>VHost<th>Request</tr>\n\n", r);
 #endif
 	}
 
 	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	    score_record = ap_scoreboard_image->servers[i];
+	for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
+	    score_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
 	    vhost = score_record.vhostrec;
 	    if (ps_record.generation != ap_my_generation) {
@@ -536,9 +547,10 @@ static int status_handler(request_rec *r)
 				my_lres, lres);
 			else
 			    ap_rprintf(r,
-				"<b>Server %d-%d</b> (%d): %d|%lu|%lu [",
+				"<b>Server %d-%d</b> (pid: %d, tid: %d): %d|%lu|%lu [",
 				i, (int) ps_record.generation,
 				(int) ps_record.pid,
+				(int) j,
 				(int) conn_lres, my_lres, lres);
 
 			switch (score_record.status) {
@@ -604,14 +616,14 @@ static int status_handler(request_rec *r)
 		    else {		/* !no_table_report */
 			if (score_record.status == SERVER_DEAD)
 			    ap_rprintf(r,
-				"<tr><td><b>%d-%d</b><td>-<td>%d/%lu/%lu",
+				"<tr><td><b>%d-%d</b><td>-<td>-<td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
 				(int) conn_lres, my_lres, lres);
 			else
 			    ap_rprintf(r,
-				"<tr><td><b>%d-%d</b><td>%d<td>%d/%lu/%lu",
+				"<tr><td><b>%d-%d</b><td>%d<td>%d<td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
-				(int) ps_record.pid, (int) conn_lres,
+				(int) ps_record.pid, (int) j, (int) conn_lres,
 				my_lres, lres);
 
 			switch (score_record.status) {
@@ -641,6 +653,12 @@ static int status_handler(request_rec *r)
 			    break;
 			case SERVER_GRACEFUL:
 			    ap_rputs("<td>G", r);
+			    break;
+			case SERVER_ACCEPTING:
+			    ap_rputs("<td>A", r);
+			    break;
+			case SERVER_QUEUEING:
+			    ap_rputs("<td>Q", r);
 			    break;
 			default:
 			    ap_rputs("<td>?", r);
@@ -678,6 +696,7 @@ static int status_handler(request_rec *r)
 		}			/* !short_report */
 	    }			/* if (<active child>) */
 	}				/* for () */
+	}
 
 	if (!(short_report || no_table_report)) {
 #ifdef NO_TIMES
@@ -686,6 +705,7 @@ static int status_handler(request_rec *r)
 <table>\n \
 <tr><th>Srv<td>Child Server number - generation\n \
 <tr><th>PID<td>OS process ID\n \
+<tr><th>TID<td>OS thread ID\n \
 <tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
 <tr><th>M<td>Mode of operation\n \
 <tr><th>SS<td>Seconds since beginning of most recent request\n \
@@ -700,6 +720,7 @@ static int status_handler(request_rec *r)
 <table>\n \
 <tr><th>Srv<td>Child Server number - generation\n \
 <tr><th>PID<td>OS process ID\n \
+<tr><th>TID<td>OS thread ID\n \
 <tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
 <tr><th>M<td>Mode of operation\n \
 <tr><th>CPU<td>CPU usage, number of seconds\n \
@@ -724,13 +745,17 @@ static int status_handler(request_rec *r)
 	ap_rputs("</BODY></HTML>\n", r);
     }
 
-    ap_kill_timeout(r);
+    /* ap_kill_timeout(r); */
     return 0;
 }
 
 
 static void status_init(server_rec *s, pool *p)
 {
+    int i;
+    for (i = 0; i < SERVER_NUM_STATUS; i++)
+      status_flags[i] = '?';
+
     status_flags[SERVER_DEAD] = '.';	/* We don't want to assume these are in */
     status_flags[SERVER_READY] = '_';	/* any particular order in scoreboard.h */
     status_flags[SERVER_STARTING] = 'S';
@@ -740,6 +765,8 @@ static void status_init(server_rec *s, pool *p)
     status_flags[SERVER_BUSY_LOG] = 'L';
     status_flags[SERVER_BUSY_DNS] = 'D';
     status_flags[SERVER_GRACEFUL] = 'G';
+    status_flags[SERVER_ACCEPTING] = 'A';
+    status_flags[SERVER_QUEUEING] = 'Q';
 }
 
 static const handler_rec status_handlers[] =
