@@ -1,10 +1,10 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/03/29 18:35:29 $]
+  Last modified at [$Date: 2004/03/30 13:51:57 $]
 
 Release:
 
    1.3.30-dev: In development. Jim proposes a release around the
-               "end" of March, 2004.
+               April 2, 2004.
    1.3.29: Tagged October 24, 2003. Announced Oct 29, 2003.
    1.3.28: Tagged July 16, 2003. Announced ??
    1.3.27: Tagged September 30, 2002. Announced Oct 3, 2002.
@@ -48,7 +48,9 @@ Release:
 RELEASE SHOWSTOPPERS:
 
   *  PR: 27023 Cookie could not delivered if the cookie made before
-         proxy module.
+         proxy module. Jim will wait 24 hours but not hold
+         off on 1.3.30 after that to address this. Will be
+         placed in 'NON-SHOWSTOPPERS' at that point.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
