@@ -218,7 +218,10 @@ static void clean_child_exit(int code, int worker_num, apr_pool_t *pthrd,
                              apr_bucket_alloc_t *bucket_alloc)
 {
     if (!shutdown_pending) {
-        apr_bucket_alloc_destroy(bucket_alloc);
+        /* Destroying the thread pool should take
+           care of the bucket allocator.  So
+           there is no need to destroy the bucket
+           allocator here also */
         apr_pool_destroy(pthrd);
     }
 
