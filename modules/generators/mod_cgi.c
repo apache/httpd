@@ -124,8 +124,8 @@ static int is_scriptaliased(request_rec *r)
 
 typedef struct {
     const char *logname;
-    long logbytes;
-    int bufbytes;
+    long        logbytes;
+    apr_size_t  bufbytes;
 } cgi_server_conf;
 
 static void *create_cgi_config(apr_pool_t *p, server_rec *s)
@@ -589,7 +589,8 @@ static void discard_script_output(apr_bucket_brigade *bb)
 
 static int cgi_handler(request_rec *r)
 {
-    int nph, dbpos = 0;
+    int nph;
+    apr_size_t dbpos = 0;
     const char *argv0;
     const char *command;
     const char **argv;
