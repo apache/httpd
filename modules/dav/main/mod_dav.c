@@ -53,32 +53,32 @@
  */
 
 /*
-** DAV extension module for Apache 2.0.*
-**
-** This module is repository-independent. It depends on hooks provided by a
-** repository implementation.
-**
-** APACHE ISSUES:
-**   - within a DAV hierarchy, if an unknown method is used and we default
-**     to Apache's implementation, it sends back an OPTIONS with the wrong
-**     set of methods -- there is NO HOOK for us.
-**     therefore: we need to manually handle the HTTP_METHOD_NOT_ALLOWED
-**       and HTTP_NOT_IMPLEMENTED responses (not ap_send_error_response).
-**   - process_mkcol_body() had to dup code from ap_setup_client_block().
-**   - it would be nice to get status lines from Apache for arbitrary
-**     status codes
-**   - it would be nice to be able to extend Apache's set of response
-**     codes so that it doesn't return 500 when an unknown code is placed
-**     into r->status.
-**   - http_vhost functions should apply "const" to their params
-**
-** DESIGN NOTES:
-**   - For PROPFIND, we batch up the entire response in memory before
-**     sending it. We may want to reorganize around sending the information
-**     as we suck it in from the propdb. Alternatively, we should at least
-**     generate a total Content-Length if we're going to buffer in memory
-**     so that we can keep the connection open.
-*/
+ * DAV extension module for Apache 2.0.*
+ *
+ * This module is repository-independent. It depends on hooks provided by a
+ * repository implementation.
+ *
+ * APACHE ISSUES:
+ *   - within a DAV hierarchy, if an unknown method is used and we default
+ *     to Apache's implementation, it sends back an OPTIONS with the wrong
+ *     set of methods -- there is NO HOOK for us.
+ *     therefore: we need to manually handle the HTTP_METHOD_NOT_ALLOWED
+ *       and HTTP_NOT_IMPLEMENTED responses (not ap_send_error_response).
+ *   - process_mkcol_body() had to dup code from ap_setup_client_block().
+ *   - it would be nice to get status lines from Apache for arbitrary
+ *     status codes
+ *   - it would be nice to be able to extend Apache's set of response
+ *     codes so that it doesn't return 500 when an unknown code is placed
+ *     into r->status.
+ *   - http_vhost functions should apply "const" to their params
+ *
+ * DESIGN NOTES:
+ *   - For PROPFIND, we batch up the entire response in memory before
+ *     sending it. We may want to reorganize around sending the information
+ *     as we suck it in from the propdb. Alternatively, we should at least
+ *     generate a total Content-Length if we're going to buffer in memory
+ *     so that we can keep the connection open.
+ */
 
 #include "apr_strings.h"
 #include "apr_lib.h"            /* for apr_is* */
@@ -124,7 +124,7 @@ typedef struct {
 } dav_server_conf;
 
 #define DAV_INHERIT_VALUE(parent, child, field) \
-		((child)->field ? (child)->field : (parent)->field)
+                ((child)->field ? (child)->field : (parent)->field)
 
 
 /* forward-declare for use in configuration lookup */
@@ -169,7 +169,7 @@ static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     dav_methods[DAV_M_BIND] = ap_method_register(p, "BIND");
 
     ap_add_version_component(p, "DAV/2");
-    
+
     return OK;
 }
 
@@ -177,7 +177,7 @@ static void *dav_create_server_config(apr_pool_t *p, server_rec *s)
 {
     dav_server_conf *newconf;
 
-    newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
+    newconf = (dav_server_conf *)apr_pcalloc(p, sizeof(*newconf));
 
     /* ### this isn't used at the moment... */
 
@@ -191,7 +191,7 @@ static void *dav_merge_server_config(apr_pool_t *p, void *base, void *overrides)
 #endif
     dav_server_conf *newconf;
 
-    newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
+    newconf = (dav_server_conf *)apr_pcalloc(p, sizeof(*newconf));
 
     /* ### nothing to merge right now... */
 
@@ -204,7 +204,7 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
 
     dav_dir_conf *conf;
 
-    conf = (dav_dir_conf *) apr_pcalloc(p, sizeof(*conf));
+    conf = (dav_dir_conf *)apr_pcalloc(p, sizeof(*conf));
 
     /* clean up the directory to remove any trailing slash */
     if (dir != NULL) {
@@ -225,7 +225,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
 {
     dav_dir_conf *parent = base;
     dav_dir_conf *child = overrides;
-    dav_dir_conf *newconf = (dav_dir_conf *) apr_pcalloc(p, sizeof(*newconf));
+    dav_dir_conf *newconf = (dav_dir_conf *)apr_pcalloc(p, sizeof(*newconf));
 
     /* DBG3("dav_merge_dir_config: new=%08lx  base=%08lx  overrides=%08lx",
        (long)newconf, (long)base, (long)overrides); */
@@ -254,7 +254,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     return newconf;
 }
 
-static const dav_provider * dav_get_provider(request_rec *r)
+static const dav_provider *dav_get_provider(request_rec *r)
 {
     dav_dir_conf *conf;
 
@@ -292,13 +292,13 @@ const dav_hooks_binding *dav_get_binding_hooks(request_rec *r)
  */
 static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
 {
-    dav_dir_conf *conf = (dav_dir_conf *) config;
+    dav_dir_conf *conf = (dav_dir_conf *)config;
 
     if (strcasecmp(arg1, "on") == 0) {
-	conf->provider_name = DAV_DEFAULT_PROVIDER;
+        conf->provider_name = DAV_DEFAULT_PROVIDER;
     }
     else if (strcasecmp(arg1, "off") == 0) {
-	conf->provider_name = NULL;
+        conf->provider_name = NULL;
         conf->provider = NULL;
     }
     else {
@@ -327,12 +327,12 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
 static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
                                             int arg)
 {
-    dav_dir_conf *conf = (dav_dir_conf *) config;
+    dav_dir_conf *conf = (dav_dir_conf *)config;
 
     if (arg)
-	conf->allow_depthinfinity = DAV_ENABLED_ON;
+        conf->allow_depthinfinity = DAV_ENABLED_ON;
     else
-	conf->allow_depthinfinity = DAV_ENABLED_OFF;
+        conf->allow_depthinfinity = DAV_ENABLED_OFF;
     return NULL;
 }
 
@@ -342,7 +342,7 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
 static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
                                          const char *arg1)
 {
-    dav_dir_conf *conf = (dav_dir_conf *) config;
+    dav_dir_conf *conf = (dav_dir_conf *)config;
 
     conf->locktimeout = atoi(arg1);
     if (conf->locktimeout < 0)
@@ -374,15 +374,15 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 
     /* begin the response now... */
     ap_rvputs(r,
-	      DAV_RESPONSE_BODY_1,
-	      r->status_line,
-	      DAV_RESPONSE_BODY_2,
-	      &r->status_line[4],
-	      DAV_RESPONSE_BODY_3,
+              DAV_RESPONSE_BODY_1,
+              r->status_line,
+              DAV_RESPONSE_BODY_2,
+              &r->status_line[4],
+              DAV_RESPONSE_BODY_3,
               body,
-	      DAV_RESPONSE_BODY_4,
+              DAV_RESPONSE_BODY_4,
               ap_psignature("<hr />\n", r),
-	      DAV_RESPONSE_BODY_5,
+              DAV_RESPONSE_BODY_5,
               NULL);
 
     /* the response has been sent. */
@@ -396,7 +396,7 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 /*
  * Send a "standardized" error response based on the error's namespace & tag
  */
-static int dav_error_response_tag(request_rec *r, 
+static int dav_error_response_tag(request_rec *r,
                                   dav_error *err)
 {
     r->status = err->status;
@@ -428,10 +428,10 @@ static int dav_error_response_tag(request_rec *r,
                    ">" DEBUG_CR
                    "<D:%s/>" DEBUG_CR, err->tagname);
     }
-    
+
     /* here's our mod_dav specific tag: */
     if (err->desc != NULL) {
-        ap_rprintf(r, 
+        ap_rprintf(r,
                    "<m:human-readable errcode=\"%d\">" DEBUG_CR
                    "%s" DEBUG_CR
                    "</m:human-readable>" DEBUG_CR,
@@ -450,30 +450,30 @@ static int dav_error_response_tag(request_rec *r,
 
 
 /*
-** Apache's URI escaping does not replace '&' since that is a valid character
-** in a URI (to form a query section). We must explicitly handle it so that
-** we can embed the URI into an XML document.
-*/
+ * Apache's URI escaping does not replace '&' since that is a valid character
+ * in a URI (to form a query section). We must explicitly handle it so that
+ * we can embed the URI into an XML document.
+ */
 static const char *dav_xml_escape_uri(apr_pool_t *p, const char *uri)
 {
     const char *e_uri = ap_escape_uri(p, uri);
 
     /* check the easy case... */
     if (ap_strchr_c(e_uri, '&') == NULL)
-	return e_uri;
+        return e_uri;
 
     /* there was a '&', so more work is needed... sigh. */
 
     /*
-    ** Note: this is a teeny bit of overkill since we know there are no
-    ** '<' or '>' characters, but who cares.
-    */
+     * Note: this is a teeny bit of overkill since we know there are no
+     * '<' or '>' characters, but who cares.
+     */
     return ap_xml_quote_string(p, e_uri, 0);
 }
 
 static void dav_send_multistatus(request_rec *r, int status,
                                  dav_response *first,
-				 apr_array_header_t *namespaces)
+                                 apr_array_header_t *namespaces)
 {
     /* Set the correct status and Content-Type */
     r->status = status;
@@ -481,74 +481,75 @@ static void dav_send_multistatus(request_rec *r, int status,
 
     /* Send the headers and actual multistatus response now... */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
-	     "<D:multistatus xmlns:D=\"DAV:\"", r);
+             "<D:multistatus xmlns:D=\"DAV:\"", r);
 
     if (namespaces != NULL) {
-	int i;
+       int i;
 
-	for (i = namespaces->nelts; i--; ) {
-	    ap_rprintf(r, " xmlns:ns%d=\"%s\"", i,
-		       AP_XML_GET_URI_ITEM(namespaces, i));
-	}
+       for (i = namespaces->nelts; i--; ) {
+           ap_rprintf(r, " xmlns:ns%d=\"%s\"", i,
+                      AP_XML_GET_URI_ITEM(namespaces, i));
+       }
     }
 
     /* ap_rputc('>', r); */
     ap_rputs(">" DEBUG_CR, r);
 
     for (; first != NULL; first = first->next) {
-	ap_text *t;
+        ap_text *t;
 
-	if (first->propresult.xmlns == NULL) {
-	    ap_rputs("<D:response>", r);
-	}
-	else {
-	    ap_rputs("<D:response", r);
-	    for (t = first->propresult.xmlns; t; t = t->next) {
-		ap_rputs(t->text, r);
-	    }
-	    ap_rputc('>', r);
-	}
+        if (first->propresult.xmlns == NULL) {
+            ap_rputs("<D:response>", r);
+        }
+        else {
+            ap_rputs("<D:response", r);
+            for (t = first->propresult.xmlns; t; t = t->next) {
+                ap_rputs(t->text, r);
+            }
+            ap_rputc('>', r);
+        }
 
-	ap_rputs(DEBUG_CR "<D:href>", r);
-	ap_rputs(dav_xml_escape_uri(r->pool, first->href), r);
-	ap_rputs("</D:href>" DEBUG_CR, r);
+        ap_rputs(DEBUG_CR "<D:href>", r);
+        ap_rputs(dav_xml_escape_uri(r->pool, first->href), r);
+        ap_rputs("</D:href>" DEBUG_CR, r);
 
-	if (first->propresult.propstats == NULL) {
-	    /* use the Status-Line text from Apache.  Note, this will
-	     * default to 500 Internal Server Error if first->status
-	     * is not a known (or valid) status code. */
-	    ap_rprintf(r,
-		       "<D:status>HTTP/1.1 %s</D:status>" DEBUG_CR, 
-		       ap_get_status_line(first->status));
-	}
-	else {
-	    /* assume this includes <propstat> and is quoted properly */
-	    for (t = first->propresult.propstats; t; t = t->next) {
-		ap_rputs(t->text, r);
-	    }
-	}
+        if (first->propresult.propstats == NULL) {
+            /* use the Status-Line text from Apache.  Note, this will
+             * default to 500 Internal Server Error if first->status
+             * is not a known (or valid) status code.
+             */
+            ap_rprintf(r,
+                       "<D:status>HTTP/1.1 %s</D:status>" DEBUG_CR,
+                       ap_get_status_line(first->status));
+        }
+        else {
+            /* assume this includes <propstat> and is quoted properly */
+            for (t = first->propresult.propstats; t; t = t->next) {
+                ap_rputs(t->text, r);
+            }
+        }
 
-	if (first->desc != NULL) {
-	    /*
-	    ** We supply the description, so we know it doesn't have to
-	    ** have any escaping/encoding applied to it.
-	    */
-	    ap_rputs("<D:responsedescription>", r);
-	    ap_rputs(first->desc, r);
-	    ap_rputs("</D:responsedescription>" DEBUG_CR, r);
-	}
+        if (first->desc != NULL) {
+            /*
+             * We supply the description, so we know it doesn't have to
+             * have any escaping/encoding applied to it.
+             */
+            ap_rputs("<D:responsedescription>", r);
+            ap_rputs(first->desc, r);
+            ap_rputs("</D:responsedescription>" DEBUG_CR, r);
+        }
 
-	ap_rputs("</D:response>" DEBUG_CR, r);
+        ap_rputs("</D:response>" DEBUG_CR, r);
     }
 
     ap_rputs("</D:multistatus>" DEBUG_CR, r);
 }
 
 /*
-** dav_log_err()
-**
-** Write error information to the log.
-*/
+ * dav_log_err()
+ *
+ * Write error information to the log.
+ */
 static void dav_log_err(request_rec *r, dav_error *err, int level)
 {
     dav_error *errscan;
@@ -556,43 +557,44 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
     /* Log the errors */
     /* ### should have a directive to log the first or all */
     for (errscan = err; errscan != NULL; errscan = errscan->prev) {
-	if (errscan->desc == NULL)
-	    continue;
-	if (errscan->save_errno != 0) {
-	    errno = errscan->save_errno;
-	    ap_log_rerror(APLOG_MARK, level, errno, r, "%s  [%d, #%d]",
-			  errscan->desc, errscan->status, errscan->error_id);
-	}
-	else {
-	    ap_log_rerror(APLOG_MARK, level | APLOG_NOERRNO, 0, r,
-			  "%s  [%d, #%d]",
-			  errscan->desc, errscan->status, errscan->error_id);
-	}
+        if (errscan->desc == NULL)
+            continue;
+
+        if (errscan->save_errno != 0) {
+            errno = errscan->save_errno;
+            ap_log_rerror(APLOG_MARK, level, errno, r, "%s  [%d, #%d]",
+                          errscan->desc, errscan->status, errscan->error_id);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, level | APLOG_NOERRNO, 0, r,
+                          "%s  [%d, #%d]",
+                          errscan->desc, errscan->status, errscan->error_id);
+        }
     }
 }
 
 /*
-** dav_handle_err()
-**
-** Handle the standard error processing. <err> must be non-NULL.
-**
-** <response> is set by the following:
-**   - dav_validate_request()
-**   - dav_add_lock()
-**   - repos_hooks->remove_resource
-**   - repos_hooks->move_resource
-**   - repos_hooks->copy_resource
-**   - vsn_hooks->update
-*/
+ * dav_handle_err()
+ *
+ * Handle the standard error processing. <err> must be non-NULL.
+ *
+ * <response> is set by the following:
+ *   - dav_validate_request()
+ *   - dav_add_lock()
+ *   - repos_hooks->remove_resource
+ *   - repos_hooks->move_resource
+ *   - repos_hooks->copy_resource
+ *   - vsn_hooks->update
+ */
 static int dav_handle_err(request_rec *r, dav_error *err,
-			  dav_response *response)
+                          dav_response *response)
 {
     /* log the errors */
     dav_log_err(r, err, APLOG_ERR);
 
     if (response == NULL) {
-	/* our error messages are safe; tell Apache this */
-	apr_table_setn(r->notes, "verbose-error-to", "*");
+        /* our error messages are safe; tell Apache this */
+        apr_table_setn(r->notes, "verbose-error-to", "*");
 
         /* didn't get a multistatus response passed in, but we still
            might be able to generate a standard <D:error> response. */
@@ -600,7 +602,7 @@ static int dav_handle_err(request_rec *r, dav_error *err,
             return dav_error_response_tag(r, err);
         }
 
-	return err->status;
+        return err->status;
     }
 
     /* since we're returning DONE, ensure the request body is consumed. */
@@ -618,13 +620,13 @@ static int dav_created(request_rec *r, const char *locn, const char *what,
     const char *body;
 
     if (locn == NULL) {
-	locn = r->uri;
+        locn = r->uri;
     }
 
     /* did the target resource already exist? */
     if (replaced) {
-	/* Apache will supply a default message */
-	return HTTP_NO_CONTENT;
+        /* Apache will supply a default message */
+        return HTTP_NO_CONTENT;
     }
 
     /* Per HTTP/1.1, S10.2.2: add a Location header to contain the
@@ -648,22 +650,23 @@ int dav_get_depth(request_rec *r, int def_depth)
     const char *depth = apr_table_get(r->headers_in, "Depth");
 
     if (depth == NULL) {
-	return def_depth;
+        return def_depth;
     }
+
     if (strcasecmp(depth, "infinity") == 0) {
-	return DAV_INFINITY;
+        return DAV_INFINITY;
     }
     else if (strcmp(depth, "0") == 0) {
-	return 0;
+        return 0;
     }
     else if (strcmp(depth, "1") == 0) {
-	return 1;
+        return 1;
     }
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
     ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		  "An invalid Depth header was specified.");
+                  "An invalid Depth header was specified.");
     return -1;
 }
 
@@ -672,20 +675,21 @@ static int dav_get_overwrite(request_rec *r)
     const char *overwrite = apr_table_get(r->headers_in, "Overwrite");
 
     if (overwrite == NULL) {
-	return 1;		/* default is "T" */
+        return 1; /* default is "T" */
     }
 
     if ((*overwrite == 'F' || *overwrite == 'f') && overwrite[1] == '\0') {
-	return 0;
+        return 0;
     }
+
     if ((*overwrite == 'T' || *overwrite == 't') && overwrite[1] == '\0') {
-	return 1;
+        return 1;
     }
 
     /* The caller will return an HTTP_BAD_REQUEST. This will augment the
      * default message that Apache provides. */
     ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		  "An invalid Overwrite header was specified.");
+                  "An invalid Overwrite header was specified.");
     return -1;
 }
 
@@ -698,8 +702,8 @@ static int dav_get_overwrite(request_rec *r)
  * the resource identified by the DAV:checked-in property of the resource
  * identified by the Request-URI.
  */
-static dav_error * dav_get_resource(request_rec *r, int label_allowed,
-                                    int use_checked_in, dav_resource **res_p)
+static dav_error *dav_get_resource(request_rec *r, int label_allowed,
+                                   int use_checked_in, dav_resource **res_p)
 {
     dav_dir_conf *conf;
     const char *label = NULL;
@@ -746,8 +750,8 @@ static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
 
     if (hooks == NULL) {
-	*lockdb = NULL;
-	return NULL;
+        *lockdb = NULL;
+        return NULL;
     }
 
     /* open the thing lazily */
@@ -804,6 +808,7 @@ static int dav_method_get(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -847,9 +852,9 @@ static int dav_method_post(request_rec *r)
 
     /* Note: depth == 0. Implies no need for a multistatus response. */
     if ((err = dav_validate_request(r, resource, 0, NULL, NULL,
-				    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     return DECLINED;
@@ -874,7 +879,7 @@ static int dav_method_put(request_rec *r)
     apr_off_t range_end;
 
     if ((result = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)) != OK) {
-	return result;
+        return result;
     }
 
     /* Ask repository module to resolve the resource */
@@ -887,14 +892,14 @@ static int dav_method_put(request_rec *r)
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR
         && resource->type != DAV_RESOURCE_TYPE_WORKING) {
         body = apr_psprintf(r->pool,
-                           "Cannot create resource %s with PUT.",
-                           ap_escape_html(r->pool, r->uri));
-	return dav_error_response(r, HTTP_CONFLICT, body);
+                            "Cannot create resource %s with PUT.",
+                            ap_escape_html(r->pool, r->uri));
+        return dav_error_response(r, HTTP_CONFLICT, body);
     }
 
     /* Cannot PUT a collection */
     if (resource->collection) {
-	return dav_error_response(r, HTTP_CONFLICT,
+        return dav_error_response(r, HTTP_CONFLICT,
                                   "Cannot PUT to a collection.");
 
     }
@@ -902,28 +907,28 @@ static int dav_method_put(request_rec *r)
     resource_state = dav_get_resource_state(r, resource);
 
     /*
-    ** Note: depth == 0 normally requires no multistatus response. However,
-    ** if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
-    ** other than the Request-URI, thereby requiring a multistatus.
-    **
-    ** If the resource does not exist (DAV_RESOURCE_NULL), then we must
-    ** check the resource *and* its parent. If the resource exists or is
-    ** a locknull resource, then we check only the resource.
-    */
+     * Note: depth == 0 normally requires no multistatus response. However,
+     * if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
+     * other than the Request-URI, thereby requiring a multistatus.
+     *
+     * If the resource does not exist (DAV_RESOURCE_NULL), then we must
+     * check the resource *and* its parent. If the resource exists or is
+     * a locknull resource, then we check only the resource.
+     */
     if ((err = dav_validate_request(r, resource, 0, NULL, &multi_response,
-				    resource_state == DAV_RESOURCE_NULL ?
-				    DAV_VALIDATE_PARENT :
-				    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, multi_response);
+                                    resource_state == DAV_RESOURCE_NULL ?
+                                    DAV_VALIDATE_PARENT :
+                                    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* make sure the resource can be modified (if versioning repository) */
     if ((err = dav_auto_checkout(r, resource,
-				 0 /* not parent_only */,
-				 &av_info)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                 0 /* not parent_only */,
+                                 &av_info)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* truncate and rewrite the file unless we see a Content-Range */
@@ -937,12 +942,12 @@ static int dav_method_put(request_rec *r)
     /* Create the new file in the repository */
     if ((err = (*resource->hooks->open_stream)(resource, mode,
                                                &stream)) != NULL) {
-	/* ### assuming FORBIDDEN is probably not quite right... */
-	err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
-			     apr_psprintf(r->pool,
-					 "Unable to PUT new contents for %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        /* ### assuming FORBIDDEN is probably not quite right... */
+        err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
+                             apr_psprintf(r->pool,
+                                          "Unable to PUT new contents for %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
     }
 
     if (err == NULL && has_range) {
@@ -952,55 +957,55 @@ static int dav_method_put(request_rec *r)
 
     if (err == NULL) {
         if (ap_should_client_block(r)) {
-	    char *buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
-	    long len;
+            char *buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
+            long len;
 
             /*
-            ** Once we start reading the request, then we must read the
-            ** whole darn thing. ap_discard_request_body() won't do anything
-            ** for a partially-read request.
-            */
+             * Once we start reading the request, then we must read the
+             * whole darn thing. ap_discard_request_body() won't do anything
+             * for a partially-read request.
+             */
 
-	    while ((len = ap_get_client_block(r, buffer,
-					      DAV_READ_BLOCKSIZE)) > 0) {
-		if (err == NULL) {
-		    /* write whatever we read, until we see an error */
-		    err = (*resource->hooks->write_stream)(stream,
-                                                           buffer, len);
-		}
-	    }
+            while ((len = ap_get_client_block(r, buffer,
+                                              DAV_READ_BLOCKSIZE)) > 0) {
+                   if (err == NULL) {
+                       /* write whatever we read, until we see an error */
+                       err = (*resource->hooks->write_stream)(stream,
+                                                              buffer, len);
+                   }
+            }
 
             /*
-            ** ### what happens if we read more/less than the amount
-            ** ### specified in the Content-Range? eek...
-            */
+             * ### what happens if we read more/less than the amount
+             * ### specified in the Content-Range? eek...
+             */
 
-	    if (len == -1) {
-		/*
-		** Error reading request body. This has precedence over
-		** prior errors.
-		*/
-		err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
-				    "An error occurred while reading the "
-				    "request body.");
-	    }
+            if (len == -1) {
+                /*
+                 * Error reading request body. This has precedence over
+                 * prior errors.
+                 */
+                err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                    "An error occurred while reading the "
+                                    "request body.");
+            }
         }
 
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
-	if (err2 != NULL && err == NULL) {
-	    /* no error during the write, but we hit one at close. use it. */
-	    err = err2;
-	}
+        if (err2 != NULL && err == NULL) {
+            /* no error during the write, but we hit one at close. use it. */
+            err = err2;
+        }
     }
 
     /*
-    ** Ensure that we think the resource exists now.
-    ** ### eek. if an error occurred during the write and we did not commit,
-    ** ### then the resource might NOT exist (e.g. dav_fs_repos.c)
-    */
+     * Ensure that we think the resource exists now.
+     * ### eek. if an error occurred during the write and we did not commit,
+     * ### then the resource might NOT exist (e.g. dav_fs_repos.c)
+     */
     if (err == NULL) {
-	resource->exists = 1;
+        resource->exists = 1;
     }
 
     /* restore modifiability of resources back to what they were */
@@ -1009,16 +1014,17 @@ static int dav_method_put(request_rec *r)
 
     /* check for errors now */
     if (err != NULL) {
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
+
     if (err2 != NULL) {
-	/* just log a warning */
-	err2 = dav_push_error(r->pool, err->status, 0,
-			      "The PUT was successful, but there "
-			      "was a problem automatically checking in "
-			      "the resource or its parent collection.",
-			      err2);
-	dav_log_err(r, err2, APLOG_WARNING);
+        /* just log a warning */
+        err2 = dav_push_error(r->pool, err->status, 0,
+                              "The PUT was successful, but there "
+                              "was a problem automatically checking in "
+                              "the resource or its parent collection.",
+                              err2);
+        dav_log_err(r, err2, APLOG_WARNING);
     }
 
     /* ### place the Content-Type and Content-Language into the propdb */
@@ -1027,30 +1033,30 @@ static int dav_method_put(request_rec *r)
         dav_lockdb *lockdb;
 
         if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
-	    /* The file creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The file was PUT successfully, but there "
-				 "was a problem opening the lock database "
-				 "which prevents inheriting locks from the "
-				 "parent resources.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
+            /* The file creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The file was PUT successfully, but there "
+                                 "was a problem opening the lock database "
+                                 "which prevents inheriting locks from the "
+                                 "parent resources.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
         }
 
-	/* notify lock system that we have created/replaced a resource */
-	err = dav_notify_created(r, lockdb, resource, resource_state, 0);
+        /* notify lock system that we have created/replaced a resource */
+        err = dav_notify_created(r, lockdb, resource, resource_state, 0);
 
-	(*locks_hooks->close_lockdb)(lockdb);
+        (*locks_hooks->close_lockdb)(lockdb);
 
-	if (err != NULL) {
-	    /* The file creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The file was PUT successfully, but there "
-				 "was a problem updating its lock "
-				 "information.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if (err != NULL) {
+            /* The file creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The file was PUT successfully, but there "
+                                 "was a problem updating its lock "
+                                 "information.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
     }
 
     /* NOTE: WebDAV spec, S8.7.1 states properties should be unaffected */
@@ -1070,7 +1076,7 @@ DAV_DECLARE(void) dav_add_response(dav_walk_resource *wres,
     resp->href = apr_pstrdup(wres->pool, wres->resource->uri);
     resp->status = status;
     if (propstats) {
-	resp->propresult = *propstats;
+        resp->propresult = *propstats;
     }
 
     resp->next = wres->response;
@@ -1090,7 +1096,7 @@ static int dav_method_delete(request_rec *r)
 
     /* We don't use the request body right now, so torch it. */
     if ((result = ap_discard_request_body(r)) != OK) {
-	return result;
+        return result;
     }
 
     /* Ask repository module to resolve the resource */
@@ -1100,7 +1106,7 @@ static int dav_method_delete(request_rec *r)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
-	return HTTP_NOT_FOUND;
+        return HTTP_NOT_FOUND;
     }
 
     /* 2518 says that depth must be infinity only for collections.
@@ -1109,16 +1115,17 @@ static int dav_method_delete(request_rec *r)
     depth = dav_get_depth(r, DAV_INFINITY);
 
     if (resource->collection && depth != DAV_INFINITY) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "Depth must be \"infinity\" for DELETE of a collection.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth must be \"infinity\" for DELETE of a collection.");
+        return HTTP_BAD_REQUEST;
     }
+
     if (!resource->collection && depth == 1) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "Depth of \"1\" is not allowed for DELETE.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth of \"1\" is not allowed for DELETE.");
+        return HTTP_BAD_REQUEST;
     }
 
     /*
@@ -1130,30 +1137,30 @@ static int dav_method_delete(request_rec *r)
     ** multistatus response -- only internal members/collections.
     */
     if ((err = dav_validate_request(r, resource, depth, NULL,
-				    &multi_response,
-				    DAV_VALIDATE_PARENT
+                                    &multi_response,
+                                    DAV_VALIDATE_PARENT
                                     | DAV_VALIDATE_USE_424, NULL)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not DELETE %s due to a failed "
-					 "precondition (e.g. locks).",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not DELETE %s due to a failed "
+                                          "precondition (e.g. locks).",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* ### RFC 2518 s. 8.10.5 says to remove _all_ locks, not just those
      *     locked by the token(s) in the if_header.
      */
     if ((result = dav_unlock(r, resource, NULL)) != OK) {
-	return result;
+        return result;
     }
 
     /* if versioned resource, make sure parent is checked out */
     if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
-				 &av_info)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                 &av_info)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* try to remove the resource */
@@ -1161,25 +1168,25 @@ static int dav_method_delete(request_rec *r)
 
     /* restore writability of parent back to what it was */
     err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
-			    0 /*unlock*/, &av_info);
+                            0 /*unlock*/, &av_info);
 
     /* check for errors now */
     if (err != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not DELETE %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not DELETE %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
     if (err2 != NULL) {
-	/* just log a warning */
-	err = dav_push_error(r->pool, err2->status, 0,
-			     "The DELETE was successful, but there "
-			     "was a problem automatically checking in "
-			     "the parent collection.",
-			     err2);
-	dav_log_err(r, err, APLOG_WARNING);
+        /* just log a warning */
+        err = dav_push_error(r->pool, err2->status, 0,
+                             "The DELETE was successful, but there "
+                             "was a problem automatically checking in "
+                             "the parent collection.",
+                             err2);
+        dav_log_err(r, err, APLOG_WARNING);
     }
 
     /* ### HTTP_NO_CONTENT if no body, HTTP_OK if there is a body (some day) */
@@ -1206,14 +1213,16 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
     if (elem->first_child == NULL) {
         /* show all supported methods */
         arr = apr_table_elts(methods);
-        elts = (const apr_table_entry_t *) arr->elts;
+        elts = (const apr_table_entry_t *)arr->elts;
 
         for (i = 0; i < arr->nelts; ++i) {
             if (elts[i].key == NULL)
                 continue;
+
             s = apr_psprintf(r->pool,
-                            "<D:supported-method D:name=\"%s\"/>" DEBUG_CR,
-                            elts[i].key);
+                             "<D:supported-method D:name=\"%s\"/>"
+                             DEBUG_CR,
+                             elts[i].key);
             ap_text_append(r->pool, body, s);
         }
     }
@@ -1240,8 +1249,9 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
                 /* see if method is supported */
                 if (apr_table_get(methods, name) != NULL) {
                     s = apr_psprintf(r->pool,
-                                    "<D:supported-method D:name=\"%s\"/>" DEBUG_CR,
-                                    name);
+                                     "<D:supported-method D:name=\"%s\"/>"
+                                     DEBUG_CR,
+                                     name);
                     ap_text_append(r->pool, body, s);
                 }
             }
@@ -1267,11 +1277,11 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     /* open lock database, to report on supported lock properties */
     /* ### should open read-only */
     if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
-	return dav_push_error(r->pool, err->status, 0,
-			      "The lock database could not be opened, "
-			      "preventing the reporting of supported lock "
+        return dav_push_error(r->pool, err->status, 0,
+                              "The lock database could not be opened, "
+                              "preventing the reporting of supported lock "
                               "properties.",
-			      err);
+                              err);
     }
 
     /* open the property database (readonly) for the resource */
@@ -1280,10 +1290,10 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
         if (lockdb != NULL)
             (*lockdb->hooks->close_lockdb)(lockdb);
 
-	return dav_push_error(r->pool, err->status, 0,
-			      "The property database could not be opened, "
-			      "preventing report of supported properties.",
-			      err);
+        return dav_push_error(r->pool, err->status, 0,
+                              "The property database could not be opened, "
+                              "preventing report of supported properties.",
+                              err);
     }
 
     ap_text_append(r->pool, body, "<D:supported-live-property-set>" DEBUG_CR);
@@ -1360,7 +1370,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
         const dav_report_elem *rp;
 
         if ((err = (*vsn_hooks->avail_reports)(resource, &reports)) != NULL) {
-	    return dav_push_error(r->pool, err->status, 0,
+            return dav_push_error(r->pool, err->status, 0,
                                   "DAV:supported-report-set could not be "
                                   "determined due to a problem fetching the "
                                   "available reports for this resource.",
@@ -1371,10 +1381,12 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
             if (elem->first_child == NULL) {
                 /* show all supported reports */
                 for (rp = reports; rp->nmspace != NULL; ++rp) {
-                    /* Note: we presume reports->namespace is properly XML/URL quoted */
+                    /* Note: we presume reports->namespace is 
+                     * properly XML/URL quoted */
                     s = apr_psprintf(r->pool,
-                                    "<D:supported-report D:name=\"%s\" D:namespace=\"%s\"/>" DEBUG_CR,
-                                    rp->name, rp->nmspace);
+                                     "<D:supported-report D:name=\"%s\" "
+                                     "D:namespace=\"%s\"/>" DEBUG_CR,
+                                     rp->name, rp->nmspace);
                     ap_text_append(r->pool, body, s);
                 }
             }
@@ -1409,10 +1421,15 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                         for (rp = reports; rp->nmspace != NULL; ++rp) {
                             if (strcmp(name, rp->name) == 0
                                 && strcmp(nmspace, rp->nmspace) == 0) {
-                                /* Note: we presume reports->nmspace is properly XML/URL quoted */
+                                /* Note: we presume reports->nmspace is
+                                 * properly XML/URL quoted 
+                                 */
                                 s = apr_psprintf(r->pool,
-                                                "<D:supported-report D:name=\"%s\" D:namespace=\"%s\"/>" DEBUG_CR,
-                                                rp->name, rp->nmspace);
+                                                 "<D:supported-report "
+                                                 "D:name=\"%s\" "
+                                                 "D:namespace=\"%s\"/>"
+                                                 DEBUG_CR,
+                                                 rp->name, rp->nmspace);
                                 ap_text_append(r->pool, body, s);
                                 break;
                             }
@@ -1459,14 +1476,14 @@ static int dav_method_options(request_rec *r)
 
     /* parse any request body */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
     /* note: doc == NULL if no request body */
 
     if (doc && !dav_validate_root(doc, "options")) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"options\" element was not found.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The \"options\" element was not found.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* determine which providers are available */
@@ -1477,20 +1494,20 @@ static int dav_method_options(request_rec *r)
     }
 
     if (binding_hooks != NULL)
-	dav_level = apr_pstrcat(r->pool, dav_level, ",bindings", NULL);
+        dav_level = apr_pstrcat(r->pool, dav_level, ",bindings", NULL);
 
     /* ###
-    ** MSFT Web Folders chokes if length of DAV header value > 63 characters!
-    ** To workaround that, we use separate DAV headers for versioning and
-    ** live prop provider namespace URIs.
-    ** ###
-    */
+     * MSFT Web Folders chokes if length of DAV header value > 63 characters!
+     * To workaround that, we use separate DAV headers for versioning and
+     * live prop provider namespace URIs.
+     * ###
+     */
     apr_table_setn(r->headers_out, "DAV", dav_level);
 
     /*
-    ** If there is a versioning provider, generate DAV headers
-    ** for versioning options.
-    */
+     * If there is a versioning provider, generate DAV headers
+     * for versioning options.
+     */
     if (vsn_hooks != NULL) {
         (*vsn_hooks->get_vsn_options)(r->pool, &vsn_options);
 
@@ -1499,10 +1516,10 @@ static int dav_method_options(request_rec *r)
     }
 
     /*
-    ** Gather property set URIs from all the liveprop providers,
-    ** and generate a separate DAV header for each URI, to avoid
-    ** problems with long header lengths.
-    */
+     * Gather property set URIs from all the liveprop providers,
+     * and generate a separate DAV header for each URI, to avoid
+     * problems with long header lengths.
+     */
     uri_ary = apr_array_make(r->pool, 5, sizeof(const char *));
     dav_run_gather_propsets(uri_ary);
     for (i = 0; i < uri_ary->nelts; ++i) {
@@ -1514,14 +1531,14 @@ static int dav_method_options(request_rec *r)
     apr_table_setn(r->headers_out, "MS-Author-Via", "DAV");
 
     /*
-    ** Determine which methods are allowed on the resource.
-    ** Three cases:  resource is null (3), is lock-null (7.4), or exists.
-    **
-    ** All cases support OPTIONS, and if there is a lock provider, LOCK.
-    ** (Lock-) null resources also support MKCOL and PUT.
-    ** Lock-null supports PROPFIND and UNLOCK.
-    ** Existing resources support lots of stuff.
-    */
+     * Determine which methods are allowed on the resource.
+     * Three cases:  resource is null (3), is lock-null (7.4), or exists.
+     *
+     * All cases support OPTIONS, and if there is a lock provider, LOCK.
+     * (Lock-) null resources also support MKCOL and PUT.
+     * Lock-null supports PROPFIND and UNLOCK.
+     * Existing resources support lots of stuff.
+     */
 
     apr_table_addn(methods, "OPTIONS", "");
 
@@ -1529,7 +1546,7 @@ static int dav_method_options(request_rec *r)
     switch (dav_get_resource_state(r, resource))
     {
     case DAV_RESOURCE_EXISTS:
-	/* resource exists */
+        /* resource exists */
         apr_table_addn(methods, "GET", "");
         apr_table_addn(methods, "HEAD", "");
         apr_table_addn(methods, "POST", "");
@@ -1540,7 +1557,7 @@ static int dav_method_options(request_rec *r)
         apr_table_addn(methods, "COPY", "");
         apr_table_addn(methods, "MOVE", "");
 
-	if (!resource->collection)
+        if (!resource->collection)
             apr_table_addn(methods, "PUT", "");
 
         if (locks_hooks != NULL) {
@@ -1551,7 +1568,7 @@ static int dav_method_options(request_rec *r)
         break;
 
     case DAV_RESOURCE_LOCK_NULL:
-	/* resource is lock-null. */
+        /* resource is lock-null. */
         apr_table_addn(methods, "MKCOL", "");
         apr_table_addn(methods, "PROPFIND", "");
         apr_table_addn(methods, "PUT", "");
@@ -1564,7 +1581,7 @@ static int dav_method_options(request_rec *r)
         break;
 
     case DAV_RESOURCE_NULL:
-	/* resource is null. */
+        /* resource is null. */
         apr_table_addn(methods, "MKCOL", "");
         apr_table_addn(methods, "PUT", "");
 
@@ -1574,8 +1591,8 @@ static int dav_method_options(request_rec *r)
         break;
 
     default:
-	/* ### internal error! */
-	break;
+        /* ### internal error! */
+        break;
     }
 
     /* If there is a versioning provider, add versioning methods */
@@ -1619,7 +1636,7 @@ static int dav_method_options(request_rec *r)
 
     /* Generate the Allow header */
     arr = apr_table_elts(methods);
-    elts = (const apr_table_entry_t *) arr->elts;
+    elts = (const apr_table_entry_t *)arr->elts;
     text_size = 0;
 
     /* first, compute total length */
@@ -1715,23 +1732,23 @@ static void dav_cache_badprops(dav_walker_ctx *ctx)
 
     /* just return if we built the thing already */
     if (ctx->propstat_404 != NULL) {
-	return;
+        return;
     }
 
     ap_text_append(ctx->w.pool, &hdr,
-		   "<D:propstat>" DEBUG_CR
-		   "<D:prop>" DEBUG_CR);
+                   "<D:propstat>" DEBUG_CR
+                   "<D:prop>" DEBUG_CR);
 
     elem = dav_find_child(ctx->doc->root, "prop");
     for (elem = elem->first_child; elem; elem = elem->next) {
-	ap_text_append(ctx->w.pool, &hdr,
+        ap_text_append(ctx->w.pool, &hdr,
                        ap_xml_empty_elem(ctx->w.pool, elem));
     }
 
     ap_text_append(ctx->w.pool, &hdr,
-		   "</D:prop>" DEBUG_CR
-		   "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
-		   "</D:propstat>" DEBUG_CR);
+                   "</D:prop>" DEBUG_CR
+                   "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
+                   "</D:propstat>" DEBUG_CR);
 
     ctx->propstat_404 = hdr.first;
 }
@@ -1752,34 +1769,34 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** the resource, however, since we are opening readonly.
     */
     err = dav_open_propdb(ctx->r, ctx->w.lockdb, wres->resource, 1,
-			  ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
+                          ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
-	/* ### do something with err! */
+        /* ### do something with err! */
 
-	if (ctx->propfind_type == DAV_PROPFIND_IS_PROP) {
-	    dav_get_props_result badprops = { 0 };
+        if (ctx->propfind_type == DAV_PROPFIND_IS_PROP) {
+            dav_get_props_result badprops = { 0 };
 
-	    /* some props were expected on this collection/resource */
-	    dav_cache_badprops(ctx);
-	    badprops.propstats = ctx->propstat_404;
-	    dav_add_response(wres, 0, &badprops);
-	}
-	else {
-	    /* no props on this collection/resource */
-	    dav_add_response(wres, HTTP_OK, NULL);
-	}
-	return NULL;
+            /* some props were expected on this collection/resource */
+            dav_cache_badprops(ctx);
+            badprops.propstats = ctx->propstat_404;
+            dav_add_response(wres, 0, &badprops);
+        }
+        else {
+            /* no props on this collection/resource */
+            dav_add_response(wres, HTTP_OK, NULL);
+        }
+        return NULL;
     }
     /* ### what to do about closing the propdb on server failure? */
 
     if (ctx->propfind_type == DAV_PROPFIND_IS_PROP) {
-	propstats = dav_get_props(propdb, ctx->doc);
+        propstats = dav_get_props(propdb, ctx->doc);
     }
     else {
         dav_prop_insert what = ctx->propfind_type == DAV_PROPFIND_IS_ALLPROP
                                  ? DAV_PROP_INSERT_VALUE
                                  : DAV_PROP_INSERT_NAME;
-	propstats = dav_get_allprops(propdb, what);
+        propstats = dav_get_allprops(propdb, what);
     }
     dav_close_propdb(propdb);
 
@@ -1807,65 +1824,65 @@ static int dav_method_propfind(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     if (dav_get_resource_state(r, resource) == DAV_RESOURCE_NULL) {
-	/* Apache will supply a default error for this. */
-	return HTTP_NOT_FOUND;
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
     }
 
     if ((depth = dav_get_depth(r, DAV_INFINITY)) < 0) {
-	/* dav_get_depth() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_depth() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
 
     if (depth == DAV_INFINITY && resource->collection) {
-	dav_dir_conf *conf;
-	conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						     &dav_module);
+        dav_dir_conf *conf;
+        conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                    &dav_module);
         /* default is to DISALLOW these requests */
-	if (conf->allow_depthinfinity != DAV_ENABLED_ON) {
+        if (conf->allow_depthinfinity != DAV_ENABLED_ON) {
             return dav_error_response(r, HTTP_FORBIDDEN,
                                       apr_psprintf(r->pool,
-                                                  "PROPFIND requests with a "
-                                                  "Depth of \"infinity\" are "
-                                                  "not allowed for %s.",
-                                                  ap_escape_html(r->pool,
-                                                                 r->uri)));
-	}
+                                                   "PROPFIND requests with a "
+                                                   "Depth of \"infinity\" are "
+                                                   "not allowed for %s.",
+                                                   ap_escape_html(r->pool,
+                                                                  r->uri)));
+        }
     }
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
     /* note: doc == NULL if no request body */
 
     if (doc && !dav_validate_root(doc, "propfind")) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"propfind\" element was not found.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The \"propfind\" element was not found.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* ### validate that only one of these three elements is present */
 
     if (doc == NULL
-	|| (child = dav_find_child(doc->root, "allprop")) != NULL) {
-	/* note: no request body implies allprop */
-	ctx.propfind_type = DAV_PROPFIND_IS_ALLPROP;
+        || (child = dav_find_child(doc->root, "allprop")) != NULL) {
+        /* note: no request body implies allprop */
+        ctx.propfind_type = DAV_PROPFIND_IS_ALLPROP;
     }
     else if ((child = dav_find_child(doc->root, "propname")) != NULL) {
-	ctx.propfind_type = DAV_PROPFIND_IS_PROPNAME;
+        ctx.propfind_type = DAV_PROPFIND_IS_PROPNAME;
     }
     else if ((child = dav_find_child(doc->root, "prop")) != NULL) {
-	ctx.propfind_type = DAV_PROPFIND_IS_PROP;
+        ctx.propfind_type = DAV_PROPFIND_IS_PROP;
     }
     else {
-	/* "propfind" element must have one of the above three children */
+        /* "propfind" element must have one of the above three children */
 
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"propfind\" element does not contain one of "
-		      "the required child elements (the specific command).");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The \"propfind\" element does not contain one of "
+                      "the required child elements (the specific command).");
+        return HTTP_BAD_REQUEST;
     }
 
     ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
@@ -1879,27 +1896,27 @@ static int dav_method_propfind(request_rec *r)
 
     /* ### should open read-only */
     if ((err = dav_open_lockdb(r, 0, &ctx.w.lockdb)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     "The lock database could not be opened, "
-			     "preventing access to the various lock "
-			     "properties for the PROPFIND.",
-			     err);
-	return dav_handle_err(r, err, NULL);
+        err = dav_push_error(r->pool, err->status, 0,
+                             "The lock database could not be opened, "
+                             "preventing access to the various lock "
+                             "properties for the PROPFIND.",
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
     if (ctx.w.lockdb != NULL) {
-	/* if we have a lock database, then we can walk locknull resources */
-	ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
+        /* if we have a lock database, then we can walk locknull resources */
+        ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
     }
 
     err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
 
     if (ctx.w.lockdb != NULL) {
-	(*ctx.w.lockdb->hooks->close_lockdb)(ctx.w.lockdb);
+        (*ctx.w.lockdb->hooks->close_lockdb)(ctx.w.lockdb);
     }
 
     if (err != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* return a 207 (Multi-Status) response now. */
@@ -1910,11 +1927,11 @@ static int dav_method_propfind(request_rec *r)
      * scope for the badprops. */
     /* NOTE: propstat_404 != NULL implies doc != NULL */
     if (ctx.propstat_404 != NULL) {
-	dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status,
+        dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status,
                              doc->namespaces);
     }
     else {
-	dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status, NULL);
+        dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status, NULL);
     }
 
     /* the response has been sent. */
@@ -1922,7 +1939,7 @@ static int dav_method_propfind(request_rec *r)
 }
 
 static ap_text * dav_failed_proppatch(apr_pool_t *p,
-                                       apr_array_header_t *prop_ctx)
+                                      apr_array_header_t *prop_ctx)
 {
     ap_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
@@ -1934,49 +1951,49 @@ static ap_text * dav_failed_proppatch(apr_pool_t *p,
     /* ### might be nice to sort by status code and description */
 
     for ( ; i-- > 0; ++ctx ) {
-	ap_text_append(p, &hdr,
-		       "<D:propstat>" DEBUG_CR
-		       "<D:prop>");
-	ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
-	ap_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
+        ap_text_append(p, &hdr,
+                       "<D:propstat>" DEBUG_CR
+                       "<D:prop>");
+        ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
+        ap_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
 
-	if (ctx->err == NULL) {
-	    /* nothing was assigned here yet, so make it a 424 */
+        if (ctx->err == NULL) {
+            /* nothing was assigned here yet, so make it a 424 */
 
-	    if (ctx->operation == DAV_PROP_OP_SET) {
-		if (err424_set == NULL)
-		    err424_set = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
-					       "Attempted DAV:set operation "
-					       "could not be completed due "
-					       "to other errors.");
-		ctx->err = err424_set;
-	    }
-	    else if (ctx->operation == DAV_PROP_OP_DELETE) {
-		if (err424_delete == NULL)
-		    err424_delete = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
-						  "Attempted DAV:remove "
-						  "operation could not be "
-						  "completed due to other "
-						  "errors.");
-		ctx->err = err424_delete;
-	    }
-	}
+            if (ctx->operation == DAV_PROP_OP_SET) {
+                if (err424_set == NULL)
+                    err424_set = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
+                                               "Attempted DAV:set operation "
+                                               "could not be completed due "
+                                               "to other errors.");
+                ctx->err = err424_set;
+            }
+            else if (ctx->operation == DAV_PROP_OP_DELETE) {
+                if (err424_delete == NULL)
+                    err424_delete = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
+                                                  "Attempted DAV:remove "
+                                                  "operation could not be "
+                                                  "completed due to other "
+                                                  "errors.");
+                ctx->err = err424_delete;
+            }
+        }
 
-	s = apr_psprintf(p,
-			"<D:status>"
-			"HTTP/1.1 %d (status)"
-			"</D:status>" DEBUG_CR,
-			ctx->err->status);
-	ap_text_append(p, &hdr, s);
+        s = apr_psprintf(p,
+                         "<D:status>"
+                         "HTTP/1.1 %d (status)"
+                         "</D:status>" DEBUG_CR,
+                         ctx->err->status);
+        ap_text_append(p, &hdr, s);
 
-	/* ### we should use compute_desc if necessary... */
-	if (ctx->err->desc != NULL) {
-	    ap_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
-	    ap_text_append(p, &hdr, ctx->err->desc);
-	    ap_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
-	}
+        /* ### we should use compute_desc if necessary... */
+        if (ctx->err->desc != NULL) {
+            ap_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
+            ap_text_append(p, &hdr, ctx->err->desc);
+            ap_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
+        }
 
-	ap_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
+        ap_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
     }
 
     return hdr.first;
@@ -1989,22 +2006,22 @@ static ap_text * dav_success_proppatch(apr_pool_t *p, apr_array_header_t *prop_c
     dav_prop_ctx *ctx = (dav_prop_ctx *)prop_ctx->elts;
 
     /*
-    ** ### we probably need to revise the way we assemble the response...
-    ** ### this code assumes everything will return status==200.
-    */
+     * ### we probably need to revise the way we assemble the response...
+     * ### this code assumes everything will return status==200.
+     */
 
     ap_text_append(p, &hdr,
-		   "<D:propstat>" DEBUG_CR
-		   "<D:prop>" DEBUG_CR);
+                   "<D:propstat>" DEBUG_CR
+                   "<D:prop>" DEBUG_CR);
 
     for ( ; i-- > 0; ++ctx ) {
-	ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
+        ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
     }
 
     ap_text_append(p, &hdr,
-		    "</D:prop>" DEBUG_CR
-		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
-		    "</D:propstat>" DEBUG_CR);
+                   "</D:prop>" DEBUG_CR
+                   "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
+                   "</D:propstat>" DEBUG_CR);
 
     return hdr.first;
 }
@@ -2015,36 +2032,36 @@ static void dav_prop_log_errors(dav_prop_ctx *ctx)
 }
 
 /*
-** Call <func> for each context. This can stop when an error occurs, or
-** simply iterate through the whole list.
-**
-** Returns 1 if an error occurs (and the iteration is aborted). Returns 0
-** if all elements are processed.
-**
-** If <reverse> is true (non-zero), then the list is traversed in
-** reverse order.
-*/
+ * Call <func> for each context. This can stop when an error occurs, or
+ * simply iterate through the whole list.
+ *
+ * Returns 1 if an error occurs (and the iteration is aborted). Returns 0
+ * if all elements are processed.
+ *
+ * If <reverse> is true (non-zero), then the list is traversed in
+ * reverse order.
+ */
 static int dav_process_ctx_list(void (*func)(dav_prop_ctx *ctx),
-				apr_array_header_t *ctx_list, int stop_on_error,
-				int reverse)
+                                apr_array_header_t *ctx_list, int stop_on_error,
+                                int reverse)
 {
     int i = ctx_list->nelts;
     dav_prop_ctx *ctx = (dav_prop_ctx *)ctx_list->elts;
 
     if (reverse)
-	ctx += i;
+        ctx += i;
 
     while (i--) {
-	if (reverse)
-	    --ctx;
+        if (reverse)
+            --ctx;
 
-	(*func)(ctx);
-	if (stop_on_error && DAV_PROP_CTX_HAS_ERR(*ctx)) {
-	    return 1;
-	}
+        (*func)(ctx);
+        if (stop_on_error && DAV_PROP_CTX_HAS_ERR(*ctx)) {
+            return 1;
+        }
 
-	if (!reverse)
-	    ++ctx;
+        if (!reverse)
+            ++ctx;
     }
 
     return 0;
@@ -2072,51 +2089,51 @@ static int dav_method_proppatch(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
-	/* Apache will supply a default error for this. */
-	return HTTP_NOT_FOUND;
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
     }
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
     /* note: doc == NULL if no request body */
 
     if (doc == NULL || !dav_validate_root(doc, "propertyupdate")) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request body does not contain "
-		      "a \"propertyupdate\" element.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request body does not contain "
+                      "a \"propertyupdate\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* Check If-Headers and existing locks */
     /* Note: depth == 0. Implies no need for a multistatus response. */
     if ((err = dav_validate_request(r, resource, 0, NULL, NULL,
-				    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* make sure the resource can be modified (if versioning repository) */
     if ((err = dav_auto_checkout(r, resource,
-				 0 /* not parent_only */,
-				 &av_info)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                 0 /* not parent_only */,
+                                 &av_info)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     if ((err = dav_open_propdb(r, NULL, resource, 0, doc->namespaces,
-			       &propdb)) != NULL) {
+                               &propdb)) != NULL) {
         /* undo any auto-checkout */
         dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
 
-	err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     apr_psprintf(r->pool,
-					 "Could not open the property "
-					 "database for %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, NULL);
+        err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not open the property "
+                                          "database for %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
     /* ### what to do about closing the propdb on server failure? */
 
@@ -2127,64 +2144,64 @@ static int dav_method_proppatch(request_rec *r)
 
     /* do a first pass to ensure that all "remove" properties exist */
     for (child = doc->root->first_child; child; child = child->next) {
-	int is_remove;
-	ap_xml_elem *prop_group;
-	ap_xml_elem *one_prop;
+        int is_remove;
+        ap_xml_elem *prop_group;
+        ap_xml_elem *one_prop;
 
-	/* Ignore children that are not set/remove */
-	if (child->ns != AP_XML_NS_DAV_ID
-	    || (!(is_remove = strcmp(child->name, "remove") == 0)
-		&& strcmp(child->name, "set") != 0)) {
-	    continue;
-	}
+        /* Ignore children that are not set/remove */
+        if (child->ns != AP_XML_NS_DAV_ID
+            || (!(is_remove = strcmp(child->name, "remove") == 0)
+                && strcmp(child->name, "set") != 0)) {
+            continue;
+        }
 
-	/* make sure that a "prop" child exists for set/remove */
-	if ((prop_group = dav_find_child(child, "prop")) == NULL) {
-	    dav_close_propdb(propdb);
+        /* make sure that a "prop" child exists for set/remove */
+        if ((prop_group = dav_find_child(child, "prop")) == NULL) {
+            dav_close_propdb(propdb);
 
             /* undo any auto-checkout */
             dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
 
-	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  "A \"prop\" element is missing inside "
-			  "the propertyupdate command.");
-	    return HTTP_BAD_REQUEST;
-	}
+            /* This supplies additional information for the default message. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "A \"prop\" element is missing inside "
+                          "the propertyupdate command.");
+            return HTTP_BAD_REQUEST;
+        }
 
-	for (one_prop = prop_group->first_child; one_prop;
-	     one_prop = one_prop->next) {
+        for (one_prop = prop_group->first_child; one_prop;
+             one_prop = one_prop->next) {
 
-	    ctx = (dav_prop_ctx *)apr_array_push(ctx_list);
-	    ctx->propdb = propdb;
-	    ctx->operation = is_remove ? DAV_PROP_OP_DELETE : DAV_PROP_OP_SET;
-	    ctx->prop = one_prop;
+            ctx = (dav_prop_ctx *)apr_array_push(ctx_list);
+            ctx->propdb = propdb;
+            ctx->operation = is_remove ? DAV_PROP_OP_DELETE : DAV_PROP_OP_SET;
+            ctx->prop = one_prop;
 
             ctx->r = r;         /* for later use by dav_prop_log_errors() */
 
-	    dav_prop_validate(ctx);
+            dav_prop_validate(ctx);
 
-	    if ( DAV_PROP_CTX_HAS_ERR(*ctx) ) {
-		failure = 1;
-	    }
-	}
+            if ( DAV_PROP_CTX_HAS_ERR(*ctx) ) {
+                failure = 1;
+            }
+        }
     }
 
     /* ### should test that we found at least one set/remove */
 
     /* execute all of the operations */
     if (!failure && dav_process_ctx_list(dav_prop_exec, ctx_list, 1, 0)) {
-	failure = 1;
+        failure = 1;
     }
 
     /* generate a failure/success response */
     if (failure) {
-	(void)dav_process_ctx_list(dav_prop_rollback, ctx_list, 0, 1);
-	propstat_text = dav_failed_proppatch(r->pool, ctx_list);
+        (void)dav_process_ctx_list(dav_prop_rollback, ctx_list, 0, 1);
+        propstat_text = dav_failed_proppatch(r->pool, ctx_list);
     }
     else {
-	(void)dav_process_ctx_list(dav_prop_commit, ctx_list, 0, 0);
-	propstat_text = dav_success_proppatch(r->pool, ctx_list);
+        (void)dav_process_ctx_list(dav_prop_commit, ctx_list, 0, 0);
+        propstat_text = dav_success_proppatch(r->pool, ctx_list);
     }
 
     /* make sure this gets closed! */
@@ -2223,42 +2240,43 @@ static int process_mkcol_body(request_rec *r)
     r->remaining = 0;
 
     if (tenc) {
-	if (strcasecmp(tenc, "chunked")) {
-	    /* Use this instead of Apache's default error string */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  "Unknown Transfer-Encoding %s", tenc);
-	    return HTTP_NOT_IMPLEMENTED;
-	}
+        if (strcasecmp(tenc, "chunked")) {
+            /* Use this instead of Apache's default error string */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "Unknown Transfer-Encoding %s", tenc);
+            return HTTP_NOT_IMPLEMENTED;
+        }
 
-	r->read_chunked = 1;
+        r->read_chunked = 1;
     }
     else if (lenp) {
-	const char *pos = lenp;
+        const char *pos = lenp;
 
-	while (apr_isdigit(*pos) || apr_isspace(*pos)) {
-	    ++pos;
-	}
-	if (*pos != '\0') {
-	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  "Invalid Content-Length %s", lenp);
-	    return HTTP_BAD_REQUEST;
-	}
+        while (apr_isdigit(*pos) || apr_isspace(*pos)) {
+            ++pos;
+        }
 
-	r->remaining = atol(lenp);
+        if (*pos != '\0') {
+            /* This supplies additional information for the default message. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "Invalid Content-Length %s", lenp);
+            return HTTP_BAD_REQUEST;
+        }
+
+        r->remaining = atol(lenp);
     }
 
     if (r->read_chunked || r->remaining > 0) {
-	/* ### log something? */
+        /* ### log something? */
 
-	/* Apache will supply a default error for this. */
-	return HTTP_UNSUPPORTED_MEDIA_TYPE;
+        /* Apache will supply a default error for this. */
+        return HTTP_UNSUPPORTED_MEDIA_TYPE;
     }
 
     /*
-    ** Get rid of the body. this will call ap_setup_client_block(), but
-    ** our copy above has already verified its work.
-    */
+     * Get rid of the body. this will call ap_setup_client_block(), but
+     * our copy above has already verified its work.
+     */
     return ap_discard_request_body(r);
 }
 
@@ -2278,11 +2296,11 @@ static int dav_method_mkcol(request_rec *r)
     /* handle the request body */
     /* ### this may move lower once we start processing bodies */
     if ((result = process_mkcol_body(r)) != OK) {
-	return result;
+        return result;
     }
 
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
+    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                &dav_module);
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -2291,39 +2309,39 @@ static int dav_method_mkcol(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     if (resource->exists) {
-	/* oops. something was already there! */
+        /* oops. something was already there! */
 
-	/* Apache will supply a default error for this. */
-	/* ### we should provide a specific error message! */
-	return HTTP_METHOD_NOT_ALLOWED;
+        /* Apache will supply a default error for this. */
+        /* ### we should provide a specific error message! */
+        return HTTP_METHOD_NOT_ALLOWED;
     }
 
     resource_state = dav_get_resource_state(r, resource);
 
     /*
-    ** Check If-Headers and existing locks.
-    **
-    ** Note: depth == 0 normally requires no multistatus response. However,
-    ** if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
-    ** other than the Request-URI, thereby requiring a multistatus.
-    **
-    ** If the resource does not exist (DAV_RESOURCE_NULL), then we must
-    ** check the resource *and* its parent. If the resource exists or is
-    ** a locknull resource, then we check only the resource.
-    */
+     * Check If-Headers and existing locks.
+     *
+     * Note: depth == 0 normally requires no multistatus response. However,
+     * if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
+     * other than the Request-URI, thereby requiring a multistatus.
+     *
+     * If the resource does not exist (DAV_RESOURCE_NULL), then we must
+     * check the resource *and* its parent. If the resource exists or is
+     * a locknull resource, then we check only the resource.
+     */
     if ((err = dav_validate_request(r, resource, 0, NULL, &multi_status,
-				    resource_state == DAV_RESOURCE_NULL ?
-				    DAV_VALIDATE_PARENT :
-				    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, multi_status);
+                                    resource_state == DAV_RESOURCE_NULL ?
+                                    DAV_VALIDATE_PARENT :
+                                    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, multi_status);
     }
 
     /* if versioned resource, make sure parent is checked out */
     if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
-				 &av_info)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+                                 &av_info)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* try to create the collection */
@@ -2332,50 +2350,50 @@ static int dav_method_mkcol(request_rec *r)
 
     /* restore modifiability of parent back to what it was */
     err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
-			    0 /*unlock*/, &av_info);
+                            0 /*unlock*/, &av_info);
 
     /* check for errors now */
     if (err != NULL) {
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
     if (err2 != NULL) {
-	/* just log a warning */
-	err = dav_push_error(r->pool, err->status, 0,
-			     "The MKCOL was successful, but there "
-			     "was a problem automatically checking in "
-			     "the parent collection.",
-			     err2);
-	dav_log_err(r, err, APLOG_WARNING);
+        /* just log a warning */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "The MKCOL was successful, but there "
+                             "was a problem automatically checking in "
+                             "the parent collection.",
+                             err2);
+        dav_log_err(r, err, APLOG_WARNING);
     }
 
     if (locks_hooks != NULL) {
-	dav_lockdb *lockdb;
+        dav_lockdb *lockdb;
 
-	if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
-	    /* The directory creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The MKCOL was successful, but there "
-				 "was a problem opening the lock database "
-				 "which prevents inheriting locks from the "
-				 "parent resources.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
+            /* The directory creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The MKCOL was successful, but there "
+                                 "was a problem opening the lock database "
+                                 "which prevents inheriting locks from the "
+                                 "parent resources.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
 
-	/* notify lock system that we have created/replaced a resource */
-	err = dav_notify_created(r, lockdb, resource, resource_state, 0);
+        /* notify lock system that we have created/replaced a resource */
+        err = dav_notify_created(r, lockdb, resource, resource_state, 0);
 
-	(*locks_hooks->close_lockdb)(lockdb);
+        (*locks_hooks->close_lockdb)(lockdb);
 
-	if (err != NULL) {
-	    /* The dir creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The MKCOL was successful, but there "
-				 "was a problem updating its lock "
-				 "information.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if (err != NULL) {
+            /* The dir creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The MKCOL was successful, but there "
+                                 "was a problem updating its lock "
+                                 "information.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
     }
 
     /* return an appropriate response (HTTP_CREATED) */
@@ -2409,55 +2427,56 @@ static int dav_method_copymove(request_rec *r, int is_move)
                            0 /* use_checked_in */, &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
-	/* Apache will supply a default error for this. */
-	return HTTP_NOT_FOUND;
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
     }
 
     /* If not a file or collection resource, COPY/MOVE not allowed */
     /* ### allow COPY/MOVE of DeltaV resource types */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
         body = apr_psprintf(r->pool,
-                           "Cannot COPY/MOVE resource %s.",
-                           ap_escape_html(r->pool, r->uri));
-	return dav_error_response(r, HTTP_METHOD_NOT_ALLOWED, body);
+                            "Cannot COPY/MOVE resource %s.",
+                            ap_escape_html(r->pool, r->uri));
+        return dav_error_response(r, HTTP_METHOD_NOT_ALLOWED, body);
     }
 
     /* get the destination URI */
     dest = apr_table_get(r->headers_in, "Destination");
     if (dest == NULL) {
-	/* Look in headers provided by Netscape's Roaming Profiles */
-	const char *nscp_host = apr_table_get(r->headers_in, "Host");
-	const char *nscp_path = apr_table_get(r->headers_in, "New-uri");
+        /* Look in headers provided by Netscape's Roaming Profiles */
+        const char *nscp_host = apr_table_get(r->headers_in, "Host");
+        const char *nscp_path = apr_table_get(r->headers_in, "New-uri");
 
-	if (nscp_host != NULL && nscp_path != NULL)
-	    dest = apr_psprintf(r->pool, "http://%s%s", nscp_host, nscp_path);
+        if (nscp_host != NULL && nscp_path != NULL)
+            dest = apr_psprintf(r->pool, "http://%s%s", nscp_host, nscp_path);
     }
     if (dest == NULL) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request is missing a Destination header.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request is missing a Destination header.");
+        return HTTP_BAD_REQUEST;
     }
 
     lookup = dav_lookup_uri(dest, r, 1 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
-	if (lookup.err.status == HTTP_BAD_REQUEST) {
-	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  lookup.err.desc);
-	    return HTTP_BAD_REQUEST;
-	}
+        if (lookup.err.status == HTTP_BAD_REQUEST) {
+            /* This supplies additional information for the default message. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          lookup.err.desc);
+            return HTTP_BAD_REQUEST;
+        }
 
-	/* ### this assumes that dav_lookup_uri() only generates a status
-	 * ### that Apache can provide a status line for!! */
+        /* ### this assumes that dav_lookup_uri() only generates a status
+         * ### that Apache can provide a status line for!! */
 
-	return dav_error_response(r, lookup.err.status, lookup.err.desc);
+        return dav_error_response(r, lookup.err.status, lookup.err.desc);
     }
     if (lookup.rnew->status != HTTP_OK) {
-	/* ### how best to report this... */
-	return dav_error_response(r, lookup.rnew->status,
-				  "Destination URI had an error.");
+        /* ### how best to report this... */
+        return dav_error_response(r, lookup.rnew->status,
+                                  "Destination URI had an error.");
     }
 
     /* Resolve destination resource */
@@ -2468,33 +2487,33 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != resnew->hooks) {
-	/* ### this message exposes some backend config, but screw it... */
-	return dav_error_response(r, HTTP_BAD_GATEWAY,
-				  "Destination URI is handled by a "
-				  "different repository than the source URI. "
-				  "MOVE or COPY between repositories is "
-				  "not possible.");
+        /* ### this message exposes some backend config, but screw it... */
+        return dav_error_response(r, HTTP_BAD_GATEWAY,
+                                  "Destination URI is handled by a "
+                                  "different repository than the source URI. "
+                                  "MOVE or COPY between repositories is "
+                                  "not possible.");
     }
 
     /* get and parse the overwrite header value */
     if ((overwrite = dav_get_overwrite(r)) < 0) {
-	/* dav_get_overwrite() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_overwrite() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
 
     /* quick failure test: if dest exists and overwrite is false. */
     if (resnew->exists && !overwrite) {
-	/* Supply some text for the error response body. */
-	return dav_error_response(r, HTTP_PRECONDITION_FAILED,
+        /* Supply some text for the error response body. */
+        return dav_error_response(r, HTTP_PRECONDITION_FAILED,
                                   "Destination is not empty and "
                                   "Overwrite is not \"T\"");
     }
 
     /* are the source and destination the same? */
     if ((*resource->hooks->is_same_resource)(resource, resnew)) {
-	/* Supply some text for the error response body. */
-	return dav_error_response(r, HTTP_FORBIDDEN,
+        /* Supply some text for the error response body. */
+        return dav_error_response(r, HTTP_FORBIDDEN,
                                   "Source and Destination URIs are the same.");
 
     }
@@ -2503,135 +2522,135 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* get and parse the Depth header value. "0" and "infinity" are legal. */
     if ((depth = dav_get_depth(r, DAV_INFINITY)) < 0) {
-	/* dav_get_depth() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_depth() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
     if (depth == 1) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		   "Depth must be \"0\" or \"infinity\" for COPY or MOVE.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth must be \"0\" or \"infinity\" for COPY or MOVE.");
+        return HTTP_BAD_REQUEST;
     }
     if (is_move && is_dir && depth != DAV_INFINITY) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		    "Depth must be \"infinity\" when moving a collection.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth must be \"infinity\" when moving a collection.");
+        return HTTP_BAD_REQUEST;
     }
 
     /*
-    ** Check If-Headers and existing locks for each resource in the source
-    ** if we are performing a MOVE. We will return a 424 response with a
-    ** DAV:multistatus body. The multistatus responses will contain the
-    ** information about any resource that fails the validation.
-    **
-    ** We check the parent resource, too, since this is a MOVE. Moving the
-    ** resource effectively removes it from the parent collection, so we
-    ** must ensure that we have met the appropriate conditions.
-    **
-    ** If a problem occurs with the Request-URI itself, then a plain error
-    ** (rather than a multistatus) will be returned.
-    */
+     * Check If-Headers and existing locks for each resource in the source
+     * if we are performing a MOVE. We will return a 424 response with a
+     * DAV:multistatus body. The multistatus responses will contain the
+     * information about any resource that fails the validation.
+     *
+     * We check the parent resource, too, since this is a MOVE. Moving the
+     * resource effectively removes it from the parent collection, so we
+     * must ensure that we have met the appropriate conditions.
+     *
+     * If a problem occurs with the Request-URI itself, then a plain error
+     * (rather than a multistatus) will be returned.
+     */
     if (is_move
-	&& (err = dav_validate_request(r, resource, depth, NULL,
-				       &multi_response,
-				       DAV_VALIDATE_PARENT
+        && (err = dav_validate_request(r, resource, depth, NULL,
+                                       &multi_response,
+                                       DAV_VALIDATE_PARENT
                                        | DAV_VALIDATE_USE_424,
                                        NULL)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not MOVE %s due to a failed "
-					 "precondition on the source "
-					 "(e.g. locks).",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not MOVE %s due to a failed "
+                                          "precondition on the source "
+                                          "(e.g. locks).",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /*
-    ** Check If-Headers and existing locks for destination. Note that we
-    ** use depth==infinity since the target (hierarchy) will be deleted
-    ** before the move/copy is completed.
-    **
-    ** Note that we are overwriting the target, which implies a DELETE, so
-    ** we are subject to the error/response rules as a DELETE. Namely, we
-    ** will return a 424 error if any of the validations fail.
-    ** (see dav_method_delete() for more information)
-    */
+     * Check If-Headers and existing locks for destination. Note that we
+     * use depth==infinity since the target (hierarchy) will be deleted
+     * before the move/copy is completed.
+     *
+     * Note that we are overwriting the target, which implies a DELETE, so
+     * we are subject to the error/response rules as a DELETE. Namely, we
+     * will return a 424 error if any of the validations fail.
+     * (see dav_method_delete() for more information)
+     */
     if ((err = dav_validate_request(lookup.rnew, resnew, DAV_INFINITY, NULL,
-				    &multi_response,
-				    DAV_VALIDATE_PARENT
+                                    &multi_response,
+                                    DAV_VALIDATE_PARENT
                                     | DAV_VALIDATE_USE_424, NULL)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not MOVE/COPY %s due to a "
-					 "failed precondition on the "
-					 "destination (e.g. locks).",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not MOVE/COPY %s due to a "
+                                          "failed precondition on the "
+                                          "destination (e.g. locks).",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     if (is_dir
-	&& depth == DAV_INFINITY
-	&& (*resource->hooks->is_parent_resource)(resource, resnew)) {
-	/* Supply some text for the error response body. */
-	return dav_error_response(r, HTTP_FORBIDDEN,
+        && depth == DAV_INFINITY
+        && (*resource->hooks->is_parent_resource)(resource, resnew)) {
+        /* Supply some text for the error response body. */
+        return dav_error_response(r, HTTP_FORBIDDEN,
                                   "Source collection contains the "
                                   "Destination.");
 
     }
     if (is_dir
-	&& (*resnew->hooks->is_parent_resource)(resnew, resource)) {
-	/* The destination must exist (since it contains the source), and
-	 * a condition above implies Overwrite==T. Obviously, we cannot
-	 * delete the Destination before the MOVE/COPY, as that would
-	 * delete the Source.
-	 */
+        && (*resnew->hooks->is_parent_resource)(resnew, resource)) {
+        /* The destination must exist (since it contains the source), and
+         * a condition above implies Overwrite==T. Obviously, we cannot
+         * delete the Destination before the MOVE/COPY, as that would
+         * delete the Source.
+         */
 
-	/* Supply some text for the error response body. */
-	return dav_error_response(r, HTTP_FORBIDDEN,
+        /* Supply some text for the error response body. */
+        return dav_error_response(r, HTTP_FORBIDDEN,
                                   "Destination collection contains the Source "
                                   "and Overwrite has been specified.");
     }
 
     /* ### for now, we don't need anything in the body */
     if ((result = ap_discard_request_body(r)) != OK) {
-	return result;
+        return result;
     }
 
     if ((err = dav_open_lockdb(r, 0, &lockdb)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     /* remove any locks from the old resources */
     /*
-    ** ### this is Yet Another Traversal. if we do a rename(), then we
-    ** ### really don't have to do this in some cases since the inode
-    ** ### values will remain constant across the move. but we can't
-    ** ### know that fact from outside the provider :-(
-    **
-    ** ### note that we now have a problem atomicity in the move/copy
-    ** ### since a failure after this would have removed locks (technically,
-    ** ### this is okay to do, but really...)
-    */
+     * ### this is Yet Another Traversal. if we do a rename(), then we
+     * ### really don't have to do this in some cases since the inode
+     * ### values will remain constant across the move. but we can't
+     * ### know that fact from outside the provider :-(
+     *
+     * ### note that we now have a problem atomicity in the move/copy
+     * ### since a failure after this would have removed locks (technically,
+     * ### this is okay to do, but really...)
+     */
     if (is_move && lockdb != NULL) {
-	/* ### this is wrong! it blasts direct locks on parent resources */
-	/* ### pass lockdb! */
-	(void)dav_unlock(r, resource, NULL);
+        /* ### this is wrong! it blasts direct locks on parent resources */
+        /* ### pass lockdb! */
+        (void)dav_unlock(r, resource, NULL);
     }
 
     /* if this is a move, then the source parent collection will be modified */
     if (is_move) {
         if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
-				     &src_av_info)) != NULL) {
-	    if (lockdb != NULL)
-		(*lockdb->hooks->close_lockdb)(lockdb);
+                                     &src_av_info)) != NULL) {
+            if (lockdb != NULL)
+                (*lockdb->hooks->close_lockdb)(lockdb);
 
-	    /* ### add a higher-level description? */
-	    return dav_handle_err(r, err, NULL);
+            /* ### add a higher-level description? */
+            return dav_handle_err(r, err, NULL);
         }
     }
 
@@ -2663,20 +2682,20 @@ static int dav_method_copymove(request_rec *r, int is_move)
      */
     if (!resnew->exists || replace_dest) {
         if ((err = dav_auto_checkout(r, resnew, 1 /*parent_only*/,
-				     &dst_av_info)) != NULL) {
+                                     &dst_av_info)) != NULL) {
             /* could not make destination writable:
-	     * if move, restore state of source parent
-	     */
+             * if move, restore state of source parent
+             */
             if (is_move) {
-                (void) dav_auto_checkin(r, NULL, 1 /* undo */,
-				        0 /*unlock*/, &src_av_info);
+                (void)dav_auto_checkin(r, NULL, 1 /* undo */,
+                                       0 /*unlock*/, &src_av_info);
             }
 
-	    if (lockdb != NULL)
-	        (*lockdb->hooks->close_lockdb)(lockdb);
+            if (lockdb != NULL)
+                (*lockdb->hooks->close_lockdb)(lockdb);
 
-	    /* ### add a higher-level description? */
-	    return dav_handle_err(r, err, NULL);
+            /* ### add a higher-level description? */
+            return dav_handle_err(r, err, NULL);
         }
     }
 
@@ -2697,78 +2716,78 @@ static int dav_method_copymove(request_rec *r, int is_move)
      * (we know Ovewrite must be TRUE). Then try to copy/move the resource.
      */
     if (replace_dest)
-	err = (*resnew->hooks->remove_resource)(resnew, &multi_response);
+        err = (*resnew->hooks->remove_resource)(resnew, &multi_response);
 
     if (err == NULL) {
-	if (is_move)
-	    err = (*resource->hooks->move_resource)(resource, resnew,
+        if (is_move)
+            err = (*resource->hooks->move_resource)(resource, resnew,
                                                     &multi_response);
-	else
-	    err = (*resource->hooks->copy_resource)(resource, resnew, depth,
+        else
+            err = (*resource->hooks->copy_resource)(resource, resnew, depth,
                                                     &multi_response);
     }
 
     /* perform any auto-versioning cleanup */
     err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
-			    0 /*unlock*/, &dst_av_info);
+                            0 /*unlock*/, &dst_av_info);
 
     if (is_move) {
         err3 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
-				0 /*unlock*/, &src_av_info);
+                                0 /*unlock*/, &src_av_info);
     }
     else
-	err3 = NULL;
+        err3 = NULL;
 
     /* check for error from remove/copy/move operations */
     if (err != NULL) {
-	if (lockdb != NULL)
-	    (*lockdb->hooks->close_lockdb)(lockdb);
+        if (lockdb != NULL)
+            (*lockdb->hooks->close_lockdb)(lockdb);
 
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not MOVE/COPY %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not MOVE/COPY %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* check for errors from auto-versioning */
     if (err2 != NULL) {
-	/* just log a warning */
-	err = dav_push_error(r->pool, err2->status, 0,
-			     "The MOVE/COPY was successful, but there was a "
-			     "problem automatically checking in the "
-			     "source parent collection.",
-			     err2);
-	dav_log_err(r, err, APLOG_WARNING);
+        /* just log a warning */
+        err = dav_push_error(r->pool, err2->status, 0,
+                             "The MOVE/COPY was successful, but there was a "
+                             "problem automatically checking in the "
+                             "source parent collection.",
+                             err2);
+        dav_log_err(r, err, APLOG_WARNING);
     }
     if (err3 != NULL) {
-	/* just log a warning */
-	err = dav_push_error(r->pool, err3->status, 0,
-			     "The MOVE/COPY was successful, but there was a "
-			     "problem automatically checking in the "
-			     "destination or its parent collection.",
-			     err3);
-	dav_log_err(r, err, APLOG_WARNING);
+        /* just log a warning */
+        err = dav_push_error(r->pool, err3->status, 0,
+                             "The MOVE/COPY was successful, but there was a "
+                             "problem automatically checking in the "
+                             "destination or its parent collection.",
+                             err3);
+        dav_log_err(r, err, APLOG_WARNING);
     }
 
     /* propagate any indirect locks at the target */
     if (lockdb != NULL) {
 
-	/* notify lock system that we have created/replaced a resource */
-	err = dav_notify_created(r, lockdb, resnew, resnew_state, depth);
+        /* notify lock system that we have created/replaced a resource */
+        err = dav_notify_created(r, lockdb, resnew, resnew_state, depth);
 
-	(*lockdb->hooks->close_lockdb)(lockdb);
+        (*lockdb->hooks->close_lockdb)(lockdb);
 
-	if (err != NULL) {
-	    /* The move/copy was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The MOVE/COPY was successful, but there "
-				 "was a problem updating the lock "
-				 "information.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if (err != NULL) {
+            /* The move/copy was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The MOVE/COPY was successful, but there "
+                                 "was a problem updating the lock "
+                                 "information.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
     }
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
@@ -2777,8 +2796,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
 }
 
 /* dav_method_lock:  Handler to implement the DAV LOCK method
-**    Returns appropriate HTTP_* response.
-*/
+ *    Returns appropriate HTTP_* response.
+ */
 static int dav_method_lock(request_rec *r)
 {
     dav_error *err;
@@ -2799,13 +2818,13 @@ static int dav_method_lock(request_rec *r)
         return DECLINED;
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK)
-	return result;
+        return result;
 
     depth = dav_get_depth(r, DAV_INFINITY);
     if (depth != 0 && depth != DAV_INFINITY) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "Depth must be 0 or \"infinity\" for LOCK.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth must be 0 or \"infinity\" for LOCK.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* Ask repository module to resolve the resource */
@@ -2815,18 +2834,18 @@ static int dav_method_lock(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /*
-    ** Open writable. Unless an error occurs, we'll be
-    ** writing into the database.
-    */
+     * Open writable. Unless an error occurs, we'll be
+     * writing into the database.
+     */
     if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
     }
 
     if (doc != NULL) {
         if ((err = dav_lock_parse_lockinfo(r, resource, lockdb, doc,
-	    			           &lock)) != NULL) {
-	    /* ### add a higher-level description to err? */
+                                               &lock)) != NULL) {
+            /* ### add a higher-level description to err? */
             goto error;
         }
         new_lock_request = 1;
@@ -2837,12 +2856,12 @@ static int dav_method_lock(request_rec *r)
     resource_state = dav_get_resource_state(r, resource);
 
     /*
-    ** Check If-Headers and existing locks.
-    **
-    ** If this will create a locknull resource, then the LOCK will affect
-    ** the parent collection (much like a PUT/MKCOL). For that case, we must
-    ** validate the parent resource's conditions.
-    */
+     * Check If-Headers and existing locks.
+     *
+     * If this will create a locknull resource, then the LOCK will affect
+     * the parent collection (much like a PUT/MKCOL). For that case, we must
+     * validate the parent resource's conditions.
+     */
     if ((err = dav_validate_request(r, resource, depth, NULL, &multi_response,
                                     (resource_state == DAV_RESOURCE_NULL
                                      ? DAV_VALIDATE_PARENT
@@ -2850,68 +2869,69 @@ static int dav_method_lock(request_rec *r)
                                     | (new_lock_request ? lock->scope : 0)
                                     | DAV_VALIDATE_ADD_LD,
                                     lockdb)) != OK) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not LOCK %s due to a failed "
-					 "precondition (e.g. other locks).",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	goto error;
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not LOCK %s due to a failed "
+                                          "precondition (e.g. other locks).",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        goto error;
     }
 
     if (new_lock_request == 0) {
-	dav_locktoken_list *ltl;
-		
-	/*
-	** Refresh request 
-	** ### Assumption:  We can renew multiple locks on the same resource
-	** ### at once. First harvest all the positive lock-tokens given in
-	** ### the If header. Then modify the lock entries for this resource
-	** ### with the new Timeout val.
-	*/
+        dav_locktoken_list *ltl;
 
-	if ((err = dav_get_locktoken_list(r, &ltl)) != NULL) {
-	    err = dav_push_error(r->pool, err->status, 0,
-				 apr_psprintf(r->pool,
-					     "The lock refresh for %s failed "
-					     "because no lock tokens were "
-					     "specified in an \"If:\" "
-					     "header.",
-					     ap_escape_html(r->pool, r->uri)),
-				 err);
-	    goto error;
-	}
+        /*
+         * Refresh request
+         * ### Assumption:  We can renew multiple locks on the same resource
+         * ### at once. First harvest all the positive lock-tokens given in
+         * ### the If header. Then modify the lock entries for this resource
+         * ### with the new Timeout val.
+         */
 
-	if ((err = (*locks_hooks->refresh_locks)(lockdb, resource, ltl,
-						 dav_get_timeout(r),
-						 &lock)) != NULL) {
-	    /* ### add a higher-level description to err? */
-	    goto error;
-	}
+        if ((err = dav_get_locktoken_list(r, &ltl)) != NULL) {
+            err = dav_push_error(r->pool, err->status, 0,
+                                 apr_psprintf(r->pool,
+                                              "The lock refresh for %s failed "
+                                              "because no lock tokens were "
+                                              "specified in an \"If:\" "
+                                              "header.",
+                                              ap_escape_html(r->pool, r->uri)),
+                                 err);
+            goto error;
+        }
+
+        if ((err = (*locks_hooks->refresh_locks)(lockdb, resource, ltl,
+                                                 dav_get_timeout(r),
+                                                 &lock)) != NULL) {
+            /* ### add a higher-level description to err? */
+            goto error;
+        }
     } else {
-	/* New lock request */
+        /* New lock request */
         char *locktoken_txt;
-	dav_dir_conf *conf;
+        dav_dir_conf *conf;
 
-	conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						     &dav_module);
+        conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                    &dav_module);
 
-	/* apply lower bound (if any) from DAVMinTimeout directive */
-	if (lock->timeout != DAV_TIMEOUT_INFINITE
+        /* apply lower bound (if any) from DAVMinTimeout directive */
+        if (lock->timeout != DAV_TIMEOUT_INFINITE
             && lock->timeout < time(NULL) + conf->locktimeout)
-	    lock->timeout = time(NULL) + conf->locktimeout;
+            lock->timeout = time(NULL) + conf->locktimeout;
 
         err = dav_add_lock(r, resource, lockdb, lock, &multi_response);
-	if (err != NULL) {
-	    /* ### add a higher-level description to err? */
-	    goto error;
-	}
+        if (err != NULL) {
+            /* ### add a higher-level description to err? */
+            goto error;
+        }
 
         locktoken_txt = apr_pstrcat(r->pool, "<",
-				   (*locks_hooks->format_locktoken)(r->pool, lock->locktoken),
-				   ">", NULL);
+                                    (*locks_hooks->format_locktoken)(r->pool,
+                                        lock->locktoken),
+                                    ">", NULL);
 
-	apr_table_set(r->headers_out, "Lock-Token", locktoken_txt);
+        apr_table_set(r->headers_out, "Lock-Token", locktoken_txt);
     }
 
     (*locks_hooks->close_lockdb)(lockdb);
@@ -2921,13 +2941,13 @@ static int dav_method_lock(request_rec *r)
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR "<D:prop xmlns:D=\"DAV:\">" DEBUG_CR, r);
     if (lock == NULL)
-	ap_rputs("<D:lockdiscovery/>" DEBUG_CR, r);
+        ap_rputs("<D:lockdiscovery/>" DEBUG_CR, r);
     else {
-	ap_rprintf(r,
-		   "<D:lockdiscovery>" DEBUG_CR
-		   "%s" DEBUG_CR
-		   "</D:lockdiscovery>" DEBUG_CR,
-		   dav_lock_get_activelock(r, lock, NULL));
+        ap_rprintf(r,
+                   "<D:lockdiscovery>" DEBUG_CR
+                   "%s" DEBUG_CR
+                   "</D:lockdiscovery>" DEBUG_CR,
+                   dav_lock_get_activelock(r, lock, NULL));
     }
     ap_rputs("</D:prop>", r);
 
@@ -2959,35 +2979,37 @@ static int dav_method_unlock(request_rec *r)
     if (locks_hooks == NULL)
         return DECLINED;
 
-    if ((const_locktoken_txt = apr_table_get(r->headers_in, "Lock-Token")) == NULL) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "Unlock failed (%s):  No Lock-Token specified in header", r->filename);
-	return HTTP_BAD_REQUEST;
+    if ((const_locktoken_txt = apr_table_get(r->headers_in,
+                                             "Lock-Token")) == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Unlock failed (%s):  "
+                      "No Lock-Token specified in header", r->filename);
+        return HTTP_BAD_REQUEST;
     }
 
     locktoken_txt = apr_pstrdup(r->pool, const_locktoken_txt);
     if (locktoken_txt[0] != '<') {
-	/* ### should provide more specifics... */
-	return HTTP_BAD_REQUEST;
+        /* ### should provide more specifics... */
+        return HTTP_BAD_REQUEST;
     }
     locktoken_txt++;
 
     if (locktoken_txt[strlen(locktoken_txt) - 1] != '>') {
-	/* ### should provide more specifics... */
-	return HTTP_BAD_REQUEST;
+        /* ### should provide more specifics... */
+        return HTTP_BAD_REQUEST;
     }
     locktoken_txt[strlen(locktoken_txt) - 1] = '\0';
-		
+
     if ((err = (*locks_hooks->parse_locktoken)(r->pool, locktoken_txt,
-					       &locktoken)) != NULL) {
-	err = dav_push_error(r->pool, HTTP_BAD_REQUEST, 0,
-			     apr_psprintf(r->pool,
-					 "The UNLOCK on %s failed -- an "
-					 "invalid lock token was specified "
-					 "in the \"If:\" header.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, NULL);
+                                               &locktoken)) != NULL) {
+        err = dav_push_error(r->pool, HTTP_BAD_REQUEST, 0,
+                             apr_psprintf(r->pool,
+                                          "The UNLOCK on %s failed -- an "
+                                          "invalid lock token was specified "
+                                          "in the \"If:\" header.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, NULL);
     }
 
     /* Ask repository module to resolve the resource */
@@ -2999,35 +3021,35 @@ static int dav_method_unlock(request_rec *r)
     resource_state = dav_get_resource_state(r, resource);
 
     /*
-    ** Check If-Headers and existing locks.
-    **
-    ** Note: depth == 0 normally requires no multistatus response. However,
-    ** if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
-    ** other than the Request-URI, thereby requiring a multistatus.
-    **
-    ** If the resource is a locknull resource, then the UNLOCK will affect
-    ** the parent collection (much like a delete). For that case, we must
-    ** validate the parent resource's conditions.
-    */
+     * Check If-Headers and existing locks.
+     *
+     * Note: depth == 0 normally requires no multistatus response. However,
+     * if we pass DAV_VALIDATE_PARENT, then we could get an error on a URI
+     * other than the Request-URI, thereby requiring a multistatus.
+     *
+     * If the resource is a locknull resource, then the UNLOCK will affect
+     * the parent collection (much like a delete). For that case, we must
+     * validate the parent resource's conditions.
+     */
     if ((err = dav_validate_request(r, resource, 0, locktoken,
                                     &multi_response,
                                     resource_state == DAV_RESOURCE_LOCK_NULL
                                     ? DAV_VALIDATE_PARENT
                                     : DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, multi_response);
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* ### RFC 2518 s. 8.11: If this resource is locked by locktoken,
      *     _all_ resources locked by locktoken are released.  It does not say
      *     resource has to be the root of an infinte lock.  Thus, an UNLOCK
      *     on any part of an infinte lock will remove the lock on all resources.
-     *     
+     *
      *     For us, if r->filename represents an indirect lock (part of an infinity lock),
      *     we must actually perform an UNLOCK on the direct lock for this resource.
-     */     
+     */
     if ((result = dav_unlock(r, resource, locktoken)) != OK) {
-	return result;
+        return result;
     }
 
     return HTTP_NO_CONTENT;
@@ -3060,7 +3082,7 @@ static int dav_method_vsn_control(request_rec *r)
 
     /* parse the request body (may be a version-control element) */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
     /* note: doc == NULL if no request body */
 
@@ -3069,34 +3091,34 @@ static int dav_method_vsn_control(request_rec *r)
         apr_size_t tsize;
 
         if (!dav_validate_root(doc, "version-control")) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		          "The request body does not contain "
-		          "a \"version-control\" element.");
-	    return HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The request body does not contain "
+                          "a \"version-control\" element.");
+            return HTTP_BAD_REQUEST;
         }
 
         /* get the version URI */
         if ((child = dav_find_child(doc->root, "version")) == NULL) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		          "The \"version-control\" element does not contain "
-		          "a \"version\" element.");
-	    return HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The \"version-control\" element does not contain "
+                          "a \"version\" element.");
+            return HTTP_BAD_REQUEST;
         }
 
         if ((child = dav_find_child(child, "href")) == NULL) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		          "The \"version\" element does not contain "
-		          "an \"href\" element.");
-	    return HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The \"version\" element does not contain "
+                          "an \"href\" element.");
+            return HTTP_BAD_REQUEST;
         }
 
         /* get version URI */
         ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                        &target, &tsize);
         if (tsize == 0) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		          "An \"href\" element does not contain a URI.");
-	    return HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "An \"href\" element does not contain a URI.");
+            return HTTP_BAD_REQUEST;
         }
     }
 
@@ -3110,14 +3132,14 @@ static int dav_method_vsn_control(request_rec *r)
     if (!resource->exists && target == NULL) {
         err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
                             "<DAV:initial-version-required/>");
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
     else if (resource->exists) {
         /* cannot add resource to existing version history */
         if (target != NULL) {
             err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
                                 "<DAV:cannot-add-to-existing-history/>");
-	    return dav_handle_err(r, err, NULL);
+            return dav_handle_err(r, err, NULL);
         }
 
         /* resource must be unversioned and versionable, or version selector */
@@ -3125,7 +3147,7 @@ static int dav_method_vsn_control(request_rec *r)
             || (!resource->versioned && !(vsn_hooks->versionable)(resource))) {
             err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
                                 "<DAV:must-be-versionable/>");
-	    return dav_handle_err(r, err, NULL);
+            return dav_handle_err(r, err, NULL);
         }
 
         /* the DeltaV spec says if resource is a version selector,
@@ -3145,26 +3167,26 @@ static int dav_method_vsn_control(request_rec *r)
     /* Check If-Headers and existing locks */
     /* Note: depth == 0. Implies no need for a multistatus response. */
     if ((err = dav_validate_request(r, resource, 0, NULL, NULL,
-				    resource_state == DAV_RESOURCE_NULL ?
-				    DAV_VALIDATE_PARENT :
-				    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
-	return dav_handle_err(r, err, NULL);
+                                    resource_state == DAV_RESOURCE_NULL ?
+                                    DAV_VALIDATE_PARENT :
+                                    DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
+        return dav_handle_err(r, err, NULL);
     }
 
     /* if in versioned collection, make sure parent is checked out */
     if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
-				 &av_info)) != NULL) {
-	return dav_handle_err(r, err, NULL);
+                                 &av_info)) != NULL) {
+        return dav_handle_err(r, err, NULL);
     }
 
     /* attempt to version-control the resource */
     if ((err = (*vsn_hooks->vsn_control)(resource, target)) != NULL) {
         dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
-	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     apr_psprintf(r->pool,
-					 "Could not VERSION-CONTROL resource %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not VERSION-CONTROL resource %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -3172,44 +3194,44 @@ static int dav_method_vsn_control(request_rec *r)
     err = dav_auto_checkin(r, resource, 0 /*undo*/, 0 /*unlock*/, &av_info);
     if (err != NULL) {
         /* just log a warning */
-	err = dav_push_error(r->pool, err->status, 0,
-			     "The VERSION-CONTROL was successful, but there "
-			     "was a problem automatically checking in "
-			     "the parent collection.",
-			     err);
+        err = dav_push_error(r->pool, err->status, 0,
+                             "The VERSION-CONTROL was successful, but there "
+                             "was a problem automatically checking in "
+                             "the parent collection.",
+                             err);
         dav_log_err(r, err, APLOG_WARNING);
     }
 
     /* if the resource is lockable, let lock system know of new resource */
     if (locks_hooks != NULL
-	&& (*locks_hooks->get_supportedlock)(resource) != NULL) {
-	dav_lockdb *lockdb;
+        && (*locks_hooks->get_supportedlock)(resource) != NULL) {
+        dav_lockdb *lockdb;
 
-	if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
-	    /* The resource creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The VERSION-CONTROL was successful, but there "
-				 "was a problem opening the lock database "
-				 "which prevents inheriting locks from the "
-				 "parent resources.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if ((err = (*locks_hooks->open_lockdb)(r, 0, 0, &lockdb)) != NULL) {
+            /* The resource creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The VERSION-CONTROL was successful, but there "
+                                 "was a problem opening the lock database "
+                                 "which prevents inheriting locks from the "
+                                 "parent resources.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
 
-	/* notify lock system that we have created/replaced a resource */
-	err = dav_notify_created(r, lockdb, resource, resource_state, 0);
+        /* notify lock system that we have created/replaced a resource */
+        err = dav_notify_created(r, lockdb, resource, resource_state, 0);
 
-	(*locks_hooks->close_lockdb)(lockdb);
+        (*locks_hooks->close_lockdb)(lockdb);
 
-	if (err != NULL) {
-	    /* The dir creation was successful, but the locking failed. */
-	    err = dav_push_error(r->pool, err->status, 0,
-				 "The VERSION-CONTROL was successful, but there "
-				 "was a problem updating its lock "
-				 "information.",
-				 err);
-	    return dav_handle_err(r, err, NULL);
-	}
+        if (err != NULL) {
+            /* The dir creation was successful, but the locking failed. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "The VERSION-CONTROL was successful, but there "
+                                 "was a problem updating its lock "
+                                 "information.",
+                                 err);
+            return dav_handle_err(r, err, NULL);
+        }
     }
 
     /* set the Cache-Control header, per the spec */
@@ -3239,7 +3261,7 @@ static int dav_method_checkout(request_rec *r)
         return DECLINED;
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK)
-	return result;
+        return result;
 
     if (doc != NULL) {
         const ap_xml_elem *aset;
@@ -3307,6 +3329,7 @@ static int dav_method_checkout(request_rec *r)
     err = dav_get_resource(r, 1 /*label_allowed*/, apply_to_vsn, &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3317,18 +3340,18 @@ static int dav_method_checkout(request_rec *r)
      */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR
         && resource->type != DAV_RESOURCE_TYPE_VERSION) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot checkout this type of resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot checkout this type of resource.");
     }
 
     if (!resource->versioned) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot checkout unversioned resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot checkout unversioned resource.");
     }
 
     if (resource->working) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "The resource is already checked out to the workspace.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "The resource is already checked out to the workspace.");
     }
 
     /* ### do lock checks, once behavior is defined */
@@ -3338,11 +3361,11 @@ static int dav_method_checkout(request_rec *r)
                                       is_unreserved, is_fork_ok,
                                       create_activity, activities,
                                       &working_resource)) != NULL) {
-	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     apr_psprintf(r->pool,
-					 "Could not CHECKOUT resource %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not CHECKOUT resource %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -3374,7 +3397,7 @@ static int dav_method_uncheckout(request_rec *r)
         return DECLINED;
 
     if ((result = ap_discard_request_body(r)) != OK) {
-	return result;
+        return result;
     }
 
     /* Ask repository module to resolve the resource */
@@ -3382,6 +3405,7 @@ static int dav_method_uncheckout(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3391,29 +3415,29 @@ static int dav_method_uncheckout(request_rec *r)
      * must be versioned, and must be checked out.
      */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot uncheckout this type of resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot uncheckout this type of resource.");
     }
 
     if (!resource->versioned) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot uncheckout unversioned resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot uncheckout unversioned resource.");
     }
 
     if (!resource->working) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "The resource is not checked out to the workspace.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "The resource is not checked out to the workspace.");
     }
 
     /* ### do lock checks, once behavior is defined */
 
     /* Do the uncheckout */
     if ((err = (*vsn_hooks->uncheckout)(resource)) != NULL) {
-	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     apr_psprintf(r->pool,
-					 "Could not UNCHECKOUT resource %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not UNCHECKOUT resource %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -3439,7 +3463,7 @@ static int dav_method_checkin(request_rec *r)
         return DECLINED;
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK)
-	return result;
+        return result;
 
     if (doc != NULL) {
         if (!dav_validate_root(doc, "checkin")) {
@@ -3458,6 +3482,7 @@ static int dav_method_checkin(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3467,18 +3492,18 @@ static int dav_method_checkin(request_rec *r)
      * must be versioned, and must be checked out.
      */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot checkin this type of resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot checkin this type of resource.");
     }
 
     if (!resource->versioned) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "Cannot checkin unversioned resource.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "Cannot checkin unversioned resource.");
     }
 
     if (!resource->working) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "The resource is not checked out.");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "The resource is not checked out.");
     }
 
     /* ### do lock checks, once behavior is defined */
@@ -3486,11 +3511,11 @@ static int dav_method_checkin(request_rec *r)
     /* Do the checkin */
     if ((err = (*vsn_hooks->checkin)(resource, keep_checked_out, &new_version))
         != NULL) {
-	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     apr_psprintf(r->pool,
-					 "Could not CHECKIN resource %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not CHECKIN resource %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -3519,22 +3544,22 @@ static int dav_method_update(request_rec *r)
         return DECLINED;
 
     if ((depth = dav_get_depth(r, 0)) < 0) {
-	/* dav_get_depth() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_depth() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
 
     /* parse the request body */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
 
     if (doc == NULL || !dav_validate_root(doc, "update")) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request body does not contain "
-		      "an \"update\" element.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request body does not contain "
+                      "an \"update\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* check for label-name or version element, but not both */
@@ -3543,34 +3568,34 @@ static int dav_method_update(request_rec *r)
     else if ((child = dav_find_child(doc->root, "version")) != NULL) {
         /* get the href element */
         if ((child = dav_find_child(child, "href")) == NULL) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		          "The version element does not contain "
-		          "an \"href\" element.");
-	    return HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The version element does not contain "
+                          "an \"href\" element.");
+            return HTTP_BAD_REQUEST;
         }
     }
     else {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"update\" element does not contain "
-		      "a \"label-name\" or \"version\" element.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The \"update\" element does not contain "
+                      "a \"label-name\" or \"version\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* a depth greater than zero is only allowed for a label */
     if (!is_label && depth != 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "Depth must be zero for UPDATE with a version");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "Depth must be zero for UPDATE with a version");
+        return HTTP_BAD_REQUEST;
     }
 
     /* get the target value (a label or a version URI) */
     ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                    &target, &tsize);
     if (tsize == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "A \"label-name\" or \"href\" element does not contain "
-		      "any content.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "A \"label-name\" or \"href\" element does not contain "
+                      "any content.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* Ask repository module to resolve the resource */
@@ -3589,8 +3614,8 @@ static int dav_method_update(request_rec *r)
      */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR
         || !resource->versioned || resource->working) {
-	return dav_error_response(r, HTTP_CONFLICT,
-				  "<DAV:must-be-checked-in-version-controlled-resource>");
+        return dav_error_response(r, HTTP_CONFLICT,
+                                  "<DAV:must-be-checked-in-version-controlled-resource>");
     }
 
     /* if target is a version, resolve the version resource */
@@ -3598,22 +3623,22 @@ static int dav_method_update(request_rec *r)
     if (!is_label) {
         lookup = dav_lookup_uri(target, r, 0 /* must_be_absolute */);
         if (lookup.rnew == NULL) {
-	    if (lookup.err.status == HTTP_BAD_REQUEST) {
-	        /* This supplies additional information for the default message. */
-	        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			      lookup.err.desc);
-	        return HTTP_BAD_REQUEST;
-	    }
+            if (lookup.err.status == HTTP_BAD_REQUEST) {
+                /* This supplies additional information for the default message. */
+                ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                              lookup.err.desc);
+                return HTTP_BAD_REQUEST;
+            }
 
-	    /* ### this assumes that dav_lookup_uri() only generates a status
-	     * ### that Apache can provide a status line for!! */
+            /* ### this assumes that dav_lookup_uri() only generates a status
+             * ### that Apache can provide a status line for!! */
 
-	    return dav_error_response(r, lookup.err.status, lookup.err.desc);
+            return dav_error_response(r, lookup.err.status, lookup.err.desc);
         }
         if (lookup.rnew->status != HTTP_OK) {
-	    /* ### how best to report this... */
-	    return dav_error_response(r, lookup.rnew->status,
-				      "Version URI had an error.");
+            /* ### how best to report this... */
+            return dav_error_response(r, lookup.rnew->status,
+                                      "Version URI had an error.");
         }
 
         /* resolve version resource */
@@ -3631,9 +3656,9 @@ static int dav_method_update(request_rec *r)
 
     if (err != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
-					 "Could not UPDATE %s.",
-					 ap_escape_html(r->pool, r->uri)),
+                             ap_psprintf(r->pool,
+                                         "Could not UPDATE %s.",
+                                         ap_escape_html(r->pool, r->uri)),
                              err);
         return dav_handle_err(r, err, multi_response);
     }
@@ -3681,19 +3706,19 @@ static dav_error * dav_label_walker(dav_walk_resource *wres, int calltype)
     if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
         (wres->resource->type != DAV_RESOURCE_TYPE_REGULAR
          || !wres->resource->versioned)) {
-	err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
-			    "<DAV:must-be-version-or-version-selector/>");
+        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
+                            "<DAV:must-be-version-or-version-selector/>");
     }
     else if (wres->resource->working) {
-	err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
-			    "<DAV:must-not-be-checked-out/>");
+        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
+                            "<DAV:must-not-be-checked-out/>");
     }
     else {
         /* do the label operation */
         if (ctx->label_op == DAV_LABEL_REMOVE)
-	    err = (*ctx->vsn_hooks->remove_label)(wres->resource, ctx->label);
+            err = (*ctx->vsn_hooks->remove_label)(wres->resource, ctx->label);
         else
-	    err = (*ctx->vsn_hooks->add_label)(wres->resource, ctx->label,
+            err = (*ctx->vsn_hooks->add_label)(wres->resource, ctx->label,
                                                ctx->label_op == DAV_LABEL_SET);
     }
 
@@ -3735,22 +3760,22 @@ static int dav_method_label(request_rec *r)
     }
 
     if ((depth = dav_get_depth(r, 0)) < 0) {
-	/* dav_get_depth() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_depth() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
 
     /* parse the request body */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
 
     if (doc == NULL || !dav_validate_root(doc, "label")) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request body does not contain "
-		      "a \"label\" element.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request body does not contain "
+                      "a \"label\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* check for add, set, or remove element */
@@ -3764,27 +3789,27 @@ static int dav_method_label(request_rec *r)
         ctx.label_op = DAV_LABEL_REMOVE;
     }
     else {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The \"label\" element does not contain "
-		      "an \"add\", \"set\", or \"remove\" element.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The \"label\" element does not contain "
+                      "an \"add\", \"set\", or \"remove\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* get the label string */
     if ((child = dav_find_child(child, "label-name")) == NULL) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The label command element does not contain "
-		      "a \"label-name\" element.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The label command element does not contain "
+                      "a \"label-name\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
                    &ctx.label, &tsize);
     if (tsize == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "A \"label-name\" element does not contain "
-		      "a label name.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "A \"label-name\" element does not contain "
+                      "a label name.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* do the label operation walk */
@@ -3847,7 +3872,7 @@ static int dav_method_report(request_rec *r)
         return DECLINED;
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK)
-	return result;
+        return result;
     if (doc == NULL) {
         /* This supplies additional information for the default msg. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
@@ -3864,6 +3889,7 @@ static int dav_method_report(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3875,7 +3901,7 @@ static int dav_method_report(request_rec *r)
      * ### have to handle error responses as well.
      */
     if ((err = (*vsn_hooks->get_report)(r, resource, doc, &hdr)) != NULL)
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
 
     /* send the report response */
     r->status = HTTP_OK;
@@ -3912,15 +3938,15 @@ static int dav_method_make_workspace(request_rec *r)
 
     /* parse the request body (must be a mkworkspace element) */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-	return result;
+        return result;
     }
 
     if (doc == NULL
         || !dav_validate_root(doc, "mkworkspace")) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request body does not contain "
-		      "a \"mkworkspace\" element.");
-	return HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request body does not contain "
+                      "a \"mkworkspace\" element.");
+        return HTTP_BAD_REQUEST;
     }
 
     /* Check request preconditions */
@@ -3933,18 +3959,18 @@ static int dav_method_make_workspace(request_rec *r)
     if (resource->exists) {
         err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
                             "<DAV:resource-must-be-null/>");
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
 
     /* ### what about locking? */
 
     /* attempt to create the workspace */
     if ((err = (*vsn_hooks->make_workspace)(resource, doc)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not create workspace %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not create workspace %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -3976,7 +4002,7 @@ static int dav_method_make_activity(request_rec *r)
 
     /* MKACTIVITY does not have a defined request body. */
     if ((result = ap_discard_request_body(r)) != OK) {
-	return result;
+        return result;
     }
 
     /* Check request preconditions */
@@ -3989,18 +4015,18 @@ static int dav_method_make_activity(request_rec *r)
     if (resource->exists) {
         err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
                             "<DAV:resource-must-be-null/>");
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
 
     /* ### what about locking? */
 
     /* attempt to create the activity */
     if ((err = (*vsn_hooks->make_activity)(resource)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not create activity %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not create activity %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -4038,29 +4064,29 @@ static int dav_method_merge(request_rec *r)
         return DECLINED;
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK)
-	return result;
+        return result;
 
     if (doc == NULL || !dav_validate_root(doc, "merge")) {
         /* This supplies additional information for the default msg. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request body must be present and must be a "
-		      "DAV:merge element.");
-	return HTTP_BAD_REQUEST;
+                      "The request body must be present and must be a "
+                      "DAV:merge element.");
+        return HTTP_BAD_REQUEST;
     }
 
     if ((source_elem = dav_find_child(doc->root, "source")) == NULL) {
         /* This supplies additional information for the default msg. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The DAV:merge element must contain a DAV:source "
-		      "element.");
-	return HTTP_BAD_REQUEST;
+                      "The DAV:merge element must contain a DAV:source "
+                      "element.");
+        return HTTP_BAD_REQUEST;
     }
     if ((href_elem = dav_find_child(source_elem, "href")) == NULL) {
         /* This supplies additional information for the default msg. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The DAV:source element must contain a DAV:href "
-		      "element.");
-	return HTTP_BAD_REQUEST;
+                      "The DAV:source element must contain a DAV:href "
+                      "element.");
+        return HTTP_BAD_REQUEST;
     }
     source = dav_xml_get_cdata(href_elem, r->pool, 1 /* strip_white */);
 
@@ -4069,24 +4095,24 @@ static int dav_method_merge(request_rec *r)
     lookup = dav_lookup_uri(source, r, 0 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
         if (lookup.err.status == HTTP_BAD_REQUEST) {
-	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  lookup.err.desc);
-	    return HTTP_BAD_REQUEST;
-	}
+            /* This supplies additional information for the default message. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          lookup.err.desc);
+            return HTTP_BAD_REQUEST;
+        }
 
-	/* ### this assumes that dav_lookup_uri() only generates a status
-	 * ### that Apache can provide a status line for!! */
+        /* ### this assumes that dav_lookup_uri() only generates a status
+         * ### that Apache can provide a status line for!! */
 
-	return dav_error_response(r, lookup.err.status, lookup.err.desc);
+        return dav_error_response(r, lookup.err.status, lookup.err.desc);
     }
     if (lookup.rnew->status != HTTP_OK) {
         /* ### how best to report this... */
         return dav_error_response(r, lookup.rnew->status,
-				  "Merge source URI had an error.");
+                                  "Merge source URI had an error.");
     }
     err = dav_get_resource(lookup.rnew, 0 /* label_allowed */,
-			   0 /* use_checked_in */, &source_resource);
+                           0 /* use_checked_in */, &source_resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
@@ -4104,7 +4130,7 @@ static int dav_method_merge(request_rec *r)
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
-			   &resource);
+                           &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
@@ -4132,17 +4158,17 @@ static int dav_method_merge(request_rec *r)
 
     /* Do the merge, including any response generation. */
     if ((err = (*vsn_hooks->merge)(resource, source_resource,
-				   no_auto_merge, no_checkout,
-				   prop_elem,
-				   r->output_filters)) != NULL) {
+                                   no_auto_merge, no_checkout,
+                                   prop_elem,
+                                   r->output_filters)) != NULL) {
         /* ### is err->status the right error here? */
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					  "Could not MERGE resource \"%s\" "
-					  "into \"%s\".",
-					  ap_escape_html(r->pool, source),
-					  ap_escape_html(r->pool, r->uri)),
-			     err);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not MERGE resource \"%s\" "
+                                          "into \"%s\".",
+                                          ap_escape_html(r->pool, source),
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
         return dav_handle_err(r, err, NULL);
     }
 
@@ -4173,28 +4199,29 @@ static int dav_method_bind(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
     if (!resource->exists) {
-	/* Apache will supply a default error for this. */
-	return HTTP_NOT_FOUND;
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
     }
 
     /* get the destination URI */
     dest = apr_table_get(r->headers_in, "Destination");
     if (dest == NULL) {
-	/* This supplies additional information for the default message. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-		      "The request is missing a Destination header.");
-	return HTTP_BAD_REQUEST;
+        /* This supplies additional information for the default message. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request is missing a Destination header.");
+        return HTTP_BAD_REQUEST;
     }
 
     lookup = dav_lookup_uri(dest, r, 0 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
-	if (lookup.err.status == HTTP_BAD_REQUEST) {
-	    /* This supplies additional information for the default message. */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  lookup.err.desc);
-	    return HTTP_BAD_REQUEST;
-	}
+        if (lookup.err.status == HTTP_BAD_REQUEST) {
+            /* This supplies additional information for the default message. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          lookup.err.desc);
+            return HTTP_BAD_REQUEST;
+        }
         else if (lookup.err.status == HTTP_BAD_GATEWAY) {
             /* ### Bindings protocol draft 02 says to return 507
              * ### (Cross Server Binding Forbidden); Apache already defines 507
@@ -4202,18 +4229,19 @@ static int dav_method_bind(request_rec *r)
              * ### HTTP_FORBIDDEN
              */
              return dav_error_response(r, HTTP_FORBIDDEN,
-                                       "Cross server bindings are not allowed by this server.");
+                                       "Cross server bindings are not "
+                                       "allowed by this server.");
         }
 
-	/* ### this assumes that dav_lookup_uri() only generates a status
-	 * ### that Apache can provide a status line for!! */
+        /* ### this assumes that dav_lookup_uri() only generates a status
+         * ### that Apache can provide a status line for!! */
 
-	return dav_error_response(r, lookup.err.status, lookup.err.desc);
+        return dav_error_response(r, lookup.err.status, lookup.err.desc);
     }
     if (lookup.rnew->status != HTTP_OK) {
-	/* ### how best to report this... */
-	return dav_error_response(r, lookup.rnew->status,
-				  "Destination URI had an error.");
+        /* ### how best to report this... */
+        return dav_error_response(r, lookup.rnew->status,
+                                  "Destination URI had an error.");
     }
 
     /* resolve binding resource */
@@ -4224,117 +4252,117 @@ static int dav_method_bind(request_rec *r)
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != binding->hooks) {
-	/* ### this message exposes some backend config, but screw it... */
-	return dav_error_response(r, HTTP_BAD_GATEWAY,
-				  "Destination URI is handled by a "
-				  "different repository than the source URI. "
-				  "BIND between repositories is not possible.");
+        /* ### this message exposes some backend config, but screw it... */
+        return dav_error_response(r, HTTP_BAD_GATEWAY,
+                                  "Destination URI is handled by a "
+                                  "different repository than the source URI. "
+                                  "BIND between repositories is not possible.");
     }
 
     /* get and parse the overwrite header value */
     if ((overwrite = dav_get_overwrite(r)) < 0) {
-	/* dav_get_overwrite() supplies additional information for the
-	 * default message. */
-	return HTTP_BAD_REQUEST;
+        /* dav_get_overwrite() supplies additional information for the
+         * default message. */
+        return HTTP_BAD_REQUEST;
     }
 
     /* quick failure test: if dest exists and overwrite is false. */
     if (binding->exists && !overwrite) {
-	return dav_error_response(r, HTTP_PRECONDITION_FAILED,
-			          "Destination is not empty and "
-			          "Overwrite is not \"T\"");
+        return dav_error_response(r, HTTP_PRECONDITION_FAILED,
+                                  "Destination is not empty and "
+                                  "Overwrite is not \"T\"");
     }
 
     /* are the source and destination the same? */
     if ((*resource->hooks->is_same_resource)(resource, binding)) {
-	return dav_error_response(r, HTTP_FORBIDDEN,
-			          "Source and Destination URIs are the same.");
+        return dav_error_response(r, HTTP_FORBIDDEN,
+                                  "Source and Destination URIs are the same.");
     }
 
     /*
-    ** Check If-Headers and existing locks for destination. Note that we
-    ** use depth==infinity since the target (hierarchy) will be deleted
-    ** before the move/copy is completed.
-    **
-    ** Note that we are overwriting the target, which implies a DELETE, so
-    ** we are subject to the error/response rules as a DELETE. Namely, we
-    ** will return a 424 error if any of the validations fail.
-    ** (see dav_method_delete() for more information)
-    */
+     * Check If-Headers and existing locks for destination. Note that we
+     * use depth==infinity since the target (hierarchy) will be deleted
+     * before the move/copy is completed.
+     *
+     * Note that we are overwriting the target, which implies a DELETE, so
+     * we are subject to the error/response rules as a DELETE. Namely, we
+     * will return a 424 error if any of the validations fail.
+     * (see dav_method_delete() for more information)
+     */
     if ((err = dav_validate_request(lookup.rnew, binding, DAV_INFINITY, NULL,
-				    &multi_response,
-				    DAV_VALIDATE_PARENT
+                                    &multi_response,
+                                    DAV_VALIDATE_PARENT
                                     | DAV_VALIDATE_USE_424, NULL)) != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not BIND %s due to a "
-					 "failed precondition on the "
-					 "destination (e.g. locks).",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not BIND %s due to a "
+                                          "failed precondition on the "
+                                          "destination (e.g. locks).",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* guard against creating circular bindings */
     if (resource->collection
-	&& (*resource->hooks->is_parent_resource)(resource, binding)) {
-	return dav_error_response(r, HTTP_FORBIDDEN,
-			          "Source collection contains the Destination.");
+        && (*resource->hooks->is_parent_resource)(resource, binding)) {
+        return dav_error_response(r, HTTP_FORBIDDEN,
+                                  "Source collection contains the Destination.");
     }
     if (resource->collection
-	&& (*resource->hooks->is_parent_resource)(binding, resource)) {
-	/* The destination must exist (since it contains the source), and
-	 * a condition above implies Overwrite==T. Obviously, we cannot
-	 * delete the Destination before the BIND, as that would
-	 * delete the Source.
-	 */
+        && (*resource->hooks->is_parent_resource)(binding, resource)) {
+        /* The destination must exist (since it contains the source), and
+         * a condition above implies Overwrite==T. Obviously, we cannot
+         * delete the Destination before the BIND, as that would
+         * delete the Source.
+         */
 
-	return dav_error_response(r, HTTP_FORBIDDEN,
-			          "Destination collection contains the Source and "
-			          "Overwrite has been specified.");
+        return dav_error_response(r, HTTP_FORBIDDEN,
+                                  "Destination collection contains the Source and "
+                                  "Overwrite has been specified.");
     }
 
     /* prepare the destination collection for modification */
     if ((err = dav_auto_checkout(r, binding, 1 /* parent_only */,
-				 &av_info)) != NULL) {
+                                 &av_info)) != NULL) {
         /* could not make destination writable */
-	return dav_handle_err(r, err, NULL);
+        return dav_handle_err(r, err, NULL);
     }
 
     /* If target exists, remove it first (we know Ovewrite must be TRUE).
      * Then try to bind to the resource.
      */
     if (binding->exists)
-	err = (*resource->hooks->remove_resource)(binding, &multi_response);
+        err = (*resource->hooks->remove_resource)(binding, &multi_response);
 
     if (err == NULL) {
-	err = (*binding_hooks->bind_resource)(resource, binding);
+        err = (*binding_hooks->bind_resource)(resource, binding);
     }
 
     /* restore parent collection states */
     err2 = dav_auto_checkin(r, NULL,
-			    err != NULL /* undo if error */,
-			    0 /*unlock*/, &av_info);
+                            err != NULL /* undo if error */,
+                            0 /* unlock */, &av_info);
 
     /* check for error from remove/bind operations */
     if (err != NULL) {
-	err = dav_push_error(r->pool, err->status, 0,
-			     apr_psprintf(r->pool,
-					 "Could not BIND %s.",
-					 ap_escape_html(r->pool, r->uri)),
-			     err);
-	return dav_handle_err(r, err, multi_response);
+        err = dav_push_error(r->pool, err->status, 0,
+                             apr_psprintf(r->pool,
+                                          "Could not BIND %s.",
+                                          ap_escape_html(r->pool, r->uri)),
+                             err);
+        return dav_handle_err(r, err, multi_response);
     }
 
     /* check for errors from reverting writability */
     if (err2 != NULL) {
-	/* just log a warning */
-	err = dav_push_error(r->pool, err2->status, 0,
-			     "The BIND was successful, but there was a "
-			     "problem automatically checking in the "
-			     "source parent collection.",
-			     err2);
-	dav_log_err(r, err, APLOG_WARNING);
+        /* just log a warning */
+        err = dav_push_error(r->pool, err2->status, 0,
+                             "The BIND was successful, but there was a "
+                             "problem automatically checking in the "
+                             "source parent collection.",
+                             err2);
+        dav_log_err(r, err, APLOG_WARNING);
     }
 
     /* return an appropriate response (HTTP_CREATED) */
@@ -4351,18 +4379,18 @@ static int dav_handler(request_rec *r)
     dav_dir_conf *conf;
 
     if (strcmp(r->handler, "dav-handler")) {
-	return DECLINED;
+        return DECLINED;
     }
 
     /* quickly ignore any HTTP/0.9 requests */
     if (r->assbackwards) {
-	return DECLINED;
+        return DECLINED;
     }
 
     /* ### do we need to do anything with r->proxyreq ?? */
 
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
+    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                &dav_module);
 
     /*
      * Set up the methods mask, since that's one of the reasons this handler
@@ -4377,131 +4405,137 @@ static int dav_handler(request_rec *r)
      */
     r->allowed = 0
         | (AP_METHOD_BIT << M_GET)
-	| (AP_METHOD_BIT << M_PUT)
-	| (AP_METHOD_BIT << M_DELETE)
-	| (AP_METHOD_BIT << M_OPTIONS)
-	| (AP_METHOD_BIT << M_INVALID);
+        | (AP_METHOD_BIT << M_PUT)
+        | (AP_METHOD_BIT << M_DELETE)
+        | (AP_METHOD_BIT << M_OPTIONS)
+        | (AP_METHOD_BIT << M_INVALID);
+
     /*
      * These are the DAV methods we handle.
      */
     r->allowed |= 0
-	| (AP_METHOD_BIT << M_COPY)
-	| (AP_METHOD_BIT << M_LOCK)
-	| (AP_METHOD_BIT << M_UNLOCK)
-	| (AP_METHOD_BIT << M_MKCOL)
-	| (AP_METHOD_BIT << M_MOVE)
-	| (AP_METHOD_BIT << M_PROPFIND)
-	| (AP_METHOD_BIT << M_PROPPATCH);
+        | (AP_METHOD_BIT << M_COPY)
+        | (AP_METHOD_BIT << M_LOCK)
+        | (AP_METHOD_BIT << M_UNLOCK)
+        | (AP_METHOD_BIT << M_MKCOL)
+        | (AP_METHOD_BIT << M_MOVE)
+        | (AP_METHOD_BIT << M_PROPFIND)
+        | (AP_METHOD_BIT << M_PROPPATCH);
+
     /*
      * These are methods that we don't handle directly, but let the
      * server's default handler do for us as our agent.
      */
     r->allowed |= 0
-	| (AP_METHOD_BIT << M_POST);
- 
+        | (AP_METHOD_BIT << M_POST);
+
     /* ### hrm. if we return HTTP_METHOD_NOT_ALLOWED, then an Allow header
      * ### is sent; it will need the other allowed states; since the default
      * ### handler is not called on error, then it doesn't add the other
-     * ### allowed states, so we must */
+     * ### allowed states, so we must
+     */
+
     /* ### we might need to refine this for just where we return the error.
-     * ### also, there is the issue with other methods (see ISSUES) */
+     * ### also, there is the issue with other methods (see ISSUES)
+     */
+
     /* ### more work necessary, now that we have M_foo for DAV methods */
 
     /* dispatch the appropriate method handler */
     if (r->method_number == M_GET) {
-	return dav_method_get(r);
+        return dav_method_get(r);
     }
 
     if (r->method_number == M_PUT) {
-	return dav_method_put(r);
+        return dav_method_put(r);
     }
 
     if (r->method_number == M_POST) {
-	return dav_method_post(r);
+        return dav_method_post(r);
     }
 
     if (r->method_number == M_DELETE) {
-	return dav_method_delete(r);
+        return dav_method_delete(r);
     }
 
     if (r->method_number == M_OPTIONS) {
-	return dav_method_options(r);
+        return dav_method_options(r);
     }
 
     if (r->method_number == M_PROPFIND) {
-	return dav_method_propfind(r);
+        return dav_method_propfind(r);
     }
 
     if (r->method_number == M_PROPPATCH) {
-	return dav_method_proppatch(r);
+        return dav_method_proppatch(r);
     }
 
     if (r->method_number == M_MKCOL) {
-	return dav_method_mkcol(r);
+        return dav_method_mkcol(r);
     }
 
     if (r->method_number == M_COPY) {
-	return dav_method_copymove(r, DAV_DO_COPY);
+        return dav_method_copymove(r, DAV_DO_COPY);
     }
 
     if (r->method_number == M_MOVE) {
-	return dav_method_copymove(r, DAV_DO_MOVE);
+        return dav_method_copymove(r, DAV_DO_MOVE);
     }
 
     if (r->method_number == M_LOCK) {
-	return dav_method_lock(r);
+        return dav_method_lock(r);
     }
 
     if (r->method_number == M_UNLOCK) {
-	return dav_method_unlock(r);
+        return dav_method_unlock(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_VERSION_CONTROL]) {
-	return dav_method_vsn_control(r);
+        return dav_method_vsn_control(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_CHECKOUT]) {
-	return dav_method_checkout(r);
+        return dav_method_checkout(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_UNCHECKOUT]) {
-	return dav_method_uncheckout(r);
+        return dav_method_uncheckout(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_CHECKIN]) {
-	return dav_method_checkin(r);
+        return dav_method_checkin(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_UPDATE]) {
-	return dav_method_update(r);
+        return dav_method_update(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_LABEL]) {
-	return dav_method_label(r);
+        return dav_method_label(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_REPORT]) {
-	return dav_method_report(r);
+        return dav_method_report(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_MKWORKSPACE]) {
-	return dav_method_make_workspace(r);
+        return dav_method_make_workspace(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_MKACTIVITY]) {
-	return dav_method_make_activity(r);
+        return dav_method_make_activity(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_BASELINE_CONTROL]) {
-	return dav_method_baseline_control(r);
+        return dav_method_baseline_control(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_MERGE]) {
-	return dav_method_merge(r);
+        return dav_method_merge(r);
     }
 
     if (r->method_number == dav_methods[DAV_M_BIND]) {
-	return dav_method_bind(r);
+        return dav_method_bind(r);
     }
 
     /* ### add'l methods for Advanced Collections, ACLs, DASL */
@@ -4513,29 +4547,29 @@ static int dav_type_checker(request_rec *r)
 {
     dav_dir_conf *conf;
 
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
+    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                &dav_module);
 
     /* if DAV is not enabled, then we've got nothing to do */
     if (conf->provider == NULL) {
-	return DECLINED;
+        return DECLINED;
     }
 
     if (r->method_number == M_GET) {
-	/*
-	** ### need some work to pull Content-Type and Content-Language
-	** ### from the property database.
-	*/
-	    
-	/*
-	** If the repository hasn't indicated that it will handle the
-	** GET method, then just punt.
-	**
-	** ### this isn't quite right... taking over the response can break
-	** ### things like mod_negotiation. need to look into this some more.
-	*/
-	if (!conf->provider->repos->handle_get) {
-	    return DECLINED;
+        /*
+         * ### need some work to pull Content-Type and Content-Language
+         * ### from the property database.
+         */
+
+        /*
+         * If the repository hasn't indicated that it will handle the
+         * GET method, then just punt.
+         *
+         * ### this isn't quite right... taking over the response can break
+         * ### things like mod_negotiation. need to look into this some more.
+         */
+        if (!conf->provider->repos->handle_get) {
+            return DECLINED;
         }
     }
 
@@ -4543,17 +4577,17 @@ static int dav_type_checker(request_rec *r)
     /* ### the handler DOES handle POST, so we need to fix one of these */
     if (r->method_number != M_POST) {
 
-	/*
-	** ### anything else to do here? could another module and/or
-	** ### config option "take over" the handler here? i.e. how do
-	** ### we lock down this hierarchy so that we are the ultimate
-	** ### arbiter? (or do we simply depend on the administrator
-	** ### to avoid conflicting configurations?)
-	**
-	** ### I think the OK stops running type-checkers. need to look.
-	*/
-	r->handler = "dav-handler";
-	return OK;
+        /*
+         * ### anything else to do here? could another module and/or
+         * ### config option "take over" the handler here? i.e. how do
+         * ### we lock down this hierarchy so that we are the ultimate
+         * ### arbiter? (or do we simply depend on the administrator
+         * ### to avoid conflicting configurations?)
+         *
+         * ### I think the OK stops running type-checkers. need to look.
+         */
+        r->handler = "dav-handler";
+        return OK;
     }
 
     return DECLINED;
@@ -4567,15 +4601,15 @@ static void register_hooks(apr_pool_t *p)
 
     dav_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, APR_HOOK_LAST);
     dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
-                                 NULL, NULL, APR_HOOK_MIDDLE);
+                                  NULL, NULL, APR_HOOK_MIDDLE);
 
     dav_core_register_uris(p);
 }
 
 /*---------------------------------------------------------------------------
-**
-** Configuration info for the module
-*/
+ *
+ * Configuration info for the module
+ */
 
 static const command_rec dav_cmds[] =
 {
@@ -4599,11 +4633,11 @@ static const command_rec dav_cmds[] =
 module DAV_DECLARE_DATA dav_module =
 {
     STANDARD20_MODULE_STUFF,
-    dav_create_dir_config,	/* dir config creater */
-    dav_merge_dir_config,	/* dir merger --- default is to override */
-    dav_create_server_config,	/* server config */
-    dav_merge_server_config,	/* merge server config */
-    dav_cmds,			/* command table */
+    dav_create_dir_config,      /* dir config creater */
+    dav_merge_dir_config,       /* dir merger --- default is to override */
+    dav_create_server_config,   /* server config */
+    dav_merge_server_config,    /* merge server config */
+    dav_cmds,                   /* command table */
     register_hooks,             /* register hooks */
 };
 
@@ -4612,14 +4646,17 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(find_liveprop)
     APR_HOOK_LINK(insert_all_liveprops)
     )
+
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_propsets,
                                  (apr_array_header_t *uris),
                                  (uris))
+
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, find_liveprop,
                                       (const dav_resource *resource,
                                        const char *ns_uri, const char *name,
                                        const dav_hooks_liveprop **hooks),
-                                     (resource, ns_uri, name, hooks), 0)
+                                      (resource, ns_uri, name, hooks), 0)
+
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
                                   dav_prop_insert what, ap_text_header *phdr),
