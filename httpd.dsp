@@ -48,8 +48,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"LibR\apr.lib"
-# ADD LIB32 /nologo /out:"LibR\apr.lib"
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -73,8 +73,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"LibD\apr.lib"
-# ADD LIB32 /nologo /out:"LibD\apr.lib"
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
 
 !ENDIF 
 
@@ -295,10 +295,6 @@ SOURCE=.\include\ap_listen.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ap_md5.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
@@ -480,5 +476,10 @@ InputPath=.\main\gen_uri_delims.exe
 
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\ApacheCore.def
+# PROP Exclude_From_Build 1
+# End Source File
 # End Target
 # End Project
