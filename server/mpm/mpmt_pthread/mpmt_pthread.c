@@ -72,7 +72,7 @@
 
 #include "http_accept.h"
 #include <netinet/tcp.h> 
-#include "pthread.h" 
+#include <pthread.h> 
 
 /*
  * Actual definitions of config globals
