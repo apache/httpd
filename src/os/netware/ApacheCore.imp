@@ -346,4 +346,16 @@ ap_listeners
 ap_listenbacklog
 clean_parent_exit
 init_tsd
-
+ap_set_config_vectors
+ap_strcasestr
+ap_to64
+ap_vrprintf
+regerror
+ap_add_file_conf
+ap_configtestonly
+ap_is_rdirectory
+ap_remove_spaces
+ap_scan_script_header_err_strs
+ap_start_shutdown
+ap_start_restart
+ap_stripprefix
