@@ -60,6 +60,7 @@
  
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_file_io.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -1426,7 +1427,7 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    struct stat finfo;
+    ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {

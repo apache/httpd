@@ -59,6 +59,7 @@
 #define CORE_PRIVATE 
  
 #include "apr_portable.h"
+#include "apr_file_io.h"
 #include "apr_thread_proc.h"
 #include "ap_config.h"
 #include "httpd.h" 
@@ -1431,7 +1432,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    struct ap_finfo_t finfo;
+    ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
