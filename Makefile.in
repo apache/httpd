@@ -151,7 +151,7 @@ install-include:
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
             cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir); \
         fi;
-	@cp -p $(srcdir)/server/mpm/$(MPM_NAME)/*.h $(includedir)
+	@cp -p $(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h $(includedir)
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
 	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
 	@cp -p $(srcdir)/modules/generators/mod_cgi.h $(includedir)
