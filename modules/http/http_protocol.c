@@ -2396,7 +2396,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     apr_status_t rv;
     apr_int32_t timeout;
     ap_bucket *b, *old;
-    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+    ap_bucket_brigade *bb;
 
     if (!r->read_chunked) {     /* Content-length read */
         const char *tempbuf;
@@ -2406,6 +2406,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         if (len_to_read == 0) {
             return 0;
         }
+        bb = ap_brigade_create(r->pool);
         do {
             if (AP_BRIGADE_EMPTY(bb)) {
                 apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
@@ -2416,6 +2417,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                      */
                     apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
                     r->connection->keepalive = -1;
+                    ap_brigade_destroy(bb);
                     return -1;
                 }
                 apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
@@ -2433,19 +2435,14 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         total = 0;
         do {
             rv = ap_bucket_read(b, &tempbuf, &len_read, 0);
-            if (len_to_read < b->length) { /* shouldn't happen */
-                ap_bucket_split(b, len_to_read);
-            }
-            else {
-                len_to_read = len_read;
-            }
-            
-            memcpy(buffer, tempbuf, len_to_read);
-            buffer += len_to_read;
-            
-            r->read_length += len_to_read;
-            total += len_to_read;
-            r->remaining -= len_to_read;
+            ap_debug_assert(total + len_read <= bufsiz); /* because we told the filter 
+                                                          * below us not to give us too much */
+            ap_debug_assert(r->remaining >= len_read);
+            memcpy(buffer, tempbuf, len_read);
+            buffer += len_read;
+            r->read_length += len_read;
+            total += len_read;
+            r->remaining -= len_read;
             old = b;
             b = AP_BUCKET_NEXT(b);
             AP_BUCKET_REMOVE(old);
@@ -2454,7 +2451,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         ap_brigade_destroy(bb);
         return total;
     }
-   
+
     /*
      * Handle chunked reading Note: we are careful to shorten the input
      * bufsiz so that there will always be enough space for us to add a CRLF

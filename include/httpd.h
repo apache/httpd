@@ -1599,6 +1599,10 @@ unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
 
 /*
  * Redefine assert() to something more useful for an Apache...
+ *
+ * Use ap_assert() if the condition should always be checked.
+ * Use ap_debug_assert() if the condition should only be checked when AP_DEBUG
+ * is defined.
  */
 /**
  * Log an assertion to the error log
@@ -1610,6 +1614,12 @@ unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
 #define ap_assert(exp) ((exp) ? (void)0 : ap_log_assert(#exp,__FILE__,__LINE__))
+
+#ifdef AP_DEBUG
+#define ap_debug_assert(exp) ap_assert(exp)
+#else
+#define ap_debug_assert(exp) ((void)0)
+#endif
 
 /* A set of flags which indicate places where the server should raise(SIGSTOP).
  * This is useful for debugging, because you can then attach to that process
