@@ -385,8 +385,9 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         else {
             new->special_type = SPECIAL_NOT;
             /* Handle fname as a regular expression.
-             * If fname a simple header string, identify as such (new->pnamereg = NULL)
-             * to avoid the overhead of searching through headers_in for a regex match.
+             * If fname a simple header string, identify as such
+             * (new->pnamereg = NULL) to avoid the overhead of searching
+             * through headers_in for a regex match.
              */
             if (is_header_regex(cmd->pool, fname)) {
                 new->pnamereg = ap_pregcomp(cmd->pool, fname,
@@ -394,7 +395,8 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
                                              | (icase ? REG_ICASE : 0)));
                 if (new->pnamereg == NULL)
                     return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                                       "Header name regex could not be compiled.", NULL);
+                                       "Header name regex could not be "
+                                       "compiled.", NULL);
             }
             else {
                 new->pnamereg = NULL;
@@ -458,14 +460,15 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
 
 static const command_rec setenvif_module_cmds[] =
 {
-    AP_INIT_RAW_ARGS("SetEnvIf", add_setenvif, NULL,
-                     OR_FILEINFO, "A header-name, regex and a list of variables."),
-    AP_INIT_RAW_ARGS("SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
-                     OR_FILEINFO, "a header-name, regex and a list of variables."),
-    AP_INIT_RAW_ARGS("BrowserMatch", add_browser, NULL,
-                     OR_FILEINFO, "A browser regex and a list of variables."),
+    AP_INIT_RAW_ARGS("SetEnvIf", add_setenvif, NULL, OR_FILEINFO,
+                     "A header-name, regex and a list of variables."),
+    AP_INIT_RAW_ARGS("SetEnvIfNoCase", add_setenvif, ICASE_MAGIC, OR_FILEINFO,
+                     "a header-name, regex and a list of variables."),
+    AP_INIT_RAW_ARGS("BrowserMatch", add_browser, NULL, OR_FILEINFO,
+                     "A browser regex and a list of variables."),
     AP_INIT_RAW_ARGS("BrowserMatchNoCase", add_browser, ICASE_MAGIC,
-                     OR_FILEINFO, "A browser regex and a list of variables."),
+                     OR_FILEINFO,
+                     "A browser regex and a list of variables."),
     { NULL },
 };
 
@@ -540,7 +543,9 @@ static int match_headers(request_rec *r)
                      * the headers_in until we find a match or run out of
                      * headers.
                      */
-                    const apr_array_header_t *arr = apr_table_elts(r->headers_in);
+                    const apr_array_header_t
+                        *arr = apr_table_elts(r->headers_in);
+
                     elts = (const apr_table_entry_t *) arr->elts;
                     val = NULL;
                     for (j = 0; j < arr->nelts; ++j) {
