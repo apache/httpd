@@ -61,6 +61,8 @@ requests</description>
     running the server. Some admins use user <code>nobody</code>,
     but this is not always possible or desirable.</p>
 
+    <example>Group www-group</example>
+
     <p>Note: if you start the server as a non-root user, it will
     fail to change to the specified group, and will instead
     continue to run as the group of the original user.</p>
