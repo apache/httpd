@@ -53,6 +53,13 @@ RELEASE SHOWSTOPPERS:
            Does the current cvs work with existing db files, or not?
            If not, let's fix it.  If unknown, it isn't a showstopper.
 
+    * need to ensure it compiles properly on win32 before rolling the 
+      tarball, and that no last minute changes break it
+
+    * WARNING-NT.TXT; why did Roy remove it?  Either we have to agree to
+      remove it from the installer, etc. or it has to go back.  
+          Marc: -1 on a release without it without some justification
+
 Documentation that needs writing:
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
