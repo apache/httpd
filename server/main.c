@@ -337,8 +337,8 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_destroy_pool(ptemp);
 
     for (;;) {
-	ap_create_context(&ptemp, pconf);
 	ap_clear_pool(pconf);
+	ap_create_context(&ptemp, pconf);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(pconf, ptemp, confname);
