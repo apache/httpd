@@ -1577,9 +1577,10 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     ap_cfg_closefile(cfp);
 }
 
-AP_DECLARE(void) ap_process_config_tree(server_rec *s,
-                                        ap_directive_t *conftree,
-                                        apr_pool_t *p, apr_pool_t *ptemp)
+AP_DECLARE(int) ap_process_config_tree(server_rec *s,
+                                       ap_directive_t *conftree,
+                                       apr_pool_t *p,
+                                       apr_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1599,8 +1600,10 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s,
                      parms.err_directive->filename);
         ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
                      "%s", errmsg);
-        exit(1);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    return OK;
 }
 
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,

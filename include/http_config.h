@@ -927,9 +927,12 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
  * @param conftree The config tree to process
  * @param p The pool for general allocation
  * @param ptemp The pool for temporary allocations
+ * @return OK if no problems
  */
-AP_DECLARE(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
-                                        apr_pool_t *p, apr_pool_t *ptemp);
+AP_DECLARE(int) ap_process_config_tree(server_rec *s,
+                                       ap_directive_t *conftree,
+                                       apr_pool_t *p,
+                                       apr_pool_t *ptemp);
 
 /* Module-method dispatchers, also for http_request.c */
 /**
