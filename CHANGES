@@ -1,4 +1,8 @@
 Changes with Apache 2.0.35
+
+  *) add compat layer to support RSA SSLC 1.x and 2.x in mod_ssl
+     [Jon Travis, John Barbee, William Rowe, Ryan Bloom, Doug MacEachern]
+
   *) Add a new parameter to the quick_handler hook to instruct
      quick handlers to optionally do a lookup rather than actually 
      serve content. This is the first of several changes required fix
