@@ -63,6 +63,7 @@ ap_clear_table
 ap_close_piped_log
 ap_construct_server
 ap_construct_url
+ap_content_type_tolower
 ap_copy_array
 ap_copy_array_hdr
 ap_copy_table
