@@ -1308,7 +1308,8 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     apr_size_t i, nbytes, combined_len = 0;
     apr_status_t rv;
     const char *eol = APR_EOL_STR;
-    int eolc = 0, found_nl = 0;
+    apr_size_t eolc = 0;
+    int found_nl = 0;
     result_list *buflist = NULL, *curbuf = NULL;
 
 #ifndef NO_WRITEV
