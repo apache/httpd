@@ -1,5 +1,8 @@
 Changes with Apache 2.0.27-dev
 
+  *) Moved all ldap modules from the core to httpd-ldap sub-project
+     [Ryan Bloom]
+
   *) Exit when we can't listen on any of the configured ports.  This
      is the same behavior as 1.3, and it avoids having the MPMs to
      deal with bogus ap_listen_rec structures.  [Jeff Trawick]
