@@ -243,9 +243,14 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 
     Rhapsody:*:*:*)
 	case "${MACHINE}" in
-	    Power*) MACHINE=powerpc ;;
+	    "Power Macintosh") MACHINE=powerpc ;;
 	esac
 	echo "${MACHINE}-apple-rhapsody${RELEASE}"; exit 0
+	;;
+
+    "Mac OS":*:*:*)
+	MACHINE=`uname -p`
+	echo "${MACHINE}-apple-macos${RELEASE}"; exit 0
 	;;
 
     "RISC iX":*)

@@ -384,12 +384,18 @@ typedef int pid_t;
 #define NO_USE_SIGACTION
 #define HAVE_SYSLOG 1
 
-#elif defined(RHAPSODY) /* Mac OS X Server */
+#elif defined(MAC_OS) || defined(MAC_OS_X_SERVER) /* Mac OS (>= 10.0) and Mac OS X Server (<= 5.x) */
+#define HAVE_DYLD
+#ifdef MAC_OS_X_SERVER
+#define DYLD_CANT_UNLOAD
+#endif /* MAC_OS_X_SERVER */
 #define HAVE_GMTOFF
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #define USE_MMAP_SCOREBOARD
+#ifdef MAC_OS_X_SERVER
 #define MAP_TMPFILE
+#endif /* MAC_OS_X_SERVER */
 #define HAVE_RESOURCE
 #define HAVE_SNPRINTF
 #define JMP_BUF jmp_buf
@@ -397,26 +403,52 @@ typedef int pid_t;
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 /*
- * If you are using APACI, (you should be on Rhapsody) these
- * values are set at configure time. These are here as reference;
- * the apache that is built into Rhapsody is configured with
- * these values.
+ * If you are using APACI, (you probably should be on Mac OS) these
+ * values are set at configure time.
  */
-#if 0
+#ifndef HTTPD_ROOT
 #define HTTPD_ROOT              "/Local/Library/WebServer"
+#endif
+#ifndef DOCUMENT_LOCATION
 #define DOCUMENT_LOCATION       HTTPD_ROOT "/Documents"
+#endif
+#ifndef DEFAULT_XFERLOG
 #define DEFAULT_XFERLOG         "Logs/Access"
+#endif
+#ifndef DEFAULT_ERRORLOG
 #define DEFAULT_ERRORLOG        "Logs/Errors"
+#endif
+#ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG          "Logs/Process"
+#endif
+#ifndef DEFAULT_SCOREBOARD
 #define DEFAULT_SCOREBOARD      "Logs/Status"
+#endif
+#ifndef DEFAULT_LOCKFILE
 #define DEFAULT_LOCKFILE        "Logs/Lock"
+#endif
+#ifndef SERVER_CONFIG_FILE
 #define SERVER_CONFIG_FILE      "Configuration/Server"
+#endif
+#ifndef RESOURCE_CONFIG_FILE
 #define RESOURCE_CONFIG_FILE    "Configuration/Resources"
+#endif
+#ifndef TYPES_CONFIG_FILE
 #define TYPES_CONFIG_FILE       "Configuration/MIME"
+#endif
+#ifndef ACCESS_CONFIG_FILE
 #define ACCESS_CONFIG_FILE      "Configuration/Access"
+#endif
+#ifndef DEFAULT_USER_DIR
 #define DEFAULT_USER_DIR        "Library/Web Documents"
-#define DEFAULT_USER            "nobody"
-#define DEFAULT_GROUP           "nogroup"
+#endif
+#ifndef DEFAULT_USER
+#define DEFAULT_USER            "www"
+#endif
+#ifndef DEFAULT_GROUP
+#define DEFAULT_GROUP           "www"
+#endif
+#ifndef DEFAULT_PATH
 #define DEFAULT_PATH            "/bin:/usr/bin:/usr/local/bin"
 #endif
 
@@ -934,7 +966,7 @@ typedef int rlim_t;
  * __private_extern__.
  * For other systems, make that a no-op.
  */
-#if defined(RHAPSODY)
+#if defined(MAC_OS) || defined(MAC_OS_X_SERVER)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern
