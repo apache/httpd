@@ -1,4 +1,9 @@
 Changes with Apache 2.0.41
+
+  *) Fixed mod_rewrite's RewriteMap prg: support so that request/response
+     pairs will no longer get out of sync with each other.  PR 9534
+     [Cliff Woolley]
+
   *) Fixes required to get quoted and escaped command args working in
      mod_ext_filter. PR 11793 [Paul J. Reder]
 

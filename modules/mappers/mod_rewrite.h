@@ -467,8 +467,8 @@ static apr_status_t rewritelock_remove(void *data);
 static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p);
 static apr_status_t rewritemap_program_child(apr_pool_t *p, 
                                              const char *progname, char **argv,
-                                             apr_file_t **fpout, apr_file_t **fpin,
-                                             apr_file_t **fperr);
+                                             apr_file_t **fpout,
+                                             apr_file_t **fpin);
 
     /* env variable support */
 static char *lookup_variable(request_rec *r, char *var);

@@ -3405,12 +3405,8 @@ static apr_status_t rewritelock_remove(void *data)
 static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 {
     rewrite_server_conf *conf;
-    apr_file_t *fpin = NULL;
-    apr_file_t *fpout = NULL;
-    apr_file_t *fperr = NULL;
     apr_array_header_t *rewritemaps;
     rewritemap_entry *entries;
-    rewritemap_entry *map;
     int i;
     apr_status_t rc;
 
@@ -3426,7 +3422,10 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
     rewritemaps = conf->rewritemaps;
     entries = (rewritemap_entry *)rewritemaps->elts;
     for (i = 0; i < rewritemaps->nelts; i++) {
-        map = &entries[i];
+        apr_file_t *fpin = NULL;
+        apr_file_t *fpout = NULL;
+        rewritemap_entry *map = &entries[i];
+
         if (map->type != MAPTYPE_PRG) {
             continue;
         }
@@ -3436,10 +3435,8 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
             || map->fpout != NULL        ) {
             continue;
         }
-        fpin  = NULL;
-        fpout = NULL;
         rc = rewritemap_program_child(p, map->argv[0], map->argv,
-                                     &fpout, &fpin, &fperr);
+                                      &fpout, &fpin);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                          "mod_rewrite: could not startup RewriteMap "
@@ -3448,7 +3445,6 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         }
         map->fpin  = fpin;
         map->fpout = fpout;
-        map->fperr = fperr;
     }
     return APR_SUCCESS;
 }
@@ -3456,17 +3452,16 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 /* child process code */
 static apr_status_t rewritemap_program_child(apr_pool_t *p, 
                                              const char *progname, char **argv,
-                                             apr_file_t **fpout, apr_file_t **fpin,
-                                             apr_file_t **fperr)
+                                             apr_file_t **fpout,
+                                             apr_file_t **fpin)
 {
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
     if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK,
-                                  APR_FULL_NONBLOCK,
-                                  APR_FULL_NONBLOCK)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK,
+                                   APR_NO_PIPE)) != APR_SUCCESS) ||
         ((rc = apr_procattr_dir_set(procattr, 
                                    ap_make_dirstr_parent(p, argv[0])))
          != APR_SUCCESS) ||
@@ -3487,10 +3482,6 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
 
             if (fpout) {
                 (*fpout) = procnew->out;
-            }
-
-            if (fperr) {
-                (*fperr) = procnew->err;
             }
         }
     }
