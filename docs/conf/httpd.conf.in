@@ -365,9 +365,7 @@ DefaultType text/plain
 # contents of the file itself to determine its type.  The MIMEMagicFile
 # directive tells the module where the hint definitions are located.
 #
-<IfModule mime_magic_module>
-    MIMEMagicFile @rel_sysconfdir@/magic
-</IfModule>
+#MIMEMagicFile @rel_sysconfdir@/magic
 
 #
 # Customizable error responses come in three flavors:
