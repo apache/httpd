@@ -42,10 +42,11 @@
      o If you want to be informed about new code releases, bug fixes,
        security fixes, general news and information about the Apache server
        subscribe to the apache-announce mailing list as described under
-       http://httpd.apache.org/announcelist.html
+       http://httpd.apache.org/lists.html#http-announce
 
      o If you want freely available support for running Apache please join the
-       Apache user community by subscribing to one of the following USENET
+       Apache user community by subscribing to Users Mailing List at
+       http://httpd.apache.org/userslist.html or one of the following USENET
        newsgroups:
        comp.infosystems.www.servers.unix
        comp.infosystems.www.servers.ms-windows
@@ -62,7 +63,7 @@
 
      o If you want to participate in actively developing Apache please
        subscribe to the `dev@httpd.apache.org' mailing list as described at
-       http://www.apache.org/foundation/mailinglists.html#http
+       http://www.apache.org/lists.html#http-dev
 
   Acknowledgments
   ----------------
