@@ -175,6 +175,9 @@ if test "$apache_need_sdbm" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS sdbm"
   AP_LIBS="$AP_LIBS lib/sdbm/libsdbm.la"
   INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/sdbm"
+else
+  echo "Adding sdbm to the include list anyway until aputil configuration works..."
+  INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/sdbm"
 fi
 if test "$apache_need_expat" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS expat-lite"
