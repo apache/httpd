@@ -170,6 +170,7 @@ ap_is_directory
 ap_is_fnmatch
 ap_is_initial_req
 ap_is_matchexp
+ap_is_rdirectory
 ap_is_url
 ap_keepalive_timeout
 ap_kill_cleanup
@@ -343,6 +344,7 @@ ap_start_shutdown
 ap_str_tolower
 ap_strcasecmp_match
 ap_strcmp_match
+ap_stripprefix
 ap_sub_req_lookup_file
 ap_sub_req_lookup_uri
 ap_sub_req_method_uri
