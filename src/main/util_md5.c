@@ -89,6 +89,7 @@
 
 API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
 {
+    const char *hex = "0123456789abcdef";
     AP_MD5_CTX my_md5;
     unsigned char hash[16];
     char *r, result[33];
@@ -102,8 +103,10 @@ API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
     ap_MD5Update(&my_md5, buf, length);
     ap_MD5Final(hash, &my_md5);
 
-    for (i = 0, r = result; i < 16; i++, r += 2)
-	sprintf(r, "%02x", hash[i]);
+    for (i = 0, r = result; i < 16; i++) {
+	*r++ = hex[hash[i] >> 4];
+	*r++ = hex[hash[i] & 0xF];
+    }
     *r = '\0';
 
     return ap_pstrdup(p, result);
