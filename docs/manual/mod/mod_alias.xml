@@ -72,7 +72,7 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
     <p>In particular, if you are creating an <code>Alias</code> to a
     directory outside of your <directive
-    module="code">DocumentRoot</directive>, you may need to explicitly
+    module="core">DocumentRoot</directive>, you may need to explicitly
     permit access to the target directory.</p>
 
     <example><title>Example:</title>

@@ -100,7 +100,7 @@
     they will apply.)</p>
 
     <p>In particular, if you are creating an <code>Alias</code> to a
-    directory outside of your <code class="directive"><a href="../mod/code.html#documentroot">DocumentRoot</a></code>, you may need to explicitly
+    directory outside of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, you may need to explicitly
     permit access to the target directory.</p>
 
     <div class="example"><h3>Example:</h3><p><code>

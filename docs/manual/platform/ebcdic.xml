@@ -369,7 +369,7 @@
       </tr>
 
       <tr>
-        <td><module>mod_digest</module></td>
+        <td><code>mod_digest</code></td>
         <td class="centered">+</td>
         <td></td>
       </tr>
@@ -429,13 +429,13 @@
       </tr>
 
       <tr>
-        <td><module>mod_log_agent</module></td>
+        <td><code>mod_log_agent</code></td>
         <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td><module>mod_log_config</module></td>
+        <td><code>mod_log_config</code></td>
         <td class="centered">+</td>
         <td></td>
       </tr>

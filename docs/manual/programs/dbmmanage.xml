@@ -21,8 +21,7 @@
     href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
 </summary>
 <seealso><a href="httpd.html">httpd</a></seealso>
-<seealso><module>mod_authn_dbm</module></seealso>
-<seealso><module>mod_authz_dbm</module></seealso>
+<seealso><module>mod_auth_dbm</module></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
     <p><code><strong>dbmmanage</strong> [ <var>encoding</var> ]

@@ -126,8 +126,8 @@
       server machine, in order that this activity not adversely affect
       server performance.</p>
 
-      <p>If you use any <code><code class="directive"><a href="../mod/access.html#allow">Allow</a></code> 
-      from domain</code> or <code><code class="directive"><a href="../mod/access.html#deny">Deny</a></code> from domain</code> 
+      <p>If you use any <code><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> 
+      from domain</code> or <code><code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> from domain</code> 
       directives (i.e., using a hostname, or a domain name, rather than
       an IP address) then you will pay for
       a double reverse DNS lookup (a reverse, followed by a forward
@@ -449,7 +449,7 @@
         <p>Since memory usage is such an important consideration in
         performance, you should attempt to eliminate modules that youare
         not actually using. If you have built the modules as <a href="../dso.html">DSOs</a>, eliminating modules is a simple
-        matter of commenting out the associated <code class="directive"><a href="../mod/so.html#loadmodule">LoadModule</a></code> directive for that module.
+        matter of commenting out the associated <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive for that module.
         This allows you to experiment with removing modules, and seeing
         if your site still functions in their absense.</p>
 
