@@ -95,6 +95,10 @@ struct nsrec {
  * statistics - obvious
  */
 
+#ifndef h_errno
+extern int h_errno; /* some machines don't have this in their headers */
+#endif
+
 /* largeste value for h_errno */
 #define MAX_ERR (NO_ADDRESS)
 #define UNKNOWN_ERR (MAX_ERR+1)
@@ -117,9 +121,6 @@ static void cgethost (struct in_addr ipnum, char *string, int check)
     struct nsrec **current, *new;
     struct hostent *hostdata;
     char *name;
-#ifndef h_errno
-    extern int h_errno; /* some machines don't have this in their headers */
-#endif
 
     current = &nscache[((ipnum.s_addr + (ipnum.s_addr >> 8) +
 			 (ipnum.s_addr >> 16) + (ipnum.s_addr >> 24)) % BUCKETS)];
