@@ -290,7 +290,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
     const char *etag;
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    apr_time_t mtime;
+    apr_int64_t mtime;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -309,8 +309,11 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 
     etag = apr_table_get(r->headers_out, "ETag");
 
+    /* All of our comparisons must be in seconds, because that's the
+     * highest time resolution the HTTP specification allows.
+     */
     /* XXX: we should define a "time unset" constant */
-    mtime = (r->mtime != 0) ? r->mtime : apr_time_now();
+    mtime = ((r->mtime != 0) ? r->mtime : apr_time_now()) / APR_USEC_PER_SEC;
 
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
@@ -334,7 +337,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
         if (if_unmodified != NULL) {
             apr_time_t ius = apr_date_parse_http(if_unmodified);
 
-            if ((ius != APR_DATE_BAD) && (mtime > ius)) {
+            if ((ius != APR_DATE_BAD) && (mtime > (ius / APR_USEC_PER_SEC))) {
                 return HTTP_PRECONDITION_FAILED;
             }
         }
@@ -387,9 +390,12 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
              && ((if_modified_since =
                   apr_table_get(r->headers_in,
                                 "If-Modified-Since")) != NULL)) {
-        apr_time_t ims = apr_date_parse_http(if_modified_since);
+        apr_int64_t ims, reqtime;
 
-        if ((ims >= mtime) && (ims <= r->request_time)) {
+        ims = apr_date_parse_http(if_modified_since) / APR_USEC_PER_SEC;
+        reqtime = r->request_time / APR_USEC_PER_SEC;
+
+        if ((ims >= mtime) && (ims <= reqtime)) {
             return HTTP_NOT_MODIFIED;
         }
     }
