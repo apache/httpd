@@ -158,21 +158,21 @@ static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
     a->conditionals = ap_append_arrays(p, base->conditionals,
-                                    overrides->conditionals);
+				       overrides->conditionals);
     return a;
 }
 
-/* any non-NULL magic constant will do... used to indicate if REG_ICASE should be
- * used */
+/* any non-NULL magic constant will do... used to indicate if REG_ICASE should
+ * be used */
 #define ICASE_MAGIC	((void *)(&setenvif_module))
 
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
-    char *fname, const char *args)
+				     char *fname, const char *args)
 {
     char *regex;
     const char *feature;
     sei_cfg_rec *sconf = ap_get_module_config(cmd->server->module_config,
-                                           &setenvif_module);
+					      &setenvif_module);
     sei_entry *new, *entries = (sei_entry *) sconf->conditionals->elts;
     char *var;
     int i;
@@ -183,7 +183,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     regex = ap_getword_conf(cmd->pool, &args);
     if (!*regex) {
         return ap_pstrcat(cmd->pool, "Missing regular expression for ",
-                        cmd->cmd->name, NULL);
+			  cmd->cmd->name, NULL);
     }
 
     /*
@@ -217,11 +217,11 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	new->regex = regex;
 	new->icase = icase;
 	new->preg = ap_pregcomp(cmd->pool, regex,
-			    (REG_EXTENDED | REG_NOSUB
-			    | (icase ? REG_ICASE : 0)));
+				(REG_EXTENDED | REG_NOSUB
+				 | (icase ? REG_ICASE : 0)));
 	if (new->preg == NULL) {
 	    return ap_pstrcat(cmd->pool, cmd->cmd->name,
-			    " regex could not be compiled.", NULL);
+			      " regex could not be compiled.", NULL);
 	}
 	new->features = ap_make_table(cmd->pool, 2);
 
@@ -248,10 +248,11 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	new = &entries[i];
     }
 
-    for (;;) {
+    for ( ; ; ) {
 	feature = ap_getword_conf(cmd->pool, &args);
-	if(!*feature)
+	if (!*feature) {
 	    break;
+	}
         beenhere++;
 
         var = ap_getword(cmd->pool, &feature, '=');
@@ -268,13 +269,14 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
     if (!beenhere) {
         return ap_pstrcat(cmd->pool, "Missing envariable expression for ",
-                        cmd->cmd->name, NULL);
+			  cmd->cmd->name, NULL);
     }
 
     return NULL;
 }
 
-static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
+static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
+				const char *args)
 {
     char *fname;
 
@@ -282,7 +284,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
     fname = ap_getword_conf(cmd->pool, &args);
     if (!*fname) {
         return ap_pstrcat(cmd->pool, "Missing header-field name for ",
-                        cmd->cmd->name, NULL);
+			  cmd->cmd->name, NULL);
     }
     return add_setenvif_core(cmd, mconfig, fname, args);
 }
@@ -299,28 +301,30 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
 
 static const command_rec setenvif_module_cmds[] =
 {
-    {"SetEnvIf", add_setenvif, NULL,
-     RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables."},
-    {"SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
-     RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables."},
-    {"BrowserMatch", add_browser, NULL,
-     RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables."},
-    {"BrowserMatchNoCase", add_browser, ICASE_MAGIC,
-     RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables."},
-    {NULL},
+    { "SetEnvIf", add_setenvif, NULL,
+      RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables." },
+    { "SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
+      RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables." },
+    { "BrowserMatch", add_browser, NULL,
+      RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables." },
+    { "BrowserMatchNoCase", add_browser, ICASE_MAGIC,
+      RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables." },
+    { NULL },
 };
 
 static int match_headers(request_rec *r)
 {
     server_rec *s = r->server;
-    sei_cfg_rec *sconf = (sei_cfg_rec *) ap_get_module_config(s->module_config,
-                                                           &setenvif_module);
-    sei_entry *entries = (sei_entry *) sconf->conditionals->elts;
+    sei_cfg_rec *sconf;
+    sei_entry *entries;
     table_entry *elts;
     const char *val;
     int i, j;
     char *last_name;
 
+    sconf = (sei_cfg_rec *) ap_get_module_config(s->module_config,
+						 &setenvif_module);
+    entries = (sei_entry *) sconf->conditionals->elts;
     last_name = NULL;
     val = NULL;
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
@@ -339,7 +343,7 @@ static int match_headers(request_rec *r)
 		break;
 	    case SPECIAL_REMOTE_HOST:
 		val =  ap_get_remote_host(r->connection, r->per_dir_config,
-					    REMOTE_NAME);
+					  REMOTE_NAME);
 		break;
 	    case SPECIAL_REMOTE_USER:
 		val = r->connection->user;
