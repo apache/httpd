@@ -49,7 +49,10 @@ to, and a log file format.
 The first argument is the filename to log to. This is used
 exactly like the argument to <code>TransferLog</code>, that is,
 it is either a file as a full path or relative to the current
-server root, or |programname. <p>
+server root, or |programname.  Be aware that anyone who can write to
+the directory where a log file is written can gain access to the uid
+that starts the server.  See the <A HREF="misc/security_tips.html">
+security tips</A> document for details.<p>
 
 The format argument specifies a format for each line of the log file.
 The options available for the format are exactly the same as for

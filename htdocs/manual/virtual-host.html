@@ -130,6 +130,14 @@ in the VirtualHost directive, with the exception of
 
 <P>
 
+<EM>SECURITY:</EM> When specifying where to write log files, be aware
+of some security risks which are present if anyone other than the
+user that starts Apache has write access to the directory where they
+are written.  See the <A HREF="misc/security_tips.html">security
+tips</A> document for details.
+
+<P>
+
 <H2>File Handle/Resource Limits:</H2>
 When using a large number of Virtual Hosts, Apache may run out of available
 file descriptors if each Virtual Host specifies different log files.
