@@ -2255,7 +2255,7 @@ static int handle_printenv(ap_bucket *in, request_rec *r, const char *error)
 
 /* This is a stub which parses a file descriptor. */
 
-static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r, 
+static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r, 
                                 ap_filter_t *f)
 {
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
@@ -2265,7 +2265,7 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
     int if_nesting;
     int printing;
     int conditional_status;
-    ap_bucket *dptr = AP_BRIGADE_FIRST(bb);
+    ap_bucket *dptr = AP_BRIGADE_FIRST(*bb);
     ap_bucket *tagbuck, *dptr2;
     ap_bucket *endsec;
     ap_bucket_brigade *tag_and_after;
@@ -2289,12 +2289,12 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
-    AP_BRIGADE_FOREACH(dptr, bb) {
-        if ((tagbuck = find_string(dptr, STARTING_SEQUENCE, AP_BRIGADE_LAST(bb))) != NULL) {
+    AP_BRIGADE_FOREACH(dptr, *bb) {
+        if ((tagbuck = find_string(dptr, STARTING_SEQUENCE, AP_BRIGADE_LAST(*bb))) != NULL) {
             dptr2 = tagbuck;
             dptr = tagbuck;
-            while (dptr2 != AP_BRIGADE_SENTINEL(bb) && 
-                  (endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(bb))) == NULL) {
+            while (dptr2 != AP_BRIGADE_SENTINEL(*bb) && 
+                  (endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(*bb))) == NULL) {
                 dptr2 = AP_BUCKET_NEXT(dptr2);
             }
             if (endsec == NULL) {
@@ -2316,9 +2316,9 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
 		ap_rputs(error, r);
                 return;
             }
-            tag_and_after = ap_brigade_split(bb, dptr);
-            ap_pass_brigade(f->next, bb); /* process what came before the tag */
-            bb = tag_and_after;
+            tag_and_after = ap_brigade_split(*bb, dptr);
+            ap_pass_brigade(f->next, *bb); /* process what came before the tag */
+            *bb = tag_and_after;
             if (!strcmp(directive, "if")) {
                 if (!printing) {
                     if_nesting++;
@@ -2513,7 +2513,7 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
     ap_bsetopt(r->connection->client, BO_WXLATE, &ap_hdrs_to_ascii);
 #endif
 
-    send_parsed_content(b, r, f);
+    send_parsed_content(&b, r, f);
     ap_pass_brigade(f->next, b);
 
     if (parent) {
