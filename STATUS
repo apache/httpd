@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/10/31 05:57:52 $]
+  Last modified at [$Date: 2003/02/04 19:08:59 $]
 
 Release:
 
@@ -29,16 +29,16 @@ Release:
    1.3.11: Tagged and rolled Jan. 19, 2000. Released/announced on the 21st.
    1.3.10: Not released.
              (Pulled at "last minute" due to a build bug in the MPE port)
-    1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
+    1.3.9: Tagged and rolled on Aug. 16, 1999. Released and announced on 19th.
     1.3.8: Not released.
     1.3.7: Not released.
-    1.3.6: Tagged and rolled on Mar. 22. Released and announced on 24th.
+    1.3.6: Tagged and rolled on Mar. 22, 1999. Released and announced on 24th.
     1.3.5: Not released.
-    1.3.4: Tagged and rolled on Jan. 9.  Released on 11th, announced on 12th.
-    1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
-    1.3.2: Tagged and rolled on Sep. 21. Announced and released on 23rd.
-    1.3.1: Tagged and rolled on July 19. Announced and released.
-    1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
+    1.3.4: Tagged and rolled on Jan. 9, 1999.  Released on 11th, announced on 12th.
+    1.3.3: Tagged and rolled on Oct. 7, 1998.  Released on 9th, announced on 10th.
+    1.3.2: Tagged and rolled on Sep. 21, 1998. Announced and released on 23rd.
+    1.3.1: Tagged and rolled on July 19, 1998. Announced and released.
+    1.3.0: Tagged and rolled on June 1, 1998.  Announced and released on the 6th.
            
     2.0  : Available for general use, see httpd-2.0 repository
 
