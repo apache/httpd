@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/15 13:28:14 $]
+Last modified at [$Date: 2003/07/15 17:56:48 $]
 
 Release:
 
@@ -294,6 +294,12 @@ PATCHES TO PORT FROM 2.1
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
         modules/generators/mod_autoindex.c r1.120
+      +1: nd
+
+    * Ignore RewriteRules in .htaccess files if the directory
+      containing the .htaccess file is requested without a trailing slash.
+      PR 20195.
+        modules/mappers/mod_rewrite.c: r1.156
       +1: nd
 
 CURRENT RELEASE NOTES:
