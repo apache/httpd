@@ -646,6 +646,20 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         }
     }
 
+    if (*readbytes == -1) {
+        apr_bucket *e;
+        apr_off_t total;
+        APR_BRIGADE_FOREACH(e, ctx->b) {
+            const char *str;
+            apr_size_t len;
+            apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+        }
+        apr_brigade_length(b, 1, &total);
+        *readbytes = total;
+        e = apr_bucket_eos_create();
+        APR_BRIGADE_INSERT_TAIL(b, e);
+        return APR_SUCCESS;
+    }
     /* readbytes == 0 is "read a single line". otherwise, read a block. */
     if (*readbytes) {
         apr_off_t total;
