@@ -48,7 +48,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName server.domain.tld
 
     NameVirtualHost *
@@ -90,7 +90,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName server.domain.tld
 
     NameVirtualHost 111.22.33.44 
@@ -135,7 +135,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName www.domain.tld
     DocumentRoot /www/domain
 
@@ -197,7 +197,7 @@
        to serve multiple ports.  By defining the
        ports in the "NameVirtualHost" tag, you can allow this to
        work. If you try using <VirtualHost name:port> without the
-       NameVirtualHost name:port or you try to use the Port
+       NameVirtualHost name:port or you try to use the Listen
        directive, your configuration will not work.
        <P>
 
@@ -252,7 +252,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     DocumentRoot /www/domain
     ServerName www.domain.tld
 
@@ -276,7 +276,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName server.domain.tld
     
     &lt;VirtualHost 111.22.33.44&gt;
@@ -313,7 +313,6 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
     Listen 111.22.33.44:80
     Listen 111.22.33.55:8080
     ServerName server.domain.tld
@@ -360,7 +359,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName server.domain.tld
 
     NameVirtualHost 111.22.33.44
@@ -531,7 +530,7 @@
 
     <BLOCKQUOTE><PRE>
     ...
-    Port 80
+    Listen 80
     ServerName www.domain.tld
     DocumentRoot /www/domain
 
