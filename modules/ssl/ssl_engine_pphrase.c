@@ -312,7 +312,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 
             if (pPrivateKey == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                        "Init: Unable to read server private key from file %s perhaps it is in a seperate file? [Hint: SSLCertificateKeyFile]", szPath);
+                        "Init: Unable to read server private key from file %s [Hint: Perhaps it is in a separate file?  See SSLCertificateKeyFile]", szPath);
                 ssl_die();
             }
 
