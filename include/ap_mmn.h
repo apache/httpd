@@ -105,12 +105,13 @@
  * 20020329 (2.0.35-dev) bump for addition of freelists to bucket API
  * 20020329.1 (2.0.36) minor bump for new arg to opt fn ap_cgi_build_command
  * 20020506 (2.0.37-dev) Removed r->boundary in request_rec.
+ * 20020529 (2.0.37-dev) Standardized the names of some apr_pool_*_set funcs
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020506
+#define MODULE_MAGIC_NUMBER_MAJOR 20020529
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
