@@ -2,9 +2,11 @@
 #
 # instdso.sh - install Apache DSO modules
 #
-# usually this just passes through to libtool but on a few
-# platforms libtool doesn't install DSOs exactly like we'd
-# want so more effort is required
+# we use this instead of libtool --install because:
+# 1) on a few platforms libtool doesn't install DSOs exactly like we'd
+#    want (weird names, doesn't remove DSO first)
+# 2) we never want the .la files copied, so we might as well copy
+#    the .so files ourselves
 
 if test "$#" != "3"; then
     echo "wrong number of arguments to instdso.sh"
@@ -17,9 +19,6 @@ DSOARCHIVE=$2
 TARGETDIR=$3
 DSOBASE=`echo $DSOARCHIVE | sed -e 's/\.la$//'`
 TARGET_NAME="$DSOBASE.so"
-
-# special logic for systems where libtool doesn't install
-# the DSO exactly like we'd want
 
 SYS=`uname -s`
 case $SYS in
@@ -45,7 +44,7 @@ case $SYS in
         $CMD || exit $?
         ;;
     *)
-        CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR"
+        CMD="cp .libs/$TARGET_NAME $TARGETDIR/$TARGET_NAME"
         echo $CMD
         $CMD || exit $?
         ;;
