@@ -301,9 +301,12 @@ remains, move onto the next test.
 <LI>Select the variants with the highest 'level' media parameter
   (used to give the version of text/html media types).
 
-<LI>Select only unencoded variants, if there is a mix of encoded
-  and non-encoded variants. If either all variants are encoded
-  or all variants are not encoded, select all.
+<LI>Select the variants with the best encoding. If there are
+  variants with an encoding that is acceptable to the user-agent,
+  select only these variants. Otherwise if there is a mix of encoded
+  and non-encoded variants, select only the unencoded variants.
+  If either all variants are encoded or all variants are not encoded, 
+  select all variants.
 
 <LI>Select only variants with acceptable charset media parameters,
   as given on the Accept-Charset header line. Charset ISO-8859-1
