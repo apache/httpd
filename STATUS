@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/14 15:09:40 $]
+Last modified at [$Date: 2003/07/14 17:06:14 $]
 
 Release:
 
@@ -64,6 +64,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * mod_rewrite.c: Fix mod_rewrite's support of the [P] option to send
+      rewritten request using "proxy:". The code was adding multiple "proxy:"
+      fields in the rewritten URI. PR: 13946.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.153&r2=1.154
+      +1: rederpj
 
     * ap_get_mime_headers_core(): Remove LWS between header token and ':'
       delimeter. (2616 compliance)
