@@ -135,7 +135,7 @@ shows the virtualhost settings).</dd>
 <dt><code>-t</code></dt>
 
 <dd>Run syntax tests for configuration files only.  The program
-immediately exits after these syntax parsing with either a return code
+immediately exits after these syntax parsing tests with either a return code
 of 0 (Syntax OK) or return code not equal to 0 (Syntax Error).  If -D
 <var>DUMP</var>_<var>VHOSTS </var>is also set, details of the virtual host
 configuration will be printed.</dd>

@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "DBMMANAGE" 1 "2003-05-10" "Apache HTTP Server" "dbmmanage"
+.TH "DBMMANAGE" 1 "2004-01-06" "Apache HTTP Server" "dbmmanage"
 
 .SH NAME
 dbmmanage \- Manage user authentication files in DBM format
@@ -117,7 +117,7 @@ Just displays the contents of the DBM file\&. If you specify a \fIusername\fR, i
 One should be aware that there are a number of different DBM file formats in existence, and with all likelihood, libraries for more than one format may exist on your system\&. The three primary examples are SDBM, NDBM, the GNU project's GDBM, and Berkeley DB 2\&. Unfortunately, all these libraries use different file formats, and you must make sure that the file format used by \fIfilename\fR is the same format that dbmmanage expects to see\&. dbmmanage currently has no way of determining what type of DBM file it is looking at\&. If used against the wrong format, will simply return nothing, or may create a different DBM file with a different name, or at worst, it may corrupt the DBM file if you were attempting to write to it\&.
  
 .PP
-dbmmanage has a list of DBM format preferences, defined by the @AnyDBM::ISA array near the beginning of the program\&. Since we prefer the Berkeley DB 2 file format, the order in which dbmmanage will look for system libraries is Berkeley DB 2, then NDBM, then GDBM and then SDBM\&. The first library found will be the library dbmmanage will attempt to use for all DBM file transactions\&. This ordering is slightly different than the standard @AnyDBM::ISA ordering in perl, as well as the ordering used by the simple dbmopen() call in Perl, so if you use any other utilities to manage your DBM files, they must also follow this preference ordering\&. Similar care must be taken if using programs in other languages, like C, to access these files\&.
+dbmmanage has a list of DBM format preferences, defined by the @AnyDBM::ISA array near the beginning of the program\&. Since we prefer the Berkeley DB 2 file format, the order in which dbmmanage will look for system libraries is Berkeley DB 2, then NDBM, then GDBM and then SDBM\&. The first library found will be the library dbmmanage will attempt to use for all DBM file transactions\&. This ordering is slightly different than the standard @AnyDBM::ISA ordering in Perl, as well as the ordering used by the simple dbmopen() call in Perl, so if you use any other utilities to manage your DBM files, they must also follow this preference ordering\&. Similar care must be taken if using programs in other languages, like C, to access these files\&.
  
 .PP
 One can usually use the file program supplied with most Unix systems to see what format a DBM file is in\&.
