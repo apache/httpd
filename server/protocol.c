@@ -756,15 +756,25 @@ AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
 
 AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
 {
-    if (!strcasecmp(ap_auth_type(r), "Basic"))
-        ap_note_basic_auth_failure(r);
-    else if (!strcasecmp(ap_auth_type(r), "Digest"))
-        ap_note_digest_auth_failure(r);
+    const char *type = ap_auth_type(r);
+    if (type) {
+        if (!strcasecmp(type, "Basic"))
+            ap_note_basic_auth_failure(r);
+        else if (!strcasecmp(type, "Digest"))
+            ap_note_digest_auth_failure(r);
+    }
+    /* XXX: else there is no AuthType configured
+     *      should we log an error or something ?
+     */
 }
 
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
 {
-    if (strcasecmp(ap_auth_type(r), "Basic"))
+    const char *type = ap_auth_type(r);
+    /* if there is no AuthType configure or it is something other than
+     * Basic, let ap_note_auth_failure() deal with it
+     */
+    if (!type || strcasecmp(type, "Basic"))
         ap_note_auth_failure(r);
     else
         apr_table_setn(r->err_headers_out,
