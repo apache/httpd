@@ -957,8 +957,9 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    ;;
 	*-linux2)
+		LD_SHLIB="gcc"
 	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB="-shared"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    SHLIB_SUFFIX_DEPTH=0

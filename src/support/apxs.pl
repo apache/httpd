@@ -382,7 +382,11 @@ if ($opt_c) {
     $opt = '';
     my ($opt_Wl, $opt_L, $opt_l);
     foreach $opt_Wl (@opt_W) {
-        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
+		if($CFG_LD_SHLIB ne "gcc") {
+	        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
+		} else {
+	        $opt .= " -W$opt_Wl";
+		}
     }
     foreach $opt_L (@opt_L) {
         $opt .= " -L$opt_L";
