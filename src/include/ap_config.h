@@ -310,22 +310,50 @@ typedef int pid_t;
 #define HAVE_SYSLOG
 
 #elif defined(LINUX)
+
 #if LINUX > 1
 #include <features.h>
+
+/* libc4 systems probably still work, it probably doesn't define
+ *  __GNU_LIBRARY__
+ * libc5 systems define __GNU_LIBRARY__ == 1, but don't define __GLIBC__
+ * glibc 2.x and later systems define __GNU_LIBRARY__ == 6, but list it as
+ * "deprecated in favour of __GLIBC__"; the value 6 will never be changed.
+ * glibc 1.x systems (i.e. redhat 4.x on sparc/alpha) should have
+ * __GLIBC__ < 2
+ * all glibc based systems need crypt.h
+ */
 #if defined(__GNU_LIBRARY__) && __GNU_LIBRARY__ > 1
-/* it's a glibc host */
 #include <crypt.h>
-#define NET_SIZE_T size_t
 #endif
+
+/* glibc 2.0.0 through 2.0.4 need size_t * here, where 2.0.5 needs socklen_t *
+ * there's no way to discern between these two libraries.  But using int should
+ * be portable because otherwise these libs would be hopelessly broken with
+ * reams of existing networking code.  We'll use socklen_t * for 2.1.x and
+ * later.
+ *
+ * int works for all the earlier libs, and is picked up by default later.
+ */
+#if defined(__GLIBC__) && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ > 0))
+#define NET_SIZE_T socklen_t
+#endif
+
 #define HAVE_SHMGET
 #define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
+
+/* glibc 2.1 and later finally define rlim_t */
+#if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
 typedef int rlim_t;
+#endif
 /* flock is faster ... but hasn't been tested on 1.x systems */
 #define USE_FLOCK_SERIALIZED_ACCEPT
+
 #else
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
+
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
