@@ -74,6 +74,7 @@ MPM</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#workerstacksize">WorkerStackSize</a></li>
 </ul>
 </div>
 

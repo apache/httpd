@@ -89,5 +89,7 @@ MPM</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>User</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>WorkerStackSize</name>
+</directivesynopsis>
 
 </modulesynopsis>
