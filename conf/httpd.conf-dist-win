@@ -187,6 +187,7 @@ ThreadsPerChild 50
 # Note: The order in which modules are loaded is important.  Don't change
 # the order below without expert advice.
 #
+#LoadModule vhost_alias_module modules/mod_vhost_alias.so
 #LoadModule anon_auth_module modules/mod_auth_anon.so
 #LoadModule dbm_auth_module modules/mod_auth_dbm.so
 #LoadModule digest_auth_module modules/mod_auth_digest.so
@@ -199,6 +200,7 @@ ThreadsPerChild 50
 #LoadModule speling_module modules/mod_speling.so
 #LoadModule info_module modules/mod_info.so
 #LoadModule status_module modules/mod_status.so
+#LoadModule unique_id_module modules/mod_unique_id.so
 #LoadModule usertrack_module modules/mod_usertrack.so
 
 #
