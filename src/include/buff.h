@@ -234,6 +234,14 @@ API_EXPORT(int) ap_bfileno(BUFF *fb, int direction);
 /* bflush() if a read now would block, but don't actually read anything */
 API_EXPORT(void) ap_bhalfduplex(BUFF *fb);
 
+#if defined(WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
+
+/* ap_recvwithtimeout/ap_sendwithtimeout socket primitives for WinSock */
+API_EXPORT(int) ap_sendwithtimeout(int sock, const char *buf, int len, int flags);
+API_EXPORT(int) ap_recvwithtimeout(int sock, char *buf, int len, int flags);
+
+#endif
+
 #ifdef __cplusplus
 }
 #endif
