@@ -175,7 +175,7 @@ static int log_child(ap_context_t *p, const char *progname,
 
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
-    signal(SIGHUP, SIG_IGN);
+    ap_signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
 
     if ((ap_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
@@ -585,7 +585,7 @@ static int piped_log_spawn(piped_log *pl)
 
     ap_cleanup_for_exec();
 #ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
+    ap_signal(SIGHUP, SIG_IGN);
 #endif
     if ((ap_createprocattr_init(&procattr, pl->p)         != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||

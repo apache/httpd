@@ -855,7 +855,7 @@ static int read_request_line(request_rec *r)
      * thread isn't used. - mvsk
 
 #ifdef SIGWINCH
-    signal(SIGWINCH, SIG_IGN);
+    ap_signal(SIGWINCH, SIG_IGN);
 #endif
     */
 
