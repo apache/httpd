@@ -379,13 +379,15 @@ static char *log_request_time(request_rec *r, char *a)
     }
     else {                      /* CLF format */
         char sign = (timz < 0 ? '-' : '+');
+	size_t l;
 
         if (timz < 0) {
             timz = -timz;
         }
 
         strftime(tstr, MAX_STRING_LEN, "[%d/%b/%Y:%H:%M:%S ", t);
-        ap_snprintf(tstr + strlen(tstr), sizeof(tstr) - strlen(tstr),
+	l = strlen(tstr);
+        ap_snprintf(tstr + l, sizeof(tstr) - l,
                     "%c%.2d%.2d]", sign, timz / 60, timz % 60);
     }
 
