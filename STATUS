@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/03 18:14:44 $]
+Last modified at [$Date: 2002/06/03 22:10:58 $]
 
 Release:
 
@@ -56,14 +56,6 @@ RELEASE SHOWSTOPPERS:
     * Reverse proxy broken
       Message-ID: <3CFA9315.4030003@apache.org>
 
-    * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
-      to fix, probably just some extraneous #include's that are fouling
-      things up.
-      PR: 9457
-      Jeff: See my reply and patch in the PR (and previous commit to
-      stop using "pipe" as a field name).  If patch is committed, we
-      should be okay.  I'll wait to see if the user tests the patch.
-
     * Win32: httpd won't start.  There was a command line args problem
       that got fixed, but now something else is wrong.
       Status: one problem here might be a "" argument being returned from
@@ -72,6 +64,7 @@ RELEASE SHOWSTOPPERS:
       Message-ID: <5.1.0.14.2.20020525222410.02a629d0@pop3.rowe-clan.net>
                   <00ca01c2033e$f1c54c10$a6271b09@sashimi>
                   <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
+      Analysis:   <00fe01c20b46$4a441fb0$16381b09@sashimi>
 
     * CWD issues
       Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
@@ -88,20 +81,13 @@ RELEASE SHOWSTOPPERS:
 
     * Chunked trailer support is broken.
       Message-ID: <20020531142047.W19485@apache.org>
-      Justin says: Without Ryan's commit that breaks trailers, we need a
-                   way to enforce that ap_discard_request_body can not be
-                   called twice.  I have some rough patches in my tree
-                   that attempt to resolve this by relocating the discard
-                   calls to the latest possible place for all handlers, but
-                   they don't yet pass all httpd-test cases.  More work is
-                   needed, and it won't fix third-party modules that are
-                   written incorrectly.  Another potential solution is to add
-                   r->eos_received to request_rec and HTTP_IN can set this
-                   whenever it returns EOS and if it receives another call
-                   after returning EOS, it can return EOS again.  However,
-                   where possible, I'd prefer to remove duplicate calls to
-                   ap_discard_request_body.  So, maybe both strategies are
-                   needed.
+      Status: Justin posted a series of patches to fix this to dev@httpd
+              which are waiting for review:
+                For the core and various modules:
+                  <20020602164041.N19485@apache.org>
+                For mod_dav:
+                  <20020602161511.K19485@apache.org>
+                  <20020602162838.L19485@apache.org>
 
 CURRENT VOTES:
 
@@ -139,6 +125,14 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
+      to fix, probably just some extraneous #include's that are fouling
+      things up.
+      PR: 9457
+      Jeff: See my reply and patch in the PR (and previous commit to
+      stop using "pipe" as a field name).  If patch is committed, we
+      should be okay.  I'll wait to see if the user tests the patch.
 
     * exec cmd and suexec arg-passing enhancements
       Status: Patches proposed
