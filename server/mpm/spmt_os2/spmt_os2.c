@@ -518,6 +518,7 @@ static void thread_main(void *thread_num_arg)
     *ppthread_globals = (struct thread_globals *)apr_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(thread_num) = (int)thread_num_arg;
     THREAD_GLOBAL(pchild) = pchild;
+    thread_control[THREAD_GLOBAL(thread_num)].generation = ap_scoreboard_image->global.running_generation;
     apr_pool_create(&ptrans, pchild);
 
     if (setup_listen_poll(pchild, &listen_poll)) {
@@ -743,7 +744,6 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->servers[0][slot].tid = tid;
-    thread_control[THREAD_GLOBAL(thread_num)].generation = ap_scoreboard_image->global.running_generation;
     return 0;
 }
 
