@@ -1505,7 +1505,7 @@ if [ "x$using_shlib" = "x1" ] ; then
         #    select the special subtarget for shared core generation
         SUBTARGET=target_shared
         #    determine additional suffixes for libhttpd.so
-        V=1 R=3 P=3
+	V=1 R=3 P=4
         if [ ".$SHLIB_SUFFIX_DEPTH" = .0 ]; then
             SHLIB_SUFFIX_LIST=""
         fi
