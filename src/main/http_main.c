@@ -6860,11 +6860,13 @@ int REALMAIN(int argc, char *argv[])
         clean_parent_exit(0);
     }
 
+#ifdef WIN32
     /* Handle -k start [with or without -n arg] later */
     if (signal_to_send && strcasecmp(signal_to_send, "start")) {
         send_signal(pconf, signal_to_send);
         clean_parent_exit(0);
     }
+#endif
     
 #ifndef NETWARE
     if (!child && !ap_dump_settings) { 
