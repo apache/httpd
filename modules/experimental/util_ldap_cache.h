@@ -73,22 +73,6 @@ struct util_ald_cache {
 
 };
 
-#if APR_HAS_THREADS
-#define LDAP_CACHE_LOCK_CREATE(p) \
-    if (!st->util_ldap_cache_lock) apr_thread_rwlock_create(&st->util_ldap_cache_lock, st->pool)
-#define LDAP_CACHE_WRLOCK() \
-    apr_thread_rwlock_wrlock(st->util_ldap_cache_lock)
-#define LDAP_CACHE_UNLOCK() \
-    apr_thread_rwlock_unlock(st->util_ldap_cache_lock)
-#define LDAP_CACHE_RDLOCK() \
-    apr_thread_rwlock_rdlock(st->util_ldap_cache_lock)
-#else
-#define LDAP_CACHE_LOCK_CREATE(p)
-#define LDAP_CACHE_WRLOCK()
-#define LDAP_CACHE_UNLOCK()
-#define LDAP_CACHE_RDLOCK()
-#endif
-
 #ifndef WIN32
 #define ALD_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
 #else
