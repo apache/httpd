@@ -579,6 +579,12 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
                                          apr_bucket_brigade *bb)
 {
     apr_status_t status = APR_SUCCESS;
+    SSLFilterRec *ctx = f->ctx;
+
+    if (!ctx->pssl) {
+        /* ssl_hook_CloseConnection has already been called */
+        return ap_pass_brigade(f->next, bb);
+    }
 
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
@@ -587,8 +593,6 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
          * These types do not require translation by OpenSSL.  
          */
         if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
-            SSLFilterRec *ctx = f->ctx;
-
             if ((status = BIO_bucket_flush(ctx->pbioWrite)) != APR_SUCCESS) {
                 return status;
             }
