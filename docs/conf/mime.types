@@ -17,11 +17,13 @@ application/andrew-inset	ez
 application/applefile
 application/atomicmail
 application/batch-SMTP
+application/beep+xml
 application/cals-1840
 application/commonground
 application/cybercash
 application/dca-rft
 application/dec-dx
+application/dvcs
 application/eshop
 application/http
 application/hyperstudio
@@ -33,6 +35,8 @@ application/index.response
 application/index.vnd
 application/iotp
 application/ipp
+application/isup
+application/font-tdpfr
 application/mac-binhex40	hqx
 application/mac-compactpro	cpt
 application/macwriteii
@@ -46,6 +50,7 @@ application/ocsp-request
 application/ocsp-response
 application/octet-stream	bin dms lha lzh exe class so dll
 application/oda			oda
+application/parityfec
 application/pdf			pdf
 application/pgp-encrypted
 application/pgp-keys
@@ -60,8 +65,10 @@ application/postscript		ai eps ps
 application/prs.alvestrand.titrax-sheet
 application/prs.cww
 application/prs.nprend
+application/qsig
 application/remote-printing
 application/riscos
+application/rtf
 application/sdp
 application/set-payment
 application/set-payment-initiation
@@ -69,14 +76,18 @@ application/set-registration
 application/set-registration-initiation
 application/sgml
 application/sgml-open-catalog
+application/sieve
 application/slate
 application/smil		smi smil
+application/timestamp-query
+application/timestamp-reply
 application/vemmi
 application/vnd.3M.Post-it-Notes
 application/vnd.FloGraphIt
 application/vnd.accpac.simply.aso
 application/vnd.accpac.simply.imp
 application/vnd.acucobol
+application/vnd.aether.imp
 application/vnd.anser-web-certificate-issue-initiation
 application/vnd.anser-web-funds-transfer-initiation
 application/vnd.audiograph
@@ -116,6 +127,7 @@ application/vnd.eudora.data
 application/vnd.fdf
 application/vnd.ffsns
 application/vnd.framemaker
+application/vnd.fsc.weblaunch
 application/vnd.fujitsu.oasys
 application/vnd.fujitsu.oasys2
 application/vnd.fujitsu.oasys3
@@ -132,6 +144,7 @@ application/vnd.groove-injector
 application/vnd.groove-tool-message
 application/vnd.groove-tool-template
 application/vnd.groove-vcard
+application/vnd.hhe.lesson-player
 application/vnd.hp-HPGL
 application/vnd.hp-PCL
 application/vnd.hp-PCLXL
@@ -139,6 +152,7 @@ application/vnd.hp-hpid
 application/vnd.hp-hps
 application/vnd.httphone
 application/vnd.hzn-3d-crossword
+application/vnd.ibm.afplinedata
 application/vnd.ibm.MiniPay
 application/vnd.ibm.modcap
 application/vnd.informix-visionary
@@ -147,6 +161,7 @@ application/vnd.intertrust.digibox
 application/vnd.intertrust.nncp
 application/vnd.intu.qbo
 application/vnd.intu.qfx
+application/vnd.irepository.package+xml
 application/vnd.is-xpr
 application/vnd.japannet-directory-service
 application/vnd.japannet-jpnstore-wakeup
@@ -191,6 +206,7 @@ application/vnd.ms-powerpoint	ppt
 application/vnd.ms-project
 application/vnd.ms-tnef
 application/vnd.ms-works
+application/vnd.mseq
 application/vnd.msign
 application/vnd.music-niff
 application/vnd.musician
@@ -202,6 +218,7 @@ application/vnd.novadigm.EDM
 application/vnd.novadigm.EDX
 application/vnd.novadigm.EXT
 application/vnd.osa.netdeploy
+application/vnd.palm
 application/vnd.pg.format
 application/vnd.pg.osasli
 application/vnd.powerbuilder6
@@ -212,6 +229,8 @@ application/vnd.powerbuilder75
 application/vnd.powerbuilder75-s
 application/vnd.previewsystems.box
 application/vnd.publishare-delta-tree
+application/vnd.pvi.ptid1
+application/vnd.pwg-xhtml-print+xml
 application/vnd.rapid
 application/vnd.s3sms
 application/vnd.seemail
@@ -219,16 +238,20 @@ application/vnd.shana.informed.formdata
 application/vnd.shana.informed.formtemplate
 application/vnd.shana.informed.interchange
 application/vnd.shana.informed.package
+application/vnd.sss-cod
+application/vnd.sss-dtf
+application/vnd.sss-ntf
 application/vnd.street-stream
 application/vnd.svd
 application/vnd.swiftview-ics
 application/vnd.triscape.mxs
 application/vnd.trueapp
 application/vnd.truedoc
+application/vnd.tve-trigger
 application/vnd.ufdl
 application/vnd.uplanet.alert
 application/vnd.uplanet.alert-wbxml
-application/vnd.uplanet.bearer-choi-wbxml
+application/vnd.uplanet.bearer-choice-wbxml
 application/vnd.uplanet.bearer-choice
 application/vnd.uplanet.cacheop
 application/vnd.uplanet.cacheop-wbxml
@@ -241,7 +264,9 @@ application/vnd.uplanet.listcmd-wbxml
 application/vnd.uplanet.signal
 application/vnd.vcx
 application/vnd.vectorworks
+application/vnd.vidsoft.vidconference
 application/vnd.visio
+application/vnd.vividence.scriptfile
 application/vnd.wap.sic
 application/vnd.wap.slc
 application/vnd.wap.wbxml	wbxml
@@ -291,15 +316,22 @@ application/x-ustar		ustar
 application/x-wais-source	src
 application/x400-bp
 application/xml
+application/xml-dtd
+application/xml-external-parsed-entity
 application/zip			zip
 audio/32kadpcm
 audio/basic			au snd
+audio/g.722.1
 audio/l16
 audio/midi			mid midi kar
+audio/mp4a-latm
+audio/mpa-robust
 audio/mpeg			mpga mp2 mp3
+audio/parityfec
 audio/prs.sid
 audio/telephone-event
 audio/tone
+audio/vnd.cisco.nse
 audio/vnd.cns.anp1
 audio/vnd.cns.inf1
 audio/vnd.digital-winds
@@ -308,6 +340,7 @@ audio/vnd.lucent.voice
 audio/vnd.nortel.vbk
 audio/vnd.nuera.ecelp4800
 audio/vnd.nuera.ecelp7470
+audio/vnd.nuera.ecelp9600
 audio/vnd.octel.sbc
 audio/vnd.qcelp
 audio/vnd.rhetorex.32kadpcm
@@ -388,6 +421,7 @@ text/css			css
 text/directory
 text/enriched
 text/html			html htm
+text/parityfec
 text/plain			asc txt
 text/prs.lines.tag
 text/rfc822-headers
@@ -415,13 +449,19 @@ text/vnd.wap.sl
 text/vnd.wap.wml		wml
 text/vnd.wap.wmlscript		wmls
 text/x-setext			etx
-text/xml			xml
+text/xml			xml xsl
+text/xml-external-parsed-entity
+video/mp4v-es
 video/mpeg			mpeg mpg mpe
+video/parityfec
 video/pointer
 video/quicktime			qt mov
 video/vnd.fvt
 video/vnd.motorola.video
 video/vnd.motorola.videop
+video/vnd.mpegurl
+video/vnd.mts
+video/vnd.nokia.interleaved-multimedia
 video/vnd.vivo
 video/x-msvideo			avi
 video/x-sgi-movie		movie
