@@ -1,5 +1,11 @@
 Changes with Apache 1.2
 
+  *) Fixed SIGSEGV problem when a DirectoryIndex file is also the source
+     of an external redirection.  [Roy Fielding and Paul Sutton]
+
+  *) Configure would create a broken Makefile if the configuration file
+     contained a commented-out Rule.  [Roy Fielding]
+
   *) Promote per_dir_config and subprocess_env from the subrequest to the
      main request in mod_negotiation.  In particular this fixes a bug
      where <Files> sections wouldn't properly apply to negotiated content.

@@ -820,6 +820,19 @@ int handle_dir (request_rec *r)
 	    return OK;
 	}
 
+	/* If the request returned a redirect, propagate it to the client */
+
+	if (is_HTTP_REDIRECT(rr->status)) {
+	    error_notfound = rr->status;
+	    r->notes = overlay_tables(r->pool, r->notes, rr->notes);
+	    r->headers_out = overlay_tables(r->pool, r->headers_out,
+	                                            rr->headers_out);
+	    r->err_headers_out = overlay_tables(r->pool, r->err_headers_out,
+	                                                rr->err_headers_out);
+	    destroy_sub_req(rr);
+	    return error_notfound;
+	}
+            
 	/* If the request returned something other than 404 (or 200),
 	 * it means the module encountered some sort of problem. To be
 	 * secure, we should return the error, rather than create
