@@ -3665,6 +3665,7 @@ static APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
 static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
+    apr_bucket_brigade *more;  /* definition moved to foil a gdb bug */
     conn_rec *c = f->c;
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
@@ -3690,7 +3691,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         apr_bucket *e;
 
         /* tail of brigade if we need another pass */
-        apr_bucket_brigade *more = NULL;
+        more = NULL;
 
         /* one group of iovecs per pass over the brigade */
         apr_size_t nvec = 0;
@@ -4003,6 +4004,27 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * created the resource
          */
         if (ctx->deferred_write_pool) {
+            if (more) {
+                if (APR_BRIGADE_EMPTY(more)) {
+                    /* the usual case - prevent the next loop iteration
+                     * from referencing a brigade which lives in a
+                     * cleared pool
+                     */
+                    more = NULL;
+                }
+                else {
+                    /* change the lifetime of "more" to the connection's
+                     * lifetime
+                     *
+                     * XXX a shorter lifetime would be better for long-running
+                     * keep-alive connections...might be able to use the
+                     * input brigade's pool
+                     */
+                    apr_bucket_brigade *tmp_more = more;
+                    more = NULL;
+                    ap_save_brigade(f, &more, &tmp_more, c->pool);
+                }
+            }
             apr_pool_clear(ctx->deferred_write_pool);  
         }
         if (rv != APR_SUCCESS) {
