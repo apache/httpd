@@ -75,7 +75,7 @@
     <li>Einige Betriebssysteme und Netzwerkanlagen setzen Techniken zum 
       Bandbreiten-Management ein, die nicht zwischen Hosts unterscheiden
       können, wenn diese nicht auf verschiedenen IP-Adressen liegen.</li>
-	</ul>
+    </ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -89,7 +89,10 @@
     der Direktive <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     eingestellt. Im Normalfall, wenn alle IP-Adressen des Server verwendet
     werden sollen, können Sie <code>*</code> als Argument für
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> verwenden. Beachten Sie,
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> verwenden. Wenn Sie
+    vorhaben, mehrere Ports zu nutzen (etwa wenn SSL läuft), sollten
+    Sie dem Argument einen Port hinzufügen, wie zum Beispiel
+    <code>*:80</code>. Beachten Sie,
     dass die Angabe einer IP-Adresse in einer <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>-Anweisung den Server nicht
     automatisch an dieser Adresse lauschen läßt. Lesen Sie bitte "<a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen und
     Ports</a>" für weitere Details. Zusätzlich muss jede hier
@@ -120,10 +123,10 @@
     die gleiche IP-Adresse zeigt. Dann fügen Sie einfach Folgendes der
     <code>httpd.conf</code> hinzu:</p>
 
-	<div class="example"><p><code>
-    NameVirtualHost *<br />
+    <div class="example"><p><code>
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
     ServerName www.domain.tld<br />
     ServerAlias domain.tld *.domain.tld<br />
@@ -131,12 +134,12 @@
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">ServerName www.otherdomain.tld<br />
     DocumentRoot /www/otherdomain<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-	</code></p></div>
+    </code></p></div>
 
   <p>Sie können anstelle des <code>*</code> bei den beiden Anweisungen 
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> und <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> alternativ eine 
@@ -152,9 +155,9 @@
     aufgeführten Namen alternative Namen sind, die man verwenden kann, um
     das gleiche Webangebot zu erreichen:</p>
 
-	<div class="example"><p><code>
+    <div class="example"><p><code>
     ServerAlias domain.tld *.domain.tld
-	</code></p></div>
+    </code></p></div>
 
   <p>Anfragen für alle Hosts der Domain <code>domain.tld</code> werden
     von dem virtuellen Host <code>www.domain.tld</code> bedient. Die
