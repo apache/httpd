@@ -10,7 +10,6 @@
  You may configure the design and markup of the documents by modifying
  the HTML files in the directory 'error/include'.
 
-
  Supported Languages:
  
   +-----------------------+------------------------------------------+
@@ -18,11 +17,12 @@
   +-----------------------+------------------------------------------+
   | Brazilian (pt-br)     | Ricardo Leite                            |
   | Dutch (nl/*)          | Peter Van Biesen                         |
-  | French (fr)           | Cecile de Crecy                          |
   | English (en)          | Lars Eilebrecht                          |
+  | French (fr)           | Cecile de Crecy                          |
   | German (de)           | Lars Eilebrecht                          |
+  | Italian (it)          | Luigi Rosa                               |
+  | Romanian (ro)         | Andrei Besleaga                          |
   | Spanish (es)          | Karla Quintero                           |
-  | Italian (fr)          | Luigi Rosa                               |
   | Swedish (sv)          | Thomas Sjögren                           |
   +-----------------------+------------------------------------------+
   (Please see http://httpd.apache.org/docs-project/ if you would

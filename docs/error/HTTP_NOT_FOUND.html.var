@@ -218,3 +218,29 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Obiectul nu a fost gasit!"
+--><!--#include virtual="include/top.html" -->
+
+    URL-ul cerut nu a fost gasit pe acest server.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Link-ul de pe
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
+    de unde ati venit</a> pare a fi gresit sau invechit. Va rugam informati autorul
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">acestei pagini</a>
+    despre eroare.
+
+  <!--#else -->
+
+    Daca ati introdus URL-ul manual, va rugam verificati
+    corectitudinea si incercati din nou.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

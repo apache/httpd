@@ -185,3 +185,24 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Accesul interzis!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    Nu aveti permisiunea sa accesati directorul cerut.
+    Nu este nici un document index sau directorul este protejat la citire.
+
+  <!--#else -->
+
+    Nu aveti permisiunea sa accesati obiectul cerut.
+    Este protejat la citire sau nu poate fi citit de server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
