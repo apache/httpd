@@ -580,9 +580,10 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
     apr_pool_t *tpool;		/* Pool for this thread           */
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     apr_socket_t *sd = NULL;
+    volatile int last_pollfd = 0;
+    volatile int thread_just_started = 1;
     int srv;
-    int curr_pollfd, last_pollfd = 0;
-    int thread_just_started = 1;
+    int curr_pollfd;
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
     apr_pollfd_t *pollset;
@@ -877,7 +878,6 @@ static void child_main(int child_num_arg)
     int i;
     ap_listen_rec *lr;
     apr_status_t rv;
-    apr_thread_t *thread;
 
     my_pid = getpid();
     child_num = child_num_arg;
