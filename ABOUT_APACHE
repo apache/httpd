@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                              January 1998
+                               April 1998
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -67,33 +67,33 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 1 January 1998:
+Current Apache Group in alphabetical order as of 8 April 1998:
 
    Brian Behlendorf       Organic Online, California 
    Ken Coar               MeepZor Consulting, New England, USA 
-   Mark J. Cox            C2Net Europe, UK 
    Ralf S. Engelschall    Munich, Germany.
-   Roy T. Fielding        UC Irvine, California 
    Dean Gaudet            Transmeta Corporation, California 
    Rob Hartill            Internet Movie DB, UK 
    Jim Jagielski          jaguNET ISP, Maryland 
    Alexei Kosut           Stanford University, California 
    Martin Kraemer         Munich, Germany
    Ben Laurie             Freelance Consultant, UK 
-   Chuck Murcko           The Topsail Group, Pennsylvania 
    Doug MacEachern        TOG Research Institute, Massachusetts
-   Aram W. Mirzadeh       Qosina Corporation, New York 
    Sameer Parekh          C2Net, California 
    Paul Sutton            C2Net Europe, UK 
    Marc Slemko            Canada 
    Randy Terbush          Zyzzyva ISP, Nebraska 
    Dirk-Willem van Gulik  Freelance Consultant, Italy 
-   Andrew Wilson          Freelance Consultant, UK 
 
 Apache Emeritae (old group members now off doing other things)
 
+   Mark J. Cox            C2Net Europe, UK 
+   Roy T. Fielding        UC Irvine, California 
+   Aram W. Mirzadeh       Qosina Corporation, New York 
+   Chuck Murcko           The Topsail Group, Pennsylvania 
    David Robinson         Cambridge University, UK
    Robert S. Thau         MIT, Massachusetts
+   Andrew Wilson          Freelance Consultant, UK 
    
 Other major contributors
 
@@ -103,7 +103,7 @@ Other major contributors
    Kevin Hughes (creator of all those nifty icons),
    Henry Spencer (author of the regex library), Garey Smiley (OS/2 port),
    Howard Fear (mod_include), Florent Guillaume (language negotiation), 
-   Ambarish Malpani (NT port).
+   Ambarish Malpani (NT port), Ben Hyde (multi-platform build tests).
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
@@ -113,7 +113,7 @@ contribute ideas, patches, and testing.  In particular, Doug MacEachern
 
 Hundreds of people have made individual contributions to the Apache
 project.  Patch contributors are listed in the src/CHANGES file.
-Frequent contributors have included Petr Lampa, Tom Tromey,
+Frequent contributors have included Lars Eilebrecht, Petr Lampa, Tom Tromey,
 James H. Cloos Jr., Ed Korthof, Nathan Neulinger, Jason S. Clary,
 Jason A. Dour, Michael Douglass, Tony Sanders, Brian Tao, Michael Smith,
 Adam Sussman, Nathan Schrenk, Matthew Gray, and John Heidemann.
@@ -179,7 +179,7 @@ nominated by one member and unanimously approved by the voting members.
 In most cases, this "new" member has been actively contributing to the
 group's work for over six months, so it's usually an easy decision.
 
-The above describes our past and current (as of January 1998) guidelines,
+The above describes our past and current (as of April 1998) guidelines,
 which will probably change over time as the membership of the group
 changes and our development/coordination tools improve.
 

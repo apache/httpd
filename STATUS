@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul, Jim, Martin, Ralf, Randy, Brian, Ken
+         +1: Dean, Paul, Jim, Martin, Ralf, Randy, Brian, Ken
          +0:
          -1:
 
@@ -77,7 +77,7 @@ Committed Code Changes:
     * Martin's new URI parsing stuff (the source module main/util_uri.c)
     * New `%a' construct for LogFormat and CustomLog. PR#1885
     * Ralf's `Rule HIDE' feature for hiding the symbol namespace
-      -- vetoed by Roy, currently going with Ralf's replacement plan
+      -- under debate
     * Make \\ behave as expected.
     * Fix for "poly" directive in image maps. PR#1771
     * Reduce memory usage, and speed up ServerAlias support. PR#1531
@@ -118,7 +118,7 @@ Committed Code Changes:
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
     * Ken's change HIDE default to "yes", always include hide.h
-      -- vetoed by Roy, currently going with Ralf's replacement plan
+      -- under debate
     * Ralf's major Configure cleanup
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
@@ -171,51 +171,6 @@ Available Patches:
 
 In progress:
 
-    * The proposed steps of Roy for the big symbol renaming change:
-
-      NOTE: Roy won't even start down this path until there is at least
-            three +1 votes for the prefix option(s) applied (see below).
-
-        - completely remove HIDE stuff from
-             src/Configure, include/*, APACI, etc.
-
-        - tag the source tree
-          $ cd apache-1.3
-          $ cvs tag PRE_AP_PREFIX_RENAME .
-        - rename the source identifiers
-          $ cd apache-1.3/src/test/rename
-          $ make rename
-        - compile entire server (static variant)
-          $ cd apache-1.3
-          $ ./configure --prefix=/tmp/apache 
-                        --enable-module=most
-        - check symbols
-          $ cd apache-1.3/src
-          $ nm -g httpd |more
-        - check operation of server
-          $ cd apache-1.3
-          $ make install
-          $ /tmp/apache/sbin/apachectl start
-        - compile entire server (shared variant)
-          $ cd apache-1.3
-          $ ./configure --prefix=/tmp/apache 
-                        --enable-module=most
-                        --enable-shared=max
-        - check symbols
-          $ cd apache-1.3/src
-          $ nm -g httpd | egrep -v '_modules?$' | egrep -v 'apx?_' | grep -v '.o$'
-          $ nm -g httpd | more
-        - check operation of server
-          $ cd apache-1.3
-          $ make install
-          $ /tmp/apache/sbin/apachectl start
-        - commit
-          $ cd apache-1.3/src
-          $ cvs commit .
-        - tag the source tree
-          $ cd apache-1.3
-          $ cvs tag POST_AP_PREFIX_RENAME .
-   
     * Ralf's and Martin's enhancement to the DSO support in Apache
       to be able to support DSO under mostly all SVR4-variants, too. 
       This would be a major milestone for Apache's DSO support. It is done by
@@ -237,8 +192,6 @@ In progress:
 FINAL RELEASE SHOWSTOPPERS:
 
     * proxy security fixes from 1.2.5 need to be brought forward
-
-    * HIDE has been vetoed -- no release until it is removed/replaced
 
 Needs patch:
 
@@ -264,7 +217,7 @@ Open issues:
       1.3b6 and thus for the 1.3.x release branch via the
       apache-1.3/src/test/rename/rename.cf file as the configuration for the
       renaming. The used prefix or prefixes are configureable in the file.
-       +1: Roy, Ralf
+       +1: Ralf
         0: Marc
 
       NOTES:
@@ -277,14 +230,14 @@ Open issues:
     * What prefixes to use for the renaming:
 
         - Apache provided general functions (e.g., ap_cpystrn)
-            ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Roy, Randy
+            ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Randy
 
         - Public API functions (e.g., palloc)
-            ap_xxx:    +1: Ralf, Roy, Dean, Randy, Martin, Brian, Paul
+            ap_xxx:    +1: Ralf, Dean, Randy, Martin, Brian, Paul
 
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            ap_xxx:    +1: Roy, Dean, Randy, Martin, Brian, Paul
+            ap_xxx:    +1: Dean, Randy, Martin, Brian, Paul
 	               -0: Ralf
             apx_xxx:   +1: Ralf
             appri_xxx: +0: Ralf
@@ -293,7 +246,7 @@ Open issues:
           status_module) which are used special in Configure,
           mod_so, etc and have to be exported:
           [CANNOT BE DONE AUTOMATICALLY BY RENAME.PL!]
-            ..._module:+1: Roy [status quo], Dean
+            ..._module:+1: Dean
 	               +0: Ralf
             ap_xxx:    +1:
 	               -0: Ralf
@@ -423,9 +376,9 @@ Open issues:
 
     * 206 vs. 200 issue on Content-Length
 	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
-	Roy says current behavior is correct, but Alexei disagrees.
-	Marc sides with Alexei.  [Roy: This summary is incorrect -- we were
-        talking about two different PRs]
+	Roy says sending 200 is correct, but Alexei disagrees.
+	Marc sides with Alexei.  We were talking about two different PRs.
+        Apache should be sending 200 *and* Accept-Ranges.
 
     * Marc's socket options like source routing (kill them?)
 	Marc, Dean, Martin say Yes
@@ -443,7 +396,7 @@ Open issues:
 	  field is r->content_languages.  Heck it's not even mentioned in
 	  apache-devsite/mmn.txt when we got content_languages (note the s!).
 	  The proposal is to remove r->content_language:
-	    Status: Dean +1, Paul +1, Roy +1, Ralf +1, Ken +1
+	    Status: Dean +1, Paul +1, Ralf +1, Ken +1
 
 	- child_exit() is redundant, it can be implemented via cleanups.  It is
 	  not "symmetric" in the sense that there is no exit API method to go
@@ -452,7 +405,7 @@ Open issues:
 	  mod_mmap_static, and mod_php3 for example).  The proposal is to
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
-	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1, 
+	    Status: Dean +1, Rasmus +1, Paul +1, Jim +1, 
 	            Martin +1, Ralf +1, Ken +1
 
     * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
