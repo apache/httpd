@@ -1015,17 +1015,16 @@ static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
     ap_wait_t status;
-    ap_proc_t *pid;
+    ap_proc_t pid;
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        /* this is a memory leak, but I'll fix it later. */
-        pid = ap_wait_or_timeout(&status, pconf);
+        ap_wait_or_timeout(&status, &pid, pconf);
         
-        if (pid != NULL) {
-            process_child_status(pid, status);
+        if (pid.pid != -1) {
+            process_child_status(&pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(pid);
+            child_slot = find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 ap_mpmt_pthread_force_reset_connection_status(child_slot);
                 for (i = 0; i < ap_threads_per_child; i++)
@@ -1041,7 +1040,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (ap_reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1052,7 +1051,7 @@ static void server_main_loop(int remaining_children_to_start)
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0,
 		             ap_server_conf,
 		             "long lost child came home! (pid %ld)",
-		             (long)pid->pid);
+		             (long)pid.pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a

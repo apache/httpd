@@ -974,19 +974,19 @@ static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
     ap_wait_t status;
-    ap_proc_t *pid;
+    ap_proc_t pid;
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        pid = ap_wait_or_timeout(&status, pconf);
+        ap_wait_or_timeout(&status, &pid, pconf);
         
-        if (pid != NULL) {
-            process_child_status(pid, status);
+        if (pid.pid != -1) {
+            process_child_status(&pid, status);
             /* non-fatal death... note that it's gone in the child table and
              * clean out the status table. */
             child_slot = -1;
             for (i = 0; i < ap_max_daemons_limit; ++i) {
-        	if (ap_child_table[i].pid == pid->pid) {
+        	if (ap_child_table[i].pid == pid.pid) {
                     int j;
 
                     child_slot = i;
@@ -1009,7 +1009,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (ap_reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1021,7 +1021,7 @@ static void server_main_loop(int remaining_children_to_start)
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
                              ap_server_conf,
 			    "long lost child came home! (pid %ld)", 
-                             (long)pid->pid);
+                             (long)pid.pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a

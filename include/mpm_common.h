@@ -75,7 +75,7 @@ extern "C" {
 #endif
 
 void ap_reclaim_child_processes(int terminate);
-ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p);
+void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p);
 
 #ifdef __cplusplus
 }

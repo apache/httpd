@@ -176,11 +176,10 @@ void ap_reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
+void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
-    ap_proc_t *ret = ap_pcalloc(p, sizeof(*ret));
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
@@ -191,20 +190,22 @@ ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
     }
     rv = ap_wait_all_procs(ret, status, APR_NOWAIT, p);
     if (ap_canonical_error(rv) == APR_EINTR) {
-        return NULL;
+        ret->pid = -1;
+        return;
     }
     if (rv == APR_CHILD_DONE) {
-        return ret;
+        return;
     }
 #ifdef NEED_WAITPID
     if ((ret = reap_children(status)) > 0) {
-        return ret;
+        return;
     }
 #endif
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);
-    return NULL;
+    ret->pid = -1;
+    return;
 }
 
 
