@@ -285,11 +285,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
     SSL_set_tmp_rsa_callback(ssl, ssl_callback_TmpRSA);
     SSL_set_tmp_dh_callback(ssl,  ssl_callback_TmpDH);
 
-    /*
-     * Predefine some client verification results
-     */
-    apr_table_setn(c->notes, "ssl::verify::error", NULL);
-    apr_table_setn(c->notes, "ssl::verify::info", NULL);
     SSL_set_verify_result(ssl, X509_V_OK);
 
     /*
@@ -336,7 +331,6 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
     int n, err;
     X509 *xs;
-    char *cp = NULL;
     conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
@@ -412,8 +406,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
         verify_result = SSL_get_verify_result(pRec->pssl);
 
         if (verify_result != X509_V_OK ||
-            ((cp = (char *)apr_table_get(c->notes,
-                                         "ssl::verify::error")) != NULL))
+            sslconn->verify_error != NULL)
         {
             if (ssl_verify_error_is_optional(verify_result) &&
                 (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
@@ -433,11 +426,12 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
 
             }
             else {
-                const char *verror =
+                const char *error = sslconn->verify_error ?
+                    sslconn->verify_error :
                     X509_verify_cert_error_string(verify_result);
                 ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                         "SSL client authentication failed: %s",
-                        cp ? cp : verror ? verror : "unknown");
+                        error ? error : "unknown");
                 return ssl_abort(pRec, c);
             }
         }
@@ -446,7 +440,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
          * Remember the peer certificate's DN
          */
         if ((xs = SSL_get_peer_certificate(pRec->pssl)) != NULL) {
-            cp = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
+            char *cp = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
             sslconn->client_dn = apr_pstrdup(c->pool, cp);
             free(cp);
         }
