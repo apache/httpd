@@ -59,7 +59,7 @@ and other protocols.
 
 <HR>
 
-<A name="proxyrequests"><H2>ProxyRequests</H2></A>
+<H2><A NAME="proxyrequests">ProxyRequests</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -96,7 +96,7 @@ HREF="#proxypass">ProxyPass</A> directive.
 
 <HR>
 
-<A name="proxyremote"><H2>ProxyRemote</H2></A>
+<H2><A NAME="proxyremote">ProxyRemote</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -153,7 +153,7 @@ them.
 
 <HR>
 
-<A name="proxypass"><H2>ProxyPass</H2></A>
+<H2><A NAME="proxypass">ProxyPass</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -200,7 +200,7 @@ internally converted into a proxy request to
 
 <HR>
 
-<A name="proxyblock"><H2>ProxyBlock</H2></A>
+<H2><A NAME="proxyblock">ProxyBlock</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -255,7 +255,7 @@ blocks connections to all sites.
 
 <HR>
 
-<A name="noproxy"><H2>NoProxy</H2></A>
+<H2><A NAME="noproxy">NoProxy</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -392,7 +392,7 @@ The arguments to the NoProxy directive are one of the following type list:
 
 <HR>
 
-<A name="proxydomain"><H2>ProxyDomain</H2></A>
+<H2><A NAME="proxydomain">ProxyDomain</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -439,7 +439,7 @@ Example:
 
 <HR>
 
-<A name="cacheroot"><H2>CacheRoot</H2></A>
+<H2><A NAME="cacheroot">CacheRoot</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -476,7 +476,7 @@ by the httpd server.
 
 <HR>
 
-<A name="cachesize"><H2>CacheSize</H2></A>
+<H2><A NAME="cachesize">CacheSize</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -513,7 +513,7 @@ until the usage is at or below this setting.
 
 <HR>
 
-<A name="cachegcinterval"><H2>CacheGcInterval</H2></A>
+<H2><A NAME="cachegcinterval">CacheGcInterval</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -549,7 +549,7 @@ usage is greater than that set by CacheSize.
 
 <HR>
 
-<A name="cachemaxexpire"><H2>CacheMaxExpire</H2></A>
+<H2><A NAME="cachemaxexpire">CacheMaxExpire</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -587,7 +587,7 @@ was supplied with the document.
 
 <HR>
 
-<A name="cachelastmodifiedfactor"><H2>CacheLastModifiedFactor</H2></A>
+<H2><A NAME="cachelastmodifiedfactor">CacheLastModifiedFactor</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -631,7 +631,7 @@ then the latter takes precedence.
 
 <HR>
 
-<A name="cachedirlevels"><H2>CacheDirLevels</H2></A>
+<H2><A NAME="cachedirlevels">CacheDirLevels</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -667,7 +667,7 @@ Cached data will be saved this many directory levels below CacheRoot.
 
 <HR>
 
-<A name="cachedirlength"><H2>CacheDirLength</H2></A>
+<H2><A NAME="cachedirlength">CacheDirLength</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -702,7 +702,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 
 <HR>
 
-<A name="cachedefaultexpire"><H2>CacheDefaultExpire</H2></A>
+<H2><A NAME="cachedefaultexpire">CacheDefaultExpire</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -740,7 +740,7 @@ override this setting.
 
 <HR>
 
-<A name="nocache"><H2>NoCache</H2></A>
+<H2><A NAME="nocache">NoCache</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -796,7 +796,7 @@ disables caching completely.<P>
 
 <HR>
 
-<A name="configs"><H2>Common configuration topics</H2></A>
+<H2><A NAME="configs">Common configuration topics</A></H2>
 
 <UL>
 <LI><A HREF="#access">Controlling access to your proxy</A>
@@ -808,7 +808,7 @@ disables caching completely.<P>
 <LI><A HREF="#intranet">What other functions are useful for an intranet proxy server?</A>
 </UL>
 
-<H2><A name="access">Controlling access to your proxy</A></H2>
+<H2><A NAME="access">Controlling access to your proxy</A></H2>
 
 You can control who can access your proxy via the normal &lt;Directory&gt;
 control block using the following example:<P>
@@ -826,14 +826,14 @@ allow from [machines you'd like to allow by IP address or name]
 A &lt;Files&gt; block will also work, and is the only method known to work
 for all possible URLs in Apache versions earlier than 1.2b10.<P>
 
-<H2><A name="shortname">Using Netscape hostname shortcuts</A></H2>
+<H2><A NAME="shortname">Using Netscape hostname shortcuts</A></H2>
 
 There is an optional patch to the proxy module to allow Netscape-like
-hostname shortcuts to be used. It's available
-<A HREF="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch">
-here</A>.<P>
+hostname shortcuts to be used. It's available from the
+<A HREF="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch"
+><SAMP>contrib/patches/1.2</SAMP></A> directory on the Apache Web site.<P>
 
-<H2><A name="mimetypes">Why doesn't file type <EM>xxx</EM> download via FTP?</A></H2>
+<H2><A NAME="mimetypes">Why doesn't file type <EM>xxx</EM> download via FTP?</A></H2>
 
 You probably don't have that particular file type defined as
 <EM>application/octet-stream</EM> in your proxy's mime.types configuration
@@ -843,14 +843,14 @@ file. A useful line can be<P>
 application/octet-stream        bin dms lha lzh exe class tgz taz
 </PRE>
 
-<H2><A name="type">How can I force an FTP ASCII download of File <EM>xxx</EM>?</A></H2>
+<H2><A NAME="type">How can I force an FTP ASCII download of File <EM>xxx</EM>?</A></H2>
 
 In the rare situation where you must download a specific file using the FTP
 <STRONG>ASCII</STRONG> transfer method (while the default transfer is in
 <STRONG>binary</STRONG> mode), you can override mod_proxy's default by
 suffixing the request with <SAMP>;type=a</SAMP> to force an ASCII transfer.<P>
 
-<H2><A name="startup">Why does Apache start more slowly when using the
+<H2><A NAME="startup">Why does Apache start more slowly when using the
         proxy module?</A></H2>
 
 If you're using the <CODE>ProxyBlock</CODE> or <CODE>NoCache</CODE>
@@ -858,7 +858,7 @@ directives, hostnames' IP addresses are looked up and cached during
 startup for later match test. This may take a few seconds (or more)
 depending on the speed with which the hostname lookups occur.<P>
 
-<H2><A name="socks">Can I use the Apache proxy module with my SOCKS proxy?</A></H2>
+<H2><A NAME="socks">Can I use the Apache proxy module with my SOCKS proxy?</A></H2>
 
 Yes. Just build Apache with the rule <CODE>SOCKS4=yes</CODE> in your
 <EM>Configuration</EM> file, and follow the instructions there. SOCKS5
@@ -874,7 +874,7 @@ Remember that you'll also have to grant access to your Apache proxy machine by
 permitting connections on the appropriate ports in your SOCKS daemon's
 configuration.<P>
 
-<H2><A name="intranet">What other functions are useful for an intranet proxy server?</A></H2>
+<H2><A NAME="intranet">What other functions are useful for an intranet proxy server?</A></H2>
 
 <P>An Apache proxy server situated in an intranet needs to forward external
 requests through the company's firewall. However, when it has to access
