@@ -453,6 +453,10 @@ ServerSignature On
 
         SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|pt-br|ru)/ prefer-language=$1
         RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|pt-br|ru)){2,}(/.*)?$ /manual/$1$2
+
+        LanguagePriority en de es fr ja ko pt-br ru 
+        ForceLanguagePriority Prefer Fallback
+
     </Directory>
 
     #
