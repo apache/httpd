@@ -82,7 +82,7 @@ static int decodeenc(char *x)
     if (x[0] == '\0')
 	return 0;		/* special case for no characters */
     for (i = 0, j = 0; x[i] != '\0'; i++, j++) {
-/* decode it if not already done */
+        /* decode it if not already done */
 	ch = x[i];
 	if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
 	    ch = ap_proxy_hex2c(&x[i + 1]);
@@ -777,22 +777,23 @@ PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf
     if (i == -1) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-#if 0
     if (i == 120) {
-	/* RFC2068 states:
-	 * 14.38 Retry-After
+	/* RFC2616 states:
+	 * 14.37 Retry-After
 	 * 
 	 *  The Retry-After response-header field can be used with a 503 (Service
 	 *  Unavailable) response to indicate how long the service is expected to
-	 *  be unavailable to the requesting client. The value of this field can
-	 *  be either an HTTP-date or an integer number of seconds (in decimal)
+	 *  be unavailable to the requesting client. [...] The value of this field
+	 *  can be either an HTTP-date or an integer number of seconds (in decimal)
 	 *  after the time of the response.
 	 *     Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
 	 */
-	ap_table_add(r->headers_out, "Retry-After", apr_psprintf(p, "%u", 60*wait_mins);
+	for (i=0 ; buffer[i] && !isdigit(buffer[i]); i++);
+	if (buffer[i]) {
+	    ap_table_add(r->headers_out, "Retry-After", apr_psprintf(p, "%lu", 60*atol(buffer+i)));
+	}
 	return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, buffer);
     }
-#endif
     if (i != 220) {
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
