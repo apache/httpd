@@ -496,11 +496,22 @@ static const char *
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
-
-    new = apr_array_push(conf->aliases);
-    new->fake = f;
-    new->real = r;
-    return NULL;
+		if (r!=NULL && cmd->path == NULL ) {
+			new = apr_array_push(conf->aliases);
+			new->fake = f;
+			new->real = r;
+		} else if (r==NULL && cmd->path != NULL) {
+			new = apr_array_push(conf->aliases);
+			new->fake = cmd->path;
+			new->real = f;
+		} else {
+			if ( r== NULL)
+				return "ProxyPass needs a path when not defined in a location";
+			else 
+				return "ProxyPass can not have a path when defined in a location";
+		}
+  
+     return NULL;
 }
 
 static const char *
@@ -512,9 +523,21 @@ static const char *
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
                                                   &proxy_module);
-    new = apr_array_push(conf->raliases);
-    new->fake = f;
-    new->real = r;
+		if (r!=NULL && cmd->path == NULL ) {
+			new = apr_array_push(conf->raliases);
+			new->fake = f;
+			new->real = r;
+		} else if (r==NULL && cmd->path != NULL) {
+			new = apr_array_push(conf->raliases);
+			new->fake = cmd->path;
+			new->real = f;
+		} else {
+			if ( r == NULL)
+				return "ProxyPassReverse needs a path when not defined in a location";
+			else 
+				return "ProxyPassReverse can not have a path when defined in a location";
+		}
+  
     return NULL;
 }
 
@@ -709,9 +732,9 @@ static const command_rec proxy_cmds[] =
      "on if the true proxy requests should be accepted"),
     AP_INIT_TAKE2("ProxyRemote", add_proxy, NULL, RSRC_CONF,
      "a scheme, partial URL or '*' and a proxy server"),
-    AP_INIT_TAKE2("ProxyPass", add_pass, NULL, RSRC_CONF,
+    AP_INIT_TAKE12("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
-    AP_INIT_TAKE2("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF,
+    AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
     AP_INIT_ITERATE("ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF,
      "A list of names, hosts or domains to which the proxy will not connect"),
