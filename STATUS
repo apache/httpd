@@ -143,10 +143,15 @@ Committed Code Changes:
     * r->allowed cleanup
     * References to undefined 'cwd' cell fixed in suexec.c
     * fix options/allowoverride merging
+    * tweak some table sizes
+    * fix r->hostname port stripping
     * Ken's restructuring the header files into src/include
+    * UseCanonicalName
+    * default_port/http_method
+    * ap_read/ap_write
+    * minor r->finfo handling cleanups
 
 Available Patches:
-
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
