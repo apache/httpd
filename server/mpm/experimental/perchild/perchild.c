@@ -1465,6 +1465,7 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 
     if (debug) {
         foreground = one_process = 1;
+        no_detach = 0;
     }
     else {
         one_process = ap_exists_config_define("ONE_PROCESS");
