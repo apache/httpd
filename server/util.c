@@ -599,8 +599,7 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
     int l;
 
     if (last_slash == NULL) {
-	/* XXX: well this is really broken if this happens */
-	return (apr_pstrdup(p, "/"));
+	return NULL;
     }
     l = (last_slash - s) + 1;
     d = apr_palloc(p, l + 1);
