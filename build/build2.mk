@@ -88,8 +88,8 @@ aclocal.m4: acinclude.m4 srclib/apr/apr_common.m4 srclib/apr/hints.m4 $(libtool_
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
 
-export_lists:
-	@build/buildexports.sh server/exports.c srclib/apr/apr.exports
+export_lists: $(aprutil_configure) $(apr_configure)
+	@build/buildexports.sh server/exports.c srclib/apr/apr.exports srclib/apr-util/aprutil.exports
 
 $(LT_TARGETS):
 	libtoolize $(AMFLAGS) --force
@@ -118,9 +118,9 @@ $(apr_private.h_in): $(apr_configure) srclib/apr/acconfig.h
 	@rm -f $@
 	(cd srclib/apr && autoheader)
 
-$(aprutil_configure): srclib/apr-util/configure.in
+$(aprutil_configure): srclib/apr-util/configure.in 
 	@echo rebuilding $@
-	(cd srclib/apr-util && ./buildconf.sh)
+	(cd srclib/apr-util && ./buildconf.sh ../apr)
 
 $(apr_configure): srclib/apr/aclocal.m4 srclib/apr/configure.in srclib/apr/apr_common.m4 srclib/apr/hints.m4
 	@echo rebuilding $@
