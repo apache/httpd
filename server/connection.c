@@ -192,8 +192,8 @@ void ap_lingering_close(conn_rec *c)
      * which seems to work well), close the connection.
      */
     timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
+    apr_setsocketopt(c->client_socket, APR_SO_TIMEOUT, timeout);
     for (;;) {
-        apr_setsocketopt(c->client_socket, APR_SO_TIMEOUT, timeout);
         nbytes = sizeof(dummybuf);
         rc = apr_recv(c->client_socket, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
