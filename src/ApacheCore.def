@@ -324,4 +324,5 @@ EXPORTS
 	ap_make_etag   @317
 	ap_array_pstrcat   @318
 	ap_os_is_filename_valid   @319
+	ap_find_opaque_token   @320
 
