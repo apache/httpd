@@ -114,7 +114,7 @@
 #include "http_protocol.h"
 #include "mod_rewrite.h"
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
 #include "unixd.h"
 #endif
 
@@ -4153,13 +4153,6 @@ static char *find_char_in_brackets(char *s, int c, int left, int right)
 ** Module paraphernalia
 **
 */
-
-#ifdef NETWARE
-int main(int argc, char *argv[]) 
-{
-    ExitThread(TSR_THREAD, 0);
-}
-#endif
 
     /* the apr_table_t of commands we provide */
 static const command_rec command_table[] = {
