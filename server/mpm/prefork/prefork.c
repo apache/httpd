@@ -973,6 +973,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int index;
     int remaining_children_to_start;
 
+    ap_log_pid(pconf, ap_pid_fname);
+
     first_server_limit = server_limit;
     if (changed_limit_at_restart) {
         ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
@@ -1182,7 +1184,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-
 /* This really should be a post_config hook, but the error log is already
  * redirected by that point, so we need to do this in the open_logs phase.
  */
@@ -1198,8 +1199,6 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                      NULL, "no listening sockets available, shutting down");
 	return DONE;
     }
-
-    ap_log_pid(pconf, ap_pid_fname);
 
     if ((rv = ap_mpm_pod_open(pconf, &pod))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
@@ -1260,8 +1259,11 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 
 static void prefork_hooks(apr_pool_t *p)
 {
+    /* The prefork open_logs phase must run before the core's, or stderr
+     * will be redirected to a file, and the messages won't print to the
+     * console.
+     */
     static const char *const aszSucc[] = {"core.c", NULL};
-
 
 #ifdef AUX3
     (void) set42sig();

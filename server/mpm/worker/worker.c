@@ -1288,8 +1288,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int remaining_children_to_start;
     apr_status_t rv;
 
-    pconf = _pconf;
-    ap_server_conf = s;
+    ap_log_pid(pconf, ap_pid_fname);
+
     first_server_limit = server_limit;
     first_thread_limit = thread_limit;
     if (changed_limit_at_restart) {
@@ -1299,21 +1299,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         changed_limit_at_restart = 0;
     }
     
-    if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
-        /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
-            "no listening sockets available, shutting down");
-        return 1;
-    }
-
-    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "Could not open pipe-of-death.");
-        return 1;
-    }
-
-    ap_log_pid(pconf, ap_pid_fname);
-
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
                                  ap_server_root_relative(_pconf, ap_lock_fname),
@@ -1456,6 +1441,30 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
+/* This really should be a post_config hook, but the error log is already
+ * redirected by that point, so we need to do this in the open_logs phase.
+ */
+static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    apr_status_t rv;
+
+    pconf = p;
+    ap_server_conf = s;
+
+    if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0,
+                     NULL, "no listening sockets available, shutting down");
+        return DONE;
+    }
+
+    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
+                "Could not open pipe-of-death.");
+        return DONE;
+    }
+    return OK;
+}
+
 static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
                              apr_pool_t *ptemp)
 {
@@ -1546,8 +1555,14 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static void worker_hooks(apr_pool_t *p)
 {
+    /* The worker open_logs phase must run before the core's, or stderr
+     * will be redirected to a file, and the messages won't print to the
+     * console.
+     */
+    static const char *const aszSucc[] = {"core.c", NULL};
     one_process = 0;
 
+    ap_hook_open_logs(worker_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
     ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
