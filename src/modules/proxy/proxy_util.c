@@ -89,7 +89,7 @@ int proxy_hex2c(const char *x)
 	i += ch - ('a' - 10);
     return i;
 #else /*CHARSET_EBCDIC*/
-    return (1 == sscanf(x, "%2x", &i)) ? i : 0;
+    return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i&0xFF] : 0;
 #endif /*CHARSET_EBCDIC*/
 }
 
@@ -112,9 +112,10 @@ void proxy_c2hex(int ch, char *x)
 	x[2] = '0' + i;
 #else /*CHARSET_EBCDIC*/
     static const char ntoa[] = { "0123456789ABCDEF" };
+    ch &= 0xFF;
     x[0] = '%';
-    x[1] = ntoa[(ch>>4)&0x0F];
-    x[2] = ntoa[ch&0x0F];
+    x[1] = ntoa[(os_toascii[ch]>>4)&0x0F];
+    x[2] = ntoa[os_toascii[ch]&0x0F];
     x[3] = '\0';
 #endif /*CHARSET_EBCDIC*/
 }
