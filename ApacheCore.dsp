@@ -178,6 +178,10 @@ SOURCE=.\modules\standard\mod_autoindex.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\standard\mod_cgi.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\standard\mod_dir.c
 # End Source File
 # Begin Source File
