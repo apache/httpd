@@ -1,5 +1,5 @@
 Content-language: de
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
 informieren Sie bitte den
@@ -8,14 +8,14 @@ hier&uuml;ber.
 ----------de--
 
 Content-language: en
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
 If you think this is a server error, please contact
 the <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>.
 ----------en--
 
 Content-language: es
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 Favor de contactar al
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>
@@ -23,28 +23,28 @@ en caso de que usted crea que existe un error en el servidor.
 ----------es--
 
 Content-language: fr
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
 Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
 ----------fr--
 
 Content-language: nl
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
 Indien u van oordeel bent dat deze server in fout is, gelieve
 de <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a> te contacteren.
 ----------nl--
 
 Content-language: sv
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
 Om du tror att detta beror p&aring; ett serverfel, v&auml;nligen kontakta
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webbansvarig</a>.
 ----------sv--
 
 Content-language: it
-Content-type: text/html
+Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
 Se pensi che questo sia un errore del server, per favore contatta il
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>.
