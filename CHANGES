@@ -1,4 +1,10 @@
 Changes with Apache 2.0.18-dev
+  *) mod_log_config: %c connection status incorrectly logged
+     as "-" (non-keepalive) when MaxKeepAliveRequests is set to 0.
+     [Bill Stoddard]
+
+  *) Get mod_cern_meta working under Windows
+     [Bill Stoddard]
 
   *) Create Files, and thus MMAPs, out of the request pool, not the
      connection pool.  This solves a small resource leak that had us
