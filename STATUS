@@ -1,10 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/16 21:20:06 $]
+Last modified at [$Date: 2002/02/17 06:43:19 $]
 
 Release:
 
     2.0.33  : in development
-    2.0.32  : rolled Feburary 14, 2002.
+    2.0.32  : released Feburary 16, 2002.
     2.0.31  : rolled Feburary 1, 2002.  not released.
     2.0.30  : tagged January 8, 2002.  not rolled.
     2.0.29  : tagged November 27, 2001.  not rolled.
@@ -43,12 +43,7 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 32 status:
-      Rolled.
-        http://www.apache.org/dist/httpd/httpd-2.0.32-alpha.tar.gz
-      Tested on: Linux 2.4, Win2K, FreeBSD, AIX 
-      Release .32 as beta:
-        +1: trawick, Justin, FirstBill, Ian, Cliff, gregames
+    * 32 status: Released as beta.  Enjoy.
 
 FINAL RELEASE SHOWSTOPPERS:
 
@@ -80,6 +75,9 @@ FINAL RELEASE SHOWSTOPPERS:
       GA release:
           * Free lists for bucket allocation
           * Removal of APR_BRIGADE_NORMALIZE from the public bucket API
+      Justin says: "APR_BRIGADE_NORMALIZE is not a showstopper since no
+                    one uses it except for core_input_filter.  If its
+                    use was prevalent, that'd be a different story."
 
     * [Ken] Test suite failures:
       o worker is also failing some of the 'cgi' subtests
