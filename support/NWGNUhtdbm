@@ -107,6 +107,12 @@ NLM_DESCRIPTION	= HT Digest Utility for NetWare
 NLM_THREAD_NAME	= htdbm
 
 #
+# This is used by the '-screenname' directive.  If left blank,
+# 'Apache for NetWare' Thread will be used.
+#
+NLM_SCREEN_NAME = htdbm Password Management
+
+#
 # If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
