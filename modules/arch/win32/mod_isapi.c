@@ -433,7 +433,7 @@ apr_status_t isapi_handler (request_rec *r)
          * TODO: add the httpd.conf option for ReadAheadBuffer.
          */
         if (r->remaining) {
-            cid->ecb->cbTotalBytes = r->remaining;
+            cid->ecb->cbTotalBytes = (apr_size_t)r->remaining;
             if (cid->ecb->cbTotalBytes > cid->sconf->ReadAheadBuffer)
                 cid->ecb->cbAvailable = cid->sconf->ReadAheadBuffer;
             else
@@ -671,8 +671,9 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     DWORD read = 0;
     int res;
 
-    if (r->remaining < (long) *lpdwSize)
-        *lpdwSize = r->remaining;
+    if (r->remaining < *lpdwSize) {
+        *lpdwSize = (apr_size_t)r->remaining;
+    }
 
     while (read < *lpdwSize &&
            ((res = ap_get_client_block(r, (char*)lpvBuffer + read,
@@ -684,9 +685,9 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     return TRUE;
 }
 
-static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
-                                      const char *head, apr_size_t statlen,
-                                      apr_size_t headlen)
+static apr_ssize_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
+                                        const char *head, apr_size_t statlen,
+                                        apr_size_t headlen)
 {
     int termarg;
     char *termch;
@@ -729,7 +730,7 @@ static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
     /* Any data left is sent directly by the caller, all we
      * give back is the size of the headers we consumed
      */
-    if (termch && (termarg == 1) && headlen > (termch - head)) {
+    if (termch && (termarg == 1) && head + headlen > termch) {
         return termch - head;
     }
     return 0;
@@ -779,7 +780,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
     {
         /* Parse them out, or die trying */
         apr_size_t statlen = 0, headlen = 0;
-        int ate;
+        apr_ssize_t ate;
         if (lpvBuffer)
             statlen = strlen((char*) lpvBuffer);
         if (lpdwDataType)
@@ -791,7 +792,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             SetLastError(TODO_ERROR);
             return FALSE;
         }
-        else if (ate < headlen) {
+        else if ((apr_size_t)ate < headlen) {
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool);
@@ -912,36 +913,36 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
              * response headers, and without, pHead simply contains text
              * (handled after this case).
              */
-            apr_off_t ate = SendResponseHeaderEx(cid, tf->pszStatusCode, 
-                                                 (char*)tf->pHead,
-                                                 strlen(tf->pszStatusCode), 
-                                                 (apr_size_t)tf->HeadLength);
+            apr_ssize_t ate = SendResponseHeaderEx(cid, tf->pszStatusCode, 
+                                                   (char*)tf->pHead,
+                                                   strlen(tf->pszStatusCode), 
+                                                   tf->HeadLength);
             if (ate < 0)
             {
                 apr_brigade_destroy(bb);
                 SetLastError(TODO_ERROR);
                 return FALSE;
             }
-            if (ate < (apr_size_t)tf->HeadLength)
+            if ((apr_size_t)ate < tf->HeadLength)
             {
                 b = apr_bucket_transient_create((char*)tf->pHead + ate, 
-                                            (apr_size_t)tf->HeadLength - ate);
+                                                tf->HeadLength - ate);
                 APR_BRIGADE_INSERT_TAIL(bb, b);
             }
         }
         else if (tf->pHead && tf->HeadLength) {
             b = apr_bucket_transient_create((char*)tf->pHead, 
-                                           (apr_size_t)tf->HeadLength);
+                                            tf->HeadLength);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
 
-        b = apr_bucket_file_create(fd, (apr_off_t)tf->Offset, 
-                                  (apr_size_t)tf->BytesToWrite, r->pool);
+        b = apr_bucket_file_create(fd, tf->Offset, 
+                                   tf->BytesToWrite, r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         
-        if (tf->pTail && (apr_size_t)tf->TailLength) {
+        if (tf->pTail && tf->TailLength) {
             b = apr_bucket_transient_create((char*)tf->pTail, 
-                                           (apr_size_t)tf->TailLength);
+                                            tf->TailLength);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
         
@@ -1086,20 +1087,20 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
                                   = (LPHSE_SEND_HEADER_EX_INFO) lpvBuffer;
         /* XXX: ignore shi->fKeepConn?  We shouldn't need the advise */
         /* r->connection->keepalive = shi->fKeepConn; */
-        apr_off_t ate = SendResponseHeaderEx(cid, shi->pszStatus, 
-                                             shi->pszHeader,
-                                             shi->cchStatus, 
-                                             shi->cchHeader);
+        apr_ssize_t ate = SendResponseHeaderEx(cid, shi->pszStatus, 
+                                               shi->pszHeader,
+                                               shi->cchStatus, 
+                                               shi->cchHeader);
         if (ate < 0) {
             SetLastError(TODO_ERROR);
             return FALSE;
         }
-        else if (ate < (apr_off_t)shi->cchHeader) {
+        else if ((apr_size_t)ate < shi->cchHeader) {
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool);
 	    b = apr_bucket_transient_create(shi->pszHeader + ate, 
-                                           (apr_size_t)shi->cchHeader - ate);
+                                            shi->cchHeader - ate);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create();
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
