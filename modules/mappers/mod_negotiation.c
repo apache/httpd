@@ -930,7 +930,7 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if ((status = apr_opendir(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
+    if ((status = apr_dir_open(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;

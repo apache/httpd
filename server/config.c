@@ -1381,7 +1381,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	 * for this.
 	 */
 	fprintf(stderr, "Processing config directory: %s\n", fname);
-	if (apr_opendir(&dirp, fname, p) != APR_SUCCESS) {
+	if (apr_dir_open(&dirp, fname, p) != APR_SUCCESS) {
 	    perror("fopen");
 	    fprintf(stderr, "%s: could not open config directory %s\n",
 		ap_server_argv0, fname);

@@ -297,7 +297,7 @@ static int check_speling(request_rec *r)
     url = apr_pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
-    if (apr_opendir(&dir, good, r->pool) != APR_SUCCESS) {
+    if (apr_dir_open(&dir, good, r->pool) != APR_SUCCESS) {
         /* Oops, not a directory... */
         return DECLINED;
     }

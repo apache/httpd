@@ -1551,7 +1551,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if ((status = apr_opendir(&d, name, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_dir_open(&d, name, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
