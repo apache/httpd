@@ -1739,7 +1739,8 @@ dav_error *dav_revert_resource_writability(
             if (undo)
                 err = (*vsn_hooks->uncheckout)(resource);
             else
-                err = (*vsn_hooks->checkin)(resource, NULL);
+                err = (*vsn_hooks->checkin)(resource,
+                                            0 /*keep_checked_out*/, NULL);
 
             if (err != NULL) {
 	        body = apr_psprintf(r->pool,
@@ -1774,7 +1775,8 @@ dav_error *dav_revert_resource_writability(
 	if (undo)
 	    err = (*vsn_hooks->uncheckout)(av_info->parent_resource);
 	else
-	    err = (*vsn_hooks->checkin)(av_info->parent_resource, NULL);
+	    err = (*vsn_hooks->checkin)(av_info->parent_resource,
+                                        0 /*keep_checked_out*/, NULL);
 
 	if (err != NULL) {
 	    body = apr_psprintf(r->pool,
