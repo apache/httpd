@@ -17,9 +17,7 @@ Configuration: Configuration.tmpl
 	@echo "Consider copying Configuration.tmpl to Configuration, editing and rerunning"
 	@echo "Configure."
 	@echo "If not, you will at least have to touch Configuration."
-# Use expr "" to generate an error code (exit doesn't work). Nasty. If anyone
-# knows a better way, let me know (ben@algroup.co.uk).
-	@expr ""
+	@false
 
 httpd: $(OBJS)
 	$(CC) $(LFLAGS) $(AUX_LFLAGS) -o httpd $(OBJS) $(EXTRA_LIBS) $(AUX_LIBS)
