@@ -118,9 +118,6 @@
 #include "util_md5.h"
 #include "apr_shm.h"
 #include "apr_rmm.h"
-#include "ap_provider.h"
-
-#include "mod_auth.h"
 
 /* Disable shmem until pools/init gets sorted out 
  * remove following two lines when fixed 
@@ -132,7 +129,8 @@
 
 typedef struct digest_config_struct {
     const char  *dir_name;
-    authn_provider_list *providers;
+    const char  *pwfile;
+    const char  *grpfile;
     const char  *realm;
     char **qop_list;
     apr_sha1_ctx_t  nonce_ctx;
@@ -482,53 +480,17 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
     return DECLINE_CMD;
 }
 
-static const char *add_authn_provider(cmd_parms *cmd, void *config,
-                                      const char *arg)
+static const char *set_digest_file(cmd_parms *cmd, void *config,
+                                   const char *file)
 {
-    digest_config_rec *conf = (digest_config_rec*)config;
-    authn_provider_list *newp;
-    const char *provider_name;
-    
-    if (strcasecmp(arg, "on") == 0) {
-        provider_name = AUTHN_DEFAULT_PROVIDER;
-    }
-    else if (strcasecmp(arg, "off") == 0) {
-        /* Clear all configured providers and return. */
-        conf->providers = NULL; 
-        return NULL;
-    }
-    else {
-        provider_name = apr_pstrdup(cmd->pool, arg);
-    }
+    ((digest_config_rec *) config)->pwfile = file;
+    return NULL;
+}
 
-    newp = apr_pcalloc(cmd->pool, sizeof(authn_provider_list));
-    newp->provider_name = provider_name;
-
-    /* lookup and cache the actual provider now */
-    newp->provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
-                                        newp->provider_name);
-
-    if (newp->provider == NULL) {
-       /* by the time they use it, the provider should be loaded and
-           registered with us. */
-        return apr_psprintf(cmd->pool,
-                            "Unknown Authn provider: %s",
-                            newp->provider_name);
-    }
-
-    /* Add it to the list now. */
-    if (!conf->providers) {
-        conf->providers = newp;
-    }
-    else {
-        authn_provider_list *last = conf->providers;
-
-        while (last->next) {
-            last = last->next;
-        }
-        last->next = newp;
-    }
-
+static const char *set_group_file(cmd_parms *cmd, void *config,
+                                  const char *file)
+{
+    ((digest_config_rec *) config)->grpfile = file;
     return NULL;
 }
 
@@ -681,8 +643,10 @@ static const command_rec digest_cmds[] =
 {
     AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG, 
      "The authentication realm (e.g. \"Members Only\")"),
-    AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, ACCESS_CONF,
-                     "specify the auth providers for a directory or location"),
+    AP_INIT_TAKE1("AuthDigestFile", set_digest_file, NULL, OR_AUTHCFG, 
+     "The name of the file containing the usernames and password hashes"),
+    AP_INIT_TAKE1("AuthDigestGroupFile", set_group_file, NULL, OR_AUTHCFG, 
+     "The name of the file containing the group names and members"),
     AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG, 
      "A list of quality-of-protection options"),
     AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG, 
@@ -1461,50 +1425,34 @@ static void note_digest_auth_failure(request_rec *r,
  */
 
 static const char *get_hash(request_rec *r, const char *user,
-                            digest_config_rec *conf)
+                            const char *realm, const char *auth_pwfile)
 {
-    authn_status auth_result;
-    char *password;
-    authn_provider_list *current_provider;
+    ap_configfile_t *f;
+    char l[MAX_STRING_LEN];
+    const char *rpw;
+    char *w, *x;
+    apr_status_t sts;
 
-    current_provider = conf->providers;
-    do {
-        const authn_provider *provider;
-
-        /* For now, if a provider isn't set, we'll be nice and use the file
-         * provider.
-         */
-        if (!current_provider) {
-            provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
-                                          AUTHN_DEFAULT_PROVIDER);
-        }
-        else {
-            provider = current_provider->provider;
-        }
-
-        /* We expect the password to be md5 hash of user:realm:password */
-        auth_result = provider->get_realm_hash(r, user, conf->realm,
-                                               &password);
-
-        /* User is found.  Stop checking. */
-        if (auth_result == AUTH_USER_FOUND) {
-            break;
-        }
-
-        /* If we're not really configured for providers, stop now. */
-        if (!conf->providers) {
-           break;
-        }
-
-        current_provider = current_provider->next;
-    } while (current_provider);
-
-    if (auth_result != AUTH_USER_FOUND) {
+    if ((sts = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, sts, r,
+                      "Digest: Could not open password file: %s", auth_pwfile);
         return NULL;
     }
-    else {
-        return password;
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+        if ((l[0] == '#') || (!l[0])) {
+            continue;
+        }
+        rpw = l;
+        w = ap_getword(r->pool, &rpw, ':');
+        x = ap_getword(r->pool, &rpw, ':');
+
+        if (x && w && !strcmp(user, w) && !strcmp(realm, x)) {
+            ap_cfg_closefile(f);
+            return apr_pstrdup(r->pool, rpw);
+        }
     }
+    ap_cfg_closefile(f);
+    return NULL;
 }
 
 static int check_nc(const request_rec *r, const digest_header_rec *resp,
@@ -1863,7 +1811,11 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_UNAUTHORIZED;
     }
 
-    if (!(conf->ha1 = get_hash(r, r->user, conf))) {
+    if (!conf->pwfile) {
+        return DECLINED;
+    }
+
+    if (!(conf->ha1 = get_hash(r, r->user, conf->realm, conf->pwfile))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Digest: user `%s' in realm `%s' not found: %s",
                       r->user, conf->realm, r->uri);
@@ -1929,6 +1881,146 @@ static int authenticate_digest_user(request_rec *r)
 
     return OK;
 }
+
+
+/*
+ * Checking ID
+ */
+
+static apr_table_t *groups_for_user(request_rec *r, const char *user,
+                                    const char *grpfile)
+{
+    ap_configfile_t *f;
+    apr_table_t *grps = apr_table_make(r->pool, 15);
+    apr_pool_t *sp;
+    char l[MAX_STRING_LEN];
+    const char *group_name, *ll, *w;
+    apr_status_t sts;
+
+    if ((sts = ap_pcfg_openfile(&f, r->pool, grpfile)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, sts, r,
+                      "Digest: Could not open group file: %s", grpfile);
+        return NULL;
+    }
+
+    if (apr_pool_create(&sp, r->pool) != APR_SUCCESS) {
+        return NULL;
+    }
+
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
+        if ((l[0] == '#') || (!l[0])) {
+            continue;
+        }
+        ll = l;
+        apr_pool_clear(sp);
+
+        group_name = ap_getword(sp, &ll, ':');
+
+        while (ll[0]) {
+            w = ap_getword_conf(sp, &ll);
+            if (!strcmp(w, user)) {
+                apr_table_setn(grps, apr_pstrdup(r->pool, group_name), "in");
+                break;
+            }
+        }
+    }
+
+    ap_cfg_closefile(f);
+    apr_pool_destroy(sp);
+    return grps;
+}
+
+
+static int digest_check_auth(request_rec *r)
+{
+    const digest_config_rec *conf =
+                (digest_config_rec *) ap_get_module_config(r->per_dir_config,
+                                                           &auth_digest_module);
+    const char *user = r->user;
+    int m = r->method_number;
+    int method_restricted = 0;
+    register int x;
+    const char *t, *w;
+    apr_table_t *grpstatus;
+    const apr_array_header_t *reqs_arr;
+    require_line *reqs;
+
+    if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest")) {
+        return DECLINED;
+    }
+
+    reqs_arr = ap_requires(r);
+    /* If there is no "requires" directive, then any user will do.
+     */
+    if (!reqs_arr) {
+        return OK;
+    }
+    reqs = (require_line *) reqs_arr->elts;
+
+    if (conf->grpfile) {
+        grpstatus = groups_for_user(r, user, conf->grpfile);
+    }
+    else {
+        grpstatus = NULL;
+    }
+
+    for (x = 0; x < reqs_arr->nelts; x++) {
+
+        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
+            continue;
+        }
+
+        method_restricted = 1;
+
+        t = reqs[x].requirement;
+        w = ap_getword_white(r->pool, &t);
+        if (!strcasecmp(w, "valid-user")) {
+            return OK;
+        }
+        else if (!strcasecmp(w, "user")) {
+            while (t[0]) {
+                w = ap_getword_conf(r->pool, &t);
+                if (!strcmp(user, w)) {
+                    return OK;
+                }
+            }
+        }
+        else if (!strcasecmp(w, "group")) {
+            if (!grpstatus) {
+                return DECLINED;
+            }
+
+            while (t[0]) {
+                w = ap_getword_conf(r->pool, &t);
+                if (apr_table_get(grpstatus, w)) {
+                    return OK;
+                }
+            }
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Digest: access to %s failed, reason: unknown "
+                          "require directive \"%s\"",
+                          r->uri, reqs[x].requirement);
+            return DECLINED;
+        }
+    }
+
+    if (!method_restricted) {
+        return OK;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "Digest: access to %s failed, reason: user %s not "
+                  "allowed access", r->uri, user);
+
+    note_digest_auth_failure(r, conf,
+        (digest_header_rec *) ap_get_module_config(r->request_config,
+                                                   &auth_digest_module),
+        0);
+    return HTTP_UNAUTHORIZED;
+}
+
 
 /*
  * Authorization-Info header code
@@ -2115,7 +2207,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, APR_HOOK_MIDDLE);
-
+    ap_hook_auth_checker(digest_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
