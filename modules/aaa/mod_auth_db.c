@@ -129,7 +129,7 @@ static void *create_db_auth_dir_config(apr_pool_t *p, char *d)
     return sec;
 }
 
-static const char *set_db_slot(cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_db_slot(cmd_parms *cmd, void *offset, const char *f, const char *t)
 {
     if (!t || strcmp(t, "db"))
 	return DECLINE_CMD;
