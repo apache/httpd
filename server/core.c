@@ -2446,12 +2446,6 @@ static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
                            "\" must be a non-negative integer", NULL);
     }
 
-    if (lim > DEFAULT_LIMIT_REQUEST_LINE) {
-        return apr_psprintf(cmd->temp_pool, "LimitRequestLine \"%s\" "
-                            "must not exceed the precompiled maximum of %d",
-                            arg, DEFAULT_LIMIT_REQUEST_LINE);
-    }
-
     cmd->server->limit_req_line = lim;
     return NULL;
 }
