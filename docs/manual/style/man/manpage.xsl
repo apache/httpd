@@ -374,11 +374,16 @@ FATAL: only tables with two (2) columns are supported.
 <!-- text filter                                                          -->
 <!-- ==================================================================== -->
 <xsl:template match="text()">
-<xsl:if test="normalize-space(.) != ''">
+<xsl:choose>
+<xsl:when test="normalize-space(.) != ''">
 <xsl:call-template name="filter.escape">
     <xsl:with-param name="text" select="." />
 </xsl:call-template>
-</xsl:if>
+</xsl:when>
+<xsl:otherwise>
+    <xsl:text> </xsl:text>
+</xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 
 
