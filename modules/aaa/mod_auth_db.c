@@ -165,7 +165,9 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     DB *f;
     DBT d, q;
     char *pw = NULL;
+#if DB_VER > 1
     int retval;
+#endif
 
     memset(&d, 0, sizeof(d));
     memset(&q, 0, sizeof(q));
