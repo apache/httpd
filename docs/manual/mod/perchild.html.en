@@ -97,13 +97,15 @@ running with the specified user and group id.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ChildPerUserId" id="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid" id="childperuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+<em>group_id</em> <em>num_children</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>perchild</td></tr></table>
-<p>Specify a user id and group id for a specific child process. The number of
-children is set by the <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>
-directive. For example, the default value for <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code> is 5 and that means
-children ids 1,2,3,4 and 5 are available for assigment. If a child does not
-have an associated ChildPerUserID, it inherits the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> settings from the main server </p> 
+<p>Specify a user id and group id for a number of child processes.  The third
+argument, num_children, is the number of child processes to start with the
+specified user and group.  It does <strong>not</strong> represent a specific
+child number.  If the total number of child processes, found by totaling all of
+the third arguments to all ChildPerUserId directives in the config file, is
+less than <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>, then all
+remaining children will inherit the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> settings from the main server </p> 
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

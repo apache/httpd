@@ -186,7 +186,7 @@ NoImp +</td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspa
 <tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the spelling 
 module</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<em>group_id</em> <em>num_children</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
