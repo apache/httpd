@@ -487,12 +487,12 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
     switch (status) {
 #if defined(HPUX11) && defined(ENOBUFS)
         /* On HPUX 11.x, the 'ENOBUFS, No buffer space available'
-         * error occures because the accept() cannot complete.
-         * You will not see ENOBUFS at 10.20 because the kernel
-         * hides any occurrence from being returned from user space.
-         * ENOBUFS at 11.0 TCP/IP is quite possible, and could
+         * error occurs because the accept() cannot complete.
+         * You will not see ENOBUFS with 10.20 because the kernel
+         * hides any occurrence from being returned to user space.
+         * ENOBUFS with 11.x's TCP/IP stack is possible, and could
          * occur intermittently. As a work-around, we are going to
-         * ingnore ENOBUFS.
+         * ignore ENOBUFS.
          */
         case ENOBUFS:
 #endif
