@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.13 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -43,6 +43,8 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
@@ -52,6 +54,8 @@
 <directivesynopsis location="mpm_common"><name>ThreadLimit</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 
 <directivesynopsis>
