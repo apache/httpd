@@ -3580,37 +3580,18 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  we stop processing and return immediately. The only thing
      *  we have not to forget are the environment variables and
      *  cookies:
-     *  (`RewriteRule <pat> - [E=...,CO=...]')
+     *  (`RewriteRule <pat> - [E=...,CO=...,T=...]')
      */
     if (output[0] == '-' && !output[1]) {
         do_expand_env(r, p->env, briRR, briRC);
         do_expand_cookie(r, p->cookie, briRR, briRC);
-        if (p->forced_mimetype != NULL) {
-            if (perdir == NULL) {
-                /* In the per-server context we can force the MIME-type
-                 * the correct way by notifying our MIME-type hook handler
-                 * to do the job when the MIME-type API stage is reached.
-                 */
-                rewritelog((r, 2, NULL, "remember %s to have MIME-type '%s'",
-                            r->filename, p->forced_mimetype));
-                apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
-                               p->forced_mimetype);
-            }
-            else {
-                /* In per-directory context we operate in the Fixup API hook
-                 * which is after the MIME-type hook, so our MIME-type handler
-                 * has no chance to set r->content_type. And because we are
-                 * in the situation where no substitution takes place no
-                 * sub-request will happen (which could solve the
-                 * restriction). As a workaround we do it ourself now
-                 * immediately although this is not strictly API-conforming.
-                 * But it's the only chance we have...
-                 */
-                rewritelog((r, 1, perdir, "force %s to have MIME-type '%s'",
-                            r->filename, p->forced_mimetype));
-                ap_set_content_type(r, p->forced_mimetype);
-            }
+        if (p->forced_mimetype) {
+            rewritelog((r, 2, perdir, "remember %s to have MIME-type '%s'",
+                        r->filename, p->forced_mimetype));
+            apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                           p->forced_mimetype);
         }
+
         return 2;
     }
 
@@ -4714,11 +4695,6 @@ static void register_hooks(apr_pool_t *p)
      */
     static const char * const aszPre[]={ "mod_proxy.c", NULL };
 
-    /* check type before mod_mime, so that [T=foo/bar] will not be
-     * overridden by AddType definitions.
-     */
-    static const char * const ct_aszSucc[]={ "mod_mime.c", NULL };
-
     APR_REGISTER_OPTIONAL_FN(ap_register_rewrite_mapfunc);
 
     ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
@@ -4727,8 +4703,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_child_init(init_child, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_fixups(hook_fixup, aszPre, NULL, APR_HOOK_FIRST);
+    ap_hook_fixups(hook_mimetype, NULL, NULL, APR_HOOK_LAST);
     ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype, NULL, ct_aszSucc, APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */
