@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 23:17:11 $]
+Last modified at [$Date: 2003/05/13 23:45:30 $]
 
 Release:
 
@@ -223,7 +223,9 @@ PATCHES TO PORT FROM 2.1
     * mod_log_config: be able to log the id of the thread that handled
       the request
       modules/loggers/mod_log_config.c: r1.102-1.104
-      +1: trawick, stoddard (don't forget the doc)
+      docs/manual/mod/mod_log_config.xml.diff?r1=1.19&r2=1.22
+      +1: trawick, stoddard, nd
+      (the comment on top of the file still talks about %I; should be fixed :)
 
     * ap_get_mime_headers_core: allocate space for the trailing null
       when folding is in effect.
@@ -239,7 +241,6 @@ PATCHES TO PORT FROM 2.1
     * If mod_mime_magic does not know the content-type, do not attempt to
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
       +1:
-
 
 CURRENT RELEASE NOTES:
 
