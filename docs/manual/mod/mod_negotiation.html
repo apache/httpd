@@ -184,10 +184,12 @@
 
     <h2><a id="forcelanguagepriority"
     name="forcelanguagepriority">ForceLanguagePriority</a> directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt ForceLanguagePriority} directive&gt; -->
     <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> ForceLanguagePriority
-    <em>None</em> | [<em>Prefer</em>] [<em>Fallback</em>]</em><br />
+    None|Prefer|Fallback [Prefer|Fallback]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>ForceLanguagePriority None</code><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
     host, directory, .htaccess<br />
@@ -198,32 +200,36 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_negotiation 
 
-    <p>The <em>ForceLanguagePriority</em> directive uses the given
-    <em>LanguagePriority</em> to satisfy two common negotation results.</p>
+    <p>The <code>ForceLanguagePriority</code> directive uses the given
+    <a href="#languagepriority">LanguagePriority</a> to satisfy
+    negotation where the server could otherwise not return a single
+    matching document.</p>
 
-    <p><em>ForceLanguagePriority Prefer</em> uses <em>LanguagePriority</em>
-    to serve a one valid result, rather than returning an HTTP result 300,
-    MULTIPLE CHOICES, when there are several equally valid choices.  
-    If the directives below were given, and the user's Accept-Language 
-    header assigned en and de each as quality .500 (equally acceptable)
-    then then first matching variant, en, will be served;</p>
+    <p><code>ForceLanguagePriority Prefer</code> uses
+    <code>LanguagePriority</code> to serve a one valid result, rather
+    than returning an HTTP result 300 (MULTIPLE CHOICES) when there
+    are several equally valid choices.  If the directives below were
+    given, and the user's Accept-Language header assigned en and de
+    each as quality .500 (equally acceptable) then then first matching
+    variant, en, will be served.</p>
 
-    <blockquote>
-      <code>LanguagePriority en fr de</code>
-      <code>ForceLanguagePriority Prefer</code>
-    </blockquote>
+    <blockquote><code>
+      LanguagePriority en fr de<br />
+      ForceLanguagePriority Prefer
+    </code></blockquote>
 
-    <p><em>ForceLanguagePriority Fallback</em> uses <em>LanguagePriority</em>
-    to serve a valid result, rather than returning an HTTP result 406,
-    NOT ACCEPTABLE.  If the directives below were given, and the user's
-    Accept-Language only permitted an es langauge response, but such a
-    variant isn't found, then the first variant from the LanguagePriority 
-    list below will be served;</p>
+    <p><code>ForceLanguagePriority Fallback</code> uses
+    <code>LanguagePriority</code> to serve a valid result, rather than
+    returning an HTTP result 406 (NOT ACCEPTABLE).  If the directives
+    below were given, and the user's Accept-Language only permitted an
+    es langauge response, but such a variant isn't found, then the
+    first variant from the LanguagePriority list below will be
+    served.</p>
 
-    <blockquote>
-      <code>LanguagePriority en fr de</code>
-      <code>ForceLanguagePriority Fallback</code>
-    </blockquote>
+    <blockquote><code>
+      LanguagePriority en fr de<br />
+      ForceLanguagePriority Fallback
+    </code></blockquote>
 
     <p>Both options, Prefer and Fallback, may be specified, so either the
     first matching variant from LanguagePriority will be served if more
@@ -264,13 +270,15 @@
     then <code>foo.html.fr</code> would be returned. 
 
     <p>Note that this directive only has an effect if a 'best'
-    language cannot be determined by any other means. Correctly
-    implemented HTTP/1.1 requests will mean this directive has no
-    effect.</p>
+    language cannot be determined by any other means or the <a
+    href="#forcelanguagepriority">ForceLanguagePriority</a> directive
+    is not <code>None</code>. Correctly implemented HTTP/1.1 requests
+    will mean this directive has no effect.</p>
 
     <p><strong>See also</strong>: <a
-    href="./mod_mime.html#defaultlanguage">DefaultLanguage</a> and
-    <a href="./mod_mime.html#addlanguage">AddLanguage</a> 
+    href="./mod_mime.html#defaultlanguage">DefaultLanguage</a>,
+    <a href="./mod_mime.html#addlanguage">AddLanguage</a> and
+    <a href="#forcelanguagepriority">ForceLanguagePriority</a>. 
     <!--#include virtual="footer.html" -->
     </p>
   </body>
