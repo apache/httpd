@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/23 23:40:54 $]
+Last modified at [$Date: 2003/02/24 01:02:56 $]
 
 Release:
 
@@ -160,6 +160,11 @@ PATCHES TO PORT FROM 2.1
     * Fix possible 1-byte buffer overflow in mod_rewrite. (2.0 and 1.3)
       modules/mappers/mod_rewrite.c: r1.140, r1.141
       +1: nd, jwoolley
+
+    * Fix a problem where a redirected subrequest doesn't have the
+      subrequest filter in place (PR 15423).
+      modules/http/http_request.c: r1.154
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
