@@ -228,9 +228,13 @@ int find_ct(request_rec *r)
 	  r->content_language = type;
 	
       /* Check for Content-Encoding */
-      if ((type = table_get (conf->encoding_types, ext)))
-	  r->content_encoding = type;
-
+      if ((type = table_get (conf->encoding_types, ext))) {
+	  if (!r->content_encoding)
+	      r->content_encoding = type;
+	  else
+	      r->content_encoding = pstrcat(r->pool, r->content_encoding,
+					    ", ", type, NULL);
+      }
       /* Check for a special handler, but not for proxy request */
       if ((type = table_get (conf->handlers, ext)) && !r->proxyreq)
 	  r->handler = type;
