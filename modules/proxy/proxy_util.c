@@ -1364,7 +1364,8 @@ static apr_status_t connection_destructor(void *resource, void *params,
 }
 
 PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
-                                                     proxy_worker *worker)
+                                                     proxy_worker *worker,
+                                                     server_rec *s)
 {
 #if PROXY_HAS_SCOREBOARD
     lb_score *score = NULL;
@@ -1376,22 +1377,35 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     if (ap_scoreboard_image) {
         score = ap_get_scoreboard_lb(worker->id);
     if (!score)
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conf->pool,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
               "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
               worker->id, worker->name);
     }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+              "proxy: initialized scoreboard slot %d for worker %s",
+              worker->id, worker->name);
+    }
 #endif
-    if (!score)
+    if (!score) {
         score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+              "proxy: initialized plain memory for worker %s",
+              worker->name);
+    }
     worker->s = (proxy_worker_stat *)score;
     if (worker->route)
         strcpy(worker->s->route, worker->route);
     else
-    *worker->s->route = '\0';
+        *worker->s->route = '\0';
     if (worker->redirect)
         strcpy(worker->s->redirect, worker->redirect);
     else
-    *worker->s->redirect = '\0';
+        *worker->s->redirect = '\0';
+    /* Set default parameters */
+    if (!worker->retry)
+        worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
+
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
@@ -1448,9 +1462,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     }
     if (rv == APR_SUCCESS)
         worker->s->status |= PROXY_WORKER_INITIALIZED;
-    /* Set default parameters */
-    if (!worker->retry)
-        worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
     return rv;
 }
 

@@ -420,17 +420,18 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p);
 /**
  * Initize the worker's shared data
  * @param conf   current proxy server configuration
+ * @param worker worker to initialize
  * @param s      current server record
  * @param worker worker to initialize
  */
 PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
-                                                     proxy_worker *worker);
+                                                     proxy_worker *worker,
+                                                     server_rec *s);
 
 
 /**
  * Initize the worker
  * @param worker worker to initialize
- * @param p      memory pool to allocate worker from 
  * @param s      current server record
  * @return       APR_SUCCESS or error code
  */
