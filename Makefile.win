@@ -630,8 +630,9 @@ BEGIN {
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
+!IF EXIST("srclib\openssl")
 	copy docs\conf\ssl-std.conf.in "$(INSTDIR)\conf\ssl.default.conf" <.y
-	-awk -f <<script.awk "docs/conf/ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
+	-awk -f <<script.awk "docs/conf/ssl-std.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
     BEGIN { 
 	serverroot = ARGV[2];
 	delete ARGV[2];
@@ -641,11 +642,17 @@ BEGIN {
     }
     {
 	gsub( /@@ServerRoot@@/, serverroot );
+	gsub( /@exp_runtimedir@/, "logs" );
+	gsub( /@exp_htdocsdir@/, serverroot "/htdocs" );
+	gsub( /@exp_logfiledir@/, "logs" );
+	gsub( /@exp_sysconfdir@/, "conf" );
+	gsub( /@exp_cgidir@/, serverroot "/cgi" );
 	print $$0;
     }
 <<
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
 	    copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
+!ENDIF
 	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
 	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
