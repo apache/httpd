@@ -90,19 +90,19 @@
 #include "apr_pools.h"
 #include "apr_strings.h"
 
+#include "httpd.h"
+#include "http_config.h"
+#include "ap_config.h"
+#include "http_core.h"
+#include "http_protocol.h"
+#include "http_request.h"
+#include "http_vhost.h"
+#include "http_main.h"
+#include "http_log.h"
+#include "http_connection.h"
 #include "util_filter.h"
 #include "util_date.h"
 #include "util_uri.h"
-#include "httpd.h"
-#include "http_config.h"
-#include "http_protocol.h"
-#include "ap_config.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "http_core.h"
-#include "http_connection.h"
-#include "http_vhost.h"
-#include "http_request.h"
 #include "mod_core.h"
 
 
@@ -223,12 +223,13 @@ typedef struct {
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, int proxyport);
+apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /* proxy_ftp.c */
 
 int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, char *url);
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb, ap_input_mode_t mode);
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /* proxy_http.c */
 
