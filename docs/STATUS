@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/05/02 00:58:26 $
+Last modified: $Date: 2003/05/02 19:10:07 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -187,6 +187,3 @@ http://httpd.apache.org/docs-project/docsformat.html
 # play with them
 # nope. in order to create other formats, we need 'em as xml. --nd
 developer/API.html
-
-# converting from nroff to xml
-programs/other.html

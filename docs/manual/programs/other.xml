@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="other.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>Other Programs</title>
+
+<summary>
+    <p>The following programs are simple support programs included with the
+    Apache HTTP Server which do not have their own manual pages. They are not
+    installed automatically. You can find them after the configuration process
+    in the <code>support/</code> directory.</p>
+</summary>
+
+<section id="log_server_status"><title>log_server_status</title>
+    <p>This perl script is designed to be run at a frequent interval by
+    something like cron. It connects to the server and downloads the status
+    information. It reformats the information to a single line and logs it to
+    a file. Adjust the variables at the top of the script to specify the
+    location of the resulting logfile.</p>
+</section>
+
+<section id="split-logfile"><title>split-logfile</title>
+    <p>This perl script will take a combined Web server access log file and
+    break its contents into separate files. It assumes that the first field of
+    each line is the virtual host identity (put there by "<code>%v</code>"), and
+    that the logfiles should be named that + "<code>.log</code>" in the current
+    directory.</p>
+
+    <p>The combined log file is read from stdin. Records read will be appended
+    to any existing log files.</p>
+</section>
+
+</manualpage>
