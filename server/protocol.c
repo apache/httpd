@@ -788,18 +788,20 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 }
 
                 *value = '\0';
-                tmp_field = value;  /*Used to trim the whitespace between key */
-                ++value;            /*     token and seperator*/
+                tmp_field = value;  /* used to trim the whitespace between key
+                                     * token and separator
+                                     */
+                ++value;
                 while (*value == ' ' || *value == '\t') {
                     ++value;            /* Skip to start of value   */
                 }
 
                 /* This check is to avoid any invalid memory reference while
-                 *   traversing backwards in the key. To avoid a case where
-                 *   the header starts with ':' (or with just some white
-                 *   space and the ':') followed by the value
-		         */
-                if(tmp_field > last_field) {
+                 * traversing backwards in the key. To avoid a case where
+                 * the header starts with ':' (or with just some white
+                 * space and the ':') followed by the value
+                 */
+                if (tmp_field > last_field) {
                     --tmp_field;
                     while ((tmp_field > last_field) &&
                            (*tmp_field == ' ' || *tmp_field == '\t')) {
