@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
@@ -83,8 +83,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib "Debug\buildmark.obj"/nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib "Debug\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",ApacheCore
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
