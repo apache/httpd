@@ -42,11 +42,22 @@ CC= gcc
 # -DNO_MMAP
 
 # Status Instrumentation
-#  In order for the status module to obtain full statistics Apache must
-#  be modified to keep track of various information.  This is not
-#  turned on by default.
-# In order to enable full status details add -DSTATUS to
-# the end of the CFLAGS line below
+# In order for the status module to obtain full statistics Apache must
+# be modified to keep track of various information.  This is not
+# turned on by default. In order to enable full status details add -DSTATUS 
+# to the end of the CFLAGS line below.
+
+# Using SOCKS
+# Apache can be compiled to work over a SOCKS firewall by 
+# adding the following string to your CFLAGS define:
+#
+#  -Dconnect=Rconnect -Dselect=Rselect -Dgethstbyname=Rgethostbyname
+#
+# and by adding the following to the EXTRA_LIBS define:
+#
+#  -L/usr/local/lib -lsocks
+#
+# making sure that -L points to wherever you've put libsocks.a.
 
 # [Some other former Apache compile-time options are now treated differently;
 #  the virtual host code is always present; DBM auth is an optional module, and
@@ -103,7 +114,7 @@ EXTRA_LIBS=
 #AUX_LIBS= -lPW -lsocket -lmalloc -lcrypt_i
 # For SCO OpenServer Release 5
 # -K noinline is needed to work around an optimiser bug which appears in
-# mod_bprintf.c
+# http_bprintf.c
 #AUX_CFLAGS= -DSCO5
 #AUX_LIBS=-lsocket -lmalloc -lprot
 #BROKEN_BPRINTF_FLAGS=-K noinline
@@ -150,7 +161,16 @@ EXTRA_LIBS=
 # can have visible effects; for instance, if UserDir followed Alias,
 # you couldn't alias out a particular user's home directory.
 
-# Basic modules (i.e., generally useful stuff that works everyplace):
+# The configuration below is what we consider a decent default 
+# configuration.  If you want the functionality provided by a particular
+# module, remove the "#" sign at the beginning of the line. But remember, 
+# the more modules you compile into the server, the larger the executable
+# is and the more memory it will take, so if you are unlikely to use the
+# functionality of a particular module you might wish to leave it out.
+
+## Basic modules (i.e., generally useful stuff that works everyplace):
+## You should probably not comment out any of these unless you know what it
+## does and you know you won't need it.
 
 Module mime_module         mod_mime.o
 Module access_module       mod_access.o
@@ -163,64 +183,80 @@ Module userdir_module      mod_userdir.o
 Module alias_module        mod_alias.o
 Module common_log_module   mod_log_common.o
 
-# Modules which implement Apache extensions:
-# These can be commented out if you don't want them
+## The asis module implemented ".asis" file types, which allow the embedding
+## of HTTP headers at the beginning of the document.  mod_imap handles internal 
+## imagemaps (no more cgi-bin/imagemap/!).  mod_actions is used to specify 
+## CGI scripts which act as "handlers" for particular files, for example to
+## automatically convert every GIF to another file type.
 
 Module asis_module        mod_asis.o
 Module imap_module        mod_imap.o
 Module action_module      mod_actions.o
-Module cern_meta_module   mod_cern_meta.o
-Module env_module         mod_env.o
-Module anon_auth_module   mod_auth_anon.o
-Module digest_module      mod_digest.o
 
-# The status module allows the server to display current details about 
-# how well it is performing and what it is doing.  Consider also enabling 
-# -DSTATUS (see the CFLAGS section near the start of the file) to allow
-# full status information.  Check conf/access.conf on how to enable this.
-
-Module status_module	mod_status.o
-
-# Optional authentication modules, which should only be
-# uncommented out if you have the neccessary system support.
-# (if you don't have the decade-old "new" DBM libs, for example)
-
-# Module dbm_auth_module  mod_auth_dbm.o
-# Module db_auth_module   mod_auth_db.o
-# Module msql_auth_module mod_auth_msql.o
-
-# Optional modules for *full* NCSA compatibility --- we think these log
-# files are a bad idea, but reasonable people seem to disagree:
+## Optional modules for NCSA user-agent/referer logging compatibility
+## We recommend, however, that you migrate to the configurable logging
+## module, below.
 
 # Module agent_log_module    mod_log_agent.o
 # Module referer_log_module  mod_log_referer.o
 
-# Finally, outright experiments --- mod_dld defines commands which
-# allows other modules to be loaded in at runtime, and mod_cookies
-# uses Netscape cookies to automatically construct and log accurate
-# click-trails from Netscape cookies, for Netscape-using clients who
-# aren't coming in via proxy.   
+## This is a *replacement* for mod_log_common which supports a
+## LogFormat directive which allows you to specify what goes into 
+## the TransferLog (if you want Referer, etc.)  source code for docs.
+##
+## If you play with this, remember to drop the standard
+## mod_log_common --- a server with both will work, but you'll get
+## very confused trying to figure out what's going on...
+
+# Module config_log_module mod_log_config.o
+
+## cern_meta mimicks the behavior of the CERN web server with regards to 
+## metainformation files.  mod_env allows the setting of extra CGI environment
+## variables.  The anon_auth module allows for anonymous-FTP-style username/
+## password authentication.
+
+# Module cern_meta_module   mod_cern_meta.o
+# Module env_module         mod_env.o
+# Module anon_auth_module   mod_auth_anon.o
+
+## The status module allows the server to display current details about 
+## how well it is performing and what it is doing.  Consider also enabling 
+## -DSTATUS (see the CFLAGS section near the start of the file) to allow
+## full status information.  Check conf/access.conf on how to enable this.
+
+# Module status_module	mod_status.o
+
+## The Info module displays configuration information for the server and 
+## all included modules. It's very useful for debugging.
+
+# Module info_module    mod_info.o
+
+## Optional authentication modules, which should only be
+## uncommented out if you have the neccessary system support.
+## (if you don't have the decade-old "new" DBM libs, for example)
+## db_auth works with Berkeley DB files, and msql_auth checks 
+## against an MSQL database.  Finally, mod_digest implements HTTP 
+## Digest Authentication rather than the less secure Basic Auth
+## used by the other modules.
+
+# Module dbm_auth_module  mod_auth_dbm.o
+# Module db_auth_module   mod_auth_db.o
+# Module msql_auth_module mod_auth_msql.o
+# Module digest_module    mod_digest.o
+
+## Outright experiments --- mod_dld defines commands which
+## allows other modules to be loaded in at runtime, and mod_cookies
+## uses Netscape cookies to automatically construct and log accurate
+## click-trails from Netscape cookies, for Netscape-using clients who
+## aren't coming in via proxy.   
 
 # Module dld_module     mod_dld.o
 # Module cookies_module mod_cookies.o
 
-# Even more finally, the proxy module. Incomplete, buggy and possibly dangerous
-# Use it at your own risk.
+## Finally, the proxy module.  It's not as complete as it could
+## be yet, so use at your own risk.
 
 # Module proxy_module       mod_proxy.o
 
-# Finally, this is a *replacement* for mod_log_common which 
-# supports a LogFormat directive which allows you to specify what
-# goes into the TransferLog (if you want Referer, etc.) --- see the
-# source code for docs.  It is likely that something like this will
-# be the default logger in a future release, but this is very much
-# an experimental piece of code, and the syntax, etc., are still
-# up for grabs.
-#
-# If you play with this, remember to drop the standard
-# mod_log_common --- a server with both will work, but you'll get
-# very confused trying to figure out what's going on...
-
-# Module config_log_module mod_log_config.o
 
 
