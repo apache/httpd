@@ -110,13 +110,14 @@ The binary release is not yet available.
 Running Apache
 --------------
 
-On NT, Apache can run as either a service or a regular executable. 
+Apache can run as either a service (NT only) or a regular executable. 
 
 To run as an executable, simply run \Apache\apache from the command
 line. This will print the version number, then wait to serve
 requests. To stop Apache, press Control-C to stop it running. Note
 that there may be a delay between typing the command line and Apache
-being ready to accept requests. This method also works on Windows 95.
+being ready to accept requests as it checks the service manager. Use
+the -s option to prevent this delay.
 
 To run as a service, first install the service with
 
@@ -129,6 +130,13 @@ time if required. You can also stop Apache from the manager.
 To remove the Apache service, run
 
   \Apache\apache -u
+
+Uninstalling Apache
+-------------------
+
+To uninstall Apache, use the normal method of removing programs (Start
+menu, Control Panel, Add/Remove Programs). You may have to remove the
+directory manually because of the configuration files.
 
 Known Problems
 --------------
@@ -146,12 +154,6 @@ Known Problems
   accepted by it are aborted.
 
 - Problem with very long running cgi scripts (their output is garbled?)
-
-- There are problems with the way the program handles cgi scripts that
-  it doesn't successfully spawn.
-
-- On Windows 95, there is a problem spawning cgi script since
-  Windows 95 requires \'s in the path (unlike NT, which accepts /'s).
 
 - regex does not generate *.ih headers.
 
