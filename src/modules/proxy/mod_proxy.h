@@ -65,8 +65,7 @@
 
 /*
 
-   Note that the Explain() stuff is not yet complete.
-   Also note numerous FIXMEs and CHECKMEs which should be eliminated.
+   Note numerous FIXMEs and CHECKMEs which should be eliminated.
 
    If TESTING is set, then garbage collection doesn't delete ... probably a good
    idea when hacking.
@@ -104,7 +103,6 @@
  */
 
 #define TESTING	0
-#undef EXPLAIN
 
 #include "httpd.h"
 #include "http_config.h"

@@ -65,8 +65,6 @@
 
 #define AUTODETECT_PWD
 
-DEF_Explain
-
 /*
  * Decodes a '%' escaped string, and returns the number of characters
  */
@@ -543,7 +541,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
                                  "Connect to remote machine blocked");
     }
 
-    Explain2("FTP: connect to %s:%d", host, port);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: connect to %s:%d", host, port);
 
     parms = strchr(path, ';');
     if (parms != NULL)
@@ -626,7 +624,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 421 Service not available, closing control connection. */
     ap_hard_timeout("proxy ftp", r);
     i = ftp_getrc_msg(f, resp, sizeof resp);
-    Explain1("FTP: returned status %d", i);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
     if (i == -1) {
 	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -654,11 +652,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, resp);
     }
 
-    Explain0("FTP: connected.");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: connected.");
 
     ap_bvputs(f, "USER ", user, CRLF, NULL);
     ap_bflush(f);			/* capture any errors */
-    Explain1("FTP: USER %s", user);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: USER %s", user);
 
 /* possible results; 230, 331, 332, 421, 500, 501, 530 */
 /* states: 1 - error, 2 - success; 3 - send password, 4,5 fail */
@@ -671,7 +669,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 501 Syntax error in parameters or arguments. */
     /* 530 Not logged in. */
     i = ftp_getrc(f);
-    Explain1("FTP: returned status %d", i);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
     if (i == -1) {
 	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -692,7 +690,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	}
 	ap_bvputs(f, "PASS ", password, CRLF, NULL);
 	ap_bflush(f);
-	Explain1("FTP: PASS %s", password);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PASS %s", password);
 /* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
     /* 230 User logged in, proceed. */
     /* 332 Need account for login. */
@@ -702,7 +700,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 503 Bad sequence of commands. */
     /* 530 Not logged in. */
 	i = ftp_getrc(f);
-	Explain1("FTP: returned status %d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -737,7 +735,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	len = decodeenc(path);
 	ap_bvputs(f, "CWD ", path, CRLF, NULL);
 	ap_bflush(f);
-	Explain1("FTP: CWD %s", path);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
 	*strp = '/';
 /* responses: 250, 421, 500, 501, 502, 530, 550 */
     /* 250 Requested file action okay, completed. */
@@ -748,7 +746,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 530 Not logged in. */
     /* 550 Requested action not taken. */
 	i = ftp_getrc(f);
-	Explain1("FTP: returned status %d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -783,7 +781,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	   connection */
 	ap_bputs("TYPE I" CRLF, f);
 	ap_bflush(f);
-	Explain0("FTP: TYPE I");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: TYPE I");
 /* responses: 200, 421, 500, 501, 504, 530 */
     /* 200 Command okay. */
     /* 421 Service not available, closing control connection. */
@@ -792,7 +790,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 504 Command not implemented for that parameter. */
     /* 530 Not logged in. */
 	i = ftp_getrc(f);
-	Explain1("FTP: returned status %d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -829,8 +827,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
     ap_bputs("PASV" CRLF, f);
     ap_bflush(f);
-    Explain0("FTP: PASV command issued");
-/* possible results: 227, 421, 500, 501, 502, 530 */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PASV command issued");
+    /* possible results: 227, 421, 500, 501, 502, 530 */
     /* 227 Entering Passive Mode (h1,h2,h3,h4,p1,p2). */
     /* 421 Service not available, closing control connection. */
     /* 500 Syntax error, command unrecognized. */
@@ -863,14 +861,14 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	else
 	    presult = atoi(pasv);
 
-	Explain1("FTP: returned status %d", presult);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", presult);
 
 	if (presult == 227 && pstr != NULL && (sscanf(pstr,
 		 "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
 	    /* pardon the parens, but it makes gcc happy */
 	    paddr = (((((h3 << 8) + h2) << 8) + h1) << 8) + h0;
 	    pport = (p1 << 8) + p0;
-	    Explain5("FTP: contacting host %d.%d.%d.%d:%d",
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: contacting host %d.%d.%d.%d:%d",
 		     h3, h2, h1, h0, pport);
 	    data_addr.sin_family = AF_INET;
 	    data_addr.sin_addr.s_addr = htonl(paddr);
@@ -948,16 +946,16 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     else {
 	ap_bvputs(f, "SIZE ", path, CRLF, NULL);
 	ap_bflush(f);
-	Explain1("FTP: SIZE %s", path);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: SIZE %s", path);
 	i = ftp_getrc_msg(f, resp, sizeof resp);
-	Explain2("FTP: returned status %d with response %s", i, resp);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d with response %s", i, resp);
 	if (i != 500) {		/* Size command not recognized */
 	    if (i == 550) {	/* Not a regular file */
-		Explain0("FTP: SIZE shows this is a directory");
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: SIZE shows this is a directory");
 		parms = "d";
 		ap_bvputs(f, "CWD ", path, CRLF, NULL);
 		ap_bflush(f);
-		Explain1("FTP: CWD %s", path);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
 		i = ftp_getrc(f);
 		/* possible results: 250, 421, 500, 501, 502, 530, 550 */
 		/* 250 Requested file action okay, completed. */
@@ -967,7 +965,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 		/* 502 Command not implemented. */
 		/* 530 Not logged in. */
 		/* 550 Requested action not taken. */
-		Explain1("FTP: returned status %d", i);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
 		if (i == -1) {
 		    ap_kill_timeout(r);
 		    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -997,7 +995,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 #ifdef AUTODETECT_PWD
     ap_bvputs(f, "PWD", CRLF, NULL);
     ap_bflush(f);
-    Explain0("FTP: PWD");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD");
 /* responses: 257, 500, 501, 502, 421, 550 */
     /* 257 "<directory-name>" <commentary> */
     /* 421 Service not available, closing control connection. */
@@ -1006,7 +1004,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 502 Command not implemented. */
     /* 550 Requested action not taken. */
     i = ftp_getrc_msg(f, resp, sizeof resp);
-    Explain1("FTP: PWD returned status %d", i);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD returned status %d", i);
     if (i == -1 || i == 421) {
 	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1027,11 +1025,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    ap_bvputs(f, "LIST ", path, CRLF, NULL);
 	else
 	    ap_bputs("LIST -lag" CRLF, f);
-	Explain1("FTP: LIST %s", (len == 0 ? "" : path));
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: LIST %s", (len == 0 ? "" : path));
     }
     else {
 	ap_bvputs(f, "RETR ", path, CRLF, NULL);
-	Explain1("FTP: RETR %s", path);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: RETR %s", path);
     }
     ap_bflush(f);
 /* RETR: 110, 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 530, 550
@@ -1051,18 +1049,18 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 530 Not logged in. */
     /* 550 Requested action not taken. */
     rc = ftp_getrc(f);
-    Explain1("FTP: returned status %d", rc);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
     if (rc == -1) {
 	ap_kill_timeout(r);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     }
     if (rc == 550) {
-	Explain0("FTP: RETR failed, trying LIST instead");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: RETR failed, trying LIST instead");
 	parms = "d";
 	ap_bvputs(f, "CWD ", path, CRLF, NULL);
 	ap_bflush(f);
-	Explain1("FTP: CWD %s", path);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: CWD %s", path);
 	/* possible results: 250, 421, 500, 501, 502, 530, 550 */
 	/* 250 Requested file action okay, completed. */
 	/* 421 Service not available, closing control connection. */
@@ -1072,7 +1070,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	/* 530 Not logged in. */
 	/* 550 Requested action not taken. */
 	rc = ftp_getrc(f);
-	Explain1("FTP: returned status %d", rc);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
 	if (rc == -1) {
 	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1090,7 +1088,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 #ifdef AUTODETECT_PWD
 	ap_bvputs(f, "PWD", CRLF, NULL);
 	ap_bflush(f);
-	Explain0("FTP: PWD");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD");
 /* responses: 257, 500, 501, 502, 421, 550 */
 	/* 257 "<directory-name>" <commentary> */
 	/* 421 Service not available, closing control connection. */
@@ -1099,7 +1097,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	/* 502 Command not implemented. */
 	/* 550 Requested action not taken. */
 	i = ftp_getrc_msg(f, resp, sizeof resp);
-	Explain1("FTP: PWD returned status %d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: PWD returned status %d", i);
 	if (i == -1 || i == 421) {
 	    ap_kill_timeout(r);
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1117,9 +1115,9 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
 	ap_bputs("LIST -lag" CRLF, f);
 	ap_bflush(f);
-	Explain0("FTP: LIST -lag");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: LIST -lag");
 	rc = ftp_getrc(f);
-	Explain1("FTP: returned status %d", rc);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", rc);
 	if (rc == -1)
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 "Error reading from remote server");
@@ -1149,7 +1147,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 #endif
 	if (r->content_type != NULL) {
 	    ap_table_setn(resp_hdrs, "Content-Type", r->content_type);
-	    Explain1("FTP: Content-Type set to %s", r->content_type);
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: Content-Type set to %s", r->content_type);
 	}
 	else {
 	    ap_table_setn(resp_hdrs, "Content-Type", ap_default_type(r));
@@ -1157,11 +1155,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	if (parms[0] != 'a' && size != NULL) {
 	    /* We "trust" the ftp server to really serve (size) bytes... */
 	    ap_table_set(resp_hdrs, "Content-Length", size);
-	    Explain1("FTP: Content-Length set to %s", size);
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: Content-Length set to %s", size);
 	}
     }
     if (r->content_encoding != NULL && r->content_encoding[0] != '\0') {
-	Explain1("FTP: Content-Encoding set to %s", r->content_encoding);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: Content-Encoding set to %s", r->content_encoding);
 	ap_table_setn(resp_hdrs, "Content-Encoding", r->content_encoding);
     }
 
@@ -1266,7 +1264,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	ap_bflush(f);
 	if (!pasvmode)
 	    ap_bclose(data);
-	Explain0("FTP: ABOR");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: ABOR");
 /* responses: 225, 226, 421, 500, 501, 502 */
     /* 225 Data connection open; no transfer in progress. */
     /* 226 Closing data connection. */
@@ -1275,7 +1273,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     /* 501 Syntax error in parameters or arguments. */
     /* 502 Command not implemented. */
 	i = ftp_getrc(f);
-	Explain1("FTP: returned status %d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: returned status %d", i);
     }
 
     ap_kill_timeout(r);
@@ -1284,12 +1282,12 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 /* finish */
     ap_bputs("QUIT" CRLF, f);
     ap_bflush(f);
-    Explain0("FTP: QUIT");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: QUIT");
 /* responses: 221, 500 */
     /* 221 Service closing control connection. */
     /* 500 Syntax error, command unrecognized. */
     i = ftp_getrc(f);
-    Explain1("FTP: QUIT: status %d", i);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "FTP: QUIT: status %d", i);
 
     if (pasvmode)
 	ap_bclose(data);

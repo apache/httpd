@@ -66,8 +66,6 @@
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
 
-DEF_Explain
-
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
@@ -167,10 +165,10 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	return HTTP_FORBIDDEN;
 
     if (proxyhost) {
-	Explain2("CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
     }
     else {
-	Explain2("CONNECT to %s on port %d", host, port);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "CONNECT to %s on port %d", host, port);
     }
 
     server.sin_port = (proxyport ? htons(proxyport) : htons(port));
@@ -190,7 +188,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 
 #ifdef CHECK_FD_SETSIZE
     if (sock >= FD_SETSIZE) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r->server,
 	    "proxy_connect_handler: filedescriptor (%u) "
 	    "larger than FD_SETSIZE (%u) "
 	    "found, you probably need to rebuild Apache with a "
@@ -224,7 +222,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	 * have no alternative.  Error checking ignored.  Also, we force
 	 * a HTTP/1.0 request to keep things simple.
 	 */
-	Explain0("Sending the CONNECT request to the remote proxy");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Sending the CONNECT request to the remote proxy");
 	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF,
 		    r->uri);
 #ifdef CHARSET_EBCDIC
@@ -242,7 +240,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	send(sock, buffer, strlen(buffer),0);
     }
     else {
-	Explain0("Returning 200 OK Status");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Returning 200 OK Status");
 	ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
 	ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
 	ap_bflush(r->connection->client);
@@ -253,34 +251,34 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	FD_SET(sock, &fds);
 	FD_SET(ap_bfileno(r->connection->client, B_WR), &fds);
 
-	Explain0("Going to sleep (select)");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Going to sleep (select)");
 	i = ap_select((ap_bfileno(r->connection->client, B_WR) > sock ?
 		       ap_bfileno(r->connection->client, B_WR) + 1 :
 		       sock + 1), &fds, NULL, NULL, NULL);
-	Explain1("Woke from select(), i=%d", i);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Woke from select(), i=%d", i);
 
 	if (i) {
 	    if (FD_ISSET(sock, &fds)) {
-		Explain0("sock was set");
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "sock was set");
 		if ((nbytes = recv(sock, buffer, HUGE_STRING_LEN,0)) != 0) {
 		    if (nbytes == -1)
 			break;
 		    if (send(ap_bfileno(r->connection->client, B_WR), buffer, nbytes,0) == EOF)
 			break;
-		    Explain1("Wrote %d bytes to client", nbytes);
+		    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Wrote %d bytes to client", nbytes);
 		}
 		else
 		    break;
 	    }
 	    else if (FD_ISSET(ap_bfileno(r->connection->client, B_WR), &fds)) {
-		Explain0("client->fd was set");
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "client->fd was set");
 		if ((nbytes = recv(ap_bfileno(r->connection->client, B_WR), buffer,
 				   HUGE_STRING_LEN, 0)) != 0) {
 		    if (nbytes == -1)
 			break;
 		    if (send(sock, buffer, nbytes, 0) == EOF)
 			break;
-		    Explain1("Wrote %d bytes to server", nbytes);
+		    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server, "Wrote %d bytes to server", nbytes);
 		}
 		else
 		    break;

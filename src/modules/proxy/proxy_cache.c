@@ -78,8 +78,6 @@
 #include "os.h"
 #endif
 
-DEF_Explain
-
 struct gc_ent {
     unsigned long int len;
     time_t expire;
@@ -386,7 +384,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     for (i = 0; i < files->nelts; i++) {
 	fent = &((struct gc_ent *) files->elts)[i];
 	sprintf(filename, "%s%s", cachedir, fent->file);
-	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, (long)fent->expire, (long)garbage_now);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, (long)fent->expire, (long)garbage_now);
 #if TESTING
 	fprintf(stderr, "Would unlink %s\n", filename);
 #else
@@ -429,7 +427,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 
     ap_snprintf(cachedir, sizeof(cachedir), "%s%s", cachebasedir, cachesubdir);
     filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
-    Explain1("GC Examining directory %s", cachedir);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "GC Examining directory %s", cachedir);
     dir = opendir(cachedir);
     if (dir == NULL) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
@@ -441,7 +439,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	if (ent->d_name[0] == '.')
 	    continue;
 	sprintf(filename, "%s%s", cachedir, ent->d_name);
-	Explain1("GC Examining file %s", filename);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "GC Examining file %s", filename);
 /* is it a temporary file? */
 	if (strncmp(ent->d_name, "tmp", 3) == 0) {
 /* then stat it to see how old it is; delete temporary files > 1 day old */
@@ -452,7 +450,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	    }
 	    else if (garbage_now != -1 && buf.st_atime < garbage_now - SEC_ONE_DAY &&
 		     buf.st_mtime < garbage_now - SEC_ONE_DAY) {
-		Explain1("GC unlink %s", filename);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "GC unlink %s", filename);
 		ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, r->server,
 			     "proxy gc: deleting orphaned cache file %s", filename);
 #if TESTING
@@ -739,12 +737,12 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* find out about whether the request can access the cache */
     pragma = ap_table_get(r->headers_in, "Pragma");
     auth = ap_table_get(r->headers_in, "Authorization");
-    Explain5("Request for %s, pragma=%s, auth=%s, ims=%ld, imstr=%s", url,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Request for %s, pragma=%s, auth=%s, ims=%ld, imstr=%s", url,
 	     pragma, auth, (long)c->ims, imstr);
     if (c->filename != NULL && r->method_number == M_GET &&
 	strlen(url) < 1024 && !ap_proxy_liststr(pragma, "no-cache") &&
 	auth == NULL) {
-	Explain1("Check file %s", c->filename);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Check file %s", c->filename);
 	cfd = open(c->filename, O_RDWR | O_BINARY);
 	if (cfd != -1) {
 	    ap_note_cleanups_for_fd(r->pool, cfd);
@@ -755,10 +753,8 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error opening cache file %s",
 			 c->filename);
-#ifdef EXPLAIN
 	else
-	    Explain1("File %s not found", c->filename);
-#endif
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "File %s not found", c->filename);
     }
 
     if (cachefp != NULL) {
@@ -784,7 +780,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     now = time(NULL);
 /* Ok, have we got some un-expired data? */
     if (cachefp != NULL && c->expire != BAD_DATE && now < c->expire) {
-	Explain0("Unexpired data available");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Unexpired data available");
 /* check IMS */
 	if (c->lmod != BAD_DATE && c->ims != BAD_DATE && c->ims >= c->lmod) {
 /* has the cached file changed since this request? */
@@ -798,12 +794,12 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		    ap_table_set(r->headers_out, "Expires", q);
 	    }
 	    ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
-	    Explain0("Use local copy, cached file hasn't changed");
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Use local copy, cached file hasn't changed");
 	    return HTTP_NOT_MODIFIED;
 	}
 
 /* Ok, has been modified */
-	Explain0("Local copy modified, send it");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Local copy modified, send it");
 	r->status_line = strchr(c->resp_line, ' ') + 1;
 	r->status = c->status;
 	if (!r->assbackwards) {
@@ -838,7 +834,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     }
     c->fp = cachefp;
 
-    Explain0("Local copy not present or expired. Declining.");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Local copy not present or expired. Declining.");
 
     return DECLINED;
 }
@@ -916,7 +912,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	r->header_only ||
 	ap_table_get(r->headers_in, "Authorization") != NULL ||
 	nocache) {
-	Explain1("Response is not cacheable, unlinking %s", c->filename);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Response is not cacheable, unlinking %s", c->filename);
 /* close the file */
 	if (c->fp != NULL) {
 	    ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
@@ -947,7 +943,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	date = now;
 	dates = ap_gm_timestr_822(r->pool, now);
 	ap_table_set(resp_hdrs, "Date", dates);
-	Explain0("Added date header");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Added date header");
     }
 
 /* check last-modified date */
@@ -956,12 +952,12 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     {
 	lmod = date;
 	lmods = dates;
-	Explain0("Last modified is in the future, replacing with now");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Last modified is in the future, replacing with now");
     }
 /* if the response did not contain the header, then use the cached version */
     if (lmod == BAD_DATE && c->fp != NULL) {
 	lmod = c->lmod;
-	Explain0("Reusing cached last modified");
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Reusing cached last modified");
     }
 
 /* we now need to calculate the expire data for the object. */
@@ -977,7 +973,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
  *   else
  *      expire date = now + defaultexpire
  */
-    Explain1("Expiry date is %ld", (long)expc);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Expiry date is %ld", (long)expc);
     if (expc == BAD_DATE) {
 	if (lmod != BAD_DATE) {
 	    double x = (double) (date - lmod) * conf->cache.lmfactor;
@@ -988,7 +984,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	}
 	else
 	    expc = now + conf->cache.defaultexpire;
-	Explain1("Expiry date calculated %ld", (long)expc);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Expiry date calculated %ld", (long)expc);
     }
 
 /* get the content-length header */
@@ -1027,13 +1023,13 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 				 c->filename);
 	    }
 	    ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
-	    Explain0("Remote document not modified, use local copy");
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Remote document not modified, use local copy");
 	    /* CHECKME: Is this right? Shouldn't we check IMS again here? */
 	    return HTTP_NOT_MODIFIED;
 	}
 	else {
 /* return the whole document */
-	    Explain0("Remote document updated, sending");
+	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Remote document updated, sending");
 	    r->status_line = strchr(c->resp_line, ' ') + 1;
 	    r->status = c->status;
 	    if (!r->assbackwards) {
@@ -1093,7 +1089,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     if (p == NULL)
 	return DECLINED;
 
-    Explain1("Create temporary file %s", c->tempfile);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Create temporary file %s", c->tempfile);
 
     i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, 0622);
     if (i == -1) {
