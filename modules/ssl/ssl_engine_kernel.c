@@ -199,6 +199,13 @@ int ssl_hook_ReadReq(request_rec *r)
                               thisurl, thisurl);
 
         apr_table_setn(r->notes, "error-notes", errmsg);
+
+        /* Now that we have caught this error, forget it. we are done
+         * with using SSL on this request.
+         */
+        sslconn->non_ssl_request = 0;
+        
+
         return HTTP_BAD_REQUEST;
     }
 
