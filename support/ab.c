@@ -886,14 +886,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.35 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.36 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.35 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.36 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -942,6 +942,7 @@ static int parse_url(char *url)
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
         url += 7;
     h = url;
+#if APR_HAVE_INET6
     if (*url == '[') { /* RFC 2732 format */
         h = url + 1;
         url = strchr(h, ']');
@@ -959,6 +960,7 @@ static int parse_url(char *url)
          */
         family = APR_INET6;
     }
+#endif /* APR_HAVE_INET6 */
     if ((cp = strchr(url, ':')) != NULL) {
         *cp++ = '\0';
         p = cp;
@@ -969,10 +971,13 @@ static int parse_url(char *url)
     strcpy(path, cp);
     *cp = '\0';
     strcpy(hostname, h);
+#if APR_HAVE_INET6
     if (family == APR_INET6) {
         host_field = apr_psprintf(cntxt, "[%s]",hostname);
     }
-    else {
+    else 
+#endif /* APR_HAVE_INET6 */
+    {
         host_field = hostname;
     }
     if (p != NULL)
