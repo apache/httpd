@@ -13,11 +13,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef MPE
 #include <signal.h>
-#else
-#include <sys/signal.h>
-#endif
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
@@ -134,7 +130,7 @@ void add_password(char *user, FILE *f)
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 2);
     salt[2] = '\0';
-    cpw = crypt(pw, salt);
+    cpw = (char *)crypt(pw, salt);
     free(pw);
     fprintf(f, "%s:%s\n", user, cpw);
 }
