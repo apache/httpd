@@ -30,7 +30,9 @@ PCRE_POSIXLIB_VERSION=0:0:0
 dnl Checks for programs.
 
 AC_PROG_CC
-AC_PROG_RANLIB
+dnl OS/390 doesn't have ranlib and its make utility thinks RANLIB=:
+dnl is a rule, so set RANLIB to true if there is no ranlib.
+AC_CHECK_PROG(RANLIB, ranlib, ranlib, true)
 
 dnl Checks for header files.
 
