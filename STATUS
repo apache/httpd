@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 15:18:51 $]
+Last modified at [$Date: 2004/05/21 16:07:39 $]
 
 Release:
 
@@ -76,6 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
        is NULL.
        modules/experimental/util_ldap_cache.c r1.16
        PR 26686 [Jari Ahonen <jah@progress.com>]
+       +1: jim
 
     *) Quotes cannot be used around require group and require dn
        directives, update the documentation to reflect this. Also add
@@ -85,13 +86,13 @@ PATCHES TO BACKPORT FROM 2.1
        docs/manual/mod/mod_auth_ldap.xml r1.18
        modules/experimental/mod_auth_ldap.c r1.27
        PR 19304
-       +1: minfrin
+       +1: minfrin, jim
 
     *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
        from escaping filters twice when the backslash character is used.
        modules/experimental/mod_auth_ldap.c r1.25
        PR 24437 [Jess Holle <jessh@ptc.com>]
-       +1: minfrin
+       +1: minfrin, jim
 
     *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
        functions leave the connections in a sane state after errors have
@@ -102,7 +103,7 @@ PATCHES TO BACKPORT FROM 2.1
        modules/experimental/mod_auth_ldap.c r1.24
        modules/experimental/util_ldap.c r1.18
        PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134, 27271       
-       +1: minfrin
+       +1: minfrin, jim
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
@@ -128,7 +129,7 @@ PATCHES TO BACKPORT FROM 2.1
        record is updated to show that the connection is no longer
        bound.
        modules/experimental/util_ldap.c: r1.27
-       +1: bnicholes
+       +1: bnicholes, jim
        +1: minfrin (confirmed fixes long standing timeout bug)
         
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
