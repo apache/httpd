@@ -933,7 +933,6 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *locks,
 				    dav_buffer *pbuf);
 
 /* LockDB-related public lock functions */
-const char *dav_get_lockdb_path(const request_rec *r);
 dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const dav_resource *resrouce,
 				    dav_lockdb *lockdb,

@@ -52,48 +52,86 @@
  * <http://www.apache.org/>.
  */
 
+#include "httpd.h"
+#include "http_config.h"
+
+#include "mod_dav.h"
+#include "repos.h"
+
+/* per-server configuration */
+typedef struct {
+    const char *lockdb_path;
+
+} dav_fs_server_conf;
+
+extern module MODULE_VAR_EXPORT dav_fs_module;
+
+const char *dav_get_lockdb_path(const request_rec *r)
+{
+    dav_fs_server_conf *conf;
+
+    conf = ap_get_module_config(r->server->module_config, &dav_fs_module);
+    return conf->lockdb_path;
+}
+
+static void *dav_fs_create_server_config(ap_pool_t *p, server_rec *s)
+{
+    return ap_pcalloc(p, sizeof(dav_fs_server_conf));
+}
+
+static void *dav_fs_merge_server_config(ap_pool_t *p,
+                                        void *base, void *overrides)
+{
+    dav_fs_server_conf *parent = base;
+    dav_fs_server_conf *child = overrides;
+    dav_fs_server_conf *newconf;
+
+    newconf = ap_pcalloc(p, sizeof(*newconf));
+
+    newconf->lockdb_path =
+        child->lockdb_path ? child->lockdb_path : parent->lockdb_path;
+
+    return newconf;
+}
+
 /*
-** Declarations for the filesystem repository implementation
-*/
+ * Command handler for the DAVLockDB directive, which is TAKE1
+ */
+static const char *dav_fs_cmd_davlockdb(cmd_parms *cmd, void *config,
+                                        const char *arg1)
+{
+    dav_fs_server_conf *conf;
 
-#ifndef _DAV_FS_REPOS_H_
-#define _DAV_FS_REPOS_H_
+    conf = ap_get_module_config(cmd->server->module_config,
+                                &dav_fs_module);
+    arg1 = ap_os_canonical_filename(cmd->pool, arg1);
+    conf->lockdb_path = ap_server_root_relative(cmd->pool, arg1);
 
-/* the subdirectory to hold all DAV-related information for a directory */
-#define DAV_FS_STATE_DIR		".DAV"
-#define DAV_FS_STATE_FILE_FOR_DIR	".state_for_dir"
-#define DAV_FS_LOCK_NULL_FILE	        ".locknull"
+    return NULL;
+}
 
+static const command_rec dav_fs_cmds[] =
+{
+    /* per server */
+    AP_INIT_TAKE1("DAVLockDB", dav_fs_cmd_davlockdb, NULL, RSRC_CONF,
+                  "specify a lock database"),
 
-/* ensure that our state subdirectory is present */
-void dav_fs_ensure_state_dir(ap_pool_t *p, const char *dirname);
+    { NULL }
+};
 
-/* return the storage pool associated with a resource */
-ap_pool_t *dav_fs_pool(const dav_resource *resource);
+static void register_hooks(void)
+{
+    /* nothing yet */
+}
 
-/* return the full pathname for a resource */
-const char *dav_fs_pathname(const dav_resource *resource);
-
-/* return the directory and filename for a resource */
-void dav_fs_dir_file_name(const dav_resource *resource,
-			  const char **dirpath,
-			  const char **fname);
-
-/* return the list of locknull members in this resource's directory */
-dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
-                                        dav_buffer *pbuf);
-
-
-/* DBM functions used by the repository and locking providers */
-extern const dav_hooks_db dav_hooks_db_dbm;
-
-dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
-				dav_db **pdb);
-void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
-			    const char **state1, const char **state2);
-
-/* where is the lock database located? */
-const char *dav_get_lockdb_path(const request_rec *r);
-
-
-#endif /* _DAV_FS_REPOS_H_ */
+module MODULE_VAR_EXPORT dav_fs_module =
+{
+    STANDARD20_MODULE_STUFF,
+    NULL,			/* dir config creater */
+    NULL,			/* dir merger --- default is to override */
+    dav_fs_create_server_config,	/* server config */
+    dav_fs_merge_server_config,	/* merge server config */
+    dav_fs_cmds,		/* command table */
+    NULL,                       /* handlers */
+    register_hooks,             /* register hooks */
+};

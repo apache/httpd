@@ -121,8 +121,6 @@ typedef struct {
 
 /* per-server configuration */
 typedef struct {
-    const char *lockdb_path;	/* lock database path */
-
     uuid_state st;		/* UUID state for opaquelocktoken */
 
 } dav_server_conf;
@@ -218,7 +216,6 @@ static void *dav_create_server_config(ap_pool_t *p, server_rec *s)
 
     newconf = (dav_server_conf *) ap_pcalloc(p, sizeof(*newconf));
 
-    newconf->lockdb_path = NULL;
     dav_create_uuid_state(&newconf->st);
 
     return newconf;
@@ -226,14 +223,16 @@ static void *dav_create_server_config(ap_pool_t *p, server_rec *s)
 
 static void *dav_merge_server_config(ap_pool_t *p, void *base, void *overrides)
 {
-    dav_server_conf *parent = base;
     dav_server_conf *child = overrides;
     dav_server_conf *newconf;
 
     newconf = (dav_server_conf *) ap_pcalloc(p, sizeof(*newconf));
 
-    newconf->lockdb_path = DAV_INHERIT_VALUE(parent, child, lockdb_path);
-
+    /* ### hmm. we should share the uuid state rather than copy it. if we
+       ### do another merge, then we'll just get the old one, rather than
+       ### an updated state.
+       ### of course... the UUID generation should move into APR
+    */
     memcpy(&newconf->st, &child->st, sizeof(newconf->st));
 
     return newconf;
@@ -325,14 +324,6 @@ uuid_state *dav_get_uuid_state(const request_rec *r)
     return &conf->st;
 }
 
-const char *dav_get_lockdb_path(const request_rec *r)
-{
-    dav_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &dav_module);
-    return conf->lockdb_path;
-}
-
 ap_table_t *dav_get_dir_params(const request_rec *r)
 {
     dav_dir_conf *conf;
@@ -357,7 +348,6 @@ const dav_dyn_hooks *dav_get_provider_hooks(request_rec *r, int provider_type)
     const dav_dyn_hooks *hooks;
     static const dav_dyn_hooks null_hooks = { { 0 } };
 
-    /* Call repository hook to resolve resource */
     conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
 						 &dav_module);
     switch (provider_type) {
@@ -427,22 +417,6 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
 	conf->allow_depthinfinity = DAV_ENABLED_ON;
     else
 	conf->allow_depthinfinity = DAV_ENABLED_OFF;
-    return NULL;
-}
-
-/*
- * Command handler for the DAVLockDB directive, which is TAKE1
- */
-static const char *dav_cmd_davlockdb(cmd_parms *cmd, void *config,
-                                     const char *arg1)
-{
-    dav_server_conf *conf;
-
-    conf = (dav_server_conf *) ap_get_module_config(cmd->server->module_config,
-						    &dav_module);
-    arg1 = ap_os_canonical_filename(cmd->pool, arg1);
-    conf->lockdb_path = ap_server_root_relative(cmd->pool, arg1);
-
     return NULL;
 }
 
@@ -3265,10 +3239,6 @@ static const command_rec dav_cmds[] =
     /* per directory/location */
     AP_INIT_FLAG("DAV", dav_cmd_dav, NULL, ACCESS_CONF,
                  "turn DAV on/off for a directory or location"),
-
-    /* per server */
-    AP_INIT_TAKE1("DAVLockDB", dav_cmd_davlockdb, NULL,	RSRC_CONF,
-                  "specify a lock database"),
 
     /* per directory/location, or per server */
     AP_INIT_TAKE1("DAVMinTimeout", dav_cmd_davmintimeout, NULL,
