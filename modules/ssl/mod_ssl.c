@@ -488,6 +488,7 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_handler       (ssl_hook_Handler,       NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
 
 #if 0 /* XXX - Work in progress */
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
@@ -508,10 +509,8 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_type_checker  (ssl_hook_fixer_upper,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter (ssl_hook_insert_filter, NULL,NULL, APR_HOOK_MIDDLE);
 #endif
-#if 0 /* XXX */
     ssl_var_register();
     ssl_io_register();
-#endif
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
