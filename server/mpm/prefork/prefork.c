@@ -406,6 +406,9 @@ static void sig_term(int sig)
     shutdown_pending = 1;
 }
 
+/* restart() is the signal handler for SIGHUP and SIGWINCH
+ * in the parent process, unless running in ONE_PROCESS mode
+ */
 static void restart(int sig)
 {
     if (restart_pending == 1) {
@@ -413,11 +416,9 @@ static void restart(int sig)
 	return;
     }
     restart_pending = 1;
-#if 0
     if ((is_graceful = (sig == SIGWINCH))) {
         apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
     }
-#endif
 }
 
 static void set_signals(void)
@@ -480,9 +481,12 @@ static void set_signals(void)
 
     /* we want to ignore HUPs and WINCH while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
+    sigaddset(&sa.sa_mask, SIGWINCH);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
+    if (sigaction(SIGWINCH, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGWINCH)");
 #else
     if (!one_process) {
 	apr_signal(SIGSEGV, sig_coredump);
@@ -511,7 +515,7 @@ static void set_signals(void)
     apr_signal(SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGWINCH
-    apr_signal(SIGWINCH, SIG_IGN);
+    apr_signal(SIGWINCH, restart);
 #endif /* SIGWINCH */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
@@ -889,6 +893,10 @@ static int make_child(server_rec *s, int slot)
 	 */
 	apr_signal(SIGHUP, please_die_gracefully);
 	apr_signal(SIGTERM, just_die);
+        /* The child process doesn't do anything for SIGWINCH.  Instead, the
+         * pod is used for signalling graceful restart.
+         */
+        apr_signal(SIGWINCH, SIG_IGN);
         ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
     }
