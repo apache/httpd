@@ -1,5 +1,8 @@
 Changes with Apache 1.3.32
 
+  *) mod_setenvif: Remove "support" for Remote_User variable which
+     never worked at all. PR 25725.  [André Malo]
+
   *) mod_usertrack: Escape the cookie name before pasting into the
      regexp.  [André Malo]
 
