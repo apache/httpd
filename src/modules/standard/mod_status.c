@@ -450,14 +450,22 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
 	if (!ap_extended_status) {
+	    int j = 0;
 	    ap_rputs("PID Key: <br>\n", r);
-	    ap_rputs("<UL>\n", r);
+	    ap_rputs("<PRE>\n", r);
 	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-		if (stat_buffer[i] != '.')
-		    ap_rprintf(r, "<LI>%d in state: %c <BR>\n", pid_buffer[i],
+		if (stat_buffer[i] != '.') {
+		    ap_rprintf(r, "   %d in state: %c ", pid_buffer[i],
 		     stat_buffer[i]);
+		    if (++j >= 3) {
+		    	ap_rputs("\n", r);
+			j = 0;
+		    } else
+		    	ap_rputs(",", r);
+		}
 	    }
-	    ap_rputs("</UL>\n", r);
+	    ap_rputs("\n", r);
+	    ap_rputs("</PRE>\n", r);
 	}
     }
 
@@ -650,7 +658,7 @@ static int status_handler(request_rec *r)
 	}				/* for () */
 
 	if (!(short_report || no_table_report)) {
-#ifdef OS2
+#ifdef NO_TIMES
 	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
@@ -684,9 +692,8 @@ static int status_handler(request_rec *r)
 
     } else {
 
-    ap_rputs("<hr>To obtain a full report with current status information and", r);
-    ap_rputs(" DNS and LOGGING status codes \n", r);
-    ap_rputs("you need to use the <code>ExtendedStatus On</code>directive. \n", r);
+    ap_rputs("<hr>To obtain a full report with current status information", r);
+    ap_rputs("you need to use the <code>ExtendedStatus On</code> directive. \n", r);
 
     }
 
