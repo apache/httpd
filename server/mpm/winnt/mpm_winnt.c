@@ -1694,8 +1694,6 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         /* Parent process */
         PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
 
-        ap_clear_pool(plog);
-        ap_open_logs(server_conf, plog);
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         if (!restart) {
             ap_log_pid(pconf, ap_pid_fname);
