@@ -444,8 +444,8 @@ if test "x$ap_ssltk_base" = "x"; then
   fi
   if test "x$ap_ssltk_libdir" != "x/usr/lib"; then
     APR_ADDTO(LIBS, [-L$ap_ssltk_libdir])
-    if test "x$ap_platform_needs_R" = "xyes"; then
-      APR_ADDTO(LIBS, [-R$ap_ssltk_libdir])
+    if test "x$ap_platform_runtime_link_flag" != "x"; then
+      APR_ADDTO(LIBS, [$ap_platform_runtime_link_flag$ap_ssltk_libdir])
     fi
   fi
   APR_ADDTO(LIBS, [-lssl -lcrypto])
