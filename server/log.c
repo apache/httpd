@@ -198,7 +198,7 @@ static int log_child(apr_pool_t *p, const char *progname,
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
         && ((rc = apr_procattr_cmdtype_set(procattr,
-                                           APR_PROGRAM_ENV)) == APR_SUCCESS)
+                                           APR_SHELLCMD_ENV)) == APR_SUCCESS)
         && ((rc = apr_procattr_io_set(procattr,
                                       APR_FULL_BLOCK,
                                       APR_NO_PIPE,
@@ -725,7 +725,7 @@ static int piped_log_spawn(piped_log *pl)
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
         ((status = apr_procattr_cmdtype_set(procattr,
-                                            APR_PROGRAM_ENV)) != APR_SUCCESS) || 
+                                            APR_SHELLCMD_ENV)) != APR_SUCCESS) || 
         ((status = apr_procattr_child_in_set(procattr,
                                              ap_piped_log_read_fd(pl),
                                              ap_piped_log_write_fd(pl)))
