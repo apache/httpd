@@ -139,11 +139,6 @@ every configuration function as __stdcall.
 #define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
 #endif
 
-#if 0
-#ifndef S_ISREG
-#define S_ISREG(m)      (((m)&(S_IFREG)) == (S_IFREG))
-#endif
-#endif
 
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
@@ -163,13 +158,6 @@ __inline int ap_os_is_path_absolute(const char *file)
   return file[0] == '/' || file[1] == ':';
 }
 
-#define _spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
-#define spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
-#define _spawnve(mode,cmdname,argv,envp)    os_spawnve(mode,cmdname,argv,envp)
-#define spawnve(mode,cmdname,argv,envp)	    os_spawnve(mode,cmdname,argv,envp)
-#define _spawnle			    os_spawnle
-#define spawnle				    os_spawnle
-
 /* OS-dependent filename routines in util_win32.c */
 API_EXPORT(char *) ap_os_canonical_filename(ap_context_t *p, const char *file);
 API_EXPORT(char *) ap_os_case_canonical_filename(ap_context_t *pPool, const char *szFile);
@@ -179,7 +167,9 @@ int os_strftime(char *, size_t , const char *, const struct tm *);
 
 /* Abstractions for dealing with shared object files (DLLs on Win32).
  * These are used by mod_so.c
+ * ToDo: This need to be migrated to APR
  */
+
 #define ap_os_dso_handle_t  HINSTANCE
 #define ap_os_dso_init()
 #define ap_os_dso_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
@@ -190,19 +180,8 @@ int os_strftime(char *, size_t , const char *, const struct tm *);
 /* Other ap_os_ routines not used by this platform */
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
-/* Moved from multithread.h. Axe this stuff when APR comes online... */
-
-#define MULTI_OK (0)
-#define MULTI_TIMEOUT (1)
-#define MULTI_ERR (2)
-
 typedef void thread;
 typedef void event;
 
-thread *create_thread(void (thread_fn) (void *thread_arg), void *thread_arg);
-int kill_thread(thread *thread_id);
-int await_thread(thread *thread_id, int sec_to_wait);
-void exit_thread(int status);
-void free_thread(thread *thread_id);
 
 #endif   /* ! APACHE_OS_H */

@@ -118,25 +118,6 @@ static ap_status_t socket_cleanup(void *sock)
  * or thrown out entirely...
  */
 
-static int
-map_rv(int rv)
-{
-    switch(rv)
-    {
-    case WAIT_OBJECT_0:
-    case WAIT_ABANDONED:
-        return(MULTI_OK);
-    case WAIT_TIMEOUT:
-        return(MULTI_TIMEOUT);
-    case WAIT_FAILED:
-        return(MULTI_ERR);
-    default:
-        ap_assert(0);
-    }
-
-    ap_assert(0);
-    return(0);
-}
 
 typedef void semaphore;
 typedef void event;
@@ -147,13 +128,13 @@ create_semaphore(int initial)
     return(CreateSemaphore(NULL, initial, 1000000, NULL));
 }
 
-static int acquire_semaphore(semaphore *semaphore_id)
+static void acquire_semaphore(semaphore *semaphore_id)
 {
     int rv;
     
     rv = WaitForSingleObject(semaphore_id, INFINITE);
     
-    return(map_rv(rv));
+    return;
 }
 
 static int release_semaphore(semaphore *semaphore_id)
