@@ -1,278 +1,278 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
-<head>
-<title>Apache module mod_mime</title>
-</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<body
- bgcolor="#FFFFFF"
- text="#000000"
- link="#0000FF"
- vlink="#000080"
- alink="#FF0000"
->
-<!--#include virtual="header.html" -->
-<h1 align="center">Module mod_mime</h1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module associates the request filename's extensions (e.g. .html) with
-the file's behavior (handlers and filters) and content (mime-type, language,
-character set and encoding.)</p>
+    <title>Apache module mod_mime</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<p><a
-href="module-dict.html#Status"
-rel="Help"
-><strong>Status:</strong></a> Base
-<br>
-<a
-href="module-dict.html#SourceFile"
-rel="Help"
-><strong>Source File:</strong></a> mod_mime.c
-<br>
-<a
-href="module-dict.html#ModuleIdentifier"
-rel="Help"
-><strong>Module Identifier:</strong></a> mime_module
-</p>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<h2>Summary</h2>
+    <h1 align="center">Module mod_mime</h1>
 
-This module is used to associate various bits of "meta information" with
-files by their filename extensions. This information relates the filename
-of the document to it's mime-type, language, character set and encoding.
-This information is sent to the browser, and participates in content 
-negotiation, so the user's preferences are respected when choosing one of 
-several possible files to serve.  See 
-<a href="mod_negotiation">mod_negotiation</a> for more information about
-content negotiation.
+    <p>This module associates the request filename's extensions
+    (e.g. .html) with the file's behavior (handlers and filters)
+    and content (mime-type, language, character set and
+    encoding.)</p>
 
-<P>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_mime.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    mime_module</p>
 
-The directives <a href="#addhandler">AddHandler</a>, 
-<a href="#addoutputfilter">AddOutputFilter</a>, and
-<a href="#addinputfilter">AddInputFilter</a> control the modules or
-scripts that serve the document.
+    <h2>Summary</h2>
+    This module is used to associate various bits of "meta
+    information" with files by their filename extensions. This
+    information relates the filename of the document to it's
+    mime-type, language, character set and encoding. This
+    information is sent to the browser, and participates in content
+    negotiation, so the user's preferences are respected when
+    choosing one of several possible files to serve. See <a
+    href="mod_negotiation">mod_negotiation</a> for more information
+    about content negotiation. 
 
-<P>
+    <p>The directives <a href="#addhandler">AddHandler</a>, <a
+    href="#addoutputfilter">AddOutputFilter</a>, and <a
+    href="#addinputfilter">AddInputFilter</a> control the modules
+    or scripts that serve the document.</p>
 
-In addition, mod_mime may define the "handler" for a document, which controls
-which module or script will serve the document.  With the introduction of
-"filters" in Apache 2.0, mod_mime can also define the filters that the 
-the content should be processed through (e.g. the Includes output filter for
-server side scripting) and what filters the client request and POST content 
-should be processed through (the input filters.)
+    <p>In addition, mod_mime may define the "handler" for a
+    document, which controls which module or script will serve the
+    document. With the introduction of "filters" in Apache 2.0,
+    mod_mime can also define the filters that the the content
+    should be processed through (e.g. the Includes output filter
+    for server side scripting) and what filters the client request
+    and POST content should be processed through (the input
+    filters.)</p>
 
-<P>
+    <p>The directives <a href="#addcharset">AddCharset</a>, <a
+    href="#addencoding">AddEncoding</a>, <a
+    href="#addlanguage">AddLanguage</a> and <a
+    href="#addtype">AddType</a> are all used to map file extensions
+    onto the meta-information for that file. Respectively they set
+    the character set, content-encoding, content-language, and
+    MIME-type (content-type) of documents.</p>
 
-The directives <a href="#addcharset">AddCharset</a>,
-<a href="#addencoding">AddEncoding</a>, <a href="#addlanguage">AddLanguage</a> 
-and <a href="#addtype">AddType</a> are all used to map file extensions onto 
-the meta-information for that file.  Respectively they set the character set, 
-content-encoding, content-language, and MIME-type (content-type) of documents.
+    <p>The directive <a href="#typesconfig">TypesConfig</a> is used
+    to specify a file which also maps extensions onto MIME types.
+    Most administrators use the provided mime.types file which
+    associates common filename extensions with IANA registered
+    content types. The current list is maintained at
+    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>
+    although it may be mirrored elsewhere). This simplifies the
+    httpd.conf file by providing the majority of media-type
+    definitions, and they may be overridden by <a
+    href="#addtype">AddType</a> directives as needed.</p>
 
-<P>
+    <p><em>Please do not send requests to the Apache httpd Project
+    to add any new entries in the distributed mime.types file
+    unless (1) they are already registered with IANA, and (2) they
+    use widely accepted, non-conflicting filename extensions across
+    platforms. category/x-subtype requests will be automatically
+    rejected, as will any new two-letter extensions as they will
+    likely conflict later with the already crowded language and
+    character set namespace.</em></p>
 
-The directive <a href="#typesconfig">TypesConfig</a> is used to specify a
-file which also maps extensions onto MIME types.  Most administrators use
-the provided mime.types file which associates common filename extensions
-with IANA registered content types.  The current list is maintained at
-<code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>
-although it may be mirrored elsewhere).  This simplifies the httpd.conf file
-by providing the majority of media-type definitions, and they may be
-overriden by <a href="#addtype">AddType</a> directives as needed.
+    <p>The core directives <a
+    href="core.html#forcetype">ForceType</a> and <a
+    href="core.html#sethandler">SetHandler</a> are used to
+    associate all the files in a given container (<em>e.g.</em>,
+    &lt;location&gt;, &lt;directory&gt;, or &lt;Files&gt;) with a
+    particular MIME-type or handler. These settings override any
+    filename extension mappings defined in mod_mime.</p>
 
-<P>
+    <p>Note that changing the type or encoding of a file does not
+    change the value of the <code>Last-Modified</code> header.
+    Thus, previously cached copies may still be used by a client or
+    proxy, with the previous headers. If you change the
+    meta-information (language, content type, character set or
+    encoding) you may need to 'touch' affected files (updating
+    their last modified date) to ensure that all visitors are
+    receive the corrected content headers.</p>
 
-<EM>Please do not send requests to the Apache httpd Project to add any new
-entries in the distributed mime.types file unless (1) they are already 
-registered with IANA, and (2) they use widely accepted, non-conflicting
-filename extensions across platforms.  category/x-subtype requests will
-be automatically rejected, as will any new two-letter extensions as they
-will likely conflict later with the already crowded language and character 
-set namespace.</EM>
+    <h2>Directives</h2>
 
-<P>
+    <ul>
+      <li><a href="#addcharset">AddCharset</a></li>
 
-The core directives <a href="core.html#forcetype">ForceType</a> and 
-<a href="core.html#sethandler">SetHandler</a> are used to associate
-all the files in a given container (<em>e.g.</em>, &lt;location&gt;, 
-&lt;directory&gt;, or &lt;Files&gt;) with a particular MIME-type or 
-handler.  These settings override any filename extension mappings 
-defined in mod_mime.
+      <li><a href="#addencoding">AddEncoding</a></li>
 
-<P>
+      <li><a href="#addhandler">AddHandler</a></li>
 
-Note that changing the type or encoding of a file does not change the
-value of the <CODE>Last-Modified</code> header. Thus, previously cached
-copies may still be used by a client or proxy, with the previous headers.
-If you change the meta-information (language, content type, character set
-or encoding) you may need to 'touch' affected files (updating their last 
-modified date) to ensure that all visitors are receive the corrected 
-content headers.
+      <li><a href="#addinputfilter">AddInputFilter</a></li>
 
-<h2>Directives</h2>
-<ul>
-<li><a href="#addcharset">AddCharset</a></li>
-<li><a href="#addencoding">AddEncoding</a>
-<li><a href="#addhandler">AddHandler</a>
-<li><a href="#addinputfilter">AddInputFilter</a>
-<li><a href="#addlanguage">AddLanguage</a>
-<li><a href="#addoutputfilter">AddOutputFilter</a>
-<li><a href="#addtype">AddType</a>
-<li><a href="#defaultlanguage">DefaultLanguage</a>
-<li><a href="#removecharset">RemoveCharset</a>
-<li><a href="#removeencoding">RemoveEncoding</a>
-<li><a href="#removehandler">RemoveHandler</a>
-<li><a href="#removeinputfilter">RemoveInputFilter</a>
-<li><a href="#removelanguage">RemoveLanguage</a>
-<li><a href="#removeoutputfilter">RemoveOutputFilter</a>
-<li><a href="#removetype">RemoveType</a>
-<li><a href="#typesconfig">TypesConfig</a>
-</ul>
+      <li><a href="#addlanguage">AddLanguage</a></li>
 
-<p>See also: <a
-href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a>.</p>
+      <li><a href="#addoutputfilter">AddOutputFilter</a></li>
 
-<h2><a name="multipleext">Files with Multiple Extensions</a></h2>
+      <li><a href="#addtype">AddType</a></li>
 
-Files can have more than one extension, and the order of the
-extensions is <em>normally</em> irrelevant. For example, if the file
-<code>welcome.html.fr</code> maps onto content type text/html and
-language French then the file <code>welcome.fr.html</code> will map
-onto exactly the same information. The only exception to this is if an
-extension is given which Apache does not know how to handle. In this
-case it will "forget" about any information it obtained from
-extensions to the left of the unknown extension. So, for example, if
-the extensions fr and html are mapped to the appropriate language and
-type but extension xxx is not assigned to anything, then the file
-<code>welcome.fr.xxx.html</code> will be associated with content-type
-text/html but <em>no</em> language.
+      <li><a href="#defaultlanguage">DefaultLanguage</a></li>
 
-<P>
+      <li><a href="#removecharset">RemoveCharset</a></li>
 
-If more than one extension is given which maps onto the same type of
-meta-information, then the one to the right will be used. For example,
-if ".gif" maps to the MIME-type image/gif and ".html" maps to the
-MIME-type text/html, then the file <code>welcome.gif.html</code> will
-be associated with the MIME-type "text/html".
+      <li><a href="#removeencoding">RemoveEncoding</a></li>
 
-<P>
+      <li><a href="#removehandler">RemoveHandler</a></li>
 
-Care should be taken when a file with multiple extensions gets
-associated with both a MIME-type and a handler. This will usually
-result in the request being by the module associated with the
-handler. For example, if the <code>.imap</code> extension is mapped to
-the handler "imap-file" (from mod_imap) and the <code>.html</code>
-extension is mapped to the MIME-type "text/html", then the file
-<code>world.imap.html</code> will be associated with both the
-"imap-file" handler and "text/html" MIME-type. When it is processed,
-the "imap-file" handler will be used, and so it will be treated as a
-mod_imap imagemap file.
+      <li><a href="#removeinputfilter">RemoveInputFilter</a></li>
 
-<h2><a name="contentencoding">Content encoding</a></h2>
+      <li><a href="#removelanguage">RemoveLanguage</a></li>
 
-A file of a particular MIME type can additionally be encoded a
-particular way to simplify transmission over the Internet. While this
-usually will refer to compression, such as <samp>gzip</samp>, it can 
-also refer to encryption, such a <samp>pgp</samp> or
-to an encoding such as UUencoding, which is designed for transmitting
-a binary file in an ASCII (text) format.<p>
+      <li><a href="#removeoutputfilter">RemoveOutputFilter</a></li>
 
-The MIME RFC puts it this way:
-<blockquote>
-The Content-Encoding entity-header field is used as a modifier to the
-media-type. When present, its value indicates what additional content
-coding has been applied to the resource, and thus what decoding mechanism
-must be applied in order to obtain the media-type referenced by the
-Content-Type header field. The Content-Encoding is primarily used to allow
-a document to be compressed without losing the identity of its underlying
-media type.
-</blockquote>
+      <li><a href="#removetype">RemoveType</a></li>
 
-By using more than one file extension (see 
-<a href="#multipleext">section above about multiple file 
-extensions</a>), you can indicate that a file is of a particular 
-<em>type</em>, and also has a particular <em>encoding</em>.<p>
+      <li><a href="#typesconfig">TypesConfig</a></li>
+    </ul>
 
-For example, you may have a file which is a Microsoft Word document,
-which is pkzipped to reduce its size. If the <samp>.doc</samp> extension is
-associated with the Microsoft Word file type, and the
-<samp>.zip</samp> extension is associated with the pkzip file
-encoding, then the file <samp>Resume.doc.zip</samp>would be known to
-be a pkzip'ed Word document.<p>
+    <p>See also: <a
+    href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a>.</p>
 
-Apache send a <samp>Content-encoding</samp> header with the resource,
-in order to tell the client browser about the encoding method.
-<p>
-<samp>Content-encoding: pkzip</samp>
-<p>
-<h2>Character sets and languages</h2>
+    <h2><a id="multipleext" name="multipleext">Files with Multiple
+    Extensions</a></h2>
+    Files can have more than one extension, and the order of the
+    extensions is <em>normally</em> irrelevant. For example, if the
+    file <code>welcome.html.fr</code> maps onto content type
+    text/html and language French then the file
+    <code>welcome.fr.html</code> will map onto exactly the same
+    information. The only exception to this is if an extension is
+    given which Apache does not know how to handle. In this case it
+    will "forget" about any information it obtained from extensions
+    to the left of the unknown extension. So, for example, if the
+    extensions fr and html are mapped to the appropriate language
+    and type but extension xxx is not assigned to anything, then
+    the file <code>welcome.fr.xxx.html</code> will be associated
+    with content-type text/html but <em>no</em> language. 
 
-Finally, in addition to file type, and the file encoding,
-another important piece of information is
-what language a particular document is in, and in what character set
-the file should be displayed. For example, the document might be
-written in the Vietnamese alphabet, or in Cyrillic, and should be
-displayed as such. This information, also, is transmitted in HTTP
-headers.<p>
+    <p>If more than one extension is given which maps onto the same
+    type of meta-information, then the one to the right will be
+    used. For example, if ".gif" maps to the MIME-type image/gif
+    and ".html" maps to the MIME-type text/html, then the file
+    <code>welcome.gif.html</code> will be associated with the
+    MIME-type "text/html".</p>
 
-While the character set is useful for the browser, in order to
-determine how to display the document, the language and the
-character set are also used in the process of content negotiation
-(See <a href="mod_negotiation.html">mod_negotiation</a>)
-to determine which document to give to the client, when there are
-alternative documents in more than one language, or more than 
-one character set.<p>
+    <p>Care should be taken when a file with multiple extensions
+    gets associated with both a MIME-type and a handler. This will
+    usually result in the request being by the module associated
+    with the handler. For example, if the <code>.imap</code>
+    extension is mapped to the handler "imap-file" (from mod_imap)
+    and the <code>.html</code> extension is mapped to the MIME-type
+    "text/html", then the file <code>world.imap.html</code> will be
+    associated with both the "imap-file" handler and "text/html"
+    MIME-type. When it is processed, the "imap-file" handler will
+    be used, and so it will be treated as a mod_imap imagemap
+    file.</p>
 
-To convey this further information, Apache optionally sends a
-<samp>Content-Language</samp> header, to specify the language that the
-document is in, and can append additional information onto the
-<samp>Content-Type</samp> header to indicate the particular character
-set that should be used to correctly render the information.
+    <h2><a id="contentencoding" name="contentencoding">Content
+    encoding</a></h2>
+    A file of a particular MIME type can additionally be encoded a
+    particular way to simplify transmission over the Internet.
+    While this usually will refer to compression, such as
+    <samp>gzip</samp>, it can also refer to encryption, such a
+    <samp>pgp</samp> or to an encoding such as UUencoding, which is
+    designed for transmitting a binary file in an ASCII (text)
+    format. 
 
+    <p>The MIME RFC puts it this way:</p>
+
+    <blockquote>
+      The Content-Encoding entity-header field is used as a
+      modifier to the media-type. When present, its value indicates
+      what additional content coding has been applied to the
+      resource, and thus what decoding mechanism must be applied in
+      order to obtain the media-type referenced by the Content-Type
+      header field. The Content-Encoding is primarily used to allow
+      a document to be compressed without losing the identity of
+      its underlying media type.
+    </blockquote>
+    By using more than one file extension (see <a
+    href="#multipleext">section above about multiple file
+    extensions</a>), you can indicate that a file is of a
+    particular <em>type</em>, and also has a particular
+    <em>encoding</em>. 
+
+    <p>For example, you may have a file which is a Microsoft Word
+    document, which is pkzipped to reduce its size. If the
+    <samp>.doc</samp> extension is associated with the Microsoft
+    Word file type, and the <samp>.zip</samp> extension is
+    associated with the pkzip file encoding, then the file
+    <samp>Resume.doc.zip</samp>would be known to be a pkzip'ed Word
+    document.</p>
+
+    <p>Apache send a <samp>Content-encoding</samp> header with the
+    resource, in order to tell the client browser about the
+    encoding method.</p>
+
+    <p><samp>Content-encoding: pkzip</samp></p>
+
+    <h2>Character sets and languages</h2>
+    Finally, in addition to file type, and the file encoding,
+    another important piece of information is what language a
+    particular document is in, and in what character set the file
+    should be displayed. For example, the document might be written
+    in the Vietnamese alphabet, or in Cyrillic, and should be
+    displayed as such. This information, also, is transmitted in
+    HTTP headers. 
+
+    <p>While the character set is useful for the browser, in order
+    to determine how to display the document, the language and the
+    character set are also used in the process of content
+    negotiation (See <a
+    href="mod_negotiation.html">mod_negotiation</a>) to determine
+    which document to give to the client, when there are
+    alternative documents in more than one language, or more than
+    one character set.</p>
+
+    <p>To convey this further information, Apache optionally sends
+    a <samp>Content-Language</samp> header, to specify the language
+    that the document is in, and can append additional information
+    onto the <samp>Content-Type</samp> header to indicate the
+    particular character set that should be used to correctly
+    render the information.</p>
 <pre>
 Content-Language: en, fr
 Content-Type: text/plain; charset=ISO-8859-2
 </pre>
-<p>
-The language specification is the two-letter abbreviation for the
-language. The <samp>charset</samp> is the name of the particular
-character set which should be used.</p>
 
-<hr>
+    <p>The language specification is the two-letter abbreviation
+    for the language. The <samp>charset</samp> is the name of the
+    particular character set which should be used.</p>
+    <hr />
 
-<h2><a name="addcharset">AddCharset</a> directive</h2>
-<a href="directive-dict.html#Syntax" rel="Help"
-><strong>Syntax:</strong></a> AddCharset <em>charset extension</em>
- [<em>extension</em>] ...<br>
-<a href="directive-dict.html#Context" rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime
-<br>
-<a href="directive-dict.html#Compatibility" rel="Help"
-><strong>Compatibility:</strong></a> AddCharset is only available in Apache
-1.3.10 and later
+    <h2><a id="addcharset" name="addcharset">AddCharset</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddCharset <em>charset
+    extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime <br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AddCharset is
+    only available in Apache 1.3.10 and later 
 
-<P>
-The AddCharset directive maps the given filename extensions to the
-specified content charset. <i>charset</i> is the MIME charset
-parameter of filenames containing <i>extension</i>.  This mapping is
-added to any already in force, overriding any mappings that already
-exist for the same <i>extension</i>.
-</P>
-<P>
-Example:
+    <p>The AddCharset directive maps the given filename extensions
+    to the specified content charset. <i>charset</i> is the MIME
+    charset parameter of filenames containing <i>extension</i>.
+    This mapping is added to any already in force, overriding any
+    mappings that already exist for the same <i>extension</i>.</p>
+
+    <p>Example:</p>
 <pre>
     AddLanguage ja .ja
     AddCharset EUC-JP .euc
@@ -280,743 +280,608 @@ Example:
     AddCharset SHIFT_JIS .sjis
 </pre>
 
-<P>
-Then the document <code>xxxx.ja.jis</code> will be treated as being a
-Japanese document whose charset is ISO-2022-JP (as will the document
-<code>xxxx.jis.ja</code>). The AddCharset directive is useful for both
-to inform the client about the character encoding of the document so
-that the document can be interpreted and displayed appropriately, and
-for <a href="../content-negotiation.html">content negotiation</a>, where
-the server returns one from several documents based on the client's
-charset preference.
-</P>
+    <p>Then the document <code>xxxx.ja.jis</code> will be treated
+    as being a Japanese document whose charset is ISO-2022-JP (as
+    will the document <code>xxxx.jis.ja</code>). The AddCharset
+    directive is useful for both to inform the client about the
+    character encoding of the document so that the document can be
+    interpreted and displayed appropriately, and for <a
+    href="../content-negotiation.html">content negotiation</a>,
+    where the server returns one from several documents based on
+    the client's charset preference.</p>
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
 
-<P>
-<strong>See also</strong>: <a href="mod_negotiation.html">mod_negotiation</a>
-</P>
+    <p><strong>See also</strong>: <a
+    href="mod_negotiation.html">mod_negotiation</a></p>
+    <hr />
 
-<hr>
+    <h2><a id="addencoding" name="addencoding">AddEncoding</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddEncoding
+    <em>MIME-enc extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime 
 
-<h2><a name="addencoding">AddEncoding</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> AddEncoding <em>MIME-enc extension</em>
-    [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<P>
+    <p>The AddEncoding directive maps the given filename extensions
+    to the specified encoding type. <em>MIME-enc</em> is the MIME
+    encoding to use for documents containing the
+    <em>extension</em>. This mapping is added to any already in
+    force, overriding any mappings that already exist for the same
+    <em>extension</em>. Example:</p>
 
-The AddEncoding directive maps the given filename extensions to the
-specified encoding type. <em>MIME-enc</em> is the MIME encoding to use
-for documents containing the <em>extension</em>. This mapping is added
-to any already in force, overriding any mappings that already exist
-for the same <em>extension</em>.
+    <blockquote>
+      <code>AddEncoding x-gzip .gz<br />
+       AddEncoding x-compress .Z</code>
+    </blockquote>
+    This will cause filenames containing the .gz extension to be
+    marked as encoded using the x-gzip encoding, and filenames
+    containing the .Z extension to be marked as encoded with
+    x-compress. 
 
-Example:
-<blockquote><code>
-AddEncoding x-gzip .gz<br> 
-AddEncoding x-compress .Z
-</code></blockquote>
+    <p>Old clients expect <code>x-gzip</code> and
+    <code>x-compress</code>, however the standard dictates that
+    they're equivalent to <code>gzip</code> and
+    <code>compress</code> respectively. Apache does content
+    encoding comparisons by ignoring any leading <code>x-</code>.
+    When responding with an encoding Apache will use whatever form
+    (<em>i.e.</em>, <code>x-foo</code> or <code>foo</code>) the
+    client requested. If the client didn't specifically request a
+    particular form Apache will use the form given by the
+    <code>AddEncoding</code> directive. To make this long story
+    short, you should always use <code>x-gzip</code> and
+    <code>x-compress</code> for these two specific encodings. More
+    recent encodings, such as <code>deflate</code> should be
+    specified without the <code>x-</code>.</p>
 
-This will cause filenames containing the .gz extension to be marked as
-encoded using the x-gzip encoding, and filenames containing the .Z
-extension to be marked as encoded with x-compress.<P>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
 
-Old clients expect <code>x-gzip</code> and <code>x-compress</code>,
-however the standard dictates that they're equivalent to <code>gzip</code>
-and <code>compress</code> respectively.  Apache does content encoding
-comparisons by ignoring any leading <code>x-</code>.  When responding
-with an encoding Apache will use whatever form (<em>i.e.</em>, <code>x-foo</code>
-or <code>foo</code>) the client requested.  If the client didn't
-specifically request a particular form Apache will use the form given by
-the <code>AddEncoding</code> directive.  To make this long story short,
-you should always use <code>x-gzip</code> and <code>x-compress</code>
-for these two specific encodings.  More recent encodings, such as
-<code>deflate</code> should be specified without the <code>x-</code>.
+    <p><strong>See also</strong>: <a href="#multipleext">Files with
+    multiple extensions</a></p>
+    <hr />
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <h2><a id="addhandler" name="addhandler">AddHandler</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddHandler
+    <em>handler-name extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AddHandler is
+    only available in Apache 1.1 and later 
 
-<P>
-
-<strong>See also</strong>: <a href="#multipleext">Files with
-multiple extensions</a>
-
-<P><hr>
-
-<h2><a name="addhandler">AddHandler</a> directive</h2>
-
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> AddHandler <em>handler-name extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> AddHandler is only available in Apache
-1.1 and later<P>
-
-<P>AddHandler maps the filename extensions <em>extension</em> to the
-<a href="../handler.html">handler</a> <em>handler-name</em>.  This
-mapping is added to any already in force, overriding any mappings that
-already exist for the same <em>extension</em>.
-
-For example, to activate CGI scripts
-with the file extension "<code>.cgi</code>", you might use:
+    <p>AddHandler maps the filename extensions <em>extension</em>
+    to the <a href="../handler.html">handler</a>
+    <em>handler-name</em>. This mapping is added to any already in
+    force, overriding any mappings that already exist for the same
+    <em>extension</em>. For example, to activate CGI scripts with
+    the file extension "<code>.cgi</code>", you might use:</p>
 <pre>
     AddHandler cgi-script .cgi
 </pre>
 
-<P>Once that has been put into your srm.conf or httpd.conf file, any
-file containing the "<code>.cgi</code>" extension will be treated as a
-CGI program.</P> 
+    <p>Once that has been put into your srm.conf or httpd.conf
+    file, any file containing the "<code>.cgi</code>" extension
+    will be treated as a CGI program.</p>
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
 
-<P>
+    <p><strong>See also</strong>: <a href="#multipleext">Files with
+    multiple extensions</a></p>
+    <hr />
 
-<strong>See also</strong>: <a href="#multipleext">Files with
-multiple extensions</a></p>
+    <h2><a id="addinputfilter" name="addinputfilter">AddInputFilter
+    directive</a></h2>
 
-<HR>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddInputFilter
+    <em>filter</em>[<em>;filter</em>...] extension
+    [<em>extension</em> ...]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, files,
+    location, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AddInputFilter
+    is only available in Apache 2.0.26 and later.</p>
 
-<H2><A NAME="addinputfilter">AddInputFilter directive</A></H2>
-<P><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AddInputFilter <EM>filter</EM>[<EM
->;filter</EM>...] extension</em> [<em>extension</em> ...]<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> none<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, files, location, .htaccess<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> mod_mime<BR>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> AddInputFilter is only available in 
-Apache 2.0.26 and later.<P>
+    <p>AddInputFilter maps the filename extensions
+    <em>extension</em> to the filter or filters which will process
+    client requests and POST input when they are received by the
+    server. This is in addition to any filters defined elsewhere,
+    including the <a
+    href="core.html#setinputfilter">SetInputFilter</a> directive.
+    This mapping is merged over any already in force, overriding
+    any mappings that already exist for the same
+    <em>extension</em>.</p>
 
-<P>AddInputFilter maps the filename extensions <em>extension</em> to the
-filter or filters which will process client requests and POST input 
-when they are received by the server.  This is in addition to any 
-filters defined elsewhere, including the 
-<a href="core.html#setinputfilter">SetInputFilter</a> directive.
-This mapping is merged over any already in force, overriding any 
-mappings that already exist for the same <em>extension</em>.</p>
+    <p>If more than one filter is specified, they must be separated
+    by semicolons in the order in which they should process the
+    content. Both the filter and <em>extension</em> arguments are
+    case-insensitive, and the extension may be specified with or
+    without a leading dot.</p>
 
-<p>If more than one filter is specified, they must be separated by
-semicolons in the order in which they should process the content. Both
-the filter and <em>extension</em> arguments are case-insensitive, and 
-the extension may be specified with or without a leading dot.</p>
+    <p>See also the <a href="../filter.html">Filters</a>
+    documentation.</p>
+    <hr />
 
-<p>See also the <a href="../filter.html">Filters</a> documentation.</p>
+    <h2><a id="addlanguage" name="addlanguage">AddLanguage</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddLanguage
+    <em>MIME-lang extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime 
 
-<hr>
+    <p>The AddLanguage directive maps the given filename extension
+    to the specified content language. <em>MIME-lang</em> is the
+    MIME language of filenames containing <em>extension</em>. This
+    mapping is added to any already in force, overriding any
+    mappings that already exist for the same
+    <em>extension</em>.</p>
 
-<h2><a name="addlanguage">AddLanguage</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> AddLanguage <em>MIME-lang extension</em>
-    [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime
+    <p>Example:</p>
 
-<P>
-The AddLanguage directive maps the given filename extension to the
-specified content language. <em>MIME-lang</em> is the MIME language of
-filenames containing <em>extension</em>.  This mapping is added to any
-already in force, overriding any mappings that already exist for the
-same <em>extension</em>.
-</P>
-<P>
-Example:
-</p>
-<blockquote><code>
-AddEncoding x-compress .Z<br> AddLanguage en .en<br> AddLanguage fr
-.fr<br> </code></blockquote>
+    <blockquote>
+      <code>AddEncoding x-compress .Z<br />
+       AddLanguage en .en<br />
+       AddLanguage fr .fr<br />
+      </code>
+    </blockquote>
 
-<P>
-Then the document <code>xxxx.en.Z</code> will be treated as being a
-compressed English document (as will the document
-<code>xxxx.Z.en</code>). Although the content language is reported to
-the client, the browser is unlikely to use this information. The
-AddLanguage directive is more useful for
-<a href="../content-negotiation.html">content negotiation</a>, where
-the server returns one from several documents based on the client's
-language preference.
-</P>
-<P>
-If multiple language assignments are made for the same extension,
-the last one encountered is the one that is used.  That is, for the
-case of:
-</P>
+    <p>Then the document <code>xxxx.en.Z</code> will be treated as
+    being a compressed English document (as will the document
+    <code>xxxx.Z.en</code>). Although the content language is
+    reported to the client, the browser is unlikely to use this
+    information. The AddLanguage directive is more useful for <a
+    href="../content-negotiation.html">content negotiation</a>,
+    where the server returns one from several documents based on
+    the client's language preference.</p>
+
+    <p>If multiple language assignments are made for the same
+    extension, the last one encountered is the one that is used.
+    That is, for the case of:</p>
 <pre>
     AddLanguage en .en
     AddLanguage en-uk .en
     AddLanguage en-us .en
 </pre>
-<P>
-documents with the extension "<code>.en</code>" would be treated as
-being "<code>en-us</code>".
-</P>
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>documents with the extension "<code>.en</code>" would be
+    treated as being "<code>en-us</code>".</p>
 
-<P>
-<strong>See also</strong>: <a href="#multipleext">Files with
-multiple extensions</a>, <a href="./mod_negotiation.html"
->mod_negotiation</a></P>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
 
-<HR>
-<H2><A NAME="addoutputfilter">AddOutputFilter directive</A></H2>
-<P><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AddOutputFilter <EM>filter</EM>[<EM
->;filter</EM>...] extension</em> [<em>extension</em> ...]<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> none<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, files, location, .htaccess<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> mod_mime<BR>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> AddOutputFilter is only available in 
-Apache 2.0.26 and later.<P>
+    <p><strong>See also</strong>: <a href="#multipleext">Files with
+    multiple extensions</a>, <a
+    href="./mod_negotiation.html">mod_negotiation</a></p>
+    <hr />
 
+    <h2><a id="addoutputfilter"
+    name="addoutputfilter">AddOutputFilter directive</a></h2>
 
-<P>The <code>AddOutputFilter</code> directive maps the filename extensions 
-<em>extension</em> to the filters which will process responses from the 
-server before they are sent to the client.  This is in addition to any 
-filters defined elsewhere, including the 
-<a href="core.html#setoutputfilter">SetOutputFilter</a> directive.
-This mapping is merged over any already in force, overriding any 
-mappings that already exist for the same <em>extension</em>.</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddOutputFilter
+    <em>filter</em>[<em>;filter</em>...] extension
+    [<em>extension</em> ...]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, files,
+    location, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> AddOutputFilter
+    is only available in Apache 2.0.26 and later.</p>
 
-For example, the following configuration will process all .shtml files 
-for server-side includes.</P>
+    <p>The <code>AddOutputFilter</code> directive maps the filename
+    extensions <em>extension</em> to the filters which will process
+    responses from the server before they are sent to the client.
+    This is in addition to any filters defined elsewhere, including
+    the <a href="core.html#setoutputfilter">SetOutputFilter</a>
+    directive. This mapping is merged over any already in force,
+    overriding any mappings that already exist for the same
+    <em>extension</em>.</p>
+    For example, the following configuration will process all
+    .shtml files for server-side includes.<br />
+     <br />
+     
 
-<BLOCKQUOTE><CODE>
-&nbsp;&nbsp;AddOutputFilter INCLUDES shtml<BR>
-</CODE></BLOCKQUOTE>
+    <blockquote>
+      <code>&nbsp;&nbsp;AddOutputFilter INCLUDES shtml<br />
+      </code>
+    </blockquote>
 
-<p>If more than one filter is specified, they must be separated by
-semicolons in the order in which they should process the content. Both
-the filter and <em>extension</em> arguments are case-insensitive, and 
-the extension may be specified with or without a leading dot.</p>
+    <p>If more than one filter is specified, they must be separated
+    by semicolons in the order in which they should process the
+    content. Both the filter and <em>extension</em> arguments are
+    case-insensitive, and the extension may be specified with or
+    without a leading dot.</p>
 
-<p>See also the <a href="../filter.html">Filters</a> documentation.</p>
+    <p>See also the <a href="../filter.html">Filters</a>
+    documentation.</p>
+    <hr />
 
-<hr>
+    <h2><a id="addtype" name="addtype">AddType</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime 
 
-<h2><a name="addtype">AddType</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> AddType <em>MIME-type extension</em>
-   [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<P>
+    <p>The AddType directive maps the given filename extensions
+    onto the specified content type. <em>MIME-type</em> is the MIME
+    type to use for filenames containing <em>extension</em>. This
+    mapping is added to any already in force, overriding any
+    mappings that already exist for the same <em>extension</em>.
+    This directive can be used to add mappings not listed in the
+    MIME types file (see the <code><a
+    href="#typesconfig">TypesConfig</a></code> directive).
+    Example:</p>
 
-The AddType directive maps the given filename extensions onto the
-specified content type. <em>MIME-type</em> is the MIME type to use for
-filenames containing <em>extension</em>.  This mapping is added to any
-already in force, overriding any mappings that already exist for the
-same <em>extension</em>. This directive can be used to add mappings
-not listed in the MIME types file (see the <code><a
-href="#typesconfig">TypesConfig</a></code> directive).
+    <blockquote>
+      <code>AddType image/gif .gif</code>
+    </blockquote>
+    It is recommended that new MIME types be added using the
+    AddType directive rather than changing the <a
+    href="#typesconfig">TypesConfig</a> file. 
 
-Example:
-<blockquote><code>
-AddType image/gif .gif
-</code></blockquote>
-It is recommended that new MIME types be added using the AddType directive
-rather than changing the <a href="#typesconfig">TypesConfig</a> file.<P>
-Note that, unlike the NCSA httpd, this directive cannot be used to set the
-type of particular files.<P>
+    <p>Note that, unlike the NCSA httpd, this directive cannot be
+    used to set the type of particular files.</p>
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
 
-<P>
+    <p><strong>See also</strong>: <a href="#multipleext">Files with
+    multiple extensions</a></p>
+    <hr />
 
-<strong>See also</strong>: <a href="#multipleext">Files with
-multiple extensions</a></p>
+    <h2><a id="defaultlanguage"
+    name="defaultlanguage">DefaultLanguage</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DefaultLanguage
+    <em>MIME-lang</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> DefaultLanguage
+    is only available in Apache 1.3.4 and later. 
 
-<hr>
+    <p>The DefaultLanguage directive tells Apache that all files in
+    the directive's scope (<em>e.g.</em>, all files covered by the
+    current <code>&lt;Directory&gt;</code> container) that don't
+    have an explicit language extension (such as <samp>.fr</samp>
+    or <samp>.de</samp> as configured by <samp>AddLanguage</samp>)
+    should be considered to be in the specified <em>MIME-lang</em>
+    language. This allows entire directories to be marked as
+    containing Dutch content, for instance, without having to
+    rename each file. Note that unlike using extensions to specify
+    languages, <samp>DefaultLanguage</samp> can only specify a
+    single language.</p>
 
-<h2><a name="defaultlanguage">DefaultLanguage</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> DefaultLanguage <em>MIME-lang</em><br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config, virtual host, directory, .htaccess<br>
-<a
- href="directive-dict.html#Override"
- rel="Help"
-><strong>Override:</strong></a> FileInfo<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> DefaultLanguage is only available in Apache
-1.3.4 and later.<P>
+    <p>If no <samp>DefaultLanguage</samp> directive is in force,
+    and a file does not have any language extensions as configured
+    by <samp>AddLanguage</samp>, then that file will be considered
+    to have no language attribute.</p>
 
-The DefaultLanguage directive tells Apache that all files in the
-directive's scope (<em>e.g.</em>, all files covered by the current
-<code>&lt;Directory&gt;</code> container) that don't have an explicit
-language extension (such as <samp>.fr</samp> or <samp>.de</samp> as
-configured by <samp>AddLanguage</samp>) should be considered to be in
-the specified <em>MIME-lang</em> language.  This allows entire
-directories to be marked as containing Dutch content, for instance,
-without having to rename each file. Note that unlike using extensions
-to specify languages, <samp>DefaultLanguage</samp> can only specify a
-single language.
+    <p><strong>See also</strong>: <a href="#multipleext">Files with
+    multiple extensions</a>, <a
+    href="./mod_negotiation.html">mod_negotiation</a></p>
+    <hr />
 
-<P>
+    <h2><a id="removecharset"
+    name="removecharset">RemoveCharset</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveCharset
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RemoveCharset is
+    only available in Apache 2.0.24 and later. 
 
-If no <samp>DefaultLanguage</samp> directive is in force, and a file
-does not have any language extensions as configured by
-<samp>AddLanguage</samp>, then that file will be considered to have no
-language attribute.
+    <p>The <samp>RemoveCharset</samp> directive removes any
+    character set associations for files with the given extensions.
+    This allows <code>.htaccess</code> files in subdirectories to
+    undo any associations inherited from parent directories or the
+    server config files.</p>
 
-<P>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<strong>See also</strong>: <a href="#multipleext">Files with
-multiple extensions</a>, <a href="./mod_negotiation.html"
->mod_negotiation</a></P>
+    <h2><a id="removeencoding"
+    name="removeencoding">RemoveEncoding</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveEncoding
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RemoveEncoding
+    is only available in Apache 1.3.13 and later. 
 
-<hr>
+    <p>The <samp>RemoveEncoding</samp> directive removes any
+    encoding associations for files with the given extensions. This
+    allows <code>.htaccess</code> files in subdirectories to undo
+    any associations inherited from parent directories or the
+    server config files. An example of its use might be:</p>
 
-<h2><a name="removecharset">RemoveCharset</a> directive</h2>
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveCharset <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveCharset is only available in Apache
-2.0.24 and later.<P>
+      <dd><code>AddEncoding x-gzip .gz</code><br />
+       <code>AddType text/plain .asc</code><br />
+       <code>&lt;Files *.gz.asc&gt;</code><br />
+       <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding
+      .gz</code><br />
+       <code>&lt;/Files&gt;</code></dd>
+    </dl>
 
-<P>
-The <samp>RemoveCharset</samp> directive removes any
-character set associations for files with the given extensions.
-This allows <code>.htaccess</code> files in subdirectories to undo
-any associations inherited from parent directories or the server
-config files.
-</P>
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>This will cause <code>foo.gz</code> to be marked as being
+    encoded with the gzip method, but <code>foo.gz.asc</code> as an
+    unencoded plaintext file.</p>
 
-<hr>
+    <p><b>Note:</b>RemoveEncoding directives are processed
+    <i>after</i> any AddEncoding directives, so it is possible they
+    may undo the effects of the latter if both occur within the
+    same directory configuration.</p>
 
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<h2><a name="removeencoding">RemoveEncoding</a> directive</h2>
+    <h2><a id="removehandler"
+    name="removehandler">RemoveHandler</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveHandler
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RemoveHandler is
+    only available in Apache 1.3.4 and later. 
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveEncoding <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveEncoding is only available in Apache
-1.3.13 and later.<P>
+    <p>The <samp>RemoveHandler</samp> directive removes any handler
+    associations for files with the given extensions. This allows
+    <code>.htaccess</code> files in subdirectories to undo any
+    associations inherited from parent directories or the server
+    config files. An example of its use might be:</p>
 
-<P>
-The <samp>RemoveEncoding</samp> directive removes any
-encoding associations for files with the given extensions.
-This allows <code>.htaccess</code> files in subdirectories to undo
-any associations inherited from parent directories or the server
-config files.  An example of its use might be:
-</P>
-<DL>
- <DT><code>/foo/.htaccess:</code></DT>
- <DD><code>AddEncoding x-gzip .gz</code>
-     <br>
-     <code>AddType text/plain .asc</code>
-     <br>
-     <code>&lt;Files *.gz.asc&gt;</code>
-     <br>
-     <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding .gz</code>
-     <br>
-     <code>&lt;/Files&gt;</code></dd>
-</DL>
-<P>
-This will cause <code>foo.gz</code> to be marked as being encoded with the
-gzip method, but <code>foo.gz.asc</code> as an unencoded plaintext file.
-</P>
-<p>
-<b>Note:</b>RemoveEncoding directives are processed <i>after</i> any
-AddEncoding directives, so it is possible they may undo the effects
-of the latter if both occur within the same directory configuration.
-</p>
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
 
-<hr>
+      <dd><code>AddHandler server-parsed .html</code></dd>
 
-<h2><a name="removehandler">RemoveHandler</a> directive</h2>
+      <dt><code>/foo/bar/.htaccess:</code></dt>
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveHandler <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveHandler is only available in Apache
-1.3.4 and later.<P>
+      <dd><code>RemoveHandler .html</code></dd>
+    </dl>
 
-<P>
-The <samp>RemoveHandler</samp> directive removes any
-handler associations for files with the given extensions.
-This allows <code>.htaccess</code> files in subdirectories to undo
-any associations inherited from parent directories or the server
-config files.  An example of its use might be:
-</P>
-<dl>
- <dt><code>/foo/.htaccess:</code></dt>
- <dd><code>AddHandler server-parsed .html</code></dd>
- <dt><code>/foo/bar/.htaccess:</code></dt>
- <dd><code>RemoveHandler .html</code></dd>
-</dl>
-<P>
-This has the effect of returning <samp>.html</samp> files in the
-<samp>/foo/bar</samp> directory to being treated as normal
-files, rather than as candidates for parsing (see the
-<a href="mod_include.html"><samp>mod_include</samp></a> module).
-</P>
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>This has the effect of returning <samp>.html</samp> files in
+    the <samp>/foo/bar</samp> directory to being treated as normal
+    files, rather than as candidates for parsing (see the <a
+    href="mod_include.html"><samp>mod_include</samp></a>
+    module).</p>
 
-<hr>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<h2><a name="removeinputfilter">RemoveInputFilter</a> directive</h2>
+    <h2><a id="removeinputfilter"
+    name="removeinputfilter">RemoveInputFilter</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveInputFilter
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    RemoveInputFilter is only available in Apache 2.0.26 and later.
+    
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveInputFilter <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveInputFilter is only available in 
-Apache 2.0.26 and later.<P>
+    <p>The <samp>RemoveInputFilter</samp> directive removes any
+    input filter associations for files with the given extensions.
+    This allows <code>.htaccess</code> files in subdirectories to
+    undo any associations inherited from parent directories or the
+    server config files.</p>
 
-<P>
-The <samp>RemoveInputFilter</samp> directive removes any input filter
-associations for files with the given extensions.  This allows 
-<code>.htaccess</code> files in subdirectories to undo any associations 
-inherited from parent directories or the server config files.</P>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <h2><a id="removelanguage"
+    name="removelanguage">RemoveLanguage</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveLanguage
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RemoveLanguage
+    is only available in Apache 2.0.24 and later. 
 
-<hr>
+    <p>The <samp>RemoveLanguage</samp> directive removes any
+    language associations for files with the given extensions. This
+    allows <code>.htaccess</code> files in subdirectories to undo
+    any associations inherited from parent directories or the
+    server config files.</p>
 
-<h2><a name="removelanguage">RemoveLanguage</a> directive</h2>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveLanguage <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveLanguage is only available in 
-Apache 2.0.24 and later.<P>
+    <h2><a id="removeoutputfilter"
+    name="removeoutputfilter">RemoveOutputFilter</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveOutputFilter
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    RemoveOutputFilter is only available in Apache 2.0.26 and
+    later. 
 
-<P>
-The <samp>RemoveLanguage</samp> directive removes any
-language associations for files with the given extensions.
-This allows <code>.htaccess</code> files in subdirectories to undo
-any associations inherited from parent directories or the server
-config files.
-</P>
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <p>The <samp>RemoveOutputFilter</samp> directive removes any
+    output filter associations for files with the given extensions.
+    This allows <code>.htaccess</code> files in subdirectories to
+    undo any associations inherited from parent directories or the
+    server config files.</p>
 
-<hr>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<h2><a name="removeoutputfilter">RemoveOutputFilter</a> directive</h2>
+    <h2><a id="removetype" name="removetype">RemoveType</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RemoveType
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> RemoveType is
+    only available in Apache 1.3.13 and later. 
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveOutputFilter <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveOutputFilter is only available in 
-Apache 2.0.26 and later.<P>
+    <p>The <samp>RemoveType</samp> directive removes any MIME type
+    associations for files with the given extensions. This allows
+    <code>.htaccess</code> files in subdirectories to undo any
+    associations inherited from parent directories or the server
+    config files. An example of its use might be:</p>
 
-<P>
-The <samp>RemoveOutputFilter</samp> directive removes any output filter
-associations for files with the given extensions.  This allows 
-<code>.htaccess</code> files in subdirectories to undo any associations 
-inherited from parent directories or the server config files.</P>
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
 
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+      <dd><code>RemoveType .cgi</code></dd>
+    </dl>
 
-<hr>
+    <p>This will remove any special handling of <code>.cgi</code>
+    files in the <code>/foo/</code> directory and any beneath it,
+    causing the files to be treated as being of the <a
+    href="core.html#defaulttype">default type</a>.</p>
 
-<h2><a name="removetype">RemoveType</a> directive</h2>
+    <p><b>Note:</b><code>RemoveType</code> directives are processed
+    <i>after</i> any <code>AddType</code> directives, so it is
+    possible they may undo the effects of the latter if both occur
+    within the same directory configuration.</p>
 
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> RemoveType <em>extension</em>
-     [<em>extension</em>] ...<br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> directory, .htaccess<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<br>
-<a
- href="directive-dict.html#Compatibility"
- rel="Help"
-><strong>Compatibility:</strong></a> RemoveType is only available in Apache
-1.3.13 and later.<P>
+    <p>The <em>extension</em> argument is case-insensitive, and can
+    be specified with or without a leading dot.</p>
+    <hr />
 
-<P>
-The <samp>RemoveType</samp> directive removes any
-MIME type associations for files with the given extensions.
-This allows <code>.htaccess</code> files in subdirectories to undo
-any associations inherited from parent directories or the server
-config files.  An example of its use might be:
-</P>
-<dl>
- <dt><code>/foo/.htaccess:</code></dt>
- <dd><code>RemoveType .cgi</code></dd>
-</dl>
-<P>
-This will remove any special handling of <code>.cgi</code> files in the
-<code>/foo/</code> directory and any beneath it, causing the files to be
-treated as being of the <a href="core.html#defaulttype">default type</a>.
-</P>
-<p>
-<b>Note:</b><code>RemoveType</code> directives are processed <i>after</i> any
-<code>AddType</code> directives, so it is possible they may undo the effects
-of the latter if both occur within the same directory configuration.
-</p>
-<p>The <em>extension</em> argument is case-insensitive, and can
-be specified with or without a leading dot.</p>
+    <h2><a id="typesconfig" name="typesconfig">TypesConfig</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> TypesConfig
+    <em>file-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>TypesConfig
+    conf/mime.types</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime 
 
-<hr>
+    <p>The TypesConfig directive sets the location of the MIME
+    types configuration file. <em>Filename</em> is relative to the
+    <a href="core.html#serverroot">ServerRoot</a>. This file sets
+    the default list of mappings from filename extensions to
+    content types; changing this file is not recommended. Use the
+    <a href="#addtype">AddType</a> directive instead. The file
+    contains lines in the format of the arguments to an AddType
+    command:</p>
 
-<h2><a name="typesconfig">TypesConfig</a> directive</h2>
-<a
- href="directive-dict.html#Syntax"
- rel="Help"
-><strong>Syntax:</strong></a> TypesConfig <em>file-path</em><br>
-<a
- href="directive-dict.html#Default"
- rel="Help"
-><strong>Default:</strong></a> <code>TypesConfig conf/mime.types</code><br>
-<a
- href="directive-dict.html#Context"
- rel="Help"
-><strong>Context:</strong></a> server config<br>
-<a
- href="directive-dict.html#Status"
- rel="Help"
-><strong>Status:</strong></a> Base<br>
-<a
- href="directive-dict.html#Module"
- rel="Help"
-><strong>Module:</strong></a> mod_mime<P>
+    <blockquote>
+      <em>MIME-type extension extension ...</em>
+    </blockquote>
+    The extensions are lower-cased. Blank lines, and lines
+    beginning with a hash character (`#') are ignored. 
 
-The TypesConfig directive sets the location of the MIME types configuration
-file. <em>Filename</em> is relative to the
-<a href="core.html#serverroot">ServerRoot</a>. This file sets the default list of
-mappings from filename extensions to content types; changing this file is not
-recommended. Use the <a href="#addtype">AddType</a> directive instead. The
-file contains lines in the format of the arguments to an AddType command:
-<blockquote><em>MIME-type extension extension ...</em></blockquote>
-The extensions are lower-cased. Blank lines, and lines beginning with a hash
-character (`#') are ignored.<P>
-
-<!--#include virtual="footer.html" -->
-</body>
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
 </html>
 
