@@ -2330,21 +2330,21 @@ static void reduce_uri(request_rec *r)
     char host[LONG_STRING_LEN];
     char buf[MAX_STRING_LEN];
     char *olduri;
+    int l;
 
-#ifdef APACHE_SSL
-    if (   (!r->connection->client->ssl &&
-            strncasecmp(r->filename, "http://", 7) == 0)
-        || (r->connection->client->ssl &&
-            strncasecmp(r->filename, "https://", 8) == 0)) {
-#else
-    if (strncasecmp(r->filename, "http://", 7) == 0) {
-#endif
+    cp = ap_http_method(r);
+    l  = strlen(cp);
+    if (   strlen(r->filename) > l+3 
+        && strncasecmp(r->filename, cp, l) == 0
+        && r->filename[l]   == ':'
+        && r->filename[l+1] == '/'
+        && r->filename[l+2] == '/'             ) {
         /* there was really a rewrite to a remote path */
 
         olduri = ap_pstrdup(r->pool, r->filename); /* save for logging */
 
         /* cut the hostname and port out of the URI */
-        ap_cpystrn(buf, r->filename+strlen(ap_http_method(r))+3, sizeof(buf));
+        ap_cpystrn(buf, r->filename+(l+3), sizeof(buf));
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
