@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Fix the handling of variable expansion look-ahead in mod_rewrite,
+     i.e. syntax like %{LA-U:REMOTE_USER}, and also fix the parsing of
+     more complicated nested RewriteMap lookups. PR#7087 [Tony Finch]
+
   *) Fix the RFC number mentioned when complaining about a missing
      Host: header. PR#7079 [Alexey Toptygin <alexeyt@wam.umd.edu>]
 
