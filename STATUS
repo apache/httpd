@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/11/03 00:55:25 $]
+  Last modified at [$Date: 2000/11/05 03:22:18 $]
 
 Release:
 
@@ -29,6 +29,10 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
+
+    * Byte range handling is broken. PR # 6711.
+      There's a potential patch in
+      Message-ID: <20001101001706.G16227@hand.dotat.at>
 
     * Parse the ServerName arg for invalid characters at startup.
       Bug report 6787 and others are very confused that these bugs
