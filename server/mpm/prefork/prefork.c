@@ -187,7 +187,7 @@ int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
-int die_now = 0;
+static int die_now = 0;
 
 #ifdef GPROF
 /* 
@@ -380,12 +380,6 @@ static void sig_coredump(int sig)
 static void just_die(int sig)
 {
     clean_child_exit(0);
-}
-
-static void please_die_gracefully(int sig)
-{
-    /* clean_child_exit(0); */
-    die_now = 1;
 }
 
 /* volatile just in case */
@@ -830,8 +824,9 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (one_process) {
-	apr_signal(SIGHUP, please_die_gracefully);
-	apr_signal(SIGINT, please_die_gracefully);
+	apr_signal(SIGHUP, just_die);
+        /* Don't catch SIGWINCH in ONE_PROCESS mode :) */
+	apr_signal(SIGINT, just_die);
 #ifdef SIGQUIT
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
