@@ -121,7 +121,7 @@ static int make_sock(const struct sockaddr_in *server)
      *
      * If no size is specified, use the kernel default.
      */
-#ifndef SO_SNDBUF
+#ifdef SO_SNDBUF
     if (send_buffer_size) {
 	if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
 		(char *) &send_buffer_size, sizeof(int)) < 0) {
