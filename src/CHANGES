@@ -1,5 +1,10 @@
 Changes with Apache 1.3b8
 
+  *) Make sure the argument for the --add-module option to APACI's configure
+     script is of type [path/to/]mod_xxx.c because all calculations inside
+     configure and src/Configure depend on this.
+     [Ralf S. Engelschall] PR#2307
+
   *) Changes usage of perror/fprintf to stderr to more proper ap_log_error
      in mod_mime, mod_log_referer, mod_log_agent, and mod_log_config.
      [Brian Behlendorf]

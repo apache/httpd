@@ -423,12 +423,10 @@ do
             ;;
         --add-module=*) 
             file="$apc_optarg"
-            case $file in
-                *.c ) ;;
-                  * ) echo "configure:Error: Module source $file is not a C source file" 1>&2
-                      exit 1 
-                      ;;
-            esac
+            if [ ".`echo $file | egrep '/?mod_[a-zA-Z0-9][a-zA-Z0-9_]*\.c$'`" = . ]; then
+                echo "configure:Error: Module filename doesn't match '/?mod_[a-zA-Z0-9][a-zA-Z0-9_]*\.c'" 1>&2
+                exit 1
+            fi
             if [ ! -f $file ]; then
                 echo "configure:Error: Module source $file not found" 1>&2
                 exit 1
