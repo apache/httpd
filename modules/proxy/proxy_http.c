@@ -546,7 +546,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                 status = apr_temp_dir_get(&temp_dir, p);
                 if (status != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                                 "proxy: request data temp directory search failed");
+                                 "proxy: search for temporary directory failed");
                     return status;
                 }
                 apr_filepath_merge(&template, temp_dir,
@@ -555,7 +555,8 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                 status = apr_file_mktemp(&tmpfile, template, 0, p);
                 if (status != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                                 "proxy: request data tmp file creation failed");
+                                 "proxy: creation of temporary file in directory %s failed",
+                                 temp_dir);
                     return status;
                 }
             }
@@ -568,8 +569,14 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                 apr_bucket_read(e, &data, &bytes_read, APR_BLOCK_READ);
                 status = apr_file_write_full(tmpfile, data, bytes_read, &bytes_written);
                 if (status != APR_SUCCESS) {
+                    const char *tmpfile_name;
+
+                    if (apr_file_name_get(&tmpfile_name, tmpfile) != APR_SUCCESS) {
+                        tmpfile_name = "(unknown)";
+                    }
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                                 "proxy: request data tmp file I/O failed");
+                                 "proxy: write to temporary file %s failed",
+                                 tmpfile_name);
                     return status;
                 }
                 AP_DEBUG_ASSERT(bytes_read == bytes_written);
