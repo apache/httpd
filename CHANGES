@@ -1,5 +1,10 @@
 Changes with Apache 2.0.34
 
+  *) Allow all Perchild directives to accept either numerical UID/GID
+     or logical user/group names.  [Scott Lamb <slamb@slamb.org>]
+
+  *) Make Perchild compile cleanly and serve pages again. [Ryan Bloom]
+
   *) implement ssl proxy to support ProxyPass / https:// and the
      SSLProxy* directives [Doug MacEachern]
 
