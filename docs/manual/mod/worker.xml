@@ -43,18 +43,35 @@
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
-    served. Apache assesses the total number of idle threads in all
-    processes, and forks or kills processes to keep this number within
-    the boundaries specified by <directive
+    served. The number of processes that will initially launched is
+    set by the <directive module="mpm_common">StartServers</directive>
+    directive. Then during operation, Apache assesses the total number
+    of idle threads in all processes, and forks or kills processes to
+    keep this number within the boundaries specified by <directive
     module="mpm_common">MinSpareThreads</directive> and <directive
     module="mpm_common">MaxSpareThreads</directive>. Since this
     process is very self-regulating, it is rarely necessary to modify
     these directives from their default values. The maximum number of
-    clients that may be served simultaneously is determined by
-    multiplying the maximum number of server processes that will be
-    created (<directive module="mpm_common">MaxClients</directive>) by
-    the number of threads created in each process (<directive
-    module="mpm_common">ThreadsPerChild</directive>).</p>
+    clients that may be served simultaneously (i.e., the maximum total
+    number of threads in all processes) is determined by the
+    <directive module="mpm_common">MaxClients</directive> directive,
+    while the maximum number of processes that can be launched is set
+    by the <directive module="mpm_common">ServerLimit</directive>
+    directive.  <directive module="mpm_common">ServerLimit</directive>
+    multiplied by <directive
+    module="mpm_common">ThreadsPerChild</directive> must be greater
+    than or equal to <directive
+    module="mpm_common">MaxClients</directive></p>
+
+    <p>A typical configuration of the process-thread controls in
+    the <module>worker</module> MPM could look as follows:</p>
+
+<example><pre>StartServers         2
+MaxClients         150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+ServerLimit         16</pre></example>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes and threads are
