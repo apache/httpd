@@ -2524,14 +2524,20 @@ later</compatibility>
 <name>ServerAdmin</name>
 <description>Email address that the server includes in error
 messages sent to the client</description>
-<syntax>ServerAdmin <var>email-address</var></syntax>
+<syntax>ServerAdmin <var>email-address</var>|<var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>ServerAdmin</directive> sets the e-mail address
+    <p>The <directive>ServerAdmin</directive> sets the contact address
     that the server includes in any error messages it returns to the
-    client.</p>
+    client. If the httpd doesn't recognize the supplied argument as an URL, it
+    assumes, that it's an <var>email-address</var> and prepends it with
+    <code>mailto:</code> in hyperlink targets. However, it's recommended to
+    actually use an email address, since there are a lot of CGI scripts that
+    make that assumption. If you want to use an URL, it should point to another
+    server under your control. Otherwise users may not be able to contact you in
+    case of errors.</p>
 
     <p>It may be worth setting up a dedicated address for this, e.g.</p>
 
