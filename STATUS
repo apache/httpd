@@ -1,10 +1,14 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/02/16 14:16:36 $]
+  Last modified at [$Date: 2001/02/16 14:36:36 $]
 
 Release:
 
     1.3.18-dev: Target t/r date Feb 18, 2001, rel date Feb 20.
-            As such, Jim offers to t/r, proposes a code freeze.
+            Jim offers to t/r. We have one ShowStopper and
+	    one Proposed Patch that we should close and consider,
+	    respectively. We should not rush to add the
+	    Proposed Patch, however. Shipping 1.3.18 w/o it
+	    is a distinct possibility.
     1.3.17: Tagged and rolled late Jan 26, 2001
             announced Jan 29, 2001.
     1.3.16: Tagged and Rolled Jan 20, 2001.
@@ -51,6 +55,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       set headers too (needed by mod_auth_digest)
         Message-ID: <199907080712.JAA28269@chill.innovation.ch>
         Status:
+
+PROPOSED PATCHES:
+
+    * Rewrite of ap_unparse_uri_components() and fix of
+      ap_default_port_for_scheme().
+      Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
+      Status: 
 
 Documentation that needs writing:
 
