@@ -289,6 +289,7 @@ deal_with_host:
 	if (s == NULL) {
 	    /* we expect the common case to have no port */
 	    uptr->hostname = apr_pstrndup(p, hostinfo, uri - hostinfo);
+            uptr->port = uptr->scheme ? ap_default_port_for_scheme(uptr->scheme) : DEFAULT_HTTP_PORT;
 	    goto deal_with_path;
 	}
 	uptr->hostname = apr_pstrndup(p, hostinfo, s - hostinfo);
