@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Removed bogus "dist.tar" target from Makefile.tmpl and make sure
+     backup files are removed on "clean" target [Ralf S. Engelschall]
+     
   *) PORT: Add -lm to LIBS for HPUX.  [Dean Gaudet] PR#1639
 
   *) Various errors from select() and accept() in child_main() would
