@@ -1474,13 +1474,11 @@ void set_signals()
 	log_unixerr ("sigaction(SIGTERM)", NULL, NULL, server_conf);
 
     /* wait_or_timeout uses sleep() which could deliver a SIGALRM just as we're
-     * trying to process the restart requests.  That's not good.  restart
-     * cleans out the SIGALRM handler, but this totally avoids the race
-     * condition between when the restart request is made and when the handler
-     * is invoked.
+     * trying to process the restart requests.  That's not good.  So we avoid
+     * the race condition between when the restart request is made and when the
+     * handler is invoked.
      *
-     * We also don't want to ignore HUPs and USR1 while we're busy processing
-     * one.
+     * We also want to ignore HUPs and USR1 while we're busy processing one.
      */
     sigaddset (&sa.sa_mask, SIGALRM);
     sigaddset (&sa.sa_mask, SIGHUP);
