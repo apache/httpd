@@ -2045,8 +2045,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
         n = o;
         do {
             rv = ap_read(fd, buf, &n);
-        } while (rv == APR_EINTR && !ap_is_aborted(r->connection) &&
-                 (n < 1));
+        } while (rv == APR_EINTR && !ap_is_aborted(r->connection));
 
         if (n < 1) {
             break;
