@@ -95,6 +95,7 @@ static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static int server_pid; 
+static int mpm_state = AP_MPMQ_STARTING;
 
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
@@ -186,6 +187,8 @@ ap_generation_t volatile ap_my_generation = 0;
 
 static void ap_start_shutdown(void)
 {
+    mpm_state = AP_MPMQ_STOPPING;
+ 
     if (shutdown_pending == 1) {
 	/* Um, is this _probably_ not an error, if the user has
 	 * tried to do a shutdown twice quickly, so we won't
@@ -199,6 +202,7 @@ static void ap_start_shutdown(void)
 /* do a graceful restart if graceful == 1 */
 static void ap_start_restart(int graceful)
 {
+    mpm_state = AP_MPMQ_STOPPING;
 
     if (restart_pending == 1) {
         /* Probably not an error - don't bother reporting it */
@@ -222,6 +226,9 @@ static void tell_workers_to_exit(void)
 {
     apr_size_t len;
     int i = 0;
+
+    mpm_state = AP_MPMQ_STOPPING;
+
     for (i = 0 ; i < ap_max_child_assigned; i++){
         len = 4;
         if (apr_sendto(udp_sock, udp_sa, 0, "die!", &len) != APR_SUCCESS)
@@ -334,6 +341,8 @@ static int32 worker_thread(void * dummy)
     int this_worker_should_exit = 0; 
     free(ti);
 
+    mpm_state = AP_MPMQ_STARTING;
+
     on_exit_thread(check_restart, (void*)child_slot);
           
     /* block the signals for this thread */
@@ -359,6 +368,8 @@ static int32 worker_thread(void * dummy)
     apr_poll_setup(&pollset, num_listening_sockets + 1, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
+
+    mpm_state = AP_MPMQ_RUNNING;
 
     while (1) {
         /* If we're here, then chances are (unless we're the first thread created) 
@@ -720,6 +731,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_DAEMONS:
             *result = HARD_SERVER_LIMIT;
             return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = mpm_state;
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
 }
@@ -966,6 +980,8 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     int no_detach, debug, foreground;
     apr_status_t rv;
 
+    mpm_state = AP_MPMQ_STARTING;
+
     debug = ap_exists_config_define("DEBUG");
 
     if (debug) {
@@ -1017,7 +1033,7 @@ static void beos_hooks(apr_pool_t *p)
 {
     one_process = 0;
     
-    ap_hook_pre_config(beos_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_pre_config(beos_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST); 
 }
 
 static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
