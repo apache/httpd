@@ -1516,7 +1516,7 @@ API_EXPORT(char *) ap_construct_server(ap_pool_t *p, const char *hostname,
 
 /* c2x takes an unsigned, and expects the caller has guaranteed that
  * 0 <= what < 256... which usually means that you have to cast to
- * unsigned char first, because (unsigned)(char)(x) fist goes through
+ * unsigned char first, because (unsigned)(char)(x) first goes through
  * signed extension to an int before the unsigned cast.
  *
  * The reason for this assumption is to assist gcc code generation --
@@ -1528,6 +1528,9 @@ static const char c2x_table[] = "0123456789abcdef";
 
 static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
 {
+#ifdef CHARSET_EBCDIC
+    what = os_toascii[what];
+#endif /*CHARSET_EBCDIC*/
     *where++ = '%';
     *where++ = c2x_table[what >> 4];
     *where++ = c2x_table[what & 0xf];
