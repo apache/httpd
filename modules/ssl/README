@@ -177,7 +177,6 @@
  o We certainly need CRYPTO_set_locking_callback() now also under Unix!
  o Enable Timeout processing.
  o Do we need SSL_set_read_ahead()?
- o Enable Client authentication.
  o Remember the Peer Certificate parameters.
  o Enable use of MM, SHMCB and SHMHT.
  o Enable SSL extensions (ssl_engine_ext.c)
