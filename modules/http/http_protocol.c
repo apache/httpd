@@ -575,6 +575,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             }
 
             if (len) {
+                /* note: this can sometimes insert empty buckets into the
+                 * brigade, or the data might come in a few characters at
+                 * a time - don't assume that one call to apr_bucket_read()
+                 * will return the full string.
+                 */
                 if (f->c->remain < len) {
                     apr_bucket_split(e, f->c->remain);
                     f->c->remain = 0;
