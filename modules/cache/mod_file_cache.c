@@ -423,13 +423,6 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
     ap_hdtr_t *phdtr = &hdtr;
     ap_int32_t flags = 0;
 
-    if (!r->connection->keepalive) {
-        /* Prepare the socket to be reused. Ignored on systems
-         * that do not support reusing the accept socket
-         */
-        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-    }
-
     /* 
      * We want to send any data held in the client buffer on the
      * call to iol_sendfile. So hijack it then set outcnt to 0
@@ -449,6 +442,15 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 
     if (!rangestatus) {
         length = file->finfo.size;
+
+        if (!r->connection->keepalive) {
+            /* Disconnect the socket after the send completes. This
+             * should leave the accept socket in a state ready to be
+             * reused for the next connection.
+             */
+            flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+        }
+
         iol_sendfile(r->connection->client->iol,
                      file->file,
                      phdtr,
