@@ -38,11 +38,11 @@
     <h2>Directives</h2>
 
     <ul>
-      <li><a href="#xbithack">XBitHack</a></li>
-      <li><a href="#ssierrormsg">SSIErrorMsg</a></li>
-      <li><a href="#ssitimeformat">SSITimeFormat</a></li>
-      <li><a href="#ssistarttag">SSIStartTag</a></li>
       <li><a href="#ssiendtag">SSIEndTag</a></li>
+      <li><a href="#ssierrormsg">SSIErrorMsg</a></li>
+      <li><a href="#ssistarttag">SSIStartTag</a></li>
+      <li><a href="#ssitimeformat">SSITimeFormat</a></li>
+      <li><a href="#xbithack">XBitHack</a></li>
     </ul>
 
     <p>See also: <a href="core.html#options">Options</a>, <a
@@ -492,10 +492,104 @@
 
     <hr />
 
+    <h2><a id="ssiendtag"
+    name="ssiendtag">SSIEndTag</a> directive</h2> <a
+    href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SSIEndTag <em>tag</em><br
+    /> <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSIEndTag
+    &quot;--&gt;&quot;</code><br /> <a
+    href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br /> <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br /> <a
+    href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include
+
+    <p>This directive changes the string that mod_include looks for 
+    to mark the end of a include command.</p>
+
+    <p>See also: <a href="#ssistarttag">SSIStartTag</a>.</p>
+
+    <hr />
+    <h2><a id="ssierrormsg" name="ssierrormsg">SSIErrorMsg</a>
+    directive</h2>
+      <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SSIErrorMsg
+    <em>message</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSIErrorMsg
+    &quot;[an error occurred while processing this directive]&quot;</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
+
+    <p>The SSIErrorMsg directive changes the error message displayed
+    when mod_include encounters an error. For production servers you
+    may consider changing the default error message to
+    <code>&quot;&lt;-- Error --&gt;&quot;</code> so that the message
+    is not presented to the user.
+    </p>
+    <p>This directive has the same effect as the <code>&lt;--#config
+    errmsg=<em>message</em> --&gt;</code> element.</p>
+    <hr />
+    <h2><a id="ssistarttag" name="ssistarttag">SSIStartTag</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+        rel="Help"><strong>Syntax:</strong></a> SSIStartTag
+    <em>tag</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSIStartTag
+    &quot;&lt;--!&quot;</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
+
+    <p>This directive changes the string that mod_include looks for 
+    to mark an include element to process.</p>
+
+    <p>You may want to use this option if have 2 servers parsing the
+    output of a file each processing different commands (possibly at
+    different times).</p> 
+
+    <p>See also: <a href="#ssiendtag">SSIEndTag</a>.</p>
+
+    <hr />
+    <h2><a id="ssitimeformat" name="ssitimeformat">SSITimeFormat</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+        rel="Help"><strong>Syntax:</strong></a> SSITimeFormat 
+    <em>formatstring</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSITimeFormat
+    &quot;%A, %d-%b-%Y %H:%M:%S %Z&quot;</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
+
+    <p>This directive changes the format in which date strings are displayed 
+    when echoing DATE environment variables.  The <em>formatstring</em>
+    is as in strftime(3) from the C standard library.</p>
+
+    <p>This directive has the same effect as the <code>&lt;--#config
+    timefmt=<em>formatstring</em> --&gt;</code> element.</p>
+
+    <hr />
     <h2><a id="xbithack" name="xbithack">XBitHack</a>
     directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt XBitHack} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
+      <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> XBitHack
     on|off|full<br />
      <a href="directive-dict.html#Default"
@@ -544,90 +638,6 @@
       </dd>
     </dl>
     <hr />
-    <h2><a id="ssierrormsg" name="ssierrormsg">SSIErrorMsg</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt SSIErrorMsg} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> SSIErrorMsg
-    &quot;text for error message&quot;<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>SSIErrorMsg
-    &quot;[an error occurred while processing this directive]&quot;</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_include 
-
-    <p>The SSIErrorMsg directive changes the error message displayed when 
-    mod_include encounters an error. For production servers you may consider
-    changing the default error message to <code>&quot;&lt;-- Error --&gt;&quot;</code> 
-    so that the message is not presented to the user.
-    </p>
-    <hr />
-    <h2><a id="ssitimeformat" name="ssitimeformat">SSITimeFormat</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt SSITimeFormat} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-        rel="Help"><strong>Syntax:</strong></a> SSITimeFormat 
-    formatString<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>SSITimeFormat
-    &quot;%A, %d-%b-%Y %H:%M:%S %Z&quot;</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_include 
-
-    <p>This directive changes the format in which date strings are displayed 
-    in note variables</p>
-    <hr />
-    <h2><a id="ssistarttag" name="ssistarttag">SSIStartTag</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt SSIStartTag} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-        rel="Help"><strong>Syntax:</strong></a> SSIStartTag
-    tag<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>SSIStartTag
-    &quot;&lt;--!&quot;</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_include 
-
-    <p>This directive changes the string that mod_include looks for 
-    to mark a include command to process</p>
-    <p>you may want to use this option if have 2 servers parsing the output of a file
-    each processing different comnmands (possibly at different times)</p>
-    <hr />
-    <h2><a id="ssiendtag" name="ssiendtag">SSIEndTag</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt SSIEndTag} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-        rel="Help"><strong>Syntax:</strong></a> SSIEndTag
-    tag<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>SSIEndTag
-    &quot;--&gt;&quot;</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_include 
-
-    <p>This directive changes the string that mod_include looks for 
-    to mark the end of a include command</p>
 
     <p><!--#include virtual="footer.html" -->
     </p>
