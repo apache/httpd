@@ -1,5 +1,6 @@
 # This is a comment. I love comments.
 
+
 application/activemessage
 application/andrew-inset
 application/applefile
@@ -23,12 +24,14 @@ application/slate
 application/wita
 application/wordperfect5.1
 application/x-bcpio		bcpio
-application/x-cdlink 		vcd
+application/x-cdlink		vcd
+application/x-compress		Z
 application/x-cpio		cpio
 application/x-csh		csh
-application/x-director 		dcr dir dxr
+application/x-director		dcr dir dxr
 application/x-dvi		dvi
 application/x-gtar		gtar
+application/x-gzip		gz
 application/x-hdf		hdf
 application/x-httpd-cgi		cgi
 application/x-koan		skp skd skt skm
@@ -47,11 +50,10 @@ application/x-texinfo		texinfo texi
 application/x-troff		t tr roff
 application/x-troff-man		man
 application/x-troff-me		me
-application/x-troff-ms	 	ms
+application/x-troff-ms		ms
 application/x-ustar		ustar
 application/x-wais-source	src
 application/zip			zip
-audio/basic			au snd
 audio/basic			au snd
 audio/mpeg			mpga mp2
 audio/x-aiff			aif aiff aifc
@@ -88,6 +90,7 @@ text/plain			txt
 text/richtext			rtx
 text/tab-separated-values	tsv
 text/x-setext			etx
+text/x-sgml			sgml sgm
 video/mpeg			mpeg mpg mpe
 video/quicktime			qt mov
 video/x-msvideo			avi
