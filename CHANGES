@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_log_config change optional hook to return previous handler
+     [Ian Holsman]
+
   *) Forward port of mod_actions' ability to handle arbitrary methods
      with the Script directive.  [André Malo]
 
