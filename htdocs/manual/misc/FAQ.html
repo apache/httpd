@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.133 $ ($Date: 1998/10/23 18:46:12 $)
+  $Revision: 1.134 $ ($Date: 1998/11/06 17:28:05 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -724,6 +724,12 @@
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call
   <CODE>fflush()</CODE> after writing the headers).
+  </P>
+  <P>
+  Another cause for the &quot;premature end of script headers&quot;
+  message are the RLimitCPU and RLimitMEM directives. You may
+  get the message if the CGI script was killed due to a
+  resource limit.
   </P>
   <HR>
  </LI>
