@@ -1,5 +1,7 @@
 Changes with Apache 1.3.3
 
+  *) Quote paths in default configuration files.  [Wilfredo Sanchez]
+
   *) PORT: Remove extra HAVE_SYS_RESOURCE_H define for RHAPSODY since
      it is now taken care of properly by the header file tests.
      [Wilfredo Sanchez <wsanchez@apple.com>]
