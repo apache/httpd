@@ -1,5 +1,8 @@
 Changes with Apache 1.3.30
 
+  *) mod_usertrack no longer inspects the Cookie2 header for
+     the cookie name. PR 11475.  [Chris Darrochi <chrisd pearsoncmg.com>]
+
   *) mod_usertrack no longer overwrites other cookies.
      PR 26002.  [Scott Moore <apache nopdesign.com>]
 
