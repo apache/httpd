@@ -62,12 +62,10 @@
 extern "C" {
 #endif
 
-#ifndef WIN32
-#ifdef TPF
-#include <time.h>
-#else
+#ifdef HAVE_SYS_TIMES_H
 #include <sys/times.h>
-#endif /* TPF */
+#elif defined(TPF)
+#include <time.h>
 #endif
 
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
@@ -154,7 +152,7 @@ typedef struct {
     struct timeval start_time;
     struct timeval stop_time;
 #endif
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
     struct tms times;
 #endif
 #ifndef OPTIMIZE_TIMEOUTS

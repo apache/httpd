@@ -45,7 +45,6 @@ dnl directory, they should be moved (Comment #Spoon)
 
 AC_CHECK_HEADERS( \
 unistd.h \
-sys/times.h \
 sys/time.h \
 )
 
