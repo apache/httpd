@@ -44,8 +44,14 @@ mime type or handler.
 
 <P>
 
+Note that changing the type or encoding of a file does not change the
+value of the <CODE>Last-Modified</CODE> header. Thus, previously cached
+copies may still be used by a client or proxy, with the previous headers.
+
+<A NAME="multipleext"><H2>Files with Multiple Extensions</H2></A>
+
 Files can have more than one extension, and the order of the
-extensions is normally irrelevant. For example, if the file
+extensions is <i>normally</i> irrelevant. For example, if the file
 <CODE>welcome.html.fr</CODE> maps onto content type text/html and
 language French then the file <CODE>welcome.fr.html</CODE> will map
 onto exactly the same information. The only exception to this is if an
@@ -59,19 +65,26 @@ text/html but <EM>no</EM> language.
 
 <P>
 
-Note that changing the type or encoding of a file does not change the
-value of the <CODE>Last-Modified</CODE> header. Thus, previously cached
-copies may still be used by a client or proxy, with the previous headers.
+If more than one extension is given which maps onto the same type of
+meta-information, then the one to the right will be used. For example,
+if ".gif" maps to the MIME-type image/gif and ".html" maps to the
+MIME-type text/html, then the file <CODE>welcome.gif.html</CODE> will
+be associated with the MIME-type "text/html".
 
 <P>
 
-Please note that changing a file's type or encoding does not change
-the value of the <CODE>Last-Modified</CODE> header. Previously cached
-copies may still be used by a client or proxy.
+Care should be taken when a file with multiple extensions gets
+associated with both a MIME-type and a handler. This will usually
+result in the request being by the module associated with the
+handler. For example, if the <CODE>.imap</CODE> extension is mapped to
+the handler "imap-file" (from mod_imap) and the <CODE>.html</CODE>
+extension is mapped to the MIME-type "text/html", then the file
+<CODE>world.imap.html</CODE> will be associated with both the
+"imap-file" handler and "text/html" MIME-type. When it is processed,
+the "imap-file" handler will be used, and so it will be treated as a
+mod_imap imagemap file.
 
-<P>
-
-<H2> Directives</H2>
+<H2>Directives</H2>
 <UL>
 <LI><A HREF="#addencoding">AddEncoding</A>
 <LI><A HREF="#addhandler">AddHandler</A>
@@ -107,17 +120,19 @@ copies may still be used by a client or proxy.
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
-The AddEncoding directive adds to the list of filename extensions which
-filenames may end in for the specified encoding type. <EM>Mime-enc</EM>
-is the mime encoding to use for documents ending in <EM>extension</EM>.
+The AddEncoding directive maps the given filename extensions to the
+specified encoding type. <EM>Mime-enc</EM> is the mime encoding to use
+for documents containing the <EM>extension</EM>. This mapping is added
+to any already in force, overriding any mappings that already exist
+for the same <EM>extension</EM>.
+
 Example:
-<BLOCKQUOTE><CODE>
-AddEncoding x-gzip gz<BR>
-AddEncoding x-compress Z
+<BLOCKQUOTE><CODE> AddEncoding x-gzip gz<BR> AddEncoding x-compress Z
 </CODE></BLOCKQUOTE>
 
-This will cause files ending in .gz to be marked as encoded using the x-gzip
-encoding, and .Z files to be marked as encoded with x-compress.<P>
+This will cause filenames containing the .gz extension to be marked as
+encoded using the x-gzip encoding, and filenames containing the .Z
+extension to be marked as encoded with x-compress.<P>
 
 Old clients expect <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>,
 however the standard dictates that they're equivalent to <CODE>gzip</CODE>
@@ -130,6 +145,11 @@ the <CODE>AddEncoding</CODE> directive.  To make this long story short,
 you should always use <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>
 for these two specific encodings.  More recent encodings, such as
 <CODE>deflate</CODE> should be specified without the <CODE>x-</CODE>.
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
+multiple extensions</A>
 
 <P><HR>
 
@@ -162,16 +182,25 @@ for these two specific encodings.  More recent encodings, such as
 1.1 and later<P>
 
 <P>AddHandler maps the filename extensions <EM>extension</EM> to the
-<A HREF="../handler.html">handler</A>
-<EM>handler-name</EM>. For example, to activate CGI scripts
+<A HREF="../handler.html">handler</A> <EM>handler-name</EM>.  This
+mapping is added to any already in force, overriding any mappings that
+already exist for the same <EM>extension</EM>.
+
+For example, to activate CGI scripts
 with the file extension "<CODE>.cgi</CODE>", you might use:
 <PRE>
     AddHandler cgi-script cgi
 </PRE>
 
 <P>Once that has been put into your srm.conf or httpd.conf file, any
-file ending with "<CODE>.cgi</CODE>" will be treated as a CGI
-program.</P>
+file containing the "<CODE>.cgi</CODE>" extension will be treated as a
+CGI program.</P> 
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
+multiple extensions</A>
+
 <HR>
 
 <H2><A NAME="addlanguage">AddLanguage</A></H2>
@@ -197,21 +226,30 @@ program.</P>
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
-The AddLanguage directive adds to the list of filename extensions which
-filenames may end in for the specified content language. <EM>Mime-lang</EM>
-is the mime language of files with names ending <EM>extension</EM>,
-after any content encoding extensions have been removed. Example:
-<BLOCKQUOTE><CODE>
-AddEncoding x-compress Z<BR>
-AddLanguage en .en<BR>
-AddLanguage fr .fr<BR>
-</CODE></BLOCKQUOTE>
+The AddLanguage directive maps the given filename extensions to the
+specified content language. <EM>Mime-lang</EM> is the mime language of
+filenames containing <EM>extension</EM>.  This mapping is added to any
+already in force, overriding any mappings that already exist for the
+same <EM>extension</EM>.
 
-Then the document <CODE>xxxx.en.Z</CODE> will be treated as being a compressed
-English document. Although the content language is reported to the client,
-the browser is unlikely to use this information. The AddLanguage directive
-is more useful for content negotiation, where the server returns one
-from several documents based on the client's language preference.<P><HR>
+Example: <BLOCKQUOTE><CODE>
+AddEncoding x-compress Z<BR> AddLanguage en .en<BR> AddLanguage fr
+.fr<BR> </CODE></BLOCKQUOTE>
+
+Then the document <CODE>xxxx.en.Z</CODE> will be treated as being a
+compressed English document (as will the document
+<CODE>xxxx.Z.en</CODE>). Although the content language is reported to
+the client, the browser is unlikely to use this information. The
+AddLanguage directive is more useful for content negotiation, where
+the server returns one from several documents based on the client's
+language preference.<P>
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
+multiple extensions</A>
+
+<HR>
 
 <H2><A NAME="addtype">AddType</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddType} directive&gt; -->
@@ -236,17 +274,29 @@ from several documents based on the client's language preference.<P><HR>
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
-The AddType directive adds to the list of filename extensions which
-filenames may end in for the specified content type. <EM>Mime-enc</EM>
-is the mime type to use for documents ending in <EM>extension</EM>.
-after content-encoding and language extensions have been removed. Example:
+The AddType directive maps the given filename extensions onto the
+specified content type. <EM>Mime-enc</EM> is the mime type to use for
+filenames containing <EM>extension</EM>.  This mapping is added to any
+already in force, overriding any mappings that already exist for the
+same <EM>extension</EM>. This directive can be used to add mappings
+not listed in the mime types file (see the <CODE><A
+HREF="#typesconfig">TypesConfig</A></CODE> directive).
+
+Example:
 <BLOCKQUOTE><CODE>
 AddType image/gif GIF
 </CODE></BLOCKQUOTE>
 It is recommended that new mime types be added using the AddType directive
 rather than changing the <A HREF="#typesconfig">TypesConfig</A> file.<P>
 Note that, unlike the NCSA httpd, this directive cannot be used to set the
-type of particular files.<P><HR>
+type of particular files.<P>
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
+multiple extensions</A>
+
+<HR>
 
 <H2><A NAME="forcetype">ForceType</A></H2>
 
