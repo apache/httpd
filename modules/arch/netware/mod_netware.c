@@ -192,13 +192,16 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         /* Run in its own address space if specified */
         detached = apr_table_get(d->file_handler_mode, ext);
         if (detached) {
-            e_info->detached = 1;
+		    e_info->cmd_type = APR_PROGRAM_ENV;
         }
+		else {
+		    e_info->cmd_type = APR_PROGRAM;
+		}
     }
 
     /* Tokenize the full command string into its arguments */
     apr_tokenize_to_argv(*cmd, (char***)argv, p);
-    e_info->cmd_type = APR_PROGRAM;
+    e_info->detached = 1;
 
     /* The first argument should be the executible */
     *cmd = ap_server_root_relative(p, *argv[0]);
