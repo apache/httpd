@@ -1,5 +1,12 @@
 Changes with Apache 2.0.17-dev
 
+  *) Allow module authors to add a module to their Apache build using
+     --with-module, without re-running buildconf.  The syntax is:
+	--with-module=module_type:/path/to/module.c
+     The configure script will copy the module.c file to 
+     modules/module_type, and it will be added to the relevant Makefiles.
+     currently, this only works for static modules.  [Ryan Bloom]
+
   *) Changes required to make prefork clean up idle children properly.
      There was a window during which a starting worker deadlocks when
      an idle cleanup arrives before it completes init. Apache then keeps
