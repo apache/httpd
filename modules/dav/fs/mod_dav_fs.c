@@ -104,7 +104,6 @@ static const char *dav_fs_cmd_davlockdb(cmd_parms *cmd, void *config,
 
     conf = ap_get_module_config(cmd->server->module_config,
                                 &dav_fs_module);
-    arg1 = ap_os_canonical_filename(cmd->pool, arg1);
     conf->lockdb_path = ap_server_root_relative(cmd->pool, arg1);
 
     return NULL;

@@ -777,12 +777,9 @@ static int dav_method_get(request_rec *r)
 	    return HTTP_NOT_FOUND;
 	}
 
-	/* Convert to canonical filename, so Apache detects component
-	 * separators (on Windows, it only looks for '/', not '\')
-	 */
-	pathname = ap_os_case_canonical_filename(r->pool, pathname);
-
-	/* Create a sub-request with the new filename */
+	/* Create a sub-request with the new filename 
+         * The new_req filename is canonicalized by ap_sub_req_lookup_file()
+         */
 	new_req = ap_sub_req_lookup_file(pathname, r, NULL);
 	if (new_req == NULL) {
 	    (*resource->hooks->free_file)(fhandle);
