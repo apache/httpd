@@ -73,6 +73,8 @@
         AP_INIT_##args("SSL"#name, ssl_cmd_SSL##name, NULL, OR_##type, desc),
 #define AP_END_CMD { NULL }
 
+#define HTTP_ON_HTTPS_PORT "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n"
+
 static const command_rec ssl_config_cmds[] = {
 
     /*
@@ -375,35 +377,35 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                  * Apache processing.
                  *
                  */
-
-#if 0 /* XXX */
-                /*
-                 * Still need to be ported to Apache 2.0 style
-                 */
-                char ca[2];
-                int rv;
-
+                apr_bucket *e;
+                const char *str;
+                apr_size_t len;
                 /* log the situation */
                 ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                         "SSL handshake failed: HTTP spoken on HTTPS port; "
                         "trying to send HTML error page");
-                /* first: skip the remaining bytes of the request line */
-                do {
-                    do {
-                        rv = read(fb->fd, ca, 1);
-                    } while (rv == -1 && errno == EINTR);
-                } while (rv > 0 && ca[0] != '\012' /*LF*/);
 
-                /* second: fake the request line */
-                fb->inbase = ap_palloc(fb->pool, fb->bufsiz);
-                ap_cpystrn((char *)fb->inbase, "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n",
-                           fb->bufsiz);
-                fb->inptr = fb->inbase;
-                fb->incnt = strlen((char *)fb->inptr);
-#else
-                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                        "SSL handshake failed: HTTP spoken on HTTPS port");
-#endif
+                /* fake the request line */
+                e = apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, 
+                                               strlen(HTTP_ON_HTTPS_PORT));
+                APR_BRIGADE_INSERT_HEAD(pRec->pbbPendingInput, e);
+
+                APR_BRIGADE_FOREACH(e, pRec->pbbInput) {
+                    apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+                    if (len) {
+                        APR_BUCKET_REMOVE(e);
+                        APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput, e);
+                        if ((strcmp(str, "\r\n") == 0) ||
+                            (ap_strstr_c(str, "\r\n\r\n"))) {
+                            break;
+                        }
+                    }
+                }
+                e = APR_BRIGADE_LAST(pRec->pbbInput);
+                APR_BUCKET_REMOVE(e);
+
+                ap_remove_output_filter(pRec->pOutputFilter);
+                return HTTP_BAD_REQUEST;
             }
             else if (ssl_util_getmodconfig_ssl(pRec->pssl, "ssl::handshake::timeout")
                == (void *)TRUE) {
@@ -536,6 +538,7 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(ssl_hook_ReadReq,    NULL,NULL, APR_HOOK_MIDDLE);
 
     ssl_var_register();
 }
