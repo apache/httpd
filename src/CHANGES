@@ -1,3 +1,7 @@
+Changes with Apache 1.3.24
+
+  *) Win32: Accept OPTIONS * requests.  [Keith Wannamaker]
+
 Changes with Apache 1.3.23
 
   *) Unixware 7.0 and later did not have a default locking
