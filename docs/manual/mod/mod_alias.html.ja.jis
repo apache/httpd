@@ -55,13 +55,13 @@
      /usr/local/apache/icons/</code> というものを使用していると、
     <code>/icons</code> という url はエイリアスされません。</p>
 
-    <p>エイリアスの<em>行き先</em>を含んでいる <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+    <p>エイリアスの<em>行き先</em>を含んでいる <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     セクションを追加する必要があるかもしれないことに注意してください。
-    エイリアスの展開は <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+    エイリアスの展開は <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     セクションを調べる前に行なわれますので、
-    エイリアスの行き先の <code>&lt;Directory&gt;</code> セクションのみ
+    エイリアスの行き先の <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> セクションのみ
     効果があります。
-    (しかし、<code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>
+    (しかし、<code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     セクションはエイリアスが処理される前に実行されますので、
     こちらは適用されます。)</p>
 
@@ -73,7 +73,7 @@
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
     <p>このディレクティブは <code class="directive"><a href="#alias">Alias</a></code>
-    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
     標準正規表現を利用します。ここで指定された正規表現と URL のパス
     が合うかどうかを調べ、合う場合は括弧で括られたマッチを
     与えられた文字列で置き換え、それをファイル名として使用します。たとえば、
@@ -94,7 +94,7 @@
     新しい URL がクライアントに返されます。そして、
     クライアントは新しいアドレスをもう一回取得しようとします。
     <em>URL-path</em> (% が復号された) パスで始まるドキュメントへの
-    すべてのリクエストは <em>URL</em> で始まる新しい
+    すべてのリクエストは <em>URL</em> で始まる新しい
     (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
 
     <p>例:</p>
@@ -108,7 +108,7 @@
 <div class="note"><h3>注意:</h3><p>設定ファイル中の順番に関わらず、
 Redirect 系のディレクティブは Alias
 ディレクティブと ScriptAlias ディレクティブよりも優先されます。
-また、.htaccess ファイルや <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+また、.htaccess ファイルや <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 セクションの中で使われていたとしても、<em>URL-path</em>
 は相対パスではなく、絶対パスでなければなりません。</p></div>
 
@@ -156,8 +156,7 @@ Redirect 系のディレクティブは Alias
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>現在の URL への正規表現のマッチにより
-クライアントが違う URL を取得するように外部へのリダイレクトを
-送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+外部へのリダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>RedirectMatch [<em>status</em>] <em>regex URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
@@ -175,8 +174,8 @@ Redirect 系のディレクティブは Alias
     RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>クライアントが違う URL を取得するように外部への永久的な
-リダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td>クライアントが違う URL を取得するように外部への永久的な
+リダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>RedirectPermanent <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:

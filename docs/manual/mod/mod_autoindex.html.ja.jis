@@ -132,31 +132,31 @@
     引数が全て解釈されるように、
     未知の引数 "X" はリストの最後に置かれています。</p>
 
-<div class="example"><p><code>
-&lt;FORM METHOD="GET"&gt;<br />
-&#160;&#160;Show me a &lt;SELECT NAME="F"&gt;<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="0"&gt; Plain list <br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="2"&gt; Table list<br />
-&#160;&#160;&lt;/SELECT&gt;<br />
-&#160;&#160;Sorted by &lt;SELECT NAME="C"&gt;<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="M"&gt; Date Modified<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="S"&gt; Size<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="D"&gt; Description<br />
-&#160;&#160;&lt;/SELECT&gt;<br />
-&#160;&#160;&lt;SELECT NAME="O"&gt;<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="D"&gt; Descending<br />
-&#160;&#160;&lt;/SELECT&gt;<br />
-&#160;&#160;&lt;SELECT NAME="V"&gt;<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
-&#160;&#160;&#160;&#160;&lt;OPTION VALUE="1"&gt; in Version order<br />
-&#160;&#160;&lt;/SELECT&gt;<br />
-&#160;&#160;Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
-&#160;&#160;&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
-&lt;/FORM&gt;
-</code></p></div>
+<div class="example"><pre>
+&lt;form action="" method="get"&gt;
+  Show me a &lt;select name="F"&gt;
+    &lt;option value="0"&gt; Plain list&lt;/option&gt;
+    &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+    &lt;option value="2"&gt; Table list&lt;/option&gt;
+  &lt;/select&gt;
+  Sorted by &lt;select name="C"&gt;
+    &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+    &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+    &lt;option value="S"&gt; Size&lt;/option&gt;
+    &lt;option value="D"&gt; Description&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="O"&gt;
+    &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+    &lt;option value="D"&gt; Descending&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="V"&gt;
+    &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+    &lt;option value="1"&gt; in Version order&lt;/option&gt;
+  &lt;/select&gt;
+  Matching &lt;input type="text" name="P" value="*" /&gt;
+  &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;
+</pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>アイコンの代わりに
@@ -171,15 +171,16 @@
     <em>File</em> は、説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白がある場合は引用符  (<code>"</code>
+    か <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <div class="example"><p><code>
-    AddAlt "PDF" *.pdf<br />
-    AddAlt "Compressed" *.gz *.zip *.Z
+    AddAlt "PDF file" *.pdf<br />
+    AddAlt Compressed *.gz *.zip *.Z
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
@@ -196,14 +197,15 @@
     <em>MIME-encoding</em> は有効な符号化、例えば
     <code>x-compress</code>
     です。 
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <div class="example"><p><code>
-    AddAltByEncoding "gzip" x-gzip
+    AddAltByEncoding gzip x-gzip
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>アイコンの代わりに
@@ -220,14 +222,15 @@
     <em>MIME-type</em> は有効なタイプ、例えば
     <code>text/html</code>
     です。
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <div class="example"><p><code>
-    AddAltByType "TXT" text/plain
+    AddAltByType 'plain text' text/plain
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>ファイルに対して表示する説明</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
@@ -401,19 +404,20 @@ HeaderName HEADER.html
 <div class="example"><p><code>
     AddType text/html .cgi
 </code></p></div>
-      <p><code>MultiViews</code> <code class="directive"><a href="../mod/core.html#option">Option</a></code> が有効になっている場合は、
+      <p><code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>MultiViews</code> が
+      有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
       が行われます。
       もし <em>filename</em> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
-      <code>Includes</code>
-      <code class="directive"><a href="../mod/core.html#option">option</a></code>
-      オプションが有効になっている場合は、
+      <code class="directive"><a href="../mod/core.html#options">options</a></code>
+      <code>Includes</code> か <code>IncludesNOEXEC</code>
+      が有効になっている場合は、
       ファイルはサーバーサイドインクルードで処理されます
       (<code class="module"><a href="../mod/mod_include.html">mod_include</a></code> ドキュメントを参照して下さい)。</p>
 </div>
 
-    <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
+    <p>もし <code class="directive">HeaderName</code> で指定されたファイルが
     HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
     等) を含んでいたら、
     <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
@@ -748,7 +752,8 @@ foo-1.04
               </a></th><td>
 ディレクトリインデックスの標準の順番付けを設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>IndexOrderDefault
-Ascending|Descending Name|Date|Size|Description</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+Ascending|Descending Name|Date|Size|Description</td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
+              </a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
