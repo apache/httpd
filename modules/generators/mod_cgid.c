@@ -130,6 +130,9 @@ static int total_modules = 0;
 static pid_t daemon_pid;
 static int daemon_should_exit = 0;
 
+/* Read and discard the data in the brigade produced by a CGI script */
+static void discard_script_output(apr_bucket_brigade *bb);
+
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
  * request came through ScriptAlias or not... so the Alias module 
@@ -821,12 +824,18 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
 } 
 
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret, 
-                  char *dbuf, const char *sbuf, apr_file_t *script_in, apr_file_t *script_err) 
+                      char *dbuf, const char *sbuf, apr_bucket_brigade *bb,
+                      apr_file_t *script_err) 
 { 
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in); 
     const apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
     char argsbuffer[HUGE_STRING_LEN]; 
     apr_file_t *f = NULL; 
+    apr_bucket *e;
+    const char *buf;
+    apr_size_t len;
+    apr_status_t rv;
+    int first;
     int i; 
     struct stat finfo; 
     char time_str[APR_CTIME_LEN];
@@ -838,9 +847,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
          (apr_file_open(&f, conf->logname, 
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         /* Soak up script output */ 
-        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                             script_in) == APR_SUCCESS) 
-            continue; 
+        discard_script_output(bb);
         if (script_err) {
             while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
                                  script_err) == APR_SUCCESS) 
@@ -880,14 +887,22 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     if (sbuf && *sbuf) 
         apr_file_printf(f, "%s\n", sbuf); 
 
-    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == APR_SUCCESS) { 
-        apr_file_puts("%stdout\n", f); 
-        apr_file_puts(argsbuffer, f); 
-        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                             script_in) == APR_SUCCESS) 
-            apr_file_puts(argsbuffer, f); 
-        apr_file_puts("\n", f); 
-    } 
+    first = 1;
+    APR_BRIGADE_FOREACH(e, bb) {
+        if (APR_BUCKET_IS_EOS(e)) {
+            break;
+        }
+        rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
+        if (!APR_STATUS_IS_SUCCESS(rv) || (len == 0)) {
+            break;
+        }
+        if (first) {
+            apr_file_puts("%stdout\n", f);
+            first = 0;
+        }
+        apr_file_write(f, buf, &len);
+	apr_file_puts("\n", f);
+    }
 
     if (script_err) {
         if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
@@ -901,7 +916,6 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
         } 
     }
 
-    apr_file_close(script_in); 
     if (script_err) {
         apr_file_close(script_err); 
     }
@@ -967,6 +981,23 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
     }
     *sdptr = sd;
     return OK;
+}
+
+static void discard_script_output(apr_bucket_brigade *bb)
+{
+    apr_bucket *e;
+    const char *buf;
+    apr_size_t len;
+    apr_status_t rv;
+    APR_BRIGADE_FOREACH(e, bb) {
+        if (APR_BUCKET_IS_EOS(e)) {
+            break;
+        }
+        rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
+        if (!APR_STATUS_IS_SUCCESS(rv)) {
+            break;
+        }
+    }
 }
 
 /**************************************************************** 
@@ -1115,19 +1146,23 @@ static int cgid_handler(request_rec *r)
         char sbuf[MAX_STRING_LEN]; 
         int ret; 
 
-        if ((ret = ap_scan_script_header_err(r, tempsock, sbuf))) { 
-            return log_script(r, conf, ret, dbuf, sbuf, tempsock, NULL); 
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+        b = apr_bucket_eos_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+
+        if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) { 
+            return log_script(r, conf, ret, dbuf, sbuf, bb, NULL); 
         } 
 
         location = apr_table_get(r->headers_out, "Location"); 
 
         if (location && location[0] == '/' && r->status == 200) { 
 
-            /* Soak up all the script output */ 
-            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                                 tempsock) == APR_SUCCESS) { 
-                continue; 
-            } 
+            /* Soak up all the script output */
+            discard_script_output(bb);
+            apr_brigade_destroy(bb);
             /* This redirect needs to be a GET no matter what the original 
              * method was. 
              */ 
@@ -1147,6 +1182,8 @@ static int cgid_handler(request_rec *r)
             /* XX Note that if a script wants to produce its own Redirect 
              * body, it now has to explicitly *say* "Status: 302" 
              */ 
+            discard_script_output(bb);
+            apr_brigade_destroy(bb);
             return HTTP_MOVED_TEMPORARILY; 
         } 
 
@@ -1157,11 +1194,6 @@ static int cgid_handler(request_rec *r)
              */
             apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-            bb = apr_brigade_create(r->pool, c->bucket_alloc);
-            b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, b);
             ap_pass_brigade(r->output_filters, bb);
         } 
     } 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/29 08:17:19 $]
+Last modified at [$Date: 2002/03/30 23:55:16 $]
 
 Release:
 
@@ -176,16 +176,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       descriptors between vhost child groups. An API was proposed
       on dev@apr:
         Message-ID: <20020111115006.K1529@clove.org>
-
-    * CGI single-byte reads
-      BrianP suggests that this is caused by the ap_scan_script_header_err()
-      routine, which will do single-byte reads until it finds the end
-      of the header, at which point it constructs a pipe-bucket (buffered)
-      to read from.
-      Proposed solution in:
-        Message-ID: <3C36ADAF.60601@cnet.com>
-      Update 3/23/2002: solution implemented for mod_cgi, mod_cgid remains
-        to be fixed
 
     * Try to get libtool inter-library dependency code working on AIX.
         Message-ID: <cm3n10lx555.fsf@rdu163-40-092.nc.rr.com>
