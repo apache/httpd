@@ -415,4 +415,6 @@ EXPORTS
         ap_run_open_logs        @409 NONAME
         ap_process_config_tree  @410 NONAME
         ap_server_config_defines @411 NONAME DATA
-        
+        ap_sort_hooks		 @412
+	ap_fini_vhost_config	 @413
+	ap_fixup_virtual_hosts	 @414
