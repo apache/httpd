@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/20 15:41:10 $]
+  Last modified at [$Date: 1999/03/20 15:45:18 $]
 
 Release:
 
@@ -456,30 +456,4 @@ Win32 specific issues:
 
     * apparently either "BrowserMatch" or the "nokeepalive" variable
       cause instability - see PR#1729.
-
-Binaries
-   The goal here is to have two columns of all-Y (where applicable)
-   for the two stable release versions, and nothing under Old unless
-   the new version just doesn't work on that platform.
-
-                        1.2.6   1.3.4   Old
-   aix_4.1                N       N     1.2.5, 1.3.1
-   alphalinux             N       N     1.3.0
-   aux_3.1                N       Y
-   decalphaNT             N       N     1.3b6
-   dunix_4.0              N       N     1.2.4, 1.3.0, 1.3.1
-   freebsd_2.1            N       N     1.2.4
-   freebsd_2.2            N       Y
-   hpux_10.20             N       N     1.2.5
-   hpux_11                N       N     1.3.2
-   irix_6.2               N       N     1.2.5
-   linux_2.x              N       N     1.2.4, 1.3.0
-   netbsd_1.2             N       N     1.2.4
-   os2                    N       Y
-   reliantunix_5.4        Y       Y
-   solaris                N       N     1.2.5, 1.3.0, 1.3.1
-   sparclinux             N       N     1.3.0, 1.3.1
-   sunos_4.1.x            N       N     1.2.5
-   ultrix_4.4             N       N     1.2.4
-   win32                  -       N     1.3.2  (is symlink okay?)
 
