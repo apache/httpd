@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.2.2.5 $ -->
+<!-- $Revision: 1.2.2.6 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -91,9 +91,9 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>A regular expression, which is a way of describing a
-      pattern to match in text. The directive definition will
-      specify what the <em>regex</em> is matching against.</dd>
+      <dd>A Perl-compatible <a href="../glossary.html#regex">regular
+      expression</a>. The directive definition will specify what the
+      <em>regex</em> is matching against.</dd>
 
       <dt><em>extension</em></dt>
 
