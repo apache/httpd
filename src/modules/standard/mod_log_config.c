@@ -935,7 +935,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
 
     cls->fname = fn;
     cls->format_string = fmt;
-    if (fmt != NULL) {
+    if (fmt == NULL) {
         cls->format = NULL;
     }
     else {
