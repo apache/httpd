@@ -151,8 +151,8 @@ int raise_sigstop_flags;
 static ap_pool_t *pconf;		/* Pool for config stuff */
 static ap_pool_t *pchild;		/* Pool for httpd child stuff */
 
-int ap_my_pid; /* Linux getpid() doesn't work except in main thread. Use
-                      this instead */
+unsigned int ap_my_pid; /* Linux getpid() doesn't work except in main 
+                           thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static pthread_mutex_t worker_thread_count_mutex;
@@ -1110,7 +1110,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    lock_fname = ap_psprintf(_pconf, "%s.%lu",
+    lock_fname = ap_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              ap_my_pid);
     rv = ap_create_lock(&process_accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
