@@ -1489,7 +1489,7 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
-AP_DECLARE(extern const char *) ap_psignature(const char *prefix, request_rec *r);
+AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
 
 /* strtoul does not exist on sunos4. */
 #ifdef strtoul

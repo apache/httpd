@@ -250,14 +250,14 @@ struct piped_log {
  * @return The piped log structure
  * @deffunc piped_log *ap_open_piped_log(apr_pool_t *p, const char *program)
  */
-AP_DECLARE(piped_log *) ap_open_piped_log (apr_pool_t *p, const char *program);
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
 
 /**
  * Close the piped log and kill the logging process
  * @param pl The piped log structure
  * @deffunc void ap_close_piped_log(piped_log *pl)
  */
-AP_DECLARE(void) ap_close_piped_log (piped_log *pl);
+AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
 
 /**
  * A macro to access the read side of the piped log pipe
