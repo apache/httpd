@@ -244,6 +244,7 @@ AC_SUBST(perlbin)
 
 dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
 
+BSD_MAKEFILE=no
 case "$host_alias" in
 *bsdi*)
     BSD_MAKEFILE=yes;;

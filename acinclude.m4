@@ -90,7 +90,6 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
 dnl APACHE_GEN_MAKEFILES
 dnl Creates Makefiles
 AC_DEFUN(APACHE_GEN_MAKEFILES,[
-  test -z "$BSD_MAKEFILE" && BSD_MAKEFILE=no
   $SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $BSD_MAKEFILE $APACHE_FAST_OUTPUT_FILES
 ])
 
