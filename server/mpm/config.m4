@@ -50,10 +50,23 @@ if test "$mpm_explicit" = "no"; then
     AC_CACHE_SAVE
   fi
 
+dnl The MPM_FAKE_NAME allow the mpmt MPM to emulate all of the MPMs without
+dnl Apache actually knowing it.  The problem is IfModule.  IfModule uses
+dnl the C file's name to know if the module is loaded.  Without this change
+dnl mpmt always shows up as mpmt.c, and we can't distinguish between all
+dnl of the emulated MPMs.
+dnl
+dnl This fixes that by creating a soft link that has the name of the
+dnl desired MPM to mpmt.c.  Now, Apache can search for the specified MPM
+dnl and actually find it.
   if test "$MPM_NAME" = "mpmt_pthread" ; then
     EXTRA_CFLAGS="$EXTRA_CFLAGS -DMPMT_PTHREAD"
+    MPM_FAKE_NAME=mpmt_pthread.c
+    ln -s mpmt.c modules/mpm/mpmt/mpmt_pthread.c
   elif test "$MPM_NAME" = "dexter" ; then
     EXTRA_CFLAGS="$EXTRA_CFLAGS -DDEXTER"
+    MPM_FAKE_NAME=dexter.c
+    ln -s mpmt.c modules/mpm/mpmt/dexter.c
   fi
 
   if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread"; then
@@ -67,6 +80,7 @@ if test "$mpm_explicit" = "no"; then
 fi
 
 APACHE_SUBST(MPM_NAME)
+APACHE_SUBST(MPM_FAKE_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
 
 dnl Check for pthreads and attempt to support it
