@@ -95,7 +95,16 @@ request_rec *ap_read_request(conn_rec *c);
  * Read the mime-encoded headers.
  * @param r The current request
  */
-void ap_get_mime_headers(request_rec *r);
+AP_DECLARE(void) ap_get_mime_headers(request_rec *r);
+
+/**
+ * Optimized version of ap_get_mime_headers() that requires a
+ * temporary brigade to work with
+ * @param r The current request
+ * @param bb temp brigade
+ */
+AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
+                                          apr_bucket_brigade *bb);
 
 /* Finish up stuff after a request */
 
@@ -573,6 +582,7 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
  * @param read The length of the line.
  * @param r The request
  * @param fold Whether to merge continuation lines
+ * @param bb Working brigade to use when reading buckets
  * @return APR_SUCCESS, if successful
  *         APR_ENOSPC, if the line is too big to fit in the buffer
  *         Other errors where appropriate
@@ -580,14 +590,16 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
 #if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n, 
                                      apr_size_t *read,
-                                     request_rec *r, int fold);
+                                     request_rec *r, int fold,
+                                     apr_bucket_brigade *bb);
 #else /* ASCII box */
-#define ap_rgetline(s, n, read, r, fold) \
-        ap_rgetline_core((s), (n), (read), (r), (fold))
+#define ap_rgetline(s, n, read, r, fold, bb) \
+        ap_rgetline_core((s), (n), (read), (r), (fold), (bb))
 #endif
 AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
                                           apr_size_t *read,
-                                          request_rec *r, int fold);
+                                          request_rec *r, int fold,
+                                          apr_bucket_brigade *bb);
 
 /**
  * Get the method number associated with the given string, assumed to

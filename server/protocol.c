@@ -243,31 +243,28 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
 AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                                           apr_size_t *read, request_rec *r,
-                                          int fold)
+                                          int fold, apr_bucket_brigade *bb)
 {
     apr_status_t rv;
-    apr_bucket_brigade *b;
     apr_bucket *e;
     apr_size_t bytes_handled = 0, current_alloc = 0;
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
 
-    b = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    rv = ap_get_brigade(r->input_filters, b, AP_MODE_GETLINE,
+    apr_brigade_cleanup(bb);
+    rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
                         APR_BLOCK_READ, 0);
 
     if (rv != APR_SUCCESS) {
-        apr_brigade_destroy(b);
         return rv;
     }
 
     /* Something horribly wrong happened.  Someone didn't block! */
-    if (APR_BRIGADE_EMPTY(b)) {
-        apr_brigade_destroy(b);
+    if (APR_BRIGADE_EMPTY(bb)) {
         return APR_EGENERAL;
     }
 
-    APR_BRIGADE_FOREACH(e, b) {
+    APR_BRIGADE_FOREACH(e, bb) {
         const char *str;
         apr_size_t len;
 
@@ -280,7 +277,6 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(b);
             return rv;
         }
 
@@ -294,7 +290,6 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
         /* Would this overrun our buffer?  If so, we'll die. */
         if (n < bytes_handled + len) {
-            apr_brigade_destroy(b);
             return APR_ENOSPC;
         }
 
@@ -342,7 +337,6 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
      */
     if (bytes_handled == 0) {
         *read = 0;
-        apr_brigade_destroy(b);
         return APR_SUCCESS;
     }
 
@@ -365,10 +359,9 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
             next_size = n - bytes_handled;
 
-            rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold);
+            rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold, bb);
 
             if (rv != APR_SUCCESS) {
-                apr_brigade_destroy(b);
                 return rv;
             }
 
@@ -397,7 +390,6 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             last_char = *s + bytes_handled - 1;
         }
         else {
-            apr_brigade_destroy(b);
             return APR_ENOSPC;
         }
     }
@@ -442,36 +434,33 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         char c;
 
         /* Clear the temp brigade for this filter read. */
-        apr_brigade_cleanup(b);
+        apr_brigade_cleanup(bb);
 
         /* We only care about the first byte. */
-        rv = ap_get_brigade(r->input_filters, b, AP_MODE_SPECULATIVE,
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_SPECULATIVE,
                             APR_BLOCK_READ, 1);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(b);
             return rv;
         }
 
-        if (APR_BRIGADE_EMPTY(b)) {
+        if (APR_BRIGADE_EMPTY(bb)) {
             *read = bytes_handled;
-            apr_brigade_destroy(b);
             return APR_SUCCESS;
         }
 
-        e = APR_BRIGADE_FIRST(b);
+        e = APR_BRIGADE_FIRST(bb);
 
         /* If we see an EOS, don't bother doing anything more. */
         if (APR_BUCKET_IS_EOS(e)) {
             *read = bytes_handled;
-            apr_brigade_destroy(b);
             return APR_SUCCESS;
         }
 
         rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
 
         if (rv != APR_SUCCESS) {
-            apr_brigade_destroy(b);
+            apr_brigade_destroy(bb);
             return rv;
         }
 
@@ -505,10 +494,9 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                 next_size = n - bytes_handled;
 
-                rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold);
+                rv = ap_rgetline_core(&tmp, next_size, &next_len, r, fold, bb);
 
                 if (rv != APR_SUCCESS) {
-                    apr_brigade_destroy(b);
                     return rv;
                 }
 
@@ -528,25 +516,22 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 }
 
                 *read = bytes_handled + next_len;
-                apr_brigade_destroy(b);
                 return APR_SUCCESS;
             }
             else {
-                apr_brigade_destroy(b);
                 return APR_ENOSPC;
             }
         }
     }
 
     *read = bytes_handled;
-    apr_brigade_destroy(b);
     return APR_SUCCESS;
 }
 
 #if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      apr_size_t *read, request_rec *r,
-                                     int fold)
+                                     int fold, apr_bucket_brigade *bb)
 {
     /* on ASCII boxes, ap_rgetline is a macro which simply invokes
      * ap_rgetline_core with the same parms
@@ -558,7 +543,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      */
     apr_status_t rv;
 
-    rv = ap_rgetline_core(s, n, read, r, fold);
+    rv = ap_rgetline_core(s, n, read, r, fold, bb);
     if (rv == APR_SUCCESS) {
         ap_xlate_proto_from_ascii(*s, *read);
     }
@@ -571,8 +556,11 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     char *tmp_s = s;
     apr_status_t rv;
     apr_size_t len;
+    apr_bucket_brigade *tmp_bb;
 
-    rv = ap_rgetline(&tmp_s, n, &len, r, fold);
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    rv = ap_rgetline(&tmp_s, n, &len, r, fold, tmp_bb);
+    apr_brigade_destroy(tmp_bb);
 
     /* Map the out-of-space condition to the old API. */
     if (rv == APR_ENOSPC) {
@@ -644,7 +632,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     }
 }
 
-static int read_request_line(request_rec *r)
+static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 {
     const char *ll;
     const char *uri;
@@ -679,7 +667,7 @@ static int read_request_line(request_rec *r)
          */
         r->the_request = NULL;
         rv = ap_rgetline(&(r->the_request), DEFAULT_LIMIT_REQUEST_LINE + 2,
-                         &len, r, 0);
+                         &len, r, 0, bb);
 
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
@@ -753,7 +741,7 @@ static int read_request_line(request_rec *r)
     return 1;
 }
 
-void ap_get_mime_headers(request_rec *r)
+AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
     char* field;
     char *value;
@@ -773,7 +761,7 @@ void ap_get_mime_headers(request_rec *r)
 
         field = NULL;
         rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
-                         &len, r, 1);
+                         &len, r, 1, bb);
 
         /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
          * finding the end-of-line.  This is only going to happen if it
@@ -837,12 +825,21 @@ void ap_get_mime_headers(request_rec *r)
     apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
 }
 
+AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
+{
+    apr_bucket_brigade *tmp_bb;
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    ap_get_mime_headers_core(r, tmp_bb);
+    apr_brigade_destroy(tmp_bb);
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
     apr_pool_t *p;
     const char *expect;
     int access_status;
+    apr_bucket_brigade *tmp_bb;
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -879,26 +876,31 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
     /* Get the request... */
-    if (!read_request_line(r)) {
+    if (!read_request_line(r, tmp_bb)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: URI too long");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
             return r;
         }
 
+        apr_brigade_destroy(tmp_bb);
         return NULL;
     }
 
     if (!r->assbackwards) {
-        ap_get_mime_headers(r);
+        ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
             return r;
         }
     }
@@ -916,9 +918,12 @@ request_rec *ap_read_request(conn_rec *conn)
             r->status = HTTP_BAD_REQUEST;
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
             return r;
         }
     }
+
+    apr_brigade_destroy(tmp_bb);
 
     r->status = HTTP_OK;                         /* Until further notice. */
 

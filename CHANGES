@@ -1,4 +1,8 @@
 Changes with Apache 2.0.40
+
+  *) Performance improvements for the code that reads request
+     headers (ap_rgetline_core() and related functions)  [Brian Pane]
+
   *) Add a new directive: MaxMemFree.  MaxMemFree makes it possible
      to configure the maximum amount of memory the allocators will
      hold on to for reuse.  Anything over the MaxMemFree threshold
