@@ -148,10 +148,10 @@ struct worker_score {
 #endif
     unsigned char status;
     unsigned long access_count;
-    unsigned long bytes_served;
+    apr_off_t     bytes_served;
     unsigned long my_access_count;
-    unsigned long my_bytes_served;
-    unsigned long conn_bytes;
+    apr_off_t     my_bytes_served;
+    apr_off_t     conn_bytes;
     unsigned short conn_count;
     apr_time_t start_time;
     apr_time_t stop_time;

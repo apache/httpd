@@ -686,9 +686,9 @@ struct request_rec {
     ap_method_list_t *allowed_methods; 
 
     /** byte count in stream is for body */
-    int sent_bodyct;
+    apr_off_t sent_bodyct;
     /** body byte count, for easy access */
-    long bytes_sent;
+    apr_off_t bytes_sent;
     /** Time the resource was last modified */
     apr_time_t mtime;
 
@@ -704,9 +704,9 @@ struct request_rec {
     apr_off_t clength;
 
     /** bytes left to read */
-    apr_size_t remaining;
+    apr_off_t remaining;
     /** bytes that have been read */
-    long read_length;
+    apr_off_t read_length;
     /** how the request body should be read */
     int read_body;
     /** reading chunked transfer-coding */

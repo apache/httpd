@@ -558,7 +558,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             }
             else {
                 const char *c = str;
-                while (c - str < length) {
+                while (c < str + length) {
                     if (*c == APR_ASCII_LF)
                         c++;
                     else if (*c == APR_ASCII_CR && *(c + 1) == APR_ASCII_LF)
@@ -1422,7 +1422,7 @@ static long get_chunk_size(char *b)
  * hold a chunk-size line, including any extensions. For now, we'll leave
  * that to the caller, at least until we can come up with a better solution.
  */
-AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
 {
     apr_size_t len_read, total;
     apr_status_t rv;
