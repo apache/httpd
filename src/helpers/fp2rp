@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ "x$1" = x. ]; then
+    rp="."
+else
+    rp=""
+    for pe in `echo $1 | sed -e 's:/: :'`; do
+	rp="../$rp"
+    done
+fi
+echo $rp | sed -e 's:/$::'
