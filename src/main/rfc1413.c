@@ -124,7 +124,7 @@ static int setsocktimeout (int sock, int timeout)
     setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, 
                (char *) &msec, sizeof(msec));
 #else
-    //XXX Needs to be implemented for non-winsock platforms
+    /* XXX Needs to be implemented for non-winsock platforms */
 #endif
     return 0;
 }
