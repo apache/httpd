@@ -79,6 +79,7 @@ fi
 APR_ADDTO(CFLAGS, `$apr_config --cflags`)
 APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
+APR_ADDTO(INCLUDES, `$apr_config --includes`)
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
@@ -113,9 +114,9 @@ dnl then we are running in VPATH mode.
 
 if test "$abs_builddir" != "$abs_srcdir"; then
   USE_VPATH=1
-  APR_ADDTO(INCLUDES, [-I. -I\$(srcdir) -I\$(top_builddir)/os/\$(OS_DIR) -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_builddir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_builddir)/modules/http -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/proxy -I\$(top_builddir)/include -I\$(top_srcdir)/include -I\$(top_builddir)/srclib/apr/include -I\$(top_srcdir)/srclib/apr/include -I\$(top_builddir)/srclib/apr-util/include -I\$(top_srcdir)/srclib/apr-util/include])
+  APR_ADDTO(INCLUDES, [-I. -I\$(srcdir) -I\$(top_builddir)/os/\$(OS_DIR) -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_builddir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_builddir)/modules/http -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/proxy -I\$(top_builddir)/include -I\$(top_srcdir)/include])
 else
-  APR_ADDTO(INCLUDES, [-I. -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include -I\$(top_srcdir)/srclib/apr/include -I\$(top_srcdir)/srclib/apr-util/include])
+  APR_ADDTO(INCLUDES, [-I. -I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include])
 fi
 
 echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
