@@ -883,7 +883,8 @@ int ap_slack(int fd, int line);
 /*
  * Redefine assert() to something more useful for an Apache...
  */
-API_EXPORT(void) log_assert(const char *szExp, const char *szFile, int nLine);
+API_EXPORT(void) log_assert(const char *szExp, const char *szFile, int nLine)
+			    __attribute__((noreturn));
 #define ap_assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )
 
 /* The optimized timeout code only works if we're not MULTITHREAD and we're
