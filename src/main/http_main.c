@@ -6623,6 +6623,7 @@ int main(int argc, char *argv[], char *envp[])
 #endif /* ndef SHARED_CORE_BOOTSTRAP */
 
 #ifndef SHARED_CORE_BOOTSTRAP
+#include "httpd.h"
 /*
  * Force ap_validate_password() into the image so that modules like
  * mod_auth can use it even if they're dynamically loaded.
