@@ -805,6 +805,36 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-Bdynamic -G"
             LDFLAGS_SHLIB_EXPORT=""
             ;;
+        *)
+            ##  ok, no known explict support for shared objects
+            ##  on this platform, but we give not up immediately.
+            ##  We take a second chance by guessing the compiler
+            ##  and linker flags from the Perl installation
+            ##  if it exists.
+            if [ ".`perl -V:dlsrc 2>/dev/null | grep dlopen`" != . ]; then
+                #   cool, Perl is installed on this platform
+                #   and actually uses the dlopen-style interface,
+                #   so we can guess the flags from its knowledge
+                CFLAGS_SHLIB="`perl -V:cccdlflags | cut -d\' -f2`"
+                LDFLAGS_SHLIB="`perl -V:lddlflags | cut -d\' -f2`"
+                LDFLAGS_SHLIB_EXPORT="`perl -V:ccdlflags | cut -d\' -f2`"
+                #   but additionally we have to inform the
+                #   user that we are just guessing the flags
+                echo ""
+                echo "** WARNING: We have no explicit knowledge about shared object"
+                echo "** support for your particular platform. But perhaps you have"
+                echo "** luck: We were able to guess the compiler and linker flags"
+                echo "** for creating shared objects from your Perl installation."
+                echo "** If they actually work, please send the following information"
+                echo "** for inclusion into later releases to apache@apache.org or"
+                echo "** make a suggestion report at http://bugs.apache.org/:"
+                echo "**     PLATFORM=$PLAT"
+                echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
+                echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
+                echo "**     LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT"
+                echo ""
+            fi
+            ;;
     esac
 fi
 
@@ -815,12 +845,14 @@ fi
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB"  = x -a "x$CFLAGS_SHLIB"  = x  -a \
          "x$TLDFLAGS_SHLIB" = x -a "x$LDFLAGS_SHLIB" = x ]; then
-        echo "Sorry, no shared object support available."
-        echo "Either compile all modules statically (use AddModule instead"
-        echo "of SharedModule in the Configuration file) or at least provide"
-        echo "us with the apropriate compiler and linker flags via the"
-        echo "CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
-        echo "in the configuration file."
+        echo ""
+        echo "** FAILURE: Sorry, no shared object support available."
+        echo "** Either compile all modules statically (use AddModule instead"
+        echo "** of SharedModule in the Configuration file) or at least provide"
+        echo "** us with the apropriate compiler and linker flags via the"
+        echo "** CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
+        echo "** in the Configuration file."
+        echo ""
         exit 1
     fi
 fi
