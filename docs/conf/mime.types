@@ -31,6 +31,7 @@ application/index.cmd
 application/index.obj
 application/index.response
 application/index.vnd
+application/iotp
 application/ipp
 application/mac-binhex40	hqx
 application/mac-compactpro	cpt
@@ -81,6 +82,8 @@ application/vnd.anser-web-funds-transfer-initiation
 application/vnd.audiograph
 application/vnd.businessobjects
 application/vnd.bmi
+application/vnd.canon-cpdl
+application/vnd.canon-lips
 application/vnd.claymore
 application/vnd.commerce-battelle
 application/vnd.commonspace
@@ -89,6 +92,7 @@ application/vnd.cosmocaller
 application/vnd.cups-postscript
 application/vnd.cups-raster
 application/vnd.cups-raw
+application/vnd.ctc-posml
 application/vnd.cybank
 application/vnd.dna
 application/vnd.dpgraph
@@ -200,6 +204,7 @@ application/vnd.powerbuilder75-s
 application/vnd.previewsystems.box
 application/vnd.publishare-delta-tree
 application/vnd.rapid
+application/vnd.s3sms
 application/vnd.seemail
 application/vnd.shana.informed.formdata
 application/vnd.shana.informed.formtemplate
@@ -209,6 +214,7 @@ application/vnd.street-stream
 application/vnd.svd
 application/vnd.swiftview-ics
 application/vnd.triscape.mxs
+application/vnd.trueapp
 application/vnd.truedoc
 application/vnd.ufdl
 application/vnd.uplanet.alert
@@ -229,9 +235,9 @@ application/vnd.vectorworks
 application/vnd.visio
 application/vnd.wap.sic
 application/vnd.wap.slc
-application/vnd.wap.wbxml
-application/vnd.wap.wmlc
-application/vnd.wap.wmlscriptc
+application/vnd.wap.wbxml	wbxml
+application/vnd.wap.wmlc	wmlc
+application/vnd.wap.wmlscriptc	wmlsc
 application/vnd.webturbo
 application/vnd.wrq-hp3000-labelled
 application/vnd.wt.stf
@@ -283,6 +289,7 @@ audio/mpeg			mpga mp2 mp3
 audio/vnd.cns.anp1
 audio/vnd.cns.inf1
 audio/vnd.digital-winds
+audio/vnd.everad.plj
 audio/vnd.lucent.voice
 audio/vnd.nortel.vbk
 audio/vnd.octel.sbc
@@ -316,7 +323,7 @@ image/vnd.fujixerox.edmics-rlc
 image/vnd.mix
 image/vnd.net-fpx
 image/vnd.svf
-image/vnd.wap.wbmp
+image/vnd.wap.wbmp		wbmp
 image/vnd.xiff
 image/x-cmu-raster		ras
 image/x-portable-anymap		pnm
@@ -339,6 +346,8 @@ model/iges			igs iges
 model/mesh			msh mesh silo
 model/vnd.dwf
 model/vnd.flatland.3dml
+model/vnd.gdl
+model/vnd.gs-gdl
 model/vnd.gtw
 model/vnd.mts
 model/vnd.vtu
@@ -368,6 +377,7 @@ text/richtext			rtx
 text/rtf			rtf
 text/sgml			sgml sgm
 text/tab-separated-values	tsv
+text/t140
 text/uri-list
 text/vnd.abc
 text/vnd.flatland.3dml
@@ -377,10 +387,11 @@ text/vnd.in3d.3dml
 text/vnd.in3d.spot
 text/vnd.latex-z
 text/vnd.motorola.reflex
+text/vnd.ms-mediapackage
 text/vnd.wap.si
 text/vnd.wap.sl
-text/vnd.wap.wml
-text/vnd.wap.wmlscript
+text/vnd.wap.wml		wml
+text/vnd.wap.wmlscript		wmls
 text/x-setext			etx
 text/xml			xml
 video/mpeg			mpeg mpg mpe
