@@ -186,11 +186,12 @@ void ap_init_vhost_config(apr_pool_t *p)
 static const char *get_addresses(apr_pool_t *p, const char *w_,
 				 server_addr_rec ***paddr, apr_port_t port)
 {
-    apr_in_addr_t my_addr;
+    apr_sockaddr_t *my_addr;
     server_addr_rec *sar;
     char *t;
     int i;
     char *w;
+    apr_status_t rv;
 
     if (*w_ == 0)
 	return NULL;
@@ -212,9 +213,12 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 
     if (strcasecmp(w, "_default_") == 0
         || strcmp(w, "255.255.255.255") == 0) {
-        my_addr.s_addr = DEFAULT_VHOST_ADDR;
+        rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
+        ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
+        my_addr->sa.sin.sin_addr.s_addr = DEFAULT_VHOST_ADDR;
     } else {
-        if (apr_get_inaddr(&my_addr, w) != APR_SUCCESS) {
+        rv = apr_getaddrinfo(&my_addr, w, APR_INET, port, 0, p);
+        if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
                 "Cannot resolve host name %s --- ignoring!", w);
             return NULL;
@@ -376,7 +380,7 @@ static apr_inline ipaddr_chain *find_ipaddr(apr_in_addr_t *server_ip,
     bucket = hash_inaddr(addr);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
 	server_addr_rec *sar = trav->sar;
-	if ((sar->host_addr.s_addr == addr)
+	if ((sar->host_addr->sa.sin.sin_addr.s_addr == addr)
 	    && (sar->host_port == 0 || sar->host_port == port
 		|| port == 0)) {
 	    return trav;
@@ -407,17 +411,17 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
     int len;
     char buf[MAX_STRING_LEN];
 
-    if (ic->sar->host_addr.s_addr == DEFAULT_VHOST_ADDR) {
+    if (ic->sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR) {
 	len = apr_snprintf(buf, sizeof(buf), "_default_:%u",
 		ic->sar->host_port);
     }
-    else if (ic->sar->host_addr.s_addr == INADDR_ANY) {
+    else if (ic->sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
 	len = apr_snprintf(buf, sizeof(buf), "*:%u",
 		ic->sar->host_port);
     }
     else {
 	len = apr_snprintf(buf, sizeof(buf), "%pA:%u",
-		&ic->sar->host_addr, ic->sar->host_port);
+		ic->sar->host_addr, ic->sar->host_port);
     }
     if (ic->sar->host_port == 0) {
 	buf[len-1] = '*';
@@ -546,10 +550,10 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      * occured in the config file, we'll copy it in that order.
      */
     for (sar = name_vhost_list; sar; sar = sar->next) {
-	unsigned bucket = hash_inaddr(sar->host_addr.s_addr);
+	unsigned bucket = hash_inaddr(sar->host_addr->sa.sin.sin_addr.s_addr);
 	ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
 
-	if (sar->host_addr.s_addr != INADDR_ANY) {
+	if (sar->host_addr->sa.sin.sin_addr.s_addr != INADDR_ANY) {
 	    *iphash_table_tail[bucket] = ic;
 	    iphash_table_tail[bucket] = &ic->next;
 	}
@@ -577,8 +581,8 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 	for (sar = s->addrs; sar; sar = sar->next) {
 	    ipaddr_chain *ic;
 
-	    if (sar->host_addr.s_addr == DEFAULT_VHOST_ADDR
-		|| sar->host_addr.s_addr == INADDR_ANY) {
+	    if (sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR
+		|| sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
 		ic = find_default_server(sar->host_port);
 		if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
 		    if (ic && ic->sar->host_port != 0) {
@@ -594,10 +598,10 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 	    }
 	    else {
 		/* see if it matches something we've already got */
-		ic = find_ipaddr(&sar->host_addr, sar->host_port);
+		ic = find_ipaddr(&sar->host_addr->sa.sin.sin_addr, sar->host_port);
 
 		if (!ic) {
-		    unsigned bucket = hash_inaddr(sar->host_addr.s_addr);
+		    unsigned bucket = hash_inaddr(sar->host_addr->sa.sin.sin_addr.s_addr);
 
 		    ic = new_ipaddr_chain(p, s, sar);
 		    ic->next = *iphash_table_tail[bucket];
@@ -633,20 +637,24 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 		    apr_pstrdup(p, "bogus_host_without_forward_dns");
 	    }
 	    else {
-		struct hostent *h;
+		apr_status_t rv;
+                char *hostname;
 
-		if ((h = gethostbyaddr((char *) &(s->addrs->host_addr),
-					sizeof(struct in_addr), APR_INET))) {
-		    s->server_hostname = apr_pstrdup(p, (char *) h->h_name);
+                rv = apr_getnameinfo(&hostname, s->addrs->host_addr, 0);
+                if (rv == APR_SUCCESS) {
+                    s->server_hostname = apr_pstrdup(p, hostname);
 		}
 		else {
 		    /* again, what can we do?  They didn't specify a
 		       ServerName, and their DNS isn't working. -djg */
+                    char *ipaddr_str;
+
+                    apr_get_ipaddr(&ipaddr_str, s->addrs->host_addr);
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
-			    "Failed to resolve server name "
-			    "for %s (check DNS) -- or specify an explicit "
-			    "ServerName",
-			    inet_ntoa(s->addrs->host_addr));
+                                 "Failed to resolve server name "
+                                 "for %s (check DNS) -- or specify an explicit "
+                                 "ServerName",
+                                 ipaddr_str);
 		    s->server_hostname =
 			apr_pstrdup(p, "bogus_host_without_reverse_dns");
 		}

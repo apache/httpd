@@ -1634,6 +1634,7 @@ static void init_config_globals(apr_pool_t *p)
 
 static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 {
+    apr_status_t rv;
     server_rec *s = (server_rec *) apr_pcalloc(p, sizeof(server_rec));
 
     apr_open_stderr(&s->error_log, p);
@@ -1653,7 +1654,9 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->next = NULL;
     s->addrs = apr_pcalloc(p, sizeof(server_addr_rec));
     /* NOT virtual host; don't match any real network interface */
-    s->addrs->host_addr.s_addr = htonl(INADDR_ANY);
+    rv = apr_getaddrinfo(&s->addrs->host_addr,
+                         NULL, APR_INET, 0, 0, p);
+    ap_assert(rv == APR_SUCCESS); /* otherwise: bug or no storage */
     s->addrs->host_port = 0;	/* matches any port */
     s->addrs->virthost = "";	/* must be non-NULL */
     s->names = s->wild_names = NULL;
