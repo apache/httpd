@@ -394,7 +394,9 @@ apr_status_t util_ldap_cache_module_kill(void *data)
     if (st->cache_shm != NULL) {
         apr_status_t result = apr_shm_destroy(st->cache_shm);
         st->cache_shm = NULL;
-        apr_file_remove(st->cache_file, st->pool);
+        if (st->cache_file) {
+            apr_file_remove(st->cache_file, st->pool);
+        }
         return result;
     }
 #endif
