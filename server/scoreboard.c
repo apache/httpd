@@ -179,8 +179,8 @@ static apr_status_t create_namebased_scoreboard(apr_pool_t *pool,
     rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "unable to create scoreboard "
-                     "(name-based shared memory failure)");
+                     "unable to create scoreboard using filename %s "
+                     "(name-based shared memory failure)", fname);
         return rv;
     }
 #endif /* APR_HAS_SHARED_MEMORY */
