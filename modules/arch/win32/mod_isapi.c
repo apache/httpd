@@ -726,8 +726,7 @@ static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
     if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR)
         return -1;
     
-    /* All the headers should be set now */
-    ap_send_http_header(cid->r);
+    /* Headers will actually go when they are good and ready */
 
     /* Any data left is sent directly by the caller, all we
      * give back is the size of the headers we consumed
