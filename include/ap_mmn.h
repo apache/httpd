@@ -80,12 +80,14 @@
  * 20010808 (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
  * 20010825 (2.0.25-dev) removed d_is_absolute, introduced map_to_storage hook
  * 20011002 (2.0.26-dev) removed 1.3-depreciated request_rec.content_language
+ * 20011127 (2.0.28-dev) bump for postconfig hook change, and removal of socket
+ *                       from connection record
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20011002
+#define MODULE_MAGIC_NUMBER_MAJOR 20011127
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
