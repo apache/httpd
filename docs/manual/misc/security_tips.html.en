@@ -1,16 +1,18 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Security Tips - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Security Tips</h1>
+      --><title>Security Tips - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Security Tips</h1>
     <p>Some hints and tips on security issues in setting up a web server. 
     Some of the suggestions will be general, others specific to Apache.</p>
-  <ul><li><a href="#serverroot">Permissions on ServerRoot Directories</a></li><li><a href="#ssi">Server Side Includes</a></li><li><a href="#cgi">CGI in General</a></li><li><a href="#nsaliasedcgi">Non Script Aliased CGI</a></li><li><a href="#saliasedcgi">Script Aliased CGI</a></li><li><a href="#systemsettings">Protecting System Settings</a></li><li><a href="#protectserverfiles">Protect Server Files by Default</a></li><li><a href="#watchyourlogs">Watching Your Logs</a></li></ul><hr><h2><a name="serverroot">Permissions on ServerRoot Directories</a></h2>
+  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI in General</a></li><li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li><li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">Script Aliased CGI</a></li><li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protecting System Settings</a></li><li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protect Server Files by Default</a></li><li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Watching Your Logs</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="serverroot" id="serverroot">Permissions on ServerRoot Directories</a></h2>
   
     
     
     <p>In typical operation, Apache is started by the root user, and it 
-    switches to the user defined by the <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> directive to serve hits. As is the 
+    switches to the user defined by the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive to serve hits. As is the 
     case with any command that root executes, you must take care that it is 
     protected from modification by non-root users. Not only must the files 
     themselves be writeable only by root, but so must the directories, and 
@@ -18,25 +20,25 @@
     ServerRoot in  /usr/local/apache then it is suggested that you create 
     that directory as root, with commands like these:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      mkdir /usr/local/apache <br>
-      cd /usr/local/apache <br>
-      mkdir bin conf logs <br>
-      chown 0 . bin conf logs <br>
-      chgrp 0 . bin conf logs <br>
+    <div class="example"><p><code>
+      mkdir /usr/local/apache <br />
+      cd /usr/local/apache <br />
+      mkdir bin conf logs <br />
+      chown 0 . bin conf logs <br />
+      chgrp 0 . bin conf logs <br />
       chmod 755 . bin conf logs
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>It is assumed that /, /usr, and /usr/local are only modifiable by 
     root. When you install the httpd executable, you should ensure that 
     it is similarly protected:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      cp httpd /usr/local/apache/bin <br>
-      chown 0 /usr/local/apache/bin/httpd <br>
-      chgrp 0 /usr/local/apache/bin/httpd <br>
+    <div class="example"><p><code>
+      cp httpd /usr/local/apache/bin <br />
+      chown 0 /usr/local/apache/bin/httpd <br />
+      chgrp 0 /usr/local/apache/bin/httpd <br />
       chmod 511 /usr/local/apache/bin/httpd
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>You can create an htdocs subdirectory which is modifiable by other 
     users -- since root never executes any files out of there, and shouldn't 
@@ -52,7 +54,7 @@
     themselves are writeable (by a non-root user), then someone may be 
     able to overwrite the log itself with bogus data.</p>
     
-  <h2><a name="ssi">Server Side Includes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ssi" id="ssi">Server Side Includes</a></h2>
   
     
     
@@ -85,11 +87,11 @@
     
     <p>Another solution is to disable the ability to run scripts and 
     programs from SSI pages. To do this replace <code>Includes</code>
-    with <code>IncludesNOEXEC</code> in the <a href="../mod/core.html#options" class="directive"><code class="directive">Options</code></a> directive.  Note that users may 
+    with <code>IncludesNOEXEC</code> in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.  Note that users may 
     still use &gt;--#include virtual="..." --&lt; to execute CGI scripts if 
-    these scripts are in directories desginated by a <a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a> directive.</p>
+    these scripts are in directories desginated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
     
-  <h2><a name="cgi">CGI in General</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi" id="cgi">CGI in General</a></h2>
   
     
     
@@ -109,7 +111,7 @@
     popular way of doing this is with 
     <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
     
-  <h2><a name="nsaliasedcgi">Non Script Aliased CGI</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="nsaliasedcgi" id="nsaliasedcgi">Non Script Aliased CGI</a></h2>
   
     
     
@@ -124,7 +126,7 @@
       <li>You have no users, and nobody ever visits your server.</li>
     </ul>
     
-  <h2><a name="saliasedcgi">Script Aliased CGI</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="saliasedcgi" id="saliasedcgi">Script Aliased CGI</a></h2>
   
     
     
@@ -137,7 +139,7 @@
     <p>Most sites choose this option over the non script aliased CGI 
     approach.</p>
     
-  <h2><a name="systemsettings">Protecting System Settings</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="systemsettings" id="systemsettings">Protecting System Settings</a></h2>
   
     
     
@@ -147,16 +149,16 @@
     
     <p>In the server configuration file, put</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      &lt;Directory /&gt; <br>
-        AllowOverride None <br>
+    <div class="example"><p><code>
+      &lt;Directory /&gt; <br />
+        AllowOverride None <br />
       &lt;/Directory&gt;
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>This prevents the use of <code>.htaccess</code> files in all 
     directories apart from those specifically enabled.</p>
     
-  <h2><a name="protectserverfiles">Protect Server Files by Default</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="protectserverfiles" id="protectserverfiles">Protect Server Files by Default</a></h2>
   
     
     
@@ -167,52 +169,52 @@
     
     <p>For instance, consider the following example:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      # cd /; ln -s / public_html <br>
+    <div class="example"><p><code>
+      # cd /; ln -s / public_html <br />
       Accessing <code>http://localhost/~root/</code>
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>This would allow clients to walk through the entire filesystem. To 
     work around this, add the following block to your server's 
     configuration:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      &lt;Directory /&gt; <br>
-      Order Deny,Allow <br>
-      Deny from all <br>
+    <div class="example"><p><code>
+      &lt;Directory /&gt; <br />
+      Order Deny,Allow <br />
+      Deny from all <br />
       &lt;/Directory&gt;
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>This will forbid default access to filesystem locations. Add 
-    appropriate <a href="../mod/core.html#directory" class="directive"><code class="directive">Directory</code></a> blocks to 
+    appropriate <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> blocks to 
     allow access only in those areas you wish. For example,</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      &lt;Directory /usr/users/*/public_html&gt; <br>
-        Order Deny,Allow <br>
-        Allow from all <br>
-      &lt;/Directory&gt; <br>
-      &lt;Directory /usr/local/httpd&gt; <br>
-        Order Deny,Allow <br>
-        Allow from all <br>
+    <div class="example"><p><code>
+      &lt;Directory /usr/users/*/public_html&gt; <br />
+        Order Deny,Allow <br />
+        Allow from all <br />
+      &lt;/Directory&gt; <br />
+      &lt;Directory /usr/local/httpd&gt; <br />
+        Order Deny,Allow <br />
+        Allow from all <br />
       &lt;/Directory&gt;
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
-    <p>Pay particular attention to the interactions of <a href="../mod/core.html#location" class="directive"><code class="directive">Location</code></a> and <a href="../mod/core.html#directory" class="directive"><code class="directive">Directory</code></a> directives; for instance, even 
+    <p>Pay particular attention to the interactions of <code class="directive"><a href="../mod/core.html#location">Location</a></code> and <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> directives; for instance, even 
     if <code>&lt;Directory /&gt;</code> denies access, a <code>
     &lt;Location /&gt;</code> directive might overturn it</p>
     
-    <p>Also be wary of playing games with the <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a> directive; setting it to 
+    <p>Also be wary of playing games with the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive; setting it to 
     something like "./" would have the same effect, for root, as the first 
     example above. If you are using Apache 1.3 or above, we strongly 
     recommend that you include the following line in your server 
     configuration files:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       UserDir disabled root
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
-  <h2><a name="watchyourlogs">Watching Your Logs</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="watchyourlogs" id="watchyourlogs">Watching Your Logs</a></h2>
   
     
     
@@ -224,38 +226,38 @@
     
     <p>A couple of examples:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br>
+    <div class="example"><p><code>
+      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
       grep "client denied" error_log | tail -n 10
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>The first example will list the number of attacks trying to exploit the
     <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat 
     Source.JSP Malformed Request Information Disclosure Vulnerability</a>, 
     the second example will list the ten last denied clients, for example:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       [Thu Jul 11 17:18:39 2002] [error] [client foo.bar.com] client denied 
       by server configuration: /usr/local/apache/htdocs/.htpasswd
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>As you can see, the log files only report what already has happend, so 
     if the client had been able to access the <code>.htpasswd</code> file you 
     would have seen something similar to:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    <div class="example"><p><code>
       foo.bar.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
     <p>in your <a href="../logs.html#accesslog">Access Log</a>. This means 
     you probably commented out the following in your server configuration 
     file:</p>
     
-    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      &lt;Files ~ "^\.ht"&gt; <br>
-        Order allow,deny <br>
-        Deny from all <br>
+    <div class="example"><p><code>
+      &lt;Files ~ "^\.ht"&gt; <br />
+        Order allow,deny <br />
+        Deny from all <br />
       &lt;Files&gt;
-    </code></td></tr></table></blockquote>
+    </code></p></div>
     
-  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
