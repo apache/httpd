@@ -305,7 +305,7 @@ static void clean_child_exit(int code)
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
-    chdir(ap_coredump_dir);
+    apr_filepath_set(ap_coredump_dir, pconf);
     apr_signal(sig, SIG_DFL);
     if (ap_my_pid == parent_pid) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
@@ -723,7 +723,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     return NULL;
 }
 
-static void *worker_thread(apr_thread_t *thd, void * dummy)
+static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
@@ -770,7 +770,7 @@ static int check_signal(int signum)
     return 0;
 }
 
-static void *start_threads(apr_thread_t *thd, void *dummy)
+static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
 {
     thread_starter *ts = dummy;
     apr_thread_t **threads = ts->threads;
@@ -800,7 +800,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
         /* In case system resources are maxxed out, we don't want
          * Apache running away with the CPU trying to fork over and
          * over and over again if we exit. */
-        sleep(10);
+        apr_sleep(10 * APR_USEC_PER_SEC);
         clean_child_exit(APEXIT_CHILDFATAL);
     }
     while (1) {
@@ -836,7 +836,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
                 /* In case system resources are maxxed out, we don't want
                    Apache running away with the CPU trying to fork over and
                    over and over again if we exit. */
-                sleep(10);
+                apr_sleep(10 * APR_USEC_PER_SEC);
                 clean_child_exit(APEXIT_CHILDFATAL);
             }
             threads_created++;
@@ -844,7 +844,8 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
         if (workers_may_exit || threads_created == ap_threads_per_child) {
             break;
         }
-        sleep(1); /* wait for previous generation to clean up an entry */
+        /* wait for previous generation to clean up an entry */
+        apr_sleep(1 * APR_USEC_PER_SEC);
     }
     
     /* What state should this child_main process be listed as in the 
@@ -942,7 +943,7 @@ static void child_main(int child_num_arg)
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
            over and over again if we exit. */
-        sleep(10);
+        apr_sleep(10 * APR_USEC_PER_SEC);
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -998,7 +999,7 @@ static int make_child(server_rec *s, int slot)
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
            over and over again. */
-        sleep(10);
+        apr_sleep(10 * APR_USEC_PER_SEC);
 
         return -1;
     }
@@ -1417,7 +1418,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-                  AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
+                     AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
 
         /* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.
