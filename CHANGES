@@ -1,5 +1,10 @@
 Changes with Apache 2.0.25-dev
 
+  *) Clean up location_walk, so that this step performs a minimum
+     amount of redundant effort (it must be run twice, but it will no
+     longer reparse all <Location > blocks when the request uri
+     hadn't changed.)  [William Rowe]
+
   *) Eliminate proxy: (and all other 'special') processing from the
      ap_directory_walk() phase.  Modules that want to use special
      walk logic should refer to the mod_proxy map_to_location example,

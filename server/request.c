@@ -963,68 +963,117 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
     ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
-    ap_conf_vector_t **url = (ap_conf_vector_t **) sconf->sec_url->elts;
-    int len, num_url = sconf->sec_url->nelts;
+    ap_conf_vector_t *per_uri_defaults = NULL;
+    ap_conf_vector_t **locations = (ap_conf_vector_t **) sconf->sec_url->elts;
+    ap_conf_vector_t **loc_done = NULL;
+    int len, num_loc = sconf->sec_url->nelts;
     char *test_location;
     ap_conf_vector_t *this_conf;
     ap_conf_vector_t *entry_config;
     core_dir_config *entry_core;
-    char *entry_url;
+    char *entry_uri;
     int j;
 
-    if (!num_url) {
+    /* No tricks here, there are no <Locations > to parse in this vhost
+     */
+    if (!num_loc) {
+        apr_pool_userdata_set(NULL, "ap_location_walk::dir_conf", 
+                              apr_pool_cleanup_null, r->pool);
+        apr_pool_userdata_set(NULL, "ap_location_walk::loc_done", 
+                              apr_pool_cleanup_null, r->pool);
+        apr_pool_userdata_set(NULL, "ap_location_walk::last_uri",
+                              apr_pool_cleanup_null, r->pool);
 	return OK;
     }
 
-    /* Location and LocationMatch differ on their behaviour w.r.t. multiple
-     * slashes.  Location matches multiple slashes with a single slash,
-     * LocationMatch doesn't.  An exception, for backwards brokenness is
-     * absoluteURIs... in which case neither match multiple slashes.
+    apr_pool_userdata_get(&entry_uri, "ap_location_walk::last_uri", r->pool);
+    apr_pool_userdata_get(&(void*)loc_done, "ap_location_walk::loc_done", r->pool);
+
+    /* If we have an ap_location_walk::last_uri that matches r->uri,
+     * and the vhost's list of locations hasn't changed,
+     * we will go through the location_walk entries.
      */
-    if (r->uri[0] != '/') {
-	test_location = r->uri;
+    if (!entry_uri || (loc_done != locations) 
+                   || (strcmp(r->uri, entry_uri) != 0))
+    {
+        /* Location and LocationMatch differ on their behaviour w.r.t. multiple
+         * slashes.  Location matches multiple slashes with a single slash,
+         * LocationMatch doesn't.  An exception, for backwards brokenness is
+         * absoluteURIs... in which case neither match multiple slashes.
+         */
+        if (r->uri[0] != '/') {
+	    test_location = r->uri;
+        }
+        else {
+	    test_location = apr_pstrdup(r->pool, r->uri);
+	    ap_no2slash(test_location);
+        }
+
+        /* Go through the location entries, and check for matches. */
+
+        /* we apply the directive sections in some order;
+         * should really try them with the most general first.
+         */
+        for (j = 0; j < num_loc; ++j) {
+
+	    entry_config = locations[j];
+
+	    entry_core = ap_get_module_config(entry_config, &core_module);
+	    entry_uri = entry_core->d;
+
+	    len = strlen(entry_uri);
+
+	    this_conf = NULL;
+            
+            /* Test the regex, fnmatch or string as appropriate.
+             * If it's a strcmp, and the <Location > pattern was 
+             * not slash terminated, then this uri must be slash
+             * terminated (or at the end of the string) to match.
+             */
+	    if (entry_core->r 
+                  ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
+                  : (entry_core->d_is_fnmatch
+                       ? apr_fnmatch(entry_uri, test_location, FNM_PATHNAME)
+                       : (strncmp(test_location, entry_uri, len)
+                            || (entry_uri[len - 1] != '/'
+                             && test_location[len] != '/' 
+                             && test_location[len] != '\0')))) {
+	        continue;
+            }
+
+            if (per_uri_defaults)
+	        per_uri_defaults = ap_merge_per_dir_configs(r->pool,
+                                                            per_uri_defaults,
+                                                            entry_config);
+            else
+                per_uri_defaults = entry_config;
+        }
+
+        /* Set aside this walk result, in case we end up back here with
+         * the same uri again.
+         */
+        apr_pool_userdata_set(per_uri_defaults, "ap_location_walk::dir_conf", 
+                              apr_pool_cleanup_null, r->pool);
+        apr_pool_userdata_set(locations, "ap_location_walk::loc_done", 
+                              apr_pool_cleanup_null, r->pool);
+        apr_pool_userdata_set(r->uri, "ap_location_walk::last_uri", 
+                              apr_pool_cleanup_null, r->pool);
     }
     else {
-	test_location = apr_pstrdup(r->pool, r->uri);
-	ap_no2slash(test_location);
+        /* Well this looks familiar!  Get back our per_uri_defaults
+         * from the last location walk.
+         */
+        apr_pool_userdata_get(&per_uri_defaults, "ap_location_walk::dir_conf",
+                              r->pool);
     }
 
-    /* Go through the location entries, and check for matches. */
-
-    /* we apply the directive sections in some order;
-     * should really try them with the most general first.
+    /* We might be able to optimize further, if r->per_dir_config never changed. 
+     * In any case, merge our per_uri_defaults onto 
      */
-    for (j = 0; j < num_url; ++j) {
-
-	entry_config = url[j];
-
-	entry_core = ap_get_module_config(entry_config, &core_module);
-	entry_url = entry_core->d;
-
-	len = strlen(entry_url);
-
-	this_conf = NULL;
-
-	if (entry_core->r) {
-	    if (!ap_regexec(entry_core->r, r->uri, 0, NULL, 0))
-		this_conf = entry_config;
-	}
-	else if (entry_core->d_is_fnmatch) {
-	    if (!apr_fnmatch(entry_url, test_location, FNM_PATHNAME)) {
-		this_conf = entry_config;
-	    }
-	}
-	else if (!strncmp(test_location, entry_url, len) &&
-                 (entry_url[len - 1] == '/' ||
-                  test_location[len] == '/' || test_location[len] == '\0'))
-	    this_conf = entry_config;
-
-	if (this_conf)
-	    per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                        per_dir_defaults,
-                                                        this_conf);
-    }
-    r->per_dir_config = per_dir_defaults;
+    if (per_uri_defaults)
+        r->per_dir_config = ap_merge_per_dir_configs(r->pool,
+                                                     r->per_dir_config,
+                                                     per_uri_defaults);
 
     return OK;
 }
