@@ -1710,11 +1710,11 @@ static int find_child_by_pid(int pid)
     return -1;
 }
 
-static void reclaim_child_processes(int start_tries)
+static void reclaim_child_processes(int terminate)
 {
 #ifndef MULTITHREAD
     int i, status;
-    long int waittime = 4096;	/* in usecs */
+    long int waittime = 1024 * 16;	/* in usecs */
     struct timeval tv;
     int waitret, tries;
     int not_dead_yet;
@@ -1724,17 +1724,14 @@ static void reclaim_child_processes(int start_tries)
 
     sync_scoreboard_image();
 
-    tries = 0;
-    for (tries = start_tries; tries < 4; ++tries) {
+    for (tries = terminate ? 4 : 1; tries <= 9; ++tries) {
 	/* don't want to hold up progress any more than 
 	 * necessary, but we need to allow children a few moments to exit.
-	 * delay with an exponential backoff.
-	 * Currently set for a maximum wait of a bit over
-	 * four seconds.
+	 * Set delay with an exponential backoff.
 	 */
 	tv.tv_sec = waittime / 1000000;
 	tv.tv_usec = waittime % 1000000;
-	waittime = waittime * 2;
+	waittime = waittime * 4;
 	ap_select(0, NULL, NULL, NULL, &tv);
 
 	/* now see who is done */
@@ -1752,28 +1749,38 @@ static void reclaim_child_processes(int start_tries)
 	    }
 	    ++not_dead_yet;
 	    switch (tries) {
-	    case 1:
+	    case 1:     /*  16ms */
+	    case 2:     /*  82ms */
+		break;
+	    case 3:     /* 344ms */
 		/* perhaps it missed the SIGHUP, lets try again */
-		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+			    server_conf,
 		    "child process %d did not exit, sending another SIGHUP",
 			    pid);
 		kill(pid, SIGHUP);
+		waittime = 1024 * 16;
 		break;
-	    case 2:
+	    case 4:     /*  16ms */
+	    case 5:     /*  82ms */
+	    case 6:     /* 344ms */
+		break;
+	    case 7:     /* 1.4sec */
 		/* ok, now it's being annoying */
-		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+			    server_conf,
 		   "child process %d still did not exit, sending a SIGTERM",
 			    pid);
 		kill(pid, SIGTERM);
 		break;
-	    case 3:
+	    case 8:     /*  6 sec */
 		/* die child scum */
 		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
 		   "child process %d still did not exit, sending a SIGKILL",
 			    pid);
 		kill(pid, SIGKILL);
 		break;
-	    case 4:
+	    case 9:     /* 14 sec */
 		/* gave it our best shot, but alas...  If this really 
 		 * is a child we are trying to kill and it really hasn't
 		 * exited, we will likely fail to bind to the port
@@ -3497,7 +3504,7 @@ void standalone_main(int argc, char **argv)
 	    if (ap_killpg(pgrp, SIGTERM) < 0) {
 		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
 	    }
-	    reclaim_child_processes(2);		/* Start with SIGTERM */
+	    reclaim_child_processes(1);		/* Start with SIGTERM */
 	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"httpd: caught SIGTERM, shutting down");
 
@@ -3554,7 +3561,7 @@ void standalone_main(int argc, char **argv)
 	    if (ap_killpg(pgrp, SIGHUP) < 0) {
 		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGHUP");
 	    }
-	    reclaim_child_processes(1);		/* Not when just starting up */
+	    reclaim_child_processes(0);		/* Not when just starting up */
 	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"SIGHUP received.  Attempting to restart");
 	}
