@@ -151,22 +151,41 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
 
-    if ((access_status = ap_location_walk(r))) {
-        return access_status;
+    /* File-specific requests with no 'true' URI are a huge pain... they 
+     * cannot bubble through the next several steps.  Only subrequests may 
+     * have an empty uri, otherwise let translate_name kill the request.
+     */
+    if (!r->main || (r->uri && r->uri[0]))
+    {
+        if ((access_status = ap_location_walk(r))) {
+            return access_status;
+        }
+
+        if ((access_status = ap_run_translate_name(r))) {
+            return decl_die(access_status, "translate", r);
+            return access_status;
+        }
     }
 
-    if ((access_status = ap_run_translate_name(r))) {
-        return decl_die(access_status, "translate", r);
-        return access_status;
-    }
+    /* Reset to the server default config prior to running map_to_storage 
+     */
+    r->per_dir_config = r->server->lookup_defaults;
 
-    if ((access_status = ap_run_map_to_storage(r))) {
+    if ((access_status = ap_run_map_to_storage(r))) 
+    {
         /* This request wasn't in storage (e.g. TRACE) */
         return access_status;
     }
 
-    if ((access_status = ap_location_walk(r))) {
-        return access_status;
+    /* Excluding file-specific requests with no 'true' URI...
+     */
+    if (!r->main || (r->uri && r->uri[0]))
+    {
+        /* Rerun the location walk, which overrides any map_to_storage config.
+         */
+        if ((access_status = ap_location_walk(r))) {
+            return access_status;
+        }
     }
 
     /* Only on the main request! */
@@ -176,46 +195,61 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         }
     }
 
-    switch (ap_satisfies(r)) {
-    case SATISFY_ALL:
-    case SATISFY_NOSPEC:
-        if ((access_status = ap_run_access_checker(r)) != 0) {
-            return decl_die(access_status, "check access", r);
-        }
-        if (ap_some_auth_required(r)) {
-            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-		            ? "check user.  No user file?"
-		            : "perform authentication. AuthType not set!", r);
-            }
-            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-		            ? "check access.  No groups file?"
-		            : "perform authentication. AuthType not set!", r);
-            }
-        }
-        break;
-    case SATISFY_ANY:
-        if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
-            if (!ap_some_auth_required(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-		            ? "check access"
-		            : "perform authentication. AuthType not set!", r);
-            }
-            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-		            ? "check user.  No user file?"
-		            : "perform authentication. AuthType not set!", r);
-            }
-            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-		            ? "check access.  No groups file?"
-		            : "perform authentication. AuthType not set!", r);
-            }
-        }
-        break;
+    /* Skip authn/authz if the parent or prior request passed the authn/authz,
+     * and that configuration didn't change (this requires optimized _walk()
+     * functions in map_to_storage that use the same merge results given
+     * identical input.)  If the config changes, we must re-auth.
+     */
+    if (r->main && (r->main->per_dir_config == r->per_dir_config)) {
+        r->user = r->main->user;	
+        r->ap_auth_type = r->main->ap_auth_type;
+    } 
+    else if (r->prev && (r->prev->per_dir_config == r->per_dir_config)) {
+        r->user = r->prev->user;	
+        r->ap_auth_type = r->prev->ap_auth_type;
     }
-
+    else
+    {
+        switch (ap_satisfies(r)) {
+        case SATISFY_ALL:
+        case SATISFY_NOSPEC:
+            if ((access_status = ap_run_access_checker(r)) != 0) {
+                return decl_die(access_status, "check access", r);
+            }
+            if (ap_some_auth_required(r)) {
+                if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                    return decl_die(access_status, ap_auth_type(r)
+		                ? "check user.  No user file?"
+		                : "perform authentication. AuthType not set!", r);
+                }
+                if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                    return decl_die(access_status, ap_auth_type(r)
+		                ? "check access.  No groups file?"
+		                : "perform authentication. AuthType not set!", r);
+                }
+            }
+            break;
+        case SATISFY_ANY:
+            if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
+                if (!ap_some_auth_required(r)) {
+                    return decl_die(access_status, ap_auth_type(r)
+		                ? "check access"
+		                : "perform authentication. AuthType not set!", r);
+                }
+                if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                    return decl_die(access_status, ap_auth_type(r)
+		                ? "check user.  No user file?"
+		                : "perform authentication. AuthType not set!", r);
+                }
+                if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                    return decl_die(access_status, ap_auth_type(r)
+		                ? "check access.  No groups file?"
+		                : "perform authentication. AuthType not set!", r);
+                }
+            }
+            break;
+        }
+    }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme 
      *                              && !strcmp(r->parsed_uri.scheme, "http")
@@ -792,7 +826,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
-    ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
+    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
     ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_dir->elts;
     int num_sec = sconf->sec_dir->nelts;
     int sec_idx;
@@ -1143,13 +1177,6 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         apr_pool_userdata_set(cache, "ap_location_walk::cache", 
                               apr_pool_cleanup_null, r->pool);
     }
-
-    /* If the initial request creation logic failed to reset the
-     * per_dir_config, we will do so here.
-     * ### at this time, only subreq creation fails to do so.
-     */
-    if (!r->per_dir_config)
-        r->per_dir_config = r->server->lookup_defaults;
     
     /* No tricks here, there are no <Locations > to parse in this vhost.
      * We won't destroy the cache, just in case _this_ redirect is later
@@ -1386,6 +1413,14 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
 
     rnew->request_config = ap_create_request_config(rnew->pool);
 
+    /* Start a clean config from this subrequest's vhost.  Optimization in
+     * Location/File/Dir walks from the parent request assure that if the
+     * config blocks of the subrequest match the parent request, no merges
+     * will actually occur (and generally a minimal number of merges are 
+     * required, even if the parent and subrequest aren't quite identical.)
+     */
+    rnew->per_dir_config = r->server->lookup_defaults;
+
     rnew->htaccess       = r->htaccess;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
 
@@ -1451,8 +1486,6 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
 
-    rnew->per_dir_config = r->server->lookup_defaults;
-
     /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
      */
@@ -1496,8 +1529,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
 
-    rnew->chunked        = r->chunked;
-
     /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
      */
@@ -1522,7 +1553,10 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
 #if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
-       * dir_walk/file_walk values.
+       * dir_walk/file_walk values.  We also need to preserve the apr_stat
+       * results into the new parser, which can't happen until the new dir_walk
+       * is taught to recognize the condition, and perhaps we also tag that
+       * symlinks were tested and/or found for r->filename.  
        */
     rnew->per_dir_config = r->per_dir_config;
 
@@ -1610,12 +1644,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
-
-    /* XXX Either this is needed for all subreq types (move into
-     * fill_in_sub_req_vars), or it isn't needed at all.  
-     * WHICH IS IT?
-     */
-    rnew->chunked        = r->chunked;
 
     /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
@@ -1736,19 +1764,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = apr_pstrdup(rnew->pool, "");
-
-#if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
-       * dir_walk/file_walk values.
-       */
-
-        rnew->per_dir_config = r->server->lookup_defaults;
-        res = ap_directory_walk(rnew);
-        if (!res) {
-            res = ap_file_walk(rnew);
-        }
-#endif
     }
-
 
     if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
