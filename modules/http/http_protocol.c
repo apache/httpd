@@ -1294,7 +1294,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
-    long max_body;
+    apr_off_t max_body;
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -2490,7 +2490,7 @@ static int ap_set_byterange(request_rec *r)
         int rv;
         /* A single range */
 
-        /* rvarse_byterange() modifies the contents, so make a copy */
+        /* parse_byterange() modifies the contents, so make a copy */
         if ((rv = parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
                              &range_start, &range_end)) <= 0) {
             return rv;
