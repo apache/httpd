@@ -1,4 +1,8 @@
 Changes with Apache 2.0.33-dev
+
+  *) OS/390: Get make install to properly copy DSO modules.
+     [Jeff Trawick]
+
   *) Win32: Fix bug in mod_status with displaying "Restart Time"
      and "Server uptime".
      [Bill Stoddard]
