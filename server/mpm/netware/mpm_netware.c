@@ -212,14 +212,13 @@ static int volatile wait_to_finish=1;
 ap_generation_t volatile ap_my_generation=0;
 
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, 
-                             apr_bucket_alloc_t *bucket_alloc, apr_pool_t *pthrd) __attribute__ ((noreturn));
-static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, 
-                             apr_bucket_alloc_t *bucket_alloc, apr_pool_t *pthrd)
+static void clean_child_exit(int code, int worker_num, apr_pool_t *pthrd, 
+                             apr_bucket_alloc_t *bucket_alloc) __attribute__ ((noreturn));
+static void clean_child_exit(int code, int worker_num, apr_pool_t *pthrd, 
+                             apr_bucket_alloc_t *bucket_alloc)
 {
     if (!shutdown_pending) {
         apr_bucket_alloc_destroy(bucket_alloc);
-        apr_pool_destroy(ptrans);
         apr_pool_destroy(pthrd);
     }
 
@@ -384,12 +383,13 @@ void worker_main(void *arg)
 
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
-    apr_allocator_owner_set(allocator, ptrans);
-    apr_pool_tag(ptrans, "transaction");
 
-    apr_pool_create(&pthrd, pmain);
+    apr_pool_create_ex(&pthrd, pmain, NULL, allocator);
+    apr_allocator_owner_set(allocator, pthrd);
     apr_pool_tag(pthrd, "worker_thrd_pool");
+
+    apr_pool_create(&ptrans, pthrd);
+    apr_pool_tag(ptrans, "transaction");
 
     bucket_alloc = apr_bucket_alloc_create(pthrd);
 
@@ -404,7 +404,8 @@ void worker_main(void *arg)
 
         if ((ap_max_requests_per_child > 0
             && requests_this_child++ >= ap_max_requests_per_child)) {
-            clean_child_exit(0, my_worker_num, ptrans, bucket_alloc, pthrd);
+            DBPRINT1 ("\n**Thread slot %d is shutting down", my_worker_num);
+            clean_child_exit(0, my_worker_num, pthrd, bucket_alloc);
         }
 
         ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
@@ -417,7 +418,7 @@ void worker_main(void *arg)
         for (;;) {
             if (shutdown_pending || restart_pending || (ap_scoreboard_image->servers[0][my_worker_num].status == WORKER_IDLE_KILL)) {
                 DBPRINT1 ("\nThread slot %d is shutting down\n", my_worker_num);
-                clean_child_exit(0, my_worker_num, ptrans, bucket_alloc, pthrd);
+                clean_child_exit(0, my_worker_num, pthrd, bucket_alloc);
             }
 
             /* Check the listen queue on all sockets for requests */
@@ -526,13 +527,13 @@ void worker_main(void *arg)
                         */
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_accept: giving up.");
-                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, 
-                                         bucket_alloc, pthrd);
+                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, pthrd, 
+                                         bucket_alloc);
                 }
                 else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_accept: (client socket)");
-                        clean_child_exit(1, my_worker_num, ptrans, bucket_alloc, pthrd);
+                        clean_child_exit(1, my_worker_num, pthrd, bucket_alloc);
                 }
             }
         }
@@ -551,7 +552,7 @@ void worker_main(void *arg)
         }
         request_count++;
     }
-    clean_child_exit(0, my_worker_num, ptrans, bucket_alloc, pthrd);
+    clean_child_exit(0, my_worker_num, pthrd, bucket_alloc);
 }
 
 
