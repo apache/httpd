@@ -65,6 +65,9 @@ struct ap_listen_rec {
     ap_listen_rec *next;
     ap_socket_t *sd;
     int active;
+#ifdef WIN32
+    int count;
+#endif
 /* more stuff here, like which protocol is bound to the port */
 };
 
