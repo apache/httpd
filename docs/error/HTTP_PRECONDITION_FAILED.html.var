@@ -16,12 +16,12 @@ Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="Vorbedingung negativ!"
+--><!--#set var="TITLE" value="Vorbedingung verfehlt!"
 --><!--#include virtual="include/top.html" -->
 
-    Die Vorbedingung unter dem angeforderten URL wurde
-    negativ ausgewertet.
-    
+    Die f&uuml;r den Abruf der angeforderten URL notwendige
+    Vorbedingung wurde nicht erf&uuml;llt.
+
 <!--#include virtual="include/bottom.html" -->
 ----------de--
 
