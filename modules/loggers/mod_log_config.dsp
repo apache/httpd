@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_log_config.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_log_config.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_log_config.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_log_config.dbgmark"
+	echo rebased > ".\Release\mod_log_config.dbr"
 
 # End Custom Build
 

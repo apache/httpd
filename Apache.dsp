@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\Apache.exe
 SOURCE="$(InputPath)"
 
-".\Release\Apache.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\Apache.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\Apache.dbgmark"
+	echo rebased > ".\Release\Apache.dbr"
 
 # End Custom Build
 

@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\rotatelogs.so
 SOURCE="$(InputPath)"
 
-".\Release\rotatelogs.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\rotatelogs.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\rotatelogs.dbgmark"
+	echo rebased > ".\Release\rotatelogs.dbr"
 
 # End Custom Build
 

@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_proxy.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_proxy.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_proxy.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_proxy.dbgmark"
+	echo rebased > ".\Release\mod_proxy.dbr"
 
 # End Custom Build
 

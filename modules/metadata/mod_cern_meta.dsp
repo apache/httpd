@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_cern_meta.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_cern_meta.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_cern_meta.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_cern_meta.dbgmark"
+	echo rebased > ".\Release\mod_cern_meta.dbr"
 
 # End Custom Build
 

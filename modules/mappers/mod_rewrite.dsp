@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_rewrite.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_rewrite.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_rewrite.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_rewrite.dbgmark"
+	echo rebased > ".\Release\mod_rewrite.dbr"
 
 # End Custom Build
 

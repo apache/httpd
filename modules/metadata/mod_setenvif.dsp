@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_setenvif.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_setenvif.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_setenvif.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_setenvif.dbgmark"
+	echo rebased > ".\Release\mod_setenvif.dbr"
 
 # End Custom Build
 

@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_charset_lite.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_charset_lite.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_charset_lite.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_charset_lite.dbgmark"
+	echo rebased > ".\Release\mod_charset_lite.dbr"
 
 # End Custom Build
 

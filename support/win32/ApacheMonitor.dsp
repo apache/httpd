@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\ApacheMonitor.so
 SOURCE="$(InputPath)"
 
-".\Release\ApacheMonitor.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\ApacheMonitor.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\ApacheMonitor.dbgmark"
+	echo rebased > ".\Release\ApacheMonitor.dbr"
 
 # End Custom Build
 

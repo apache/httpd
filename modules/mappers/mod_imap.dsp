@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_imap.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_imap.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_imap.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_imap.dbgmark"
+	echo rebased > ".\Release\mod_imap.dbr"
 
 # End Custom Build
 

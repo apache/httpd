@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_authz_dbm.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_authz_dbm.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_authz_dbm.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_authz_dbm.dbgmark"
+	echo rebased > ".\Release\mod_authz_dbm.dbr"
 
 # End Custom Build
 

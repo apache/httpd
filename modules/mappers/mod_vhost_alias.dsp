@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_vhost_alias.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_vhost_alias.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_vhost_alias.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_vhost_alias.dbgmark"
+	echo rebased > ".\Release\mod_vhost_alias.dbr"
 
 # End Custom Build
 

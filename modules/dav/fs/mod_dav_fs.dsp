@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_dav_fs.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_dav_fs.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_dav_fs.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_dav_fs.dbgmark"
+	echo rebased > ".\Release\mod_dav_fs.dbr"
 
 # End Custom Build
 
