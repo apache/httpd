@@ -259,13 +259,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 
 /*
- * Check for OpenSSL version 
- */
-#if SSL_LIBRARY_VERSION < 0x00906000
-#error "mod_ssl requires OpenSSL 0.9.6 or higher"
-#endif
-
-/*
  * Define the certificate algorithm types
  */
 
