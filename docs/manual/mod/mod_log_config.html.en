@@ -101,7 +101,9 @@
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the request sent to the server.</td></tr>
 <tr><td><code>%...l</code></td>
-        <td>Remote logname (from identd, if supplied)</td></tr>
+        <td>Remote logname (from identd, if supplied). This will return a
+        dash unless <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> is present and <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
+        <code>On</code>.</td></tr>
 <tr class="odd"><td><code>%...m</code></td>
         <td>The request method</td></tr>
 <tr><td><code>%...{<var>Foobar</var>}n</code></td>

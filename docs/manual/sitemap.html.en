@@ -186,6 +186,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_ext_filter.html">Apache Module mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache Module mod_file_cache</a></li>
 <li><a href="mod/mod_headers.html">Apache Module mod_headers</a></li>
+<li><a href="mod/mod_ident.html">Apache Module mod_ident</a></li>
 <li><a href="mod/mod_imap.html">Apache Module mod_imap</a></li>
 <li><a href="mod/mod_include.html">Apache Module mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache Module mod_info</a></li>

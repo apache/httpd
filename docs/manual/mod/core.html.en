@@ -48,7 +48,6 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -1198,33 +1197,6 @@ MIME content-type</td></tr>
     amounts of time. The utility <a href="../programs/logresolve.html">logresolve</a>, compiled by default
     to the <code>bin</code> subdirectory of your installation directory, can
     be used to look up host names from logged IP addresses offline.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables logging of the RFC1413 identity of the remote
-user</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IdentityCheck On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IdentityCheck Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table>
-    <p>This directive enables RFC1413-compliant logging of the
-    remote user name for each connection, where the client machine
-    runs identd or something similar. This information is logged in
-    the access log.</p>
-
-    <p>The information should not be trusted in any way except for
-    rudimentary usage tracking.</p>
-
-    <p>Note that this can cause serious latency problems accessing
-    your server since every request requires one of these lookups
-    to be performed. When firewalls are involved each lookup might
-    possibly fail and add 30 seconds of latency to each hit. So in
-    general this is not very useful on public servers accessible
-    from the Internet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

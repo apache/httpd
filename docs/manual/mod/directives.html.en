@@ -180,7 +180,8 @@
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
-<li><a href="core.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
+<li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
+<li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
 <li><a href="mod_imap.html#imapbase">ImapBase</a></li>
