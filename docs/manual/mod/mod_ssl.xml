@@ -1170,16 +1170,15 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 
 <directivesynopsis>
 <name>SSLProxyMachineCertificatePath</name>
-<description>Directory of PEM-encoded CA certificates for proxy server client certificates</description>
+<description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>Not applicable</override>
 
 <usage>
 <p>
-This directive sets the directory where you keep the certificates of
-Certification Authorities (CAs) whose proxy client certificates are used for
-authentication of the proxy server to remote servers.
+This directive sets the directory where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
 </p>
 <p>The files in this directory must be PEM-encoded and are accessed through
 hash filenames. Additionally, you must create symbolic links named
@@ -1187,10 +1186,13 @@ hash filenames. Additionally, you must create symbolic links named
 directory contains the appropriate symbolic links. Use the Makefile which
 comes with mod_ssl to accomplish this task.
 </p>
+<note type="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</note>
 <p>
 Example:</p>
 <example>
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
 </example> 
 </usage> 
 </directivesynopsis>
@@ -1198,28 +1200,30 @@ SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
 
 <directivesynopsis>
 <name>SSLProxyMachineCertificateFile</name>
-<description>File of concatenated PEM-encoded CA certificates for proxy server client certificates</description>
+<description>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>Not applicable</override>
 
 <usage>
 <p>
-This directive sets the all-in-one file where you keep the certificates of
-Certification Authorities (CAs) whose proxy client certificates are used for
-authentication of the proxy server to remote servers.
+This directive sets the all-in-one file where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
 </p>
 <p>
 This referenced file is simply the concatenation of the various PEM-encoded
 certificate files, in order of preference. Use this directive alternatively
 or additionally to <code>SSLProxyMachineCertificatePath</code>.
 </p>
+<note type="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</note>
 <p>
 Example:</p>
 <example>
-SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/
-</example> 
-</usage> 
+SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+</example>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

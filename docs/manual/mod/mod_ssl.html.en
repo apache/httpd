@@ -952,7 +952,7 @@ SSLProxyEngine on<br />
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyMachineCertificateFile" id="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</a> <a name="sslproxymachinecertificatefile" id="sslproxymachinecertificatefile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA certificates for proxy server client certificates</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateFile <em>filename</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Not applicable</td></tr>
@@ -960,26 +960,28 @@ SSLProxyEngine on<br />
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive sets the all-in-one file where you keep the certificates of
-Certification Authorities (CAs) whose proxy client certificates are used for
-authentication of the proxy server to remote servers.
+This directive sets the all-in-one file where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
 </p>
 <p>
 This referenced file is simply the concatenation of the various PEM-encoded
 certificate files, in order of preference. Use this directive alternatively
 or additionally to <code>SSLProxyMachineCertificatePath</code>.
 </p>
+<div class="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</div>
 <p>
 Example:</p>
 <div class="example"><p><code>
-SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/
-</code></p></div> 
+SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+</code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyMachineCertificatePath" id="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</a> <a name="sslproxymachinecertificatepath" id="sslproxymachinecertificatepath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA certificates for proxy server client certificates</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificatePath <em>directory</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Not applicable</td></tr>
@@ -987,9 +989,8 @@ SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive sets the directory where you keep the certificates of
-Certification Authorities (CAs) whose proxy client certificates are used for
-authentication of the proxy server to remote servers.
+This directive sets the directory where you keep the certificates and
+keys used for authentication of the proxy server to remote servers.
 </p>
 <p>The files in this directory must be PEM-encoded and are accessed through
 hash filenames. Additionally, you must create symbolic links named
@@ -997,10 +998,13 @@ hash filenames. Additionally, you must create symbolic links named
 directory contains the appropriate symbolic links. Use the Makefile which
 comes with mod_ssl to accomplish this task.
 </p>
+<div class="warning">
+<p>Currently there is no support for encrypted private keys</p>
+</div>
 <p>
 Example:</p>
 <div class="example"><p><code>
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
 </code></p></div> 
 
 </div>
