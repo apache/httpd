@@ -59,17 +59,17 @@ clean:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	cd srclib\apr
-#	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
-	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+#	 aprlibdll creates the dynamic libapr.dll from the static library project apr.dsp
+	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\apr-util
-#	 aprutildll creates the dynamic apr-util.dll from the static library project aprutil.dsp
+#	 libaprutil creates the dynamic libaprutil.dll from the static library project aprutil.dsp
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f aprutildll.mak CFG="aprutildll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libaprutil.mak CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\expat-lite
-	 $(MAKE) $(MAKEOPT) -f expatlib.mak CFG="expatlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libexpat.mak CFG="libexpat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -81,9 +81,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 -del Core$(SHORT)\buildmark.obj
-#	 ApacheCoreDll creates the dynamic ApacheCore.dll from the static library project ApacheCore
-	 $(MAKE) $(MAKEOPT) -f ApacheCore.mak CFG="ApacheCore - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f ApacheCoreDll.mak CFG="ApacheCoreDll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+#	 libhttpd creates the dynamic libhttpd.dll from the static library project httpd
+	 $(MAKE) $(MAKEOPT) -f httpd.mak CFG="httpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libhttpd.mak CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd modules\aaa
 	 $(MAKE) $(MAKEOPT) -f mod_auth_anon.mak CFG="mod_auth_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -140,11 +140,11 @@ _install:
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
-	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
-	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
-	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
-        copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
-        copy srclib\expat-lite\$(LONG)\libexpat.dll "$(INSTDIR)\bin"
+	copy $(LONG)\Apache.exe "$(INSTDIR)"
+	copy $(LONG)\libhttpd.dll "$(INSTDIR)"
+	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)"
+        copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)"
+        copy srclib\expat-lite\$(LONG)\libexpat.dll "$(INSTDIR)"
         copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
