@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/30 14:45:15 $]
+Last modified at [$Date: 2000/06/30 21:11:26 $]
 
 Release:
 
@@ -172,7 +172,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       - The "link-based" variant is ready to go:
         MsgID: <20000627044436.N29590@lyra.org>   (patch)
 	MsgID: <20000627053302.O29590@lyra.org>   (demo usage)
-        Status: Greg +1
+        Status: Greg +1, Jim +1
         
 
 Other bugs that need fixing:
