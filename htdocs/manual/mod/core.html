@@ -281,7 +281,8 @@ Allow use of the directives controlling specific directory features
 
 This directive sets the name of the authorization realm for a directory.
 This realm is given to the client so that the user knows which username and
-password to send.
+password to send.  <SAMP>AuthName</SAMP> takes a single argument;
+if the realm name contains spaces, it must be enclosed in quotation marks.
 It must be accompanied by <A HREF="#authtype">AuthType</A> and
 <A HREF="#require">require</A> directives, and directives such as
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
