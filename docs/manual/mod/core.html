@@ -2874,14 +2874,29 @@
        TransferLog logs/host.foo.com-access_log<br />
        &lt;/VirtualHost&gt;</code>
     </blockquote>
-    Each VirtualHost must correspond to a different IP address,
+
+    <p>IPv6 addresses must be specified in square brackets because
+    the optional port number could not be determined otherwise.  An
+    IPv6 example is shown below:</p>
+    
+    <blockquote>
+      <code>&lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+       ServerAdmin webmaster@host.foo.com<br />
+       DocumentRoot /www/docs/host.foo.com<br />
+       ServerName host.foo.com<br />
+       ErrorLog logs/host.foo.com-error_log<br />
+       TransferLog logs/host.foo.com-access_log<br />
+       &lt;/VirtualHost&gt;</code>
+    </blockquote>
+
+    <p>Each VirtualHost must correspond to a different IP address,
     different port number or a different host name for the server,
     in the former case the server machine must be configured to
     accept IP packets for multiple addresses. (If the machine does
     not have multiple network interfaces, then this can be
     accomplished with the <code>ifconfig alias</code> command (if
     your OS supports it), or with kernel patches like <a
-    href="../misc/vif-info.html">VIF</a> (for SunOS(TM) 4.1.x)). 
+    href="../misc/vif-info.html">VIF</a> (for SunOS(TM) 4.1.x)).</p>
 
     <p>The special name <code>_default_</code> can be specified in
     which case this virtual host will match any IP address that is
