@@ -215,13 +215,17 @@ typedef struct ap_filter_provider_t ap_filter_provider_t;
 struct ap_filter_rec_t {
     /** The registered name for this filter */
     const char *name;
+
     /** The function to call when this filter is invoked. */
     ap_filter_func filter_func;
+
     /** The function to call before the handlers are invoked. Notice
      * that this function is called only for filters participating in
      * the http protocol. Filters for other protocols are to be
-     * initiliazed by the protocols themselves. */
+     * initialized by the protocols themselves.
+     */
     ap_init_filter_func filter_init_func;
+
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
      * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
@@ -239,17 +243,22 @@ struct ap_filter_rec_t {
         RESPONSE_HEADERS,
         SUBPROCESS_ENV,
         CONTENT_TYPE
-    } dispatch ;
+    } dispatch;
+
     /** Match value for filter providers */
-    const char* value ;
+    const char* value;
+
     /** Providers for this filter */
-    ap_filter_provider_t* providers ;
+    ap_filter_provider_t* providers;
+
     /** Trace level for this filter */
-    int debug ;
+    int debug;
+
     /** Protocol flags for this filter */
-    unsigned int proto_flags ;
+    unsigned int proto_flags;
+
     /** Save Ranges header if this filter unsets it */
-    const char* range ;
+    const char* range;
 };
 
 /**
@@ -268,19 +277,23 @@ struct ap_filter_provider_t {
         INT_LT,
         INT_GT,
         DEFINED
-    } match_type ;
+    } match_type;
+
     /** negation on match_type */
-    int not ;
+    int not;
+
     /** The dispatch match itself - union member depends on match_type */
     union {
-        const char* c ;
-        regex_t* r ;
-        int i ;
-    } match ;
+        const char* c;
+        regex_t* r;
+        int i;
+    } match;
+
     /** The filter that implements this provider */
-    ap_filter_rec_t* frec ;
+    ap_filter_rec_t* frec;
+
     /** The next provider in the list */
-    ap_filter_provider_t* next ;
+    ap_filter_provider_t* next;
 };
 
 /**
@@ -360,6 +373,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
                                           ap_init_filter_func filter_init,
                                           ap_filter_type ftype);
+
 /**
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
@@ -603,14 +617,19 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
 
 /** Filter changes contents (so invalidating checksums/etc) */
 #define AP_FILTER_PROTO_CHANGE 0x1
+
 /** Filter changes length of contents (so invalidating content-length/etc) */
 #define AP_FILTER_PROTO_CHANGE_LENGTH 0x2
+
 /** Filter requires complete input and can't work on byteranges */
 #define AP_FILTER_PROTO_NO_BYTERANGE 0x4
+
 /** Filter should not run in a proxy */
 #define AP_FILTER_PROTO_NO_PROXY 0x8
+
 /** Filter makes output non-cacheable */
 #define AP_FILTER_PROTO_NO_CACHE 0x10
+
 /** Filter is incompatible with "Cache-Control: no-transform" */
 #define AP_FILTER_PROTO_TRANSFORM 0x20
 
