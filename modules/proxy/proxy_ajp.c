@@ -193,7 +193,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              conn->worker->hostname);
                 return HTTP_SERVICE_UNAVAILABLE;
             }
-            conn->worker->s->transfered += bufsiz;
+            conn->worker->s->transferred += bufsiz;
         }
     }
 
@@ -249,7 +249,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                      "ajp_send_data_msg failed");
                         break;
                     }
-                    conn->worker->s->transfered += bufsiz;
+                    conn->worker->s->transferred += bufsiz;
                 } else {
                     /* something is wrong TC asks for more body but we are
                      * already at the end of the body data
