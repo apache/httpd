@@ -712,8 +712,7 @@ static void winnt_accept(void *listen_socket)
         pCompContext = mpm_get_completion_context();
         if (!pCompContext) {
             /* Hopefully whatever is preventing us from getting a 
-             * completion context is a temporary condition. Give other 
-             * threads a chance to run before trying again. 
+             * completion context is a temporary resource constraint.
              */
             Sleep(750);
             continue;
@@ -723,11 +722,13 @@ static void winnt_accept(void *listen_socket)
         /* Create and initialize the accept socket */
         if (pCompContext->accept_socket == INVALID_SOCKET) {
             pCompContext->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        
             if (pCompContext->accept_socket == INVALID_SOCKET) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
-                             "winnt_accept: socket() failed. Process will exit.");
-                // return -1;
+                /* Hopefully another temporary condition. Be graceful. */
+                ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+                             "winnt_accept: Failed to allocate an accept socket. "
+                             "Temporary resource constraint? Try again.");
+                Sleep(500);
+                goto again;
             }
         }
 
@@ -747,9 +748,11 @@ static void winnt_accept(void *listen_socket)
                  * accept socket (usually when the client disconnects early). 
                  * Get a new socket and try the call again.
                  */
+                closesocket(pCompContext->accept_socket);
                 pCompContext->accept_socket = INVALID_SOCKET;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, lasterror, ap_server_conf,
-                             "winnt_accept: AcceptEx failed. Reallocate the accept socket and try again.");
+                       "winnt_accept: AcceptEx failed due to early client "
+                       "disconnect. Reallocate the accept socket and try again.");
                 if (shutdown_in_progress)
                     break;
                 else
@@ -757,8 +760,11 @@ static void winnt_accept(void *listen_socket)
             }
             else if (lasterror != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, ap_server_conf,
-                             "winnt_accept: AcceptEx failed. Process will exit.");
-                // return -1;
+                             "winnt_accept: AcceptEx failed. Attempting to recover.");
+                closesocket(pCompContext->accept_socket);
+                pCompContext->accept_socket = INVALID_SOCKET;
+                Sleep(500);
+                goto again;
             }
 
             /* Wait for pending i/o */
