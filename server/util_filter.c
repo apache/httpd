@@ -67,7 +67,7 @@
 static apr_hash_t *registered_output_filters = NULL;
 static apr_hash_t *registered_input_filters = NULL;
 
-/* NOTE: Apache's current design doesn't allow a pool to be passed thu,
+/* NOTE: Apache's current design doesn't allow a pool to be passed thru,
    so we depend on a global to hold the correct pool
 */
 #define FILTER_POOL     apr_global_hook_pool
@@ -109,7 +109,8 @@ static void register_filter(const char *name,
 
     apr_hash_set(*reg_filter_set, frec->name, APR_HASH_KEY_STRING, frec);
 
-    apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, apr_pool_cleanup_null);
+    apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
+                              apr_pool_cleanup_null);
 }
 
 AP_DECLARE(void) ap_register_input_filter(const char *name,
@@ -131,10 +132,10 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
 }
 
 static ap_filter_t *add_any_filter(const char *name, void *ctx, 
-				   request_rec *r, conn_rec *c, 
-                   apr_hash_t *reg_filter_set,
-				   ap_filter_t **r_filters,
-				   ap_filter_t **c_filters)
+                                   request_rec *r, conn_rec *c, 
+                                   apr_hash_t *reg_filter_set,
+                                   ap_filter_t **r_filters,
+                                   ap_filter_t **c_filters)
 {
     if (reg_filter_set) {
         ap_filter_rec_t *frec;
@@ -183,21 +184,21 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
-					      request_rec *r, conn_rec *c)
+                                              request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_input_filters,
-			  r ? &r->input_filters : NULL, &c->input_filters);
+                          r ? &r->input_filters : NULL, &c->input_filters);
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
-					       request_rec *r, conn_rec *c)
+                                               request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_output_filters,
-			  r ? &r->output_filters : NULL, &c->output_filters);
+                          r ? &r->output_filters : NULL, &c->output_filters);
 }
 
 static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, 
-                                   ap_filter_t **c_filt)
+                              ap_filter_t **c_filt)
 {
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
@@ -218,12 +219,14 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
 {
-    remove_any_filter(f, f->r ? &f->r->input_filters : NULL, &f->c->input_filters);
+    remove_any_filter(f, f->r ? &f->r->input_filters : NULL, 
+                      &f->c->input_filters);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
-    remove_any_filter(f, f->r ? &f->r->output_filters : NULL, &f->c->output_filters);
+    remove_any_filter(f, f->r ? &f->r->output_filters : NULL, 
+                      &f->c->output_filters);
 }
 
 /* 
@@ -249,7 +252,8 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next,
  * the current filter.  At that point, we can just call the first filter in
  * the stack, or r->output_filters.
  */
-AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, apr_bucket_brigade *bb)
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, 
+                                         apr_bucket_brigade *bb)
 {
     if (next) {
         apr_bucket *e;
@@ -269,7 +273,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, apr_bucket_brigade *
     return AP_NOBODY_WROTE;
 }
 
-AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **saveto,
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, 
+                                         apr_bucket_brigade **saveto,
                                          apr_bucket_brigade **b, apr_pool_t *p)
 {
     apr_bucket *e;
@@ -295,7 +300,8 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
     return APR_SUCCESS;
 }
 
-AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx)
+AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, 
+                                                void *ctx)
 {
     ap_filter_t *f = ctx;
 
@@ -336,4 +342,3 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
     va_end(args);
     return rv;
 }
-
