@@ -70,21 +70,30 @@ function leave_scope() {
 }
 
 function add_symbol(symbol) {
-    idx = index(symbol, "#")
-
-    if (!idx) {
+    if (!index(symbol, "#")) {
         push("const void *ap_hack_" symbol " = (const void *)" symbol ";")
         scope_used[scope] = 1
     }
 }
 
-/^[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/  { 
-    sub("[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)]", "");
-    sub("[(].*", "");
-    sub("^[ \t]+", "");
-    sub("([^ ]* ^([ \t]*[(]))*", "");
+/^[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
+    sub("[ \t]*AP[RU]?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
+    sub("[(].*", "")
+    sub("([^ ]* ^([ \t]*[(]))*", "")
 
     add_symbol($0)
+    next
+}
+
+/^[ \t]*AP_DECLARE_HOOK[^(]*[(][^)]*[)]/ {
+    split($0, args, ",")
+    symbol = args[2]
+    sub("^[ \t]+", "", symbol)
+    sub("[ \t]+$", "", symbol)
+
+    add_symbol("ap_hook_" symbol)
+    add_symbol("ap_hook_get_" symbol)
+    add_symbol("ap_run_" symbol)
     next
 }
 
