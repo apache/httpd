@@ -692,30 +692,34 @@ static void usage(void)
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
     "Usage: %s [-Dvrn] -pPATH -lLIMIT"                                       NL
-    "       %s [-Dvrn] -pPATH -LLIMIT"                                       NL
     "       %s [-ni] -dINTERVAL -pPATH -lLIMIT"                              NL
-    "       %s [-ni] -dINTERVAL -pPATH -LLIMIT"                              NL
+                                                                             NL
     "Options:"                                                               NL
     "  -d   Daemonize and repeat cache cleaning every INTERVAL minutes."     NL
     "       This option is mutually exclusive with the -D, -v and -r"        NL
     "       options."                                                        NL
+                                                                             NL
     "  -D   Do a dry run and don't delete anything. This option is mutually" NL
     "       exclusive with the -d option."                                   NL
+                                                                             NL
     "  -v   Be verbose and print statistics. This option is mutually"        NL
     "       exclusive with the -d option."                                   NL
+                                                                             NL
     "  -r   Clean thoroughly. This assumes that the Apache web server is "   NL
     "       not running. This option is mutually exclusive with the -d"      NL
     "       option."                                                         NL
+                                                                             NL
     "  -n   Be nice. This causes slower processing in favour of other"       NL
     "       processes."                                                      NL
+                                                                             NL
     "  -p   Specify PATH as the root directory of the disk cache."           NL
-    "  -l   Specify LIMIT as the total disk cache size limit in KBytes."     NL
-    "  -L   Specify LIMIT as the total disk cache size limit in MBytes."     NL
+                                                                             NL
+    "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
+    "       or 'M' to the number for specifying KBytes or MBytes."           NL
+                                                                             NL
     "  -i   Be intelligent and run only when there was a modification of"    NL
     "       the disk cache. This option is only possible together with the"  NL
     "       -d option."                                                      NL,
-    shortname,
-    shortname,
     shortname,
     shortname,
     shortname
@@ -833,17 +837,30 @@ int main(int argc, const char * const argv[])
                     usage();
                 }
                 limit_found = 1;
-                max = apr_atoi64(arg);
-                max *= KBYTE;
-                break;
 
-            case 'L':
-                if (limit_found) {
-                    usage();
-                }
-                limit_found = 1;
-                max = apr_atoi64(arg);
-                max *= MBYTE;
+                do {
+                    apr_status_t rv;
+                    char *end;
+
+                    rv = apr_strtoff(&max, arg, &end, 10);
+                    if (rv == APR_SUCCESS) {
+                        if ((*end == 'K' || *end == 'k') && !end[1]) {
+                            max *= KBYTE;
+                        }
+                        else if ((*end == 'M' || *end == 'm') && !end[1]) {
+                            max *= MBYTE;
+                        }
+                        else if (*end &&        /* neither empty nor [Bb] */
+                                 ((*end != 'B' && *end != 'b') || end[1])) {
+                            rv = APR_EGENERAL;
+                        }
+                    }
+                    if (rv != APR_SUCCESS) {
+                        apr_file_printf(errfile, "Invalid limit: %s"
+                                                 APR_EOL_STR APR_EOL_STR, arg);
+                        usage();
+                    }
+                } while(0);
                 break;
 
             case 'p':
