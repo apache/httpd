@@ -591,7 +591,6 @@ static int piped_log_spawn(piped_log *pl)
 {
     int rc;
     ap_procattr_t *procattr;
-    ap_os_proc_t pid;
     ap_proc_t *procnew;
 
 #ifdef SIGHUP
