@@ -2541,7 +2541,7 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 #endif
 
 static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
-                                  apr_size_t len, apr_ssize_t *nbytes)
+                                  apr_size_t len, apr_size_t *nbytes)
 {
     apr_size_t bytes_written = 0;
     apr_status_t rv;
@@ -3274,8 +3274,7 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 #define ASCII_LF '\012'
     char *buff;
-    apr_size_t length = HUGE_STRING_LEN;
-    apr_size_t templen;
+    apr_ssize_t length = HUGE_STRING_LEN, templen;
     apr_socket_t *csock = NULL;
     apr_status_t rv;
     ap_bucket *e;

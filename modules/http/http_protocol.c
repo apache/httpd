@@ -866,7 +866,7 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 #define ASCII_LF '\012'
     ap_bucket *e;
     char *buff;
-    int length;
+    apr_ssize_t length;
     char *pos;
     int state = 0;
     http_ctx_t *ctx = f->ctx;
@@ -963,7 +963,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     const char *temp;
     int retval;
     int total = 0;
-    int length;
+    apr_ssize_t length;
     ap_bucket_brigade *b;
     ap_bucket *e;
     
