@@ -2788,6 +2788,8 @@ static int parse_byterange(char *range, apr_off_t clength,
                            apr_off_t *start, apr_off_t *end)
 {
     char *dash = strchr(range, '-');
+    char *errp;
+    apr_off_t number;
 
     if (!dash) {
         return 0;
@@ -2795,15 +2797,23 @@ static int parse_byterange(char *range, apr_off_t clength,
 
     if ((dash == range)) {
         /* In the form "-5" */
-        *start = clength - apr_atoi64(dash + 1);
+        if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
+            return 0;
+        }
+        *start = clength - number;
         *end = clength - 1;
     }
     else {
-        *dash = '\0';
-        dash++;
-        *start = apr_atoi64(range);
+        *dash++ = '\0';
+        if (apr_strtoff(&number, range, &errp, 10) || *errp) {
+            return 0;
+        }
+        *start = number;
         if (*dash) {
-            *end = apr_atoi64(dash);
+            if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
+                return 0;
+            }
+            *end = number;
         }
         else {                  /* "5-" */
             *end = clength - 1;
