@@ -148,7 +148,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 
         buf = malloc(len);
         for(n=0 ; n < len ; ++n)
-            buf[n] = toupper(data[n]);
+            buf[n] = apr_toupper(data[n]);
 
         pbktOut = apr_bucket_heap_create(buf, len, 0, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);

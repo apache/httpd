@@ -67,7 +67,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 	/* write */
 	buf = apr_bucket_alloc(len, c->bucket_alloc);
 	for(n=0 ; n < len ; ++n)
-	    buf[n]=toupper(data[n]);
+	    buf[n] = apr_toupper(data[n]);
 
 	pbktOut = apr_bucket_heap_create(buf, len, apr_bucket_free,
 	                                 c->bucket_alloc);
