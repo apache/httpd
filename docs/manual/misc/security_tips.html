@@ -22,16 +22,48 @@ the suggestions will be general, others specific to Apache.
 
 <HR>
 
-<H2>Permissions on Log File Directories</H2>
-<P>When Apache starts, it opens the log files as the user who started the
-server before switching to the user defined in the
-<a href="../mod/core.html#user"><b>User</b></a> directive.  Anyone who
-has write permission for the directory where any log files are
-being written to can append pseudo-arbitrary data to any file on the
-system which is writable by the user who starts Apache.  Since the
-server is normally started by root, you should <EM>NOT</EM> give anyone
-write permission to the directory where logs are stored unless you
-want them to have root access.
+<a name="serverroot">
+<H2>Permissions on ServerRoot Directories</H2></a>
+<P>In typical operation, Apache is started by the root
+user, and it switches to the user defined by the <a
+href="../mod/core.html#user"><b>User</b></a> directive to serve hits.
+As is the case with any command that root executes, you must take care
+that it is protected from modification by non-root users.  Not only
+must the files themselves be writeable only by root, but so must the
+directories, and parents of all directories.  For example, if you
+choose to place ServerRoot in <code>/usr/local/apache</code> then it is
+suggested that you create that directory as root, with commands
+like these:
+
+<blockquote><pre>
+    mkdir /usr/local/apache
+    cd /usr/local/apache
+    mkdir bin conf logs
+    chown 0 . bin conf logs
+    chgrp 0 . bin conf logs
+    chmod 755 . bin conf logs
+</pre></blockquote>
+
+It is assumed that /, /usr, and /usr/local are only modifiable by root.
+When you install the httpd executable, you should ensure that it is
+similarly protected:
+
+<blockquote><pre>
+    cp httpd /usr/local/apache/bin
+    chown 0 /usr/local/apache/bin/httpd
+    chgrp 0 /usr/local/apache/bin/httpd
+    chmod 511 /usr/local/apache/bin/httpd
+</pre></blockquote>
+
+<p>You can create an htdocs subdirectory which is modifiable by other
+users -- since root never executes any files out of there, and shouldn't
+be creating files in there.
+
+<p>If you allow non-root users to modify any files that root either
+executes or writes on then you open your system to root compromises.
+For example, someone could replace the httpd binary so that the next
+time you start it, it will execute some arbitrary code.  Or someone
+could overwrite the logs with arbitrary data.
 <P>
 <HR>
 <H2>Server Side Includes</H2>
