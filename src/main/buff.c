@@ -630,6 +630,9 @@ static int read_with_errors(BUFF *fb, void *buf, int nbyte)
  * Read up to nbyte bytes into buf.
  * If fewer than byte bytes are currently available, then return those.
  * Returns 0 for EOF, -1 for error.
+ * NOTE EBCDIC: The readahead buffer _always_ contains *unconverted* data.
+ * Only when the caller retrieves data from the buffer (calls bread)
+ * is a conversion done, if the conversion flag is set at that time.
  */
 API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 {
@@ -656,6 +659,10 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 	    return i;
 	}
 	i = read_with_errors(fb, buf, nbyte);
+#ifdef CHARSET_EBCDIC
+	if (i > 0 && bgetflag(fb, B_ASCII2EBCDIC))
+	    ascii2ebcdic(buf, buf, i);
+#endif /*CHARSET_EBCDIC*/
 	return i;
     }
 
@@ -689,11 +696,11 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 
 /* do a single read */
     if (nbyte >= fb->bufsiz) {
-/* read directly into buffer */
+/* read directly into caller's buffer */
 	i = read_with_errors(fb, buf, nbyte);
 #ifdef CHARSET_EBCDIC
 	if (i > 0 && bgetflag(fb, B_ASCII2EBCDIC))
-	    ascii2ebcdic(buf, buf, nbyte);
+	    ascii2ebcdic(buf, buf, i);
 #endif /*CHARSET_EBCDIC*/
 	if (i == -1) {
 	    return nrd ? nrd : -1;
@@ -1459,6 +1466,13 @@ static int bprintf_flush(ap_vformatter_buff *vbuff)
     struct bprintf_data *b = (struct bprintf_data *)vbuff;
     BUFF *fb = b->fb;
 
+#ifdef CHARSET_EBCDIC
+    /* Characters were pushed into the buffer without conversion. Do it now */
+    if (fb->flags & B_EBCDIC2ASCII)
+        ebcdic2ascii(&fb->outbase[fb->outcnt],
+		     &fb->outbase[fb->outcnt],
+		     b->vbuff.curpos - (char *)&fb->outbase[fb->outcnt]);
+#endif /*CHARSET_EBCDIC*/
     fb->outcnt += b->vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
     if (fb->outcnt == fb->bufsiz) {
 	if (bflush(fb)) {
@@ -1483,6 +1497,13 @@ API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
     res = ap_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
     va_end(ap);
     if (res != -1) {
+#ifdef CHARSET_EBCDIC
+	/* Characters were pushed into the buffer without conversion. Do it now */
+	if (fb->flags & B_EBCDIC2ASCII)
+	    ebcdic2ascii(&fb->outbase[fb->outcnt],
+			 &fb->outbase[fb->outcnt],
+			 b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt]);
+#endif /*CHARSET_EBCDIC*/
 	fb->outcnt += b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
     }
     return res;
@@ -1498,6 +1519,13 @@ API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list ap)
     b.fb = fb;
     res = ap_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
     if (res != -1) {
+#ifdef CHARSET_EBCDIC
+	/* Characters were pushed into the buffer without conversion. Do it now */
+	if (fb->flags & B_EBCDIC2ASCII)
+	    ebcdic2ascii(&fb->outbase[fb->outcnt],
+			 &fb->outbase[fb->outcnt],
+			 b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt]);
+#endif /*CHARSET_EBCDIC*/
 	fb->outcnt += b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
     }
     return res;
