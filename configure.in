@@ -170,8 +170,17 @@ case $host in
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *-solaris2*)
-      dnl  This is a hack -- we should be using AC_TRY_RUN instead
+      dnl This is a hack -- we should be using AC_TRY_RUN instead
       ap_platform_runtime_link_flag="-R"
+      dnl solaris 8 and above don't have a thundering herd
+      dnl not sure about rev's before this one.
+      case `uname -r` in
+        5.[567]*)
+            ;;
+        * )
+            APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+            ;;
+      esac
       ;;
   *cygwin*)
       APR_SETVAR(APACHE_MPM, [prefork])
