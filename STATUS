@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/03 01:09:16 $]
+Last modified at [$Date: 2001/04/03 22:56:48 $]
 
 Release:
 
@@ -115,8 +115,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       which doesn't appear to be catered for in the current build system.
 
     * OS/2: Make mod_status work for spmt_os2 MPM.
-
-    * Win32: Enable the winnt MPM to use the new scoreboard API
 
     * Win32: Win9x console window still won't play nice with the
         close window, logoff and shutdown scenarios.
