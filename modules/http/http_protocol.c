@@ -86,7 +86,7 @@
 #include "http_vhost.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
-#include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
+#include "apr_date.h"           /* For apr_date_parse_http and APR_DATE_BAD */
 #include "util_charset.h"
 #include "util_ebcdic.h"
 
@@ -235,9 +235,9 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
          */
         if_unmodified = apr_table_get(r->headers_in, "If-Unmodified-Since");
         if (if_unmodified != NULL) {
-            apr_time_t ius = ap_parseHTTPdate(if_unmodified);
+            apr_time_t ius = apr_date_parse_http(if_unmodified);
 
-            if ((ius != BAD_DATE) && (mtime > ius)) {
+            if ((ius != APR_DATE_BAD) && (mtime > ius)) {
                 return HTTP_PRECONDITION_FAILED;
             }
         }
@@ -290,7 +290,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
              && ((if_modified_since =
                   apr_table_get(r->headers_in,
 				"If-Modified-Since")) != NULL)) {
-        apr_time_t ims = ap_parseHTTPdate(if_modified_since);
+        apr_time_t ims = apr_date_parse_http(if_modified_since);
 
 	if ((ims >= mtime) && (ims <= r->request_time)) {
             return HTTP_NOT_MODIFIED;
