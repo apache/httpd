@@ -195,7 +195,7 @@ static void unload_module(moduleinfo *modi)
     ap_remove_module(modi->modp);
 
     /* unload the module space itself */
-    os_dl_unload((os_dl_module_handle_type)modi->modp->dynamic_load_handle);
+    ap_dso_unload((ap_dso_handle_t)modi->modp->dynamic_load_handle);
 
     /* destroy the module information */
     modi->modp = NULL;
@@ -211,9 +211,7 @@ static void unload_module(moduleinfo *modi)
 
 static void unload_file(void *handle)
 {
-    /* The Linux manpage doesn't give any way to check the success of
-     * dlclose() */
-    os_dl_unload((os_dl_module_handle_type)handle);
+    ap_dso_unload((ap_dso_handle_t)handle);
 }
 
 /* 
@@ -224,7 +222,7 @@ static void unload_file(void *handle)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
                                char *modname, char *filename)
 {
-    void *modhandle;
+    ap_dso_handle_t modhandle;
     module *modp;
     const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
@@ -250,8 +248,8 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Load the file into the Apache address space
      */
-    if (!(modhandle = os_dl_load(szModuleFile))) {
-	const char *my_error = os_dl_error();
+    if (!(modhandle = ap_dso_load(szModuleFile))) {
+	const char *my_error = ap_dso_error();
 	return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
 			" into server: ", 
 			my_error ? my_error : "(reason unknown)",
@@ -261,21 +259,13 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 		"loaded module %s", modname);
 
     /*
-     * Optionally prefix the symbol with an underscore
-     * for some platforms.
-     */
-#ifdef NEED_UNDERSCORE_SYM
-    modname = ap_pstrcat(cmd->pool, "_", modname, NULL);
-#endif
-
-    /*
      * Retrieve the pointer to the module structure through the module name:
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if (!(modp = (module *)(os_dl_sym (modhandle, modname)))) {
+    if (!(modp = (module *)(ap_dso_sym(modhandle, modname)))) {
 	return ap_pstrcat(cmd->pool, "Can't find module ", modname,
-		       " in file ", filename, ":", os_dl_error(), NULL);
+		       " in file ", filename, ":", ap_dso_error(), NULL);
     }
     modi->modp = modp;
     modp->dynamic_load_handle = modhandle;
@@ -319,8 +309,8 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    if (!(handle = os_dl_load(file))) {
-	const char *my_error = os_dl_error();
+    if (!(handle = ap_dso_load(file))) {
+	const char *my_error = ap_dso_error();
 	return ap_pstrcat (cmd->pool, "Cannot load ", filename, 
 			" into server:", 
 			my_error ? my_error : "(reason unknown)",

@@ -26,5 +26,5 @@ extern int ap_is_path_absolute(const char *f);
 /* Sorry if this is ugly, but the include order doesn't allow me
  * to use request_rec here... */
 struct request_rec;
-extern int os_checkconv(struct request_rec *r);
+extern int ap_checkconv(struct request_rec *r);
 #endif /*AP_OS_BS2000_OS_H*/

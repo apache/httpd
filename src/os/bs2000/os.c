@@ -64,7 +64,7 @@
 #include "os.h"
 
 /* Check the Content-Type to decide if conversion is needed */
-int os_checkconv(struct request_rec *r)
+int ap_checkconv(struct request_rec *r)
 {
     int convert_to_ascii;
 

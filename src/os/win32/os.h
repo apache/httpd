@@ -101,8 +101,8 @@ API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
 /* Abstractions for dealing with shared object files (DLLs on Win32).
  * These are used by mod_so.c
  */
-#define os_dl_module_handle_type HINSTANCE
-#define os_dl_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
-#define os_dl_unload(l) FreeLibrary(l)
-#define os_dl_sym(h,s)  GetProcAddress(h,s)
-#define os_dl_error()   ""	/* for now */
+#define ap_dso_handle_t  HINSTANCE
+#define ap_dso_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
+#define ap_dso_unload(l) FreeLibrary(l)
+#define ap_dso_sym(h,s)  GetProcAddress(h,s)
+#define ap_dso_error()   ""	/* for now */

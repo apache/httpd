@@ -499,7 +499,7 @@ static int cgi_handler(request_rec *r)
 
 #ifdef CHARSET_EBCDIC
         /* Now check the Content-Type to decide if conversion is needed */
-        os_checkconv(r);
+        ap_checkconv(r);
 #endif /*CHARSET_EBCDIC*/
 
 	location = ap_table_get(r->headers_out, "Location");

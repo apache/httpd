@@ -80,55 +80,49 @@ extern int ap_is_path_absolute(const char *f);
 #endif
 
 /*
- * Abstraction layer for dynamic loading of modules (mod_so.c)
+ *  Abstraction layer for loading
+ *  Apache modules under run-time via 
+ *  dynamic shared object (DSO) mechanism
  */
+
+#if defined(HPUX) || defined(HPUX10)
+#define HAVE_DL_H 1
+#endif
 
 #if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS2) || \
     defined(__bsdi__) || defined(IRIX) || defined(SVR4) || defined(OSF1)
-# define HAVE_DLFCN_H 1
+#define HAVE_DLFCN_H 1
 #endif
 
-#if defined(__FreeBSD__)
-# define NEED_UNDERSCORE_SYM
+#ifdef HAVE_DL_H
+#include <dl.h>
 #endif
 
-     /* OSes that don't support dlopen */
-#if defined(UW) || defined(ULTRIX) || defined(HPUX) || defined(HPUX10)
-# define NO_DL
-#endif
-
-     /* Start of real module */
 #ifdef HAVE_DLFCN_H
-# include <dlfcn.h>
+#include <dlfcn.h>
 #else
-void * dlopen (const char * __filename, int __flag);
-const char * dlerror (void);
-void * dlsym (void *, const char *);
-int dlclose (void *);
+void *dlopen(const char *, int);
+int dlclose(void *);
+void *dlsym(void *, const char *);
+const char *dlerror(void);
 #endif
 
-#ifndef RTLD_NOW
-/* 
- * probably on an older system that doesn't support RTLD_NOW or RTLD_LAZY.
+/* probably on an older system that doesn't support RTLD_NOW or RTLD_LAZY.
  * The below define is a lie since we are really doing RTLD_LAZY since the
  * system doesn't support RTLD_NOW.
  */
-# define RTLD_NOW 1
+#ifndef RTLD_NOW
+#define RTLD_NOW 1
 #endif
 
-#if defined(HPUX) || defined(HPUX10)
-#include <dl.h>
-#define os_dl_module_handle_type void *
-void *os_dl_load(char *path);
-void os_dl_unload(void *handle);
-void *os_dl_sym(void *handle, char *symname);
-char *os_dl_error(void);
-#else
-#define os_dl_module_handle_type void *
-#define os_dl_load(l)   dlopen(l, RTLD_NOW)
-#define os_dl_unload(l) dlclose(l)
-#define os_dl_sym(h,s)  dlsym(h,s)
-#define os_dl_error()   dlerror()
+#if defined(__FreeBSD__)
+#define DLSYM_NEEDS_UNDERSCORE
 #endif
+
+#define     ap_dso_handle_t  void *
+void *      ap_dso_load(const char *);
+void        ap_dso_unload(void *);
+void *      ap_dso_sym(void *, const char *);
+const char *ap_dso_error(void);
 
 #endif	/* !APACHE_OS_H */

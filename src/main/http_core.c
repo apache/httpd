@@ -2127,7 +2127,7 @@ static int default_handler (request_rec *r)
 	 * the type to the real text/{plain,html,...} type. Otherwise, we
 	 * set a flag that translation is required later on.
 	 */
-        os_checkconv(r);
+        ap_checkconv(r);
 #endif /*CHARSET_EBCDIC*/
 
 	ap_send_http_header (r);

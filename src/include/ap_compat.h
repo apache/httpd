@@ -389,5 +389,9 @@
 #define util_uri_init                  ap_util_uri_init
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
+#define os_dl_load                     ap_dso_load
+#define os_dl_unload                   ap_dso_unload
+#define os_dl_sym                      ap_dso_sym
+#define os_dl_error                    ap_dso_error
 
 #endif /* APACHE_COMPAT_H */
