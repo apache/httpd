@@ -349,7 +349,6 @@
 #define merge_core_server_configs      AP_merge_core_server_configs
 #define merge_per_dir_configs          AP_merge_per_dir_configs
 #define merge_server_configs           AP_merge_server_configs
-#define mime_find_ct                   AP_mime_find_ct
 #define month_snames                   AP_month_snames
 #define new_block                      AP_new_block
 #define no2slash                       AP_no2slash

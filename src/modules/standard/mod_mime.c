@@ -237,7 +237,6 @@ static void init_mime(server_rec *s, pool *p)
     cfg_closefile(f);
 }
 
-/* note that the proxy module uses this via mime_find_ct */
 static int find_ct(request_rec *r)
 {
     const char *fn = strrchr(r->filename, '/');
@@ -323,11 +322,6 @@ static int find_ct(request_rec *r)
         return DECLINED;
 
     return OK;
-}
-
-API_EXPORT(int) mime_find_ct(request_rec *r)
-{
-    return find_ct(r);
 }
 
 module MODULE_VAR_EXPORT mime_module =

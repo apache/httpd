@@ -55,7 +55,6 @@
 
 #include "mod_proxy.h"
 #include "http_main.h"
-#include "../standard/mod_mime.h"
 
 DEF_Explain
 
@@ -929,7 +928,6 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (parms[0] == 'd')
 	proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
     else {
-	mime_find_ct(r);
 	if (r->content_type != NULL) {
 	    proxy_add_header(resp_hdrs, "Content-Type", r->content_type,
 			     HDR_REP);

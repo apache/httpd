@@ -84,6 +84,7 @@ Committed Code Changes:
     * Ralf's support for building shared objects even for library-style modules
     * Performance improvements to invoke_handler().
     * Ben Hyde's check to make sure the "Port" range is valid
+    * Ralf's Unbundling mod_proxy and mod_mime (making mime_find_ct obsolete)
 
 Available Patches:
 

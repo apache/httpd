@@ -1,4 +1,15 @@
 Changes with Apache 1.3b6
+  
+  *) Making the hard-coded cross-module function call mime_find_ct() (from
+     mod_proxy to mod_mime) obsolete by making sure the API hook for MIME type
+     checking is really called even for proxy requests except for URLs with
+     HTTP schemes (because there we can optimize by not running the type
+     checking hooks due to the fact that the proxy gets the MIME Content-type
+     from the remote host later). This change cleans up mod_mime by removing
+     the ugly export kludge, makes the one-liner file mod_mime.h obsolete, and
+     especially unbundles mod_proxy and mod_mime. This way they both now can
+     be compiled as shared objects and are no longer tied together. 
+     [Ralf S. Engelschall]
 
   *) util.c cleanup and speedup. [Dean Gaudet]
 
