@@ -67,7 +67,13 @@
 #include "httpd.h"
 #include "http_conf_globals.h"	/* for user_id & group_id */
 #include "http_log.h"
-#include <stdio.h>
+#if defined(SUNOS4)
+/* stdio.h has been read in conf.h already. Add missing prototypes here: */
+extern int fgetc(FILE *);
+extern char *fgets(char *s, int, FILE*);
+extern int fclose(FILE *);
+#endif
+
 
 const char month_snames[12][4] =
 {

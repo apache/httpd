@@ -117,7 +117,6 @@ typedef int rlim_t;
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define NEED_DIFFTIME
 #define HAVE_SYSLOG
-#define SUNOS_LIB_PROTOTYPES
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
@@ -921,7 +920,8 @@ Sigfunc *signal(int signo, Sigfunc * func);
 /* Prototypes needed to get a clean compile with gcc -Wall.
  * Believe it or not, these do have to be declared, at least on SunOS,
  * because they aren't mentioned in the relevant system headers.
- * Sun Quality Software.  Gotta love it.
+ * Sun Quality Software.  Gotta love it.  This section is not 
+ * currently (13Nov97) used.
  */
 
 int getopt(int, char **, char *);
