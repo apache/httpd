@@ -1074,7 +1074,7 @@ static int read_types_multi(negotiation_state *neg)
     if (anymatch && !neg->avail_vars->nelts) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Negotiation: discovered file(s) matching request: %s"
-                      " all containing unrecognized extension(s): ", 
+                      " (None could be negotiated).", 
                       r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
