@@ -930,7 +930,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     /*
      * Otherwise, see if the method name is in the array or string names
      */
-    if ((l->method_list = NULL) || (l->method_list->nelts == 0)) {
+    if ((l->method_list == NULL) || (l->method_list->nelts == 0)) {
 	return 0;
     }
     methods = (char **)l->method_list->elts;
