@@ -101,6 +101,9 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "apr_strings.h"
+#if APR_HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 typedef struct anon_auth {
     char *password;
