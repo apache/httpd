@@ -38,7 +38,7 @@ delete-exports: export_files
 	    headers="`find $$files -newer exports.c`"; \
 	    if test -n "$$headers"; then \
 	        echo Found newer headers. Will rebuild exports.c.; \
-	        echo rm -f exports.c exports_files; \
+	        echo rm -f exports.c export_files; \
 	        rm -f exports.c export_files; \
 	    fi; \
 	fi
