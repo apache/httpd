@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Fix a segfault in the worker MPM that could happen during
+     child process exits.  [Brian Pane, Aaron Bannert]
+
   *) Allow mod_auth_dbm to handle multiple DBM types [Ian Holsman]
 
   *) Fix matching of vhosts by ip address so we find IPv4
