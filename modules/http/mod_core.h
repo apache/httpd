@@ -75,8 +75,6 @@ extern "C" {
  */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_off_t *readbytes);
-apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                               ap_input_mode_t mode, apr_off_t *readbytes);
 
 char *ap_response_code_string(request_rec *r, int error_index);
 
