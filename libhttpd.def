@@ -365,7 +365,7 @@ EXPORTS
 
 
         ap_debug_module_hooks
-        ap_debug_module_name
+        ap_current_hooking_module
         ap_global_hook_pool
         ap_hook_pre_connection
         ap_hook_post_read_request
