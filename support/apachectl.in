@@ -29,7 +29,7 @@ ARGV="$@"
 PIDFILE=@exp_runtimedir@/@progname@.pid
 #
 # the path to your httpd binary, including options if necessary
-HTTPD='@exp_bindir@/@progname@'
+HTTPD='@exp_sbindir@/@progname@'
 #
 # pick up any necessary environment variables
 if test -f @exp_bindir@/envvars; then

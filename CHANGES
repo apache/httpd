@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Properly substitute sbindir as httpd's location in apachectl.  PR 7840.
+     [Andreas Hasenack <andreas@netbank.com.br>]
+
   *) Allow Win32 shebang scripts to follow the path (or omit the .exe
      suffix from the shebang command), and allow ScriptInterpreterSource
      Registry or RegistryStrict to override shebang lines, as 1.3 did.
