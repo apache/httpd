@@ -104,7 +104,8 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 {
     int ka_sent = 0;
     int wimpy = ap_find_token(r->pool,
-                           apr_table_get(r->headers_out, "Connection"), "close");
+                              apr_table_get(r->headers_out, "Connection"),
+                              "close");
     const char *conn = apr_table_get(r->headers_in, "Connection");
 
     /* The following convoluted conditional determines whether or not
@@ -161,14 +162,17 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
-            if (r->server->keep_alive_max)
+            if (r->server->keep_alive_max) {
 		apr_table_setn(r->headers_out, "Keep-Alive",
-		    apr_psprintf(r->pool, "timeout=%d, max=%d",
-                            r->server->keep_alive_timeout, left));
-            else
+                               apr_psprintf(r->pool, "timeout=%d, max=%d",
+                                            r->server->keep_alive_timeout,
+                                            left));
+            }
+            else {
 		apr_table_setn(r->headers_out, "Keep-Alive",
-		    apr_psprintf(r->pool, "timeout=%d",
-                            r->server->keep_alive_timeout));
+                               apr_psprintf(r->pool, "timeout=%d",
+                                            r->server->keep_alive_timeout));
+            }
             apr_table_mergen(r->headers_out, "Connection", "Keep-Alive");
         }
 
@@ -183,8 +187,9 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
      * to a HTTP/1.1 client. Better safe than sorry.
      */
-    if (!wimpy)
+    if (!wimpy) {
 	apr_table_mergen(r->headers_out, "Connection", "close");
+    }
 
     r->connection->keepalive = 0;
 
@@ -307,7 +312,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
  * are dynamically assigned when modules are loaded and <Limit GET MYGET>
  * directives are processed.
  */
-static apr_hash_t *methods_registry=NULL;
+static apr_hash_t *methods_registry = NULL;
 static int cur_method_number = METHOD_NUMBER_FIRST;
 
 /* This internal function is used to clear the method registry
@@ -345,12 +350,13 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
 	 * assignable method numbers. Log this and return M_INVALID.
 	 */
 	ap_log_perror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, p,
-		      "Maximum new request methods %d reached while registering method %s.",
+		      "Maximum new request methods %d reached while "
+                      "registering method %s.",
 		      METHOD_NUMBER_LAST, methname);
 	return M_INVALID;
     }
 
-    newmethnum  = (int*)apr_palloc(p,sizeof(int));
+    newmethnum  = (int*)apr_palloc(p, sizeof(int));
     *newmethnum = cur_method_number++;
     apr_hash_set(methods_registry, methname, APR_HASH_KEY_STRING, newmethnum);
 
@@ -369,58 +375,74 @@ AP_DECLARE(int) ap_method_number_of(const char *method)
     int *methnum = NULL;
 
     switch (*method) {
-        case 'H':
-           if (strcmp(method, "HEAD") == 0)
-               return M_GET;   /* see header_only in request_rec */
-           break;
-        case 'G':
-           if (strcmp(method, "GET") == 0)
-               return M_GET;
-           break;
-        case 'P':
-           if (strcmp(method, "POST") == 0)
-               return M_POST;
-           if (strcmp(method, "PUT") == 0)
-               return M_PUT;
-           if (strcmp(method, "PATCH") == 0)
-               return M_PATCH;
-           if (strcmp(method, "PROPFIND") == 0)
-               return M_PROPFIND;
-           if (strcmp(method, "PROPPATCH") == 0)
-               return M_PROPPATCH;
-           break;
-        case 'D':
-           if (strcmp(method, "DELETE") == 0)
-               return M_DELETE;
-           break;
-        case 'C':
-           if (strcmp(method, "CONNECT") == 0)
-               return M_CONNECT;
-           if (strcmp(method, "COPY") == 0)
-               return M_COPY;
-           break;
-        case 'M':
-           if (strcmp(method, "MKCOL") == 0)
-               return M_MKCOL;
-           if (strcmp(method, "MOVE") == 0)
-               return M_MOVE;
-           break;
-        case 'O':
-           if (strcmp(method, "OPTIONS") == 0)
-               return M_OPTIONS;
-           break;
-        case 'T':
-           if (strcmp(method, "TRACE") == 0)
-               return M_TRACE;
-           break;
-        case 'L':
-           if (strcmp(method, "LOCK") == 0)
-               return M_LOCK;
-           break;
-        case 'U':
-           if (strcmp(method, "UNLOCK") == 0)
-               return M_UNLOCK;
-           break;
+    case 'H':
+        if (strcmp(method, "HEAD") == 0) {
+            return M_GET;   /* see header_only in request_rec */
+        }
+        break;
+    case 'G':
+        if (strcmp(method, "GET") == 0) {
+            return M_GET;
+        }
+        break;
+    case 'P':
+        if (strcmp(method, "POST") == 0) {
+            return M_POST;
+        }
+        if (strcmp(method, "PUT") == 0) {
+            return M_PUT;
+        }
+        if (strcmp(method, "PATCH") == 0) {
+            return M_PATCH;
+        }
+        if (strcmp(method, "PROPFIND") == 0) {
+            return M_PROPFIND;
+        }
+        if (strcmp(method, "PROPPATCH") == 0) {
+            return M_PROPPATCH;
+        }
+        break;
+    case 'D':
+        if (strcmp(method, "DELETE") == 0) {
+            return M_DELETE;
+        }
+        break;
+    case 'C':
+        if (strcmp(method, "CONNECT") == 0) {
+            return M_CONNECT;
+        }
+        if (strcmp(method, "COPY") == 0) {
+            return M_COPY;
+        }
+        break;
+    case 'M':
+        if (strcmp(method, "MKCOL") == 0) {
+            return M_MKCOL;
+        }
+        if (strcmp(method, "MOVE") == 0) {
+            return M_MOVE;
+        }
+        break;
+    case 'O':
+        if (strcmp(method, "OPTIONS") == 0) {
+            return M_OPTIONS;
+        }
+        break;
+    case 'T':
+        if (strcmp(method, "TRACE") == 0) {
+            return M_TRACE;
+        }
+        break;
+    case 'L':
+        if (strcmp(method, "LOCK") == 0) {
+            return M_LOCK;
+        }
+        break;
+    case 'U':
+        if (strcmp(method, "UNLOCK") == 0) {
+            return M_UNLOCK;
+        }
+        break;
     }
 
     /* check if the method has been dynamically registered */
@@ -428,8 +450,9 @@ AP_DECLARE(int) ap_method_number_of(const char *method)
 	methnum = (int*)apr_hash_get(methods_registry,
 				     method,
 				     APR_HASH_KEY_STRING);
-	if (methnum != NULL)
+	if (methnum != NULL) {
 	    return *methnum;
+        }
     }
 
     return M_INVALID;
@@ -492,18 +515,20 @@ typedef struct http_filter_ctx {
     } state;
 } http_ctx_t;
 
-/* This is the input filter for HTTP requests.  It handles chunked and 
+/* This is the input filter for HTTP requests.  It handles chunked and
  * content-length bodies.  This can only be inserted/used after the headers
  * are successfully parsed. */
-apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                            ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
     /* just get out of the way of this thing. */
-    if (mode == AP_MODE_PEEK)
+    if (mode == AP_MODE_PEEK) {
         return ap_get_brigade(f->next, b, mode, readbytes);
+    }
 
     if (!ctx) {
         const char *tenc, *lenp;
@@ -516,7 +541,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         if (tenc) {
             if (!strcasecmp(tenc, "chunked")) {
                 char line[30];
-            
+
                 if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
                     return rv;
                 }
@@ -536,10 +561,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         }
     }
 
-    if (!ctx->remaining)
-    {
-        switch (ctx->state)
-        {
+    if (!ctx->remaining) {
+        switch (ctx->state) {
         case BODY_NONE:
             break;
         case BODY_LENGTH:
@@ -549,7 +572,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         case BODY_CHUNK:
             {
                 char line[30];
-        
+
                 ctx->state = BODY_NONE;
 
                 /* We need to read the CRLF after the chunk.  */
@@ -564,8 +587,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
                 ctx->state = BODY_CHUNK;
                 ctx->remaining = get_chunk_size(line);
 
-                if (!ctx->remaining)
-                {
+                if (!ctx->remaining) {
                     /* Handle trailers by calling get_mime_headers again! */
                     e = apr_bucket_eos_create();
                     APR_BRIGADE_INSERT_TAIL(b, e);
@@ -577,7 +599,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     }
 
     /* Ensure that the caller can not go over our boundary point. */
-    if (ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) { 
+    if (ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) {
         if (ctx->remaining < *readbytes) {
             *readbytes = ctx->remaining;
         }
@@ -586,11 +608,13 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
 
     rv = ap_get_brigade(f->next, b, mode, readbytes);
 
-    if (rv != APR_SUCCESS)
+    if (rv != APR_SUCCESS) {
         return rv;
+    }
 
-    if (ctx->state != BODY_NONE)
+    if (ctx->state != BODY_NONE) {
         ctx->remaining -= *readbytes;
+    }
 
     return APR_SUCCESS;
 }
@@ -604,7 +628,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
 #ifdef UTS21
 /* The second const triggers an assembler bug on UTS 2.1.
  * Another workaround is to move some code out of this file into another,
- *   but this is easier.  Dave Dykstra, 3/31/99 
+ *   but this is easier.  Dave Dykstra, 3/31/99
  */
 static const char * status_lines[RESPONSE_CODES] =
 #else
@@ -736,7 +760,7 @@ static int form_header_field(header_struct *h,
  *
  * also prepare r->status_line.
  */
-static void basic_http_header_check(request_rec *r, 
+static void basic_http_header_check(request_rec *r,
                                     const char **protocol)
 {
     if (r->assbackwards) {
@@ -744,14 +768,14 @@ static void basic_http_header_check(request_rec *r,
         return;
     }
 
-    if (!r->status_line)
+    if (!r->status_line) {
         r->status_line = status_lines[ap_index_of_response(r->status)];
+    }
 
     /* kluge around broken browsers when indicated by force-response-1.0
      */
     if (r->proto_num == HTTP_VERSION(1,0)
-            && apr_table_get(r->subprocess_env, "force-response-1.0")) {
-
+        && apr_table_get(r->subprocess_env, "force-response-1.0")) {
         *protocol = "HTTP/1.0";
         r->connection->keepalive = -1;
     }
@@ -759,7 +783,8 @@ static void basic_http_header_check(request_rec *r,
         *protocol = AP_SERVER_PROTOCOL;
     }
 
-    if (r->proto_num > HTTP_VERSION(1,0) && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
+    if (r->proto_num > HTTP_VERSION(1,0)
+        && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
         r->proto_num = HTTP_VERSION(1,0);
     }
 }
@@ -893,15 +918,18 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     apr_bucket_brigade *b;
     header_struct h;
 
-    if (r->method_number != M_TRACE)
+    if (r->method_number != M_TRACE) {
         return DECLINED;
+    }
 
     /* Get the original request */
-    while (r->prev)
+    while (r->prev) {
         r = r->prev;
+    }
 
-    if ((rv = ap_setup_client_block(r, REQUEST_NO_BODY)))
+    if ((rv = ap_setup_client_block(r, REQUEST_NO_BODY))) {
         return rv;
+    }
 
     r->content_type = "message/http";
 
@@ -912,7 +940,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     h.pool = r->pool;
     h.bb = b;
     apr_table_do((int (*) (void *, const char *, const char *))
-                form_header_field, (void *) &h, r->headers_in, NULL);
+                 form_header_field, (void *) &h, r->headers_in, NULL);
     apr_brigade_puts(b, NULL, NULL, CRLF);
     ap_pass_brigade(r->output_filters, b);
 
@@ -921,13 +949,15 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
 AP_DECLARE(int) ap_send_http_options(request_rec *r)
 {
-    if (r->assbackwards)
+    if (r->assbackwards) {
         return DECLINED;
-    
+    }
+
     apr_table_setn(r->headers_out, "Allow", make_allow(r));
 
     /* the request finalization will send an EOS, which will flush all
-       the headers out (including the Allow header) */
+     * the headers out (including the Allow header)
+     */
 
     return OK;
 }
@@ -1000,7 +1030,7 @@ static void fixup_vary(request_rec *r)
      * if not already present in the array.
      */
     apr_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
-		(void *) varies, r->headers_out, "Vary", NULL);
+                 (void *) varies, r->headers_out, "Vary", NULL);
 
     /* If we found any, replace old Vary fields with unique-ified value */
 
@@ -1014,9 +1044,8 @@ typedef struct header_filter_ctx {
     int headers_sent;
 } header_filter_ctx;
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
-    ap_filter_t *f,
-    apr_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
+                                                           apr_bucket_brigade *b)
 {
     int i;
     request_rec *r = f->r;
@@ -1030,7 +1059,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
     AP_DEBUG_ASSERT(!r->main);
 
     /* Handlers -should- be smart enough not to send content on HEAD requests.
-     * To guard against poorly written handlers, leave the header_filter 
+     * To guard against poorly written handlers, leave the header_filter
      * installed (but only for HEAD requests) to intercept and discard content
      * after the headers have been sent.
      */
@@ -1065,9 +1094,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
      * header field tables into a single table.  If we don't do this, our
      * later attempts to set or unset a given fieldname might be bypassed.
      */
-    if (!apr_is_empty_table(r->err_headers_out))
+    if (!apr_is_empty_table(r->err_headers_out)) {
         r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
-                                        r->headers_out);
+                                           r->headers_out);
+    }
 
     /*
      * Remove the 'Vary' header field if the client can't handle it.
@@ -1127,14 +1157,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
      * just return in that situation, and the core handled the HEAD.  In
      * 2.0, if a handler returns, then the core sends an EOS bucket down
      * the filter stack, and the content-length filter computes a C-L of
-     * zero and that gets put in the headers, and we end up sending a 
+     * zero and that gets put in the headers, and we end up sending a
      * zero C-L to the client.  We can't just remove the C-L filter,
-     * because well behaved 2.0 handlers will send their data down the stack, 
+     * because well behaved 2.0 handlers will send their data down the stack,
      * and we will compute a real C-L for the head request. RBB
      */
-    if (r->header_only && 
-        (clheader = apr_table_get(r->headers_out, "Content-Length")) &&
-        !strcmp(clheader, "0")) {
+    if (r->header_only
+        && (clheader = apr_table_get(r->headers_out, "Content-Length"))
+        && !strcmp(clheader, "0")) {
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
@@ -1146,22 +1176,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
 
     if (r->status == HTTP_NOT_MODIFIED) {
         apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
-                    (void *) &h, r->headers_out,
-                    "Connection",
-                    "Keep-Alive",
-                    "ETag",
+                     (void *) &h, r->headers_out,
+                     "Connection",
+                     "Keep-Alive",
+                     "ETag",
                     "Content-Location",
-                    "Expires",
-                    "Cache-Control",
-                    "Vary",
-                    "Warning",
-                    "WWW-Authenticate",
-                    "Proxy-Authenticate",
-                    NULL);
+                     "Expires",
+                     "Cache-Control",
+                     "Vary",
+                     "Warning",
+                     "WWW-Authenticate",
+                     "Proxy-Authenticate",
+                     NULL);
     }
     else {
         apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
-		 (void *) &h, r->headers_out, NULL);
+                     (void *) &h, r->headers_out, NULL);
     }
 
     terminate_header(b2);
@@ -1269,8 +1299,8 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         r->remaining = atol(lenp);
     }
 
-    if ((r->read_body == REQUEST_NO_BODY) &&
-        (r->read_chunked || (r->remaining > 0))) {
+    if ((r->read_body == REQUEST_NO_BODY)
+        && (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
@@ -1281,14 +1311,15 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         /* XXX shouldn't we enforce this for chunked encoding too? */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Request content-length of %s is larger than "
-		      "the configured limit of %" APR_OFF_T_FMT, lenp, max_body);
+		      "the configured limit of %" APR_OFF_T_FMT, lenp,
+                      max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
 #ifdef AP_DEBUG
     {
         /* Make sure ap_getline() didn't leave any droppings. */
-        core_request_config *req_cfg = 
+        core_request_config *req_cfg =
             (core_request_config *)ap_get_module_config(r->request_config,
                                                         &core_module);
         AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(req_cfg->bb));
@@ -1302,8 +1333,9 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
 {
     /* First check if we have already read the request body */
 
-    if (r->read_length || (!r->read_chunked && (r->remaining <= 0)))
+    if (r->read_length || (!r->read_chunked && (r->remaining <= 0))) {
         return 0;
+    }
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         char *tmp;
@@ -1312,7 +1344,7 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
 
         /* sending 100 Continue interim response */
         tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
-                                CRLF CRLF, NULL);
+                          CRLF CRLF, NULL);
         bb = apr_brigade_create(r->pool);
         e = apr_bucket_pool_create(tmp, strlen(tmp), r->pool);
         APR_BRIGADE_INSERT_HEAD(bb, e);
@@ -1362,7 +1394,8 @@ static long get_chunk_size(char *b)
  * hold a chunk-size line, including any extensions. For now, we'll leave
  * that to the caller, at least until we can come up with a better solution.
  */
-AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
+                                     apr_size_t bufsiz)
 {
     apr_size_t total;
     apr_status_t rv;
@@ -1376,7 +1409,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
 
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
-        len_read = bufsiz; 
+        len_read = bufsiz;
         if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
                            &len_read) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
@@ -1386,7 +1419,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
             apr_brigade_destroy(bb);
             return -1;
         }
-    } 
+    }
 
     b = APR_BRIGADE_FIRST(bb);
     if (APR_BUCKET_IS_EOS(b)) { /* reached eos on previous invocation */
@@ -1409,7 +1442,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
            && !APR_BUCKET_IS_EOS(b)) {
         apr_size_t len_read;
 
-        if ((rv = apr_bucket_read(b, &tempbuf, &len_read, APR_BLOCK_READ)) != APR_SUCCESS) {
+        if ((rv = apr_bucket_read(b, &tempbuf, &len_read,
+                                  APR_BLOCK_READ)) != APR_SUCCESS) {
             return -1;
         }
         if (total + len_read > bufsiz) {
@@ -1419,11 +1453,11 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
         memcpy(buffer, tempbuf, len_read);
         buffer += len_read;
         total += len_read;
-        /* XXX the next two fields shouldn't be mucked with here, as they are in terms
-         * of bytes in the unfiltered body; gotta see if anybody else actually uses 
-         * these
+        /* XXX the next two fields shouldn't be mucked with here,
+         * as they are in terms of bytes in the unfiltered body;
+         * gotta see if anybody else actually uses these
          */
-        r->read_length += len_read;      /* XXX yank me? */
+        r->read_length += len_read; /* XXX yank me? */
         old = b;
         b = APR_BUCKET_NEXT(b);
         apr_bucket_delete(old);
@@ -1442,16 +1476,18 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
  * Since we return an error status if the request is malformed, this
  * routine should be called at the beginning of a no-body handler, e.g.,
  *
- *    if ((retval = ap_discard_request_body(r)) != OK)
+ *    if ((retval = ap_discard_request_body(r)) != OK) {
  *        return retval;
+ *    }
  */
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     int rv;
 
-    if (r->read_length == 0) { /* if not read already */
-        if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
+    if (r->read_length == 0) {  /* if not read already */
+        if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK))) {
             return rv;
+        }
     }
 
     /* In order to avoid sending 100 Continue when we already know the
@@ -1467,22 +1503,24 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
             return OK;
         }
 
-        while ((rv = ap_get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0)
+        while ((rv = ap_get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0) {
             continue;
+        }
 
-        if (rv < 0)
+        if (rv < 0) {
             return HTTP_BAD_REQUEST;
+        }
     }
     return OK;
 }
 
-static const char *add_optional_notes(request_rec *r, 
+static const char *add_optional_notes(request_rec *r,
                                       const char *prefix,
-                                      const char *key, 
+                                      const char *key,
                                       const char *suffix)
 {
     const char *notes, *result;
-    
+
     if ((notes = apr_table_get(r->notes, key)) == NULL) {
         result = apr_pstrcat(r->pool, prefix, suffix, NULL);
     }
@@ -1493,224 +1531,239 @@ static const char *add_optional_notes(request_rec *r,
     return result;
 }
 
-static const char *get_canned_error_string(int status, 
-                                           request_rec *r,
-                                           const char *location) 
-
-/* construct and return the default error message for a given 
+/* construct and return the default error message for a given
  * HTTP defined error code
  */
-{	
+static const char *get_canned_error_string(int status,
+                                           request_rec *r,
+                                           const char *location)
+{
     apr_pool_t *p = r->pool;
     const char *error_notes, *h1, *s1;
 
-	switch (status) {
-	case HTTP_MOVED_PERMANENTLY:
-	case HTTP_MOVED_TEMPORARILY:
-	case HTTP_TEMPORARY_REDIRECT:
-	    return(apr_pstrcat(p,
+    switch (status) {
+    case HTTP_MOVED_PERMANENTLY:
+    case HTTP_MOVED_TEMPORARILY:
+    case HTTP_TEMPORARY_REDIRECT:
+        return(apr_pstrcat(p,
                            "<p>The document has moved <a href=\"",
-		                   ap_escape_html(r->pool, location), 
-			   "\">here</a>.</p>\n",
-                           NULL));
-	case HTTP_SEE_OTHER:
-	    return(apr_pstrcat(p,
-                           "<p>The answer to your request is located <a href=\"",
-		                   ap_escape_html(r->pool, location), 
+                           ap_escape_html(r->pool, location),
                            "\">here</a>.</p>\n",
                            NULL));
-	case HTTP_USE_PROXY:
-	    return(apr_pstrcat(p,
+    case HTTP_SEE_OTHER:
+        return(apr_pstrcat(p,
+                           "<p>The answer to your request is located "
+                           "<a href=\"",
+                           ap_escape_html(r->pool, location),
+                           "\">here</a>.</p>\n",
+                           NULL));
+    case HTTP_USE_PROXY:
+        return(apr_pstrcat(p,
                            "<p>This resource is only accessible "
-		                   "through the proxy\n",
-		                   ap_escape_html(r->pool, location),
-		                   "<br />\nYou will need to "
-		                   "configure your client to use that proxy.</p>\n",
-						   NULL));
-	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
-	case HTTP_UNAUTHORIZED:
-	    return("<p>This server could not verify that you\n"
-	           "are authorized to access the document\n"
-	           "requested.  Either you supplied the wrong\n"
-	           "credentials (e.g., bad password), or your\n"
-	           "browser doesn't understand how to supply\n"
-	           "the credentials required.</p>\n");
-	case HTTP_BAD_REQUEST:
-        return(add_optional_notes(r,  
-	                              "<p>Your browser sent a request that "
-	                              "this server could not understand.<br />\n",
-                                  "error-notes", 
+                           "through the proxy\n",
+                           ap_escape_html(r->pool, location),
+                           "<br />\nYou will need to configure "
+                           "your client to use that proxy.</p>\n",
+                           NULL));
+    case HTTP_PROXY_AUTHENTICATION_REQUIRED:
+    case HTTP_UNAUTHORIZED:
+        return("<p>This server could not verify that you\n"
+               "are authorized to access the document\n"
+               "requested.  Either you supplied the wrong\n"
+               "credentials (e.g., bad password), or your\n"
+               "browser doesn't understand how to supply\n"
+               "the credentials required.</p>\n");
+    case HTTP_BAD_REQUEST:
+        return(add_optional_notes(r,
+                                  "<p>Your browser sent a request that "
+                                  "this server could not understand.<br />\n",
+                                  "error-notes",
                                   "</p>\n"));
-	case HTTP_FORBIDDEN:
-	    return(apr_pstrcat(p,
+    case HTTP_FORBIDDEN:
+        return(apr_pstrcat(p,
                            "<p>You don't have permission to access ",
-		                   ap_escape_html(r->pool, r->uri),
-		                   "\non this server.</p>\n",
-                           NULL));
-	case HTTP_NOT_FOUND:
-	    return(apr_pstrcat(p,
-                           "<p>The requested URL ",
-		                   ap_escape_html(r->pool, r->uri),
-		                   " was not found on this server.</p>\n",
-                           NULL));
-	case HTTP_METHOD_NOT_ALLOWED:
-	    return(apr_pstrcat(p,
-                           "<p>The requested method ", r->method,
-		                   " is not allowed for the URL ", 
                            ap_escape_html(r->pool, r->uri),
-		                   ".</p>\n",
+                           "\non this server.</p>\n",
                            NULL));
-	case HTTP_NOT_ACCEPTABLE:
-	    s1 = apr_pstrcat(p,
-	                     "<p>An appropriate representation of the "
-		                 "requested resource ",
-		                 ap_escape_html(r->pool, r->uri),
-		                 " could not be found on this server.</p>\n",
+    case HTTP_NOT_FOUND:
+        return(apr_pstrcat(p,
+                           "<p>The requested URL ",
+                           ap_escape_html(r->pool, r->uri),
+                           " was not found on this server.</p>\n",
+                           NULL));
+    case HTTP_METHOD_NOT_ALLOWED:
+        return(apr_pstrcat(p,
+                           "<p>The requested method ", r->method,
+                           " is not allowed for the URL ",
+                           ap_escape_html(r->pool, r->uri),
+                           ".</p>\n",
+                           NULL));
+    case HTTP_NOT_ACCEPTABLE:
+        s1 = apr_pstrcat(p,
+                         "<p>An appropriate representation of the "
+                         "requested resource ",
+                         ap_escape_html(r->pool, r->uri),
+                         " could not be found on this server.</p>\n",
                          NULL);
-            return(add_optional_notes(r, s1, "variant-list", ""));
-	case HTTP_MULTIPLE_CHOICES:
-            return(add_optional_notes(r, "", "variant-list", ""));
-	case HTTP_LENGTH_REQUIRED:
-	    s1 = apr_pstrcat(p, 
-                        "<p>A request of the requested method ", 
+        return(add_optional_notes(r, s1, "variant-list", ""));
+    case HTTP_MULTIPLE_CHOICES:
+        return(add_optional_notes(r, "", "variant-list", ""));
+    case HTTP_LENGTH_REQUIRED:
+        s1 = apr_pstrcat(p,
+                         "<p>A request of the requested method ",
                          r->method,
-		                 " requires a valid Content-length.<br />\n", 
+                         " requires a valid Content-length.<br />\n",
                          NULL);
-		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
-	case HTTP_PRECONDITION_FAILED:
-	    return(apr_pstrcat(p,
-                           "<p>The precondition on the request for the URL ",
-		                   ap_escape_html(r->pool, r->uri),
-		                   " evaluated to false.</p>\n",
+        return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
+    case HTTP_PRECONDITION_FAILED:
+        return(apr_pstrcat(p,
+                           "<p>The precondition on the request "
+                           "for the URL ",
+                           ap_escape_html(r->pool, r->uri),
+                           " evaluated to false.</p>\n",
                            NULL));
-	case HTTP_NOT_IMPLEMENTED:
-	    s1 = apr_pstrcat(p, "<p>",
+    case HTTP_NOT_IMPLEMENTED:
+        s1 = apr_pstrcat(p,
+                         "<p>",
                          ap_escape_html(r->pool, r->method), " to ",
-		                 ap_escape_html(r->pool, r->uri),
-		                 " not supported.<br />\n", 
+                         ap_escape_html(r->pool, r->uri),
+                         " not supported.<br />\n",
                          NULL);
-		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
-	case HTTP_BAD_GATEWAY:
-	    s1 = "<p>The proxy server received an invalid" CRLF
-	         "response from an upstream server.<br />" CRLF;
-		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
-	case HTTP_VARIANT_ALSO_VARIES:
-	    return(apr_pstrcat(p,
-                           "<p>A variant for the requested resource\n<pre>\n",
-		                   ap_escape_html(r->pool, r->uri),
-		                   "\n</pre>\nis itself a negotiable resource. "
-		                   "This indicates a configuration error.</p>\n",
+        return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
+    case HTTP_BAD_GATEWAY:
+        s1 = "<p>The proxy server received an invalid" CRLF
+            "response from an upstream server.<br />" CRLF;
+        return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
+    case HTTP_VARIANT_ALSO_VARIES:
+        return(apr_pstrcat(p,
+                           "<p>A variant for the requested "
+                           "resource\n<pre>\n",
+                           ap_escape_html(r->pool, r->uri),
+                           "\n</pre>\nis itself a negotiable resource. "
+                           "This indicates a configuration error.</p>\n",
                            NULL));
-	case HTTP_REQUEST_TIME_OUT:
-	    return("<p>I'm tired of waiting for your request.</p>\n");
-	case HTTP_GONE:
-	    return(apr_pstrcat(p,
+    case HTTP_REQUEST_TIME_OUT:
+        return("<p>I'm tired of waiting for your request.</p>\n");
+    case HTTP_GONE:
+        return(apr_pstrcat(p,
                            "<p>The requested resource<br />",
-		                   ap_escape_html(r->pool, r->uri),
-		                   "<br />\nis no longer available on this server "
-		                   "and there is no forwarding address.\n"
-		                   "Please remove all references to this resource.</p>\n",
+                           ap_escape_html(r->pool, r->uri),
+                           "<br />\nis no longer available on this server "
+                           "and there is no forwarding address.\n"
+                           "Please remove all references to this "
+                           "resource.</p>\n",
                            NULL));
-	case HTTP_REQUEST_ENTITY_TOO_LARGE:
-	    return(apr_pstrcat(p,
+    case HTTP_REQUEST_ENTITY_TOO_LARGE:
+        return(apr_pstrcat(p,
                            "The requested resource<br />",
-		                   ap_escape_html(r->pool, r->uri), "<br />\n",
-		                   "does not allow request data with ", 
+                           ap_escape_html(r->pool, r->uri), "<br />\n",
+                           "does not allow request data with ",
                            r->method,
                            " requests, or the amount of data provided in\n"
-		                   "the request exceeds the capacity limit.\n",
+                           "the request exceeds the capacity limit.\n",
                            NULL));
-	case HTTP_REQUEST_URI_TOO_LARGE:
-	    s1 = "<p>The requested URL's length exceeds the capacity\n"
-	         "limit for this server.<br />\n";
+    case HTTP_REQUEST_URI_TOO_LARGE:
+        s1 = "<p>The requested URL's length exceeds the capacity\n"
+             "limit for this server.<br />\n";
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
-	case HTTP_UNSUPPORTED_MEDIA_TYPE:
-	    return("<p>The supplied request data is not in a format\n"
-	           "acceptable for processing by this resource.</p>\n");
-	case HTTP_RANGE_NOT_SATISFIABLE:
-	    return("<p>None of the range-specifier values in the Range\n"
-	           "request-header field overlap the current extent\n"
-	           "of the selected resource.</p>\n");
-	case HTTP_EXPECTATION_FAILED:
-	    return(apr_pstrcat(p, 
-                           "<p>The expectation given in the Expect request-header"
-	                       "\nfield could not be met by this server.</p>\n"
-	                       "<p>The client sent<pre>\n    Expect: ",
-	                       apr_table_get(r->headers_in, "Expect"), "\n</pre>\n"
-	                       "but we only allow the 100-continue expectation.</p>\n",
-	                       NULL));
-	case HTTP_UNPROCESSABLE_ENTITY:
-	    return("<p>The server understands the media type of the\n"
-	           "request entity, but was unable to process the\n"
-	           "contained instructions.</p>\n");
-	case HTTP_LOCKED:
-	    return("<p>The requested resource is currently locked.\n"
-	           "The lock must be released or proper identification\n"
-	           "given before the method can be applied.</p>\n");
-	case HTTP_FAILED_DEPENDENCY:
-	    return("<p>The method could not be performed on the resource\n"
-	           "because the requested action depended on another\n"
-	           "action and that other action failed.</p>\n");
-	case HTTP_INSUFFICIENT_STORAGE:
-	    return("<p>The method could not be performed on the resource\n"
-	           "because the server is unable to store the\n"
-	           "representation needed to successfully complete the\n"
-	           "request.  There is insufficient free space left in\n"
-	           "your storage allocation.</p>\n");
-	case HTTP_SERVICE_UNAVAILABLE:
-	    return("<p>The server is temporarily unable to service your\n"
-	           "request due to maintenance downtime or capacity\n"
-	           "problems. Please try again later.</p>\n");
-	case HTTP_GATEWAY_TIME_OUT:
-	    return("<p>The proxy server did not receive a timely response\n"
-	           "from the upstream server.</p>\n");
-	case HTTP_NOT_EXTENDED:
-	    return("<p>A mandatory extension policy in the request is not\n"
-	           "accepted by the server for this resource.</p>\n");
-	default:            /* HTTP_INTERNAL_SERVER_ERROR */
-	    /*
-	     * This comparison to expose error-notes could be modified to
-	     * use a configuration directive and export based on that 
-	     * directive.  For now "*" is used to designate an error-notes
-	     * that is totally safe for any user to see (ie lacks paths,
-	     * database passwords, etc.)
-	     */
-	    if (((error_notes = apr_table_get(r->notes, "error-notes")) != NULL)
-		&& (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
-		&& (strcmp(h1, "*") == 0)) {
-	        return(apr_pstrcat(p, error_notes, "<p />\n", NULL));
-	    }
-	    else {
-	        return(apr_pstrcat(p, 
-                         "<p>The server encountered an internal error or\n"
-	                     "misconfiguration and was unable to complete\n"
-	                     "your request.</p>\n"
-	                     "<p>Please contact the server administrator,\n ",
-	                     ap_escape_html(r->pool, r->server->server_admin),
-	                     " and inform them of the time the error occurred,\n"
-	                     "and anything you might have done that may have\n"
-	                     "caused the error.</p>\n"
-		                 "<p>More information about this error may be available\n"
-		                 "in the server error log.</p>\n", 
-                         NULL));
-	    }
-	 /*
-	  * It would be nice to give the user the information they need to
-	  * fix the problem directly since many users don't have access to
-	  * the error_log (think University sites) even though they can easily
-	  * get this error by misconfiguring an htaccess file.  However, the
-	  * e error notes tend to include the real file pathname in this case,
-	  * which some people consider to be a breach of privacy.  Until we
-	  * can figure out a way to remove the pathname, leave this commented.
-	  *
-	  * if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
-	  *     return(apr_pstrcat(p, error_notes, "<p />\n", NULL);
-	  * }
-      * else {
-      *     return "";
-      * }
-	  */
-	}
+    case HTTP_UNSUPPORTED_MEDIA_TYPE:
+        return("<p>The supplied request data is not in a format\n"
+               "acceptable for processing by this resource.</p>\n");
+    case HTTP_RANGE_NOT_SATISFIABLE:
+        return("<p>None of the range-specifier values in the Range\n"
+               "request-header field overlap the current extent\n"
+               "of the selected resource.</p>\n");
+    case HTTP_EXPECTATION_FAILED:
+        return(apr_pstrcat(p,
+                           "<p>The expectation given in the Expect "
+                           "request-header"
+                           "\nfield could not be met by this server.</p>\n"
+                           "<p>The client sent<pre>\n    Expect: ",
+                           apr_table_get(r->headers_in, "Expect"),
+                           "\n</pre>\n"
+                           "but we only allow the 100-continue "
+                           "expectation.</p>\n",
+                           NULL));
+    case HTTP_UNPROCESSABLE_ENTITY:
+        return("<p>The server understands the media type of the\n"
+               "request entity, but was unable to process the\n"
+               "contained instructions.</p>\n");
+    case HTTP_LOCKED:
+        return("<p>The requested resource is currently locked.\n"
+               "The lock must be released or proper identification\n"
+               "given before the method can be applied.</p>\n");
+    case HTTP_FAILED_DEPENDENCY:
+        return("<p>The method could not be performed on the resource\n"
+               "because the requested action depended on another\n"
+               "action and that other action failed.</p>\n");
+    case HTTP_INSUFFICIENT_STORAGE:
+        return("<p>The method could not be performed on the resource\n"
+               "because the server is unable to store the\n"
+               "representation needed to successfully complete the\n"
+               "request.  There is insufficient free space left in\n"
+               "your storage allocation.</p>\n");
+    case HTTP_SERVICE_UNAVAILABLE:
+        return("<p>The server is temporarily unable to service your\n"
+               "request due to maintenance downtime or capacity\n"
+               "problems. Please try again later.</p>\n");
+    case HTTP_GATEWAY_TIME_OUT:
+        return("<p>The proxy server did not receive a timely response\n"
+               "from the upstream server.</p>\n");
+    case HTTP_NOT_EXTENDED:
+        return("<p>A mandatory extension policy in the request is not\n"
+               "accepted by the server for this resource.</p>\n");
+    default:                    /* HTTP_INTERNAL_SERVER_ERROR */
+        /*
+         * This comparison to expose error-notes could be modified to
+         * use a configuration directive and export based on that
+         * directive.  For now "*" is used to designate an error-notes
+         * that is totally safe for any user to see (ie lacks paths,
+         * database passwords, etc.)
+         */
+        if (((error_notes = apr_table_get(r->notes,
+                                          "error-notes")) != NULL)
+            && (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
+            && (strcmp(h1, "*") == 0)) {
+            return(apr_pstrcat(p, error_notes, "<p />\n", NULL));
+        }
+        else {
+            return(apr_pstrcat(p,
+                               "<p>The server encountered an internal "
+                               "error or\n"
+                               "misconfiguration and was unable to complete\n"
+                               "your request.</p>\n"
+                               "<p>Please contact the server "
+                               "administrator,\n ",
+                               ap_escape_html(r->pool,
+                                              r->server->server_admin),
+                               " and inform them of the time the "
+                               "error occurred,\n"
+                               "and anything you might have done that "
+                               "may have\n"
+                               "caused the error.</p>\n"
+                               "<p>More information about this error "
+                               "may be available\n"
+                               "in the server error log.</p>\n",
+                               NULL));
+        }
+        /*
+         * It would be nice to give the user the information they need to
+         * fix the problem directly since many users don't have access to
+         * the error_log (think University sites) even though they can easily
+         * get this error by misconfiguring an htaccess file.  However, the
+         * e error notes tend to include the real file pathname in this case,
+         * which some people consider to be a breach of privacy.  Until we
+         * can figure out a way to remove the pathname, leave this commented.
+         *
+         * if ((error_notes = apr_table_get(r->notes,
+         *                                  "error-notes")) != NULL) {
+         *     return(apr_pstrcat(p, error_notes, "<p />\n", NULL);
+         * }
+         * else {
+         *     return "";
+         * }
+         */
+    }
 }
 
 static void reset_filters(request_rec *r)
@@ -1855,7 +1908,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         /* folks decided they didn't want the error code in the H1 text */
         h1 = &title[4];
 
-        /* can't count on a charset filter being in place here, 
+        /* can't count on a charset filter being in place here,
          * so do ebcdic->ascii translation explicitly (if needed)
          */
 
@@ -1864,10 +1917,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                   "<html><head>\n<title>", title,
                   "</title>\n</head><body>\n<h1>", h1, "</h1>\n",
                   NULL);
-        
+
         ap_rvputs_proto_in_ascii(rlast,
                                  get_canned_error_string(status, r, location),
-                                 NULL); 
+                                 NULL);
 
         if (recursive_error) {
             ap_rvputs_proto_in_ascii(rlast, "<p>Additionally, a ",
@@ -1888,13 +1941,13 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
 {
     ap_method_list_t *ml;
- 
+
     ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
     ml->method_mask = 0;
     ml->method_list = apr_array_make(p, sizeof(char *), nelts);
     return ml;
 }
- 
+
 /*
  * Make a copy of a method list (primarily for subrequests that may
  * subsequently change it; don't want them changing the parent's, too!).
@@ -1905,7 +1958,7 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
     int i;
     char **imethods;
     char **omethods;
- 
+
     dest->method_mask = src->method_mask;
     imethods = (char **) src->method_list->elts;
     for (i = 0; i < src->method_list->nelts; ++i) {
@@ -1913,13 +1966,14 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
         *omethods = apr_pstrdup(dest->method_list->pool, imethods[i]);
     }
 }
- 
+
 /*
  * Invoke a callback routine for each method in the specified list.
  */
-AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec,
+                                                       const char *mname,
                                                        int mnum),
-                                          void *rec, 
+                                          void *rec,
                                           const ap_method_list_t *ml, ...)
 {
     va_list vp;
@@ -1927,16 +1981,16 @@ AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *m
     ap_method_list_vdo(comp, rec, ml, vp);
     va_end(vp);
 }
- 
+
 AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *mrec,
                                                  const char *mname,
                                                  int mnum),
                                     void *rec, const ap_method_list_t *ml,
                                     va_list vp)
 {
- 
+
 }
- 
+
 /*
  * Return true if the specified HTTP method is in the provided
  * method list.
@@ -1946,7 +2000,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     int methnum;
     int i;
     char **methods;
- 
+
     /*
      * If it's one of our known methods, use the shortcut and check the
      * bitmask.
@@ -1957,7 +2011,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     }
     /*
      * Otherwise, see if the method name is in the array or string names
-     */ 
+     */
     if ((l->method_list == NULL) || (l->method_list->nelts == 0)) {
         return 0;
     }
@@ -1969,7 +2023,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
     }
     return 0;
 }
- 
+
 /*
  * Add the specified method to a method list (if it isn't already there).
  */
@@ -1979,7 +2033,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
     int i;
     const char **xmethod;
     char **methods;
- 
+
     /*
      * If it's one of our known methods, use the shortcut and use the
      * bitmask.
@@ -1995,7 +2049,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
     if (l->method_list->nelts != 0) {
         methods = (char **)l->method_list->elts;
         for (i = 0; i < l->method_list->nelts; ++i) {
-            if (strcmp(method, methods[i]) == 0) { 
+            if (strcmp(method, methods[i]) == 0) {
                 return;
             }
         }
@@ -2003,7 +2057,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
     xmethod = (const char **) apr_array_push(l->method_list);
     *xmethod = method;
 }
- 
+
 /*
  * Remove the specified method from a method list.
  */
@@ -2012,7 +2066,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 {
     int methnum;
     char **methods;
- 
+
     /*
      * If it's a known methods, either builtin or registered
      * by a module, use the bitmask.
@@ -2033,7 +2087,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
                 for (j = i, k = i + 1; k < l->method_list->nelts; ++j, ++k) {
                     methods[j] = methods[k];
                 }
-                --l->method_list->nelts; 
+                --l->method_list->nelts;
             }
             else {
                 ++i;
@@ -2041,7 +2095,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
         }
     }
 }
- 
+
 /*
  * Reset a method list to be completely empty.
  */
@@ -2049,7 +2103,7 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
 {
     l->method_mask = 0;
     l->method_list->nelts = 0;
-} 
+}
 
 /*
  * Construct an entity tag (ETag) from resource information.  If it's a real
@@ -2075,7 +2129,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
      * be modified again later in the second, and the validation
      * would be incorrect.
      */
-    
+
     weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
 	    && !force_weak) ? "" : "W/";
 
@@ -2122,16 +2176,18 @@ AP_DECLARE(void) ap_set_etag(request_rec *r)
 
         vlv = r->vlist_validator;
         vlv_weak = (vlv[0] == 'W');
-               
+
         variant_etag = ap_make_etag(r, vlv_weak);
 
         /* merge variant_etag and vlv into a structured etag */
 
         variant_etag[strlen(variant_etag) - 1] = '\0';
-        if (vlv_weak)
+        if (vlv_weak) {
             vlv += 3;
-        else
+        }
+        else {
             vlv++;
+        }
         etag = apr_pstrcat(r->pool, variant_etag, ";", vlv, NULL);
     }
 
@@ -2143,8 +2199,9 @@ static int parse_byterange(char *range, apr_off_t clength,
 {
     char *dash = strchr(range, '-');
 
-    if (!dash)
+    if (!dash) {
         return 0;
+    }
 
     if ((dash == range)) {
         /* In the form "-5" */
@@ -2155,20 +2212,25 @@ static int parse_byterange(char *range, apr_off_t clength,
         *dash = '\0';
         dash++;
         *start = atol(range);
-        if (*dash)
+        if (*dash) {
             *end = atol(dash);
-        else                    /* "5-" */
+        }
+        else {                  /* "5-" */
             *end = clength - 1;
+        }
     }
 
-    if (*start < 0)
+    if (*start < 0) {
 	*start = 0;
+    }
 
-    if (*end >= clength)
+    if (*end >= clength) {
         *end = clength - 1;
+    }
 
-    if (*start > *end)
+    if (*start > *end) {
 	return -1;
+    }
 
     return (*start > 0 || *end < clength);
 }
@@ -2191,18 +2253,17 @@ typedef struct byterange_ctx {
 static int use_range_x(request_rec *r)
 {
     const char *ua;
-    return (apr_table_get(r->headers_in, "Request-Range") ||
-            ((ua = apr_table_get(r->headers_in, "User-Agent"))
-             && ap_strstr_c(ua, "MSIE 3")));
+    return (apr_table_get(r->headers_in, "Request-Range")
+            || ((ua = apr_table_get(r->headers_in, "User-Agent"))
+                && ap_strstr_c(ua, "MSIE 3")));
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
 #define PARTITION_ERR_FMT "apr_brigade_partition() failed " \
                           "[%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]"
 
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
-    ap_filter_t *f,
-    apr_bucket_brigade *bb)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
+                                                         apr_bucket_brigade *bb)
 {
 #define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
@@ -2220,7 +2281,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
     if (!ctx) {
         int num_ranges = ap_set_byterange(r);
- 
+
         if (num_ranges == -1) {
             ap_remove_output_filter(f);
             bsend = apr_brigade_create(r->pool);
@@ -2240,9 +2301,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
         if (num_ranges > 1) {
             ctx->orig_ct = r->content_type;
-            r->content_type = 
-                 apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
-                          "byteranges; boundary=", r->boundary, NULL);
+            r->content_type = apr_pstrcat(r->pool, "multipart",
+                                          use_range_x(r) ? "/x-" : "/",
+                                          "byteranges; boundary=",
+                                          r->boundary, NULL);
         }
 
         /* create a brigade in case we never call ap_save_brigade() */
@@ -2251,7 +2313,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
     /* We can't actually deal with byte-ranges until we have the whole brigade
      * because the byte-ranges can be in any order, and according to the RFC,
-     * we SHOULD return the data in the same order it was requested. 
+     * we SHOULD return the data in the same order it was requested.
      */
     if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         ap_save_brigade(f, &ctx->bb, &bb, r->pool);
@@ -2263,12 +2325,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
                              CRLF "--", r->boundary,
                              CRLF "Content-type: ",
                              ap_make_content_type(r, ctx->orig_ct),
-                             CRLF "Content-range: bytes ", 
+                             CRLF "Content-range: bytes ",
                              NULL);
     ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
 
     /* If we have a saved brigade from a previous run, concat the passed
-     * brigade with our saved brigade.  Otherwise just continue.  
+     * brigade with our saved brigade.  Otherwise just continue.
      */
     if (ctx->bb) {
         APR_BRIGADE_CONCAT(ctx->bb, bb);
@@ -2285,8 +2347,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     /* this brigade holds what we will be sending */
     bsend = apr_brigade_create(r->pool);
 
-    while ((current = ap_getword(r->pool, &r->range, ',')) &&
-           (rv = parse_byterange(current, clength, &range_start, &range_end))) {
+    while ((current = ap_getword(r->pool, &r->range, ','))
+           && (rv = parse_byterange(current, clength, &range_start,
+                                    &range_end))) {
         apr_bucket *e2;
         apr_bucket *ec;
 
@@ -2307,7 +2370,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
                           PARTITION_ERR_FMT, range_end+1, clength);
             continue;
         }
-        
+
         found = 1;
 
         if (ctx->num_ranges > 1) {
@@ -2323,7 +2386,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             e = apr_bucket_pool_create(ts, strlen(ts), r->pool);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
-        
+
         do {
             apr_bucket *foo;
             const char *str;
@@ -2368,8 +2431,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_brigade_destroy(bb);
 
     /* send our multipart output */
-    return ap_pass_brigade(f->next, bsend); 
-}    
+    return ap_pass_brigade(f->next, bsend);
+}
 
 static int ap_set_byterange(request_rec *r)
 {
@@ -2381,8 +2444,9 @@ static int ap_set_byterange(request_rec *r)
     apr_off_t range_end;
     int num_ranges;
 
-    if (r->assbackwards)
+    if (r->assbackwards) {
         return 0;
+    }
 
     /* is content already a single range? */
     if (apr_table_get(r->headers_out, "Content-Range")) {
@@ -2390,9 +2454,9 @@ static int ap_set_byterange(request_rec *r)
     }
 
     /* is content already a multiple range? */
-    if ((ct = apr_table_get(r->headers_out, "Content-Type")) &&
-        (!strncasecmp(ct, "multipart/byteranges", 20) ||
-         !strncasecmp(ct, "multipart/x-byteranges", 22))) {
+    if ((ct = apr_table_get(r->headers_out, "Content-Type"))
+        && (!strncasecmp(ct, "multipart/byteranges", 20)
+            || !strncasecmp(ct, "multipart/x-byteranges", 22))) {
        return 0;
     }
 
@@ -2406,8 +2470,9 @@ static int ap_set_byterange(request_rec *r)
      * Navigator 2-3 and MSIE 3.
      */
 
-    if (!(range = apr_table_get(r->headers_in, "Range")))
+    if (!(range = apr_table_get(r->headers_in, "Range"))) {
         range = apr_table_get(r->headers_in, "Request-Range");
+    }
 
     if (!range || strncasecmp(range, "bytes=", 6)) {
         return 0;
@@ -2419,13 +2484,15 @@ static int ap_set_byterange(request_rec *r)
      */
     if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
         if (if_range[0] == '"') {
-            if (!(match = apr_table_get(r->headers_out, "Etag")) ||
-                (strcmp(if_range, match) != 0))
+            if (!(match = apr_table_get(r->headers_out, "Etag"))
+                || (strcmp(if_range, match) != 0)) {
                 return 0;
+            }
         }
-        else if (!(match = apr_table_get(r->headers_out, "Last-Modified")) ||
-                 (strcmp(if_range, match) != 0))
+        else if (!(match = apr_table_get(r->headers_out, "Last-Modified"))
+                 || (strcmp(if_range, match) != 0)) {
             return 0;
+        }
     }
 
     /* would be nice to pick this up from f->ctx */
