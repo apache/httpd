@@ -71,6 +71,8 @@ get_config_vars("$installbuilddir/config_vars.mk",\%config_vars);
 my $prefix         = get_vars("prefix");
 my $CFG_PREFIX     = $prefix;
 my $exec_prefix    = get_vars("exec_prefix");
+my $datadir        = get_vars("datadir");
+my $localstatedir  = get_vars("localstatedir");
 my $CFG_TARGET     = get_vars("progname");
 my $CFG_SYSCONFDIR = get_vars("sysconfdir");
 my $CFG_CFLAGS     = join ' ', map { get_vars($_) }

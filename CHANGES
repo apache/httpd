@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Fix apxs to allow "apxs -q installbuilddir" and to allow
+     querying certain other variables from config_vars.mk.  PR 9316  
+     [Jeff Trawick]
+
   *) Added the "detached" attribute to the cgi_exec_info_t internals
      so that Win32 and Netware won't create a new window or console
      for each CGI invoked.  PR 8387
