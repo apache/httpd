@@ -101,49 +101,78 @@ enum cmd_how {
     TAKE123,			/**< one, two or three arguments */
     TAKE13			/**< one or three arguments */
 };
-
+/**
+ * This structure is passed to a command which is being invoked,
+ * to carry a large variety of miscellaneous data which is all of
+ * use to *somebody*...
+ */
 typedef struct cmd_parms_struct cmd_parms;
 
 #if defined(AP_HAVE_DESIGNATED_INITIALIZER) || defined(DOXYGEN)
 
-/** All the types of functions that can be used in directives */
+/** 
+ * All the types of functions that can be used in directives
+ * @internal
+ */
 typedef union {
+    /** function to call for a no-args */
     const char *(*no_args) (cmd_parms *parms, void *mconfig);
+    /** function to call for a raw-args */
     const char *(*raw_args) (cmd_parms *parms, void *mconfig,
 			     const char *args);
+    /** function to call for a take1 */
     const char *(*take1) (cmd_parms *parms, void *mconfig, const char *w);
+    /** function to call for a take2 */
     const char *(*take2) (cmd_parms *parms, void *mconfig, const char *w,
 			  const char *w2);
+    /** function to call for a take3 */
     const char *(*take3) (cmd_parms *parms, void *mconfig, const char *w,
 			  const char *w2, const char *w3);
+    /** function to call for a flag */
     const char *(*flag) (cmd_parms *parms, void *mconfig, int on);
 } cmd_func;
 
+/** This configuration directive does not take any arguments */
 # define AP_NO_ARGS	func.no_args
+/** This configuration directive will handle it's own parsing of arguments*/
 # define AP_RAW_ARGS	func.raw_args
+/** This configuration directive takes 1 argument*/
 # define AP_TAKE1	func.take1
+/** This configuration directive takes 2 arguments */
 # define AP_TAKE2	func.take2
+/** This configuration directive takes 3 arguments */
 # define AP_TAKE3	func.take3
+/** This configuration directive takes a flag (on/off) as a argument*/
 # define AP_FLAG	func.flag
 
+/** method of decalring a directive with no arguments */
 # define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
     { directive, { .no_args=func }, mconfig, where, RAW_ARGS, help }
+/** method of decalring a directive with raw argument parsing */
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
+/** method of decalring a directive which takes 1 argument */
 # define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     { directive, { .take1=func }, mconfig, where, TAKE1, help }
+/** method of decalring a directive which takes multiple arguments */
 # define AP_INIT_ITERATE(directive, func, mconfig, where, help) \
     { directive, { .take1=func }, mconfig, where, ITERATE, help }
+/** method of decalring a directive which takes 2 arguments */
 # define AP_INIT_TAKE2(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, TAKE2, help }
+/** method of decalring a directive which takes 1 or 2 arguments */
 # define AP_INIT_TAKE12(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, TAKE12, help }
+/** method of decalring a directive which takes multiple 2 arguments */
 # define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, ITERATE2, help }
+/** method of decalring a directive which takes 2 or 3 arguments */
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE23, help }
+/** method of decalring a directive which takes 3 arguments */
 # define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE3, help }
+/** method of decalring a directive which takes a flag (on/off) as a argument*/
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
@@ -181,11 +210,11 @@ typedef const char *(*cmd_func) ();
 
 #endif /* AP_HAVE_DESIGNATED_INITIALIZER */
 
-typedef struct command_struct command_rec; 
 /**
  * The command record structure.  Each modules can define a table of these
  * to define the directives it will implement.
  */
+typedef struct command_struct command_rec; 
 struct command_struct {
     /** Name of this command */
     const char *name;
@@ -211,7 +240,7 @@ struct command_struct {
  *
  * @{
  */
-#define OR_NONE 0
+#define OR_NONE 0             /**< *.conf is not available anywhere in this override */
 #define OR_LIMIT 1	     /**< *.conf inside <Directory> or <Location>
 				and .htaccess when AllowOverride Limit */
 #define OR_OPTIONS 2         /**< *.conf anywhere
@@ -222,10 +251,13 @@ struct command_struct {
 				and .htaccess when AllowOverride AuthConfig */
 #define OR_INDEXES 16        /**< *.conf anywhere
 				and .htaccess when AllowOverride Indexes */
-#define OR_UNSET 32
+#define OR_UNSET 32          /**< unset a directive (in Allow) */
 #define ACCESS_CONF 64       /**< *.conf inside <Directory> or <Location> */
 #define RSRC_CONF 128	     /**< *.conf outside <Directory> or <Location> */
-#define EXEC_ON_READ 256
+#define EXEC_ON_READ 256     /**< force directive to execute a command 
+                which would modify the conifguration (like including another
+                file, or IFModule */
+/** this directive can be placed anywhere */
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
 
 /** @} */
@@ -237,8 +269,8 @@ struct command_struct {
  */
 #define DECLINE_CMD "\a\b"
 
-typedef struct ap_configfile_t ap_configfile_t;
 /** Common structure for reading of config files / passwd files etc. */
+typedef struct ap_configfile_t ap_configfile_t;
 struct ap_configfile_t {
     int (*getch) (void *param);	    /**< a getc()-like function */
     void *(*getstr) (void *buf, size_t bufsiz, void *param);
@@ -261,7 +293,9 @@ struct cmd_parms_struct {
     int override;
     /** Which methods are <Limit>ed */
     apr_int64_t limited;
+    /** methods which are limited */
     apr_array_header_t *limited_xmethods;
+    /** methods which are xlimited */
     ap_method_list_t *xlimited;
 
     /** Config file structure. */
@@ -292,12 +326,12 @@ struct cmd_parms_struct {
     const ap_directive_t *err_directive;
 };
 
-typedef struct module_struct module;
 /**
  * Module structures.  Just about everything is dispatched through
  * these, directly or indirectly (through the command and handler
  * tables).
  */
+typedef struct module_struct module;
 struct module_struct {
     /** API version, *not* module version; check that module is 
      * compatible with this version of the server.
@@ -411,6 +445,7 @@ struct module_struct {
 
 /* CONFIGURATION VECTOR FUNCTIONS */
 
+/** configuration vector structure */
 typedef struct ap_conf_vector_t ap_conf_vector_t;
 
 #if defined(AP_DEBUG) || defined(DOXYGEN)
@@ -676,6 +711,8 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
 /**
  * @defgroup ap_check_cmd_context ap_check_cmd_context
  * @{
+ */
+/**
  * Check the context a command is used in.
  * @param cmd The command to check
  * @param forbidden Where the command is forbidden.
@@ -688,8 +725,10 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 #define  NOT_IN_DIRECTORY       0x04 /**< Forbidden in <Directory> */
 #define  NOT_IN_LOCATION        0x08 /**< Forbidden in <Location> */
 #define  NOT_IN_FILES           0x10 /**< Forbidden in <Files> */
-#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) /**< Forbidden in <Directory>/<Location>/<Files>*/
-#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
+/** Forbidden in <Directory>/<Location>/<Files>*/
+#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) 
+/** Forbidden in <VirtualHost>/<Limit>/Directory>/<Location>/<Files> */
+#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE) 
 
 /** @} */
 
