@@ -288,6 +288,19 @@ elements are:
     &lt;!--#if expr="$a = \$test" --&gt;
 </PRE>
 
+<P> If a variable reference needs to be substituted in the middle of a
+    string, it can be done by enclosing the reference in braces,
+    <EM>&aacute; la</EM> shell substitution:
+
+<PRE>
+    &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" -->
+</PRE>
+
+<P> will result in the <SAMP>Zed</SAMP> variable being set to
+    &quot;<SAMP>X_Y</SAMP>&quot; if <SAMP>REMOTE_HOST</SAMP> is
+    &quot;<SAMP>X</SAMP>&quot; and <SAMP>REQUEST_METHOD</SAMP> is
+    &quot;<SAMP>Y</SAMP>&quot;.
+
 <P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is 
 /foo/file.html, "in bar" if it is /bar/file.html and "in neither" 
 otherwise:
