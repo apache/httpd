@@ -41,7 +41,6 @@ always available.
 <LI><A HREF="#errorlog">ErrorLog</A>
 <LI><A HREF="#files">&lt;Files&gt;</A>
 <LI><A HREF="#filesmatch">&lt;FilesMatch&gt;</A>
-<LI><A HREF="#group">Group</A>
 <LI><A HREF="#hostnamelookups">HostNameLookups</A>
 <LI><A HREF="#identitycheck">IdentityCheck</A>
 <LI><A HREF="#ifdefine">&lt;IfDefine&gt;</A>
@@ -55,8 +54,6 @@ always available.
 <LI><A HREF="#limitrequestfields">LimitRequestFields</A>
 <LI><A HREF="#limitrequestfieldsize">LimitRequestFieldsize</A>
 <LI><A HREF="#limitrequestline">LimitRequestLine</A>
-<LI><A HREF="#listen">Listen</A>
-<LI><A HREF="#listenbacklog">ListenBacklog</A>
 <LI><A HREF="#location">&lt;Location&gt;</A>
 <LI><A HREF="#locationmatch">&lt;LocationMatch&gt;</A>
 <LI><A HREF="#loglevel">LogLevel</A>
@@ -71,7 +68,6 @@ always available.
 <LI><A HREF="#rlimitnproc">RLimitNPROC</A>
 <LI><A HREF="#satisfy">Satisfy</A>
 <LI><A HREF="#scriptinterpretersource">ScriptInterpreterSource</A>
-<LI><A HREF="#sendbuffersize">SendBufferSize</A>
 <LI><A HREF="#serveradmin">ServerAdmin</A>
 <LI><A HREF="#serveralias">ServerAlias</A>
 <LI><A HREF="#servername">ServerName</A>
@@ -83,7 +79,6 @@ always available.
 <LI><A HREF="#threadstacksize">ThreadStackSize</A>
 <LI><A HREF="#timeout">TimeOut</A>
 <LI><A HREF="#usecanonicalname">UseCanonicalName</A>
-<LI><A HREF="#user">User</A>
 <LI><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
 </UL>
 <HR>
@@ -966,56 +961,6 @@ different sections are combined when a request is received
 
 <HR>
 
-<H2><A NAME="group">Group directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> Group <EM>unix-group</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>Group #-1</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0<P>
-
-The Group directive sets the group under which the server will answer requests.
-In order to use this directive, the stand-alone server must be run initially
-as root. <EM>Unix-group</EM> is one of:
-<DL>
-<DT>A group name
-<DD>Refers to the given group by name.
-<DT># followed by a group number.
-<DD>Refers to a group by its number.
-</DL>
-
-It is recommended that you set up a new group specifically for running the
-server. Some admins use user <CODE>nobody</CODE>, but this is not always
-possible or desirable.<P>
-
-Note: if you start the server as a non-root user, it will fail to change
-to the specified group, and will instead continue to run as the group of the
-original user. <P>
-
-Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
-When used inside a &lt;VirtualHost&gt; in this manner, only the group
-that CGIs are run as is affected.  Non-CGI requests are still processed
-as the group specified in the main Group directive.<P>
-
-SECURITY: See <A HREF="#user">User</A> for a discussion of the security
-considerations.<P><HR>
-
 <H2><A NAME="hostnamelookups">HostNameLookups directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
 <A
@@ -1596,107 +1541,6 @@ of denial-of-service attacks.  Under normal conditions, the value should
 not be changed from the default.<P>
 
 <P><HR>
-
-<H2><A NAME="listen">Listen directive</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A>
-Listen [<EM>IP address</EM>:]<EM>port number</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Listen is only available in Apache
-1.1 and later. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
-
-<P>The Listen directive instructs Apache to listen to more than one IP
-address or port; by default it responds to requests on all IP
-interfaces, but only on the port given by the <CODE><A
-HREF="#port">Port</A></CODE> directive.</P>
-
-<TT>Listen</TT> can be used instead of <TT><A
-HREF="#bindaddress">BindAddress</A></TT> and <TT>Port</TT>. It tells
-the server to accept incoming requests on the specified port or
-address-and-port combination. If the first format is used, with a port
-number only, the server listens to the given port on all interfaces,
-instead of the port given by the <TT>Port</TT> directive. If an IP
-address is given as well as a port, the server will listen on the
-given port and interface.  <P>
-
-Note that you may still require a <TT>Port</TT> directive so
-that URLs that Apache generates that point to your server still
-work.<P>
-
-Multiple Listen directives may be used
-to specify a number of addresses and ports to listen to. The server
-will respond to requests from any of the listed addresses and
-ports. 
-<P>
-
-For example, to make the server accept connections on both port
-80 and port 8000, use:
-<PRE>
-   Listen 80
-   Listen 8000
-</PRE>
-
-To make the server accept connections on two specified
-interfaces and port numbers, use
-<PRE>
-   Listen 192.170.2.1:80
-   Listen 192.170.2.5:8000
-</PRE>
-
-<P><STRONG>See Also:</STRONG>
-<A HREF="../dns-caveats.html">DNS Issues</A><BR>
-<STRONG>See Also:</STRONG>
-<A HREF="../bind.html">Setting which addresses and ports Apache uses</A><BR>
-<STRONG>See Also:</STRONG>
-<A HREF="http://www.apache.org/info/known_bugs.html#listenbug">Known Bugs</A>
-</P>
-<HR>
-
-<H2><A NAME="listenbacklog">ListenBacklog directive</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ListenBacklog <EM>backlog</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ListenBacklog 511</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> ListenBacklog is only available in Apache
-versions after 1.2.0. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
-
-<P>The maximum length of the queue of pending connections.  Generally no
-tuning is needed or desired, however on some systems it is desirable
-to increase this when under a TCP SYN flood attack.  See
-the backlog parameter to the <CODE>listen(2)</CODE> system call.
-
-<P>This will often be limited to a smaller number by the operating
-system.  This varies from OS to OS.  Also note that many OSes do not
-use exactly what is specified as the backlog, but use a number based on
-(but normally larger than) what is set.
-<HR>
 
 <H2><A NAME="location">&lt;Location&gt; directive</A></H2>
 
@@ -2467,31 +2311,6 @@ the #! line in the script.  Setting ScriptInterpreterSource registry will cause 
 Windows Registry to be searched using the script file extension (e.g., .pl) as a search key.
 <P><HR>
 
-<H2><A NAME="sendbuffersize">SendBufferSize directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> SendBufferSize <EM>bytes</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
-
-The server will set the TCP buffer size to the number of bytes
-specified. Very useful to increase past standard OS defaults on high
-speed high latency (<EM>i.e.</EM>, 100ms or so, such as transcontinental
-fast pipes)
-<P><HR>
-
 <H2><A NAME="serveradmin">ServerAdmin directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt ServerAdmin} directive&gt; -->
 <A
@@ -2913,64 +2732,6 @@ self-referential URLs then it should be just fine.
 <A HREF="#port">Port</A>
 
 <P><HR>
-
-<H2><A NAME="user">User directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> User <EM>unix-userid</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>User #-1</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
-
-The User directive sets the userid as which the server will answer requests.
-In order to use this directive, the standalone server must be run initially
-as root. <EM>Unix-userid</EM> is one of:
-<DL>
-<DT>A username
-<DD>Refers to the given user by name.
-<DT># followed by a user number.
-<DD>Refers to a user by their number.
-</DL>
-
-The user should have no privileges which result in it being able to access
-files which are not intended to be visible to the outside world, and
-similarly, the user should not be able to execute code which is not
-meant for httpd requests. It is recommended that you set up a new user and
-group specifically for running the server. Some admins use user
-<CODE>nobody</CODE>, but this is not always possible or desirable.
-For example mod_proxy's cache, when enabled, must be accessible to this user
-(see the <A HREF="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE>
-directive</A>).<P>
-
-Notes: If you start the server as a non-root user, it will fail to change
-to the lesser privileged user, and will instead continue to run as
-that original user. If you do start the server as root, then it is normal
-for the parent process to remain running as root.<P>
-
-Special note: Use of this directive in &lt;VirtualHost&gt; requires a
-properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
-When used inside a &lt;VirtualHost&gt; in this manner, only the user
-that CGIs are run as is affected.  Non-CGI requests are still processed
-with the user specified in the main User directive.<P>
-
-SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
-<CODE>root</CODE> unless you know exactly what you are doing, and what the
-dangers are.<P><HR>
 
 <H2><A NAME="virtualhost">&lt;VirtualHost&gt; directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt VirtualHost} section directive&gt; -->
