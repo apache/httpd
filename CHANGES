@@ -1,9 +1,15 @@
 Changes with Apache 2.0.40
 
+  *) Set aside the apr-iconv and apr_xlate() features for the Win32
+     build of 2.0.40 so development can be completed.  A patch, from
+     <http://www.apache.org/dist/httpd/patches/apply_to_2.0.40/>
+     will be available for those that wish to work with apr-iconv.
+     [William Rowe]
+
   *) Fix proxy so that it is possible to access ftp: URLs via a proxy
      chain. [Peter Van Biesen <peter.vanbiesen@vlafo.be>]
 
-  *) mod-defalte now checks to make sure that 'gzip-only-text/html' is
+  *) mod-deflate now checks to make sure that 'gzip-only-text/html' is
      set to 1, so we can exclude things from the general case with
      browsermatch. [Ian Holsman, Andre Schild <A.Schild@aarboard.ch>]
   
