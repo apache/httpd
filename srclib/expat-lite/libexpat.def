@@ -1,7 +1,7 @@
-; expatlib.def
+; libexpat.def
 
-LIBRARY expatlib
-DESCRIPTION ''
+LIBRARY libexpat
+DESCRIPTION 'expat-lite XML Parsing Library'
 
 EXPORTS
    XmlGetUtf16InternalEncoding

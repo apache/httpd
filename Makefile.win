@@ -133,31 +133,33 @@ _install:
 	-mkdir "$(INSTDIR)\htdocs\manual"
 	-mkdir "$(INSTDIR)\icons"
 	-mkdir "$(INSTDIR)\include"
+	-mkdir "$(INSTDIR)\include\xml"
+	-mkdir "$(INSTDIR)\include\pcre"
 	-mkdir "$(INSTDIR)\lib"
 	-mkdir "$(INSTDIR)\libexec"
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
-	copy Apache$(SHORT)\Apache.exe "$(INSTDIR)"
-	copy Core$(SHORT)\ApacheCore.dll "$(INSTDIR)"
-	copy srclib\apr\$(LONG)\aprlib.dll "$(INSTDIR)"
-        copy srclib\apr-util\$(LONG)\apr-util.dll "$(INSTDIR)"
-        copy srclib\expat-lite\$(LONG)\expatlib.dll "$(INSTDIR)"
-        copy modules\aaa\mod_auth_anon$(SHORT)\mod_auth_anon.dll "$(INSTDIR)\modules"
-	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll "$(INSTDIR)\modules"
-	copy modules\aaa\mod_auth_digest$(SHORT)\mod_auth_digest.dll "$(INSTDIR)\modules"
-	copy modules\cache\mod_file_cache$(SHORT)\mod_file_cache.dll "$(INSTDIR)\modules"
-        copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll "$(INSTDIR)\modules"
-        copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll "$(INSTDIR)\modules"
-#       copy modules\generators\mod_info$(SHORT)\mod_info.dll "$(INSTDIR)\modules"
-        copy modules\generators\mod_status$(SHORT)\mod_status.dll "$(INSTDIR)\modules"
-        copy modules\mappers\mod_rewrite$(SHORT)\mod_rewrite.dll "$(INSTDIR)\modules"
-	copy modules\mappers\mod_speling$(SHORT)\mod_speling.dll "$(INSTDIR)\modules"
-	copy modules\metadata\mod_cern_meta$(SHORT)\mod_cern_meta.dll "$(INSTDIR)\modules"
-	copy modules\metadata\mod_expires$(SHORT)\mod_expires.dll "$(INSTDIR)\modules"
-	copy modules\metadata\mod_headers$(SHORT)\mod_headers.dll "$(INSTDIR)\modules"
-	copy modules\metadata\mod_usertrack$(SHORT)\mod_usertrack.dll "$(INSTDIR)\modules"
-#       copy modules\proxy\mod_proxy$(SHORT)\mod_proxy.dll "$(INSTDIR)\modules"
+	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
+	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
+	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
+        copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
+        copy srclib\expat-lite\$(LONG)\libexpat.dll "$(INSTDIR)\bin"
+        copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
+	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
+	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
+	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules"
+        copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules"
+        copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules"
+#       copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
+        copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
+        copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
+	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
+#       copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
         copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
         copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
@@ -170,10 +172,39 @@ A
         xcopy docs\manual "$(INSTDIR)\htdocs\manual" /s /d < <<
 A
 <<
+	xcopy include\*.h "$(INSTDIR)\include" /d < <<
+A
+<<
+	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < <<
+A
+<<
+	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < <<
+A
+<<
+	xcopy srclib\expat-lite\*.h "$(INSTDIR)\include\xml" /d < <<
+A
+<<
+	xcopy srclib\pcre\*.h "$(INSTDIR)\include\pcre" /d < <<
+A
+<<
         xcopy docs\icons "$(INSTDIR)\icons" /s /d < <<
 A
 <<
-        copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
+	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib"
+	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib"
+	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib"
+	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib"
+	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\libexec"
+	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\libexec"
+	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\libexec"
+	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\libexec"
+	copy srclib\expat-lite\$(LONG)\libexpat.lib "$(INSTDIR)\libexec"
+	copy srclib\expat-lite\$(LONG)\libexpat.exp "$(INSTDIR)\libexec"
+	copy $(LONG)\libhttpd.exp "$(INSTDIR)\libexec"
+	copy $(LONG)\libhttpd.lib "$(INSTDIR)\libexec"
+	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\libexec"
+	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\libexec"
+	copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
         if not exist "$(INSTDIR)\conf\magic" \
             copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
         copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
