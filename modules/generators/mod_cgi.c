@@ -542,7 +542,7 @@ static int cgi_handler(request_rec *r)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     char argsbuffer[HUGE_STRING_LEN];
-    int is_included = !strcmp(r->protocol, "INCLUDED");
+    int is_included;
     apr_pool_t *p;
     cgi_server_conf *conf;
     apr_status_t rv;
@@ -550,6 +550,8 @@ static int cgi_handler(request_rec *r)
 
     if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
 	return DECLINED;
+
+    is_included = !strcmp(r->protocol, "INCLUDED");
 
     p = r->main ? r->main->pool : r->pool;
 
