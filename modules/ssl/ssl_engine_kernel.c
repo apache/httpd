@@ -1406,7 +1406,7 @@ int ssl_callback_SSLVerify_CRL(
          * Log information about CRL
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
-        if (ssl_log_applies(s, SSL_LOG_TRACE)) {
+        if (sc->nLogLevel >= SSL_LOG_TRACE) {
             bio = BIO_new(BIO_s_mem());
             BIO_printf(bio, "lastUpdate: ");
             ASN1_UTCTIME_print(bio, X509_CRL_get_lastUpdate(crl));
