@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ko"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.4.2.3 -->
 
 <moduleindex metafile="index.xml.meta">
   <title>모듈 목록</title>

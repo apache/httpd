@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ko"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.7.2.2 -->
 
 <directiveindex metafile="directives.xml.meta">
   <title>지시어 목록</title>
