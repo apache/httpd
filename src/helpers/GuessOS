@@ -247,7 +247,9 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     *:4.0:2:*)
 	echo "whatever-unisys-sysv4"; exit 0;
 	;;
-
+    *:*:dcosx:NILE*)
+	echo "pyramid-pyramid-svr4"; exit 0;
+	;;
 esac
 
 #

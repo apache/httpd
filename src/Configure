@@ -612,7 +612,7 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
-    NILE*-*-*DC-OSx*dcosx)
+    pyramid-pyramid-svr4)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4 -DNO_LONG_DOUBLE"
 	DEF_WANTHSREGEX=yes
