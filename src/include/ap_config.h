@@ -87,6 +87,7 @@ char *crypt(char *pw, char *salt);
 #undef HAS_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
+#define NEED_STRINGS_H
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
@@ -337,6 +338,9 @@ extern char *rindex(const char *,char);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef NEED_STRINGS_H
+#include <strings.h>
+#endif
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <sys/socket.h>
