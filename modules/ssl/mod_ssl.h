@@ -742,14 +742,14 @@ void          ssl_ds_table_wipeout(ssl_ds_table *);
 void          ssl_ds_table_kill(ssl_ds_table *);
 
 unsigned char *ssl_asn1_table_set(apr_hash_t *table,
-                                  const void *key,
+                                  const char *key,
                                   long int length);
 
 ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
-                               const void *key);
+                               const char *key);
 
 void ssl_asn1_table_unset(apr_hash_t *table,
-                          const void *key);
+                          const char *key);
 
 /*  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
