@@ -1,5 +1,9 @@
 Changes with Apache 2.0.29-dev
 
+  *) Allow SUEXEC_BIN (the path to the suexec binary that is
+     hard-coded into the server) to be specified to the configure
+     script by the --with-suexec-bin parameter.  [Aaron Bannert]
+
   *) Fix segv in worker MPM following accept on pipe-of-death
      [Brian Pane]
 
