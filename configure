@@ -178,6 +178,18 @@ case "`$TAR --version 2>/dev/null`" in
 esac
 
 ##
+##  determine path to sh, it's not /bin/sh on ALL systems
+##
+SHELL=/bin/sh
+if [ ! -f "$SHELL" ]; then
+    SHELL="`$aux/PrintPath sh`"
+    if [ "x$SHELL" = "x" ]; then
+        echo "configure:Error: Cannot determine path to Bourne-Shell" 1>&2
+        exit 1
+    fi
+fi
+
+##
 ##  determine default parameters
 ##
 
@@ -1115,7 +1127,8 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@build_support@%$build_support%g" \
 -e "s%@install_support@%$install_support%g" \
 -e "s%@clean_support@%$clean_support%g" \
--e "s%@distclean_support@%$distclean_support%g"
+-e "s%@distclean_support@%$distclean_support%g" \
+-e "s%@SHELL@%$SHELL%g"
 
 ##
 ##  override default paths in $src/include/httpd.h
