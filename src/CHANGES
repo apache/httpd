@@ -112,7 +112,7 @@ Changes with Apache 1.3a2
      generated Makefiles. [Paul Sutton]
 
   *) Source core re-organisation: distibuted modules are now in 
-     modules/standard. All other source code is in core. OS-specific
+     modules/standard. All other source code is in main. OS-specific
      code is in os/{unix,emx,win32} directories. [Paul Sutton]
 
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
