@@ -14,7 +14,7 @@ $(LTLIBRARY_OBJECTS) dftables.lo: config.h
 dftables: dftables.lo
 	$(LINK) $(EXTRA_LDFLAGS) dftables.lo $(EXTRA_LIBS)
 
-$(srcdir)/chartables.c: dftables
+chartables.c: dftables
 	./dftables > $@
 
 pcre.lo: chartables.c
