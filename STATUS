@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/27 00:18:03 $]
+Last modified at [$Date: 2004/03/27 19:07:29 $]
 
 Release:
 
@@ -71,6 +71,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_include: remove "recursive-include" check, it's no longer
+       necessary and forbids legal actions.
+          modules/filters/mod_include.c: r1.296
+       +1: nd
+
+    *) mod_alias: Emit a warning if an alias overlaps another
+          modules/mappers/mod_alias.c: r1.45, 1.46, 1.47, 1.48, 1.55
+      +1: nd
 
     *) mod_ssl: Disable the extra session caching in OpenSSL to prevent
        memory leak. PR: 26562.
