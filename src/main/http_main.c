@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.74 1996/10/01 00:12:26 fielding Exp $ */
+/* $Id: http_main.c,v 1.75 1996/10/02 00:31:52 jim Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -122,7 +122,9 @@ int standalone;
 uid_t user_id;
 char *user_name;
 gid_t group_id;
+#ifdef MULTIPLE_GROUPS
 gid_t group_id_list[NGROUPS_MAX];
+#endif
 int max_requests_per_child;
 char *pid_fname;
 char *scoreboard_fname;
@@ -1137,12 +1139,12 @@ static void set_group_privs()
 	log_unixerr("initgroups", NULL, "unable to set groups", server_conf);
 	exit (1);
     }
-
+#ifdef MULTIPLE_GROUPS
     if (getgroups(NGROUPS_MAX, group_id_list) == -1) {
 	log_unixerr("getgroups", NULL, "unable to get group list", server_conf);
 	exit (1);
     }
-
+#endif
     if (setgid(group_id) == -1) {
 	log_unixerr("setgid", NULL, "unable to set group id", server_conf);
 	exit (1);

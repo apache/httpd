@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.21 1996/09/30 05:56:27 brian Exp $ */
+/* $Id: util.c,v 1.22 1996/10/02 00:31:52 jim Exp $ */
 
 /*
  * str.c: string utility things
@@ -919,7 +919,9 @@ int is_url(char *u) {
 }
 
 int can_exec(struct stat *finfo) {
+#ifdef MULTIPLE_GROUPS
   int cnt;
+#endif
 #ifdef __EMX__
     /* OS/2 dosen't have Users and Groups */
     return (finfo->st_mode & S_IEXEC);
@@ -927,13 +929,16 @@ int can_exec(struct stat *finfo) {
     if(user_id == finfo->st_uid)
         if(finfo->st_mode & S_IXUSR)
             return 1;
+    if(group_id == finfo->st_gid)
+        if(finfo->st_mode & S_IXGRP)
+            return 1;
+#ifdef MULTIPLE_GROUPS
     for(cnt=0; cnt < NGROUPS_MAX; cnt++) {
         if(group_id_list[cnt] == finfo->st_gid)
             if(finfo->st_mode & S_IXGRP)
                 return 1;
-	    else
-	    	break;
     }
+#endif
     return (finfo->st_mode & S_IXOTH);
 #endif    
 }
