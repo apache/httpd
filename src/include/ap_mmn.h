@@ -244,16 +244,17 @@
 	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
 	    && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
 
-/* For example, suppose you wish to use the ap_overlap_tables
-   function.  You can do this:
-
-#if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
-    ... use ap_overlap_tables()
-#else
-    ... alternative code which doesn't use ap_overlap_tables()
-#endif
-
-*/
+/*
+ * For example, suppose you wish to use the ap_overlap_tables
+ * function.  You can do this:
+ *
+ * #if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
+ *    ... use ap_overlap_tables()
+ * #else
+ *    ... alternative code which doesn't use ap_overlap_tables()
+ * #endif
+ *
+ */
 
 /* deprecated. present for backwards compatibility */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR
