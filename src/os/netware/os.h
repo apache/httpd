@@ -147,6 +147,7 @@ void ap_os_dso_init(void);
 void *ap_os_dso_load(const char *);
 void ap_os_dso_unload(void *);
 void *ap_os_dso_sym(void *, const char *);
+void ap_os_dso_unsym(void *handle, const char *symname);
 const char *ap_os_dso_error(void);
 char *remove_filename(char*);
 char *bslash2slash(char*);

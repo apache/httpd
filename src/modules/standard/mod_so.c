@@ -179,6 +179,9 @@ static void unload_module(moduleinfo *modi)
     ap_remove_loaded_module(modi->modp);
 
     /* unload the module space itself */
+#ifdef NETWARE
+    ap_os_dso_unsym((ap_os_dso_handle_t)modi->modp->dynamic_load_handle, modi->name);
+#endif
     ap_os_dso_unload((ap_os_dso_handle_t)modi->modp->dynamic_load_handle);
 
     /* destroy the module information */

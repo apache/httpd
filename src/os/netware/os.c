@@ -97,6 +97,11 @@ void *ap_os_dso_sym(void *handle, const char *symname)
     return ImportSymbol((int)GetNLMHandle(), (char *)symname);
 }
 
+void ap_os_dso_unsym(void *handle, const char *symname)
+{
+    UnimportSymbol((int)GetNLMHandle(), (char *)symname);
+}
+
 const char *ap_os_dso_error(void)
 {
     return NULL;
