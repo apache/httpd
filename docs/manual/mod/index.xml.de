@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.de"> ]
->
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.4.2.6 -->
+<!-- English Revision: 1.4.2.7 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -35,6 +33,4 @@
   </seealso>
   <seealso><a href="quickreference.html">Kurzreferenz der Direktiven</a>
   </seealso>
-
-  &allmodules;
 </moduleindex>

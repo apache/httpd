@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.es"> ]
->
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1.4.2.6  -->
-
+<!-- English Revision: 1.4.2.7  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -38,7 +35,5 @@
   <seealso><a href="quickreference.html">Gu&#237;a R&#225;pida de Referencia de
   Directivas</a>
   </seealso>
-
-  &allmodules;
 </moduleindex>
 
