@@ -188,15 +188,6 @@ AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard, apr_pool_cleanup_null);
 }
 
-/* ToDo:
- * reinit_scoreboard should be eliminated when all MPMs migrate to
- * ap_create_scoreboard()
- */
-void reinit_scoreboard(apr_pool_t *p)
-{
-    ap_create_scoreboard(p, SB_SHARED);
-}
-
 /* Routines called to deal with the scoreboard image
  * --- note that we do *not* need write locks, since update_child_status
  * only updates a *single* record in place, and only one process writes to

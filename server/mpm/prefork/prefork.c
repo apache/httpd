@@ -1088,7 +1088,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
     if (!is_graceful) {
-	reinit_scoreboard(pconf);
+        ap_create_scoreboard(pconf, SB_SHARED);
     }
 #ifdef SCOREBOARD_FILE
     else {
