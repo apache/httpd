@@ -645,10 +645,11 @@ static void strip_paren_comments(char *hdr)
 
     while (*hdr) {
         if (*hdr == '"') {
-            while (*++hdr && *hdr != '"') {
-                continue;
-            }
-            ++hdr;
+	    hdr = strchr(hdr, '"');
+	    if (hdr == NULL) {
+		return;
+	    }
+	    ++hdr;
         }
         else if (*hdr == '(') {
             while (*hdr && *hdr != ')') {

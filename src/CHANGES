@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Fix a potential SEGV problem in mod_negotiation when dealing
+     with type-maps.  [Dean Gaudet]
+
   *) Better glibc support under Linux.  [Dean Gaudet] PR#1542
 
   *) "RedirectMatch gone /" would cause a SIGSEGV. [Dean Gaudet] PR#1319
