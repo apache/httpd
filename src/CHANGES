@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) Fix handling of unsigned ints in ap_snprintf() on some chips such
+     as the DEC Alpha which is 64-bit but uses 32-bit ints. 
+     [Dean Gaudet, Ken the Rodent]
+
   *) Return a 302 response code to the client when sending a redirect
      due to a missing trailing '/' on a directory instead of a 301; now
      it is cacheable. [Markus Gyger]

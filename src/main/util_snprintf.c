@@ -671,13 +671,26 @@ static int format_converter(register buffy * odp, const char *fmt,
 	     *   It is reset to ' ' by non-numeric formats
 	     */
 	    switch (*fmt) {
-	    case 'd':
-	    case 'i':
 	    case 'u':
 		if (is_long)
-		    i_num = va_arg(ap, wide_int);
+		    i_num = va_arg(ap, u_wide_int);
 		else
-		    i_num = (wide_int) va_arg(ap, int);
+		    i_num = (wide_int) va_arg(ap, unsigned int);
+		/*
+		 * The rest also applies to other integer formats, so fall
+		 * into that case.
+		 */
+	    case 'd':
+	    case 'i':
+		/*
+		 * Get the arg if we haven't already.
+		 */
+		if ((*fmt) != 'u') {
+		    if (is_long)
+			i_num = va_arg(ap, wide_int);
+		    else
+			i_num = (wide_int) va_arg(ap, int);
+		};
 		s = conv_10(i_num, (*fmt) == 'u', &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
