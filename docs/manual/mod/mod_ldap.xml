@@ -253,7 +253,7 @@ by other LDAP modules</description>
 
 <directivesynopsis>
 <name>LDAPCacheEntries</name>
-<description>Maximum number of entires in the primary LDAP cache</description>
+<description>Maximum number of entries in the primary LDAP cache</description>
 <syntax>LDAPCacheEntries <var>number</var></syntax>
 <default>LDAPCacheEntries 1024</default>
 <contextlist><context>server config</context></contextlist>
