@@ -303,7 +303,7 @@ A simple shell script to do it (execute within the errordocs/ dir):
  variable within an error document:
 </P>
 <PRE>
- &lt;!--#if expr="\"$REDIRECT_ERROR_NOTES\" = \"\"" --&gt;
+ &lt;!--#if expr="$REDIRECT_ERROR_NOTES = ''" --&gt;
   &lt;p&gt;
    The server encountered an unexpected condition
    which prevented it from fulfilling the request. 
@@ -340,7 +340,7 @@ documents, or to translate the error documents to different languages.
    modifications.
    &lt;/P&gt;
    &lt;P&gt;
-   &lt;!--#if expr="\"$HTTP_REFERER\" != \"\"" --&gt;
+   &lt;!--#if expr="$HTTP_REFERER != ''" --&gt;
     Please inform the owner of
     &lt;A HREF="&lt;!--#echo var="HTTP_REFERER" --&gt;"&gt;the referring page&lt;/A&gt; about 
     the malformed link.
@@ -361,7 +361,7 @@ appears to support it (the latter requires server configuration lines
 of the form <BR><CODE>BrowserMatch "^Mozilla/[2-4]" anigif</CODE><BR>
 for browser types which support animated GIFs).
 <HR><PRE>
-&lt;!--#if expr="\"$SERVER_NAME\" = /.*\.mycompany\.com/" 
+&lt;!--#if expr="$SERVER_NAME = /.*\.mycompany\.com/" 
 --&gt;&lt;!--#set var="IMG_CorpLogo"
             value="http://$SERVER_NAME:$SERVER_PORT/errordocs/CorpLogo.gif" 
 --&gt;&lt;!--#set var="ALT_CorpLogo" value="Powered by Linux!" 
