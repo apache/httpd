@@ -76,7 +76,6 @@
 
 /*
  Todo list
- - Fix log file clashing between child processes
  - Enforce MaxClients somehow
  - Catch thread exceptions & initiate graceful shutdown of child process
 */
