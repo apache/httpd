@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Allow instdso.sh to work with full paths to the shared module.
+     [Justin Erenkrantz]
+
   *) NetWare: Enabled CGI functionality and added mod_cgi as a built
      in module for NetWare  [Brad Nicholes]
 
