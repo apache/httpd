@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>Apache-2.0 Documentation</title>
+</head>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<h2>Manual Index for Apache-2.0</h2>
+<p>The documentation has been split into 2 sections.  One is for people installing and configuring an Apache server, the other is for those who are developing the server.</p>
+<h3 align="center">Where do you want to go today?</h3>
+<table width="100%">
+<tr>
+<td width="50%" align="center">
+<a href="user/index.html">I'm configuring/installing a server</a>
+</td>
+<td width="50%" align="center">
+<a href="developer/index.html">I'm a developer</a>
+</td>
+</tr>
+</table>
+<hr>
+<i>David Reid, 15<sup>th</sup> January 2000</i>
+</body>
+</html>
+
