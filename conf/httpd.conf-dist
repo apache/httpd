@@ -61,6 +61,12 @@ ServerRoot @@ServerRoot@@
 
 ErrorLog logs/error_log
 
+# LogLevel: Control the number of messages logged to the error_log.
+# Possible values include: debug, info, notice, warn, error, crit,
+# alert, emerg.
+
+LogLevel warn
+
 # TransferLog: The location of the transfer log file. If this does not
 # start with /, ServerRoot is prepended to it.
 
