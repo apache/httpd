@@ -93,6 +93,11 @@
  *         no control is passed along.
  */
 
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -100,9 +105,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"  /* for ap_hook_(check_user_id | auth_check) */
-#include "apr_lib.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
+
 #ifdef HAVE_DB_H
 #include <db.h>
 #endif
@@ -124,12 +127,12 @@ typedef struct {
 
 static void *create_db_auth_dir_config(apr_pool_t *p, char *d)
 {
-    db_auth_config_rec *sec
-    = (db_auth_config_rec *) apr_pcalloc(p, sizeof(db_auth_config_rec));
-    sec->auth_dbpwfile = NULL;
-    sec->auth_dbgrpfile = NULL;
-    sec->auth_dbauthoritative = 1;	/* fortress is secure by default */
-    return sec;
+    db_auth_config_rec *conf = apr_pcalloc(p, sizeof(*conf));
+
+    conf->auth_dbpwfile = NULL;
+    conf->auth_dbgrpfile = NULL;
+    conf->auth_dbauthoritative = 1;	/* fortress is secure by default */
+    return conf;
 }
 
 static const char *set_db_slot(cmd_parms *cmd, void *offset, const char *f, const char *t)
@@ -291,9 +294,8 @@ static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile)
 
 static int db_authenticate_basic_user(request_rec *r)
 {
-    db_auth_config_rec *sec =
-    (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-						&auth_db_module);
+    db_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                    &auth_db_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
     apr_status_t invalid_pw;
@@ -302,14 +304,14 @@ static int db_authenticate_basic_user(request_rec *r)
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
-    if (!sec->auth_dbpwfile) {
+    if (!conf->auth_dbpwfile) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "DB file %s not found", sec->auth_dbpwfile);
+		      "DB file %s not found", conf->auth_dbpwfile);
 	return DECLINED;
     }
 
-    if (!(real_pw = get_db_pw(r, r->user, sec->auth_dbpwfile))) {
-	if (!(sec->auth_dbauthoritative))
+    if (!(real_pw = get_db_pw(r, r->user, conf->auth_dbpwfile))) {
+	if (!(conf->auth_dbauthoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "DB user %s not found: %s", r->user, r->filename);
@@ -339,9 +341,8 @@ static int db_authenticate_basic_user(request_rec *r)
 
 static int db_check_auth(request_rec *r)
 {
-    db_auth_config_rec *sec =
-    (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-						&auth_db_module);
+    db_auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                    &auth_db_module);
     char *user = r->user;
     int m = r->method_number;
 
@@ -352,7 +353,7 @@ static int db_check_auth(request_rec *r)
     const char *t;
     char *w;
 
-    if (!sec->auth_dbgrpfile)
+    if (!conf->auth_dbgrpfile)
 	return DECLINED;
     if (!reqs_arr)
 	return DECLINED;
@@ -365,16 +366,16 @@ static int db_check_auth(request_rec *r)
 	t = reqs[x].requirement;
 	w = ap_getword_white(r->pool, &t);
 
-	if (!strcmp(w, "group") && sec->auth_dbgrpfile) {
+	if (!strcmp(w, "group") && conf->auth_dbgrpfile) {
 	    const char *orig_groups, *groups;
 	    char *v;
 
-	    if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
-		if (!(sec->auth_dbauthoritative))
+	    if (!(groups = get_db_grp(r, user, conf->auth_dbgrpfile))) {
+		if (!(conf->auth_dbauthoritative))
 		    return DECLINED;
 		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			      "user %s not in DB group file %s: %s",
-			      user, sec->auth_dbgrpfile, r->filename);
+			      user, conf->auth_dbgrpfile, r->filename);
 		ap_note_basic_auth_failure(r);
 		return HTTP_UNAUTHORIZED;
 	    }
@@ -400,8 +401,9 @@ static int db_check_auth(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(db_authenticate_basic_user,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_auth_checker(db_check_auth,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(db_authenticate_basic_user, NULL, NULL,
+                          APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(db_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module auth_db_module =
