@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Optimization for the BNDM string-search function in
+     mod_include.  [Brian Pane]
+
   *) Fixed the behavior of the XBitHack directive.
      [Taketo Kabe <kabe@sra-tohoku.co.jp>, Cliff Woolley] PR#8804
 
