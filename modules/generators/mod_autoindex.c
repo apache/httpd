@@ -58,10 +58,10 @@
 
 /*
  * mod_autoindex.c: Handles the on-the-fly html index generation
- * 
+ *
  * Rob McCool
  * 3/23/93
- * 
+ *
  * Adapted to Apache by rst.
  *
  * Version sort added by Martin Pool <mbp@humbug.org.au>.
@@ -367,8 +367,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
             option = FANCY_INDEXING;
         }
         else if (!strcasecmp(w, "FoldersFirst")) {
-            option = FOLDERS_FIRST; 
-        } 
+            option = FOLDERS_FIRST;
+        }
         else if (!strcasecmp(w, "HTMLTable")) {
             option = TABLE_INDEXING;
         }
@@ -406,8 +406,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
             option = SUPPRESS_RULES;
         }
         else if (!strcasecmp(w, "TrackModified")) {
-            option = TRACK_MODIFIED; 
-        } 
+            option = TRACK_MODIFIED;
+        }
         else if (!strcasecmp(w, "VersionSort")) {
             option = VERSION_SORT;
         }
@@ -473,30 +473,30 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
             }
         }
         else if (!strcasecmp(w, "DescriptionWidth")) {
-            if (action != '-') { 
-                return "DescriptionWidth with no value may only appear as " 
-                       "'-DescriptionWidth'"; 
-            } 
-            d_cfg->desc_width = DEFAULT_DESC_WIDTH; 
-            d_cfg->desc_adjust = K_NOADJUST; 
-        } 
+            if (action != '-') {
+                return "DescriptionWidth with no value may only appear as "
+                       "'-DescriptionWidth'";
+            }
+            d_cfg->desc_width = DEFAULT_DESC_WIDTH;
+            d_cfg->desc_adjust = K_NOADJUST;
+        }
         else if (!strncasecmp(w, "DescriptionWidth=", 17)) {
-            if (action == '-') { 
-                return "Cannot combine '-' with DescriptionWidth=n"; 
-            } 
-            if (w[17] == '*') { 
-                d_cfg->desc_adjust = K_ADJUST; 
-            } 
+            if (action == '-') {
+                return "Cannot combine '-' with DescriptionWidth=n";
+            }
+            if (w[17] == '*') {
+                d_cfg->desc_adjust = K_ADJUST;
+            }
             else {
-                int width = atoi(&w[17]); 
+                int width = atoi(&w[17]);
 
-                if (width && (width < 12)) { 
-                    return "DescriptionWidth value must be greater than 12"; 
-                } 
-                d_cfg->desc_width = width; 
-                d_cfg->desc_adjust = K_NOADJUST; 
-            } 
-        } 
+                if (width && (width < 12)) {
+                    return "DescriptionWidth value must be greater than 12";
+                }
+                d_cfg->desc_width = width;
+                d_cfg->desc_adjust = K_NOADJUST;
+            }
+        }
         else {
             return "Invalid directory indexing option";
         }
@@ -562,18 +562,21 @@ static const char *set_default_order(cmd_parms *cmd, void *m,
 
 static const command_rec autoindex_cmds[] =
 {
-    AP_INIT_ITERATE2("AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS, 
+    AP_INIT_ITERATE2("AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS,
                      "an icon URL followed by one or more filenames"),
     AP_INIT_ITERATE2("AddIconByType", add_icon, BY_TYPE, DIR_CMD_PERMS,
                      "an icon URL followed by one or more MIME types"),
     AP_INIT_ITERATE2("AddIconByEncoding", add_icon, BY_ENCODING, DIR_CMD_PERMS,
                      "an icon URL followed by one or more content encodings"),
     AP_INIT_ITERATE2("AddAlt", add_alt, BY_PATH, DIR_CMD_PERMS,
-                     "alternate descriptive text followed by one or more filenames"),
+                     "alternate descriptive text followed by one or more "
+                     "filenames"),
     AP_INIT_ITERATE2("AddAltByType", add_alt, BY_TYPE, DIR_CMD_PERMS,
-                     "alternate descriptive text followed by one or more MIME types"),
+                     "alternate descriptive text followed by one or more MIME "
+                     "types"),
     AP_INIT_ITERATE2("AddAltByEncoding", add_alt, BY_ENCODING, DIR_CMD_PERMS,
-                     "alternate descriptive text followed by one or more content encodings"),
+                     "alternate descriptive text followed by one or more "
+                     "content encodings"),
     AP_INIT_RAW_ARGS("IndexOptions", add_opts, NULL, DIR_CMD_PERMS,
                      "one or more index options [+|-][]"),
     AP_INIT_TAKE2("IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS,
@@ -587,7 +590,8 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_TAKE1("ReadmeName", add_readme, NULL, DIR_CMD_PERMS,
                   "a filename"),
     AP_INIT_RAW_ARGS("FancyIndexing", ap_set_deprecated, NULL, OR_ALL,
-                 "The FancyIndexing directive is no longer supported.  Use IndexOptions FancyIndexing."),
+                     "The FancyIndexing directive is no longer supported. "
+                     "Use IndexOptions FancyIndexing."),
     AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
                   (void *)APR_OFFSETOF(autoindex_config_rec, default_icon),
                   DIR_CMD_PERMS, "an icon URL"),
@@ -603,8 +607,8 @@ static void *create_autoindex_config(apr_pool_t *p, char *dummy)
     new->icon_height = 0;
     new->name_width = DEFAULT_NAME_WIDTH;
     new->name_adjust = K_UNSET;
-    new->desc_width = DEFAULT_DESC_WIDTH; 
-    new->desc_adjust = K_UNSET; 
+    new->desc_width = DEFAULT_DESC_WIDTH;
+    new->desc_adjust = K_UNSET;
     new->icon_list = apr_array_make(p, 4, sizeof(struct item));
     new->alt_list = apr_array_make(p, 4, sizeof(struct item));
     new->desc_list = apr_array_make(p, 4, sizeof(ai_desc_t));
@@ -655,7 +659,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
          * incremental ones.
          */
         if (add->opts == 0) {
-            new->incremented_opts = (base->incremented_opts 
+            new->incremented_opts = (base->incremented_opts
                                      | add->incremented_opts)
                                     & ~add->decremented_opts;
             new->decremented_opts = (base->decremented_opts
@@ -694,21 +698,21 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
         new->name_adjust = add->name_adjust;
     }
 
-    /* 
-     * Likewise for DescriptionWidth. 
-     */ 
-    if (add->desc_adjust == K_UNSET) { 
-        new->desc_width = base->desc_width; 
-        new->desc_adjust = base->desc_adjust; 
-    } 
+    /*
+     * Likewise for DescriptionWidth.
+     */
+    if (add->desc_adjust == K_UNSET) {
+        new->desc_width = base->desc_width;
+        new->desc_adjust = base->desc_adjust;
+    }
     else {
-        new->desc_width = add->desc_width; 
-        new->desc_adjust = add->desc_adjust; 
-    } 
+        new->desc_width = add->desc_width;
+        new->desc_adjust = add->desc_adjust;
+    }
 
-    new->default_keyid = add->default_keyid ? add->default_keyid 
+    new->default_keyid = add->default_keyid ? add->default_keyid
                                             : base->default_keyid;
-    new->default_direction = add->default_direction ? add->default_direction 
+    new->default_direction = add->default_direction ? add->default_direction
                                                     : base->default_direction;
     return new;
 }
@@ -1032,19 +1036,19 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
                 }
                 /* This is a hack, but I can't find any better way to do this.
                  * The problem is that we have already created the sub-request,
-                 * but we just inserted the OLD_WRITE filter, and the 
+                 * but we just inserted the OLD_WRITE filter, and the
                  * sub-request needs to pass its data through the OLD_WRITE
                  * filter, or things go horribly wrong (missing data, data in
-                 * the wrong order, etc).  To fix it, if you create a 
+                 * the wrong order, etc).  To fix it, if you create a
                  * sub-request and then insert the OLD_WRITE filter before you
                  * run the request, you need to make sure that the sub-request
-                 * data goes through the OLD_WRITE filter.  Just steal this 
+                 * data goes through the OLD_WRITE filter.  Just steal this
                  * code.  The long-term solution is to remove the ap_r*
                  * functions.
                  */
-                for (f=rr->output_filters; 
+                for (f=rr->output_filters;
                      f->frec != ap_subreq_core_filter_handle; f = f->next);
-                f->next = r->output_filters; 
+                f->next = r->output_filters;
 
                 /*
                  * If there's a problem running the subrequest, display the
@@ -1134,9 +1138,9 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
             if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
                             "text/html")) {
                 ap_filter_t *f;
-                for (f=rr->output_filters; 
+                for (f=rr->output_filters;
                      f->frec != ap_subreq_core_filter_handle; f = f->next);
-                f->next = r->output_filters; 
+                f->next = r->output_filters;
 
 
                 if (ap_run_sub_req(rr) == OK) {
@@ -1158,7 +1162,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
             }
         }
     }
-    
+
     if (!suppress_sig) {
         ap_rputs(ap_psignature("", r), r);
     }
@@ -1229,7 +1233,7 @@ static char *find_title(request_rec *r)
 
 static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
                                      autoindex_config_rec *d,
-                                     request_rec *r, char keyid, 
+                                     request_rec *r, char keyid,
                                      char direction)
 {
     struct ent *p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
@@ -1277,7 +1281,7 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     return p;
 }
 
-static struct ent *make_autoindex_entry(const apr_finfo_t *dirent, 
+static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
                                         int autoindex_opts,
                                         autoindex_config_rec *d,
                                         request_rec *r, char keyid,
@@ -1293,7 +1297,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
 
 #ifndef CASE_BLIND_FILESYSTEM
-    if (pattern && (apr_fnmatch(pattern, dirent->name, 
+    if (pattern && (apr_fnmatch(pattern, dirent->name,
                                 FNM_NOESCAPE | FNM_PERIOD)
                         != APR_SUCCESS))
         return (NULL);
@@ -1303,8 +1307,8 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
          * a factor of the filesystem involved, but we can't detect that
          * reliably - so we have to granularise at the OS level.
          */
-    if (pattern && (apr_fnmatch(pattern, dirent->name, 
-                                FNM_NOESCAPE | FNM_PERIOD | FNM_CASE_BLIND) 
+    if (pattern && (apr_fnmatch(pattern, dirent->name,
+                                FNM_NOESCAPE | FNM_PERIOD | FNM_CASE_BLIND)
                         != APR_SUCCESS))
         return (NULL);
 #endif /* !CASE_BLIND_FILESYSTEM */
@@ -1397,13 +1401,13 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
     int maxsize = desc_width;
     register int x;
 
-    /* 
+    /*
      * If there's no DescriptionWidth in effect, default to the old
-     * behaviour of adjusting the description size depending upon 
-     * what else is being displayed.  Otherwise, stick with the 
-     * setting. 
-     */ 
-    if (d->desc_adjust == K_UNSET) { 
+     * behaviour of adjusting the description size depending upon
+     * what else is being displayed.  Otherwise, stick with the
+     * setting.
+     */
+    if (d->desc_adjust == K_UNSET) {
         if (autoindex_opts & SUPPRESS_ICON) {
             maxsize += 6;
         }
@@ -1450,8 +1454,8 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
  * current request, the link changes its meaning to reverse the order when
  * selected again.  Non-active fields always start in ascending order.
  */
-static void emit_link(request_rec *r, const char *anchor, char column, 
-                      char curkey, char curdirection, 
+static void emit_link(request_rec *r, const char *anchor, char column,
+                      char curkey, char curdirection,
                       const char *colargs, int nosort)
 {
     char qvalue[13];
@@ -1472,7 +1476,7 @@ static void emit_link(request_rec *r, const char *anchor, char column,
         qvalue[10] = '=';
         qvalue[11] = reverse ? D_DESCENDING : D_ASCENDING;
         qvalue[12] = '\0';
-        ap_rvputs(r, "<a href=\"", qvalue, colargs ? colargs : "", 
+        ap_rvputs(r, "<a href=\"", qvalue, colargs ? colargs : "",
                      "\">", anchor, "</a>", NULL);
     }
     else {
@@ -1482,7 +1486,7 @@ static void emit_link(request_rec *r, const char *anchor, char column,
 
 static void output_directories(struct ent **ar, int n,
                                autoindex_config_rec *d, request_rec *r,
-                               apr_int32_t autoindex_opts, char keyid, 
+                               apr_int32_t autoindex_opts, char keyid,
                                char direction, const char *colargs)
 {
     int x;
@@ -1503,9 +1507,9 @@ static void output_directories(struct ent **ar, int n,
     }
 
     name_width = d->name_width;
-    desc_width = d->desc_width; 
+    desc_width = d->desc_width;
 
-    if ((autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING)) 
+    if ((autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING))
                         == FANCY_INDEXING) {
         if (d->name_adjust == K_ADJUST) {
             for (x = 0; x < n; x++) {
@@ -1516,16 +1520,16 @@ static void output_directories(struct ent **ar, int n,
             }
         }
 
-        if (d->desc_adjust == K_ADJUST) { 
+        if (d->desc_adjust == K_ADJUST) {
             for (x = 0; x < n; x++) {
-                if (ar[x]->desc != NULL) { 
-                    int t = strlen(ar[x]->desc); 
-                    if (t > desc_width) { 
-                        desc_width = t; 
-                    } 
-                } 
-            } 
-        } 
+                if (ar[x]->desc != NULL) {
+                    int t = strlen(ar[x]->desc);
+                    if (t > desc_width) {
+                        desc_width = t;
+                    }
+                }
+            }
+        }
     }
     name_scratch = apr_palloc(r->pool, name_width + 1);
     pad_scratch = apr_palloc(r->pool, name_width + 1);
@@ -1551,27 +1555,27 @@ static void output_directories(struct ent **ar, int n,
             else {
                 ap_rputs("&nbsp;</th>", r);
             }
-            
+
             ++cols;
         }
         ap_rputs("<th>", r);
-        emit_link(r, "Name", K_NAME, keyid, direction, 
+        emit_link(r, "Name", K_NAME, keyid, direction,
                   colargs, static_columns);
         if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             ap_rputs("</th><th>", r);
-            emit_link(r, "Last modified", K_LAST_MOD, keyid, direction, 
+            emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
         if (!(autoindex_opts & SUPPRESS_SIZE)) {
             ap_rputs("</th><th>", r);
-            emit_link(r, "Size", K_SIZE, keyid, direction, 
+            emit_link(r, "Size", K_SIZE, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
         if (!(autoindex_opts & SUPPRESS_DESC)) {
             ap_rputs("</th><th>", r);
-            emit_link(r, "Description", K_DESC, keyid, direction, 
+            emit_link(r, "Description", K_DESC, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
@@ -1600,7 +1604,7 @@ static void output_directories(struct ent **ar, int n,
                 ap_rputs("      ", r);
             }
         }
-        emit_link(r, "Name", K_NAME, keyid, direction, 
+        emit_link(r, "Name", K_NAME, keyid, direction,
                   colargs, static_columns);
         ap_rputs(pad_scratch + 4, r);
         /*
@@ -1613,7 +1617,7 @@ static void output_directories(struct ent **ar, int n,
             ap_rputs("      ", r);
         }
         if (!(autoindex_opts & SUPPRESS_SIZE)) {
-            emit_link(r, "Size", K_SIZE, keyid, direction, 
+            emit_link(r, "Size", K_SIZE, keyid, direction,
                       colargs, static_columns);
             ap_rputs("  ", r);
         }
@@ -1670,7 +1674,7 @@ static void output_directories(struct ent **ar, int n,
                     ap_rputs(" />", r);
                 }
                 else {
-                    ap_rputs("&nbsp;", r);            
+                    ap_rputs("&nbsp;", r);
                 }
                 if (autoindex_opts & ICONS_ARE_LINKS) {
                     ap_rputs("</a></td>", r);
@@ -1703,8 +1707,9 @@ static void output_directories(struct ent **ar, int n,
                     char time_str[MAX_STRING_LEN];
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
-                    apr_strftime(time_str, &rv, MAX_STRING_LEN, 
-                                 "</td><td align=\"right\">%d-%b-%Y %H:%M  ", &ts);
+                    apr_strftime(time_str, &rv, MAX_STRING_LEN,
+                                 "</td><td align=\"right\">%d-%b-%Y %H:%M  ",
+                                 &ts);
                     ap_rputs(time_str, r);
                 }
                 else {
@@ -1722,9 +1727,9 @@ static void output_directories(struct ent **ar, int n,
                         ap_rvputs(r, "</td><td>", ar[x]->desc, NULL);
                     }
                     else {
-                        ap_rvputs(r, "</td><td>", 
+                        ap_rvputs(r, "</td><td>",
                                   terminate_description(d, ar[x]->desc,
-                                                        autoindex_opts, 
+                                                        autoindex_opts,
                                                         desc_width), NULL);
                     }
                 }
@@ -1786,7 +1791,7 @@ static void output_directories(struct ent **ar, int n,
                     char time_str[MAX_STRING_LEN];
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
-                    apr_strftime(time_str, &rv, MAX_STRING_LEN, 
+                    apr_strftime(time_str, &rv, MAX_STRING_LEN,
                                 "%d-%b-%Y %H:%M  ", &ts);
                     ap_rputs(time_str, r);
                 }
@@ -1851,12 +1856,12 @@ static int dsortf(struct ent **e1, struct ent **e2)
     if ((*e2)->name[0] == '/') {
         return 1;
     }
-    /* 
+    /*
      * Now see if one's a directory and one isn't, if we're set
-     * isdir for FOLDERS_FIRST. 
-     */ 
+     * isdir for FOLDERS_FIRST.
+     */
     if ((*e1)->isdir != (*e2)->isdir) {
-        return (*e1)->isdir ? -1 : 1; 
+        return (*e1)->isdir ? -1 : 1;
     }
     /*
      * All of our comparisons will be of the c1 entry against the c2 one,
@@ -1920,8 +1925,8 @@ static int dsortf(struct ent **e1, struct ent **e2)
     }
 
     /* The names may be identical in respects other other than
-     * filename case when strnatcmp is used above, so fall back 
-     * to strcmp on conflicts so that fn1.01.zzz and fn1.1.zzz 
+     * filename case when strnatcmp is used above, so fall back
+     * to strcmp on conflicts so that fn1.01.zzz and fn1.1.zzz
      * are also sorted in a deterministic order.
      */
 
@@ -1962,7 +1967,7 @@ static int index_directory(request_rec *r,
         return HTTP_FORBIDDEN;
     }
 
-#if APR_HAS_UNICODE_FS 
+#if APR_HAS_UNICODE_FS
     ap_set_content_type(r, "text/html;charset=utf-8");
 #else
     ap_set_content_type(r, "text/html");
@@ -1981,16 +1986,16 @@ static int index_directory(request_rec *r,
      * If there is no specific ordering defined for this directory,
      * default to ascending by filename.
      */
-    keyid = autoindex_conf->default_keyid 
+    keyid = autoindex_conf->default_keyid
                 ? autoindex_conf->default_keyid : K_NAME;
-    direction = autoindex_conf->default_direction 
+    direction = autoindex_conf->default_direction
                 ? autoindex_conf->default_direction : D_ASCENDING;
 
     /*
      * Figure out what sort of indexing (if any) we're supposed to use.
      *
      * If no QUERY_STRING was specified or client query strings have been
-     * explicitly disabled.  
+     * explicitly disabled.
      * If we are ignoring the client, suppress column sorting as well.
      */
     if (autoindex_opts & IGNORE_CLIENT) {
@@ -2012,7 +2017,7 @@ static int index_directory(request_rec *r,
             }
             else if (qstring[0] == 'O' && qstring[1] == '='
                      && ((qstring[2] == D_ASCENDING)
-                         || (qstring[2] == D_DESCENDING)) 
+                         || (qstring[2] == D_DESCENDING))
                      && (qstring[3] == '&' || !qstring[3])) {
                 direction = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
@@ -2030,7 +2035,7 @@ static int index_directory(request_rec *r,
                 else if (qstring[2] == '2') {
                     autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING;
                 }
-                strcpy(fval, "&F= "); 
+                strcpy(fval, "&F= ");
                 fval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
@@ -2043,14 +2048,14 @@ static int index_directory(request_rec *r,
                 else if (qstring[2] == '1') {
                     autoindex_opts |= VERSION_SORT;
                 }
-                strcpy(fval, "&V= "); 
+                strcpy(fval, "&V= ");
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'P' && qstring[1] == '=') {
                 const char *eos = ap_strchr_c(qstring, '&');
                 if (eos) {
-                    pstring = apr_pstrndup(r->pool, qstring + 2, 
+                    pstring = apr_pstrndup(r->pool, qstring + 2,
                                            eos - qstring - 2);
                     qstring = eos + 1;
                 }
@@ -2059,7 +2064,7 @@ static int index_directory(request_rec *r,
                     qstring = NULL;
                 }
                 if (*pstring) {
-                    ppre = "&P="; 
+                    ppre = "&P=";
                 }
                 else {
                     pstring = NULL;
@@ -2082,9 +2087,9 @@ static int index_directory(request_rec *r,
     emit_head(r, find_header(autoindex_conf, r),
               autoindex_opts & SUPPRESS_PREAMBLE, title_name);
 
-    /* 
-     * Since we don't know how many dir. entries there are, put them into a 
-     * linked list and then arrayificate them so qsort can use them. 
+    /*
+     * Since we don't know how many dir. entries there are, put them into a
+     * linked list and then arrayificate them so qsort can use them.
      */
     head = NULL;
     p = make_parent_entry(autoindex_opts, autoindex_conf, r, keyid, direction);
@@ -2096,7 +2101,8 @@ static int index_directory(request_rec *r,
     fullpath = apr_palloc(r->pool, APR_PATH_MAX);
     dirpathlen = strlen(name);
     memcpy(fullpath, name, dirpathlen);
-    while (apr_dir_read(&dirent, APR_FINFO_MIN | APR_FINFO_NAME, thedir) == APR_SUCCESS) {
+    while (apr_dir_read(&dirent, APR_FINFO_MIN | APR_FINFO_NAME,
+                        thedir) == APR_SUCCESS) {
         /* We want to explode symlinks here. */
         if (dirent.filetype == APR_LNK) {
             const char *savename;
@@ -2105,7 +2111,7 @@ static int index_directory(request_rec *r,
             savename = dirent.name;
             apr_cpystrn(fullpath + dirpathlen, dirent.name,
                         APR_PATH_MAX - dirpathlen);
-            status = apr_stat(&fi, fullpath, 
+            status = apr_stat(&fi, fullpath,
                               dirent.valid & ~(APR_FINFO_NAME), r->pool);
             if (status != APR_SUCCESS) {
                 /* Something bad happened, skip this file. */
@@ -2115,7 +2121,7 @@ static int index_directory(request_rec *r,
             dirent.name = savename;
             dirent.valid |= APR_FINFO_NAME;
         }
-        p = make_autoindex_entry(&dirent, autoindex_opts, autoindex_conf, r, 
+        p = make_autoindex_entry(&dirent, autoindex_opts, autoindex_conf, r,
                                  keyid, direction, pstring);
         if (p != NULL) {
             p->next = head;
@@ -2136,7 +2142,7 @@ static int index_directory(request_rec *r,
         qsort((void *) ar, num_ent, sizeof(struct ent *),
               (int (*)(const void *, const void *)) dsortf);
     }
-    output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, 
+    output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts,
                        keyid, direction, colargs);
     apr_dir_close(thedir);
 
