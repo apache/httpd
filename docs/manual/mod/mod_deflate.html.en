@@ -77,7 +77,12 @@ client</td></tr>
         BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
         <br />
         # MSIE masquerades as Netscape, but it is fine<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        # BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48<br />
+        # the above regex won't work. You can use the following<br />
+        # workaround to get the desired effect:<br />
+        BrowserMatch \bMSI[E]           !no-gzip !gzip-only-text/html<br />
         <br />
         # Don't compress images<br />
         SetEnvIfNoCase Request_URI \<br />
