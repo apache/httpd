@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 8 "2004-01-06" "Apache HTTP Server" "apxs"
+.TH "APXS" 8 "2004-11-20" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -96,7 +96,7 @@ This explicitly sets the module name for the -i (install) and -g (template gener
  
 .TP
 -q
-Performs a query for apxs's knowledge about certain settings\&. The \fIquery\fR parameters can be one or more of the following strings: CC, CFLAGS, CFLAGS_SHLIB, INCLUDEDIR, LD_SHLIB, LDFLAGS_SHLIB, LIBEXECDIR, LIBS_SHLIB, SBINDIR, SYSCONFDIR, TARGET\&. .PP Use this for manually determining settings\&. For instance use .nf INC=-I`apxs -q INCLUDEDIR` .fi .PP inside your own Makefiles if you need manual access to Apache's C header files\&.  
+Performs a query for apxs's knowledge about certain settings\&. The \fIquery\fR parameters can be one or more of the following strings: CC, CFLAGS, CFLAGS_SHLIB, INCLUDEDIR, LD_SHLIB, LDFLAGS_SHLIB, LIBEXECDIR, LIBS_SHLIB, SBINDIR, SYSCONFDIR, TARGET\&. .PP Use this for manually determining settings\&. For instance use INC=-I`apxs -q INCLUDEDIR` .PP inside your own Makefiles if you need manual access to Apache's C header files\&.  
   
 .SS "Configuration Options"
  
