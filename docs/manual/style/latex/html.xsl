@@ -62,12 +62,18 @@
     <xsl:text>\smallskip </xsl:text>
   </xsl:when>
   <xsl:otherwise>
-    <xsl:text>\\ </xsl:text>
+    <!-- Don't put a line break if we are the last thing -->
+    <xsl:if test="not(position()=last()) and not(position()=last()-1 and normalize-space(following-sibling::node()[1])='')">
+      <xsl:text>\\ </xsl:text>
+    </xsl:if>
   </xsl:otherwise>
   </xsl:choose>
 </xsl:when>
 <xsl:otherwise>
-<xsl:text>\\ </xsl:text>
+    <!-- Don't put a line break if we are the last thing -->
+    <xsl:if test="not(position()=last()) and not(position()=last()-1 and normalize-space(following-sibling::node()[1])='')">
+      <xsl:text>\\ </xsl:text>
+    </xsl:if>
 </xsl:otherwise>
 </xsl:choose>
 </xsl:template>

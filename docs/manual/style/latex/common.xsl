@@ -82,9 +82,11 @@ select="$metafile/basename"/>
 <!-- indentations                                                         -->
 <!-- ==================================================================== -->
 <xsl:template match="indent">
-<xsl:text>\hfill\begin{minipage}{.9\textwidth}{\texttt </xsl:text>
+<xsl:text>\begin{list}{}{\topsep 0pt\rightmargin 0pt\leftmargin 2em}
+\item[] </xsl:text>
 <xsl:apply-templates/>
-<xsl:text>}\end{minipage}</xsl:text>
+<xsl:text>\end{list}
+</xsl:text>
 </xsl:template>
 
 <!-- ==================================================================== -->
