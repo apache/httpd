@@ -83,12 +83,6 @@
 #include "rfc1413.h"
 #include "http_main.h"		/* set_callback_and_alarm */
 
-/* XXX WIN32 may also need to include these #defines */
-#if (defined(NETWARE) /*|| defined(WIN32)*/)
-#define write(a,b,c) send(a,b,c,0)
-#define read(a,b,c) recv(a,b,c,0)
-#endif /* NETWARE || WIN32 */
-
 /* Local stuff. */
 /* Semi-well-known port */
 #define	RFC1413_PORT	113
