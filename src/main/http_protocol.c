@@ -529,12 +529,8 @@ void send_http_header(request_rec *r)
 {
     conn_rec *c = r->connection;
     FILE *fd = c->client;
-
-    array_header *hdrs_arr = table_elts (r->headers_out);
-    table_entry *hdrs = (table_entry *)hdrs_arr->elts;
-
-    array_header *err_hdrs_arr = table_elts (r->err_headers_out);
-    table_entry *err_hdrs = (table_entry *)err_hdrs_arr->elts;
+    array_header *hdrs_arr;
+    table_entry *hdrs;
     int i;
     
     core_dir_config *dir_conf =
@@ -562,14 +558,18 @@ void send_http_header(request_rec *r)
     if (r->content_language)
         fprintf (fd, "Content-language: %s\015\012", r->content_language);
     
+    hdrs_arr = table_elts(r->headers_out);
+    hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) continue;
 	fprintf (fd, "%s: %s\015\012", hdrs[i].key, hdrs[i].val);
     }
 
-    for (i = 0; i < err_hdrs_arr->nelts; ++i) {
-        if (!err_hdrs[i].key) continue;
-	fprintf (fd, "%s: %s\015\012", err_hdrs[i].key, err_hdrs[i].val);
+    hdrs_arr = table_elts(r->err_headers_out);
+    hdrs = (table_entry *)hdrs_arr->elts;
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+        if (!hdrs[i].key) continue;
+	fprintf (fd, "%s: %s\015\012", hdrs[i].key, hdrs[i].val);
     }
 
     fputs("\015\012",fd);
