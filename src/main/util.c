@@ -148,7 +148,7 @@ struct tm *get_gmtoff(long *tz) {
 
     tt = time(NULL);
     t = localtime(&tt);
-#if defined(HAVE_GMTOFF)
+#if defined(HAS_GMTOFF)
     *tz = t->tm_gmtoff;
 #elif !defined(NO_TIMEZONE)
     *tz = - timezone;

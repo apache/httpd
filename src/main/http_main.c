@@ -152,7 +152,7 @@ pid_t pgrp;
 
 int one_process = 0;
 
-#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
+#if defined(FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
 static struct flock unlock_it = { F_UNLCK, 0, 0, 0 };
 
@@ -208,7 +208,7 @@ void accept_mutex_off()
 	exit(1);
     }
 }
-#elif defined(USE_FLOCK_SERIALIZED_ACCEPT)
+#elif defined(FLOCK_SERIALIZED_ACCEPT)
 
 static int lock_fd=-1;
 
@@ -307,7 +307,7 @@ int sig;
     }
     
     if (!current_conn) {
-#if defined(NEXT) || defined(USE_LONGJMP)
+#ifdef NEXT
 	longjmp(jmpbuffer,1);
 #else
 	siglongjmp(jmpbuffer,1);
@@ -348,7 +348,7 @@ int sig;
 	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
-#if defined(NEXT) || defined(USE_LONGJMP)
+#ifdef NEXT
 	longjmp(jmpbuffer,1);
 #else
 	siglongjmp(jmpbuffer,1);
@@ -827,7 +827,7 @@ static JMP_BUF wait_timeout_buf;
 static int wait_or_timeout_retval = -1;
 
 static void longjmp_out_of_alarm (int sig) {
-#if defined(NEXT) || defined(USE_LONGJMP)
+#ifdef NEXT
     longjmp (wait_timeout_buf, 1);
 #else
     siglongjmp (wait_timeout_buf, 1);
@@ -987,7 +987,7 @@ static void set_group_privs()
 void restart() {
     signal (SIGALRM, SIG_IGN);
     alarm (0);
-#if defined(NEXT) || defined(USE_LONGJMP)
+#ifdef NEXT
     longjmp(restart_buffer,1);
 #else
     siglongjmp(restart_buffer,1);
