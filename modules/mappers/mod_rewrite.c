@@ -1083,8 +1083,7 @@ static char *select_random_value_part(request_rec *r, char *value)
 static void rewrite_child_errfn(apr_pool_t *p, apr_status_t err,
                                 const char *desc)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL,
-                 "%s", desc);
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL, "%s", desc);
 }
 
 static apr_status_t rewritemap_program_child(apr_pool_t *p,
@@ -1096,19 +1095,16 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
-    if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK,
-                                   APR_NO_PIPE)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_dir_set(procattr,
-                                   ap_make_dirstr_parent(p, argv[0])))
-         != APR_SUCCESS) ||
-        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_child_errfn_set(procattr, rewrite_child_errfn)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
-        /* Something bad happened, give up and go away. */
-    }
-    else {
+    if (   APR_SUCCESS == (rc=apr_procattr_create(&procattr, p))
+        && APR_SUCCESS == (rc=apr_procattr_io_set(procattr, APR_FULL_BLOCK,
+                                                  APR_FULL_BLOCK, APR_NO_PIPE))
+        && APR_SUCCESS == (rc=apr_procattr_dir_set(procattr,
+                                             ap_make_dirstr_parent(p, argv[0])))
+        && APR_SUCCESS == (rc=apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
+        && APR_SUCCESS == (rc=apr_procattr_child_errfn_set(procattr,
+                                                           rewrite_child_errfn))
+        && APR_SUCCESS == (rc=apr_procattr_error_check_set(procattr, 1))) {
+
         procnew = apr_pcalloc(p, sizeof(*procnew));
         rc = apr_proc_create(procnew, argv[0], (const char **)argv, NULL,
                              procattr, p);
