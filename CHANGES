@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Rewrite find_start_sequence to use a better search algorithm
+     to find the start tag.  [Justin Erenkrantz]
+
   *) Fix a seg fault in mod_include.  When we are generating an
      internal redirect, we must set r->uri to "", not a bogus
      string, and not NULL.  [Ryan Bloom]

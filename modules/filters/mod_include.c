@@ -206,6 +206,113 @@ static const char *get_include_var(request_rec *r, const char *var)
 
 /* --------------------------- Parser functions --------------------------- */
 
+/* This is an implementation of the BNDM search algorithm.
+ *
+ * Fast and Flexible String Matching by Combining Bit-parallelism and 
+ * Suffix Automata (2001) 
+ * Gonzalo Navarro, Mathieu Raffinot
+ *
+ * http://www-igm.univ-mlv.fr/~raffinot/ftp/jea2001.ps.gz
+ *
+ * Initial code submitted by Sascha Schumann.
+ */
+   
+typedef struct {
+    unsigned int T[256];
+    unsigned int x;
+} bndm_t;
+
+/* This is the pattern matcher that holds the STARTING_SEQUENCE bndm_t
+ * structure.
+ */
+static bndm_t start_seq_pat;
+
+/* Precompile the bndm_t data structure. */
+static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
+{
+    unsigned int x;
+    const char *ne = n + nl;
+
+    memset(t->T, 0, sizeof(unsigned int) * 256);
+    
+    for (x = 1; n < ne; x <<= 1)
+        t->T[(unsigned char) *n++] |= x;
+
+    t->x = x - 1;
+}
+
+/* Implements the BNDM search algorithm (as described above).
+ *
+ * n  - the pattern to search for
+ * nl - length of the pattern to search for
+ * h  - the string to look in
+ * hl - length of the string to look for
+ * t  - precompiled bndm structure against the pattern 
+ *
+ * Returns the count of character that is the first match or hl if no
+ * match is found.
+ */
+static int bndm(const char *n, apr_size_t nl, const char *h, apr_size_t hl, 
+                bndm_t *t)
+{
+    apr_size_t skip;
+    const char *he, *p, *pi;
+    unsigned int *T, x, d;
+
+    he = h + hl;
+
+    T = t->T;
+    x = t->x << 1;
+
+    pi = h - 1; /* pi: p initial */
+    p = pi + nl; /* compare window right to left. point to the first char */
+
+    while (p < he) {
+        skip = nl;
+        d = x;
+        do {
+            d = (d >> 1) & T[(unsigned char) *p--];
+            if ((d & 1)) {
+                if (p != pi)
+                    skip = p - pi;
+                else
+                    return p - h + 1;
+            }
+        } while (d > 1);
+        p = (pi += skip) + nl; 
+    }
+
+    return hl;
+}
+
+/* We've now found a start sequence tag... */
+static apr_bucket* found_start_sequence(apr_bucket *dptr,
+                                          include_ctx_t *ctx, 
+                                          int tagStart)
+{
+    /* We want to split the bucket at the '<'. */
+    ctx->state = PARSE_DIRECTIVE;
+    ctx->tag_length = 0;
+    ctx->parse_pos = 0;
+    ctx->tag_start_bucket = dptr;
+    ctx->tag_start_index = tagStart;
+    if (ctx->head_start_index > 0) {
+        apr_bucket *tmp_bkt;
+
+        /* Split the bucket with the start of the tag in it */
+        apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
+        tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
+        /* If it was a one bucket match */
+        if (dptr == ctx->head_start_bucket) {
+            ctx->tag_start_bucket = tmp_bkt;
+            ctx->tag_start_index = tagStart - ctx->head_start_index;
+        }
+        ctx->head_start_bucket = tmp_bkt;
+        ctx->head_start_index = 0;
+    }
+    return ctx->head_start_bucket;
+}
+
 /* This function returns either a pointer to the split bucket containing the
  * first byte of the BEGINNING_SEQUENCE (after finding a complete match) or it
  * returns NULL if no match found.
@@ -217,8 +324,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     const char *c;
     const char *buf;
     const char *str = STARTING_SEQUENCE;
-    apr_bucket *tmp_bkt;
-    apr_size_t  start_index;
+    int slen = sizeof(STARTING_SEQUENCE) - 1;
+    int pos;
 
     *do_cleanup = 0;
 
@@ -269,8 +376,53 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (len == 0) { /* end of pipe? */
             break;
         }
+
+        /* Set our buffer to use. */
         c = buf;
-        while (c < buf + len) {
+
+        /* The last bucket had a left over partial match that we need to
+         * complete. 
+         */
+        if (ctx->state == PARSE_HEAD)
+        {
+            apr_size_t tmpLen;
+            tmpLen = (len > (slen - 1)) ? len : (slen - 1);
+
+            while (c < buf + tmpLen && *c == str[ctx->parse_pos])
+            {
+                c++; 
+                ctx->parse_pos++;
+            }
+
+            if (str[ctx->parse_pos] == '\0')
+            {
+                ctx->bytes_parsed += c - buf;
+                return found_start_sequence(dptr, ctx, c - buf);
+            }
+
+            /* False alarm... */
+            ctx->state = PRE_HEAD;
+        }
+
+        if (len)
+        {
+            pos = bndm(str, slen, c, len, &start_seq_pat);
+            if (pos != len)
+            {
+                ctx->head_start_bucket = dptr;
+                ctx->head_start_index = pos;
+                ctx->bytes_parsed += pos + slen;
+                return found_start_sequence(dptr, ctx, pos + slen);
+            }
+        }
+        
+        /* Consider the case where we have <!-- at the end of the bucket. */
+        ctx->bytes_parsed += len - slen;
+        ctx->parse_pos = 0;
+
+        c = buf + len - slen + 1;
+        while (c < buf + len)
+        {
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state == PRE_HEAD) {
                     ctx->state = PARSE_HEAD;
@@ -279,48 +431,24 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 }
                 ctx->parse_pos++;
             }
-            else {
-                if (str[ctx->parse_pos] == '\0') {
-                    /* We want to split the bucket at the '<'. */
-                    ctx->bytes_parsed++;
-                    ctx->state = PARSE_DIRECTIVE;
-                    ctx->tag_length = 0;
-                    ctx->parse_pos = 0;
-                    ctx->tag_start_bucket = dptr;
-                    ctx->tag_start_index = c - buf;
-                    if (ctx->head_start_index > 0) {
-                        start_index = (c - buf) - ctx->head_start_index;
-                        apr_bucket_split(ctx->head_start_bucket, 
-                                         ctx->head_start_index);
-                        tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
-                        if (dptr == ctx->head_start_bucket) {
-                            ctx->tag_start_bucket = tmp_bkt;
-                            ctx->tag_start_index = start_index;
-                        }
-                        ctx->head_start_bucket = tmp_bkt;
-                        ctx->head_start_index = 0;
-                    }
-                    return ctx->head_start_bucket;
+            else if (ctx->parse_pos != 0) 
+            {
+                /* The reason for this, is that we need to make sure 
+                 * that we catch cases like <<!--#.  This makes the 
+                 * second check after the original check fails.
+                 * If parse_pos was already 0 then we already checked this.
+                 */
+                /* FIXME: Why? */
+                *do_cleanup = 1;
+                if (*c == str[0]) {
+                    ctx->parse_pos = 1;
+                    ctx->head_start_index = c - buf;
                 }
-                else if (ctx->parse_pos != 0) {
-                    /* The reason for this, is that we need to make sure 
-                     * that we catch cases like <<!--#.  This makes the 
-                     * second check after the original check fails.
-                     * If parse_pos was already 0 then we already checked this.
-                     */
-                    *do_cleanup = 1;
-                    if (*c == str[0]) {
-                        ctx->parse_pos = 1;
-                        ctx->state = PARSE_HEAD;
-                        ctx->head_start_bucket = dptr;
-                        ctx->head_start_index = c - buf;
-                    }
-                    else {
-                        ctx->parse_pos = 0;
-                        ctx->state = PRE_HEAD;
-                        ctx->head_start_bucket = NULL;
-                        ctx->head_start_index = 0;
-                    }
+                else {
+                    ctx->parse_pos = 0;
+                    ctx->state = PRE_HEAD;
+                    ctx->head_start_bucket = NULL;
+                    ctx->head_start_index = 0;
                 }
             }
             c++;
@@ -2970,6 +3098,10 @@ static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
     include_hash = apr_hash_make(p);
+
+    /* compile the pattern used by find_start_sequence */
+    bndm_compile(&start_seq_pat, STARTING_SEQUENCE, 
+                 sizeof(STARTING_SEQUENCE)-1); 
 
     ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
 
