@@ -344,7 +344,7 @@ HREF="./mod_negotiation.html">mod_negotiation</A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> SetFilter <EM>Assign filters based on MIME-type...</EM><BR>
+><STRONG>Syntax:</STRONG></A> SetFilter <EM>Assign filters based on Handler...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -363,8 +363,7 @@ HREF="./mod_negotiation.html">mod_negotiation</A>
 ><STRONG>Module:</STRONG></A> mod_mime
 
 <P>
-The SetFilter directive maps a filter stack to the specified content
-type.
+The SetFilter directive maps a filter stack to the specified Handler.
 </P>
 <P>
 Example: <BLOCKQUOTE><CODE>
@@ -372,15 +371,15 @@ SetFilter server-parsed INCLUDES CACHE
 </CODE></BLOCKQUOTE>
 </P>
 <P>
-Then any document with the server-parsed MIME-type will pass through the 
+Then any document with the server-parsed Handler will pass through the 
 INCLUDES and CACHE filters.  The filters are added in the same order that 
 they are specified in the config file.
 </P>
 <P>
-This can be very powerful when combined with either the <A HREF="#addtype">
-AddType</A> or <A HREF="#addhandler">AddHandler</A> directives.  This allows
-you to specify an extension for a MIME-type and a set of filters for files
-with those extensions to be passed through
+This can be very powerful when combined with either the <A HREF="#addhandler">
+AddHandler</A> directives.  This allows you to specify an extension for a 
+MIME-type and a set of filters for files with those extensions to be passed 
+through
 </P>
 <PRE>
 AddHandler server-parsed .shtml
