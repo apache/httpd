@@ -502,19 +502,17 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
 {
     HANDLE hPipeRead = (HANDLE) hPipe;
     HANDLE hEventSource;
-    char errbuf[256];
-    char *errmsg = errbuf;
+    char errbuf[256], *errread = errbuf;
     const char *errarg[9];
-    DWORD errlen = 0;
     DWORD errres;
     HKEY hk;
     
     errarg[0] = "The Apache service named";
     errarg[1] = mpm_display_name;
     errarg[2] = "reported the following error:\r\n>>>";
-    errarg[3] = errmsg;
-    errarg[4] = "<<<\r\n before the error.log file could be opened.\r\n";
-    errarg[5] = "More information may be available in the error.log file.";
+    errarg[3] = errbuf;
+    errarg[4] = NULL;
+    errarg[5] = NULL;
     errarg[6] = NULL;
     errarg[7] = NULL;
     errarg[8] = NULL;
@@ -538,29 +536,64 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
 
     hEventSource = RegisterEventSource(NULL, "Apache Service");
 
-    while (ReadFile(hPipeRead, errmsg, 1, &errres, NULL) && (errres == 1))
+    while (ReadFile(hPipeRead, errread, 
+                    sizeof(errbuf) - (errread - errbuf) - 1, &errres, NULL))
     {
-        if ((errmsg > errbuf) || !isspace(*errmsg))
+        if (errres)
         {
-            ++errlen;
-            ++errmsg;
-            if ((*(errmsg - 1) == '\n') || (errlen == sizeof(errbuf) - 1))
+            /* NULL terminate */
+            errread[errres] = '\0';
+
+            /* Process complete lines */
+            while (*errread) 
             {
-                while (errlen && isspace(errbuf[errlen - 1]))
-                    --errlen;
-                errbuf[errlen] = '\0';
+                char *erreol;
+                int errlen;
+
+                /* Trim leading whitespace */
+                errread = errbuf;
+                while (apr_isspace(*errread)) {
+                    ++errread;
+                }
+                if (!*errread) {
+                    errread = errbuf;
+                    *errread = '\0';
+                    continue;
+                }
+                /* Find eol, but only re-Read if the buffer is unfilled */
+                erreol = strchr(errread, '\n');
+                if (!erreol && (errread > errbuf)) {
+                    errlen = strlen(errbuf);
+                    memmove(errbuf, errread, errlen + 1);
+                    errread = errbuf + errlen;
+                    continue;
+                }
+                *erreol = '\0';
 
                 /* Generic message: '%1 %2 %3 %4 %5 %6 %7 %8 %9'
                  * The event code in netmsg.dll is 3299
                  */
                 ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
                             3299, NULL, 9, 0, errarg, NULL);
-                errmsg = errbuf;
-                errlen = 0;
+                
+                if (!erreol) {
+                    errread = errbuf;
+                    *errread = '\0';
+                    continue;
+                }
+                errread = erreol + 1;
             }
         }
     }
 
+    if ((errres = GetLastError()) != ERROR_BROKEN_PIPE) {
+        apr_snprintf(errbuf, sizeof(errbuf),
+                     "Win32 error %d reading stderr pipe stream\r\n", 
+                     GetLastError());
+
+        ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
+                    3299, NULL, 9, 0, errarg, NULL);
+    }
     CloseHandle(hPipeRead);
     return 0;
 }
@@ -603,7 +636,6 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         PulseEvent(globdat.signal_monitor);
         return;
     }
-
     /* Report status, no errors, and buy 3 more seconds */
     ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 3000);
     
@@ -620,17 +652,35 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                                   (LPVOID) hPipeRead, 0, &threadid);
             if (thread)
             {
+                FILE *fl, flip;
+                int fd;
+
                 CloseHandle(thread);
  		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
 	
-/* XXX: To support stderr, we need some code like this.
- * but not this specific code, turned out to be very buggy.
- *              fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
- *                                   _O_WRONLY | _O_BINARY);
- *              dup2(fh, STDERR_FILENO);
- *              fl = _fdopen(STDERR_FILENO, "wcb");
- *              memcpy(stderr, fl, sizeof(FILE));
- */         }
+                /* Flush, commit and close stderr.  This is typically a noop
+                 * in Win2K/XP since services start with NULL std handles,
+                 * but is required for NT 4.0 and a decent saftey anyways.
+                 */
+                fflush(stderr);
+                _commit(2 /* stderr */);
+                fclose(stderr);
+
+                /* The fdopen mode "wcb" is write, binary, so that simple 
+                 * strings are not buffered for \n -> crlf munging, and
+                 * commit-on-write.  Used setvbuf to assure no buffering.
+                 */
+                if (((fd = _open_osfhandle((long) hPipeWrite, 
+                                           _O_WRONLY | _O_BINARY) != -1)
+                        && (dup2(fd, 2 /* stderr */) == 0)
+                        && ((fl = _fdopen(2 /* stderr */, "wcb")) != NULL))) {
+                    _close(fd);
+                    flip = *stderr;
+                    *stderr = *fl;
+                    *fl = flip;
+                    setvbuf(stderr, NULL, _IONBF, 0);
+                }
+            }
             else
             {
                 CloseHandle(hPipeRead);
@@ -669,17 +719,17 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         mpm_new_argv->elts = (char *)cmb_data;
         mpm_new_argv->nelts = mpm_new_argv->nalloc;
     }
-        
+
     /* Let the main thread continue now... but hang on to the
      * signal_monitor event so we can take further action
      */
-    SetEvent(globdat.signal_monitor);
+    PulseEvent(globdat.signal_monitor);
 
     waitfor[0] = globdat.signal_monitor;
     waitfor[1] = globdat.mpm_thread;
     WaitForMultipleObjects(2, waitfor, FALSE, INFINITE);
-    /* The process is ready to terminate, or already has */
 
+    /* The process is ready to terminate, or already has */
     CloseHandle(hPipeWrite);
 }
 
@@ -844,7 +894,7 @@ apr_status_t mpm_service_to_start(const char **display_name)
         waitfor[1] = globdat.service_thread;
     
         /* SetEvent(globdat.signal_monitor) to clean up the SCM thread */
-        if (WaitForMultipleObjects(2, waitfor, FALSE, 10000) != WAIT_OBJECT_0) {
+        if (WaitForMultipleObjects(2, waitfor, FALSE, 30000) != WAIT_OBJECT_0) {
             CloseHandle(globdat.service_thread);
             return APR_ENOTHREAD;
         }
