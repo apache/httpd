@@ -67,7 +67,7 @@
 #include "http_log.h"
 #include "rfc1413.h"
 #include "util_md5.h"
-#include "fnmatch.h"
+#include "apr_fnmatch.h"
 #include "http_connection.h"
 
 /* Allow Apache to use ap_mmap */

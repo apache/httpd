@@ -76,7 +76,7 @@
 #if 0
 #include "scoreboard.h"
 #endif
-#include "fnmatch.h"
+#include "apr_fnmatch.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(translate_name)
