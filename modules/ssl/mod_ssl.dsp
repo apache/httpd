@@ -188,6 +188,10 @@ SOURCE=.\ssl_expr.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_private.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_expr_parse.h
 # End Source File
 # Begin Source File

@@ -26,7 +26,7 @@
                                   the eagles when you work
                                   with the turkeys.''
                                           -- Unknown  */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

@@ -26,7 +26,7 @@
                                   industry job and open-source software
                                   hacking is about 30 hours a week.''
                                          -- Ralf S. Engelschall     */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

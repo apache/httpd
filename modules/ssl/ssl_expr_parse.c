@@ -27,7 +27,7 @@
 
 #line 68 "ssl_expr_parse.y"
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 #line 72 "ssl_expr_parse.y"
 typedef union {

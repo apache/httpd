@@ -28,7 +28,7 @@
                                   who piss me off!''
                                             -- Calvin          */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 

@@ -26,7 +26,7 @@
                                   Just one little problem:
                                   core keeps dumping.''
                                             -- Unknown    */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **
