@@ -9,20 +9,17 @@ INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= \
-  main/alloc.o main/http_main.o main/http_core.o \
-  main/http_config.o main/http_request.o main/http_log.o \
-  main/http_protocol.o main/rfc1413.o main/util.o \
-  main/util_script.o main/buff.o main/md5c.o \
-  main/util_md5.o main/explain.o main/http_bprintf.o \
-  main/util_date.o main/util_snprintf.o main/fnmatch.o \
   modules.o \
-  $(OSOBJ) \
-  $(MODULES)
+  $(MODULES) \
+  $(OSDIR)/libos.a \
+  main/libmain.a
+
+SUBDIRS=main $(OSDIR) modules
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
-all: @@Configuration@@ os-dir core-dir modules/last-built httpd 
+all: @@Configuration@@ httpd
 
 @@Configuration@@: Configuration.tmpl
 	@echo "@@Configuration@@ older than Configuration.tmpl, or doesn't exist."
@@ -31,36 +28,30 @@ all: @@Configuration@@ os-dir core-dir modules/last-built httpd
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-httpd: $(REGLIB) $(OBJS)
+httpd: $(REGLIB) modules.o subdirs
 	rm -f buildmark.c
 	echo 'const char SERVER_BUILT[] = "'`/bin/date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
 	$(CC) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
-regex/libregex.a:
-	(cd regex; $(MAKE) lib CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
+subdirs:
+	for i in $(SUBDIRS); do \
+		( cd $$i; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') \
+	done
 
-modules/last-built:
-	(cd modules; \
-	$(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
+$(REGLIB):
+	(cd regex; $(MAKE) lib CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
 
 support: support-dir
 
 support-dir:
 	cd support; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
-core-dir:
-	cd main; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
-
-os-dir:	
-	cd $(OSDIR); $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
-
 clean:
 	rm -f httpd *.o $(OBJS) 
-	cd main; $(MAKE) clean
-	cd regex; $(MAKE) clean
-	cd modules; $(MAKE) clean
-	cd support; $(MAKE) clean
+	for i in $(SUBDIRS) regex; do \
+		( cd $$i; $(MAKE) $@ ) \
+	done
 
 dist.tar: 
 	# Assure a semi-sensible configuration going out...

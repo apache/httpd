@@ -16,10 +16,17 @@ OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
-all: $(OBJS)
+LIB=	libmain.a
+
+all: $(LIB)
+
+$(LIB): $(OBJS)
+	rm -f $@
+	ar crv $@ $(OBJS)
+	$(RANLIB) $@
 
 clean:
-	rm -f $(OBJS) 
+	rm -f $(OBJS) $(LIB)
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c

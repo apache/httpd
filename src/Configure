@@ -836,18 +836,45 @@ sed -e 's/_module//' $tmpfile | awk >modules.c '\
 	 print "};"; \
    }'
 
-# Add the module targets to the Makefile
+# figure out which module dir require use to autocreate a Makefile.
+# for these dirs we must not list the object files from the AddModule
+# lines individually since the auto-generated Makefile will create
+# a library called libMODDIR.a for it (MODDIR is the module dir
+# name). We create two variable here:
+#
+#   AUTODIRS   Space separated list of module directories, relative to
+#              src
+#   AUTOLIBS   Space separated list of auto-generated library files
 
-awk >>Makefile <$tmpfile '\
+for moddir in $MODDIRS 
+do
+	if [ -f modules/$moddir/Makefile.tmpl ] ; then
+		AUTODIRS="$AUTODIRS modules/$moddir"
+		AUTOLIBS="$AUTOLIBS modules/$moddir/lib$moddir.a"
+	fi
+done
+
+# Add the module targets to the Makefile. Do not add inidividual object
+# targets for auto-generated directories.
+awk -v AUTODIRS="$AUTODIRS" >>Makefile <$tmpfile '\
+   BEGIN { split ( AUTODIRS, tmp, / /); \
+		for ( key in tmp ) { autodirs[tmp[key]] = 1; } } \
    /^Module/ { modules[n++] = $3 } \
    /^%Module/ { modules[n++] = $3 } \
-   END { print "MODULES=\\"; \
+   END { print "MODULES=\\";  \
 	 for (i = 0; i < n; ++i) { \
-	     if (i < n-1) printf ("  %s \\\n", modules[i]); \
-	     else printf ("  %s\n", modules[i]); \
+	     split ( modules[i], pp, /\//); \
+	     dir = pp[1] "/" pp[2] ; \
+	     if ( dir in autodirs ) { continue; }\
+	     else printf ("  %s\\\n", modules[i]); \
 	 } \
-	 print "" \
        }'
+
+# Now add the auto-generated library targets
+for lib in $AUTOLIBS; do
+	echo "  $lib \\" >> Makefile
+done
+echo >> Makefile
 
 ####################################################################
 # Continue building Makefile.config.
@@ -951,39 +978,43 @@ for i in $MODDIRS ; do
 done
 ) >> modules/Makefile
 
-for moddir in $MODDIRS ; do
-	if [ ! -f modules/$moddir/Makefile.tmpl ] ; then
-		continue
-	fi
-	echo "Creating Makefile in modules/$moddir"
+for moddir in $AUTODIRS ; do
+	echo "Creating Makefile in $moddir"
 
-	cat Makefile.config > modules/$moddir/Makefile
-	awk >> modules/$moddir/Makefile < $tmpfile '\
+	cat Makefile.config > $moddir/Makefile
+	basedir=`echo $moddir | sed 's|^[^/]*/||g'`
+	awk >> $moddir/Makefile < $tmpfile '\
 	    BEGIN { printf "OBJS=" }\
-	    ($1 == "Module" && $3 ~ /^modules\/'$moddir'\//) { \
+	    ($1 == "Module" && $3 ~ /^modules\/'$basedir'\//) { \
 		split ($3, pp, "/"); \
 		printf "%s ", pp[3]; \
 	    	} \
 	   END {printf "\n"}'
 
-	cat << 'EOF' >> modules/$moddir/Makefile
+	echo "LIB=lib$basedir.a" >> $moddir/Makefile
+	cat << 'EOF' >> $moddir/Makefile
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 INCDIR=../../main
 
-all:	$(OBJS)
+all:	$(LIB)
+
+$(LIB): $(OBJS)
+	rm -f $@
+	ar crv $@ $(OBJS)
+	$(RANLIB) $@
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(LIB)
 
 $(OBJS): Makefile
 EOF
-cat >> modules/$moddir/Makefile < modules/$moddir/Makefile.tmpl
+cat >> $moddir/Makefile < $moddir/Makefile.tmpl
 
 done
 

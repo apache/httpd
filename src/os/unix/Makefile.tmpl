@@ -6,13 +6,22 @@ INCDIR=../../main
 
 OBJS=	os.o
 
-all:	$(OBJS)
+LIB=	libos.a
+
+all: $(LIB) 
+
+$(LIB): $(OBJS)
+	rm -f $@
+	ar crv $@ $(OBJS)
+	$(RANLIB) $@
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
 	rm -f $(OBJS)
+
+$(OBJS): Makefile
 
 # DO NOT REMOVE
 os.o:	os.c
