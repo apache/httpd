@@ -167,12 +167,12 @@ static int first_server_limit;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit;
 static int changed_limit_at_restart;
-static int max_requests_per_child = 0;
 static int num_daemons = 0;
 static int curr_child_num = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
-static int num_listenfds = 0;
+static int num_listensocks = 0;
+static ap_pod_t *pod;
 static apr_socket_t **listenfds;
 static jmp_buf jmpbuffer;
 
@@ -299,7 +299,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = max_spare_threads;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
-            *result = max_requests_per_child;
+            *result = ap_max_requests_per_child;
             return APR_SUCCESS; 
         case AP_MPMQ_MAX_DAEMONS:
             *result = num_daemons;
@@ -654,8 +654,10 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
     int thread_num = *((int *) arg);
     long conn_id = child_num * thread_limit + thread_num;
     apr_pollfd_t *pollset;
-    int n;
     apr_status_t rv;
+    ap_listen_rec *lr;
+    int n;
+    apr_socket_t *childsock = NULL;
 
     apr_lock_acquire(thread_pool_parent_mutex);
     apr_pool_create(&tpool, thread_pool_parent);
@@ -666,14 +668,16 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                                                SERVER_STARTING,
                                                (request_rec *) NULL);
 
-    apr_poll_setup(&pollset, num_listenfds+1, tpool);
-    for(n = 0; n <= num_listenfds; ++n) {
-        apr_poll_socket_add(pollset, listenfds[n], APR_POLLIN);
+    apr_poll_setup(&pollset, num_listensocks + 1, tpool);
+    for(lr = ap_listeners; lr != NULL; lr = lr->next) {
+        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
     }
+    apr_os_sock_put(&childsock, &child_info_table[child_num].sd, tpool);
+    apr_poll_socket_add(pollset, childsock, APR_POLLIN);
 
     while (!workers_may_exit) {
-        workers_may_exit |= (max_requests_per_child != 0)
-                            && (requests_this_child <= 0);
+        workers_may_exit |= ((ap_max_requests_per_child != 0)
+                            && (requests_this_child <= 0));
         if (workers_may_exit) break;
         if (!thread_just_started) {
             apr_lock_acquire(idle_thread_count_mutex);
@@ -724,25 +728,24 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
             }
             if (workers_may_exit) break;
 
-            apr_poll_revents_get(&event, listenfds[0], pollset);
+/*            apr_poll_revents_get(&event, listenfds[0], pollset);
             if (event & APR_POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
-                 * the lucky process to die. */
+                 * the lucky process to die. 
                 check_pipe_of_death();
                 continue;
             }
-            
             apr_poll_revents_get(&event, listenfds[1], pollset);
             if (event & APR_POLLIN || event & APR_POLLOUT) {
                 /* This request is from another child in our current process.
                  * We should set a flag here, and then below we will read
                  * two bytes (the socket number and the NULL byte.
-                 */
                 thread_socket_table[thread_num] = AP_PERCHILD_OTHERCHILD;
                 goto got_from_other_child;
             }
+           */ 
 
-            if (num_listenfds == 1) {
+            if (num_listensocks == 1) {
                 sd = ap_listeners->sd;
                 goto got_fd;
             }
@@ -751,7 +754,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 curr_pollfd = last_pollfd;
                 do {
                     curr_pollfd++;
-                    if (curr_pollfd > num_listenfds) {
+                    if (curr_pollfd > num_listensocks) {
                         curr_pollfd = 1;
                     }
                     /* XXX: Should we check for POLLERR? */
@@ -951,7 +954,6 @@ static int check_signal(int signum)
 static void child_main(int child_num_arg)
 {
     int i;
-    ap_listen_rec *lr;
     apr_status_t rv;
 
     my_pid = getpid();
@@ -978,23 +980,8 @@ static void child_main(int child_num_arg)
 
     apr_setup_signal_thread();
 
-    requests_this_child = max_requests_per_child;
+    requests_this_child = ap_max_requests_per_child;
     
-    /* Set up the pollfd array, num_listenfds + 1 for the pipe and 1 for
-     * the child socket.
-     */
-    listenfds = apr_pcalloc(pchild, sizeof(*listenfds) * (num_listenfds + 2));
-#if APR_FILES_AS_SOCKETS
-    apr_socket_from_file(&listenfds[0], pipe_of_death_in);
-#endif
-
-    /* The child socket */
-    apr_os_sock_put(&listenfds[1], &child_info_table[child_num].sd, pchild);
-
-    num_listenfds++;
-    for (lr = ap_listeners, i = 2; i <= num_listenfds; lr = lr->next, ++i) {
-        listenfds[i]=lr->sd;
-    }
 
     /* Setup worker threads */
 
@@ -1279,13 +1266,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         exit(1);
     }
     ap_server_conf = s;
-    if ((num_listenfds = ap_setup_listeners(ap_server_conf)) < 1) {
-        /* XXX: hey, what's the right way for the mpm to indicate
-         * a fatal error? */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
-                     "no listening sockets available, shutting down");
-        return 1;
-    }
 
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
@@ -1496,7 +1476,7 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     max_threads = thread_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
-    max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     curr_child_num = 0;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
