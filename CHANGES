@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix byterange requests from returning 416 when using dynamic data
+     (such as filters like mod_include).  [Justin Erenkrantz]
+
   *) Allow mod_rewrite's set of "int:" internal RewriteMap functions
      to be extended by third-party modules via an optional function.
      [Tahiry Ramanamampanoharana <nomentsoa@hotmail.com>, Cliff Woolley]
