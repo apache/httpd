@@ -124,9 +124,9 @@
     
     <p>The server access log records all requests processed by the
     server. The location and content of the access log are
-    controlled by the <directive module="mod_log_config">
-    CustomLog</directive> directive. The <directive module="mod_log_config">
-    LogFormat</directive> directive can be used to simplify the selection of 
+    controlled by the <directive module="mod_log_config">CustomLog</directive>
+    directive. The <directive module="mod_log_config">LogFormat</directive>
+    directive can be used to simplify the selection of 
     the contents of the logs. This section describes how to configure the server
     to record information in the access log.</p>
 
@@ -183,8 +183,8 @@
 
       <p>The <code>CustomLog</code> directive sets up a new log file
       using the defined <em>nickname</em>. The filename for the
-      access log is relative to the <directive module="core">
-      ServerRoot</directive> unless it begins
+      access log is relative to the <directive
+      module="core">ServerRoot</directive> unless it begins
       with a slash.</p>
     
       <p>The above configuration will write log entries in a format
@@ -204,8 +204,8 @@
         <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
         <dd>This is the IP address of the client (remote host) which
-        made the request to the server. If <directive module="core">
-        HostnameLookups</directive> is
+        made the request to the server. If <directive
+	module="core">HostnameLookups</directive> is
         set to <code>On</code>, then the server will try to determine
         the hostname and log it in place of the IP address. However,
         this configuration is not recommended since it can
@@ -227,8 +227,8 @@
         machine. This information is highly unreliable and should
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
-        this information unless <directive module="core">
-        IdentityCheck</directive> is set
+        this information unless <directive
+	module="core">IdentityCheck</directive> is set
         to <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
@@ -357,8 +357,8 @@
       file. For example, the following directives will create three
       access logs. The first contains the basic CLF information,
       while the second and third contain referer and browser
-      information. The last two <directive module="core">
-      CustomLog</directive> lines show how
+      information. The last two <directive
+      module="core">CustomLog</directive> lines show how
       to mimic the effects of the <directive module="core">ReferLog</directive> 
       and <directive module="core">AgentLog</directive> directives.</p>
 
@@ -518,7 +518,8 @@
     hosts</a>, there are several options for dealing with log
     files. First, it is possible to use logs exactly as in a
     single-host server. Simply by placing the logging directives
-    outside the <code>&lt;VirtualHost&gt;</code> sections in the
+    outside the <directive module="core" 
+    type="section">VirtualHost</directive> sections in the
     main server context, it is possible to log all requests in the
     same access log and error log. This technique does not allow
     for easy collection of statistics on individual virtual
@@ -526,8 +527,8 @@
 
     <p>If <directive module="mod_log_config">CustomLog</directive> 
     or <directive module="mod_log_config">ErrorLog</directive>
-    directives are placed inside a <directive module="core">
-    &lt;VirtualHost&gt;</directive>
+    directives are placed inside a
+    <directive module="core" type="section">VirtualHost</directive>
     section, all requests or errors for that virtual host will be
     logged only to the specified file. Any virtual host which does
     not have logging directives will still have its requests sent
@@ -592,8 +593,8 @@
     <section id="scriptlog">
       <title>Script Log</title>
       
-      <p>In order to aid in debugging, the <directive module="mod_cgi">
-      ScriptLog</directive> directive
+      <p>In order to aid in debugging, the
+      <directive module="mod_cgi">ScriptLog</directive> directive
       allows you to record the input to and output from CGI scripts.
       This should only be used in testing - not for live servers.
       More information is available in the <a
@@ -605,12 +606,12 @@
       
       <p>When using the powerful and complex features of <a
       href="mod/mod_rewrite.html">mod_rewrite</a>, it is almost
-      always necessary to use the <directive module="mod_rewrite">
-      RewriteLog</directive> to help
+      always necessary to use the <directive
+      module="mod_rewrite">RewriteLog</directive> to help
       in debugging. This log file produces a detailed analysis of how
       the rewriting engine transforms requests. The level of detail
-      is controlled by the <directive module="mod_rewrite">
-      RewriteLogLevel</directive> directive.</p>
+      is controlled by the <directive
+      module="mod_rewrite">RewriteLogLevel</directive> directive.</p>
     </section>
   </section>
 </manualpage>
