@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/12/13 12:04:44 $
+Last modified: $Date: 2002/12/13 12:37:57 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -137,9 +137,6 @@ Documentation improvements
     script in the support directory that scans the files there and
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
-
-* Navigation
-  - Find a way to switch between translation(s) and original doc
 
 XML Conversions
 ===============
