@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/11 05:33:07 $]
+Last modified at [$Date: 2002/06/13 07:48:22 $]
 
 Release:
 
@@ -89,12 +89,26 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * 500 returned instead of 501 if a handler other than default_handler
+      is invoked on a method with M_INVALID.
+      Message-ID: <20020613001913.J22524@apache.org>
+      Is this a showstopper?
+        +1: Justin
+        -1:
+
     * Returning invalid 304 errors when filters are present.  [PR 9673]
       Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
+                  <20020607135121.G19485@apache.org>
+                  <20020610204425.B19018@lyra.org>
+      Proposed patch: <20020607214725.K19485@apache.org>
       Status: We should set r->no_local_copy, but where can we set it?
               We must set it before the handlers are run so that the
               appropriate handler can call ap_meets_conditions() before
-              generating the data.
+              generating the data.  Greg has reservations about Justin's
+              proposed patch.  Consensus needed.
+      Is this a showstopper?
+        +1: Justin
+        -1:
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
