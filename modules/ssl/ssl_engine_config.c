@@ -1060,14 +1060,16 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd, void *ctx,
     return NULL;
 }
 
-const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
-                                const char *opt)
+static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
+                                          const char *arg,
+                                          ssl_proto_t *options)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    ssl_proto_t thisopt, options = SSL_PROTOCOL_NONE;
+    ssl_proto_t thisopt;
 
-    while (*opt) {
-        char *w = ap_getword_conf(cmd->pool, &opt);
+    *options = SSL_PROTOCOL_NONE;
+
+    while (*arg) {
+        char *w = ap_getword_conf(parms->temp_pool, &arg);
         char action = '\0';
 
         if ((*w == '+') || (*w == '-')) {
@@ -1087,25 +1089,32 @@ const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
             thisopt = SSL_PROTOCOL_ALL;
         }
         else {
-            return apr_pstrcat(cmd->pool,
-                               "SSLProtocol: Illegal protocol '",
+            return apr_pstrcat(parms->temp_pool,
+                               parms->cmd->name,
+                               ": Illegal protocol '",
                                w, "'", NULL);
         }
 
         if (action == '-') {
-            options &= ~thisopt;
+            *options &= ~thisopt;
         }
         else if (action == '+') {
-            options |= thisopt;
+            *options |= thisopt;
         }
         else {
-            options = thisopt;
+            *options = thisopt;
         }
     }
 
-    sc->nProtocol = options;
-
     return NULL;
+}
+
+const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
+                                const char *opt)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    return ssl_cmd_protocol_parse(cmd, opt, &sc->nProtocol);
 }
 
 #ifdef SSL_EXPERIMENTAL_PROXY
@@ -1114,48 +1123,8 @@ const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, char *struct_ptr,
                                      const char *opt)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    ssl_proto_t thisopt, options = SSL_PROTOCOL_NONE;
 
-    while (*opt) {
-        char *w = ap_getword_conf(cmd->pool, &opt);
-        char action = '\0';
-
-        if ((*w == '+') || (*w == '-')) {
-            action = *(w++);
-        }
-
-        if (strcEQ(w, "SSLv2")) {
-            thisopt = SSL_PROTOCOL_SSLV2;
-        }
-        else if (strcEQ(w, "SSLv3")) {
-            thisopt = SSL_PROTOCOL_SSLV3;
-        }
-        else if (strcEQ(w, "TLSv1")) {
-            thisopt = SSL_PROTOCOL_TLSV1;
-        }
-        else if (strcEQ(w, "all")) {
-            thisopt = SSL_PROTOCOL_ALL;
-        }
-        else {
-            return apr_pstrcat(cmd->pool,
-                               "SSLProxyProtocol: Illegal protocol '",
-                               w, "'", NULL);
-        }
-
-        if (action == '-') {
-            options &= ~thisopt;
-        }
-        else if (action == '+') {
-            options |= thisopt;
-        }
-        else {
-            options = thisopt;
-        }
-    }
-
-    sc->nProxyProtocol = options;
-
-    return NULL;
+    return ssl_cmd_protocol_parse(cmd, opt, &sc->nProxyProtocol);
 }
 
 const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd, char *struct_ptr,
