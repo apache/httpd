@@ -58,15 +58,52 @@
  */
 
 
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 
 #include <stdarg.h>
+#include <syslog.h>
 
-static int
-error_log_child (void *cmd)
+static TRANS facilities[] = {
+    {"auth",	LOG_AUTH},
+    {"authpriv",LOG_AUTHPRIV},
+    {"cron", 	LOG_CRON},
+    {"daemon",	LOG_DAEMON},
+    {"ftp",	LOG_FTP},
+    {"kern",	LOG_KERN},
+    {"lpr",	LOG_LPR},
+    {"mail",	LOG_MAIL},
+    {"news",	LOG_NEWS},
+    {"syslog",	LOG_SYSLOG},
+    {"user",	LOG_USER},
+    {"uucp",	LOG_UUCP},
+    {"local0",	LOG_LOCAL0},
+    {"local1",	LOG_LOCAL1},
+    {"local2",	LOG_LOCAL2},
+    {"local3",	LOG_LOCAL3},
+    {"local4",	LOG_LOCAL4},
+    {"local5",	LOG_LOCAL5},
+    {"local6",	LOG_LOCAL6},
+    {"local7",	LOG_LOCAL7},
+    {NULL,		-1},
+};
+
+static TRANS priorities[] = {
+    {"emerg",	APLOG_EMERG},
+    {"alert",	APLOG_ALERT},
+    {"crit",	APLOG_CRIT},
+    {"error",	APLOG_ERR},
+    {"warn",	APLOG_WARNING},
+    {"notice",	APLOG_NOTICE},
+    {"info",	APLOG_INFO},
+    {"debug",	APLOG_DEBUG},
+    {NULL,	-1},
+};
+
+static int error_log_child (void *cmd)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -92,29 +129,47 @@ error_log_child (void *cmd)
     return(child_pid);
 }
 
-void open_error_log(server_rec *s, pool *p)
+void open_error_log (server_rec *s, pool *p)
 {
     char *fname;
-  
-    fname = server_root_relative (p, s->error_fname);
+    register TRANS *fac;
+
 
     if (*s->error_fname == '|') {
-      FILE *dummy;
+	FILE *dummy;
 
-      if (!spawn_child (p, error_log_child, (void *)(s->error_fname+1),
-                    kill_after_timeout, &dummy, NULL)) {
-	perror ("spawn_child");
-	fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
-	exit (1);
-      }
+	if (!spawn_child (p, error_log_child, (void *)(s->error_fname+1),
+			  kill_after_timeout, &dummy, NULL)) {
+	    perror ("spawn_child");
+	    fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
+	    exit (1);
+	}
 
-      s->error_log = dummy;
-    } else {
+	s->error_log = dummy;
+    }
+    else if (!strncasecmp(s->error_fname, "syslog", 6)) {
+	if ((fname = strchr(s->error_fname, ':'))) {
+	    fname++;
+	    for (fac = facilities; fac->t_name; fac++) {
+		if (!strcasecmp(fname, fac->t_name)) {
+		    openlog("httpd", LOG_NDELAY|LOG_CONS|LOG_PID, fac->t_val);
+		    s->error_log = NULL;
+		    return;
+		}
+	    }
+	}
+	else
+	    openlog("httpd", LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
+
+	s->error_log = NULL;
+    }
+    else {
+	fname = server_root_relative (p, s->error_fname);
         if(!(s->error_log = pfopen(p, fname, "a"))) {
             perror("fopen");
             fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
             exit(1);
-      }
+	}
     }
 }
 
@@ -139,12 +194,67 @@ void open_logs (server_rec *s_main, pool *p)
     }
 }
 
-API_EXPORT(void) error_log2stderr(server_rec *s) {
+API_EXPORT(void) error_log2stderr (server_rec *s) {
     if(fileno(s->error_log) != STDERR_FILENO)
         dup2(fileno(s->error_log),STDERR_FILENO);
 }
 
-void log_pid(pool *p, char *pid_fname) {
+API_EXPORT(void) aplog_error (const char *file, int line, int level,
+			      const request_rec *r, const char *fmt, ...)
+{
+    core_dir_config *conf;
+    va_list args;
+    char errstr[MAX_STRING_LEN];
+    static TRANS *pname = priorities;
+    
+
+    if (r != NULL) { /* backward compatibilty for historic logging functions */
+	conf = get_module_config(r->per_dir_config, &core_module);
+
+	if (level > conf->loglevel)
+	    return;
+
+	switch (conf->loglevel) {
+	case APLOG_DEBUG:
+	    ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: %s: %d: ",
+			pname[level].t_name, errno, strerror(errno), file, line);
+	    break;
+	case APLOG_EMERG:
+	case APLOG_CRIT:
+	case APLOG_ALERT:
+	    ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: ",
+			pname[level].t_name, errno, strerror(errno));
+	    break;
+	case APLOG_INFO:
+	case APLOG_ERR:
+	case APLOG_WARNING:
+	case APLOG_NOTICE:
+	    ap_snprintf(errstr, sizeof(errstr), "[%s]", pname[level].t_name);
+	    break;
+	}
+    }
+    else
+	ap_snprintf(errstr, sizeof(errstr), "[%s]", pname[level].t_name);
+	
+    va_start(args, fmt);
+
+    /* NULL if we are logging to syslog */
+    if (r->server->error_log) {
+	fprintf(r->server->error_log, "[%s] %s", get_time(), errstr);
+	vfprintf(r->server->error_log, fmt, args);
+	fflush(r->server->error_log);
+    }
+    else {
+	if (errstr)
+	    syslog(level, "%s", errstr);
+
+	vsyslog(level, fmt, args);
+    }
+    
+    va_end(args);
+}
+
+void log_pid (pool *p, char *pid_fname) {
     FILE *pid_file;
 
     if (!pid_fname) return;
@@ -158,13 +268,14 @@ void log_pid(pool *p, char *pid_fname) {
     fclose(pid_file);
 }
 
-API_EXPORT(void) log_error(const char *err, server_rec *s) {
+API_EXPORT(void) log_error (const char *err, server_rec *s)
+{
     fprintf(s->error_log, "[%s] %s\n",get_time(),err);
     fflush(s->error_log);
 }
 
-API_EXPORT(void) log_unixerr(const char *routine, const char *file,
-			     const char *msg, server_rec *s)
+API_EXPORT(void) log_unixerr (const char *routine, const char *file,
+			      const char *msg, server_rec *s)
 {
     const char *p, *q;
     FILE *err=s ? s->error_log : stderr;
@@ -181,33 +292,33 @@ API_EXPORT(void) log_unixerr(const char *routine, const char *file,
     fflush(err);
 }
 
-API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) log_printf (const server_rec *s, const char *fmt, ...)
 {
     va_list args;
     
     fprintf(s->error_log, "[%s] ", get_time());
-    va_start (args, fmt);
-    vfprintf (s->error_log, fmt, args);
-    va_end (args);
+    va_start(args, fmt);
+    vfprintf(s->error_log, fmt, args);
+    va_end(args);
 
     fputc('\n', s->error_log);
     fflush(s->error_log);
 }
 
-API_EXPORT(void) log_reason(const char *reason, const char *file, request_rec *r) 
+API_EXPORT(void) log_reason (const char *reason, const char *file, request_rec *r) 
 {
-    fprintf (r->server->error_log,
-	     "[%s] access to %s failed for %s, reason: %s\n",
-	     get_time(), file,
-	     get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
-	     reason);
-    fflush (r->server->error_log);
+    fprintf(r->server->error_log,
+	    "[%s] access to %s failed for %s, reason: %s\n",
+	    get_time(), file,
+	    get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
+	    reason);
+    fflush(r->server->error_log);
 }
 
-API_EXPORT(void) log_assert(const char *szExp, const char *szFile, int nLine)
+API_EXPORT(void) log_assert (const char *szExp, const char *szFile, int nLine)
 {
     fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
-	get_time(), szFile, nLine, szExp);
+	    get_time(), szFile, nLine, szExp);
 #ifndef WIN32
     /* unix assert does an abort leading to a core dump */
     abort();

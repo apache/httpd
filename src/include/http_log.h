@@ -50,7 +50,25 @@
  *
  */
 
+#define	APLOG_EMERG	0	/* system is unusable */
+#define	APLOG_ALERT	1	/* action must be taken immediately */
+#define	APLOG_CRIT	2	/* critical conditions */
+#define	APLOG_ERR	3	/* error conditions */
+#define	APLOG_WARNING	4	/* warning conditions */
+#define	APLOG_NOTICE	5	/* normal but significant condition */
+#define	APLOG_INFO	6	/* informational */
+#define	APLOG_DEBUG	7	/* debug-level messages */
+#define DEFAULT_LOGLEVEL	APLOG_ERR
+#define APLOG_MARK	__FILE__,__LINE__
+
+typedef struct _trans {
+	char	*t_name;
+	int	t_val;
+} TRANS;
+
 void open_logs (server_rec *, pool *p);
+API_EXPORT(void) aplog_error(const char *file, int line, int level,
+			     const request_rec *r, const char *fmt, ...);
 API_EXPORT(void) error_log2stderr (server_rec *);     
 
 void log_pid (pool *p, char *fname);

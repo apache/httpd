@@ -189,6 +189,9 @@ typedef struct {
     struct rlimit *limit_nproc;
 #endif
 
+    /* logging options */
+    int loglevel;
+    
     /* Access control */
     array_header *sec;
     regex_t *r;

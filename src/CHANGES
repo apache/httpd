@@ -1,5 +1,11 @@
 Changes with Apache 1.3a2
 
+  *) Add aplog_error() providing a mechanism to define levels of
+     verbosity to the server error logging. This addition also provides
+     the ablity to log errors using syslogd. Error logging is configurable
+     on a per-directory basis using the LogLevel directive. Conversion
+     of log_*() in progress. [Randy Terbush]
+
   *) Canonicalise filenames under Win32. Short filenames are
      converted to long ones. Backslashes are converted to forward
 	 slashes. Case is converted to lower. Parts of URLs that do not
