@@ -615,7 +615,9 @@ struct request_rec {
     char *the_request;
     /** HTTP/0.9, "simple" request */
     int assbackwards;
-    /** A proxy request (calculated during post_read_request/translate_name) */
+    /** A proxy request (calculated during post_read_request/translate_name)
+     *  possible values PROXYREQ_NONE, PROXYREQ_PROXY, PROXYREQ_REVERSE
+     */
     int proxyreq;
     /** HEAD request, as opposed to GET */
     int header_only;
@@ -806,6 +808,16 @@ struct request_rec {
  * binary compatibility for some other reason.
  */
 };
+
+/** Possible values of request_rec->proxyreq. A request could be normal,
+ *  proxied or reverse proxied. Normally proxied and reverse proxied are
+ *  grouped together as just "proxied", but sometimes it's necessary to
+ *  tell the difference between the two, such as for authentication.
+ */
+
+#define PROXYREQ_NONE 0
+#define PROXYREQ_PROXY 1
+#define PROXYREQ_REVERSE 2
 
 
 /** Structure to store things which are per connection */

@@ -1081,7 +1081,7 @@ AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
         ap_note_auth_failure(r);
     else
         apr_table_setn(r->err_headers_out,
-                  r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+                  (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate" : "WWW-Authenticate",
                   apr_pstrcat(r->pool, "Basic realm=\"", ap_auth_name(r), "\"",
                           NULL));
 }
@@ -1089,7 +1089,7 @@ AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r)
 AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
 {
     apr_table_setn(r->err_headers_out,
-	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+	    (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate" : "WWW-Authenticate",
 	    apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
 		ap_auth_name(r), r->request_time));
 }
@@ -1097,7 +1097,7 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *auth_line = apr_table_get(r->headers_in,
-                                      r->proxyreq ? "Proxy-Authorization"
+                                      (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authorization"
                                                   : "Authorization");
     const char *t;
 

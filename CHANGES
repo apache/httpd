@@ -37,6 +37,10 @@ Changes with Apache 2.0.15-dev
      entire content.  It is far safer to just remove the C-L as long
      as we are scanning it.  [Ryan Bloom]
 
+  *) Make sure Apache sends WWW-Authenticate during a reverse proxy
+     request and not Proxy-Authenticate.
+     [Graham Leggett <minfrin@sharp.fm>]
+
 Changes with Apache 2.0.14
 
   *) Fix content-length computation.  We ONLY compute a content-length if
