@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/30 20:20:30 $]
+Last modified at [$Date: 2002/05/30 23:17:23 $]
 
 Release:
 
@@ -52,6 +52,12 @@ CURRENT RELEASE NOTES:
       Friday.  Just wanted an intermediate milestone.
 
 RELEASE SHOWSTOPPERS:
+
+    * 413 (invalid chunk size) followed by another request segfaults.
+      Message-ID: <m31ybt4zyt.fsf@rdu88-251-253.nc.rr.com>
+      Status: Justin is completely confounded by this.  It looks like a
+              bucket lifetime bug, but somehow an operation on one
+              brigade is altering another brigade and corrupting it.
 
     * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
       to fix, probably just some extraneous #include's that are fouling
