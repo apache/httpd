@@ -1,3 +1,9 @@
+Changes with Apache 2.0.23
+
+  *) Improve content generation throughout Apache, providing closer
+     compliance with HTML 3.2, HTML 4.01 Transitional and XHTML 1.0
+     Transitional specifications.  [William Rowe]
+
 Changes with Apache 2.0.22
 
   *) Apache/Win32 now fills in the service description with Apache's
