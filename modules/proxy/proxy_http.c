@@ -456,7 +456,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         ap_bwrite(r->connection->client, buffer, len, &cntr);
         if (cachefp && ap_bwrite(cachefp, buffer, len, &cntr) != len) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: error writing extra data to cache", cachefp);
+                          "proxy: error writing extra data to cache");
             ap_proxy_cache_error(&c);
         }
     }
