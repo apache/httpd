@@ -78,27 +78,20 @@
 #define daemons_to_start               AP_daemons_to_start
 #define excess_requests_per_child      AP_excess_requests_per_child
 #define group_id                       AP_group_id
-#define jmpbuffer                      AP_jmpbuffer
 #define listenbacklog                  AP_listenbacklog
 #define listeners                      AP_listeners
 #define lock_fname                     AP_lock_fname
 #define max_requests_per_child         AP_max_requests_per_child
-#define my_pid                         AP_my_pid
-#define permanent_pool                 AP_permanent_pool
-#define pgrp                           AP_pgrp
 #define pid_fname                      AP_pid_fname
 #define restart_time                   AP_restart_time
 #define scoreboard_fname               AP_scoreboard_fname
-#define sd                             AP_sd
 #define server_argv0                   AP_server_argv0
-#define server_conf                    AP_server_conf
 #define server_confname                AP_server_confname
 #define server_post_read_config        AP_server_post_read_config
 #define server_pre_read_config         AP_server_pre_read_config
 #define server_root                    AP_server_root
 #define standalone                     AP_standalone
 #define threads_per_child              AP_threads_per_child
-#define timebuf                        AP_timebuf
 #define user_id                        AP_user_id
 #define user_name                      AP_user_name
 
@@ -212,7 +205,6 @@
 #define clear_module_list              AP_clear_module_list
 #define clear_pool                     AP_clear_pool
 #define clear_table                    AP_clear_table
-#define client_to_stdout               AP_client_to_stdout
 #define close_piped_log                AP_close_piped_log
 #define construct_server               AP_construct_server
 #define construct_url                  AP_construct_url
@@ -221,11 +213,9 @@
 #define copy_table                     AP_copy_table
 #define core_reorder_directories       AP_core_reorder_directories
 #define count_dirs                     AP_count_dirs
-#define create_empty_config            AP_create_empty_config
 #define create_environment             AP_create_environment
 #define create_per_dir_config          AP_create_per_dir_config
 #define create_request_config          AP_create_request_config
-#define default_handler                AP_default_handler
 #define default_port_for_request       AP_default_port_for_request
 #define default_port_for_scheme        AP_default_port_for_scheme
 #define default_type                   AP_default_type
