@@ -130,6 +130,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Fix 64-bit problem in mod_ssl input logic.  
+     [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
+
   *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
      [Justin Erenkrantz]
 
