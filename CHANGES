@@ -1,5 +1,8 @@
 Changes with Apache 2.0.16-dev
 
+  *) Enable mod_status by default.  This matches what Apache 1.3 does.
+     [Ed Korthof]
+
   *) Add a ScriptSock directive to the default config file.  This is
      only enabled when mod_cgid is used.  
      [Taketo Kabe <kabe@sra-tohoku.co.jp>]
