@@ -242,11 +242,12 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
     return AP_NOBODY_WROTE;
 }
 
-AP_DECLARE(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
-                                        ap_bucket_brigade **b)
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
+                                         ap_bucket_brigade **b)
 {
     ap_bucket *e;
     apr_pool_t *p = f->r ? f->r->pool : f->c->pool;
+    apr_status_t rv;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
@@ -256,7 +257,11 @@ AP_DECLARE(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
     }
     
     AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {
-        ap_bucket_setaside(e);
+        rv = ap_bucket_setaside(e);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            return rv;
+        }
     }
     AP_BRIGADE_CONCAT(*saveto, *b);
+    return APR_SUCCESS;
 }
