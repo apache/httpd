@@ -6718,6 +6718,14 @@ int REALMAIN(int argc, char *argv[])
         ap_cpystrn(ap_server_root, bslash2slash(remove_filename(argv[0])),
                    sizeof(ap_server_root));
     }
+
+    /* NetWare doesn't have a concept of a current working directory so we
+     * initialize cwd to the startup directory for the executible, in case
+     * the user chooses a relative path for the -d serverroot arg a bit later
+     */
+    ap_cpystrn(cwd, ap_server_root, sizeof(cwd));
+    if (cwd[strlen(cwd)-1] != '/')
+	strcat (cwd, "/");
 #else
     if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
        ap_log_error(APLOG_MARK,APLOG_EMERG|APLOG_WIN32ERROR, NULL,
