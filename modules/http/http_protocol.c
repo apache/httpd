@@ -1913,7 +1913,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 }
 
 /* finalize_request_protocol is called at completion of sending the
- * response.  It's sole purpose is to send the terminating protocol
+ * response.  Its sole purpose is to send the terminating protocol
  * information for any wrappers around the response message body
  * (i.e., transfer encodings).  It should have been named finalize_response.
  */
@@ -1921,7 +1921,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     /* tell the filter chain there is no more content coming */
     end_output_stream(r);
-    }
+}
 
 /* Here we deal with getting the request message body from the client.
  * Whether or not the request contains a body is signaled by the presence
@@ -2513,7 +2513,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
-    size_t bytes_sent = 0;
+    apr_ssize_t bytes_sent = 0;
     ap_bucket_brigade *bb = NULL;
     
     /* WE probably need to do something to make sure we are respecting the
@@ -2522,7 +2522,7 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
      */
     bb = ap_brigade_create(r->pool);
     ap_brigade_append_buckets(bb, 
-                            ap_bucket_mmap_create(mm, mm->size, &bytes_sent));
+                              ap_bucket_mmap_create(mm, mm->size, &bytes_sent));
     bytes_sent = ap_pass_brigade(r->filters, bb);
 
     return bytes_sent;
