@@ -17,6 +17,7 @@ END {
     print " * configuration script.  DO NOT HAND EDIT!!!!!"
     print " */"
     print ""
+    print "#include \"ap_config.h\""
     print "#include \"httpd.h\""
     print "#include \"http_config.h\""
     print ""

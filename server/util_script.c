@@ -56,6 +56,7 @@
  */
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
@@ -65,7 +66,6 @@
 #include "http_request.h"	/* for sub_req_lookup_uri() */
 #include "util_script.h"
 #include "util_date.h"		/* For parseHTTPdate() */
-#include "ap_config.h"
 #include <stdlib.h>
 #include <string.h>
 

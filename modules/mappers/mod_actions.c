@@ -77,6 +77,7 @@
  * URI includes query information (stuff after a ?-mark).
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"

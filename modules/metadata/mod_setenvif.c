@@ -114,12 +114,12 @@
  *    SetEnvIf remote_addr (127.0.0.1|192.168.10.) LOCAL
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "ap_config.h"
 
 enum special {
     SPECIAL_NOT,

@@ -1,3 +1,4 @@
+#include "ap_config.h"
 #include "ap_mmn.h"
 #include "httpd.h"
 #include "http_config.h"

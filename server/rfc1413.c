@@ -78,6 +78,7 @@
 
 /* Rewritten by David Robinson */
 
+#include "ap_config.h"
 #include "httpd.h"		/* for server_rec, conn_rec, etc. */
 #include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"

@@ -56,6 +56,7 @@
  */ 
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h" 
 #include "http_main.h" 
 #include "http_log.h" 
@@ -63,7 +64,6 @@
 #include "util_uri.h" 
 #include "apr_getopt.h"
 #include "ap_mpm.h"
-#include "ap_config.h"
 
 const char *ap_server_argv0;
 

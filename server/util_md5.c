@@ -84,6 +84,7 @@
 /* md5.c --Module Interface to MD5. */
 /* Jeff Hostetler, Spyglass, Inc., 1994. */
 
+#include "ap_config.h"
 #include "apr_portable.h"
 #include "httpd.h"
 #include "util_md5.h"

@@ -59,11 +59,11 @@
  * 
  */
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "util_uri.h"
 #include <string.h>
-#include "ap_config.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
