@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/28 07:37:58 $]
+Last modified at [$Date: 2002/10/28 07:41:09 $]
 
 Release:
 
@@ -65,10 +65,10 @@ RELEASE SHOWSTOPPERS:
 CURRENT VOTES:
 
     * Adopt backwards compatibility for future Apache 2.0 releases
-      such that MMN changes and eliminating non-experimental modules 
-      are deferred for the next minor version bump (e.g. 2.1, 2.2 
+      such that MMN major number changes and eliminating non-experimental
+      modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
       or 3.0).
-        +1: wrowe, jerenkrantz, aaron
+        +1: wrowe, jerenkrantz, aaron, brianp
          0: 
         -1: 
 
