@@ -215,14 +215,6 @@ void util_uri_init(void)
     int ret;
     const char *re_str;
 
-    memset(uri_delims, 0, sizeof(uri_delims));
-    uri_delims[':'] = T_COLON;
-    uri_delims['/'] = T_SLASH;
-    uri_delims['?'] = T_QUESTION;
-    uri_delims['#'] = T_HASH;
-    uri_delims['@'] = T_AT;
-    uri_delims['\0'] = T_NUL;
-
     /* This is a modified version of the regex that appeared in
      * draft-fielding-uri-syntax-01.  It doesnt allow the uri to contain a
      * scheme but no hostinfo or vice versa. 
@@ -398,7 +390,6 @@ API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *u
 #define T_SLASH		0x02	/* '/' */
 #define T_QUESTION	0x04	/* '?' */
 #define T_HASH		0x08	/* '#' */
-#define T_AT		0x10	/* '@' */
 #define T_NUL		0x80	/* '\0' */
 
 static unsigned char uri_delims[256];
@@ -423,7 +414,6 @@ void util_uri_init(void)
     uri_delims['/'] = T_SLASH;
     uri_delims['?'] = T_QUESTION;
     uri_delims['#'] = T_HASH;
-    uri_delims['@'] = T_AT;
     uri_delims['\0'] = T_NUL;
 }
 
