@@ -399,7 +399,7 @@ install-config:
 			target_prefix="$(TARGET)_"; \
 		fi; \
 		(echo "##"; \
-		 echo "## $${conf} -- Apache HTTP server configuration file"; \
+		 echo "## $${target_conf} -- Apache HTTP server configuration file"; \
 		 echo "##"; \
 		 echo ""; \
 		 cat $(TOP)/conf/$${conf}-dist ) |\
