@@ -2339,13 +2339,16 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
-    if (ap_bflush(r->connection->client) < 0) {
+    ap_status_t rv;
+
+    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
         if (!ap_is_aborted(r->connection)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                 "client stopped connection before rflush completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
         }
+        errno = rv;
         return EOF;
     }
     return 0;

@@ -146,7 +146,7 @@ static void lingering_close(request_rec *r)
 
     /* Send any leftover data to the client, but never try to again */
 
-    if (ap_bflush(r->connection->client) == -1) {
+    if (ap_bflush(r->connection->client) != APR_SUCCESS) {
 	ap_bclose(r->connection->client);
 	return;
     }
