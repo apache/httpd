@@ -376,7 +376,12 @@ Allows additional information to be listed along with a specified module.
     <li><strong><code>child_exit</code> function for module API</strong><br>
     A new phase called once per "heavy-weight process," when it is
     terminating.  Note that it can't be called in some fatal cases (such
-    as segfaults and kill -9).
+    as segfaults and kill -9).  The <code>child_init</code> and
+    <code>child_exit</code> functions are passed a pool whose lifetime is
+    the same as the lifetime of the child (modulo completely fatal
+    events in which apache has no hope of recovering).  In contrast,
+    the module <code>init</code> function is passed a pool whose lifetime
+    ends when the parent exits or restarts.
 
     <li><strong><code>child_terminate</code></strong><br>
     Used in the child to indicate the child should exit after finishing
