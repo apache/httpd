@@ -922,6 +922,9 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
+    enum {E_NONE, E_URL, E_ENTITY} encode;
+
+    encode = E_ENTITY;
 
     while (1) {
         if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
@@ -931,7 +934,15 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
             const char *val = ap_table_get(r->subprocess_env, tag_val);
 
             if (val) {
-                ap_rputs(val, r);
+		if (encode == E_NONE) {
+		    ap_rputs(val, r);
+		}
+		else if (encode == E_URL) {
+		    ap_rputs(ap_escape_uri(r->pool, val), r);
+		}
+		else if (encode == E_ENTITY) {
+		    ap_rputs(ap_escape_html(r->pool, val), r);
+		}
             }
             else {
                 ap_rputs("(none)", r);
@@ -940,6 +951,19 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
         else if (!strcmp(tag, "done")) {
             return 0;
         }
+	else if (!strcmp(tag, "encoding")) {
+	    if (!strcasecmp(tag_val, "none")) encode = E_NONE;
+	    else if (!strcasecmp(tag_val, "url")) encode = E_URL;
+	    else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
+	    else {
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+			    "unknown value \"%s\" to parameter \"encoding\" of "
+			    "tag echo in %s",
+			    tag_val, r->filename);
+		ap_rputs(error, r);
+	    }
+	}
+
         else {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "unknown parameter \"%s\" to tag echo in %s",
@@ -2116,7 +2140,8 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
     }
     else if (!strcmp(tag, "done")) {
         for (i = 0; i < arr->nelts; ++i) {
-            ap_rvputs(r, elts[i].key, "=", elts[i].val, "\n", NULL);
+            ap_rvputs(r, ap_escape_html(r->pool, elts[i].key), "=", 
+		ap_escape_html(r->pool, elts[i].val), "\n", NULL);
         }
         return 0;
     }

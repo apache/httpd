@@ -127,6 +127,8 @@ API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype)
 {
     const char *semi;
 
+    if (intype == NULL) return NULL;
+
     semi = strchr(intype, ';');
     if (semi == NULL) {
 	return ap_pstrdup(p, intype);

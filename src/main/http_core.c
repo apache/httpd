@@ -154,6 +154,9 @@ static void *create_core_dir_config(pool *a, char *dir)
 
     conf->server_signature = srv_sig_unset;
 
+    conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
+    conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
+
     return (void *)conf;
 }
 
@@ -279,6 +282,14 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
 
     if (new->server_signature != srv_sig_unset) {
 	conf->server_signature = new->server_signature;
+    }
+
+    if (new->add_default_charset != ADD_DEFAULT_CHARSET_UNSET) {
+	conf->add_default_charset = new->add_default_charset;
+    }
+
+    if (new->add_default_charset_name) {
+	conf->add_default_charset_name = new->add_default_charset_name;
     }
 
     return (void*)conf;
@@ -1034,6 +1045,28 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 #endif /*GPROF*/
+
+static const char *set_add_default_charset(cmd_parms *cmd, 
+	core_dir_config *d, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+    d->add_default_charset = arg != 0;
+    return NULL;
+}
+
+static const char *set_add_default_charset_name(cmd_parms *cmd, 
+	core_dir_config *d, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+    d->add_default_charset_name = arg;
+    return NULL;
+}
 
 static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
 {
@@ -2786,6 +2819,10 @@ static const command_rec core_cmds[] = {
 { "GprofDir", set_gprof_dir, NULL, RSRC_CONF, TAKE1,
   "Directory to plop gmon.out files" },
 #endif
+{ "AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, FLAG,
+  "whether or not to add a default charset to any Content-Type without one" },
+{ "AddDefaultCharsetName", set_add_default_charset_name, NULL, OR_FILEINFO, 
+  TAKE1, "The name of the charset to add if AddDefaultCharset is enabled" },
 
 /* Old resource config file commands */
   

@@ -409,6 +409,12 @@ extern "C" {
 #endif /* default limit on number of request header fields */
 
 /*
+ * The default default character set name to add if AddDefaultCharset is 
+ * enabled.  Overridden with AddDefaultCharsetName.
+ */
+#define DEFAULT_ADD_DEFAULT_CHARSET_NAME "iso-8859-1"
+
+/*
  * The below defines the base string of the Server: header. Additional
  * tokens can be added via the ap_add_version_component() API call.
  *

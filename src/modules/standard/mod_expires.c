@@ -437,7 +437,8 @@ static int add_expires(request_rec *r)
     if (r->content_type == NULL)
         code = NULL;
     else
-        code = (char *) ap_table_get(conf->expiresbytype, r->content_type);
+        code = (char *) ap_table_get(conf->expiresbytype, 
+		ap_field_noparam(r->pool, r->content_type));
 
     if (code == NULL) {
         /* no expires defined for that type, is there a default? */

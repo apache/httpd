@@ -103,6 +103,35 @@
 
 #endif /*CHARSET_EBCDIC*/
 
+/*
+ * Builds the content-type that should be sent to the client from the
+ * content-type specified.  The following rules are followed:
+ *    - if type is NULL, type is set to ap_default_type(r)
+ *    - if charset adding is disabled, stop processing and return type.
+ *    - then, if there are no parameters on type, add the default charset
+ *    - return type
+ */
+static const char *make_content_type(request_rec *r, const char *type) {
+    const char *i;
+    core_dir_config *conf = (core_dir_config *)ap_get_module_config(
+	r->per_dir_config, &core_module);
+    if (!type) type = ap_default_type(r);
+    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) return type;
+
+    i = type;
+    while (*i && *i != ';') i++;
+    if (*i && *i == ';') {
+	/* already has parameter, do nothing */
+	/* XXX should check for actual charset=, but then we need real 
+	 * parsing code 
+	 */
+    } else {
+	type = ap_pstrcat(r->pool, type, "; charset=", 
+	    conf->add_default_charset_name, NULL);
+    }
+    return type;
+}
+
 static int parse_byterange(char *range, long clength, long *start, long *end)
 {
     char *dash = strchr(range, '-');
@@ -265,7 +294,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     }
 
     if (r->byterange > 1) {
-        const char *ct = r->content_type ? r->content_type : ap_default_type(r);
+        const char *ct = make_content_type(r, r->content_type);
         char ts[MAX_STRING_LEN];
 
         ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
@@ -1636,10 +1665,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         ap_table_setn(r->headers_out, "Content-Type",
                   ap_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
                           "byteranges; boundary=", r->boundary, NULL));
-    else if (r->content_type)
-        ap_table_setn(r->headers_out, "Content-Type", r->content_type);
-    else
-        ap_table_setn(r->headers_out, "Content-Type", ap_default_type(r));
+    else ap_table_setn(r->headers_out, "Content-Type", make_content_type(r, 
+	r->content_type));
 
     if (r->content_encoding)
         ap_table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
@@ -2550,7 +2577,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        r->content_type = "text/html";
+        r->content_type = "text/html; charset=iso-8859-1";
 
         if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
             ap_table_setn(r->headers_out, "Allow", make_allow(r));

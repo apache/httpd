@@ -89,15 +89,34 @@ Valid values are <CODE>bytes</CODE> for a count in bytes, or
 routine when printing dates.
 </DL>
 
+<A NAME="echo">
 <DT><STRONG>echo</STRONG>
 <DD>
 This command prints one of the include variables, defined below.
 If the variable is unset, it is printed as <CODE>(none)</CODE>.
 Any dates printed are subject to the currently configured <CODE>timefmt</CODE>.
+
 Attributes:
 <DL>
 <DT>var
 <DD>The value is the name of the variable to print.
+<DT>encoding 
+<DD>Specifies how Apache should encode special characters contained
+in the variable before outputting them.  If set to "none", no encoding
+will be done.  If set to "url", then URL encoding (also known as
+%-encoding; this is appropriate for use within URLs in links, etc.)
+will be performed.  At the start of an <CODE>echo</CODE> element,
+the default is set to "entity", resulting in entity encoding (which
+is appropriate in the context of a block-level HTML element, eg.
+a paragraph of text).  This can be changed by adding an
+<CODE>encoding</CODE> attribute, which will remain in effect until
+the next <CODE>encoding</CODE> attribute is encountered or the
+element ends, whichever comes first.  Note that only special
+characters as defined in the ISO-8859-1 character encoding will be
+encoded.  This encoding process may not have the desired result if
+a different character encoding is in use.  Apache 1.3.12 and above; previous
+versions do no encoding.
+
 </DL>
 
 <DT><STRONG>exec</STRONG>
@@ -181,7 +200,9 @@ output. Thus included files can be nested.
 
 <DT><STRONG>printenv</STRONG>
 <DD>This prints out a listing of all existing variables and their values.
-    No attributes.
+   Starting with Apache 1.3.12, special characters are entity encoded (see the 
+   <A HREF="#echo"><CODE>echo</CODE></A> element for details) before being
+   output.  No attributes.
 <DD>For example: <CODE>&lt;!--#printenv --&gt;</CODE>
 <DD>Apache 1.2 and above.
 

@@ -243,6 +243,15 @@ typedef struct {
      */
     unsigned d_is_fnmatch : 1;
 
+    /* should we force a charset on any outgoing parameterless content-type?
+     * if so, which charset?
+     */
+#define ADD_DEFAULT_CHARSET_OFF   (0)
+#define ADD_DEFAULT_CHARSET_ON    (1)
+#define ADD_DEFAULT_CHARSET_UNSET (2)
+    unsigned add_default_charset : 2;
+    char *add_default_charset_name;
+
     /* System Resource Control */
 #ifdef RLIMIT_CPU
     struct rlimit *limit_cpu;
