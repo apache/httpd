@@ -331,9 +331,9 @@ static int get_path_info(request_rec *r)
 static int directory_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
-                                                  &core_module);
-    void *per_dir_defaults = r->server->lookup_defaults;
-    void **sec = (void **) sconf->sec->elts;
+                                                     &core_module);
+    ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
+    ap_conf_vector_t **sec = (ap_conf_vector_t **) sconf->sec->elts;
     int num_sec = sconf->sec->nelts;
     char *test_filename;
     char *test_dirname;
@@ -343,6 +343,9 @@ static int directory_walk(request_rec *r)
 #if defined(HAVE_UNC_PATHS) || defined(NETWARE)
     unsigned iStart = 1;
 #endif
+    ap_conf_vector_t *entry_config;
+    ap_conf_vector_t *this_conf;
+    core_dir_config *entry_core;
 
     /*
      * Are we dealing with a file? If not, we can (hopefuly) safely assume we
@@ -372,16 +375,12 @@ static int directory_walk(request_rec *r)
 
     if (!ap_os_is_path_absolute(r->filename))
     {
-        void *this_conf, *entry_config;
-        core_dir_config *entry_core;
-        char *entry_dir;
+        const char *entry_dir;
 
         for (j = 0; j < num_sec; ++j) {
 
             entry_config = sec[j];
-
-            entry_core = (core_dir_config *)
-                ap_get_module_config(entry_config, &core_module);
+            entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
             this_conf = NULL;
@@ -398,8 +397,8 @@ static int directory_walk(request_rec *r)
 
             if (this_conf)
                 per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                         per_dir_defaults,
-                                                         this_conf);
+                                                            per_dir_defaults,
+                                                            this_conf);
         }
 
         r->per_dir_config = per_dir_defaults;
@@ -410,7 +409,7 @@ static int directory_walk(request_rec *r)
     /* XXX This needs to be rolled into APR, the APR function will not
      * be allowed to fold the case of any non-existant segment of the path:
      */
-    r->filename   = ap_os_case_canonical_filename(r->pool, r->filename);
+    r->filename = ap_os_case_canonical_filename(r->pool, r->filename);
 
     /* TODO This is rather silly right here, we should simply be setting
      * filename and path_info at the end of our directory_walk
@@ -420,10 +419,10 @@ static int directory_walk(request_rec *r)
         return res;
     }
 
-    /* XXX This becomes mute, and will already happen above for elements
+    /* XXX This becomes moot, and will already happen above for elements
      * that actually exist:
      */
-    r->filename   = ap_os_canonical_filename(r->pool, r->filename);
+    r->filename = ap_os_canonical_filename(r->pool, r->filename);
 
     test_filename = apr_pstrdup(r->pool, r->filename);
 
@@ -500,8 +499,8 @@ static int directory_walk(request_rec *r)
     j = 0;
     for (; i <= num_dirs; ++i) {
         int overrides_here;
-        core_dir_config *core_dir = (core_dir_config *)
-            ap_get_module_config(per_dir_defaults, &core_module);
+        core_dir_config *core_dir = ap_get_module_config(per_dir_defaults,
+                                                         &core_module);
 
         /*
          * XXX: this could be made faster by only copying the next component
@@ -530,13 +529,10 @@ static int directory_walk(request_rec *r)
          */
 
         for (; j < num_sec; ++j) {
-            void *entry_config = sec[j];
-            core_dir_config *entry_core;
             char *entry_dir;
-            void *this_conf;
 
-            entry_core = (core_dir_config *)
-                         ap_get_module_config(entry_config, &core_module);
+            entry_config = sec[j];
+            entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
             if (entry_core->r
@@ -546,10 +542,11 @@ static int directory_walk(request_rec *r)
      * XXX: The net test may be wrong... may fail ap_os_is_path_absolute
      */
                 || (entry_core->d_components > 1
-                    && entry_core->d_components > i))
+                    && entry_core->d_components > i)
 #else
-                || entry_core->d_components > i)
-#endif /* def HAVE_DRIVE_LETTERS || NETWARE */                  
+                || entry_core->d_components > i
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
+                )
                 break;
 
             this_conf = NULL;
@@ -563,10 +560,10 @@ static int directory_walk(request_rec *r)
 
             if (this_conf) {
                 per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                         per_dir_defaults,
-                                                         this_conf);
-                core_dir = (core_dir_config *)
-                           ap_get_module_config(per_dir_defaults, &core_module);
+                                                            per_dir_defaults,
+                                                            this_conf);
+                core_dir = ap_get_module_config(per_dir_defaults,
+                                                &core_module);
             }
 #if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
             /* So that other top-level directory sections (e.g. "e:/") aren't
@@ -587,11 +584,11 @@ static int directory_walk(request_rec *r)
         if (i >= iStart)
 #endif
         if (overrides_here) {
-            void *htaccess_conf = NULL;
+            ap_conf_vector_t *htaccess_conf = NULL;
 
             res = ap_parse_htaccess(&htaccess_conf, r, overrides_here,
-                                 apr_pstrdup(r->pool, test_dirname),
-                                 sconf->access_name);
+                                    apr_pstrdup(r->pool, test_dirname),
+                                    sconf->access_name);
             if (res)
                 return res;
 
@@ -610,17 +607,15 @@ static int directory_walk(request_rec *r)
      * regexes.
      */
     for (; j < num_sec; ++j) {
-        void *entry_config = sec[j];
-        core_dir_config *entry_core;
 
-        entry_core = (core_dir_config *)
-                     ap_get_module_config(entry_config, &core_module);
+        entry_config = sec[j];
+        entry_core = ap_get_module_config(entry_config, &core_module);
 
         if (entry_core->r) {
             if (!ap_regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
-                per_dir_defaults =
-                    ap_merge_per_dir_configs(r->pool, per_dir_defaults,
-                                          entry_config);
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                            per_dir_defaults,
+                                                            entry_config);
             }
         }
     }
@@ -648,12 +643,13 @@ static int directory_walk(request_rec *r)
 static int location_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
-                                                  &core_module);
-    void *per_dir_defaults = r->per_dir_config;
-    void **url = (void **) sconf->sec_url->elts;
+                                                     &core_module);
+    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
+    ap_conf_vector_t **url = (ap_conf_vector_t **) sconf->sec_url->elts;
     int len, num_url = sconf->sec_url->nelts;
     char *test_location;
-    void *this_conf, *entry_config;
+    ap_conf_vector_t *this_conf;
+    ap_conf_vector_t *entry_config;
     core_dir_config *entry_core;
     char *entry_url;
     int j;
@@ -684,8 +680,7 @@ static int location_walk(request_rec *r)
 
 	entry_config = url[j];
 
-	entry_core = (core_dir_config *)
-	    ap_get_module_config(entry_config, &core_module);
+	entry_core = ap_get_module_config(entry_config, &core_module);
 	entry_url = entry_core->d;
 
 	len = strlen(entry_url);
@@ -702,13 +697,14 @@ static int location_walk(request_rec *r)
 	    }
 	}
 	else if (!strncmp(test_location, entry_url, len) &&
-		    (entry_url[len - 1] == '/' ||
-		test_location[len] == '/' || test_location[len] == '\0'))
+                 (entry_url[len - 1] == '/' ||
+                  test_location[len] == '/' || test_location[len] == '\0'))
 	    this_conf = entry_config;
 
 	if (this_conf)
 	    per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-					    per_dir_defaults, this_conf);
+                                                        per_dir_defaults,
+                                                        this_conf);
     }
     r->per_dir_config = per_dir_defaults;
 
@@ -717,9 +713,10 @@ static int location_walk(request_rec *r)
 
 static int file_walk(request_rec *r)
 {
-    core_dir_config *conf = ap_get_module_config(r->per_dir_config, &core_module);
-    void *per_dir_defaults = r->per_dir_config;
-    void **file = (void **) conf->sec->elts;
+    core_dir_config *conf = ap_get_module_config(r->per_dir_config,
+                                                 &core_module);
+    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
+    ap_conf_vector_t **file = (ap_conf_vector_t **) conf->sec->elts;
     int num_files = conf->sec->nelts;
     char *test_file;
 
@@ -735,7 +732,8 @@ static int file_walk(request_rec *r)
     /* Go through the file entries, and check for matches. */
 
     if (num_files) {
-        void *this_conf, *entry_config;
+        ap_conf_vector_t *this_conf;
+        ap_conf_vector_t *entry_config;
         core_dir_config *entry_core;
         char *entry_file;
         int j;
@@ -747,8 +745,7 @@ static int file_walk(request_rec *r)
 
             entry_config = file[j];
 
-            entry_core = (core_dir_config *)
-                         ap_get_module_config(entry_config, &core_module);
+            entry_core = ap_get_module_config(entry_config, &core_module);
             entry_file = entry_core->d;
 
             this_conf = NULL;
@@ -768,8 +765,8 @@ static int file_walk(request_rec *r)
 
             if (this_conf)
                 per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                         per_dir_defaults,
-                                                         this_conf);
+                                                            per_dir_defaults,
+                                                            this_conf);
         }
         r->per_dir_config = per_dir_defaults;
     }

@@ -127,10 +127,8 @@ static const char *set_language_priority(cmd_parms *cmd, void *n,
 static const char *cache_negotiated_docs(cmd_parms *cmd, void *dummy,
                                          int arg)
 {
-    void *server_conf = cmd->server->module_config;
-
-    ap_set_module_config(server_conf, &negotiation_module, 
-	(arg ? "Cache" : NULL));
+    ap_set_module_config(cmd->server->module_config, &negotiation_module, 
+                         (arg ? "Cache" : NULL));
     return NULL;
 }
 

@@ -122,12 +122,12 @@
 
 module userdir_module;
 
-typedef struct userdir_config {
+typedef struct {
     int globally_disabled;
     char *userdir;
     apr_table_t *enabled_users;
     apr_table_t *disabled_users;
-}              userdir_config;
+} userdir_config;
 
 /*
  * Server config for this module: global disablement flag, a list of usernames
@@ -137,14 +137,14 @@ typedef struct userdir_config {
 
 static void *create_userdir_config(apr_pool_t *p, server_rec *s)
 {
-    userdir_config
-    * newcfg = (userdir_config *) apr_pcalloc(p, sizeof(userdir_config));
+    userdir_config *newcfg = apr_pcalloc(p, sizeof(*newcfg));
 
     newcfg->globally_disabled = 0;
     newcfg->userdir = DEFAULT_USER_DIR;
     newcfg->enabled_users = apr_table_make(p, 4);
     newcfg->disabled_users = apr_table_make(p, 4);
-    return (void *) newcfg;
+
+    return newcfg;
 }
 
 #define O_DEFAULT 0
@@ -153,15 +153,10 @@ static void *create_userdir_config(apr_pool_t *p, server_rec *s)
 
 static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    userdir_config
-    * s_cfg = (userdir_config *) ap_get_module_config
-    (
-     cmd->server->module_config,
-     &userdir_module
-    );
+    userdir_config *s_cfg = ap_get_module_config(cmd->server->module_config,
+                                                 &userdir_module);
     char *username;
-    const char
-        *usernames = arg;
+    const char *usernames = arg;
     char *kw = ap_getword_conf(cmd->pool, &usernames);
     apr_table_t *usertable;
 
@@ -219,9 +214,9 @@ static const command_rec userdir_cmds[] = {
 
 static int translate_userdir(request_rec *r)
 {
-    void *server_conf = r->server->module_config;
-    const userdir_config *s_cfg =
-    (userdir_config *) ap_get_module_config(server_conf, &userdir_module);
+    ap_conf_vector_t *server_conf = r->server->module_config;
+    const userdir_config *s_cfg = ap_get_module_config(server_conf,
+                                                       &userdir_module);
     char *name = r->uri;
     const char *userdirs = s_cfg->userdir;
     const char *w, *dname;
@@ -233,11 +228,7 @@ static int translate_userdir(request_rec *r)
      * If the URI doesn't match our basic pattern, we've nothing to do with
      * it.
      */
-    if (
-        (s_cfg->userdir == NULL) ||
-        (name[0] != '/') ||
-        (name[1] != '~')
-        ) {
+    if (s_cfg->userdir == NULL || name[0] != '/' || name[1] != '~') {
         return DECLINED;
     }
 
@@ -271,10 +262,8 @@ static int translate_userdir(request_rec *r)
      * If there's a global interdiction on UserDirs, check to see if this
      * name is one of the Blessed.
      */
-    if (
-        s_cfg->globally_disabled &&
-        (apr_table_get(s_cfg->enabled_users, w) == NULL)
-        ) {
+    if (s_cfg->globally_disabled
+        && apr_table_get(s_cfg->enabled_users, w) == NULL) {
         return DECLINED;
     }
 

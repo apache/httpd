@@ -166,32 +166,17 @@ typedef void *(*merger_func) (apr_pool_t *, void *, void *);
  * overridden).
  */
 
-#ifndef ap_get_module_config
-AP_DECLARE(void *) ap_get_module_config(void *conf_vector, module *m)
+static ap_conf_vector_t *create_empty_config(apr_pool_t *p)
 {
-    void **confv = (void **) conf_vector;
-    return confv[m->module_index];
-}
-#endif
-
-#ifndef ap_set_module_config
-AP_DECLARE(void) ap_set_module_config(void *conf_vector, module *m, void *val)
-{
-    void **confv = (void **) conf_vector;
-    confv[m->module_index] = val;
-}
-#endif
-
-static void *create_empty_config(apr_pool_t *p)
-{
-    void **conf_vector = (void **) apr_pcalloc(p, sizeof(void *) *
-				    (total_modules + DYNAMIC_MODULE_LIMIT));
-    return (void *) conf_vector;
+    void *conf_vector = apr_pcalloc(p, sizeof(void *) *
+                                    (total_modules + DYNAMIC_MODULE_LIMIT));
+    return conf_vector;
 }
 
-static void *create_default_per_dir_config(apr_pool_t *p)
+static ap_conf_vector_t *create_default_per_dir_config(apr_pool_t *p)
 {
-    void **conf_vector = (void **) apr_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = apr_pcalloc(p, sizeof(void *) *
+                                     (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
     for (modp = top_module; modp; modp = modp->next) {
@@ -201,13 +186,14 @@ static void *create_default_per_dir_config(apr_pool_t *p)
 	    conf_vector[modp->module_index] = (*df) (p, NULL);
     }
 
-    return (void *) conf_vector;
+    return (ap_conf_vector_t *) conf_vector;
 }
 
-void *
-     ap_merge_per_dir_configs(apr_pool_t *p, void *base, void *new)
+ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
+                                           ap_conf_vector_t *base,
+                                           ap_conf_vector_t *new)
 {
-    void **conf_vector = (void **) apr_palloc(p, sizeof(void *) * total_modules);
+    void **conf_vector = apr_palloc(p, sizeof(void *) * total_modules);
     void **base_vector = (void **) base;
     void **new_vector = (void **) new;
     module *modp;
@@ -222,12 +208,13 @@ void *
 	    conf_vector[i] = new_vector[i] ? new_vector[i] : base_vector[i];
     }
 
-    return (void *) conf_vector;
+    return (ap_conf_vector_t *) conf_vector;
 }
 
-static void *create_server_config(apr_pool_t *p, server_rec *s)
+static ap_conf_vector_t *create_server_config(apr_pool_t *p, server_rec *s)
 {
-    void **conf_vector = (void **) apr_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = apr_pcalloc(p, sizeof(void *) *
+                                     (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
     for (modp = top_module; modp; modp = modp->next) {
@@ -235,10 +222,11 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
 	    conf_vector[modp->module_index] = (*modp->create_server_config) (p, s);
     }
 
-    return (void *) conf_vector;
+    return (ap_conf_vector_t *) conf_vector;
 }
 
-static void merge_server_configs(apr_pool_t *p, void *base, void *virt)
+static void merge_server_configs(apr_pool_t *p, ap_conf_vector_t *base,
+                                 ap_conf_vector_t *virt)
 {
     /* Can reuse the 'virt' vector for the spine of it, since we don't
      * have to deal with the moral equivalent of .htaccess files here...
@@ -259,17 +247,17 @@ static void merge_server_configs(apr_pool_t *p, void *base, void *virt)
     }
 }
 
-void *ap_create_request_config(apr_pool_t *p)
+ap_conf_vector_t *ap_create_request_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }
 
-void *ap_create_conn_config(apr_pool_t *p)
+ap_conf_vector_t *ap_create_conn_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }
 
-AP_CORE_DECLARE(void *) ap_create_per_dir_config(apr_pool_t *p)
+AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }
@@ -765,8 +753,8 @@ AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_
 
 AP_CORE_DECLARE(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
 {
-    void *mconfig = ap_get_module_config(config, mod);
-    void *sconfig = ap_get_module_config(parms->server->module_config, mod);
+    ap_conf_vector_t *mconfig = ap_get_module_config(config, mod);
+    ap_conf_vector_t *sconfig = ap_get_module_config(parms->server->module_config, mod);
 
     if (!mconfig && mod->create_dir_config) {
 	mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
@@ -1356,8 +1344,9 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     ap_cfg_closefile(cfp);
 }
 
-AP_DECLARE(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
-                                       apr_pool_t *p, apr_pool_t *ptemp)
+AP_DECLARE(void) ap_process_config_tree(server_rec *s,
+                                        ap_directive_t *conftree,
+                                        apr_pool_t *p, apr_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1381,17 +1370,18 @@ AP_DECLARE(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
     }
 }
 
-int ap_parse_htaccess(void **result, request_rec *r, int override,
-		      const char *d, const char *access_name) {
+int ap_parse_htaccess(ap_conf_vector_t **result, request_rec *r, int override,
+		      const char *d, const char *access_name)
+{
     configfile_t *f = NULL;
     cmd_parms parms;
     char *filename = NULL;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
-    void *dc = NULL;
+    ap_conf_vector_t *dc = NULL;
     apr_status_t status;
 
-/* firstly, search cache */
+    /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next)
 	if (cache->override == override && strcmp(cache->dir, d) == 0) {
 	    if (cache->htaccess != NULL)
@@ -1434,7 +1424,8 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             *result = dc;
             break;
         } else {
-	    if (!APR_STATUS_IS_ENOENT(status) && !APR_STATUS_IS_ENOTDIR(status)) {
+	    if (!APR_STATUS_IS_ENOENT(status)
+                && !APR_STATUS_IS_ENOTDIR(status)) {
 		ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
 			      "%s pcfg_openfile: unable to check htaccess file, "
 			      "ensure it is readable",
@@ -1447,20 +1438,23 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
         }
     }
 
-/* cache it */
+    /* cache it */
     new = apr_palloc(r->pool, sizeof(struct htaccess_result));
     new->dir = parms.path;
     new->override = override;
     new->htaccess = dc;
-/* add to head of list */
+
+    /* add to head of list */
     new->next = r->htaccess;
     r->htaccess = new;
 
     return OK;
 }
 
-AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostname,
-			      server_rec *main_server, server_rec **ps)
+AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
+                                                   const char *hostname,
+                                                   server_rec *main_server,
+                                                   server_rec **ps)
 {
     server_rec *s = (server_rec *) apr_pcalloc(p, sizeof(server_rec));
 

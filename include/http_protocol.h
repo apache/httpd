@@ -311,6 +311,7 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
  * @deffunc int ap_rputc(int c, request_rec *r)
  */
 AP_DECLARE(int) ap_rputc(int c, request_rec *r);
+
 /**
  * Output a string for the current request
  * @param str The string to output
@@ -319,6 +320,7 @@ AP_DECLARE(int) ap_rputc(int c, request_rec *r);
  * @deffunc int ap_rputs(const char *str, request_rec *r)
  */
 AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
+
 /**
  * Write a buffer for the current request
  * @param buf The buffer to write
@@ -328,6 +330,7 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
  * @deffunc int ap_rwrite(const void *buf, int nbyte, request_rec *r)
  */
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
+
 /**
  * Write an unspecified number of strings to the request
  * @param r The current request
@@ -336,6 +339,7 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  * @deffunc int ap_rvputs(request_rec *r, ...)
  */
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
+
 /**
  * Output data to the client in a printf format
  * @param r The current request
@@ -345,6 +349,7 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
  * @deffunc int ap_vrprintf(request_rec *r, const char *fmt, va_list vlist)
  */
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
+
 /**
  * Output data to the client in a printf format
  * @param r The current request
@@ -397,6 +402,7 @@ AP_DECLARE(const char *) ap_get_status_line(int status);
  * @deffunc int ap_setup_cleint_block(request_rec *r, int read_policy)
  */
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
+
 /**
  * Determine if the client has sent any data.  This also sends a 
  * 100 Continue resposne to HTTP/1.1 clients, so modules should not be called
@@ -407,6 +413,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
  * @deffunc int ap_should_client_block(request_rec *r)
  */
 AP_DECLARE(int) ap_should_client_block(request_rec *r);
+
 /**
  * Call this in a loop.  It will put data into a buffer and return the length
  * of the input block
@@ -418,6 +425,7 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  * @deffunc long ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
+
 /**
  * In HTTP/1.1, any method can have a body.  However, most GET handlers
  * wouldn't know what to do with a request body if they received one.
@@ -431,6 +439,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
  */
 AP_DECLARE(int) ap_discard_request_body(request_rec *r);
 
+
 /* Sending a byterange */
 
 /**
@@ -441,6 +450,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r);
  * @deffunc void ap_note_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
+
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
@@ -449,6 +459,7 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
  * @deffunc void ap_note_basic_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
+
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
@@ -457,6 +468,7 @@ AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
  * @deffunc void ap_note_digest_auth_failure(request_rec *r)
  */ 
 AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
+
 /**
  * Get the password from the request headers
  * @param r The current request
@@ -528,6 +540,7 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum);
  * @deffunc ap_run_post_read_request(request_rec *r)
  */
 AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
+
 /**
  * This hook allows modules to perform any module-specific logging activities
  * over and above the normal server things.
@@ -536,6 +549,7 @@ AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
  * @deffunc int ap_run_log_transaction(request_rec *r)
  */
 AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
+
 /**
  * This hook allows modules to retrieve the http method from a request.  This
  * allows Apache modules to easily extend the methods that Apache understands
@@ -544,6 +558,7 @@ AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
  * @deffunc const char *ap_run_http_method(const request_rec *r)
  */
 AP_DECLARE_HOOK(const char *,http_method,(const request_rec *r))
+
 /**
  * Return the default port from the current request
  * @param r The current request
@@ -553,6 +568,7 @@ AP_DECLARE_HOOK(const char *,http_method,(const request_rec *r))
 AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 
 typedef struct ap_bucket_error ap_bucket_error;
+
 /**
  * A bucket referring to an HTTP error
  * This bucket can be passed down the filter stack to indicate that an

@@ -148,7 +148,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->limit_req_body = 0;
     conf->limit_xml_body = AP_LIMIT_UNSET;
-    conf->sec = apr_array_make(a, 2, sizeof(void *));
+    conf->sec = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
 #ifdef WIN32
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
 #endif
@@ -318,8 +318,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #endif
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->ap_document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
-    conf->sec = apr_array_make(a, 40, sizeof(void *));
-    conf->sec_url = apr_array_make(a, 40, sizeof(void *));
+    conf->sec = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
+    conf->sec_url = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
     
     return (void *)conf;
 }
@@ -406,7 +406,7 @@ AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
  * components (where a "special" section has infinite components).
  */
 struct reorder_sort_rec {
-    void *elt;
+    ap_conf_vector_t *elt;
     int orig_index;
 };
 
@@ -417,8 +417,8 @@ static int reorder_sorter(const void *va, const void *vb)
     core_dir_config *core_a;
     core_dir_config *core_b;
 
-    core_a = (core_dir_config *)ap_get_module_config(a->elt, &core_module);
-    core_b = (core_dir_config *)ap_get_module_config(b->elt, &core_module);
+    core_a = ap_get_module_config(a->elt, &core_module);
+    core_b = ap_get_module_config(b->elt, &core_module);
     if (IS_SPECIAL(core_a)) {
 	if (!IS_SPECIAL(core_b)) {
 	    return 1;
@@ -448,14 +448,14 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
     apr_array_header_t *sec;
     struct reorder_sort_rec *sortbin;
     int nelts;
-    void **elts;
+    ap_conf_vector_t **elts;
     int i;
     apr_pool_t *tmp;
 
     sconf = ap_get_module_config(s->module_config, &core_module);
     sec = sconf->sec;
     nelts = sec->nelts;
-    elts = (void **)sec->elts;
+    elts = (ap_conf_vector_t **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
     apr_pool_create(&tmp, p);

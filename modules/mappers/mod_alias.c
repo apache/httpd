@@ -138,8 +138,8 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 				      int use_regex)
 {
     server_rec *s = cmd->server;
-    alias_server_conf *conf =
-    (alias_server_conf *) ap_get_module_config(s->module_config, &alias_module);
+    alias_server_conf *conf = ap_get_module_config(s->module_config,
+                                                   &alias_module);
     alias_entry *new = apr_array_push(conf->aliases);
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
@@ -182,8 +182,8 @@ static const char *add_redirect_internal(cmd_parms *cmd,
 {
     alias_entry *new;
     server_rec *s = cmd->server;
-    alias_server_conf *serverconf =
-    (alias_server_conf *) ap_get_module_config(s->module_config, &alias_module);
+    alias_server_conf *serverconf = ap_get_module_config(s->module_config,
+                                                         &alias_module);
     int status = (int) (long) cmd->info;
     regex_t *r = NULL;
     const char *f = arg2;
@@ -377,9 +377,8 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
 
 static int translate_alias_redir(request_rec *r)
 {
-    void *sconf = r->server->module_config;
-    alias_server_conf *serverconf =
-    (alias_server_conf *) ap_get_module_config(sconf, &alias_module);
+    ap_conf_vector_t *sconf = r->server->module_config;
+    alias_server_conf *serverconf = ap_get_module_config(sconf, &alias_module);
     char *ret;
     int status;
 

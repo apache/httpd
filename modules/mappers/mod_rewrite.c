@@ -347,9 +347,7 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
     rewrite_perdir_conf *dconf = in_dconf;
     rewrite_server_conf *sconf;
 
-    sconf = 
-        (rewrite_server_conf *)ap_get_module_config(cmd->server->module_config,
-                                                    &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     if (cmd->path == NULL) { /* is server command */
         sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
@@ -368,8 +366,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
     rewrite_server_conf *sconf;
     const char *err;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     if (cmd->path == NULL) { /* is server command */
         err = cmd_rewriteoptions_setoption(cmd->pool,
@@ -400,8 +397,7 @@ static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, const char *a1)
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     sconf->rewritelogfile = a1;
 
@@ -412,8 +408,7 @@ static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, const char *
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     sconf->rewriteloglevel = atoi(a1);
 
@@ -427,8 +422,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     rewritemap_entry *newmap;
     apr_finfo_t st;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     newmap = apr_array_push(sconf->rewritemaps);
 
@@ -546,8 +540,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     const char *err;
     int rc;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal temporary rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
@@ -691,8 +684,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     const char *err;
     int mode;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
@@ -1012,7 +1004,6 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
 static int hook_uri2file(request_rec *r)
 {
-    void *sconf;
     rewrite_server_conf *conf;
     const char *var;
     const char *thisserver;
@@ -1030,9 +1021,7 @@ static int hook_uri2file(request_rec *r)
     /*
      *  retrieve the config structures
      */
-    sconf = r->server->module_config;
-    conf  = (rewrite_server_conf *)ap_get_module_config(sconf,
-                                                        &rewrite_module);
+    conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
     /*
      *  only do something under runtime if the engine is really enabled,
@@ -2634,7 +2623,6 @@ static char *expand_tildepaths(request_rec *r, char *uri)
 
 static char *lookup_map(request_rec *r, char *name, char *key)
 {
-    void *sconf;
     rewrite_server_conf *conf;
     apr_array_header_t *rewritemaps;
     rewritemap_entry *entries;
@@ -2645,9 +2633,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     int i;
 
     /* get map configuration */
-    sconf = r->server->module_config;
-    conf  = (rewrite_server_conf *)ap_get_module_config(sconf, 
-                                                        &rewrite_module);
+    conf = ap_get_module_config(r->server->module_config, &rewrite_module);
     rewritemaps = conf->rewritemaps;
 
     entries = (rewritemap_entry *)rewritemaps->elts;

@@ -122,20 +122,20 @@ module AP_MODULE_DECLARE_DATA env_module;
 
 static void *create_env_dir_config(apr_pool_t *p, char *dummy)
 {
-    env_dir_config_rec *new =
-    (env_dir_config_rec *) apr_palloc(p, sizeof(env_dir_config_rec));
-    new->vars = apr_table_make(p, 50);
-    new->unsetenv = "";
-    new->vars_present = 0;
-    return (void *) new;
+    env_dir_config_rec *conf = apr_palloc(p, sizeof(*conf));
+
+    conf->vars = apr_table_make(p, 50);
+    conf->unsetenv = "";
+    conf->vars_present = 0;
+
+    return conf;
 }
 
 static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    env_dir_config_rec *base = (env_dir_config_rec *) basev;
-    env_dir_config_rec *add = (env_dir_config_rec *) addv;
-    env_dir_config_rec *new =
-    (env_dir_config_rec *) apr_palloc(p, sizeof(env_dir_config_rec));
+    env_dir_config_rec *base = basev;
+    env_dir_config_rec *add = addv;
+    env_dir_config_rec *newconf = apr_palloc(p, sizeof(*newconf));
 
     apr_table_t *new_table;
     apr_table_entry_t *elts;
@@ -170,17 +170,17 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
         uenv = ap_getword_conf(p, &unset);
     }
 
-    new->vars = new_table;
+    newconf->vars = new_table;
 
-    new->vars_present = base->vars_present || add->vars_present;
+    newconf->vars_present = base->vars_present || add->vars_present;
 
-    return new;
+    return newconf;
 }
 
 static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
                                               const char *arg)
 {
-    env_dir_config_rec *sconf=sconf_;
+    env_dir_config_rec *sconf = sconf_;
     apr_table_t *vars = sconf->vars;
     char *env_var;
     char *name_ptr;
@@ -199,7 +199,7 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
 static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
                                            const char *arg)
 {
-    env_dir_config_rec *sconf=sconf_;
+    env_dir_config_rec *sconf = sconf_;
     apr_table_t *vars = sconf->vars;
     char *name, *value;
 
@@ -224,11 +224,12 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
 static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
                                              const char *arg)
 {
-    env_dir_config_rec *sconf=sconf_;
+    env_dir_config_rec *sconf = sconf_;
 
-    sconf->unsetenv = sconf->unsetenv ?
-        apr_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
-         arg;
+    sconf->unsetenv = sconf->unsetenv
+        ? apr_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL)
+        : arg;
+
     return NULL;
 }
 
@@ -260,7 +261,7 @@ static int fixup_env_module(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_env_module,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_env_module, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA env_module =

@@ -505,7 +505,7 @@ struct htaccess_result {
     /** the overrides allowed for the .htaccess file */
     int override;
     /** the configuration directives */
-    void *htaccess;
+    struct ap_conf_vector_t *htaccess;
     /** the next one, or NULL if no more; N.B. never change this */
     const struct htaccess_result *next;
 };
@@ -729,9 +729,9 @@ struct request_rec {
      */
 
     /** Options set in config files, etc. */
-    void *per_dir_config;
+    struct ap_conf_vector_t *per_dir_config;
     /** Notes on *this* request */
-    void *request_config;
+    struct ap_conf_vector_t *request_config;
 
 /**
  * a linked list of the configuration directives in the .htaccess files
@@ -811,7 +811,7 @@ struct conn_rec {
     /** ID of this connection; unique at any point in time */
     long id; 
     /** Notes on *this* connection */
-    void *conn_config;
+    struct ap_conf_vector_t *conn_config;
     /** send note from one module to another, must remain valid for all
      *  requests on this conn */
     apr_table_t *notes;
@@ -883,9 +883,9 @@ struct server_rec {
     int is_virtual;
     /** Config vector containing pointers to modules' per-server config 
      *  structures. */
-    void *module_config; 
+    struct ap_conf_vector_t *module_config; 
     /** MIME type info, etc., before we start checking per-directory info */
-    void *lookup_defaults;
+    struct ap_conf_vector_t *lookup_defaults;
 
     /* Transaction handling */
 

@@ -440,8 +440,8 @@ static int cgid_server(void *data)
     mode_t omask;
     apr_socklen_t len;
     server_rec *main_server = data;
-    cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
-                       main_server->module_config, &cgid_module); 
+    cgid_server_conf *sconf = ap_get_module_config(main_server->module_config,
+                                                   &cgid_module); 
 
     apr_signal(SIGCHLD, SIG_IGN); 
     if (unlink(sconf->sockname) < 0 && errno != ENOENT) {
@@ -640,8 +640,8 @@ static void *merge_cgid_config(apr_pool_t *p, void *basev, void *overridesv)
 static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
-    cgid_server_conf *conf = 
-    (cgid_server_conf *) ap_get_module_config(s->module_config, &cgid_module); 
+    cgid_server_conf *conf = ap_get_module_config(s->module_config,
+                                                  &cgid_module); 
 
     conf->logname = arg; 
     return NULL; 
@@ -650,8 +650,8 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
 static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
-    cgid_server_conf *conf = 
-    (cgid_server_conf *) ap_get_module_config(s->module_config, &cgid_module); 
+    cgid_server_conf *conf = ap_get_module_config(s->module_config,
+                                                  &cgid_module); 
 
     conf->logbytes = atol(arg); 
     return NULL; 
@@ -660,8 +660,8 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char 
 static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
-    cgid_server_conf *conf = 
-    (cgid_server_conf *) ap_get_module_config(s->module_config, &cgid_module); 
+    cgid_server_conf *conf = ap_get_module_config(s->module_config,
+                                                  &cgid_module); 
 
     conf->bufbytes = atoi(arg); 
     return NULL; 
@@ -670,8 +670,8 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char 
 static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
-    cgid_server_conf *conf = 
-    (cgid_server_conf *) ap_get_module_config(s->module_config, &cgid_module); 
+    cgid_server_conf *conf = ap_get_module_config(s->module_config,
+                                                  &cgid_module); 
 
     conf->sockname = ap_server_root_relative(cmd->pool, arg); 
     return NULL; 
@@ -820,7 +820,6 @@ static int cgid_handler(request_rec *r)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     char argsbuffer[HUGE_STRING_LEN]; 
-    void *sconf;
     cgid_server_conf *conf;
     int is_included;
     int sd;
@@ -839,8 +838,7 @@ static int cgid_handler(request_rec *r)
         return DECLINED; 
     } 
 
-    sconf = r->server->module_config; 
-    conf = (cgid_server_conf *) ap_get_module_config(sconf, &cgid_module); 
+    conf = ap_get_module_config(r->server->module_config, &cgid_module); 
     is_included = !strcmp(r->protocol, "INCLUDED"); 
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL)
@@ -1125,8 +1123,8 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     apr_bucket *b;
     struct sockaddr_un unix_addr;
     apr_file_t *tempsock = NULL;
-    void *sconf = r->server->module_config; 
-    cgid_server_conf *conf = (cgid_server_conf *) ap_get_module_config(sconf, &cgid_module); 
+    cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
+                                                  &cgid_module); 
 
     add_ssi_vars(r, f->next);
     env = ap_create_environment(r->pool, r->subprocess_env);

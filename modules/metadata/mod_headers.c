@@ -138,39 +138,40 @@ module AP_MODULE_DECLARE_DATA headers_module;
 
 static void *create_headers_config(apr_pool_t *p, server_rec *s)
 {
-    headers_conf *a =
-    (headers_conf *) apr_pcalloc(p, sizeof(headers_conf));
+    headers_conf *conf = apr_pcalloc(p, sizeof(*conf));
 
-    a->headers = apr_array_make(p, 2, sizeof(header_entry));
-    return a;
+    conf->headers = apr_array_make(p, 2, sizeof(header_entry));
+
+    return conf;
 }
 
 static void *create_headers_dir_config(apr_pool_t *p, char *d)
 {
-    return (headers_conf *) create_headers_config(p, NULL);
+    return create_headers_config(p, NULL);
 }
 
 static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    headers_conf *a =
-    (headers_conf *) apr_pcalloc(p, sizeof(headers_conf));
-    headers_conf *base = (headers_conf *) basev, *overrides = (headers_conf *) overridesv;
+    headers_conf *newconf = apr_pcalloc(p, sizeof(*newconf));
+    headers_conf *base = basev;
+    headers_conf *overrides = overridesv;
 
-    a->headers = apr_array_append(p, base->headers, overrides->headers);
+    newconf->headers = apr_array_append(p, base->headers, overrides->headers);
 
-    return a;
+    return newconf;
 }
 
 
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr, const char *value)
+                              const char *action, const char *inhdr,
+                              const char *value)
 {
     headers_conf *dirconf = indirconf;
     char *hdr = apr_pstrdup(cmd->pool, inhdr);
     header_entry *new;
     server_rec *s = cmd->server;
-    headers_conf *serverconf =
-    (headers_conf *) ap_get_module_config(s->module_config, &headers_module);
+    headers_conf *serverconf = ap_get_module_config(s->module_config,
+                                                    &headers_module);
     char *colon;
 
     if (cmd->path) {
@@ -240,12 +241,10 @@ static void do_headers_fixup(request_rec *r, apr_array_header_t *headers)
 
 static int fixup_headers(request_rec *r)
 {
-    void *sconf = r->server->module_config;
-    headers_conf *serverconf =
-    (headers_conf *) ap_get_module_config(sconf, &headers_module);
-    void *dconf = r->per_dir_config;
-    headers_conf *dirconf =
-    (headers_conf *) ap_get_module_config(dconf, &headers_module);
+    headers_conf *serverconf = ap_get_module_config(r->server->module_config,
+                                                    &headers_module);
+    headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
+                                                 &headers_module);
 
     do_headers_fixup(r, serverconf->headers);
     do_headers_fixup(r, dirconf->headers);
@@ -255,7 +254,7 @@ static int fixup_headers(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_headers,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_headers, NULL, NULL, APR_HOOK_MIDDLE);
 } 
 
 module AP_MODULE_DECLARE_DATA headers_module =
