@@ -488,7 +488,7 @@ API_EXPORT(void) ap_add_loaded_module(module *mod)
      *
      *  Notes: 1. ap_add_module() would already complain if no more space
      *            exists for adding a dynamically loaded module
-     *         2. ap_add_module() accepts double ap_context_t nclusion, so we have
+     *         2. ap_add_module() accepts double inclusion, so we have
      *            to accept this, too.
      */
     for (m = ap_loaded_modules; *m != NULL; m++)
@@ -1424,7 +1424,7 @@ void ap_show_modules()
 {
     int n;
 
-    printf("Compiled ap_context_t n modules:\n");
+    printf("Compiled in modules:\n");
     for (n = 0; ap_loaded_modules[n]; ++n)
 	printf("  %s\n", ap_loaded_modules[n]->name);
 }
