@@ -845,6 +845,7 @@ DEP_CPP_HTTP_P=\
 	".\core\http_log.h"\
 	".\core\http_main.h"\
 	".\core\http_protocol.h"\
+	".\core\http_request.h"\
 	".\core\httpd.h"\
 	".\core\util_date.h"\
 	".\os\win32\readdir.h"\

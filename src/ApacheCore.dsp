@@ -253,15 +253,15 @@ SOURCE=.\core\util_md5.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\util_nt.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\core\util_script.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\core\util_snprintf.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\util_win32.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -269,95 +269,103 @@ SOURCE=.\core\util_snprintf.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\alloc.h
+SOURCE=.\core\alloc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\buff.h
+SOURCE=.\core\buff.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\conf.h
+SOURCE=.\core\conf.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\explain.h
+SOURCE=.\core\explain.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\getopt.h
+SOURCE=.\core\fnmatch.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_conf_globals.h
+SOURCE=.\os\win32\getopt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_config.h
+SOURCE=.\core\http_conf_globals.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_core.h
+SOURCE=.\core\http_config.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_log.h
+SOURCE=.\core\http_core.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_main.h
+SOURCE=.\core\http_log.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_protocol.h
+SOURCE=.\core\http_main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_request.h
+SOURCE=.\core\http_protocol.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\httpd.h
+SOURCE=.\core\http_request.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\md5.h
+SOURCE=.\core\httpd.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_mime.h
+SOURCE=.\core\md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\multithread.h
+SOURCE=.\modules\standard\mod_mime.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\readdir.h
+SOURCE=.\core\multithread.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\rfc1413.h
+SOURCE=.\os\win32\readdir.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\scoreboard.h
+SOURCE=.\regex\regex.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\service.h
+SOURCE=.\core\rfc1413.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_date.h
+SOURCE=.\core\scoreboard.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_md5.h
+SOURCE=.\os\win32\service.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_script.h
+SOURCE=.\core\util_date.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\core\util_md5.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\core\util_script.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
