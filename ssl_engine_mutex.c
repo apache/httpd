@@ -117,8 +117,12 @@ int ssl_mutex_kill(server_rec *s)
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
+    /* XXX: currently mutex is not created until 2nd pass at startup */
+    if (!mc->pMutex)
+        return TRUE;
     if (apr_lock_destroy(mc->pMutex) != APR_SUCCESS)
         return FALSE;
+    mc->pMutex = NULL;
     return TRUE;
 }
 
