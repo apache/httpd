@@ -72,6 +72,6 @@
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>threadpool.xml</modulefile>
-  <modulefile>mpm_winnt.xml</modulefile>
+  <modulefile>mpm_winnt.xml.de</modulefile>
   <modulefile>worker.xml</modulefile>
 </modulefilelist>
