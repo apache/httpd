@@ -324,8 +324,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     const char *c;
     const char *buf;
     const char *str = STARTING_SEQUENCE;
-    int slen = sizeof(STARTING_SEQUENCE) - 1;
-    int pos;
+    apr_size_t slen = sizeof(STARTING_SEQUENCE) - 1;
+    apr_size_t pos;
 
     *do_cleanup = 0;
 
