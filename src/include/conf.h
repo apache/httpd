@@ -642,6 +642,12 @@ typedef void Sigfunc(int);
 #define SIG_ERR ((Sigfunc *)-1)
 #endif
 
+/*
+ * For some strange reason, QNX defines signal to signal. Eliminate it.
+ */
+#ifdef signal
+#undef signal
+#endif
 #define signal(s,f)	ap_signal(s,f)
 Sigfunc *signal(int signo, Sigfunc *func);
 #endif

@@ -5,6 +5,9 @@ Changes with Apache 1.2
      body of the request, the server would block trying to read the
      message body again.  [Rob Hartill]
 
+  *) signal() replacement conflicted with a define on QNX (and potentially
+     other platforms). Fixed. [Ben Laurie] PR#512
+
 Changes with Apache 1.2b10
 
   *) Allow HTTPD_ROOT, SERVER_CONFIG_FILE, DEFAULT_PATH, and SHELL_PATH
