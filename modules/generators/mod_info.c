@@ -257,7 +257,17 @@ typedef struct { /*XXX: should get something from apr_hooks.h instead */
     int nOrder;
 } hook_struct_t;
 
-typedef apr_array_header_t * (*hook_get_t)(void);
+/*
+ * hook_get_t is a pointer to a function that takes void as an argument and
+ * returns a pointer to an apr_array_header_t.  The nasty WIN32 ifdef
+ * is required to account for the fact that the ap_hook* calls all use
+ * STDCALL calling convention. 
+ */
+typedef apr_array_header_t * ( 
+#ifdef WIN32
+__stdcall 
+#endif
+* hook_get_t)(void);
 
 typedef struct {
     const char *name;
