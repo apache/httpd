@@ -942,10 +942,10 @@ URLs</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:<
     all, it should be emphasized that &lt;Location&gt; operates
     completely outside the filesystem.</p>
 
-    <p>For all origin (non-proxy) requests, the URL to be matched
-    is of the form <code>/path/</code>, and you should not include
-    any <code>http://servername</code> prefix. For proxy requests,
-    the URL to be matched is of the form
+    <p>For all origin (non-proxy) requests, the URL to be matched is a
+    URL-path of the form <code>/path/</code>.  No scheme, hostname,
+    port, or query string may be included.  For proxy requests, the
+    URL to be matched is of the form
     <code>scheme://servername/path</code>, and you must include the
     prefix.</p>
 
