@@ -8,7 +8,7 @@
 
 OS=`src/helpers/GuessOS`
 case "x$OS" in
-  x*390) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-module=log_agent --enable-module=log_referer --enable-module=example --enable-module=mmap_static";;
+  x*390*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most";;
       *) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max";;
 esac
 APDIR=`pwd`
@@ -272,7 +272,7 @@ else
     if [ "x$TAR" != "x" ]
     then
       case "x$OS" in
-        x*390) $TAR -cfU ../apache_$VER-$OS.tar -C .. apache_$VER;;
+        x*390*) $TAR -cfU ../apache_$VER-$OS.tar -C .. apache_$VER;;
 	    *) $TAR -cf ../apache_$VER-$OS.tar -C .. apache_$VER;;
       esac
       if [ "x$GZIP" != "x" ]
