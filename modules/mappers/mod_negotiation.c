@@ -1100,26 +1100,41 @@ static int read_types_multi(negotiation_state *neg)
             continue;
         }
 
-        /*
-         * Simple enough for now, every unregonized bit better match
-         * our base name.  When we break up our base name and allow
-         * index.en to match index.html.en, this gets tricker.
-         * XXX: index.html.foo won't be caught by testing index.html
-         * since the exceptions result is index.foo - this should be
-         * fixed as part of a new match-parts logic here.
+        /* Each unregonized bit better match our base name, in sequence.
+         * A test of index.html.foo will match index.foo or index.html.foo,
+         * but it will never transpose the segments and allow index.foo.html
+         * because that would introduce too much CPU consumption.  Better that
+         * we don't attempt a many-to-many match here.
          */
         {
-            char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
-            int base_len = strlen(base);
-            if (base_len > prefix_len 
+            int nexcept = exception_list->nelts;
+            char **except = (char**)exception_list->elts;
+            char *segstart = filp, *segend, saveend;
+
+            while (*segstart && nexcept) {
+                if (!(segend = strchr(segstart, '.')))
+                    segend = strchr(segstart, '\0');
+                saveend = *segend;
+                *segend = '\0';
+                    
 #ifdef CASE_BLIND_FILESYSTEM
-                || strncasecmp(base, filp, base_len)
+                if (strcasecmp(segstart, *except) == 0) {
 #else
-                || strncmp(base, filp, base_len)
+                if (strcmp(segstart, *except) == 0) {
 #endif
-                || (prefix_len > base_len && filp[base_len] != '.')) {
-                /* 
-                 * Something you don't know is, something you don't know...
+                    --nexcept;
+                    ++except;                    
+                }         
+                
+                if (!saveend)
+                    break;
+
+                *segend = saveend;
+                segstart = segend + 1;
+            }
+
+            if (nexcept) {
+                /* Something you don't know is, something you don't know...
                  */
                 ap_destroy_sub_req(sub_req);
                 continue;
