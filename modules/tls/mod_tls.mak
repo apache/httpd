@@ -348,6 +348,7 @@ DEP_CPP_MOD_T=\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\srclib\apr\include\apr_portable.h"\
+	"..\..\srclib\apr\include\apr_sms.h"\
 	"..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\srclib\apr\include\apr_thread_proc.h"\
@@ -366,58 +367,7 @@ NODEP_CPP_MOD_T=\
 SOURCE=.\openssl_state_machine.c
 DEP_CPP_OPENS=\
 	"..\..\srclib\apr\include\apr.h"\
-	"..\..\srclib\openssl\inc32\openssl\asn1.h"\
-	"..\..\srclib\openssl\inc32\openssl\bio.h"\
-	"..\..\srclib\openssl\inc32\openssl\blowfish.h"\
-	"..\..\srclib\openssl\inc32\openssl\bn.h"\
-	"..\..\srclib\openssl\inc32\openssl\buffer.h"\
-	"..\..\srclib\openssl\inc32\openssl\cast.h"\
-	"..\..\srclib\openssl\inc32\openssl\comp.h"\
-	"..\..\srclib\openssl\inc32\openssl\crypto.h"\
-	"..\..\srclib\openssl\inc32\openssl\des.h"\
-	"..\..\srclib\openssl\inc32\openssl\dh.h"\
-	"..\..\srclib\openssl\inc32\openssl\dsa.h"\
-	"..\..\srclib\openssl\inc32\openssl\e_os.h"\
-	"..\..\srclib\openssl\inc32\openssl\e_os2.h"\
-	"..\..\srclib\openssl\inc32\openssl\ebcdic.h"\
-	"..\..\srclib\openssl\inc32\openssl\err.h"\
-	"..\..\srclib\openssl\inc32\openssl\evp.h"\
-	"..\..\srclib\openssl\inc32\openssl\idea.h"\
-	"..\..\srclib\openssl\inc32\openssl\kssl.h"\
-	"..\..\srclib\openssl\inc32\openssl\lhash.h"\
-	"..\..\srclib\openssl\inc32\openssl\md2.h"\
-	"..\..\srclib\openssl\inc32\openssl\md4.h"\
-	"..\..\srclib\openssl\inc32\openssl\md5.h"\
-	"..\..\srclib\openssl\inc32\openssl\mdc2.h"\
-	"..\..\srclib\openssl\inc32\openssl\obj_mac.h"\
-	"..\..\srclib\openssl\inc32\openssl\objects.h"\
-	"..\..\srclib\openssl\inc32\openssl\opensslconf.h"\
-	"..\..\srclib\openssl\inc32\openssl\opensslv.h"\
-	"..\..\srclib\openssl\inc32\openssl\pem.h"\
-	"..\..\srclib\openssl\inc32\openssl\pem2.h"\
-	"..\..\srclib\openssl\inc32\openssl\pkcs7.h"\
-	"..\..\srclib\openssl\inc32\openssl\rc2.h"\
-	"..\..\srclib\openssl\inc32\openssl\rc4.h"\
-	"..\..\srclib\openssl\inc32\openssl\rc5.h"\
-	"..\..\srclib\openssl\inc32\openssl\rd_fst.h"\
-	"..\..\srclib\openssl\inc32\openssl\rijndael.h"\
-	"..\..\srclib\openssl\inc32\openssl\ripemd.h"\
-	"..\..\srclib\openssl\inc32\openssl\rsa.h"\
-	"..\..\srclib\openssl\inc32\openssl\safestack.h"\
-	"..\..\srclib\openssl\inc32\openssl\sha.h"\
-	"..\..\srclib\openssl\inc32\openssl\ssl.h"\
-	"..\..\srclib\openssl\inc32\openssl\ssl2.h"\
-	"..\..\srclib\openssl\inc32\openssl\ssl23.h"\
-	"..\..\srclib\openssl\inc32\openssl\ssl3.h"\
-	"..\..\srclib\openssl\inc32\openssl\stack.h"\
-	"..\..\srclib\openssl\inc32\openssl\symhacks.h"\
-	"..\..\srclib\openssl\inc32\openssl\tls1.h"\
-	"..\..\srclib\openssl\inc32\openssl\x509.h"\
-	"..\..\srclib\openssl\inc32\openssl\x509_vfy.h"\
 	".\openssl_state_machine.h"\
-	
-NODEP_CPP_OPENS=\
-	"..\..\srclib\openssl\inc32\openssl\MacSocket.h"\
 	
 
 "$(INTDIR)\openssl_state_machine.obj" : $(SOURCE) $(DEP_CPP_OPENS) "$(INTDIR)"
