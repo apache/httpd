@@ -1,26 +1,17 @@
 </DL><DL><DD>
 <!--#include virtual="../contact.html.var" -->
 </DL>
-<!--#if expr="$INCLUDE_LOGO=yes" -->
- <BR CLEAR=<!--#if expr="$ALIGN_LOGO=left" -->right<!--#else -->left<!--#endif -->>
-<!--#endif -->
 
 <H2>Error <!--#echo encoding="none" var="REDIRECT_STATUS" --></H2>
 <DL>
 <DD>
 <ADDRESS>
-<!--#if expr="$INCLUDE_SERVER_NAME=yes" -->
   <A HREF="/"><!--#echo encoding="none" var="SERVER_NAME" --></A>
   <BR>
-<!--#endif -->
-<!--#if expr="$INCLUDE_DATE=yes" -->
   <!--#config timefmt="%c" -->
   <small><!--#echo encoding="none" var="DATE_LOCAL" --></small>
   <BR>
-<!--#endif -->
-<!--#if expr="$INCLUDE_SOFTWARE=yes" -->
   <small><!--#echo encoding="none" var="SERVER_SOFTWARE" --></small>
-<!--#endif -->
 </ADDRESS>
 </DL>
 </BODY>
