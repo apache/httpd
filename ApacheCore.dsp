@@ -90,6 +90,26 @@ SOURCE=.\ap\ap_base64.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ap\ap_buckets.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_eos.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_heap.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_mmap.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_transient.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ap\ap_hooks.c
 # End Source File
 # Begin Source File
@@ -247,6 +267,10 @@ SOURCE=.\main\util_cfgtree.c
 # Begin Source File
 
 SOURCE=.\main\util_date.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\util_filter.c
 # End Source File
 # Begin Source File
 
