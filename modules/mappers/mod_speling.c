@@ -61,7 +61,6 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "apr_file_io.h"
-#include "../../lib/apr/misc/unix/misc.h"
 
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *
@@ -229,7 +228,7 @@ static int sort_by_quality(const void *left, const void *rite)
 static int check_speling(request_rec *r)
 {
     spconfig *cfg;
-    char *good, *bad, *postgood, *url;
+    char *good, *bad, *postgood, *url, *fname;
     int filoc, dotloc, urlen, pglen;
     ap_array_header_t *candidates = NULL;
     ap_dir_t          *dir;
@@ -302,17 +301,14 @@ static int check_speling(request_rec *r)
         dotloc = strlen(bad);
     }
 
-    while (ap_readdir(dir) == APR_SUCCESS) {
+    /* NOTE: ap_get_dir_filename() fills fname with a ap_palloc()ed copy
+     * of the found directory name already. We don't need to copy it.
+     * @@@: Copying *ALL* found file names is wasted energy (and memory)!
+     */
+    while (ap_readdir(dir) == APR_SUCCESS &&
+	   ap_get_dir_filename(&fname, dir) == APR_SUCCESS) {
         sp_reason q;
-	char *fname;
-        ap_status_t ok; 
 
-        ok = ap_get_dir_filename(&fname, dir);
-
-/*@@*/
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS,
-		  r, __FILE__": Check_Speling `%s' in `%s'", r->filename, good, ok==APR_SUCCESS ? fname : "ERROR");
-/*@@*/
         /*
          * If we end up with a "fixed" URL which is identical to the
          * requested one, we must have found a broken symlink or some such.
@@ -331,7 +327,7 @@ static int check_speling(request_rec *r)
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) ap_push_array(candidates);
-            sp_new->name = ap_pstrdup(r->pool, fname);
+            sp_new->name = fname;
             sp_new->quality = SP_MISCAPITALIZED;
         }
 
@@ -343,7 +339,7 @@ static int check_speling(request_rec *r)
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) ap_push_array(candidates);
-            sp_new->name = ap_pstrdup(r->pool, fname);
+            sp_new->name = fname;
             sp_new->quality = q;
         }
 
@@ -389,13 +385,12 @@ static int check_speling(request_rec *r)
                 misspelled_file *sp_new;
 
 		sp_new = (misspelled_file *) ap_push_array(candidates);
-                sp_new->name = ap_pstrdup(r->pool, fname);
+                sp_new->name = fname;
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif
         }
     }
-
     ap_closedir(dir);
 
     if (candidates->nelts != 0) {
