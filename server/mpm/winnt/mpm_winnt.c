@@ -307,7 +307,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
         switch(type) {
            case SIGNAL_PARENT_SHUTDOWN: 
            {
-               winnt_mpm_state = AP_MPMQ_STOPPING;
                SetEvent(shutdown_event); 
                break;
            }
@@ -315,7 +314,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
            case SIGNAL_PARENT_RESTART: 
            case SIGNAL_PARENT_RESTART_GRACEFUL:
            {
-               winnt_mpm_state = AP_MPMQ_STOPPING;
                is_graceful = 1;
                SetEvent(restart_event); 
                break;
@@ -327,7 +325,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
     switch(type) {
        case SIGNAL_PARENT_SHUTDOWN: 
        {
-           winnt_mpm_state = AP_MPMQ_STOPPING;
            signal_name = signal_shutdown_name; 
            break;
        }
@@ -335,7 +332,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
        case SIGNAL_PARENT_RESTART: 
        case SIGNAL_PARENT_RESTART_GRACEFUL:
        {
-           winnt_mpm_state = AP_MPMQ_STOPPING;
            signal_name = signal_restart_name;     
            is_graceful = 1;
            break;
@@ -934,6 +930,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     ap_scoreboard_image->parent[0].pid = child_pid;
 
     /* Wait for shutdown or restart events or for child death */
+    winnt_mpm_state = AP_MPMQ_RUNNING;
     rv = WaitForMultipleObjects(NUM_WAIT_HANDLES, (HANDLE *) event_handles, FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
@@ -1013,6 +1010,7 @@ die_now:
     if (shutdown_pending) 
     {
         int timeout = 30000;  /* Timeout is milliseconds */
+        winnt_mpm_state = AP_MPMQ_STOPPING;
 
         /* This shutdown is only marginally graceful. We will give the 
          * child a bit of time to exit gracefully. If the time expires,
@@ -1044,7 +1042,7 @@ die_now:
         }
         return 0;  /* Tell the caller we do not want to restart */
     }
-
+    winnt_mpm_state = AP_MPMQ_STARTING;
     return 1;      /* Tell the caller we want a restart */
 }
 
