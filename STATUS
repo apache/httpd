@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/30 11:43:10 $]
+Last modified at [$Date: 2004/03/30 14:42:03 $]
 
 Release:
 
@@ -74,11 +74,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_ssl: Fix segfaults when doing shutdown from a cleanup.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.121&r2=1.122
-       +1: jorton
+       +1: jorton, trawick
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
-       +1: nd
+       +1: nd, trawick
 
     *) Backport mod_log_forensic.
        +1: ben, stoddard, nd
@@ -96,7 +96,7 @@ PATCHES TO BACKPORT FROM 2.1
        memory leak. PR: 26562.
            modules/ssl/ssl_engine_init.c:    r1.127
            modules/ssl/ssl_toolkit_compat.h: r1.41
-       +1: madhum, jorton
+       +1: madhum, jorton, trawick
 
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
@@ -120,7 +120,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Issue a 413 not a 400 if client exceeds configured LimitXMLRequestBody
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_xml.c?r1=1.28&r2=1.29
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
