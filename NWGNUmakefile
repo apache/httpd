@@ -324,6 +324,7 @@ install :: nlms FORCE
 	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
 	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
 	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
+	-copy docs\conf\charset.conv    $(INSTALL)\Apache2\conf\charset.conv
 	-copy docs\cgi-examples\printenv $(INSTALL)\Apache2\cgi-bin\printenv.pl
 	@echo rem copying the docs directories > xc.bat
 	@echo xcopy docs\error $(INSTALL)\Apache2\error $(XCOPYSW) >> xc.bat
