@@ -2034,14 +2034,11 @@ static char *do_expand(request_rec *r, char *input,
                     if (dflt) {
                         *dflt++ = '\0';
                     }
-                    else {
-                        dflt = "";
-                    }
 
                     /* reuse of key variable as result */
                     key = lookup_map(r, map, do_expand(r, key, briRR, briRC));
 
-                    if (!key && *dflt) {
+                    if (!key && dflt && *dflt) {
                         key = do_expand(r, dflt, briRR, briRC);
                     }
 
