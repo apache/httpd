@@ -365,13 +365,6 @@ void ssl_hook_NewConnection(conn_rec *conn)
 #ifndef WIN32
     SSL_set_read_ahead(ssl, TRUE);
 #endif
-
-#ifdef SSL_VENDOR
-    /* Allow vendors to do more things on connection time... */
-    ap_hook_use("ap::mod_ssl::vendor::new_connection",
-                AP_HOOK_SIG2(void,ptr), AP_HOOK_ALL, conn);
-#endif
-
     return;
 }
 
@@ -1032,11 +1025,6 @@ int ssl_hook_Access(request_rec *r)
      * deny access.
      */
     rc = DECLINED;
-#ifdef SSL_VENDOR
-    ap_hook_use("ap::mod_ssl::vendor::access_handler",
-                AP_HOOK_SIG2(int,ptr), AP_HOOK_DECLINE(DECLINED),
-                &rc, r);
-#endif
     return rc;
 }
 
