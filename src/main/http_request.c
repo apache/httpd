@@ -1056,7 +1056,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
      */
     if ((r->status != HTTP_NOT_MODIFIED) && (r->status != HTTP_NO_CONTENT)
         && !ap_status_drops_connection(r->status)
-        && r->connection && (r->connection->keepalive != -1)) {
+        && r->connection && (r->connection->keepalive > 0)) {
 
         (void) ap_discard_request_body(r);
     }
