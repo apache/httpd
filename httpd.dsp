@@ -106,10 +106,6 @@ SOURCE=.\buildmark.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\getopt.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\http_config.c
 # End Source File
 # Begin Source File
@@ -295,10 +291,6 @@ SOURCE=.\include\explain.h
 # Begin Source File
 
 SOURCE=.\include\fnmatch.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\getopt.h
 # End Source File
 # Begin Source File
 
