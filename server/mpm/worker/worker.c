@@ -505,7 +505,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 /* requests_this_child has gone to zero or below.  See if the admin coded
    "MaxRequestsPerChild 0", and keep going in that case.  Doing it this way
    simplifies the hot path in worker_thread */
-
 static void check_infinite_requests(void)
 {
     if (ap_max_requests_per_child) {
@@ -679,14 +678,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
     dying = 1;
-    apr_lock_acquire(worker_thread_count_mutex);
-    worker_thread_count--;
-    if (worker_thread_count == 0) {
-        /* All the threads have exited, now finish the shutdown process
-         * by signalling the sigwait thread */
-        kill(ap_my_pid, SIGTERM);
-    }
-    apr_lock_release(worker_thread_count_mutex);
+    ap_scoreboard_image->parent[process_slot].quiescing = 1;
+    kill(ap_my_pid, SIGTERM);
 
     return NULL;
 }
@@ -704,6 +697,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     while (!workers_may_exit) {
         ap_queue_pop(worker_queue, &csd, &ptrans);
+        if (!csd) {
+            continue;
+        }
         ap_increase_blanks(worker_queue);
         process_socket(ptrans, csd, process_slot, thread_slot);
         requests_this_child--;
@@ -714,20 +710,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
     apr_lock_acquire(worker_thread_count_mutex);
-    if (!dying) {
-        /* this is the first thread to exit */
-        if (ap_my_pid == ap_scoreboard_image->parent[process_slot].pid) {
-            /* tell the parent that it may use this scoreboard slot */
-            ap_scoreboard_image->parent[process_slot].quiescing = 1;
-        }   
-        dying = 1;
-    }
     worker_thread_count--;
-    if (worker_thread_count == 0) {
-        /* All the threads have exited, now finish the shutdown process
-         * by signalling the sigwait thread */
-        kill(ap_my_pid, SIGTERM);
-    }
     apr_lock_release(worker_thread_count_mutex);
 
     return NULL;
