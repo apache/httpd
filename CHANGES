@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Don't let the default handler try to serve a raw directory.  At
+     best you get gibberish.  Much worse things can happen depending
+     on the OS.  [Jeff Trawick]
+     
   *) Change the pre_config hook to return a value. Modules can now emit
      an error message and then cause the server to quit gracefully during
      startup. This required a bump to the MMN.  [Aaron Bannert]
