@@ -26,6 +26,7 @@ case "$host" in
     proxy_connect_objs="$proxy_connect_objs mod_proxy.la"
     proxy_ftp_objs="$proxy_ftp_objs mod_proxy.la"
     proxy_http_objs="$proxy_http_objs mod_proxy.la"
+    proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
     ;;
 esac
@@ -33,10 +34,9 @@ esac
 APACHE_MODULE(proxy_connect, Apache proxy CONNECT module, $proxy_connect_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_ftp, Apache proxy FTP module, $proxy_ftp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_http, Apache proxy HTTP module, $proxy_http_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current/../generators])
-
-APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , no)
 
 APACHE_MODPATH_FINISH
