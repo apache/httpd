@@ -168,7 +168,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char *destportstr = NULL;
     const char *urlptr = NULL;
     const char *datestr, *urlstr;
-    char *content_length;
+    const char *content_length;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
