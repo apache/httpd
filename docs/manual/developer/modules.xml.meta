@@ -7,6 +7,6 @@
 
   <variants>
     <variant>en</variant>
-    <variant htmlonly="yes">ja</variant>
+    <variant>ja</variant>
   </variants>
 </metafile>
