@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_isapi: GetServerVariable returned improperly terminated header 
+     fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
+     [Jesse Pelton <jsp pkc.com>]
+
   *) mod_isapi: send_response_header() failed to copy status string's 
      last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
 
