@@ -3868,7 +3868,6 @@ static int dav_method_report(request_rec *r)
     int result;
     int label_allowed;
     ap_xml_doc *doc;
-    ap_text_header hdr = { 0 };
     ap_text *t;
     dav_error *err;
 
@@ -3900,23 +3899,17 @@ static int dav_method_report(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    /* run report hook */
-    /* ### writing large reports to memory could be bad...
-     * ### but if provider generated output directly, it would
-     * ### have to handle error responses as well.
-     */
-    if ((err = (*vsn_hooks->get_report)(r, resource, doc, &hdr)) != NULL)
-        return dav_handle_err(r, err, NULL);
-
-    /* send the report response */
+    /* set up defaults for the report response */
     r->status = HTTP_OK;
     r->content_type = DAV_XML_CONTENT_TYPE;
 
-    /* send the headers and response body */
-    ap_rputs(DAV_XML_HEADER DEBUG_CR, r);
-
-    for (t = hdr.first; t != NULL; t = t->next)
-        ap_rputs(t->text, r);
+    /* run report hook */
+    if ((err = (*vsn_hooks->deliver_report)(r, resource, doc,
+                                            r->output_filters)) != NULL) {
+        /* NOTE: we're assuming that the provider has not generated any
+           content yet! */
+        return dav_handle_err(r, err, NULL);
+    }
 
     return DONE;
 }
