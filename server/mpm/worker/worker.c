@@ -262,17 +262,18 @@ static void wakeup_listener(void)
     pthread_kill(*listener_os_thread, LISTENER_SIGNAL);
 }
 
+#define ST_INIT              0
 #define ST_GRACEFUL          1
 #define ST_UNGRACEFUL        2
 
+static int terminate_mode = ST_INIT;
+
 static void signal_threads(int mode)
 {
-    static int prev_mode = 0;
-    
-    if (prev_mode == mode) {
+    if (terminate_mode == mode) {
         return;
     }
-    prev_mode = mode;
+    terminate_mode = mode;
 
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
@@ -625,7 +626,20 @@ static void check_infinite_requests(void)
     }
 }
 
-static void unblock_the_listener(int sig)
+static void unblock_signal(int sig)
+{
+    sigset_t sig_mask;
+
+    sigemptyset(&sig_mask);
+    sigaddset(&sig_mask, sig);
+#if defined(SIGPROCMASK_SETS_THREAD_MASK)
+    sigprocmask(SIG_UNBLOCK, &sig_mask, NULL);
+#else
+    pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL);
+#endif
+}
+
+static void dummy_signal_handler(int sig)
 {
     /* XXX If specifying SIG_IGN is guaranteed to unblock a syscall,
      *     then we don't need this goofy function.
@@ -645,8 +659,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     apr_pollfd_t *pollset;
     apr_status_t rv;
     ap_listen_rec *lr, *last_lr = ap_listeners;
-    struct sigaction sa;
-    sigset_t sig_mask;
 
     free(ti);
 
@@ -654,20 +666,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
         apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
 
-    sigemptyset(&sig_mask);
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
      */
-    sigaddset(&sig_mask, LISTENER_SIGNAL);
-#if defined(SIGPROCMASK_SETS_THREAD_MASK)
-    sigprocmask(SIG_UNBLOCK, &sig_mask, NULL);
-#else
-    pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL);
-#endif
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = unblock_the_listener;
-    sigaction(LISTENER_SIGNAL, &sa, NULL);
+    unblock_signal(LISTENER_SIGNAL);
+    apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -811,10 +814,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
 
-    /* XXX in one-process mode, this SIGTERM will wake up the main thread
-     *     in normal mode, it is unclear what it will do... the main
-     *     thread is stuck in a read on the POD
-     */
+    /* wake up the main thread */
     kill(ap_my_pid, SIGTERM);
 
     apr_thread_exit(thd, APR_SUCCESS);
@@ -1196,13 +1196,26 @@ static void child_main(int child_num_arg)
         join_workers(ts->listener, threads);
     }
     else { /* !one_process */
+        /* remove SIGTERM from the set of blocked signals...  if one of
+         * the other threads in the process needs to take us down
+         * (e.g., for MaxRequestsPerChild) it will send us SIGTERM
+         */
+        unblock_signal(SIGTERM);
+        apr_signal(SIGTERM, dummy_signal_handler);
         /* Watch for any messages from the parent over the POD */
         while (1) {
-            /* XXX join_start_thread() won't be awakened if one of our
-             *     threads encounters a critical error and attempts to
-             *     shutdown this child
-             */
             rv = ap_mpm_pod_check(pod);
+            if (rv == AP_NORESTART) {
+                /* see if termination was triggered while we slept */
+                switch(terminate_mode) {
+                case ST_GRACEFUL:
+                    rv = AP_GRACEFUL;
+                    break;
+                case ST_UNGRACEFUL:
+                    rv = AP_RESTART;
+                    break;
+                }
+            }
             if (rv == AP_GRACEFUL || rv == AP_RESTART) {
                 /* make sure the start thread has finished; 
                  * signal_threads() and join_workers depend on that

@@ -72,6 +72,9 @@
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 {
@@ -93,21 +96,21 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 AP_DECLARE(int) ap_mpm_pod_check(ap_pod_t *pod)
 {
     char c;
-    apr_size_t len = 1;
-    apr_status_t rv;
+    apr_os_file_t fd;
+    int rc;
 
-    rv = apr_file_read(pod->pod_in, &c, &len);
-
-    if ((rv == APR_SUCCESS) && (len ==1)) {
-        if (c == RESTART_CHAR) {
+    /* we need to surface EINTR so we'll have to grab the
+     * native file descriptor and do the OS read() ourselves
+     */
+    apr_os_file_get(&fd, pod->pod_in);
+    rc = read(fd, &c, 1);
+    if (rc == 1) {
+        switch(c) {
+        case RESTART_CHAR:
             return AP_RESTART;
-        }
-        if (c == GRACEFUL_CHAR) {
+        case GRACEFUL_CHAR:
             return AP_GRACEFUL;
         }
-    }
-    else if (rv != APR_SUCCESS) {
-        return rv;
     }
     return AP_NORESTART;
 }
