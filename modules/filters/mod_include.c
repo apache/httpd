@@ -1906,7 +1906,8 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
 }
 
 /*
- * <!--#config [timefmt="..."] [sizefmt="..."] [errmsg="..."] -->
+ * <!--#config [timefmt="..."] [sizefmt="..."] [errmsg="..."]
+ *             [echomsg="..."] -->
  */
 static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                                   apr_bucket_brigade *bb)
@@ -1934,7 +1935,6 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
     while (1) {
         char *tag     = NULL;
         char *tag_val = NULL;
-        char *parsed_string;
 
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_RAW);
         if (!tag || !tag_val) {
@@ -1944,6 +1944,11 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
         if (!strcmp(tag, "errmsg")) {
             ctx->error_str = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                  SSI_EXPAND_DROP_NAME);
+        }
+        else if (!strcmp(tag, "echomsg")) {
+            ctx->intern->undefined_echo =
+                ap_ssi_parse_string(ctx, tag_val, NULL, 0,SSI_EXPAND_DROP_NAME);
+            ctx->intern->undefined_echo_len=strlen(ctx->intern->undefined_echo);
         }
         else if (!strcmp(tag, "timefmt")) {
             apr_time_t date = r->request_time;
@@ -1960,6 +1965,8 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                            ctx->time_str, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
+            char *parsed_string;
+
             parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                 SSI_EXPAND_DROP_NAME);
             if (!strcmp(parsed_string, "bytes")) {
