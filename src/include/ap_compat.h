@@ -174,6 +174,7 @@ extern "C" {
 #define invoke_handler                 ap_invoke_handler
 #define is_default_port                ap_is_default_port
 #define is_directory                   ap_is_directory
+#define is_empty_table                 ap_is_empty_table
 #define is_fnmatch                     ap_is_fnmatch
 #define is_initial_req                 ap_is_initial_req
 #define is_matchexp                    ap_is_matchexp
