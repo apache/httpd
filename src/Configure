@@ -235,10 +235,15 @@ case "$PLAT" in
 	OS='DEC OSF/1'
 	CFLAGS="$CFLAGS -DOSF1"
 	;;
-    QNX)
+    *-qnx)
 	DEF_WANTHSREGEX=yes
 	OS='QNX'
 	CFLAGS="$CFLAGS -DQNX"
+	LIBS="$LIBS -N128k -lsocket"
+	;;
+    *-qnx32)
+	OS='QNX32'
+	CFLAGS="$CFLAGS -DQNX -mf -3"
 	LIBS="$LIBS -N128k -lsocket"
 	;;
     *-sco3*)
