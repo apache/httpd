@@ -45,6 +45,8 @@
 
 #define MODSSL_BIO_CB_ARG_TYPE const char
 
+#define modssl_X509_verify_cert(c) X509_verify_cert(c)
+
 #else /* RSA sslc */
 
 #ifndef STACK_OF
@@ -52,6 +54,8 @@
 #endif
 
 #define MODSSL_BIO_CB_ARG_TYPE char
+
+#define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
 
 #if SSLC_VERSION < 0x2000
 
