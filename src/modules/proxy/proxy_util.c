@@ -68,7 +68,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
-static struct per_thread_data *get_per_thread_data();
+static struct per_thread_data *get_per_thread_data(void);
 /* already called in the knowledge that the characters are hex digits */
 int ap_proxy_hex2c(const char *x)
 {
@@ -1316,7 +1316,7 @@ BOOL WINAPI DllMain (HINSTANCE dllhandle, DWORD reason, LPVOID reserved)
 
 #endif
 
-static struct per_thread_data *get_per_thread_data()
+static struct per_thread_data *get_per_thread_data(void)
 {
 #if defined(WIN32)
 
