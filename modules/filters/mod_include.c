@@ -144,6 +144,13 @@ do {                                                                        \
  * +-------------------------------------------------------+
  */
 
+/* sll used for string expansion */
+typedef struct result_item {
+    struct result_item *next;
+    apr_size_t len;
+    const char *string;
+} result_item_t;
+
 typedef enum {
     XBITHACK_OFF,
     XBITHACK_ON,
@@ -437,8 +444,7 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var)
     return val;
 }
 
-static const char *get_include_var(request_rec *r, include_ctx_t *ctx, 
-                                   const char *var)
+static const char *get_include_var(const char *var, include_ctx_t *ctx)
 {
     const char *val;
     if (apr_isdigit(*var) && !var[1]) {
@@ -457,195 +463,235 @@ static const char *get_include_var(request_rec *r, include_ctx_t *ctx,
                  || (*ctx->intern->re_result)[idx].rm_eo < 0) {
                 return NULL;
             }
-            val = apr_pstrmemdup(r->pool, ctx->intern->re_string
+            val = apr_pstrmemdup(ctx->dpool, ctx->intern->re_string
                                  + (*ctx->intern->re_result)[idx].rm_so, len);
         }
     }
     else {
-        val = apr_table_get(r->subprocess_env, var);
+        val = apr_table_get(ctx->intern->r->subprocess_env, var);
 
         if (val == LAZY_VALUE)
-            val = add_include_vars_lazy(r, var);
+            val = add_include_vars_lazy(ctx->intern->r, var);
     }
     return val;
 }
 
-/* initial buffer size for power-of-two allocator in ap_ssi_parse_string */
-#define PARSE_STRING_INITIAL_SIZE 64
-
 /*
  * Do variable substitution on strings
+ *
  * (Note: If out==NULL, this function allocs a buffer for the resulting
- * string from r->pool.  The return value is the parsed string)
+ * string from ctx->pool. The return value is always the parsed string)
  */
 static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
                                  apr_size_t length, int leave_name)
 {
-    char ch;
-    char *next;
-    char *end_out;
-    apr_size_t out_size;
     request_rec *r = ctx->intern->r;
+    result_item_t *result = NULL, *current = NULL;
+    apr_size_t outlen = 0, inlen, span;
+    char *ret = NULL, *eout = NULL;
+    const char *p;
 
-    /* allocate an output buffer if needed */
-    if (!out) {
-        out_size = PARSE_STRING_INITIAL_SIZE;
-        if (out_size > length) {
-            out_size = length;
+    if (out) {
+        /* sanity check, out && !length is not supported */
+        ap_assert(out && length);
+
+        ret = out;
+        eout = out + length - 1;
+    }
+
+    span = strcspn(in, "\\$");
+    inlen = strlen(in);
+
+    /* fast exit */
+    if (inlen == span) {
+        if (out) {
+            apr_cpystrn(out, in, length);
         }
-        out = apr_palloc(r->pool, out_size);
+        else {
+            ret = apr_pstrmemdup(ctx->pool, in, (length && length <= inlen)
+                                                ? length - 1 : inlen);
+        }
+
+        return ret;
+    }
+
+    /* well, actually something to do */
+    p = in + span;
+
+    if (out) {
+        if (span) {
+            memcpy(out, in, (out+span <= eout) ? span : (eout-out));
+            out += span;
+        }
     }
     else {
-        out_size = length;
+        current = result = apr_palloc(ctx->dpool, sizeof(*result));
+        current->next = NULL;
+        current->string = in;
+        current->len = span;
+        outlen = span;
     }
 
-    /* leave room for nul terminator */
-    end_out = out + out_size - 1;
-
-    next = out;
-    while ((ch = *in++) != '\0') {
-        switch (ch) {
-        case '\\':
-            if (next == end_out) {
-                if (out_size < length) {
-                    /* double the buffer size */
-                    apr_size_t new_out_size = out_size * 2;
-                    apr_size_t current_length = next - out;
-                    char *new_out;
-                    if (new_out_size > length) {
-                        new_out_size = length;
-                    }
-                    new_out = apr_palloc(r->pool, new_out_size);
-                    memcpy(new_out, out, current_length);
-                    out = new_out;
-                    out_size = new_out_size;
-                    end_out = out + out_size - 1;
-                    next = out + current_length;
-                }
-                else {
-                    /* truncated */
-                    *next = '\0';
-                    return out;
-                }
-            }
-            if (*in == '$') {
-                *next++ = *in++;
-            }
-            else {
-                *next++ = ch;
-            }
-            break;
-        case '$':
-            {
-                const char *start_of_var_name;
-                char *end_of_var_name;        /* end of var name + 1 */
-                const char *expansion, *temp_end, *val;
-                char        tmp_store;
-                apr_size_t l;
-
-                /* guess that the expansion won't happen */
-                expansion = in - 1;
-                if (*in == '{') {
-                    ++in;
-                    start_of_var_name = in;
-                    in = ap_strchr_c(in, '}');
-                    if (in == NULL) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                                      0, r, "Missing '}' on variable \"%s\"",
-                                      expansion);
-                        *next = '\0';
-                        return out;
-                    }
-                    temp_end = in;
-                    end_of_var_name = (char *)temp_end;
-                    ++in;
-                }
-                else {
-                    start_of_var_name = in;
-                    while (apr_isalnum(*in) || *in == '_') {
-                        ++in;
-                    }
-                    temp_end = in;
-                    end_of_var_name = (char *)temp_end;
-                }
-                /* what a pain, too bad there's no table_getn where you can
-                 * pass a non-nul terminated string */
-                l = end_of_var_name - start_of_var_name;
-                if (l != 0) {
-                    tmp_store        = *end_of_var_name;
-                    *end_of_var_name = '\0';
-                    val = get_include_var(r, ctx, start_of_var_name);
-                    *end_of_var_name = tmp_store;
-
-                    if (val) {
-                        expansion = val;
-                        l = strlen(expansion);
-                    }
-                    else if (leave_name) {
-                        l = in - expansion;
-                    }
-                    else {
-                        /* no expansion to be done */
-                        break;
-                    }
-                }
-                else {
-                    /* zero-length variable name causes just the $ to be 
-                     * copied */
-                    l = 1;
-                }
-                if ((next + l > end_out) && (out_size < length)) {
-                    /* increase the buffer size to accommodate l more chars */
-                    apr_size_t new_out_size = out_size;
-                    apr_size_t current_length = next - out;
-                    char *new_out;
-                    do {
-                        new_out_size *= 2;
-                    } while (new_out_size < current_length + l);
-                    if (new_out_size > length) {
-                        new_out_size = length;
-                    }
-                    new_out = apr_palloc(r->pool, new_out_size);
-                    memcpy(new_out, out, current_length);
-                    out = new_out;
-                    out_size = new_out_size;
-                    end_out = out + out_size - 1;
-                    next = out + current_length;
-                }
-                l = ((int)l > end_out - next) ? (end_out - next) : l;
-                memcpy(next, expansion, l);
-                next += l;
-                break;
-            }
-        default:
-            if (next == end_out) {
-                if (out_size < length) {
-                    /* double the buffer size */
-                    apr_size_t new_out_size = out_size * 2;
-                    apr_size_t current_length = next - out;
-                    char *new_out;
-                    if (new_out_size > length) {
-                        new_out_size = length;
-                    }
-                    new_out = apr_palloc(r->pool, new_out_size);
-                    memcpy(new_out, out, current_length);
-                    out = new_out;
-                    out_size = new_out_size;
-                    end_out = out + out_size - 1;
-                    next = out + current_length;
-                }
-                else {
-                    /* truncated */
-                    *next = '\0';
-                    return out;
-                }
-            }
-            *next++ = ch;
+    /* loop for specials */
+    do {
+        if ((out && out >= eout) || (length && outlen >= length)) {
             break;
         }
+
+        /* prepare next entry */
+        if (!out && current->len) {
+            current->next = apr_palloc(ctx->dpool, sizeof(*current->next));
+            current = current->next;
+            current->next = NULL;
+            current->len = 0;
+        }
+
+        /*
+         * escaped character
+         */
+        if (*p == '\\') {
+            if (out) {
+                *out++ = (p[1] == '$') ? *++p : *p;
+                ++p;
+            }
+            else {
+                current->len = 1;
+                current->string = (p[1] == '$') ? ++p : p;
+                ++p;
+                ++outlen;
+            }
+        }
+
+        /*
+         * variable expansion
+         */
+        else {       /* *p == '$' */
+            const char *newp = NULL, *ep, *key = NULL;
+
+            if (*++p == '{') {
+                ep = ap_strchr_c(++p, '}');
+                if (!ep) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "Missing '}' on "
+                                  "variable \"%s\" in %s", p, r->filename);
+                    break;
+                }
+
+                if (p < ep) {
+                    key = apr_pstrmemdup(ctx->dpool, p, ep - p);
+                    newp = ep + 1;
+                }
+                p -= 2;
+            }
+            else {
+                ep = p;
+                while (*ep == '_' || apr_isalnum(*ep)) {
+                    ++ep;
+                }
+
+                if (p < ep) {
+                    key = apr_pstrmemdup(ctx->dpool, p, ep - p);
+                    newp = ep;
+                }
+                --p;
+            }
+
+            /* empty name results in a copy of '$' in the output string */
+            if (!key) {
+                if (out) {
+                    *out++ = *p++;
+                }
+                else {
+                    current->len = 1;
+                    current->string = p++;
+                    ++outlen;
+                }
+            }
+            else {
+                const char *val = get_include_var(key, ctx);
+                apr_size_t len = 0;
+
+                if (val) {
+                    len = strlen(val);
+                }
+                else if (leave_name) {
+                    val = p;
+                    len = ep - p;
+                }
+
+                if (val && len) {
+                    if (out) {
+                        memcpy(out, val, (out+len <= eout) ? len : (eout-out));
+                        out += len;
+                    }
+                    else {
+                        current->len = len;
+                        current->string = val;
+                        outlen += len;
+                    }
+                }
+
+                p = newp;
+            }
+        }
+
+        if ((out && out >= eout) || (length && outlen >= length)) {
+            break;
+        }
+
+        /* check the remainder */
+        if (*p && (span = strcspn(p, "\\$")) > 0) {
+            if (!out && current->len) {
+                current->next = apr_palloc(ctx->dpool, sizeof(*current->next));
+                current = current->next;
+                current->next = NULL;
+            }
+
+            if (out) {
+                memcpy(out, p, (out+span <= eout) ? span : (eout-out));
+                out += span;
+            }
+            else {
+                current->len = span;
+                current->string = p;
+                outlen += span;
+            }
+
+            p += span;
+        }
+    } while (p < in+inlen);
+
+    /* assemble result */
+    if (out) {
+        if (out > eout) {
+            *eout = '\0';
+        }
+        else {
+            *out = '\0';
+        }
     }
-    *next = '\0';
-    return out;
+    else {
+        const char *ep;
+
+        if (length && outlen > length) {
+            outlen = length - 1;
+        }
+
+        ret = out = apr_palloc(ctx->pool, outlen + 1);
+        ep = ret + outlen;
+
+        do {
+            if (result->len) {
+                memcpy(out, result->string, (out+result->len <= ep)
+                                            ? result->len : (ep-out));
+                out += result->len;
+            }
+            result = result->next;
+        } while (result && out < ep);
+
+        ret[outlen] = '\0';
+    }
+
+    return ret;
 }
 
 
@@ -1811,10 +1857,11 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
             const char *echo_text = NULL;
             apr_size_t e_len;
 
-            val = get_include_var(r, ctx,
-                                  ap_ssi_parse_string(ctx, tag_val, NULL,
+            val = get_include_var(ap_ssi_parse_string(ctx, tag_val, NULL,
                                                       MAX_STRING_LEN,
-                                                      SSI_EXPAND_DROP_NAME));
+                                                      SSI_EXPAND_DROP_NAME),
+                                  ctx);
+
             if (val) {
                 switch(encode) {
                 case E_NONE:
