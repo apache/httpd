@@ -1,5 +1,8 @@
 Changes with Apache 1.3b8
 
+  *) A few cosmetics and trivial enhancements to APXS to make the
+     generated Makefile more user friendly. [Ralf S. Engelschall]
+
   *) Proxy Fix: The proxy special failure routine ap_proxyerror()
      was updated to use the normal apache error processing, thereby allowing
      proxy errors to be treated by ErrorDocument's as well. For this
