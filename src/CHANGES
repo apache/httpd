@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) PORT: Add UnixWare 7 support
+     [Vadim Kostoglodoff <vadim@olly.ru>] PR#2463
+
   *) Fix the Guess-DSO-flags-from-Perl stuff in src/Configure: "perl" was
      used instead of "$PERL" which contains the correctly determined Perl
      interpreter (important for instance on systems where "perl" and "perl5"

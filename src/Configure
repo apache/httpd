@@ -584,6 +584,12 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	DBM_LIB=""
 	;;
+    *-unixware7)
+	OS='UnixWare 7'
+	CFLAGS="$CFLAGS -DUW=700"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
+	DBM_LIB=""
+	;;
     maxion-*-sysv4*)
     	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
