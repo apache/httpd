@@ -127,5 +127,5 @@ AC_SUBST(OS_DIR)
 dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
-AC_OUTPUT([Makefile ap/Makefile main/Makefile modules/Makefile
+AC_OUTPUT([Makefile ap/Makefile lib/Makefile main/Makefile modules/Makefile
            modules/standard/Makefile os/Makefile $APACHE_OUTPUT_FILES])
