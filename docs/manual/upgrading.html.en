@@ -86,8 +86,9 @@
       of httpd.conf, with the one for <code>srm.conf</code>
       preceding the one for <code>access.conf</code>.</li>
 
-      <li>The <code>BindAddress</code> directive no longer exists.
-      Equivalent functionality is provided with the more flexible
+      <li>The <code>BindAddress</code> and <code>Port</code> 
+      directives no longer exist.  Equivalent functionality is 
+      provided with the more flexible 
       <code><a href="mod/mpm_common.html#listen">Listen</a></code>
       directive.</li>
 
