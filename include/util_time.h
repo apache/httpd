@@ -109,6 +109,13 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t *tm,
  */
 AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t);
 
+/**
+ * format a recent timestamp in the RFC822 format
+ * @param date_str String to write to (must have length >= APR_RFC822_DATE_LEN)
+ * @param t the time to convert 
+ */
+AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t);
+
 #ifdef __cplusplus
 }
 #endif
