@@ -329,6 +329,7 @@ void ShowTryPopupMenu(HWND hWnd)
         GetCursorPos(&pt);
         SetForegroundWindow(NULL);
         TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+        DestroyMenu(hMenu);
     }
 }
 
@@ -352,6 +353,7 @@ void ShowTryServicesMenu(HWND hWnd)
             GetCursorPos(&pt);
             SetForegroundWindow(NULL);
             TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+            DestroyMenu(hMenu);
         }
     }
 }
