@@ -61,8 +61,8 @@
 
 /* 
  * This shared memory based SSL session cache implementation was
- * originally written by Geoff Thorpe <geoff@eu.c2.net> for C2Net Europe
- * and as a contribution to Ralf Engelschall's mod_ssl project.
+ * originally written by Geoff Thorpe <geoff@geoffthorpe.net> for C2Net
+ * Europe as a contribution to Ralf Engelschall's mod_ssl project.
  */
 
 /*
