@@ -590,7 +590,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
     if (is_HTTP_SUCCESS(status)) {
 	/* if it has a scheme we may need to do absoluteURI vhost stuff */
 	if (r->parsed_uri.scheme
-	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))) {
+	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
 	    r->hostname = r->parsed_uri.hostname;
 	} else if (r->method_number == M_CONNECT) {
 	    r->hostname = r->parsed_uri.hostname;

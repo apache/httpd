@@ -1,4 +1,9 @@
 Changes with Apache 1.3b8
+  
+  *) Renamed three more functions to common ap_ prefix which we missed at the
+     Big Symbol Renaming because they're #defines and not real C functions:
+     is_default_port(), default_port(), http_method().
+     [Ralf S. Engelschall]
 
   *) A zero-length name after a $ in an SSI document should cause
      just the $ to be in the expansion.  This was broken during the

@@ -607,7 +607,7 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     
-    port = r->server->port ? r->server->port : default_port(r);
+    port = r->server->port ? r->server->port : ap_default_port(r);
 
     if (d->use_canonical_name & 1) {
 	return port;
@@ -624,7 +624,7 @@ API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
 
     if (d->use_canonical_name & 1) {
-	port = r->server->port ? r->server->port : default_port(r);
+	port = r->server->port ? r->server->port : ap_default_port(r);
 	host = r->server->server_hostname;
     }
     else {
@@ -633,14 +633,14 @@ API_EXPORT(char *) ap_construct_url(pool *p, const char *uri, const request_rec 
         else if (r->server->port)
             port = r->server->port;
         else
-            port = default_port(r);
+            port = ap_default_port(r);
 
 	host = r->hostname ? r->hostname : r->server->server_hostname;
     }
-    if (is_default_port(port, r)) {
-	return ap_pstrcat(p, http_method(r), "://", host, uri, NULL);
+    if (ap_is_default_port(port, r)) {
+	return ap_pstrcat(p, ap_http_method(r), "://", host, uri, NULL);
     }
-    return ap_psprintf(p, "%s://%s:%u%s", http_method(r), host, port, uri);
+    return ap_psprintf(p, "%s://%s:%u%s", ap_http_method(r), host, port, uri);
 }
 
 /*****************************************************************

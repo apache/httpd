@@ -1002,7 +1002,7 @@ static int hook_uri2file(request_rec *r)
     /* add the canonical URI of this URL */
     thisserver = ap_get_server_name(r);
     port = ap_get_server_port(r);
-    if (is_default_port(port, r))
+    if (ap_is_default_port(port, r))
         thisport = "";
     else {
         ap_snprintf(buf, sizeof(buf), ":%u", port);
@@ -1011,7 +1011,7 @@ static int hook_uri2file(request_rec *r)
     thisurl = ap_table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
     /* set the variable */
-    var = ap_pstrcat(r->pool, http_method(r), "://", thisserver, thisport,
+    var = ap_pstrcat(r->pool, ap_http_method(r), "://", thisserver, thisport,
                   thisurl, NULL);
     ap_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
@@ -2220,7 +2220,7 @@ static void reduce_uri(request_rec *r)
         olduri = ap_pstrdup(r->pool, r->filename); /* save for logging */
 
         /* cut the hostname and port out of the URI */
-        ap_cpystrn(buf, r->filename+strlen(http_method(r))+3, sizeof(buf));
+        ap_cpystrn(buf, r->filename+strlen(ap_http_method(r))+3, sizeof(buf));
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
@@ -2245,7 +2245,7 @@ static void reduce_uri(request_rec *r)
             ap_cpystrn(host, hostp, sizeof(host));
             *cp = '/';
             /* set port */
-            port = default_port(r);
+            port = ap_default_port(r);
             /* set remaining url */
             url = cp;
         }
@@ -2253,7 +2253,7 @@ static void reduce_uri(request_rec *r)
             /* set host */
             ap_cpystrn(host, hostp, sizeof(host));
             /* set port */
-            port = default_port(r);
+            port = ap_default_port(r);
             /* set remaining url */
             url = "/";
         }
@@ -2292,7 +2292,7 @@ static void fully_qualify_uri(request_rec *r)
           
         thisserver = ap_get_server_name(r);
         port = ap_get_server_port(r);
-        if (is_default_port(port,r))
+        if (ap_is_default_port(port,r))
             thisport = "";
         else {
             ap_snprintf(buf, sizeof(buf), ":%u", port);
@@ -2301,11 +2301,11 @@ static void fully_qualify_uri(request_rec *r)
 
         if (r->filename[0] == '/')
             r->filename = ap_psprintf(r->pool, "%s://%s%s%s",
-                        http_method(r), thisserver,
+                        ap_http_method(r), thisserver,
                         thisport, r->filename);
         else
             r->filename = ap_psprintf(r->pool, "%s://%s%s/%s",
-                        http_method(r), thisserver,
+                        ap_http_method(r), thisserver,
                         thisport, r->filename);
     }
     return;

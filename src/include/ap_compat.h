@@ -101,6 +101,7 @@ extern "C" {
 #define daemons_min_free               ap_daemons_min_free
 #define daemons_to_start               ap_daemons_to_start
 #define day_snames                     ap_day_snames
+#define default_port                   ap_default_port
 #define default_port_for_request       ap_default_port_for_request
 #define default_port_for_scheme        ap_default_port_for_scheme
 #define default_type                   ap_default_type
@@ -160,6 +161,7 @@ extern "C" {
 #define hard_timeout                   ap_hard_timeout
 #define header_parse                   ap_header_parse
 #define ht_time                        ap_ht_time
+#define http_method                    ap_http_method
 #define ind                            ap_ind
 #define index_of_response              ap_index_of_response
 #define init_alloc                     ap_init_alloc
@@ -169,6 +171,7 @@ extern "C" {
 #define internal_redirect              ap_internal_redirect
 #define internal_redirect_handler      ap_internal_redirect_handler
 #define invoke_handler                 ap_invoke_handler
+#define is_default_port                ap_is_default_port
 #define is_directory                   ap_is_directory
 #define is_fnmatch                     ap_is_fnmatch
 #define is_initial_req                 ap_is_initial_req

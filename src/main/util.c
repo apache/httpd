@@ -1137,7 +1137,7 @@ API_EXPORT(int) ap_unescape_url(char *url)
 API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r)
 {
-    if (is_default_port(port, r))
+    if (ap_is_default_port(port, r))
 	return ap_pstrdup(p, hostname);
     else {
 	return ap_psprintf(p, "%s:%u", hostname, port);
