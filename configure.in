@@ -183,6 +183,10 @@ fi
 if test "$apache_need_shared" = "yes"; then
   $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
   case $PLATFORM in
+    *-ibm-aix*)
+      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_srcdir/support/httpd.exp"
+      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_srcdir/support/httpd.exp"
+      ;;
     *os390)
       CFLAGS="$CFLAGS -Wc,DLL,EXPORTALL"
       ;;
