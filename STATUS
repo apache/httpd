@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/22 20:22:15 $]
+Last modified at [$Date: 2003/05/22 20:47:03 $]
 
 Release:
 
@@ -217,15 +217,6 @@ PATCHES TO PORT FROM 2.1
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
 
-    * mod_ssl: Quit twiddling status bits, and call SSL_renegotiate to unset
-      the current negotiation status.
-      http://www.apache.org/~wrowe/ssl_renegotiate.patch for a clean 2.0 patch.
-      modules/ssl/config.m4 1.15
-      modules/ssl/ssl_engine_io.c 1.08
-      modules/ssl/ssl_engine_kernel.c 1.93
-      modules/ssl/ssl_toolkit_compat.c 1.34
-      +1: wrowe
-
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
@@ -406,6 +397,18 @@ CURRENT VOTES:
             nd (for 2.0)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * mod_ssl: We twiddle status bits rather than calling SSL_renegotiate 
+      to unset the current negotiation status.  This especially affects
+      sslc users who can't touch these internal bits (nor should OpenSSL
+      based apps do so.)  Flipping to SSL_renegotiate causes us to start 
+      failing perl-framework tests.  Needs some further research.
+        http://www.apache.org/~wrowe/ssl_renegotiate.patch for a clean 2.0 patch,
+        or for httpd-2.1 refer to:
+        modules/ssl/config.m4 1.15
+        modules/ssl/ssl_engine_io.c 1.08
+        modules/ssl/ssl_engine_kernel.c 1.93
+        modules/ssl/ssl_toolkit_compat.c 1.34
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
