@@ -1273,6 +1273,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, 
                                  SERVICE_INTERROGATE | SERVICE_QUERY_STATUS | 
+                                 SERVICE_USER_DEFINED_CONTROL |
                                  SERVICE_START | SERVICE_STOP);
 
         if (schService == NULL) {
