@@ -1,4 +1,8 @@
 Changes with Apache 2.0.15-dev
+  *) Avoid using sscanf to determine the HTTP protocol number in
+     the common case because sscanf is a performance hog. From
+     Mike Abbot's Accelerating Apache patch number 6.
+     [Mike Abbot <mja@trudge.engr.sgi.com>, Bill Stoddard]
 
   *) Fix a security exposure in mod_access.  Previously when IPv6 
      listening sockets were used, allow/deny-from-IPv4-address rules 

@@ -664,6 +664,8 @@ static int read_request_line(request_rec *r)
     char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
     const char *ll = l;
     const char *uri;
+    const char *pro;
+
 #if 0
     conn_rec *conn = r->connection;
 #endif
@@ -739,16 +741,27 @@ static int read_request_line(request_rec *r)
         return 0;
     }
 
-    r->assbackwards = (ll[0] == '\0');
-    r->protocol = apr_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
-/* XXX If we want to keep track of the Method, the protocol module should do
- * it.  That support isn't in the scoreboard yet.  Hopefully next week 
- * sometime.   rbb
-    ap_update_connection_status(conn->id, "Protocol", r->protocol); 
- */
+    if (ll[0]) {
+        r->assbackwards = 0;
+        pro = ll;
+        len = strlen(ll);
+    } else {
+        r->assbackwards = 1;
+        pro = "HTTP/0.9";
+        len = 8;
+    }
+    r->protocol = apr_pstrndup(r->pool, pro, len);
 
-    if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
-      && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
+    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
+
+    /* Avoid sscanf in the common case */
+    if (len == 8 &&
+        pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P' &&
+        pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.' &&
+        apr_isdigit(pro[7])) {
+ 	r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
+    } else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+               && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
 	r->proto_num = HTTP_VERSION(major, minor);
     else
 	r->proto_num = HTTP_VERSION(1,0);
