@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) mod_include's fsize/flastmod should allow only relative paths, just
+     like "include file".  [Jaroslav Benkovsky <benkovsk@pha.pvt.cz>]
+
   *) OS/2: Add support for building loadable modules using DLLs.
      [Brian Havard]
 

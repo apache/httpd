@@ -1045,35 +1045,41 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
 static int find_file(request_rec *r, const char *directive, const char *tag,
                      char *tag_val, struct stat *finfo, const char *error)
 {
-    char *to_send;
-    request_rec *rr;
+    char *to_send = tag_val;
+    request_rec *rr = NULL;
     int ret=0;
+    char *error_fmt = NULL;
 
     if (!strcmp(tag, "file")) {
-        ap_getparents(tag_val);    /* get rid of any nasties */
-        
-        rr = ap_sub_req_lookup_file(tag_val, r);
-
-        if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
-            to_send = rr->filename;
-            if ((ret = stat(to_send, finfo)) == -1) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                            "unable to get information about \"%s\" "
-                            "in parsed file %s",
-                            to_send, r->filename);
-                ap_rputs(error, r);
-            }
+        /* be safe; only files in this directory or below allowed */
+        if (!is_only_below(tag_val)) {
+            error_fmt = "unable to access file \"%s\" "
+                        "in parsed file %s";
         }
         else {
+            ap_getparents(tag_val);    /* get rid of any nasties */
+            rr = ap_sub_req_lookup_file(tag_val, r);
+
+            if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
+                to_send = rr->filename;
+                if (stat(to_send, finfo)) {
+                    error_fmt = "unable to get information about \"%s\" "
+                                "in parsed file %s";
+                }
+            }
+            else {
+                error_fmt = "unable to lookup information about \"%s\" "
+                            "in parsed file %s";
+            }
+        }
+
+        if (error_fmt) {
             ret = -1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                        "unable to lookup information about \"%s\" "
-                        "in parsed file %s",
-                        tag_val, r->filename);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r, error_fmt, to_send, r->filename);
             ap_rputs(error, r);
         }
-        
-        ap_destroy_sub_req(rr);
+
+        if (rr) ap_destroy_sub_req(rr);
         
         return ret;
     }
