@@ -450,7 +450,6 @@ static const char *log_request_time(request_rec *r, char *a)
 {
     apr_exploded_time_t xt;
     apr_size_t retcode;
-    char tstr[MAX_STRING_LEN];
 
     /*
 	hi.  i think getting the time again at the end of the request
@@ -469,7 +468,9 @@ static const char *log_request_time(request_rec *r, char *a)
     ap_explode_recent_localtime(&xt, r->request_time);
 #endif
     if (a && *a) {              /* Custom format */
-        apr_strftime(tstr, &retcode, MAX_STRING_LEN, a, &xt);
+        char tstr[MAX_STRING_LEN];
+        apr_strftime(tstr, &retcode, sizeof(tstr), a, &xt);
+        return apr_pstrdup(r->pool, tstr);
     }
     else {                      /* CLF format */
 	char sign;
@@ -484,13 +485,11 @@ static const char *log_request_time(request_rec *r, char *a)
 	    sign = '+';
 	}
 
-        apr_snprintf(tstr, sizeof(tstr), "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
+        return apr_psprintf(r->pool, "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
                 xt.tm_mday, apr_month_snames[xt.tm_mon], xt.tm_year+1900,
                 xt.tm_hour, xt.tm_min, xt.tm_sec,
                 sign, timz / (60*60), timz % (60*60));
     }
-
-    return apr_pstrdup(r->pool, tstr);
 }
 
 static const char *log_request_duration(request_rec *r, char *a)
