@@ -7,12 +7,21 @@
  * 16/02/99 PCS 1.003 Add logging to "install.log" in the installed directory
  */
 
+#define VERSION ( "1.003 " __DATE__ " " __TIME__ )
+
 #include <windows.h>
 #include <winsock.h>
 #include <string.h>
 #include <stdio.h>
 #include <direct.h>
 #include <time.h>
+
+#include "conf.h"
+#include "ap.h"
+
+#ifdef strftime
+#undef strftime
+#endif
 
 /* Global to store the instance handle */
 HINSTANCE hInstance = NULL;
@@ -34,9 +43,9 @@ void LogMessage(char *fmt, ...)
     va_list ap;
     struct tm *tms;
     time_t nowtime;
-    int bufsize = 4000;
     char *bp = buf;
-    int rc;
+    int rv;
+    int free = sizeof(buf);
 
     if (!fpLog) {
 	return;
@@ -44,13 +53,19 @@ void LogMessage(char *fmt, ...)
 
     nowtime = time(NULL);
     tms = localtime(&nowtime);
-    rc = strftime(buf, 4000, "%c", tms);
-    bp += rc;
-    *bp++ = ' ';
+    rv = strftime(bp, free, "%c", tms);
+    bp += rv;
+    free -= rv;
+    if (free) {
+        *bp++ = ' ';
+	free--;
+    }
 
     va_start(ap, fmt);
-    wvsprintf(bp, fmt, ap);
+    rv = ap_vsnprintf(bp, free, fmt, ap);
     va_end(ap);
+
+    free -= rv;
 
     fprintf(fpLog, "%s\n", buf);
 }
@@ -70,9 +85,6 @@ void CloseLog(void)
  * the output string. The output string is given as a printf-format
  * and replacement arguments. The hWnd, title and mb_opt fields are 
  * passed on to the Win32 MessageBox() call.
- *
- * We shouldn't use a fixed length buffer to build up the printf
- * text. Umm.
  */
 
 #define AP_WIN32ERROR 1
@@ -80,31 +92,64 @@ void CloseLog(void)
 int MessageBox_error(HWND hWnd, int opt, char *title, 
 		     int mb_opt, char *fmt, ...)
 {
-    char buf[4000];
+    char buf[1000];
     va_list ap;
+    int free = sizeof(buf);       /* Number of bytes free in the buffer */
+    int rv;
     char *p;
 
     va_start(ap, fmt);
-    wvsprintf(buf, fmt, ap);
+    rv = ap_vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
 
-    if (opt & AP_WIN32ERROR) {
-	char *p;
+    free -= rv;
 
-	strcat(buf, "\r\r(");
-	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
-		      NULL,
-		      GetLastError(),
-		      0,
-		      buf + strlen(buf),
-		      4000 - strlen(buf),
-		      NULL);
-	p = buf+strlen(buf)-1;
-	while (*p == '\r' || *p == '\n')
-	    p--;
-	p++;
-	*p = '\0';
-	strcat(buf, ")");
+    if (opt & AP_WIN32ERROR && free > 3) {
+      /* We checked in the "if" that we have enough space in buf for
+       * at least three extra characters.
+       */
+      p = buf + strlen(buf);
+      *p++ = '\r';
+      *p++ = '\r';
+      *p++ = '(';
+      free -= 3;
+      /* NB: buf is now not null terminated */
+
+      /* Now put the error message straight into buf. This function
+       * takes the free buffer size as the 6th argument.
+       */
+      rv = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
+                         NULL,
+                         GetLastError(),
+                         0,
+                         p,
+                         free,
+                         NULL);
+
+      if (rv == 0) {
+          /* FormatMessage failed, so get rid of the "\r\r(" we just placed
+           * in the buffer, since there is no system error message.
+           */
+          p -= 3;
+          *p = '\0';
+          free += 3;
+      } else {
+          free -= rv;
+          p += rv;
+
+          /* Strip any trailing \r or \n characters to make it look nice on
+           * the screen.
+           */
+          while (*(p-1) == '\r' || *(p-1) == '\n')
+              p--, free++;
+          *p = '\0';
+
+          /* Append a trailing ) */
+          if (free >= 1) {
+              *p++ = ')';
+              *p++ = '\0';
+          }
+      }
     }
 
     for (p = buf; *p; p++) {
@@ -112,7 +157,6 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
 	    *p = ' ';
 	}
     }
-
     LogMessage("MSG %s", buf);
 
     return MessageBox(hWnd, buf, title, mb_opt);
@@ -318,8 +362,8 @@ int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFi
     FILE *infp;
     FILE *outfp;
 
-    sprintf(inFile, "%s\\%s", szInst, szinFile);
-    sprintf(outFile, "%s\\%s", szInst, szoutFile);
+    ap_snprintf(inFile, sizeof(inFile), "%s\\%s", szInst, szinFile);
+    ap_snprintf(outFile, sizeof(outFile), "%s\\%s", szInst, szoutFile);
 
     if (!(infp = fopen(inFile, "r"))) {
 	MessageBox_error(hwnd, 
@@ -540,7 +584,8 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
     int end = 0;
 
     OpenLog(szInst, "install.log");
-    LogMessage("installdll started: src=%s support=%s inst=%s",
+    LogMessage("STARTED %s", VERSION);
+    LogMessage("src=%s support=%s inst=%s",
 		szSrcDir, szSupport, szInst);
 
     FillInReplaceTable(hwnd, replaceHttpd, szInst);
@@ -571,7 +616,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 	case CMD_RM: {
 	    char inFile[MAX_INPUT_LINE];
 
-	    sprintf(inFile, "%s\\%s", szInst, pactionItem->in);
+	    ap_snprintf(inFile, sizeof(inFile), "%s\\%s", szInst, pactionItem->in);
 	    if (unlink(inFile) < 0 && !(pactionItem->options & OPT_SILENT)) {
 		MessageBox_error(hwnd, AP_WIN32ERROR, "Error during configuration",
 		    MB_ICONHAND,
@@ -585,7 +630,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 	case CMD_RMDIR: {
 	    char inFile[MAX_INPUT_LINE];
 
-	    sprintf(inFile, "%s\\%s", szInst, pactionItem->in);
+	    ap_snprintf(inFile, sizeof(inFile), "%s\\%s", szInst, pactionItem->in);
 	    if (rmdir(inFile) < 0) {
 		MessageBox_error(hwnd, AP_WIN32ERROR, "Error during configuration",
 		    MB_ICONHAND,
@@ -607,7 +652,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 	pactionItem++;
     }
 
-    LogMessage("install finished OK");
+    LogMessage("FINISHED OK");
     CloseLog();
 
     return 1;
