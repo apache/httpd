@@ -194,10 +194,11 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
      * entity, and it's value is in the past, it has expired.
      * 
      */
-    cc_cresp = ap_table_get(r->headers_out, "Cache-Control");
-    cc_req = ap_table_get(r->headers_in, "Cache-Control");
-    pragma_cresp = ap_table_get(r->headers_out, "Pragma");  /* TODO: pragma_cresp not being used? */
-    if ((agestr = ap_table_get(r->headers_out, "Age"))) {
+    cc_cresp = apr_table_get(r->headers_out, "Cache-Control");
+    cc_req = apr_table_get(r->headers_in, "Cache-Control");
+    /* TODO: pragma_cresp not being used? */
+    pragma_cresp = apr_table_get(r->headers_out, "Pragma");  
+    if ((agestr = apr_table_get(r->headers_out, "Age"))) {
         age_c = atoi(agestr);
     }
 
@@ -256,15 +257,15 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
         (info->expire != APR_DATE_BAD && age < (info->expire - info->date + maxstale - minfresh))) {
         /* it's fresh darlings... */
         /* set age header on response */
-        ap_table_set(r->headers_out, "Age",
-                     ap_psprintf(r->pool, "%lu", (unsigned long)age));
+        apr_table_set(r->headers_out, "Age",
+                      apr_psprintf(r->pool, "%lu", (unsigned long)age));
 
         /* add warning if maxstale overrode freshness calculation */
         if (!((-1 < smaxage && age < smaxage) ||
               (-1 < maxage && age < maxage) ||
               (info->expire != APR_DATE_BAD && (info->expire - info->date) > age))) {
             /* make sure we don't stomp on a previous warning */
-            ap_table_merge(r->headers_out, "Warning", "110 Response is stale");
+            apr_table_merge(r->headers_out, "Warning", "110 Response is stale");
         }
         return 1;    /* Cache object is fresh */
     }
@@ -291,22 +292,22 @@ CACHE_DECLARE(int) ap_cache_liststr(const char *list, const char *key, char **va
             i = p - list;
             do
             p++;
-            while (ap_isspace(*p));
+            while (apr_isspace(*p));
         }
         else
             i = strlen(list);
 
-        while (i > 0 && ap_isspace(list[i - 1]))
+        while (i > 0 && apr_isspace(list[i - 1]))
             i--;
         if (i == len && strncasecmp(list, key, len) == 0) {
             if (val) {
                 p = strchr((char *) list, ',');
-                while (ap_isspace(*list)) {
+                while (apr_isspace(*list)) {
                     list++;
                 }
                 if ('=' == list[0])
                     list++;
-                while (ap_isspace(*list)) {
+                while (apr_isspace(*list)) {
                     list++;
                 }
                 strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));

@@ -209,15 +209,15 @@ int cache_select_url(request_rec *r, const char *types, char *url)
              * 
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
-            vary = ap_pstrdup(r->pool, ap_table_get(r->headers_out, "Vary"));
+            vary = apr_pstrdup(r->pool, apr_table_get(r->headers_out, "Vary"));
             while (vary && *vary) {
                 char *name = vary;
                 const char *h1, *h2;
 
                 /* isolate header name */
-                while (*vary && !ap_isspace(*vary) && (*vary != ','))
+                while (*vary && !apr_isspace(*vary) && (*vary != ','))
                     ++vary;
-                while (*vary && (ap_isspace(*vary) || (*vary == ','))) {
+                while (*vary && (apr_isspace(*vary) || (*vary == ','))) {
                     *vary = '\0';
                     ++vary;
                 }
@@ -226,8 +226,8 @@ int cache_select_url(request_rec *r, const char *types, char *url)
                  * is this header in the request and the header in the cached
                  * request identical? If not, we give up and do a straight get
                  */
-                h1 = ap_table_get(r->headers_in, name);
-                h2 = ap_table_get(h->req_hdrs, name);
+                h1 = apr_table_get(r->headers_in, name);
+                h2 = apr_table_get(h->req_hdrs, name);
                 if (h1 == h2) {
                     /* both headers NULL, so a match - do nothing */
                 }

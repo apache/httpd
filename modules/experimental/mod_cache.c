@@ -124,7 +124,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
                                                        &cache_module);
     if (!cache) {
-        cache = ap_pcalloc(r->pool, sizeof(cache_request_rec));
+        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
@@ -400,7 +400,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     int rv;
     request_rec *r = f->r;
     char *url = r->unparsed_uri;
-    const char *cc_out = ap_table_get(r->headers_out, "Cache-Control");
+    const char *cc_out = apr_table_get(r->headers_out, "Cache-Control");
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_size_t size;
@@ -427,7 +427,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * other than the cache handler
      */
     if (!cache) {
-        cache = ap_pcalloc(r->pool, sizeof(cache_request_rec));
+        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
@@ -459,12 +459,12 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * and decides whether this URL should be cached at all. This section is
      * run before the above section.
      */
-    info = ap_pcalloc(r->pool, sizeof(cache_info));
+    info = apr_pcalloc(r->pool, sizeof(cache_info));
 
     /* read expiry date; if a bad date, then leave it so the client can
      * read it 
      */
-    exps = ap_table_get(r->headers_out, "Expires");
+    exps = apr_table_get(r->headers_out, "Expires");
     if (exps != NULL) {
         if (APR_DATE_BAD == (exp = apr_date_parse_http(exps))) {
             exps = NULL;
@@ -475,7 +475,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     /* read the last-modified date; if the date is bad, then delete it */
-    lastmods = ap_table_get(r->headers_out, "Last-Modified");
+    lastmods = apr_table_get(r->headers_out, "Last-Modified");
     if (lastmods != NULL) {
         if (APR_DATE_BAD == (lastmod = apr_date_parse_http(lastmods))) {
             lastmods = NULL;
@@ -486,7 +486,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     /* read the etag from the entity */
-    etag = ap_table_get(r->headers_out, "Etag");
+    etag = apr_table_get(r->headers_out, "Etag");
 
     /*
      * what responses should we not cache?
@@ -539,7 +539,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * 2) If Cache-Control: must-revalidate is included
      * 3) If Cache-Control: public is included
      */
-        (ap_table_get(r->headers_in, "Authorization") != NULL &&
+        (apr_table_get(r->headers_in, "Authorization") != NULL &&
          !(ap_cache_liststr(cc_out, "s-maxage", NULL) || 
            ap_cache_liststr(cc_out, "must-revalidate", NULL) || 
            ap_cache_liststr(cc_out, "public", NULL))
@@ -658,7 +658,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
 
     /* Read the date. Generate one if one is not supplied */
-    dates = ap_table_get(r->headers_out, "Date");
+    dates = apr_table_get(r->headers_out, "Date");
     if (dates != NULL)
         info->date = apr_date_parse_http(dates);
     else
@@ -674,7 +674,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         date = now;
         dates = apr_pcalloc(r->pool, MAX_STRING_LEN);
         apr_rfc822_date(dates, now);
-        ap_table_set(r->headers_out, "Date", dates);
+        apr_table_set(r->headers_out, "Date", dates);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache: Added date header");
         info->date = date;
@@ -743,15 +743,15 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
-    cache_server_conf *ps = ap_pcalloc(p, sizeof(cache_server_conf));
+    cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
 
     /* 1 if the cache is enabled, 0 otherwise */
     ps->cacheon = 0;
     ps->cacheon_set = 0;
     /* array of URL prefixes for which caching is enabled */
-    ps->cacheenable = ap_make_array(p, 10, sizeof(struct cache_enable));
+    ps->cacheenable = apr_array_make(p, 10, sizeof(struct cache_enable));
     /* array of URL prefixes for which caching is disabled */
-    ps->cachedisable = ap_make_array(p, 10, sizeof(struct cache_disable));
+    ps->cachedisable = apr_array_make(p, 10, sizeof(struct cache_disable));
     /* maximum time to cache a document */
     ps->maxex = DEFAULT_CACHE_MAXEXPIRE;
     ps->maxex_set = 0;
@@ -773,7 +773,7 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
 
 static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    cache_server_conf *ps = ap_pcalloc(p, sizeof(cache_server_conf));
+    cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
     cache_server_conf *base = (cache_server_conf *) basev;
     cache_server_conf *overrides = (cache_server_conf *) overridesv;
 
@@ -781,11 +781,11 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->cacheon = 
         (overrides->cacheon_set == 0) ? base->cacheon : overrides->cacheon;
     /* array of URL prefixes for which caching is disabled */
-    ps->cachedisable = ap_append_arrays(p, 
+    ps->cachedisable = apr_array_append(p, 
                                         base->cachedisable, 
                                         overrides->cachedisable);
     /* array of URL prefixes for which caching is enabled */
-    ps->cacheenable = ap_append_arrays(p, 
+    ps->cacheenable = apr_array_append(p, 
                                        base->cacheenable, 
                                        overrides->cacheenable);
     /* maximum time to cache a document */
