@@ -983,7 +983,7 @@ static int read_request_line(request_rec *r)
     const char *uri;
     conn_rec *conn = r->connection;
     unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    int len, n;
+    int len, n = 0;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
