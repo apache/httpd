@@ -90,6 +90,7 @@
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_hash.h"
 #include "apr_user.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
@@ -179,6 +180,9 @@
 
     /* the module (predeclaration) */
 module AP_MODULE_DECLARE_DATA rewrite_module;
+
+    /* rewritemap int: handler function registry */
+static apr_hash_t *mapfunc_hash;
 
     /* the cache */
 static cache *cachep;
@@ -458,19 +462,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_INT;
         newmap->datafile  = NULL;
         newmap->checkfile = NULL;
-        if (strcmp(a2+4, "tolower") == 0) {
-            newmap->func = rewrite_mapfunc_tolower;
-        }
-        else if (strcmp(a2+4, "toupper") == 0) {
-            newmap->func = rewrite_mapfunc_toupper;
-        }
-        else if (strcmp(a2+4, "escape") == 0) {
-            newmap->func = rewrite_mapfunc_escape;
-        }
-        else if (strcmp(a2+4, "unescape") == 0) {
-            newmap->func = rewrite_mapfunc_unescape;
-        }
-        else if (sconf->state == ENGINE_ENABLED) {
+        newmap->func      = apr_hash_get(mapfunc_hash, a2+4, strlen(a2+4));
+        if ((sconf->state == ENGINE_ENABLED) && (newmap->func == NULL)) {
             return apr_pstrcat(cmd->pool, "RewriteMap: internal map not found:",
                               a2+4, NULL);
         }
@@ -921,15 +914,31 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
 /*
 **
 **  Global Module Initialization
-**  [called from read_config() after all
-**  config commands were already called]
 **
 */
 
-static int init_module(apr_pool_t *p,
-                        apr_pool_t *plog,
-                        apr_pool_t *ptemp,
-                        server_rec *s)
+static int pre_config(apr_pool_t *pconf,
+                      apr_pool_t *plog,
+                      apr_pool_t *ptemp)
+{
+    APR_OPTIONAL_FN_TYPE(ap_register_rewrite_mapfunc) *map_pfn_register;
+
+    /* register int: rewritemap handlers */
+    mapfunc_hash = apr_hash_make(pconf);
+    map_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_rewrite_mapfunc);
+    if (map_pfn_register) {
+        map_pfn_register("tolower", rewrite_mapfunc_tolower);
+        map_pfn_register("toupper", rewrite_mapfunc_toupper);
+        map_pfn_register("escape", rewrite_mapfunc_escape);
+        map_pfn_register("unescape", rewrite_mapfunc_unescape);
+    }
+    return OK;
+}
+
+static int post_config(apr_pool_t *p,
+                       apr_pool_t *plog,
+                       apr_pool_t *ptemp,
+                       server_rec *s)
 {
     apr_status_t rv;
     void *data;
@@ -2781,7 +2790,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_INT) {
-                if ((value = lookup_map_internal(r, s->func, key)) != NULL) {
+                if ((value = s->func(r, key)) != NULL) {
                     rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s",
                                s->name, key, value);
                     return value;
@@ -2982,13 +2991,9 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     }
 }
 
-static char *lookup_map_internal(request_rec *r,
-                                 char *(*func)(request_rec *, char *),
-                                 char *key)
+static void ap_register_rewrite_mapfunc(char *name, rewrite_mapfunc_t *func)
 {
-    /* currently we just let the function convert
-       the key to a corresponding value */
-    return func(r, key);
+    apr_hash_set(mapfunc_hash, name, strlen(name), (const void *)func);
 }
 
 static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
@@ -4187,8 +4192,11 @@ static const command_rec command_table[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(ap_register_rewrite_mapfunc);
+
     ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_config(init_module, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(init_child, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_fixups(hook_fixup, NULL, NULL, APR_HOOK_FIRST);

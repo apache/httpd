@@ -115,6 +115,7 @@
 #if APR_HAS_THREADS
 #include "apr_thread_mutex.h"
 #endif
+#include "apr_optional.h"
 #include "ap_config.h"
 
     /* Include from the Apache server ... */
@@ -384,10 +385,13 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg
                                            char *key, char *val);
 
     /* initialisation */
-static int init_module(apr_pool_t *p,
-                        apr_pool_t *plog,
-                        apr_pool_t *ptemp,
-                        server_rec *s);
+static int pre_config(apr_pool_t *pconf,
+                      apr_pool_t *plog,
+                      apr_pool_t *ptemp);
+static int post_config(apr_pool_t *pconf,
+                       apr_pool_t *plog,
+                       apr_pool_t *ptemp,
+                       server_rec *s);
 static void init_child(apr_pool_t *p, server_rec *s);
 
     /* runtime hooks */
@@ -425,13 +429,17 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key);
 #endif
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key);
-static char *lookup_map_internal(request_rec *r,
-                                 char *(*func)(request_rec *r, char *key),
-                                 char *key);
+
+typedef char *(rewrite_mapfunc_t)(request_rec *r, char *key);
+static void ap_register_rewrite_mapfunc(char *name, rewrite_mapfunc_t *func);
+APR_DECLARE_OPTIONAL_FN(void, ap_register_rewrite_mapfunc,
+                        (char *name, rewrite_mapfunc_t *func));
+
 static char *rewrite_mapfunc_toupper(request_rec *r, char *key);
 static char *rewrite_mapfunc_tolower(request_rec *r, char *key);
 static char *rewrite_mapfunc_escape(request_rec *r, char *key);
 static char *rewrite_mapfunc_unescape(request_rec *r, char *key);
+
 static char *select_random_value_part(request_rec *r, char *value);
 static void  rewrite_rand_init(void);
 static int   rewrite_rand(int l, int h);
