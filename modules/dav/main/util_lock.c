@@ -460,6 +460,7 @@ static dav_error * dav_get_direct_resource(apr_pool_t *p,
     while (resource != NULL) {
 	dav_error *err;
 	dav_lock *lock;
+        dav_resource *parent;
 
 	/*
 	** Find the lock specified by <locktoken> on <resource>. If it is
@@ -488,7 +489,12 @@ static dav_error * dav_get_direct_resource(apr_pool_t *p,
 	}
 
 	/* the lock was indirect. move up a level in the URL namespace */
-	resource = (*resource->hooks->get_parent_resource)(resource);
+	if ((err = (*resource->hooks->get_parent_resource)(resource,
+                                                           &parent)) != NULL) {
+            /* ### add a higher-level desc? */
+            return err;
+        }
+        resource = parent;
     }
 
     return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -625,14 +631,20 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
     dav_response *multi_status;
 
     if (use_parent) {
-	which_resource = (*repos_hooks->get_parent_resource)(resource);
-	if (which_resource == NULL) {
+        dav_resource *parent;
+	if ((err = (*repos_hooks->get_parent_resource)(resource,
+                                                       &parent)) != NULL) {
+            /* ### add a higher-level desc? */
+            return err;
+        }
+	if (parent == NULL) {
 	    /* ### map result to something nice; log an error */
 	    return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not fetch parent resource. Unable to "
 				 "inherit locks from the parent and apply "
 				 "them to this resource.");
 	}
+        which_resource = parent;
     }
     else {
 	which_resource = resource;

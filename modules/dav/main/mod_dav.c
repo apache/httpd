@@ -618,39 +618,54 @@ static int dav_get_overwrite(request_rec *r)
  * by either a DAV:version or DAV:label-name element (passed as
  * the target argument), or any Target-Selector header in the request.
  */
-static int dav_get_resource(request_rec *r, int target_allowed,
-                            ap_xml_elem *target, dav_resource **res_p)
+static dav_error * dav_get_resource(request_rec *r, int target_allowed,
+                                    ap_xml_elem *target, dav_resource **res_p)
 {
     void *data;
     dav_dir_conf *conf;
     const char *target_selector = NULL;
     int is_label = 0;
     int result;
+    dav_error *err;
 
-    /* go look for the resource if it isn't already present */
+    /* only look for the resource if it isn't already present */
     (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
     if (data != NULL) {
         *res_p = data;
-        return OK;
+        return NULL;
     }
 
     /* if the request target can be overridden, get any target selector */
     if (target_allowed) {
+        /* ### this should return a dav_error* */
         if ((result = dav_get_target_selector(r, target,
                                               &target_selector,
                                               &is_label)) != OK)
-	    return result;
+            return dav_new_error(r->pool, result, 0,
+                                 "Could not process the method target.");
     }
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
     /* assert: conf->provider != NULL */
 
     /* resolve the resource */
-    *res_p = (*conf->provider->repos->get_resource)(r, conf->dir,
-                                                    target_selector, is_label);
+    err = (*conf->provider->repos->get_resource)(r, conf->dir,
+                                                 target_selector, is_label,
+                                                 res_p);
+    if (err != NULL) {
+        err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                             "Could not fetch resource information.", err);
+        return err;
+    }
+
+    /* Note: this shouldn't happen, but just be sure... */
     if (*res_p == NULL) {
-        /* Apache will supply a default error for this. */
-        return HTTP_NOT_FOUND;
+        /* ### maybe use HTTP_INTERNAL_SERVER_ERROR */
+        return dav_new_error(r->pool, HTTP_NOT_FOUND, 0,
+                             apr_psprintf(r->pool,
+                                          "The provider did not define a "
+                                          "resource for %s.",
+                                          ap_escape_html(r->pool, r->uri)));
     }
 
     (void) apr_set_userdata(*res_p, DAV_KEY_RESOURCE, apr_null_cleanup,
@@ -661,7 +676,7 @@ static int dav_get_resource(request_rec *r, int target_allowed,
      * add it now */
     dav_add_vary_header(r, r, *res_p);
 
-    return OK;
+    return NULL;
 }
 
 static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
@@ -715,14 +730,15 @@ static int dav_method_get(request_rec *r)
 {
     dav_resource *resource;
     int result;
+    dav_error *err;
 
     /* This method should only be called when the resource is not
      * visible to Apache. We will fetch the resource from the repository,
      * then create a subrequest for Apache to handle.
      */
-    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -912,13 +928,11 @@ static int dav_method_post(request_rec *r)
 {
     dav_resource *resource;
     dav_error *err;
-    int result;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK) {
-        return result;
-    }
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* Note: depth == 0. Implies no need for a multistatus response. */
     if ((err = dav_validate_request(r, resource, 0, NULL, NULL,
@@ -953,10 +967,9 @@ static int dav_method_put(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK) {
-        return result;
-    }
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* If not a file or collection resource, PUT not allowed */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
@@ -1168,9 +1181,9 @@ static int dav_method_delete(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
 	return HTTP_NOT_FOUND;
@@ -1522,11 +1535,12 @@ static int dav_method_options(request_rec *r)
     apr_array_header_t *uri_ary;
     ap_xml_doc *doc;
     const ap_xml_elem *elem;
+    dav_error *err;
 
     /* resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* parse any request body */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
@@ -1872,9 +1886,9 @@ static int dav_method_propfind(request_rec *r)
     dav_response *multi_status;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     if (dav_get_resource_state(r, resource) == DAV_RESOURCE_NULL) {
 	/* Apache will supply a default error for this. */
@@ -2136,9 +2150,9 @@ static int dav_method_proppatch(request_rec *r)
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
 	/* Apache will supply a default error for this. */
 	return HTTP_NOT_FOUND;
@@ -2336,9 +2350,9 @@ static int dav_method_mkcol(request_rec *r)
 						 &dav_module);
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     if (resource->exists) {
 	/* oops. something was already there! */
@@ -2455,9 +2469,9 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int resource_state;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, !is_move /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, !is_move /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
 	/* Apache will supply a default error for this. */
 	return HTTP_NOT_FOUND;
@@ -2509,9 +2523,9 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* Resolve destination resource */
-    result = dav_get_resource(lookup.rnew, 0 /*target_allowed*/, NULL, &resnew);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(lookup.rnew, 0 /*target_allowed*/, NULL, &resnew);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != resnew->hooks) {
@@ -2838,9 +2852,9 @@ static int dav_method_lock(request_rec *r)
      * so allow it, and let provider reject the lock attempt
      * on a version if it wants to.
      */
-    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /*
     ** Open writable. Unless an error occurs, we'll be
@@ -3025,9 +3039,9 @@ static int dav_method_unlock(request_rec *r)
      * so allow it, and let provider reject the unlock attempt
      * on a version if it wants to.
      */
-    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     resource_state = dav_get_resource_state(r, resource);
 
@@ -3083,9 +3097,9 @@ static int dav_method_vsn_control(request_rec *r)
         return DECLINED;
 
     /* ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* remember the pre-creation resource state */
     resource_state = dav_get_resource_state(r, resource);
@@ -3284,9 +3298,9 @@ static int dav_method_checkout(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 1 /*target_allowed*/, target, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, target, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3349,9 +3363,9 @@ static int dav_method_uncheckout(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3412,9 +3426,9 @@ static int dav_method_checkin(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /* target_allowed */, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /* target_allowed */, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3518,9 +3532,9 @@ static int dav_method_set_target(request_rec *r)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3700,9 +3714,9 @@ static int dav_method_label(request_rec *r)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3835,9 +3849,9 @@ static int dav_method_report(request_rec *r)
      * for this report.
      */
     target_allowed = (*vsn_hooks->report_target_selector_allowed)(doc);
-    result = dav_get_resource(r, target_allowed, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, target_allowed, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3882,9 +3896,9 @@ static int dav_method_make_workspace(request_rec *r)
         return DECLINED;
 
     /* ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* parse the request body (must be a mkworkspace element) */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
@@ -3961,16 +3975,15 @@ static int dav_method_bind(request_rec *r)
     dav_response *multi_response = NULL;
     dav_lookup_result lookup;
     int overwrite;
-    int result;
 
     /* If no bindings provider, decline the request */
     if (binding_hooks == NULL)
         return DECLINED;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, 0 /*!target_allowed*/, NULL, &resource);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(r, 0 /*!target_allowed*/, NULL, &resource);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
     if (!resource->exists) {
 	/* Apache will supply a default error for this. */
 	return HTTP_NOT_FOUND;
@@ -4015,9 +4028,9 @@ static int dav_method_bind(request_rec *r)
     }
 
     /* resolve binding resource */
-    result = dav_get_resource(lookup.rnew, 0 /*!target_allowed*/, NULL, &binding);
-    if (result != OK)
-        return result;
+    err = dav_get_resource(lookup.rnew, 0 /*!target_allowed*/, NULL, &binding);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != binding->hooks) {

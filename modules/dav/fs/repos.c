@@ -591,11 +591,12 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 ** REPOSITORY HOOK FUNCTIONS
 */
 
-static dav_resource * dav_fs_get_resource(
+static dav_error * dav_fs_get_resource(
     request_rec *r,
     const char *root_dir,
     const char *target,
-    int is_label)
+    int is_label,
+    dav_resource **result_resource)
 {
     dav_resource_private *ctx;
     dav_resource *resource;
@@ -679,7 +680,10 @@ static dav_resource * dav_fs_get_resource(
 		** be in path_info. The resource is simply an error: it
 		** can't be a null or a locknull resource.
 		*/
-		return NULL;	/* becomes HTTP_NOT_FOUND */
+                return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                     "The URL contains extraneous path "
+                                     "components. The resource could not "
+                                     "be identified.");
 	    }
 
 	    /* retain proper integrity across the structures */
@@ -689,10 +693,12 @@ static dav_resource * dav_fs_get_resource(
 	}
     }
 
-    return resource;
+    *result_resource = resource;
+    return NULL;
 }
 
-static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
+static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
+                                              dav_resource **result_parent)
 {
     dav_resource_private *ctx = resource->info;
     dav_resource_private *parent_ctx;
@@ -706,8 +712,10 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
 #else
         strcmp(ctx->pathname, "/") == 0
 #endif
-	)
+	) {
+        *result_parent = NULL;
         return NULL;
+    }
 
     /* ### optimize this into a single allocation! */
 
@@ -740,7 +748,8 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
         parent_resource->exists = 1;
     }
 
-    return parent_resource;
+    *result_parent = parent_resource;
+    return NULL;
 }
 
 static int dav_fs_is_same_resource(

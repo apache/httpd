@@ -1566,32 +1566,41 @@ struct dav_hooks_repository
      */
     int handle_get;
 
-    /* Get a resource descriptor for the URI in a request.
-     * A descriptor is returned even if the resource does not exist.
-     * The return value should only be NULL for some kind of fatal error.
+    /* Get a resource descriptor for the URI in a request. A descriptor
+     * should always be returned even if the resource does not exist. This
+     * repository has been identified as handling the resource given by
+     * the URI, so an answer must be given. If there is a problem with the
+     * URI or accessing the resource or whatever, then an error should be
+     * returned.
      *
-     * The root_dir is the root of the directory for which this repository
-     * is configured.
-     * The target is either a label, or a version URI, or NULL. If there
-     * is a target, then is_label specifies whether the target is a label
-     * or a URI.
+     * root_dir: the root of the directory for which this repository is
+     *           configured.
+     * target: is either a label, or a version URI, or NULL. If there is
+     *         a target, then is_label specifies whether the target is a
+     *         label or a URI.
      *
-     * The provider may associate the request storage pool with the resource,
-     * to use in other operations on that resource.
+     * The provider may associate the request storage pool with the resource
+     * (in the resource->pool field), to use in other operations on that
+     * resource. 
      */
-    dav_resource * (*get_resource)(
+    dav_error * (*get_resource)(
         request_rec *r,
         const char *root_dir,
 	const char *target,
-        int is_label
+        int is_label,
+        dav_resource **resource
     );
 
     /* Get a resource descriptor for the parent of the given resource.
      * The resources need not exist.  NULL is returned if the resource 
      * is the root collection.
+     *
+     * An error should be returned only if there is a fatal error in
+     * fetching information about the parent resource.
      */
-    dav_resource * (*get_parent_resource)(
-        const dav_resource *resource
+    dav_error * (*get_parent_resource)(
+        const dav_resource *resource,
+        dav_resource **parent_resource
     );
 
     /* Determine whether two resource descriptors refer to the same resource.
