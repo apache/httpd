@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Fix problem matching Configure guessos on HP-UX 10.
+     [Victor J. Orlikowski]  PR#6015
+
   *) Correct the problem where the only local host name that the IP stack
      can discover are 'undotted' private names.  If no fully qualified
      domain name can be identified, the default ServerName will be set to
