@@ -1492,13 +1492,23 @@ static request_rec *make_sub_request(const request_rec *r,
 
     /* start with the same set of output filters */
     if (next_filter) {
+        /* no input filters for a subrequest */
         rnew->output_filters = next_filter;
+        ap_add_output_filter_handle(ap_subreq_core_filter_handle,
+                                    NULL, rnew, rnew->connection); 
     }
     else {
-        rnew->output_filters = r->output_filters;
+        /* If NULL - we are expecting to be internal_fast_redirect'ed
+         * to this subrequest - or this request will never be invoked.
+         * Ignore the original request filter stack entirely, and
+         * drill the input and output stacks back to the connection.
+         */
+        rnew->proto_input_filters = r->proto_input_filters;
+        rnew->proto_output_filters = r->proto_output_filters;
+
+        rnew->input_filters = r->proto_input_filters;
+        rnew->output_filters = r->proto_output_filters;
     }
-    ap_add_output_filter_handle(ap_subreq_core_filter_handle,
-                                NULL, rnew, rnew->connection); 
 
     /* no input filters for a subrequest */
 

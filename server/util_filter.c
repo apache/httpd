@@ -294,7 +294,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
 static ap_filter_t *add_any_filter(const char *name, void *ctx, 
                                    request_rec *r, conn_rec *c, 
                                    const filter_trie_node *reg_filter_set,
-                                   ap_filter_t **r_filters,
+                                   ap_filter_t **r_filters, 
+                                   ap_filter_t **p_filters,
                                    ap_filter_t **c_filters)
 {
     if (reg_filter_set) {
@@ -329,7 +330,7 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         if (node && node->frec) {
             apr_pool_t* p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_palloc(p, sizeof(*f));
-            ap_filter_t **outf = r ? r_filters : c_filters;
+            ap_filter_t **outf = r ? (r_filters ? r_filters : p_filters) : c_filters;
 
             f->frec = node->frec;
             f->ctx = ctx;
@@ -360,11 +361,12 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 
                                           request_rec *r, conn_rec *c, 
                                           ap_filter_t **r_filters,
+                                          ap_filter_t **p_filters,
                                           ap_filter_t **c_filters)
 {
     apr_pool_t* p = r ? r->pool : c->pool;
     ap_filter_t *f = apr_palloc(p, sizeof(*f));
-    ap_filter_t **outf = r ? r_filters : c_filters;
+    ap_filter_t **outf = r ? (r_filters ? r_filters : p_filters) : c_filters;
 
     f->frec = frec;
     f->ctx = ctx;
@@ -390,7 +392,8 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
                                               request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_input_filters,
-                          r ? &r->input_filters : NULL, &c->input_filters);
+                          r ? &r->input_filters : NULL, 
+                          r ? &r->proto_input_filters : NULL, &c->input_filters);
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_input_filter_handle(ap_filter_rec_t *f,
@@ -399,6 +402,7 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter_handle(ap_filter_rec_t *f,
                                                      conn_rec *c)
 {
     return add_any_filter_handle(f, ctx, r, c, r ? &r->input_filters : NULL,
+                                 r ? &r->proto_input_filters : NULL, 
                                  &c->input_filters);
 }
 
@@ -406,7 +410,8 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
                                                request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_output_filters,
-                          r ? &r->output_filters : NULL, &c->output_filters);
+                          r ? &r->output_filters : NULL, 
+                          r ? &r->proto_output_filters : NULL, &c->output_filters);
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
@@ -415,6 +420,7 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                                       conn_rec *c)
 {
     return add_any_filter_handle(f, ctx, r, c, r ? &r->output_filters : NULL,
+                                 r ? &r->proto_output_filters : NULL,
                                  &c->output_filters);
 }
 
