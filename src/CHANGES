@@ -3,11 +3,6 @@ Changes with Apache 1.3.4
   *) Change the ap_assert macro to a variant that works on all platforms.
      [Richard Prinz <richard.prinz@cso.net>] PR#2575
 
-  *) In order to prevent some errant library code from setting an alarm
-     on one request and having it affect some later connection, force the
-     alarm to be cleared before each connection even if Apache's own
-     timeouts are being handled by the parent. [Roy Fielding]
-
   *) Make sure under ELF-based NetBSD (now) and OpenBSD (future) we don't
      search for an underscore on dlsym() (as it's already the case
      for FreeBSD 3.0). [Todd Vierling <tv@pobox.com>] PR#2462
