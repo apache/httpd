@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.8 (outdated: 1.11) -->
+<!-- English Revision: 1.11 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -124,10 +124,19 @@
     することができます。</p>
 
     <example>
-      &lt;Directory /home/*/cgi-bin/&gt;<br />
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
        Options ExecCGI<br />
        SetHandler cgi-script<br />
        &lt;/Directory&gt;
+    </example>
+
+    <p>そして、<code>UserDir</code> が
+    <code>public_html</code> に設定されていると仮定すると、
+    そのディレクトリの CGI プログラム <code>example.cgi</code>
+    は以下の様に呼び出されることができます:</p>
+
+    <example>
+    http://example.com/~rbowen/cgi-bin/example.cgi
     </example>
 
     </section>
