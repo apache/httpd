@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/19 03:43:15 $]
+Last modified at [$Date: 2000/12/20 06:17:52 $]
 
 Release:
 
@@ -69,11 +69,6 @@ RELEASE SHOWSTOPPERS:
       top-level SUBDIRS list, but definitely get it cleaned for the
       dev guys.  (Greg volunteers)
 
-    * The installed layout needs to be fixed.  This means that the header
-      files need to be installed in the correct location.  Expect a message 
-      in a few minutes with my opinion for how this should look.
-	Status: rbb volunteers
-
     * The instructions for rolling a release need to be updated for
       2.0.
 	Status: rbb volunteers
@@ -81,9 +76,6 @@ RELEASE SHOWSTOPPERS:
     * binbuild.sh may need to be updated.  I haven't looked into this, but I
       would be surprised if it works.
 	Status: rbb volunteers
-
-    * Apache.org needs to start running Apache 2.0 if at all possible.
-
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
