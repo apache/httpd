@@ -951,17 +951,18 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
 #if !defined(TPF) && !defined(BEOS)
     if (conf->recv_buffer_size > 0
-        && (rv = apr_setsocketopt(sock, APR_SO_RCVBUF,
-                                  conf->recv_buffer_size))) {
+        && (rv = apr_socket_opt_set(sock, APR_SO_RCVBUF,
+                                    conf->recv_buffer_size))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+                      "apr_socket_opt_set(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
     }
 #endif
 
-    if (APR_SUCCESS != (rv = apr_setsocketopt(sock, APR_SO_REUSEADDR, one))) {
+    if ((rv = apr_socket_opt_set(sock, APR_SO_REUSEADDR, one)) 
+            != APR_SUCCESS) {
 #ifndef _OSD_POSIX              /* BS2000 has this option "always on" */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "proxy: FTP: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
+                      "proxy: FTP: error setting reuseaddr option: apr_socket_opt_set(SO_REUSEADDR)");
         return HTTP_INTERNAL_SERVER_ERROR;
 #endif                          /* _OSD_POSIX */
     }
@@ -1288,10 +1289,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(data_sock, APR_SO_RCVBUF,
-                                                 conf->recv_buffer_size))) {
+                if (conf->recv_buffer_size > 0 
+                        && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
+                                                    conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+                                  "proxy: FTP: apr_socket_opt_set(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
                 }
 #endif
 
@@ -1374,10 +1376,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(data_sock, APR_SO_RCVBUF,
-                                                 conf->recv_buffer_size))) {
+                if (conf->recv_buffer_size > 0 
+                        && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
+                                                    conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "proxy: FTP: setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
+                                  "proxy: FTP: apr_socket_opt_set(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
                 }
 #endif
 
@@ -1418,7 +1421,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         apr_sockaddr_port_get(&local_port, local_addr);
         apr_sockaddr_ip_get(&local_ip, local_addr);
 
-        if ((rv = apr_setsocketopt(local_sock, APR_SO_REUSEADDR, one)) != APR_SUCCESS) {
+        if ((rv = apr_socket_opt_set(local_sock, APR_SO_REUSEADDR, one)) 
+                != APR_SUCCESS) {
 #ifndef _OSD_POSIX              /* BS2000 has this option "always on" */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "proxy: FTP: error setting reuseaddr option");

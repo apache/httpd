@@ -1958,7 +1958,7 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 
 #if APR_O_NONBLOCK_INHERITED
     for(lr = ap_listeners ; lr != NULL ; lr = lr->next) {
-        apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
+        apr_socket_opt_set(lr->sd, APR_SO_NONBLOCK, 1);
     }
 #endif /* APR_O_NONBLOCK_INHERITED */
 

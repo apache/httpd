@@ -465,7 +465,7 @@ void worker_main(void *arg)
             /* If we got a new socket, set it to non-blocking mode and process
                 it.  Otherwise handle the error. */
             if (stat == APR_SUCCESS) {
-                apr_setsocketopt(csd, APR_SO_NONBLOCK, 0);
+                apr_socket_opt_set(csd, APR_SO_NONBLOCK, 0);
 #ifdef DBINFO_ON
                 if (wouldblock_retry < MAX_WB_RETRIES) {
                     retry_success++;
@@ -851,7 +851,7 @@ static int setup_listeners(server_rec *s)
         }
         /* Use non-blocking listen sockets so that we
            never get hung up. */
-        apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
+        apr_socket_opt_set(lr->sd, APR_SO_NONBLOCK, 1);
     }
     return 0;
 }
