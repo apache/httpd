@@ -1084,7 +1084,7 @@ fi
 ##  UID/GID as production oriented as a web server in NIS anyway.
 ##
 conf_user="nobody"
-conf_group="#-1"
+conf_group="\\\\#-1"
 conf_port="80"
 conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
