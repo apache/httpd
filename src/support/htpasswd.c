@@ -247,7 +247,8 @@ static int mkrecord(char *user, char *record, size_t rlen, int alg)
 
     switch (alg) {
     case ALG_APMD5:
-	ap_MD5Encode(pw, salt, cpw, sizeof(cpw));
+	ap_MD5Encode((const unsigned char *)pw, (const unsigned char *)salt,
+		     cpw, sizeof(cpw));
 	break;
     case ALG_CRYPT:
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);

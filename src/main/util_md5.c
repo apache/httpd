@@ -100,7 +100,7 @@ API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
      */
 
     ap_MD5Init(&my_md5);
-    ap_MD5Update(&my_md5, buf, length);
+    ap_MD5Update(&my_md5, buf, (unsigned int)length);
     ap_MD5Final(hash, &my_md5);
 
     for (i = 0, r = result; i < 16; i++) {
@@ -114,7 +114,7 @@ API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
 
 API_EXPORT(char *) ap_md5(pool *p, const unsigned char *string)
 {
-    return ap_md5_binary(p, string, strlen(string));
+    return ap_md5_binary(p, string, (int) strlen((char *)string));
 }
 
 /* these portions extracted from mpack, John G. Myers - jgm+@cmu.edu */
@@ -192,7 +192,7 @@ API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
     AP_MD5_CTX context;
     unsigned char buf[1000];
     long length = 0;
-    int nbytes;
+    unsigned int nbytes;
 
     ap_MD5Init(&context);
     while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {

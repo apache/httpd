@@ -3101,7 +3101,7 @@ static int default_handler(request_rec *r)
 	    AP_MD5_CTX context;
 	    
 	    ap_MD5Init(&context);
-	    ap_MD5Update(&context, (void *)mm, r->finfo.st_size);
+	    ap_MD5Update(&context, (void *)mm, (unsigned int)r->finfo.st_size);
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5contextTo64(r->pool, &context));
 	}
