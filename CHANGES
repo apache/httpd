@@ -1,5 +1,9 @@
 Changes with Apache 2.0.36
 
+  *) Fix parsing of some AP_DECLARE_DATA declarations so that the filter
+     handle declarations are recognized.  This fixes problems loading 
+     mod_autoindex on some platforms.  [Brian Havard]
+
   *) add optional fixup hook to proxy [Daniel Lopez <daniel@covalent.net>]
 
   *) Remind the admin about the User and Group directives when we are
