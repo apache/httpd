@@ -461,11 +461,14 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                  &c->output_filters);
 }
 
-static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, 
+static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t **p_filt,
                               ap_filter_t **c_filt)
 {
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
+
+    if (*p_filt == f)
+        *p_filt = (*p_filt)->next;
 
     if (*curr == f) {
         *curr = (*curr)->next;
@@ -486,12 +489,14 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
 {
     remove_any_filter(f, f->r ? &f->r->input_filters : NULL, 
+                      f->r ? &f->r->proto_input_filters : NULL, 
                       &f->c->input_filters);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
     remove_any_filter(f, f->r ? &f->r->output_filters : NULL, 
+                      f->r ? &f->r->proto_output_filters : NULL, 
                       &f->c->output_filters);
 }
 
