@@ -141,28 +141,25 @@
        [INCLUDES=...]  [LDFLAGS_SHLIB_EXPORT=...] 
        [LDFLAGS=...]   [RANLIB=...]  
        [LIBS=...]      [DEPS=...]
-       ./configure [--quiet]   [--prefix=DIR]         [--enable-rule=NAME]    
-                   [--verbose] [--exec-prefix=PREFIX] [--disable-rule=NAME]   
-                   [--shadow]  [--bindir=EPREFIX]     [--add-module=FILE]     
-                   [--help]    [--sbindir=DIR]        [--activate-module=FILE]
-                               [--libexecdir=DIR]     [--enable-module=NAME]  
-                               [--mandir=DIR]         [--disable-module=NAME] 
-                               [--sysconfdir=DIR]     [--enable-shared=NAME]  
-                               [--datadir=DIR]        [--disable-shared=NAME] 
-                               [--includedir=DIR]     [--permute-module=N1:N2]
-                               [--localstatedir=DIR]
-                               [--runtimedir=DIR]     [--enable-suexec]
-                               [--logfiledir=DIR]     [--suexec-caller=UID]
-                               [--proxycachedir=DIR]  [--suexec-docroot=DIR]
-                               [--with-layout=[F:]ID] [--suexec-logfile=FILE]
-                               [--show-layout]        [--suexec-userdir=DIR]
-                                                      [--suexec-uidmin=UID]
-                                                      [--suexec-gidmin=GID]
-                                                      [--suexec-safepath=PATH]
-
-                                                      [--with-perl=FILE]
-                                                      [--without-support]      
-                                                      [--without-confadjust]   
+       ./configure
+           [--quiet]         [--prefix=DIR]            [--enable-rule=NAME]    
+           [--verbose]       [--exec-prefix=PREFIX]    [--disable-rule=NAME]   
+           [--shadow[=DIR]]  [--bindir=EPREFIX]        [--add-module=FILE]     
+           [--show-layout]   [--sbindir=DIR]           [--activate-module=FILE]
+           [--help]          [--libexecdir=DIR]        [--enable-module=NAME]  
+                             [--mandir=DIR]            [--disable-module=NAME] 
+                             [--sysconfdir=DIR]        [--enable-shared=NAME]  
+                             [--datadir=DIR]           [--disable-shared=NAME] 
+                             [--includedir=DIR]        [--permute-module=N1:N2]
+                             [--localstatedir=DIR]
+                             [--runtimedir=DIR]        [--enable-suexec]
+                             [--logfiledir=DIR]        [--suexec-caller=UID]
+                             [--proxycachedir=DIR]     [--suexec-docroot=DIR]
+                             [--with-layout=[FILE:]ID] [--suexec-logfile=FILE]
+                                                       [--suexec-userdir=DIR]
+                             [--with-perl=FILE]        [--suexec-uidmin=UID]
+                             [--without-support]       [--suexec-gidmin=GID]
+                             [--without-confadjust]    [--suexec-safepath=PATH]
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and TARGET
@@ -400,7 +397,8 @@
      Use the --shadow option to let APACI create a shadow source tree of the
      sources for building. This is useful when you want to build for different
      platforms in parallel (usually through a NFS, AFS or DFS mounted
-     filesystem).
+     filesystem).  You may specify a directory to the --shadow option into
+     which the shadow tree will be created.
  
      Use the --quiet option to disable all configuration verbose messages.
  

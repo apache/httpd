@@ -19,17 +19,34 @@ DIFS='
 src=`echo $1 | sed -e 's:/$::'`
 dst=`echo $2 | sed -e 's:/$::'`
 
-#   determine if source is an absolute path
+#   check whether source exists
+if [ ! -d $src ]; then
+    echo "mkshadow.sh:Error: source directory not found" 1>&2
+    exit 1
+fi
+
+#   determine if one of the paths is an absolute path,
+#   because then we have to use an absolute symlink
+oneisabs=0
 case $src in
-    /* ) srcisabs=1 ;;
-     * ) srcisabs=0 ;;
+    /* ) oneisabs=1 ;;
+esac
+case $dst in
+    /* ) oneisabs=1 ;;
 esac
 
-#   determine reverse directory to directory
-case $dst in
-    /* ) dstrevdir='' ;;
-     * ) dstrevdir="`$src/helpers/fp2rp $dst`/" ;;
-esac
+#   determine reverse directory for destination directory
+dstrevdir=''
+if [ $oneisabs = 0 ]; then
+    #   (inlined fp2rp)
+    OIFS2="$IFS"; IFS='/'
+    for pe in $dst; do
+        dstrevdir="../$dstrevdir"
+    done
+    IFS="$OIFS2"
+else
+    src="`cd $src; pwd`";
+fi
 
 #   create directory tree at destination
 if [ ! -d $dst ]; then
@@ -48,7 +65,7 @@ IFS="$OIFS"
 
 #   fill directory tree with symlinks to files
 FILES="`cd $src
-        find . -type f -depth -print |\
+        find . -depth -print |\
         sed -e '/\.o$/d' \
             -e '/\.a$/d' \
             -e '/\.so$/d' \
@@ -63,23 +80,29 @@ FILES="`cd $src
             -e 's/^\.\///'`"
 OIFS="$IFS" IFS="$DIFS"
 for file in $FILES; do
+     #  don't use `-type f' above for find because of symlinks
+     if [ -d $file ]; then
+         continue
+     fi
      basename=`echo $file | sed -e 's:^.*/::'`
      dir=`echo $file | sed -e 's:[^/]*$::' -e 's:/$::' -e 's:$:/:' -e 's:^/$::'`
      from="$src/$file"
      to="$dst/$dir$basename"
-     if [ $srcisabs = 0 -a ".$dir" != . ]; then
-         subdir=`echo $dir | sed -e 's:/$::'`
-         #   (inlined fp2rp)
-         revdir=''
-         OIFS2="$IFS"; IFS='/'
-         for pe in $subdir; do
-             revdir="../$revdir"
-         done
-         IFS="$OIFS2"
-         #   finalize from
-         from="$revdir$from"
+     if [ $oneisabs = 0 ]; then
+         if [ ".$dir" != . ]; then
+             subdir=`echo $dir | sed -e 's:/$::'`
+             #   (inlined fp2rp)
+             revdir=''
+             OIFS2="$IFS"; IFS='/'
+             for pe in $subdir; do
+                 revdir="../$revdir"
+             done
+             IFS="$OIFS2"
+             #   finalize from
+             from="$revdir$from"
+         fi
+         from="$dstrevdir$from"
      fi
-     from="$dstrevdir$from"
      echo "    $to"
      ln -s $from $to
 done

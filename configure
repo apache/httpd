@@ -79,6 +79,7 @@ tplconf=src/.apaci.tplconf
 pldconf=src/.apaci.pldconf
 configlayout=config.layout
 configstatus=config.status
+shadow=''
 
 ##
 ##  pre-determine runtime modes
@@ -218,8 +219,6 @@ IFS="$OIFS"
 rules=`echo $rules | sed -e 's/^://'`
 
 #   determine modules
-rm -f $addconf 2>/dev/null
-touch $addconf
 modules=""
 modulelist=""
 OIFS="$IFS" IFS='
@@ -263,49 +262,11 @@ for var in CFLAGS LDFLAGS LIBS INCLUDES DEPS; do
 done
 IFS="$OIFS"
 
-#   create a config status script for restoring
-#   the configuration via a simple shell script
-if [ ".$help" = .no ]; then
-    rm -f $configstatus 2>/dev/null
-    echo "#!/bin/sh" >$configstatus
-    echo "##" >>$configstatus
-    echo "##  $configstatus -- APACI auto-generated configuration restore script" >>$configstatus
-    echo "##" >>$configstatus
-    echo "##  Use this shell script to re-run the APACI configure script for" >>$configstatus
-    echo "##  restoring your configuration. Additional parameters can be supplied." >>$configstatus
-    echo "##" >>$configstatus
-    echo "" >>$configstatus
-    for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-               LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
-        eval "val=\"\$$var\""
-        if [ ".$val" != . ]; then
-            echo "$var=$val" |\
-            sed -e 's:\(["$\\]\):\\\1:g' \
-                -e 's:\([A-Z]*=\):\1":' \
-                -e 's:$:" \\:' >>$configstatus
-        fi
-    done
-    if [ $# -eq 0 ]; then
-        echo "./configure" >>$configstatus
-    else
-        echo $SEO "./configure \\" >>$configstatus
-        for arg
-        do
-            echo "$arg" |\
-            sed -e 's:\(["$\\]\):\\\1:g' \
-                -e 's:^:":' \
-                -e 's:$:" \\:' >>$configstatus
-        done
-    fi
-    echo '"$@"' >>$configstatus
-    echo '' >>$configstatus
-    chmod a+x $configstatus
-fi
-
 ##
 ##  parse argument line options
 ##
 
+addconf_created=0
 apc_prev=""
 OIFS1="$IFS" IFS="$DIFS"
 for apc_option
@@ -330,7 +291,27 @@ do
         --verbose | -v)
             verbose=yes
             ;;
-        --shadow)
+        --shadow*)
+            #   if we use an external shadow tree, first shadow all of ourself
+            #   to this tree and switch over to to it for internal (=platform)
+            #   shadowing...
+            case "$apc_option" in
+                --shadow=*)
+                    shadow="$apc_optarg"
+                    if [ .$quiet = .no ]; then
+                        echo " + creating external package shadow tree ($shadow)"
+                    fi
+                    rm -rf $shadow 2>/dev/null
+                    $aux/mkshadow.sh . $shadow
+                    for file in $mkf $sedsubst $addconf $tplconf $pldconf $configstatus; do
+                        rm -f $shadow/$file 2>/dev/null
+                    done
+                    if [ .$quiet = .no ]; then
+                        echo " + switching to external package shadow tree ($shadow)"
+                    fi
+                    cd $shadow
+                    ;;
+            esac
             #   determine GNU platform triple
             gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
@@ -342,10 +323,15 @@ do
                 echo "##  Apache Makefile (shadow wrapper)" >> Makefile
                 echo "##" >> Makefile
                 echo "" >> Makefile
+                if [ ".$shadow" != . ]; then
+                    echo "SHADOW=$shadow" >> Makefile
+                else
+                    echo "SHADOW=." >> Makefile
+                fi
                 echo "GNUTRIPLE=\`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf(\"%s\",\$\$1); }'\`" >> Makefile
                 echo "" >> Makefile
                 echo "all build install install-quiet clean distclean:" >> Makefile
-                echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
+                echo "	@cd \$(SHADOW); \$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
                 echo "" >> Makefile
             fi
             #   set shadow paths
@@ -357,7 +343,7 @@ do
             shadowtplconf="src.$gnutriple/.apaci.tplconf"
             #   (re)create shadow tree
             if [ .$quiet = .no ]; then
-                echo " + create shadow tree ($shadowsrc)"
+                echo " + creating internal platform shadow tree ($shadowsrc)"
             fi
             rm -rf $shadowsrc
             $aux/mkshadow.sh $src $shadowsrc
@@ -366,10 +352,7 @@ do
             src=$shadowsrc
             aux=$shadowaux
             sedsubst=$shadowsedsubst
-            rm -f $addconf 2>/dev/null
             addconf=$shadowaddconf
-            rm -f $addconf 2>/dev/null
-            touch $addconf
             tplconf=$shadowtplconf
             ;;
         --help | -h | -help )
@@ -378,7 +361,7 @@ do
             echo "General options:"
             echo " --quiet, --silent      do not print messages"
             echo " --verbose, -v          print even more messages"
-            echo " --shadow               switch to a shadow tree for building"
+            echo " --shadow[=DIR]         switch to a shadow tree (under DIR) for building"
             echo ""
             echo "Stand-alone options:"
             echo " --help, -h             print this message"
@@ -531,6 +514,11 @@ do
             if [ ".$file" != ".$src/modules/extra/$modfilec" ]; then
                 cp $file $src/modules/extra/$modfilec
             fi
+            if [ ".$addconf_created" = .0 ]; then
+                addconf_created=1
+                rm -f $addconf 2>/dev/null
+                touch $addconf 2>/dev/null
+            fi
             echo "" >>$addconf
             echo "## On-the-fly added module" >>$addconf
             echo "## (configure --add-module=$file)" >>$addconf
@@ -557,6 +545,11 @@ do
                     ;;
             esac
             modfile=`echo $file | sed -e 's;^src/;;'`
+            if [ ".$addconf_created" = .0 ]; then
+                addconf_created=1
+                rm -f $addconf 2>/dev/null
+                touch $addconf 2>/dev/null
+            fi
             echo "" >>$addconf
             echo "## On-the-fly activated module" >>$addconf
             echo "## (configure --activate-module=$file)" >>$addconf
@@ -790,6 +783,47 @@ if [ ".$apc_prev" != . ]; then
     echo "configure:Error: missing argument to --`echo $apc_prev | sed 's/_/-/g'`" 1>&2
     exit 1
 fi
+if [ ".$addconf_created" = .0 ]; then
+    rm -f $addconf 2>/dev/null
+    touch $addconf 2>/dev/null
+fi
+
+#   create a config status script for restoring
+#   the configuration via a simple shell script
+rm -f $configstatus 2>/dev/null
+echo "#!/bin/sh" >$configstatus
+echo "##" >>$configstatus
+echo "##  $configstatus -- APACI auto-generated configuration restore script" >>$configstatus
+echo "##" >>$configstatus
+echo "##  Use this shell script to re-run the APACI configure script for" >>$configstatus
+echo "##  restoring your configuration. Additional parameters can be supplied." >>$configstatus
+echo "##" >>$configstatus
+echo "" >>$configstatus
+for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
+           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
+    eval "val=\"\$$var\""
+    if [ ".$val" != . ]; then
+        echo "$var=$val" |\
+        sed -e 's:\(["$\\]\):\\\1:g' \
+            -e 's:\([A-Z]*=\):\1":' \
+            -e 's:$:" \\:' >>$configstatus
+    fi
+done
+if [ $# -eq 0 ]; then
+    echo "./configure" >>$configstatus
+else
+    echo $SEO "./configure \\" >>$configstatus
+    for arg
+    do
+        echo "$arg" |\
+        sed -e 's:\(["$\\]\):\\\1:g' \
+            -e 's:^:":' \
+            -e 's:$:" \\:' >>$configstatus
+    done
+fi
+echo '"$@"' >>$configstatus
+echo '' >>$configstatus
+chmod a+x $configstatus
 
 ##
 ##  a few errors
@@ -970,7 +1004,6 @@ if [ .$quiet = .no ]; then
 fi
 sed <Makefile.tmpl >$mkf \
 -e "s%@PERL@%$PERL%g" \
--e "s%@TOP@%$top%g" \
 -e "s%@SRC@%$src%g" \
 -e "s%@MKF@%$mkf%g" \
 -e "s%@AUX@%$aux%g" \
@@ -1230,5 +1263,21 @@ else
      sed -e '/^Using config file:.*/d' \
          -e "s:Makefile in :Makefile in $src\\/:" \
          -e "s:Makefile\$:Makefile in $src:")
+fi
+
+##
+##  final hints
+##
+if [ .$quiet = .no ]; then
+    if [ ".$shadow" != . ]; then
+        echo "Hint: You now have to build inside $shadow."
+        echo "This can be done either by running the canonical commands"
+        echo "  \$ cd $shadow"
+        echo "  \$ make"
+        echo "  \$ make install"
+        echo "or by running this alternative commands"
+        echo "  \$ make -f $shadow/Makefile"
+        echo "  \$ make -f $shadow/Makefile install"
+    fi
 fi
 

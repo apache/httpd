@@ -70,7 +70,7 @@
 SHELL           = /bin/sh
 
 #   paths to the source tree parts
-TOP             = @TOP@
+TOP             = .
 SRC             = @SRC@
 MKF             = @MKF@
 AUX             = @AUX@
@@ -152,7 +152,7 @@ all: build
 #   build the package
 build:
 	@echo "===> $(SRC)"
-	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) build-std $(build-support)
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) build-std $(build-support)
 	@touch $(TOP)/$(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
 
@@ -188,11 +188,11 @@ build-support:
 #   separate parts of the installation process.
 install:
 	@if [ ! -f $(TOP)/$(SRC)/.apaci.build.ok ]; then \
-		$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) build; \
+		$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) build; \
 	else \
 		:; \
 	fi
-	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) \
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) \
 		install-mktree install-programs $(install-support) \
 		install-include install-data install-config
 	-@$(RM) $(SRC)/.apaci.install.tmp
@@ -218,7 +218,7 @@ install:
 
 #   the non-verbose variant for package maintainers
 install-quiet:
-	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) QUIET=1 install
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) QUIET=1 install
 
 #   create the installation tree
 install-mktree:
@@ -349,8 +349,8 @@ install-data:
 		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(datadir)/htdocs/]"; \
 	else \
 		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(datadir)/htdocs/"; \
-		(cd $(TOP)/htdocs/ && $(TAR) cf - *) |\
-		(cd $(root)$(datadir)/htdocs/ && $(TAR) xf -); \
+		(cd $(TOP)/htdocs/ && $(TAR) -hcf - *) |\
+		(cd $(root)$(datadir)/htdocs/ && $(TAR) -xf -); \
 		find $(root)$(datadir)/htdocs/ -type d -exec chmod a+rx {} \; ; \
 		find $(root)$(datadir)/htdocs/ -type f -exec chmod a+r {} \; ; \
 	fi
@@ -366,8 +366,8 @@ install-data:
 		done; \
 	fi
 	@echo "Copying tree $(TOP)/icons/ -> $(root)$(datadir)/icons/"; \
-	(cd $(TOP)/icons/ && $(TAR) cf - *) |\
-	(cd $(root)$(datadir)/icons/ && $(TAR) xf -); \
+	(cd $(TOP)/icons/ && $(TAR) -hcf - *) |\
+	(cd $(root)$(datadir)/icons/ && $(TAR) -xf -); \
 	find $(root)$(datadir)/icons/ -type d -exec chmod a+rx {} \; ;\
 	find $(root)$(datadir)/icons/ -type f -exec chmod a+r {} \;
 	@echo "<=== [data]"
@@ -437,7 +437,7 @@ install-config:
 #   created by the build target
 clean:
 	@echo "===> $(SRC)"
-	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) clean-std $(clean-support)
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) clean-std $(clean-support)
 	@echo "<=== $(SRC)"
 	@$(RM) $(TOP)/$(SRC)/.apaci.build.ok
 
@@ -460,14 +460,14 @@ clean-support:
 #   When --shadow is used we just remove the complete shadow tree.
 distclean:
 	@if [ ".$(SRC)" = .src ]; then \
-		$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) distclean-normal; \
+		$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) distclean-normal; \
 	else \
-		$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) distclean-shadow; \
+		$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) distclean-shadow; \
 	fi
 
 distclean-normal:
 	@echo "===> $(SRC)"
-	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) distclean-std $(distclean-support)
+	@$(MAKE) -f $(TOP)/$(MKF) $(MFLAGS) $(MFWD) distclean-std $(distclean-support)
 	@echo "<=== $(SRC)"
 	-$(RM) $(SRC)/Configuration.apaci
 	-$(RM) $(SRC)/apaci
@@ -490,7 +490,7 @@ distclean-support:
 
 distclean-shadow:
 	$(RM) -r $(SRC)
-	$(RM) $(MKF)
+	$(RM) $(TOP)/$(MKF)
 	-@if [ ".`ls $(TOP)/src.* 2>/dev/null`" = . ]; then \
 		echo "$(RM) Makefile"; \
 		$(RM) Makefile; \
