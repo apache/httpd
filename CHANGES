@@ -1,4 +1,9 @@
 Changes with Apache 2.0b1
+
+  *) Move the Apache version information out of httpd.h and into release.h.
+     This is in preparation for the first tag with the new tag and release
+     system.  [Ryan Bloom]
+
   *) Begin restructuring scoreboard code to enable adding back in
      the ability to use IPC other than shared memory.
      Get mod_status working on Windows again. [Bill Stoddard]
