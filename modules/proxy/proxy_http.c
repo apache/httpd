@@ -1032,10 +1032,10 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
         }
         is_ssl = 1;
     }
-    else if (strncasecmp(url, "http:", 5)) {
+    else if (!(strncasecmp(url, "http:", 5)==0 || (strncasecmp(url, "ftp:", 4)==0 && proxyname))) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: HTTP: declining URL %s", url);
-        return DECLINED; /* only interested in HTTP */
+        return DECLINED; /* only interested in HTTP, or FTP via proxy */
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: serving URL %s", url);
