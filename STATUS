@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 10:44:48 $]
+Last modified at [$Date: 2003/12/02 13:15:01 $]
 
 Release:
 
@@ -328,7 +328,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_info: Escape html code in directives and arguments. PR: 24232
         modules/generators/mod_info.c: r1.52
-      +1: thommay, nd, trawick
+      +1: thommay, nd, trawick, striker
 
     * Let mod_autoindex show filenames containing special characters.
       PR 13598.
@@ -351,7 +351,7 @@ PATCHES TO BACKPORT FROM 2.1
       directories that don't contain an index file.
       PR 7990
         modules/generators/mod_autoindex.c: r1.125
-      +1: nd, trawick
+      +1: nd, trawick, striker
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
@@ -366,12 +366,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix display of empty variables via mod_include.  PR 24734.
         modules/metadata/mod_env.c r1.31
-      +1: trawick, nd
+      +1: trawick, nd, striker
 
     * Fix htdbm to generate comment fields in the DBM files correctly.
       (This causes DBMAuthGroupFile to break)
         support/htdbm.c r1.11
-      +1: jerenkrantz
+      +1: jerenkrantz, striker
 
 CURRENT RELEASE NOTES:
 
