@@ -19,6 +19,7 @@ $listend    = '\n#endif\n';
     dlclose dlerror dlopen dlsym
     start end atexit exit etext edata
     regcomp regerror regexec regfree
+    aplog_error
 );
 @included   = qw(
     D:db_auth_module
@@ -74,6 +75,8 @@ foreach $l (@L) {
         #   (when running this script while httpd was
         #    already compiled with HIDE defined)
         $name =~ s|^AP_||;  
+        #   skip any already-protected symbols
+        next if ($name =~ m:^ap(_)|(api):);
         #   skip any compiler- or system-private symbols
         next if ($name !~ m|^[a-zA-Z]+|);
         #   skip any symbols in our exclusion list
