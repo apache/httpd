@@ -366,7 +366,7 @@ do
             exit 0
             ;;
         --with-layout=*|--compat)
-            if [ "$apc_option" = "--compat" ]; then
+            if [ "x$apc_option" = "x--compat" ]; then
                 apc_optarg="Apache"
             fi
             case $apc_optarg in

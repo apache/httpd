@@ -83,7 +83,7 @@ SUBDIRS="ap main modules"
 ## to select an alternate Configuration file
 ##
 while [ "$1" != "" ]; do
-  if [ "$1" = "-file" ] ; then
+  if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
     if [ ! -r $file ]; then
       echo "$file does not exist or is not readable."

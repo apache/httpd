@@ -27,7 +27,7 @@ do
         optprev=''
     fi
     #   remember options for arg when used stand-alone
-    if [ "$opt" = "-L" -o "$opt" = "-l" ]; then
+    if [ "x$opt" = "x-L" -o "x$opt" = "x-l" ]; then
         optprev="$opt"
         continue;
     fi

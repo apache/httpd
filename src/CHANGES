@@ -3,7 +3,9 @@ Changes with Apache 1.3.5
   *) Shell script style now consistant. For shell string equality tests,
      we used to have several different styles to work around old shells.
      It's now formally (eg): if [ "$var" = "value" ] (ie: both sides are
-     wrapped in dbl-quotes). [Jim Jagielski]
+     wrapped in dbl-quotes). There is one exception: if "value"
+     has a leading "-" then it should be [ "x$var" = "x-value" ].
+     [Jim Jagielski]
 
   *) The status module now prints out both the main server generation as
      well as the generation of each process. Also, the vhost info is
