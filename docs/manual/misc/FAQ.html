@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.129 $ ($Date: 1998/09/17 14:14:52 $)
+  $Revision: 1.130 $ ($Date: 1998/09/27 17:36:12 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -296,6 +296,8 @@
    </LI>
    <LI><A HREF="#submit_patch">How do I submit a patch to the Apache Group?</A>
    </LI>
+   <LI><A HREF="#aixccbug">Why am I getting "<SAMP>Expected &lt/Directory&gt;
+        but saw &lt;/Directory&gt;</SAMP>" when I try to start Apache?</A>
   </OL>
  </LI>
 </UL>
@@ -2277,30 +2279,35 @@
    let you apply certain attributes against collections of files or resources 
    in very flexible ways - for example, all .gif and .jpg files under
    any "images" directory could be written as /.*\/images\/.*[jpg|gif]/.
-
-   <P>The best overview around is probably the one which comes with
+   </P>
+   <P>
+   The best overview around is probably the one which comes with
    Perl.  We implement a simple subset of Perl's regexp support, but
    it's still a good way to learn what they mean.  You can start by
-   going to the <A
-   HREF="http://www.perl.com/CPAN-local/doc/manual/html/pod/perlre.html#Version_8_Regular_Expresions">CPAN
-   page on regular expressions</A>, and branching out from there.
-
+   going to the
+   <A
+    HREF="http://www.perl.com/CPAN-local/doc/manual/html/pod/perlre.html#Version_8_Regular_Expresions"
+   >CPAN page on regular expressions</A>, and branching out from there.
+   </P>
   <HR>
  </LI>
  <LI><A NAME="broken-gcc"><STRONG>I'm using gcc and I get some
 	compilation errors, what is wrong?</STRONG></A>
-    <P> GCC parses your system header files and produces a modified subset which
+    <P>
+    GCC parses your system header files and produces a modified subset which
     it uses for compiling.  This behaviour ties GCC tightly to the version
     of your operating system.  So, for example, if you were running IRIX 5.3
     when you built GCC and then upgrade to IRIX 6.2 later, you will have to
     rebuild GCC.  Similarly for Solaris 2.4, 2.5, or 2.5.1 when you upgrade
     to 2.6.  Sometimes you can type "gcc -v" and it will tell you the version
     of the operating system it was built against.
+    </P>
     <P>
     If you fail to do this, then it is very likely that Apache will fail
     to build.  One of the most common errors is with <CODE>readv</CODE>,
     <CODE>writev</CODE>, or <CODE>uio.h</CODE>.  This is <STRONG>not</STRONG> a
     bug with Apache.  You will need to re-install GCC.
+    </P>
    <HR>
   </LI>
   <LI><A NAME="htaccess-work">
@@ -2313,33 +2320,55 @@
    it covers the directory you are trying to use the .htaccess file in.  
    This is normally accomplished by ensuring it is inside the proper 
    <A HREF="../mod/core.html#directory">Directory</A> container.
+   </P>
    <HR>
   </LI>
   <LI><A NAME="submit_patch">
        <STRONG>How do I submit a patch to the Apache Group?</STRONG></A>
    <P>
-   The Apache Group encourages patches from outside developers. There are 2 main "types"
-   of patches: small bugfixes and general improvements. Bugfixes should be sent to the
+   The Apache Group encourages patches from outside developers. There are 2
+   main "types"
+   of patches: small bugfixes and general improvements. Bugfixes should be
+   submitting using the
    Apache <A HREF="http://www.apache.org/bug_report.html">bug report page</A>.
-   Improvements, modifications and additions should follow these instructions.
+   Improvements, modifications, and additions should follow the instructions
+   below.
+   </P>
    <P>
    In general, the first course of action is to be a member of the
-   <CODE>new-httpd@apache.org</CODE> mailing list. This indicates to the Group that
-   you are closely following the latest Apache developments. Your patch file should be
-   generated using either '<CODE>diff -c</CODE>' or '<CODE>diff -u</CODE>' against the
-   latest CVS tree. To submit your patch, send Email to <CODE>new-httpd@apache.org</CODE>
-   with a <CODE>Subject:</CODE> line that starts with <CODE>[PATCH]</CODE> and
+   <SAMP>new-httpd@apache.org</SAMP> mailing list. This indicates to the Group
+   that
+   you are closely following the latest Apache developments. Your patch file
+   should be
+   generated using either '<CODE>diff&nbsp;-c</CODE>' or
+   '<CODE>diff&nbsp;-u</CODE>' against the
+   latest CVS tree. To submit your patch, send email to
+   <SAMP>new-httpd@apache.org</SAMP>
+   with a <SAMP>Subject:</SAMP> line that starts with <SAMP>[PATCH]</SAMP> and
    includes a general description of the patch. In the body of the message, the
-   patch should be clearly described and then included at the end of the message.
-   If the patch-file is long, you can note a URL to the file instead of the file
-   itself. Use of MIME enclosures/attachments should be avoided.
+   patch should be clearly described and then included at the end of the
+   message.
+   If the patch-file is long, you can note a URL to the file instead of the
+   file itself. Use of MIME enclosures/attachments should be avoided.
+   </P>
    <P>
-   Be prepared to respond to any questions about your patches and possibly defend
+   Be prepared to respond to any questions about your patches and possibly
+   defend
    your code. If your patch results in a lot of discussion, you may be asked to
    submit an updated patch that incorporate all changes and suggestions.
+   </P>
    <HR>
   </LI>
-
+  <LI><A NAME="aixccbug"><STRONG>Why am I getting "<SAMP>Expected
+       &lt/Directory&gt; but saw &lt;/Directory&gt;</SAMP>" when
+       I try to start Apache?</STRONG></A>
+   <P>
+   This is a known problem with certain versions of the AIX C compiler.
+   IBM are working on a solution, and the issue is being tracked by
+   <A HREF="http://bugs.apache.org/index/full/2312">problem report #2312</A>.
+   </P>
+   <HR>
+  </LI>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
 </OL>
