@@ -268,6 +268,7 @@ typedef struct dav_hooks_vsn dav_hooks_vsn;
 typedef struct dav_hooks_repository dav_hooks_repository;
 typedef struct dav_hooks_liveprop dav_hooks_liveprop;
 typedef struct dav_hooks_binding dav_hooks_binding;
+typedef struct dav_hooks_search dav_hooks_search;
 
 /* ### deprecated name */
 typedef dav_hooks_propdb dav_hooks_db;
@@ -612,7 +613,7 @@ typedef struct {
     const dav_hooks_locks *locks;
     const dav_hooks_vsn *vsn;
     const dav_hooks_binding *binding;
-
+    const dav_hooks_search *search;
 } dav_provider;
 
 /*
@@ -666,6 +667,7 @@ const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 const dav_hooks_binding *dav_get_binding_hooks(request_rec *r);
+const dav_hooks_search *dav_get_search(request_rec *r);
 
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
@@ -677,6 +679,7 @@ const dav_provider * dav_lookup_provider(const char *name);
 #define DAV_GET_HOOKS_LOCKS(r)          dav_get_lock_hooks(r)
 #define DAV_GET_HOOKS_VSN(r)            dav_get_vsn_hooks(r)
 #define DAV_GET_HOOKS_BINDING(r)        dav_get_binding_hooks(r)
+#define DAV_GET_HOOKS_SEARCH(r)         dav_get_search_hooks(r)
 
 
 /* --------------------------------------------------------------------
@@ -2330,6 +2333,38 @@ struct dav_hooks_binding {
      */
     dav_error * (*bind_resource)(const dav_resource *resource,
 				 dav_resource *binding);
+
+};
+
+
+/* --------------------------------------------------------------------
+**
+** SEARCH(DASL) FUNCTIONS
+*/
+
+/* search provider hooks */
+struct dav_hooks_search {
+    /* Set header for a OPTION method
+     * An error may be returned.
+     * To set a hadder, this function might call
+     * apr_table_setn(r->headers_out, "DASL", dasl_optin1);
+     *
+     * Examples:
+     * DASL: <DAV:basicsearch>
+     * DASL: <http://foo.bar.com/syntax1>
+     * DASL: <http://akuma.com/syntax2>
+     */
+    dav_error * (*set_option_head)(request_rec *r);
+
+    /* Search resources
+     * An error may be returned. *response will contain multistatus
+     * responses (if any) suitable for the body of the error. It is also
+     * possible to return NULL, yet still have multistatus responses.
+     * In this case, typically the caller should return a 207 (Multistatus)
+     * and the responses (in the body) as the HTTP response.
+     */
+    dav_error * (*search_resource)(request_rec *r,
+				   dav_response **response);
 
 };
 
