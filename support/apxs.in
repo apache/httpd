@@ -73,7 +73,7 @@ my $CFG_PREFIX        = "@prefix@";
 my $prefix            = "$CFG_PREFIX";
 my $CFG_EXEC_PREFIX   = "@exec_prefix@";
 my $exec_prefix       = "$CFG_EXEC_PREFIX";
-my $CFG_SBINDIR       = "@bindir@";
+my $CFG_SBINDIR       = "@sbindir@";
 my $CFG_INCLUDEDIR    = "@includedir@";
 my $CFG_LIBEXECDIR    = "@libexecdir@";
 my $CFG_SYSCONFDIR    = "@sysconfdir@";
@@ -372,6 +372,7 @@ if ($opt_c) {
     }
     my $cflags = "$CFG_CFLAGS";
     my $s;
+    my $mod;
     foreach $s (@srcs) {
         my $slo = $s;
         $slo =~ s|\.c$|.slo|;
@@ -379,10 +380,20 @@ if ($opt_c) {
         $lo =~ s|\.c$|.lo|;
         my $la = $s;
         $la =~ s|\.c$|.la|;
-        push(@cmds, "libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c $s && touch $slo");
-        push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $la -rpath $CFG_LIBEXECDIR -module -avoid-version $lo");
-
+        my $o = $s;
+        $o =~ s|\.c$|.o|;
+        push(@cmds, "libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
+        unshift(@objs, $lo);
     }
+
+    #   create link command
+    my $o;
+    my $lo;	
+    foreach $o (@objs) {
+        $lo .= " $o";
+    }
+
+    push(@cmds, "libtool --silent --mode=link $CFG_CC $cflags -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
