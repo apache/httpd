@@ -301,7 +301,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     ap_filter_t *f = apr_palloc(p, sizeof(*f));
     ap_filter_t **outf;
 
-    if (frec->ftype < AP_FTYPE_HTTP_HEADER) {
+    if (frec->ftype < AP_FTYPE_PROTOCOL) {
         if (r) {
             outf = r_filters;
         }

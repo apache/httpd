@@ -445,7 +445,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 static void register_hooks(apr_pool_t * p)
 {
     ap_register_output_filter(deflateFilterName, deflate_out_filter,
-                              AP_FTYPE_HTTP_HEADER);
+                              AP_FTYPE_CONTENT_SET);
 }
 
 static const command_rec deflate_filter_cmds[] = {
