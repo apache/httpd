@@ -371,7 +371,7 @@ to hold without calling free()</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxMemFree 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
     <p>The <code class="directive">MaxMemFree</code> directive sets the
     maximum number of free Kbytes that the main allocator is allowed
