@@ -56,12 +56,45 @@
 # buildconf: Build the support scripts needed to compile from a
 #            checked-out version of the source code.
 
+# set a couple of defaults for where we should be looking for our support libs.
+# can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
+
+apr_src_dir=srclib/apr
+apu_src_dir=srclib/apr-util
+
+while test $# -gt 0 
+do
+  # Normalize
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+  *) optarg= ;;
+  esac
+
+  case "$1" in
+  --with-apr=*)
+  apr_src_dir=$optarg
+  ;;
+  esac
+
+  case "$1" in
+  --with-apr-util=*)
+  apu_src_dir=$optarg
+  ;;
+  esac
+
+  shift
+done
+
 #
 # Check to be sure that we have the srclib dependencies checked-out
 #
-if [ ! -d srclib/apr -o ! -f srclib/apr/build/apr_common.m4 ]; then
+
+if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo ""
-    echo "You don't have a srclib/apr/ subdirectory.  Please get one:"
+    echo "You don't have a copy of the apr source in $apr_src_dir. " 
+    echo "Please get the source using the following instructions," 
+    echo "or specify the location of the source with " 
+    echo "--with-apr=[path to apr] :"
     echo ""
     echo "   cd srclib"
     echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
@@ -70,9 +103,12 @@ if [ ! -d srclib/apr -o ! -f srclib/apr/build/apr_common.m4 ]; then
     echo ""
     exit 1
 fi
-if [ ! -d srclib/apr-util -o ! -f srclib/apr-util/Makefile.in ]; then
+if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo ""
-    echo "You don't have a srclib/apr-util/ subdirectory.  Please get one:"
+    echo "You don't have a copy of the apr-util source in $apu_src_dir. "
+    echo "Please get one the source using the following instructions, "
+    echo "or specify the location of the source with "
+    echo "--with-apr-util=[path to apr-util]:"
     echo ""
     echo "   cd srclib"
     echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
@@ -98,29 +134,33 @@ esac
 #
 # end temporary stuff
 
-apr_configure="srclib/apr/configure"
-aprutil_configure="srclib/apr-util/configure"
+apr_configure="$apr_src_dir/configure"
+aprutil_configure="$apu_src_dir/configure"
 pcre_configure="srclib/pcre/configure"
 config_h_in="include/ap_config_auto.h.in"
 
 cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
 
-echo rebuilding $apr_configure
-(cd srclib/apr && ./buildconf) || {
-    echo "./buildconf failed for apr"
-    exit 1
-}
+if [ -d srclib/apr ]; then
+    echo rebuilding $apr_configure
+    (cd srclib/apr && ./buildconf) || {
+        echo "./buildconf failed for apr"
+        exit 1
+    }
+fi
 
-echo rebuilding $aprutil_configure
-(cd srclib/apr-util && ./buildconf) || {
-    echo "./buildconf failed for apr-util" 
-    exit 1
-}
+if [ -d srclib/apr-util ]; then
+    echo rebuilding $aprutil_configure
+    (cd srclib/apr-util && ./buildconf) || {
+        echo "./buildconf failed for apr-util" 
+        exit 1
+    }
+fi
 
 echo copying build files
-cp srclib/apr/build/config.guess build
-cp srclib/apr/build/config.sub build
-cp srclib/apr/build/PrintPath build
+cp $apr_src_dir/build/config.guess $apr_src_dir/build/config.sub \
+   $apr_src_dir/build/PrintPath $apr_src_dir/build/apr_common.m4 \
+   $apr_src_dir/build/find_apr.m4 $apu_src_dir/build/find_apu.m4 build
 
 # Optionally copy libtool-1.3.x files
 if [ -f srclib/apr/build/ltconfig ]; then

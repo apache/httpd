@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Modify buildconf to copy all required files into httpd's tree.
+     [Thom May <thom@planetarytramp.net>]
+
   *) Allow mod_dav to do weak entity comparison functions.
      [Justin Erenkrantz]
 

@@ -13,9 +13,9 @@ AC_CONFIG_AUX_DIR(build)
 dnl #
 dnl # Include our own M4 macros along with those for APR and libtool
 dnl #
-sinclude(srclib/apr/build/apr_common.m4)
-sinclude(srclib/apr/build/find_apr.m4)
-sinclude(srclib/apr-util/build/find_apu.m4)
+sinclude(build/apr_common.m4)
+sinclude(build/find_apr.m4)
+sinclude(build/find_apu.m4)
 sinclude(acinclude.m4)
 
 dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
@@ -80,7 +80,7 @@ APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apr_config --includes`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
-APR_INCLUDEDIR=`$apr_config --includes | sed 's|^.*-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
+APR_INCLUDEDIR=`$apr_config --includedir`
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
@@ -100,7 +100,7 @@ fi
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
-APU_INCLUDEDIR=`$apu_config --includes | sed 's|^ *-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
+APU_INCLUDEDIR=`$apu_config --includedir`
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
