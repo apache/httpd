@@ -1590,7 +1590,14 @@ else
          -e "s:Makefile in :Makefile in $src\\/:" \
          -e "s:Makefile\$:Makefile in $src:")
 fi 3>&1 1>&2`
-[ $rc = 0 ] || exit 1
+
+## Ugly. So far, we've only used -eq, so just in case, use this
+## stupid code unless we're *sure* that -ne is also available
+if [ $rc -eq 0 ]; then
+    :
+else
+    exit 1
+fi
 
 ##
 ##  final hints
