@@ -23,6 +23,7 @@
 
 <name>mod_cache</name>
 <description>Content cache keyed to URIs.</description>
+<status>Extension</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
 
