@@ -2243,63 +2243,88 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
     return OK;
 }
 
+#if APR_HAS_SENDFILE
+static ap_status_t static_send_file(ap_file_t *fd, request_rec *r, ap_off_t offset, 
+                                    ap_size_t length, ap_size_t *nbytes) 
+{
+    ap_int32_t flags = 0;
+    ap_status_t rv;
+
+    ap_bsetopt(r->connection->client, BO_TIMEOUT,
+               r->connection->keptalive
+               ? &r->server->keep_alive_timeout
+               : &r->server->timeout);
+
+    ap_bflush(r->connection->client);
+
+    if (!r->connection->keepalive) {
+        /* Prepare the socket to be reused */
+        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+    }
+
+    rv = iol_sendfile(r->connection->client->iol, 
+                      fd,      /* The file to send */
+                      NULL,    /* Header and trailer iovecs */
+                      &offset, /* Offset in file to begin sending from */
+                      &length,
+                      flags);
+
+    if (r->connection->keptalive) {
+        ap_bsetopt(r->connection->client, BO_TIMEOUT, 
+                   &r->server->timeout);
+    }
+
+    *nbytes = length;
+
+    return rv;
+}
+#endif
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
+API_EXPORT(ap_status_t) ap_send_fd(ap_file_t *fd, request_rec *r, ap_off_t offset, 
+                                   ap_size_t length, ap_size_t *nbytes) 
 {
-    ap_size_t len = r->finfo.size;
-#if APR_HAS_SENDFILE
-    ap_int32_t flags = 0;
-    if (!r->chunked) {
-	ap_status_t rv;
-        ap_bsetopt(r->connection->client, BO_TIMEOUT,
-                   r->connection->keptalive
-                   ? &r->server->keep_alive_timeout
-                   : &r->server->timeout);
-        ap_bflush(r->connection->client);
-
-        if (!r->connection->keepalive) {
-            /* Prepare the socket to be reused. Ignored on systems
-             * that do not support reusing the accept socket
-             */
-            flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-        }
-
-        rv = iol_sendfile(r->connection->client->iol, 
-                          fd,     /* The file to send */
-                          NULL,   /* header and trailer iovecs */
-                          0,      /* Offset in file to begin sending from */
-                          &len,
-                          flags);
-        if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "ap_send_fd: iol_sendfile failed.");
-        }
-        if (r->connection->keptalive) {
-            ap_bsetopt(r->connection->client, BO_TIMEOUT, 
-                       &r->server->timeout);
-        }
-    }
-    else {
-        len = ap_send_fd_length(fd, r, -1);
-    }
-#else
-    len = ap_send_fd_length(fd, r, -1);
-#endif
-    return len;
-}
-
-API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
-{
-    char buf[IOBUFSIZE];
-    long total_bytes_sent = 0;
+    ap_status_t rv = APR_SUCCESS;
+    ap_size_t total_bytes_sent = 0;
     register int o;
     ap_ssize_t n;
-    ap_status_t rv;
+    char buf[IOBUFSIZE];
 
-    if (length == 0)
-        return 0;
+    if ((length == 0) || r->connection->aborted) {
+        *nbytes = 0;
+        return APR_SUCCESS;
+    }
+
+#if APR_HAS_SENDFILE
+    /* Chunked encoding must be handled in the BUFF */
+    if (!r->chunked) {
+        rv = static_send_file(fd, r, offset, length, &total_bytes_sent);
+        if (rv == APR_SUCCESS) {
+            r->bytes_sent += total_bytes_sent;
+            *nbytes = total_bytes_sent;
+            return rv;
+        }
+        /* Don't consider APR_ENOTIMPL a failure */
+        if (rv != APR_ENOTIMPL) {
+            check_first_conn_error(r, "send_fd", rv);
+            r->bytes_sent += total_bytes_sent;
+            *nbytes = total_bytes_sent;
+            return rv;
+        }
+    }
+#endif
+
+    /* Either sendfile is not defined or it failed with APR_ENOTIMPL */
+    if (offset) {
+        /* Seek the file to the offset */
+        rv = ap_seek(fd, APR_SET, &offset);
+        if (rv != APR_SUCCESS) {
+            *nbytes = total_bytes_sent;
+            /* ap_close(fd); close the file or let the caller handle it? */
+            return rv;
+        }
+    }
 
     while (!r->connection->aborted) {
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
@@ -2311,6 +2336,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
             rv = ap_read(fd, buf, &n);
         } while (rv == APR_EINTR && !r->connection->aborted);
 
+        /* Is this still the right check? maybe check for n==0 or rv == APR_EOF? */
         if (n < 1) {
             break;
         }
@@ -2322,7 +2348,8 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     }
 
     SET_BYTES_SENT(r);
-    return total_bytes_sent;
+    *nbytes = total_bytes_sent;
+    return rv;
 }
 
 /*

@@ -136,8 +136,8 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r);
  * (Ditto the send_header stuff).
  */
 
-API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r);
-API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length);
+API_EXPORT(ap_status_t) ap_send_fd(ap_file_t *fd, request_rec *r, ap_off_t offset, 
+                                   ap_size_t length, ap_size_t *nbytes);
 
 API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
 API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
