@@ -534,22 +534,16 @@ static void dav_propdb_close(dav_db *db)
 
 static dav_error * dav_propdb_define_namespaces(dav_db *db, dav_xmlns_info *xi)
 {
-    int ns = db->ns_count;
+    int ns;
     const char *uri = db->ns_table.buf + sizeof(dav_propdb_metadata);
-    char prefix[23];    /* "ns" + 20 digits + '\0' */
-
-    prefix[0] = 'n';
-    prefix[1] = 's';
 
     /* within the prop values, we use "ns%d" for prefixes... register them */
     for (ns = 0; ns < db->ns_count; ++ns, uri += strlen(uri) + 1) {
-        sprintf(&prefix[2], "%d", ns);
 
-        /* prefix is on the stack, and ns_table.buf can move, so copy the
-           two strings (and we simply want the values to last as long as
-           the provided dav_xmlns_info). */
+        /* ns_table.buf can move, so copy its value (we want the values to
+           last as long as the provided dav_xmlns_info). */
         dav_xmlns_add(xi,
-                      apr_pstrdup(xi->pool, prefix),
+                      apr_psprintf(xi->pool, "ns%d", ns),
                       apr_pstrdup(xi->pool, uri));
     }
 
