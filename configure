@@ -714,8 +714,8 @@ do
             esac
             case "$apc_feature" in
                 rule   )
-                    apc_optarg=`echo "$apc_optarg" | tr "A-Z" "a-z"`
-                    apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
+                    apc_optarg=`echo "$apc_optarg" | tr '[A-Z]' '[a-z]'`
+                    apc_optarg_real=`echo "$apc_optarg" | tr '[a-z]' '[A-Z]'`
                     eval "exists=\$rule_${apc_optarg}" 
                     if [ "x$exists" = "x" ]; then
                         echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
@@ -809,8 +809,8 @@ do
             esac
             case "$apc_feature" in
                 rule   ) 
-                    apc_optarg=`echo "$apc_optarg" | tr "A-Z" "a-z"`
-                    apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
+                    apc_optarg=`echo "$apc_optarg" | tr '[A-Z]' '[a-z]'`
+                    apc_optarg_real=`echo "$apc_optarg" | tr '[a-z]' '[A-Z]'`
                     eval "exists=\$rule_${apc_optarg}" 
                     if [ "x$exists" = "x" ]; then
                         echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
@@ -1274,7 +1274,7 @@ IFS="$OIFS"
 OIFS="$IFS"
 IFS=':'
 for rule in $rules; do
-    name="`echo $rule | tr "a-z" "A-Z"`"
+    name="`echo $rule | tr '[a-z]' '[A-Z]'`"
     eval "val=\$rule_$rule"
     echo $SEO "s%^\\(Rule $name=\\).*%\\1$val%g" >>$sedsubst
     if [ "x$verbose" = "xyes" ]; then

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fix 'configure' to work correctly with SysV-based versions of
+     'tr' (consistent with Configure's use as well). [Jim Jagielski]
+
   *) apxs: Add "-S var=val" option which allows for override of CFG_*
      built-in values. Add "-e" option which works like -i but doesn't
      install the DSO; useful for editing httpd.conf with apxs. Fix
@@ -220,7 +223,7 @@ Changes with Apache 1.3.7
      [Graham Leggett <minfrin@sharp.fm>,
      Tim Costello <tjcostel@socs.uts.edu.au>] PR#3178
 
-  *) Fix inconsistant error messages reported by mod_proxy.
+  *) Fix inconsistent error messages reported by mod_proxy.
      [Graham Leggett <minfrin@sharp.fm>]
 
   *) OS/2: Fix terminating CGIs that aren't compiled by EMX GCC when a 
@@ -698,7 +701,7 @@ Changes with Apache 1.3.5 [not released]
      and check to see if the tar we wind up with supports '-h'.
      [Jim Jagielski] PR#3671
 
-  *) A consistant and conservative style for all shell scripts has been
+  *) A consistent and conservative style for all shell scripts has been
      implemented. Basically, all shell string tests use the traditional
      hack of 'if [ "x$var" != "x" ]' or 'if [ "x$var" = "xstring" ]'
      to protect against bare null variable strings (ie: wrapping both
@@ -2684,7 +2687,7 @@ Changes with Apache 1.3b6
   *) PORT: IRIX needs the -n32 flag iff using the 'cc' compiler
      [Jim Jagielski] PR#1901
 
-  *) BUG: Configure was using TCC and CC inconsistantly. Make sure
+  *) BUG: Configure was using TCC and CC inconsistently. Make sure
      Configure knows which CC we are using. [Jim Jagielski]
 
   *) "Options +Includes" wasn't correctly merged if "+IncludesNoExec"
