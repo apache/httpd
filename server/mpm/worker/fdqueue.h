@@ -81,7 +81,6 @@ struct fd_queue_elem_t {
 typedef struct fd_queue_elem_t fd_queue_elem_t;
 
 struct fd_queue_t {
-    int                head;
     int                tail;
     fd_queue_elem_t   *data;
     int                bounds;

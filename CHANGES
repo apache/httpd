@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Turn the worker MPM's queue into a LIFO.  This may
+     improve cache-hit performance under some conditions.
+     [Aaron Bannert <aaron@clove.org>]
+
   *) Switch back to SIGUSR1 for graceful restarts on all platforms that
      support it.  [Justin Erenkrantz]
 
