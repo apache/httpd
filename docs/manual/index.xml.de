@@ -26,7 +26,7 @@
     <page href="handler.html">Handler</page>
     <page href="programs/">Server und Hilfsprogramme</page>
     <page href="glossary.html">Glossar</page>
-</category>    
+</category>
 
 <category id="usersguide"><title>Benutzerhandbuch</title>
     <page href="bind.html">Bindung</page>
@@ -44,7 +44,7 @@
     <page href="suexec.html">Suexec f&uuml;r CGI</page>
     <page href="misc/rewriteguide.html">Einf&uuml;hrung in die
     URL-Manipulation</page>
-    <page href="vhosts/">Virtual-Hosts</page>
+    <page href="vhosts/">Virtuelle Hosts</page>
 </category>
 
 <category id="howto"><title>Praxis / Anleitungen</title>
@@ -71,4 +71,3 @@
 </category>
 
 </indexpage>
-

@@ -878,7 +878,7 @@ gültig</td></tr>
     </div>
 
     <p>Beim MPM <code class="module"><a href="../mod/perchild.html">perchild</a></code>, das dafür gedacht ist,
-    Virtual-Hosts unter verschiedenen Benutzerkennungen auszuführen,
+    virtuelle Hosts unter verschiedenen Benutzerkennungen auszuführen,
     bestimmt die Direktive <code class="directive">User</code> die
     Benutzerkennung für den Hauptserver und bildet den Rückfallwert
     für <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitte ohne eine

@@ -2098,14 +2098,14 @@ zulässig sind</td></tr>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a>-<a name="namevirtualhost" id="namevirtualhost">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt eine IP-Adresse für den Betrieb namensbasierter
-Virtual-Hosts</td></tr>
+virtueller Hosts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive <code class="directive">NameVirtualHost</code> ist erforderlich,
-    wenn Sie <a href="../vhosts/">namensbasierte Virtual-Hosts</a>
+    wenn Sie <a href="../vhosts/">namensbasierte virtuelle Hosts</a>
     konfigurieren möchten.</p>
 
     <p>Obwohl <var>Adresse</var> eine Hostname sein kann, wird empfohlen,
@@ -2117,8 +2117,8 @@ Virtual-Hosts</td></tr>
 
     <p>Mit der <code class="directive">NameVirtualHost</code>-Anweisung geben Sie
     die IP-Adresse an, unter der der Server Anfragen für
-    namensbasierte Virtual-Hosts entgegennimmt. Das ist üblicherweise
-    die Adresse, zu der die Namen Ihrer namensbasierten Virtual-Hosts
+    namensbasierte virtuelle Hosts entgegennimmt. Das ist üblicherweise
+    die Adresse, zu der die Namen Ihrer namensbasierten virtuellen Hosts
     aufgelöst werden. Falls eine Firewall oder ein anderer Proxy die
     Anfrage in Empfang nimmt und Sie zu einer weiteren IP-Adresse des Servers
     weiterleitet, müssen Sie die IP-Adresse der physikalischen
@@ -2137,7 +2137,7 @@ Virtual-Hosts</td></tr>
     </div>
 
     <p>Optional können Sie die Nummer eines Ports angeben, an dem
-    namensbasierte Virtual-Hosts verwendet werden sollen. Beispiel:</p>
+    namensbasierte virtuelle Hosts verwendet werden sollen. Beispiel:</p>
 
     <div class="example"><p><code>
       NameVirtualHost 111.22.33.44:8080
@@ -2171,7 +2171,7 @@ Virtual-Hosts</td></tr>
 
 <h3>Siehe auch</h3>
 <ul>
-<li><a href="../vhosts/">Virtual-Host-Dokumentation</a></li>
+<li><a href="../vhosts/">Dokumentation zu virtuellen Hosts</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2594,14 +2594,14 @@ welche an den Client gesendet werden</td></tr>
 <div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a>-<a name="serveralias" id="serveralias">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Alternativer Name für einen Host, der verwendet wird, wenn
-Anfragen einem namensbasierten Virtual-Host zugeordnet werden</td></tr>
+Anfragen einem namensbasierten virtuellen Host zugeordnet werden</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive <code class="directive">ServerAlias</code> bestimmt die
-    alternativen Namen eines Hosts zur Verwendung mit <a href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>.</p>
+    alternativen Namen eines Hosts zur Verwendung mit <a href="../vhosts/name-based.html">namensbasierten virtuelle Hosts</a>.</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost *&gt;<br />
@@ -2613,8 +2613,8 @@ Anfragen einem namensbasierten Virtual-Host zugeordnet werden</td></tr>
 
 <h3>Siehe auch</h3>
 <ul>
-<li><a href="../vhosts/">Virtual-Host-Dokumentation des
-Apache</a></li>
+<li><a href="../vhosts/">Apache-Dokumentation zu virtuellen
+  Hosts</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2653,10 +2653,10 @@ selbst zu identifizieren</td></tr>
     <code class="directive">ServerName</code> verwenden.</p>
 
     <p>Wenn Sie <a href="../vhosts/name-based.html">namensbasierte
-    Virtual-Hosts</a> verwenden, gibt <code class="directive">ServerName</code>
+    virtuelle Hosts</a> verwenden, gibt <code class="directive">ServerName</code>
     innerhalb eines <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitts an, welcher
     Hostname im <code>Host:</code>-Header der Anfrage auftauchen muss,
-    damit sie diesem Virtual-Host zugeordnet wird.</p>
+    damit sie diesem virtuellen Host zugeordnet wird.</p>
 
     <p>Lesen Sie bitte die Beschreibung der Direktive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> für Einstellungen, die
     bestimmen, ob selbstreferenzierende URLs (z.B. vom Modul
@@ -2667,8 +2667,8 @@ selbst zu identifizieren</td></tr>
 <ul>
 <li><a href="../dns-caveats.html">Probleme bezüglich DNS und
 Apache</a></li>
-<li><a href="../vhosts/">Virtual-Host-Dokumentation des
-    Apache</a></li>
+<li><a href="../vhosts/">Apache-Dokumentation zu virtuellen
+  Hosts</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li>
 <li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li>
@@ -2678,7 +2678,7 @@ Apache</a></li>
 <div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a>-<a name="serverpath" id="serverpath">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Veralteter URL-Pfad für einen namensbasierten
-Virtual-Host, auf den von einem inkompatiblen Browser zugegriffen
+virtuellen Host, auf den von einem inkompatiblen Browser zugegriffen
 wird</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerPath <var>URL-Pfad</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Virtual Host</td></tr>
@@ -2688,12 +2688,12 @@ wird</td></tr>
     <p>Die Direktive <code class="directive">ServerPath</code> legt den
     veralteten <span class="transnote">(<em>Anm.d.Ü.:</em> Gemeint ist eigentlich "Altlast" aufgrund
     antiquierter Clients.)</span> URL-Pfad eines Hosts zur Verwendung mit
-    <a href="../vhosts/">namensbasierten Virtual-Hosts</a> fest.</p>
+    <a href="../vhosts/">namensbasierten virtuellen Hosts</a> fest.</p>
 
 <h3>Siehe auch</h3>
 <ul>
-<li><a href="../vhosts/">Virtual-Host-Dokumentation des
-Apache</a></li>
+<li><a href="../vhosts/">Apache-Dokumentation zu virtuellen
+  Hosts</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2749,7 +2749,7 @@ Dokumenten</td></tr>
     <p>Die (Vor-)Einstellung <code>Off</code> unterdrückt die
     Fußzeile (und ist damit kompatibel zum Verhalten des Apache 1.2 und
     früher). Die Einstellung <code>On</code> fügt schlicht eine
-    Zeile mit der Versionsnummer des Servers und dem Servernamen (<code class="directive"><a href="#servername">ServerName</a></code>) des bedienenden Virtual-Hosts an.
+    Zeile mit der Versionsnummer des Servers und dem Servernamen (<code class="directive"><a href="#servername">ServerName</a></code>) des bedienenden virtuellen Hosts an.
     Die Einstellung <code>EMail</code> erstellt zusätzlich einen
     "mailto:"-Verweis zum Serveradministrator (<code class="directive"><a href="#serveradmin">ServerAdmin</a></code>) des referenzierten Dokuments.</p>
 
@@ -2989,9 +2989,9 @@ ermittelt</td></tr>
     selbstreferenzierende URLs, indem er den vom Client übermittelten
     Hostnamen und Port verwendet, sofern diese vorhanden sind (andernfalls
     wird der kanonische Name, wie oben beschrieben, benutzt). Die Werte
-    sind die gleichen, die zur Anwendung von <a href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>
+    sind die gleichen, die zur Anwendung von <a href="../vhosts/name-based.html">namensbasierten virtuellen Hosts</a>
     verwendet werden, und sie sind mit den gleichen Clients verfügbar
-    <span class="transnote">(<em>Anm.d.Ü.:</em> , die auch in der Lage sind, auf namensbasierte Virtual-Hosts
+    <span class="transnote">(<em>Anm.d.Ü.:</em> , die auch in der Lage sind, auf namensbasierte virtuelle Hosts
     zuzugreifen, d.h. einen <code>Host</code>-Header mitschicken)</span>.
     Die CGI-Variablen <code>SERVER_NAME</code> und <code>SERVER_PORT</code>
     werden ebenfalls aus den vom Client angeboten Werten erstellt.</p>
@@ -3048,26 +3048,26 @@ IP-Adressen angewendet werden</td></tr>
 </table>
     <p><code class="directive">&lt;VirtualHost&gt;</code> und
     <code>&lt;/VirtualHost&gt;</code> werden dazu verwendet, eine Gruppe
-    von Direktiven zusammenzufassen, die nur auf einen bestimmten Virtual-Host
-    angewendet werden. Jede Direktive, die im Virtual-Host-Kontext
+    von Direktiven zusammenzufassen, die nur auf einen bestimmten virtuellen
+    Host angewendet werden. Jede Direktive, die im Virtual-Host-Kontext
     zulässig ist, kann verwendet werden. Wenn der Server eine Anfrage
-    für ein bestimmtes Dokument eines bestimmten Virtual-Hosts
+    für ein bestimmtes Dokument eines bestimmten virtuellen Host
     empfängt, dann benutzt er die im
     <code class="directive">&lt;VirtualHost&gt;</code>-Container enthaltenen
     Konfigurationsanweisungen. <var>Adresse</var> kann sein:</p>
 
     <ul>
-      <li>Die IP-Adresse des Virtual-Hosts.</li>
+      <li>Die IP-Adresse des virtuellen Hosts.</li>
 
       <li>Ein voll qualifizierter Domainname für die IP-Adresse des
-      Virtual-Hosts.</li>
+      virtuellen Hosts.</li>
 
       <li>Das Zeichen <code>*</code>, welches nur in Kombination mit
       <code>NameVirtualHost *</code> verwendet wird, um allen IP-Adressen
       zu entsprechen.</li>
 
       <li>Die Zeichenkette <code>_default_</code>, die nur mit IP-basierten
-      Virtual-Hosts verwendet wird, um nicht zugewiesene IP-Adressen
+      virtuellen Hosts verwendet wird, um nicht zugewiesene IP-Adressen
       aufzufangen.</li>
     </ul>
 
@@ -3099,7 +3099,7 @@ IP-Adressen angewendet werden</td></tr>
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Jeder Virtual-Host muss einer anderen IP-Adresse, einem anderen Port
+    <p>Jeder virtuelle Host muss einer anderen IP-Adresse, einem anderen Port
     oder einem anderen Hostnamen für den Server entsprechen. Im ersten
     Fall muss die Servermaschine so eingerichtet sein, dass sie IP-Pakete
     für mehrere Adressen akzeptiert. (Wenn der Rechner nicht mehrere
@@ -3114,16 +3114,16 @@ IP-Adressen angewendet werden</td></tr>
       an der richtigen Adresse lauscht.</p>
     </div>
 
-    <p>Bei der Verwendung IP-basierter Virtual-Hosts kann der spezielle
+    <p>Bei der Verwendung IP-basierter virtueller Hosts kann der spezielle
     Name <code>_default_</code> benutzt werden. In diesem Fall weist
-    der Apache jede IP-Adresse diesem Virtual-Host zu, die nicht explizit in
-    einem anderen Virtual-Host angegeben ist. Falls kein Virtual-Host
+    der Apache jede IP-Adresse diesem virtuellen Host zu, die nicht explizit in
+    einem anderen virtuellen Host angegeben ist. Falls kein virtueller Host
     <code>_default_</code> angegeben ist, wird die "Hauptserver"-Konfiguration,
     die aus allen Definitionen außerhalb der Virtual-Host-Abschnitte
     besteht, für nicht passende IPs verwendet. (Beachten Sie jedoch,
-    dass eine IP-Adressen die zu einer <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code>-Anweisung passt, weder den
-    "hauptserver" noch den <code>_default_</code>-Virtual-Host verwendet.
-    Lesen Sie für weitere Details die Dokumentation zu <a href="../vhosts/name-based.html">namensbasierten Virtual-Hosts</a>.)</p>
+    dass eine IP-Adresse die zu einer <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code>-Anweisung passt, weder den
+    "Hauptserver" noch den virtuellen Host <code>_default_</code> verwendet.
+    Lesen Sie für weitere Details die Dokumentation zu <a href="../vhosts/name-based.html">namensbasierten virtuellen Hosts</a>.)</p>
 
     <p>Sie können einen speziellen <code>:Port</code> angeben,
     um den entsprechenden Port zu wechseln. Falls nicht angegeben, wird
@@ -3143,8 +3143,8 @@ IP-Adressen angewendet werden</td></tr>
 
 <h3>Siehe auch</h3>
 <ul>
-<li><a href="../vhosts/">Virtual-Host-Dokumentation des
-    Apache</a></li>
+<li><a href="../vhosts/">Apache-Dokumentation zu virtuellen
+  Hosts</a></li>
 <li><a href="../dns-caveats.html">Probleme bezüglich DNS und
     Apache</a></li>
 <li><a href="../bind.html">Bestimmen, welche Adressen und Ports

@@ -889,7 +889,7 @@ g&uuml;ltig</compatibility>
     </note>
 
     <p>Beim MPM <module>perchild</module>, das daf&uuml;r gedacht ist,
-    Virtual-Hosts unter verschiedenen Benutzerkennungen auszuf&uuml;hren,
+    virtuelle Hosts unter verschiedenen Benutzerkennungen auszuf&uuml;hren,
     bestimmt die Direktive <directive>User</directive> die
     Benutzerkennung f&uuml;r den Hauptserver und bildet den R&uuml;ckfallwert
     f&uuml;r <directive type="section"

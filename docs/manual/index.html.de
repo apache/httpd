@@ -54,7 +54,7 @@
 <li><a href="suexec.html">Suexec für CGI</a></li>
 <li><a href="misc/rewriteguide.html">Einführung in die
     URL-Manipulation</a></li>
-<li><a href="vhosts/">Virtual-Hosts</a></li>
+<li><a href="vhosts/">Virtuelle Hosts</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">Praxis / Anleitungen</a></h2>
 <ul><li><a href="howto/auth.html">Authentisierung, Autorisierung und
