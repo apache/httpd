@@ -1,15 +1,15 @@
 @echo off
 
-if not "%NovellNDK%" == "" goto CheckNDK
-set NovellNDK=\novell\ndk\libc
-@echo Could not find the NovellNDK environment variable
-@echo Setting NovellNDK = %NovellNDK%
+if not "%NovellLibC%" == "" goto CheckNDK
+set NovellLibC=\novell\ndk\libc
+@echo Could not find the NovellLibC environment variable
+@echo Setting NovellLibC = %NovellLibC%
 @echo ---------------------  
 
 :CheckNDK
-if exist %NovellNDK%\include\netware.h goto NDKOK
-@echo The path to the NDK "%NovellNDK%" is invalid.
-@echo Please set then NovellNDK environment variable to the location of the NDK
+if exist %NovellLibC%\include\netware.h goto NDKOK
+@echo The path to the NDK "%NovellLibC%" is invalid.
+@echo Please set then NovellLibC environment variable to the location of the NDK
 @echo ---------------------  
 goto Done
 
@@ -35,7 +35,7 @@ copy ..\srclib\pcre\config.hw ..\srclib\pcre\config.h
 copy ..\srclib\pcre\pcre.hw ..\srclib\pcre\pcre.h
 
 @echo Generating the import lists...
-set MWCIncludes=..\include;..\modules\http;..\os\netware;..\server\mpm\netware;..\srclib\apr\include;..\srclib\apr-util\include;+%NovellNDK%
+set MWCIncludes=..\include;..\modules\http;..\os\netware;..\server\mpm\netware;..\srclib\apr\include;..\srclib\apr-util\include;+%NovellLibC%
 mwccnlm -P nw_export.inc -d NETWARE -d CORE_PRIVATE -EP
 awk -f make_nw_export.awk nw_export.i |sort >..\os\netware\httpd.imp
 
