@@ -464,11 +464,28 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
+#if APR_HAS_PROC_INVOKED
+            if (procnew->invoked) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, rc, r,
+                              "mod_cgi: failed to invoke process: %s", 
+                              procnew->invoked);
+            }
+            else
+#endif
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-                        "couldn't create child process: %d: %s", rc, r->filename);
+                          "mod_cgi: couldn't create child process: %s",
+                          r->filename);
         }
         else {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
+
+#if APR_HAS_PROC_INVOKED
+            if (procnew->invoked) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, rc, r,
+                              "mod_cgi invoked process: %s", 
+                              procnew->invoked);
+            }
+#endif
 
             *script_in = procnew->out;
             if (!*script_in)
