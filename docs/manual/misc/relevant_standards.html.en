@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Relevant Standards - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Relevant Standards</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/misc/relevant_standards.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>This page documents all the relevant standards that the
+    Apache HTTP Server follows, along with brief descriptions.</p>
+
+    <p>In addition to the information listed below, the following resources
+    should be consulted:</p>
+
+    <ul>
+      <li>
+        <a href="http://purl.org/NET/http-errata">
+        http://purl.org/NET/http-errata</a> - HTTP/1.1 Specification Errata
+      </li>
+      <li>
+        <a href="http://www.rfc-editor.org/errata.html">
+        http://www.rfc-editor.org/errata.html</a> - RFC Errata
+      </li>
+      <li>
+        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
+        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - A pre-compiled list
+        of HTTP related RFCs
+      </li>
+    </ul>
+
+    <div class="warning"><h3>Notice</h3>
+    <p>This document is not yet complete.</p>
+    </div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#http_recommendations">HTTP Recommendations</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#html_recommendations">HTML Recommendations</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authentication">Authentication</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="http_recommendations" id="http_recommendations">HTTP Recommendations</a></h2>
+
+    <p>Regardless of what modules are compiled and used, Apache as a
+    basic web server complies with the following IETF recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      (Informational)</dt>
+
+      <dd>The Hypertext Transfer Protocol (HTTP) is an application-level
+      protocol with the lightness and speed necessary for distributed,
+      collaborative, hypermedia information systems.  This documents
+      HTTP/1.0.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      (Standards Track)</dt>
+
+      <dd>The Hypertext Transfer Protocol (HTTP) is an
+      application-level protocol for distributed, collaborative,
+      hypermedia information systems.  This documents HTTP/1.1.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      (Standards Track)</dt>
+
+      <dd>A Uniform Resource Identifier (URI) is a compact string of
+      characters for identifying an abstract or physical resource.</dd>
+    </dl>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="html_recommendations" id="html_recommendations">HTML Recommendations</a></h2>
+
+    <p>Regarding the Hypertext Markup Language, Apache complies with
+    the following IETF and W3C recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      (Informational)</dt>
+
+      <dd>This document summarizes the history of HTML development,
+      and defines the "text/html" MIME type by pointing to the relevant
+      W3C recommendations.</dd>
+
+      <dt><a href="http://www.w3.org/TR/html401">HTML 4.01 Specification</a>
+      (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
+      </dt>
+
+      <dd>This specification defines the HyperText Markup Language (HTML),
+      the publishing language of the World Wide Web. This specification
+      defines HTML 4.01, which is a subversion of HTML 4.</dd>
+
+      <dt><a href="http://www.w3.org/TR/REC-html32">HTML 3.2 Reference
+      Specification</a></dt>
+
+      <dd>The HyperText Markup Language (HTML) is a simple markup language
+      used to create hypertext documents that are portable from one
+      platform to another. HTML documents are SGML documents.</dd>
+
+      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML^(TM) 1.1 -
+      Module-based XHTML</a>
+      (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20010410-errata">Errata</a>)
+      </dt>
+
+      <dd>This Recommendation defines a new XHTML document type
+      that is based upon the module framework and modules defined in
+      Modularization of XHTML.</dd>
+
+      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML^(TM) 1.0 The
+      Extensible HyperText Markup Language (Second Edition)</a>
+      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata">Errata</a>)
+      </dt>
+
+      <dd>This specification defines the Second Edition of XHTML 1.0,
+      a reformulation of HTML 4 as an XML 1.0 application, and three
+      DTDs corresponding to the ones defined by HTML 4.</dd>
+    </dl>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authentication" id="authentication">Authentication</a></h2>
+
+    <p>Concerning the different methods of authentication, Apache
+    follows the following IETF recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      (Draft standard)</dt>
+
+      <dd>"HTTP/1.0", includes the specification for a Basic
+      Access Authentication scheme.</dd>
+
+    </dl>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/misc/relevant_standards.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
