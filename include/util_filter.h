@@ -163,9 +163,13 @@ typedef struct ap_filter_t ap_filter_t;
  * @ingroup filter
  * @{
  */
-typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
-typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
-                                          ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
+typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f,
+                                           apr_bucket_brigade *b);
+typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f,
+                                          apr_bucket_brigade *b, 
+                                          ap_input_mode_t mode,
+                                          apr_read_type_e block,
+                                          apr_off_t readbytes);
 
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
@@ -303,7 +307,8 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter,
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  */
-AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket);
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
+                                         apr_bucket_brigade *bucket);
 
 /**
  * This function is used to register an input filter with the system. 
@@ -318,8 +323,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade
  * @see add_input_filter()
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
-					  ap_in_filter_func filter_func,
-					  ap_filter_type ftype);
+                                          ap_in_filter_func filter_func,
+                                          ap_filter_type ftype);
 /**
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
@@ -333,8 +338,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  * @see ap_add_output_filter()
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
-					    ap_out_filter_func filter_func,
-					    ap_filter_type ftype);
+                                            ap_out_filter_func filter_func,
+                                            ap_filter_type ftype);
 
 /**
  * Adds a named filter into the filter chain on the specified request record.
@@ -355,7 +360,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
  * @param c The connection to add the fillter for
  */
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
-					      request_rec *r, conn_rec *c);
+                                              request_rec *r, conn_rec *c);
 
 /**
  * Variant of ap_add_input_filter() that accepts a registered filter handle
@@ -387,7 +392,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_get_input_filter_handle(const char *name);
  * @param c The connection to add this filter for
  */
 AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx, 
-					       request_rec *r, conn_rec *c);
+                                               request_rec *r, conn_rec *c);
 
 /**
  * Variant of ap_add_output_filter() that accepts a registered filter handle
@@ -447,7 +452,8 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  *          on return
  * @param p Ensure that all data in the brigade lives as long as this pool
  */
-AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to,
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
+                                         apr_bucket_brigade **save_to,
                                          apr_bucket_brigade **b, apr_pool_t *p);    
 
 /**
@@ -456,7 +462,8 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
  * @param bb The brigade to flush
  * @param ctx The filter to pass the brigade to
  */
-AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx);
+AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
+                                                void *ctx);
 
 /**
  * Flush the current brigade down the filter stack.
@@ -473,7 +480,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param nbyte The number of bytes in the data
  */
 #define ap_fwrite(f, bb, data, nbyte) \
-	apr_brigade_write(bb, ap_filter_flush, f, data, nbyte)
+        apr_brigade_write(bb, ap_filter_flush, f, data, nbyte)
 
 /**
  * Write a buffer for the current filter, buffering if possible.
@@ -482,7 +489,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param str The string to write
  */
 #define ap_fputs(f, bb, str) \
-	apr_brigade_puts(bb, ap_filter_flush, f, str)
+        apr_brigade_puts(bb, ap_filter_flush, f, str)
 
 /**
  * Write a character for the current filter, buffering if possible.
@@ -491,7 +498,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param c The character to write
  */
 #define ap_fputc(f, bb, c) \
-	apr_brigade_putc(bb, ap_filter_flush, f, c)
+        apr_brigade_putc(bb, ap_filter_flush, f, c)
 
 /**
  * Write an unspecified number of strings to the current filter
@@ -520,4 +527,4 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
 }
 #endif
 
-#endif	/* !AP_FILTER_H */
+#endif  /* !AP_FILTER_H */
