@@ -892,9 +892,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          * leave it to the pool cleanup to dispose of our mutex.
          */
         if (cid->completed) {
-            rv = apr_thread_mutex_create(&cid->completed, 
-                                         APR_THREAD_MUTEX_UNNESTED, 
-                                         r->pool);
+            (void)apr_thread_mutex_unlock(cid->completed);
             return 1;
         }
         else if (cid->dconf.log_unsupported) {
@@ -1498,7 +1496,7 @@ apr_status_t isapi_handler (request_rec *r)
                                      APR_THREAD_MUTEX_UNNESTED, 
                                      r->pool);
         if (cid->completed && (rv == APR_SUCCESS)) {
-            rv = apr_thread_mutex_lock(comp);
+            rv = apr_thread_mutex_lock(cid->completed);
         }
 
         if (!cid->completed || (rv != APR_SUCCESS)) {
