@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/28 21:07:58 $]
+Last modified at [$Date: 2002/05/28 21:14:28 $]
 
 Release:
 
@@ -87,7 +87,9 @@ RELEASE SHOWSTOPPERS:
       code and sniff out any side-effects it may uncover and is
       leaning toward 2.0.38 but will reserve final judgement
       since it's as yet unclear how soon 2.0.37 will be ready.
-      (vote tally for 2.0.37: +1: Sander, Ian; -0: Brian, Cliff)
+      Vote tally for 2.0.37:
+        +1: Sander, Ian, Justin
+        -0: Brian, Cliff
       Message-ID: <JLEGKKNELMHCJPNMOKHOGEIIFOAA.striker@apache.org>
                   <1022371367.23007.13.camel@mypc1.pacbell.net>
 
@@ -105,6 +107,11 @@ RELEASE SHOWSTOPPERS:
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
       Message-ID: <3CE15B85.2FF45121@apache.org>
+
+    * Invalid chunk-length lines do not return 413.
+      Status: Justin is looking at this and is confused how to properly
+              return 413.
+      Message-ID: <m3n0ukxsmr.fsf@rdu88-251-253.nc.rr.com>
 
 CURRENT VOTES:
 
