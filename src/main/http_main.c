@@ -5579,7 +5579,6 @@ die_now:
  	    "forcing termination of child #%d (handle %d)", i, process_handles[i]);
 	TerminateProcess((HANDLE) process_handles[i], 1);
     }
-    service_set_status(SERVICE_STOPPED);
 
     /* cleanup pid file on normal shutdown */
     {
@@ -5597,6 +5596,7 @@ die_now:
     }
 
     ap_destroy_mutex(start_mutex);
+    service_set_status(SERVICE_STOPPED);
     return (0);
 }
 
@@ -5718,7 +5718,7 @@ int REALMAIN(int argc, char *argv[])
         exit(0);
     }
 
-    if (!child) {
+    if (!child && !ap_dump_settings && !install) {
 	ap_log_pid(pconf, ap_pid_fname);
     }
     ap_set_version();
