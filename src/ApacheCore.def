@@ -320,7 +320,6 @@ EXPORTS
 	ap_method_number_of   @313
 	ap_exists_config_define   @314
 	ap_single_module_configure   @315
-	ap_single_module_init   @316
 	ap_make_etag   @317
 	ap_array_pstrcat   @318
 	ap_os_is_filename_valid   @319
