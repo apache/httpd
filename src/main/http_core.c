@@ -817,7 +817,11 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     conf->r = r;
 
     add_per_dir_conf (cmd->server, new_dir_conf);
- 
+
+    if (*arg != '\0')
+	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "DirectoryMatch" : "Directory",
+			"> arguments not (yet) supported.", NULL);
+
     cmd->path = old_path;
     cmd->override = old_overrides;
 
@@ -867,6 +871,10 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     add_per_url_conf (cmd->server, new_url_conf);
     
+    if (*arg != '\0')
+	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "LocationMatch" : "Location",
+			"> arguments not (yet) supported.", NULL);
+
     cmd->path = old_path;
     cmd->override = old_overrides;
 
@@ -928,6 +936,10 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     add_file_conf (c, new_file_conf);
     
+    if (*arg != '\0')
+	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "FilesMatch" : "Files",
+			"> arguments not (yet) supported.", NULL);
+
     cmd->path = old_path;
     cmd->override = old_overrides;
 
