@@ -34,8 +34,8 @@ client</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#compressionlevel">CompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
@@ -214,23 +214,6 @@ client</td></tr>
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CompressionLevel" id="CompressionLevel">CompressionLevel</a> <a name="compressionlevel" id="compressionlevel">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much compression do we apply to the output</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CompressionLevel<var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Zlib's default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-</table>
-    <p>The <code class="directive">CompressionLevel</code> directive specifies
-        what level of compression should be used, the higher the value, 
-        the better the compression, but the more CPU time is required to
-        achieve this.</p>
-    <p>The value must between 1 (less compression) and 9 (more compression).</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fragment size to be compressed at one time by zlib</td></tr>
@@ -246,6 +229,24 @@ client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much compression do we apply to the output</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateCompressionLevel<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Zlib's default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>This directive is available since Apache 2.0.45</td></tr>
+</table>
+    <p>The <code class="directive">DeflateCompressionLevel</code> directive specifies
+        what level of compression should be used, the higher the value, 
+        the better the compression, but the more CPU time is required to
+        achieve this.</p>
+    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Places the compression ratio in a note for logging</td></tr>
@@ -253,7 +254,7 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><var>type</var> is available since Apache 2.1</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><var>type</var> is available since Apache 2.0.45</td></tr>
 </table>
     <p>The <code class="directive">DeflateFilterNote</code> directive
     specifies that a note about compression ratios should be attached
