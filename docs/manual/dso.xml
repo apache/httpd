@@ -42,7 +42,7 @@
     itself. Practically all other distributed Apache modules can then
     be placed into a DSO by individually enabling the DSO build for
     them via <code>configure</code>'s
-    <code>--enable-<em>module</em>=shared</code> option as disucussed
+    <code>--enable-<em>module</em>=shared</code> option as discussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
     can use <module>mod_so</module>'s <directive
