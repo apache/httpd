@@ -1443,8 +1443,12 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
         /* If the best variant's charset is ISO-8859-1 and this variant has
            the same charset quality, then we prefer this variant */
         if (variant->charset_quality == best->charset_quality &&
-            (best->content_charset == NULL || *best->content_charset == 0 ||
-            strcmp(best->content_charset, "iso-8859-1") == 0)) {
+            (variant->content_charset != NULL &&
+             *variant->content_charset != '\0' &&
+             strcmp(variant->content_charset, "iso-8859-1") != 0) &&
+            (best->content_charset == NULL ||
+             *best->content_charset == '\0' ||
+             strcmp(best->content_charset, "iso-8859-1") == 0)) {
             *p_bestq = q;
             return 1;
 	}
@@ -1542,9 +1546,12 @@ int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, f
     /* If the best variant's charset is ISO-8859-1 and this variant has
        the same charset quality, then we prefer this variant */
     if (variant->charset_quality > best->charset_quality ||
-        (variant->charset_quality == best->charset_quality &&
-        (best->content_charset == NULL || *best->content_charset == 0 ||
-        strcmp(best->content_charset, "iso-8859-1") == 0))) {
+	((variant->content_charset != NULL &&
+          *variant->content_charset != '\0' &&
+	  strcmp(variant->content_charset, "iso-8859-1") != 0) &&
+	 (best->content_charset == NULL ||
+	  *best->content_charset == '\0' ||
+	  strcmp(best->content_charset, "iso-8859-1") == 0))) {
         *p_bestq = q;
         return 1;
     }
