@@ -28,10 +28,10 @@ include $(top_srcdir)/build/program.mk
 
 install-conf:
 	@echo Installing configuration files
-	@test -d $(sysconfdir) || $(MKINSTALLDIRS) $(sysconfdir)
+	@test -d $(DESTDIR)$(sysconfdir) || $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)
 	@cd $(top_srcdir)/docs/conf; \
 	for i in mime.types magic; do \
-		$(INSTALL_DATA) $$i $(sysconfdir); \
+		$(INSTALL_DATA) $$i $(DESTDIR)$(sysconfdir); \
 	done; \
 	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
 		cd $$j ; \
@@ -67,31 +67,31 @@ install-conf:
 					-e 's#@@Port@@#$(PORT)#g' \
 					< $$i; \
 			fi \
-		) > $(sysconfdir)/$$i; \
-		chmod 0644 $(sysconfdir)/$$i; \
+		) > $(DESTDIR)$(sysconfdir)/$$i; \
+		chmod 0644 $(DESTDIR)$(sysconfdir)/$$i; \
 		file=`echo $$i|sed s/-std//`; \
 		if [ "$$file" = "httpd.conf" ]; then \
 			file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
 		fi; \
-		if test "$$file" != "$$i" && test ! -f $(sysconfdir)/$$file; then \
-			$(INSTALL_DATA) $(sysconfdir)/$$i $(sysconfdir)/$$file; \
+		if test "$$file" != "$$i" && test ! -f $(DESTDIR)$(sysconfdir)/$$file; then \
+			$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/$$i $(DESTDIR)$(sysconfdir)/$$file; \
 		fi; \
 	done ; \
 	done
 	@if test -f "$(builddir)/envvars-std"; then \
-	    cp -p envvars-std $(sbindir); \
-	    if test ! -f $(sbindir)/envvars; then \
-	        cp -p envvars-std $(sbindir)/envvars ; \
+	    cp -p envvars-std $(DESTDIR)$(sbindir); \
+	    if test ! -f $(DESTDIR)$(sbindir)/envvars; then \
+	        cp -p envvars-std $(DESTDIR)$(sbindir)/envvars ; \
 	    fi ; \
 	fi
 
 install-build:
 	@echo Installing build system files 
-	@test -d $(installbuilddir) || $(MKINSTALLDIRS) $(installbuilddir) 
-	@cp build/*.mk $(installbuilddir); \
+	@test -d $(DESTDIR)$(installbuilddir) || $(MKINSTALLDIRS) $(DESTDIR)$(installbuilddir) 
+	@cp build/*.mk $(DESTDIR)$(installbuilddir); \
 	sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
-	    build/config_vars.mk > $(installbuilddir)/config_vars.mk; \
-	cp $(top_srcdir)/build/instdso.sh $(installbuilddir);
+	    build/config_vars.mk > $(DESTDIR)$(installbuilddir)/config_vars.mk; \
+	cp $(top_srcdir)/build/instdso.sh $(DESTDIR)$(installbuilddir);
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
 
@@ -104,77 +104,77 @@ dox::
 
 install-htdocs:
 	@echo Installing HTML documents
-	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
-	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
-	@test -d $(manualdir) || $(MKINSTALLDIRS) $(manualdir)
-	@test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(manualdir))
-	@test "x$(htdocsdir)" != "x" && cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf
+	@test -d $(DESTDIR)$(htdocsdir) || $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir)
+	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir))
+	@test -d $(DESTDIR)$(manualdir) || $(MKINSTALLDIRS) $(DESTDIR)$(manualdir)
+	@test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
+	@test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf
 
 install-error:
 	@echo Installing error documents
-	@test -d $(errordir) || $(MKINSTALLDIRS) $(errordir)
-	@cd $(top_srcdir)/docs/error && cp -rp * $(errordir)
-	@test "x$(errordir)" != "x" && cd $(errordir) && find . -name "CVS" -print | xargs rm -rf
+	@test -d $(DESTDIR)$(errordir) || $(MKINSTALLDIRS) $(DESTDIR)$(errordir)
+	@cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir)
+	@test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -print | xargs rm -rf
 
 install-icons:
 	@echo Installing icons
-	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
-	@cd $(top_srcdir)/docs/icons && cp -rp * $(iconsdir)
-	@test "x$(iconsdir)" != "x" && cd $(iconsdir) && find . -name "CVS" -print | xargs rm -rf
+	@test -d $(DESTDIR)$(iconsdir) || $(MKINSTALLDIRS) $(DESTDIR)$(iconsdir)
+	@cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir)
+	@test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -print | xargs rm -rf
 
 install-cgi:
 	@echo Installing CGIs
-	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
-	@cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(cgidir)
-	@test "x$(cgidir)" != "x" && cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf
+	@test -d $(DESTDIR)$(cgidir) || $(MKINSTALLDIRS) $(DESTDIR)$(cgidir)
+	@cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir)
+	@test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name "CVS" -print | xargs rm -rf
 
 install-other:
-	@test -d $(logfiledir) || $(MKINSTALLDIRS) $(logfiledir)
-	@test -d $(runtimedir) || $(MKINSTALLDIRS) $(runtimedir)
+	@test -d $(DESTDIR)$(logfiledir) || $(MKINSTALLDIRS) $(DESTDIR)$(logfiledir)
+	@test -d $(DESTDIR)$(runtimedir) || $(MKINSTALLDIRS) $(DESTDIR)$(runtimedir)
 	@for ext in dll x; do \
 		file=apachecore.$$ext; \
 		if test -f $$file; then \
-			cp -p $$file $(libdir); \
+			cp -p $$file $(DESTDIR)$(libdir); \
 		fi; \
 	done; \
 	file=httpd.dll; \
 	if test -f $$file; then \
-		cp -p $$file $(bindir); \
+		cp -p $$file $(DESTDIR)$(bindir); \
 	fi;
 
 install-include:
 	@echo Installing header files
-	@test -d $(includedir)     || $(MKINSTALLDIRS) $(includedir)
-	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
-	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
+	@test -d $(DESTDIR)$(includedir)     || $(MKINSTALLDIRS) $(DESTDIR)$(includedir)
+	@cp -p include/*.h $(srcdir)/include/*.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(DESTDIR)$(includedir)
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
-            cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir); \
+            cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(DESTDIR)$(includedir); \
         fi;
-	@cp -p $(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h $(includedir)
-	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
-	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
-	@cp -p $(srcdir)/modules/generators/mod_cgi.h $(includedir)
-	@cp -p $(srcdir)/modules/loggers/mod_log_config.h $(includedir)
-	@cp -p $(srcdir)/modules/http/mod_core.h $(includedir)
-	@cp -p $(srcdir)/modules/proxy/mod_proxy.h $(includedir)
-	@cp -p $(srcdir)/modules/ssl/*.h $(includedir)
-	@cp -p $(srcdir)/srclib/pcre/pcre*.h $(includedir)
-	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(includedir)
-	@chmod 644 $(includedir)/*.h
+	@cp -p $(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/filters/mod_include.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/generators/mod_cgi.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/loggers/mod_log_config.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/http/mod_core.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/proxy/mod_proxy.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/modules/ssl/*.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/srclib/pcre/pcre*.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(DESTDIR)$(includedir)
+	@chmod 644 $(DESTDIR)$(includedir)/*.h
 
 install-man:
 	@echo Installing man pages
-	@test -d $(mandir)      || $(MKINSTALLDIRS) $(mandir)
-	@test -d $(mandir)/man1 || $(MKINSTALLDIRS) $(mandir)/man1
-	@test -d $(mandir)/man8 || $(MKINSTALLDIRS) $(mandir)/man8
-	@cp -p $(top_srcdir)/docs/man/*.1 $(mandir)/man1
-	@cp -p $(top_srcdir)/docs/man/*.8 $(mandir)/man8
+	@test -d $(DESTDIR)$(mandir)      || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)
+	@test -d $(DESTDIR)$(mandir)/man1 || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man1
+	@test -d $(DESTDIR)$(mandir)/man8 || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man8
+	@cp -p $(top_srcdir)/docs/man/*.1 $(DESTDIR)$(mandir)/man1
+	@cp -p $(top_srcdir)/docs/man/*.8 $(DESTDIR)$(mandir)/man8
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
-            test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir); \
-            $(INSTALL_PROGRAM) $(top_builddir)/support/suexec $(sbindir); \
-            chmod 4755 $(sbindir)/suexec; \
+            test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir); \
+            $(INSTALL_PROGRAM) $(top_builddir)/support/suexec $(DESTDIR)$(sbindir); \
+            chmod 4755 $(DESTDIR)$(sbindir)/suexec; \
 	fi
 
 suexec:
