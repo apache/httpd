@@ -377,6 +377,26 @@ int main(int argc, char *argv[])
     int noninteractive = 0;
     int i;
     int args_left = 2;
+#ifdef CHARSET_EBCDIC
+    ap_pool_t *pool;
+    ap_status_t rv;
+    ap_xlate_t *to_ascii;
+
+    ap_initialize();
+    atexit(ap_terminate);
+    ap_create_pool(&pool, NULL);
+
+    rv = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    if (rv) {
+        fprintf(stderr, "ap_xlate_open(to ASCII)->%d\n", rv);
+        exit(1);
+    }
+    rv = ap_MD5InitEBCDIC(to_ascii);
+    if (rv) {
+        fprintf(stderr, "ap_MD5InitEBCDIC()->%d\n", rv);
+        exit(1);
+    }
+#endif /*CHARSET_EBCDIC*/
 
     tempfilename = NULL;
     signal(SIGINT, (void (*)(int)) interrupted);
