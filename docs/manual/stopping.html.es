@@ -25,10 +25,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/stopping.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Este documento explica como iniciar y parar el servidor Apache
      en sistemas tipo Unix. Los usuarios de Windows NT, 2000 y XP
@@ -42,17 +38,17 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">Reinicio Graceful</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Reiniciar Apache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#race">Apéndice: señales y race conditions</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introducción</a></h2>
 
     <p>Para parar y reiniciar Apache, hay que enviar la señal
-    apropiada al proceso padre <code>httpd</code> que se esté
+    apropiada al proceso padre <code class="program"><a href="./programs/httpd.html">httpd</a></code> que se esté
     ejecutando.  Hay dos maneras de enviar estas señales.  En
     primer lugar, puede usar el comando de Unix <code>kill</code> que
     envía señales directamente a los procesos. Puede que
-    tenga varios procesos <code>httpd</code> ejecutandose en su
+    tenga varios procesos <code class="program"><a href="./programs/httpd.html">httpd</a></code> ejecutandose en su
     sistema, pero las señales deben enviarse solamente al proceso
     padre, cuyo pid está especificado en la directiva <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. Esto quiere decir que no
     debe necesitar enviar señales a ningún proceso excepto
@@ -66,15 +62,16 @@
 <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
     <p>La segunda manera de enviar señales a los procesos
-    <code>httpd</code> es usando las opciones de línea de
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> es usando las opciones de línea de
     comandos <code>-k</code>: <code>stop</code>, <code>restart</code>,
     y <code>graceful</code>, como se muestra más abajo.  Estas
-    opciones se le pueden pasar al binario <a href="programs/httpd.html">httpd</a>, pero se recomienda que se
-    pasen al script de control <a href="programs/apachectl.html">apachectl</a>, que a su vez los
-    pasará a <code>httpd</code>.</p>
+    opciones se le pueden pasar al binario <code class="program"><a href="./programs/httpd.html">httpd</a></code>,
+    pero se recomienda que se pasen al script de control
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, que a su vez los pasará a
+    <code>httpd</code>.</p>
 
     <p>Después de haber enviado las señales que desee a
-    <code>httpd</code>, puede ver como progresa el proceso
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>, puede ver cómo progresa el proceso
     escribiendo:</p>
 
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
@@ -173,18 +170,18 @@
     servidor -- no será posible conectarse a la lista de puertos
     de escucha. Antes de reiniciar, puede comprobar que la sintaxis de
     sus ficheros de configuracion es correcta con la opción de
-    línea de comandos <code>-t</code> (consulte <a href="programs/httpd.html">httpd</a>). No obstante, esto no
-    garantiza que el servidor se reinicie correctamente. Para
-    comprobar que no hay errores en los ficheros de
-    configuración, puede intentar iniciar <code>httpd</code> con
-    un usuario diferente a root. Si no hay errores, intentará
-    abrir sus sockets y logs y fallará porque el usuario no es
-    root (o porque el <code>httpd</code> que se está ejecutando
-    en ese momento ya está conectado a esos puertos). Si falla
-    por cualquier otra razón, entonces casi seguro que hay
-    algún error en alguno de los ficheros de configuración y
-    debe corregir ese o esos errores antes de hacer un reinicio
-    graceful.</div>
+    línea de comandos <code>-t</code> (consulte
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>). No obstante, esto no garantiza que el
+    servidor se reinicie correctamente. Para comprobar que no hay
+    errores en los ficheros de configuración, puede intentar
+    iniciar <code class="program"><a href="./programs/httpd.html">httpd</a></code> con un usuario diferente a root. Si no
+    hay errores, intentará abrir sus sockets y logs y
+    fallará porque el usuario no es root (o porque el
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> que se está ejecutando en ese momento ya
+    está conectado a esos puertos). Si falla por cualquier otra
+    razón, entonces casi seguro que hay algún error en
+    alguno de los ficheros de configuración y debe corregir ese o
+    esos errores antes de hacer un reinicio graceful.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="hup" id="hup">Reiniciar Apache</a></h2>

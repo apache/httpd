@@ -23,11 +23,7 @@
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
-
+ 
     <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>
 </div>
@@ -36,52 +32,52 @@
 <h2><a name="index" id="index">Índice</a></h2>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
 
       <dd>Servidor Apache del Protocolo de Transmisión de
       Hipertexto (HTTP)</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
 
       <dd>Interfaz de control del servidor HTTP Apache </dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
 
       <dd>Herramienta de benchmarking del Servidor HTTP Apache</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
 
       <dd>Herramienta de Extensión de Apache</dd>
 
-      <dt><a href="configure.html">configure</a></dt>
+      <dt><code class="program"><a href="../programs/configure.html">configure</a></code></dt>
 
       <dd>Configuración de la estructura de directorios de Apache</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
 
       <dd>Crea y actualiza los archivos de autentificación de usuarios
       en formato DBM para autentificación básica</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
       <dd>Crea y actualiza los ficheros de autentificación de usuarios
       para autentificación tipo digest</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
       <dd>Crea y actualiza los ficheros de autentificación de usuarios
       para autentificación básica</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
 
       <dd>Resuelve los nombres de host para direcciones IP que estén
       en los ficheros log de Apache</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
       <dd>Renueva los logs de Apache sin parar el servidor</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
 
       <dd>Switch User For Exec. Programa para cambiar la identidad de
       usuario con la que se ejecuta un CGI</dd>
