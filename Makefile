@@ -12,7 +12,7 @@ all: src/httpd
 
 src/httpd:
 	(cd src; \
-	  test ! -f Configuration && cp Configuration.tmpl Configuration; \
+	  test ! -f Configuration && cp Configuration.tmpl Configuration || true; \
 	  ./Configure -file Configuration; $(MAKE) all support)
 
 lint: 
