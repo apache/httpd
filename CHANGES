@@ -1,5 +1,10 @@
 Changes with Apache 2.0.15-dev
 
+  *) Cleanup the build process a bit more.  The Apache configure
+     script no longer creates its own helper scripts, it just
+     uses APR's.  
+     [jean-frederic clere <jfrederic.clere@fujitsu-siemens.com>]
+
   *) Stop the forced downgrade of the connection to HTTP/1.0 for
      proxy requests.  [Graham Leggett]
 
