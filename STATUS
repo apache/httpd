@@ -11,7 +11,6 @@ Release:
 
 Current Modes:
 
-    * CODE FREEZE in effect for 1.3b5.  NO COMMITS!
     o Commit-Then-Review (see <http://dev.apache.org/guidelines.html#ctr>
 
 Plan:
@@ -20,130 +19,8 @@ Showstoppers:
 
 Committed Code Changes:
 
-    * Paul's [PATCH] to build shared modules with "SharedModule" command
-    * Sameer's mod_so.c to dynamically load modules (experimental)
-    * Ben Hyde's [PATCH] fix mmap error conditions again
-    * [PATCH] Fix problems with timeouts in inetd mode and -X mode
-    * Marc's [PATCH] fix strtoul
-    * Alexei's [PATCH/Win32] Remove main() from ApacheCore.dll
-    * Ben's [PATCH] Only lowercase "real" path
-    * Ben Hyde's [PATCH] general/1387: scoreboard_image memory allocation
-    * Martin's [PATCH] [FEATURE] Clickable Path Components in ftp dir header
-    * Martin's [FIX] Deleted redundant pstrndup() call which slipped in
-    * Martin's [PATCH] add |APLOG_NOERRNO to proxy log messages
-    * Ken's [PATCH] for #1479, #1480
-    * Dean's [PATCH] fail gracefully if cd fails
-    * Dean's [PATCH] Re: general/1491: mmap_handler error_log entry
-    * Marc's [PATCH] FreeBSD 2.2+ can use SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-    * Ken's [PATCH] Configure be more verbose when it can't find
-      Configuration
-    * Paul's [PATCH] Proper reporting of Win32 errors
-    * Ben's [PATCH] WIN32: Allow spaces to prefix the interpreter in #! lines
-    * Ben's [PATCH] PR#1511 Make set_file_slot() use os_is_path_absolute()
-    * [PATCH] for PR#1523: Cure filehandle leak in Win32 CGI
-    * Igor Tatarinov's [PATCH] pthread_mutex_ functions do not set errno
-    * Dean's [PATCH] PR#1319: RedirectMatch gone / causes SIGSEGV
-    * Lars' [Patch] PR#1512 typo in mod_alias.html
-    * Dean's [PATCH] PR#1542 Better glibc support for linux
-    * Dean's [PATCH] mod_mime_magic small bug fixes
-    * Ben Hyde's [PATCH] Let CVS ignore MSDev's ApacheOS[DR] directories
-    * Dean's [PATCH] mod_negotiation small bug fix
-    * Ken's stage 2 of moving ap_*() to src/ap (ap_slack() move)
-    * Brian Havard's [PATCH] mod_mime_magic and OS/2
-    * Igor Tatarinov's [PATCH] usage patch (-V)
-    * Dean's [PATCH] child_timeout not correctly defined
-    * Mark Bixby's [PORT] MPE porting patch
-    * Dean's [PATCH] Re: problem with a .gif and v2.1.4
-    * Dean's [PATCH] util_date.c needless reinitialization
-    * Martin's [PATCH] Gimme a break! (missing break;s in mod_include)
-    * Dean's [PATCH] two bugs in mod_autoindex
-    * Igor Tatarinov's Re: A tiny correction and a question on writev_it_all
-    * Dean's [PATCH] more useful warning message for fcntl() lock failure
-    * Dean's [PATCH] ap_snprintf should be more sane (fwd)
-    * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
-    * [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
-    * Dean's [PATCH] fix Rasmus' chunking error (take 2, really fix it)
-    * [PATCH] PR#1366: fix result of send_fd_length
-    * Ben Hyde's [PATCH] Finish suite of mutex ops for non-threaded platforms
-    * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool
-      (take 2)
-    * Ken's [PATCH] for PR#1195 (" in realm names)
-    * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
-    * Dean's [PATCH] 1.3: "DoS" attack
-    * Paul/Ben's [PATCH] 1.3: spaces in NT spawn* arguments
-    * Dean's [PATCH] mod_info minor cleanups (take 2)
-    * Dean's [PATCH] mod_status cleanups
-    * [PATCH] mod_digest/1599: proxy authentication using the digest auth
-      scheme never succeeds (fwd)
-    * Paul's [PATCH] a bundle of multithreading changes
-    * Ken's [PATCH] for copyright year update
-    * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
-    * Dean's [PATCH] make mod_include use ap_cpystrn
-    * WIN32: fix proxy caching
-    * WIN32: fix CGI scripts called w/o '=' in path info  PR#1591
-    * Doug's [PATCH] add -c and -C switches (take 3)
-    * Paul's WIN32: patch to allow for Doug's -c option
-    * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
-    * Brian Havard's [Patch] OS/2 - fix up shut down
-    * Dean's [PATCH] make mod_rewrite use ap_cpystrn
-    * Martin's [PORT] Make apache compile & run on an EBCDIC mainframe
-    * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
-    * Dean's [PATCH] protect the environment
-    * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
-    * mod_rewrite/1684: RewriteLog directive does the equivalent of
-     "HostnameLookups on"
-    * protocol/1683: The Connection header may contain multiple close tokens
-    * some of Marc's 1.2.5 security patches (minus proxy fixes)
-    * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
-      misplacement.
-    * Ken's addition of src/ap/ap.h for prototypes of routines in libap.a
-    * Ken's addition of #ifndef wrappers to src/main/*.h header files
-    * Ken's removal of problem-causing "const"s from mod_imap.c
-    * os-next/1613: can't compile
-    * os-next/1614: can't compile
-    * os-os2/1482: I cannot add a user in an existing password file
-    * Martin's [PATCH] Improve implementation of -c/-C directive reading
-      (take 2)
-    * Dean's [PATCH] MONCONTROL for profiling children
-    * Marc's [PATCH] don't log bogus errno when file doesn't exist
-    * Dean's [PATCH] OSF/1 serialized accept
-    * Marc's [PATCH] PR#1543: suexec logging exec failures
-    * Ben Hyde's [PATCH] WIN32 deserves a pid log file
-    * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
-    * Marc's [PATCH] define to allow passing of Authorization header
-    * Roy's [PATCH] protocol/1399: failing to read body
-    * PR#1082, 1282, 1499, 1553: unixware cleanup
-    * mod_spelling added to win32 build
-    * Jim's rename of SAFE_UNSERIALIZED_ACCEPT to
-      SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-    * Jim's addition of USE_MMAP_SCOREBOARD and USE_SHMGET_SCOREBOARD in
-      conjunction with HAVE_MMAP and HAVE_SHMGET to select scoreboard
-      type.
-    * Jim's [PATCH] A/UX can use SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-    * Jim's [PATCH] force Unixware to use mmap() scoreboard (before
-      was dependent on ordering of the #defines in http_main.c)
-    * table api cleanup
-    * [PORT] Add function to emulate the execution of #! scripts
-      for OS's which don't support starting them automatically
-      (enable with #define NEED_HASHBANG_EMUL)
-    * more mod_mime_magic cleanup
-    * Add more compile time diagnosis to main's -V switch
-    * [Port] Fix CGI-Execution for EBCDIC hosts.
-    * Martin's [PATCH] "Signing" server generated pages
-    * Dmitry's table_*n API addition
-    * mod_unique_id didn't deal with internal_redirect properly
-    * SIGURG isn't everywhere like elvis
-    * some rfc2068 case insensitivity issues
-    * r->allowed cleanup
-    * References to undefined 'cwd' cell fixed in suexec.c
-    * fix options/allowoverride merging
-    * tweak some table sizes
-    * fix r->hostname port stripping
-    * Ken's restructuring the header files into src/include
-    * UseCanonicalName
-    * default_port/http_method
-    * ap_read/ap_write
-    * minor r->finfo handling cleanups
+    (Do we really have to keep this up to date?? It's the same as what's
+    in src/CHANGES -djg)
 
 Available Patches:
 
@@ -412,7 +289,5 @@ Win32 specific issues:
 	- mod_mime_magic.c (needs access to mod_mime API stage...)
 
     * do something to disable bogus warnings
-
-    * double check the test_filename and os_canonical_name thing in
-	directory_walk ... Dean thinks it looks bogus, r->filename
-	isn't used for comparisons, test_filename is.
+    
+    * SECURITY: PR#1203 still needs to be dealt with for WIN32
