@@ -134,7 +134,7 @@ sub randchar {
     "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   while ($count--) {
     # 64 = length($enc) in call to rand() below
-    $str .= substr($enc,int(rand(64))+1,1);
+    $str .= substr($enc,int(rand(64)),1);
   }
   $str;
 }
