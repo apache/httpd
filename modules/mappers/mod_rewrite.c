@@ -1444,6 +1444,18 @@ static int hook_fixup(request_rec *r)
     }
 
     /*
+     *  .htaccess file is called before really entering the directory, i.e.:
+     *  URL: http://localhost/foo  and .htaccess is located in foo directory
+     *  Ignore such attempts, since they may lead to undefined behaviour.
+     */
+    if (r->filename &&
+        strlen(r->filename) == strlen(dconf->directory) - 1 &&
+        (dconf->directory)[strlen(dconf->directory) - 1] == '/' &&
+        !strncmp(r->filename, dconf->directory, strlen(dconf->directory) - 1)) {
+        return DECLINED;
+    }
+
+    /*
      *  only do something under runtime if the engine is really enabled,
      *  for this directory, else return immediately!
      */
