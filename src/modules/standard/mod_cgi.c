@@ -336,7 +336,14 @@ int cgi_handler (request_rec *r)
 	    while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL)
 	        continue;
 	    kill_timeout (r);
-	    
+
+
+	   /* This redirect needs to be a GET no matter what the original
+	    * method was.
+	    */
+	    r->method = pstrdup(r->pool, "GET");
+	    r->method_number = M_GET;
+
 	    internal_redirect (location, r);
 	    return OK;
         }

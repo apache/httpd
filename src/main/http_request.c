@@ -563,6 +563,11 @@ void die(int type, request_rec *r)
 	    r->no_cache = 1;	/* Do NOT send USE_LOCAL_COPY for
 				 * error documents!
 				 */
+		/* This redirect needs to be a GET no matter what the original
+		 * method was.
+		 */
+		r->method = pstrdup(r->pool, "GET");
+		r->method_number = M_GET;
 	    internal_redirect (custom_response, r);
 	    return;
 	} else {
@@ -706,14 +711,10 @@ void internal_redirect (char *new_uri, request_rec *r)
     new->prev = r;
     r->next = new;
     
-    /* We are redirecting.  Treat the internally generated transaction
-     * as a GET, since there is not a chance of its getting POST-style
-     * arguments.   
-     */
-    new->method = "GET";
-    new->method_number = M_GET;
-
     /* Inherit the rest of the protocol info... */
+
+    new->method = r->method;
+    new->method_number = r->method_number;
     
     new->status = r->status;
     new->assbackwards = r->assbackwards;
