@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Bug #11213.. make module loading error messages more informative 
+     [Ian Darwin <Ian779@darwinsys.com>]
+
   *) thread safety & proxy-ftp [Alexey Panchenko alexey@liwest.ru, Ian Holsman]
 
   *) mod_disk_cache works much better. This module should still
