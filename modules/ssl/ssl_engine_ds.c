@@ -231,6 +231,12 @@ unsigned char *ssl_asn1_table_set(apr_hash_t *table,
     return asn1->cpData; /* caller will assign a value to this */
 }
 
+ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
+                               const void *key)
+{
+    return (ssl_asn1_t *)apr_hash_get(table, key, APR_HASH_KEY_STRING);
+}
+
 void ssl_asn1_table_unset(apr_hash_t *table,
                           const void *key)
 {
