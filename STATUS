@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/17 06:43:19 $]
+Last modified at [$Date: 2002/02/17 07:09:00 $]
 
 Release:
 
@@ -79,28 +79,6 @@ FINAL RELEASE SHOWSTOPPERS:
                     one uses it except for core_input_filter.  If its
                     use was prevalent, that'd be a different story."
 
-    * [Ken] Test suite failures:
-      o worker is also failing some of the 'cgi' subtests
-      (see <URL:http://Source-Zone.Org/Apache/regression/>):
-        Justin says: "Worker should be fine and passes httpd-test here.
-                      If you can provide evidence that it can be reproduced
-                      outside of httpd-test, then it's a showstopper.  I
-                      think it's a perl or a httpd-test problem."
-        Not a showstopper: Justin
-
-    * [Ken] A binbuild installation picks up the right libraries when
-      running apachectl because we set the appropriate environment
-      variable, but ab, htpasswd, etc. don't know how to pick up apr,
-      apr-util, etc.
-        Message-ID: <20020116000226.GA15991@ebuilt.com>
-        gregames says: what about httpd?  yeah, it works at the moment
-                       if you use apachectl.  But I've already heard
-                       complaints about not being able to execute 
-                       httpd directly.
-        Status: Aaron has committed this for all the support binaries,
-                but is hesitant to do the same for the httpd binary.
-        Message-ID: <20020207142751.T31582@clove.org>
-
 CURRENT VOTES:
 
     * Should we always build binaries statically unless otherwise
@@ -129,6 +107,18 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Can a static httpd be built reliably?
+        Message-ID: <20020207142751.T31582@clove.org>
+
+    * [Ken] Test suite failures:
+      o worker is also failing some of the 'cgi' subtests
+      (see <URL:http://Source-Zone.Org/Apache/regression/>):
+        Justin says: "Worker should be fine and passes httpd-test here.
+                      If you can provide evidence that it can be reproduced
+                      outside of httpd-test, then it's a showstopper.  I
+                      think it's a perl or a httpd-test problem."
+        Not a showstopper: Justin
 
     * When we start httpd with the -DNO_DETACH flag on Unix, we
       should still create a new session (and possibly also still close
