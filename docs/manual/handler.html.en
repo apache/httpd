@@ -31,25 +31,25 @@ handlers in the standard distribution are as follows:</p>
 <ul>
 <li><strong>send-as-is</strong>:
     Send file with HTTP headers as is.
-    (<a href="mod_asis.html">mod_asis</a>)
+    (<a href="mod/mod_asis.html">mod_asis</a>)
 <li><strong>cgi-script</strong>:
     Treat the file as a CGI script.
-    (<a href="mod_cgi.html">mod_cgi</a>)
+    (<a href="mod/mod_cgi.html">mod_cgi</a>)
 <li><strong>imap-file</strong>:
     Imagemap rule file.
-    (<a href="mod_imap.html">mod_imap</a>)
+    (<a href="mod/mod_imap.html">mod_imap</a>)
 <li><strong>server-info</strong>:
     Get the server's configuration information
-    (<a href="mod_info.html">mod_info</a>)
+    (<a href="mod/mod_info.html">mod_info</a>)
 <li><strong>server-parsed</strong>:
     Parse for server-side includes
-    (<a href="mod_include.html">mod_include</a>)
+    (<a href="mod/mod_include.html">mod_include</a>)
 <li><strong>server-status</strong>:
     Get the server's status report
-    (<a href="mod_status.html">mod_status</a>)
+    (<a href="mod/mod_status.html">mod_status</a>)
 <li><strong>type-map</strong>:
     Parse as a type map file for content negotiation
-    (<a href="mod_negotiation.html">mod_negotiation</a>)
+    (<a href="mod/mod_negotiation.html">mod_negotiation</a>)
 </ul>
 
 <p>
