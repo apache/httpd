@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 18:51:59 $]
+Last modified at [$Date: 2002/02/04 19:19:55 $]
 
 Release:
 
@@ -131,6 +131,8 @@ RELEASE SHOWSTOPPERS:
                 platforms, and should only be used in MPMs like worker
                 with limited OS exposure.
         BrianP asks: "Is this really a showstopper?"
+        IanH says: "If we don't do it before we go live we will have 2
+                    different API's to support in APR"
 
     * A binbuild installation picks up the right libraries when
       running apachectl because we set the appropriate environment
