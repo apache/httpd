@@ -122,6 +122,14 @@ cp srclib/apr/build/config.guess build
 cp srclib/apr/build/config.sub build
 cp srclib/apr/build/PrintPath build
 
+# Optionally copy libtool-1.3.x files
+if [ -f srclib/apr/build/ltconfig ]; then
+    cp srclib/apr/build/ltconfig build
+fi
+if [ -f srclib/apr/build/ltmain.sh ]; then
+    cp srclib/apr/build/ltmain.sh build
+fi
+
 echo rebuilding $pcre_configure
 (cd srclib/pcre && ${AUTOCONF:-autoconf})
 
