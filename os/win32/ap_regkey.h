@@ -154,6 +154,26 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
                                              const char *valuename, 
                                              apr_pool_t *pool);
 
+AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
+                                             const char *valuename, 
+                                             const char *value, 
+                                             apr_pool_t *pool);
+
+AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result, 
+                                                   ap_regkey_t *key,
+                                                   const char *valuename, 
+                                                   apr_pool_t *pool);
+
+AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key, 
+                                                   const char *valuename, 
+                                                   int nelts, 
+                                                   const char * const * elts,
+                                                   apr_pool_t *pool);
+
+AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key, 
+                                                const char *valuename,
+                                                apr_pool_t *pool);
+
 #ifdef __cplusplus
 }
 #endif
