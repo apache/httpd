@@ -259,7 +259,7 @@ do
             ;;
         --shadow)
             #   determine GNU platform triple
-            gnutriple=`$src/helpers/GuessOS | awk '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
+            gnutriple=`$aux/GuessOS | awk '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
             #   create Makefile wrapper
             if [ .$quiet = .no ]; then
                 echo " + creating Makefile (shadow wrapper)"
@@ -268,7 +268,7 @@ do
             echo "##  Apache Makefile (shadow wrapper)" >> Makefile
             echo "##" >> Makefile
             echo "" >> Makefile
-            echo "GNUTRIPLE=\`$src/helpers/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
+            echo "GNUTRIPLE=\`$aux/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
             echo "" >> Makefile
             echo "all build install install-quiet clean distclean:" >> Makefile
             echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
@@ -640,7 +640,7 @@ OIFS="$IFS" IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir \
            libexecdir mandir sysconfdir datadir \
            localstatedir includedir; do
-    eval "val=\$$var";
+    eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
     case $var in
@@ -650,7 +650,7 @@ for var in prefix exec_prefix bindir sbindir \
                *apache | *apache* ) ;;
                * ) eval "customized=\$customized_$var"
                    if [ ".$customized" = .0 ]; then
-                       eval "$var=\$$var/apache"
+                       eval "$var=\"\$$var/apache\""
                    fi
                    ;;
            esac
@@ -790,7 +790,7 @@ touch sedsubst
 OIFS="$IFS" IFS="$DIFS"
 for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
-    eval "val=\$$var";
+    eval "val=\"\$$var\"";
     if [ ".$val" != . ]; then
         case $var in 
             CFLAGS|LDFLAGS|LIBS|INCLUDES) 
@@ -882,9 +882,9 @@ rm -f sedsubst 2>/dev/null
 ##  $src/Configure script with our custom Configuration.apaci file
 ##
 if [ .$quiet = .yes ]; then
-    (cd $src; CFLAGS= ./Configure -file Configuration.apaci >/dev/null);
+    (cd $src; ./Configure -file Configuration.apaci >/dev/null);
 else
-    (cd $src; CFLAGS= ./Configure -file Configuration.apaci |\
+    (cd $src; ./Configure -file Configuration.apaci |\
      sed -e '/^Using config file:.*/d' \
          -e "s:Makefile in :Makefile in $src\\/:" \
          -e "s:Makefile\$:Makefile in $src:")
