@@ -70,12 +70,11 @@
  *         no control is passed along.
  */
 
-#include "apr_lib.h"
-
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
+#include "apr_md5.h"            /* for apr_password_validate */
 
 #include "httpd.h"
 #include "http_config.h"
