@@ -707,6 +707,7 @@ void usage(char *bin)
     fprintf(stderr, "-d directory : specify an alternate initial ServerRoot\n");
     fprintf(stderr, "-f file : specify an alternate ServerConfigFile\n");
     fprintf(stderr, "-v : show version number\n");
+    fprintf(stderr, "-V : show compile settings\n");
     fprintf(stderr, "-h : list directives\n");
     fprintf(stderr, "-l : list modules\n");
     exit(1);
