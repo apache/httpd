@@ -1,5 +1,8 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix an assertion failure in mod_ssl when the keepalive timeout is  
+     reached.  [Jeff Trawick]
+
 Changes with Apache 2.0.24
 
   *) Fixed the segfaults in mod_mime introduced by hash tables in 2.0.20.
