@@ -66,7 +66,7 @@
 #include "http_conf_globals.h"
 #include "mpm_status.h"
 #include "scoreboard.h"
-#include "dexter.h" /* for max_daemons_limit */
+#include "mpm.h" /* for ap_max_daemons_limit */
 #include <sys/types.h>
 #ifdef USE_SHMGET_SCOREBOARD
 #include <sys/ipc.h>
@@ -501,7 +501,7 @@ ap_array_header_t *ap_get_connections(ap_pool_t *p)
     /* We assume that there is a connection iff it has an entry in the status
      * table. Connections without any status sound problematic to me, so this
      * is probably for the best. - manoj */
-    for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
+    for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] != '\0') {
             array_slot = ap_push_array(connection_list);
             *array_slot = i;
@@ -575,7 +575,7 @@ ap_array_header_t *ap_get_status_table(ap_pool_t *p)
      * aren't maintaining it. We can at least look at what children from
      * previous generations are up to. */
 
-    for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
+    for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] == '\0')
 	    continue;
         array_slot = ap_push_array(server_status);

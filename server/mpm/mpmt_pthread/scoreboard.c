@@ -65,7 +65,7 @@
 #include "unixd.h"
 #include "http_conf_globals.h"
 #include "mpm_status.h"
-#include "mpmt_pthread.h"
+#include "mpm.h"
 #include "scoreboard.h"
 #include <sys/types.h>
 
