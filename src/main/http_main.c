@@ -866,12 +866,14 @@ int update_child_status (int child_num, int status, request_rec *r)
 
 #if defined(STATUS)
     new_score_rec.last_used=time(NULL);
-    if (status == SERVER_DEAD) {
+    if (status == SERVER_READY || status == SERVER_DEAD) {
 	/*
 	 * Reset individual counters
 	 */
-	new_score_rec.my_access_count = 0L;
-	new_score_rec.my_bytes_served = 0L;
+	if (status == SERVER_DEAD) {
+	    new_score_rec.my_access_count = 0L;
+	    new_score_rec.my_bytes_served = 0L;
+	}
 	new_score_rec.conn_count = (unsigned short)0;
 	new_score_rec.conn_bytes = (unsigned long)0;
     }
@@ -952,7 +954,7 @@ short_score get_scoreboard_info(int i)
 }
 
 #if defined(STATUS)
-void increment_counts (int child_num, request_rec *r, int flag)
+static void increment_counts (int child_num, request_rec *r)
 {
     long int bs=0;
     short_score new_score_rec;
@@ -962,10 +964,6 @@ void increment_counts (int child_num, request_rec *r, int flag)
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
-    if (flag) {
-	new_score_rec.conn_count = (unsigned short)0;
-	new_score_rec.conn_bytes = (unsigned long)0;
-    }
     new_score_rec.access_count ++;
     new_score_rec.my_access_count ++;
     new_score_rec.conn_count ++;
@@ -1764,7 +1762,7 @@ void child_main(int child_num_arg)
 
             if (r) process_request(r); /* else premature EOF --- ignore */
 #if defined(STATUS)
-            if (r) increment_counts(child_num,r,1);
+            if (r) increment_counts(child_num, r);
 #endif
             if (!r || !current_conn->keepalive)
                 break;

@@ -1,5 +1,7 @@
 Changes with Apache 1.2b8
 
+  *) Fixed server status updating of per-connection counters. [Roy Fielding]
+
   *) Workaround to a compiler bug that causes SunOS 4.1.x to panic.
      [Roy Fielding]
 
