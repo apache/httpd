@@ -182,6 +182,15 @@ with MSIE 3 is actually due to the Acrobat plugin, not due to the browser.
 version 3.01 is used with it, it will not properly understand byteranges.
 The user must upgrade their Acrobat reader to 3.01.
 
+<a name="cookie-merge"><h3><code>Set-Cookie</code> header is unmergeable</h3></a>
+
+<p>The HTTP specifications say that it is legal to merge headers with
+duplicate names into one (separated by semicolon).  Some browsers
+that support Cookies don't like merged headers and prefer that each
+<code>Set-Cookie</code> header is sent separately.  When parsing the
+headers returned by a CGI, Apache will explicitly avoid merging any
+<code>Set-Cookie</code> headers.
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
