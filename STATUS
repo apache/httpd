@@ -1,9 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/09/28 08:42:57 $]
+  Last modified at [$Date: 2000/10/04 18:28:57 $]
 
 Release:
 
-    1.3.13-dev: ???
+    1.3.13-dev: Plan to release on Oct 13, 2000. Mark Cox
+                volunteers as RM, with Jim and Dirk as backup.
     1.3.12: Tagged and rolled Feb. 23, 2000. Released and
             announced on the 25th.
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
@@ -50,7 +51,7 @@ Available Patches:
     * Dan Astoorian <djast@cs.toronto.edu>'s patch to fix mod_include RE
       tokenisation
 	PR: 5898
-	Status: 
+	Status: Jim: Still appropriate?
 
     * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
       to handle both Digest *and* Basic authentication modes.
@@ -106,7 +107,8 @@ Available Patches:
 
     * Stipe Tolj's Cygwin32 port
 	PR#: 2936
-        Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept)
+        Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept),
+                Jim +1 (concept)
 
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
       to refer to URIs for non-static resources.
@@ -121,7 +123,7 @@ Available Patches:
 		Martin +1 (untested), Fred +1,
 		Jim -1 (I really don't think it makes sense to
 		add this right now this late in the release cycle
-		for 1.3.10. I am +1 for 1.3.11)
+		for 1.3.13. I am +1 for 1.3.14)
 		Greg -0 for 1.3 series.
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
