@@ -474,6 +474,7 @@
       <dd>true if <var>string</var> is not empty</dd>
 
       <dt><code><var>string1</var> = <var>string2</var><br />
+      <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
       
       <dd><p>Compare <var>string1</var> with <var>string2</var>. If
@@ -481,11 +482,12 @@
       then it is treated as a regular expression. Regular expressions are
       implemented by the <a href="http://www.pcre.org">PCRE</a> engine and
       have the same syntax as those in <a href="http://www.perl.com">perl
-      5</a>.</p>
+      5</a>. Note that <code>==</code> is just an alias for <code>=</code>
+      and behaves exactly the same way.</p>
 
-      <p>If you are matching positive (<code>=</code>), you can capture
-      grouped parts of the regular expression. The captured parts are
-      stored in the special variables <code>$1</code> ..
+      <p>If you are matching positive (<code>=</code> or <code>==</code>), you
+      can capture grouped parts of the regular expression. The captured parts
+      are stored in the special variables <code>$1</code> ..
       <code>$9</code>.</p>
 
       <example><title>Example</title>
@@ -533,6 +535,10 @@
       &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
     </example>
 
+    <p>The boolean operators <code>&amp;&amp;</code> and <code>||</code>
+    share the same priority. So if you want to bind such an operator more
+    tightly, you should use parentheses.</p>
+
     <p>Anything that's not recognized as a variable or an operator
     is treated as a string. Strings can also be quoted:
     <code>'string'</code>. Unquoted strings can't contain whitespace
@@ -551,6 +557,30 @@
       >string2</var>'</code> results in <code><var
       >string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code>.</p>
     </example>
+
+    <note><title>Optimization of Boolean Expressions</title>
+      <p>If the expressions become more complex and slow down processing
+      significantly, you can try to optimize them according to the
+      evaluation rules:</p>
+      <ul>
+      <li>Expressions are evaluated from left to right</li>
+      <li>Binary boolean operators (<code>&amp;&amp;</code> and <code>||</code>)
+          are short circuited whereever possible. In conclusion with the rule
+          above that means, <module>mod_include</module> evaluates at first
+          the left expression. If the left result if sufficient to determine
+          the end result, processing stops here. Otherwise it evaluates the
+          right side and computes the end result from both left and right
+          results.</li>
+      <li>Short circuit evaluation is turned off as long as there are regular
+          expressions to deal with. These must be evaluated to fill in the
+          backreference variables (<code>$1</code> .. <code>$9</code>).</li>
+      </ul>
+      <p>If you want to look how a particular expression is handled, you can
+      recompile <module>mod_include</module> using the
+      <code>-DDEBUG_INCLUDE</code> compiler option. This inserts for every
+      parsed expression tokenizer information, the parse tree and how it is
+      evaluated into the output sent to the client.</p>
+    </note>
 </section>
 
 <directivesynopsis>
