@@ -307,16 +307,12 @@ static int find_code_page(request_rec *r)
                           "mime type is %s; no translation selected",
                           mime_type);
         }
-#if #system(bs2000)
-/* We must not bail out here (i.e., the MIME test must be in the filter
- * itself, not in the fixup, because only then is the final MIME type known.
- * Examples for late changes to the MIME type include CGI handling (MIME
- * type is set in the Content-Type header produced by the CGI script), or
- * PHP (until PHP runs, the MIME type is set to application/x-httpd-php)
- */
-#else
-        return DECLINED;
-#endif
+        /* We must not bail out here (i.e., the MIME test must be in the filter
+         * itself, not in the fixup, because only then is the final MIME type known.
+         * Examples for late changes to the MIME type include CGI handling (MIME
+         * type is set in the Content-Type header produced by the CGI script), or
+         * PHP (until PHP runs, the MIME type is set to application/x-httpd-php)
+         */
     }
 
     if (dc->debug >= DBGLVL_GORY) {
@@ -340,24 +336,13 @@ static int find_code_page(request_rec *r)
 
     reqinfo->output_ctx = output_ctx;
 
-#if #system(bs2000)
-/* We must not open the xlation table here yet, because the final MIME
- * type is not known until we are actually called in the output filter.
- * With POST or PUT request, the case is different, because their MIME
- * type is set in the request headers, and their data are prerequisites
- * for actually calling, e.g., the CGI handler later on.
- */
+    /* We must not open the xlation table here yet, because the final MIME
+     * type is not known until we are actually called in the output filter.
+     * With POST or PUT request, the case is different, because their MIME
+     * type is set in the request headers, and their data are prerequisites
+     * for actually calling, e.g., the CGI handler later on.
+     */
     output_ctx->xlate = NULL;
-#else
-    rv = apr_xlate_open(&output_ctx->xlate, 
-                        dc->charset_default, dc->charset_source, r->pool);
-    if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "can't open translation %s->%s",
-                      dc->charset_source, dc->charset_default);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-#endif
 
     switch (r->method_number) {
     case M_PUT:
@@ -878,7 +863,6 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
     }
 
-#if #system(bs2000)
     /* Opening the output translation (this used to be done in the fixup hook,
      * but that was too early: a subsequent type modification, e.g., by a
      * CGI script, would go unnoticed. Now we do it in the filter itself.)
@@ -926,7 +910,6 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                   mime_type);
             }
     }
-#endif
 
     if (dc->debug >= DBGLVL_GORY) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
