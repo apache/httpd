@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Forward port of mod_actions' ability to handle arbitrary methods
+     with the Script directive.  [André Malo]
+
   *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
      not specified. Now it assumes "/" as already documented. PR 16937.
      [André Malo]
