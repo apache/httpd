@@ -199,13 +199,6 @@
     always the cleanest mechanism, but occasionally it's the only
     option.</p>
 
-    <h3>Hook: insert_filter</h3>
-
-    <p>Modules that transform the content in some way can insert
-    their values and override existing filters, such that if the
-    user configured a more advanced filter out-of-order, then the
-    module can move it's order as need be.</p>
-
     <h2>The Handler Phase</h2>
 
     <p>This phase is <strong><em>not</em></strong> part of the
@@ -214,6 +207,14 @@
     content at all. After the core, or a module calls
     <code>ap_process_request_internal()</code> it then calls
     <code>ap_invoke_handler()</code> to generate the request.</p>
+
+    <h3>Hook: insert_filter</h3>
+
+    <p>Modules that transform the content in some way can insert
+    their values and override existing filters, such that if the
+    user configured a more advanced filter out-of-order, then the
+    module can move it's order as need be.  There is no result code,
+    so actions in this hook better be trusted to always succeed.</p>
 
     <h3>Hook: handler</h3>
 
