@@ -134,54 +134,12 @@
 #define ERR_OVERFLOW 5
 #define ERR_BADUSER 6
 
-/*
- * This needs to be declared statically so the signal handler can
- * access it.
- */
-static char *tempfilename;
-/*
- * If our platform knows about the tmpnam() external buffer size, create
- * a buffer to pass in.  This is needed in a threaded environment, or
- * one that thinks it is (like HP-UX).
- */
-#ifdef L_tmpnam
-static char tname_buf[L_tmpnam];
-#else
-static char *tname_buf = NULL;
-#endif
+#define NEWFILE        1
+#define NOFILE         2
+#define NONINTERACTIVE 4
 
-/*
- * Get a line of input from the user, not including any terminating
- * newline.
- */
-static int get_line(char *s, int n, FILE *f)
-{
-    register int i = 0;
-
-    while (1) {
-        s[i] = (char) fgetc(f);
-
-        if (s[i] == CR) {
-            s[i] = fgetc(f);
-        }
-
-        if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
-            s[i] = '\0';
-            return (feof(f) ? 1 : 0);
-        }
-        ++i;
-    }
-}
-
-static void putline(FILE *f, char *l)
-{
-    int x;
-
-    for (x = 0; l[x]; x++) {
-        fputc(l[x], f);
-    }
-    fputc('\n', f);
-}
+apr_file_t *errfile;
+apr_file_t *ftemp = NULL;
 
 static void to64(char *s, unsigned long v, int n)
 {
@@ -192,6 +150,11 @@ static void to64(char *s, unsigned long v, int n)
         *s++ = itoa64[v&0x3f];
         v >>= 6;
     }
+}
+
+static void putline(apr_file_t *f, const char *l)
+{
+    apr_file_puts(l, f);
 }
 
 /*
@@ -276,43 +239,34 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     return 0;
 }
 
-static int usage(void)
+static void usage(void)
 {
-    fprintf(stderr, "Usage:\n");
-    fprintf(stderr, "\thtpasswd [-cmdps] passwordfile username\n");
-    fprintf(stderr, "\thtpasswd -b[cmdps] passwordfile username password\n\n");
-    fprintf(stderr, "\thtpasswd -n[mdps] username\n");
-    fprintf(stderr, "\thtpasswd -nb[mdps] username password\n");
-    fprintf(stderr, " -c  Create a new file.\n");
-    fprintf(stderr, " -n  Don't update file; display results on stdout.\n");
-    fprintf(stderr, " -m  Force MD5 encryption of the password"
+    apr_file_printf(errfile, "Usage:\n");
+    apr_file_printf(errfile, "\thtpasswd [-cmdps] passwordfile username\n");
+    apr_file_printf(errfile, "\thtpasswd -b[cmdps] passwordfile username password\n\n");
+    apr_file_printf(errfile, "\thtpasswd -n[mdps] username\n");
+    apr_file_printf(errfile, "\thtpasswd -nb[mdps] username password\n");
+    apr_file_printf(errfile, " -c  Create a new file.\n");
+    apr_file_printf(errfile, " -n  Don't update file; display results on stdout.\n");
+    apr_file_printf(errfile, " -m  Force MD5 encryption of the password"
 #if defined(WIN32) || defined(TPF) || defined(NETWARE)
         " (default)"
 #endif
         ".\n");
-    fprintf(stderr, " -d  Force CRYPT encryption of the password"
+    apr_file_printf(errfile, " -d  Force CRYPT encryption of the password"
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
             " (default)"
 #endif
             ".\n");
-    fprintf(stderr, " -p  Do not encrypt the password (plaintext).\n");
-    fprintf(stderr, " -s  Force SHA encryption of the password.\n");
-    fprintf(stderr, " -b  Use the password from the command line rather "
+    apr_file_printf(errfile, " -p  Do not encrypt the password (plaintext).\n");
+    apr_file_printf(errfile, " -s  Force SHA encryption of the password.\n");
+    apr_file_printf(errfile, " -b  Use the password from the command line rather "
             "than prompting for it.\n");
-    fprintf(stderr,
+    apr_file_printf(errfile,
             "On Windows, NetWare and TPF systems the '-m' flag is used by default.\n");
-    fprintf(stderr,
+    apr_file_printf(errfile,
             "On all other systems, the '-p' flag will probably not work.\n");
-    return ERR_SYNTAX;
-}
-
-static void interrupted(void)
-{
-    fprintf(stderr, "Interrupted.\n");
-    if (tempfilename != NULL) {
-        unlink(tempfilename);
-    }
-    exit(ERR_INTERRUPTED);
+    exit(ERR_SYNTAX);
 }
 
 /*
@@ -359,19 +313,6 @@ static int exists(char *fname, apr_pool_t *pool)
     return ((check || sbuf.filetype != APR_REG) ? 0 : 1);
 }
 
-/*
- * Copy from the current position of one file to the current position
- * of another.
- */
-static void copy_file(FILE *target, FILE *source)
-{
-    static char line[MAX_STRING_LEN];
-
-    while (fgets(line, sizeof(line), source) != NULL) {
-        fputs(line, target);
-    }
-}
-
 #ifdef NETWARE
 void nwTerminate()
 {
@@ -379,60 +320,12 @@ void nwTerminate()
 }
 #endif
 
-/*
- * Let's do it.  We end up doing a lot of file opening and closing,
- * but what do we care?  This application isn't run constantly.
- */
-int main(int argc, const char * const argv[])
+static void check_args(int argc, const char *const argv[], int *alg, int *mask,
+                       int *num_args)
 {
-    FILE *ftemp = NULL;
-    FILE *fpw = NULL;
-    char user[MAX_STRING_LEN];
-    char password[MAX_STRING_LEN];
-    char record[MAX_STRING_LEN];
-    char line[MAX_STRING_LEN];
-    char pwfilename[MAX_STRING_LEN];
     const char *arg;
-    int found = 0;
-    int alg = ALG_CRYPT;
-    int newfile = 0;
-    int nofile = 0;
-    int noninteractive = 0;
-    int i;
     int args_left = 2;
-    apr_pool_t *pool;
-#if APR_CHARSET_EBCDIC
-    apr_status_t rv;
-    apr_xlate_t *to_ascii;
-#endif
-
-    apr_app_initialize(&argc, &argv, NULL);
-    atexit(apr_terminate);
-#ifdef NETWARE
-    atexit(nwTerminate);
-#endif
-    apr_pool_create(&pool, NULL);
-
-#if APR_CHARSET_EBCDIC
-    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
-    if (rv) {
-        fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", rv);
-        exit(1);
-    }
-    rv = apr_SHA1InitEBCDIC(to_ascii);
-    if (rv) {
-        fprintf(stderr, "apr_SHA1InitEBCDIC()->%d\n", rv);
-        exit(1);
-    }
-    rv = apr_MD5InitEBCDIC(to_ascii);
-    if (rv) {
-        fprintf(stderr, "apr_MD5InitEBCDIC()->%d\n", rv);
-        exit(1);
-    }
-#endif /*APR_CHARSET_EBCDIC*/
-
-    tempfilename = NULL;
-    apr_signal(SIGINT, (void (*)(int)) interrupted);
+    int i;
 
     /*
      * Preliminary check to make sure they provided at least
@@ -440,7 +333,7 @@ int main(int argc, const char * const argv[])
      * we parse the command line.
      */
     if (argc < 3) {
-        return usage();
+        usage();
     }
 
     /*
@@ -454,98 +347,154 @@ int main(int argc, const char * const argv[])
         }
         while (*++arg != '\0') {
             if (*arg == 'c') {
-                newfile++;
+                *mask |= NEWFILE;
             }
             else if (*arg == 'n') {
-                nofile++;
+                *mask |= NOFILE;
                 args_left--;
             }
             else if (*arg == 'm') {
-                alg = ALG_APMD5;
+                *alg = ALG_APMD5;
             }
             else if (*arg == 's') {
-                alg = ALG_APSHA;
+                *alg = ALG_APSHA;
             }
             else if (*arg == 'p') {
-                alg = ALG_PLAIN;
+                *alg = ALG_PLAIN;
             }
             else if (*arg == 'd') {
-                alg = ALG_CRYPT;
+                *alg = ALG_CRYPT;
             }
             else if (*arg == 'b') {
-                noninteractive++;
+                *mask |= NONINTERACTIVE;
                 args_left++;
             }
             else {
-                return usage();
+                usage();
             }
         }
     }
 
+    if (*mask & (NEWFILE & NOFILE)) {
+        apr_file_printf(errfile, "%s: -c and -n options conflict\n", argv[0]);
+        exit(ERR_SYNTAX);
+    }
     /*
      * Make sure we still have exactly the right number of arguments left
      * (the filename, the username, and possibly the password if -b was
      * specified).
      */
     if ((argc - i) != args_left) {
-        return usage();
+        usage();
     }
-    if (newfile && nofile) {
-        fprintf(stderr, "%s: -c and -n options conflict\n", argv[0]);
-        return ERR_SYNTAX;
+    *num_args = i;
+}
+
+/*
+ * Let's do it.  We end up doing a lot of file opening and closing,
+ * but what do we care?  This application isn't run constantly.
+ */
+int main(int argc, const char * const argv[])
+{
+    apr_file_t *fpw = NULL;
+    char user[MAX_STRING_LEN];
+    char record[MAX_STRING_LEN];
+    char line[MAX_STRING_LEN];
+    char *password = NULL;
+    char *pwfilename = NULL;
+    char tn[] = "htpasswd.tmp.XXXXXX";
+    char scratch[MAX_STRING_LEN];
+    char *str = NULL;
+    int found = 0;
+    int alg = ALG_CRYPT;
+    int mask = 0;
+    int i;
+    apr_pool_t *pool;
+#if APR_CHARSET_EBCDIC
+    apr_status_t rv;
+    apr_xlate_t *to_ascii;
+#endif
+
+    apr_app_initialize(&argc, &argv, NULL);
+    atexit(apr_terminate);
+#ifdef NETWARE
+    atexit(nwTerminate);
+#endif
+    apr_pool_create(&pool, NULL);
+    apr_file_open_stderr(&errfile, pool);
+
+#if APR_CHARSET_EBCDIC
+    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    if (rv) {
+        apr_file_printf(errfile, "apr_xlate_open(to ASCII)->%d\n", rv);
+        exit(1);
     }
-    if (nofile) {
+    rv = apr_SHA1InitEBCDIC(to_ascii);
+    if (rv) {
+        apr_file_printf(errfile, "apr_SHA1InitEBCDIC()->%d\n", rv);
+        exit(1);
+    }
+    rv = apr_MD5InitEBCDIC(to_ascii);
+    if (rv) {
+        apr_file_printf(errfile, "apr_MD5InitEBCDIC()->%d\n", rv);
+        exit(1);
+    }
+#endif /*APR_CHARSET_EBCDIC*/
+
+    check_args(argc, argv, &alg, &mask, &i);
+
+    if (mask & NOFILE) {
         i--;
     }
     else {
-        if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
-            fprintf(stderr, "%s: filename too long\n", argv[0]);
+        if (strlen(argv[i]) > (PATH_MAX - 1)) {
+            apr_file_printf(errfile, "%s: filename too long\n", argv[0]);
             return ERR_OVERFLOW;
         }
-        strcpy(pwfilename, argv[i]);
+        pwfilename = apr_pstrdup(pool, argv[i]);
         if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-            fprintf(stderr, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
+            apr_file_printf(errfile, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
                 argv[0], sizeof(user) - 1);
             return ERR_OVERFLOW;
         }
     }
     strcpy(user, argv[i + 1]);
-    if ((arg = strchr(user, ':')) != NULL) {
-        fprintf(stderr, "%s: username contains illegal character '%c'\n",
-                argv[0], *arg);
+    if ((str = strchr(user, ':')) != NULL) {
+        apr_file_printf(errfile, "%s: username contains illegal character '%c'\n",
+                argv[0], *str);
         return ERR_BADUSER;
     }
-    if (noninteractive) {
-        if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
-            fprintf(stderr, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
-                argv[0], sizeof(password) - 1);
+    if (mask & NONINTERACTIVE) {
+        if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
+            apr_file_printf(errfile, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
+                argv[0], MAX_STRING_LEN);
             return ERR_OVERFLOW;
         }
-        strcpy(password, argv[i + 2]);
+        password = apr_pstrdup(pool, argv[i + 2]);
     }
 
 #if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
-        fprintf(stderr, "Automatically using MD5 format.\n");
+        apr_file_printf(errfile, "Automatically using MD5 format.\n");
     }
 #endif
 
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
-        fprintf(stderr,"Warning: storing passwords as plain text might "
+        apr_file_printf(errfile,"Warning: storing passwords as plain text might "
                 "just not work on this platform.\n");
     }
 #endif
-    if (! nofile) {
+    if (! mask & NOFILE) {
         /*
          * Only do the file checks if we're supposed to frob it.
          *
          * Verify that the file exists if -c was omitted.  We give a special
          * message if it doesn't.
          */
-        if ((! newfile) && (! exists(pwfilename, pool))) {
-            fprintf(stderr,
+        if ((! mask & NEWFILE) && (! exists(pwfilename, pool))) {
+            apr_file_printf(errfile,
                     "%s: cannot modify file %s; use '-c' to create it\n",
                     argv[0], pwfilename);
             perror("fopen");
@@ -555,8 +504,8 @@ int main(int argc, const char * const argv[])
          * Verify that we can read the existing file in the case of an update
          * to it (rather than creation of a new one).
          */
-        if ((! newfile) && (! readable(pwfilename))) {
-            fprintf(stderr, "%s: cannot open file %s for read access\n",
+        if ((! mask & NEWFILE) && (! readable(pwfilename))) {
+            apr_file_printf(errfile, "%s: cannot open file %s for read access\n",
                     argv[0], pwfilename);
             perror("fopen");
             exit(ERR_FILEPERM);
@@ -565,8 +514,8 @@ int main(int argc, const char * const argv[])
          * Now check to see if we can preserve an existing file in case
          * of password verification errors on a -c operation.
          */
-        if (newfile && exists(pwfilename, pool) && (! readable(pwfilename))) {
-            fprintf(stderr, "%s: cannot open file %s for read access\n"
+        if ((mask & NEWFILE) && exists(pwfilename, pool) && (! readable(pwfilename))) {
+            apr_file_printf(errfile, "%s: cannot open file %s for read access\n"
                     "%s: existing auth data would be lost on "
                     "password mismatch",
                     argv[0], pwfilename, argv[0]);
@@ -577,7 +526,7 @@ int main(int argc, const char * const argv[])
          * Now verify that the file is writable!
          */
         if (! writable(pwfilename)) {
-            fprintf(stderr, "%s: cannot open file %s for write access\n",
+            apr_file_printf(errfile, "%s: cannot open file %s for write access\n",
                     argv[0], pwfilename);
             perror("fopen");
             exit(ERR_FILEPERM);
@@ -592,13 +541,12 @@ int main(int argc, const char * const argv[])
      * the mkrecord() routine doesn't have access to argv[].
      */
     i = mkrecord(user, record, sizeof(record) - 1,
-                 noninteractive ? password : NULL,
-                 alg);
+                 password, alg);
     if (i != 0) {
-        fprintf(stderr, "%s: %s\n", argv[0], record);
+        apr_file_printf(errfile, "%s: %s\n", argv[0], record);
         exit(i);
     }
-    if (nofile) {
+    if (mask & NOFILE) {
         printf("%s\n", record);
         exit(0);
     }
@@ -607,33 +555,21 @@ int main(int argc, const char * const argv[])
      * We can access the files the right way, and we have a record
      * to add or update.  Let's do it..
      */
-    errno = 0;
-    tempfilename = tmpnam(tname_buf);
-    if ((tempfilename == NULL) || (*tempfilename == '\0')) {
-        fprintf(stderr, "%s: unable to generate temporary filename\n",
-                argv[0]);
-        if (errno == 0) {
-            errno = ENOENT;
-        }
-        perror("tmpnam");
+    if (apr_file_mktemp(&ftemp, tn, 
+                        APR_CREATE | APR_READ | APR_WRITE | APR_EXCL,
+                        pool) != APR_SUCCESS) {
+        apr_file_printf(errfile, "%s: unable to create temporary file '%s'\n", 
+                        argv[0], tn);
         exit(ERR_FILEPERM);
     }
-    ftemp = fopen(tempfilename, "w+");
-    if (ftemp == NULL) {
-        fprintf(stderr, "%s: unable to create temporary file '%s'\n", argv[0],
-                tempfilename);
-        perror("fopen");
-        exit(ERR_FILEPERM);
-    }
+
     /*
      * If we're not creating a new file, copy records from the existing
      * one to the temporary file until we find the specified user.
      */
-    if (! newfile) {
-        char scratch[MAX_STRING_LEN];
-
-        fpw = fopen(pwfilename, "r");
-        while (! (get_line(line, sizeof(line), fpw))) {
+    if (apr_file_open(&fpw, pwfilename, APR_READ, APR_OS_DEFAULT, 
+                      pool) == APR_SUCCESS) {
+        while (! (apr_file_gets(line, sizeof(line), fpw))) {
             char *colon;
 
             if ((line[0] == '#') || (line[0] == '\0')) {
@@ -652,40 +588,29 @@ int main(int argc, const char * const argv[])
                 putline(ftemp, line);
                 continue;
             }
-            found++;
-            break;
+            else {
+                /* We found the user we were looking for, add him to the file.
+                 */
+                apr_file_printf(errfile, "Updating ");
+                putline(ftemp, record);
+            }
         }
     }
-    if (found) {
-        fprintf(stderr, "Updating ");
+    if (!found) {
+        apr_file_printf(errfile, "Adding ");
+        putline(ftemp, record);
     }
-    else {
-        fprintf(stderr, "Adding ");
-    }
-    fprintf(stderr, "password for user %s\n", user);
-    /*
-     * Now add the user record we created.
+    apr_file_printf(errfile, "password for user %s\n", user);
+    apr_file_close(fpw);
+
+    /* The temporary file has all the data, just copy it to the new location.
      */
-    putline(ftemp, record);
-    /*
-     * If we're updating an existing file, there may be additional
-     * records beyond the one we're updating, so copy them.
-     */
-    if (! newfile) {
-        copy_file(ftemp, fpw);
-        fclose(fpw);
-    }
-    /*
-     * The temporary file now contains the information that should be
-     * in the actual password file.  Close the open files, re-open them
-     * in the appropriate mode, and copy them file to the real one.
-     */
-    fclose(ftemp);
-    fpw = fopen(pwfilename, "w+");
-    ftemp = fopen(tempfilename, "r");
-    copy_file(fpw, ftemp);
-    fclose(fpw);
-    fclose(ftemp);
-    unlink(tempfilename);
+#if defined(OS2) || defined(WIN32)
+    str = apr_psprintf(pool, "copy \"%s\" \"%s\"", tn, pwfilename);
+#else
+    str = apr_psprintf(pool, "cp %s %s", tn, pwfilename);
+#endif
+    system(str);
+    apr_file_close(ftemp);
     return 0;
 }
