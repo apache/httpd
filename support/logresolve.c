@@ -85,19 +85,6 @@ static void stats(FILE *output);
 /* number of buckets in cache hash apr_table_t */
 #define BUCKETS 256
 
-#if !APR_HAVE_STRDUP
-char *strdup (const char *str)
-{
-    char *dup;
-
-    if (!(dup = (char *) malloc(strlen(str) + 1)))
-	return NULL;
-    dup = strcpy(dup, str);
-
-    return dup;
-}
-#endif
-
 /*
  * struct nsrec - record of nameservice for cache linked list
  * 
