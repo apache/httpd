@@ -93,6 +93,7 @@ install-include:
 	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir)
+	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
 	@cp -p $(srcdir)/lib/expat-lite/*.h $(includedir)/xml
 	@cp -p lib/apr/include/*.h $(srcdir)/lib/apr/include/*.h $(includedir)/apr
 	@chmod 644 $(includedir)/*.h $(includedir)/xml/*.h $(includedir)/apr/*.h
