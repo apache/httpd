@@ -1,5 +1,7 @@
 Changes with Apache 2.0.50
 
+  *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
+
   *) mod_isapi: send_response_header() failed to copy status string's 
      last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
 

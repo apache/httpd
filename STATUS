@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 11:50:42 $]
+Last modified at [$Date: 2004/05/26 12:00:57 $]
 
 Release:
 
@@ -82,12 +82,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/proxy/proxy_ftp.c r1.143
        PR 24922 [Pascal Terjan <pterjan@linuxfr.org>]
        +1: minfrin, nd
-
-    *) Fix handling of IPv6 numeric strings in mod_proxy.
-         modules/proxy/proxy_ftp.c r1.141, r1.142
-         modules/proxy/proxy_http.c r1.186
-         modules/proxy/proxy_util.c r1.107
-       +1: trawick, minfrin, nd
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.

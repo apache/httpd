@@ -197,9 +197,10 @@ PROXY_DECLARE(char *)
      ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, apr_port_t *port)
 {
-    int i;
-    char *strp, *host, *url = *urlp;
+    char *addr, *scope_id, *strp, *host, *url = *urlp;
     char *user = NULL, *password = NULL;
+    apr_port_t tmp_port;
+    apr_status_t rv;
 
     if (url[0] != '/' || url[1] != '/')
 	return "Malformed URL";
@@ -238,44 +239,21 @@ PROXY_DECLARE(char *)
 	*passwordp = password;
     }
 
-    strp = strrchr(host, ':');
-    if (strp != NULL) {
-	*(strp++) = '\0';
-
-	for (i = 0; strp[i] != '\0'; i++)
-	    if (!apr_isdigit(strp[i]))
-		break;
-
-	/* if (i == 0) the no port was given; keep default */
-	if (strp[i] != '\0') {
-	    return "Bad port number in URL";
-	} else if (i > 0) {
-            int int_port = atoi(strp);
-
-	    if (int_port > 65535)
-		return "Port number in URL > 65535";
-
-	    *port = (apr_port_t)int_port;
-	}
+    /* Parse the host string to separate host portion from optional port.
+     * Perform range checking on port.
+     */
+    rv = apr_parse_addr_port(&addr, &scope_id, &tmp_port, host, p);
+    if (rv != APR_SUCCESS || addr == NULL || scope_id != NULL) {
+        return "Invalid host/port";
     }
-    ap_str_tolower(host);		/* DNS names are case-insensitive */
-    if (*host == '\0')
-	return "Missing host in URL";
-/* check hostname syntax */
-    for (i = 0; host[i] != '\0'; i++)
-	if (!apr_isdigit(host[i]) && host[i] != '.')
-	    break;
-    /* must be an IP address */
-    if (host[i] == '\0' && (apr_inet_addr(host) == -1))
-    {
-	return "Bad IP address in URL";
+    if (tmp_port != 0) { /* only update caller's port if port was specified */
+        *port = tmp_port;
     }
 
-/*    if (strchr(host,'.') == NULL && domain != NULL)
-   host = pstrcat(p, host, domain, NULL);
- */
+    ap_str_tolower(addr); /* DNS names are case-insensitive */
+
     *urlp = url;
-    *hostp = host;
+    *hostp = addr;
 
     return NULL;
 }
