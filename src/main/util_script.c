@@ -410,7 +410,7 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 }
 
 
-static int scan_script_header_err_core(request_rec *r, char *buffer,
+API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data)
 {
@@ -559,7 +559,7 @@ static int getsfunc_FILE(char *buf, int len, void *f)
 API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f,
 					  char *buffer)
 {
-    return scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
+    return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
 
 static int getsfunc_BUFF(char *w, int len, void *fb)
@@ -570,7 +570,7 @@ static int getsfunc_BUFF(char *w, int len, void *fb)
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
 					       char *buffer)
 {
-    return scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
+    return ap_scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
 }
 
 

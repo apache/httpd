@@ -78,6 +78,9 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r);
 API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f, char *buffer);
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
                                                char *buffer);
+API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
+				       int (*getsfunc) (char *, int, void *),
+				       void *getsfunc_data);
 API_EXPORT(void) ap_send_size(size_t size, request_rec *r);
 API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, char **env,
                           int shellcmd);
