@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/10/11 21:27:48 $]
+  Last modified at [$Date: 1999/11/05 14:53:32 $]
 
 Release:
 
@@ -42,6 +42,31 @@ Documentation that needs writing:
 
 
 Available Patches:
+    * Jayaram's patch (10/27/99) to fix PR4856
+        PR: 4856 It is found that UnSetEnv directive fails to unset the environment
+        variable in the server config context.
+	Status:
+
+    * Jayaram's patch (10/27/99) for changes to mod_autoindex
+ 
+	Problem 1:
+	------------------------
+	AddIcon (<alttext>,<icon>) ^^DIRECTORY^^ 
+	and 
+	AddIcon (<alttext>,<icon>) ^^BLANKICON^^ 
+	should be able to set the alternate text and icon file for any directory/
+	blankicon in a directory listing. This was not happening because the
+	alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were hardcoded to 
+	"DIR" and "   " respectively.
+
+	Problem 2:
+	-------------------------
+	IndexIgnore <file-extension> should hide the files with this file-
+	extension in directory listings. This was NOT happening because the 
+	total filename was being compared with the file-extension.
+
+	Status:
+       
     * JJ Keijser's patch (99/10/06) to enable mod_info on Win32
 	PR#: PR2415, PR1442
 	Status: 
