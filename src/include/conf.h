@@ -467,6 +467,7 @@ extern char *crypt();
 #define NO_LINGCLOSE
 #define NO_SLACK
 #define HAVE_SYSLOG 1
+#undef HAVE_SYS_RESOURCE_H	/* exists but does not provide *rlimit funcs */
 
 #elif defined(SVR4)
 #define NO_KILLPG
