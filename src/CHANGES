@@ -1,5 +1,8 @@
 Changes with Apache 1.3.15
 
+  *) Fix the declaration of the module structure in mod_example.
+     PR#7095 [Gururaj Upadhye <gururaj@enertec.com>]
+
   *) Fix the handling of variable expansion look-ahead in mod_rewrite,
      i.e. syntax like %{LA-U:REMOTE_USER}, and also fix the parsing of
      more complicated nested RewriteMap lookups. PR#7087 [Tony Finch]

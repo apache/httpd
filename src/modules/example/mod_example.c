@@ -133,7 +133,7 @@ static pool *example_subpool = NULL;
  * Declare ourselves so the configuration routines can find and know us.
  * We'll fill it in at the end of the module.
  */
-module example_module;
+module MODULE_VAR_EXPORT example_module;
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -1120,7 +1120,7 @@ static const handler_rec example_handlers[] =
  * during request processing.  Note that not all routines are necessarily
  * called (such as if a resource doesn't have access restrictions).
  */
-module example_module =
+module MODULE_VAR_EXPORT example_module =
 {
     STANDARD_MODULE_STUFF,
     example_init,               /* module initializer */
