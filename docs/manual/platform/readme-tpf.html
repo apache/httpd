@@ -8,7 +8,6 @@
 <H1 align="center">Overview of the Apache TPF Port</H1>
 <HR>
 <CENTER>[&nbsp;<A HREF="#configuration_files">Configuration Files</A>
-   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
    &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
    &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
 </CENTER>
@@ -41,8 +40,7 @@
    work on TPF with only a couple of operating system specific changes
    to httpd.conf:<BR>
    <UL>
-   <LI>ServerType needs to be "inetd" since TPF does not yet support
-       "standalone" mode.
+   <LI>ServerType needs to be "inetd" on pre-PUT09 systems.
    <LI>Performance considerations may dictate setting KeepAlive to "Off"
        (the default is "On") or lowering the Timeout value from the default
        300 seconds (5 minutes) in order to reduce the number of active ECBs on your system.
@@ -68,64 +66,75 @@
    <LI>buff.c
    <LI>buildmark.c
    <LI>ebcdic.c
+   <LI>gen_test.char.c
+   <LI>gen_uri_delims.c
    <LI>http_config.c
    <LI>http_core.c
    <LI>http_log.c
-   <LI>http_main.c
+   <LI>http_main.c <A HREF="#note_1"> <i><small>(see note 1)</small></i></A>
    <LI>http_protocol.c
    <LI>http_request.c
-   <LI>http_vhost.c <A HREF="#note_2">*</A>
-   <LI>mod_access.c
+   <LI>http_vhost.c <i><small>(requires PUT9)</small></i>
+   <LI>logresolve.c <i><small>(requires PUT10)</small></i>
+   <LI>mod_access.c <A HREF="#note_2"> <i><small>(see note 2)</small></i></A>
+   <LI>mod_actions.c
    <LI>mod_alias.c
    <LI>mod_asis.c
+   <LI>mod_auth_anon.c
    <LI>mod_autoindex.c
    <LI>mod_cern_meta.c
+   <LI>mod_cgi.c <i><small>(requires PUT10)</small></i>
    <LI>mod_dir.c
+   <LI>mod_env.c
    <LI>mod_example.c
    <LI>mod_expires.c
    <LI>mod_headers.c
    <LI>mod_imap.c
+   <LI>mod_include.c <A HREF="#note_3"> <i><small>(see note 3)</small></i></A>
    <LI>mod_info.c
    <LI>mod_log_agent.c
    <LI>mod_log_config.c
    <LI>mod_log_referer.c
    <LI>mod_mime.c
+   <LI>mod_mime_magic.c
    <LI>mod_negotiation.c
+   <LI><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put.c</A>
    <LI>mod_setenvif.c
    <LI>mod_speling.c
+   <LI>mod_status.c
+   <LI>mod_unique_id.c <i><small>(requires PUT10)</small></i>
    <LI>mod_userdir.c
    <LI>mod_usertrack.c
    <LI>os.c
    <LI>os-inline.c
    <LI>regular expression parser
+   <LI>rotatelogs.c <i><small>(requires PUT10)</small></i>
    <LI>util.c
    <LI>util_date.c
+   <LI>util_script.c
    <LI>util_uri.c
    </UL></MULTICOL>
-   Please keep in mind that some major pieces are not yet in place including
-   standalone mode, pipes, password/group files, CGI scripts, and MD5 support.
-   <BR>
+   <br><b>Notes:</b>
+      <A NAME="note_1">&nbsp;</A>
+   <ol>
+      <li>"Standalone" mode requires TPF version 4.1 PUT09
    <A NAME="note_2">&nbsp;</A>
-   <BR>
-   * virtual hosting requires TPF version 4.1 PUT09
+      <li>Use of mod_access directives &quot;<tt>allow from</tt>&quot; &amp; &quot;<tt>deny from</tt>&quot;
+          with host <i>names</i> (verses ip addresses) requires TPF version 4.1 PUT10
+      <A NAME="note_3">&nbsp;</A>
+      <li>CGI execution requires TPF version 4.1 PUT10
+   </ol>
 
-<H3>Components/modules not (yet?) supported on TPF:</H3>
+<H3>Components/modules not yet supported on TPF:</H3>
 
    <multicol COLS=3><UL>
+   <LI>ap_md5c.c
    <LI>htpasswd.c
-   <LI>md5c.c
-   <LI>mod_actions.c
    <LI>mod_auth.c
-   <LI>mod_auth_anon.c
-   <LI>mod_cgi.c
    <LI>mod_digest.c
-   <LI>mod_env.c
-   <LI>mod_include.c
-   <LI>mod_mime_magic.c
+   <LI>mod_mmap_static.c
    <LI>mod_proxy.c
    <LI>mod_rewrite.c
-   <LI>mod_status.c
-   <LI>mod_unique_id.c
    <LI>proxy_cache.c
    <LI>proxy_connect.c
    <LI>proxy_ftp.c
@@ -133,19 +142,16 @@
    <LI>proxy_util.c
    <LI>rfc1413.c
    <LI>util_md5.c
-   <LI>util_script.c
    </UL></MULTICOL>
 
 <H3>Components/modules that don't apply or that probably won't ever be available on TPF:</H3>
 
    <multicol COLS=3><UL>
-   <LI>gen_test.char.c
-   <LI>gen_uri_delims.c
    <LI>mod_auth_db.c
    <LI>mod_auth_dbm.c
    <LI>mod_auth_db.module
-   <LI>mod_mmap_static.c
    <LI>mod_so.c
+   <LI>suexec.c
    </UL></MULTICOL>
 
 <A NAME="porting_notes">&nbsp;</A>
@@ -188,16 +194,9 @@
       differences in how some functions are implemented on TPF.
    </P>
 
-   <H3>Temporary changes:</H3>
-   <P>Lastly, we needed to bypass sections of Apache processing
-      since this first cut for TPF doesn't include
-      Standalone mode, pipes, forking, et cetera.
-   </P>
-
 <HR>
 <CENTER>[&nbsp;<A HREF="#top">top</A>
    &nbsp;|&nbsp;<A HREF="#configuration_files">Configuration Files</A>
-   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
    &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
    &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
 </CENTER>
