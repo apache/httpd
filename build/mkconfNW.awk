@@ -19,6 +19,7 @@ BEGIN {
     B["manualdir"] = A["ServerRoot"]"/"A["manualdir"]
     B["errordir"] = A["ServerRoot"]"/"A["errordir"]
     B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
+    B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
 }
 
 /@@LoadModule@@/ {
