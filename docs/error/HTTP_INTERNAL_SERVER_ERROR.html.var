@@ -194,3 +194,31 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Erro interno do Servidor!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    
+    O servidor encontrou um erro interno e n&atilde;o pode
+    completar sua requisi&ccedil;&atilde;o.   
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Mensagem de Erro:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    O servidor encontrou um erro interno e n&atilde;o
+    foi poss&iacute;vel completar sua requisi&ccedil;&atilde;o.
+    O servidor est&aacute; sobrecarregado ou existe um 
+    erro em um script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

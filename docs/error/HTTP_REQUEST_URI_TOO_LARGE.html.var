@@ -18,8 +18,8 @@ Body:----------en--
 <!--#set var="TITLE" value="Submitted URI too large!" -->
 <!--#include virtual="include/top.html" -->
 
-    The length of the requested URL exceeds the capacity limit for this server.
-    The request cannot be processed.
+    The length of the requested URL exceeds the capacity limit for
+	this server. The request cannot be processed.
    
 <!--#include virtual="include/bottom.html" -->
 ----------en--
@@ -59,8 +59,8 @@ Body:----------nl--
 <!--#set var="TITLE" value="Aangeboden URI te groot!" -->
 <!--#include virtual="include/top.html" -->
 
-   De lengte van de aangeboden URL overschreidt het maximum voor deze server.
-   De vraag kan niet verwerkt worden.
+   De lengte van de aangeboden URL overschreidt het maximum
+   voor deze server. De vraag kan niet verwerkt worden.
 
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
@@ -92,3 +92,16 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="URL excede limite!" -->
+<!--#include virtual="include/top.html" -->
+
+   O tamanho do endere&ccedil;o (URL) excede a capacidade limite
+   desse servidor. A requisi&ccedil;&atilde;o n&atilde;o pode ser
+   processada.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

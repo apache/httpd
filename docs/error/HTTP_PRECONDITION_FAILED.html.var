@@ -86,3 +86,15 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Falha de precondi&ccedil;&atilde;o!" -->
+<!--#include virtual="include/top.html" -->
+
+    A condi&ccedil;&atilde;o necess&aacute;ria para a
+	requisi&ccedil;&atilde;o da URL foi avaliada como falsa.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -89,3 +89,15 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Objeto apropriado n&atilde;o encontrado!" -->
+<!--#include virtual="include/top.html" -->
+
+    N&atilde;o existe uma representa&ccedil;&atilde;o apropriada
+    para o recurso requisitado neste servidor.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

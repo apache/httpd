@@ -13,8 +13,9 @@ Body:----------de--
 
   <!--#include virtual="include/spacer.html" -->
 
-    Sofern Sie f&uuml;r den Zugriff berechtigt sind, &uuml;berpr&uuml;fen Sie bitte
-    die eingegebene User-ID und das Passwort und versuchen Sie es erneut.  
+    Sofern Sie f&uuml;r den Zugriff berechtigt sind, &uuml;berpr&uuml;fen
+	Sie bitte die eingegebene User-ID und das Passwort und versuchen Sie
+	es erneut.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -145,3 +146,22 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Autentica&ccedil;&atilde;o Requerida!" -->
+<!--#include virtual="include/top.html" -->
+
+    Este servidor n&atilde;o pode autorizar o seu acesso &agrave; URL
+    "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Voc&ecirc; deve ter fornecido dados incorretos (ex. senha errada), ou o seu
+    "browser" n&atilde;o fornece as credenciais necess&aacute;rias.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    No caso de voc&ecirc; realmente possuir permiss&atilde;o para este documento,
+    por favor checar seu login e sua senha e tentar novamente.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -94,3 +94,16 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Variante auto-negoci&aacute;vel!" -->
+<!--#include virtual="include/top.html" -->
+
+    Uma variante da entidade de requisi&ccedil;&atilde;o
+	&eacute; por si mesma um recurso negoci&aacute;vel.
+    Acesso n&atilde;o &eacute; poss&iacute;vel.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

@@ -93,3 +93,16 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Volume da dados muito grande!" -->
+<!--#include virtual="include/top.html" -->
+
+    O m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    n&atilde;o permite a transmiss&atilde;o dos dados,
+    ou o volume de dados excede a capacidade limite.
+  
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

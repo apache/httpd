@@ -190,3 +190,29 @@ Body:----------it--
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Objeto n&atilde;o encontrado!" -->
+<!--#include virtual="include/top.html" -->
+
+    A URL requisitada n&atilde;o foi encontrada neste servidor.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    O link na
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
+    referida</a> parece estar com algum erro ou desatualizado. Por favor informe o
+    autor <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">desta 
+    p&aacute;gina</a> sobre o erro.
+
+   <!--#else -->
+
+    Se voc&ecirc; digitou o endere&ccedil;o (URL) manualmente,
+    por favor verifique novamente a sintaxe do endere&ccedil;o.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--

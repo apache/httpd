@@ -84,3 +84,15 @@ Body:----------it--
    
 <!--#include virtual="include/bottom.html" -->
 ----------it--
+
+Content-language: pt-br
+Content-type: text/html; charset=ISO-8859-1
+Body:-------pt-br--
+<!--#set var="TITLE" value="Tipo de media n&atilde;o suportado!" -->
+<!--#include virtual="include/top.html" -->
+
+   O servidor n&atilde;o suporta o tipo de m&iacute;dia
+   transmitida nesta requisi&ccedil;&atilde;o.
+
+<!--#include virtual="include/bottom.html" -->
+-------pt-br--
