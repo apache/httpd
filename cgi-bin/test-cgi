@@ -1,5 +1,7 @@
 #!/bin/sh
-# $Id: test-cgi,v 1.4 1996/08/20 13:17:23 paul Exp $
+
+# disable filename globbing
+set -f
 
 echo Content-type: text/plain
 echo

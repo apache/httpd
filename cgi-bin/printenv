@@ -1,5 +1,4 @@
 #!/usr/local/bin/perl
-# $Id: printenv,v 1.2 1996/08/20 13:17:23 paul Exp $
 
 print "Content-type: text/html\n\n";
 while (($key, $val) = each %ENV) {
