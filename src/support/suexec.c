@@ -111,6 +111,11 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif
 
+#if defined(NEED_STRERROR)
+extern char *sys_errlist[];
+#define strerror(x) sys_errlist[(x)]
+#endif
+
 #if defined(PATH_MAX)
 #define AP_MAXPATH PATH_MAX
 #elif defined(MAXPATHLEN)

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.28
 
+  *) Fix suexec compile error under SUNOS4, where strerror() doesn't
+     exist. PR 5913, 9977.
+     [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
+
   *) Unix build: Add support for environment variable 
      EXTRA_LDFLAGS_SHLIB, which allows the user to add to the hard-coded 
      ld flags specified for DSOs.  Compare with the existing LDFLAGS_SHLIB 
