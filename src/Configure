@@ -143,7 +143,7 @@ RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 # Now we determine the OS/Platform automagically, thanks to
 # GuessOS, a home-brewed OS-determiner ala config.guess
 #
-# We adjust CFLAGS, LIBS, LFLAGS and INCLUDES (and other Makefile
+# We adjust CFLAGS, LIBS, LDFLAGS and INCLUDES (and other Makefile
 # options) as required. Setting CC and OPTIM here has no effect
 # if they were set in Configure.
 #
@@ -191,13 +191,13 @@ case "$PLAT" in
         OS='MPE/iX'
 	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
 	LIBS="$LIBS -lsocket"
-	LFLAGS="$LFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
+	LDFLAGS="$LDFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
 	;;
     *-apple-aux3*)
 	OS='A/UX 3.1.x'
 	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
 	LIBS="$LIBS -lposix -lbsd"
-	LFLAGS="$LFLAGS -s"
+	LDFLAGS="$LDFLAGS -s"
 	DEF_WANTHSREGEX=no
 	;;
     i386-ibm-aix*)
@@ -256,7 +256,7 @@ case "$PLAT" in
 	echo "You are running 64-bit Irix. For now, we will compile 32-bit"
 	echo "but if you would care to port to 64-bit, send us the patches."
 	CFLAGS="$CFLAGS -n32"
-	LFLAGS="$LFLAGS -n32"
+	LDFLAGS="$LDFLAGS -n32"
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
 	if [ "$RULE_IRIXNIS" = "yes" ]; then
@@ -357,7 +357,7 @@ case "$PLAT" in
 	OS='ISC 4'
 	CC='gcc'
 	CFLAGS="$CFLAGS -posix -DISC"
-	LFLAGS="$LFLAGS -posix"
+	LDFLAGS="$LDFLAGS -posix"
 	LIBS="$LIBS -linet"
 	DEF_WANTHSREGEX=yes
 	;;
@@ -454,11 +454,11 @@ case "$PLAT" in
 	;;
     *powerpc-tenon-machten*)
 	OS='MachTen PPC'
-	LFLAGS="$LFLAGS -Xlstack=0x14000 -Xldelcsect"
+	LDFLAGS="$LDFLAGS -Xlstack=0x14000 -Xldelcsect"
 	;;
     *-machten*)
 	OS='MachTen 68K'
-	LFLAGS="$LFLAGS -stack 0x14000"
+	LDFLAGS="$LDFLAGS -stack 0x14000"
 	DEF_WANTHSREGEX=yes
 	;;
     *convex-v11*)
@@ -585,7 +585,7 @@ fi
 #
 # Now SOCKS4.
 #  NOTE: We assume that if they are using SOCKS4, then they've
-#   adjusted EXTRA_LIBS and/or EXTRA_LFLAGS as required,
+#   adjusted EXTRA_LIBS and/or EXTRA_LDFLAGS as required,
 #   otherwise we assume "-L/usr/local/lib -lsocks"
 #
 if [ "$RULE_SOCKS4" = "yes" ]; then
@@ -614,7 +614,7 @@ fi
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
 echo "LIBS1=$LIBS">> Makefile.config
-echo "LFLAGS1=$LFLAGS">> Makefile.config
+echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config

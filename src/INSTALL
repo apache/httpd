@@ -13,7 +13,7 @@ To do this:
    lists the modules which have been compiled in, and also names the
    files containing them.  You will need to:
 
-   a) Adjust the Rules and EXTRA_CFLAGS|LIBS|LFLAGS|INCLUDES if
+   a) Adjust the Rules and EXTRA_CFLAGS|LIBS|LDFLAGS|INCLUDES if
       you feel so inclined.
 
    b) Uncomment lines corresponding to those optional modules you wish

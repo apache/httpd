@@ -81,7 +81,7 @@ in early versions have been fixed in 1.2.
     <LI>If compilation fails complaining about "unknown symbol __inet_ntoa()"
     then you have probably installed version 8 of bind. You will need to
     explicitly link with the bind library by adding <CODE>-lbind</CODE> 
-    to <CODE>EXTRA_LFLAGS</CODE> in <CODE>Configuration</CODE>. See
+    to <CODE>EXTRA_LDFLAGS</CODE> in <CODE>Configuration</CODE>. See
     <A HREF="http://www.apache.org/bugdb.cgi/full/616">PR#616</A>
     and the 
     <A HREF="FAQ.html#bind8.1">Apache FAQ</A>.

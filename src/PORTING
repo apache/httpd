@@ -104,7 +104,7 @@ determines a build for A/UX, it runs the following lines:
 	OS='A/UX 3.1.x'
 	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
 	LIBS="$LIBS -lposix -lbsd"
-	LFLAGS="$LFLAGS -s"
+	LDFLAGS="$LDFLAGS -s"
 	DEF_WANTHSREGEX=no
 	;;
 
@@ -114,7 +114,7 @@ for. You will also note that 'CFLAGS' defines "-DAUX". In this case,
 below]) to handle OS-specific code. Each code that has and requires
 such OS-specific code will require a unique "system cookie" defined
 in 'CFLAGS'. You will also note that Configure also goes ahead and
-predefines the LIBS and LFLAGS Makefile variables (DEF_WANTHSREGEX is
+predefines the LIBS and LDFLAGS Makefile variables (DEF_WANTHSREGEX is
 explained below).
 
 conf.h:

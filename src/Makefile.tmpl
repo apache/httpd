@@ -6,7 +6,7 @@
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
-LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
@@ -26,7 +26,7 @@ all: @@Configuration@@ httpd
 	@false
 
 httpd: $(REGLIB) $(OBJS)
-	$(CC) $(LFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(LDFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
 
 regex/libregex.a:
 	(cd regex; $(MAKE) lib CC=$(CC) AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
