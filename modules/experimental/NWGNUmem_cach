@@ -179,6 +179,9 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_mem_cache.o \
+	$(OBJDIR)/cache_hash.o \
+	$(OBJDIR)/cache_pqueue.o \
+	$(OBJDIR)/cache_cache.o \
 	$(EOLIST)
 
 #

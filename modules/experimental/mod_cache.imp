@@ -9,13 +9,6 @@
  generate_name,
  cache_hook_create_entity,
  cache_hook_open_entity,
- cache_hook_remove_url,
- cache_hash_set,
- cache_hash_this,
- cache_hash_first,
- cache_hash_make,
- cache_hash_get,
- cache_hash_next,
- cache_hash_count,
- cache_hash_free,
+ cache_hook_remove_url
+
 
