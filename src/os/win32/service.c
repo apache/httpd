@@ -620,7 +620,7 @@ void InstallService(char *display_name, char *conf)
             return;
         }
 
-        /* Attempt to add a key for our service */
+        /* Attempt to add the value for our service */
         rv = RegSetValueEx(hkey, service_name, 0, REG_SZ, 
                            (unsigned char *)szQuotedPath, 
                            strlen(szQuotedPath) + 1);
@@ -632,6 +632,48 @@ void InstallService(char *display_name, char *conf)
             RegCloseKey(hkey);
             return;
         }
+
+        RegCloseKey(hkey);
+
+        /* Create/Find the Service key for Monitor Applications to iterate */
+        ap_snprintf(szPath, sizeof(szPath), 
+                    "SYSTEM\\CurrentControlSet\\Services\\%s", service_name);
+        rv = RegCreateKey(HKEY_LOCAL_MACHINE, szPath, &hkey);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Could not create/open the %s registry key", szPath);
+            return;
+        }
+
+        /* Attempt to add the ImagePath value to identify it as Apache */
+        rv = RegSetValueEx(hkey, "ImagePath", 0, REG_SZ, 
+                           (unsigned char *)szQuotedPath, 
+                           strlen(szQuotedPath) + 1);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Unable to install service: "
+                         "Could not add ImagePath to %s Registry Key", 
+                         service_name);
+            RegCloseKey(hkey);
+            return;
+        }
+
+        /* Attempt to add the DisplayName value for our service */
+        rv = RegSetValueEx(hkey, "DisplayName", 0, REG_SZ, 
+                           (unsigned char *)display_name, 
+                           strlen(display_name) + 1);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Unable to install service: "
+                         "Could not add DisplayName to %s Registry Key", 
+                         service_name);
+            RegCloseKey(hkey);
+            return;
+        }
+
         RegCloseKey(hkey);
     }
 
