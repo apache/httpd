@@ -12,7 +12,7 @@
 
 # This should be changed to whatever you set DocumentRoot to.
 
-<Directory /usr/local/etc/httpd/htdocs>
+<Directory @@ServerRoot@@/htdocs>
 
 # This may also be "None", "All", or any combination of "Indexes",
 # "Includes", "FollowSymLinks", "ExecCGI", or "MultiViews".
@@ -35,10 +35,10 @@ allow from all
 
 </Directory>
 
-# /usr/local/etc/httpd/cgi-bin should be changed to whatever your ScriptAliased
+# @@ServerRoot@@/cgi-bin should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 
-<Directory /usr/local/etc/httpd/cgi-bin>
+<Directory @@ServerRoot@@/cgi-bin>
 AllowOverride None
 Options None
 </Directory>

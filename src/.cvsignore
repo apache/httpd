@@ -1,4 +1,6 @@
 Configuration
+Configuration.lint
+Configuration.default
 Makefile
 modules.c
 httpd

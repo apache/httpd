@@ -44,7 +44,7 @@ ServerAdmin you@your.address
 # ServerRoot: The directory the server's config, error, and log files
 # are kept in
 
-ServerRoot /usr/local/etc/httpd
+ServerRoot @@ServerRoot@@
 
 # BindAddress: You can support virtual hosts with this option. This option
 # is used to tell the server which IP address to listen to. It can either
@@ -151,7 +151,7 @@ MaxRequestsPerChild 30
 
 # To enable the cache as well, edit and uncomment the following lines:
 
-#CacheRoot /usr/local/etc/httpd/proxy
+#CacheRoot @@ServerRoot@@/proxy
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24
