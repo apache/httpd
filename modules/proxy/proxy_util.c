@@ -1664,10 +1664,14 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
         !worker->is_address_reusable) {
         /* TODO: Check if the connection can be reused
-         */
-        if (conn->sock) {
-            apr_socket_close(conn->sock);
-            conn->sock = NULL;
+         */            
+        if (conn->connection) {      
+            if (conn->sock) {
+                apr_socket_close(conn->sock);
+                conn->sock = NULL;
+            }
+            apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
+            conn->connection = NULL;
         }
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
@@ -1693,6 +1697,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         conn->addr = worker->cp->addr;
         PROXY_THREAD_UNLOCK(worker);
     }
+    else
+        conn->addr = worker->cp->addr;
+
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
