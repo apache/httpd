@@ -68,6 +68,7 @@ gifted exclusively to the The Apache Group in July 1997 by
     <LI><A HREF="#RewriteOptions">RewriteOptions</A>
     <LI><A HREF="#RewriteLog">RewriteLog</A>
     <LI><A HREF="#RewriteLogLevel">RewriteLogLevel</A>
+    <LI><A HREF="#RewriteLock">RewriteLock</A>
     <LI><A HREF="#RewriteMap">RewriteMap</A>
     <LI><A HREF="#RewriteBase">RewriteBase</A>
     <LI><A HREF="#RewriteCond">RewriteCond</A>
@@ -247,6 +248,32 @@ at <EM>Level</EM> not greater than 2!
 RewriteLogLevel 3
 </PRE>
 </BLOCKQUOTE>
+
+<P>
+<hr noshade size=1>
+<P>
+
+<H3><A NAME="RewriteLock">RewriteLock</A></H3>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> <CODE>RewriteLock</CODE> <EM>Filename</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<P>
+
+This directive sets the filename for a synchronization lockfile which
+mod_rewrite needs to communicate with <SAMP>RewriteMap</SAMP>
+<EM>programs</EM>. Set this lockfile to a local path (not on a NFS-mounted
+device) when you want to use a rewriting map-program. It is not required for
+SAMP
+using all other types of rewriting maps.
 
 <P>
 <hr noshade size=1>
@@ -437,8 +464,11 @@ while (&lt;STDIN&gt;) {
         if this program hangs it will lead to a hang of the Apache server
         when the rule occurs.
     <LI>Avoid one common mistake: never do buffered I/O on <TT>stdout</TT>!
-    This will cause a deadloop! Hence the ``<TT>$|=1</TT>'' in the above
-    example...
+        This will cause a deadloop! Hence the ``<TT>$|=1</TT>'' in the above
+        example...
+    <LI>Use the <SAMP>RewriteLock</SAMP> directive to define a lockfile
+        mod_rewrite can use to synchronize the communication to the program.
+        Per default no such synchronization takes place.
     </OL>
 </UL>
 
