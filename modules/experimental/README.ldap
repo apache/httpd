@@ -16,3 +16,17 @@ Quick installation instructions (UNIX):
   The --enable-auth-ldap option switches on the LDAP authentication
   module.
 
+Quick installation instructions (win32):
+
+1. copy the file srclib\apr-util\include\apr_ldap.hw to apr_ldap.h
+2. the netscape/iplanet ldap libraries are installed in srclib\ldap
+3. Compile the two modules util_ldap and mod_auth_ldap using the dsp files
+4. You get a mod_auth_ldap.so and a util_ldap.so module
+5. Put them in the modules directory, don't forget to copy the
+   nsldap32v50.dll somewhere where apache.exe will find it
+6. Load the two modules in your httpd.conf, like below:
+   LoadModule ldap_module modules/util_ldap.so
+   LoadModule auth_ldap_module modules/mod_auth_ldap.so
+7. Configure the directories as described in the docus.
+
+
