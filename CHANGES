@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) mod_autoindex now lists files that would result in HTTP_UNAUTHORIZED
+     in addition to success and redirection, since there's a chance the
+     client will actually have the proper authorization to retrieve them.
+     [Stas Bekman, Cliff Woolley]
+
   *) Not being able to bind to the socket is a fatal error.  We should
      print an error to the console, and return a non-zero status code.
      With these changes, all of the Unix MPMs do that correctly.
