@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
+     not specified. Now it assumes "/" as already documented. PR 16937.
+     [André Malo]
+
   *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
      be started on Unix because of such problems as bad permissions,
      bad shebang line, etc.  [Jeff Trawick]
@@ -9,9 +13,6 @@ Changes with Apache 2.1.0-dev
   *) Fix suexec compile error under SUNOS4, where strerror() doesn't
      exist. PR 5913, 9977.
      [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
-
-  *) Fix mod_auth_digest not to use local paths for the domain parameter
-     on non-unix systems. PR 16937.  [André Malo]
 
   *) Let suexec send a message to stderr, if it failed or its policy
      was violated. This message appears in the error log and allows
