@@ -449,17 +449,23 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->type      = MAPTYPE_TXT;
         new->datafile  = a2+4;
         new->checkfile = a2+4;
+        new->cachename = ap_psprintf(cmd->pool, "%pp:%s",
+                                     (void *)cmd->server, a1);
     }
     else if (strncmp(a2, "rnd:", 4) == 0) {
         new->type      = MAPTYPE_RND;
         new->datafile  = a2+4;
         new->checkfile = a2+4;
+        new->cachename = ap_psprintf(cmd->pool, "%pp:%s",
+                                     (void *)cmd->server, a1);
     }
     else if (strncmp(a2, "dbm:", 4) == 0) {
 #ifndef NO_DBM_REWRITEMAP
         new->type      = MAPTYPE_DBM;
         new->datafile  = a2+4;
         new->checkfile = ap_pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
+        new->cachename = ap_psprintf(cmd->pool, "%pp:%s",
+                                     (void *)cmd->server, a1);
 #else
         return ap_pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, "
                           "because no NDBM support is compiled in");
@@ -469,11 +475,13 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->type = MAPTYPE_PRG;
         new->datafile = a2+4;
         new->checkfile = a2+4;
+        new->cachename = NULL;
     }
     else if (strncmp(a2, "int:", 4) == 0) {
         new->type      = MAPTYPE_INT;
         new->datafile  = NULL;
         new->checkfile = NULL;
+        new->cachename = NULL;
         if (strcmp(a2+4, "tolower") == 0) {
             new->func = rewrite_mapfunc_tolower;
         }
@@ -495,6 +503,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->type      = MAPTYPE_TXT;
         new->datafile  = a2;
         new->checkfile = a2;
+        new->cachename = ap_psprintf(cmd->pool, "%pp:%s",
+                                     (void *)cmd->server, a1);
     }
     new->fpin  = -1;
     new->fpout = -1;
@@ -2837,7 +2847,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                                "see error log");
                     return NULL;
                 }
-                value = get_cache_string(cachep, s->name, CACHEMODE_TS,
+                value = get_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new "
@@ -2846,14 +2856,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                          lookup_map_txtfile(r, s->datafile, key)) != NULL) {
                         rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
                                    "-> val=%s", s->name, key, value);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, value);
                         return value;
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, "");
                         return NULL;
                     }
@@ -2874,7 +2884,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                                "see error log");
                     return NULL;
                 }
-                value = get_cache_string(cachep, s->name, CACHEMODE_TS,
+                value = get_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6,
@@ -2883,14 +2893,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                          lookup_map_dbmfile(r, s->datafile, key)) != NULL) {
                         rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s "
                                    "-> val=%s", s->name, key, value);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, value);
                         return value;
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] "
                                    "key=%s", s->name, key);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, "");
                         return NULL;
                     }
@@ -2936,7 +2946,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                                "see error log");
                     return NULL;
                 }
-                value = get_cache_string(cachep, s->name, CACHEMODE_TS,
+                value = get_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new "
@@ -2945,13 +2955,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                          lookup_map_txtfile(r, s->datafile, key)) != NULL) {
                         rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
                                    "-> val=%s", s->name, key, value);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, value);
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
-                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                        set_cache_string(cachep, s->cachename, CACHEMODE_TS,
                                          st.st_mtime, key, "");
                         return NULL;
                     }

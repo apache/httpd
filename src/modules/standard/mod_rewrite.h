@@ -232,6 +232,7 @@ typedef struct {
     int   fperr;                   /* err file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
                   char *);
+    char *cachename;               /* name for the cache */
 } rewritemap_entry;
 
 typedef struct {
