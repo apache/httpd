@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="KOI8-R" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
+<!-- English Revision: 1.3.2.5 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -18,15 +20,11 @@
 -->
 
 <!--***************************************************-->
-<!-- English revision: 1.3.2.3                         -->
-<!--***************************************************-->
 <!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
 <!--***************************************************-->
-
-<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 
 <manualpage metafile="handler.xml.meta">
 

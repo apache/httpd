@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
+<!-- English Revision: 1.2 (outdated: 1.2.2.6) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -18,15 +20,12 @@
 -->
 
 <!--***************************************************-->
-<!-- English revision: 1.2                             -->
-<!--***************************************************-->
 <!-- Translator: Mikhail Filimonov (mvf@uniyar.ac.ru)  -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
 <!--***************************************************-->
 
-<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 <manualpage metafile="mpm.xml.meta">
 
   <title>Мульти-процессные модули (МП-модули)</title>

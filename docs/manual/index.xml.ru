@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="KOI8-R" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
+<!-- English Revision: 1.1.2.6 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -18,15 +20,11 @@
 -->
 
 <!--***************************************************-->
-<!-- English revision: 1.1.2.4                         -->
-<!--***************************************************-->
 <!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
 <!--***************************************************-->
-
-<?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
