@@ -428,6 +428,10 @@ SOURCE=.\include\util_script.h
 
 SOURCE=.\include\util_uri.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\util_xml.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
