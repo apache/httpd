@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
+     [Jeff Trawick]
+
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
 

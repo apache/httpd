@@ -812,7 +812,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     apr_pool_userdata_get((void **)&procnew, userdata_key, main_server->process->pool);
     if (!procnew) {
         first_time = 1;
-        procnew = apr_pcalloc(p, sizeof(*procnew));
+        procnew = apr_pcalloc(main_server->process->pool, sizeof(*procnew));
         procnew->pid = -1;
         procnew->err = procnew->in = procnew->out = NULL;
         apr_pool_userdata_set((const void *)procnew, userdata_key,
