@@ -11,7 +11,7 @@
 # consult the online docs. You have been warned.  
 #
 # After this file is processed, the server will look for and process
-# @@ServerRoot@@/conf/srm.conf and then @@ServerRoot@@/conf/access.conf
+# conf/srm.conf and then conf/access.conf
 # unless you have overridden these with ResourceConfig and/or
 # AccessConfig directives here.
 #

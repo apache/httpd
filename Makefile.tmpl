@@ -529,6 +529,8 @@ install-config:
 			-e "s;logs/referer_log;$(logfiledir)/$${target_prefix}referer_log;" \
 			-e "s;logs/agent_log;$(logfiledir)/$${target_prefix}agent_log;" \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
+			-e 's;conf/srm.conf;$(sysconfdir)/srm.conf;' \
+			-e 's;conf/access.conf;$(sysconfdir)/access.conf;' \
 			-e 's;conf/mime\.types;$(sysconfdir)/mime.types;' \
 			-e 's;User nobody;User $(conf_user);' \
 			-e 's;Group #-1;Group $(conf_group);' \
