@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: build.mk,v 1.3 2000/01/16 17:18:13 sascha Exp $ 
+# $Id: build.mk,v 1.4 2000/02/07 17:16:57 dreid Exp $ 
 #
 # Makefile to generate build tools
 #
@@ -33,7 +33,7 @@ all: $(STAMP) generated_lists
 
 generated_lists:
 	@echo config_m4_files = `find . -name config.m4` > $@
-	@n=`which libtool`; echo libtool_prefix = `dirname $$n`/.. >> $@
+	@n=`helpers/PrintPath libtool`; echo libtool_prefix = `dirname $$n`/.. >> $@
 
 $(STAMP): build/buildcheck.sh
 	@build/buildcheck.sh && touch $(STAMP)
