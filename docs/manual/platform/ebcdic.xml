@@ -295,7 +295,7 @@
 
     <title>Apache Modules' Status</title>
 
-    <table border="1" align="center">
+    <table border="1">
       <tr>
         <th>Module</th>
         <th>Status</th>
@@ -303,212 +303,212 @@
       </tr>
 
       <tr>
-        <td align="left"><module>core</module></td>
-        <td align="center">+</td>
+        <td><module>core</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_access</module></td>
-        <td align="center">+</td>
+        <td><module>mod_access</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_actions</module></td>
-        <td align="center">+</td>
+        <td><module>mod_actions</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_alias</module></td>
-        <td align="center">+</td>
+        <td><module>mod_alias</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_asis</module></td>
-        <td align="center">+</td>
+        <td><module>mod_asis</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_auth</module></td>
-        <td align="center">+</td>
+        <td><module>mod_auth</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_auth_anon</module></td>
-        <td align="center">+</td>
+        <td><module>mod_auth_anon</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_auth_dbm</module></td>
-        <td align="center">?</td>
+        <td><module>mod_auth_dbm</module></td>
+        <td class="centered">?</td>
         <td>with own <code>libdb.a</code></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_autoindex</module></td>
-        <td align="center">+</td>
+        <td><module>mod_autoindex</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_cern_meta</module></td>
-        <td align="center">?</td>
+        <td><module>mod_cern_meta</module></td>
+        <td class="centered">?</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_cgi</module></td>
-        <td align="center">+</td>
+        <td><module>mod_cgi</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_digest</module></td>
-        <td align="center">+</td>
+        <td><module>mod_digest</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_dir</module></td>
-        <td align="center">+</td>
+        <td><module>mod_dir</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_so</module></td>
-        <td align="center">-</td>
+        <td><module>mod_so</module></td>
+        <td class="centered">-</td>
         <td>no shared libs</td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_env</module></td>
-        <td align="center">+</td>
+        <td><module>mod_env</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_example</module></td>
-        <td align="center">-</td>
+        <td><module>mod_example</module></td>
+        <td class="centered">-</td>
         <td>(test bed only)</td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_expires</module></td>
-        <td align="center">+</td>
+        <td><module>mod_expires</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_headers</module></td>
-        <td align="center">+</td>
+        <td><module>mod_headers</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_imap</module></td>
-        <td align="center">+</td>
+        <td><module>mod_imap</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_include</module></td>
-        <td align="center">+</td>
+        <td><module>mod_include</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_info</module></td>
-        <td align="center">+</td>
+        <td><module>mod_info</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_log_agent</module></td>
-        <td align="center">+</td>
+        <td><module>mod_log_agent</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_log_config</module></td>
-        <td align="center">+</td>
+        <td><module>mod_log_config</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_log_referer</module></td>
-        <td align="center">+</td>
+        <td><module>mod_log_referer</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_mime</module></td>
-        <td align="center">+</td>
+        <td><module>mod_mime</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_mime_magic</module></td>
-        <td align="center">?</td>
+        <td><module>mod_mime_magic</module></td>
+        <td class="centered">?</td>
         <td>not ported yet</td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_negotiation</module></td>
-        <td align="center">+</td>
+        <td><module>mod_negotiation</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_proxy</module></td>
-        <td align="center">+</td>
+        <td><module>mod_proxy</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_rewrite</module></td>
-        <td align="center">+</td>
+        <td><module>mod_rewrite</module></td>
+        <td class="centered">+</td>
         <td>untested</td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_setenvif</module></td>
-        <td align="center">+</td>
+        <td><module>mod_setenvif</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_speling</module></td>
-        <td align="center">+</td>
+        <td><module>mod_speling</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_status</module></td>
-        <td align="center">+</td>
+        <td><module>mod_status</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_unique_id</module></td>
-        <td align="center">+</td>
+        <td><module>mod_unique_id</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_userdir</module></td>
-        <td align="center">+</td>
+        <td><module>mod_userdir</module></td>
+        <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td align="left"><module>mod_usertrack</module></td>
-        <td align="center">?</td>
+        <td><module>mod_usertrack</module></td>
+        <td class="centered">?</td>
         <td>untested</td>
       </tr>
     </table>
@@ -519,7 +519,7 @@
 
     <title>Third Party Modules' Status</title>
 
-    <table border="1" align="center">
+    <table border="1">
       <tr>
         <th>Module</th>
         <th>Status</th>
@@ -527,34 +527,31 @@
       </tr>
 
       <tr>
-        <td align="left"><code><a
-        href="http://java.apache.org/"
-        >mod_jserv</a></code></td>
-        <td align="center">-</td>
+        <td><code><a href="http://java.apache.org/">mod_jserv</a>
+        </code></td>
+        <td class="centered">-</td>
         <td>JAVA still being ported.</td>
       </tr>
 
       <tr>
-        <td align="left"><code><a href="http://www.php.net/"
-        >mod_php3</a></code></td>
-        <td align="center">+</td>
+        <td><code><a href="http://www.php.net/">mod_php3</a></code></td>
+        <td class="centered">+</td>
         <td><code>mod_php3</code> runs fine, with LDAP and GD
         and FreeType libraries.</td>
       </tr>
 
       <tr>
-        <td align="left"><code><a
+        <td><code><a
         href="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html"
         >mod_put</a></code></td>
-        <td align="center">?</td>
+        <td class="centered">?</td>
         <td>untested</td>
       </tr>
 
       <tr>
-        <td align="left"><code><a
-        href="ftp://hachiman.vidya.com/pub/apache/"
+        <td><code><a href="ftp://hachiman.vidya.com/pub/apache/"
         >mod_session</a></code></td>
-        <td align="center">-</td>
+        <td class="centered">-</td>
         <td>untested</td>
       </tr>
     </table>
@@ -562,4 +559,3 @@
   </section>
 
 </manualpage>
-

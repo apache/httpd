@@ -326,6 +326,10 @@ th {
     font-weight: bold;
 }
 
+td.centered {
+    text-align: center;
+}
+
 tr.odd { /* for large tables alternating colors */
     background-color: #f2f2f2;
 }

@@ -9,9 +9,9 @@
 
   <summary>
     <note>
-      <address>Originally written by<br />
-      Ralf S. Engelschall &lt;rse@apache.org&gt;<br />
-      December 1997</address>
+      <p>Originally written by<br />
+      <cite>Ralf S. Engelschall &lt;rse@apache.org&gt;</cite><br />
+      December 1997</p>
     </note>
 
     <p>This document supplements the <module>mod_rewrite</module>
@@ -76,7 +76,7 @@
       <title>Canonical URLs</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>On some webservers there are more than one URL for a
@@ -87,7 +87,7 @@
           canonical one only.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We do an external HTTP redirect for all non-canonical
@@ -111,11 +111,11 @@ RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<
       <title>Canonical Hostnames</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>...</dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
 <example><pre>
@@ -137,7 +137,7 @@ RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
       <title>Moved <code>DocumentRoot</code></title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Usually the <directive module="core">DocumentRoot</directive>
@@ -152,7 +152,7 @@ RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
           data pool work for subsequent requests.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We just redirect the URL <code>/</code> to
@@ -179,7 +179,7 @@ RewriteRule   <strong>^/$</strong>  /e/www/  [<strong>R</strong>]
       <title>Trailing Slash Problem</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Every webmaster can sing a song about the problem of
@@ -194,7 +194,7 @@ RewriteRule   <strong>^/$</strong>  /e/www/  [<strong>R</strong>]
           complicated URL rewritings to CGI scripts etc.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>The solution to this subtle problem is to let the server
@@ -239,7 +239,7 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
       <title>Webcluster through Homogeneous URL Layout</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>We want to create a homogeneous and consistent URL
@@ -253,7 +253,7 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
           host.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>First, the knowledge of the target servers come from
@@ -314,7 +314,7 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
       <title>Move Homedirs to Different Webserver</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Many webmasters have asked for a solution to the
@@ -324,7 +324,7 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
           will replace the old one over time.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>The solution is trivial with <module>mod_rewrite</module>.
@@ -346,7 +346,7 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
       <title>Structured Homedirs</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Some sites with thousands of users usually use a
@@ -358,7 +358,7 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
           <code>/home/<strong>b</strong>/bar/.www/anypath</code>.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We use the following ruleset to expand the tilde URLs
@@ -378,7 +378,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
       <title>Filesystem Reorganization</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>This really is a hardcore example: a killer application
@@ -424,7 +424,7 @@ drwxrwxr-x  10 netsw  users    512 Jul  9 14:08 X11/
           Web or CGI stuff to be there.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>The solution has two parts: The first is a set of CGI
@@ -527,7 +527,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
       <title>NCSA imagemap to Apache <code>mod_imap</code></title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>When switching from the NCSA webserver to the more
@@ -542,7 +542,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
           <code>/path/to/page.map</code>.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We use a global rule to remove the prefix on-the-fly for
@@ -562,7 +562,7 @@ RewriteRule    ^/cgi-bin/imagemap(.*)  $1  [PT]
       <title>Search pages in more than one directory</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Sometimes it is necessary to let the webserver search
@@ -570,7 +570,7 @@ RewriteRule    ^/cgi-bin/imagemap(.*)  $1  [PT]
           other techniques cannot help.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We program a explicit ruleset which searches for the
@@ -603,7 +603,7 @@ RewriteRule   ^(.+)  -  [PT]
       <title>Set Environment Variables According To URL Parts</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Perhaps you want to keep status information between
@@ -612,7 +612,7 @@ RewriteRule   ^(.+)  -  [PT]
           information.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We use a rewrite rule to strip out the status information
@@ -636,7 +636,7 @@ RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$
       <title>Virtual User Hosts</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Assume that you want to provide
@@ -646,7 +646,7 @@ RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$
           machine.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>For HTTP/1.0 requests there is no solution, but for
@@ -671,7 +671,7 @@ RewriteRule   ^www\.<strong>([^.]+)</strong>\.host\.com(.*) /home/<strong>$1</st
       <title>Redirect Homedirs For Foreigners</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>We want to redirect homedir URLs to another webserver
@@ -681,7 +681,7 @@ RewriteRule   ^www\.<strong>([^.]+)</strong>\.host\.com(.*) /home/<strong>$1</st
           virtual host contexts.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>Just a rewrite condition:</p>
@@ -701,7 +701,7 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
       <title>Redirect Failing URLs To Other Webserver</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>A typical FAQ about URL rewriting is how to redirect
@@ -714,7 +714,7 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
           CGI-script!</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>The first solution has the best performance but less
@@ -755,7 +755,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
       <title>Extended Redirection</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Sometimes we need more control (concerning the
@@ -769,7 +769,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
           How can we redirect to such a URL?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We have to use a kludge by the use of a NPH-CGI script
@@ -841,7 +841,7 @@ RewriteRule ^anyurl  xredirect:news:newsgroup
       <title>Archive Access Multiplexer</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Do you know the great CPAN (Comprehensive Perl Archive
@@ -855,7 +855,7 @@ RewriteRule ^anyurl  xredirect:news:newsgroup
           implemented via <module>mod_rewrite</module>?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>First we notice that from version 3.0.0
@@ -895,7 +895,7 @@ com       ftp://ftp.cxan.com/CxAN/
       <title>Time-Dependent Rewriting</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>When tricks like time-dependent content should happen a
@@ -904,7 +904,7 @@ com       ftp://ftp.cxan.com/CxAN/
           via <module>mod_rewrite</module>?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>There are a lot of variables named <code>TIME_xxx</code>
@@ -936,7 +936,7 @@ RewriteRule   ^foo\.html$             foo.night.html
       <title>Backward Compatibility for YYYY to XXXX migration</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we make URLs backward compatible (still
@@ -945,7 +945,7 @@ RewriteRule   ^foo\.html$             foo.night.html
           bunch of <code>.html</code> files to <code>.phtml</code>?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We just rewrite the name to its basename and test for
@@ -985,7 +985,7 @@ RewriteRule   ^(.*)$ $1.html
       <title>From Old to New (intern)</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Assume we have recently renamed the page
@@ -995,7 +995,7 @@ RewriteRule   ^(.*)$ $1.html
           the pages was renamed.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We rewrite the old URL to the new one internally via the
@@ -1016,7 +1016,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
       <title>From Old to New (extern)</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Assume again that we have recently renamed the page
@@ -1027,7 +1027,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
           change, too.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We force a HTTP redirect to the new URL which leads to a
@@ -1048,7 +1048,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
       <title>Browser Dependent Content</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>At least for important top-level pages it is sometimes
@@ -1058,7 +1058,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
           browsers and a average feature version for all others.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We cannot use content negotiation because the browsers do
@@ -1092,7 +1092,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
       <title>Dynamic Mirror</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Assume there are nice webpages on remote hosts we want
@@ -1109,12 +1109,12 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
           there is need (updated data on the remote host).</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>To provide this feature we map the remote webpage or even
           the complete remote webarea to our namespace by the use
-          of the <i>Proxy Throughput</i> feature
+          of the <dfn>Proxy Throughput</dfn> feature
           (flag <code>[P]</code>):</p>
 
 <example><pre>
@@ -1138,11 +1138,11 @@ RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.
       <title>Reverse Dynamic Mirror</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>...</dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
 <example><pre>
@@ -1160,7 +1160,7 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
       <title>Retrieve Missing Data from Intranet</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>This is a tricky way of virtually running a corporate
@@ -1173,7 +1173,7 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
           one.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>First, we have to make sure that our firewall still
@@ -1208,7 +1208,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
       <title>Load Balancing</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Suppose we want to load balance the traffic to
@@ -1216,7 +1216,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
           (a total of 6 servers). How can this be done?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>There are a lot of possible solutions for this problem.
@@ -1364,11 +1364,11 @@ while (&lt;STDIN&gt;) {
       <title>Reverse Proxy</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>...</dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
 <example><pre>
@@ -1481,7 +1481,7 @@ dynamic   www5.foo.dom|www6.foo.dom
       <title>New MIME-type, New Service</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>On the net there are a lot of nifty CGI programs. But
@@ -1527,7 +1527,7 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
           lot of time changing the various hyperlinks.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>The solution here is to provide a special new URL format
@@ -1565,7 +1565,7 @@ HREF="*"
       <title>From Static to Dynamic</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we transform a static page
@@ -1574,7 +1574,7 @@ HREF="*"
           by the browser/user.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We just rewrite the URL to the CGI-script and force the
@@ -1598,7 +1598,7 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<stron
       <title>On-the-fly Content-Regeneration</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Here comes a really esoteric feature: Dynamically
@@ -1611,7 +1611,7 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<stron
           contents gets refreshed.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           This is done via the following ruleset:
@@ -1641,7 +1641,7 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
       <title>Document With Autorefresh</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Wouldn't it be nice while creating a complex webpage if
@@ -1650,7 +1650,7 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
           Impossible?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>No! We just combine the MIME multipart feature, the
@@ -1793,7 +1793,7 @@ exit(0);
       <title>Mass Virtual Hosting</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>The <directive type="section" module="core"
@@ -1804,12 +1804,12 @@ exit(0);
           choice.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>To provide this feature we map the remote webpage or even
           the complete remote webarea to our namespace by the use
-          of the <i>Proxy Throughput</i> feature (flag <code>[P]</code>):</p>
+          of the <dfn>Proxy Throughput</dfn> feature (flag <code>[P]</code>):</p>
 
 <example><pre>
 ##
@@ -1886,7 +1886,7 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
       <title>Blocking of Robots</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we block a really annoying robot from
@@ -1896,7 +1896,7 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
           rid of such a robot.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We use a ruleset which forbids the URLs of the webarea
@@ -1924,7 +1924,7 @@ RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
       <title>Blocked Inline-Images</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Assume we have under <code>http://www.quux-corp.de/~quux/</code>
@@ -1934,7 +1934,7 @@ RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
           useless traffic to our server.</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>While we cannot 100% protect the images from inclusion,
@@ -1962,14 +1962,14 @@ RewriteRule <strong>^inlined-in-foo\.gif$</strong>   -                        [F
       <title>Host Deny</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we forbid a list of externally configured hosts
           from using our server?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>For Apache &gt;= 1.3b6:</p>
@@ -2017,14 +2017,14 @@ bsdti1.sdm.de  -
       <title>Proxy Deny</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we forbid a certain host or even a user of a
           special host from using the Apache proxy?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We first have to make sure <module>mod_rewrite</module>
@@ -2054,7 +2054,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
       <title>Special Authentication Variant</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>Sometimes a very special authentication is needed, for
@@ -2064,7 +2064,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
           when using the Basic Auth via <module>mod_access</module>).</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>We use a list of rewrite conditions to exclude all except
@@ -2086,7 +2086,7 @@ RewriteRule ^/~quux/only-for-friends/      -                                 [F]
       <title>Referer-based Deflector</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>How can we program a flexible URL Deflector which acts
@@ -2094,7 +2094,7 @@ RewriteRule ^/~quux/only-for-friends/      -                                 [F]
           many referring pages as we like?</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>Use the following really tricky ruleset...</p>
@@ -2144,7 +2144,7 @@ http://www.badguys.com/bad/index3.html   http://somewhere.com/
       <title>External Rewriting Engine</title>
 
       <dl>
-        <dt><strong>Description:</strong></dt>
+        <dt>Description:</dt>
 
         <dd>
           <p>A FAQ: How can we solve the FOO/BAR/QUUX/etc.
@@ -2152,7 +2152,7 @@ http://www.badguys.com/bad/index3.html   http://somewhere.com/
           <module>mod_rewrite</module>...</p>
         </dd>
 
-        <dt><strong>Solution:</strong></dt>
+        <dt>Solution:</dt>
 
         <dd>
           <p>Use an external <directive module="mod_rewrite"
