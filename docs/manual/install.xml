@@ -21,6 +21,10 @@
     to create an environment that looks like many other Open Source
     projects.</p>
 
+    <p>If you are upgrading from one minor version to the next (for
+    example, 2.0.50 to 2.0.51), please skip down to the <a
+    href="#upgrading">upgrading</a> section.</p>
+
 </summary>
 
 <seealso><a href="invoking.html">Starting Apache</a></seealso>
@@ -297,7 +301,7 @@
 
       <dd>Header file search directories ("<code>-I<em>dir</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>httpd</code>]</dt>
 
       <dd>Name of the executable which will be built.</dd>
 
@@ -547,7 +551,7 @@ separated by a colon.</dd>
 
 <section id="install"><title>Install</title>
 
-    <p>Now its time to install the package under the configured
+    <p>Now it's time to install the package under the configured
     installation <em>PREFIX</em> (see <code>--prefix</code> option
     above) by running:</p>
 
@@ -589,5 +593,52 @@ separated by a colon.</dd>
 
 <example>$ <em>PREFIX</em>/bin/apachectl stop</example>
 </section>
+<section id="upgrading"><title>Upgrading</title>
 
+    <p>The first step in upgrading is to read the release announcement
+    and the file <code>CHANGES</code> in the source distribution to
+    find any changes that may affect your site.  When changing between
+    major releases (for example, from 1.3 to 2.0 or from 2.0 to 2.2),
+    there will likely be major differences in the compile-time and
+    run-time configuration that will require manual adjustments.  All
+    modules will also need to be upgraded to accomodate changes in the
+    module API.</p>
+
+    <p>Upgrading from one minor version to the next (for example, from
+    2.0.55 to 2.0.57) is easier.  The <code>make install</code>
+    process will not overwrite any of your existing documents, log
+    files, or configuration files.  In addition, the developers make
+    every effort to avoid incompatible changes in the
+    <code>configure</code> options, run-time configuration, or the
+    module API between minor versions.  In most cases you should be able to
+    use an identical <code>configure</code> command line, an identical
+    configuration file, and all of your modules should continue to
+    work.  (This is only valid for versions after 2.0.41; earlier
+    versions have incompatible changes.)</p>
+
+    <p>If you kept the source tree from your last installation,
+    upgrading is even easier.  The file <code>config.nice</code> in
+    the root of the old source tree contains the exact
+    <code>configure</code> command line that you used to configure the
+    source tree.  Then to upgrade from one version to the next, you
+    need only copy the <code>config.nice</code> file to the source
+    tree of the new version, edit it to make any desired changes, and
+    then run:</p>
+
+    <example>
+    $ ./config.nice<br />
+    $ make<br />
+    $ make install<br />
+    $ <em>PREFIX</em>/bin/apachectl stop<br />
+    $ <em>PREFIX</em>/bin/apachectl start<br />
+    </example>
+
+    <note type="warning">You should always test any new version in your
+    environment before putting it into production.  For example, you
+    can install and run the new version along side the old one by
+    using a different <code>--prefix</code> and a
+    different port (by adjusting the <directive
+    module="mpm_common">Listen</directive> directive) to test for any
+    incompatibilities before doing the final upgrade.</note>
+</section>
 </manualpage>
