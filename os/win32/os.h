@@ -51,9 +51,9 @@ extern "C" {
 
 AP_DECLARE_DATA extern int ap_real_exit_code;
 
-#define exit(status) ((exit)((ap_real_exit_code==2) ? (ap_real_exit_code = (status)) \
-                                                 : ((ap_real_exit_code = 0), (status))))
-
+#define exit(status) ((exit)((ap_real_exit_code==2) \
+                                ? (ap_real_exit_code = (status)) \
+                                : ((ap_real_exit_code = 0), (status))))
 
 #ifdef AP_DECLARE_EXPORT
 
