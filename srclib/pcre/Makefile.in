@@ -11,7 +11,6 @@
 # include dll.mk
 # DLL_LDFLAGS=-s
 
-
 #---------------------------------------------------------------------------#
 # The next few lines are modified by "configure" to insert data that it is  #
 # given in its arguments, or which it finds out for itself.                 #
@@ -193,6 +192,9 @@ check:          runtest
 
 runtest:        all
 		./RunTest
+
+depend:
+	echo '*** SKIPPING PCRE UNTIL SOMEONE MAKES IT WORK ***'
 
 ######## MINGW32 ############### MINGW32 ############### MINGW32 #############
 
