@@ -410,6 +410,10 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     apr_sockaddr_info_get(&(*pod)->sa, ap_listeners->bind_addr->hostname,
                           APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
 
+    /* close these before exec. */
+    apr_file_unset_inherit((*pod)->pod_in);
+    apr_file_unset_inherit((*pod)->pod_out);
+
     return APR_SUCCESS;
 }
 

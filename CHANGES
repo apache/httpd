@@ -1,5 +1,11 @@
 Changes with Apache 2.0.45
 
+  *) SECURITY:  Eliminated leaks of several file descriptors to child
+     processes, such as CGI scripts.  This fix depends on the latest
+     APR library release 0.9.2, which is distributed with the httpd 
+     source tarball for Apache 2.0.45.  PR 17206
+     [Christian Kratzer <ck@cksoft.de>, Bjoern A. Zeeb <bz@zabbadoz.net>]
+
   *) Prevent endless loops of internal redirects in mod_rewrite by
      aborting after exceeding a limit of internal redirects. The
      limit defaults to 10 and can be changed using the RewriteOptions
