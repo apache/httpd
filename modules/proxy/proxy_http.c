@@ -788,8 +788,13 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
 		ap_pass_brigade(r->output_filters, bb);
 		break;
 	    }
-	    ap_pass_brigade(r->output_filters, bb);
-	    apr_brigade_cleanup(bb);
+            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+                /* Ack! Phbtt! Die! User aborted! */
+                apr_brigade_cleanup(bb);
+                close = 1;  /* this causes socket close below */
+                break;
+            }
+            apr_brigade_cleanup(bb);
 	}
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: end body send");

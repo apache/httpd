@@ -794,7 +794,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	 *  after the time of the response.
 	 *     Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
 	 */
-	for (i=0 ; buffer[i] && !isdigit(buffer[i]); i++);
+	for (i = 0; buffer[i] && !isdigit(buffer[i]); i++);
 	if (buffer[i]) {
 	    ap_table_add(r->headers_out, "Retry-After", apr_psprintf(p, "%lu", 60*atol(buffer+i)));
 	}
@@ -1264,7 +1264,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* set request; "path" holds last path component */
     len = decodeenc(path);
 
-    /* TM - if len == 0 then it must be a directory (you can't RETR anything) */
+    /* TM - if len == 0 then it must be a directory (you can't RETR nothing) */
 
     if (len == 0) {
 	parms = "d";
