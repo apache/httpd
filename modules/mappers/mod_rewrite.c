@@ -799,6 +799,8 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     /*  arg2: the output string
      *  replace the $<N> by \<n> which is needed by the currently
      *  used Regular Expression library
+     *
+     * TODO: Is this still required for PCRE?  If not, does it *work* with PCRE?
      */
     newrule->output = apr_pstrdup(cmd->pool, a2);
 
@@ -1021,9 +1023,17 @@ static void init_module(apr_pool_t *p,
 
 static void init_child(apr_pool_t *p, server_rec *s)
 {
+    apr_status_t rv;
 
     if (lockname != NULL && *(lockname) != '\0')
-        apr_child_init_lock (&rewrite_mapr_lock, lockname, p);
+    {
+        rv = apr_child_init_lock (&rewrite_mapr_lock, lockname, p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                         "mod_rewrite: could not init rewrite_mapr_lock "
+                         "in child");
+        }
+    }
 
     /* create the lookup cache */
     cachep = init_cache(p);
@@ -2756,6 +2766,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     rewritemap_entry *s;
     char *value;
     apr_finfo_t st;
+    apr_status_t rv;
     int i;
 
     /* get map configuration */
@@ -2769,8 +2780,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
-                if (apr_stat(&st, s->checkfile, r->pool) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open RewriteMap file, "
@@ -2806,8 +2817,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_DBM) {
 #ifndef NO_DBM_REWRITEMAP
-                if (apr_stat(&st, s->checkfile, r->pool) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access DBM RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open DBM RewriteMap file, "
@@ -2868,8 +2879,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_RND) {
-                if (apr_stat(&st, s->checkfile, r->pool) == -1) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                if ((rv = apr_stat(&st, s->checkfile, r->pool)) != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                  "mod_rewrite: can't access text RewriteMap "
                                  "file %s", s->checkfile);
                     rewritelog(r, 1, "can't open RewriteMap file, "
@@ -3199,7 +3210,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
 
     if (*conf->rewritelogfile == '|') {
         if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, 
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, 
                          "mod_rewrite: could not open reliable pipe "
                          "to RewriteLog filter %s", conf->rewritelogfile+1);
             exit(1);
@@ -3209,7 +3220,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
     else if (*conf->rewritelogfile != '\0') {
         rc = apr_open(&conf->rewritelogfp, fname, rewritelog_flags, rewritelog_mode, p);
         if (rc != APR_SUCCESS)  {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, 
                          "mod_rewrite: could not open RewriteLog "
                          "file %s", fname);
             exit(1);
@@ -3391,7 +3402,7 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
     rewritemap_entry *entries;
     rewritemap_entry *map;
     int i;
-    int rc;
+    apr_status_t rc;
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -3420,9 +3431,9 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         rc = rewritemap_program_child(p, map->datafile,
                                      &fpout, &fpin, &fperr);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                          "mod_rewrite: could not fork child for "
-                         "RewriteMap process. %d", rc);
+                         "RewriteMap process");
             exit(1);
         }
         map->fpin  = fpin;
@@ -3433,11 +3444,11 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 }
 
 /* child process code */
-static int rewritemap_program_child(apr_pool_t *p, const char *progname,
-                                    apr_file_t **fpout, apr_file_t **fpin,
-                                    apr_file_t **fperr)
+static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname,
+                                             apr_file_t **fpout, apr_file_t **fpin,
+                                             apr_file_t **fperr)
 {
-    int rc = -1;
+    apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
@@ -3446,15 +3457,15 @@ static int rewritemap_program_child(apr_pool_t *p, const char *progname,
 #endif
 
     
-    if ((apr_createprocattr_init(&procattr, p)           != APR_SUCCESS) ||
-        (apr_setprocattr_io(procattr, APR_FULL_BLOCK,
-                                     APR_FULL_NONBLOCK,
-                                     APR_FULL_NONBLOCK) != APR_SUCCESS) ||
-        (apr_setprocattr_dir(procattr, ap_make_dirstr_parent(p, progname))
-                                                        != APR_SUCCESS) ||
-        (apr_setprocattr_cmdtype(procattr, APR_PROGRAM)  != APR_SUCCESS)) {
+    if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_io(procattr, APR_FULL_BLOCK,
+                                  APR_FULL_NONBLOCK,
+                                  APR_FULL_NONBLOCK)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_dir(procattr, 
+                                   ap_make_dirstr_parent(p, progname)))
+         != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
-        rc = -1;
     }
     else {
         procnew = apr_pcalloc(p, sizeof(*procnew));

@@ -438,9 +438,9 @@ static apr_status_t rewritelock_remove(void *data);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, apr_pool_t *p);
-static int   rewritemap_program_child(apr_pool_t *p, const char *progname,
-                                    apr_file_t **fpout, apr_file_t **fpin,
-                                    apr_file_t **fperr);
+static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname,
+                                             apr_file_t **fpout, apr_file_t **fpin,
+                                             apr_file_t **fperr);
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
