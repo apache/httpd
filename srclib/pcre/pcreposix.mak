@@ -256,12 +256,12 @@ InputPath=.\pcre.hw
 
 "pcre - Win32 Release" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcre.mak" CFG="pcre - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcre.mak CFG="pcre - Win32 Release" 
    cd "."
 
 "pcre - Win32 ReleaseCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcre.mak" CFG="pcre - Win32 Release"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcre.mak CFG="pcre - Win32 Release"\
  RECURSE=1 
    cd "."
 
@@ -269,13 +269,13 @@ InputPath=.\pcre.hw
 
 "pcre - Win32 Debug" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\pcre.mak" CFG="pcre - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\pcre.mak CFG="pcre - Win32 Debug" 
    cd "."
 
 "pcre - Win32 DebugCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\pcre.mak" CFG="pcre - Win32 Debug"\
- RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\pcre.mak CFG="pcre - Win32 Debug" RECURSE=1\
+ 
    cd "."
 
 !ENDIF 

@@ -319,25 +319,25 @@ InputPath=.\pcre.hw
 
 "dftables - Win32 Release" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\dftables.mak" CFG="dftables - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F .\dftables.mak CFG="dftables - Win32 Release" 
    cd "."
 
 "dftables - Win32 ReleaseCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\dftables.mak"\
- CFG="dftables - Win32 Release" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\dftables.mak CFG="dftables - Win32 Release"\
+ RECURSE=1 
    cd "."
 
 !ELSEIF  "$(CFG)" == "pcre - Win32 Debug"
 
 "dftables - Win32 Debug" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\dftables.mak" CFG="dftables - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\dftables.mak CFG="dftables - Win32 Debug" 
    cd "."
 
 "dftables - Win32 DebugCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\dftables.mak" CFG="dftables - Win32 Debug"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\dftables.mak CFG="dftables - Win32 Debug"\
  RECURSE=1 
    cd "."
 
