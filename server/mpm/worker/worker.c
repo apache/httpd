@@ -1493,6 +1493,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                     "SIGHUP received.  Attempting to restart");
     }
+
+    /* get the pipe of death out of the listen_rec list */
+    ap_assert(ap_listeners->bind_addr == 0);
+    ap_listeners = ap_listeners->next;
+
     return 0;
 }
 
