@@ -460,9 +460,6 @@ EXPERIMENTAL MODULES:
 
 Other bugs that need fixing:
 
-    * ap_discard_request should be converted to use the bucket API
-      directly rather than waste cycles copying buffers with the old API.
-
     * MaxRequestsPerChild measures connections, not requests.
         Until someone has a better way, we'll probably just rename it
         "MaxConnectionsPerChild".
