@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
-<!-- English -->
+
+<!--                   -->
+<!-- Language: English -->
+<!--                   -->
+
+<!-- Some strings might be used in other contexts, than stated in the -->
+<!-- comments...                                                      -->
 <messages>
- <message name="seealso">See also </message>
- <message name="description">Description</message>
+ <!-- Used for the moduleindex -->
+ <message name="corefeatures">Core Features and Multi-Processing Modules</message>
+ <message name="othermodules">Other Modules</message>
+
+ <!-- Title for modulesynopsis -->
  <message name="apachemodule">Apache Module</message>
+
+ <!-- Used in description box for modulesynopsis -->
+ <message name="description">Description</message>
+ <message name="seealso">See also </message>
  <message name="status">Status</message>
  <message name="moduleidentifier">Module&nbsp;Identifier</message>
  <message name="compatibility">Compatibility</message>
+
+ <!-- Used in description box for directives -->
  <message name="syntax">Syntax</message>
  <message name="default">Default</message>
  <message name="context">Context</message>
  <message name="override">Override</message>
  <message name="status">Status</message>
  <message name="module">Module</message>
- <message name="nodirective">This module provides no directives.</message>
- <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
- <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
- <message name="index">Index</message>
- <message name="home">Home</message>
+
+ <!-- Used for directive lists -->
  <message name="directives">Directives</message>
  <message name="directive">Directive</message>
+ <message name="nodirective">This module provides no directives.</message>
+
+ <!-- Used in summaries -->
+ <message name="summary">Summary</message>
+
+ <!-- Used in headers and footers -->
+ <message name="apachetitle">- Apache HTTP Server</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
+ <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
+ <message name="index">Index</message>
+ <message name="home">Home</message>
 </messages>
