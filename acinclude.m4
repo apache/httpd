@@ -141,69 +141,7 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
-dnl
-dnl APACHE_CHECK_THREADS()
-dnl
-dnl Determine the best flags for linking against a threading library.
-dnl
-AC_DEFUN(APACHE_THREAD_TEST, [
-AC_TRY_RUN( [
-#include <pthread.h>
-
-void *thread_routine(void *data) {
-    return data;
-}
-
-int main() {
-    pthread_t thd;
-    int data = 1;
-    return pthread_create(&thd, NULL, thread_routine, &data);
-} ], [ 
-  apache_threads_working="yes"
-  ], [
-  apache_threads_working="no"
-  ], apache_threads_working="no" ) ] )
-
-
-AC_DEFUN(APACHE_CHECK_THREADS,[
-
-APACHE_THREAD_TEST
-
-if test "$apache_threads_working" != "yes"; then
-  for flag in -pthreads -pthread -mthreads; do 
-    AC_MSG_CHECKING(whether $flag enables POSIX threads)
-    ac_save="$CFLAGS"
-    CFLAGS="$CFLAGS $flag"
-    APACHE_THREAD_TEST
-    if test "$apache_threads_working" = "yes"; then
-      AC_MSG_RESULT(yes)
-      REENTRANCY_CFLAGS="$REENTRANCY_CFLAGS $flag"
-      break
-    fi
-    CFLAGS="$ac_save"
-    AC_MSG_RESULT(no)
-  done
-fi
-
-if test "$apache_threads_working" != "yes"; then
-  for lib in pthread pthreads c_r; do
-    ac_save="$LIBS"
-    LIBS="$LIBS -l$lib"
-    APACHE_THREAD_TEST
-    if test "$apache_threads_working" = "yes"; then
-      REENTRANCY_LDFLAGS="$REENTRANCY_LDFLAGS -l$lib"
-      break
-    fi
-    LIBS="$ac_save"
-  done
-fi
-
-if test "$apache_threads_working" = "yes"; then
-  threads_result="POSIX Threads found"
-else
-  threads_result="POSIX Threads not found"
-fi
-])
+sinclude(lib/apr/threads.m4)
 
 dnl
 dnl APACHE_INADDR_NONE

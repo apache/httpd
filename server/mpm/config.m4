@@ -11,7 +11,7 @@ AC_MSG_RESULT($APACHE_MPM)
 apache_cv_mpm=$APACHE_MPM
 	
 if test "$apache_cv_mpm" != "prefork"; then
-  APACHE_CHECK_THREADS
+  PTHREADS_CHECK
   AC_MSG_CHECKING([for which threading library to use])
   AC_MSG_RESULT($threads_result)
 
