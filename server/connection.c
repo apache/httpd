@@ -83,8 +83,8 @@ APR_HOOK_STRUCT(
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
-                     (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id),
-                     (p, server, csd, conn_id), NULL)
+                     (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id, void *sbh),
+                     (p, server, csd, conn_id, sbh), NULL)
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -167,7 +167,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
         return;
     }
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_CLOSING, NULL);
+    ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
 
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c);	/* just close it */

@@ -81,11 +81,42 @@
 #include <kernel/OS.h>
 #include "mpm_common.h"
 #include "mpm.h"
+#include "mpm_default.h"
 #include <unistd.h>
 #include <sys/socket.h>
 #include <signal.h>
 
 extern int _kset_fd_limit_(int num);
+
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons:
+ * 1) in case something goes seriously wrong, we want to stop the server starting
+ *    threads ad infinitum and crashing the server (remember that BeOS has a 192
+ *    thread per team limit).
+ * 2) it keeps the size of the scoreboard file small
+ *    enough that we can read the whole thing without worrying too much about
+ *    the overhead.
+ */
+
+/* we only ever have 1 main process running... */ 
+#define HARD_SERVER_LIMIT 1
+
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this  * HARD_SERVER_LIMIT are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifdef NO_THREADS
+#define HARD_THREAD_LIMIT 1
+#endif
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 50 
+#endif
 
 /*
  * Actual definitions of config globals
@@ -301,6 +332,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
     conn_rec *current_conn;
     long conn_id = my_child_num;
     int csd;
+    void *sbh;
 
     (void)apr_os_sock_get(&csd, sock);
     
@@ -313,7 +345,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
         return;
     }
 
-    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id);
+    ap_create_sb_handle(&sbh, p, 0, my_child_num);
+    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
 
     if (current_conn) {
         ap_process_connection(current_conn);
@@ -352,8 +385,8 @@ static int32 worker_thread(void * dummy)
     worker_thread_count++;
     apr_lock_release(worker_thread_count_mutex);
 
-    (void) ap_update_child_status(0, child_slot, SERVER_STARTING,
-                                  (request_rec*)NULL);
+    (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_STARTING,
+                                               (request_rec*)NULL);
                                   
     apr_poll_setup(&pollset, num_listening_sockets, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
@@ -369,8 +402,8 @@ static int32 worker_thread(void * dummy)
         
         if (this_worker_should_exit) break;
 
-        (void) ap_update_child_status(0, child_slot, SERVER_READY,
-                                      (request_rec*)NULL);
+        (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_READY,
+                                                   (request_rec*)NULL);
 
         apr_lock_acquire(accept_mutex);
 
@@ -457,7 +490,7 @@ static int32 worker_thread(void * dummy)
         apr_pool_clear(ptrans);
     }
 
-    ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+    ap_update_child_status_from_indexes(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
 
 ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
              "worker_thread %ld exiting", find_thread(NULL));
@@ -492,7 +525,7 @@ static int make_worker(int slot)
         return 0;
     }
 
-    (void) ap_update_child_status(0, slot, SERVER_STARTING, (request_rec*)NULL);
+    (void) ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, (request_rec*)NULL);
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
         my_info);
     if (tid < B_NO_ERROR) {
@@ -502,8 +535,8 @@ static int make_worker(int slot)
          * Apache running away with the CPU trying to fork over and
          * over and over again. 
          */
-        (void) ap_update_child_status(0, slot, SERVER_DEAD, 
-                                      (request_rec*)NULL);
+        (void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD, 
+                                                   (request_rec*)NULL);
         
     	sleep(10);
         free(my_info);
@@ -627,7 +660,9 @@ static void server_main_loop(int remaining_threads_to_start)
             }
             if (child_slot >= 0) {
                 ap_scoreboard_image->servers[0][child_slot].tid = 0;
-                (void) ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+                (void) ap_update_child_status_from_indexes(0, child_slot, 
+                                                           SERVER_DEAD, 
+                                                           (request_rec*)NULL);
                 
                 if (remaining_threads_to_start
 		            && child_slot < ap_thread_limit) {

@@ -127,10 +127,11 @@ AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
  * @param csd The socket that has been accepted
  * @param conn_id A unique identifier for this connection.  The ID only
  *                needs to be unique at that time, not forever.
+ * @param sbh A handle to scoreboard information for this connection.
  * @return An allocated connection record or NULL.
  */
 AP_DECLARE_HOOK(conn_rec *, create_connection,
-                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id))
+                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id, void *sbh))
 
 #ifdef __cplusplus
 }

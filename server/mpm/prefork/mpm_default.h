@@ -59,10 +59,6 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
-#define AP_ID_FROM_CHILD_THREAD(c, t)    c
-#define AP_CHILD_THREAD_FROM_ID(i)       i, 0
-
-
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
@@ -82,25 +78,6 @@
 
 #ifndef DEFAULT_MIN_FREE_DAEMON
 #define DEFAULT_MIN_FREE_DAEMON 5
-#endif
-
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 256
-#endif
-
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 1
 #endif
 
 /* File used for accept locking, when we use a file */

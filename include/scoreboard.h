@@ -70,7 +70,6 @@ extern "C" {
 #endif
 
 #include "ap_config.h"
-#include "mpm_default.h"	/* For HARD_.*_LIMIT */
 #include "apr_hooks.h"
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
@@ -185,8 +184,8 @@ struct process_score{
 
 typedef struct {
     global_score global;
-    process_score parent[HARD_SERVER_LIMIT];
-    worker_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
+    process_score *parent;
+    worker_score **servers;
 } scoreboard;
 
 #define KEY_LENGTH 16
@@ -196,11 +195,12 @@ typedef struct {
     char value[VALUE_LENGTH];
 } status_table_entry;
 
+/* XXX what should mod_ssl init use instead of this? */
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
-AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r);
+AP_DECLARE(void) ap_increment_counts(void *sbh, request_rec *r);
 
 apr_status_t ap_cleanup_scoreboard(void *d);
 
@@ -208,9 +208,14 @@ AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
 
 void ap_sync_scoreboard_image(void);
 
+AP_DECLARE(void) ap_create_sb_handle(void **new_handle, apr_pool_t *p,
+                                     int child_num, int thread_num);
+    
 void update_scoreboard_global(void);
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
-AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
+AP_DECLARE(int) ap_update_child_status(void *sbh, int status, request_rec *r);
+AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
+                                                    int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
 AP_DECLARE(worker_score *) ap_get_servers_scoreboard(int x, int y);
 AP_DECLARE(process_score *) ap_get_parent_scoreboard(int x);

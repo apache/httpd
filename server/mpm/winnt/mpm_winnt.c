@@ -75,6 +75,30 @@
 #include "mpm_common.h"
 #include <malloc.h>
 
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this  * HARD_SERVER_LIMIT are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 4096
+#endif
+
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons --- first off,
+ * in case something goes seriously wrong, we want to stop the fork bomb
+ * short of actually crashing the machine we're running on by filling some
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#define HARD_SERVER_LIMIT 1
+
 server_rec *ap_server_conf;
 typedef HANDLE thread;
 
@@ -863,13 +887,14 @@ static void worker_main(int thread_num)
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
     apr_os_sock_info_t sockinfo;
+    void *sbh;
 
     while (1) {
         conn_rec *c;
         apr_int32_t disconnected;
 
-        ap_update_child_status(0, thread_num, SERVER_READY, 
-                               (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, 
+                                            (request_rec *) NULL);
 
 
         /* Grab a connection off the network */
@@ -900,8 +925,9 @@ static void worker_main(int thread_num)
         /* ### is this correct?  Shouldn't be inheritable (at this point) */
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
+        ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf, context->sock,
-                              thread_num);
+                                     thread_num, sbh);
 
         if (c) {
             ap_process_connection(c);
@@ -917,7 +943,8 @@ static void worker_main(int thread_num)
         }
     }
 
-    ap_update_child_status(0, thread_num, SERVER_DEAD, (request_rec *) NULL);
+    ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, 
+                                        (request_rec *) NULL);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Child %d: Thread exiting.", my_pid);
@@ -1023,7 +1050,8 @@ static void child_main()
                  "Child %d: Starting %d worker threads.", my_pid, nthreads);
     child_handles = (thread) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
-        ap_update_child_status(0, i, SERVER_STARTING, (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, i, SERVER_STARTING, 
+                                            (request_rec *) NULL);
         child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
                                                    (void *) i, 0, &tid);
     }

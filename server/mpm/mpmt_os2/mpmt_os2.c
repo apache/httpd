@@ -100,6 +100,17 @@
 #include <os2.h>
 #include <process.h>
 
+/* We don't need many processes, 
+ * they're only for redundancy in the event of a crash 
+ */
+#define HARD_SERVER_LIMIT 10
+
+/* Limit on the total number of threads per process
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 256
+#endif
+
 server_rec *ap_server_conf;
 static apr_pool_t *pconf = NULL;		/* Pool for config stuff */
 static const char *ap_pid_fname=NULL;

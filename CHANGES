@@ -1,4 +1,8 @@
 Changes with Apache 2.0.30-dev
+
+  *) Change core code to allow an MPM to set hard thread/server
+     limits at startup.  [Jeff Trawick]
+
   *) Win32: The async AcceptEx() event should be autoreset upon
      successful completion of a wait (WaitForSingleObject). This
      eliminates a number of spurious

@@ -65,17 +65,6 @@
 #define DEFAULT_START_DAEMON 2
 #endif
 
-/* We don't need many processes, 
- * they're only for redundancy in the event of a crash 
- */
-#define HARD_SERVER_LIMIT 10
-
-/* Limit on the total number of threads per process
- */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 256
-#endif
-
 /* Maximum number of *free* server threads --- more than this, and
  * they will die off.
  */
@@ -108,9 +97,5 @@
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
 #endif
-
-/* AP_CHILD_THREAD_FROM_ID is used by the scoreboard.  */
-#define AP_CHILD_THREAD_FROM_ID(i)    (i / HARD_THREAD_LIMIT), (i % HARD_THREAD_LIMIT)
-#define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
 
 #endif /* AP_MPM_DEFAULT_H */

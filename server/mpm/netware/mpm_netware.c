@@ -125,6 +125,32 @@
 #include <nks/netware.h>
 #include <library.h>
 
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons --- first off,
+ * in case something goes seriously wrong, we want to stop the fork bomb
+ * short of actually crashing the machine we're running on by filling some
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_SERVER_LIMIT
+#define HARD_SERVER_LIMIT 1
+#endif
+
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this  * HARD_SERVER_LIMIT are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 2048
+#endif
+
 #define WORKER_DEAD         SERVER_DEAD
 #define WORKER_STARTING     SERVER_STARTING
 #define WORKER_READY        SERVER_READY
@@ -193,7 +219,8 @@ static void clean_child_exit(int code, int worker_num)
     worker_thread_count--;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
     if (worker_num >=0)
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(worker_num), WORKER_DEAD, (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, worker_num, WORKER_DEAD, 
+                                            (request_rec *) NULL);
     NXThreadExit((void*)&code);
 }
 
@@ -337,6 +364,7 @@ static void worker_main(void *arg)
     int sockdes;
     int worker_num_arg = (int)arg;
     apr_pollfd_t *listen_poll;
+    void *sbh;
 
     int my_worker_num = worker_num_arg;
     apr_socket_t *csd = NULL;
@@ -358,7 +386,8 @@ static void worker_main(void *arg)
         clean_child_exit(1, my_worker_num);
     }
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_worker_num), WORKER_READY, (request_rec *) NULL);
+    ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
+                                        (request_rec *) NULL);
 
     while (!die_now) {
         /*
@@ -372,7 +401,8 @@ static void worker_main(void *arg)
             clean_child_exit(0, my_worker_num);
         }
 
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_worker_num), WORKER_READY, (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
+                                            (request_rec *) NULL);
 
         /*
         * Wait for an acceptable connection to arrive.
@@ -501,11 +531,13 @@ got_listener:
 
         apr_thread_mutex_unlock(accept_mutex);
 
+        ap_create_sb_handle(&sbh, ptrans, 0, my_worker_num);
         /*
         * We now have a connection, so set it up with the appropriate
         * socket options, file descriptors, and read/write buffers.
         */
-        current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_worker_num);
+        current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, 
+                                                my_worker_num, sbh);
         if (current_conn) {
             ap_process_connection(current_conn);
             ap_lingering_close(current_conn);
@@ -526,7 +558,8 @@ static int make_child(server_rec *s, int slot)
         ap_max_workers_limit = slot + 1;
     }
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(slot), WORKER_STARTING, (request_rec *) NULL);
+    ap_update_child_status_from_indexes(0, slot, WORKER_STARTING, 
+                                        (request_rec *) NULL);
 
     if (ctx = NXContextAlloc((void (*)(void *)) worker_main, (void*)slot, NX_PRIO_MED, ap_thread_stack_size, NX_CTX_NORMAL, &err)) {
         char threadName[32];
@@ -543,7 +576,8 @@ static int make_child(server_rec *s, int slot)
         /* create thread didn't succeed. Fix the scoreboard or else
         * it will say SERVER_STARTING forever and ever
         */
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(slot), WORKER_DEAD, (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, slot, WORKER_DEAD, 
+                                            (request_rec *) NULL);
 
         /* In case system resources are maxxed out, we don't want
         Apache running away with the CPU trying to fork over and
@@ -655,7 +689,8 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         * while we were counting
         */
         idle_spawn_rate = 1;
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(last_non_dead), WORKER_IDLE_KILL, (request_rec *) NULL);
+        ap_update_child_status_from_indexes(0, last_non_dead, WORKER_IDLE_KILL, 
+                                            (request_rec *) NULL);
         DBPRINT1("\nKilling idle thread: %d\n", last_non_dead);
     }
     else if (idle_count < ap_threads_min_free) {
