@@ -75,7 +75,7 @@
  * Definitions of WINNT MPM specific config globals
  */
 
-char *ap_pid_fname=NULL;
+static char *ap_pid_fname = NULL;
 static int ap_threads_per_child = 0;
 static int workers_may_exit = 0;
 static int max_requests_per_child = 0;
@@ -348,6 +348,61 @@ API_EXPORT(int) ap_graceful_stop_signalled(void)
 void ap_start_shutdown(void)
 {
     signal_parent(0);
+}
+
+void ap_signal_parent(ap_context_t *p, const char* signal, 
+                      const char* server_root) 
+{
+    HANDLE event;
+    char prefix[20];
+    char *EventName;
+    FILE *fp;
+    int nread;
+    char *fname;
+    int end;
+
+    printf("signal = %s\n", signal);
+
+    fname = ap_server_root_relative (p, ap_pid_fname);
+
+    fp = fopen(fname, "r");
+    if (!fp) {
+	printf("Cannot read apache PID file %s. Error = %d\n", fname, errno);
+        return;
+    }
+    prefix[0] = 'a';
+    prefix[1] = 'p';
+
+    nread = fread(prefix+2, 1, sizeof(prefix)-3, fp);
+    if (nread == 0) {
+	fclose(fp);
+	printf("PID file %s was empty\n", fname);
+        return;
+    }
+    fclose(fp);
+
+    /* Terminate the prefix string */
+    end = 2 + nread - 1;
+    while (end > 0 && (prefix[end] == '\r' || prefix[end] == '\n'))
+	end--;
+    prefix[end + 1] = '\0';
+
+    /* Build the event name. Should be one of the following...
+     * apPID_shutdown
+     * apPID_restart
+     */
+    EventName = ap_pstrcat(p,prefix,"_",signal,NULL);
+    printf("event name = %s\n", EventName);
+    event = OpenEvent(EVENT_ALL_ACCESS, FALSE, EventName);
+    printf("event handle = %d\n", event);
+    if (event == NULL) {
+	printf("Unable to open event %s.\n", EventName);
+        return;
+    }
+    SetEvent(event);
+    ResetEvent(event);
+    CloseHandle(event);
+    return;
 }
 /*
  * Initialise the signal names, in the global variables signal_name_prefix, 
@@ -1321,7 +1376,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
     int rv;
     char buf[1024];
     char *pCommand;
-
+    int i;
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
 
@@ -1363,8 +1418,11 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
         return -1;
     }
 
-    //pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
-    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
+    /* Build the command line */
+    pCommand = ap_psprintf(p, "\"%s\"", buf);  
+    for (i = 1; i < server_conf->process->argc; i++) {
+        pCommand = ap_pstrcat(p, pCommand, " \"", server_conf->process->argv[i], "\"", NULL);
+    }
 
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
@@ -1497,6 +1555,11 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
      */
+#if 1
+//    ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
+#else
+//    service_set_status(SERVICE_START_PENDING);
+#endif
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
@@ -1506,8 +1569,11 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             goto die_now;
         }
     }
-
-    /* service_set_status(SERVICE_RUNNING);*/
+#if 1
+//    ReportStatusToSCMgr(SERVICE_RUNNING, NO_ERROR, 3000);
+#else
+//    service_set_status(SERVICE_RUNNING);
+#endif
     restart_pending = shutdown_pending = 0;
     
     /* Wait for shutdown or restart events or for child death */
@@ -1640,7 +1706,7 @@ static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context
     else {
         /* This is the parent */
         parent_pid = my_pid = getpid();
-        ap_log_pid(pconf, ap_pid_fname);
+
     }
 
     ap_listen_pre_config();
@@ -1700,9 +1766,14 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
 
         ap_clear_pool(plog);
         ap_open_logs(server_conf, plog);
-              setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
+        setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         if (!restart) {
-            /* service_set_status(SERVICE_START_PENDING);*/
+            ap_log_pid(pconf, ap_pid_fname);
+#if 1
+//            ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
+#else
+//            service_set_status(SERVICE_START_PENDING);
+#endif
             AMCSocketInitialize();
 //            setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         
@@ -1756,7 +1827,11 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
             AMCSocketCleanup();
-            /* service_set_status(SERVICE_STOPPED); */
+#if 1
+//            ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 3000);
+#else
+//            service_set_status(SERVICE_STOPPED);
+#endif
         }
     }
     return !restart;

@@ -66,7 +66,8 @@
 
 const char *ap_server_argv0;
 
-API_VAR_EXPORT const char *ap_server_root;
+//API_VAR_IMPORT const char *ap_server_root;
+const char *ap_server_root;
 
 ap_array_header_t *ap_server_pre_read_config;
 ap_array_header_t *ap_server_post_read_config;
@@ -236,6 +237,11 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Usage: %s [-D name] [-d directory] [-f file]", bin);
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-C \"directive\"] [-c \"directive\"]", pad);
+#ifdef WIN32
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-k restart|shutdown|start]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-n service_name]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-i] [-u]", pad);
+#endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Options:");
 #ifdef SHARED_CORE
@@ -246,6 +252,14 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -f file          : specify an alternate ServerConfigFile");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -C \"directive\"   : process directive before reading config files");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -c \"directive\"   : process directive after  reading config files");
+#ifdef WIN32
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -n name          : set service name and use its ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k shutdown      : tell running Apache to shutdown");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k restart       : tell running Apache to do a graceful restart");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k start         : tell Apache to start");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -i               : install an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -u               : uninstall an Apache service");
+#endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v               : show version number");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V               : show compile settings");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h               : list available command line options (this page)");
@@ -283,6 +297,10 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
     ap_context_t *pcommands; /* Pool for -C and -c switches */
 
+#ifdef WIN32
+    char *signal = NULL;
+#endif
+
     ap_server_argv0 = process->short_name;
     
     ap_util_uri_init();
@@ -296,7 +314,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
 
-    while (ap_getopt(pcommands, argc, argv, "C:c:d:f:vVlLth", &c) == APR_SUCCESS) {
+    while (ap_getopt(pcommands, argc, argv, "C:c:d:f:k:vVlLth", &c) == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
@@ -313,6 +331,11 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	case 'f':
 	    confname = ap_optarg;
 	    break;
+#ifdef WIN32
+        case 'k':
+	    signal = ap_optarg;
+            break;
+#endif
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
@@ -351,6 +374,12 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
+#ifdef WIN32
+    if (signal) {
+        ap_signal_parent(pconf, signal, ap_server_root);
+        destroy_and_exit_process(process, 0);
+    }
+#endif
     ap_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
