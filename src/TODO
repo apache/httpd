@@ -1,5 +1,3 @@
-### Testing some cvs changes
-
 *) Random stray failures to get_local_addr --- it's returning EINVAL, of all
    things.  Are these clients aborting really, really early or what?
 
