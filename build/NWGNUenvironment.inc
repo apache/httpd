@@ -114,6 +114,9 @@ LIB		= mwldnlm -type library -w nocmdline
 NOVI	= $(NOVELLLIBC)\imports
 
 INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
+ifneq "$(LDAPSDK)" ""
+INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
+endif
 
 DEFINES		= -DNETWARE
 
