@@ -94,8 +94,8 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 
         apr_pool_userdata_get(&data, userdata_key, s->process->pool);
         if (!data) {
-            apr_pool_userdata_setn((const void *)1, userdata_key,
-                                   apr_pool_cleanup_null, s->process->pool);
+            apr_pool_userdata_set((const void *)1, userdata_key,
+                                  apr_pool_cleanup_null, s->process->pool);
             return;
         }
         if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
