@@ -2053,7 +2053,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
      */
     methnum = ap_method_number_of(method);
     if (methnum != M_INVALID) {
-        return (l->method_mask & (1 << methnum));
+        return !!(l->method_mask & (1 << methnum));
     }
     /*
      * Otherwise, see if the method name is in the array or string names
