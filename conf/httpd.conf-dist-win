@@ -702,8 +702,8 @@ ServerSignature On
     # HeaderName is the name of a file which should be prepended to
     # directory indexes. 
     #
-    ReadmeName README
-    HeaderName HEADER
+    ReadmeName README.html
+    HeaderName HEADER.html
 
     #
     # IndexIgnore is a set of filenames which directory indexing should ignore
