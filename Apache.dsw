@@ -158,6 +158,12 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name aprutildll
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav_fs
+    End Project Dependency
 }}}
 
 ###############################################################################
