@@ -201,7 +201,9 @@ static int fixup_dir(request_rec *r)
         rr = ap_sub_req_lookup_uri(name_ptr, r, NULL);
 
         /* XXX: (filetype == APR_REG) - we can't use a non-file index??? */
-        if (rr->status == HTTP_OK && rr->finfo.filetype == APR_REG) {
+        if (   rr->status == HTTP_OK
+            && (   (rr->handler && !strcmp(rr->handler, "proxy-server"))
+                || rr->finfo.filetype == APR_REG)) {
             ap_internal_fast_redirect(rr, r);
             return OK;
         }
