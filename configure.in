@@ -16,8 +16,6 @@ dnl #
 sinclude(srclib/apr/build/apr_common.m4)
 sinclude(srclib/apr/build/apr_network.m4)
 sinclude(srclib/apr/build/apr_threads.m4)
-sinclude(srclib/apr/build/apr_hints.m4)
-sinclude(srclib/apr/build/libtool.m4)
 sinclude(hints.m4)
 sinclude(acinclude.m4)
 
