@@ -61,6 +61,23 @@
  * 2) I know people who are actually interested in changing this *particular*
  *    aspect of server functionality without changing the rest of it.  That's
  *    what this whole modular arrangement is supposed to be good at...
+ *
+ * Modified by Alexei Kosut to support the following constructs
+ * (server running at www.foo.com, request for /~bar/one/two.html)
+ *
+ * UserDir public_html      -> ~bar/public_html/one/two.html
+ * UserDir /usr/web         -> /usr/web/bar/one/two.html
+ * UserDir /home/* /www     -> /home/bar/www/one/two.html
+ *     NOTE: this ^ space only added allow it to work in a comment, ignore
+ * UserDir http://x/users   -> (302) http://x/users/bar/one/two.html
+ * UserDir http://x/* /y     -> (302) http://x/bar/y/one/two.html
+ *     NOTE: here also
+ *
+ * In addition, you can use multiple entries, to specify alternate
+ * user directories (a la Directory Index). For example:
+ *
+ * UserDir public_html /usr/web http://www.xyz.com/users
+ *
  */
 
 #include "httpd.h"
@@ -86,7 +103,7 @@ char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 command_rec userdir_cmds[] = {
-{ "UserDir", set_user_dir, NULL, RSRC_CONF, TAKE1,
+{ "UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
     "the public subdirectory in users' home directories, or 'disabled'" },
 { NULL }
 };
@@ -94,39 +111,76 @@ command_rec userdir_cmds[] = {
 int translate_userdir (request_rec *r)
 {
     void *server_conf = r->server->module_config;
-    char *userdir = (char *)get_module_config(server_conf, &userdir_module);
+    char *userdirs = (char *)get_module_config(server_conf, &userdir_module);
     char *name = r->uri;
-    
-    if (userdir != NULL && strcasecmp(userdir, "disabled") != 0 &&
-	name[0] == '/' && name[1] == '~')
-    {
-        struct passwd *pw;
-	char *w, *dname;
+    char *w, *dname, *redirect;
+    char *x = NULL;
 
-        dname = name + 2;
-        w = getword(r->pool, &dname, '/');
-        if(!(pw=getpwnam(w)))
-            return NOT_FOUND;
-	
-	/* The 'dname' funny business involves backing it up to capture
-	 * the '/' delimiting the "/~user" part from the rest of the URL,
-	 * in case there was one (the case where there wasn't being just
-	 * "GET /~user HTTP/1.0", for which we don't want to tack on a
-	 * '/' onto the filename).
-	 */
-	
-	if (dname[-1] == '/') --dname;
-#ifdef __EMX__
-    /* Need to manually add user name for OS/2. */
-    r->filename = pstrcat (r->pool, pw->pw_dir, w, "/", userdir, dname, NULL);
-#else
-    r->filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, dname, NULL);
-#endif    
-
-	return OK;
+    if (userdirs == NULL || !strcasecmp(userdirs, "disabled") ||
+        (name[0] != '/') || (name[1] != '~')) {
+      return DECLINED;
     }
 
-    return DECLINED;
+    while (*userdirs) {
+      char *userdir = getword_conf (r->pool, &userdirs);
+      char *filename = NULL;
+
+      dname = name + 2;
+      w = getword(r->pool, &dname, '/');
+
+      if (!strcmp(w, ""))
+	return DECLINED;
+
+      /* The 'dname' funny business involves backing it up to capture
+       * the '/' delimiting the "/~user" part from the rest of the URL,
+       * in case there was one (the case where there wasn't being just
+       * "GET /~user HTTP/1.0", for which we don't want to tack on a
+       * '/' onto the filename).
+       */
+	
+      if (dname[-1] == '/') --dname;
+
+      if (strchr(userdir, '*'))
+	x = getword(r->pool, &userdir, '*');
+
+      if (userdir[0] == '/') {
+	if (x) {
+	  if (strchr(x, ':')) {
+	    redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
+	    table_set (r->headers_out, "Location", redirect);
+	    return REDIRECT;
+	  }
+	  else
+	    filename = pstrcat (r->pool, x, w, userdir, NULL);
+	}
+	else
+	  filename = pstrcat (r->pool, userdir, "/", w, NULL);
+      }
+      else if (strchr(userdir, ':')) {
+	redirect = pstrcat(r->pool, userdir, "/", w, dname, NULL);
+	table_set (r->headers_out, "Location", redirect);
+	return REDIRECT;
+      }
+      else {
+	struct passwd *pw;
+	if(pw=getpwnam(w))
+#ifdef __EMX__
+	  /* Need to manually add user name for OS/2 */
+	  filename = pstrcat (r->pool, pw->pw_dir, w, "/", userdir, NULL);
+#else
+	  filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, NULL);
+#endif
+
+      }
+
+      /* Now see if it exists, or we're at the last entry */
+      if (!*userdirs || stat(filename, &r->finfo) != -1) {
+	r->filename = pstrcat(r->pool, filename, dname, NULL);
+	return OK;
+      }
+    }
+
+  return DECLINED;    
 }
     
 module userdir_module = {
