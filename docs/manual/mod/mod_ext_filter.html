@@ -14,12 +14,24 @@
 <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Module mod_ext_filter</H1>
 
-  <P>
-  This module is contained in the <CODE>mod_ext_filter.c</CODE> file, with
-  Apache 2.0 and later. It provides the ability to pass the response body
-  through an external program before delivering to the client.
-  <CODE>mod_ext_filter</CODE> is not compiled into the server by default.
-  </P>
+  <P>This module provides the ability to pass the response body
+  through an external program before delivering to the client.</p>
+
+<p><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Experimental
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_ext_filter.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> ext_filter_module</p>
+
 
   <H2>Summary</H2>
   <P>
@@ -59,167 +71,6 @@
    </LI>
   </UL>
 
-  <HR>
-
-  <H2><A NAME="extfilterdefine">ExtFilterDefine</A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> ExtFilterDefine <EM>filtername</EM> <EM>parameters</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> <EM>None</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> server
-  <BR>
-  <A
-   HREF="directive-dict.html#Override"
-   REL="Help"
-  ><STRONG>Override:</STRONG></A> none
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Experimental
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_ext_filter
-  <BR>
-  <A
-   HREF="directive-dict.html#Compatibility"
-   REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Only available in Apache 2.0 or later
-
-  <P>
-  The <CODE>ExtFilterDefine</CODE> directive defines the characteristics of
-  an external filter, including the program to run and its arguments.
-  </P>
-
-  <P>
-  <EM>filtername</EM> specifies the name of the filter being defined.  This name 
-  can then be used in AddOutputFilter directives.  It must be unique among all
-  registered filters.  <EM>At the present time, no error is reported by the
-  register-filter API, so a problem with duplicate names isn't reported to the 
-  user.</EM>
-  </P>
-
-  <P>
-  Subsequent parameters can appear in any order and define the external command 
-  to run and certain other characteristics.  The only required parameter is
-  <EM>cmd=</EM>.  These parameters are:
-  </P>
-
-  <DL>
-  <DT>cmd=<EM>cmdline</EM>
-  <DD>
-  The <SAMP>cmd=</SAMP> keyword allows you to specify the external command
-  to run.  If there are arguments after the program name, the command line
-  should be surrounded in quotation marks.
-  <DT>mode=<EM>mode</EM>
-  <DD>
-  <EM>mode</EM> should be <EM>output</EM> for now (the default).  In the 
-  future, <EM>mode=input</EM> will be used to specify a filter for request
-  bodies.
-  <DT>intype=<EM>imt</EM>
-  <DD>
-  This parameter specifies the internet media
-  type (i.e., MIME type) of documents which should be filtered.  By default,
-  all documents are filtered.  If <CODE>intype=</CODE> is specified,
-  the filter will be disabled for documents of other types.
-  <DT>outtype=<EM>imt</EM>
-  <DD>
-  This parameter specifies the internet media
-  type (i.e., MIME type) of filtered documents.  It is useful when the filter
-  changes the internet media type as part of the filtering operation.  By 
-  default, the internet media type is unchanged.
-  <DT>PreservesContentLength
-  <DD>
-  The <SAMP>PreservesContentLength</SAMP> keyword specifies that the filter
-  preserves the content length.  This is not the default, as most filters 
-  change the content length.  In the event that the filter doesn't modify the
-  length, this keyword should be specified.
-  </DL>
-
-  <H2><A NAME="extfilteroptions">ExtFilterOptions</A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> ExtFilterOptions <EM>option option ...</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> <EM>DebugLevel=0</EM> <EM>NoLogStderr</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> directory
-  <BR>
-  <A
-   HREF="directive-dict.html#Override"
-   REL="Help"
-  ><STRONG>Override:</STRONG></A> none
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Experimental
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_ext_filter
-  <BR>
-  <A
-   HREF="directive-dict.html#Compatibility"
-   REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Only available in Apache 2.0 or later
-
-  <P>
-  The <CODE>ExtFilterOptions</CODE> directive specifies special processing
-  options for <CODE>mod_ext_filter</CODE>.  <EM>Option</EM> can be one of
-  <DL>
-  <DT>DebugLevel=<EM>n</EM>
-  <DD>
-  The <SAMP>DebugLevel</SAMP> keyword allows you to specify the level of
-  debug messages generated by <CODE>mod_ext_filter</CODE>.  By default, no
-  debug messages are generated.  This is equivalent to 
-  <SAMP>DebugLevel=0</SAMP>.  With higher numbers, more debug messages are 
-  generated, and server performance will be degraded.  The actual meanings 
-  of the numeric values are described with the definitions of the DBGLVL_ 
-  constants near the beginning of <CODE>mod_ext_filter.c</CODE>.
-  <P>
-  Note: The core directive LogLevel should be used to cause debug messages 
-  to be stored in the Apache error log.
-  <DT>LogStderr | NoLogStderr
-  <DD>
-  The <SAMP>LogStderr</SAMP> keyword specifies that messages written to
-  standard error by the external filter program will be saved in the Apache
-  error log.  <SAMP>NoLogStderr</SAMP> disables this feature.
-  </DL>
-  </P>
-
-  Example:
-
-  <PRE>
-    ExtFilterOptions  LogStderr DebugLevel=0
-  </PRE>
-
-  Messages written to the filter's standard error will be stored in the Apache 
-  error log.  No debug messages will be generated by 
-  <CODE>mod_ext_filter</CODE>.
-
-  <P>
 
   <H2>Examples</H2>
 
@@ -280,6 +131,160 @@
 
   &lt;/Location&gt;
   </PRE>
+
+  <HR>
+
+  <H2><A NAME="extfilterdefine">ExtFilterDefine</A></H2>
+  <P>
+  <A
+   HREF="directive-dict.html#Syntax"
+   REL="Help"
+  ><STRONG>Syntax:</STRONG></A> ExtFilterDefine <EM>filtername</EM> <EM>parameters</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Default"
+   REL="Help"
+  ><STRONG>Default:</STRONG></A> <EM>None</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Context"
+   REL="Help"
+  ><STRONG>Context:</STRONG></A> server
+  <BR>
+  <A
+   HREF="directive-dict.html#Override"
+   REL="Help"
+  ><STRONG>Override:</STRONG></A> none
+  <BR>
+  <A
+   HREF="directive-dict.html#Status"
+   REL="Help"
+  ><STRONG>Status:</STRONG></A> Experimental
+  <BR>
+  <A
+   HREF="directive-dict.html#Module"
+   REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_ext_filter
+
+  <P>
+  The <CODE>ExtFilterDefine</CODE> directive defines the characteristics of
+  an external filter, including the program to run and its arguments.
+  </P>
+
+  <P>
+  <EM>filtername</EM> specifies the name of the filter being defined.  This name 
+  can then be used in AddOutputFilter directives.  It must be unique among all
+  registered filters.  <EM>At the present time, no error is reported by the
+  register-filter API, so a problem with duplicate names isn't reported to the 
+  user.</EM>
+  </P>
+
+  <P>
+  Subsequent parameters can appear in any order and define the external command 
+  to run and certain other characteristics.  The only required parameter is
+  <EM>cmd=</EM>.  These parameters are:
+  </P>
+
+  <DL>
+  <DT>cmd=<EM>cmdline</EM>
+  <DD>
+  The <SAMP>cmd=</SAMP> keyword allows you to specify the external command
+  to run.  If there are arguments after the program name, the command line
+  should be surrounded in quotation marks.
+  <DT>mode=<EM>mode</EM>
+  <DD>
+  <EM>mode</EM> should be <EM>output</EM> for now (the default).  In the 
+  future, <EM>mode=input</EM> will be used to specify a filter for request
+  bodies.
+  <DT>intype=<EM>imt</EM>
+  <DD>
+  This parameter specifies the internet media
+  type (i.e., MIME type) of documents which should be filtered.  By default,
+  all documents are filtered.  If <CODE>intype=</CODE> is specified,
+  the filter will be disabled for documents of other types.
+  <DT>outtype=<EM>imt</EM>
+  <DD>
+  This parameter specifies the internet media
+  type (i.e., MIME type) of filtered documents.  It is useful when the filter
+  changes the internet media type as part of the filtering operation.  By 
+  default, the internet media type is unchanged.
+  <DT>PreservesContentLength
+  <DD>
+  The <SAMP>PreservesContentLength</SAMP> keyword specifies that the filter
+  preserves the content length.  This is not the default, as most filters 
+  change the content length.  In the event that the filter doesn't modify the
+  length, this keyword should be specified.
+  </DL>
+
+<hr>
+
+  <H2><A NAME="extfilteroptions">ExtFilterOptions</A></H2>
+  <P>
+  <A
+   HREF="directive-dict.html#Syntax"
+   REL="Help"
+  ><STRONG>Syntax:</STRONG></A> ExtFilterOptions <EM>option option ...</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Default"
+   REL="Help"
+  ><STRONG>Default:</STRONG></A> <EM>DebugLevel=0</EM> <EM>NoLogStderr</EM>
+  <BR>
+  <A
+   HREF="directive-dict.html#Context"
+   REL="Help"
+  ><STRONG>Context:</STRONG></A> directory
+  <BR>
+  <A
+   HREF="directive-dict.html#Override"
+   REL="Help"
+  ><STRONG>Override:</STRONG></A> none
+  <BR>
+  <A
+   HREF="directive-dict.html#Status"
+   REL="Help"
+  ><STRONG>Status:</STRONG></A> Experimental
+  <BR>
+  <A
+   HREF="directive-dict.html#Module"
+   REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_ext_filter
+
+  <P>
+  The <CODE>ExtFilterOptions</CODE> directive specifies special processing
+  options for <CODE>mod_ext_filter</CODE>.  <EM>Option</EM> can be one of
+  <DL>
+  <DT>DebugLevel=<EM>n</EM>
+  <DD>
+  The <SAMP>DebugLevel</SAMP> keyword allows you to specify the level of
+  debug messages generated by <CODE>mod_ext_filter</CODE>.  By default, no
+  debug messages are generated.  This is equivalent to 
+  <SAMP>DebugLevel=0</SAMP>.  With higher numbers, more debug messages are 
+  generated, and server performance will be degraded.  The actual meanings 
+  of the numeric values are described with the definitions of the DBGLVL_ 
+  constants near the beginning of <CODE>mod_ext_filter.c</CODE>.
+  <P>
+  Note: The core directive LogLevel should be used to cause debug messages 
+  to be stored in the Apache error log.
+  <DT>LogStderr | NoLogStderr
+  <DD>
+  The <SAMP>LogStderr</SAMP> keyword specifies that messages written to
+  standard error by the external filter program will be saved in the Apache
+  error log.  <SAMP>NoLogStderr</SAMP> disables this feature.
+  </DL>
+  </P>
+
+  Example:
+
+  <PRE>
+    ExtFilterOptions  LogStderr DebugLevel=0
+  </PRE>
+
+  Messages written to the filter's standard error will be stored in the Apache 
+  error log.  No debug messages will be generated by 
+  <CODE>mod_ext_filter</CODE>.
+
+  <P>
 
 <!--#include virtual="footer.html" -->
  </BODY>
