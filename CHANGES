@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Update the mime.types file to map video/vnd.mpegurl to mxu
+     and add commonly used audio/x-mpegurl for m3u extensions.        
+     [Heiko Recktenwald <uzs106@uni-bonn.de>, Lars Eilebrecht]
+
   *) Eliminate the depreciated r->content_language, in favor of the array
      r->content_languages introduced many years ago.  Module authors must
      substantially overhaul their modules, so this needs to be upgraded
