@@ -148,10 +148,10 @@ typedef struct
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 
-void sync_scoreboard_image(void);
-int exists_scoreboard_image (void);
+API_EXPORT(void) sync_scoreboard_image(void);
+API_EXPORT(int) exists_scoreboard_image (void);
 
-extern scoreboard *scoreboard_image;
+API_VAR_EXPORT extern scoreboard *scoreboard_image;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

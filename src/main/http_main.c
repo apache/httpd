@@ -1548,7 +1548,7 @@ inline void sync_scoreboard_image (void)
 
 #endif /* MULTITHREAD */
 
-int exists_scoreboard_image (void)
+API_EXPORT(int) exists_scoreboard_image (void)
 {
     return (scoreboard_image ? 1 : 0);
 }
