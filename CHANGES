@@ -2,6 +2,10 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix the RPM spec file so that an RPM build now works. An RPM
+     build now requires system installations of APR and APR-util.
+     [Graham Leggett]
+
   *) Significantly simplify the load balancer scheduling algorithm
      for the proxy BalancerMember weighting. loadfactors (lbfactors)
      are now normalized with respect to each other. [Jim Jagielski]
