@@ -57,6 +57,8 @@ Showstoppers:
 
 Committed Code Changes:
 
+    * Lars' Configure fix to avoid confusing message under APACI control
+
 Available Patches:
 
     * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200

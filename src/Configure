@@ -186,8 +186,10 @@ fi
 ## that the user was using the old default root directory
 ## and issue a notice about it.
 ##
-if [ -d /usr/local/etc/httpd/ ]
+if [ $file != "Configuration.apaci" ]
 then
+  if [ -d /usr/local/etc/httpd/ ]
+  then
     if egrep '^EXTRA_CFLAGS.*HTTPD_ROOT' $file >/dev/null
     then
       :
@@ -199,6 +201,7 @@ then
       echo " | httpd with the option '-d /usr/local/etc/httpd' if you still"
       echo " | want to use the old root directory for your server."
     fi
+  fi
 fi
 
 ####################################################################

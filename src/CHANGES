@@ -1,3 +1,8 @@
+Changes with Apache 1.3b7
+
+  *) Make sure src/Configure doesn't complain about the old directory
+     /usr/local/etc/httpd/ when APACI is used.  [Lars Eilebrecht]
+   
 Changes with Apache 1.3b6
 
   *) PORT: Clean up warnings on Ultrix and HPUX.  [Ben Hyde]
