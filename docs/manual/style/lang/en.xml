@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
-<!-- $Revision: 1.17 $ -->
+<!-- $Revision: 1.18 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -30,6 +30,10 @@
         <charset>windows-1252</charset>
         <settings>English (USA)</settings>
     </chm>
+
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
 
     <!-- Some strings might be used in other contexts, than stated in the -->
     <!-- comments...                                                      -->
