@@ -2519,7 +2519,7 @@ void standalone_main(int argc, char **argv)
 	    update_scoreboard_global ();
 
 	    log_error ("SIGUSR1 received.  Doing graceful restart",server_conf);
-	    kill_cleanups_for_fd (pconf, sd);
+	    kill_cleanups_for_socket (pconf, sd);
 	    /* kill off the idle ones */
 	    if (ap_killpg(pgrp, SIGUSR1) < 0) {
 		log_unixerr ("killpg SIGUSR1", NULL, NULL, server_conf);
