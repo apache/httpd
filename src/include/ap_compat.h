@@ -198,8 +198,8 @@ extern "C" {
 #define make_sub_pool                  ap_make_sub_pool
 #define make_table                     ap_make_table
 #define matches_request_vhost          ap_matches_request_vhost
-#define md5                            ap_md5
 #define max_requests_per_child         ap_max_requests_per_child
+#define md5                            ap_md5
 #define meets_conditions               ap_meets_conditions
 #define merge_per_dir_configs          ap_merge_per_dir_configs
 #define month_snames                   ap_month_snames
