@@ -303,6 +303,14 @@ extern "C" {
 /* The size of the server's internal read-write buffers */
 #define AP_IOBUFSIZE 8192
 
+/* APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into 
+ * mutiple buckets, no greater than MAX(apr_size_t), and more granular 
+ * than that in case the brigade code/filters attempt to read it directly.
+ * ### 4mb is an invention, no idea if it is reasonable.
+ */
+#define AP_MAX_SENDFILE 4194304
+
+
 /*
  * Special Apache error codes. These are basically used
  *  in http_main.c so we can keep track of various errors.

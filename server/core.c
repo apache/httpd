@@ -2918,6 +2918,7 @@ static int default_handler(request_rec *r)
 {
     apr_bucket_brigade *bb;
     apr_bucket *e;
+    apr_off_t fsize, start;
     core_dir_config *d;
     int errstatus;
     apr_file_t *fd = NULL;
@@ -2996,13 +2997,22 @@ static int default_handler(request_rec *r)
     }
 
     bb = apr_brigade_create(r->pool);
-    /* XXX: APR_HAS_LARGE_FILES issue; need to split into mutiple buckets, 
-     * no greater than MAX(apr_size_t), (perhaps more granular than that
-     * in case the brigade code/filters attempt to read it!)
-     */
-    e = apr_bucket_file_create(fd, 0, r->finfo.size, r->pool);
-
-    APR_BRIGADE_INSERT_HEAD(bb, e);
+    fsize = r->finfo.size;
+    start = 0;
+#ifdef APR_HAS_LARGE_FILES
+    while (fsize > AP_MAX_SENDFILE) {
+        /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets, 
+         * no greater than MAX(apr_size_t), and more granular than that
+         * in case the brigade code/filters attempt to read it directly.
+         */
+        e = apr_bucket_file_create(fd, start, AP_MAX_SENDFILE, r->pool);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        fsize -= AP_MAX_SENDFILE;
+        start += AP_MAX_SENDFILE;
+    }
+#endif
+    e = apr_bucket_file_create(fd, start, (apr_size_t)fsize, r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
     e = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
