@@ -548,7 +548,7 @@
     <p>Files processed for server-side includes no longer accept
     requests with PATH_INFO (trailing pathname information) by
     default.  You can use the <directive
-    module="code">AcceptPathInfo</directive> directive to
+    module="core">AcceptPathInfo</directive> directive to
     configure the server to accept requests with PATH_INFO.</p>
 
 </section>
@@ -562,7 +562,7 @@ include command.</description>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 and Available in version 2.0.30 and later.
+<compatibility>Available in version 2.0.30 and later.
 </compatibility>
 
 <usage>
