@@ -505,11 +505,11 @@ static int cgid_server(void *data)
         char *argv0; 
         char **env; 
         const char * const *argv; 
-        apr_int32_t   in_pipe  = APR_CHILD_BLOCK;
-        apr_int32_t   out_pipe = APR_CHILD_BLOCK;
-        apr_int32_t   err_pipe = APR_CHILD_BLOCK;
-        apr_cmdtype_e cmd_type = APR_PROGRAM;
-        request_rec *r; 
+        apr_int32_t in_pipe;
+        apr_int32_t out_pipe;
+        apr_int32_t err_pipe;
+        apr_cmdtype_e cmd_type;
+        request_rec *r;
         apr_procattr_t *procattr = NULL;
         apr_proc_t *procnew = NULL;
         apr_file_t *inout;
@@ -522,7 +522,7 @@ static int cgid_server(void *data)
             if (errno != EINTR) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, errno, 
                              (server_rec *)data,
-                             "Error accepting on cgid socket.");
+                             "Error accepting on cgid socket");
             }
             continue;
         }
@@ -539,6 +539,12 @@ static int cgid_server(void *data)
             out_pipe = APR_FULL_BLOCK;
             err_pipe = APR_NO_PIPE;
             cmd_type = APR_SHELLCMD;
+        }
+        else {
+            in_pipe  = APR_CHILD_BLOCK;
+            out_pipe = APR_CHILD_BLOCK;
+            err_pipe = APR_CHILD_BLOCK;
+            cmd_type = APR_PROGRAM;
         }
 
         if (((rc = apr_procattr_create(&procattr, ptrans)) != APR_SUCCESS) ||
@@ -564,8 +570,8 @@ static int cgid_server(void *data)
         else {
             argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
 
-           /* We want to sd2 close for new CGI process too.
-            * If it's remained open it'll make ap_pass_brigade() block
+           /* We want to close sd2 for the new CGI process too.
+            * If it is left open it'll make ap_pass_brigade() block
             * waiting for EOF if CGI forked something running long.
             * close(sd2) here should be okay, as CGI channel
             * is already dup()ed by apr_procattr_child_{in,out}_set()
@@ -608,7 +614,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         total_modules = 0;
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
-
 
         if ((pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
