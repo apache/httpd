@@ -117,7 +117,11 @@ struct nsrec {
  */
 
 #ifndef h_errno
+#ifdef __CYGWIN__
+extern __declspec(dllimport) int h_errno;
+#else
 extern int h_errno; /* some machines don't have this in their headers */
+#endif
 #endif
 
 /* largest value for h_errno */

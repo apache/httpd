@@ -13,6 +13,10 @@ bs2000*)
   OS="unix"
   OS_DIR=bs2000  # only the OS_DIR is platform specific.
   ;;
+*cygwin*)
+  OS="cygwin"
+  OS_DIR="unix"
+  ;;
 *)
   OS="unix"
   OS_DIR=$OS;;
