@@ -1741,11 +1741,6 @@ static const char *get_ptoken(request_rec *r, const char *string,
     }
 
     /* 
-     * Yes I know that goto's are BAD.  But, c doesn't allow me to
-     * exit a loop from a switch statement.  Yes, I could use a flag,
-     * but that is (IMHO) even less readable/maintainable than the goto.
-     */
-    /* 
      * I used the ++string throughout this section so that string
      * ends up pointing to the next token and I can just return it
      */
@@ -1812,13 +1807,6 @@ static const char *get_ptoken(request_rec *r, const char *string,
 }
 
 
-/*
- * Hey I still know that goto's are BAD.  I don't think that I've ever
- * used two in the same project, let alone the same file before.  But,
- * I absolutely want to make sure that I clean up the memory in all
- * cases.  And, without rewriting this completely, the easiest way
- * is to just branch to the return code which cleans it up.
- */
 /* there is an implicit assumption here that expr is at most MAX_STRING_LEN-1
  * characters long...
  */
@@ -1832,7 +1820,6 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
     } *root, *current, *new;
     const char *parse;
     char* buffer;
-    apr_pool_t *expr_pool;
     int retval = 0;
     apr_size_t debug_pos = 0;
 
@@ -1843,12 +1830,10 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
         return (0);
     }
     root = current = (struct parse_node *) NULL;
-    if (apr_pool_create(&expr_pool, r->pool) != APR_SUCCESS)
-                return 0;
 
     /* Create Parse Tree */
     while (1) {
-        new = (struct parse_node *) apr_palloc(expr_pool,
+        new = (struct parse_node *) apr_palloc(r->pool,
                                            sizeof(struct parse_node));
         new->parent = new->left = new->right = (struct parse_node *) NULL;
         new->done = 0;
@@ -1898,7 +1883,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             break;
 
@@ -1927,7 +1912,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             break;
 
@@ -1943,7 +1928,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             /* Percolate upwards */
             while (current != (struct parse_node *) NULL) {
@@ -1969,7 +1954,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
-                    goto RETURN;
+                    return retval;
                 }
                 break;
             }
@@ -2016,7 +2001,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                                   "Invalid expression \"%s\" in file %s",
                                   expr, r->filename);
                     *was_error = 1;
-                    goto RETURN;
+                    return retval;
                 }
                 break;
             }
@@ -2050,7 +2035,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             /* Percolate upwards */
             while (current != (struct parse_node *) NULL) {
@@ -2076,7 +2061,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
-                    goto RETURN;
+                    return retval;
                 }
                 break;
             }
@@ -2112,7 +2097,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Unmatched ')' in \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             break;
 
@@ -2148,7 +2133,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                                 "Invalid expression \"%s\" in file %s",
                                 expr, r->filename);
                     *was_error = 1;
-                    goto RETURN;
+                    return retval;
                 }
                 break;
             }
@@ -2194,7 +2179,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                           "No operator before regex of expr \"%s\" in file %s",
                           expr, r->filename);
             *was_error = 1;
-            goto RETURN;
+            return retval;
 
         case token_and:
         case token_or:
@@ -2209,7 +2194,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             if (!current->left->done) {
                 switch (current->left->token.type) {
@@ -2279,7 +2264,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
                                          NULL, MAX_STRING_LEN, 0);
@@ -2338,7 +2323,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                goto RETURN;
+                return retval;
             }
             buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
                                          NULL, MAX_STRING_LEN, 0);
@@ -2423,26 +2408,24 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                         "Unmatched '(' in \"%s\" in file %s",
                         expr, r->filename);
             *was_error = 1;
-            goto RETURN;
+            return retval;
 
         case token_rbrace:
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Unmatched ')' in \"%s\" in file %s",
                         expr, r->filename);
             *was_error = 1;
-            goto RETURN;
+            return retval;
 
         default:
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "bad token type");
             *was_error = 1;
-            goto RETURN;
+            return retval;
         }
     }
 
     retval = (root == (struct parse_node *) NULL) ? 0 : root->value;
-  RETURN:
-    apr_pool_destroy(expr_pool);
     return (retval);
 }
 
