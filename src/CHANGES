@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Remove strtoul() use from mod_proxy because it isn't available
+     on all platforms.   [Marc Slemko] PR#1214
+
   *) Some Win32 systems terminated all responses after 16 kB. This turns
      out to be a bug in Winsock - select() doesn't always return the
 	 correct status.  [Ben Laurie]
@@ -8,9 +11,8 @@ Changes with Apache 1.3b3
      routine to ensure that they're not being used within a container
      (e.g., <Directory>) where they're invalid.  [Martin Kraemer]
 
-  *) PORT: SUNOS now always defines SUNOS_LIB_PROTOTYPES because a
-     recent change elsewhere left us without definitions for fgetc()
-     and fgets() breaking compilation.  [Martin Kraemer, Ben Hyde]
+  *) PORT: Recent changes made it necessary to add explicit prototype
+     for fgetc() and fgets() on SunOS 4.x.  [Martin Kraemer, Ben Hyde]
 
   *) It was necessary to distinguish between resources which are
      allocated in the parent, for cleanup in the parent, and resources
