@@ -140,7 +140,11 @@
     script error logfile. If no ScriptLog is given, no error log is
     created. If given, any CGI errors are logged into the filename
     given as argument. If this is a relative file or path it is taken
-    relative to the server root.</p>
+    relative to the <code>ServerRoot</code>.</p>
+
+    <example><title>Example</title>
+    ScriptLog logs/cgi_log
+    </example>
 
     <p>This log will be opened as the user the child processes run
     as, ie. the user specified in the main <directive module="mpm_common"
