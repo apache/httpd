@@ -264,6 +264,7 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ap_add_version_component(p, ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE"));
     ap_add_version_component(p, ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
 
+    SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
     return;
 }
 
