@@ -204,9 +204,12 @@ static int show_settings = 0;
 #endif
 
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code, int worker_num) __attribute__ ((noreturn));
-static void clean_child_exit(int code, int worker_num)
+static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, apr_bucket_alloc_t *bucket_alloc) __attribute__ ((noreturn));
+static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, apr_bucket_alloc_t *bucket_alloc)
 {
+    apr_bucket_alloc_destroy(bucket_alloc);
+    apr_pool_destroy(ptrans);
+
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
@@ -377,11 +380,7 @@ void worker_main(void *arg)
     apr_allocator_set_owner(allocator, ptrans);
     apr_pool_tag(ptrans, "transaction");
 
-    apr_allocator_create(&allocator);
-    apr_pool_create_ex(&pbucket, NULL, NULL, allocator);
-    apr_allocator_set_owner(allocator, pbucket);
-    apr_pool_tag(pbucket, "bucket_allocs");
-    bucket_alloc = apr_bucket_alloc_create(pbucket);
+    bucket_alloc = apr_bucket_alloc_create(pmain);
 
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
@@ -399,7 +398,7 @@ void worker_main(void *arg)
 
         if ((ap_max_requests_per_child > 0
             && requests_this_child++ >= ap_max_requests_per_child)) {
-            clean_child_exit(0, my_worker_num);
+            clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
         }
 
         ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
@@ -416,7 +415,7 @@ void worker_main(void *arg)
             if (shutdown_pending || restart_pending || (ap_scoreboard_image->servers[0][my_worker_num].status == WORKER_IDLE_KILL)) {
                 DBPRINT1 ("\nThread slot %d is shutting down\n", my_worker_num);
                 apr_thread_mutex_unlock(accept_mutex);
-                clean_child_exit(0, my_worker_num);
+                clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
             }
 
             /* If we just satisfied a request on listen port x, assume that more 
@@ -522,13 +521,13 @@ got_listener:
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_accept: giving up.");
                         apr_thread_mutex_unlock(accept_mutex);
-                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num);
+                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, bucket_alloc);
 
                     default:
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_accept: (client socket)");
                         apr_thread_mutex_unlock(accept_mutex);
-                        clean_child_exit(1, my_worker_num);
+                        clean_child_exit(1, my_worker_num, ptrans, bucket_alloc);
                 }
             }
         }
@@ -550,7 +549,7 @@ got_listener:
         }
         request_count++;
     }
-    clean_child_exit(0, my_worker_num);
+    clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
 }
 
 
@@ -954,6 +953,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         while (worker_thread_count > 0)
             apr_thread_yield();
 
+        apr_pool_destroy (pmain);
         return 1;
     }
     else {  /* the only other way out is a restart */
@@ -973,6 +973,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             apr_thread_yield();
         }
         DBPRINT0 ("restarting...\n");
+        apr_pool_destroy (pmain);
     }
 
     return 0;
