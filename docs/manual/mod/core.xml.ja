@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.89 (outdated: 1.90) -->
+<!-- English Revision: 1.90 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -347,8 +347,9 @@
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<directive module="core">Options</directive> と
       <directive module="mod_include">XBitHack</directive>)。
-      等号の後に、コンマで分割された(空白の入っていない)オプションのリストを
-      続けることでオプションを設定することができます。</dd>
+      <directive module="core">Options</directive> で設定するオプション
+      を、(空白を含めない) コンマ区切りのリストにして等号の後に続けることで
+      設定できます。</dd>
     </dl>
 
     <p>例:</p>
