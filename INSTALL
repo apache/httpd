@@ -29,7 +29,7 @@
      $ ./configure --prefix=PREFIX
      $ make
      $ make install
-     $ PREFIX/sbin/apachectl start
+     $ PREFIX/bin/apachectl start
 
      NOTE: PREFIX is not the string "PREFIX". Instead use the Unix
            filesystem path under which Apache should be installed. For
@@ -450,7 +450,7 @@
  
      Now you can fire up your Apache HTTP server by immediately running
  
-        $ PREFIX/sbin/apachectl start
+        $ PREFIX/bin/apachectl start
  
      and then you should be able to request your first document via URL
      http://localhost/ (when you built and installed Apache as root or at
@@ -458,7 +458,7 @@
      (when you built and installed Apache as a regular user). Then stop the
      server again by running: 
 
-        $ PREFIX/sbin/apachectl stop
+        $ PREFIX/bin/apachectl stop
  
   7. Customizing the package
      -----------------------
