@@ -193,6 +193,7 @@ static void show_compile_settings(void)
 static void destroy_and_exit_process(process_rec *process, int process_exit_value)
 {
     ap_destroy_pool(process->pool); /* and destroy all descendent pools */
+    ap_terminate();
     exit(process_exit_value);
 }
 
@@ -209,6 +210,7 @@ static process_rec *create_process(int argc, const char **argv)
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
                          "ap_create_context() failed to create "
                          "initial context");
+            ap_terminate();
             exit(1);
         }
 
@@ -298,7 +300,9 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_context_t *pcommands; /* Pool for -C and -c switches */
     module **mod;
 
+#ifndef WIN32 /* done in main_win32.c */
     ap_initialize();
+#endif
     process = create_process(argc, (const char **)argv);
     pglobal = process->pool;
     pconf = process->pconf;
