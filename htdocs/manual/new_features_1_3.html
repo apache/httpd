@@ -94,6 +94,16 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
  easier for users to add their module.
 </LI>
 <LI><A
+     HREF="install.html#install"
+    ><STRONG>Default Apache directory path changed to <SAMP>/usr/local/apache/</SAMP></STRONG></A>
+ <BR>
+ The default directory for the apache ServerRoot changed from the NCSA-compatible
+ <SAMP>/usr/local/etc/httpd/</SAMP> to <SAMP>/usr/local/apache/</SAMP>.
+ This change covers only the default setting (and the documentation); it
+ is of course possible to override it using the <A HREF="invoking.html">
+ -d <EM>ServerRoot</EM> and -f <EM>httpd.conf</EM></A> switches when starting apache.
+</LI>
+<LI><A
      HREF="mod/mod_autoindex.html"
     ><STRONG>Sortable Directory Listings</STRONG></A>
  <BR>
@@ -446,7 +456,7 @@ Allows additional information to be listed along with a specified module.
   <A
    HREF="mod/mod_include.html"
   ><SAMP>mod_include</SAMP></A>
-  has been modified todisplay the year using four digits rather than the
+  has been modified to display the year using four digits rather than the
   two-digit format used previously.  The
   <A
    HREF="mod/mod_autoindex.html"

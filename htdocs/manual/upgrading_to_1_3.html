@@ -63,6 +63,13 @@ document, or in the <code>src/CHANGES</code> file.
 <h3>Run-Time Configuration Changes</h3>
 
 <ul>
+  <LI><STRONG>The default Apache ServerRoot directory changed</STRONG>
+    from the NCSA-compatible <SAMP>/usr/local/etc/httpd/</SAMP> to
+    <SAMP>/usr/local/apache/</SAMP>. This change covers only the default
+    setting (and the documentation); it is of course possible to override it
+    using the <EM>-d ServerRoot</EM> and <EM>-f httpd.conf</EM> switches
+    when starting apache.
+
   <li>Folks using HTTP/1.1-style virtual hosting will need to list the
     ip:port pairs that are supposed to have HTTP/1.1-style virtual hosting
     via the <a href="mod/core.html#namevirtualhost"><code>
