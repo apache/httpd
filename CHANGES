@@ -1,7 +1,7 @@
 Changes with Apache 2.0.44
 
   *) Always emit Vary header if mod_deflate is involved in the
-     request.  [AndréMalo <nd@perlig.de>]
+     request.  [Andre Malo <nd@perlig.de>]
 
   *) mod_isapi: Stop unsetting the 'empty' query string result with
      a NULL argument in ecb->lpszQueryString, eliminating segfaults
