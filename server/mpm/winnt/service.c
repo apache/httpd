@@ -784,7 +784,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     char *launch_cmd;
     apr_status_t(rv);
     
-    printf("Installing the %s service\n", mpm_display_name);
+    fprintf(stderr,"Installing the %s service\n", mpm_display_name);
 
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
@@ -884,7 +884,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                      mpm_display_name);
         return (rv);
     }
-    printf("The %s service is successfully installed.\n", mpm_display_name);
+    fprintf(stderr,"The %s service is successfully installed.\n", mpm_display_name);
     return APR_SUCCESS;
 }
 
@@ -899,7 +899,7 @@ apr_status_t mpm_service_uninstall(void)
         SC_HANDLE schService;
         SC_HANDLE schSCManager;
 
-        printf("Removing the %s service\n", mpm_display_name);
+        fprintf(stderr,"Removing the %s service\n", mpm_display_name);
 
         // TODO: Determine the minimum permissions required for security
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
@@ -942,7 +942,7 @@ apr_status_t mpm_service_uninstall(void)
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
-        printf("Removing the %s service\n", mpm_display_name);
+        fprintf(stderr,"Removing the %s service\n", mpm_display_name);
 
         /* TODO: assure the service is stopped before continuing */
 
@@ -965,7 +965,7 @@ apr_status_t mpm_service_uninstall(void)
             return (rv);
         }
     }
-    printf("The %s service has been removed successfully.\n", mpm_display_name);
+    fprintf(stderr,"The %s service has been removed successfully.\n", mpm_display_name);
     return APR_SUCCESS;
 }
 
@@ -997,7 +997,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 {
     apr_status_t rv;
     
-    printf("Starting the %s service\n", mpm_display_name);
+    fprintf(stderr,"Starting the %s service\n", mpm_display_name);
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
@@ -1125,7 +1125,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
     }    
 
     if (rv == APR_SUCCESS)
-        printf("The %s service is running.\n", mpm_display_name);
+        fprintf(stderr,"The %s service is running.\n", mpm_display_name);
     else
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "%s: Failed to start the service process.",
@@ -1175,13 +1175,13 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         }
 
         if (!signal && (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED)) {
-            printf("The %s service is not started.\n", mpm_display_name);
+            fprintf(stderr,"The %s service is not started.\n", mpm_display_name);
             CloseServiceHandle(schService);
             CloseServiceHandle(schSCManager);
             return;
         }
         
-        printf("The %s service is %s.\n", mpm_display_name, 
+        fprintf(stderr,"The %s service is %s.\n", mpm_display_name, 
                signal ? "restarting" : "stopping");
 
         if (!signal)
@@ -1219,12 +1219,12 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         {
             globdat.ssStatus.dwCurrentState = SERVICE_STOPPED;
             if (!signal) {
-                printf("The %s service is not started.\n", mpm_display_name);
+                fprintf(stderr,"The %s service is not started.\n", mpm_display_name);
                 return;
             }
         }
 
-        printf("The %s service is %s.\n", mpm_display_name, 
+        fprintf(stderr,"The %s service is %s.\n", mpm_display_name, 
                signal ? "restarting" : "stopping");
 
         apr_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
@@ -1262,9 +1262,9 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
     }
 
     if (success)
-        printf("The %s service has %s.\n", mpm_display_name, 
+        fprintf(stderr,"The %s service has %s.\n", mpm_display_name, 
                signal ? "restarted" : "stopped");
     else
-        printf("Failed to %s the %s service.\n", 
+        fprintf(stderr,"Failed to %s the %s service.\n", 
                signal ? "restart" : "stop", mpm_display_name);
 }
