@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) Made RefererIgnore case-insensitive.
+
   *) Mod_log_agent, mod_log_referer now use ap_open_piped_log for piped logs.
      [Brian Behlendorf]
 

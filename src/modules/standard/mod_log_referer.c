@@ -104,6 +104,7 @@ static const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
                                                &referer_log_module);
 
     addme = ap_push_array(cls->referer_ignore_list);
+    ap_str_tolower(arg);
     *addme = arg;
     return NULL;
 }
@@ -175,7 +176,7 @@ static int referer_log_transaction(request_rec *orig)
     referer = ap_table_get(orig->headers_in, "Referer");
     if (referer != NULL) {
 
-
+        ap_str_tolower(referer);
         /* The following is an upsetting mess of pointers, I'm sorry
            Anyone with the motiviation and/or the time should feel free
            to make this cleaner... */
