@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.2 $ ($Date: 1999/06/24 15:06:27 $)
+  $Revision: 1.3 $ ($Date: 1999/07/03 22:12:50 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -76,6 +76,11 @@
         using PUT on Netscape Gold and other programs?</A>
    </LI>
    <LI><A HREF="#SSL-i">Why doesn't Apache include SSL?</A>
+   </LI>
+   <LI><A HREF="#footer">How can I attach a footer to my documents
+        without using SSI?</A>
+   </LI>
+   <LI><A HREF="#search">Does Apache include a search engine?</A>
    </LI>
   </OL>
  </LI>
@@ -159,6 +164,43 @@
   article about
   <A HREF="http://www.apacheweek.com/features/ssl" REL="Help"
   ><CITE>Apache and Secure Transactions</CITE></A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="footer">
+      <STRONG>How can I attach a footer to my documents
+        without using SSI?</STRONG>
+     </A>
+  <P>
+  You can make arbitrary changes to static documents by configuring an
+  <A HREF="http://www.apache.org/docs/mod/mod_actions.html#action">
+  Action</A> which launches a CGI script.  The CGI is then
+  responsible for setting a content-type and delivering the requested
+  document (the location of which is passed in the
+  <SAMP>PATH_TRANSLATED</SAMP> environment variable), along with
+  whatever footer is needed.
+  </P>
+  <P>
+  Busy sites may not want to run a CGI script on every request, and
+  should consider using an Apache module to add the footer.  There are
+  several third party modules available through the <A
+  HREF="http://modules.apache.org/">Apache Module Registry</A> which
+  will add footers to documents.  These include mod_trailer, PHP
+  (<SAMP>php3_auto_append_file</SAMP>), and mod_perl
+  (<SAMP>Apache::Sandwich</SAMP>).
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="search">
+      <STRONG>Does Apache include a search engine?</STRONG>
+     </A>
+  <P>Apache does not include a search engine, but there are many good
+  commercial and free search engines which can be used easily with
+  Apache.  Some of them are listed on the <A
+  HREF="http://www.searchtools.com/tools/tools.html">Web Site Search
+  Tools</A> page.  Open source search engines that are often used with
+  Apache include <A HREF="http://www.htdig.org/">ht://Dig</A> and <A
+  HREF="http://sunsite.berkeley.edu/SWISH-E/">SWISH-E</A>.
   </P>
   <HR>
  </LI>

@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.1 $ ($Date: 1999/06/24 15:02:52 $)
+  $Revision: 1.2 $ ($Date: 1999/07/03 22:12:50 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -209,7 +209,16 @@
   server.  To see if this is the case, try running the script standalone
   from an interactive session, rather than as a script under the server.
   If you get error messages, this is almost certainly the cause of the
-  &quot;premature end of script headers&quot; message.
+  &quot;premature end of script headers&quot; message.  Even if the CGI 
+  runs fine from the command line, remember that the environment and
+  permissions may be different when running under the web server.  The
+  CGI can only access resources allowed for the <A 
+  HREF="../mod/core.html#user"><CODE>User</CODE></A> and 
+  <A HREF="../mod/core.html#group"><CODE>Group</CODE></A> specified in 
+  your Apache configuration.  In addition, the environment will not be 
+  the same as the one provided on the command line, but it can be 
+  adjusted using the directives provided by <A 
+  HREF="../mod/mod_env.html">mod_env</A>.
   </P>
   <P>
   The second most common cause of this (aside from people not
@@ -253,6 +262,12 @@
   message are the RLimitCPU and RLimitMEM directives. You may
   get the message if the CGI script was killed due to a
   resource limit.
+  </P>
+  <P>
+  In addition, a configuration problem in <A
+  HREF="../suexec.html">suEXEC</A>, mod_perl, or another third party
+  module can often interfere with the execution of your CGI and cause
+  the &quot;premature end of script headers&quot; message.
   </P>
   <HR>
  </LI>
