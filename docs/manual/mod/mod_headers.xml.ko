@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.18 -->
+<!-- English Revision: 1.5.2.6 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -38,12 +38,25 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 <section id="order"><title>처리 순서</title>
 
     <p><module>mod_headers</module>가 제공하는 지시어는 서버설정의
-    거의 모든 장소에서 사용할 수 있으며, <a
-    href="../sections.html">설정 섹션</a>으로 감싸서 지시어의
-    범위를 제한할 수도 있다.</p>
+    거의 모든 장소에서 사용할 수 있다. 지시어는 주서버설정,
+    가상호스트 섹션, <directive module="core"
+    type="section">Directory</directive>, <directive module="core"
+    type="section">Location</directive>, <directive module="core"
+    type="section">Files</directive> 섹션, <code>.htaccess</code>
+    파일에서 사용할 수 있다.</p>
 
-    <p>처리순서는 중요하며, 설정파일에 나온 순서와 <a
-    href="../sections.html#mergin">설정 섹션</a>의 영향을 받는다.
+    <p>지시어는 아래 순서대로 처리된다.</p>
+
+    <ol>
+      <li>주서버</li>
+      <li>가상호스트</li>
+      <li><directive type="section">Directory</directive> 섹션과
+      <code>.htaccess</code></li>
+      <li><directive type="section">Files</directive></li>
+      <li><directive type="section">Location</directive></li>
+    </ol>
+
+    <p>순서는 중요하다.
     다음 두 지시어를 반대로 적으면 효과가 달라진다.</p>
 
     <example>
@@ -53,27 +66,6 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 
     <p>위와 같이 적으면 <code>MirrorID</code> 헤더가 나오지
     않는다. 반대로 적으면 MirrorID 헤더를 "mirror 12"로 설정한다.</p>
-</section>
-
-<section id="early"><title>이른(early) 처리와 늦은(late) 처리</title>
-    <p><module>mod_headers</module>를 요청 초기나 나중에 적용할
-    수 있다. 보통은 내용생성자를 실행하기 직전에 요청 헤더를
-    설정하고 응답을 네트웍에 쓸때 응답 헤더를 설정하는 늦은(late)
-    방식을 사용한다. 실제 서비스하는 서버에서는 항상 느린 방식을
-    사용하라.</p>
-
-    <p>이른(early) 방식은 개발자를 위해 검사/디버깅용으로 만들었다.
-    <code>early</code> 키워드를 사용하여 정의한 지시어는 요청을
-    처리하기 시작할때 설정한다. 즉, 다른 요청을 모의실험하거나
-    검사를 하기위해 사용할 수 있지만, 응답을 생성하기 전에 다른
-    모듈이 불시에 헤더를 수정할 수 있다.</p>
-
-    <p>요청경로에 대한 설정을 살펴보기 전에 이른 지시어를
-    처리하기때문에 이른 헤더 지시어는 주서버이나 가상호스트
-    사용장소에서만 사용할 수 있다. 이른 지시어는 요청경로에
-    의존할 수 없기때문에 <code>&lt;Directory&gt;</code>나
-    <code>&lt;Location&gt;</code>같은 사용장소에서 사용할 수
-    없다.</p>
 </section>
 
 <section id="examples"><title>예제</title>
@@ -145,7 +137,7 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 <name>RequestHeader</name>
 <description>HTTP 요청 헤더를 구성한다</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+[<var>value</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -174,8 +166,7 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 
     <dt><code>unset</code></dt>
     <dd>이런 이름의 요청 헤더가 있다면 삭제한다. 같은 이름을
-    가진 헤더가 여러개 있다면 모두 제거한다. <var>value</var>는
-    적지 않는다.</dd>
+    가진 헤더가 여러개 있다면 모두 제거한다.</dd>
     </dl>
 
     <p>아규먼트 뒤에 헤더명이 나온다. 헤더명 뒤에 콜론을 적을
@@ -183,23 +174,9 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
     <code>append</code>, <code>set</code>을 사용할때는 세번째
     아규먼트 <var>value</var>가 필요하다. <var>value</var> 안에
     공백이 있다면 쌍따옴표로 묶어야 한다. unset을 사용할때는
-    <var>value</var>를 적으면 안된다. <var>value</var>는 일반
-    문자열이나 형식을 기술하는 문자열이며, 두가지를 같이 사용할
-    수도 있다. 지원하는 형식기술자는 <directive
-    module="mod_headers">Header</directive>와 같으므로 자세한
-    내용은 그곳을 참고하라.</p>
+    <var>value</var>를 적으면 안된다.</p>
 
-    <p><directive>RequestHeader</directive> 지시어 뒤에 행동이
-    일어날 조건을 지시하는 추가 아규먼트나 <a
-    href="#early">이른 처리</a>를 뜻하는 키워드
-    <code>early</code>가 나올 수 있다. <code>env=<var>...</var></code>
-    아규먼트를 사용한 경우 해당 <a href="../env.html">환경변수</a>가
-    존재한다면 (혹은 <code>env=!<var>...</var></code>에 나온
-    환경변수가 존재하지 않다면) <directive>RequestHeader</directive>
-    지시어가 동작한다. 그렇지 않으면 지시어는 요청에 아무 영향을
-    미치지 않는다.</p>
-
-    <p><a href="#early">이른</a> 방식이 아니라면 fixup 단계에서
+    <p>fixup 단계에서
     요청에 해당하는 핸들러를 실행하기 직전에
     <directive>RequestHeader</directive> 지시어를 처리한다.
     그래서 브라우저에 따라 혹은 아파치 입력필터가 헤더를 덮어쓰거나
@@ -211,10 +188,11 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 <name>Header</name>
 <description>HTTP 응답 헤더를 구성한다</description>
 <syntax>Header [<var>condition</var>] set|append|add|unset|echo
-<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+<var>header</var> [<var>value</var>] [env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility><var>Condition</var>은 아파치 2.0.51 부터</compatibility>
 
 <usage>
     <p>이 지시어는 HTTP 응답 헤더를 합치거나 대체, 제거한다.
@@ -251,13 +229,11 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
 
     <dt><code>unset</code></dt>
     <dd>이런 이름의 응답 헤더가 있다면 삭제한다. 같은 이름을
-    가진 헤더가 여러개 있다면 모두 제거한다. <var>value</var>는
-    적지 않는다.</dd>
+    가진 헤더가 여러개 있다면 모두 제거한다.</dd>
 
     <dt><code>echo</code></dt>
     <dd>이런 이름의 요청 헤더를 그대로 응답 헤더로 보낸다.
-    <var>header</var>에 정규표현식을 사용할 수 있다.
-    <var>value</var>는 적지 않는다.</dd>
+    <var>header</var>에 정규표현식을 사용할 수 있다.</dd>
     </dl>
 
     <p>아규먼트 뒤에 <var>header</var> 이름이 나온다. 헤더명
@@ -273,12 +249,8 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
     두가지를 같이 사용할 수도 있다. <var>value</var>에서 지원하는
     형식기술자는 다음과 같다.</p>
 
-    <table border="1" style="zebra">
+    <table border="1">
     <columnspec><column width=".25"/><column width=".75"/></columnspec>
-    <tr><th>형식</th><th>설명</th></tr>
-    <tr><td><code>%%</code></td>
-        <td>퍼센트 기호</td></tr>
-
     <tr><td><code>%t</code></td>
         <td>요청을 받은 시간을 국제표준시로 epoch (1970년 1월
         1일) 이후 지난 마이크로초 단위로. 값 앞에 <code>t=</code>이
@@ -292,33 +264,18 @@ module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
     <tr><td><code>%{FOOBAR}e</code></td>
         <td><a href="../env.html">환경변수</a> <code>FOOBAR</code>의
         내용.</td></tr>
-
-    <tr><td><code>%{FOOBAR}s</code></td>
-        <td><module>mod_ssl</module>이 동작한다면, <a
-        href="mod_ssl.html#envvars">SSL 환경변수</a>
-        <code>FOOBAR</code>의 내용.</td></tr>
-
     </table>
 
-    <note><title>주의</title>
-      <p><code>%s</code> 형식 지시자는 아파치 2.1 이후에만 있다.
-      이 지시자는 <code>SSLOptions +StdEnvVars</code>를 사용하는
-      부담을 덜기위해 <code>%e</code> 대신 사용할 수 있다. 어떤
-      이유에서건 <code>SSLOptions +StdEnvVars</code>를 사용해야
-      한다면, <code>%e</code>는 <code>%s</code> 보다 훨씬 더
-      효율적이다.</p>
-    </note> 
-
-    <p><directive>Header</directive> 지시어 뒤에 행동이 일어날
-    조건을 지시하는 추가 아규먼트나 <a href="#early">이른 처리</a>를
-    뜻하는 키워드 <code>early</code>가 나올 수 있다.
-    <code>env=<var>...</var></code> 아규먼트를 사용한 경우 해당
-    <a href="../env.html">환경변수</a>가 존재한다면 (혹은
-    <code>env=!<var>...</var></code>에 나온 환경변수가 존재하지
-    않다면) <directive>Header</directive> 지시어가 동작한다.
+    <p><directive>Header</directive> 지시어의 <code>add</code>,
+    <code>append</code>, <code>set</code> 아규먼트를 사용하는
+    경우 네번째 아규먼트로 작업에 필요한 조건을 지정할 수 있다.
+    <code>env=...</code> 아규먼트를 사용하면 해당 <a
+    href="../env.html">환경변수</a>가 존재하는 경우에만 (아니면
+    <code>env=!...</code>에 나온 환경변수가 존재하지 않다면)
+    <directive>Header</directive> 지시어가 동작한다.
     그렇지 않으면 지시어는 요청에 아무 영향을 미치지 않는다.</p>
 
-    <p><a href="#early">이른</a> 방식이 아니라면 응답을 네트웍으로
+    <p>응답을 네트웍으로
     보내기 직전에 <directive>Header</directive> 지시어를 처리한다.
     그래서 헤더 필터가 추가하는 헤더를 제외한 대부분의 헤더를
     설정하거나 덮어쓸 수 있다.</p>

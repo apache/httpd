@@ -239,7 +239,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>This directive is available since Apache 2.0.45</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>아파치 2.0.45 부터</td></tr>
 </table>
     <p><code class="directive">DeflateCompressionLevel</code> 지시어는
         사용할 압축수준을 선택한다. 값이 클수록 압축률이 증가하지만,
@@ -255,7 +255,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td><var>type</var> is available since Apache 2.0.45</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td><var>type</var>은 아파치 2.0.45 부터</td></tr>
 </table>
     <p><code class="directive">DeflateFilterNote</code> 지시어는 요청의
     압축률을 로그에 기록하는 기호를 지정한다. 기호 이름은 지시어로

@@ -28,10 +28,10 @@
   <modulefile>mod_expires.xml.ko</modulefile>
   <modulefile>mod_ext_filter.xml.ko</modulefile>
   <modulefile>mod_file_cache.xml.ko</modulefile>
-  <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_headers.xml.ko</modulefile>
   <modulefile>mod_imap.xml.ko</modulefile>
   <modulefile>mod_include.xml</modulefile>
-  <modulefile>mod_info.xml</modulefile>
+  <modulefile>mod_info.xml.ko</modulefile>
   <modulefile>mod_isapi.xml.ko</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml.ko</modulefile>
