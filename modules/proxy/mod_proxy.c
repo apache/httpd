@@ -473,6 +473,8 @@ static int proxy_handler(request_rec *r)
     int direct_connect = 0;
     const char *str;
     long maxfwd;
+    struct proxy_balancer *balancer = NULL;
+    proxy_worker *worker = NULL;
 
     /* is this for us? */
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
@@ -549,7 +551,12 @@ static int proxy_handler(request_rec *r)
                       r->uri);
 #endif
     }
-
+    /* Try to obtain the most suitable worker */
+    access_status = proxy_run_pre_request(&worker, &balancer, r, conf, &url);
+    if (access_status != DECLINED && access_status != OK) {
+        return access_status;
+    }
+                                          
     /* firstly, try a proxy, unless a NoProxy directive is active */
     if (!direct_connect) {
         for (i = 0; i < proxies->nelts; i++) {
@@ -590,6 +597,11 @@ static int proxy_handler(request_rec *r)
                     "the proxy submodules are included in the configuration "
                     "using LoadModule.", r->uri);
         return HTTP_FORBIDDEN;
+    }
+    access_status = proxy_run_post_request(worker, balancer, r, conf);
+    if (access_status == DECLINED) {
+        access_status = OK; /* no post_request handler available */
+        /* TODO: reclycle direct worker */
     }
     return access_status;
 }
@@ -1481,6 +1493,8 @@ module AP_MODULE_DECLARE_DATA proxy_module =
 APR_HOOK_STRUCT(
 	APR_HOOK_LINK(scheme_handler)
 	APR_HOOK_LINK(canon_handler)
+	APR_HOOK_LINK(pre_request)
+	APR_HOOK_LINK(post_request)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler, 
@@ -1491,6 +1505,19 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler, 
                                      (request_rec *r, char *url),(r,
                                      url),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, pre_request, (
+                                      proxy_worker **worker,
+                                      struct proxy_balancer **balancer,
+                                      request_rec *r, 
+                                      proxy_server_conf *conf,
+                                      char **url),(worker,balancer,
+                                      r,conf,url),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
+                                      (proxy_worker *worker,
+                                       struct proxy_balancer *balancer,
+                                       request_rec *r,
+                                       proxy_server_conf *conf),(worker,
+                                       balancer,r,conf),DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
 				    (request_rec *r), (r),
 				    OK, DECLINED)

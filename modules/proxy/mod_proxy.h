@@ -249,6 +249,14 @@ struct proxy_balancer {
 #endif
 };
 
+/* data structure for set/get module_config */
+typedef struct {
+    char                  *url;         /* rewtitten url */
+    struct proxy_balancer *balancer;    /* load balancer to use */
+    proxy_worker          *worker;      /* most suitable worker */
+    void                  *opaque;      /* module private data */
+} proxy_module_conf;
+
 /* hooks */
 
 /* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
@@ -287,6 +295,27 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
+
+/**
+ * pre request hook.
+ * It will return the most suitable worker at the moment
+ * and coresponding balancer.
+ * The url is rewritten from balancer://cluster/uri to scheme://host:port/uri
+ * and then the scheme_handler is called.
+ *
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request, (proxy_worker **worker,
+                          struct proxy_balancer **balancer,
+                          request_rec *r,
+                          proxy_server_conf *conf, char **url))                          
+/**
+ * post request hook.
+ * It is called after request for updating runtime balancer status.
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, post_request, (proxy_worker *worker,
+                          struct proxy_balancer *balancer, request_rec *r,
+                          proxy_server_conf *conf))
+
 
 /* proxy_util.c */
 
