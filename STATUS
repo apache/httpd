@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 20:00:38 $]
+Last modified at [$Date: 2004/08/04 20:56:42 $]
 
 Release:
 
@@ -93,6 +93,16 @@ PATCHES TO BACKPORT FROM 2.1
                     elsewhere (APR has some fixes too).  So, 2.2 bundled
                     with APR 1.0 (or some variant of that) will be the first
                     release to work 'correctly.'
+       trawick: uhh, within the scope of the httpd developers' normal 
+                oversight over 2.0 releases (ability to review code
+                going into a 2.0 release, preserving or enhancing
+                maintainability, preserving binary compatibility
+                with prior 2.0 releases, etc.), people ought to be
+                able to fix whatever ails them in 2.0; 2.2 be damned
+                if nobody would want to use it but for some fixes that
+                are artificially kept out of 2.0; and any 2.0/2.2
+                issues are not valid reasons for keeping APR 1+ fixes/
+                enhancements out of APR 0.9
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
@@ -421,7 +431,7 @@ PATCHES TO BACKPORT FROM 2.1
         http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=82369
       Patch (2.1 version already committed, 2.0 has diff OpenSSL config logic):
         http://www.apache.org/~jerenkrantz/httpd-openssl-pkgconfig.patch
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
