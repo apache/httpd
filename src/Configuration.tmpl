@@ -322,17 +322,6 @@ AddModule modules/standard/mod_actions.o
 
 AddModule modules/standard/mod_userdir.o
 
-## "digest" implements HTTP Digest Authentication rather than the less 
-## secure Basic Auth used by the other modules. This is an updated
-## version of mod_digest, but it is not well tested and is therefore
-## marked experimental.
-## Note: if you add this module in then you might also need the
-## truerand library (available for example from
-## ftp://research.att.com/dist/mab/librand.shar) - see the Rule
-## DEV_RANDOM above for more info.
-
-# AddModule modules/experimental/mod_auth_digest.o
-
 ## The proxy module enables the server to act as a proxy for outside
 ## http and ftp services. It's not as complete as it could be yet.
 ## NOTE: You do not want this module UNLESS you are running a proxy;
@@ -370,9 +359,21 @@ AddModule modules/standard/mod_auth.o
 # AddModule modules/standard/mod_auth_db.o
 
 ## "digest" implements HTTP Digest Authentication rather than the less 
-## secure Basic Auth used by the other modules.
+## secure Basic Auth used by the other modules.  This is the old version.
 
 # AddModule modules/standard/mod_digest.o
+
+## "auth_digest" implements HTTP/1.1 Digest Authentication (RFC 2617)
+## rather than the less secure Basic Auth used by the other modules.
+## This is an updated version of mod_digest, but it is not as well tested
+## and is therefore marked experimental.  Use either the one above, or
+## this one below, but not both digest modules.
+## Note: if you add this module in then you might also need the
+## truerand library (available for example from
+## ftp://research.att.com/dist/mab/librand.shar) - see the Rule
+## DEV_RANDOM above for more info.
+
+# AddModule modules/experimental/mod_auth_digest.o
 
 ## Optional response header manipulation modules. 
 ##
