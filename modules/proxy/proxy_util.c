@@ -1236,7 +1236,17 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                                         proxy_server_conf *conf, char **url)
 {
     int access_status;
-
+    
+    if (r->proxyreq == PROXYREQ_PROXY) {
+        if (conf->forward) {
+            *balancer = NULL;
+            *worker = conf->forward;
+            access_status = OK;
+        }
+        else
+            access_status = DECLINED;
+        return access_status;
+    }
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
         *worker = ap_proxy_get_worker(r->pool, conf, *url);
@@ -1647,12 +1657,19 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                            uri->fragment ? "#" : "",
                            uri->fragment ? uri->fragment : "", NULL);
     }
-    /* Worker can have the single constant backend adress.
-     * The single DNS lookup is used once per worker.
-     * If dynamic change is needed then set the addr to NULL
-     * inside dynamic config to force the lookup.
-     */
-    if (!worker->cp->addr)
+
+    if (r->proxyreq == PROXYREQ_PROXY) {
+        err = apr_sockaddr_info_get(&(worker->cp->addr),
+                                    conn->hostname, APR_UNSPEC,
+                                    conn->port, 0,
+                                    p);
+    }
+    else if (!worker->cp->addr)
+        /* Worker can have the single constant backend adress.
+         * The single DNS lookup is used once per worker.
+        * If dynamic change is needed then set the addr to NULL
+        * inside dynamic config to force the lookup.
+        */
         err = apr_sockaddr_info_get(&(worker->cp->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
