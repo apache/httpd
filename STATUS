@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/17 22:05:58 $]
+Last modified at [$Date: 2001/12/21 13:50:41 $]
 
 Release:
 
@@ -91,13 +91,6 @@ RELEASE SHOWSTOPPERS:
                 LOCKALL and CROSS_PROCESS are not yet complete on all
                 platforms, and should only be used in MPMs like worker
                 with limited OS exposure.
-
-    * make_exports.awk doesn't handle declarations that span multiple
-      lines.  Thus, stuff like ap_hook_error_log doesn't end up in
-      exports.c and httpd.exp.  This can cause DSO modules which call
-      ap_hook_error_log (or other missing functions -- if there are
-      any) to segfault on AIX and can probably cause load or other
-      errors on some other platforms.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
