@@ -1,42 +1,37 @@
-Apache 1.3.1 Released
+Apache 1.3.2 Released
 =====================
 
-The Apache Group is pleased to announce the release of version 1.3.1 
-of the Apache HTTP server.  
+The Apache Group is pleased to announce the release of version
+1.3.2 of the Apache HTTP server.  
 
-The changes in this release consist of UNIX portability fixes, Win32
-security issues, and assorted other minor features or fixes.  
+The changes in this release consist of Unix portability fixes,
+DoS issues, and assorted other minor features or fixes.  Users
+should review the CHANGES file and decide on their upgrade plans;
+We consider Apache 1.3.2 to be the most stable version of Apache
+available.
 
-WE URGE ALL USERS RUNNING ANY PREVIOUS VERSION OF APACHE ON WIN32
-TO UPGRADE IMMEDIATELY.
+Apache 1.3.2 is available for download from
 
-Users on other platforms should review the CHANGES file and decide
-on their upgrade plans; the security issues apply only to Apache
-on Win32.  We consider Apache 1.3.1 to be the most stable version
-of Apache available.
+    http://www.apache.org/dist/
 
-Apache 1.3.1 is available for download from
+Please see the CHANGES file in the same directory for a full list
+of changes.  The distribution is also available via any of the
+mirrors listed at
 
-	http://www.apache.org/dist/
-
-Please see the CHANGES file in the same directory for a full list of 
-changes.  The distribution is also available via any of the mirrors
-listed at
-
-	http://www.apache.org/mirrors/
+    http://www.apache.org/mirrors/
 
 For an overview of new features in 1.3 please see
 
-	http://www.apache.org/docs/new_features_1_3.html
+    http://www.apache.org/docs/new_features_1_3.html
 
 In general, Apache 1.3 offers several substantial improvements
-over version 1.2, including better performance, reliability
-and a wider-range of supported platforms, including Windows 95 and
-NT (which both fall under the "Win32" label).
+over version 1.2, including better performance, reliability and a
+wider-range of supported platforms, including Windows 95 and NT
+(which both fall under the "Win32" label).
 
 Apache is the most popular web-server in the known universe; over
-half of the servers on the Internet are running Apache or one of its
-variants.
+half of the servers on the Internet are running Apache or one of
+its variants.
 
 IMPORTANT NOTE FOR WIN32 USERS: Over the years, many users have
 come to trust Apache as a secure and stable server.  It must
@@ -48,25 +43,3 @@ and resources by individuals and companies, we hope that the Win32
 version of Apache will grow stronger through the 1.3.x release
 cycle.
 
-Versions of Apache on Win32 prior to version 1.3.1 are vulnerable
-to a number of security holes common to several Win32 servers.
-The problems that impact Apache include:
-
-	- trailing "."s are ignored by the file system.  This allowed
-	  certain types of access restrictions to be bypassed.
-	- directory names of three or more dots (eg. "...") are
-    	  considered to be valid similar to "..".  This allowed people
-	  to gain access to files outside of the configured document
-	  trees.
-
-There have been at least four other similar instances of the same
-basic problem: on Win32, there is more than one name for a file.
-Some of these names are poorly documented or undocumented, and even
-Microsoft's own IIS has been vulnerable to many of these problems.
-This behavior of the Win32 file system and API makes it very difficult
-to insure future security; problems of this type have been known
-about for years, however each specific instance has been discovered
-individually.  It is unknown if there are other, yet unpublicized,
-filename variants.  As a result, we recommend that you use extreme
-caution when dealing with access restrictions on all Win32 web
-servers.
