@@ -1026,11 +1026,9 @@ var_rec *best_match(negotiation_state *neg)
 			    || (variant->lang_index == best->lang_index
 				&& ((levcmp = level_cmp (variant, best)) == 1
 				    || (levcmp == 0
-					&& !strcmp (variant->type_name,
-						    best->type_name)
 					&& (find_content_length(neg, variant)
 					    <
-				find_content_length(neg, best)))))))))
+				         find_content_length(neg, best)))))))))
 	    {
 		best = variant;
 		best_quality = q;
