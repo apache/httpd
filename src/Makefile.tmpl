@@ -5,7 +5,7 @@
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
-  md5c.o util_md5.o $(MODULES)
+  md5c.o util_md5.o explain.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<

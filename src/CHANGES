@@ -1,3 +1,11 @@
+  *) Added new Explain() function, intended to help trace execution. Currently
+     only used in mod_proxy.c (and there not yet complete). Switch it on with
+     -DEXPLAIN. See explain.h. [Ben Laurie]
+
+  *) Added two new directives to proxy module, CacheDirLevels and
+     CacheDirLength. Values of 3 and 2 respectively will result in files like
+     aa/bb/cc/dddddd in the cache. [Ben Laurie]
+
   *) Modify <VirtualHost> directive to work without the system supporting
      multiple IP addresses. It can now take advantage of the Host: header
      sent by some (but not all) new web browsers (e.g. Netscape 2.0). Those
@@ -12,7 +20,7 @@
      instantaneous status screen to be displayed.  Since the complex
      instrumentation makes the scoreboard file bigger it has been 
      made a compile-time define (add "-DSTATUS_INSTRUMENTATION" to 
-     CLAGS in the Configuration file) [Mark Cox]
+     CFLAGS in the Configuration file) [Mark Cox]
 
   *) Made it so XBITHACK behavior only occurs for files of type text/html, as
      any other file type doesn't really make sense. [Alexei Kosut]

@@ -50,6 +50,24 @@
  *
  */
 
+/*
+Note that the Explain() stuff is not yet complete.
+Also note numerous FIXMEs and CHECKMEs which should be eliminated.
+
+This code is still experimental!
+
+Things to do:
+
+1. Make it garbage collect in the background, not while someone is waiting for
+a response!
+
+2. Check the logic thoroughly.
+
+Ben Laurie <ben@algroup.co.uk> 30 Mar 96
+*/
+
+#define TESTING	0
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
@@ -59,6 +77,10 @@
 #include "md5.h"
 
 #include <utime.h>
+
+#include "explain.h"
+
+DEF_Explain
 
 #define DEFAULT_FTP_PORT 21
 #define DEFAULT_HTTPS_PORT 443
@@ -109,6 +131,8 @@ struct cache_conf
     int defaultexpire;  /* default time to keep cached file in secs */
     double lmfactor;    /* factor for estimating expires date */
     int gcinterval;     /* garbage collection interval, in seconds */
+    int dirlevels;	/* Number of levels of subdirectories */
+    int dirlength;	/* Length of subdirectory names */
 };
 
 typedef struct
@@ -623,7 +647,7 @@ http_canon(request_rec *r, char *url, const char *scheme, int def_port)
     } else
 	search = "";
 
-    if (port != DEFAULT_PORT) sprintf(sport, ":%d", port);
+    if (port != def_port) sprintf(sport, ":%d", port);
     else sport[0] = '\0';
 
     r->filename = pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
@@ -957,14 +981,15 @@ liststr(const char *list, const char *val)
 }
 
 /* number of characters in the hash */
-#define HASH_LEN (22)
+#define HASH_LEN (22*2)
 
 static void
-hash(const char *it, char *val)
+hash(const char *it, char *val,int ndepth,int nlength)
 {
     MD5_CTX context;
     unsigned char digest[16];
-    int i, k;
+    char tmp[22];
+    int i, k, d;
     unsigned int x;
     static const char table[64]=
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
@@ -980,16 +1005,26 @@ hash(const char *it, char *val)
     for (i=0, k=0; i < 15; i += 3)
     {
 	x = (digest[i] << 16) | (digest[i+1] << 8) | digest[i+2];
-	val[k++] = table[x >> 18];
-	val[k++] = table[(x >> 12) & 0x3f];
-	val[k++] = table[(x >> 6) & 0x3f];
-	val[k++] = table[x & 0x3f];
+	tmp[k++] = table[x >> 18];
+	tmp[k++] = table[(x >> 12) & 0x3f];
+	tmp[k++] = table[(x >> 6) & 0x3f];
+	tmp[k++] = table[x & 0x3f];
     }
 /* one byte left */
     x = digest[15];
-    val[k++] = table[x >> 2];  /* use up 6 bits */
-    val[k++] = table[(x << 4) & 0x3f];
-    val[k++] = '\0';
+    tmp[k++] = table[x >> 2];  /* use up 6 bits */
+    tmp[k++] = table[(x << 4) & 0x3f];
+    /* now split into directory levels */
+
+    for(i=k=d=0 ; d < ndepth ; ++d)
+	{
+	strncpy(&val[i],&tmp[k],nlength);
+	k+=nlength;
+	val[i+nlength]='/';
+	i+=nlength+1;
+	}
+    memcpy(&val[i],&tmp[k],22-k);
+    val[i+22-k]='\0';
 }
 
 /*
@@ -1215,6 +1250,7 @@ struct gc_ent
     unsigned long int len;
     time_t expire;
     char file[HASH_LEN+1];
+
 };
 
 static int
@@ -1227,24 +1263,25 @@ gcdiff(const void *ap, const void *bp)
     else return 0;
 }
 
-static void
-garbage_coll(request_rec *r)
-{
-    char *filename, line[27];
+static int curbytes, cachesize, every;
+static unsigned long int curblocks;
+static time_t now, expire;
+static char *filename;
+
+static int sub_garbage_coll(request_rec *r,array_header *files,
+			    const char *cachedir,const char *cachesubdir);
+
+static void garbage_coll(request_rec *r)
+    {
     const char *cachedir;
-    struct stat buf;
-    int i, fd, curbytes, cachesize, every;
-    unsigned long int curblocks;
-    time_t now, expire;
-    DIR *dir;
-    struct dirent *ent;
-    struct gc_ent *fent, **elts;
-    array_header *files;
     void *sconf = r->server->module_config;
     proxy_server_conf *pconf =
         (proxy_server_conf *)get_module_config(sconf, &proxy_module);
     const struct cache_conf *conf=&pconf->cache;
-
+    array_header *files;
+    struct stat buf;
+    struct gc_ent *fent,**elts;    
+    int i;
     static time_t lastcheck=-1;  /* static data!!! */
 
     cachedir = conf->root;
@@ -1280,21 +1317,73 @@ garbage_coll(request_rec *r)
 	if (utime(filename, NULL) == -1)
 	    log_uerror("utimes", filename, NULL, r->server);
     }
+    files = make_array(r->pool, 100, sizeof(struct gc_ent *));
+    curblocks = 0;
+    curbytes = 0;
 
+    sub_garbage_coll(r,files,cachedir,"/");
+
+    if (curblocks < cachesize || curblocks + curbytes <= cachesize)
+	return;
+
+    qsort(files->elts, files->nelts, sizeof(struct gc_ent *), gcdiff);
+
+    elts = (struct gc_ent **)files->elts;
+    for (i=0; i < files->nelts; i++)
+    {
+	fent = elts[i];
+	sprintf(filename, "%s%s", cachedir, fent->file);
+	Explain3("GC Unlinking %s (expiry %ld, now %ld)",filename,fent->expire,now);
+#if TESTING
+	fprintf(stderr,"Would unlink %s\n",filename);
+#else
+	if (unlink(filename) == -1)
+	{
+	    if (errno != ENOENT)
+		log_uerror("unlink", filename, NULL, r->server);
+	}
+#endif
+	else
+	{
+	    curblocks -= fent->len >> 10;
+	    curbytes -= fent->len & 0x3FF;
+	    if (curbytes < 0)
+	    {
+		curbytes += 1024;
+		curblocks--;
+	    }
+	    if (curblocks < cachesize || curblocks + curbytes <= cachesize)
+		break;
+	}
+    }
+    }
+
+static int sub_garbage_coll(request_rec *r,array_header *files,
+			     const char *cachebasedir,const char *cachesubdir)
+{
+    char line[27];
+    char cachedir[PATHSIZE];
+    struct stat buf;
+    int fd,i;
+    DIR *dir;
+    struct dirent *ent;
+    struct gc_ent *fent;
+    int nfiles=0;
+
+    sprintf(cachedir,"%s%s",cachebasedir,cachesubdir);
+    Explain1("GC Examining directory %s",cachedir);
     dir = opendir(cachedir);
     if (dir == NULL)
     {
 	log_uerror("opendir", cachedir, NULL, r->server);
-	return;
+	return 0;
     }
 
-    files = make_array(r->pool, 100, sizeof(struct gc_ent *));
-    curblocks = 0;
-    curbytes = 0;
     while ((ent = readdir(dir)) != NULL)
     {
 	if (ent->d_name[0] == '.') continue;
-	sprintf(filename, "%s/%s", cachedir, ent->d_name);
+	sprintf(filename, "%s%s", cachedir, ent->d_name);
+	Explain1("GC Examining file %s",filename);
 /* is it a temporary file? */
 	if (strncmp(ent->d_name, "#tmp", 4) == 0)
 	{
@@ -1305,11 +1394,16 @@ garbage_coll(request_rec *r)
 		    log_uerror("stat", filename, NULL, r->server);
 	    } else if (now != -1 && buf.st_atime > now + 86400 &&
 		       buf.st_mtime > now + 86400)
+		{
+		Explain0("GC Unlink");
 		unlink(filename);
+		}
 	    continue;
 	}
+	++nfiles;
 /* is it another file? */
-	if (strlen(ent->d_name) != HASH_LEN) continue;
+	/* FIXME: Shouldn't any unexpected files be deleted? */
+//	if (strlen(ent->d_name) != HASH_LEN) continue;
 
 /* read the file */
 	fd = open(filename, O_RDONLY);
@@ -1324,6 +1418,23 @@ garbage_coll(request_rec *r)
 	    close(fd);
 	    continue;
 	}
+	if(S_ISDIR(buf.st_mode))
+	    {
+	    char newcachedir[PATHSIZE];
+	    close(fd);
+	    sprintf(newcachedir,"%s%s/",cachesubdir,ent->d_name);
+	    if(!sub_garbage_coll(r,files,cachebasedir,newcachedir))
+		{
+		sprintf(newcachedir,"%s%s",cachedir,ent->d_name);
+#if TESTING
+		fprintf(stderr,"Would remove directory %s\n",newcachedir);
+#else
+		rmdir(newcachedir);
+#endif
+		}
+	    continue;
+	    }
+	    
 	i = read(fd, line, 26);
 	if (i == -1)
 	{
@@ -1341,7 +1452,11 @@ garbage_coll(request_rec *r)
 		buf.st_mtime > now + 86400)
 	    {
 		log_error("proxy: deleting bad cache file", r->server);
+#if TESTING
+		fprintf(stderr,"Would unlink bad file %s\n",filename);
+#else
 		unlink(filename);
+#endif
 	    }
 	    continue;
 	}
@@ -1352,10 +1467,13 @@ garbage_coll(request_rec *r)
  * file.
  *
  */
+	/* FIXME: We should make the array an array of gc_ents, not gc_ent *s
+	 */
 	fent = palloc(r->pool, sizeof(struct gc_ent));
 	fent->len = buf.st_size;
 	fent->expire = expire;
-	strcpy(fent->file, ent->d_name);
+	strcpy(fent->file,cachesubdir);
+	strcat(fent->file, ent->d_name);
 	*(struct gc_ent **)push_array(files) = fent;
 
 /* accumulate in blocks, to cope with directories > 4Gb */
@@ -1367,35 +1485,8 @@ garbage_coll(request_rec *r)
 	    curblocks++;
 	}
     }
+    return nfiles;
 
-    if (curblocks < cachesize || curblocks + curbytes <= cachesize)
-	return;
-
-    qsort(files->elts, files->nelts, sizeof(struct gc_ent *), gcdiff);
-
-    elts = (struct gc_ent **)files->elts;
-    for (i=0; i < files->nelts; i++)
-    {
-	fent = elts[i];
-	sprintf(filename, "%s/%s", cachedir, fent->file);
-	if (unlink(filename) == -1)
-	{
-	    if (errno != ENOENT)
-		log_uerror("unlink", filename, NULL, r->server);
-	}
-	else
-	{
-	    curblocks -= fent->len >> 10;
-	    curbytes -= fent->len & 0x3FF;
-	    if (curbytes < 0)
-	    {
-		curbytes += 1024;
-		curblocks--;
-	    }
-	    if (curblocks < cachesize || curblocks + curbytes <= cachesize)
-		break;
-	}
-    }
 }
 
 /*
@@ -1489,6 +1580,9 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
     BUFF *cachefp;
     int cfd, i;
     const long int zero=0L;
+    void *sconf = r->server->module_config;
+    proxy_server_conf *pconf =
+        (proxy_server_conf *)get_module_config(sconf, &proxy_module);
 
     c = pcalloc(r->pool, sizeof(struct cache_req));
     *cr = c;
@@ -1508,7 +1602,7 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
     }
 
 /* find the filename for this cache entry */
-    hash(url, hashfile);
+    hash(url, hashfile,pconf->cache.dirlevels,pconf->cache.dirlength);
     if (conf->root != NULL)
 	c->filename = pstrcat(r->pool, conf->root, "/", hashfile, NULL);
     else
@@ -1518,9 +1612,11 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* find out about whether the request can access the cache */
     pragma = table_get(r->headers_in, "Pragma");
     auth = table_get(r->headers_in, "Authorization");
+    Explain4("Request for %s, pragma=%s, auth=%s, ims=%ld",url,pragma,auth,c->ims);
     if (c->filename != NULL && r->method_number == M_GET &&
 	strlen(url) < 1024 && !liststr(pragma, "no-cache") && auth == NULL)
     {
+        Explain1("Check file %s",c->filename);
 	cfd = open(c->filename, O_RDWR);
 	if (cfd != -1)
 	{
@@ -1530,6 +1626,8 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	} else if (errno != ENOENT)
 	    log_uerror("open", c->filename, "proxy: error opening cache file",
 		       r->server);
+	else
+	    Explain1("File %s not found",c->filename);
     }
     
     if (cachefp != NULL)
@@ -1548,11 +1646,12 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
     }
     if (cachefp == NULL)
 	c->hdrs = make_array(r->pool, 2, sizeof(struct hdr_entry));
-
+    /* FIXME: Shouldn't we check the URL somewhere? */
     now = time(NULL);
 /* Ok, have we got some un-expired data? */
     if (cachefp != NULL && c->expire != -1 && now < c->expire)
     {
+        Explain0("Unexpired data available");
 /* check IMS */
 	if (c->lmod != -1 && c->ims != -1 && c->ims >= c->lmod)
 	{
@@ -1562,15 +1661,19 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* No, but these header values may have changed, so we send them with the
  * 304 response
  */
+	    /* CHECKME: surely this was wrong? (Ben)
 		p = table_get(r->headers_in, "Expires");
+		*/
+		p = table_get(c->hdrs, "Expires");
 		if (p != NULL) 	table_set(r->headers_out, "Expires", p);
 	    }
 	    pclosef(r->pool, cachefp->fd);
+	    Explain0("Use local copy, cached file hasn't changed");
 	    return USE_LOCAL_COPY;
 	}
 
 /* Ok, has been modified */
-
+	Explain0("Local copy modified, send it");
 	r->status_line = strchr(c->resp_line, ' ') + 1;
 	r->status = c->status;
 	soft_timeout ("send", r);
@@ -1605,6 +1708,8 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	}
     }
     c->fp = cachefp;
+
+    Explain0("Local copy not present or expired. Declining.");
 
     return DECLINED;
 }
@@ -1680,6 +1785,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 	table_get(r->headers_in, "Authorization") != NULL ||
 	nocache)
     {
+	Explain1("Response is not cacheable, unlinking %s",c->filename);
 /* close the file */
 	if (c->fp != NULL)
 	{
@@ -1709,6 +1815,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 	date = now;
 	p = gm_timestr_822(r->pool, now);
 	dates = add_header(resp_hdrs, "Date", p, HDR_REP);
+	Explain0("Added date header");
     }
 
 /* check last-modified date */
@@ -1717,9 +1824,14 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     {
 	lmod = date;
 	lmods->value = dates->value;
+	Explain0("Last modified is in the future, replacing with now");
     }
 /* if the response did not contain the header, then use the cached version */
-    if (lmod == -1 && c->fp != NULL) lmod = c->lmod;
+    if (lmod == -1 && c->fp != NULL)
+	{
+	lmod = c->lmod;
+	Explain0("Reusing cached last modified");
+	}
 
 /* we now need to calculate the expire data for the object. */
     if (expire == NULL && c->fp != NULL)  /* no expiry data sent in response */
@@ -1734,6 +1846,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
  *   else
  *      expire date = now + defaultexpire
  */
+    Explain1("Expiry date is %ld",expc);
     if (expc == -1)
     {
 	if (lmod != -1)
@@ -1744,6 +1857,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    expc = now + (int)x;
 	} else
 	    expc = now + conf->cache.defaultexpire;
+	Explain1("Expiry date calculated %ld",expc);
     }
 
 /* get the content-length header */
@@ -1781,10 +1895,13 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 			       "proxy: error updating cache file", r->server);
 	    }
 	    pclosef(r->pool, c->fp->fd);
+	    Explain0("Remote document not modified, use local copy");
+	    /* CHECKME: Is this right? Shouldn't we check IMS again here? */
 	    return USE_LOCAL_COPY;
 	} else
 	{
 /* return the whole document */
+	    Explain0("Remote document updated, sending");
 	    r->status_line = strchr(c->resp_line, ' ') + 1;
 	    r->status = c->status;
 	    soft_timeout ("send", r);
@@ -1822,14 +1939,17 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 
 /* open temporary file */
 #define TMPFILESTR	"/#tmpXXXXXX"
-    c->tempfile=palloc(r->pool,strlen(c->filename)+sizeof TMPFILESTR-1);
-    strcpy(c->tempfile,c->filename);
-    p = strrchr(c->tempfile, '/');
-    if (p == NULL) return DECLINED;
-    strcpy(p, TMPFILESTR);
+    c->tempfile=palloc(r->pool,strlen(conf->cache.root)+sizeof TMPFILESTR-1);
+    strcpy(c->tempfile,conf->cache.root);
+//    p = strrchr(c->tempfile, '/');
+//    if (p == NULL) return DECLINED;
+//    strcpy(p, TMPFILESTR);
+    strcat(c->tempfile,TMPFILESTR);
 #undef TMPFILESTR
     p = mktemp(c->tempfile);
     if (p == NULL) return DECLINED;
+
+    Explain1("Create temporary file %s",c->tempfile);
 
     i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL, 0622);
     if (i == -1)
@@ -1910,8 +2030,26 @@ cache_tidy(struct cache_req *c)
     {
 	log_uerror("unlink", c->filename,
 		   "proxy: error deleting old cache file", s);
-    } else if (link(c->tempfile, c->filename) == -1)
-	log_uerror("link", c->filename, "proxy: error linking cache file", s);
+    } else
+	{
+	char *p;
+	proxy_server_conf *conf=
+	  (proxy_server_conf *)get_module_config(s->module_config,&proxy_module);
+
+	for(p=c->filename+strlen(conf->cache.root)+1 ; ; )
+	    {
+	    p=strchr(p,'/');
+	    if(!p)
+		break;
+	    *p='\0';
+	    if(mkdir(c->filename,S_IREAD|S_IWRITE|S_IEXEC) < 0 && errno != EEXIST)
+		log_uerror("mkdir",c->filename,"proxy: error creating cache directory",s);
+	    *p='/';
+	    ++p;
+	    }
+	if (link(c->tempfile, c->filename) == -1)
+	    log_uerror("link", c->filename, "proxy: error linking cache file", s);
+	}
 
     if (unlink(c->tempfile) == -1)
 	log_uerror("unlink", c->tempfile, "proxy: error deleting temp file",s);
@@ -2684,6 +2822,9 @@ create_proxy_config(pool *p, server_rec *s)
   ps->cache.defaultexpire = DEFAULT_CACHE_EXPIRE;
   ps->cache.lmfactor = DEFAULT_CACHE_LMFACTOR;
   ps->cache.gcinterval = -1;
+  /* at these levels, the cache can have 2^18 directories (256,000)  */
+  ps->cache.dirlevels=3;
+  ps->cache.dirlength=1;
 
   return ps;
 }
@@ -2825,6 +2966,30 @@ set_cache_gcint(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
+static char *
+set_cache_dirlevels(cmd_parms *parms, char *struct_ptr, char *arg)
+{
+    proxy_server_conf *psf =
+	get_module_config (parms->server->module_config, &proxy_module);
+    int val;
+
+    if (sscanf(arg, "%d", &val) != 1) return "Value must be an integer";
+    psf->cache.dirlevels = val;
+    return NULL;
+}
+
+static char *
+set_cache_dirlength(cmd_parms *parms, char *struct_ptr, char *arg)
+{
+    proxy_server_conf *psf =
+	get_module_config (parms->server->module_config, &proxy_module);
+    int val;
+
+    if (sscanf(arg, "%d", &val) != 1) return "Value must be an integer";
+    psf->cache.dirlength = val;
+    return NULL;
+}
+
 static command_rec proxy_cmds[] = {
 { "ProxyRequests", set_proxy_req, NULL, RSRC_CONF, FLAG,
   "on if the true proxy requests should be accepted"},
@@ -2844,6 +3009,10 @@ static command_rec proxy_cmds[] = {
       "The factor used to estimate Expires date from LastModified date"},
 { "CacheGcInterval", set_cache_gcint, NULL, RSRC_CONF, TAKE1,
       "The interval between garbage collections, in hours"},
+{ "CacheDirLevels", set_cache_dirlevels, NULL, RSRC_CONF, TAKE1,
+    "The number of levels of subdirectories in the cache" },
+{ "CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF, TAKE1,
+    "The number of characters in subdirectory names" },
 { NULL }
 };
 
