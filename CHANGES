@@ -162,9 +162,6 @@ Changes with Apache 2.1.1
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [André Malo]
 
-  *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
-     library handles special characters. PR 24437 [Jess Holle]
-
   *) Unix MPMs: Shut down the server more quickly when child processes are
      slow to exit.  [Joe Orton, Jeff Trawick]
 
@@ -563,6 +560,9 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
+     library handles special characters. PR 24437 [Jess Holle]
 
   *) Win32 MPM: Correct typo in debugging output.  [William Rowe]
 
