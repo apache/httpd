@@ -119,11 +119,12 @@ struct worker_score {
 typedef struct {
     int             server_limit;
     int             thread_limit;
-    int             lb_limit;
     ap_scoreboard_e sb_type;
-    ap_generation_t running_generation;	/* the generation of children which
-                                         * should still be serving requests. */
+    ap_generation_t running_generation; /* the generation of children which
+                                         * should still be serving requests.
+                                         */
     apr_time_t restart_time;
+    int             lb_limit;
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
