@@ -209,6 +209,8 @@
  *                        to use a stronger algorithm.
  * 19990108.4           - add ap_size_list_item(), ap_get_list_item(), and
  *                        ap_find_list_item()
+ * 19990108.5           - added ap_sub_req_method_uri() and added const to the
+ *                        definition of method in request_rec.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -216,7 +218,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

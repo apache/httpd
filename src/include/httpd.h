@@ -668,7 +668,7 @@ struct request_rec {
      * look, but don't touch.
      */
 
-    char *method;		/* GET, HEAD, POST, etc. */
+    const char *method;		/* GET, HEAD, POST, etc. */
     int method_number;		/* M_GET, M_POST, etc. */
 
     /*

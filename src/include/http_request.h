@@ -86,6 +86,9 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                              const request_rec *r);
 API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r);
+API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
+                                                const char *new_file,
+                                                const request_rec *r);
 API_EXPORT(int) ap_run_sub_req(request_rec *r);
 API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
 

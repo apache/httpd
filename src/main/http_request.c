@@ -718,8 +718,9 @@ static request_rec *make_sub_request(const request_rec *r)
     return rr;
 }
 
-API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
-                                             const request_rec *r)
+API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
+                                                const char *new_file,
+                                                const request_rec *r)
 {
     request_rec *rnew;
     int res;
@@ -735,6 +736,10 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
     rnew->per_dir_config = r->server->lookup_defaults;
 
     ap_set_sub_req_protocol(rnew, r);
+
+    /* would be nicer to pass "method" to ap_set_sub_req_protocol */
+    rnew->method = method;
+    rnew->method_number = ap_method_number_of(method);
 
     if (new_file[0] == '/')
         ap_parse_uri(rnew, new_file);
@@ -794,6 +799,12 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
         rnew->status = res;
     }
     return rnew;
+}
+
+API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
+                                                const request_rec *r)
+{
+    return ap_sub_req_method_uri("GET", new_file, r);
 }
 
 API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,

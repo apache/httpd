@@ -326,6 +326,7 @@ ap_strcasecmp_match
 ap_strcmp_match
 ap_sub_req_lookup_file
 ap_sub_req_lookup_uri
+ap_sub_req_method_uri
 ap_suexec_enabled
 ap_sync_scoreboard_image
 ap_table_add

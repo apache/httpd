@@ -343,4 +343,5 @@ EXPORTS
 	ap_group_id   @336
 	ap_standalone   @337
 	ap_server_confname   @338
+	ap_sub_req_method_uri   @339
 
