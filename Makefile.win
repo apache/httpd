@@ -52,6 +52,7 @@ SSLBIN=out32dll.dbg
 !ELSE
 SSLBIN=out32dll
 !ENDIF
+
 _tryssl:
 !IF EXIST("modules\ssl\mod_ssl.mak")
 	cd modules\ssl
@@ -62,15 +63,41 @@ _tryssl:
 	cd ..
 !ELSE
 	msdev Apache.dsw /USEENV /MAKE \
-		"mod_ssl - Win32 $(LONG)"\
+		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
+#     NOT EXIST("srclib\openssl")
+
 _tryssl:
 	echo mod_ssl and ab/ssl will not build without openssl 
 	echo installed in $(INSTDIR)\srclib\openssl.  They must be precompiled 
-	echo using the ms/ntdll.mak file.  See INSTALL.W32 for details.
+	echo using the ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  
+	echo The most recent version confirmed to build with mod_ssl and ab
+	echo was 0.9.6c available from http://www.openssl.org/
+!ENDIF
+
+!IF EXIST("srclib\zlib")
+
+_tryzlib:
+!IF EXIST("modules\experimental\mod_deflate.mak")
+	cd modules\experimental
+	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_deflate.so
+	cd ..\..
+!ELSE
+	msdev Apache.dsw /USEENV /MAKE \
+		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\zlib")
+
+_tryzlib:
+	echo mod_deflate will not build without zlib installed in 
+	echo $(INSTDIR)\srclib\zlib.  
+	echo Zlib needs not be built, we compile the sources directly.
+
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
@@ -180,6 +207,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!IF EXIST("srclib\zlib")
+	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
 	cd ..\..
 	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -226,7 +257,7 @@ _build:
 	cd ..\..
 !IF EXIST("srclib\openssl")
 	cd modules\ssl
-	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET) .\$(LONG)\mod_ssl.so
 	cd ..\..
 	cd support
 	 $(MAKE) $(MAKEOPT) -f abs.mak             CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -263,6 +294,10 @@ _build:
 		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
+!IF EXIST("srclib\zlib")
+	msdev Apache.dsw /USEENV /MAKE \
+		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
 
 !ENDIF
 
@@ -286,19 +321,7 @@ _install:
 	copy CHANGES "$(INSTDIR)\CHANGES.txt" <.y
 	copy INSTALL "$(INSTDIR)\INSTALL.txt" <.y
 	copy LICENSE "$(INSTDIR)\LICENSE.txt" <.y
-!IF EXIST("srclib\openssl")
-	copy << + README "$(INSTDIR)\README.txt" <.y
-
-  This product includes cryptographic software written by
-  Eric Young (eay@cryptsoft.com).  This product includes software written
-  by Tim Hudson (tjh@cryptsoft.com).  This product includes software
-  developed by the OpenSSL Project for use in the OpenSSL Toolkit.
-  (http://www.openssl.org/)
-<<
-!ELSE
-#	--- just a vanilla copy, in this case.
 	copy README "$(INSTDIR)\README.txt" <.y
-!ENDIF
 	copy $(LONG)\Apache.exe "$(INSTDIR)\bin" <.y
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin" <.y
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin" <.y
@@ -315,6 +338,7 @@ _install:
 	copy modules\experimental\$(LONG)\mod_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules" <.y
@@ -345,14 +369,29 @@ _install:
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.so "$(INSTDIR)\modules" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.so "$(INSTDIR)\modules" <.y
 !IF EXIST("srclib\openssl")
-	-copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules" <.y
-	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin" <.y
-	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin" <.y
-	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin" <.y
-	-copy srclib\openssl\LICENSE "$(INSTDIR)\OPENSSL-LICENSE.txt" <.y
-	-copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
+	copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules" <.y
+	copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin" <.y
+	copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin" <.y
+	copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin" <.y
+	type << >> "$(INSTDIR)\README.txt"
 
- Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
+  This binary distribution includes cryptographic software written by
+  Eric Young (eay@cryptsoft.com), software written by Tim Hudson 
+  (tjh@cryptsoft.com), and software developed by the OpenSSL Project 
+  for use in the OpenSSL Toolkit <http://www.openssl.org/>.
+<<
+	-awk -f <<script.awk < "srclib\openssl\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
+{   print "";
+    print "For the libeay32.dll, ssleay32.dll and certtool.exe components:";
+    print "";
+    while ( getline > 0 ) {
+	print $$0;
+   }
+}
+<<
+	copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
+
+ Apache HTTP Server 2.0 Limited OpenSSL Distribution
 
  This binary distribution includes the minimal components of OpenSSL required
  to support mod_ssl for Apache HTTP Server version 2.0 (details are listed 
@@ -366,9 +405,9 @@ _install:
 
 --------------------------------------------------------------------------------
 <<
-	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt" <.y
+	copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt" <.y
 
- Apache HTTP Server 2.0 Limited OpenSSL Distribution  19 Aug 2001
+ Apache HTTP Server 2.0 Limited OpenSSL Distribution
 
  This binary installation of OpenSSL is a limited distribution of the documents
  OPENSSL-LICENSE.txt, OPENSSL-NEWS.txt and OPENSSL-README.txt, and the binaries
@@ -378,9 +417,10 @@ _install:
    openssl.exe
 
  These are the minimal libraries and tools required to use mod_ssl as 
- distributed with Apache HTTP Server version 2.0.  No library files, headers
- or sources are distributed with this binary distribution.  Please refer to the
- <http://www.openssl.org/> site for complete source or binary distributions.
+ distributed with Apache HTTP Server version 2.0.  No library link files, 
+ headers or sources are distributed with this binary distribution.  Please 
+ refer to the <http://www.openssl.org/> site for complete source or binary 
+ distributions.
 
  These OpenSSL binaries were built for distribution from the U.S. without 
  support for the patented encryption methods IDEA, MDC-2 or RC5.
@@ -389,15 +429,37 @@ _install:
  and development of the mod_ssl module.  We cannot provide support assistance
  for using or configuring the OpenSSL package or these modules.  Please refer
  all installation and configuration questions to the appropriate forum,
- such as the user supported newsgroups comp.infosystems.www.servers.unix or
- comp.infosystems.www.servers.ms-windows, or see the support options
- listed at <http://www.openssl.org/support/>.
+ such as the user supported lists, <http://httpd.apache.org/userslist.html> 
+ the Apache HTTP Server user's list or <http://www.openssl.org/support/> the
+ OpenSSL support page.
 
 --------------------------------------------------------------------------------
 <<
 	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe" <.y
 !ELSE
 	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin" <.y
+!ENDIF
+!IF EXIST("srclib\zlib")
+	type << >> "$(INSTDIR)\README.txt"
+
+  This binary distribution of mod_deflate.so includes zlib compression code
+  <http://www.gzip.org/zlib/> written by Jean-loup Gailly (jloup@gzip.org)
+  and Mark Adler (madler@alumni.caltech.edu) .
+<<
+	-awk -f <<script.awk < "srclib\zlib\README" >> "$(INSTDIR)\LICENSE.txt"
+{  while ( getline > 0 ) {
+      if ( $$0 ~ /Copyright notice:/ ) {
+	print "";
+	print "For the mod_deflate zlib compression component:";
+        while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
+	  print $$0;
+        }
+        exit 0;
+      }
+   }
+}
+<<
+	copy modules\experimental\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
 !ENDIF
 	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin" <.y
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin" <.y
@@ -483,7 +545,7 @@ _install:
 <<
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
 	    copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
-	awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
+	-awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
 	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
       }
