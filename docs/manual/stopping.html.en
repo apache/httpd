@@ -90,10 +90,10 @@
     it with a child from the new <em>generation</em> of the
     configuration, which begins serving new requests immediately.</p>
 
-    <div class="note">On certain platforms that do not allow USR1 to be used for a
-    graceful restart, an alternative signal may be used (such as
-    WINCH). The command <code>apachectl graceful</code> will send the
-    right signal for your platform.</div>
+    <div class="note">On certain platforms that do not allow <code>USR1</code> to
+    be used for a graceful restart, an alternative signal may be used (such
+    as <code>WINCH</code>). The command <code>apachectl graceful</code>
+    will send the right signal for your platform.</div>
 
     <p>This code is designed to always respect the process control
     directive of the MPMs, so the number of processes and threads
@@ -104,7 +104,7 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    StartServers parameter.</p>
+    <code class="directive">StartServers</code> parameter.</p>
 
     <p>Users of the <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are <strong>not</strong>
@@ -141,9 +141,9 @@
     command line argument (see <a href="programs/httpd.html">httpd</a>). This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
-    can try starting httpd as a non-root user. If there are no
+    can try starting <code>httpd</code> as a non-root user. If there are no
     errors it will attempt to open its sockets and logs and fail
-    because it's not root (or because the currently running httpd
+    because it's not root (or because the currently running <code>httpd</code>
     already has those ports bound). If it fails for any other
     reason then it's probably a config file error and the error
     should be fixed before issuing the graceful restart.</div>
