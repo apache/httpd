@@ -1485,6 +1485,9 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	    curblocks++;
 	}
     }
+
+    closedir(dir);
+
     return nfiles;
 
 }
