@@ -663,12 +663,14 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-                    apr_os_sock_get(&sockdes, lr->sd);
-		    if (FD_ISSET(sockdes, &main_fds))
-			goto got_listener;
-		    lr = lr->next;
-		    if (!lr)
-			lr = ap_listeners;
+                    if (lr->active) {
+                        apr_os_sock_get(&sockdes, lr->sd);
+		        if (FD_ISSET(sockdes, &main_fds))
+			    goto got_listener;
+                        lr = lr->next;
+                        if (!lr)
+                            lr = ap_listeners;
+                    }
 		}
 		while (lr != first_lr);
 		/* FIXME: if we get here, something bad has happened, and we're
