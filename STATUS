@@ -25,6 +25,12 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * [PATCH] PR2356 - SSI exec 
+      Message-ID: <5040300017947935000002L052*@MHS> 
+      This is an update of a patch I sent in earlier.  There are 13 new
+      lines of code to detect and handle shellcmd.  COMMAND.COM is used
+      to exec the script on Win95, CMD.EXE on NT.
+
     * [PATCH] PR #2355 and very minor security hole fix 
       Message-ID: <19980717183717.A16507@raleigh.ibm.com>
       With this patch, Apache uses ap_sub_req_lookup_file to get the 
