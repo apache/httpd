@@ -17,10 +17,10 @@ OBJS= \
 all: @@Configuration@@ $(TARGET)
 
 @@Configuration@@: Configuration.tmpl
-	@echo "@@Configuration@@ older than Configuration.tmpl, or doesn't exist."
-	@echo "Consider copying Configuration.tmpl to @@Configuration@@, editing and rerunning"
-	@echo "Configure."
-	@echo "If not, you will at least have to touch @@Configuration@@."
+	@echo "++ File '@@Configuration@@' older than 'Configuration.tmpl',"
+	@echo "++ or still doesn't exist. Please consider copying 'Configuration.tmpl'"
+	@echo "++ to '@@Configuration@@', editing and rerunning 'Configure'."
+	@echo "++ If not, you will at least have to touch '@@Configuration@@'."
 	@false
 
 $(TARGET): $(SUBTARGET)
@@ -86,6 +86,10 @@ distclean:
 	-rm -f regex/Makefile
 	-rm -f Makefile.config
 	-rm -f Makefile
+
+install:
+	@echo "++ Sorry, no installation procedure available at this level."
+	@echo "++ Go to the parent directory for an 'install' target."
 
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
