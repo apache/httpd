@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.5.2.10 $ -->
+<!-- $Revision: 1.5.2.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -72,9 +72,8 @@
     browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a> (fails when used with a query string - see the
-    <directive module="mod_auth_digest">AuthDigestEnableQueryStringHack
-    </directive> option below for a workaround), <a
+    Explorer</a> (fails when used with a query string - see "<a href="#msie"
+    >Working with MS Internet Explorer</a>" below for a workaround), <a
     href="http://www.w3.org/Amaya/">Amaya</a>, <a
     href="http://www.mozilla.org">Mozilla</a> and <a
     href="http://channels.netscape.com/ns/browsers/download.jsp"
@@ -97,9 +96,9 @@
     limitation.
     </p>
 
-    <p>Apache also provides a workaround in the
+    <p>Since version 2.0.51 Apache also provides a workaround in the
     <code>AuthDigestEnableQueryStringHack</code> environment variable.
-    If <code>AuthDigestEnableQueryStringHack</code> is true for the
+    If <code>AuthDigestEnableQueryStringHack</code> is set for the
     request, Apache will take steps to work around the MSIE bug and
     remove the request URI from the digest comparison.  Using this
     method would look similar to the following.</p>
