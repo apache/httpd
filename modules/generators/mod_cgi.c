@@ -705,7 +705,6 @@ static int cgi_handler(request_rec *r)
 	const char *location;
 	char sbuf[MAX_STRING_LEN];
 	int ret;
-        conn_rec *c = r->connection;
 
         bb = apr_brigade_create(r->pool);
         b = apr_bucket_pipe_create(script_in);
@@ -756,7 +755,6 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
-        conn_rec *c = r->connection;
         struct ap_filter_t *cur;
         
         /* get rid of all filters up through protocol...  since we
