@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_SCOREBOARD_H
-#define _APACHE_SCOREBOARD_H
+#ifndef APACHE_SCOREBOARD_H
+#define APACHE_SCOREBOARD_H
 
 #ifndef WIN32
 #include <sys/times.h>
@@ -159,4 +159,4 @@ API_VAR_EXPORT extern scoreboard *scoreboard_image;
 #define START_PREQUEST 1
 #define STOP_PREQUEST  2
 
-#endif	/* !_APACHE_SCOREBOARD_H */
+#endif	/* !APACHE_SCOREBOARD_H */

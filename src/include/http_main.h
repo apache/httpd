@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_HTTP_MAIN_H
-#define _APACHE_HTTP_MAIN_H
+#ifndef APACHE_HTTP_MAIN_H
+#define APACHE_HTTP_MAIN_H
 
 /*
  * Routines in http_main.c which other code --- in particular modules ---
@@ -144,4 +144,4 @@ API_EXPORT(void) unregister_other_child(void *data);
 
 #endif
 
-#endif	/* !_APACHE_HTTP_MAIN_H */
+#endif	/* !APACHE_HTTP_MAIN_H */

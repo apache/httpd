@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_HTTPD_H
-#define _APACHE_HTTPD_H
+#ifndef APACHE_HTTPD_H
+#define APACHE_HTTPD_H
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -946,4 +946,4 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
-#endif	/* !_APACHE_HTTPD_H */
+#endif	/* !APACHE_HTTPD_H */

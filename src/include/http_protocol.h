@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_HTTP_PROTOCOL_H
-#define _APACHE_HTTP_PROTOCOL_H
+#ifndef APACHE_HTTP_PROTOCOL_H
+#define APACHE_HTTP_PROTOCOL_H
 
 /*
  * Prototypes for routines which either talk directly back to the user,
@@ -204,4 +204,4 @@ void finalize_sub_req_protocol(request_rec *sub_r);
 
 void parse_uri(request_rec *r, const char *uri);
 
-#endif	/* !_APACHE_HTTP_PROTOCOL_H */
+#endif	/* !APACHE_HTTP_PROTOCOL_H */

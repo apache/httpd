@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_HTTP_CORE_H
-#define _APACHE_HTTP_CORE_H
+#ifndef APACHE_HTTP_CORE_H
+#define APACHE_HTTP_CORE_H
 
 /*****************************************************************
  *
@@ -221,4 +221,4 @@ typedef struct {
 
 #endif
 
-#endif	/* !_APACHE_HTTP_CORE_H */
+#endif	/* !APACHE_HTTP_CORE_H */

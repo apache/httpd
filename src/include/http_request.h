@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_HTTP_REQUEST_H
-#define _APACHE_HTTP_REQUEST_H
+#ifndef APACHE_HTTP_REQUEST_H
+#define APACHE_HTTP_REQUEST_H
 
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
@@ -100,4 +100,4 @@ int default_handler(request_rec *);
 void die(int type, request_rec *r);
 #endif
 
-#endif	/* !_APACHE_HTTP_REQUEST_H */
+#endif	/* !APACHE_HTTP_REQUEST_H */

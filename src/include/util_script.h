@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef _APACHE_UTIL_SCRIPT_H
-#define _APACHE_UTIL_SCRIPT_H
+#ifndef APACHE_UTIL_SCRIPT_H
+#define APACHE_UTIL_SCRIPT_H
 
 #ifndef APACHE_ARG_MAX
 #ifdef _POSIX_ARG_MAX
@@ -74,4 +74,4 @@ API_EXPORT(void) send_size(size_t size, request_rec *r);
 API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env,
                           int shellcmd);
 
-#endif	/* !_APACHE_UTIL_SCRIPT_H */
+#endif	/* !APACHE_UTIL_SCRIPT_H */
