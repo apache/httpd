@@ -64,8 +64,6 @@
 #include "http_config.h"
 #include "http_vhost.h"
 
-#include <poll.h>
-
 /* TODO: re-implement the lingering close stuff */
 #define NO_LINGCLOSE
 
