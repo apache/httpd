@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/17 00:58:32 $]
+Last modified at [$Date: 2001/10/17 14:50:48 $]
 
 Release:
 
@@ -35,7 +35,7 @@ on related projects:
 RELEASE SHOWSTOPPERS:
 
     * The recent split of proxy.conf and ssl.conf, good or bad?
-        Split ssl.conf & proxy.conf: +1 OtherBill, Aaron
+        Split ssl.conf & proxy.conf: +1 OtherBill, Aaron, Ken
         Split out ssl.conf only:     +1 Ryan, BrianH
         Everything in httpd.conf:    +1 Cliff, Justin
 
