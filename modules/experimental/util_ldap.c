@@ -1216,7 +1216,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
      */
     {
         apr_ldap_err_t *result = NULL;
-        apr_ldap_info(&(result), p);
+        apr_ldap_info(p, &(result));
         if (result != NULL) {
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, result->reason);
         }
