@@ -148,6 +148,9 @@ typedef struct parse_node {
     token_t token;
     int value;
     int done;
+#ifdef DEBUG_INCLUDE
+    int dump_done;
+#endif
 } parse_node_t;
 
 typedef enum {
@@ -255,6 +258,19 @@ struct ssi_internal_ctx {
  */
 
 #ifdef DEBUG_INCLUDE
+
+#define TYPE_TOKEN(token, ttype) do { \
+    (token)->type = ttype;            \
+    (token)->s = #ttype;              \
+} while(0)
+
+#define CREATE_NODE(ctx, name) do {                       \
+    (name) = apr_palloc((ctx)->dpool, sizeof(*(name)));   \
+    (name)->parent = (name)->left = (name)->right = NULL; \
+    (name)->done = 0;                                     \
+    (name)->dump_done = 0;                                \
+} while(0)
+
 static void debug_printf(include_ctx_t *ctx, const char *fmt, ...)
 {
     va_list ap;
@@ -269,17 +285,138 @@ static void debug_printf(include_ctx_t *ctx, const char *fmt, ...)
                             ctx->intern->debug.f->c->bucket_alloc));
 }
 
+#define DUMP__CHILD(ctx, is, node, child) if (1) {                           \
+    parse_node_t *d__c = node->child;                                        \
+    if (d__c) {                                                              \
+        if (!d__c->dump_done) {                                              \
+            if (d__c->parent != node) {                                      \
+                debug_printf(ctx, "!!! Parse tree is not consistent !!!\n"); \
+                if (!d__c->parent) {                                         \
+                    debug_printf(ctx, "Parent of " #child " child node is "  \
+                                 "NULL.\n");                                 \
+                }                                                            \
+                else {                                                       \
+                    debug_printf(ctx, "Parent of " #child " child node "     \
+                                 "points to another node (of type %s)!\n",   \
+                                 d__c->parent->token.s);                     \
+                }                                                            \
+                return;                                                      \
+            }                                                                \
+            node = d__c;                                                     \
+            continue;                                                        \
+        }                                                                    \
+    }                                                                        \
+    else {                                                                   \
+        debug_printf(ctx, "%s(missing)\n", is);                              \
+    }                                                                        \
+}
+
+static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
+{
+    parse_node_t *current;
+    char *is;
+
+    if (!root) {
+        debug_printf(ctx, "     -- Parse Tree empty --\n\n");
+        return;
+    }
+
+    debug_printf(ctx, "     ----- Parse Tree -----\n");
+    current = root;
+    is = "     ";
+
+    while (current) {
+        switch (current->token.type) {
+        case TOKEN_STRING:
+        case TOKEN_RE:
+            debug_printf(ctx, "%s%s (%s)\n", is, current->token.s,
+                         current->token.value);
+            current->dump_done = 1;
+            current = current->parent;
+            continue;
+
+        case TOKEN_AND:
+        case TOKEN_OR:
+        case TOKEN_EQ:
+        case TOKEN_NE:
+        case TOKEN_GE:
+        case TOKEN_LE:
+        case TOKEN_GT:
+        case TOKEN_LT:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%s%s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, left)
+            DUMP__CHILD(ctx, is, current, right)
+
+            if ((!current->left || current->left->dump_done) &&
+                (!current->right || current->right->dump_done)) {
+
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->left) current->left->dump_done = 0;
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+
+        case TOKEN_NOT:
+        case TOKEN_GROUP:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%s%s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, right)
+
+            if (!current->right || current->right->dump_done) {
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+
+        case TOKEN_RBRACE:
+        case TOKEN_LBRACE:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%sunmatched %s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, right)
+
+            if (!current->right || current->right->dump_done) {
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+        }
+    }
+
+    /* it is possible to call this function within the parser loop, to see
+     * how the tree is built. That way, we must cleanup after us to dump
+     * always the whole tree
+     */
+    root->dump_done = 0;
+    if (root->left) root->left->dump_done = 0;
+    if (root->right) root->right->dump_done = 0;
+
+    debug_printf(ctx, "     --- End Parse Tree ---\n\n");
+
+    return;
+}
+
 #define DEBUG_INIT(ctx, filter, brigade) do { \
     (ctx)->intern->debug.f = filter;          \
     (ctx)->intern->debug.bb = brigade;        \
 } while(0)
 
 #define DEBUG_PRINTF(arg) debug_printf arg
-
-#define TYPE_TOKEN(token, ttype) do { \
-    (token)->type = ttype;            \
-    (token)->s = #ttype;              \
-} while(0)
 
 #define DEBUG_DUMP_TOKEN(ctx, token) do {                                     \
     token_t *d__t = (token);                                                  \
@@ -302,14 +439,24 @@ static void debug_printf(include_ctx_t *ctx, const char *fmt, ...)
     DEBUG_PRINTF(((ctx), "**** %s cond status=\"%c\"\n", (text),   \
                   ((ctx)->flags & SSI_FLAG_COND_TRUE) ? '1' : '0'))
 
+#define DEBUG_DUMP_TREE(ctx, root) debug_dump_tree(ctx, root)
+
 #else /* DEBUG_INCLUDE */
 
 #define TYPE_TOKEN(token, ttype) (token)->type = ttype
+
+#define CREATE_NODE(ctx, name) do {                       \
+    (name) = apr_palloc((ctx)->dpool, sizeof(*(name)));   \
+    (name)->parent = (name)->left = (name)->right = NULL; \
+    (name)->done = 0;                                     \
+} while(0)
+
 #define DEBUG_INIT(ctx, f, bb)
 #define DEBUG_PRINTF(arg)
 #define DEBUG_DUMP_TOKEN(ctx, token)
 #define DEBUG_DUMP_UNMATCHED(ctx, unmatched)
 #define DEBUG_DUMP_COND(ctx, text)
+#define DEBUG_DUMP_TREE(ctx, root)
 
 #endif /* !DEBUG_INCLUDE */
 
@@ -1009,9 +1156,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
     /* Create Parse Tree */
     while (1) {
-        new = apr_palloc(ctx->dpool, sizeof(*new));
-        new->parent = new->left = new->right = NULL;
-        new->done = 0;
+        DEBUG_DUMP_TREE(ctx, root);
+        CREATE_NODE(ctx, new);
 
         was_unmatched = get_ptoken(ctx->dpool, &parse, &new->token);
         if (!parse) {
