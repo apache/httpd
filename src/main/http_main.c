@@ -83,6 +83,7 @@
 
 #ifdef SHARED_CORE
 #define REALMAIN ap_main
+int ap_main(int argc, char *argv[]);
 #else
 #define REALMAIN main
 #endif
