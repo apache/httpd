@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) ab: Overlong credentials given via command line no longer clobber
+     the buffer.  [André Malo]
+
   *) mod_deflate: Don't attempt to hold all of the response until we're
      done.  [Justin Erenkrantz]
 

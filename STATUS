@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/30 20:33:55 $]
+Last modified at [$Date: 2003/07/31 20:23:20 $]
 
 Release:
 
@@ -264,10 +264,6 @@ PATCHES TO PORT FROM 2.1
       jerenkrantz says: We're doing 3 strlen's on the same value, can we please
                         clean that up?
             nd replies: of course ..., 1.168 does.
-      +1: nd, jerenkrantz, trawick
-
-    * ab: reject overlong credentials from command line (2.0 + 1.3)
-        support/ab.c: r1.127
       +1: nd, jerenkrantz, trawick
 
     * ab: Handle conditions where connect() on non-blocking socket
