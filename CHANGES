@@ -363,6 +363,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.50
 
+  *) Ensure that lines in the request which are too long are 
+     properly terminated before logging.
+     [Tsurutani Naoki <turutani scphys.kyoto-u.ac.jp>]
+
   *) Update the bind credentials for the cached LDAP connection to 
      reflect the last bind.  This prevents util_ldap from creating 
      unnecessary connections rather than reusing cached connections.
