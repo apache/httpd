@@ -280,6 +280,18 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
+    alpha-*-linux2)
+	DEF_WANTHSREGEX=yes
+	OS='Linux'
+	CFLAGS="$CFLAGS -DLINUX=2"
+	LIBS="$LIBS -lcrypt"
+	;;
+    sparc-*-linux2)
+	DEF_WANTHSREGEX=yes
+	OS='Linux'
+	CFLAGS="$CFLAGS -DLINUX=2"
+	LIBS="$LIBS -lm"
+	;;
     *-linux2)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
