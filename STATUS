@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 10:43:43 $]
+Last modified at [$Date: 2002/07/24 10:44:48 $]
 
 Release:
 
@@ -86,7 +86,7 @@ CURRENT VOTES:
       httpd.sh should be the wrapper for httpd which sources envvars
       and allows any options to be passed through
 
-        +1:  trawick, gregames
+        +1:  gregames
       -0.5:  ianh - a wrapper which calls another wrapper which then sources
                     envvars ?? i'm not sure why calling apachectl -V is a bad
                     thing.
