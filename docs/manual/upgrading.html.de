@@ -16,8 +16,8 @@
       <li>Der Apache benutzt jetzt ein <code>autoconf</code>- und
       <code>libtool</code>-System zur <a href="install.html">Konfiguration des
       Erstellungsverfahrens</a>. Die Verwendung dieses Systems ist
-      &auml;hnlich, aber nicht identisch dem APACI-System des Apache 1.3.
-      </li>
+      &auml;hnlich, aber nicht identisch nit dem APACI-System des
+	  Apache 1.3.</li>
 
       <li>Zus&auml;tzlich zu der &uuml;blichen Auswahl von Modulen, die
       kompiliert werden sollen, wurde der Hauptteil der
@@ -39,7 +39,7 @@
       umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
       der bedeutendsten &Auml;nderungen ist die Platzierung der
       Proxy-Zugriffskontrolle innerhalb eines &lt;Proxy&gt;-Blocks,
-      statt innherhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
+      statt innerhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
 
       <li>Die Behandlung von PATH_INFO (hinter dem tats&auml;chlichen
       Dateinamen angef&uuml;gte Pfadangaben) wurde f&uuml;r einige Module
@@ -64,7 +64,7 @@
         Die <a href="./mod/core.html#errordocument" class="directive"><code class="directive">ErrorDocument</code></a>-Direktive
         verwendet kein Anf&uuml;hrungszeichen mehr am Anfang des
         Arguments, um eine
-        Textnachricht anzuzeigen. Statt dessen sollten Sie die
+        Textnachricht anzuzeigen. Stattdessen sollten Sie die
         Nachricht in doppelte Anf&uuml;hrungszeichen einschlie&szlig;en.
         Zum Beispiel sollten existierende Angaben wie
 
@@ -118,7 +118,7 @@
       Direktiven <code>AgentLog</code>, <code>RefererLog</code> und
       <code>RefererIgnore</code> bereitgestellt hatten, wurden entfernt.
       Durch Verwendung der Direktive <a href="./mod/mod_log_config.html#customlog" class="directive"><code class="directive">CustomLog</code></a> aus mod_log_config
-      sind die Agent- und Refererlogs auch weiterhin verf&uuml;gbar .</li>
+      sind die Agent- und Refererlogs auch weiterhin verf&uuml;gbar.</li>
 
       <li>Die Direktiven <code>AddModule</code> und
       <code>ClearModuleList</code> sind entfallen.
@@ -148,7 +148,7 @@
       Status hatte, wurde durch das Modul mod_file_cache ersetzt.</li>
 
       <li>Die Distribution wurde komplett reorganisiert und enth&auml;lt kein
-      unabh&auml;ngiges <code>src</code>-Verzeichnis mehr. Statt dessen wurden
+      unabh&auml;ngiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
       die Quellcodes logisch unterhalb des Hauptverzeichnisses der
       Distribution angeordnet. Installationen des kompilierten Servers
       sollten in ein separates Verzeichnis erfolgen.</li>
