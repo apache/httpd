@@ -660,7 +660,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
         port = default_port(r);
     }
 
-    /* Make sure ports patch */
+    /* Make sure ports match */
     if (port != r->server->port)
         return uri;
 
