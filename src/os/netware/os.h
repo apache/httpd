@@ -113,7 +113,7 @@ typedef int tid_t;
 
 #define crypt(buf,salt)	    (buf)
 #define sleep(t) delay(t*1000)
-#define getpid GetThreadID
+#define getpid() ((pid_t)GetThreadGroupID())
 #define gettid() ((tid_t)GetThreadID())
 /* Netware doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
