@@ -474,8 +474,12 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    r->content_type = ap_pstrdup(r->pool, l);
 	    ap_str_tolower(r->content_type);
 	}
+	/*
+	 * If the script returned a specific status, that's what
+	 * we'll use - otherwise we assume 200 OK.
+	 */
 	else if (!strcasecmp(w, "Status")) {
-	    sscanf(l, "%d", &r->status);
+	    r->status = cgi_status = atoi(l);
 	    r->status_line = ap_pstrdup(r->pool, l);
 	}
 	else if (!strcasecmp(w, "Location")) {
@@ -497,15 +501,6 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_update_mtime(r, mtime);
 	    ap_set_last_modified(r);
 	}
-	/*
-	 * If the script returned a specific status, that's what
-	 * we'll use - otherwise we assume 200 OK.
-	 */
-	else if (!strcasecmp(w, "Status")) {
-	    ap_table_set(r->headers_out, w, l);
-	    cgi_status = atoi(l);
-	}
-
 	/* The HTTP specification says that it is legal to merge duplicate
 	 * headers into one.  Some browsers that support Cookies don't like
 	 * merged headers and prefer that each Set-Cookie header is sent
