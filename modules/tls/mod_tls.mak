@@ -64,9 +64,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /I\
- "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I\
- "..\..\srclib\openssl\inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS"\
+CPP_PROJ=/nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I\
+ "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I\
+ "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
@@ -112,7 +112,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows\
  /dll /incremental:no /pdb:"$(OUTDIR)\mod_tls.pdb" /map:"$(INTDIR)\mod_tls.map"\
  /machine:I386 /out:"$(OUTDIR)\mod_tls.so" /implib:"$(OUTDIR)\mod_tls.lib"\
- /libpath:"..\..\srclib\openssl\out32dll"\
+ /libpath:"../../srclib/openssl/out32dll"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_tls 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_tls.obj" \
@@ -164,9 +164,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I\
- "..\..\srclib\apr\include" /I "..\..\srclib\apr-util\include" /I\
- "..\..\srclib\openssl\inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I\
+ "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I\
+ "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
@@ -212,7 +212,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows\
  /dll /incremental:no /pdb:"$(OUTDIR)\mod_tls.pdb" /map:"$(INTDIR)\mod_tls.map"\
  /debug /machine:I386 /out:"$(OUTDIR)\mod_tls.so"\
- /implib:"$(OUTDIR)\mod_tls.lib" /libpath:"..\..\srclib\openssl\out32dll"\
+ /implib:"$(OUTDIR)\mod_tls.lib" /libpath:"../../srclib/openssl/out32dll"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_tls 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_tls.obj" \
@@ -343,6 +343,7 @@ DEP_CPP_MOD_T=\
 	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\

@@ -84,9 +84,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /I\
- "..\..\server\mpm\winnt" /I "..\..\srclib\apr\include" /I\
- "../../srclib/apr-util/include" /I "..\..\srclib\openssl\inc32" /D "NDEBUG" /D\
+CPP_PROJ=/nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I\
+ "../../server/mpm/winnt" /I "../../srclib/apr/include" /I\
+ "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D\
  "WIN32" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
@@ -132,7 +132,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows\
  /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /map:"$(INTDIR)\mod_ssl.map"\
  /machine:I386 /out:"$(OUTDIR)\mod_ssl.so" /implib:"$(OUTDIR)\mod_ssl.lib"\
- /libpath:"..\..\srclib\openssl\out32dll"\
+ /libpath:"../../srclib/openssl/out32dll"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_ssl 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_ssl.obj" \
@@ -224,9 +224,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I\
- "..\..\server\mpm\winnt" /I "..\..\srclib\apr\include" /I\
- "..\..\srclib\apr-util\include" /I "..\..\srclib\openssl\inc32" /D "_DEBUG" /D\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I\
+ "../../server/mpm/winnt" /I "../../srclib/apr/include" /I\
+ "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D\
  "WIN32" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
@@ -272,7 +272,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows\
  /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /map:"$(INTDIR)\mod_ssl.map"\
  /debug /machine:I386 /out:"$(OUTDIR)\mod_ssl.so"\
- /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"..\..\srclib\openssl\out32dll"\
+ /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"../../srclib/openssl/out32dll"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_ssl 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_ssl.obj" \
@@ -317,6 +317,7 @@ DEP_CPP_MOD_S=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -328,9 +329,11 @@ DEP_CPP_MOD_S=\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
 	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -344,6 +347,7 @@ DEP_CPP_MOD_S=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_md5.h"\
@@ -366,6 +370,7 @@ DEP_CPP_MOD_S=\
 	
 NODEP_CPP_MOD_S=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\mod_ssl.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
@@ -377,6 +382,7 @@ DEP_CPP_SSL_E=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -387,10 +393,11 @@ DEP_CPP_SSL_E=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -404,9 +411,9 @@ DEP_CPP_SSL_E=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -418,7 +425,6 @@ DEP_CPP_SSL_E=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -426,6 +432,7 @@ DEP_CPP_SSL_E=\
 	
 NODEP_CPP_SSL_E=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_config.obj" : $(SOURCE) $(DEP_CPP_SSL_E) "$(INTDIR)"
@@ -437,6 +444,7 @@ DEP_CPP_SSL_EN=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -447,10 +455,11 @@ DEP_CPP_SSL_EN=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -464,9 +473,9 @@ DEP_CPP_SSL_EN=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -478,7 +487,6 @@ DEP_CPP_SSL_EN=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -486,6 +494,7 @@ DEP_CPP_SSL_EN=\
 	
 NODEP_CPP_SSL_EN=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_dh.obj" : $(SOURCE) $(DEP_CPP_SSL_EN) "$(INTDIR)"
@@ -497,6 +506,7 @@ DEP_CPP_SSL_ENG=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -507,10 +517,11 @@ DEP_CPP_SSL_ENG=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -524,9 +535,9 @@ DEP_CPP_SSL_ENG=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -538,7 +549,6 @@ DEP_CPP_SSL_ENG=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -546,6 +556,7 @@ DEP_CPP_SSL_ENG=\
 	
 NODEP_CPP_SSL_ENG=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_ds.obj" : $(SOURCE) $(DEP_CPP_SSL_ENG) "$(INTDIR)"
@@ -557,6 +568,7 @@ DEP_CPP_SSL_ENGI=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -567,10 +579,11 @@ DEP_CPP_SSL_ENGI=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -584,9 +597,9 @@ DEP_CPP_SSL_ENGI=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -598,7 +611,6 @@ DEP_CPP_SSL_ENGI=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -606,6 +618,7 @@ DEP_CPP_SSL_ENGI=\
 	
 NODEP_CPP_SSL_ENGI=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_ext.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGI) "$(INTDIR)"
@@ -617,6 +630,7 @@ DEP_CPP_SSL_ENGIN=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -627,10 +641,11 @@ DEP_CPP_SSL_ENGIN=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -644,9 +659,9 @@ DEP_CPP_SSL_ENGIN=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -658,7 +673,6 @@ DEP_CPP_SSL_ENGIN=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -666,6 +680,7 @@ DEP_CPP_SSL_ENGIN=\
 	
 NODEP_CPP_SSL_ENGIN=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_init.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGIN) "$(INTDIR)"
@@ -677,6 +692,7 @@ DEP_CPP_SSL_ENGINE=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -687,10 +703,11 @@ DEP_CPP_SSL_ENGINE=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -704,9 +721,9 @@ DEP_CPP_SSL_ENGINE=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -718,7 +735,6 @@ DEP_CPP_SSL_ENGINE=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -726,6 +742,7 @@ DEP_CPP_SSL_ENGINE=\
 	
 NODEP_CPP_SSL_ENGINE=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_io.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE) "$(INTDIR)"
@@ -737,6 +754,7 @@ DEP_CPP_SSL_ENGINE_=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -747,10 +765,11 @@ DEP_CPP_SSL_ENGINE_=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -764,9 +783,9 @@ DEP_CPP_SSL_ENGINE_=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -778,7 +797,6 @@ DEP_CPP_SSL_ENGINE_=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -786,6 +804,7 @@ DEP_CPP_SSL_ENGINE_=\
 	
 NODEP_CPP_SSL_ENGINE_=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_kernel.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_)\
@@ -798,6 +817,7 @@ DEP_CPP_SSL_ENGINE_L=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -808,10 +828,11 @@ DEP_CPP_SSL_ENGINE_L=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -825,9 +846,9 @@ DEP_CPP_SSL_ENGINE_L=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -839,7 +860,6 @@ DEP_CPP_SSL_ENGINE_L=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -847,6 +867,7 @@ DEP_CPP_SSL_ENGINE_L=\
 	
 NODEP_CPP_SSL_ENGINE_L=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_log.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_L) "$(INTDIR)"
@@ -858,6 +879,7 @@ DEP_CPP_SSL_ENGINE_M=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -868,10 +890,11 @@ DEP_CPP_SSL_ENGINE_M=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -885,9 +908,9 @@ DEP_CPP_SSL_ENGINE_M=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -899,7 +922,6 @@ DEP_CPP_SSL_ENGINE_M=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -907,6 +929,7 @@ DEP_CPP_SSL_ENGINE_M=\
 	
 NODEP_CPP_SSL_ENGINE_M=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_mutex.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_M)\
@@ -919,6 +942,7 @@ DEP_CPP_SSL_ENGINE_P=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -929,10 +953,11 @@ DEP_CPP_SSL_ENGINE_P=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -946,9 +971,9 @@ DEP_CPP_SSL_ENGINE_P=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -960,7 +985,6 @@ DEP_CPP_SSL_ENGINE_P=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -968,6 +992,7 @@ DEP_CPP_SSL_ENGINE_P=\
 	
 NODEP_CPP_SSL_ENGINE_P=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_pphrase.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_P)\
@@ -980,6 +1005,7 @@ DEP_CPP_SSL_ENGINE_R=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -990,10 +1016,11 @@ DEP_CPP_SSL_ENGINE_R=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1007,9 +1034,9 @@ DEP_CPP_SSL_ENGINE_R=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1021,7 +1048,6 @@ DEP_CPP_SSL_ENGINE_R=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1029,6 +1055,7 @@ DEP_CPP_SSL_ENGINE_R=\
 	
 NODEP_CPP_SSL_ENGINE_R=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_rand.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_R) "$(INTDIR)"
@@ -1040,6 +1067,7 @@ DEP_CPP_SSL_ENGINE_V=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1050,10 +1078,11 @@ DEP_CPP_SSL_ENGINE_V=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1067,9 +1096,9 @@ DEP_CPP_SSL_ENGINE_V=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1081,7 +1110,6 @@ DEP_CPP_SSL_ENGINE_V=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1089,6 +1117,7 @@ DEP_CPP_SSL_ENGINE_V=\
 	
 NODEP_CPP_SSL_ENGINE_V=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_engine_vars.obj" : $(SOURCE) $(DEP_CPP_SSL_ENGINE_V) "$(INTDIR)"
@@ -1100,6 +1129,7 @@ DEP_CPP_SSL_EX=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1110,10 +1140,11 @@ DEP_CPP_SSL_EX=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1127,9 +1158,9 @@ DEP_CPP_SSL_EX=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1141,7 +1172,6 @@ DEP_CPP_SSL_EX=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1149,6 +1179,7 @@ DEP_CPP_SSL_EX=\
 	
 NODEP_CPP_SSL_EX=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_expr.obj" : $(SOURCE) $(DEP_CPP_SSL_EX) "$(INTDIR)"
@@ -1160,6 +1191,7 @@ DEP_CPP_SSL_EXP=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1170,10 +1202,11 @@ DEP_CPP_SSL_EXP=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1187,9 +1220,9 @@ DEP_CPP_SSL_EXP=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1201,7 +1234,6 @@ DEP_CPP_SSL_EXP=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1209,6 +1241,7 @@ DEP_CPP_SSL_EXP=\
 	
 NODEP_CPP_SSL_EXP=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_expr_eval.obj" : $(SOURCE) $(DEP_CPP_SSL_EXP) "$(INTDIR)"
@@ -1222,6 +1255,7 @@ DEP_CPP_SSL_S=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1232,10 +1266,11 @@ DEP_CPP_SSL_S=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1249,9 +1284,9 @@ DEP_CPP_SSL_S=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1263,7 +1298,6 @@ DEP_CPP_SSL_S=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1271,6 +1305,7 @@ DEP_CPP_SSL_S=\
 	
 NODEP_CPP_SSL_S=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_scache.obj" : $(SOURCE) $(DEP_CPP_SSL_S) "$(INTDIR)"
@@ -1282,6 +1317,7 @@ DEP_CPP_SSL_SC=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1292,10 +1328,11 @@ DEP_CPP_SSL_SC=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1309,9 +1346,9 @@ DEP_CPP_SSL_SC=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1323,7 +1360,6 @@ DEP_CPP_SSL_SC=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1331,6 +1367,7 @@ DEP_CPP_SSL_SC=\
 	
 NODEP_CPP_SSL_SC=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_scache_dbm.obj" : $(SOURCE) $(DEP_CPP_SSL_SC) "$(INTDIR)"
@@ -1342,6 +1379,7 @@ DEP_CPP_SSL_SCA=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1352,10 +1390,11 @@ DEP_CPP_SSL_SCA=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1369,9 +1408,9 @@ DEP_CPP_SSL_SCA=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1383,7 +1422,6 @@ DEP_CPP_SSL_SCA=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1391,6 +1429,7 @@ DEP_CPP_SSL_SCA=\
 	
 NODEP_CPP_SSL_SCA=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_scache_shmcb.obj" : $(SOURCE) $(DEP_CPP_SSL_SCA) "$(INTDIR)"
@@ -1402,6 +1441,7 @@ DEP_CPP_SSL_SCAC=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1412,10 +1452,11 @@ DEP_CPP_SSL_SCAC=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1429,9 +1470,9 @@ DEP_CPP_SSL_SCAC=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1443,7 +1484,6 @@ DEP_CPP_SSL_SCAC=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1451,6 +1491,7 @@ DEP_CPP_SSL_SCAC=\
 	
 NODEP_CPP_SSL_SCAC=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_scache_shmht.obj" : $(SOURCE) $(DEP_CPP_SSL_SCAC) "$(INTDIR)"
@@ -1462,6 +1503,7 @@ DEP_CPP_SSL_U=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1472,10 +1514,11 @@ DEP_CPP_SSL_U=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1489,9 +1532,9 @@ DEP_CPP_SSL_U=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1503,7 +1546,6 @@ DEP_CPP_SSL_U=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1511,6 +1553,7 @@ DEP_CPP_SSL_U=\
 	
 NODEP_CPP_SSL_U=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_util.obj" : $(SOURCE) $(DEP_CPP_SSL_U) "$(INTDIR)"
@@ -1522,6 +1565,7 @@ DEP_CPP_SSL_UT=\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
+	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_main.h"\
@@ -1532,10 +1576,11 @@ DEP_CPP_SSL_UT=\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_md5.h"\
+	"..\..\include\util_script.h"\
 	"..\..\os\win32\os.h"\
 	"..\..\server\mpm\winnt\mpm_default.h"\
 	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\srclib\apr-util\include\apr_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\srclib\apr-util\include\apr_ring.h"\
@@ -1549,9 +1594,9 @@ DEP_CPP_SSL_UT=\
 	"..\..\srclib\apr\include\apr_fnmatch.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
-	"..\..\srclib\apr\include\apr_md5.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
@@ -1563,7 +1608,6 @@ DEP_CPP_SSL_UT=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	"..\..\srclib\apr\include\apr_xlate.h"\
 	".\mod_ssl.h"\
 	".\ssl_expr.h"\
 	".\ssl_util_ssl.h"\
@@ -1571,6 +1615,7 @@ DEP_CPP_SSL_UT=\
 	
 NODEP_CPP_SSL_UT=\
 	"..\..\include\ap_config_auto.h"\
+	".\unixd.h"\
 	
 
 "$(INTDIR)\ssl_util_ssl.obj" : $(SOURCE) $(DEP_CPP_SSL_UT) "$(INTDIR)"

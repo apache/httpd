@@ -282,9 +282,11 @@ DEP_CPP_GEN_T=\
 	"..\srclib\apr\include\apr_file_info.h"\
 	"..\srclib\apr\include\apr_file_io.h"\
 	"..\srclib\apr\include\apr_general.h"\
+	"..\srclib\apr\include\apr_inherit.h"\
 	"..\srclib\apr\include\apr_lib.h"\
 	"..\srclib\apr\include\apr_network_io.h"\
 	"..\srclib\apr\include\apr_pools.h"\
+	"..\srclib\apr\include\apr_sms.h"\
 	"..\srclib\apr\include\apr_tables.h"\
 	"..\srclib\apr\include\apr_time.h"\
 	"..\srclib\apr\include\apr_user.h"\

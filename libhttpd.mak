@@ -421,8 +421,10 @@ DEP_CPP_BUILD=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
@@ -450,10 +452,12 @@ DEP_CPP_CONFI=\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
 	".\os\win32\os.h"\
 	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
@@ -467,11 +471,13 @@ DEP_CPP_CONFI=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -518,11 +524,13 @@ DEP_CPP_CONNE=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -554,6 +562,7 @@ DEP_CPP_CORE_=\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
 	".\include\rfc1413.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
@@ -562,6 +571,7 @@ DEP_CPP_CORE_=\
 	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
@@ -576,6 +586,7 @@ DEP_CPP_CORE_=\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_md5.h"\
@@ -583,6 +594,7 @@ DEP_CPP_CORE_=\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -622,10 +634,12 @@ DEP_CPP_LOG_C=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_signal.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -660,8 +674,10 @@ DEP_CPP_MODUL=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
 	".\srclib\apr\include\apr_user.h"\
@@ -707,6 +723,7 @@ DEP_CPP_PROTO=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -714,6 +731,7 @@ DEP_CPP_PROTO=\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
 	".\srclib\apr\include\apr_signal.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -762,11 +780,13 @@ DEP_CPP_REQUE=\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -811,12 +831,14 @@ DEP_CPP_SCORE=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
 	".\srclib\apr\include\apr_shmem.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -860,12 +882,14 @@ DEP_CPP_VHOST=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -935,11 +959,13 @@ DEP_CPP_HTTP_=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -990,6 +1016,7 @@ DEP_CPP_HTTP_P=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
@@ -997,6 +1024,7 @@ DEP_CPP_HTTP_P=\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
 	".\srclib\apr\include\apr_signal.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1045,11 +1073,13 @@ DEP_CPP_HTTP_R=\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1092,10 +1122,12 @@ DEP_CPP_MOD_A=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1141,11 +1173,13 @@ DEP_CPP_MOD_AC=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1184,10 +1218,12 @@ DEP_CPP_MOD_AL=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
@@ -1231,11 +1267,13 @@ DEP_CPP_MOD_AS=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1279,12 +1317,14 @@ DEP_CPP_MOD_AU=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1332,12 +1372,14 @@ DEP_CPP_MOD_AUT=\
 	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1387,11 +1429,13 @@ DEP_CPP_MOD_C=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1437,11 +1481,13 @@ DEP_CPP_MOD_D=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1480,9 +1526,11 @@ DEP_CPP_MOD_E=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
@@ -1528,12 +1576,14 @@ DEP_CPP_MOD_I=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1583,12 +1633,14 @@ DEP_CPP_MOD_IN=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1635,11 +1687,13 @@ DEP_CPP_MOD_IS=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1684,12 +1738,14 @@ DEP_CPP_MOD_L=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1729,10 +1785,13 @@ DEP_CPP_MOD_M=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1777,12 +1836,14 @@ DEP_CPP_MOD_N=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1825,11 +1886,13 @@ DEP_CPP_MOD_S=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1866,8 +1929,10 @@ DEP_CPP_MOD_SO=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1906,9 +1971,11 @@ DEP_CPP_MOD_U=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_time.h"\
@@ -1946,11 +2013,13 @@ DEP_CPP_ERROR=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -1988,9 +2057,11 @@ DEP_CPP_RFC14=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2037,12 +2108,14 @@ DEP_CPP_UTIL_=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2072,6 +2145,7 @@ DEP_CPP_UTIL_C=\
 	".\srclib\apr\include\apr_errno.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	
 NODEP_CPP_UTIL_C=\
@@ -2103,9 +2177,11 @@ DEP_CPP_UTIL_F=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
 	".\srclib\apr\include\apr_time.h"\
@@ -2141,11 +2217,13 @@ DEP_CPP_UTIL_M=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_md5.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2195,12 +2273,14 @@ DEP_CPP_UTIL_S=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2235,8 +2315,10 @@ DEP_CPP_UTIL_W=\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2281,11 +2363,13 @@ DEP_CPP_UTIL_X=\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
 	".\srclib\apr\include\apr_time.h"\
@@ -2311,20 +2395,27 @@ DEP_CPP_LISTE=\
 	".\include\httpd.h"\
 	".\include\mpm_common.h"\
 	".\include\pcreposix.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\os\win32\os.h"\
 	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
 	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
 	".\srclib\apr\include\apr_errno.h"\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
+	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2373,11 +2464,13 @@ DEP_CPP_MPM_W=\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
 	".\srclib\apr\include\apr_hash.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2403,21 +2496,28 @@ DEP_CPP_REGIS=\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\os\win32\os.h"\
 	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
 	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
 	".\srclib\apr\include\apr_errno.h"\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
+	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
@@ -2443,22 +2543,29 @@ DEP_CPP_SERVI=\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\os\win32\os.h"\
 	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
 	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
 	".\srclib\apr\include\apr_errno.h"\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
+	".\srclib\apr\include\apr_lock.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_sms.h"\
 	".\srclib\apr\include\apr_strings.h"\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
