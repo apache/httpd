@@ -59,16 +59,10 @@ always available.
 <LI><A HREF="#listenbacklog">ListenBacklog</A>
 <LI><A HREF="#location">&lt;Location&gt;</A>
 <LI><A HREF="#locationmatch">&lt;LocationMatch&gt;</A>
-<LI><A HREF="#lockfile">LockFile</A>
 <LI><A HREF="#loglevel">LogLevel</A>
-<LI><A HREF="#maxclients">MaxClients</A>
 <LI><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A>
-<LI><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
-<LI><A HREF="#maxspareservers">MaxSpareServers</A>
-<LI><A HREF="#minspareservers">MinSpareServers</A>
 <LI><A HREF="#namevirtualhost">NameVirtualHost</A>
 <LI><A HREF="#options">Options</A>
-<LI><A HREF="#pidfile">PidFile</A>
 <LI><A HREF="#port">Port</A>
 <LI><A HREF="#require">Require</A>
 <LI><A HREF="#resourceconfig">ResourceConfig</A>
@@ -76,7 +70,6 @@ always available.
 <LI><A HREF="#rlimitmem">RLimitMEM</A>
 <LI><A HREF="#rlimitnproc">RLimitNPROC</A>
 <LI><A HREF="#satisfy">Satisfy</A>
-<LI><A HREF="#scoreboardfile">ScoreBoardFile</A>
 <LI><A HREF="#scriptinterpretersource">ScriptInterpreterSource</A>
 <LI><A HREF="#sendbuffersize">SendBufferSize</A>
 <LI><A HREF="#serveradmin">ServerAdmin</A>
@@ -87,8 +80,6 @@ always available.
 <LI><A HREF="#serversignature">ServerSignature</A>
 <LI><A HREF="#servertokens">ServerTokens</A>
 <LI><A HREF="#servertype">ServerType</A>
-<LI><A HREF="#startservers">StartServers</A>
-<LI><A HREF="#threadsperchild">ThreadsPerChild</A>
 <LI><A HREF="#threadstacksize">ThreadStackSize</A>
 <LI><A HREF="#timeout">TimeOut</A>
 <LI><A HREF="#usecanonicalname">UseCanonicalName</A>
@@ -516,36 +507,6 @@ core, and not by any module.  For example, SSI documents, output from
 CGI scripts, and byte range responses do not have this header.
 
 <HR>
-
-<H2><A NAME="coredumpdirectory">CoreDumpDirectory directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt CoreDumpDirectory} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> CoreDumpDirectory <EM>directory</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> the same location as ServerRoot<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0<P>
-
-This controls the directory to which Apache attempts to switch before
-dumping core.  The default is in the <A HREF="#serverroot">ServerRoot</A>
-directory, however since this should not be writable by the user
-the server runs as, core dumps won't normally get written.  If you
-want a core dump for debugging, you can use this directive to place
-it in a different location.<P><HR>
 
 <H2><A NAME="defaulttype">DefaultType directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt DefaultType} directive&gt; -->
@@ -1875,45 +1836,6 @@ different sections are combined when a request is received
 
 <HR>
 
-<H2><A NAME="lockfile">LockFile directive</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> LockFile <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>LockFile logs/accept.lock</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The LockFile directive sets the path to the lockfile used when
-Apache is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
-USE_FLOCK_SERIALIZED_ACCEPT.  This directive should normally be
-left at its default value.  The main reason for changing it is if
-the <CODE>logs</CODE> directory is NFS mounted, since <STRONG>the lockfile
-must be stored on a local disk</STRONG>.  The PID of the main
-server process is automatically appended to the filename. <P>
-
-<STRONG>SECURITY:</STRONG> It is best to avoid putting this file in a 
-world writable directory such as <CODE>/var/tmp</CODE> because someone 
-could create a denial of service attack and prevent the server from
-starting by creating a lockfile with the same name as the one the 
-server will try to create.<P>
-
-<P><HR>
-
 <H2><A NAME="loglevel">LogLevel directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
@@ -1981,42 +1903,6 @@ of higher significance will be reported as well.  <EM>E.g.</EM>, when
 Using a level of at least <CODE>crit</CODE> is recommended.
 <P><HR>
 
-<H2><A NAME="maxclients">MaxClients directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MaxClients} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MaxClients <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxClients 256</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-<P>The MaxClients directive sets the limit on the number of simultaneous
-requests that can be supported; not more than this number of child server
-processes will be created.  To configure more than 256 clients, you must
-edit the HARD_SERVER_LIMIT entry in httpd.h and recompile.
-
-<P>Any connection attempts over the MaxClients limit will normally
-be queued, up to a number based on the <A HREF="#listenbacklog">
-ListenBacklog</A> directive.  Once a child process is freed at the
-end of a different request, the connection will then be serviced.
-
-<HR>
-
 <H2><A NAME="maxkeepaliverequests">MaxKeepAliveRequests directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
@@ -2045,130 +1931,6 @@ allowed per connection when <A HREF="#keepalive">KeepAlive</A> is
 on. If it is set to "<CODE>0</CODE>", unlimited requests will be
 allowed. We recommend that this setting be kept to a high value for
 maximum server performance.</P><HR>
-
-<H2><A NAME="maxrequestsperchild">MaxRequestsPerChild directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MaxRequestsPerChild} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MaxRequestsPerChild <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxRequestsPerChild 0</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The MaxRequestsPerChild directive sets the limit on the number of requests
-that an individual child server process will handle. After MaxRequestsPerChild
-requests, the child process will die. If MaxRequestsPerChild is 0, then
-the process will never expire.<P>
-
-Setting MaxRequestsPerChild to a non-zero limit has two beneficial effects:
-<UL>
-<LI>it limits the amount of memory that process can consume by (accidental)
-memory leakage;
-<LI> by giving processes a finite lifetime, it helps reduce the
-number of processes when the server load reduces.
-</UL>
-
-<P>This directive has no effect on Win32.
-
-<P><STRONG>NOTE:</STRONG> For <EM>KeepAlive</EM> requests, only the first
-request is counted towards this limit. In effect, it changes the
-behavior to limit the number of <EM>connections</EM> per child.
-
-<P><HR>
-
-<H2><A NAME="maxspareservers">MaxSpareServers directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MaxSpareServers <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxSpareServers 10</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The MaxSpareServers directive sets the desired maximum number of <EM>idle</EM>
-child server processes. An idle process is one which is not handling
-a request. If there are more than MaxSpareServers idle, then the parent
-process will kill off the excess processes.<P>
-
-Tuning of this parameter should only be necessary on very busy sites.
-Setting this parameter to a large number is almost always a bad idea.<P>
-
-This directive has no effect when used with the Apache Web server on a
-Microsoft Windows platform.
-
-<P>
-
-See also <A HREF="#minspareservers">MinSpareServers</A> and
-<A HREF="#startservers">StartServers</A>.<P><HR>
-
-<H2><A NAME="minspareservers">MinSpareServers directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MinSpareServers <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MinSpareServers 5</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The MinSpareServers directive sets the desired minimum number of <EM>idle</EM>
-child server processes. An idle process is one which is not handling
-a request. If there are fewer than MinSpareServers idle, then the parent
-process creates new children at a maximum rate of 1 per second.<P>
-
-Tuning of this parameter should only be necessary on very busy sites.
-Setting this parameter to a large number is almost always a bad idea.<P>
-
-This directive has no effect on Microsoft Windows.
-
-<P>
-
-See also <A HREF="#maxspareservers">MaxSpareServers</A> and
-<A HREF="#startservers">StartServers</A>.<P><HR>
 
 <H2><A NAME="namevirtualhost">NameVirtualHost directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt NameVirtualHost} directive&gt; -->
@@ -2337,43 +2099,7 @@ disables server-side includes completely regardless of the previous setting.<P>
 The default in the absence of any other settings is <CODE>All</CODE>.<P>
 <HR>
 
-<H2><A NAME="pidfile">PidFile directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> PidFile <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>PidFile logs/httpd.pid</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
-The PidFile directive sets the file to which the server records the
-process id of the daemon. If the filename does not begin with a slash (/)
-then it is assumed to be relative to the <A HREF="#serverroot">ServerRoot</A>.
-The PidFile is only used in <A HREF="#servertype">standalone</A> mode.<P>
-
-It is often useful to be able to send the server a signal, so that it closes
-and then reopens its <A HREF="#errorlog">ErrorLog</A> and TransferLog, and
-re-reads its configuration files. This is done by sending a SIGHUP (kill -1)
-signal to the process id listed in the PidFile.<P>
-
-The PidFile is subject to the same warnings about log file placement and
-<A HREF="../misc/security_tips.html#serverroot">security</A>.
-
-<P><HR>
 
 <H2><A NAME="port">Port directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
@@ -2712,63 +2438,6 @@ clients from particular addresses in without prompting for a password.
 <P>
 See also <A HREF="#require">Require</A> and 
 <A HREF="mod_access.html">mod_access</A>.
-
-<P><HR>
-
-<H2><A NAME="scoreboardfile">ScoreBoardFile directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt ScoreBoardFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ScoreBoardFile <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ScoreBoardFile logs/apache_status</CODE>
-<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The ScoreBoardFile directive is required on some architectures to place
-a file that the server will use to communicate between its children and
-the parent.  The easiest way to find out if your architecture requires
-a scoreboard file is to run Apache and see if it creates the file named
-by the directive.  If your architecture requires it then you must ensure
-that this file is not used at the same time by more than one invocation
-of Apache.<P>
-
-If you have to use a ScoreBoardFile then you may see improved speed by
-placing it on a RAM disk.  But be careful that you heed the same warnings
-about log file placement and
-<A HREF="../misc/security_tips.html">security</A>.<P>
-
-Apache 1.2 and above:<P>
-
-Linux 1.x users might be able to add
-<CODE>-DHAVE_SHMGET -DUSE_SHMGET_SCOREBOARD</CODE> to
-the <CODE>EXTRA_CFLAGS</CODE> in your <CODE>Configuration</CODE>.  This
-might work with some 1.x installations, but won't work with all of
-them. (Prior to 1.3b4, <CODE>HAVE_SHMGET</CODE> would have sufficed.)<P>
-
-SVR4 users should consider adding
-<CODE>-DHAVE_SHMGET -DUSE_SHMGET_SCOREBOARD</CODE> to the
-<CODE>EXTRA_CFLAGS</CODE> in your <CODE>Configuration</CODE>.  This
-is believed to work, but we were unable to test it in time for 1.2
-release. (Prior to 1.3b4, <CODE>HAVE_SHMGET</CODE> would have sufficed.)<P>
-
-<STRONG>See Also</STRONG>:
-<A HREF="../stopping.html">Stopping and Restarting Apache</A></P>
 
 <P><HR>
 
@@ -3117,78 +2786,6 @@ Standalone is the most common setting for ServerType since
 it is far more efficient. The server is started once, and services all
 subsequent connections. If you intend running Apache to serve a busy site,
 standalone will probably be your only option.<P>
-<HR>
-
-<H2><A NAME="startservers">StartServers directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> StartServers <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>StartServers 5</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-The StartServers directive sets the number of child server processes created
-on startup. As the number of processes is dynamically controlled depending
-on the load, there is usually little reason to adjust this parameter.<P>
-
-<P>When running under Microsoft Windows, this directive has no effect.
-   There is always one child which handles all requests. Within the
-   child requests are handled by separate threads. The
-   <A HREF="#threadsperchild">ThreadsPerChild</A> directive controls 
-   the maximum number of child threads handling requests, which will
-   have a similar effect to the setting of <SAMP>StartServers</SAMP>
-   on Unix.
-
-<P>
-
-See also <A HREF="#minspareservers">MinSpareServers</A> and
-<A HREF="#maxspareservers">MaxSpareServers</A>.<P><HR>
-
-<H2><A NAME="threadsperchild">ThreadsPerChild</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ThreadsPerChild <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ThreadsPerChild 50</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core (Windows, NetWare)<BR>
-<STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
-with Windows. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
-
-<P>This directive tells the server how many threads it should use. This
-   is the maximum number of connections the server can handle at once; be
-   sure and set this number high enough for your site if you get a lot of
-   hits.
-
-<P>This directive has no effect on Unix systems.  Unix users should look
-   at <A HREF="#startservers">StartServers</A> and <A
-   HREF="#maxrequestsperchild">MaxRequestsPerChild</A>.</P>
-
 <HR>
 
 <H2><A NAME="threadstacksize">ThreadStackSize</A></H2>
