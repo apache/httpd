@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.124 $ ($Date: 1998/07/19 05:30:02 $)
+  $Revision: 1.125 $ ($Date: 1998/08/05 18:04:50 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -74,7 +74,6 @@
 <!--   the simple fact that older versions of Apache (and new ones  -->
 <!--   that have been upgraded without upgrading the mime.types     -->
 <!--   file) don't have the type listed at all.                     -->
-<!-- - Why is my .htaccess ignored?                                 -->
 <!-- - RewriteRule /~fraggle/* /cgi-bin/fraggle.pl does not work    -->
 <!-- - how do I disable authentication for a subdirectory?          -->
 <!--   (A: you can't but "satisfy any; allow from all" can be close -->
@@ -286,9 +285,11 @@
    </LI>
    <LI><A HREF="#regex">What are "regular expressions"?</A>
    </LI>
-   <li><a href="#broken-gcc">I'm using gcc and I get some compilation errors, what
-	is wrong?</a>
-   </li>
+   <LI><A HREF="#broken-gcc">I'm using gcc and I get some compilation errors, 
+	what is wrong?</A>
+   </LI>
+   <LI><A HREF="#htaccess-work">My <CODE>.htaccess</CODE> files are being
+	ignored.</A>
   </OL>
  </LI>
 </UL>
@@ -2251,11 +2252,12 @@
  <LI><A NAME="regex">
       <STRONG>What are "regular expressions"?</STRONG></A>
    <P>
-   Regular expressions are a way of describing a pattern - for example, "all the words
-   that begin with the letter A" or "every 10-digit phone number" or even "Every sentence
-   with two commas in it, and no capital letter Q".  Regular expressions (aka "regexp"s)
-   are useful in Apache because they let you apply certain attributes against collections
-   of files or resources in very flexible ways - for example, all .gif and .jpg files under
+   Regular expressions are a way of describing a pattern - for example, "all 
+   the words that begin with the letter A" or "every 10-digit phone number" 
+   or even "Every sentence with two commas in it, and no capital letter Q".  
+   Regular expressions (aka "regexp"s) are useful in Apache because they 
+   let you apply certain attributes against collections of files or resources 
+   in very flexible ways - for example, all .gif and .jpg files under
    any "images" directory could be written as /.*\/images\/.*[jpg|gif]/.
 
    <P>The best overview around is probably the one which comes with
@@ -2266,24 +2268,35 @@
    page on regular expressions</A>, and branching out from there.
 
   <HR>
-  </LI>
- <li><a name="broken-gcc"><strong>I'm using gcc and I get some
-	compilation errors, what is wrong?</strong></a>
-    <p>
-    GCC parses your system header files and produces a modified subset which
+ </LI>
+ <LI><A NAME="broken-gcc"><STRONG>I'm using gcc and I get some
+	compilation errors, what is wrong?</STRONG></A>
+    <P> GCC parses your system header files and produces a modified subset which
     it uses for compiling.  This behaviour ties GCC tightly to the version
     of your operating system.  So, for example, if you were running IRIX 5.3
     when you built GCC and then upgrade to IRIX 6.2 later, you will have to
     rebuild GCC.  Similarly for Solaris 2.4, 2.5, or 2.5.1 when you upgrade
     to 2.6.  Sometimes you can type "gcc -v" and it will tell you the version
     of the operating system it was built against.
-    <p>
+    <P>
     If you fail to do this, then it is very likely that Apache will fail
-    to build.  One of the most common errors is with <code>readv</code>,
-    <code>writev</code>, or <code>uio.h</code>.  This is <b>not</b> a
+    to build.  One of the most common errors is with <CODE>readv</CODE>,
+    <CODE>writev</CODE>, or <CODE>uio.h</CODE>.  This is <B>not</B> a
     bug with Apache.  You will need to re-install GCC.
-   <hr>
-   </li>
+   <HR>
+  </LI>
+  <LI><A NAME="htaccess-work">
+       <STRONG>My <CODE>.htaccess</CODE> files are being ignored.</STRONG></A>
+   <P>
+   This is almost always due to your <A HREF="../mod/core.html#allowoverride">
+   AllowOverride</A> directive being set incorrectly for the directory in 
+   question.  If it is set to <CODE>None</CODE> then .htaccess files will 
+   not even be looked for.  If you do have one that is set, then be certain 
+   it covers the directory you are trying to use the .htaccess file in.  
+   This is normally accomplished by ensuring it is inside the proper 
+   <A HREF="../mod/core.html#directory">Directory</A> container.
+   <HR>
+  </LI>
 
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
