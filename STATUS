@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/24 13:32:51 $]
+  Last modified at [$Date: 2000/01/24 13:46:34 $]
 
 Release:
 
@@ -7,7 +7,7 @@ Release:
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
             announced on the 21st.
              PREBUILT BINARIES:
-              
+              FreeBSD-2.2.8: Jim
 
     1.3.10: Not released. Pulled at "last minute" due to
             a build bug in the MPE port.
