@@ -1358,14 +1358,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.69 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.70 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.69 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.70 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1593,7 +1593,12 @@ int main(int argc, char **argv)
 	     */
 	    while (isspace((int)*optarg))
 		optarg++;
-	    l = ap_base64encode(tmp, optarg, strlen(optarg));
+            if (ap_base64encode_len(strlen(optarg)) > sizeof(tmp)) {
+                fprintf(stderr, "%s: Authentication credentials too long\n",
+                        argv[0]);
+                exit(1);
+            }
+            l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 
 	    strncat(auth, "Authorization: Basic ", sizeof(auth)-strlen(auth)-1);
@@ -1606,6 +1611,10 @@ int main(int argc, char **argv)
 	     */
 	    while (isspace((int)*optarg))
 		optarg++;
+            if (ap_base64encode_len(strlen(optarg)) > sizeof(tmp)) {
+                fprintf(stderr, "%s: Proxy credentials too long\n", argv[0]);
+                exit(1);
+            }
 	    l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 

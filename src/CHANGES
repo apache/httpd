@@ -1,5 +1,8 @@
 Changes with Apache 1.3.29
 
+  *) ab: Overlong credentials given via command line no longer clobber
+     the buffer.  [André Malo]
+
   *) Fix ProxyPass for ftp requests - the original code was segfaulting since 
      many of the values were not being filled out in the request_rec.
      [Tollef Fog Heen <tfheen@debian.org, Thom May]
