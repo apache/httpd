@@ -124,11 +124,6 @@ extern "C" {
 #define ap_sigwait(a,b) sigwait((a),(b))
 #endif
 
-/* EAGAIN apparently isn't defined on some systems */
-#if !defined(HAVE_EAGAIN) && !defined(EAGAIN)
-#define EAGAIN EWOULDBLOCK
-#endif
-
 /*
  * String and memory functions
  */
