@@ -834,16 +834,9 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
     return 0;
 } 
 
-AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
-                                                const char *new_file,
-                                                const request_rec *r,
-                                                ap_filter_t *next_filter)
+static void fillin_subreq_vars(request_rec *rnew, const request_rec *r, 
+                               ap_filter_t *next_filter)
 {
-    request_rec *rnew;
-    int res;
-    char *udir;
-
-    rnew = make_sub_request(r);
     rnew->hostname       = r->hostname;
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
@@ -875,6 +868,19 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
      * pointer won't be setup
      */
     ap_run_create_request(rnew);
+}
+
+AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
+                                                const char *new_file,
+                                                const request_rec *r,
+                                                ap_filter_t *next_filter)
+{
+    request_rec *rnew;
+    int res;
+    char *udir;
+
+    rnew = make_sub_request(r);
+    fillin_subreq_vars(rnew, r, next_filter);
 
     /* would be nicer to pass "method" to ap_set_sub_req_protocol */
     rnew->method = method;
@@ -947,6 +953,92 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
     return ap_sub_req_method_uri("GET", new_file, r, next_filter);
 }
 
+AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *fi,
+                                                   const request_rec *r,
+                                                   ap_filter_t *next_filter)
+{
+    request_rec *rnew;
+    int res;
+    char *fdir;
+    char *udir;
+
+    rnew = make_sub_request(r);
+    fillin_subreq_vars(rnew, r, next_filter);
+
+    fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
+
+    /* Since the finfo must be in the same relative directory as the request,
+     * we won't have to redo directory_walk, and we may not even have to 
+     * redo access checks.
+     */
+
+    udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+
+    rnew->finfo = *fi;
+    rnew->uri = ap_make_full_path(rnew->pool, udir, fi->name);
+    rnew->filename = ap_make_full_path(rnew->pool, fdir, fi->name);
+    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+
+    if ((res = check_safe_file(rnew))) {
+        rnew->status = res;
+        return rnew;
+    }
+
+    rnew->per_dir_config = r->per_dir_config;
+
+    /* no matter what, if it's a subdirectory, we need to re-run
+     * directory_walk
+     */
+    if (rnew->finfo.filetype == APR_DIR) {
+        res = directory_walk(rnew);
+        if (!res) {
+            res = file_walk(rnew);
+        }
+    }
+    else {
+        if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew),
+                                  rnew->pool))) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
+                        "Symbolic link not allowed: %s", rnew->filename);
+            rnew->status = res;
+            return rnew;
+        }
+        /*
+         * do a file_walk, if it doesn't change the per_dir_config then
+         * we know that we don't have to redo all the access checks
+         */
+        if ((res = file_walk(rnew))) {
+            rnew->status = res;
+            return rnew;
+        }
+        if (rnew->per_dir_config == r->per_dir_config) {
+            if ((res = ap_run_type_checker(rnew)) || (res = ap_run_fixups(rnew))) {
+                rnew->status = res;
+            }
+            return rnew;
+        }
+    }
+
+    if (res
+        || ((ap_satisfies(rnew) == SATISFY_ALL
+             || ap_satisfies(rnew) == SATISFY_NOSPEC)
+            ? ((res = ap_run_access_checker(rnew))
+               || (ap_some_auth_required(rnew)
+                   && ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+            : ((res = ap_run_access_checker(rnew))
+               && (!ap_some_auth_required(rnew)
+                   || ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+           )
+        || (res = ap_run_type_checker(rnew))
+        || (res = ap_run_fixups(rnew))
+       ) {
+        rnew->status = res;
+    }
+    return rnew;
+}
+
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
                                               ap_filter_t *next_filter)
@@ -956,37 +1048,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     char *fdir;
 
     rnew = make_sub_request(r);
-    rnew->hostname       = r->hostname;
-    rnew->request_time   = r->request_time;
-    rnew->connection     = r->connection;
-    rnew->server         = r->server;
-
-    rnew->request_config = ap_create_request_config(rnew->pool);
-
-    rnew->htaccess       = r->htaccess;
-    rnew->chunked        = r->chunked;
-    rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
-
-    /* make a copy of the allowed-methods list */
-    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
-
-    /* start with the same set of output filters */
-    if (next_filter) {
-        rnew->output_filters = next_filter;
-    }
-    else {
-        rnew->output_filters = r->output_filters;
-    }
-    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
-
-    /* no input filters for a subrequest */
-
-    ap_set_sub_req_protocol(rnew, r);
-
-    /* We have to run this after ap_set_sub_req_protocol, or the r->main
-     * pointer won't be setup
-     */
-    ap_run_create_request(rnew);
+    fillin_subreq_vars(rnew, r, next_filter);
 
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
 
