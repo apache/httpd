@@ -65,6 +65,8 @@
  *
  * Adapted for Berkeley DB by Andrew Cohen 
  *
+ * apache 2 port by Brian Martin 
+ *
  * mod_auth_db was based on mod_auth_dbm.
  * 
  * Warning, this is not a drop in replacement for mod_auth_dbm, 
@@ -101,8 +103,12 @@
 #include <db.h>
 #endif
 
-#if defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
-#define DB2
+#if   defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 3)
+#define DB_VER 3
+#elif defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
+#define DB_VER 2
+#else
+#define DB_VER 1
 #endif
 
 typedef struct {
@@ -158,6 +164,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     DB *f;
     DBT d, q;
     char *pw = NULL;
+    int retval;
 
     memset(&d, 0, sizeof(d));
     memset(&q, 0, sizeof(q));
@@ -165,17 +172,71 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     q.data = user;
     q.size = strlen(q.data);
 
-#ifdef DB2
-    if (db_open(auth_dbpwfile, DB_HASH, DB_RDONLY, 0664, NULL, NULL, &f) != 0) {
-#else
-    if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
-#endif
+#if DB_VER == 3
+    db_create(&f, NULL, 0);
+    if ((retval = f->open(f, auth_dbpwfile, NULL, DB_HASH, DB_RDONLY, 0664)) != 0) {
+	char * reason;
+	switch(retval) {
+	case DB_OLD_VERSION:
+	    reason = "Old database version.  Upgrade to version 3";
+	    break;
+
+	case EEXIST:
+	    reason = "DB_CREATE and DB_EXCL were specified and the file exists";
+	    break;
+
+	case EINVAL:
+	    reason = "An invalid flag value or parameter was specified";
+	    break;
+
+	case ENOENT:
+	    reason = "A non-existent re_source file was specified";
+	    break;
+
+	default:
+	    reason = "And I don't know why";
+	    break;
+	}
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-		    "could not open db auth file: %s", auth_dbpwfile);
+		      "could not open db auth file %s: %s", 
+		      auth_dbpwfile, reason);
 	return NULL;
     }
+#elif DB_VER == 2
+    if ((retval = db_open(auth_dbpwfile, DB_HASH, DB_RDONLY, 0664, NULL, NULL, &f)) != 0) {
+	char * reason;
+	switch(retval) {
 
-#ifdef DB2
+	case EEXIST:
+	    reason = "DB_CREATE and DB_EXCL were specified and the file exists.";
+	    break;
+
+	case EINVAL:
+	    reason = "An invalid flag value or parameter was specified";
+	    break;
+
+	case ENOENT:
+	    reason = "A non-existent re_source file was specified";
+	    break;
+
+	default:
+	    reason = "And I don't know why";
+	    break;
+	}
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+		      "could not open db auth file %s: %s", 
+		      auth_dbpwfile, reason);
+	return NULL;
+    }
+#else
+    if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+		      "could not open db auth file: %s", auth_dbpwfile);
+	return NULL;
+    }
+#endif
+
+#if DB_VER == 3 || DB_VER == 2
     if (!((f->get) (f, NULL, &q, &d, 0))) {
 #else
     if (!((f->get) (f, &q, &d, 0))) {
@@ -185,7 +246,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 	pw[d.size] = '\0';	/* Terminate the string */
     }
 
-#ifdef DB2
+#if DB_VER == 3 || DB_VER == 2
     (f->close) (f, 0);
 #else
     (f->close) (f);
@@ -226,17 +287,20 @@ static int db_authenticate_basic_user(request_rec *r)
 {
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					     &auth_db_module);
+						&auth_db_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
-    char *invalid_pw;
+    ap_status_t invalid_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
-    if (!sec->auth_dbpwfile)
+    if (!sec->auth_dbpwfile) {
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+		      "DB file %s not found", sec->auth_dbpwfile);
 	return DECLINED;
+    }
 
     if (!(real_pw = get_db_pw(r, r->user, sec->auth_dbpwfile))) {
 	if (!(sec->auth_dbauthoritative))
@@ -251,11 +315,20 @@ static int db_authenticate_basic_user(request_rec *r)
     if (colon_pw) {
 	*colon_pw = '\0';
     }
+
     invalid_pw = ap_validate_password(sent_pw, real_pw);
-    if (invalid_pw != NULL) {
+
+    if (invalid_pw != APR_SUCCESS) {
+#ifdef HAVE_APR_STRERROR
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DB user %s: authentication failure for \"%s\": %s",
-		      r->user, r->uri, invalid_pw);
+		      r->user, r->uri, apr_strerror(invalid_pw));
+#else
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+		      "DB user %s: authentication failure for \"%s\": %d",
+		      r->user, r->uri, "error number",
+		      invalid_pw);
+#endif
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -268,7 +341,7 @@ static int db_check_auth(request_rec *r)
 {
     db_auth_config_rec *sec =
     (db_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					     &auth_db_module);
+						&auth_db_module);
     char *user = r->user;
     int m = r->method_number;
 
@@ -300,8 +373,8 @@ static int db_check_auth(request_rec *r)
 		if (!(sec->auth_dbauthoritative))
 		    return DECLINED;
 		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			    "user %s not in DB group file %s: %s",
-			    user, sec->auth_dbgrpfile, r->filename);
+			      "user %s not in DB group file %s: %s",
+			      user, sec->auth_dbgrpfile, r->filename);
 		ap_note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
 	    }
@@ -316,7 +389,7 @@ static int db_check_auth(request_rec *r)
 		}
 	    }
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			"user %s not in right group: %s", user, r->filename);
+			  "user %s not in right group: %s", user, r->filename);
 	    ap_note_basic_auth_failure(r);
 	    return AUTH_REQUIRED;
 	}
@@ -325,26 +398,21 @@ static int db_check_auth(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_check_user_id(db_authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_auth_checker(db_check_auth,NULL,NULL,HOOK_MIDDLE);
+}
 
 module auth_db_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_db_auth_dir_config,	/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     db_auth_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
-    db_authenticate_basic_user,	/* check_user_id */
-    db_check_auth,		/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks		/* register hooks */
 };
+
