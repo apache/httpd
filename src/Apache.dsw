@@ -171,6 +171,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_mime_magic"=".\os\win32\mod_mime_magic.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_proxy"=".\os\win32\mod_proxy.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -325,6 +340,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_info
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_mime_magic
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy

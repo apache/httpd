@@ -28,3 +28,4 @@ mod_proxy            0x6FE10000    0x00020000
 mod_auth_dbm         0x6FE00000    0x00010000
 mod_unique_id        0x6FDF0000    0x00010000
 mod_vhost_alias      0x6FDE0000    0x00010000
+mod_mime_magic       0x6FDD0000    0x00010000
