@@ -773,9 +773,9 @@ static void fix_hostname(request_rec *r)
     if (r->hostname[0] != '[') {
         for (dst = host; *dst; dst++) {
             if (*dst == '.') {
-                dst++;
-                if (*dst == '.')
+                if (*(dst + 1) == '.') {
                     goto bad;
+                }
             }
             else if (*dst == '/' || *dst == '\\') {
                 goto bad;
