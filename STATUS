@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/23 22:20:12 $]
+Last modified at [$Date: 2004/05/24 17:35:54 $]
 
 Release:
 
@@ -77,13 +77,13 @@ PATCHES TO BACKPORT FROM 2.1
        cache.
        modules/experimental/util_ldap_cache_mgr.c r1.16
        PR 24801
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) Throw an error message if an attempt is made to use the LDAPTrustedCA
        or LDAPTrustedCAType directives in a VirtualHost.
        modules/experimental/util_ldap.c r1.29
        PR 26390 [Brad Nicholes]
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
        an attempt to do this would try and connect to 0.0.0.0, regardless
