@@ -137,6 +137,31 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Access forbidden!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    要求されたディレクトリへのアクセス権限がありません。
+    インデックスドキュメントが存在しないか、
+    ディレクトリの読み込みが許可されていません。
+
+  <!--#else -->
+
+    要求されたオブジェクトへのアクセス権がありません。
+    読み込みが許可されていないか、
+    サーバが読み込みに失敗したかでしょう。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--
