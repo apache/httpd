@@ -43,6 +43,9 @@
 #if APR_HAVE_STDIO_H
 #include <stdio.h>
 #endif
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
 #endif
@@ -51,6 +54,9 @@
 #endif
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#if APR_HAVE_STRING_H
+#include <string.h>
 #endif
 #if APR_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
