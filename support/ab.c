@@ -109,8 +109,24 @@
    **        is now treated as fatal.
    **      Contributed by Aaron Bannert, April 24, 2002
    **
- */
+   ** Version 2.0.36-dev2
+   **	  Internalized the version string - this string is part
+   **     of the Agent: header and the result output.
+   **
+   **/
+#define AP_AB_BASEREVISION "2.0.36-dev2"		/* Note: this version
+			string should start with \d+[\d\.]* and be a valid
+			string for an HTTP Agent: header when prefixed with
+			'ApacheBench/'. 
 
+			It should reflect the version of AB - and not that of 
+			the apache server it happens to accompany. And it should 
+			be updated or changed whenever the results are no longer 
+			fundamentally comparable to the results of a previous 
+			version of ab. Either due to a change in the logic of
+			ab - or to due to a change in the distribution it is
+			compiled with (such as an APR change in for example blocking).
+			*/
 /*
  * BUGS:
  *
@@ -1172,7 +1188,7 @@ static void test(void)
 		"%s" "\r\n",
 		(posting == 0) ? "GET" : "HEAD",
 		(isproxy) ? fullurl : path,
-		AP_SERVER_BASEREVISION,
+		AP_AB_BASEREVISION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth, host_field, colonhost, hdrs);
     }
@@ -1187,7 +1203,7 @@ static void test(void)
 		"%s"
 		"\r\n",
 		(isproxy) ? fullurl : path,
-		AP_SERVER_BASEREVISION,
+		AP_AB_BASEREVISION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
 		host_field, colonhost, postlen,
@@ -1319,14 +1335,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.97 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.98 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.97 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.98 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
