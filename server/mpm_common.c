@@ -186,7 +186,9 @@ void ap_reclaim_child_processes(int terminate)
         }
     }
 }
-#endif /* NEED_RECLAIM_CHILD_PROCESSES */
+#endif /* AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES */
+
+#ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
 
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
@@ -219,7 +221,9 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
     ret->pid = -1;
     return;
 }
+#endif /* AP_MPM_WANT_WAIT_OR_TIMEOUT */
 
+#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
 void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
 {
     int signum = WTERMSIG(status);
@@ -265,6 +269,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
         }
     }
 }
+#endif /* AP_MPM_WANT_PROCESS_CHILD_STATUS */
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 void ap_sock_disable_nagle(apr_socket_t *s)
@@ -287,6 +292,7 @@ void ap_sock_disable_nagle(apr_socket_t *s)
 }
 #endif
 
+#ifdef HAVE_GETPWNAM
 AP_DECLARE(uid_t) ap_uname2id(const char *name)
 {
     struct passwd *ent;
@@ -300,7 +306,9 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name)
     }
     return (ent->pw_uid);
 }
+#endif
 
+#ifdef HAVE_GETGRNAM
 AP_DECLARE(gid_t) ap_gname2id(const char *name)
 {
     struct group *ent;
@@ -313,6 +321,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
     }
     return (ent->gr_gid);
 }
+#endif
 
 #ifndef HAVE_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
