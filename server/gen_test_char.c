@@ -62,6 +62,9 @@
 #if APR_HAVE_STDIO_H
 #include <stdio.h>
 #endif
+#if APR_HAVE_STRING_H
+#include <string.h>
+#endif
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.
