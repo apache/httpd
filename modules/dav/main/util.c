@@ -87,6 +87,20 @@ DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status,
     return err;
 }
 
+DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status, 
+                                          int error_id, const char *desc,
+                                          const char *namespace,
+                                          const char *tagname)
+{
+    dav_error *err = dav_new_error(p, status, error_id, desc);
+
+    err->tagname = tagname;
+    err->namespace = namespace;
+
+    return err;
+}
+
+
 DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, 
                                        int error_id, const char *desc, 
                                        dav_error *prev)

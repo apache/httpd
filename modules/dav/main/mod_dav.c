@@ -363,7 +363,10 @@ static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
 static int dav_error_response(request_rec *r, int status, const char *body)
 {
     r->status = status;
-    r->status_line = ap_get_status_line(status);	/* ### needed? */
+
+    /* ### I really don't think this is needed; gotta test */
+    r->status_line = ap_get_status_line(status);
+
     r->content_type = "text/html";
 
     /* since we're returning DONE, ensure the request body is consumed. */
@@ -388,6 +391,63 @@ static int dav_error_response(request_rec *r, int status, const char *body)
      */
     return DONE;
 }
+
+
+/*
+ * Send a "standardized" error response based on the error's namespace & tag
+ */
+static int dav_error_response_tag(request_rec *r, 
+                                  dav_error *err)
+{
+    r->status = err->status;
+
+    /* ### I really don't think this is needed; gotta test */
+    r->status_line = ap_get_status_line(err->status);
+
+    r->content_type = DAV_XML_CONTENT_TYPE;
+
+    /* since we're returning DONE, ensure the request body is consumed. */
+    (void) ap_discard_request_body(r);
+
+    ap_rputs(DAV_XML_HEADER DEBUG_CR
+             "<D:error xmlns:D=\"DAV:\"", r);
+
+    if (err->desc != NULL) {
+        /* ### should move this namespace somewhere (with the others!) */
+        ap_rputs(" xmlns:m=\"http://apache.org/dav/xmlns\"", r);
+    }
+
+    if (err->namespace != NULL) {
+        ap_rprintf(r,
+                   " xmlns:C=\"%s\">" DEBUG_CR
+                   "<C:%s/>" DEBUG_CR,
+                   err->namespace, err->tagname);
+    }
+    else {
+        ap_rprintf(r,
+                   ">" DEBUG_CR
+                   "<D:%s/>" DEBUG_CR, err->tagname);
+    }
+    
+    /* here's our mod_dav specific tag: */
+    if (err->desc != NULL) {
+        ap_rprintf(r, 
+                   "<m:human-readable errcode=\"%d\">" DEBUG_CR
+                   "%s" DEBUG_CR
+                   "</m:human-readable>" DEBUG_CR,
+                   err->error_id,
+                   apr_xml_quote_string(r->pool, err->desc, 0));
+    }
+
+    ap_rputs("</D:error>" DEBUG_CR, r);
+
+    /* the response has been sent. */
+    /*
+     * ### Use of DONE obviates logging..!
+     */
+    return DONE;
+}
+
 
 /*
 ** Apache's URI escaping does not replace '&' since that is a valid character
@@ -533,6 +593,13 @@ static int dav_handle_err(request_rec *r, dav_error *err,
     if (response == NULL) {
 	/* our error messages are safe; tell Apache this */
 	apr_table_setn(r->notes, "verbose-error-to", "*");
+
+        /* didn't get a multistatus response passed in, but we still
+           might be able to generate a standard <D:error> response. */
+        if (err->tagname) {
+            return dav_error_response_tag(r, err);
+        }
+
 	return err->status;
     }
 
