@@ -85,12 +85,16 @@ server</description>
       </example>
       <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
-      example will match <code>foo.apache.org</code> but it will
-      not match <code>fooapache.org</code>. This configuration will
-      cause the server to perform a reverse DNS lookup on the
-      client IP address, regardless of the setting of the <directive
-      module="core">HostnameLookups</directive>
-      directive.</p></dd>
+      example will match <code>foo.apache.org</code> but it will not
+      match <code>fooapache.org</code>. This configuration will cause
+      Apache to perform a double reverse DNS lookup on the client IP
+      address, regardless of the setting of the <directive
+      module="core">HostnameLookups</directive> directive.  It will do
+      a reverse DNS lookup on the IP address to find the associated
+      hostname, and then do a forward lookup on the hostname to assure
+      that it matches the original IP address.  Only if the forward
+      and reverse DNS are consistent and the hostname matches will
+      access be allowed.</p></dd>
 
       <dt>A full IP address</dt>
 
