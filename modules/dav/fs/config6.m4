@@ -4,10 +4,10 @@ APACHE_MODPATH_INIT(dav/fs)
 
 dav_fs_objects="mod_dav_fs.lo dbm.lo lock.lo repos.lo"
 
-if test "$enable_dav" = "no"; then
-  dav_fs_enable=no
+if test "$enable_dav" != ""; then
+  dav_fs_enable=$enable_dav
 else
-  dav_fs_enable="$enable_dav"
+  dav_fs_enable=$dav_enable
 fi
 
 APACHE_MODULE(dav_fs, DAV provider for the filesystem, $dav_fs_objects, , $dav_fs_enable)

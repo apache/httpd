@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/30 14:01:07 $]
+Last modified at [$Date: 2001/07/31 19:21:50 $]
 
 Release:
 
@@ -257,7 +257,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	    (use the new canonical name stuff?)
 	- find a new home for ap_text(_header)
 	- is it possible to remove the DAV: namespace stuff from util_xml?
-        - mod_dav_fs gets built static when mods-shared=most is specified.
 
     * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
       are a bit wonky.  The function should probably be exposed as a utility 
