@@ -40,7 +40,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(bindir)
   APACHE_SUBST(sbindir)
   APACHE_SUBST(cgidir)
-  APACHE_SUBST(logdir)
+  APACHE_SUBST(logfiledir)
   APACHE_SUBST(exec_prefix)
   APACHE_SUBST(datadir)
   APACHE_SUBST(localstatedir)
@@ -291,7 +291,7 @@ AC_DEFUN(APACHE_LAYOUT,[
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
              sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-             localstatedir runtimedir logdir proxycachedir; do
+             localstatedir runtimedir logfiledir proxycachedir; do
     eval "val=\"\$$var\""
     case $val in
       *+)
@@ -329,16 +329,9 @@ AC_ARG_ENABLE(layout,
 ])
 
 if test -z "$LAYOUT"; then
-  htdocsdir='$(prefix)/htdocs'
-  iconsdir='$(prefix)/icons'
-  cgidir='$(prefix)/cgi-bin'
-  logdir='$(prefix)/logs'
-  sysconfdir='${prefix}/conf'
-  libexecdir='${prefix}/modules'
-  layout_name=Apache
-else  
-  APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
+  LAYOUT="Apache"
 fi
+APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
 
 AC_MSG_CHECKING(for chosen layout)
 AC_MSG_RESULT($layout_name)

@@ -11,7 +11,7 @@
 
 #   Classical Apache path layout.
 <Layout Apache>
-    prefix:        /usr/local/apache
+    prefix:        /usr/local/apache2
     exec_prefix:   $prefix
     bindir:        $exec_prefix/bin
     sbindir:       $exec_prefix/bin

@@ -1,4 +1,8 @@
 Changes with Apache 2.0.16-dev
+
+  *) Change the default installation directory to /usr/local/apache2,
+     as now defined by the "Apache" layout in config.layout. [Marc Slemko]
+
   *) OS/2: Added support for building loadable modules as OS/2 DLLs. 
      [Brian Havard]
 
