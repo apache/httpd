@@ -1,5 +1,7 @@
 Changes with Apache 1.2
 
+Changes with Apache 1.2b11
+
   *) Fixed open timestamp fd in proxy_cache.c [Chuck Murcko]
 
   *) Added undocumented perl SSI mechanism for -DUSE_PERL_SSI and mod_perl.
@@ -1733,7 +1735,7 @@ Changes with 0.5.2
   *) More directory handling bugs (reported by Cox)
      Parent Directory link is now set correctly. [Robert Thau]
 
-Changes with 0.5.1: [Hopefully complete]
+Changes with 0.5.1: [Hopefully complete]                  10 Apr 1995
 
   *) Generalized cleanup interface in alloc.c --- any function can be
      registered with alloc.c as a cleanup for a resource pool;
@@ -1774,3 +1776,19 @@ Changes with 0.5.1: [Hopefully complete]
      string) even if none came in with the request.  [Robert Thau]
 
   *) CHANGES file added to distribution ;-).
+
+Changes with 0.4                                          02 Apr 1995
+
+  *) Patches by Brian Behlendorf, Andrew Wilson, Robert Thau,
+     and Rob Hartill.
+
+Changes with 0.3                                          24 Mar 1995
+
+  *) Patches by Robert Thau, David Robinson, Rob Hartill, and
+     Carlos Varela
+
+Changes with 0.2                                          18 Mar 1995
+
+  *) Based on NCSA httpd 1.3 by Rob McCool and patches by CERT,
+     Roy Fielding, Robert Thau, Nicolas Pioch, David Robinson,
+     Brian Behlendorf, Rob Hartill, and Cliff Skolnick
