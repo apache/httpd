@@ -927,7 +927,7 @@ static void child_main(int child_num_arg)
         }
     }
 
-    apr_signal_thread_func(check_signal);
+    apr_signal_thread(check_signal);
 }
 
 static int make_child(server_rec *s, int slot)
