@@ -201,7 +201,6 @@ HPUX betreiben</page>
 <page href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR </page>
 <page href="developer/documenting.html">Apache 2.0 dokumentieren</page>
 <page href="developer/hooks.html">Hook-Funktionen des Apache 2.0 </page>
-<page href="developer/layeredio.html">Gestaffelte E/A des Apache 2.0</page>
 <page href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</page>
 <page href="developer/request.html">Verarbeitung der Anfragen im Apache 2.0</page>
 <page href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</page>

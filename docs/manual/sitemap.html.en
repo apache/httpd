@@ -214,7 +214,6 @@ Server on HPUX</a></li>
 <li><a href="developer/debugging.html">Debugging Memory Allocation in APR</a></li>
 <li><a href="developer/documenting.html">Documenting Apache 2.0</a></li>
 <li><a href="developer/hooks.html">Apache 2.0 Hook Functions</a></li>
-<li><a href="developer/layeredio.html">Apache 2.0 Layered I/O</a></li>
 <li><a href="developer/modules.html">Converting Modules from Apache 1.3 to Apache 2.0</a></li>
 <li><a href="developer/request.html">Request Processing in Apache 2.0</a></li>
 <li><a href="developer/filters.html">How Filters Work in Apache 2.0</a></li>
