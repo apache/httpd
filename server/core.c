@@ -3083,7 +3083,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
          */
         char *path = r->uri + r->server->pathlen;
         while (*path == '/') {
-            ++*path;
+            ++path;
         }
         if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
                                APR_FILEPATH_TRUENAME
@@ -3104,7 +3104,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
          */
         char *path = r->uri;
         while (*path == '/') {
-            ++*path;
+            ++path;
         }
         if (apr_filepath_merge(&r->filename, conf->ap_document_root, path,
                                APR_FILEPATH_TRUENAME
