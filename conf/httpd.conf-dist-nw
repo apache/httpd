@@ -180,6 +180,7 @@ MaxRequestsPerChild 0
 # LoadModule speling_module modules/speling.nlm
 # LoadModule status_module modules/status.nlm
 # LoadModule info_module modules/info.nlm
+# LoadModule unique_id_module modules/uniqueid.nlm
 # LoadModule usertrack_module modules/usrtrack.nlm
 # LoadModule tls_module modules/mod_tls.nlm
 # LoadModule vhost_alias_module modules/vhost.nlm
