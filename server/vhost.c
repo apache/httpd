@@ -713,45 +713,41 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
  */
 static void fix_hostname(request_rec *r)
 {
-    char *host = apr_palloc(r->pool, strlen(r->hostname) + 1);
-    const char *src;
+    char *host, *scope_id;
     char *dst;
+    apr_port_t port;
+    apr_status_t rv;
 
-    /* check and copy the host part */
-    src = r->hostname;
-    dst = host;
-    while (*src) {
-	if (!apr_isalnum(*src) && *src != '-') {
-	    if (*src == '.') {
-		*dst++ = *src++;
-		if (*src == '.')
-		    goto bad;
-		else
-		    continue;
-	    }
-	    if (*src == ':')
-		break;
-	    else
-		goto bad;
-	} else {
-	    *dst++ = *src++;
-	}
-    }
-    /* check the port part */
-    if (*src++ == ':') {
-	while (*src) {
-	    if (!apr_isdigit(*src++)) {
-		goto bad;
-	    }
-	}
-    }
-    /* strip trailing gubbins */
-    if (dst > host && dst[-1] == '.') {
-	dst[-1] = '\0';
-    } else {
-	dst[0] = '\0';
+    rv = apr_parse_addr_port(&host, &scope_id, &port, r->hostname, r->pool);
+    if (rv != APR_SUCCESS || scope_id) {
+        goto bad;
     }
 
+    /* if the hostname is an IPv6 numeric address string, it was validated 
+     * already; otherwise, further validation is needed 
+     */
+    if (r->hostname[0] != '[') {
+        dst = host;
+        while (*dst) {
+            if (!apr_isalnum(*dst) && *dst != '-') {
+                if (*dst == '.') {
+                    dst++;
+                    if (*dst == '.')
+                        goto bad;
+                    else
+                        continue;
+                }
+                goto bad;
+            }
+            else {
+                dst++;
+            }
+        }
+        /* strip trailing gubbins */
+        if (dst > host && dst[-1] == '.') {
+            dst[-1] = '\0';
+        }
+    }
     r->hostname = host;
     return;
 
