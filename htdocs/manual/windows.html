@@ -279,38 +279,47 @@
 <P>The main differences in Apache for Windows are:</P>
 
 <UL>
-  <LI><P>Because Apache for Windows is multithreaded, it does not use a
+  <LI>Because Apache for Windows is multithreaded, it does not use a
       separate process for each request, as Apache does with
       Unix. Instead there are usually only two Apache processes running:
       a parent process, and a child which handles the requests. Within
-      the child each request is handled by a separate thread.</P>
-      <P>So the "process"-management directives are different:</P>
-      <P><A HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>
+      the child each request is handled by a separate thread.  So, 
+      "process"-management directives are different:
+    <UL>
+      <LI><A HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>
          - Like the Unix directive, this controls how many requests a
            process will serve before exiting. However, unlike Unix, a
            process serves all the requests at once, not just one, so if
            this is set, it is recommended that a very high number is
            used. The recommended default, <CODE>MaxRequestsPerChild
-           0</CODE>, does not cause the process to ever exit.</P>
-      <P><A HREF="mod/core.html#threadsperchild">ThreadsPerChild</A> -
+           0</CODE>, does not cause the process to ever exit.
+      <LI><A HREF="mod/core.html#threadsperchild">ThreadsPerChild</A> -
          This directive is new, and tells the server how many threads it
          should use. This is the maximum number of connections the server
          can handle at once; be sure and set this number high enough for
          your site if you get a lot of hits. The recommended default is
-         <CODE>ThreadsPerChild 50</CODE>.</P>
-  <LI><P>The directives that accept filenames as arguments now must use
+         <CODE>ThreadsPerChild 50</CODE>.
+    </UL>
+  <LI>The directives that accept filenames as arguments now must use
       Windows filenames instead of Unix ones. However, because Apache
       uses Unix-style names internally, you must use forward slashes, not
       backslashes. Drive letters can be used; if omitted, the drive with
-      the Apache executable will be assumed.</P>
-  <LI><P>Apache for Windows has the ability to load modules at runtime,
+      the Apache executable will be assumed.
+  <LI>Apache for Windows has the ability to load modules at runtime,
       without recompiling the server. If Apache is compiled normally, it
       will install a number of optional modules in the
       <CODE>\modules</CODE> directory. To activate these, or other
       modules, the new <A HREF="mod/mod_so.html#loadmodule">LoadModule</A>
       directive must be used. For example, to active the status module,
       use the following (in addition to the status-activating directives
-      in <CODE>access.conf</CODE>):</P>
+      in <CODE>access.conf</CODE>):
+  <LI>Apache for Windows version 1.3 series is implemented in synchronous
+      calls.  This poses an enormous problem for CGI authors, who won't
+      see unbuffered results sent immediately to the browser.  This is not
+      the behavior described for CGI in Apache, but it is a side-effect of
+      the Windows port.  Apache 2.0 is making progress to implement the
+      expected asynchronous behavior, and we hope to discover that the
+      NT/2000 implementation will allows CGI's to behave as documented.
 <PRE>
     LoadModule status_module modules/ApacheModuleStatus.dll
 </PRE>

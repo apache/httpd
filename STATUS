@@ -1,9 +1,9 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/06/09 18:32:56 $]
+  Last modified at [$Date: 2000/06/11 21:43:48 $]
 
 Release:
 
-    1.3.13-dev: In development - targeted to freeze June 10th? Roll 6/13?
+    1.3.13-dev: In development - targeted to freeze June 15th?
     1.3.12: Tagged and rolled Feb. 23, 2000. Released and
             announced on the 25th.
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
@@ -25,16 +25,11 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * Add a simple hold console open patch (wait for close or
-        the ESC key, with a nice message) if the server died a 
-        bad death (non-zero exit code) in console mode.  
-        OtherBill is working on this, simple patch on Fri a.m.
-
-    * Assure the windows.html reflects reality, today.
-        - running the service as a user other than SYSTEM (NT/2000).
-        - Document cvstodsp6.pl in win_compiling.html.
-        - CGI's cannot be unbuffered on the 1.3.13 Win32 port.
-        OtherBill is working up these final Win32 doc revisions
+    * Undo the hardcode default ServerName in httpd.conf-dist-win, and
+        replace it with some rational handling in util.c
+      OtherBill posted <000201bfd3d6$e0559370$345985d0@corecomm.net>
+        patch to replace 'undotted server name' within find_fqdn() with 
+        the server's ip number string... awaiting feedback.
 
     * Close the security hole in stat() by testing for anything other 
         than conventional file-not-found, permission-denied errors and
@@ -45,6 +40,12 @@ RELEASE SHOWSTOPPERS:
         - Daniel S. Reichenbach is cooking something up.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Add a simple Win32 hold console open patch (wait for close or
+        the ESC key, with a nice message) if the server died a 
+        bad death (non-zero exit code) in console mode.
+      OtherBill is working on this, but is open to any hints for
+        forcing the unchecked 'Close Window on Exit' opt's behavior.
 
     * long pathnames with many components and no AllowOverride None
       Workaround is to define <Directory /> with AllowOverride None,
