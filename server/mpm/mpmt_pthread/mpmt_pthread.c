@@ -69,6 +69,7 @@
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "unixd.h"
+#include "mpm_common.h"
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
@@ -294,7 +295,7 @@ static void set_signals(void)
 #endif
 #ifdef SIGABORT
 	if (sigaction(SIGABORT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_ap_server_conf, "sigaction(SIGABORT)");
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGABORT)");
 #endif
 #ifdef SIGABRT
 	if (sigaction(SIGABRT, &sa, NULL) < 0)
@@ -1047,11 +1048,15 @@ static void server_main_loop(int remaining_children_to_start)
 	    }
 	    else if (is_graceful) {
 		/* Great, we've probably just lost a slot in the
-		    * scoreboard.  Somehow we don't know about this
-		    * child.
-		    */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
-			    "long lost child came home! (pid %d)", pid);
+		 * scoreboard.  Somehow we don't know about this child.
+		 */
+		ap_os_proc_t actual_pid;
+
+		ap_get_os_proc(&actual_pid, pid);
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0,
+		             ap_server_conf,
+		             "long lost child came home! (pid %ld)",
+		             (long)actual_pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a

@@ -68,6 +68,7 @@
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "unixd.h"
+#include "mpm_common.h"
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
@@ -1022,7 +1023,7 @@ static void server_main_loop(int remaining_children_to_start)
 		 */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
                              ap_server_conf,
-			    "long lost child came home! (pid %d)", pid);
+			    "long lost child came home! (pid %d)", actual_pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
