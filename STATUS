@@ -43,6 +43,9 @@ RELEASE SHOWSTOPPERS:
     * the edge connection filter cannot be removed 
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
       jerenkrantz asks: Why should this block a release?
+      stas replies: because it requires a rewrite of the filters stack
+            implementation (you have suggested that) and once 2.2 is
+            released you can't do that anymore. 
 
 CURRENT VOTES:
 
