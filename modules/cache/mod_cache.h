@@ -188,6 +188,14 @@ struct cache_object {
 };
 
 typedef struct cache_handle cache_handle_t;
+struct cache_handle {
+    cache_object_t *cache_obj;
+    apr_table_t *req_hdrs;        /* cached request headers */
+    apr_table_t *resp_hdrs;       /* cached response headers */
+    apr_table_t *resp_err_hdrs;   /* cached response err headers */
+    const char *content_type;     /* cached content type */
+    int status;                   /* cached status */
+};
 
 #define CACHE_PROVIDER_GROUP "cache"
 
@@ -211,15 +219,6 @@ struct cache_provider_list {
     const char *provider_name;
     const cache_provider *provider;
     cache_provider_list *next;
-};
-
-struct cache_handle {
-    cache_object_t *cache_obj;
-    apr_table_t *req_hdrs;        /* cached request headers */
-    apr_table_t *resp_hdrs;       /* cached response headers */
-    apr_table_t *resp_err_hdrs;   /* cached response err headers */
-    const char *content_type;     /* cached content type */
-    int status;                   /* cached status */
 };
 
 /* per request cache information */
