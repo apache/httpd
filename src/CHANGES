@@ -1,13 +1,17 @@
 Changes with Apache 1.3b4
 
-  *) For clarity the following compile time definitions were changed, folks
-     with custom compilation options in their Configuration should make
-     appropriate changes:
+  *) For clarity the following compile time definition was changed:
 
         SAFE_UNSERIALIZED_ACCEPT  ->   SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-        HAVE_MMAP                 ->   USE_MMAP_SCOREBOARD
-        HAVE_SHMGET               ->   USE_SHMGET_SCOREBOARD
-    
+
+     Also, for example, HAVE_MMAP would mean to use mmap() scoreboards
+     and not be a general notice that the OS has mmap(). Now the
+     HAVE_MMAP/SHMGET #defines strictly are informational that the
+     OS has that method of shared memory; the type to use for
+     the scoreboard is a seperate #define (USE_MMAP_SCOREBOARD
+     and USE_SHMGET_SCOREBOARD). This allows outside modules to
+     determine if shared memory is available and allows Apache
+     to determine the best method to use for the scoreboard.
      [Jim Jagielski]
 
   *) PORT: UnixWare 2.1.2 SMP appears to require USE_FCNTL_SERIALIZED_ACCEPT,

@@ -140,6 +140,7 @@ setup. This time using the example of AIX, we see:
    #undef NO_SETSID
    #define HAVE_SYS_SELECT_H
    #define JMP_BUF sigjmp_buf
+   #define HAVE_MMAP
    #define USE_MMAP_SCOREBOARD
    typedef int rlim_t;
 
@@ -169,6 +170,12 @@ build for your OS.
 
  HAVE_*:
   Does this OS have/support this capability?
+
+    HAVE_MMAP:
+      The OS has a working mmap() implementation
+
+    HAVE_SHMGET:
+      The OS has a working shmget() (SystemV shared memory) implementation
 
     HAVE_GMTOFF:
       Define if the OS's tm struct has the tm_gmtoff element
@@ -203,12 +210,14 @@ build for your OS.
       Define if the OS supports the BSD mmap() call. This is used by various
       OSs to allow the scoreboard file to be held in shared mmapped-memory
       instead of a real file.  Note that this is only used to determine
-      if mmap should be used for shared memory.
+      if mmap should be used for shared memory. If HAVE_MMAP is not
+      #defined, this will automatically be unset.
 
      USE_SHMGET_SCOREBOARD:
       Define if the OS has the SysV-based shmget() family of shared-memory
       functions. Used to allow the scoreboard to live in a shared-memory
-      slot instead of a real file.
+      slot instead of a real file. If HAVE_SHMGET is not #defined,
+      this will automatically be unset.
 
      <<NOTE: If neither USE_MMAP_SCOREBOARD or USE_SHMGET_SCOREBOARD
 	     is defined, a file-based scoreboard will be used and
@@ -219,7 +228,8 @@ build for your OS.
       (as well as setjmp() instead of sigsetjmp()).
 
      USE_MMAP_FILES:
-      Enable the use of mmap() for sending static files.
+      Enable the use of mmap() for sending static files. If HAVE_MMAP
+      is not #defined, this will automatically be unset.
 
  USE_*_SERIALIZED_ACCEPT:
   See htdocs/manual/misc/perf-tuning.html for an in-depth discussion of
@@ -262,6 +272,12 @@ build for your OS.
   NO_*:
    These are defined if the OS does NOT have the specified function or if
    we should not use it.
+
+      NO_SHMGET:
+       Do not use shmget() (SystemV shared memory) at all.
+
+      NO_MMAP:
+       Do not use mmap() at all.
 
       NO_UNISTD_H:
 

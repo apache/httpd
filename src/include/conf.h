@@ -95,6 +95,7 @@ int gethostname (char *name, int namelen);
 #define NO_SETSID
 #define NO_KILLPG
 #define NO_WRITEV
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define SHM_R 0400  /* Read permission */
 #define SHM_W 0200  /* Write permission */
@@ -119,6 +120,7 @@ extern char *inet_ntoa();
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
 char *mktemp(char *template);
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #include <sys/time.h>
@@ -145,6 +147,7 @@ typedef int rlim_t;
 #endif
 #endif
 #define NEED_UNION_SEMUN
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -160,7 +163,9 @@ int gethostname(char *name, int namelen);
 #if !defined(USE_FCNTL_SERIALIZED_ACCEPT) && !defined(USE_USLOCK_SERIALIZED_ACCEPT)
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #endif
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
+#define HAVE_MMAP
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
@@ -176,6 +181,7 @@ int gethostname(char *name, int namelen);
 #ifndef _HIUX_SOURCE
 #define _HIUX_SOURCE
 #endif
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define SELECT_NEEDS_CAST
 #define HAVE_SYSLOG
@@ -189,6 +195,7 @@ int gethostname(char *name, int namelen);
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define HAVE_SYSLOG
 #ifndef HPUX10
@@ -202,6 +209,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SYS_SELECT_H
 #ifndef __ps2__
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_SYSLOG
@@ -235,6 +243,7 @@ typedef int rlim_t;
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -247,6 +256,7 @@ typedef int rlim_t;
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -351,7 +361,9 @@ typedef int pid_t;
 #define NET_SIZE_T socklen_t
 #endif
 
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
+#define HAVE_MMAP
 #define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
 
@@ -388,6 +400,7 @@ typedef int rlim_t;
 #define SIGURG SIGUSR1
 #define HAVE_SYS_SELECT_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
@@ -421,6 +434,7 @@ extern char *crypt();
 /* fcntl() locking is expensive with NFS */
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 /*
  * NOTE: If when you run Apache under A/UX and you get a warning
@@ -449,10 +463,12 @@ extern char *crypt();
 #endif
 #define HAVE_SYSLOG
 #define NET_SIZE_T size_t
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #ifdef _OSD_POSIX /* BS2000-POSIX mainframe does not have syslog and needs initgroups */
 #define NEED_INITGROUPS
 #undef HAVE_SYSLOG
+#undef HAVE_SHMGET
 #undef USE_SHMGET_SCOREBOARD
 #endif /*_OSD_POSIX*/
 
@@ -465,8 +481,10 @@ extern char *crypt();
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
 #define HAVE_RESOURCE
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define HAVE_CRYPT_H
 #define HAVE_SYS_SELECT_H
@@ -531,6 +549,7 @@ extern char *crypt();
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #ifndef DEFAULT_USER
@@ -563,6 +582,7 @@ int initgroups(char *, int);
 #define NEED_PROCESS_H
 #define HAVE_SYS_SELECT_H
 #include <unix.h>
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define HAVE_SYSLOG
 
@@ -598,6 +618,7 @@ typedef int rlim_t;
 #define HAVE_RESOURCE 1
 #define bzero(a,b) memset(a,0,b)
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -614,6 +635,7 @@ typedef int rlim_t;
 #define chdir _chdir2
 #include <sys/time.h>
 #define MAXSOCKETS 4096
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
 
@@ -632,6 +654,7 @@ typedef int rlim_t;
 #define USE_LONGJMP
 #undef NEED_STRDUP
 #else
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
@@ -642,6 +665,7 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_SYSLOG
@@ -655,6 +679,7 @@ typedef int rlim_t;
 #include <net/errno.h>
 #define NO_KILLPG
 #undef NO_SETSID
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define SIGURG SIGUSR1
 #define USE_FCNTL_SERIALIZED_ACCEPT
@@ -662,6 +687,7 @@ typedef int rlim_t;
 
 #elif defined(NEWSOS)
 #define HAVE_SYS_RESOURCE_H
+#define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define USE_LONGJMP
 #define NO_SETSID
@@ -863,8 +889,16 @@ int setrlimit(int, struct rlimit *);
 #define MAP_ANON MAP_ANONYMOUS
 #endif
 
-#if defined(USE_MMAP_SCOREBOARD) && defined(NO_MMAP)
+#if defined(USE_MMAP_FILES) && (defined(NO_MMAP) || !defined(HAVE_MMAP))
+#undef USE_MMAP_FILES
+#endif
+
+#if defined(USE_MMAP_SCOREBOARD) && (defined(NO_MMAP) || !defined(HAVE_MMAP))
 #undef USE_MMAP_SCOREBOARD
+#endif
+
+#if defined(USE_SHMGET_SCOREBOARD) && (defined(NO_SHMGET) || !defined(HAVE_SHMGET))
+#undef USE_SHMGET_SCOREBOARD
 #endif
 
 #ifndef LOGNAME_MAX

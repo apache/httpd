@@ -1384,7 +1384,8 @@ static void setup_shared_mem(pool *p)
  * this #ifdef section must be ABOVE the next one (BSD style).
  *
  * I tested this stuff and it works fine for me, but if it provides 
- * trouble for you, just comment out USE_MMAP_SCOREBOARD in QNX section of conf.h
+ * trouble for you, just comment out USE_MMAP_SCOREBOARD in QNX section
+ * of conf.h
  *
  * June 5, 1997, 
  * Igor N. Kovalenko -- infoh@mail.wplus.net
@@ -2802,6 +2803,12 @@ static void show_compile_settings(void)
 #endif
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
+#endif
+#ifdef HAVE_MMAP
+    printf(" -D HAVE_MMAP\n");
+#endif
+#ifdef HAVE_SHMGET
+    printf(" -D HAVE_SHMGET\n");
 #endif
 #ifdef USE_MMAP_SCOREBOARD
     printf(" -D USE_MMAP_SCOREBOARD\n");

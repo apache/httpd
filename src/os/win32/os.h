@@ -25,6 +25,7 @@
 #define NO_GETTIMEOFDAY
 //#define NEED_PROCESS_H    although we do, this is specially handled in conf.h
 #define USE_LONGJMP
+#define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define MULTITHREAD
 #define HAVE_CANONICAL_FILENAME
