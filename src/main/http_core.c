@@ -2891,7 +2891,7 @@ static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
      *      Instead we have an idiotic define in httpd.h that prevents
      *      it from being used even when it is available. Sheesh.
      */
-    conf->limit_req_body = (unsigned long)strtol(arg, (char **)NULL, 10);
+    conf->limit_req_body = (unsigned long)ap_strtol(arg, (char **)NULL, 10);
     return NULL;
 }
 

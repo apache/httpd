@@ -1072,7 +1072,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
         if (!ap_isdigit(*addr))
             return 0;           /* no digit at start of quad */
 
-        ip_addr[quads] = strtol(addr, &tmp, 0);
+        ip_addr[quads] = ap_strtol(addr, &tmp, 0);
 
         if (tmp == addr)        /* expected a digit, found something else */
             return 0;
@@ -1096,7 +1096,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 
         ++addr;
 
-        bits = strtol(addr, &tmp, 0);
+        bits = ap_strtol(addr, &tmp, 0);
 
         if (tmp == addr)        /* expected a digit, found something else */
             return 0;

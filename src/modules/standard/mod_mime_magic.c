@@ -1110,7 +1110,7 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
     }
 
     /* get offset, then skip over it */
-    m->offset = (int) strtol(l, &t, 0);
+    m->offset = (int) ap_strtol(l, &t, 0);
     if (l == t) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
 		    MODNAME ": offset %s invalid", l);
@@ -1145,7 +1145,7 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
 	if (*l == '+' || *l == '-')
 	    l++;
 	if (ap_isdigit((unsigned char) *l)) {
-	    m->in.offset = strtol(l, &t, 0);
+	    m->in.offset = ap_strtol(l, &t, 0);
 	    if (*s == '-')
 		m->in.offset = -m->in.offset;
 	}
@@ -1233,7 +1233,7 @@ static int parse(server_rec *serv, pool *p, char *l, int lineno)
     /* New-style anding: "0 byte&0x80 =0x80 dynamically linked" */
     if (*l == '&') {
 	++l;
-	m->mask = signextend(serv, m, strtol(l, &l, 0));
+	m->mask = signextend(serv, m, ap_strtol(l, &l, 0));
     }
     else
 	m->mask = ~0L;
@@ -1311,7 +1311,7 @@ static int getvalue(server_rec *s, struct magic *m, char **p)
 	m->vallen = slen;
     }
     else if (m->reln != 'x')
-	m->value.l = signextend(s, m, strtol(*p, p, 0));
+	m->value.l = signextend(s, m, ap_strtol(*p, p, 0));
     return 0;
 }
 

@@ -517,7 +517,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
         content_length = ap_table_get(resp_hdrs, "Content-Length");
         if (content_length != NULL) {
-            c->len = strtol(content_length, NULL, 10);
+            c->len = ap_strtol(content_length, NULL, 10);
         }
 
         /* Now add out bound headers set by other modules */

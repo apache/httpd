@@ -1569,7 +1569,7 @@ static char x2c(const char *what)
     xstr[2]=what[0];
     xstr[3]=what[1];
     xstr[4]='\0';
-    digit = os_toebcdic[0xFF & strtol(xstr, NULL, 16)];
+    digit = os_toebcdic[0xFF & ap_strtol(xstr, NULL, 16)];
 #endif /*CHARSET_EBCDIC*/
     return (digit);
 }

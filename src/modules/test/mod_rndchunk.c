@@ -128,12 +128,12 @@ error:
 	ap_kill_timeout(r);
 	return 0;
     }
-    seed = strtol(args, &endptr, 0);
+    seed = ap_strtol(args, &endptr, 0);
     if (!endptr || *endptr != ',') {
 	goto error;
     }
     ++endptr;
-    count = strtol(endptr, &endptr, 0);
+    count = ap_strtol(endptr, &endptr, 0);
 
     srandom(seed);
     for (i = 0; i < count; ++i) {

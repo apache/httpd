@@ -305,7 +305,7 @@ static int proxy_handler(request_rec *r)
 
     if (r->method_number == M_TRACE &&
         (maxfwd_str = ap_table_get(r->headers_in, "Max-Forwards")) != NULL) {
-        long maxfwd = strtol(maxfwd_str, NULL, 10);
+        long maxfwd = ap_strtol(maxfwd_str, NULL, 10);
         if (maxfwd < 1) {
             int access_status;
             r->proxyreq = NOT_PROXY;
