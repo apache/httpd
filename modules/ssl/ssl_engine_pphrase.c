@@ -732,9 +732,9 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
          * (see crypto/pem/pem_lib.c:def_callback() for details)
          */
         prompt = "Enter pass phrase:";
-        apr_file_puts(prompt, writetty);
 
         for (;;) {
+            apr_file_puts(prompt, writetty);
             if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
                 i = pipe_get_passwd_cb(buf, bufsize, "", FALSE); 
             }  
