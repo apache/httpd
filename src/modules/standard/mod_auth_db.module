@@ -17,6 +17,12 @@ ConfigStart
     elif ./helpers/TestCompile lib db dbopen; then
         DB_VERSION='Berkeley-DB/1.x'
         DB_LIB='-ldb'
+    elif TCADDINCL='#include <db.h>' INCLUDES1="$INCLUDES1 -I/usr/include/db1" TLIB="-ldb1" \
+         helpers/TestCompile func dbm_open; then
+        # For Red Hat 7
+        DB_VERSION='Berkeley-DB/1.x'
+        DB_LIB='-ldb1'
+        CFLAGS="$CFLAGS -I/usr/include/db1"
     fi
     if [ ".$DB_VERSION" != . ]; then
         if [ ".$DB_LIB" != . ]; then
