@@ -111,7 +111,7 @@
       <code>RefererLog</code> ディレクティブ、
       <code>RefererIgnore</code> ディレクティブを提供していた
       mod_log_agent と mod_log_referer モジュールは削除されました。
-      Agent ログと refere ログは mod_log_config の
+      Agent ログと refere ログは <code class="directive">mod_log_config</code> の
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
       ディレクティブにより実現可能です。</li>
 
@@ -134,11 +134,12 @@
       <code>httpd</code> のコマンドラインオプション <code>-S</code> は
       <code>-t -D DUMP_VHOSTS</code> に置き換えられました。</li>
 
-      <li>Apache 1.3 で実験的なモジュールだった mod_auth_digest は
+      <li>Apache 1.3 で実験的なモジュールだった
+      <code class="directive">mod_auth_digest</code> は
       標準モジュールになりました。</li>
 
-      <li>Apache 1.3 で実験的なモジュールだった mod_mmap_static は
-      mod_file_cache で置き換えられました。</li>
+      <li>Apache 1.3 で実験的なモジュールだった <code>mod_mmap_static</code> は
+      <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> で置き換えられました。</li>
 
       <li>Apache の配布は独立した <code>src</code> ディレクトリが
       なくなるように、完全に再構成されました。その代わりに、

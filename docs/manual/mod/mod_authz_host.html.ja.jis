@@ -36,12 +36,15 @@
     しかし、<code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
     セクションの中にディレクティブを書くことで、
     一部のメソッドにのみ制限をかけることもできます。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li><li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td> Allow from
+              </a></th><td><code> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+    [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>
@@ -49,7 +52,7 @@
     <p><code class="directive">Allow</code> ディレクティブはどのホストが
     サーバのある領域をアクセスできるかに影響を与えます。
     アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
-    環境変数として取得された、その他のクライアントのリクエストの
+    環境変数として取得された、その他のクライアントのリクエストの
     特徴によって制御することができます。</p> 
 
     <p>このディレクティブの最初の引数は常に <code>from</code> です。
@@ -99,7 +102,7 @@
       となっているものからなること以外は前のものと同じです。</dd>
     </dl>
 
-    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
+    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
 
 
     <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
@@ -140,10 +143,10 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td> Deny from
+              </a></th><td><code> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+    [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>
@@ -154,9 +157,9 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>デフォルトのアクセス可能な状態と、Allow と
 Deny が評価される順番を制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td> Order <em>ordering</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
+              </a></th><td><code> Order <em>ordering</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>Order Deny,Allow</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>

@@ -27,11 +27,19 @@
     クライアントに違った
     URL に新しいリクエストを送るように指示します。これは、
     リソースが新しい場所に移動したときによく使用されます。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>URL をファイルシステムの位置にマップする</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td> Alias <em>URL-path
-    file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
     <p><code class="directive">Alias</code> ディレクティブはドキュメントを
@@ -50,7 +58,7 @@
     ファイル /ftp/pub/image/foo.gif を返します。</p>
 
     <p>もし <em>url-path</em> の最後に /
-    を書いたなら、サーバはエイリアスを展開するために最後の /
+    を書いたなら、サーバはエイリアスを展開するために最後の /
     を要求するということに注意してください。すなわち、<code>Alias /icons/
      /usr/local/apache/icons/</code> というものを使用していると、
     <code>/icons</code> という url はエイリアスされません。</p>
@@ -67,13 +75,13 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>正規表現を使って URL をファイルシステムの位置にマップする</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>AliasMatch <em>regex
-    file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code>AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
     <p>このディレクティブは <code class="directive"><a href="#alias">Alias</a></code>
-    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
     標準正規表現を利用します。ここで指定された正規表現と URL のパス
     が合うかどうかを調べ、合う場合は括弧で括られたマッチを
     与えられた文字列で置き換え、それをファイル名として使用します。たとえば、
@@ -85,8 +93,8 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>クライアントが違う URL を取得するように外部へのリダイレクトを
 送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>Redirect [<em>status</em>] <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>Redirect [<em>status</em>] <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
@@ -94,7 +102,7 @@
     新しい URL がクライアントに返されます。そして、
     クライアントは新しいアドレスをもう一回取得しようとします。
     <em>URL-path</em> (% が復号された) パスで始まるドキュメントへの
-    すべてのリクエストは <em>URL</em> で始まる新しい
+    すべてのリクエストは <em>URL</em> で始まる新しい
     (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
 
     <p>例:</p>
@@ -157,8 +165,8 @@ Redirect 系のディレクティブは Alias
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>現在の URL への正規表現のマッチにより
 外部へのリダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>RedirectMatch [<em>status</em>] <em>regex URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>RedirectMatch [<em>status</em>] <em>regex URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
@@ -175,9 +183,9 @@ Redirect 系のディレクティブは Alias
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>クライアントが違う URL を取得するように外部への永久的な
-リダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>RedirectPermanent <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+リダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+              </a></th><td><code>RedirectPermanent <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
@@ -187,8 +195,8 @@ Redirect 系のディレクティブは Alias
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>RedirectTemp <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>RedirectTemp <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
@@ -198,9 +206,9 @@ Redirect 系のディレクティブは Alias
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>URL をファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>ScriptAlias 
-<em>URL-path file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code>ScriptAlias 
+<em>URL-path file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
     <p><code class="directive">ScriptAlias</code> ディレクティブは、対象ディレクトリに
@@ -223,9 +231,9 @@ CGI スクリプトに指定</td></tr><tr><th><a href="directive-dict.html#Syntax"
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>ScriptAliasMatch
-<em>regex file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code>ScriptAliasMatch
+<em>regex file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_alias</td></tr></table>
     <p>このディレクティブは <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>
