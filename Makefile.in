@@ -75,6 +75,8 @@ install-support:
 	@cp -p $(builddir)/support/rotatelogs $(bindir)
 	@cp -p $(builddir)/support/logresolve $(bindir)
 	@cp -p $(builddir)/support/ab $(bindir)
+	@cp -p $(builddir)/support/apachectl $(bindir)
+	chmod 755 $(bindir)/apachectl
 	@if test -f $(builddir)/support/apxs; then \
 	    cp -p $(builddir)/support/apxs $(bindir); \
 	    chmod 755 $(bindir)/apxs; \

@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/06 14:28:00 $]
+Last modified at [$Date: 2000/10/07 19:54:21 $]
 
 Release:
 
@@ -27,8 +27,6 @@ RELEASE SHOWSTOPPERS:
     * Remove Buff and IOL from the code.  To do this, a chunking and 
       translation filter must be written.  This allows us to remove BUFF.
       IOLs can be removed as soon as somebody gets to it.
-
-    * apachectl not being built or installed
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
