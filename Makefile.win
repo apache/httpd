@@ -75,6 +75,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f ap.mak CFG="ap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	cd support
+         $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f htdigest.mak CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
