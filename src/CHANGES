@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Fixed a recently introduced off-by-one-character bug in 
+     mod_rewrite's expansion of expression back-references.
+     [Cliff Woolley <jwoolley@wlu.edu>] PR#4766 PR#5389
+
   *) Add IndexOptions DescriptionWidth so that the width of the
      description field in fancy-indexed directory listings can
      be specified.

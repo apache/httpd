@@ -2513,7 +2513,7 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 
     /* now apply the standard regex substitution function */
     ap_cpystrn(buf, ap_pregsub(p, buf, bri->source,
-                               bri->nsub+0, bri->regmatch), nbuf);
+                               bri->nsub+1, bri->regmatch), nbuf);
 
     /* restore the original $N and & backrefs */
     for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
