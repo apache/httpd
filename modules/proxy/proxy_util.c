@@ -739,7 +739,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 		 inet_ntoa(This->addr), bits);
     }
 
-    This->mask.s_addr = htonl(INADDR_NONE << (32 - bits));
+    This->mask.s_addr = htonl(APR_INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
