@@ -744,10 +744,19 @@ typedef int rlim_t;
 #undef NEED_STRDUP
 #endif
 
+/* stuff marked API_EXPORT is part of the API, and intended for use
+ * by modules
+ */
 #ifndef API_EXPORT
 #define API_EXPORT(type)    type
 #endif
 
+/* Stuff marked API_EXPORT_NONSTD is part of the API, and intended for
+ * use by modules.  The difference between API_EXPORT and
+ * API_EXPORT_NONSTD is that the latter is required for any functions
+ * which use varargs or are used via indirect function call.  This
+ * is to accomodate the two calling conventions in windows dlls.
+ */
 #ifndef API_EXPORT_NONSTD
 #define API_EXPORT_NONSTD(type)    type
 #endif
