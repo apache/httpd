@@ -529,8 +529,8 @@ AP_DECLARE(int) ap_method_number_of(const char *method);
  */
 AP_DECLARE(const char *) ap_method_name_of(int methnum);
 
-int http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length);
-apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length);
+apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
+apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode);
 
   /* Hooks */
   /*

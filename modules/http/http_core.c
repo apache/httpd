@@ -3327,12 +3327,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
-/* This function only understands a length of AP_GET_ANY_AMOUNT.  It will
- * ignore length values and always return the entire brigade.  This is
- * pretty safe to do, because we know there always needs to be an intervening
- * filter just above this that will only make requests for AP_GET_ANY_AMOUNT
- */
-static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
+static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
 {
     ap_bucket *e;
     
@@ -3359,7 +3354,7 @@ typedef struct CORE_OUTPUT_FILTER_CTX {
     ap_bucket_brigade *b;
 } core_output_filter_ctx_t;
 #define MAX_IOVEC_TO_WRITE 16
-static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     apr_status_t rv;
     ap_bucket_brigade *more = NULL;

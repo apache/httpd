@@ -195,11 +195,11 @@ AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx,
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, 
-                                      ap_bucket_brigade *bb, apr_ssize_t length)
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb, 
+                                        ap_input_mode_t mode)
 {
     if (next) {
-        return next->frec->filter_func.in_func(next, bb, length);
+        return next->frec->filter_func.in_func(next, bb, mode);
     }
     return AP_NOBODY_READ;
 }

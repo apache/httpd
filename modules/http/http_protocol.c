@@ -850,7 +850,7 @@ static long get_chunk_size(char *);
 static int getline(char *s, int n, request_rec *r, int fold);
 
 apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
-                            apr_ssize_t length)
+                            ap_input_mode_t mode)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
@@ -907,7 +907,7 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     if (ctx->state == WANT_BODY) {
         /* Tell http_filter() how many bytes to deliver. */
         f->c->remain = ctx->chunk_size - ctx->bytes_delivered;
-        if ((rv = ap_get_brigade(f->next, bb, 999)) != APR_SUCCESS) {
+        if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
             return rv;
         }
         /* Walk through the body, accounting for bytes, and removing an eos bucket if
@@ -935,7 +935,7 @@ typedef struct http_filter_ctx {
     ap_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
+apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
 {
 #define ASCII_LF '\012'
     ap_bucket *e;
@@ -948,15 +948,27 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         ctx->b = ap_brigade_create(f->c->pool);
-        if ((rv = ap_get_brigade(f->next, ctx->b, AP_GET_ANY_AMOUNT)) != APR_SUCCESS) {
-            return rv;
+    }
+
+    if (mode == AP_MODE_PEEK) {
+        /* XXX make me *try* to read from the network if AP_BRIGADE_EMPTY().
+         * For now, we can't do a non-blocking read so we bypass this.
+         *
+         * Also, note that in the cases where another request can be read now
+         * without blocking, it is likely already in our brigadet, so this hack 
+         * isn't so bad after all.
+         */
+        if (AP_BRIGADE_EMPTY(ctx->b)) {
+            return APR_EOF;
+        }
+        else {
+            return APR_SUCCESS;
         }
     }
-    else {
-        if (AP_BRIGADE_EMPTY(ctx->b)) {
-            if ((rv = ap_get_brigade(f->next, ctx->b, AP_GET_LINE)) != APR_SUCCESS) {
-                return rv;
-            }
+
+    if (AP_BRIGADE_EMPTY(ctx->b)) {
+        if ((rv = ap_get_brigade(f->next, ctx->b, mode)) != APR_SUCCESS) {
+            return rv;
         }
     }
 
@@ -1053,7 +1065,7 @@ static int getline(char *s, int n, request_rec *r, int fold)
 
     while (1) {
         if (AP_BRIGADE_EMPTY(b)) {
-            if (ap_get_brigade(c->input_filters, b, AP_GET_LINE) != APR_SUCCESS ||
+            if (ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING) != APR_SUCCESS ||
                 AP_BRIGADE_EMPTY(b)) {
                 return -1;
             }
