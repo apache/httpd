@@ -552,6 +552,9 @@ prefixed with "./" (or the ':' escaped). In the case of Unix, this means
 leaving '/' alone, but otherwise doing what escape_path_segment() does. For
 efficiency reasons, we don't use escape_path_segment(), which is provided for
 reference. Again, RFC 1808 is where this stuff is defined.
+
+If partial is set, os_escape_path() assumes that the path will be appended to
+something with a '/' in it (and thus does not prefix "./").
 */
 
 char *escape_path_segment(pool *p, const char *segment) {
@@ -573,16 +576,20 @@ char *escape_path_segment(pool *p, const char *segment) {
     return copy;
 }
 
-char *os_escape_path(pool *p,const char *path) {
+char *os_escape_path(pool *p,const char *path,int partial) {
   char *copy=palloc(p,3*strlen(path)+3);
   char *s=copy;
-  int colon=ind(path,':');
-  int slash=ind(path,'/');
 
-  if(colon >= 0 && (colon < slash || slash < 0))
+  if(!partial)
     {
-      *s++='.';
-      *s++='/';
+      int colon=ind(path,':');
+      int slash=ind(path,'/');
+
+      if(colon >= 0 && (colon < slash || slash < 0))
+	{
+	  *s++='.';
+	  *s++='/';
+	}
     }
   for( ; *path ; ++path)
     {

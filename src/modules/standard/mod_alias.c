@@ -183,8 +183,7 @@ char *try_alias_list (request_rec *r, array_header *aliases, int doesc)
 			   
 	    if (doesc) {
 		char *escurl;
-		/* would like to use os_escape_path here, but can't */
-		escurl = escape_uri(r->pool, r->uri + l);
+		escurl = os_escape_path(r->pool, r->uri + l, 1);
 		return pstrcat(r->pool, p->real, escurl, NULL);
 	    } else
 		return pstrcat(r->pool, p->real, r->uri + l, NULL);

@@ -488,7 +488,7 @@ extern int unescape_url(char *url);
 void no2slash(char *name);
 void getparents(char *name);
 char *escape_path_segment(pool *p, const char *s);
-char *os_escape_path(pool *p,const char *path);
+char *os_escape_path(pool *p,const char *path,int partial);
 char *escape_uri (pool *p, char *s);
 extern char *escape_html(pool *p, const char *s);
 char *construct_url (pool *p, char *path, server_rec *s);     

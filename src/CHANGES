@@ -1,13 +1,13 @@
   *) If there was no default MIME type defined, Apache sent Content-type:
      without a newline, thus swallowing the next header. Changed to send no
-     Content-type: at all.
+     Content-type: at all. [Ben Laurie]
 
   *) Long overdue revamp of the Cookies module to stop Apache cookies
      colliding with other cookies a site may be using [Mark Cox]
 
   *) Clean up strings.h warning for SGI [Mark Cox]
 
-  *) Add HAVE_MMAP to SCO 5.
+  *) Add HAVE_MMAP to SCO 5. [Ben Laurie]
 
   *) SCO 5 reportedly (by Jay Thorne <jay@result.com>) requires
      FCNTL_SERIALIZED_ACCEPT. Added to conf.h. [Ben Laurie]
