@@ -168,8 +168,8 @@ static int cache_url_handler(request_rec *r, int lookup)
                      "%s, but we know better and are ignoring it", url);
     }
     else {
-        if (ap_cache_liststr(cc_in, "no-store", NULL) ||
-            ap_cache_liststr(pragma, "no-cache", NULL) || (auth != NULL)) {
+        if (ap_cache_liststr(NULL, cc_in, "no-store", NULL) ||
+            ap_cache_liststr(NULL, pragma, "no-cache", NULL) || (auth != NULL)) {
             /* delete the previously cached file */
             cache_remove_url(r, cache->types, url);
 
@@ -559,12 +559,12 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* RFC2616 14.9.2 Cache-Control: no-store response
              * indicating do not cache, or stop now if you are
              * trying to cache it */
-            || ap_cache_liststr(cc_out, "no-store", NULL)
+            || ap_cache_liststr(NULL, cc_out, "no-store", NULL)
             /* RFC2616 14.9.1 Cache-Control: private
              * this object is marked for this user's eyes only. Behave
              * as a tunnel.
              */
-            || ap_cache_liststr(cc_out, "private", NULL)
+            || ap_cache_liststr(NULL, cc_out, "private", NULL)
             /* RFC2616 14.8 Authorisation:
              * if authorisation is included in the request, we don't cache,
              * but we can cache if the following exceptions are true:
@@ -573,9 +573,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * 3) If Cache-Control: public is included
              */
             || (apr_table_get(r->headers_in, "Authorization") != NULL
-                && !(ap_cache_liststr(cc_out, "s-maxage", NULL)
-                     || ap_cache_liststr(cc_out, "must-revalidate", NULL)
-                     || ap_cache_liststr(cc_out, "public", NULL)))
+                && !(ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)
+                     || ap_cache_liststr(NULL, cc_out, "must-revalidate", NULL)
+                     || ap_cache_liststr(NULL, cc_out, "public", NULL)))
             /* or we've been asked not to cache it above */
             || r->no_cache) {
 
