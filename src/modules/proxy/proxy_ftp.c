@@ -220,6 +220,9 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char buf2[IOBUFSIZE];
     char *filename;
     char *tempurl;
+    char *searchptr = NULL;
+    int searchidx = 0;
+    int firstfile = 1;
     char urlptr[HUGE_STRING_LEN];
     long total_bytes_sent;
     register int n, o, w;
@@ -265,6 +268,19 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             filename=strrchr(buf, ' ');
             *(filename++)=0;
             filename[strlen(filename)-1]=0;
+
+            /* handle filenames with spaces in 'em */
+            if(!strcmp(filename, ".") || !strcmp(filename, "..") || firstfile) {
+		firstfile = 0;
+                searchptr = filename;
+                searchidx = filename - buf;
+            }
+            else if (searchptr != NULL && searchidx != 0) {
+                *(--filename) = ' ';
+                buf[searchidx - 1] = 0;
+                filename = &buf[searchidx];    
+            }   
+
             /* Special handling for '.' and '..' */
             if (!strcmp(filename, "."))
             {
