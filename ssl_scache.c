@@ -184,7 +184,7 @@ void ssl_scache_expire(server_rec *s)
 
 static void ssl_ext_ms_display(request_rec *, int, int);
 
-static void ssl_scache_status_register(void)
+void ssl_scache_status_register(apr_pool_t *p)
 {
     /* XXX point mod_status to this update, when it grows the opt fn */
 #if 0
