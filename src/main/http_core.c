@@ -3217,7 +3217,7 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
     int limit = atoi(arg1);
 
     if (limit < 0) {
-        return "The recursion limit must be greater than zero.";
+        return "The redirect recursion limit cannot be less than zero.";
     }
     if (limit && limit < 4) {
         ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, cmd->server,
@@ -3231,7 +3231,7 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
         limit = atoi(arg2);
 
         if (limit < 0) {
-            return "The recursion limit must be greater than zero.";
+            return "The subrequest recursion limit cannot be less than zero.";
         }
         if (limit && limit < 4) {
             ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, cmd->server,
