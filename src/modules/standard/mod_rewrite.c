@@ -2969,7 +2969,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 }
 
 
-void add_env_variable(request_rec *r, char *s)
+static void add_env_variable(request_rec *r, char *s)
 {
     char var[MAX_STRING_LEN];
     char val[MAX_STRING_LEN];
