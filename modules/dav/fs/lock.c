@@ -992,7 +992,8 @@ dav_error * dav_fs_get_locknull_members(
 {
     const char *dirpath;
 
-    dav_fs_dir_file_name(resource, &dirpath, NULL);
+    /* ### should test this result value... */
+    (void) dav_fs_dir_file_name(resource, &dirpath, NULL);
     return dav_fs_load_locknull_list(dav_fs_pool(resource), dirpath, pbuf);
 }
 
@@ -1008,7 +1009,8 @@ static dav_error * dav_fs_add_locknull_state(
     const char *fname;
     dav_error *err;
 
-    dav_fs_dir_file_name(resource, &dirpath, &fname);
+    /* ### should test this result value... */
+    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
 
     if ((err = dav_fs_load_locknull_list(p, dirpath, &buf)) != NULL) {
         return dav_push_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,

@@ -75,9 +75,9 @@ apr_pool_t *dav_fs_pool(const dav_resource *resource);
 const char *dav_fs_pathname(const dav_resource *resource);
 
 /* return the directory and filename for a resource */
-void dav_fs_dir_file_name(const dav_resource *resource,
-			  const char **dirpath,
-			  const char **fname);
+dav_error * dav_fs_dir_file_name(const dav_resource *resource,
+                                 const char **dirpath,
+                                 const char **fname);
 
 /* return the list of locknull members in this resource's directory */
 dav_error * dav_fs_get_locknull_members(const dav_resource *resource,

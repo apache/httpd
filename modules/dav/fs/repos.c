@@ -235,7 +235,7 @@ const char *dav_fs_pathname(const dav_resource *resource)
     return resource->info->pathname;
 }
 
-void dav_fs_dir_file_name(
+dav_error * dav_fs_dir_file_name(
     const dav_resource *resource,
     const char **dirpath_p,
     const char **fname_p)
@@ -283,10 +283,13 @@ void dav_fs_dir_file_name(
                 *fname_p = ctx->pathname + dirlen;
         }
         else {
-            if (fname_p != NULL)
-                *fname_p = NULL;
+            return dav_new_error(ctx->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                 "An incomplete/bad path was found in "
+                                 "dav_fs_dir_file_name.");
         }
     }
+
+    return NULL;
 }
 
 /* Note: picked up from ap_gm_timestr_822() */
@@ -530,8 +533,9 @@ static dav_error *dav_fs_copymoveset(int is_move, apr_pool_t *p,
     dav_error *err;
 
     /* Get directory and filename for resources */
-    dav_fs_dir_file_name(src, &src_dir, &src_file);
-    dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    /* ### should test these result values... */
+    (void) dav_fs_dir_file_name(src, &src_dir, &src_file);
+    (void) dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
 
     /* Get the corresponding state files for each resource */
     dav_dbm_get_statefiles(p, src_file, &src_state1, &src_state2);
@@ -582,7 +586,8 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
     apr_status_t status;
 
     /* Get directory, filename, and state-file names for the resource */
-    dav_fs_dir_file_name(resource, &dirpath, &fname);
+    /* ### should test this result value... */
+    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
     dav_dbm_get_statefiles(p, fname, &state1, &state2);
 
     /* build the propset pathname for the file */
@@ -741,6 +746,12 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
     char *dirpath;
     const char *testroot;
     const char *testpath;
+
+    /* If we're at the root of the URL space, then there is no parent. */
+    if (strcmp(resource->uri, "/") == 0) {
+        *result_parent = NULL;
+        return NULL;
+    }
 
     /* If given resource is root, then there is no parent.
      * Unless we can retrieve the filepath root, this is

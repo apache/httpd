@@ -197,7 +197,8 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
     const char *pathname;
 
     /* Get directory and filename for resource */
-    dav_fs_dir_file_name(resource, &dirpath, &fname);
+    /* ### should test this result value... */
+    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
 
     /* If not opening read-only, ensure the state dir exists */
     if (!ro) {
