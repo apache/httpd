@@ -1,5 +1,8 @@
 Changes with Apache 1.3.32
 
+  *) Fix memory leak in the cache handling of mod_rewrite. PR 27862.
+     [chunyan sheng <shengperson yahoo.com>, André Malo]
+
   *) mod_rewrite no longer confuses the RewriteMap caches if
      different maps defined in different virtual hosts use the
      same map name. PR 26462.  [André Malo]
