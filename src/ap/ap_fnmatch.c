@@ -141,7 +141,7 @@ API_EXPORT(int) ap_fnmatch(const char *pattern, const char *string, int flags)
 	    /* FALLTHROUGH */
 	default:
 	    if (flags & FNM_CASE_BLIND) {
-	        if (toupper(c) != toupper(*string)) {
+	        if (tolower(c) != tolower(*string)) {
 		    return (FNM_NOMATCH);
 		}
 	    }
@@ -188,14 +188,14 @@ static const char *rangematch(const char *pattern, int test, int flags)
 	    }
 	    if ((c <= test && test <= c2)
 		|| ((flags & FNM_CASE_BLIND)
-		    && ((toupper(c) <= toupper(test))
-			&& (toupper(test) <= toupper(c2))))) {
+		    && ((tolower(c) <= tolower(test))
+			&& (tolower(test) <= tolower(c2))))) {
 		ok = 1;
 	    }
 	}
 	else if ((c == test)
 		 || ((flags & FNM_CASE_BLIND)
-		     && (toupper(c) == toupper(test)))) {
+		     && (tolower(c) == tolower(test)))) {
 	    ok = 1;
 	}
     }
