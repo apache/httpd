@@ -23,8 +23,8 @@
 # the path to your PID file
 PIDFILE=/usr/local/apache/logs/httpd.pid
 #
-# the path to your httpd binary
-HTTPD=/usr/local/apache/src/httpd
+# the path to your httpd binary, including options if necessary
+HTTPD='/usr/local/apache/src/httpd'
 #
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other
@@ -49,7 +49,7 @@ do
     # check for pidfile
     if [ -f $PIDFILE ] ; then
 	PID=`cat $PIDFILE`
-	PS=`ps -p $PID | tail -1 | grep $PID`
+	PS=`ps -p $PID 2>/dev/null | tail -1 | grep $PID`
 	if [ "x$PS" = "x" ]; then
 	    STATUS="httpd (pid $PID?) not running"
 	    RUNNING=0
