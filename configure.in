@@ -251,7 +251,7 @@ case $host in
         OS_SPECIFIC_VARS="$OS_SPECIFIC_VARS set AIXTHREAD_SCOPE=S ; export AIXTHREAD_SCOPE"
         ;;
     *os390*)
-        OS_SPECIFIC_VARS="export _CEE_RUNOPTS=\"(STACK(,,ANY))\" ; export _EDC_ADD_ERRNO2=1"
+        OS_SPECIFIC_VARS="export _CEE_RUNOPTS=\"STACK(,,ANY)\" ; export _EDC_ADD_ERRNO2=1"
         ;;
     *)
         OS_SPECIFIC_VARS=""
