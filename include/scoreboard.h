@@ -225,12 +225,14 @@ typedef struct {
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
+AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r);
+
 apr_status_t ap_cleanup_scoreboard(void *d);
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
 
 void ap_sync_scoreboard_image(void);
-void increment_counts(int child_num, int thread_num, request_rec *r);
+
 void update_scoreboard_global(void);
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);

@@ -245,6 +245,9 @@ AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
 	if (r->status == HTTP_OK)
 	    ap_process_request(r);
 
+        if (ap_extended_status)
+            ap_increment_counts(AP_CHILD_THREAD_FROM_ID(c->id), r);
+
 	if (!c->keepalive || c->aborted)
 	    break;
 

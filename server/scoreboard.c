@@ -231,7 +231,7 @@ void update_scoreboard_global(void)
 #endif
 }
 
-void increment_counts(int child_num, int thread_num, request_rec *r)
+AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r)
 {
     short_score *ss;
 
