@@ -248,7 +248,7 @@ typedef struct {
     proxy_balancer  *b;         /* balancer containing this worker */
     proxy_worker    *w;
     double          lbfactor;   /* dynamic lbfactor */
-    double          lbsatus;    /* Current lbstatus */
+    double          lbstatus;   /* Current lbstatus */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
     apr_size_t      readed;     /* Number of bytes readed from remote */
     const char      *route;
