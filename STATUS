@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/30 02:43:29 $]
+Last modified at [$Date: 2000/05/30 15:14:23 $]
 
 Release:
 
@@ -9,8 +9,6 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
-    * Saferead does not work on Win32
-
     * Win32: Get mod_auth_digest working under win32
       - APR_HAS_RANDOM should be defined on windows and there is a 
       lib/apr/misc/win32/rand.c which is basically a copy of what
