@@ -729,9 +729,9 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 /**
  * The topmost module in the list
- * @defvar module *top_module
+ * @defvar module *ap_top_module
  */
-AP_DECLARE_DATA extern module *top_module;
+AP_DECLARE_DATA extern module *ap_top_module;
 
 /**
  * Array of all statically linked modules

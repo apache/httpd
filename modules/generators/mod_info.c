@@ -296,7 +296,7 @@ static int display_info(request_rec *r)
     if (!r->args || strcasecmp(r->args, "list")) {
         if (!r->args) {
             ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
-            for (modp = top_module; modp; modp = modp->next) {
+            for (modp = ap_top_module; modp; modp = modp->next) {
                 ap_rprintf(r, "<a href=\"#%s\">%s</a>", modp->name, modp->name);
                 if (modp->next) {
                     ap_rputs(", ", r);
@@ -337,7 +337,7 @@ static int display_info(request_rec *r)
 		       "<tt>%s</tt><br>\n", SERVER_CONFIG_FILE);
         }
         ap_rputs("<hr><dl>", r);
-        for (modp = top_module; modp; modp = modp->next) {
+        for (modp = ap_top_module; modp; modp = modp->next) {
             if (!r->args || !strcasecmp(modp->name, r->args)) {
                 ap_rprintf(r, "<dt><a name=\"%s\"><strong>Module Name:</strong> "
                             "<font size=+1><tt>%s</tt></a></font>\n",
@@ -439,7 +439,7 @@ static int display_info(request_rec *r)
         }
     }
     else {
-        for (modp = top_module; modp; modp = modp->next) {
+        for (modp = ap_top_module; modp; modp = modp->next) {
             ap_rputs(modp->name, r);
             if (modp->next) {
                 ap_rputs("<br>", r);

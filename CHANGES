@@ -1,5 +1,7 @@
 Changes with Apache 2.0.16-dev
 
+  *) top_module global variable renamed to ap_top_module [Perl]
+
   *) Move ap_set_last_modified to the core.  This is a potentially 
      controversial change, because this is kind of HTTP specific.  However
      many protocols should be able to take advantage of this kind of

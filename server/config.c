@@ -148,7 +148,7 @@ static int total_modules = 0;
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
-AP_DECLARE_DATA module *top_module = NULL;
+AP_DECLARE_DATA module *ap_top_module = NULL;
 AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
@@ -179,7 +179,7 @@ static ap_conf_vector_t *create_default_per_dir_config(apr_pool_t *p)
                                      (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
-    for (modp = top_module; modp; modp = modp->next) {
+    for (modp = ap_top_module; modp; modp = modp->next) {
 	dir_maker_func df = modp->create_dir_config;
 
 	if (df)
@@ -198,7 +198,7 @@ ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
     void **new_vector = (void **) new_conf;
     module *modp;
 
-    for (modp = top_module; modp; modp = modp->next) {
+    for (modp = ap_top_module; modp; modp = modp->next) {
 	merger_func df = modp->merge_dir_config;
 	int i = modp->module_index;
 
@@ -217,7 +217,7 @@ static ap_conf_vector_t *create_server_config(apr_pool_t *p, server_rec *s)
                                      (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
 
-    for (modp = top_module; modp; modp = modp->next) {
+    for (modp = ap_top_module; modp; modp = modp->next) {
 	if (modp->create_server_config)
 	    conf_vector[modp->module_index] = (*modp->create_server_config) (p, s);
     }
@@ -236,7 +236,7 @@ static void merge_server_configs(apr_pool_t *p, ap_conf_vector_t *base,
     void **virt_vector = (void **) virt;
     module *modp;
 
-    for (modp = top_module; modp; modp = modp->next) {
+    for (modp = ap_top_module; modp; modp = modp->next) {
 	merger_func df = modp->merge_server_config;
 	int i = modp->module_index;
 
@@ -356,8 +356,8 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
     }
 
     if (m->next == NULL) {
-	m->next = top_module;
-	top_module = m;
+	m->next = ap_top_module;
+	ap_top_module = m;
     }
     if (m->module_index == -1) {
 	m->module_index = total_modules++;
@@ -411,10 +411,10 @@ AP_DECLARE(void) ap_remove_module(module *m)
 {
     module *modp;
 
-    modp = top_module;
+    modp = ap_top_module;
     if (modp == m) {
 	/* We are the top module, special case */
-	top_module = modp->next;
+	ap_top_module = modp->next;
 	m->next = NULL;
     }
     else {
@@ -539,7 +539,7 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
 {
     module *modp;
 
-    for (modp = top_module; modp; modp = modp->next) {
+    for (modp = ap_top_module; modp; modp = modp->next) {
 	if (strcmp(modp->name, name) == 0)
 	    return modp;
     }
@@ -786,7 +786,7 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     const char *args;
     char *cmd_name;
     ap_directive_t *newdir;
-    module *mod = top_module;
+    module *mod = ap_top_module;
     const command_rec *cmd;
 
     if (*l == '#' || *l == '\0')
@@ -922,7 +922,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 				      cmd_parms *parms,
                                       ap_conf_vector_t *section_vector)
 {
-    module *mod = top_module;
+    module *mod = ap_top_module;
 
     while (1) {
 	const command_rec *cmd;
@@ -1157,7 +1157,7 @@ static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parm
                          apr_pool_t *p, apr_pool_t *ptemp, 
                          ap_directive_t **sub_tree, ap_directive_t *parent)
 {
-    module *mod = top_module;
+    module *mod = ap_top_module;
     const command_rec *cmd;
 
     if (!(cmd = ap_find_command_in_modules(cmd_line, &mod))) {
@@ -1625,7 +1625,7 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process)
 {
     module *m;
 
-    for (m = top_module; m; m = m->next)
+    for (m = ap_top_module; m; m = m->next)
         if (m->rewrite_args)
             (*m->rewrite_args) (process);
 }
