@@ -169,7 +169,9 @@ typedef struct cache_handle cache_handle;
 struct cache_handle {
     cache_info *info;
     cache_handle *next;
-    void *cache_obj;           /* Pointer to cache specific object */
+
+    void *cache_obj;     /* Pointer to cache specific object */
+    apr_size_t count;   /* Number of body bytes written to the cache so far */
 
     /* Cache call back functions */
     int (*remove_entity) (cache_handle *h);
