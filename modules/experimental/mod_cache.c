@@ -321,7 +321,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
      * that stored headers and the entity body in seperate files.
      */
     cache_read_entity_headers(cache->handle, r);    
-    cache_read_entity_body(cache->handle, bb);
+    cache_read_entity_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
@@ -423,7 +423,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        cache_write_entity_body(cache->handle, in);
+        cache_write_entity_body(cache->handle, r, in);
         return ap_pass_brigade(f->next, in);
     }
 
@@ -706,7 +706,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * Write away header information to cache.
      */
     cache_write_entity_headers(cache->handle, r, info);
-    cache_write_entity_body(cache->handle, in);    
+    cache_write_entity_body(cache->handle, r, in);    
     return ap_pass_brigade(f->next, in);
 }
 

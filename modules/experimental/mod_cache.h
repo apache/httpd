@@ -114,6 +114,12 @@
 #define MIN(a,b)                ((a) < (b) ? (a) : (b))
 #endif
 
+/* Used by mod_disk_cache 
+ * XXX: Perhaps these should be moved to a mod_disk_cache header
+ * file? 
+ */
+#define CACHE_HEADER_SUFFIX ".header"
+#define CACHE_DATA_SUFFIX   ".data"
 
 /* default completion is 60% */
 #define DEFAULT_CACHE_COMPLETION (60)
@@ -167,6 +173,14 @@ struct cache_info {
     apr_time_t request_time;
     apr_time_t response_time;
     apr_size_t len;
+
+    /* Field used by mod_disk_cache */
+    char *datafile;          /* where the data will go */
+    char *hdrsfile;          /* where the hdrs will go */
+    char *name;
+    int version;             /* update count of the file */
+    apr_file_t *fd;          /* pointer to apr_file_t structure for the data file  */
+    apr_off_t file_size;    /*  File size of the cached data file  */    
 };
 
 /* cache handle information */
@@ -178,6 +192,10 @@ struct cache_object {
     void *vobj;         /* Opaque portion (specific to the cache implementation) of the cache object */
     apr_size_t count;   /* Number of body bytes written to the cache so far */
     int complete;
+    /* Used by mod_disk_cache: name of the temporary file, 
+     * used for cache element creation 
+     */
+    char *tempfile;
 };
 
 typedef struct cache_handle cache_handle_t;
@@ -185,9 +203,16 @@ struct cache_handle {
     cache_object_t *cache_obj;
     int (*remove_entity) (cache_handle_t *h);
     int (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
-    int (*write_body)(cache_handle_t *h, apr_bucket_brigade *b);
+    int (*write_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
     int (*read_headers) (cache_handle_t *h, request_rec *r);
-    int (*read_body) (cache_handle_t *h, apr_bucket_brigade *bb); 
+    int (*read_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+
+    /* These fields were added for mod_disk_cache but just
+     * use unnecessary storage in mod_mem_cache.
+     */
+    const char *root;           /* the location of the cache directory */
+    int dirlevels;              /* Number of levels of subdirectories */
+    int dirlength;              /* Length of subdirectory names */   
 };
 
 /* per request cache information */
@@ -201,6 +226,13 @@ typedef struct {
 
 
 /* cache_util.c */
+cache_info *create_cache_el(apr_pool_t *p, cache_handle_t *h, const char *name); 
+char *data_file(cache_handle_t *h, apr_pool_t *p, const char *name);
+char *header_file(cache_handle_t *h, apr_pool_t *p, const char *name);
+int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r);
+apr_time_t ap_cache_hex2msec(const char *x);
+void ap_cache_msec2hex(apr_time_t j, char *y);
+
 int ap_cache_request_is_conditional(request_rec *r);
 void ap_cache_reset_output_filters(request_rec *r);
 const char *ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
@@ -221,10 +253,10 @@ int cache_select_url(request_rec *r, const char *types, char *url);
 const char* cache_create_key( request_rec*r );
 
 apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
-apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
+apr_status_t cache_write_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *bb);
 
 apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r);
-apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
+apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 
 /* hooks */
@@ -251,10 +283,10 @@ apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 #endif
 
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity, 
-                          (cache_handle_t *h, const char *type,
+                          (cache_handle_t *h, request_rec *r, const char *type,
                            const char *urlkey, apr_size_t len))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
-                          (cache_handle_t *h, const char *type,
+                          (cache_handle_t *h, apr_pool_t *p, const char *type,
                            const char *urlkey))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
                           (const char *type, const char *urlkey))

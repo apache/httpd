@@ -209,3 +209,183 @@ const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
         return NULL;
 
 }
+
+/*
+ * XXX TODO:
+ * These functions were lifted from mod_proxy
+ * Consider putting them in APR or some other common accessable
+ * location.
+ */
+/*
+ * Converts apr_time_t hex digits to a time integer
+ */
+static apr_time_t ap_cache_hex2msec(const char *x)
+{
+    int i, ch;
+    apr_time_t j;
+    for (i = 0, j = 0; i < sizeof(j) * 2; i++) {
+        ch = x[i];
+        j <<= 4;
+        if (apr_isdigit(ch))
+            j |= ch - '0';
+        else if (apr_isupper(ch))
+            j |= ch - ('A' - 10);
+        else
+            j |= ch - ('a' - 10);
+    }
+    return j;
+}
+
+/*
+ * Converts a time integer to apr_time_t hex digits
+ */
+static void ap_cache_msec2hex(apr_time_t j, char *y)
+{
+    int i, ch;
+
+    for (i = (sizeof(j) * 2)-1; i >= 0; i--) {
+        ch = j & 0xF;
+        j >>= 4;
+        if (ch >= 10)
+            y[i] = ch + ('A' - 10);
+        else
+            y[i] = ch + '0';
+    }
+    y[sizeof(j) * 2] = '\0';
+}
+
+int mkdir_structure(char *file, const char *root)
+{
+    
+    /* XXX TODO: Use APR to make a root directory. Do some sanity checking... */
+    return 0;
+}
+
+cache_info * create_cache_el(apr_pool_t *p, cache_handle_t *h, const char *name)
+{
+    cache_info *info = apr_pcalloc(p, sizeof(cache_info));
+    memset(info, '\0', sizeof(cache_info));
+    info->name = (char *)name;
+    return info;
+}
+
+/* These two functions get and put state information into the data 
+ * file for an ap_cache_el, this state information will be read 
+ * and written transparent to clients of this module 
+ */
+int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r)
+{
+    apr_status_t rv;
+    char urlbuff[1034];
+    int urllen = sizeof(urlbuff);
+    int offset=0;
+    char * temp;
+
+    if(!info->hdrsfile) {
+	return APR_NOTFOUND;
+    }
+
+    /* read the data from the cache file */
+    /* format
+     * date SP expire SP count CRLF
+     * dates are stored as hex seconds since 1970
+     */
+    rv = apr_file_gets(&urlbuff[0], urllen, fd);
+    if (rv != APR_SUCCESS)
+    {
+	return rv;
+    }
+
+    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
+	*temp = '\0';      /* overlay it with the null terminator */
+
+    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&"))
+    {
+        return APR_EGENERAL;
+    }
+
+    info->date = ap_cache_hex2msec(urlbuff + offset);
+    offset += (sizeof(info->date)*2) + 1;
+    info->expire = ap_cache_hex2msec(urlbuff + offset);
+    offset += (sizeof(info->expire)*2) + 1;
+    info->version = ap_cache_hex2msec(urlbuff + offset);
+    
+    /* check that we have the same URL */
+    rv = apr_file_gets(&urlbuff[0], urllen, fd);
+    if (rv != APR_SUCCESS)
+    {
+	return rv;
+    }
+
+    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
+	*temp = '\0';      /* overlay it with the null terminator */
+
+    if (strncmp(urlbuff, "X-NAME: ", 7) != 0)
+    {
+	return APR_EGENERAL;
+    }
+    if (strcmp(urlbuff + 8, info->name) != 0)
+    {
+        return APR_EGENERAL;
+    }
+    
+    return APR_SUCCESS;
+}
+
+static void cache_hash(const char *it, char *val, int ndepth, int nlength)
+{
+    apr_md5_ctx_t context;
+    unsigned char digest[16];
+    char tmp[22];
+    int i, k, d;
+    unsigned int x;
+    static const char enc_table[64] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
+
+    apr_md5_init(&context);
+    apr_md5_update(&context, (const unsigned char *) it, strlen(it));
+    apr_md5_final(digest, &context);
+
+    /* encode 128 bits as 22 characters, using a modified uuencoding 
+     * the encoding is 3 bytes -> 4 characters* i.e. 128 bits is 
+     * 5 x 3 bytes + 1 byte -> 5 * 4 characters + 2 characters
+     */
+    for (i = 0, k = 0; i < 15; i += 3) {
+    x = (digest[i] << 16) | (digest[i + 1] << 8) | digest[i + 2];
+    tmp[k++] = enc_table[x >> 18];
+    tmp[k++] = enc_table[(x >> 12) & 0x3f];
+    tmp[k++] = enc_table[(x >> 6) & 0x3f];
+    tmp[k++] = enc_table[x & 0x3f];
+    }
+
+    /* one byte left */
+    x = digest[15];
+    tmp[k++] = enc_table[x >> 2];    /* use up 6 bits */
+    tmp[k++] = enc_table[(x << 4) & 0x3f];
+
+    /* now split into directory levels */
+    for (i = k = d = 0; d < ndepth; ++d) {
+        memcpy(&val[i], &tmp[k], nlength);
+        k += nlength;
+        val[i + nlength] = '/';
+        i += nlength + 1;
+    }
+    memcpy(&val[i], &tmp[k], 22 - k);
+    val[i + 22 - k] = '\0';
+}
+
+static char *generate_name(apr_pool_t *p, cache_handle_t *h, const char *name)
+{
+    char hashfile[66], *filebase;
+    cache_hash(name, hashfile, h->dirlevels, h->dirlength);
+    filebase = apr_pstrcat(p, h->root, "/", hashfile, "%s", NULL);
+    return filebase;
+}
+char *header_file(cache_handle_t *h, apr_pool_t *p, const char *name)
+{
+    return apr_psprintf(p, generate_name(p, h, name), CACHE_HEADER_SUFFIX);
+}
+char *data_file(cache_handle_t *h, apr_pool_t *p, const char *name)
+{
+    return apr_psprintf(p, generate_name(p, h, name), CACHE_DATA_SUFFIX);
+}

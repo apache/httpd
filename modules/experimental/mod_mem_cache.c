@@ -118,9 +118,9 @@ static mem_cache_conf *sconf;
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
 static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static int write_body(cache_handle_t *h, apr_bucket_brigade *b);
+static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
 static int read_headers(cache_handle_t *h, request_rec *r);
-static int read_body(cache_handle_t *h, apr_bucket_brigade *bb);
+static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj)
 {
@@ -222,7 +222,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static int create_entity(cache_handle_t *h, 
+static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *type, 
                          const char *key, 
                          apr_size_t len) 
@@ -311,7 +311,7 @@ static int create_entity(cache_handle_t *h,
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, const char *type, const char *key) 
+static int open_entity(cache_handle_t *h, apr_pool_t *p, const char *type, const char *key) 
 {
     cache_object_t *obj;
 
@@ -486,7 +486,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
 
 }
 
-static int read_body(cache_handle_t *h, apr_bucket_brigade *bb) 
+static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
 {
     apr_bucket *b;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -557,7 +557,7 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     return OK;
 }
 
-static int write_body(cache_handle_t *h, apr_bucket_brigade *b) 
+static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;

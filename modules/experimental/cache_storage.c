@@ -116,7 +116,7 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
     key = cache_create_key(r);
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch (rv = cache_run_create_entity(h, type, key, size)) {
+        switch (rv = cache_run_create_entity(h, r, type, key, size)) {
         case OK: {
             cache->handle = h;
             return OK;
@@ -171,7 +171,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
 
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(cache->handle, type, key))) {
+        switch ((rv = cache_run_open_entity(cache->handle, r->pool, type, key))) {
         case OK: {
             info = &(cache->handle->cache_obj->info);
             /* XXX:
@@ -209,10 +209,10 @@ apr_status_t cache_write_entity_headers(cache_handle_t *h,
     h->write_headers(h, r, info);
     return APR_SUCCESS;
 }
-apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *b) 
+apr_status_t cache_write_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_status_t rv = APR_SUCCESS;
-    if (h->write_body(h, b) != OK) {
+    if (h->write_body(h, r, b) != OK) {
     }
     return rv;
 }
@@ -229,9 +229,9 @@ apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
 
     return APR_SUCCESS;
 }
-apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *b) 
+apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *b) 
 {
-    h->read_body(h, b);
+    h->read_body(h, p, b);
     return APR_SUCCESS;
 }
 
@@ -240,13 +240,15 @@ const char* cache_create_key( request_rec *r )
     return r->uri;
 }
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
-                                      (cache_handle_t *h, const char *type, 
+                                      (cache_handle_t *h, request_rec *r, const char *type, 
                                       const char *urlkey, apr_size_t len),
-                                      (h,type,urlkey,len),DECLINED)
+                                      (h, r, type,urlkey,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
-                                      (cache_handle_t *h, const char *type, 
-                                      const char *urlkey),(h,type,urlkey),
+                                      (cache_handle_t *h, apr_pool_t *p, const char *type, 
+                                      const char *urlkey),(h,p,type,urlkey),
                                       DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
                                     (const char *type, const char *urlkey),
                                     (type,urlkey),OK,DECLINED)
+
+
