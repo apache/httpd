@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.21 1996/10/19 14:44:39 ben Exp $ */
+/* $Id: http_request.c,v 1.22 1996/10/19 15:17:06 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -567,6 +567,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
     rnew->htaccess = r->htaccess; /* copy htaccess cache */
+    rnew->per_dir_config=r->server->lookup_defaults;
     set_sub_req_protocol (rnew, r);
 	
     if (new_file[0] == '/')
@@ -587,6 +588,11 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
 
     getparents (rnew->uri);
 	
+    if ((res = location_walk (rnew))) {
+	rnew->status=res;
+	return rnew;
+    }
+
     res = translate_name(rnew);
     if (res)
     {
@@ -600,6 +606,8 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      * of translate_name.
      * Instead we rely on the cache of .htaccess results.
      */
+    /* NB: directory_walk() clears the per_dir_config, so we don't inherit from
+       location_walk() above */
     
     if ((res = directory_walk (rnew))
 	|| (res = file_walk (rnew))
@@ -776,6 +784,7 @@ static int some_auth_required (request_rec *r)
 void process_request_internal (request_rec *r)
 {
     int access_status;
+    void *save_per_dir_config;
   
     /* Kludge to be reading the assbackwards field outside of protocol.c,
      * but we've got to check for this sort of nonsense somewhere...
@@ -816,11 +825,19 @@ void process_request_internal (request_rec *r)
 	getparents(r->uri);	/* OK --- shrinking transformations... */
     }
 
+    if ((access_status = location_walk (r))) {
+        die (access_status, r);
+	return;
+    }
+
     if ((access_status = translate_name (r))) {
         decl_die (access_status, "translate", r);
 	return;
     }
-    
+
+    /* NB: directory_walk() clears the per_dir_config, so we don't inherit from
+       location_walk() above */
+
     if ((access_status = directory_walk (r))) {
         die (access_status, r);
 	return;
