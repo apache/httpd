@@ -3523,6 +3523,7 @@ void child_sub_main(int child_num, int srv,
     csd = -1;
     dupped_csd = -1;
     requests_this_child = 0;
+
     (void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
 
     /*
@@ -3774,6 +3775,8 @@ void worker_main()
      * - Exit
      */
 
+    child_init_modules(pconf, server_conf);
+
     allowed_globals.jobsemaphore = create_semaphore(0);
     allowed_globals.jobmutex = create_mutex(NULL);
 
@@ -3946,6 +3949,9 @@ void worker_main()
     }
     destroy_semaphore(allowed_globals.jobsemaphore);
     destroy_mutex(allowed_globals.jobmutex);
+
+    child_exit_modules(pconf, server_conf);
+
     cleanup_scoreboard();
     exit(0);
 
