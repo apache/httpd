@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/19 04:35:03 $]
+Last modified at [$Date: 2004/07/20 02:25:47 $]
 
 Release:
 
@@ -97,6 +97,14 @@ PATCHES TO BACKPORT FROM 2.1
        trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
+
+    *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
+       chosen SSL environment variable.  PR 20957. 
+         mod_ssl.c r1.99
+         ssl_engine_config.c r1.94
+         ssl_engine_kernel.c r1.107
+         ssl_private.h r1.7
+       +1: trawick
 
     *) Switch the caching mutexes from reader/writer thread locks to global
        mutexes to allow for protection across processes rather than just
