@@ -400,7 +400,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
  * @param ctx The filter to pass the brigade to
  * @deffunc apr_status_t ap_filter_flush(apr_bucket_brigade *bb, void *ctx)
  */
-AP_DECLARE(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx);
+AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx);
 
 /**
  * Flush the current brigade down the filter stack
