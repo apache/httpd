@@ -24,7 +24,7 @@ SUBDIRS += mod_edir \
 	       $(EOLIST)
 endif
 
-# This is a placeholder
+# Allow the experimental modules to be built if EXPERIMENTAL is defined
 ifdef EXPERIMENTAL
 SUBDIRS += experimental \
 	       $(EOLIST)
