@@ -79,7 +79,6 @@ SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I$(DEPTH)
 
-top_srcdir   = $(topsrcdir)
 top_builddir = $(DEPTH)
 
 .SUFFIXES:

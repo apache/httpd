@@ -64,7 +64,7 @@
 srcdir=$1
 shift
 
-topsrcdir=`(cd $srcdir; pwd)`
+top_srcdir=`(cd $srcdir; pwd)`
 
 mkdir_p=$1
 shift
@@ -72,7 +72,7 @@ shift
 if test "$mkdir_p" = "yes"; then
   mkdir_p="mkdir -p"
 else
-  mkdir_p="$topsrcdir/helpers/mkdir.sh"
+  mkdir_p="$top_srcdir/helpers/mkdir.sh"
 fi
 
 base="\$(DEPTH)/$srcdir"
@@ -82,7 +82,7 @@ for i in $@ ; do
 	dir=`dirname $i`
 	$mkdir_p $dir
 	sed \
-		-e s#@topsrcdir@#$base# \
+		-e s#@top_srcdir@#$base# \
 		-e s#@srcdir@#$base/$dir# \
-	< $topsrcdir/$i.in > $i
+	< $top_srcdir/$i.in > $i
 done

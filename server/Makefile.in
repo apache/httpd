@@ -1,6 +1,6 @@
 
 DEPTH     = ..
-topsrcdir = @topsrcdir@
+top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
@@ -14,7 +14,7 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_uri.c util_md5.c \
 	rfc1413.c http_connection.c iol_file.c listen.c
 
-include $(topsrcdir)/build/ltlib.mk
+include $(top_srcdir)/build/ltlib.mk
 
 gen_uri_delims_OBJECTS = gen_uri_delims.lo
 gen_uri_delims: $(gen_uri_delims_OBJECTS)
