@@ -4,11 +4,13 @@ INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
 INCDIR=../../main
 
-OBJS=	os.o
+OBJS=	os.o os-inline.o
 
 LIB=	libos.a
 
-all: $(LIB) 
+all:	$(LIB)
+	cp os.h ../../main
+	cp os-inline.c ../../main
 
 $(LIB): $(OBJS)
 	rm -f $@
@@ -20,8 +22,6 @@ $(LIB): $(OBJS)
 
 clean:
 	rm -f $(OBJS)
-
-$(OBJS): Makefile
 
 # DO NOT REMOVE
 os.o:	os.c
