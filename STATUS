@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/14 03:43:17 $]
+Last modified at [$Date: 2003/10/15 22:57:30 $]
 
 Release:
 
@@ -259,6 +259,11 @@ PATCHES TO BACKPORT FROM 2.1
       config file name.
         modules/generators/mod_info.c r1.151
       +1: trawick
+
+    * mod_include: fix segfault which occured if the filename was not
+      set, for example, when processing some error conditions. PR 23836.
+        modules/filters/mod_include.c: r1.288
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
