@@ -266,10 +266,17 @@ Available Patches:
          Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1, Jim +1
 
       Votes for commit variants:
-         CV1: Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1
-	      Jim +1 (iff we remove the "present" top-level build
-	      capability AND we clearly document the changes)
+         CV1: Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1 Jim +1 
          CV2: Ralf +0
+
+      Notes:
+         Jim:  [the +1] iff we remove the "present" top-level build
+               capability AND we clearly document the changes
+         Ralf: Sure, top-level Makefile+src/helpers/InstallApache is removed
+               and the current top-level README file is extended by
+               documenting APACI and the manual build-only approach with
+               src/Configure. Just comitting APACI files will not be done.
+               The existing README has to be adjusted. I'll do this.
 
 Concepts:
 
