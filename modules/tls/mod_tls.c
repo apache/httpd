@@ -81,6 +81,7 @@ typedef struct
     SSLStateMachine *pStateMachine;
     ap_filter_t *pInputFilter;
     ap_filter_t *pOutputFilter;
+    apr_bucket_brigade *pbbInput;
 } TLSFilterCtx;
 
 static void *create_tls_server_config(apr_pool_t *p, server_rec *s)
@@ -129,8 +130,8 @@ static int tls_filter_inserter(conn_rec *c)
 					    pConfig->szKeyFile);
 
     pCtx->pInputFilter=ap_add_input_filter(s_szTLSFilterName,pCtx,NULL,c);
-    pCtx->pOutputFilter=ap_add_output_filter(s_szTLSFilterName,pCtx,NULL,
-						 c);
+    pCtx->pOutputFilter=ap_add_output_filter(s_szTLSFilterName,pCtx,NULL,c);
+    pCtx->pbbInput=apr_brigade_create(c->pool);
 
     return OK;
 }
@@ -225,17 +226,16 @@ static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
 {
     TLSFilterCtx *pCtx=f->ctx;
     apr_bucket *pbktIn;
-    apr_bucket_brigade *pbbIn;
     apr_read_type_e eReadType=eMode == AP_MODE_BLOCKING ? APR_BLOCK_READ :
       APR_NONBLOCK_READ;
 
     // XXX: we don't currently support peek
     assert(eMode != AP_MODE_PEEK);
 
-    pbbIn=apr_brigade_create(f->c->pool);
-    ap_get_brigade(f->next,pbbIn,eMode);
+    if(APR_BRIGADE_EMPTY(pCtx->pbbInput))
+	ap_get_brigade(f->next,pCtx->pbbInput,eMode);
 
-    APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
+    APR_BRIGADE_FOREACH(pbktIn,pCtx->pbbInput) {
 	const char *data;
 	apr_size_t len;
 	int n;
