@@ -133,8 +133,8 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.rc
-	copy ApacheMonitor.rc + ApacheMonitor.rc.in
+	type ApacheMonitor.rc.in > ApacheMonitor.rc
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> .\ApacheMonitor.rc
 
 # End Custom Build
 
@@ -144,8 +144,8 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.rc
-	copy ApacheMonitor.rc + ApacheMonitor.rc.in
+	type ApacheMonitor.rc.in > ApacheMonitor.rc
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> .\ApacheMonitor.rc
 
 # End Custom Build
 

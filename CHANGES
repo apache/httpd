@@ -1,5 +1,9 @@
 Changes with Apache 2.0.40
 
+  *) Fix a dependency error when building ApacheMonitor, so that Win32
+     and MSVC now trust that the project is current (when it is).
+     [James Cox <imajes@php.net>]
+
   *) mod_ext_filter: don't segfault if content-type is not set.  PR 10617.
      [Arthur P. Smith <apsmith@aps.org>, Jeff Trawick]
 
