@@ -1,5 +1,11 @@
 Changes with Apache 2.0.32-dev
 
+  *) Fix a bug in mod_cgid that would prevent proper shutdown death
+     of the cgid process.  [Aaron Bannert]
+
+  *) Add signal handling back in to the worker MPM for the one_process
+     (-X, -DDEBUG, -DONE_PROCESS) case.  [Aaron Bannert]
+
   *) Performance: Reuse per-connection transaction pools in the
      worker MPM, rather than destroying and recreating them.  [Brian Pane]
 
