@@ -185,7 +185,7 @@
 #include "apr_strings.h"
 
 /*
-** There is some rough support for writeable DAV:getcontenttype and
+** There is some rough support for writable DAV:getcontenttype and
 ** DAV:getcontentlanguage properties. If this #define is (1), then
 ** this support is disabled.
 **
@@ -195,7 +195,7 @@
 ** values for the response.
 ** (Handling the PUT would not be difficult, though)
 */
-#define DAV_DISABLE_WRITEABLE_PROPS	1
+#define DAV_DISABLE_WRITABLE_PROPS	1
 
 #define DAV_GDBM_NS_KEY		"METADATA"
 #define DAV_GDBM_NS_KEY_LEN	8
@@ -368,12 +368,12 @@ static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
     ** Check the liveprop provider (if this is a provider-defined prop)
     */
     if (priv->provider != NULL) {
-        return (*priv->provider->is_writeable)(propdb->resource, propid);
+        return (*priv->provider->is_writable)(propdb->resource, propid);
     }
 
     /* these are defined as read-only */
     if (propid == DAV_PROPID_CORE_lockdiscovery
-#if DAV_DISABLE_WRITEABLE_PROPS
+#if DAV_DISABLE_WRITABLE_PROPS
 	|| propid == DAV_PROPID_CORE_getcontenttype
 	|| propid == DAV_PROPID_CORE_getcontentlanguage
 #endif
@@ -1323,7 +1323,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
 
     /*
     ** The property is supposed to be stored into the dead-property
-    ** database. Make sure the thing is truly open (and writeable).
+    ** database. Make sure the thing is truly open (and writable).
     */
     if (propdb->deferred
 	&& (ctx->err = dav_really_open_db(propdb, 0 /* ro */)) != NULL) {

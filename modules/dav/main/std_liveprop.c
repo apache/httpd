@@ -244,7 +244,7 @@ static dav_error * dav_core_patch_validate(const dav_resource *resource,
                                            int operation, void **context,
                                            int *defer_to_dead)
 {
-    /* all of our writeable props go in the dead prop database */
+    /* all of our writable props go in the dead prop database */
     *defer_to_dead = 1;
 
     return NULL;
