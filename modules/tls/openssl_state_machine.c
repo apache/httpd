@@ -207,6 +207,8 @@ int SSLStateMachine_read_extract(SSLStateMachine *pMachine,
 	    fprintf(stderr,"SSL_read wants more data\n");
 	    return 0;
 	    }
+	SSLStateMachine_print_error(pMachine,"SSL_read error");
+	exit(8);
 	}
 
     fprintf(stderr,"%d bytes of decrypted data read from state machine\n",n);
