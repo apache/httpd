@@ -300,7 +300,11 @@ Example header:
 
 Note that this can cause performance problems on your server
 since the message digest is computed on every request
-(the values are not cached).
+(the values are not cached).<P>
+
+<code>Content-MD5</code> is only sent for documents served by the
+core, and not by any module.  For example, SSI documents, output from
+CGI scripts, and byte range responses do not have this header.
 
 <hr>
 
