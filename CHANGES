@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) ap_get_mime_headers_core: allocate space for the trailing null
+     when folding is in effect.
+     PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
+
   *) Fix --enable-mods-shared=most and other variants.  [Aaron Bannert]
 
   *) mod_log_config: Add the ability to log the id of the thread 
