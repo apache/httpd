@@ -2501,6 +2501,8 @@ user authentication</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Influenced by <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> in version 2.0.51 and
+later</td></tr>
 </table>
     <p>Access policy if both <code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> and <code class="directive"><a href="#require">Require</a></code> used. The parameter can be
     either <code>All</code> or <code>Any</code>. This directive is only
@@ -2525,6 +2527,8 @@ user authentication</td></tr>
       Satisfy Any
     </code></p></div>
 
+    <p>Since version 2.0.51 <code class="directive">Satisfy</code> directives can
+    be restricted to particular methods by <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> sections.</p>
 
 <h3>See also</h3>
 <ul>
