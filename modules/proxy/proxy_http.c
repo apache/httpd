@@ -95,7 +95,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     }
     else if (strncasecmp(url, "https:", 6) == 0) {
         url += 6;
-        scheme = "https:";
+        scheme = "https";
     }
     else {
         return DECLINED;
