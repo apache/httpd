@@ -699,7 +699,6 @@ apr_threadkey_private_set
 apr_time_now
 apr_tokenize_to_argv
 apr_unix_file_cleanup
-apr_uri_default_port_for_request
 apr_uri_default_port_for_scheme
 apr_uri_parse_components
 apr_uri_parse_hostinfo_components
