@@ -28,7 +28,7 @@ les performances.
 <DT><STRONG>Nouveau syst&egrave;me de construction</STRONG>
 <DD>Le syst&egrave;me de construction a &eacute;t&eacute; enti&egrave;rement 
 r&eacute;&eacute;crit et repose sur autoconf et libtool. Cela rend le 
-syst&egrave;me de configuration plus semblables aux autres paquetages. 
+syst&egrave;me de configuration plus semblable aux autres paquetages. 
 
 <DT><STRONG>Support multiprotocole</STRONG>
 <DD>Apache poss&egrave;de maintenant une infrastructure afin de servir de multiples 
@@ -41,7 +41,7 @@ telles que BeOS, OS/2, et Windows. Avec l'introduction des
 <a href="mpm.html">modules multi traitements</a> (MPMs) sp&eacute;cifiques aux 
 plates-formes et l'ex&eacute;cuteur portable Apache (APR), le code pour ces 
 plates-formes est r&eacute;alis&eacute; en employant leurs API natives, 
-permettant ainsi d'&eacute;viter les couches d'&eacute;mulations POSIX 
+permettant ainsi d'&eacute;viter les couches d'&eacute;mulation POSIX 
 souvent bogu&eacute;es et peu performantes.  
 
 <DT><STRONG>Nouvelle API Apache</STRONG>

@@ -68,7 +68,7 @@
 </td></tr><tr><td>
 <A HREF="upgrading.html">Migrer vers la version 2.0</A>
 </td></tr><tr><td>
-<A HREF="LICENSE">License Apache</A>
+<A HREF="LICENSE">Licence Apache</A>
 </td></tr>
 </table>
 
@@ -85,7 +85,7 @@
 </td></tr><tr><td>
 <A HREF="mod/directives.html">Directives de configuration de l'ex&eacute;cution</A>
 </td></tr><tr><td>
-Modules <A HREF="mod/index-bytype.html">par types</A> ou 
+Modules <A HREF="mod/index-bytype.html">par type</A> ou 
     <A HREF="mod/">par ordre alphab&eacute;tique</A>
 </td></tr><tr><td>
 <a href="mpm.html">Modules Multi-Traitements (MPMs)</a>
