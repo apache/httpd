@@ -152,10 +152,11 @@ is available only in Apache 2.0</td></tr></table>
     modified.</p>
 
     <p>The optional <var>condition</var> can be either <code>onsuccess</code>
-    or <code>always</code>. It determines, when the specified action should be
-    taken. <code>onsuccess</code> stands for <code>2<var>xx</var></code> status
-    codes and <code>always</code> for all status codes (including
-    <code>2<var>xx</var></code>).</p>
+    or <code>always</code>. It determines, which internal header table should be
+    operated on. <code>onsuccess</code> stands for <code>2<var>xx</var></code>
+    status codes and <code>always</code> for all status codes (including
+    <code>2<var>xx</var></code>). Especially if you want to unset headers
+    set by certain modules, you should try out, which table is affected.</p>
 
     <p>The action it performs is determined by the second
     argument. This can be one of the following values:</p>
