@@ -350,9 +350,11 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             }
             return status;
         }
+#if 0
         if (!r->main) {
             ap_set_module_config(c->conn_config, &proxy_ajp_module, backend);
         }
+#endif
     }
 
     backend->is_ssl = 0;
