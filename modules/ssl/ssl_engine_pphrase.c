@@ -202,7 +202,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     for (pServ = s; pServ != NULL; pServ = pServ->next) {
         sc = mySrvConfig(pServ);
 
-        if (!sc->bEnabled)
+        if (!sc->enabled)
             continue;
 
         cpVHostID = ssl_util_vhostid(p, pServ);

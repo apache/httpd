@@ -226,7 +226,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (!(sc && sc->bEnabled)) {
+    if (!(sc && sc->enabled)) {
         return DECLINED;
     }
 
@@ -235,7 +235,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      */
     sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
     myConnConfigSet(c, sslconn);
-    sslconn->log_level = sc->nLogLevel;
+    sslconn->log_level = sc->log_level;
 
     /*
      * Remember the connection information for
@@ -244,7 +244,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 
     ssl_log(c->base_server, SSL_LOG_INFO,
             "Connection to child %d established "
-            "(server %s, client %s)", c->id, sc->szVHostID, 
+            "(server %s, client %s)", c->id, sc->vhost_id, 
             c->remote_ip ? c->remote_ip : "unknown");
 
     /*
@@ -267,11 +267,11 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     }
 
     if (!SSL_set_session_id_context(ssl,
-                                    (unsigned char *)sc->szVHostID,
-                                    sc->nVHostID_length))
+                                    (unsigned char *)sc->vhost_id,
+                                    sc->vhost_id_len))
     {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                "Unable to set session id context to `%s'", sc->szVHostID);
+                "Unable to set session id context to `%s'", sc->vhost_id);
 
         c->aborted = 1;
 
@@ -461,7 +461,7 @@ static const char *ssl_hook_http_method(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->bEnabled == FALSE) {
+    if (sc->enabled == FALSE) {
         return NULL;
     }
 
@@ -472,7 +472,7 @@ static apr_port_t ssl_hook_default_port(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->bEnabled == FALSE) {
+    if (sc->enabled == FALSE) {
         return 0;
     }
 
