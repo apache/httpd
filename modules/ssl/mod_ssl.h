@@ -299,9 +299,6 @@ typedef int ssl_algo_t;
  * Define IDs for the temporary RSA keys and DH params
  */
 
-#define SSL_TKP_GEN        (0)
-#define SSL_TKP_FREE       (2)
-
 #define SSL_TKPIDX_RSA512  (0)
 #define SSL_TKPIDX_RSA1024 (1)
 #define SSL_TKPIDX_DH512   (2)
@@ -645,7 +642,6 @@ const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, char *, char *)
 /*  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
 void         ssl_init_Engine(server_rec *, apr_pool_t *);
-void         ssl_init_TmpKeysHandle(int, server_rec *, apr_pool_t *);
 void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, SSLSrvConfigRec *);
 void         ssl_init_CheckServers(server_rec *, apr_pool_t *);
 STACK_OF(X509_NAME) 
