@@ -118,7 +118,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
         else {
             r = apr_time_exp_lt(xt, t);
         }
-        if (!APR_STATUS_IS_SUCCESS(r)) {
+        if (r != APR_SUCCESS) {
             return r;
         }
         cache_element->t = seconds;

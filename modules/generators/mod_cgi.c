@@ -1134,7 +1134,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
                        SSI_EXPAND_LEAVE_NAME);
 
             rv = include_cmd(ctx, f, bb, parsed_string);
-            if (!APR_STATUS_IS_SUCCESS(rv)) {
+            if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "execution failure "
                               "for parameter \"%s\" to tag exec in file %s",
                               tag, r->filename);
@@ -1149,7 +1149,7 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
                        SSI_EXPAND_DROP_NAME);
 
             rv = include_cgi(ctx, f, bb, parsed_string);
-            if (!APR_STATUS_IS_SUCCESS(rv)) {
+            if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "invalid CGI ref "
                               "\"%s\" in %s", tag_val, file);
                 SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
