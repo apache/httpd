@@ -1,345 +1,166 @@
-<html>
-<head>
-<title>mod_ssl: Reference</title>
-
-<!--
-  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  1. Redistributions of source code must retain the above
-     copyright notice, this list of conditions and the following
-     disclaimer. 
- 
-  2. Redistributions in binary form must reproduce the above
-     copyright notice, this list of conditions and the following
-     disclaimer in the documentation and/or other materials
-     provided with the distribution.
- 
-  3. All advertising materials mentioning features or use of this
-     software must display the following acknowledgment: 
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  4. The name "mod_ssl" must not be used to endorse or promote
-     products derived from this software without prior written
-     permission.  
-
-  5. Redistributions of any form whatsoever must retain the
-     following acknowledgment:
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
-  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
-  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-  OF THE POSSIBILITY OF SUCH DAMAGE.
--->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<title>Apache module mod_ssl</title>
 <style type="text/css"><!--
-A:link {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:active {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:visited {
-    text-decoration: none;
-    color: #6666cc;
-}
-#sf {
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H1 {
-    font-weight: bold;
-    font-size: 24pt;
-    line-height: 24pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H2 {
-    font-weight: bold;
-    font-size: 18pt;
-    line-height: 18pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H3 {
-    font-weight: bold;
-    font-size: 14pt;
-    line-height: 14pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H4 {
-    font-weight: bold;
-    font-size: 12pt;
-    line-height: 12pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 #H {
 }
 #D {
     background-color: #f0f0f0;
 }
-#faq {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#howto {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#term {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 --></style>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-function ro_imgNormal(imgName) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_n.src');
-        self.status = '';
-    }
-}
-function ro_imgOver(imgName, descript) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_o.src');
-        self.status = descript;
-    }
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_top_n = new Image();
-    ro_img_prev_top_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_top_o = new Image();
-    ro_img_prev_top_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_bot_n = new Image();
-    ro_img_prev_bot_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_bot_o = new Image();
-    ro_img_prev_bot_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_top_n = new Image();
-    ro_img_next_top_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_top_o = new Image();
-    ro_img_next_top_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_bot_n = new Image();
-    ro_img_next_bot_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_bot_o = new Image();
-    ro_img_next_bot_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
 </head>
-<body bgcolor="#ffffff" text="#000000" link="#333399" alink="#9999ff" vlink="#000066">
+
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+vlink="#000080" alink="#FF0000">
+<!--#include virtual="header.html" -->
+
+
+<h1 align="CENTER">Module mod_ssl</h1>
+
+<p>This module provides strong cryptography using the Secure Sockets
+Layer (SSL) and Transport Layer Security (TLS) protocols.</p>
+
+<p><a href="module-dict.html#Status"
+rel="Help"><strong>Status:</strong></a> Extension<br />
+<a href="module-dict.html#SourceFile"
+rel="Help"><strong>Source File:</strong></a>
+mod_ssl.c<br />
+<a href="module-dict.html#ModuleIdentifier"
+rel="Help"><strong>Module Identifier:</strong></a>
+ssl_module</p>
+
+<h2>Summary</h2>
+
+<p>This module provides SSL v2/v3 and TLS v1 support for the Apache
+HTTP Server.  It was contributed by Ralf S. Engeschall based on his
+mod_ssl project and originally derived from work by Ben Laurie.</p>
+
+<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+to provide the cryptography engine.</p>
+
+<p>Further details, discussion, and examples are provided in the
+<a href="../ssl/">SSL documentation</a>.</p>
+
+<h2>Directives</h2>
+
+<ul>
+<li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
+<li><a href="#sslmutex">SSLMutex</a></li>
+<li><a href="#sslrandomseed">SSLRandomSeed</a></li>
+<li><a href="#sslsessioncache">SSLSessionCache</a></li>
+<li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><a href="#sslengine">SSLEngine</a></li>
+<li><a href="#sslprotocol">SSLProtocol</a></li>
+<li><a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><a href="#sslcertificatefile">SSLCertificateFile</a></li>
+<li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
+<li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
+<li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
+<li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
+<li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
+<li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
+<li><a href="#sslverifyclient">SSLVerifyClient</a></li>
+<li><a href="#sslverifydepth">SSLVerifyDepth</a></li>
+<li><a href="#ssllog">SSLLog</a></li>
+<li><a href="#sslloglevel">SSLLogLevel</a></li>
+<li><a href="#ssloptions">SSLOptions</a></li>
+<li><a href="#sslrequiressl">SSLRequireSSL</a></li>
+<li><a href="#sslrequire">SSLRequire</a></li>
+</ul>
+
+<h2><a name="ToC25">Environment Variables</a></h2>
+This module provides a lot of SSL information as additional environment
+variables to the SSI and CGI namespace. The generated variables are listed in
+the table below. For backward compatibility the information can
+be made available under different names, too. Look in the <a
+href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
+compatibility variables.
+<p>
 <div align="center">
-<table width="600" cellspacing="0" cellpadding="0" border="0" summary="">
-<tr>
-  <td>
-      <img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="600" height="1" align="bottom" border="0"><br>
-      <table width="600" cellspacing="0" cellpadding="0" summary="">
-      <tr>
-        <td>
-        <table width="600" summary="">
-        <tr>
-            <td align="left" valign="bottom">
-            <font face="Arial,Helvetica" size="+2"><b>mod_ssl</b></font>
-            </td>
-            <td align="right">
-              <img src="ssl_template.head-chapter.gif" alt="Chapter" width="175" height="94"> <img src="ssl_template.head-num-3.gif" alt="3" width="74" height="89">
-            </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_intro.html" onmouseover="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_top'); return true" onfocus="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_top'); return true"><img name="ro_img_prev_top" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Introduction</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_compat.html" onmouseover="ro_imgOver('ro_img_next_top', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_top'); return true" onfocus="ro_imgOver('ro_img_next_top', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_top'); return true"><img name="ro_img_next_top" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">Compatibility</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td>
-          <br>
-          <img src="ssl_template.title-ref.gif" alt="Reference" width="456" height="60">
-        </td>
-      </tr>
-      </table>
-<div align="right">
-<table cellspacing="0" cellpadding="0" width="150" summary="">
-<tr>
-<td>
-<em>
-``Try to understand everything,
-but believe nothing!''
-</em>
-</td>
+<a name="table4"></a>
+<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
+<caption align="bottom" id="sf">SSI/CGI Environment Variables</caption>
+<tr><td bgcolor="#cccccc">
+<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
+<tr><td valign="top" align="center" bgcolor="#ffffff">
+<table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
+<tr id="H">
+ <td><b>Variable Name:</b></td>
+ <td><b>Value Type:</b></td>
+ <td><b>Description:</b></td>
 </tr>
-<tr>
-<td align="right">
-<font size="-1">
-Unknown
-</font>
-</td>
-</tr>
+<tr id="D"><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
+<tr id="H"><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
+<tr id="H"><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
+<tr id="D"><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr id="D"><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
+<tr id="H"><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
+<tr id="D"><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
+<tr id="H"><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
+<tr id="D"><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
+<tr id="D"><td><code>SSL_CLIENT_CERT_CHAIN</code><i>n</i></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr id="H"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><tt>NONE</tt>, <tt>SUCCESS</tt>, <tt>GENEROUS</tt> or <tt>FAILED:</tt><i>reason</i></td></tr>
+<tr id="D"><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
+<tr id="H"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
+<tr id="D"><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
+<tr id="H"><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr id="D"><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
+<tr id="H"><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr id="D"><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
+<tr id="H"><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
+<tr id="D"><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
+<tr id="H"><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
+<tr id="D"><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
 </table>
+[ where <em>x509</em> is a component of a X.509 DN:
+  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]
+</td>
+</tr></table>
+</td></tr></table>
 </div>
 <p>
-<table cellspacing="0" cellpadding="0" border="0" summary="">
-<tr valign="bottom">
-<td>
-<img src="ssl_reference.gfont000.gif" alt="T" width="34" height="34" border="0" align="left">
-his chapter provides a reference to all configuration directives and
-additional user visible features mod_ssl provides. It's intended as the
-official resource when you want to know how a particilar mod_ssl functionality
-is actually configured or activated. Each directive is documented similar to
-the way standard Apache directives are documented in the official Apache
-documentation set, i.e. for each directive especially the syntax, default and
-context where applicable is given.
+<br>
+<h2><a name="ToC26">Custom Log Formats</a></h2>
+When mod_ssl is built into Apache or at least loaded (under DSO situation)
+additional functions exist for the <a
+href="../mod_log_config.html#formats">Custom Log Format</a> of <a
+href="../mod_log_config.html">mod_log_config</a>. First there is an additional
+``<code>%{</code><em>varname</em><code>}x</code>'' eXtension format function
+which can be used to expand any variables provided by any module, especially
+those provided by mod_ssl which can you find in the above table.
 <p>
-Notice that there are three major classes of directives which are used by
-mod_ssl: First <em>Global Directives</em> (i.e. directives with context
-``server config''), which can occur inside the server config files but only
-outside of any sectioning commands like &lt;VirtualHost&gt;. Second
-<em>Per-Server Directives</em> (i.e. those with context ``server config,
-virtual host''), which can occur inside the server config files both outside
-(for the main/default server) and inside &lt;VirtualHost&gt; sections.
-</td>
-<td>
-&nbsp;&nbsp;
-</td>
-<td>
-<div align="right">
-<table cellspacing="0" cellpadding="5" border="0" bgcolor="#ccccff" summary="">
-<tr>
-<td bgcolor="#333399">
-<font face="Arial,Helvetica" color="#ccccff">
-<b>Table Of Contents</b>
-</font>
-</td>
-</tr>
-<tr>
-<td>
-<font face="Arial,Helvetica" size="-1">
-<a href="#ToC1"><strong>Configuration Directives</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC2"><strong>SSLPassPhraseDialog</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC3"><strong>SSLMutex</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC4"><strong>SSLRandomSeed</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC5"><strong>SSLSessionCache</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC6"><strong>SSLSessionCacheTimeout</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC7"><strong>SSLEngine</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC8"><strong>SSLProtocol</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC9"><strong>SSLCipherSuite</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC10"><strong>SSLCertificateFile</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC11"><strong>SSLCertificateKeyFile</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC12"><strong>SSLCertificateChainFile</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC13"><strong>SSLCACertificatePath</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC14"><strong>SSLCACertificateFile</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC15"><strong>SSLCARevocationPath</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC16"><strong>SSLCARevocationFile</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC17"><strong>SSLVerifyClient</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC18"><strong>SSLVerifyDepth</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC19"><strong>SSLLog</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC20"><strong>SSLLogLevel</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC21"><strong>SSLOptions</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC22"><strong>SSLRequireSSL</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC23"><strong>SSLRequire</strong></a><br>
-<a href="#ToC24"><strong>Additional Features</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC25"><strong>Environment Variables</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC26"><strong>Custom Log Formats</strong></a><br>
-</font>
-</td>
-</tr>
-</table>
-</div>
-</td>
-</tr>
-</table>
+For backward compatibility there is additionally a special
+``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+provided. Information about this function is provided in the <a
+href="../ssl/ssl_compat.html">Compatibility</a> chapter.
 <p>
-And third <em>Per-Directory Directives</em> (i.e. those with context ``server
-config, virtual host, directory, .htaccess''), which can pretty much occur
-everywhere. Especially both inside the server config files and the
-per-directory <code>.htaccess</code> files. The three classes are subsets of
-each other, i.e. directives from the per-directory class can also be used in
-the per-server and global context, and directives from the per-server class
-can also be used the in the global context.
-<p>
-Additional directives and environment variables provided by mod_ssl (via
-on-the-fly mapping) for backward compatiblity to other Apache SSL solutions
-are documented in the <a href="ssl_compat.html">Compatibility</a> chapter.
-<h1><a name="ToC1">Configuration Directives</a></h1>
-The most visible and error-prone things of mod_ssl are its configuration
-directives. So we document them in great detail here to assist you in setting
-up the best possible configuration of your SSL-aware webserver.
+Example:
+<blockquote>
+<pre>
+CustomLog logs/ssl_request_log \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+</pre>
+</blockquote>
+
+<hr>
 <!-- SSLPassPhraseDialog -------------------------------------------->
 <p>
 <br>
-<a name="SSLPassPhraseDialog"></a>
-<h2><a name="ToC2">SSLPassPhraseDialog</a></h2>
+
+<h2><a name="sslpassphrasedialog">SSLPassPhraseDialog</a> directive</h2>
 <p>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
@@ -353,31 +174,31 @@ up the best possible configuration of your SSL-aware webserver.
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of pass phrase dialog for encrypted private keys</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLPassPhraseDialog</code> <em>type</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLPassPhraseDialog builtin</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -444,11 +265,11 @@ Example:
 SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 </pre>
 </blockquote>
-<!-- SSLMutex ------------------------------------------------------->
+<hr /><!-- SSLMutex ------------------------------------------------------->
 <p>
 <br>
 <a name="SSLMutex"></a>
-<h2><a name="ToC3">SSLMutex</a></h2>
+<h2><a name="sslmutex">SSLMutex</a> directive</h2>
 <p>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
@@ -462,31 +283,31 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Semaphore for internal mutual exclusion of operations</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLMutex</code> <em>type</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLMutex none</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -538,11 +359,11 @@ Example:
 SSLMutex file:/usr/local/apache/logs/ssl_mutex
 </pre>
 </blockquote>
-<!-- SSLRandomSeed -------------------------------------------------->
+<hr /><!-- SSLRandomSeed -------------------------------------------------->
 <p>
 <br>
 <a name="SSLRandomSeed"></a>
-<h2><a name="ToC4">SSLRandomSeed</a></h2>
+<h2><a name="sslrandomseed">SSLRandomSeed</a> directive</h2>
 <p>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
@@ -556,31 +377,31 @@ SSLMutex file:/usr/local/apache/logs/ssl_mutex
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Pseudo Random Number Generator (PRNG) seeding source</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRandomSeed</code> <em>context</em> <em>source</em> [<em>bytes</em>]</td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>none</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.2 </td></tr>
 </table>
@@ -677,11 +498,11 @@ SSLRandomSeed connect file:/dev/random
 SSLRandomSeed connect file:/dev/urandom 1024
 </pre>
 </blockquote>
-<!-- SSLSessionCache ------------------------------------------------>
+<hr /><!-- SSLSessionCache ------------------------------------------------>
 <p>
 <br>
 <a name="SSLSessionCache"></a>
-<h2><a name="ToC5">SSLSessionCache</a></h2>
+<h2><a name="sslsessioncache">SSLSessionCache</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -694,31 +515,31 @@ SSLRandomSeed connect file:/dev/urandom 1024
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of the global/inter-process SSL Session Cache</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLSessionCache</code> <em>type</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLSessionCache none</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -770,11 +591,11 @@ SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
 SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
 </pre>
 </blockquote>
-<!-- SSLSessionCacheTimeout ----------------------------------------->
+<hr /><!-- SSLSessionCacheTimeout ----------------------------------------->
 <p>
 <br>
 <a name="SSLSessionCacheTimeout"></a>
-<h2><a name="ToC6">SSLSessionCacheTimeout</a></h2>
+<h2><a name="sslsessioncachetimeout">SSLSessionCacheTimeout</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -787,31 +608,31 @@ SSLSessionCache shm:/usr/local/apache/logs/ssl_gcache_data(512000)
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Number of seconds before an SSL session expires in the Session Cache</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLSessionCacheTimeout</code> <em>seconds</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLSessionCacheTimeout 300</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -833,11 +654,11 @@ Example:
 SSLSessionCacheTimeout 600
 </pre>
 </blockquote>
-<!-- SSLEngine ------------------------------------------------------>
+<hr /><!-- SSLEngine ------------------------------------------------------>
 <p>
 <br>
 <a name="SSLEngine"></a>
-<h2><a name="ToC7">SSLEngine</a></h2>
+<h2><a name="sslengine">SSLEngine</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -850,31 +671,31 @@ SSLSessionCacheTimeout 600
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> SSL Engine Operation Switch</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLEngine</code> <em>on|off</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLEngine off</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -899,11 +720,11 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </pre>
 </blockquote>
-<!-- SSLProtocol ---------------------------------------------------->
+<hr /><!-- SSLProtocol ---------------------------------------------------->
 <p>
 <br>
 <a name="SSLProtocol"></a>
-<h2><a name="ToC8">SSLProtocol</a></h2>
+<h2><a name="sslprotocol">SSLProtocol</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -916,31 +737,31 @@ SSLEngine on
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Configure usable SSL protocol flavors</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLProtocol</code> [+-]<em>protocol</em> ...</td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLProtocol all</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> Options</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.2 </td></tr>
 </table>
@@ -990,11 +811,11 @@ Example:
 SSLProtocol all -SSLv2
 </pre>
 </blockquote>
-<!-- SSLCipherSuite ------------------------------------------------->
+<hr /><!-- SSLCipherSuite ------------------------------------------------->
 <p>
 <br>
 <a name="SSLCipherSuite"></a>
-<h2><a name="ToC9">SSLCipherSuite</a></h2>
+<h2><a name="sslciphersuite">SSLCipherSuite</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1007,31 +828,31 @@ SSLProtocol all -SSLv2
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Cipher Suite available for negotiation in SSL handshake</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCipherSuite</code> <em>cipher-spec</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -1212,11 +1033,11 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </tr></table>
 </td></tr></table>
 </div>
-<!-- SSLCertificateFile --------------------------------------------->
+<hr /><!-- SSLCertificateFile --------------------------------------------->
 <p>
 <br>
 <a name="SSLCertificateFile"></a>
-<h2><a name="ToC10">SSLCertificateFile</a></h2>
+<h2><a name="sslcertificatefile">SSLCertificateFile</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1229,31 +1050,31 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Server PEM-encoded X.509 Certificate file</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateFile</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1277,11 +1098,11 @@ Example:
 SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
 </pre>
 </blockquote>
-<!-- SSLCertificateKeyFile ------------------------------------------>
+<hr /><!-- SSLCertificateKeyFile ------------------------------------------>
 <p>
 <br>
 <a name="SSLCertificateKeyFile"></a>
-<h2><a name="ToC11">SSLCertificateKeyFile</a></h2>
+<h2><a name="sslcertificatekeyfile">SSLCertificateKeyFile</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1294,31 +1115,31 @@ SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Server PEM-encoded Private Key file</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateKeyFile</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1347,11 +1168,11 @@ Example:
 SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
 </pre>
 </blockquote>
-<!-- SSLCertificateChainFile ---------------------------------------->
+<hr /><!-- SSLCertificateChainFile ---------------------------------------->
 <p>
 <br>
 <a name="SSLCertificateChainFile"></a>
-<h2><a name="ToC12">SSLCertificateChainFile</a></h2>
+<h2><a name="sslcertificatechainfile">SSLCertificateChainFile</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1364,31 +1185,31 @@ SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of PEM-encoded Server CA Certificates</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCertificateChainFile</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3.6 </td></tr>
 </table>
@@ -1429,11 +1250,11 @@ Example:
 SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
 </pre>
 </blockquote>
-<!-- SSLCACertificatePath ------------------------------------------->
+<hr /><!-- SSLCACertificatePath ------------------------------------------->
 <p>
 <br>
 <a name="SSLCACertificatePath"></a>
-<h2><a name="ToC13">SSLCACertificatePath</a></h2>
+<h2><a name="sslcacertificatepath">SSLCACertificatePath</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1446,31 +1267,31 @@ SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Directory of PEM-encoded CA Certificates for Client Auth.</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCACertificatePath</code> <em>directory</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1498,11 +1319,11 @@ Example:
 SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
 </pre>
 </blockquote>
-<!-- SSLCACertificateFile ------------------------------------------->
+<hr /><!-- SSLCACertificateFile ------------------------------------------->
 <p>
 <br>
 <a name="SSLCACertificateFile"></a>
-<h2><a name="ToC14">SSLCACertificateFile</a></h2>
+<h2><a name="sslcacertificatefile">SSLCACertificateFile</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1515,31 +1336,31 @@ SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of concatenated PEM-encoded CA Certificates for Client Auth.</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCACertificateFile</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1563,11 +1384,11 @@ Example:
 SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
 </pre>
 </blockquote>
-<!-- SSLCARevocationPath -------------------------------------------->
+<hr /><!-- SSLCARevocationPath -------------------------------------------->
 <p>
 <br>
 <a name="SSLCARevocationPath"></a>
-<h2><a name="ToC15">SSLCARevocationPath</a></h2>
+<h2><a name="sslcarevocationpath">SSLCARevocationPath</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1580,31 +1401,31 @@ SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Directory of PEM-encoded CA CRLs for Client Auth.</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCARevocationPath</code> <em>directory</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3 </td></tr>
 </table>
@@ -1632,11 +1453,11 @@ Example:
 SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
 </pre>
 </blockquote>
-<!-- SSLCARevocationFile -------------------------------------------->
+<hr /><!-- SSLCARevocationFile -------------------------------------------->
 <p>
 <br>
 <a name="SSLCARevocationFile"></a>
-<h2><a name="ToC16">SSLCARevocationFile</a></h2>
+<h2><a name="sslcarevocationfile">SSLCARevocationFile</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1649,31 +1470,31 @@ SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> File of concatenated PEM-encoded CA CRLs for Client Auth.</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLCARevocationFile</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.3 </td></tr>
 </table>
@@ -1697,11 +1518,11 @@ Example:
 SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
 </pre>
 </blockquote>
-<!-- SSLVerifyClient ------------------------------------------------->
+<hr /><!-- SSLVerifyClient ------------------------------------------------->
 <p>
 <br>
 <a name="SSLVerifyClient"></a>
-<h2><a name="ToC17">SSLVerifyClient</a></h2>
+<h2><a name="sslverifyclient">SSLVerifyClient</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1714,31 +1535,31 @@ SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Type of Client Certificate verification</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLVerifyClient</code> <em>level</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLVerifyClient none</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1780,11 +1601,11 @@ Example:
 SSLVerifyClient require
 </pre>
 </blockquote>
-<!-- SSLVerifyDepth ------------------------------------------------->
+<hr /><!-- SSLVerifyDepth ------------------------------------------------->
 <p>
 <br>
 <a name="SSLVerifyDepth"></a>
-<h2><a name="ToC18">SSLVerifyDepth</a></h2>
+<h2><a name="sslverifydepth">SSLVerifyDepth</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1797,31 +1618,31 @@ SSLVerifyClient require
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Maximum depth of CA Certificates in Client Certificate verification</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLVerifyDepth</code> <em>number</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLVerifyDepth 1</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -1854,11 +1675,11 @@ Example:
 SSLVerifyDepth 10
 </pre>
 </blockquote>
-<!-- SSLLog --------------------------------------------------------->
+<hr /><!-- SSLLog --------------------------------------------------------->
 <p>
 <br>
 <a name="SSLLog"></a>
-<h2><a name="ToC19">SSLLog</a></h2>
+<h2><a name="ssllog">SSLLog</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1871,31 +1692,31 @@ SSLVerifyDepth 10
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Where to write the dedicated SSL engine logfile</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLLog</code> <em>filename</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -1923,11 +1744,11 @@ Example:
 SSLLog /usr/local/apache/logs/ssl_engine_log
 </pre>
 </blockquote>
-<!-- SSLLogLevel ---------------------------------------------------->
+<hr /><!-- SSLLogLevel ---------------------------------------------------->
 <p>
 <br>
 <a name="SSLLogLevel"></a>
-<h2><a name="ToC20">SSLLogLevel</a></h2>
+<h2><a name="sslloglevel">SSLLogLevel</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -1940,31 +1761,31 @@ SSLLog /usr/local/apache/logs/ssl_engine_log
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Logging level for the dedicated SSL engine logfile</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLLogLevel</code> <em>level</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <code>SSLLogLevel none</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> <em>Not applicable</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -2011,11 +1832,11 @@ Example:
 SSLLogLevel warn
 </pre>
 </blockquote>
-<!-- SSLOptions ----------------------------------------------------->
+<hr /><!-- SSLOptions ----------------------------------------------------->
 <p>
 <br>
 <a name="SSLOptions"></a>
-<h2><a name="ToC21">SSLOptions</a></h2>
+<h2><a name="ssloptions">SSLOptions</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -2028,31 +1849,31 @@ SSLLogLevel warn
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Configure various SSL engine run-time options</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLOptions</code> [+-]<em>option</em> ...</td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> server config, virtual host, directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> Options</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -2086,7 +1907,7 @@ The available <em>option</em>s are:
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created for backward compatibility to other Apache SSL solutions. Look in
-    the <a href="ssl_compat.html">Compatibility</a> chapter for details
+    the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details
     on the particular variables generated.
 <p>
 <li><code>ExportCertData</code>
@@ -2151,11 +1972,11 @@ SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files&gt;
 </pre>
 </blockquote>
-<!-- SSLRequireSSL -------------------------------------------------->
+<hr /><!-- SSLRequireSSL -------------------------------------------------->
 <p>
 <br>
 <a name="SSLRequireSSL"></a>
-<h2><a name="ToC22">SSLRequireSSL</a></h2>
+<h2><a name="sslrequiressl">SSLRequireSSL</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -2168,31 +1989,31 @@ SSLOptions +FakeBasicAuth -StrictRequire
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Deny access when SSL is not used for the HTTP request</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRequireSSL</code></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.0 </td></tr>
 </table>
@@ -2215,11 +2036,11 @@ Example:
 SSLRequireSSL
 </pre>
 </blockquote>
-<!-- SSLRequire ----------------------------------------------------->
+<hr /><!-- SSLRequire ----------------------------------------------------->
 <p>
 <br>
 <a name="SSLRequire"></a>
-<h2><a name="ToC23">SSLRequire</a></h2>
+<h2><a name="sslrequire">SSLRequire</a> directive</h2>
 <table cellspacing="0" cellpadding="1" bgcolor="#cccccc" border="0" summary="">
 <tr>
 <td>
@@ -2232,31 +2053,31 @@ SSLRequireSSL
 <tr><td>
 <font face="Arial,Helvetica"><b>Description:</b></font></a> </td><td> Allow access only when an arbitrarily complex boolean expression is true</td></tr>
 <tr><td><a
- href="../directive-dict.html#Syntax"
+ href="directive-dict.html#Syntax"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Syntax:</b></font></a> </td><td> <code>SSLRequire</code> <em>expression</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Default"
+ href="directive-dict.html#Default"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Default:</b></font></a> </td><td> <em>None</em></td></tr>
 <tr><td><a
- href="../directive-dict.html#Context"
+ href="directive-dict.html#Context"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Context:</b></font></a> </td><td> directory, .htaccess</td></tr>
 <tr><td><a
- href="../directive-dict.html#Override"
+ href="directive-dict.html#Override"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Override:</b></font></a> </td><td> AuthConfig</td></tr>
 <tr><td><a
- href="../directive-dict.html#Status"
+ href="directive-dict.html#Status"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Status:</b></font></a> </td><td> Extension</td></tr>
 <tr><td><a
- href="../directive-dict.html#Module"
+ href="directive-dict.html#Module"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Module:</b></font></a> </td><td> mod_ssl</td></tr>
 <tr><td><a
- href="../directive-dict.html#Compatibility"
+ href="directive-dict.html#Compatibility"
  rel="Help"
 ><font face="Arial,Helvetica"><b>Compatibility:</b></font></a> </td><td> mod_ssl 2.1 </td></tr>
 </table>
@@ -2404,136 +2225,9 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 </tr></table>
 </td></tr></table>
 </div>
-<br>
-<br>
-<p>
-<h1><a name="ToC24">Additional Features</a></h1>
-<h2><a name="ToC25">Environment Variables</a></h2>
-This module provides a lot of SSL information as additional environment
-variables to the SSI and CGI namespace. The generated variables are listed in
-<a href="#table4">Table 4</a>. For backward compatibility the information can
-be made available under different names, too. Look in the <a
-href="ssl_compat.html">Compatibility</a> chapter for details on the
-compatibility variables.
-<p>
-<div align="center">
-<a name="table4"></a>
-<table width="600" cellspacing="0" cellpadding="1" border="0" summary="">
-<caption align="bottom" id="sf">Table 4: SSI/CGI Environment Variables</caption>
-<tr><td bgcolor="#cccccc">
-<table width="598" cellpadding="5" cellspacing="0" border="0" summary="">
-<tr><td valign="top" align="center" bgcolor="#ffffff">
-<table border="0" cellspacing="0" cellpadding="2" width="598" summary="">
-<tr id="H">
- <td><b>Variable Name:</b></td>
- <td><b>Value Type:</b></td>
- <td><b>Description:</b></td>
-</tr>
-<tr id="D"><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr id="H"><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
-<tr id="H"><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
-<tr id="D"><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
-<tr id="D"><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
-<tr id="H"><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
-<tr id="D"><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
-<tr id="H"><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
-<tr id="D"><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr id="D"><td><code>SSL_CLIENT_CERT_CHAIN</code><i>n</i></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
-<tr id="H"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><tt>NONE</tt>, <tt>SUCCESS</tt>, <tt>GENEROUS</tt> or <tt>FAILED:</tt><i>reason</i></td></tr>
-<tr id="D"><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
-<tr id="D"><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
-<tr id="D"><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
-<tr id="D"><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
-<tr id="H"><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
-<tr id="D"><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
-<tr id="H"><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
-<tr id="D"><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
-</table>
-[ where <em>x509</em> is a component of a X.509 DN:
-  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]
-</td>
-</tr></table>
-</td></tr></table>
-</div>
-<p>
-<br>
-<h2><a name="ToC26">Custom Log Formats</a></h2>
-When mod_ssl is built into Apache or at least loaded (under DSO situation)
-additional functions exist for the <a
-href="../mod_log_config.html#formats">Custom Log Format</a> of <a
-href="../mod_log_config.html">mod_log_config</a>. First there is an additional
-``<code>%{</code><em>varname</em><code>}x</code>'' eXtension format function
-which can be used to expand any variables provided by any module, especially
-those provided by mod_ssl which can you find in <a href="#table4">Table 4</a>.
-<p>
-For backward compatibility there is additionally a special
-``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
-provided. Information about this function is provided in the <a
-href="ssl_compat.html">Compatibility</a> chapter.
-<p>
-Example:
-<blockquote>
-<pre>
-CustomLog logs/ssl_request_log \
-          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
-</pre>
-</blockquote>
-      <p>
-      <br>
-      <table summary="">
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_intro.html" onmouseover="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_bot'); return true" onfocus="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_bot'); return true"><img name="ro_img_prev_bot" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Introduction</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_compat.html" onmouseover="ro_imgOver('ro_img_next_bot', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_bot'); return true" onfocus="ro_imgOver('ro_img_next_bot', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_bot'); return true"><img name="ro_img_next_bot" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">Compatibility</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td><table width="598" summary="">
-        <tr>
-        <td align="left"><font face="Arial,Helvetica">
-        <a href="http://www.modssl.org/">mod_ssl</a> 2.8, User Manual<br>
-        The Apache Interface to OpenSSL
-        </font>
-        </td>
-        <td align="right"><font face="Arial,Helvetica">
-        Copyright &copy; 1998-2001
-        <a href="http://www.engelschall.com/">Ralf S. Engelschall</a><br>
-        All Rights Reserved<br>
-        </font>
-        </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      </table>
-  </td>
-</tr>
-</table>
-</div>
+ <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
 </body>
 </html>
