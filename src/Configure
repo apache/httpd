@@ -219,6 +219,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DOSF1"
 	;;
     QNX)
+	DEF_WANTHSREGEX=yes
 	OS='QNX'
 	CFLAGS="$CFLAGS -DQNX"
 	LIBS="$LIBS -N128k -lsocket"

@@ -330,6 +330,9 @@ typedef quad_t rlim_t;
 #define NEED_INITGROUPS
 #define NEED_SELECT_H
 #define NEED_PROCESS_H
+#define HAVE_SYS_SELECT_H
+
+#include <unix.h>
 
 #define JMP_BUF sigjmp_buf
 
