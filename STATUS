@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/09 00:04:29 $]
+  Last modified at [$Date: 1999/08/09 08:11:03 $]
 
 Release:
 
@@ -22,81 +22,67 @@ Release:
            
     2.0  : In pre-alpha development, see apache-2.0 and apache-apr repository
 
-Binaries (1.3.6):
+Binaries (1.3.8):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
  alpha-dec-osf3.0              no      Sameer Parekh
- alpha-dec-osf4.0              yes     Lars Eilebrecht, Ken Coar
- armv4l-whatever-linux2        yes     Rasmus Lerdorf
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar
+ armv4l-whatever-linux2        no      Rasmus Lerdorf
  hppa1.1-hp-hpux               no      Rob Hartill
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
- i386-sun-solaris2.7           yes     Cliff Skolnick
+ i386-sun-solaris2.7           no      Cliff Skolnick
  i386-unixware-svr4            no      Sameer Parekh
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
- i386-unknown-freebsd2.2.8     yes     Jim Jagielski
- i386-whatever-freebsd3.0      yes     Ken Coar
- i386-whatever-freebsd3.0      yes     Dirk-Willem van Gulik
+ i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i386-whatever-freebsd3.0      no      Ken Coar
+ i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
- i586-unknown-linux2           yes     Ralf S. Engelschall, Lars Eilebrecht
- i686-unknown-linux2           yes     Lars Eilebrecht
- i686-whatever-linux2          yes     Ken Coar
+ i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht
+ i686-unknown-linux2           no      Lars Eilebrecht
+ i686-whatever-linux2          no      Ken Coar
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.2.1     N/A     Lars Eilebrecht
- i386-unknown-netBSD-1.3.2     yes     Lars Eilebrecht
+ i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
- i386-sni-svr4                 yes     Martin Kraemer
+ i386-sni-svr4                 no      Martin Kraemer
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
  mips-sgi-irix5.3              no      Mark Imbrianco
- mips-sgi-irix6.2              yes     Lars Eilebrecht
+ mips-sgi-irix6.2              no      Lars Eilebrecht
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-sni-svr4                 yes     Martin Kraemer
- OS/2                          yes     Brian Havard
+ mips-sni-svr4                 no      Martin Kraemer
+ OS/2                          no      Brian Havard
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
- rs6000-ibm-aix4.1             yes     Lars Eilebrecht
+ rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
  rs6000-ibm-aix4.3.2           no      Bill Stoddard
- sparc-sun-solaris2.5          yes     Lars Eilebrecht
- sparc-sun-solaris2.6          yes     Lars Eilebrecht
- sparc-sun-solaris2.7          yes     Cliff Skolnick
- sparc-sun-sunos4.1.4          yes     Lars Eilebrecht, Michael Douglass
+ sparc-sun-solaris2.5          no      Lars Eilebrecht
+ sparc-sun-solaris2.6          no      Lars Eilebrecht
+ sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-sunos4.1.4          no      Lars Eilebrecht, Michael Douglass
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
- sparc-unknown-linux           yes     Lars Eilebrecht
+ sparc-unknown-linux           no      Lars Eilebrecht
  mips-dec-ultrix4.4            no      Sameer Parekh
- mips-unknown-linux            yes     Lars Eilebrecht
+ mips-unknown-linux            no      Lars Eilebrecht
 
 RELEASE SHOWSTOPPERS:
 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * David Harris' note of leakage problems in adding/removing
-      modules, plus additional findings by Dean and Jim.  Discussion
-      in thread following message-ID below.
-	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
-	Status: 
-
-    * Graham Leggett has found that if he uses the 1.3.7-dev core, and
-      the 1.3.6 proxy code (plus a small patch of his) he doesn't get
-      the hangs he was reporting.  The situation is better as of
-      18 July 1999; still an occasional problem, but no longer a
-      showstopper.
-
-    * mod_rewrite/3874: RewriteLock doesn't work for virtual hosts 
-	Status: (Ralf): When I find time, I can look at this.  But
-		I would appreciate when someone other already can dive into
-		this. My opinion is already appended to the PR. It
-                should be not too hard to fix. But one has
-                to carefully look at the whole context again. -rse
-
     * long pathnames with many components and no AllowOverride None
       Workaround is to define <Directory /> with AllowOverride None,
       which is something all sites should do in any case.
 	Status: Marc was looking at it.
+
+    * Ronald Tschalär's patch to mod_proxy to allow other modules to
+      set headers too (needed by mod_auth_digest)
+        Message-ID: <199907080712.JAA28269@chill.innovation.ch>
+        Status:
 
 Documentation that needs writing:
 
@@ -114,17 +100,13 @@ Available Patches:
 	Message-ID: <008e01bedead$781c9480$0500a8c0@delf>
 	Status:
 
-    * Ian Turner's patch for port to Sequent (enabling DSO)
-	PR: 4735
-	Status: 
-
     * Stipe Tolj's Cygwin32 port
 	PR#: 2936
         Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept)
 
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
       to refer to URIs for non-static resources.
-	Message-ID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
+	MID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
 	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
@@ -173,7 +155,7 @@ Available Patches:
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
 	Status: Ken -0 for 1.3/+0 for 2.0, Lars -0 for 1.3
  
-   * Eric Prud'hommeaux's mod_dir mods for file-level access control.
+    * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
         Status: Jim -0 (The current behavior seems logical to me. If there
 		was more universal interest in changing it, then that would be
@@ -183,11 +165,6 @@ Available Patches:
       file level access control.
         Message-ID: <Pine.LNX.3.96.981110105230.10006B-200000@tux.w3.org>
         Status: 
-
-    * Ronald Tschalär's patch to mod_proxy to allow other modules to
-      set headers too (needed by mod_auth_digest)
-        Message-ID: <199907080712.JAA28269@chill.innovation.ch>
-        Status:
 
     * Greg's XML Handling patch
         Message-ID: <3764E070.381B1B8E@lyra.org>
@@ -209,6 +186,12 @@ In progress:
       This package contains modules for manipulating client request data
       via the Apache API with Perl and C.
         Status: http://www.pobox.com/~dougm/libapr-0.20_01.tar.gz
+
+    * David Harris' note of odd size memory allocations.  Dean notes
+      that this is due to BLOCK_MIN_ALLOC.  Should we reduce it to 1024?
+      Discussion in thread following message-ID below.
+	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
+	Status: 
 
 Needs patch:
 
