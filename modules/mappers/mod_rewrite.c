@@ -1348,6 +1348,8 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     apr_size_t i;
     apr_size_t nbytes;
     apr_status_t rv;
+    const char *eol = APR_EOL_STR;
+    int eolc = 0;
 
 #ifndef NO_WRITEV
     struct iovec iova[2];
@@ -1400,11 +1402,25 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     nbytes = 1;
     apr_file_read(fpout, &c, &nbytes);
     while (nbytes == 1 && (i < REWRITE_MAX_PRG_MAP_LINE)) {
-        if (c == '\n') {
+        if (c == eol[eolc]) {
+            if (!eol[++eolc]) {
+                /* remove eol from the buffer */
+                i -= --eolc;
+                break;
+            }
+        }
+
+        /* only partial (invalid) eol sequence -> reset the counter */
+        else if (eolc) {
+            eolc = 0;
+        }
+
+        /* catch binary mode, e.g. on Win32 */
+        else if (c == '\n') { 
             break;
         }
-        buf[i++] = c;
 
+        buf[i++] = c;
         apr_file_read(fpout, &c, &nbytes);
     }
 
