@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 22:26:47 $]
+Last modified at [$Date: 2003/11/01 22:33:10 $]
 
 Release:
 
@@ -278,6 +278,11 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_info: Escape html code in directives and arguments. PR: 24232
         modules/generators/mod_info.c: r1.52
       +1: thommay, nd, trawick
+
+    * Let mod_autoindex show filenames containing special characters.
+      PR 13598.
+        server/request.c: r1.130
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
