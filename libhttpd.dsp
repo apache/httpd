@@ -202,7 +202,7 @@ InputPath=.\os\win32\ap_regkey.h
 
 ".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -213,7 +213,7 @@ InputPath=.\os\win32\ap_regkey.h
 
 ".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -222,29 +222,28 @@ InputPath=.\os\win32\ap_regkey.h
 # Begin Source File
 
 SOURCE=.\server\gen_test_char.exe
+USERDEP__GEN_T=".\include\os.h"	
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-USERDEP__WIN32=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
 ".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_test_char.exe >.\server\test_char.h 
-	
+	.\server\gen_test_char.exe >.\server\test_char.h
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-USERDEP__WIN32=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
 ".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_test_char.exe >.\server\test_char.h 
-	
+	.\server\gen_test_char.exe >.\server\test_char.h
+
 # End Custom Build
 
 !ENDIF 
@@ -262,7 +261,7 @@ InputPath=.\modules\generators\mod_cgi.h
 
 ".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -273,7 +272,7 @@ InputPath=.\modules\generators\mod_cgi.h
 
 ".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -291,7 +290,7 @@ InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\http\mod_core.h > .\include\mod_core.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -302,7 +301,7 @@ InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\http\mod_core.h > .\include\mod_core.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -320,7 +319,7 @@ InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\dav\main\mod_dav.h > .\include\mod_dav.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -331,7 +330,7 @@ InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\dav\main\mod_dav.h > .\include\mod_dav.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -349,7 +348,7 @@ InputPath=.\modules\filters\mod_include.h
 
 ".\include\mod_include.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\filters\mod_include.h > .\include\mod_include.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -360,7 +359,7 @@ InputPath=.\modules\filters\mod_include.h
 
 ".\include\mod_include.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\filters\mod_include.h > .\include\mod_include.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -378,7 +377,7 @@ InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\proxy\mod_proxy.h > .\include\mod_proxy.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -389,7 +388,7 @@ InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\proxy\mod_proxy.h > .\include\mod_proxy.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -407,7 +406,7 @@ InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -418,7 +417,7 @@ InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -436,7 +435,7 @@ InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -447,7 +446,7 @@ InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -465,7 +464,7 @@ InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\os\win32\os.h > .\include\os.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -476,7 +475,7 @@ InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\os\win32\os.h > .\include\os.h
-	
+
 # End Custom Build
 
 !ENDIF 
