@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/23 20:41:27 $]
+Last modified at [$Date: 2004/08/23 23:41:10 $]
 
 Release:
 
@@ -73,6 +73,11 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) util_ldap: Validate the file path of the trusted certificate file 
+       at the time the LDAPTrushedCA directive is handled. PR#30782
+         modules/ldap/util_ldap.c: 1.9
+       +1: bnicholes
+       
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
        PR: 30134
