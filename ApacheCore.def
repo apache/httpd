@@ -263,8 +263,8 @@ EXPORTS
 ;	ap_vsnprintf   @256
 	closedir   @257
 	opendir   @258
-	os_spawnv   @259
-	os_spawnve   @260
+;	os_spawnv   @259
+;	os_spawnve   @260
 	os_stat   @261
 	readdir   @262
 	regcomp   @263
@@ -312,7 +312,7 @@ EXPORTS
 	;includes_module  @305   
 	mime_module   @306
 	negotiation_module @307  
-	os_spawnle   @308
+;	os_spawnle   @308
 	setenvif_module  @309 
 	;so_module   @310
 	top_module   @311
