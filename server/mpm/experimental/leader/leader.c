@@ -885,7 +885,6 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
                                thread_slot, bucket_alloc);
                 apr_pool_clear(ptrans);
                 requests_this_child--;
-                apr_socket_close(csd);  /* Debug only */
             }
         }
         else {
