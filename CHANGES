@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
+     functions leave the connections in a sane state after errors have
+     occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
+     27271 [Graham Leggett]
+
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
