@@ -235,7 +235,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
  
         if (num_ranges == -1) {
             ap_remove_output_filter(f);
-            return HTTP_RANGE_NOT_SATISFIABLE;
+            bsend = apr_brigade_create(r->pool);
+            e = ap_bucket_create_error(HTTP_RANGE_NOT_SATISFIABLE, NULL, r->pool);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+            e = apr_bucket_create_eos();
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+            return ap_pass_brigade(f->next, bsend);
         }
         if (num_ranges == 0) {
             ap_remove_output_filter(f);
