@@ -72,6 +72,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "mpm.h"
+#include "mpm_common.h"
 
 #ifdef DEXTER_MPM
 #define CHILD_INFO_TABLE     ap_child_table
@@ -105,7 +106,7 @@ void ap_reclaim_child_processes(int terminate)
         /* now see who is done */
         not_dead_yet = 0;
         for (i = 0; i < ap_max_daemons_limit; ++i) {
-            int pid = CHILD_INFO_TABLE[i].pid;
+            pid_t pid = CHILD_INFO_TABLE[i].pid;
 
 #ifdef DEXTER_MPM
             if (ap_child_table[i].status == SERVER_DEAD)
@@ -135,16 +136,17 @@ void ap_reclaim_child_processes(int terminate)
             case 7:     /* 1.4sec */
                 /* ok, now it's being annoying */
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
-                            0, ap_server_conf,
-                   "child process %d still did not exit, sending a SIGTERM",
-                            pid);
+                             0, ap_server_conf,
+                   "child process %ld still did not exit, sending a SIGTERM",
+                             (long)pid);
                 kill(pid, SIGTERM);
                 break;
             case 8:     /*  6 sec */
                 /* die child scum */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-                   "child process %d still did not exit, sending a SIGKILL",
-                            pid);
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                             0, ap_server_conf,
+                   "child process %ld still did not exit, sending a SIGKILL",
+                             (long)pid);
                 kill(pid, SIGKILL);
                 break;
             case 9:     /* 14 sec */
@@ -153,9 +155,10 @@ void ap_reclaim_child_processes(int terminate)
                  * exited, we will likely fail to bind to the port
                  * after the restart.
                  */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-                            "could not make child process %d exit, "
-                            "attempting to continue anyway", pid);
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                             0, ap_server_conf,
+                             "could not make child process %ld exit, "
+                             "attempting to continue anyway", (long)pid);
                 break;
             }
         }
