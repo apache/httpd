@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/12/01 22:56:47 $]
+Last modified at [$Date: 2000/12/02 07:15:32 $]
 
 Release:
 
@@ -647,6 +647,11 @@ Documentation that needs writing:
       does not show the contents of new files until later.
 
 Available Patches:
+
+   * Jon Travis's <jtravis@covalent.net> patch to deal with thread-safe
+     issues with inet_ntoa.  See message <20001201163220.A12827@covalent.net>
+	Status:  This is being set aside until the IPv6 work is finished
+		 so that we know exactly what is required.
 
    * Martin Sojka <msojka@gmx.de>'s patch to add error reporting for failed 
      htpasswd actions due to a full /tmp volume (other programs may have
