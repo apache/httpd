@@ -2979,7 +2979,7 @@ static int default_handler(request_rec *r)
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
         apr_status_t status;
-        if ((status = apr_mmap_create(&mm, fd, 0, r->finfo.size, r->pool)) != APR_SUCCESS) {
+        if ((status = apr_mmap_create(&mm, fd, 0, r->finfo.size, r->connection->pool)) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
 			 "default_handler: mmap failed: %s", r->filename);
 	    mm = NULL;
@@ -3414,7 +3414,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_EOS(e) && !AP_BUCKET_IS_FLUSH(e)) {
+        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e) || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
+            
+            /* NEVER save an EOS in here.  If we are saving a brigade with an
+             * EOS bucket, then we are doing keepalive connections, and we want
+             * to process to second request fully.
+             */
+            if (AP_BUCKET_IS_EOS(e)) {
+                AP_BUCKET_REMOVE(e);
+                ap_bucket_destroy(e);
+            }
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;
         }
