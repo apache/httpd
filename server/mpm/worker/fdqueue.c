@@ -72,7 +72,7 @@
 
 /**
  * Callback routine that is called to destroy this
- * fd_queue_t when it's pool is destroyed.
+ * fd_queue_t when its pool is destroyed.
  */
 static apr_status_t ap_queue_destroy(void *data) 
 {
