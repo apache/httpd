@@ -117,6 +117,14 @@
  * access it.
  */
 static char *tempfilename;
+/*
+ * If our platform knows about the tmpnam() external buffer size, create
+ * a buffer to pass in.  This is needed in a threaded environment, or
+ * one that thinks it is (like HP-UX).
+ */
+#ifdef L_tmpnam
+static char tname_buf[L_tmpnam];
+#endif
 
 /*
  * Get a line of input from the user, not including any terminating
@@ -517,11 +525,18 @@ int main(int argc, char *argv[])
      * We can access the files the right way, and we have a record
      * to add or update.  Let's do it..
      */
+    errno = 0;
+#ifdef L_tmpnam
+    tempfilename = tmpnam(tname_buf);
+#else   /* def L_tmpnam */
     tempfilename = tmpnam(NULL);
+#endif  /* def L_tmpnam */
     if ((tempfilename == NULL) || (strlen(tempfilename) == 0)) {
 	fprintf(stderr, "%s: unable to generate temporary filename\n",
 		argv[0]);
-	errno = ENOENT;
+	if (errno == 0) {
+	    errno = ENOENT;
+	}
 	perror("tmpnam");
 	exit(ERR_FILEPERM);
     }
