@@ -252,7 +252,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
         /* now, verify that the URI uses the same scheme as the current.
            request. the port must match our port.
         */
-        apr_sockaddr_port_get(&port, r->connection->local_addr);
+        port = r->connection->local_addr->port;
         if (strcasecmp(comp.scheme, scheme) != 0
 #ifdef APACHE_PORT_HANDLING_IS_BUSTED
             || comp.port != port

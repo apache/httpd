@@ -913,7 +913,7 @@ static void check_hostalias(request_rec *r)
 
     last_s = NULL;
 
-    apr_sockaddr_port_get(&port, r->connection->local_addr);
+    port = r->connection->local_addr->port;
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
      * whose ports may not match.  Also each server may appear more than
@@ -969,7 +969,7 @@ static void check_serverpath(request_rec *r)
     name_chain *src;
     apr_port_t port;
 
-    apr_sockaddr_port_get(&port, r->connection->local_addr);
+    port = r->connection->local_addr->port;
 
     /*
      * This is in conjunction with the ServerPath code in http_core, so we
@@ -1044,7 +1044,7 @@ AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn)
     /* maybe there's a default server or wildcard name-based vhost
      * matching this port
      */
-    apr_sockaddr_port_get(&port, conn->local_addr);
+    port = conn->local_addr->port;
 
     trav = find_default_server(port);
     if (trav) {

@@ -244,7 +244,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
             ap_listen_rec *new;
             apr_port_t oldport;
 
-            apr_sockaddr_port_get(&oldport, sa);
+            oldport = sa->port;
             /* If both ports are equivalent, then if their names are equivalent,
              * then we will re-use the existing record.
              */

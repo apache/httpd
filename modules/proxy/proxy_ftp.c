@@ -1412,7 +1412,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         apr_socket_addr_get(&local_addr, APR_LOCAL, sock);
-        apr_sockaddr_port_get(&local_port, local_addr);
+        local_port = local_addr->port;
         apr_sockaddr_ip_get(&local_ip, local_addr);
 
         if ((rv = apr_socket_opt_set(local_sock, APR_SO_REUSEADDR, one)) 
