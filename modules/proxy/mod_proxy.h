@@ -292,6 +292,10 @@ struct proxy_balancer {
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
     int                 max_attempts; /* Number of attempts before failing */
     char                max_attempts_set;
+    enum {
+       lbmethod_requests = 1,
+       lbmethod_traffic = 2
+    } lbmethod;
 
     /* XXX: Perhaps we will need the proc mutex too.
      * Altrough we are only using arithmetic operations
