@@ -111,7 +111,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     char buffer[HUGE_STRING_LEN];
     int nbytes, i, err;
 
+#if 0
     apr_socket_t *client_sock = NULL;
+#endif
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
     apr_int16_t pollevent;
@@ -252,35 +254,51 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
      * Send the HTTP/1.1 CONNECT request to the remote server
      */
 
+    /* XXXX FIXME: we are acting as a tunnel - the output filter stack should ideally
+     * be completely empty, because when we are done here we are done completely.
+     * Is there such a thing as a NULL filter?
+     */
+/*    r->output_filters = NULL;
+ *    r->connection->output_filters = NULL;
+ *   ap_add_output_filter("NULL", NULL, r, r->connection);
+ */
+
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
      */
     if (proxyport) {
 	/* FIXME: Error checking ignored.
 	 */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: CONNECT: sending the CONNECT request to the remote proxy");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-			      "CONNECT %s HTTP/1.1" CRLF, r->uri);
+			      "CONNECT %s HTTP/1.0" CRLF, r->uri);
         apr_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
         apr_send(sock, buffer, &nbytes);
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: CONNECT: Returning 200 OK Status");
-        ap_rvputs(r, "HTTP/1.1 200 Connection established" CRLF, NULL);
-        ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
-        ap_rflush(r);
+        nbytes = apr_snprintf(buffer, sizeof(buffer),
+			      "HTTP/1.0 200 Connection Established" CRLF);
+        apr_send(sock, buffer, &nbytes);
+        nbytes = apr_snprintf(buffer, sizeof(buffer),
+			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+        apr_send(sock, buffer, &nbytes);
     }
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: CONNECT: setting up poll()");
 
     /*
      * Step Four: Handle Data Transfer
      *
      * Handle two way transfer of data over the socket (this is a tunnel).
      */
+
+/*    r->sent_bodyct = 1;*/
 
     if(apr_poll_setup(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
@@ -345,7 +363,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     break;
             }
 
-            apr_poll_revents_get(&pollevent, client_sock, pollfd);
+            apr_poll_revents_get(&pollevent, sock, pollfd);
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "proxy: CONNECT: client was set");
@@ -370,6 +388,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             break;
     }
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: CONNECT: finished with poll() - cleaning up");
 
     /*
      * Step Five: Clean Up
