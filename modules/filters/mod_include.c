@@ -1158,9 +1158,9 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 {
     parse_node_t *new, *root = NULL, *current = NULL;
     request_rec *r = ctx->intern->r;
-    const char* buffer;
+    const char *buffer, *error = "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
-    int retval = 0, was_unmatched = 0;
+    int was_unmatched = 0;
     unsigned regex = 0;
 
     *was_error = 0;
@@ -1194,11 +1194,10 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 continue;
 
             default:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,
+                              r->filename);
                 *was_error = 1;
-                return retval;
+                return 0;
             }
         }
 
@@ -1210,21 +1209,17 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     apr_pstrcat(ctx->dpool, current->token.value,
                                 *current->token.value ? " " : "",
                                 new->token.value, NULL);
-                break;
+                continue;
 
             case TOKEN_RE:
             case TOKEN_RBRACE:
             case TOKEN_GROUP:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
+                break;
 
             default:
                 new->parent = current;
                 current = current->right = new;
-                break;
+                continue;
             }
             break;
 
@@ -1235,14 +1230,10 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 new->parent = current;
                 current = current->right = new;
                 ++regex;
-                break;
+                continue;
 
             default:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
+                break;
             }
             break;
 
@@ -1255,11 +1246,10 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     break;
 
                 case TOKEN_RBRACE:
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "Invalid expression \"%s\" in file %s",
-                                  expr, r->filename);
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,
+                                  r->filename);
                     *was_error = 1;
-                    return retval;
+                    return 0;
 
                 default:
                     current = current->parent;
@@ -1281,7 +1271,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 new->parent = current;
             }
             current = new;
-            break;
+            continue;
 
         case TOKEN_EQ:
         case TOKEN_NE:
@@ -1313,27 +1303,19 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     break;
                 }
             }
-
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Invalid expression \"%s\" in file %s",
-                          expr, r->filename);
-            *was_error = 1;
-            return retval;
+            break;
 
         case TOKEN_RBRACE:
             while (current && current->token.type != TOKEN_LBRACE) {
                 current = current->parent;
             }
 
-            if (!current) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Unmatched ')' in \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
+            if (current) {
+                TYPE_TOKEN(&current->token, TOKEN_GROUP);
+                continue;
             }
 
-            TYPE_TOKEN(&current->token, TOKEN_GROUP);
+            error = "Unmatched ')' in \"%s\" in file %s";
             break;
 
         case TOKEN_NOT:
@@ -1343,30 +1325,30 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             case TOKEN_RE:
             case TOKEN_RBRACE:
             case TOKEN_GROUP:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
+                break;
 
             default:
-                break;
+                current->right = new;
+                new->parent = current;
+                current = new;
+                continue;
             }
-
-            current->right = new;
-            new->parent = current;
-            current = new;
             break;
 
         default:
             break;
         }
+
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr, r->filename);
+        *was_error = 1;
+        return 0;
     }
 
     DEBUG_DUMP_TREE(ctx, root);
 
     /* Evaluate Parse Tree */
     current = root;
+    error = NULL;
     while (current) {
         switch (current->token.type) {
         case TOKEN_STRING:
@@ -1375,17 +1357,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
             current->token.value = buffer;
             current->value = !!*current->token.value;
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
             break;
-
-        case TOKEN_RE:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "No operator before regex of expr \"%s\" in file %s",
-                          expr, r->filename);
-            *was_error = 1;
-            return retval;
 
         case TOKEN_AND:
         case TOKEN_OR:
@@ -1394,7 +1366,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
-                return retval;
+                return 0;
             }
 
             if (!current->right->done) {
@@ -1452,10 +1424,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                                      current->right->value;
                 }
             }
-
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
             break;
 
         case TOKEN_EQ:
@@ -1468,7 +1436,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
                 *was_error = 1;
-                return retval;
+                return 0;
             }
             buffer = ap_ssi_parse_string(ctx, current->left->token.value,
                                          NULL, 0, SSI_EXPAND_DROP_NAME);
@@ -1492,10 +1460,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             if (current->token.type == TOKEN_NE) {
                 current->value = !current->value;
             }
-
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
             break;
 
         case TOKEN_GE:
@@ -1509,7 +1473,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
-                return retval;
+                return 0;
             }
             buffer = ap_ssi_parse_string(ctx, current->left->token.value, NULL,
                                          0, SSI_EXPAND_DROP_NAME);
@@ -1522,44 +1486,16 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             current->value = strcmp(current->left->token.value,
                                     current->right->token.value);
 
-            if (current->token.type == TOKEN_GE) {
-                current->value = current->value >= 0;
+            switch (current->token.type) {
+            case TOKEN_GE: current->value = current->value >= 0; break;
+            case TOKEN_GT: current->value = current->value >  0; break;
+            case TOKEN_LE: current->value = current->value <= 0; break;
+            case TOKEN_LT: current->value = current->value <  0; break;
+            default: current->value = 0; break; /* should not happen */
             }
-            else if (current->token.type == TOKEN_GT) {
-                current->value = current->value > 0;
-            }
-            else if (current->token.type == TOKEN_LE) {
-                current->value = current->value <= 0;
-            }
-            else if (current->token.type == TOKEN_LT) {
-                current->value = current->value < 0;
-            }
-            else {
-                current->value = 0;     /* Don't return -1 if unknown token */
-            }
-
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
             break;
 
         case TOKEN_NOT:
-            if (current->right) {
-                if (!current->right->done) {
-                    current = current->right;
-                    continue;
-                }
-                current->value = !current->right->value;
-            }
-            else {
-                current->value = 0;
-            }
-
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
-            break;
-
         case TOKEN_GROUP:
             if (current->right) {
                 if (!current->right->done) {
@@ -1572,24 +1508,32 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 current->value = 1;
             }
 
-            DEBUG_DUMP_EVAL(ctx, current);
-            current->done = 1;
-            current = current->parent;
+            if (current->token.type == TOKEN_NOT) {
+                current->value = !current->value;
+            }
             break;
 
+        case TOKEN_RE:
+            if (!error) {
+                error = "No operator before regex in expr \"%s\" in file %s";
+            }
         case TOKEN_LBRACE:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Unmatched '(' in \"%s\" in file %s",
-                          expr, r->filename);
-            *was_error = 1;
-            return retval;
-
+            if (!error) {
+                error = "Unmatched '(' in \"%s\" in file %s";
+            }
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "bad token type (internal parser error)");
+            if (!error) {
+                error = "internal parser error in \"%s\" in file %s";
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,r->filename);
             *was_error = 1;
-            return retval;
+            return 0;
         }
+
+        DEBUG_DUMP_EVAL(ctx, current);
+        current->done = 1;
+        current = current->parent;
     }
 
     return (root ? root->value : 0);
