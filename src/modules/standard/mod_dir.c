@@ -769,8 +769,6 @@ int handle_dir (request_rec *r)
     char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
     int allow_opts = allow_options (r);
 
-    if (r->method_number != M_GET) return NOT_IMPLEMENTED;
-    
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
 	char* ifile;
 	if (r->args != NULL)
@@ -813,6 +811,8 @@ int handle_dir (request_rec *r)
         destroy_sub_req (rr);
     }
 
+    if (r->method_number != M_GET) return NOT_IMPLEMENTED;
+    
     /* OK, nothing easy.  Trot out the heavy artillery... */
 
     if (allow_opts & OPT_INDEXES) 
