@@ -1,5 +1,5 @@
 .TH ab 1 "March 1998"
-.\" $Id: ab.8,v 1.5 1999/04/05 13:52:20 dirkx Exp $
+.\" $Id: ab.8,v 1.6 1999/04/07 14:51:43 martin Exp $
 .\" Copyright (c) 1998-1999 The Apache Group. All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -197,7 +197,7 @@ There are various statically declared buffers of fixed length. Combined
 with the lazy parsing of the command line arguments, the response headers
 from the server and other external inputs this might bite you.
 .P
-It does not implment HTTP/1.x fully; only accepts some 'expected' forms
+It does not implement HTTP/1.x fully; only accepts some 'expected' forms
 of responses. The rather heavy use of 
 .BR strstr(3)
 shows up top in profile,
