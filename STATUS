@@ -38,10 +38,6 @@ Available Patches:
       <199802121503.QAA25633@en1.engelschall.com>
       Status: Ralf +1, Martin +1
 
-    * Doug's [PATCH] unbind cpu option for aix
-      <34EA1E72.E79AA3D2@telebusiness.co.nz>
-      Status: Doug +1, Jim +1, Martin +1
-
 Concepts:
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()

@@ -3312,6 +3312,18 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     if (!pid) {
+#ifdef AIX
+/* by default AIX binds to a single processor
+ * this bit unbinds children which will then bind to another cpu
+ */
+#include <sys/processor.h>
+	int status = bindprocessor(BINDPROCESS, (int)getpid(), 
+				   PROCESSOR_CLASS_ANY);
+	if (status != OK) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
+			"processor unbind failed %d\n", status);
+	}
+#endif
 	RAISE_SIGSTOP(MAKE_CHILD);
 	MONCONTROL(1);
 	/* Disable the restart signal handlers and enable the just_die stuff.

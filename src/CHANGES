@@ -1,5 +1,10 @@
 Changes with Apache 1.3b6
 
+  *)  By default AIX binds a process (and it's children) to a single
+      processor.  httpd children now unbind themselves from that cpu
+      and re-bind to one selected at random via bindprocessor()
+      [Doug MacEachern]
+      
   *) Linux 2.0 and above implement RLIMIT_AS, RLIMIT_DATA has almost no
      effect.  Work around it by using RLIMIT_AS for the RLimitMEM
      directive.  [Enrik Berkhan <enrik@inka.de>] PR#1816
