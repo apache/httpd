@@ -944,7 +944,11 @@ unsigned long get_virthost_addr (char *w, short int *ports) {
 	return htonl(INADDR_ANY);
     }
 	
+#ifdef DGUX
+    my_addr = inet_network(w);
+#else
     my_addr = inet_addr(w);
+#endif
     if (my_addr != ((unsigned long) 0xffffffff))
     {
 	if (p != NULL) *p = ':';

@@ -241,6 +241,18 @@ extern int strncasecmp(const char *,const char *,unsigned);
 /* A lot of SVR4 systems need this */
 #define FCNTL_SERIALIZED_ACCEPT
 
+#elif defined(DGUX)
+#define NO_KILLPG
+#undef  NO_SETSID
+#undef NEED_STRDUP
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#define bzero(a,b) memset(a,0,b)
+#define JMP_BUF sigjmp_buf
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
+/* A lot of SVR4 systems need this */
+#define FCNTL_SERIALIZED_ACCEPT
+
 #elif defined(__NetBSD__)
 #define HAS_GMTOFF
 #undef NO_KILLPG
