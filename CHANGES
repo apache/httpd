@@ -1,4 +1,8 @@
 Changes with Apache 2.0.30-dev
+  *) Miscellaneous small performance fixes: optimized away various
+     string copy operations and removed large temp buffers from
+     the stack [Brian Pane]
+
   *) Fixed startup segfault that occurred when a VirtualHost
      directive had a port but no address [Brian Pane]
 
