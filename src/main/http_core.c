@@ -310,7 +310,7 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 #ifdef MAXIMUM_DNS
     char **haddr;
 #endif
-    core_dir_config *dir_conf;
+    core_dir_config *dir_conf = NULL;
 
 /* If we haven't checked the host name, and we want to */
     if (dir_config) 
