@@ -101,7 +101,6 @@ dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
 initgroups \
-waitpid \
 memmove \
 bzero \
 )
