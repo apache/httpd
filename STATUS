@@ -3,12 +3,13 @@ Apache 1.3 STATUS:
 Release:
 
     1.3.0: Current plan is to roll the tarball June 1 (~5pm eastern)
-           and then release it on the 5th. Jim will roll and tag
-	   on the 1st. Everyone should test the tarball so we're
-	   sure the tarball is ready for the 5th. Jim will announce
-	   as well.
+           and then release it on the 5th. The tarball will be the
+           current CVS tree (1.3b8-dev) as of that date/time.
+           Jim will roll and tag on the 1st. Everyone should test
+           the tarball so we're sure the tarball is ready for the 5th.
+           Jim will announce as well.
 
-    1.3b7: Released 26/5/98.  If no major errors, will become 1.3.0
+    1.3b7: Tagged and Released 26/5/98.
 
     2.0  : In pre-alpha development, see apache-2.0 repository
 
