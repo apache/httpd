@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) If we get an error, then we should remove all filters except for
+     those critical to serving a web page.  This fixes a bug, where
+     error pages were going through the byterange filter, even though
+     that made no sense.  [Ryan Bloom]
+
   *) Relax the syntax checking of Host: headers in order to support
      iDNS. PR#6635 [Tony Finch]
 
