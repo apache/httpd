@@ -231,7 +231,7 @@ typedef struct {
 
 /* proxy_connect.c */
 
-int ap_proxy_connect_handler(request_rec *r, ap_cache_el *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, int proxyport);
 
 /* proxy_ftp.c */
@@ -243,7 +243,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url);
 
 int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
 		     int def_port);
-int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
+int ap_proxy_http_handler(request_rec *r, char *url,
 		       const char *proxyhost, int proxyport);
 
 /* proxy_util.c */
