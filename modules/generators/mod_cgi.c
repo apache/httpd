@@ -185,7 +185,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
           (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
-                   APR_APPEND | APR_BUFFERED, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
+                   APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	return ret;
     }
 
