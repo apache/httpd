@@ -14,7 +14,7 @@
     <!--#include virtual="header.html" -->
 
     <blockquote>
-      <strong>Warning:</strong> This document has not been updated
+      <strong>Warning:</strong> This document has not been fully updated
       to take into account changes made in the 2.0 version of the
       Apache HTTP Server. Some of the information may still be
       relevant, but please use it with care.
@@ -139,10 +139,22 @@
     experimentation.</p>
 
     <p>Operating system choice is largely a matter of local
-    concerns. But a general guideline is to always apply the latest
-    vendor TCP/IP patches. HTTP serving completely breaks many of
-    the assumptions built into Unix kernels up through 1994 and
-    even 1995. Good choices include recent FreeBSD, and Linux.</p>
+    concerns. But some guidelines that have proven generally
+    useful are:</p>
+    <ul>
+      <li>Run the latest stable release and patchlevel of the
+      operating system that you choose.  Many OS suppliers have
+      introduced significant performance improvements their
+      TCP stacks and thread libraries in recent years.</li>
+      <li>If your OS supports a sendfile(2) system call, make
+      sure you install the release and/or patches needed to
+      enable it.  (With Linux, for example, this means using
+      Linux 2.4 or later.  For early releases of Solaris 8,
+      you may need to apply a patch.)  On systems where it
+      is available, sendfile enables Apache 2 to deliver
+      static content faster and with lower CPU utilization.</li>
+    </ul>
+
     <hr />
 
     <h3><a id="runtime" name="runtime">Run-Time Configuration
