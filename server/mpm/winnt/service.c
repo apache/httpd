@@ -69,6 +69,7 @@
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "ap_regkey.h"
 
 #ifdef NOUSER
 #undef NOUSER
@@ -91,6 +92,43 @@ static struct
 } globdat;
 
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
+
+
+#define PRODREGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" \
+                   AP_SERVER_BASEPRODUCT "\\" AP_SERVER_BASEREVISION
+
+/*
+ * Get the server root from the registry into 'dir' which is
+ * size bytes long. Returns 0 if the server root was found
+ * or if the serverroot key does not exist (in which case
+ * dir will contain an empty string), or -1 if there was
+ * an error getting the key.
+ */
+apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
+{
+    apr_status_t rv;
+    ap_regkey_t *key;
+
+    if ((rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, PRODREGKEY, 
+                             APR_READ, p)) == APR_SUCCESS) {
+        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
+        ap_regkey_close(key);
+        if (rv == APR_SUCCESS) 
+            return rv;
+    }
+
+    if ((rv = ap_regkey_open(&key, AP_REGKEY_CURRENT_USER, PRODREGKEY, 
+                             APR_READ, p)) == APR_SUCCESS) {
+        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
+        ap_regkey_close(key);
+        if (rv == APR_SUCCESS) 
+            return rv;
+    }
+
+    *buf = NULL;
+    return rv;
+}
+
 
 /* The service configuration's is stored under the following trees:
  *
@@ -420,6 +458,9 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
  * notify the service control manager of the name change.
  */
 
+/* borrowed from mpm_winnt.c */
+extern apr_pool_t *pconf;
+
 /* Windows 2000 alone supports ChangeServiceConfig2 in order to
  * register our server_version string... so we need some fixups
  * to avoid binding to that function if we are on WinNT/9x.
@@ -450,6 +491,7 @@ static void set_service_description(void)
             /* Cast is necessary, ChangeServiceConfig2 handles multiple
              * object types, some volatile, some not.
              */
+            /* ###: utf-ize */
             if (ChangeServiceConfig2(schService,
                                      1 /* SERVICE_CONFIG_DESCRIPTION */,
                                      (LPVOID) &full_description)) {
@@ -463,22 +505,21 @@ static void set_service_description(void)
     if (full_description) 
     {
         char szPath[MAX_PATH];
-        HKEY hkey;
+        ap_regkey_t *svckey;
+        apr_status_t rv;
 
-        /* Create/Find the Service key that Monitor Applications iterate */
+        /* Find the Service key that Monitor Applications iterate */
         apr_snprintf(szPath, sizeof(szPath), 
                      "SYSTEM\\CurrentControlSet\\Services\\%s", 
                      mpm_service_name);
-        if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szPath, 0, KEY_SET_VALUE, &hkey) 
-                != ERROR_SUCCESS) {
+        rv = ap_regkey_open(&svckey, AP_REGKEY_LOCAL_MACHINE, szPath,
+                            APR_WRITE, pconf);
+        if (rv != APR_SUCCESS) {
             return;
         }
-
         /* Attempt to set the Description value for our service */
-        RegSetValueEx(hkey, "Description", 0, REG_SZ,  
-                      (unsigned char *) full_description, 
-                      strlen(full_description) + 1);
-        RegCloseKey(hkey);
+        ap_regkey_value_set(svckey, "Description", full_description, pconf);
+        ap_regkey_close(svckey);
     }
 }
 
@@ -509,6 +550,7 @@ static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
  */
 extern apr_array_header_t *mpm_new_argv;
 
+/* ###: utf-ize */
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
     const char *ignored;
@@ -521,6 +563,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
     globdat.ssStatus.dwCheckPoint = 1;
 
+    /* ###: utf-ize */
     if (!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
@@ -574,6 +617,7 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
         { NULL, NULL }
     };
 
+    /* ###: utf-ize */
     if (!StartServiceCtrlDispatcher(dispatchTable))
     {
         /* This is a genuine failure of the SCM. */
@@ -590,6 +634,7 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
                                   const char *set_name)
 {
     char key_name[MAX_PATH];
+    ap_regkey_t *key;
     apr_status_t rv;
 
     /* ### Needs improvement, on Win2K the user can _easily_ 
@@ -599,11 +644,15 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
     mpm_service_name = apr_palloc(p, strlen(set_name) + 1);
     apr_collapse_spaces((char*) mpm_service_name, set_name);
     apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
-    rv = ap_registry_get_value(p, key_name, "DisplayName", &mpm_display_name);
+    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, APR_READ, pconf);
+    if (rv == APR_SUCCESS) {
+        rv = ap_regkey_value_get(&mpm_display_name, key, "DisplayName", pconf);
+        ap_regkey_close(key);
+    }
     if (rv != APR_SUCCESS) {
         /* Take the given literal name if there is no service entry */
         mpm_display_name = apr_pstrdup(p, set_name);
-    }
+    } 
     *display_name = mpm_display_name;
     return rv;
 }
@@ -617,9 +666,14 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
     char conf_key[MAX_PATH];
     char **cmb_data;
     apr_status_t rv;
+    ap_regkey_t *key;
 
     apr_snprintf(conf_key, sizeof(conf_key), SERVICEPARAMS, mpm_service_name);
-    rv = ap_registry_get_array(p, conf_key, "ConfigArgs", &svc_args);
+    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, conf_key, APR_READ, p);
+    if (rv == APR_SUCCESS) {
+        rv = ap_regkey_value_array_get(&svc_args, key, "ConfigArgs", p);
+        ap_regkey_close(key);
+    }
     if (rv != APR_SUCCESS) {
         if (rv == ERROR_FILE_NOT_FOUND) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
@@ -781,11 +835,13 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     char key_name[MAX_PATH];
     char exe_path[MAX_PATH];
     char *launch_cmd;
-    apr_status_t(rv);
+    ap_regkey_t *key;
+    apr_status_t rv;
     
     fprintf(stderr,reconfig ? "Reconfiguring the %s service\n"
 		   : "Installing the %s service\n", mpm_display_name);
 
+    /* ###: utf-ize */
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
         apr_status_t rv = apr_get_os_error();
@@ -812,6 +868,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         launch_cmd = apr_psprintf(ptemp, "\"%s\" -k runservice", exe_path);
 
         if (reconfig) {
+            /* ###: utf-ize */
             schService = OpenService(schSCManager, mpm_service_name, 
                                      SERVICE_ALL_ACCESS);
             if (!schService) {
@@ -819,6 +876,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                              apr_get_os_error(), NULL,
                              "OpenService failed");
             }
+            /* ###: utf-ize */
             else if (!ChangeServiceConfig(schService, 
                                           SERVICE_WIN32_OWN_PROCESS,
                                           SERVICE_AUTO_START,
@@ -841,6 +899,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
              * be warned that future apache modules or ISAPI dll's may 
              * depend on it.
              */
+            /* ###: utf-ize */
             schService = CreateService(schSCManager,         // SCManager database
                                    mpm_service_name,     // name of service
                                    mpm_display_name,     // name to display
@@ -873,7 +932,12 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         /* Store the launch command in the registry */
         launch_cmd = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
                                  exe_path, mpm_service_name);
-        rv = ap_registry_store_value(SERVICECONFIG9X, mpm_service_name, launch_cmd);
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
+                            APR_READ, pconf);
+        if (rv == APR_SUCCESS) {
+            rv = ap_regkey_value_set(key, mpm_service_name, launch_cmd, pconf);
+            ap_regkey_close(key);
+        }
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to add the RunServices registry entry.", 
@@ -882,14 +946,24 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         }
 
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
-        rv = ap_registry_store_value(key_name, "ImagePath", launch_cmd);
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
+                            APR_READ, pconf);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
+                         "%s: Failed to create the registry service key.", 
+                         mpm_display_name);
+            return (rv);
+        }
+        rv = ap_regkey_value_set(key, "ImagePath", launch_cmd, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to store ImagePath in the registry.", 
                          mpm_display_name);
+            ap_regkey_close(key);
             return (rv);
         }
-        rv = ap_registry_store_value(key_name, "DisplayName", mpm_display_name);
+        rv = ap_regkey_value_set(key, "DisplayName", mpm_display_name, pconf);
+        ap_regkey_close(key);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to store DisplayName in the registry.", 
@@ -903,7 +977,12 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     /* For both WinNT & Win9x store the service ConfigArgs in the registry...
      */
     apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, mpm_service_name);
-    rv = ap_registry_store_array(ptemp, key_name, "ConfigArgs", argc, argv);
+    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
+                        APR_READ, pconf);
+    if (rv == APR_SUCCESS) {
+        rv = ap_regkey_value_array_set(key, "ConfigArgs", argc, argv, pconf);
+        ap_regkey_close(key);
+    }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                      "%s: Failed to store the ConfigArgs in the registry.", 
@@ -937,6 +1016,7 @@ apr_status_t mpm_service_uninstall(void)
             return (rv);
         }
         
+        /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, SERVICE_ALL_ACCESS);
 
         if (!schService) {
@@ -968,28 +1048,38 @@ apr_status_t mpm_service_uninstall(void)
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
+        apr_status_t rv2, rv3;
+        ap_regkey_t *key;
         fprintf(stderr,"Removing the %s service\n", mpm_display_name);
 
         /* TODO: assure the service is stopped before continuing */
 
-        if (ap_registry_delete_value(SERVICECONFIG9X, mpm_service_name)) {
-            rv = apr_get_os_error();
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
+                            APR_WRITE, pconf);
+        if (rv == APR_SUCCESS) {
+            rv = ap_regkey_value_remove(key, mpm_service_name, pconf);
+            ap_regkey_close(key);
+        }
+        if (rv != APR_SUCCESS) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the RunServices registry "
                          "entry.", mpm_display_name);
-            return (rv);
         }
         
         /* we blast Services/us, not just the Services/us/Parameters branch */
+        apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, mpm_service_name);
+        rv2 = ap_regkey_remove(AP_REGKEY_LOCAL_MACHINE, key_name, pconf);
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
-        if (ap_registry_delete_key(key_name)) 
-        {
-            rv = apr_get_os_error();
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+        rv3 = ap_regkey_remove(AP_REGKEY_LOCAL_MACHINE, key_name, pconf);
+        rv2 = (rv2 != APR_SUCCESS) ? rv2 : rv3;
+        if (rv2 != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv2, NULL,
                          "%s: Failed to remove the service config from the "
                          "registry.", mpm_display_name);
-            return (rv);
         }
+        rv = (rv != APR_SUCCESS) ? rv : rv2;
+        if (rv != APR_SUCCESS)
+            return rv;
     }
     fprintf(stderr,"The %s service has been removed successfully.\n", mpm_display_name);
     return APR_SUCCESS;
@@ -1041,6 +1131,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
             return (rv);
         }
 
+        /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, 
                                  SERVICE_START | SERVICE_QUERY_STATUS);
         if (!schService) {
@@ -1065,6 +1156,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         start_argv[argc] = NULL;
 
         rv = APR_EINIT;
+        /* ###: utf-ize */
         if (StartService(schService, argc, start_argv)
             && signal_service_transition(schService, 0, /* test only */
                                          SERVICE_START_PENDING, 
@@ -1178,7 +1270,8 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
                          "Failed to open the NT Service Manager");
             return;
         }
-        
+
+        /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, 
                                  SERVICE_ALL_ACCESS);
 

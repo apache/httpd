@@ -110,7 +110,7 @@ server_rec *ap_server_conf;
 typedef HANDLE thread;
 
 /* Definitions of WINNT MPM specific config globals */
-static apr_pool_t *pconf;
+apr_pool_t *pconf;
 static apr_pool_t *pchild = NULL;
 static int workers_may_exit = 0;
 static int shutdown_in_progress = 0;
@@ -2070,6 +2070,8 @@ void winnt_rewrite_args(process_rec *process)
     apr_getopt_t *opt;
     int running_as_service = 1;
     int errout = 0;
+
+    pconf = process->pconf;
 
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
