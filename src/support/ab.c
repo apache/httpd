@@ -1195,16 +1195,35 @@ static void test(void)
     struct timeval timeout, now;
     fd_set sel_read, sel_except, sel_write;
     long i;
-    char connecthost[1024];
     int connectport;
+    char * url_on_request, * host;
 
+    /* There are four hostname's involved:
+     * The 'hostname' from the URL, the
+     * hostname of the proxy, the value which
+     * is to go into the Host: header and
+     * the hostname we connect to over TCP.
+     */
     if (isproxy) {
-	strcpy(connecthost, proxyhost);
+	/* Connect to proxyhost:proxyport
+         * And set Host: to the hostname of
+         * the proxy - whistl quoting the
+	 * full URL in the GET/POST line.
+	 */
+	host  = proxyhost;
 	connectport = proxyport;
+    	url_on_request = fullurl;
     }
     else {
-	strcpy(connecthost, hostname);
+	/* When there is no proxy: 
+	 * use the hostname to connect to,
+	 * use the hostname in the Host:
+	 * header; and do not quote a full
+	 * URL in the GET/POST line.
+	 */
+	host  = hostname;
 	connectport = port;
+    	url_on_request = path;
     }
 
     if (!use_html) {
@@ -1215,10 +1234,10 @@ static void test(void)
     {
 	/* get server information */
 	struct hostent *he;
-	he = gethostbyname(connecthost);
+	he = gethostbyname(host);
 	if (!he) {
 	    char theerror[1024];
-	    sprintf(theerror, "Bad hostname: %s\n", connecthost);
+	    sprintf(theerror, "Bad hostname: %s\n", host);
 	    err(theerror);
 	}
 	server.sin_family = he->h_addrtype;
@@ -1243,12 +1262,11 @@ static void test(void)
 		"Accept: */*\r\n"
 		"%s" "\r\n",
 		(posting == 0) ? "GET" : "HEAD",
-		(isproxy) ? fullurl : path,
+		url_on_request,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth, 
-		proxyhost, 
-		hdrs);
+		host, hdrs);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
@@ -1260,11 +1278,11 @@ static void test(void)
 		"Content-type: %s\r\n"
 		"%s"
 		"\r\n",
-		(isproxy) ? fullurl : path, 
+		url_on_request,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
-		proxyhost, postlen,
+		host, postlen,
 		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -1338,14 +1356,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.53 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.54 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.53 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.54 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
