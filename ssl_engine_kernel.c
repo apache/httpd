@@ -122,6 +122,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
      * to force the type of handshake via SetEnvIf directive
      */
     switch (sslconn->shutdown_type) {
+      case SSL_SHUTDOWN_TYPE_UNSET:
       case SSL_SHUTDOWN_TYPE_STANDARD:
         /* send close notify, but don't wait for clients close notify
            (standard compliant and safe, so it's the DEFAULT!) */
@@ -192,6 +193,43 @@ int ssl_hook_ReadReq(request_rec *r)
 }
 
 /*
+ * Move SetEnvIf information from request_rec to conn_rec/BUFF
+ * to allow the close connection handler to use them.
+ */
+
+static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn)
+{
+    int i;
+    const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
+    const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
+
+    sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_STANDARD;
+
+    for (i = 0; i < arr->nelts; i++) {
+        const char *key = elts[i].key;
+
+        switch (*key) {
+          case 's':
+            /* being case-sensitive here.
+             * and not checking for the -shutdown since these are the only
+             * SetEnvIf "flags" we support
+             */
+            if (!strncmp(key+1, "sl-", 3)) {
+                key += 4;
+                if (!strncmp(key, "unclean", 7)) {
+                    sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_UNCLEAN;
+                }
+                else if (!strncmp(key, "accurate", 8)) {
+                    sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_ACCURATE;
+                }
+                return; /* should only ever be one ssl-*-shutdown */
+            }
+            break;
+        }
+    }
+}
+
+/*
  *  URL Translation Handler
  */
 int ssl_hook_Translate(request_rec *r)
@@ -214,16 +252,13 @@ int ssl_hook_Translate(request_rec *r)
                 r->connection->id,
                 ssl_util_vhostid(r->pool, r->server));
 
-    /*
-     * Move SetEnvIf information from request_rec to conn_rec/BUFF
-     * to allow the close connection handler to use them.
+    /* SetEnvIf ssl-*-shutdown flags can only be per-server,
+     * so they won't change across keepalive requests
      */
-    if (apr_table_get(r->subprocess_env, "ssl-unclean-shutdown") != NULL)
-        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_UNCLEAN;
-    else if (apr_table_get(r->subprocess_env, "ssl-accurate-shutdown") != NULL)
-        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_ACCURATE;
-    else
-        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_STANDARD;
+    if (sslconn->shutdown_type == SSL_SHUTDOWN_TYPE_UNSET) {
+        ssl_configure_env(r, sslconn);
+    }
+
     return DECLINED;
 }
 
