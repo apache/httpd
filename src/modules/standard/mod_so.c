@@ -222,7 +222,7 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
 	
     modp->dynamic_load_handle = modhandle;
 
-    add_module (modp);
+    add_module(modp);
 
     /* Register a cleanup in the config pool (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
@@ -307,5 +307,8 @@ module so_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL,			/* child_init */
+   NULL,			/* child_exit */
+   NULL				/* post read-request */
 };
