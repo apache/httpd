@@ -694,7 +694,8 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
-    u_long ipaddr;
+    static struct hostent hpbuf;
+    static u_long ipaddr;
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
@@ -709,10 +710,20 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
     {
 	ipaddr = inet_addr(host);
 	hp = gethostbyaddr((char *)&ipaddr, sizeof(u_long), AF_INET);
-	if (hp == NULL)
-	    return "Address not found";
+	if (hp == NULL) {
+	    memchr(&hpbuf, 0, sizeof(hpbuf));
+	    hpbuf.h_name = 0;
+	    hpbuf.h_addrtype = AF_INET;
+	    hpbuf.h_length = sizeof(u_long);
+	    hpbuf.h_addr_list = malloc(2 * sizeof(char*));
+	    hpbuf.h_addr_list[0] = (char*)&ipaddr;
+	    hpbuf.h_addr_list[1] = 0;
+	    hp = &hpbuf;
+	}
     }
     memcpy(reqhp, hp, sizeof(struct hostent));
+    if (hpbuf.h_addr_list != NULL)
+	free(hpbuf.h_addr_list);
     return NULL;
 }
 

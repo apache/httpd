@@ -1,5 +1,10 @@
 Changes with Apache 1.2
 
+  *) Added code to return the requested IP address from proxy_host2addr()
+     if gethostbyaddr() fails due to reverse DNS lookup problems. Original
+     change submitted by Jozsef Hollosi <hollosi@sbcm.com>.
+     [Chuck Murcko] PR#614
+
   *) If multiple requests on a single connection are used to retrieve
      data from different virtual hosts, the virtual host list would be
      scanned starting with the most recently used VH instead of the first,
