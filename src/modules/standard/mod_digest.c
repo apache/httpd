@@ -143,6 +143,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
     int s, vk = 0, vv = 0;
     const char *t;
     char *key, *value;
+    const char *scheme;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
 	return DECLINED;
@@ -158,10 +159,10 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	return AUTH_REQUIRED;
     }
 
-    if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Digest")) {
+    if (strcasecmp(scheme=ap_getword(r->pool, &auth_line, ' '), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		    "client used wrong authentication scheme: %s", r->uri);
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "client used wrong authentication scheme: %s for %s", scheme, r->uri);
 	ap_note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
