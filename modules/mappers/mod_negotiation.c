@@ -962,36 +962,54 @@ static int read_types_multi(negotiation_state *neg)
             sub_req->content_type = CGI_MAGIC_TYPE;
         }
 
+        /* 
+         * mod_mime will _always_ provide us the base name in the
+         * ap-mime-exception-list, if it processed anything.  If
+         * this list is empty, give up immediately, there was
+         * nothing interesting.  For example, looking at the files
+         * readme.txt and readme.foo, we will throw away .foo if
+         * it's an insignificant file (e.g. did not identify a 
+         * language, charset, encoding, content type or handler,)
+         */
         exception_list = 
             (apr_array_header_t *)apr_table_get(sub_req->notes, 
                                                 "ap-mime-exceptions-list");
-        if (exception_list) {
-            /* Every last missing bit danged well better be in our table!
-             * Simple enough for now, every unregonized bit better match
-             * our base name.  When we break up our base name and allow
-             * index.en to match index.html.en, this gets tricker.
-             */
-            char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
-            int base_len = strlen(base);
-            if (base_len > prefix_len 
-#ifdef CASE_BLIND_FILESYSTEM
-                || strncasecmp(base, filp, base_len)
-#else
-                || strncmp(base, filp, base_len)
-#endif
-                || (prefix_len > base_len && filp[base_len] != '.')) {
-                /* 
-                 * Something you don't know is, something you don't know...
-                 */
-                ap_destroy_sub_req(sub_req);
-                continue;
-            }
+
+        if (!exception_list) {
+            ap_destroy_sub_req(sub_req);
+            continue;
         }
 
-        /* XXX If we successfully negotate ANYTHING, continue
+        /*
+         * Simple enough for now, every unregonized bit better match
+         * our base name.  When we break up our base name and allow
+         * index.en to match index.html.en, this gets tricker.
+         * XXX: index.html.foo won't be caught by testing index.html
+         * since the exceptions result is index.foo - this should be
+         * fixed as part of a new match-parts logic here.
          */
-        if (sub_req->status != HTTP_OK ||
-            (!sub_req->content_type && !exception_list)) {
+        char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
+        int base_len = strlen(base);
+        if (base_len > prefix_len 
+#ifdef CASE_BLIND_FILESYSTEM
+            || strncasecmp(base, filp, base_len)
+#else
+            || strncmp(base, filp, base_len)
+#endif
+            || (prefix_len > base_len && filp[base_len] != '.')) {
+            /* 
+             * Something you don't know is, something you don't know...
+             */
+            ap_destroy_sub_req(sub_req);
+            continue;
+        }
+
+        /* 
+         * ###: be warned, the _default_ content type is already
+         * picked up here!  If we failed the subrequest, or don't 
+         * know what we are serving, then continue.
+         */
+        if (sub_req->status != HTTP_OK || (!sub_req->content_type) {
             ap_destroy_sub_req(sub_req);
             continue;
         }
@@ -999,7 +1017,6 @@ static int read_types_multi(negotiation_state *neg)
         /* If it's a map file, we use that instead of the map
          * we're building...
          */
-
         if (((sub_req->content_type) &&
              !strcmp(sub_req->content_type, MAP_FILE_MAGIC_TYPE)) ||
             ((sub_req->handler) &&
