@@ -83,6 +83,7 @@
 #include "mpm.h"
 #include <unistd.h>
 #include <sys/socket.h>
+#include <signal.h>
 
 /*
  * Actual definitions of config globals
