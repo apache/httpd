@@ -871,9 +871,14 @@ static void child_main(void *child_num_arg)
             THREAD_GLOBAL(usr1_just_die) = 0;
             rv = apr_accept(&csd, sd, ptrans);
 
-	    if (rv == APR_SUCCESS)
+            if (APR_STATUS_IS_SUCCESS(rv)) {
 		break;		/* We have a socket ready for reading */
-	    else {
+            }
+            else if (APR_STATUS_IS_ECONNABORTED(rv) 
+                  || APR_STATUS_IS_ECONNRESET(rv)
+                  || APR_STATUS_IS_ETIMEDOUT(rv)
+                  || APR_STATUS_IS_EHOSTUNREACH(rv)
+                  || APR_STATUS_IS_ENETUNREACH(rv)) {
 
 		/* Our old behaviour here was to continue after accept()
 		 * errors.  But this leads us into lots of troubles
@@ -885,58 +890,27 @@ static void child_main(void *child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (apr_canonical_error(rv)) {
-#ifdef EPROTO
-		    /* EPROTO on certain older kernels really means
-		     * ECONNABORTED, so we need to ignore it for them.
-		     * See discussion in new-httpd archives nh.9701
-		     * search for EPROTO.
-		     *
-		     * Also see nh.9603, search for EPROTO:
-		     * There is potentially a bug in Solaris 2.x x<6,
-		     * and other boxes that implement tcp sockets in
-		     * userland (i.e. on top of STREAMS).  On these
-		     * systems, EPROTO can actually result in a fatal
-		     * loop.  See PR#981 for example.  It's hard to
-		     * handle both uses of EPROTO.
-		     */
-                case EPROTO:
-#endif
-#ifdef ECONNABORTED
-                case ECONNABORTED:
-#endif
-		    /* Linux generates the rest of these, other tcp
-		     * stacks (i.e. bsd) tend to hide them behind
-		     * getsockopt() interfaces.  They occur when
-		     * the net goes sour or the client disconnects
-		     * after the three-way handshake has been done
-		     * in the kernel but before userland has picked
-		     * up the socket.
-		     */
-#ifdef ECONNRESET
-                case ECONNRESET:
-#endif
-#ifdef ETIMEDOUT
-                case ETIMEDOUT:
-#endif
-#ifdef EHOSTUNREACH
-		case EHOSTUNREACH:
-#endif
-#ifdef ENETUNREACH
-		case ENETUNREACH:
-#endif
-                    break;
 
-                case EINTR:
-                    /* We only get hit by an EINTR if the parent is
-                     * killing us off
-                     */
-                    clean_child_exit(0);
-		default:
-		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-				"accept: (client socket)");
-		    clean_child_exit(1);
-		}
+                /* Linux generates most of these, other tcp
+                 * stacks (i.e. bsd) tend to hide them behind
+                 * getsockopt() interfaces.  They occur when
+                 * the net goes sour or the client disconnects
+                 * after the three-way handshake has been done
+                 * in the kernel but before userland has picked
+                 * up the socket.
+                 */
+                 break;
+            }
+            else if (APR_STATUS_IS_EINTR(rv)) {
+                /* We only get hit by an EINTR if the parent is
+                 * killing us off
+                 */
+                clean_child_exit(0);
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                             "accept: (client socket)");
+                clean_child_exit(1);
 	    }
 
 	    if (ap_stop_signalled()) {
