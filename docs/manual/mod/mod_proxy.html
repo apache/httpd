@@ -83,7 +83,7 @@ into a new module, mod_cache.
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
 <LI><A HREF="#proxyvia">ProxyVia</A>
-<LI><A HREF="#proxyhttpoverridereturnederrors">ProxyHTTPOverrideReturnedErrors</A>
+<LI><A HREF="#proxyerroroverride">ProxyErrorOverride</A>
 
 </UL>
 
@@ -866,11 +866,11 @@ additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment
 
 <hr>
 
-<H2><A NAME="proxyhttpoverridereturnederrors">ProxyHTTPOverrideReturnedErrors</A> directive</H2>
+<H2><A NAME="proxyerroroverride">ProxyErrorOverride</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ProxyHTTPOverrideReturnedErrors<EM>on</EM><BR>
+><STRONG>Syntax:</STRONG></A> ProxyErrorOverride<EM>on</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -894,7 +894,7 @@ additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment
 <A
  HREF="directive-dict.html#Compatibility"
  REL="Help"
-><STRONG>Compatibility:</STRONG></A> ProxyHTTPOverrideReturnedErrors
+><STRONG>Compatibility:</STRONG></A> ProxyErrorOverride
 Apache 2.0 and later.<P>
 
 This directive is usefull for reverse-proxy setups, where you wan't to 
