@@ -171,12 +171,12 @@ void make_cookie(request_rec *r)
 
 int spot_cookie(request_rec *r)
 {
-    int *disable = (int *)get_module_config(r->per_dir_config,
+    int *enable = (int *)get_module_config(r->per_dir_config,
 					    &usertrack_module);
     char *cookie;
     char *value;
 
-    if (*disable) return DECLINED;
+    if (!*enable) return DECLINED;
 
     if ((cookie = table_get (r->headers_in, "Cookie")))
       if ((value=strstr(cookie,COOKIE_NAME))) {
@@ -210,9 +210,9 @@ void *make_cookie_dir (pool *p, char *d) {
     return (void *)pcalloc(p, sizeof(int));
 }
 
-const char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
+const char *set_cookie_enable (cmd_parms *cmd, int *c, int arg)
 {
-    *c = !arg;
+    *c = arg;
     return NULL;
 }
 
@@ -284,7 +284,7 @@ const char *set_cookie_exp (cmd_parms *parms, void *dummy, const char *arg)
 command_rec cookie_log_cmds[] = {
 { "CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
     "an expiry date code" },
-{ "CookieEnable", set_cookie_disable, NULL, OR_FILEINFO, FLAG,
+{ "CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,
     "whether or not to enable cookies" },
 { NULL }
 };
