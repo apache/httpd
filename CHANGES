@@ -1,5 +1,10 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix MaxClients in the Worker MPM, so that it specifies the maximum
+     number of clients that can connect at the same time, instead of
+     specifying the maximum number of child processes.
+     [Aaron Bannert <aaron@clove.org>]
+
   *) Switch proc_pthread AcceptMutex configuration directive to pthread to 
      be consistent with 1.3.  [Justin Erenkrantz]
 
