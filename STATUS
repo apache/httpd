@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 21:00:39 $]
+Last modified at [$Date: 2002/02/06 22:17:47 $]
 
 Release:
 
@@ -40,7 +40,7 @@ on related projects:
     * docs/STATUS
 
 
-BETA RELEASE SHOWSTOPPERS:
+CURRENT RELEASE NOTES:
     * 31 BETA STATUS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
@@ -129,6 +129,8 @@ BETA RELEASE SHOWSTOPPERS:
         +0:
         -1:
 
+FINAL RELEASE SHOWSTOPPERS:
+
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
@@ -160,8 +162,6 @@ BETA RELEASE SHOWSTOPPERS:
         BrianP asks: "Is this really a showstopper?"
         IanH says: "If we don't do it before we go live we will have 2
                     different API's to support in APR"
-
-FINAL RELEASE SHOWSTOPPERS:
 
     * [Ken] Test suite failures:
       o worker is also failing some of the 'cgi' subtests
