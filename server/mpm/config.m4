@@ -8,6 +8,8 @@ AC_ARG_WITH(mpm,
   case "`uname -sr`" in
     "BeOS"*)
       APACHE_MPM=mpmt_beos;;
+    "OS/2"*)
+      APACHE_MPM=spmt_os2;;
   esac 
 ])
 AC_MSG_RESULT($APACHE_MPM)
