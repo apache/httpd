@@ -15,28 +15,83 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Starting Apache</H1>
 
-<H2>Invoking Apache</H2>
+<h2>Starting Apache On Windows</h2>
 
-On Unix, the <CODE>httpd</CODE> program is usually run as a daemon
-which executes continuously, handling requests.  It is possible to
-invoke Apache by the Internet daemon <CODE>inetd</CODE> each time a
-connection to the HTTP service is made (use the <A
-HREF="mod/core.html#servertype">ServerType</A> directive) but this is
-not recommended.
+<p>On Windows, Apache is normally run as a service on Windows NT, or
+as a console application on Windows 95. For details, see <A
+HREF="platform/windows.html#run">running Apache for Windows</A>.</p>
 
-<P>
+<h2>Starting Apache on Unix</h2>
 
-On Windows, Apache is normally run as a service on Windows NT, or as a
-console application on Windows 95. See also <A
-HREF="platform/windows.html#run">running Apache for Windows</A>.
+<p>On Unix, the <code>httpd</code> program is run as a daemon
+which executes continuously in the background to handle requests.
+A shell script called <code>apachectl</code> is provided which
+can be used to control the daemon process.  This shell script
+can often be used as an init script to start <code>httpd</code>
+on system boot, or it can be called directly with the following
+options.</p>
 
-<H2>Command line options</H2>
+<h2>apachectl Command Line Options</h2>
+
+<dl>
+
+<dt><code>start</code></dt> <dd>Start <code>httpd</code>.  If
+additional command line options need to be passed to
+<code>httpd</code> (see below), then the <code>HTTPD</code> variable
+at the top of the <code>apachectl</code> script should be edited to
+include them.</dd>
+
+<dt><code>stop</code></dt>
+<dd>Stop <code>httpd</code> by issuing the kill signal to the
+parent <code>httpd</code> process, whose process ID is contained
+in the file pointed to by the 
+<a href="mod/mpm_common.html#pidfile">PidFile</a> directive.</dd>
+
+<dt><code>restart</code></dt>
+<dd>Restart <code>httpd</code> if it is running by sending a 
+<code>SIGHUP</code>
+signal to the parent process.  If the server is not running, then
+it will be started.  <code>apachectl</code> will refuse to
+restart the server if there is a syntax error in the configuration
+files (see <code>configtest</code> below).</dd>
+
+<dt><code>graceful</code></dt> <dd>Restart <code>httpd</code> if it is
+running by sending a <code>SIGWINCH</code> signal to the parent
+process.  This type of restart is less disruptive to current clients.
+If the server is not running, then it will be
+started. <code>apachectl</code> will refuse to restart the server if
+there is a syntax error in the configuration files.</dd>
+
+<dt><code>fullstatus</code></dt>
+<dd>Show a screen indicating the status of the Apache processes.
+This option requires the presence of <code>lynx</code>, and
+for <a href="mod/mod_status.html">mod_status</a> to be enabled.</dd>
+
+<dt><code>status</code></dt>
+<dd>A shorter form of the <code>fullstatus</code> display.
+This option requires the presence of <code>lynx</code>, and
+for <a href="mod/mod_status.html">mod_status</a> to be enabled.</dd>
+
+<dt><code>configtest</code></dt>
+<dd>Do a syntax test of the Apache configuration files.  See
+the <code>httpd -t</code> command line option below.</dd>
+<dt><code>help</code></dt>
+<dd>Show a help screen.</dd>
+
+</dl>
+
+<p>For additional information on the effects of the various
+<code>apachectl</code> options, see the documentation on <a
+href="stopping.html">stopping and restarting Apache</a>.</p>
+
+<H2>httpd Command Line Options</H2>
 The following options are recognized on the httpd command line:
 <DL>
-<DT><CODE>-d</CODE> <EM>serverroot</EM>
+
+<DT><CODE>-d</CODE> <EM>directory</EM>
 <DD>Set the initial value for the
 <A HREF="mod/core.html#serverroot">ServerRoot</A> variable to
-<EM>serverroot</EM>. This can be overridden by the ServerRoot command
+<EM>directory</EM>. This can be overridden by the ServerRoot command
 in the configuration file. The default is
 <CODE>/usr/local/apache</CODE> on Unix, <CODE>/apache</CODE> on
 Windows and <CODE>/os2httpd</CODE> on OS/2.
@@ -49,24 +104,20 @@ configuration file, or to use a common configuration for
 several independent hosts, where host specific information is enclosed in
 &lt;IfDefine&gt; sections.
 
-<DT><CODE>-f</CODE> <EM>config</EM>
-<DD>Execute the commands in the file <EM>config</EM> on startup. If
+<DT><CODE>-f</CODE> <EM>file</EM>
+<DD>Execute the commands in the <EM>file</EM> on startup. If
 <EM>config</EM> does not begin with a <CODE>/</CODE>, then it is taken to be a
 path relative to the <A HREF="mod/core.html#serverroot">ServerRoot</A>. The
 default is <CODE>conf/httpd.conf</CODE>.
 
-<DT><CODE>-C</CODE> <EM>"directive"</EM>
-<DD>Process the given apache "directive" (just as if it had been part of a
-configuration file) <STRONG>before</STRONG> actually reading the regular configuration files.
+<DT><CODE>-C</CODE> <EM>"directive"</EM> 
+<DD>Process the given apache "directive" (just as if it had been part
+of a configuration file) <STRONG>before</STRONG> actually reading the
+regular configuration files.
 
 <DT><CODE>-c</CODE> <EM>"directive"</EM>
 <DD>Process the given apache "directive" <STRONG>after</STRONG> reading
 all the regular configuration files.
-
-<DT><CODE>-X</CODE>
-<DD>Run in single-process mode, for internal debugging purposes only; the
-daemon does not detach from the terminal or fork any children. Do <EM>NOT</EM>
-use this mode to provide ordinary web service.
 
 <DT><CODE>-v</CODE>
 <DD>Print the version of httpd and its build date, and then exit.
@@ -79,48 +130,27 @@ behavior and performance of the apache server (<EM>e.g.</EM>,
 then exit.
 
 <DT><A NAME="help"><CODE>-L</CODE></A>
-<DD>
-
-Give a list of directives together with expected arguments and places
-where the directive is valid, then exit.  (Apache 1.3.4 and
-later. Earlier versions used -l instead).
-
+<DD>Give a list of directives together with expected arguments and places
+where the directive is valid, then exit.
 
 <DT><CODE>-l</CODE></A>
-<DD>
-
-Give a list of all modules compiled into the server, then exit.
-(Apache 1.3.4 and later. Earlier versions used -h instead).<br>
-
-Give a list of directives together with expected arguments and places
-where the directive is valid, then exit. (Apache 1.2 to 1.3.3. Later
-versions use -L instead).
-
-
+<DD>Give a list of all modules compiled into the server, then exit.
 
 <DT><CODE>-h</CODE>
-<DD>
+<DD>Print a list of the httpd command line options, then exit.
 
-Print a list of the httpd options, then exit. (Apache 1.3.4 and
-later. Earlier versions used -? instead).<br>
+<DT><CODE>-t</CODE> 
+<DD>Test the configuration file syntax
+(<EM>i.e.</EM>, read all configuration files and interpret them) but
+do not start the server. If the configuration contains errors, display
+an error message and exit with a non-zero exit status, otherwise
+display "Syntax OK" and terminate with a zero exit status. This
+command checks to see if all DocumentRoot entries exist and are
+directories.  For sites with many vhosts, this is expensive; consider
+the <CODE>-T</CODE> command instead.<br>
 
-Give a list of all modules compiled into the server, then exit. (Up to
-Apache 1.3.3. Later versions use -l instead).<br>
-
-
-<DT><CODE>-S</CODE>
-<DD>Show the settings as parsed from the config file (currently only
-shows a breakdown of the vhost settings) but do not start the
-server. (Up to Apache 1.3.3, this option also started the server).
-
-<DT><CODE>-t</CODE>
-<DD>Test the configuration file syntax (<EM>i.e.</EM>, read all configuration files
-and interpret them) but do not start the server. If the configuration contains
-errors, display an error message and exit with a non-zero exit status,
-otherwise display "Syntax OK" and terminate with a zero exit status. This
-command checks to see if all DocumentRoot entries exist and are directories.
-For sites with many vhosts, this is expensive; consider the <CODE>-T</CODE>
-command instead.
+To check and print a summary of the current virtual host settings,
+use <code>-t -D DUMP_VHOSTS</code>.</dd>
 
 <DT><CODE>-T</CODE>
 <DD>Test the configuration file syntax (<EM>i.e.</EM>, read all configuration files
@@ -129,15 +159,34 @@ errors, display an error message and exit with a non-zero exit status,
 otherwise display "Syntax OK" and terminate with a zero exit status. This
 command does not perform any checking of the DocumentRoot entries.
 
-<DT><CODE>-k</CODE> <EM>option</EM>
-<DD>Windows only: signal Apache to restart or shutdown. <EM>option</EM> 
-is one of "shutdown" or "restart". (Apache 1.3.3 and later).
-
-<DT><CODE>-?</CODE>
-<DD>Print a list of the httpd options, and then exit (up to Apache
-1.3.3. Later version use -h instead).
+<dt><code>-R</code> <em>directory</em></dt>
+<dd>If Apache is compiled with <code>SHARED_CORE</code>, then this
+directive can be used to specify an alternate location for shared
+object files.</dd>
 
 </DL>
+
+<p>When Apache is used under Windows, the following additional 
+command line options are available.</p>
+
+<dl>
+
+<dt><code>-n</code> <em>name</em></dt>
+<dd>Set service name and use its ServerConfigFile.</dd>
+
+<DT><CODE>-k</CODE> <EM>option</EM>
+<DD>Signal Apache to restart or shutdown. <EM>option</EM> 
+is one of "shutdown" or "restart".
+
+<dt><code>-i</code></dt>
+<dd>Install an Apache service</dd>
+
+<dt><code>-u</code></dt>
+<dd>Uninstall an Apache Service</dd>
+
+</dl>
+
+
 
 <!--#include virtual="footer.html" -->
 </BODY>
