@@ -65,12 +65,12 @@ static void *merge_forensic_log_scfg(apr_pool_t *p, void *parent, void *new)
     return cfg;
 }
 
-static void open_log(server_rec *s, apr_pool_t *p)
+static int open_log(server_rec *s, apr_pool_t *p)
 {
     fcfg *cfg = ap_get_module_config(s->module_config, &log_forensic_module);
 
     if (!cfg->logname || cfg->fd)
-        return;
+        return 1;
 
     if (*cfg->logname == '|') {
         piped_log *pl;
@@ -80,7 +80,7 @@ static void open_log(server_rec *s, apr_pool_t *p)
         if (pl == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "couldn't spawn forensic log pipe %s", cfg->logname);
-            exit(1);
+            return 0;
         }
         cfg->fd = ap_piped_log_write_fd(pl);
     }
@@ -93,16 +93,22 @@ static void open_log(server_rec *s, apr_pool_t *p)
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "could not open forensic log file %s.", fname);
-            exit(1);
+            return 0;
         }
     }
+
+    return 1;
 }
 
 static int log_init(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt,
                      server_rec *s)
 {
-    for ( ; s ; s = s->next)
-        open_log(s, p);
+    for ( ; s ; s = s->next) {
+        if (!open_log(s, p)) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
+
     return OK;
 }
 
