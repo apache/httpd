@@ -212,6 +212,8 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
     char *remote_host;
     char *uri;
     const char *session_route;
+    const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
+    const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Into ajp_marshal_into_msgb");
@@ -390,22 +392,22 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
         }
     }
  */
-
- /* XXXX ignored for the moment
-    if (s->num_attributes > 0) {
-        for (i = 0 ; i < s->num_attributes ; i++) {
-            if (ajp_msg_append_uint8(msg, SC_A_REQ_ATTRIBUTE)       ||
-                ajp_msg_append_string(msg, s->attributes_names[i]) ||
-                ajp_msg_append_string(msg, s->attributes_values[i])) {
+    /* Use the environment vars prefixed with AJP_
+     * and pass it to the header striping that prefix.
+     */
+    for (i = 0; i < (apr_uint32_t)arr->nelts; i++) {
+        if (!strncmp(elts[i].key, "AJP_", 4)) {
+            if (ajp_msg_append_uint8(msg, SC_A_REQ_ATTRIBUTE) ||
+                ajp_msg_append_string(msg, elts[i].key + 4)   ||
+                ajp_msg_append_string(msg, elts[i].val)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                      "Error ajp_marshal_into_msgb - "
-                      "Error appending attribute %s=%s",
-                      s->attributes_names[i], s->attributes_values[i]);
+                        "Error ajp_marshal_into_msgb - "
+                        "Error appending attribute %s=%s",
+                        elts[i].key, elts[i].val);
                 return APR_EGENERAL;
             }
         }
     }
-  */
 
     if (ajp_msg_append_uint8(msg, SC_A_ARE_DONE)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
