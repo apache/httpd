@@ -22,8 +22,6 @@
 <a href="../ja/howto/htaccess.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
 提供します。</p>

@@ -26,8 +26,6 @@
 <a href="../es/mod/leader.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ko/mod/leader.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>표준 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM의 실험적인 변형</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>mpm_leader_module</td></tr>

@@ -24,8 +24,6 @@
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/mpm.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p>この文書ではマルチプロセッシングモジュールがどのようなもので、
 Apache HTTP サーバでどのように使用されるかについて解説しています。</p>

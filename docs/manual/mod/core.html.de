@@ -782,7 +782,7 @@ werden</td></tr>
     Beispielsweise würde</p>
 
     <div class="example"><p><code>
-      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </code></p></div>
 
     <p>auf Verzeichnisse in <code>/www/</code> passen, die aus drei

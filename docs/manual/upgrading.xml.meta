@@ -8,10 +8,10 @@
   <variants>
     <variant>de</variant>
     <variant>en</variant>
-    <variant outdated="yes">es</variant>
+    <variant>es</variant>
     <variant htmlonly="yes">fr</variant>
     <variant>ja</variant>
     <variant>ko</variant>
-    <variant outdated="yes">ru</variant>
+    <variant>ru</variant>
   </variants>
 </metafile>
