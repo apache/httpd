@@ -1,5 +1,7 @@
 Changes with Apache 2.0.31-dev
 
+  *) The Win32 mpm_winnt now has a shared scoreboard.  [William Rowe]
+
   *) Change ap_get_brigade prototype to use apr_off_t instead of apr_off_t*.
      [Justin Erenkrantz]
 

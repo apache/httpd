@@ -99,6 +99,7 @@
  */
 #define HARD_SERVER_LIMIT 1
 
+extern apr_shm_t *ap_scoreboard_shm;
 server_rec *ap_server_conf;
 typedef HANDLE thread;
 
@@ -469,6 +470,7 @@ static int get_listeners_from_parent(server_rec *s)
      * data. The sockets have been set to listening in the parent process.
      */
     pipe = GetStdHandle(STD_INPUT_HANDLE);
+
     for (lr = ap_listeners; lr; lr = lr->next) {
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
                       &BytesRead, (LPOVERLAPPED) NULL)) {
@@ -1224,6 +1226,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE hShareError;
     HANDLE hShareErrorDup;
     HANDLE hCurrentProcess = GetCurrentProcess();
+    HANDLE sb_os_shm;
+    HANDLE dup_os_shm;
     SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
 
     LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
@@ -1398,6 +1402,25 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      * the listeners will be inherited anyway.
      */
     Sleep(1000);
+
+    if ((rv = apr_os_shm_get(&sb_os_shm, ap_scoreboard_shm)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to retrieve the scoreboard handle");
+        return -1;
+    }
+    if (!DuplicateHandle(hCurrentProcess, sb_os_shm, pi.hProcess, &dup_os_shm,
+                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate the scoreboard handle to the child");
+        return -1;
+    }
+    if (!WriteFile(hPipeWrite, &dup_os_shm, sizeof(dup_os_shm),
+                   &BytesWritten, (LPOVERLAPPED) NULL)
+        || (BytesWritten != sizeof(dup_os_shm))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to send the scoreboard handle to the child");
+        return -1;
+    }
 
     /* Run the chain of open sockets. For each socket, duplicate it 
      * for the target process then send the WSAPROTOCOL_INFO 
@@ -2078,13 +2101,35 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         if (one_process) {
             /* Set up the scoreboard. */
-            ap_run_pre_mpm(pconf, SB_NOT_SHARED);
+            ap_run_pre_mpm(pconf, SB_SHARED);
             if (ap_setup_listeners(ap_server_conf) < 1) {
                 return 1;
             }
         }
         else {
             /* Set up the scoreboard. */
+            HANDLE pipe;
+            HANDLE sb_os_shm;
+            DWORD BytesRead;
+            apr_status_t rv;
+
+            pipe = GetStdHandle(STD_INPUT_HANDLE);
+            if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
+                          &BytesRead, (LPOVERLAPPED) NULL)
+                || (BytesRead != sizeof(sb_os_shm))) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                             "child: Unable to access scoreboard handle from parent");
+                ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
+                exit(1);
+            }
+            if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &sb_os_shm, s->process->pool)) 
+                    != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                             "child: Unable to access scoreboard handle from parent");
+                ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
+                exit(1);
+            }
+
             ap_run_pre_mpm(pconf, SB_SHARED_CHILD);
             ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
             get_listeners_from_parent(ap_server_conf);
@@ -2101,7 +2146,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                      "Child %d: Child process is exiting", my_pid);        
         return 1;
     }
-    else { 
+    else /* Child */ { 
         /* Set up the scoreboard. */
         ap_run_pre_mpm(pconf, SB_SHARED);
 
