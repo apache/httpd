@@ -13,7 +13,7 @@
 
 <!-- some meta information have to be passed to the transformation -->
 <xsl:variable name="output-encoding" select="'SHIFT_JIS'" />
-<xsl:variable name="toc-font" select="'@MS UI Gothic,10,128'" /> <!-- MS magic ... -->
+<xsl:variable name="toc-font" select="'MS UI Gothic,10,128'" /> <!-- MS magic ... -->
 <xsl:variable name="xml-ext" select="'.xml.ja'" />
 
 <!-- Now get the real guts of the stylesheet -->
