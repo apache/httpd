@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/30 02:55:56 $]
+Last modified at [$Date: 2002/05/30 05:04:32 $]
 
 Release:
 
@@ -57,8 +57,6 @@ RELEASE SHOWSTOPPERS:
       to fix, probably just some extraneous #include's that are fouling
       things up.
       PR: 9457
-
-    * decide if the MMN bump was warranted
 
     * Win32: httpd won't start.  There was a command line args problem
       that got fixed, but now something else is wrong.
