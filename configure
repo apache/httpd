@@ -70,8 +70,8 @@ DIFS='
 ##
 
 root=.
-src=src
 mkf=Makefile
+src=src
 aux=src/helpers
 
 ##
@@ -273,6 +273,7 @@ do
             #   set shadow paths
             shadowmkf="Makefile.$gnutriple"
             shadowsrc="src.$gnutriple"
+            shadowaux="src.$gnutriple/helpers"
             #   (re)create shadow tree
             if [ .$quiet = .no ]; then
                 echo " + create shadow tree ($shadowsrc)"
@@ -283,6 +284,7 @@ do
             #   delegate us to the shadow paths
             mkf=$shadowmkf
             src=$shadowsrc
+            aux=$shadowaux
             ;;
         --help | -h | -help )
             echo "Usage: configure [options]"

@@ -8,6 +8,7 @@
 ##  by Ralf S. Engelschall <rse@apache.org>
 ##
 
+umask 022
 errstatus=0
 for file in ${1+"$@"} ; do 
     set fnord `echo ":$file" |\
