@@ -254,7 +254,6 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\mod_dav.nlm $(INSTALL)\Apache2\modules\*.*
     
 #
 # Any specialized rules here
