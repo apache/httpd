@@ -248,10 +248,12 @@ case "$PLAT" in
     *486-*-freebsd*|*486-*-netbsd*)
 	OS='FreeBSD/NETBSD on 486'
 	LIBS="$LIBS -lcrypt"
+	DBM_LIB=""
 	;;
     *-freebsd*|*-netbsd*)
 	OS='FreeBSD/NetBSD'
 	LIBS="$LIBS -lcrypt"
+	DBM_LIB=""
 	;;
     *-next-nextstep*)
 	OS='NeXT'
