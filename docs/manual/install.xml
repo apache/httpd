@@ -403,14 +403,6 @@
       file to specify the installation paths.</dd>
     </dl>
 
-    <p>Presently it is not possible to mix the
-    <code>--enable-layout</code> and <code>--prefix</code> options.
-    Nor is it possible to individually specify detailed pathnames
-    on the <code>configure</code> command line. If you want just a
-    basic install, you can simply use the <code>--prefix</code>
-    option on its own. If you want to customize your install, you
-    should edit the <code>config.layout</code> file and use the
-    <code>--enable-layout</code> option.</p>
 </section>
 
 <section id="modules"><title>Modules</title>
