@@ -1,5 +1,9 @@
 Changes with Apache 1.3b5
 
+  *) WIN32: Append a '.' to extensionless executables in spawn[lv]e*
+     replacements, which makes them work.
+     [Sam Robb <srobb@wisewire.com>, Ben Laurie]
+
   *) Sort out problems with canonical filename handling happening too late.
      [Dean Gaudet, Ben Laurie]
 

@@ -85,10 +85,11 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
     return stat(szPath, pStat);
 }
 
-/* Fix two really crap problems with Win32 spawn[lv]e*:
+/* Fix three really crap problems with Win32 spawn[lv]e*:
  *
  *  1. Win32 doesn't deal with spaces in argv.
  *  2. Win95 doesn't like / in cmdname.
+ *  3. Win32 wants a '.' appended to extensionless files.
  */
 
 #undef _spawnv
@@ -99,13 +100,20 @@ API_EXPORT(int) os_spawnv(int mode, const char *cmdname, const char *const *argv
     const char *szArg;
     char *szCmd;
     char *s;
+    int len=strlen(cmdname);
     
-    szCmd = _alloca(strlen(cmdname)+1);
+    szCmd = _alloca(len+2);
     strcpy(szCmd, cmdname);
     for (s = szCmd; *s; ++s)
         if (*s == '/')
             *s = '\\';
     
+    s = strrchr(szCmd, '.');
+    if (!s || s < strrchr(szCmd, '\\')) {
+        szCmd[len] = '.';
+        szCmd[len+1] = '\0';
+    }
+
     for (n=0; argv[n]; ++n)
         ;
 
@@ -138,13 +146,20 @@ API_EXPORT(int) os_spawnve(int mode, const char *cmdname, const char *const *arg
     const char *szArg;
     char *szCmd;
     char *s;
+    int len=strlen(cmdname);
     
-    szCmd = _alloca(strlen(cmdname)+1);
+    szCmd = _alloca(len+2);
     strcpy(szCmd, cmdname);
     for (s = szCmd; *s; ++s)
         if (*s == '/')
             *s = '\\';
     
+    s = strrchr(szCmd, '.');
+    if (!s || s < strrchr(szCmd, '\\')) {
+        szCmd[len] = '.';
+        szCmd[len+1] = '\0';
+    }
+
     for (n = 0; argv[n] ; ++n)
         ;
 
@@ -178,12 +193,19 @@ API_EXPORT(int) os_spawnle(int mode, const char *cmdname,...)
     const char *const *aszEnv;
     char *szCmd;
     char *s;
+    int len=strlen(cmdname);
     
-    szCmd = _alloca(strlen(cmdname)+1);
+    szCmd = _alloca(len+2);
     strcpy(szCmd, cmdname);
     for (s = szCmd; *s; ++s)
         if(*s == '/')
             *s = '\\';
+
+    s = strrchr(szCmd, '.');
+    if (!s || s < strrchr(szCmd, '\\')) {
+        szCmd[len] = '.';
+        szCmd[len+1] = '\0';
+    }
 
     va_start(vlist, cmdname);
     for (n = 0; va_arg(vlist, const char *); ++n)
