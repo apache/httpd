@@ -89,19 +89,25 @@ extern module *top_module;
 char *mod_info_html_cmd_string(char *string) {
 	char *s,*t;
 	static char ret[256];  /* What is the max size of a command? */
+	char *end_ret;
 
 	ret[0]='\0';
 	s = string;
 	t=ret;	
-	while((*s) && (strlen(t) < 256)) {
+	end_ret = t + sizeof(ret);
+	while((*s) && ((t-ret) < sizeof(ret))) {
 		if(*s=='<') { 
-			strncat(t,"&lt;", sizeof(ret)-strlen(ret));
+			strncpy(t,"&lt;", end_ret - t);
 			t+=4*sizeof(char);
 		} else if(*s=='>') {
-			strncat(t,"&gt;", sizeof(ret)-strlen(ret));
+			strncpy(t,"&gt;", end_ret - t);
 			t+=4*sizeof(char);
+		} else if(*s=='&') {
+		    	strncpy(t,"&amp;", end_ret - t);
+			t+=5*sizeof(char);
+		} else {
+		    *t++=*s;
 		}
-		else *t++=*s;
 		s++;
 	}
 	*t='\0';
