@@ -128,7 +128,7 @@ APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES
 APACHE_ENABLE_SHARED
 
-INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/srclib/apr/include"
+INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/srclib/apr/include -I\$(top_srcdir)/srclib/apr-util/include"
 if test -n "$USE_VPATH"; then
   INCLUDES="$INCLUDES -I\$(top_builddir)/include -I\$(top_builddir)/srclib/apr/include"
 fi
