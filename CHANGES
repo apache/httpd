@@ -1,5 +1,12 @@
 Changes with Apache 2.0.26-dev
 
+  *) Introduce ap_directory_walk rewrite (with further optimizations
+     required) to adapt to the ap_process_request_internal() changes.
+     Optimized so subrequests and redirects now reuse previous section 
+     merges, until we mismatch with the original directory_walk, and
+     precomputed r->finfo results will cause directory_walk to skip
+     the most expensive phases of the function.  [William Rowe]
+
   *) Allow ApacheMonitor to connect to and control Apache on other 
      WinNT/2K machines.   [Mladen Turk <mturk@mappingsoft.com>]
 
