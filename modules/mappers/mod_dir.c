@@ -116,15 +116,19 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static int handle_dir(request_rec *r)
+static int handle_dir(const char *handler,request_rec *r)
 {
-    dir_config_rec *d =
-    (dir_config_rec *) ap_get_module_config(r->per_dir_config,
-                                         &dir_module);
+    dir_config_rec *d;
     char *dummy_ptr[1];
     char **names_ptr;
     int num_names;
     int error_notfound = 0;
+
+    if(strcmp(handler,DIR_MAGIC_TYPE))
+	return DECLINED;
+
+    d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
+						&dir_module);
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
         char *ifile;
@@ -218,11 +222,12 @@ static int handle_dir(request_rec *r)
 }
 
 
-static const handler_rec dir_handlers[] =
+static void register_hooks(void)
 {
-    {DIR_MAGIC_TYPE, handle_dir},
-    {NULL}
-};
+    static const char * const aszSucc[]={ "mod_autoindex.c", NULL };
+
+    ap_hook_handler(handle_dir,NULL,aszSucc,AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA dir_module = {
     STANDARD20_MODULE_STUFF,
@@ -231,6 +236,5 @@ module AP_MODULE_DECLARE_DATA dir_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     dir_cmds,			/* command apr_table_t */
-    dir_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };

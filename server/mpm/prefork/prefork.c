@@ -1543,7 +1543,6 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     static int restart_num = 0;
     int no_detach = 0;
 
-    one_process = !!getenv("ONE_PROCESS");
     no_detach = !!getenv("NO_DETACH");
 
     /* sigh, want this only the second time around */
@@ -1578,7 +1577,7 @@ static void prefork_hooks(void)
 #ifdef AUX3
     (void) set42sig();
 #endif
-    /* TODO: set one_process properly */ one_process = 0;
+    one_process = !!getenv("ONE_PROCESS");
 
     ap_hook_pre_config(prefork_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
 }
@@ -1878,6 +1877,5 @@ module AP_MODULE_DECLARE_DATA mpm_prefork_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     prefork_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     prefork_hooks,		/* register hooks */
 };

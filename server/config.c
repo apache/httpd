@@ -110,11 +110,12 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 AP_DECLARE_DATA ap_directive_t *ap_conftree;
 
 AP_HOOK_STRUCT(
-	    AP_HOOK_LINK(header_parser)
-	    AP_HOOK_LINK(pre_config)
-	    AP_HOOK_LINK(post_config)
-	    AP_HOOK_LINK(open_logs)
-	    AP_HOOK_LINK(child_init)
+	       AP_HOOK_LINK(header_parser)
+	       AP_HOOK_LINK(pre_config)
+	       AP_HOOK_LINK(post_config)
+	       AP_HOOK_LINK(open_logs)
+	       AP_HOOK_LINK(child_init)
+	       AP_HOOK_LINK(handler)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
@@ -130,6 +131,9 @@ AP_IMPLEMENT_HOOK_VOID(open_logs,
                         server_rec *s),(pconf,plog,ptemp,s))
 AP_IMPLEMENT_HOOK_VOID(child_init,
                        (apr_pool_t *pchild, server_rec *s),(pchild,s))
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,handler,(const char *handler,request_rec *r),
+			    (handler,r),DECLINED)
 
 /****************************************************************
  *
@@ -272,68 +276,8 @@ AP_CORE_DECLARE(void *) ap_create_per_dir_config(apr_pool_t *p)
     return create_empty_config(p);
 }
 
-/*
- * For speed/efficiency we generate a compact list of all the handlers
- * and wildcard handlers.  This means we won't have to scan the entire
- * module list looking for handlers... where we'll find a whole whack
- * of NULLs.
- */
-typedef struct {
-    handler_rec hr;
-    size_t len;
-} fast_handler_rec;
-
-static fast_handler_rec *handlers;
-static fast_handler_rec *wildhandlers;
-
-static void init_handlers(apr_pool_t *p)
-{
-    module *modp;
-    int nhandlers = 0;
-    int nwildhandlers = 0;
-    const handler_rec *handp;
-    fast_handler_rec *ph, *pw;
-    const char *starp;
-
-    for (modp = top_module; modp; modp = modp->next) {
-	if (!modp->handlers)
-	    continue;
-	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if (ap_strchr_c(handp->content_type, '*')) {
-                nwildhandlers ++;
-            } else {
-                nhandlers ++;
-            }
-        }
-    }
-    ph = handlers = apr_palloc(p, sizeof(*ph)*(nhandlers + 1));
-    pw = wildhandlers = apr_palloc(p, sizeof(*pw)*(nwildhandlers + 1));
-    for (modp = top_module; modp; modp = modp->next) {
-	if (!modp->handlers)
-	    continue;
-	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if ((starp = ap_strchr_c(handp->content_type, '*'))) {
-                pw->hr.content_type = handp->content_type;
-                pw->hr.handler = handp->handler;
-		pw->len = starp - handp->content_type;
-                pw ++;
-            } else {
-                ph->hr.content_type = handp->content_type;
-                ph->hr.handler = handp->handler;
-		ph->len = strlen(handp->content_type);
-                ph ++;
-            }
-        }
-    }
-    pw->hr.content_type = NULL;
-    pw->hr.handler = NULL;
-    ph->hr.content_type = NULL;
-    ph->hr.handler = NULL;
-}
-
 int ap_invoke_handler(request_rec *r)
 {
-    fast_handler_rec *handp;
     const char *handler;
     const char *p;
     size_t handler_len;
@@ -356,35 +300,13 @@ int ap_invoke_handler(request_rec *r)
 	}
     }
 
-    /* Pass one --- direct matches */
+    result=ap_run_handler(handler,r);
 
-    for (handp = handlers; handp->hr.content_type; ++handp) {
-        if (handler_len == handp->len
-            && !strncmp(handler, handp->hr.content_type, handler_len)) {
-            result = (*handp->hr.handler) (r);
-
-            if (result != DECLINED)
-                return result;
-        }
-    }
-
-    /* Pass two --- wildcard matches */
-
-    for (handp = wildhandlers; handp->hr.content_type; ++handp) {
-        if (handler_len >= handp->len
-            && !strncmp(handler, handp->hr.content_type, handp->len)) {
-            result = (*handp->hr.handler) (r);
-
-            if (result != DECLINED)
-                return result;
-         }
-    }
-
-    if (result == HTTP_INTERNAL_SERVER_ERROR && r->handler && r->filename) {
+    if (result == DECLINED && r->handler && r->filename) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
-    return HTTP_INTERNAL_SERVER_ERROR;
+    return result == DECLINED ? HTTP_INTERNAL_SERVER_ERROR : result;
 }
 
 AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
@@ -1712,7 +1634,6 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process)
 AP_DECLARE(void) ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_run_post_config(pconf,plog,ptemp,s); 
-    init_handlers(pconf);
 }
 
 void ap_child_init_hook(apr_pool_t *pchild, server_rec *s)

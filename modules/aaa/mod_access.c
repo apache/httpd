@@ -419,6 +419,5 @@ module AP_MODULE_DECLARE_DATA access_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     access_cmds,
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

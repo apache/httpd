@@ -730,21 +730,24 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
  * 
  * Actual cgid handling... 
  */ 
-static int cgid_handler(request_rec *r) 
+static int cgid_handler(const char *handler, request_rec *r) 
 { 
     int retval, nph, dbpos = 0; 
     char *argv0, *dbuf = NULL; 
     ap_bucket_brigade *bb;
     ap_bucket *b;
     char argsbuffer[HUGE_STRING_LEN]; 
-    void *sconf = r->server->module_config; 
-    cgid_server_conf *conf = (cgid_server_conf *) ap_get_module_config(sconf, &cgid_module); 
-    int is_included = !strcmp(r->protocol, "INCLUDED"); 
+    void *sconf;
+    cgid_server_conf *conf;
+    int is_included;
     int sd;
     char **env; 
     struct sockaddr_un unix_addr;
     apr_file_t *tempsock = NULL;
     apr_size_t nbytes;
+
+    if(strcmp(handler,CGI_MAGIC_TYPE) && strcmp(handler,"cgi-script"))
+	return DECLINED;
 
     if (r->method_number == M_OPTIONS) { 
         /* 99 out of 100 cgid scripts, this is all they support */ 
@@ -752,6 +755,10 @@ static int cgid_handler(request_rec *r)
         r->allowed |= (1 << M_POST); 
         return DECLINED; 
     } 
+
+    sconf = r->server->module_config; 
+    conf = (cgid_server_conf *) ap_get_module_config(sconf, &cgid_module); 
+    is_included = !strcmp(r->protocol, "INCLUDED"); 
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL)
         argv0++;
@@ -924,16 +931,10 @@ static int cgid_handler(request_rec *r)
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
 
-static const handler_rec cgid_handlers[] = 
-{ 
-    {CGI_MAGIC_TYPE, cgid_handler}, 
-    {"cgi-script", cgid_handler}, 
-    {NULL} 
-};
-
 static void register_hook(void)
 {
     ap_hook_post_config(cgid_init, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_handler(cgid_handler, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA cgid_module = { 
@@ -943,7 +944,6 @@ module AP_MODULE_DECLARE_DATA cgid_module = {
     create_cgid_config, /* server config */ 
     merge_cgid_config, /* merge server config */ 
     cgid_cmds, /* command table */ 
-    cgid_handlers, /* handlers */ 
     register_hook /* register_handlers */ 
 }; 
 

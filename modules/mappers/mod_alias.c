@@ -436,6 +436,5 @@ module AP_MODULE_DECLARE_DATA alias_module =
     create_alias_config,	/* server config */
     merge_alias_config,		/* merge server configs */
     alias_cmds,			/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -1660,10 +1660,15 @@ static int index_directory(request_rec *r,
 
 /* The formal handler... */
 
-static int handle_autoindex(request_rec *r)
+static int handle_autoindex(const char *handler,request_rec *r)
 {
     autoindex_config_rec *d;
-    int allow_opts = ap_allow_options(r);
+    int allow_opts;
+
+    if(strcmp(handler,DIR_MAGIC_TYPE))
+	return DECLINED;
+
+    allow_opts = ap_allow_options(r);
 
     d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
 						      &autoindex_module);
@@ -1693,12 +1698,10 @@ static int handle_autoindex(request_rec *r)
     }
 }
 
-
-static const handler_rec autoindex_handlers[] =
+static void register_hooks(void)
 {
-    {DIR_MAGIC_TYPE, handle_autoindex},
-    {NULL}
-};
+    ap_hook_handler(handle_autoindex,NULL,NULL,AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA autoindex_module =
 {
@@ -1708,6 +1711,5 @@ module AP_MODULE_DECLARE_DATA autoindex_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     autoindex_cmds,		/* command apr_table_t */
-    autoindex_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };

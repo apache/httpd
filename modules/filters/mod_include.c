@@ -3079,6 +3079,5 @@ module AP_MODULE_DECLARE_DATA includes_module =
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     includes_cmds,              /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

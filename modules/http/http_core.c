@@ -2971,12 +2971,11 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 
 static int do_nothing(request_rec *r) { return OK; }
 
-static int default_handler(request_rec *r)
+static int default_handler(const char *handler, request_rec *r)
 {
     ap_bucket_brigade *bb;
     ap_bucket *e;
-    core_dir_config *d =
-	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+    core_dir_config *d;
     int errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
@@ -2987,8 +2986,22 @@ static int default_handler(request_rec *r)
      *     support fairly closely (unlike 1.3, we don't handle computing md5
      *     when the charset is translated).
      */
-    int bld_content_md5 = 
-        (d->content_md5 & 1) && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
+    int bld_content_md5;
+
+    /*
+     * The old way of doing handlers meant that this handler would
+     * match literally anything - this way will require handler to
+     * have a / in the middle, which probably captures the original
+     * intent, but may cause problems at first - Ben 7th Jan 01
+     */
+    if(strcmp(handler,"request-handler")
+       && ap_strcmp_match(handler,"*/*"))
+	return DECLINED;
+
+    d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+						&core_module);
+    bld_content_md5 = (d->content_md5 & 1)
+      && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
 
     ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", "POST", NULL);
 
@@ -3488,12 +3501,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
-static const handler_rec core_handlers[] = {
-{ "*/*", default_handler },
-{ "default-handler", default_handler },
-{ NULL, NULL }
-};
-
 static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     ap_init_bucket_types(pconf);
@@ -3547,6 +3554,7 @@ static void register_hooks(void)
     ap_hook_http_method(core_method,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_default_port(core_port,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_open_logs(core_open_logs,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_handler(default_handler,NULL,NULL,AP_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
@@ -3579,6 +3587,5 @@ AP_DECLARE_DATA module core_module = {
     create_core_server_config,	/* create per-server config structure */
     merge_core_server_configs,	/* merge per-server config structures */
     core_cmds,			/* command apr_table_t */
-    core_handlers,		/* handlers */
     register_hooks		/* register hooks */
 };

@@ -268,6 +268,5 @@ module AP_MODULE_DECLARE_DATA env_module =
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
     env_module_cmds,            /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

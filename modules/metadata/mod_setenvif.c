@@ -466,6 +466,5 @@ module AP_MODULE_DECLARE_DATA setenvif_module =
     create_setenvif_config_svr, /* server config */
     merge_setenvif_config,      /* merge server configs */
     setenvif_module_cmds,       /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

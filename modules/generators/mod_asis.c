@@ -68,12 +68,15 @@
 
 #define ASIS_MAGIC_TYPE "httpd/send-as-is"
 
-static int asis_handler(request_rec *r)
+static int asis_handler(const char *handler,request_rec *r)
 {
     apr_file_t *f = NULL;
     apr_status_t status;
     const char *location;
     apr_size_t nbytes;
+
+    if(strcmp(handler,ASIS_MAGIC_TYPE) && strcmp(handler,"send-as-is"))
+	return DECLINED;
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -121,12 +124,10 @@ static int asis_handler(request_rec *r)
     return OK;
 }
 
-static const handler_rec asis_handlers[] =
+static void register_hooks(void)
 {
-    {ASIS_MAGIC_TYPE, asis_handler},
-    {"send-as-is", asis_handler},
-    {NULL}
-};
+    ap_hook_handler(asis_handler,NULL,NULL,AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA asis_module =
 {
@@ -136,6 +137,5 @@ module AP_MODULE_DECLARE_DATA asis_module =
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     NULL,			/* command apr_table_t */
-    asis_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };

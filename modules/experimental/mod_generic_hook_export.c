@@ -78,6 +78,5 @@ module generic_hook_export_module =
     NULL,
     NULL,
     NULL,
-    NULL,
     ExportRegisterHooks
 };

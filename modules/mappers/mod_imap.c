@@ -612,7 +612,7 @@ static void menu_footer(request_rec *r)
     ap_rputs("\n\n</body>\n</html>\n", r);         /* finish the menu */
 }
 
-static int imap_handler(request_rec *r)
+static int imap_handler(const char *handler,request_rec *r)
 {
     char input[MAX_STRING_LEN];
     char *directive;
@@ -632,18 +632,24 @@ static int imap_handler(request_rec *r)
     char *string_pos;
     int showmenu = 0;
 
-    imap_conf_rec *icr = ap_get_module_config(r->per_dir_config, &imap_module);
+    imap_conf_rec *icr;
 
-    char *imap_menu = icr->imap_menu ? icr->imap_menu : IMAP_MENU_DEFAULT;
-    char *imap_default = icr->imap_default
-			    ?  icr->imap_default : IMAP_DEFAULT_DEFAULT;
-    char *imap_base = icr->imap_base ? icr->imap_base : IMAP_BASE_DEFAULT;
+    char *imap_menu;
+    char *imap_default;
+    char *imap_base;
 
     configfile_t *imap; 
 
-    if (r->method_number != M_GET) {
+    if (r->method_number != M_GET || (strcmp(handler,IMAP_MAGIC_TYPE)
+				      && strcmp(handler, "imap-file")))
 	return DECLINED;
-    }
+
+    icr = ap_get_module_config(r->per_dir_config, &imap_module);
+
+    imap_menu = icr->imap_menu ? icr->imap_menu : IMAP_MENU_DEFAULT;
+    imap_default = icr->imap_default
+      ?  icr->imap_default : IMAP_DEFAULT_DEFAULT;
+    imap_base = icr->imap_base ? icr->imap_base : IMAP_BASE_DEFAULT;
 
     status = ap_pcfg_openfile(&imap, r->pool, r->filename);
 
@@ -907,13 +913,10 @@ menu_bail:
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
-
-static const handler_rec imap_handlers[] =
+static void register_hooks(void)
 {
-    {IMAP_MAGIC_TYPE, imap_handler},
-    {"imap-file", imap_handler},
-    {NULL}
-};
+    ap_hook_handler(imap_handler,NULL,NULL,AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA imap_module =
 {
@@ -923,6 +926,5 @@ module AP_MODULE_DECLARE_DATA imap_module =
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     imap_cmds,                  /* command apr_table_t */
-    imap_handlers,              /* handlers */
-    NULL                        /* register hooks */
+    register_hooks              /* register hooks */
 };

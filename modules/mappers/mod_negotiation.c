@@ -2566,14 +2566,17 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
     return OK;
 }
 
-static int handle_map_file(request_rec *r)
+static int handle_map_file(const char *handler,request_rec *r)
 {
-    negotiation_state *neg = parse_accept_headers(r);
+    negotiation_state *neg;
     var_rec *best;
     int res;
-
     char *udir;
 
+    if(strcmp(handler,MAP_FILE_MAGIC_TYPE) && strcmp(handler,"type-map"))
+	return DECLINED;
+
+    neg = parse_accept_headers(r);
     if ((res = read_type_map(neg, r))) {
         return res;
     }
@@ -2742,17 +2745,11 @@ static int fix_encoding(request_rec *r)
     return DECLINED;
 }
 
-static const handler_rec negotiation_handlers[] =
-{
-    {MAP_FILE_MAGIC_TYPE, handle_map_file},
-    {"type-map", handle_map_file},
-    {NULL}
-};
-
 static void register_hooks(void)
 {
     ap_hook_fixups(fix_encoding,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_type_checker(handle_multi,NULL,NULL,AP_HOOK_FIRST);
+    ap_hook_handler(handle_map_file,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA negotiation_module =
@@ -2763,6 +2760,5 @@ module AP_MODULE_DECLARE_DATA negotiation_module =
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     negotiation_cmds,           /* command apr_table_t */
-    negotiation_handlers,       /* handlers */
     register_hooks              /* register hooks */
 };

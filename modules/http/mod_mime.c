@@ -854,6 +854,5 @@ module AP_MODULE_DECLARE_DATA mime_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     mime_cmds,			/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };
