@@ -64,6 +64,7 @@ extern "C" {
 #endif
 
 #include "httpd.h"
+#include <limits.h>     /* for INT_MAX */
 
 
 #define DAV_VERSION		"1.0.1"
@@ -74,7 +75,6 @@ extern "C" {
 #define DAV_READ_BLOCKSIZE	2048	/* used for reading input blocks */
 
 #ifdef WIN32
-#include <limits.h>
 typedef int ssize_t;
 #endif /* WIN32 */
 
