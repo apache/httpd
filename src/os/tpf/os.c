@@ -161,6 +161,13 @@ int tpf_accept(int sockfd, struct sockaddr *peer, int *paddrlen)
     return rv;
 }
    
+/* the getpass function is not usable on TPF */
+char *getpass(const char* prompt)
+{
+    errno = EIO;
+    return((char *)NULL);
+}
+
 #ifndef __PIPE_
 int pipe(int fildes[2])
 {

@@ -95,6 +95,7 @@ extern int tpf_child;
 struct server_rec;
 pid_t os_fork(struct server_rec *s, int slot);
 int os_check_server(char *server);
+char *getpass(const char *prompt);
 extern char *ap_server_argv0;
 extern int scoreboard_fd;
 #include <signal.h>
