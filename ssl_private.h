@@ -530,6 +530,7 @@ int          ssl_hook_Access(request_rec *);
 int          ssl_hook_Fixup(request_rec *);
 int          ssl_hook_ReadReq(request_rec *);
 int          ssl_hook_Upgrade(request_rec *);
+void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
 
 /*  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);
