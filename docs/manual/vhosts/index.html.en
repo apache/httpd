@@ -74,11 +74,11 @@ hosts</a></li><li><a href="ip-based.html">IP-based virtual hosts</a></li><li><a 
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you
-    may find the Apache <code>-t -D DUMP_VHOSTS</code> command line switch
+    may find the Apache <code>-S</code> command line switch
     useful. That is, type the following command:</p>
 
     <div class="example"><p><code>
-    /usr/local/apache/bin/httpd -t -D DUMP_VHOSTS
+    /usr/local/apache/bin/httpd -S
     </code></p></div>
 
     <p>This command will dump out a description of how Apache parsed
