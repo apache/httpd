@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/28 18:31:58 $
+Last modified: $Date: 2003/06/28 22:55:53 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -18,9 +18,6 @@ Things That Need Fixing
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
     - FAQ! UTF-8 config and URL encoding for non-ascii characters.
-
-- ScriptInterpreterSource directive is poorly documented.  In particular,
-  registry-strict is pretty-much useless without more info.
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
