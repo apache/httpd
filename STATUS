@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 00:49:03 $]
+Last modified at [$Date: 2003/05/13 12:00:56 $]
 
 Release:
 
@@ -242,7 +242,7 @@ PATCHES TO PORT FROM 2.1
       docs/docroot/index.html.var: r1.12
       docs/conf/httpd-std.conf.in: r1.39
       docs/conf/httpd-win.conf: r1.85
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
