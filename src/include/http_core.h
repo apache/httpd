@@ -184,11 +184,11 @@ typedef struct {
 #define HOSTNAME_LOOKUP_ON	1
 #define HOSTNAME_LOOKUP_DOUBLE	2
 #define HOSTNAME_LOOKUP_UNSET	3
-    int hostname_lookups : 4;
+    unsigned int hostname_lookups : 4;
 
-    int do_rfc1413 : 2;   /* See if client is advertising a username? */
+    signed int do_rfc1413 : 2;   /* See if client is advertising a username? */
 
-    int content_md5 : 2;  /* calculate Content-MD5? */
+    signed int content_md5 : 2;  /* calculate Content-MD5? */
 
     unsigned use_canonical_name : 2; /* bit 0 = on/off, bit 1 = unset/set */
 
