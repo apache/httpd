@@ -174,6 +174,7 @@ static apr_pool_t *pmain;		/* Pool for httpd child stuff */
 static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
 
 static int die_now = 0;
+
 static apr_thread_mutex_t *accept_mutex = NULL;
 
 /* Keep track of the number of worker threads currently active */
@@ -323,9 +324,14 @@ int ap_graceful_stop_signalled(void)
     return 0;
 }
 
-static int just_go = 0;
+static int dont_block = 0;
+static int missed_accept = 0;
+static apr_socket_t *sd = NULL;
+
+static int skipped_selects = 0;
 static int would_block = 0;
-static void worker_main(void *arg)
+/*static */
+void worker_main(void *arg)
 {
     ap_listen_rec *lr;
     ap_listen_rec *last_lr = NULL;
@@ -337,10 +343,15 @@ static void worker_main(void *arg)
 
     int my_worker_num = worker_num_arg;
     apr_socket_t *csd = NULL;
-    apr_socket_t *sd = NULL;
     int requests_this_child = 0;
 
-    DWORD ret;
+    int sockdes;
+    ap_listen_rec *first_lr;
+    int srv;
+    struct timeval tv;
+
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
 
     apr_pool_create(&ptrans, pmain);
 
@@ -370,7 +381,7 @@ static void worker_main(void *arg)
         * Wait for an acceptable connection to arrive.
         */
 
-        /* Lock around "accept", if necessary */
+        /* Only allow a single thread at a time into the "accept" loop */
         apr_thread_mutex_lock(accept_mutex);
 
         for (;;) {
@@ -380,31 +391,80 @@ static void worker_main(void *arg)
                 clean_child_exit(0, my_worker_num);
             }
 
-            /* we remember the last_lr we searched last time around so that
-            we don't end up starving any particular listening socket */
-            if (last_lr == NULL) {
-                lr = ap_listeners;
+            /* If we just satisfied a request on listen port x, assume that more 
+                is coming. Don't bother using select() to determine if there is 
+                more, just try to accept() the next request. */
+            if (dont_block && (missed_accept<10)) {
+                skipped_selects++;
             }
             else {
-                lr = last_lr->next;
-                if (!lr)
-                    lr = ap_listeners;
-            }
-            last_lr = lr;
-            sd = lr->sd;
+                /* If we determine that there are no more requests on the listen
+                    queue then set the socket back to blocking and move back into 
+                    more of an idle listen state. */
+                if (dont_block) {
+                    apr_setsocketopt(sd, APR_SO_NONBLOCK, 0);
+                    dont_block = 0;
+                }
 
+                /* Check the listen queue on all sockets for requests */
+                memcpy(&main_fds, &listenfds, sizeof(fd_set));
+                srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
+
+                if (srv <= 0)
+                    continue;
+
+                /* remember the last_lr we searched last time around so that
+                we don't end up starving any particular listening socket */
+                if (last_lr == NULL) {
+                    lr = ap_listeners;
+                }
+                else {
+                    lr = last_lr->next;
+                    if (!lr)
+                        lr = ap_listeners;
+                }
+                first_lr = lr;
+                do {
+                    apr_os_sock_get(&sockdes, lr->sd);
+                    if (FD_ISSET(sockdes, &main_fds))
+                        goto got_listener;
+                    lr = lr->next;
+                    if (!lr)
+                        lr = ap_listeners;
+                } while (lr != first_lr);
+                /* FIXME: if we get here, something bad has happened, and we're
+                probably gonna spin forever.
+                */
+                continue;
+got_listener:
+                last_lr = lr;
+                sd = lr->sd;
+
+                /* Just got a request on one of the listen sockets so assume that
+                    there are more coming.  Set the socket to non-blocking and 
+                    move into a fast pull mode. */
+                apr_setsocketopt(sd, APR_SO_NONBLOCK, 1);
+                dont_block = 1;
+                missed_accept = 0;
+            }
+            
             stat = apr_accept(&csd, sd, ptrans);
+
+            /* If we got a new socket, set it to non-blocking mode and process
+                it.  Otherwise handle the error. */
             if (stat == APR_SUCCESS) {
                 apr_setsocketopt(csd, APR_SO_NONBLOCK, 0);
                 break;		/* We have a socket ready for reading */
             }
             else {
-                just_go = 0;
-                ret = APR_TO_NETOS_ERROR(stat);
+                switch (APR_TO_NETOS_ERROR(stat)) {
 
-                switch (ret) {
-
+                    /* if the error is a wouldblock then maybe we were too
+                        quick try to pull the next request from the listen 
+                        queue.  Try a few more times then return to our idle
+                        listen state. */
                     case WSAEWOULDBLOCK:
+                        missed_accept++;
                         would_block++;
                         apr_thread_yield();
                         continue;
@@ -443,6 +503,7 @@ static void worker_main(void *arg)
             }
         }
 
+        /* Unlock the mutext so that the next thread can start listening for requests. */
         apr_thread_mutex_unlock(accept_mutex);
 
         ap_create_sb_handle(&sbh, ptrans, 0, my_worker_num);
@@ -656,9 +717,11 @@ static void display_settings ()
     int status_array[SERVER_NUM_STATUS];
     int i, status, total=0;
     int reqs = request_count;
+    int skips = skipped_selects;
     int wblock = would_block;
 
     request_count = 0;
+    skipped_selects = 0;
     would_block = 0;
 
     ClearScreen (getscreenhandle());
@@ -718,6 +781,7 @@ static void display_settings ()
     }
     printf ("Total Running:\t%d\tout of: \t%d\n", total, ap_threads_limit);
     printf ("Requests per interval:\t%d\n", reqs);
+    printf ("Skipped selects:\t%d\n", skips);
     printf ("Would blocks:\t%d\n", wblock);
 }
 
@@ -765,7 +829,19 @@ static int setup_listeners(server_rec *s)
         if (sockdes > listenmaxfd) {
             listenmaxfd = sockdes;
         }
+#ifdef NONBLOCK1
         apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
+#endif
+    }
+    return 0;
+}
+
+static int shutdown_listeners()
+{
+    ap_listen_rec *lr;
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        apr_socket_close(lr->sd);
     }
     return 0;
 }
@@ -825,6 +901,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         apr_thread_yield();
         apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     }
+
+
+    /* Shutdown the listen sockets so that we don't get stuck in a blocking call. */
+    shutdown_listeners();
 
     if (shutdown_pending) { /* Got an unload from the console */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
