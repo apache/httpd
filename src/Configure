@@ -598,12 +598,12 @@ echo "MOD_CFLAGS=\$(INCLUDES2) \$(AUX_CFLAGS)">> modules/Makefile
 
 awk >> modules/Makefile < $tmpfile '\
    BEGIN {printf "MODULES="} \
-   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s ", pp[2]} \
+   ($1 == "Module" && $3 ~ /modules\//) {split ($3, pp, "/"); printf "%s ", pp[2]} \
    END {printf "\n"}'
 
 awk >> modules/Makefile < $tmpfile '\
    BEGIN {printf "CLEANERS="} \
-   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s_clean ", pp[2]} \
+   ($1 == "Module" && $3 ~ /modules\//) {split ($3, pp, "/"); printf "%s_clean ", pp[2]} \
    END {printf "\n"}'
 
 cat << EOF >> modules/Makefile
@@ -622,6 +622,6 @@ ForceMe:
 EOF
 
 awk >>modules/Makefile <$tmpfile \
-   '($3 ~ /modules\//) { split ($3, pp, "/"); \
+   '($1 == "Module" && $3 ~ /modules\//) { split ($3, pp, "/"); \
    printf "%s_clean:\n\t(cd %s; $(MAKE) clean)\n\n", pp[2], pp[2]}'
 
