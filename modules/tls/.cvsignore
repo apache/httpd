@@ -1,9 +1,0 @@
-.libs
-.deps
-Makefile
-modules.mk
-*.lo
-*.la
-Debug
-Release
-mod_tls.plg
