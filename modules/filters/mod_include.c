@@ -316,8 +316,8 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
 
 /* We've now found a start sequence tag... */
 static apr_bucket* found_start_sequence(apr_bucket *dptr,
-                                          include_ctx_t *ctx, 
-                                          int tagStart)
+                                        include_ctx_t *ctx, 
+                                        int tagStart)
 {
     /* We want to split the bucket at the '<'. */
     ctx->state = PARSE_DIRECTIVE;
@@ -3132,26 +3132,21 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     if (!f->ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        if (ctx != NULL) {
-            ctx->state = PRE_HEAD;
-            ctx->flags = (FLAG_PRINTING | FLAG_COND_TRUE);
-            if (ap_allow_options(r) & OPT_INCNOEXEC) {
-                ctx->flags |= FLAG_NO_EXEC;
-            }
-            ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
-            ctx->status = APR_SUCCESS;
+        ctx->state = PRE_HEAD;
+        ctx->flags = (FLAG_PRINTING | FLAG_COND_TRUE);
+        if (ap_allow_options(r) & OPT_INCNOEXEC) {
+            ctx->flags |= FLAG_NO_EXEC;
+        }
+        ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
+        ctx->status = APR_SUCCESS;
 
-            ctx->error_str = conf->default_error_msg;
-            ctx->time_str = conf->default_time_fmt;
-            ctx->pool = f->c->pool;
-            ctx->start_seq_pat = &sconf->start_seq_pat;
-            ctx->start_seq  = sconf->default_start_tag;
-            ctx->start_seq_len = sconf->start_tag_len;
-            ctx->end_seq = sconf->default_end_tag;
-        }
-        else {
-            return ap_pass_brigade(f->next, b);
-        }
+        ctx->error_str = conf->default_error_msg;
+        ctx->time_str = conf->default_time_fmt;
+        ctx->pool = f->c->pool;
+        ctx->start_seq_pat = &sconf->start_seq_pat;
+        ctx->start_seq  = sconf->default_start_tag;
+        ctx->start_seq_len = sconf->start_tag_len;
+        ctx->end_seq = sconf->default_end_tag;
     }
     else {
         ctx->bytes_parsed = 0;
