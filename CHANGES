@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Fix shutdown/restart hangs in the threaded MPM.
+     [Jeff Trawick, Greg Ames, Ryan Bloom]
+  
   *) Removed the keptalive boolean from conn_rec because it is now only
      used by a single routine and can be replaced by a local variable.
      [Greg Stein, Ryan Bloom, Roy Fielding]
