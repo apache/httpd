@@ -1,4 +1,7 @@
 Changes with Apache 2.0.30-dev
+  *) More performance tweaks to the BNDM string-search algorithm
+     used to find "<!--#" tokens in mod_include [Brian Pane]
+
   *) Miscellaneous small performance fixes: optimized away various
      string copy operations and removed large temp buffers from
      the stack [Brian Pane]
