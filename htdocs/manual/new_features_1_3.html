@@ -169,7 +169,8 @@ sections provide a new syntax for regular expression sectioning.
     The <code>mod_dir</code> module has been split in two, with
     <a href="mod/mod_dir.html">mod_dir</a> handling directory index
     files, and <a href="mod/mod_autoindex.html">mod_autoindex</a>
-    creating directory listings.
+    creating directory listings.  Thus allowing folks to remove
+    the indexing function from critical servers.
 
  <LI><STRONG>Support for Directory Icon Sizing</STRONG>
   <BR>
@@ -211,17 +212,13 @@ through which shared pages are being served.
     IP.  Regardless of the HostnameLookups setting,
     <a href="mod/mod_access.html">mod_access</a> access lists using DNS
     names <b>require</b> all names to pass a double-reverse DNS test.
+    (Prior versions of Apache required a compile-time switch to enable
+    double-reverse DNS.)
 
 <li><strong>CIDR and Netmask access control</strong><br>
     <a href="mod/mod_access.html">mod_access</a> directives now support
     CIDR (Classless Inter-Domain Routing) style prefixes, and netmasks for
     greater control over IP access lists.
-
-<li><strong>New child_init function for module API</strong><br>
-A new phase for Apache's API is called once per "heavy-weight process,"
-before any requests are handled. This allows the module to set up
-anything that need to be done once per processes. For example,
-connections to databases.
 
 <li><strong><a href="mod/mod_proxy.html#noproxy">NoProxy</a></strong>
 and <strong><a href="mod/mod_proxy.html#proxydomain">ProxyDomain</a>
@@ -251,6 +248,7 @@ Allows additional information to be listed along with a specified module.
 	<code>mmap</code>, which means bytes are only copied from the
 	disk buffer to the network buffer directly by the kernel.  The
 	program never copies bytes around, which reduces CPU time.
+	(Only where available/tested.)
     <li>When presented with a load spike, the server quickly adapts by
 	spawning children at faster rates.
     <li>The code which dispatches modules was optimized to avoid repeatedly
@@ -264,7 +262,12 @@ Allows additional information to be listed along with a specified module.
 	children and high loads.
     <li>New serialization choices improve performance on Linux, Solaris,
 	and IRIX.
+    <li><code><a href="mod/mod_log_config.html">mod_log_config</a></code>
+	can be compile-time configured to buffer writes.
     </ul>
+
+    <p>See <a href="misc/perf-tuning.html">the new performance
+    documentation</a> for more information.
 
 <li><strong>Unique Identifiers</strong><br>
     mod_unique_id can be included to generate a unique identifier that
@@ -283,6 +286,101 @@ Allows additional information to be listed along with a specified module.
     it.  This opens up more opportunities for log rotation, hit filtering,
     real-time splitting of multiple vhosts into separate logs, and
     asynchronous DNS resolving on the fly.
+
+<li><strong>ServerRoot relative auth filenames</strong><br>
+    Auth filenames for the various authentication modules are now treated
+    as relative to the ServerRoot if they are not full paths.
+
+<li><strong>Include directive</strong><br>
+    The Include directive includes other config files immediately at that
+    point in parsing.
+
+<li><strong>No TransferLog disables logging</strong><br>
+    If no <a href="mod/mod_log_config.html#TransferLog">TransferLog</a>
+    directive is given then no log is written.  This supports co-existence
+    with other logging modules.
+
+<li><strong>mod_cern_meta configurable per-directory</strong><br>
+    <a href="mod/mod_cern_meta.html">mod_cern_meta</a> is now configurable
+    on a per-directory basis.
+
+<li><strong>API Additions</strong><br>
+    
+    For all those module writers and code hackers:
+
+    <ul>
+    <li><strong><code>child_init</code> function for module API</strong><br>
+    A new phase for Apache's API is called once per "heavy-weight process,"
+    before any requests are handled. This allows the module to set up
+    anything that need to be done once per processes. For example,
+    connections to databases.
+
+    <li><strong><code>child_exit</code> function for module API</strong><br>
+    A new phase called once per "heavy-weight process," when it is
+    terminating.  Note that it can't be called in some fatal cases (such
+    as segfaults and kill -9).
+
+    <li><strong><code>child_terminate</code></strong><br>
+    Used in the child to indicate the child should exit after finishing
+    the current request.
+
+    <li><strong><code>register_other_child</code></strong><br>
+    See <code>http_main.h</code>.  This is used in the parent to register
+    a child for monitoring.  The parent will report status to a supplied
+    callback function.  This allows modules to create their own children
+    which are monitored along with the httpd children.
+
+    <li><strong><code>piped_log</code></strong><br>
+    See <code>http_log.h</code>.  This API provides the common code for
+    implementing piped logs.  In particular it implements a reliable piped
+    log on architectures supporting it (i.e. Unix at the moment).
+
+    <li><strong>MD5 functions renamed <code>ap_*</code></strong><br>
+    MD5 functions renamed to avoid conflicts with other libraries.
+
+    <li><strong>scoreboard format changed</strong><br>
+    The scoreboard format is quite different.  It is considered a
+    "private" interface in general, so it's only mentioned here as an FYI.
+
+    <li><strong><code>set_last_modified</code> split into three</strong><br>
+    The old function <code>set_last_modified</code> performed multiple
+    jobs including the setting of the <code>Last-Modified</code> header, the
+    <code>ETag</code> header, and processing conditional requests (such as
+    IMS).  These functions have been split into three functions:
+    <code>set_last_modified</code>, <code>set_etag</code>, and
+    <code>meets_conditions</code>.  The field <code>mtime</code> has been
+    added to <code>request_rec</code> to facilitate
+    <code>meets_conditions</code>.
+
+    <li><strong>New error logging function: <code>aplog_error</code></strong><br>
+    All old logging functions are deprecated, we are in the process of
+    replacing them with a single function called <code>aplog_error</code>.
+    This is still a work in progress.
+
+    <li><strong><code>set_file_slot</code> for config parsing</strong><br>
+    The <code>set_file_slot</code> routine provides a standard routine that
+    prepends ServerRoot to non-absolute paths.
+
+    <li><strong><code>post_read_request</code> module API</strong><br>
+    This request phase occurs immediately after reading the request (headers),
+    and immediately after creating an internal redirect.  It is most useful
+    for setting environment variables to affect future phases.
+
+    <li><strong><code>psocket</code>, and <code>popendir</code></strong><br>
+    The <code>psocket</code> and <code>pclosesocket</code> functions allow
+    for race-condition free socket creation with resource tracking.
+    Similarly <code>popendir</code> and <code>pclosedir</code> protect
+    directory reading.
+
+    <li><strong><code>is_initial_req</code></strong><br>
+    Test if the request is the initial request (i.e. the one coming from
+    the client).
+
+    <li><strong><code>kill_only_once</code></strong><br>
+    An option to <code>spawn_child</code> functions which prevents Apache
+    from aggressively trying to kill off the child.
+
+    </ul>
 
 </ul>
 
