@@ -3,7 +3,7 @@ Changes with Apache 1.3
   *) IndexOptions SuppressHTMLPreamble now causes the actual HTML of
      directory indices to start with the contents of the HeaderName file
      if there is one.  If there isn't one, the behaviour is unchanged.
-     [Ken Coar, based upon code and an idea submitted by <ache@nagual.ru>]
+     [Ken Coar, Roy Fielding, Andrey A. Chernov]
 
   *) On Win32, modules can now be dynamically loaded DLLs using the
      LoadModule/LoadFile directives. Note that module DLLs must be
