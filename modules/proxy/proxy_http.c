@@ -626,6 +626,7 @@ static apr_status_t send_request_body(apr_pool_t *p,
 {
     enum {RB_INIT, RB_STREAM_CL, RB_STREAM_CHUNKED, RB_SPOOL_CL} rb_method = RB_INIT;
     const char *old_cl_val, *te_val;
+    int cl_zero; /* client sent "Content-Length: 0", which we forward on to server */
     apr_status_t status;
 
     /* send CL or use chunked encoding?
@@ -656,17 +657,22 @@ static apr_status_t send_request_body(apr_pool_t *p,
      * . proxy-sendunchangedcl
      *   use C-L from client and spool the request body
      */
-    if (!force10 && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
+    old_cl_val = apr_table_get(r->headers_in, "Content-Length");
+    cl_zero = old_cl_val && !strcmp(old_cl_val, "0");
+
+    if (!force10
+        && !cl_zero
+        && apr_table_get(r->subprocess_env, "proxy-sendchunks")) {
         rb_method = RB_STREAM_CHUNKED;
     }
-    else if (apr_table_get(r->subprocess_env, "proxy-sendcl")) {
+    else if (!cl_zero
+             && apr_table_get(r->subprocess_env, "proxy-sendcl")) {
         rb_method = RB_SPOOL_CL;
     }
     else {
-        old_cl_val = apr_table_get(r->headers_in, "Content-Length");
         if (old_cl_val &&
             (r->input_filters == r->proto_input_filters
-             || !strcmp(old_cl_val, "0")
+             || cl_zero
              || apr_table_get(r->subprocess_env, "proxy-sendunchangedcl"))) {
             rb_method = RB_STREAM_CL;
         }
@@ -887,8 +893,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             || !apr_strnatcasecmp(headers_in[counter].key, "Transfer-Encoding")
             || !apr_strnatcasecmp(headers_in[counter].key, "Upgrade")
 
-            /* We have no way of knowing whether this Content-Length will
-             * be accurate, so we must not include it.
+            /* We'll add appropriate Content-Length later, if appropriate.
              */
             || !apr_strnatcasecmp(headers_in[counter].key, "Content-Length")
         /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
