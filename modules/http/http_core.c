@@ -408,11 +408,20 @@ CORE_EXPORT(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
  * See directory_walk().
  */
 
-#ifdef HAVE_DRIVE_LETTERS
+#if defined(HAVE_DRIVE_LETTERS)
 #define IS_SPECIAL(entry_core)	\
     ((entry_core)->r != NULL \
 	|| ((entry_core)->d[0] != '/' && (entry_core)->d[1] != ':'))
-#else
+#elif defined(NETWARE)
+/* XXX: Fairly certain this is correct... '/' must prefix the path
+ *      or else in the case xyz:/ or abc/xyz:/, '/' must follow the ':'.
+ *      If there is no leading '/' or embedded ':/', then we are special.
+ */
+#define IS_SPECIAL(entry_core)	\
+    ((entry_core)->r != NULL \
+	|| ((entry_core)->d[0] != '/' \
+            && strchr((entry_core)->d, ':') \
+            && *(strchr((entry_core)->d, ':') + 1) != '/'))
 #define IS_SPECIAL(entry_core)	\
     ((entry_core)->r != NULL || (entry_core)->d[0] != '/')
 #endif
@@ -1570,6 +1579,18 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 	cmd->path = ap_getword_conf(cmd->pool, &arg);
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+    else if (strcmp(cmd->path, "/") == 0) {
+        /* Treat 'default' path / as an inalienable root */
+        cmd->path = apr_pstrdup(cmd->pool, cmd->path);
+    }
+#endif
+#if defined(HAVE_UNC_PATHS)
+    else if (strcmp(cmd->path, "//") == 0) {
+        /* Treat UNC path // as an inalienable root */
+        cmd->path = apr_pstrdup(cmd->pool, cmd->path);
+    }
+#endif
     else {
 	/* Ensure that the pathname is canonical */
 	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);

@@ -211,7 +211,7 @@ static int get_path_info(request_rec *r)
     char *end = &path[strlen(path)];
     char *last_cp = NULL;
     int rv;
-#ifdef HAVE_DRIVE_LETTERS
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
     char bStripSlash=1;
 #endif
 
@@ -226,14 +226,15 @@ static int get_path_info(request_rec *r)
      */
     if (strlen(path) == 3 && path[1] == ':' && path[2] == '/')
         bStripSlash = 0;
+#endif
 
-
+#ifdef HAVE_UNC_PATHS
     /* If UNC name == //machine/share/, do not 
      * advance over the trailing slash.  Any other
      * UNC name is OK to strip the slash.
      */
     cp = end;
-    if (strlen(path) > 2 && path[0] == '/' && path[1] == '/' && 
+    if (path[0] == '/' && path[1] == '/' && 
         path[2] != '/' && cp[-1] == '/') {
         char *p;
         int iCount=0;
@@ -246,7 +247,9 @@ static int get_path_info(request_rec *r)
         if (iCount == 4)
             bStripSlash = 0;
     }
-
+#endif
+   
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
     if (bStripSlash)
 #endif
         /* Advance over trailing slashes ... NOT part of filename 
@@ -254,7 +257,6 @@ static int get_path_info(request_rec *r)
          */
         for (cp = end; cp > path && cp[-1] == '/'; --cp)
             continue;
-
 
     while (cp > path) {
 
@@ -361,8 +363,11 @@ static int directory_walk(request_rec *r)
     char *test_filename;
     char *test_dirname;
     int res;
-    unsigned i, num_dirs, iStart;
+    unsigned i, num_dirs;
     int j, test_filename_len;
+#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
+    unsigned iStart = 1;
+#endif
 
     /*
      * Are we dealing with a file? If not, we can (hopefuly) safely assume we
@@ -468,18 +473,46 @@ static int directory_walk(request_rec *r)
      */
     test_dirname = apr_palloc(r->pool, test_filename_len + 2);
 
-    iStart = 1;
-#ifdef WIN32
-    /* If the name is a UNC name, then do not walk through the
-     * machine and share name (e.g. \\machine\share\)
+#if defined(HAVE_UNC_PATHS)
+    /* If the name is a UNC name, then do not perform any true file test
+     * against the machine name (start at //machine/share/)
+     * This is optimized to use the normal walk (skips the redundant '/' root)
      */
     if (num_dirs > 3 && test_filename[0] == '/' && test_filename[1] == '/')
         iStart = 4;
 #endif
 
+#if defined(NETWARE)
+    /* If the name is a fully qualified volume name, then do not perform any
+     * true file test on the machine name (start at machine/share:/)
+     * XXX: The implementation eludes me at this moment... 
+     *      Does this make sense?  Please test!
+     */
+    if (num_dirs > 1 && strchr(test_filename, '/') < strchr(test_filename, ':'))
+        iStart = 2;
+#endif
+
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+    /* Should match <Directory> sections starting from '/', not 'e:/' 
+     * (for example).  WIN32/OS2/NETWARE do not have a single root directory,
+     * they have one for each filesystem.  Traditionally, Apache has treated 
+     * <Directory /> permissions as the base for the whole server, and this 
+     * tradition should probably be preserved. 
+     *
+     * NOTE: MUST SYNC WITH ap_make_dirstr_prefix() CHANGE IN src/main/util.c
+     */
+    if (test_filename[0] == '/')
+        i = 1;
+    else
+        i = 0;
+#else
+    /* Normal File Systems are rooted at / */
+    i = 1;
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
+
     /* j keeps track of which section we're on, see core_reorder_directories */
     j = 0;
-    for (i = iStart; i <= num_dirs; ++i) {
+    for (; i <= num_dirs; ++i) {
         int overrides_here;
         core_dir_config *core_dir = (core_dir_config *)
             ap_get_module_config(per_dir_defaults, &core_module);
@@ -495,6 +528,10 @@ static int directory_walk(request_rec *r)
          * permissions appropriate to the *parent* directory...
          */
 
+#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
+        /* Test only legal names against the real filesystem */
+        if (i >= iStart)
+#endif
         if ((res = check_symlinks(test_dirname, core_dir->opts, r->pool))) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Symbolic link not allowed: %s", test_dirname);
@@ -518,7 +555,15 @@ static int directory_walk(request_rec *r)
 
             if (entry_core->r
 		|| !ap_os_is_path_absolute(entry_dir)
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+    /* To account for the top-level "/" directory when i == 0 
+     * XXX: The net test may be wrong... may fail ap_os_is_path_absolute
+     */
+                || (entry_core->d_components > 1
+                    && entry_core->d_components > i))
+#else
                 || entry_core->d_components > i)
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */                  
                 break;
 
             this_conf = NULL;
@@ -537,11 +582,24 @@ static int directory_walk(request_rec *r)
                 core_dir = (core_dir_config *)
                            ap_get_module_config(per_dir_defaults, &core_module);
             }
+#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
+            /* So that other top-level directory sections (e.g. "e:/") aren't
+             * skipped when i == 0
+             * XXX: I don't get you here, Tim... That's a level 1 section, but
+             *      we are at level 0. Did you mean fast-forward to the next?
+             */
+            else if (!i)
+                break;
+#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
         }
         overrides_here = core_dir->override;
 
         /* If .htaccess files are enabled, check for one. */
 
+#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
+        /* Test only legal names against the real filesystem */
+        if (i >= iStart)
+#endif
         if (overrides_here) {
             void *htaccess_conf = NULL;
 

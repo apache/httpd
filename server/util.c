@@ -555,6 +555,11 @@ API_EXPORT(void) ap_no2slash(char *name)
  * assumes n > 0
  * the return value is the ever useful pointer to the trailing \0 of d
  *
+ * MODIFIED FOR HAVE_DRIVE_LETTERS and NETWARE environments, 
+ * so that if n == 0, "/" is returned in d with n == 1 
+ * and s == "e:/test.html", "e:/" is returned in d
+ * *** See also directory_walk in src/main/http_request.c
+
  * examples:
  *    /a/b, 1  ==> /
  *    /a/b, 2  ==> /a/
