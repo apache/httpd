@@ -646,6 +646,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         }
     }
 
+    /* If readbytes is -1, we want to just read everything until the end
+     * of the brigade, which in this case means the end of the socket.  To
+     * do this, we loop through the entire brigade, until the socket is
+     * exhausted, at which point, it will automagically remove itself from
+     * the brigade.
+     */
     if (*readbytes == -1) {
         apr_bucket *e;
         apr_off_t total;
