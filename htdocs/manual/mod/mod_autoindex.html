@@ -426,20 +426,53 @@ preference.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_autoindex<P>
+><STRONG>Module:</STRONG></A> mod_autoindex
+  <BR>
+  <A
+   HREF="directive-dict.html#Compatibility"
+   REL="Help"
+  ><STRONG>Compatibility:</STRONG></A> some features only available after
+ 1.3.6; see text
 
+<P>
 The HeaderName directive sets the name of the file that will be inserted
 at the top of the index listing. <EM>Filename</EM> is the name of the file
-to include, and is taken to be relative to the directory being indexed.
-The server first attempts to include <EM>filename</EM><CODE>.html</CODE>
-as an HTML document, otherwise it will include <EM>filename</EM> as plain
-text. Example:
+to include.
+</P>
+<BLOCKQUOTE><STRONG>Apache 1.3.6 and earlier:</STRONG>
+The module first attempts to include <EM>filename</EM><CODE>.html</CODE>
+as an HTML document, otherwise it will try to include <EM>filename</EM> as
+plain text.  <EM>Filename</EM> is treated as a filesystem path relative
+to the directory being indexed.  In no case is SSI processing done.
+Example:
 <BLOCKQUOTE><CODE>HeaderName HEADER</CODE></BLOCKQUOTE>
 when indexing the directory <CODE>/web</CODE>, the server will first look for
 the HTML file <CODE>/web/HEADER.html</CODE> and include it if found, otherwise
 it will include the plain text file <CODE>/web/HEADER</CODE>, if it exists.
-
-<P>See also <A HREF="#readmename">ReadmeName</A>.<P><HR>
+</BLOCKQUOTE>
+<BLOCKQUOTE><STRONG>Apache versions after 1.3.6:</STRONG>
+<EM>Filename</EM> is treated as a URI path relative to the one used
+to access the directory being indexed, and must resolve to a document
+with a major content type of "<SAMP>text</SAMP>" (<EM>e.g.</EM>,
+<SAMP>text/html</SAMP>, <SAMP>text/plain</SAMP>, <EM>etc.</EM>).
+This means that <EM>filename</EM> may refer to a CGI script if the
+script's actual file type (as opposed to its output) is marked as
+<SAMP>text/html</SAMP> such as with a directive like:
+<PRE>
+    AddType text/html .cgi
+</PRE>
+<A HREF="../content-negotiation.html">Content negotiation</A>
+will be performed if the <SAMP>MultiViews</SAMP>
+<A HREF="core.html#options">option</A> is enabled.
+If <EM>filename</EM> resolves to a static <SAMP>text/html</SAMP> document
+(not a CGI script) and the
+<SAMP>Includes</SAMP> <A HREF="core.html#options">option</A> is enabled,
+the file will be processed for server-side includes (see the
+<A HREF="mod_include.html"><SAMP>mod_include</SAMP></A> documentation).
+</BLOCKQUOTE>
+<P>
+See also <A HREF="#readmename">ReadmeName</A>.
+<P><HR>
 
 <H2><A NAME="indexignore">IndexIgnore</A></H2>
 <!--%plaintext &lt;?INDEX {\tt IndexIgnore} directive&gt; -->
@@ -753,19 +786,26 @@ the client from requesting the directory listing in a different order.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_autoindex<P>
+><STRONG>Module:</STRONG></A> mod_autoindex
+  <BR>
+  <A
+   HREF="directive-dict.html#Compatibility"
+   REL="Help"
+  ><STRONG>Compatibility:</STRONG></A> some features only available after
+ 1.3.6; see text
 
+<P>
 The ReadmeName directive sets the name of the file that will be appended
 to the end of the index listing. <EM>Filename</EM> is the name of the file
-to include, and is taken to be relative to the directory being indexed.
-The server first attempts to include <EM>filename</EM><CODE>.html</CODE>
-as an HTML document, otherwise it will include <EM>filename</EM> as plain
-text. Example:
-<BLOCKQUOTE><CODE>ReadmeName README</CODE></BLOCKQUOTE>
-when indexing the directory <CODE>/web</CODE>, the server will first look for
-the HTML file <CODE>/web/README.html</CODE> and include it if found, otherwise
-it will include the plain text file <CODE>/web/README</CODE>, if it exists.
-
+to include, and is taken to be relative to the location being indexed.
+</P>
+<BLOCKQUOTE>
+<STRONG>The <EM>filename</EM> argument is treated as a stub filename
+in Apache 1.3.6 and earlier, and as a relative URI in later versions.
+Details of how it is handled may be found under the description of
+the <A HREF="#headername">HeaderName</A> directive, which uses the
+same mechanism and changed at the same time as ReadmeName.</STRONG>
+</BLOCKQUOTE>
 <P>See also <A HREF="#headername">HeaderName</A>.<P>
 
 

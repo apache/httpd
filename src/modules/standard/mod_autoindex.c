@@ -322,9 +322,6 @@ static const char *add_ignore(cmd_parms *cmd, void *d, char *ext)
 
 static const char *add_header(cmd_parms *cmd, void *d, char *name)
 {
-    if (strchr(name, '/')) {
-	return "HeaderName cannot contain a /";
-    }
     push_item(((autoindex_config_rec *) d)->hdr_list, 0, NULL, cmd->path,
 	      name);
     return NULL;
@@ -332,9 +329,6 @@ static const char *add_header(cmd_parms *cmd, void *d, char *name)
 
 static const char *add_readme(cmd_parms *cmd, void *d, char *name)
 {
-    if (strchr(name, '/')) {
-	return "ReadmeName cannot contain a /";
-    }
     push_item(((autoindex_config_rec *) d)->rdme_list, 0, NULL, cmd->path,
 	      name);
     return NULL;
@@ -864,99 +858,223 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
  */
 
 /*
- * Look for the specified file, and pump it into the response stream if we
- * find it.
+ * Elements of the emitted document:
+ *	Preamble
+ *		Emitted unless SUPPRESS_PREAMBLE is set AND ap_run_sub_req
+ *		succeeds for the (content_type == text/html) header file.
+ *	Header file
+ *		Emitted if found (and able).
+ *	H1 tag line
+ *		Emitted if a header file is NOT emitted.
+ *	Directory stuff
+ *		Always emitted.
+ *	HR
+ *		Emitted if FANCY_INDEXING is set.
+ *	Readme file
+ *		Emitted if found (and able).
+ *	ServerSig
+ *		Emitted if ServerSignature is not Off AND a readme file
+ *		is NOT emitted.
+ *	Postamble
+ *		Emitted unless SUPPRESS_PREAMBLE is set AND ap_run_sub_req
+ *		succeeds for the (content_type == text/html) readme file.
  */
-static int insert_readme(char *name, char *readme_fname, char *title,
-			 int hrule, int whichend, request_rec *r)
-{
-    char *fn;
-    FILE *f;
-    struct stat finfo;
-    int plaintext = 0;
-    request_rec *rr;
-    autoindex_config_rec *cfg;
-    int autoindex_opts;
 
-    cfg = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
-							&autoindex_module);
-    autoindex_opts = cfg->opts;
-    /* XXX: this is a load of crap, it needs to do a full sub_req_lookup_uri */
-    fn = ap_make_full_path(r->pool, name, readme_fname);
-    fn = ap_pstrcat(r->pool, fn, ".html", NULL);
-    if (stat(fn, &finfo) == -1) {
-	/* A brief fake multiviews search for README.html */
-	fn[strlen(fn) - 5] = '\0';
-	if (stat(fn, &finfo) == -1) {
-	    return 0;
+
+/*
+ * emit a plain text file
+ */
+static void do_emit_plain(request_rec *r, FILE *f)
+{
+    char buf[IOBUFSIZE + 1];
+    int i, n, c, ch;
+
+    ap_rputs("<PRE>\n", r);
+    while (!feof(f)) {
+	do {
+	    n = fread(buf, sizeof(char), IOBUFSIZE, f);
 	}
-	plaintext = 1;
-	if (hrule) {
-	    ap_rputs("<HR>\n", r);
+	while (n == -1 && ferror(f) && errno == EINTR);
+	if (n == -1 || n == 0) {
+	    break;
+	}
+	buf[n] = '\0';
+	c = 0;
+	while (c < n) {
+	    for (i = c; i < n; i++) {
+		if (buf[i] == '<' || buf[i] == '>' || buf[i] == '&') {
+		    break;
+		}
+	    }
+	    ch = buf[i];
+	    buf[i] = '\0';
+	    ap_rputs(&buf[c], r);
+	    if (ch == '<') {
+		ap_rputs("&lt;", r);
+	    }
+	    else if (ch == '>') {
+		ap_rputs("&gt;", r);
+	    }
+	    else if (ch == '&') {
+		ap_rputs("&amp;", r);
+	    }
+	    c = i + 1;
 	}
     }
-    else if (hrule) {
-	ap_rputs("<HR>\n", r);
+    ap_rputs("</PRE>\n", r);
+}
+
+/* See mod_include */
+#define SUB_REQ_STRING	"Sub request to mod_include"
+#define PARENT_STRING	"Parent request to mod_include"
+
+/*
+ * Handle the preamble through the H1 tag line, inclusive.  Locate
+ * the file with a subrequests.  Process text/html documents by actually
+ * running the subrequest; text/xxx documents get copied verbatim,
+ * and any other content type is ignored.  This means that a non-text
+ * document (such as HEADER.gif) might get multiviewed as the result
+ * instead of a text document, meaning nothing will be displayed, but
+ * oh well.
+ */
+static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
+		      char *title)
+{
+    FILE *f;
+    request_rec *rr = NULL;
+    int emit_amble = 1;
+    int emit_H1 = 1;
+
+    /*
+     * If there's a header file, send a subrequest to look for it.  If it's
+     * found and a text file, handle it -- otherwise fall through and
+     * pretend there's nothing there.
+     */
+    if ((header_fname != NULL)
+	&& (rr = ap_sub_req_lookup_uri(header_fname, r))
+	&& (rr->status == HTTP_OK)
+	&& (rr->filename != NULL)
+	&& S_ISREG(rr->finfo.st_mode)) {
+	/*
+	 * Check for the two specific cases we allow: text/html and
+	 * text/anything-else.  The former is allowed to be processed for
+	 * SSIs.
+	 */
+	if (rr->content_type != NULL) {
+	    if (!strcasecmp("text/html", rr->content_type)) {
+		/* Hope everything will work... */
+		emit_amble = 0;
+		emit_H1 = 0;
+
+		if (! suppress_amble) {
+		    emit_preamble(r, title);
+		}
+		ap_table_add(r->notes, PARENT_STRING, "");
+		ap_table_add(rr->notes, SUB_REQ_STRING, "");
+		/*
+		 * If there's a problem running the subrequest, display the
+		 * preamble if we didn't do it before -- the header file
+		 * didn't get displayed.
+		 */
+		if (ap_run_sub_req(rr) != OK) {
+		    /* It didn't work */
+		    emit_amble = suppress_amble;
+		    emit_H1 = 1;
+		}
+	    }
+	    else if (!strncasecmp("text/", rr->content_type, 5)) {
+		/*
+		 * If we can open the file, prefix it with the preamble
+		 * regardless; since we'll be sending a <PRE> block around
+		 * the file's contents, any HTML header it had won't end up
+		 * where it belongs.
+		 */
+		if ((f = ap_pfopen(r->pool, rr->filename, "r")) != 0) {
+		    emit_preamble(r, title);
+		    emit_amble = 0;
+		    do_emit_plain(r, f);
+		    ap_pfclose(r->pool, f);
+		    emit_H1 = 0;
+		}
+	    }
+	}
     }
-    /* XXX: when the above is rewritten properly, this necessary security
-     * check will be redundant. -djg */
-    rr = ap_sub_req_lookup_file(fn, r);
-    if (rr->status != HTTP_OK) {
-	ap_destroy_sub_req(rr);
-	return 0;
-    }
-    ap_destroy_sub_req(rr);
-    if (!(f = ap_pfopen(r->pool, fn, "r"))) {
-        return 0;
-    }
-    if ((whichend == FRONT_MATTER)
-	&& (!(autoindex_opts & SUPPRESS_PREAMBLE))) {
+
+    if (emit_amble) {
 	emit_preamble(r, title);
     }
-    if (!plaintext) {
-	ap_send_fd(f, r);
+    if (emit_H1) {
+	ap_rvputs(r, "<H1>Index of ", title, "</H1>\n", NULL);
     }
-    else {
-	char buf[IOBUFSIZE + 1];
-	int i, n, c, ch;
-	ap_rputs("<PRE>\n", r);
-	while (!feof(f)) {
-	    do {
-		n = fread(buf, sizeof(char), IOBUFSIZE, f);
+    if (rr != NULL) {
+	ap_destroy_sub_req(rr);
+    }
+}
+
+
+/*
+ * Handle the Readme file through the postamble, inclusive.  Locate
+ * the file with a subrequests.  Process text/html documents by actually
+ * running the subrequest; text/xxx documents get copied verbatim,
+ * and any other content type is ignored.  This means that a non-text
+ * document (such as FOOTER.gif) might get multiviewed as the result
+ * instead of a text document, meaning nothing will be displayed, but
+ * oh well.
+ */
+static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
+{
+    FILE *f;
+    request_rec *rr = NULL;
+    int suppress_post = 0;
+    int suppress_sig = 0;
+
+    /*
+     * If there's a readme file, send a subrequest to look for it.  If it's
+     * found and a text file, handle it -- otherwise fall through and
+     * pretend there's nothing there.
+     */
+    if ((readme_fname != NULL)
+	&& (rr = ap_sub_req_lookup_uri(readme_fname, r))
+	&& (rr->status == HTTP_OK)
+	&& (rr->filename != NULL)
+	&& S_ISREG(rr->finfo.st_mode)) {
+	/*
+	 * Check for the two specific cases we allow: text/html and
+	 * text/anything-else.  The former is allowed to be processed for
+	 * SSIs.
+	 */
+	if (rr->content_type != NULL) {
+	    if (!strcasecmp("text/html", rr->content_type)) {
+		ap_table_add(r->notes, PARENT_STRING, "");
+		ap_table_add(rr->notes, SUB_REQ_STRING, "");
+		if (ap_run_sub_req(rr) == OK) {
+		    /* worked... */
+		    suppress_sig = 1;
+		    suppress_post = suppress_amble;
+		}
 	    }
-	    while (n == -1 && ferror(f) && errno == EINTR);
-	    if (n == -1 || n == 0) {
-		break;
-	    }
-	    buf[n] = '\0';
-	    c = 0;
-	    while (c < n) {
-	        for (i = c; i < n; i++) {
-		    if (buf[i] == '<' || buf[i] == '>' || buf[i] == '&') {
-			break;
-		    }
+	    else if (!strncasecmp("text/", rr->content_type, 5)) {
+		/*
+		 * If we can open the file, suppress the signature.
+		 */
+		if ((f = ap_pfopen(r->pool, rr->filename, "r")) != 0) {
+		    do_emit_plain(r, f);
+		    ap_pfclose(r->pool, f);
+		    suppress_sig = 1;
 		}
-		ch = buf[i];
-		buf[i] = '\0';
-		ap_rputs(&buf[c], r);
-		if (ch == '<') {
-		    ap_rputs("&lt;", r);
-		}
-		else if (ch == '>') {
-		    ap_rputs("&gt;", r);
-		}
-		else if (ch == '&') {
-		    ap_rputs("&amp;", r);
-		}
-		c = i + 1;
 	    }
 	}
     }
-    ap_pfclose(r->pool, f);
-    if (plaintext) {
-	ap_rputs("</PRE>\n", r);
+    
+    if (!suppress_sig) {
+	ap_rputs(ap_psignature("", r), r);
     }
-    return 1;
+    if (!suppress_post) {
+	ap_rputs("</BODY></HTML>\n", r);
+    }
+    if (rr != NULL) {
+	ap_destroy_sub_req(rr);
+    }
 }
 
 
@@ -1389,7 +1507,6 @@ static int index_directory(request_rec *r,
     int num_ent = 0, x;
     struct ent *head, *p;
     struct ent **ar = NULL;
-    char *tmp;
     const char *qstring;
     int autoindex_opts = autoindex_conf->opts;
     char keyid;
@@ -1419,12 +1536,8 @@ static int index_directory(request_rec *r,
 	*title_endp-- = '\0';
     }
 
-    if ((!(tmp = find_header(autoindex_conf, r)))
-	|| (!(insert_readme(name, tmp, title_name, NO_HRULE, FRONT_MATTER, r)))
-	) {
-	emit_preamble(r, title_name);
-	ap_rvputs(r, "<H1>Index of ", title_name, "</H1>\n", NULL);
-    }
+    emit_head(r, find_header(autoindex_conf, r),
+	      autoindex_opts & SUPPRESS_PREAMBLE, title_name);
 
     /*
      * Figure out what sort of indexing (if any) we're supposed to use.
@@ -1489,15 +1602,11 @@ static int index_directory(request_rec *r,
 		       direction);
     ap_pclosedir(r->pool, d);
 
-    if ((tmp = find_readme(autoindex_conf, r))) {
-	if (!insert_readme(name, tmp, "",
-			   ((autoindex_opts & FANCY_INDEXING) ? HRULE
-			                                      : NO_HRULE),
-			   END_MATTER, r)) {
-	    ap_rputs(ap_psignature("<HR>\n", r), r);
-	}
+    if (autoindex_opts & FANCY_INDEXING) {
+	ap_rputs("<HR>\n", r);
     }
-    ap_rputs("</BODY></HTML>\n", r);
+    emit_tail(r, find_readme(autoindex_conf, r),
+	      autoindex_opts & SUPPRESS_PREAMBLE);
 
     ap_kill_timeout(r);
     return 0;

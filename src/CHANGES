@@ -1,5 +1,13 @@
 Changes with Apache 1.3.7
 
+  *) Support for server-parsed and multiview-determined ReadmeName and
+     HeaderName files in mod_autoindex. Removed the restriction on
+     "/"s in ReadmeName and HeaderName directives since the *sub_req*
+     routines will deal with the access issues. (It's now possible to
+     have {site|group|project|customer|...} wide readmes and headers.)
+     [Raymond S Brand <rsbx@rsbx.net>, Ken Coar] PR#1574, 3026, 3529,
+     3569, 4256
+
   *) When stat() fails, don't assume anything about the contents of
      the struct stat.  [Ed Korthof <ed@bitmechanic.com>]
 

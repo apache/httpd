@@ -108,9 +108,6 @@
 
 module MODULE_VAR_EXPORT includes_module;
 
-/* just need some arbitrary non-NULL pointer which can't also be a request_rec */
-#define NESTED_INCLUDE_MAGIC	(&includes_module)
-
 /* ------------------------ Environment function -------------------------- */
 
 /* XXX: could use ap_table_overlap here */
@@ -746,9 +743,7 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
             }
 
 	    /* destroy the sub request if it's not a nested include */
-            if (rr != NULL
-		&& ap_get_module_config(rr->request_config, &includes_module)
-		    != NESTED_INCLUDE_MAGIC) {
+	    if (rr != NULL) {
 		ap_destroy_sub_req(rr);
             }
         }
@@ -2376,6 +2371,41 @@ static int send_parsed_file(request_rec *r)
         return OK;
     }
 
+#define SUB_REQ_STRING	"Sub request to mod_include"
+#define PARENT_STRING	"Parent request to mod_include"
+
+    if (ap_table_get(r->notes, SUB_REQ_STRING) != NULL) {
+	request_rec *p = r->main;
+
+	/*
+	 * The note is a flag to mod_include that this request is actually
+	 * a subrequest from another module and that mod_include needs to
+	 * treat it as if it's a subrequest from mod_include.
+	 *
+	 * HACK ALERT!
+	 * There is no good way to pass the parent request_rec to mod_include.
+	 * Tables only take string values and there is nowhere appropriate in
+	 * in the request_rec that can safely be used.
+	 *
+	 * So we search up the chain of requests and redirects looking for
+	 * the parent request.
+	 */
+
+	while (p) {
+	    if (ap_table_get(p->notes, PARENT_STRING) != NULL) {
+		/* Kludge --- See below */
+		ap_set_module_config(r->request_config, &includes_module, p);
+
+		ap_add_common_vars(p);
+		ap_add_cgi_vars(p);
+		add_include_vars(p, DEFAULT_TIME_FORMAT);
+		ap_table_unset(r->notes, SUB_REQ_STRING);
+		break;
+	    }
+	    p = (p->prev) ? p->prev : p->main;
+	}
+    }
+
     if ((parent = ap_get_module_config(r->request_config, &includes_module))) {
 	/* Kludge --- for nested includes, we want to keep the subprocess
 	 * environment of the base document (for compatibility); that means
@@ -2411,9 +2441,10 @@ static int send_parsed_file(request_rec *r)
     send_parsed_content(f, r);
 
     if (parent) {
-	/* signify that the sub request should not be killed */
-	ap_set_module_config(r->request_config, &includes_module,
-	    NESTED_INCLUDE_MAGIC);
+	/* Kludge --- Doing this allows the caller to safely destroy the
+	 * sub_req
+	 */
+	r->pool = ap_make_sub_pool(r->pool);
     }
 
     ap_kill_timeout(r);
