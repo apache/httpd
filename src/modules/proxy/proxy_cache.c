@@ -280,7 +280,7 @@ static int should_proxy_garbage_coll(request_rec *r)
     const struct cache_conf *conf = &pconf->cache;
 
     const char *cachedir = conf->root;
-    char filename[ strlen(cachedir) + strlen( DOT_TIME ) +1];
+    char *filename = ap_palloc(r->pool, strlen(cachedir) + strlen( DOT_TIME ) +1);
     struct stat buf;
     int timefd;
     time_t every = conf->gcinterval;
@@ -349,7 +349,7 @@ static void help_proxy_garbage_coll(request_rec *r)
     array_header *files;
     struct gc_ent *fent;
     int i;
-    char filename[ strlen(cachedir) + HASH_LEN + 2];
+    char *filename = ap_palloc(r->pool, strlen(cachedir) + HASH_LEN + 2);
 
     cachedir = conf->root;
     /* configured size is given in kB. Make it bytes, convert to long61_t: */
