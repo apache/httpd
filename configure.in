@@ -116,9 +116,11 @@ dnl PCRE and for our config tests will be whatever PCRE determines.
 AC_PROG_CC
 AC_PROG_CPP
 
-# Likewise, ensure that CC and CPP are passed through to the pcre
-# configure script if caching is disabled (the autoconf 2.5x default).
-export CC; export CPP
+if test "x${cache_file}" = "x/dev/null"; then
+  # Likewise, ensure that CC and CPP are passed through to the pcre
+  # configure script iff caching is disabled (the autoconf 2.5x default).
+  export CC; export CPP
+fi
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
