@@ -3840,7 +3840,8 @@ static int default_handler(request_rec *r)
 
     if (r->method_number == M_INVALID) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		    "Invalid method in request %s", r->the_request);
+		    "Invalid method in request %s",
+		    ap_escape_logitem(r->pool, r->the_request));
 	return NOT_IMPLEMENTED;
     }
     if (r->method_number == M_OPTIONS) {
