@@ -1,4 +1,19 @@
 Changes with Apache 1.2.1
+  
+  *) "make clean" at the top level now removes *.o.  [Dean Gaudet] PR#752
+  
+  *) Don't serve file system objects unless they are plain files, symlinks,
+     or directories.  This prevents local users from using pipes or
+     named sockets to invoke programs for an extremely crude form of
+     CGI.  [Dean Gaudet]
+
+  *) HeaderName and ReadmeName were settable in .htaccess and could
+     contain "../" allowing a local user to "publish" any file on the
+     system.  No slashes are allowed now.  [Dean Gaudet]
+
+  *) It was possible to violate the symlink Options using mod_dir (headers,
+     readmes, titles), mod_negotiation (type maps), or mod_cern_meta
+     (meta files).  [Dean Gaudet]
 
   *) Update Unixware support for 2.1.2.  [Lawrence Rosenman <ler@lerctr.org>]
      PR#511
