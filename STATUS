@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/14 21:54:11 $]
+Last modified at [$Date: 2003/07/14 23:04:27 $]
 
 Release:
 
@@ -159,8 +159,7 @@ PATCHES TO PORT FROM 2.1
       one)
       configure.in: r1.250
       docs/conf/ssl-std.conf.in: r1.1,1.2
-      +1: thommay, jerenkrantz, striker, jim, nd
-       0: trawick
+      +1: thommay, jerenkrantz, striker, jim, nd, trawick
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
 	  
