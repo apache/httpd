@@ -4,7 +4,7 @@
 
 <manualpage>
 <relativepath href=".."/>
-
+<parentdocument href="./">Virtual Hosts</parentdocument>
    <title>An In-Depth Discussion of Virtual Host Matching</title>
 
 <summary>
