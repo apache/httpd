@@ -148,6 +148,8 @@ dnl ## Check for programs
 
 AC_PATH_PROG(RM, rm)
 AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
@@ -155,6 +157,7 @@ dnl AC_PATH_PROG(PERL_PATH, perl)
 
 dnl various OS checks that apparently set required flags
 AC_AIX
+AC_ISC_POSIX
 AC_MINIX
 
 dnl ## Check for libraries
@@ -201,18 +204,8 @@ AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-port requires a value (the TCP port number)'); else PORT="$withval"; fi],
 	[PORT=80])
 
-AC_ARG_ENABLE(debug,[  --enable-debug            Turn on debugging and compile time warnings],
-  [APR_ADDTO(CFLAGS,-g)
-   if test $ac_cv_prog_gcc = yes; then
-     APR_ADDTO(CFLAGS,-Wall)
-   fi
-])dnl
-
 AC_ARG_ENABLE(maintainer-mode,[  --enable-maintainer-mode  Turn on debugging and compile time warnings],
-  [APR_ADDTO(CFLAGS,-g)
-   if test $ac_cv_prog_gcc = yes; then
-     APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -DAP_DEBUG])
-   fi
+  [APR_ADDTO(CPPFLAGS,-DAP_DEBUG)
 ])dnl
 
 APACHE_ENABLE_LAYOUT
