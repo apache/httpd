@@ -38,11 +38,6 @@ mod_auth_dbm.o: mod_auth_dbm.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 	$(INCDIR)/http_core.h $(INCDIR)/http_log.h \
 	$(INCDIR)/http_protocol.h
 
-mod_auth_msql.o: mod_auth_msql.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
-	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
-	$(INCDIR)/http_core.h $(INCDIR)/http_log.h \
-	$(INCDIR)/http_protocol.h
-
 mod_autoindex.o: mod_autoindex.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
 	$(INCDIR)/http_core.h $(INCDIR)/http_request.h \
