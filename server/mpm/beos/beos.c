@@ -739,7 +739,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * a seperate pool of it's own to use.
      */
     apr_pool_create(&pchild, pconf);
-    ap_child_init_hook(pchild, ap_server_conf);
+    ap_run_child_init(pchild, ap_server_conf);
 
     /* Now that we have the child pool (pchild) we can allocate
      * the listenfds and creat the pollset...

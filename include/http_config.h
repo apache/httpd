@@ -792,16 +792,6 @@ AP_DECLARE(void) ap_show_modules(void);
 AP_DECLARE(server_rec *) ap_read_config(process_rec *process, apr_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
 
 /**
- * Run all post config hooks for loaded modules.
- * @param pconf The configuration pool
- * @param plog The logging pool
- * @param ptemp The temporary pool
- * @param s The list of server_rec structures
- * @deffunc void ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
- */
-AP_DECLARE(void) ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s);
-
-/**
  * Run all rewrite args hooks for loaded modules
  * @param process The process currently running the server
  * @deffunc void ap_run_rewrite_args(process_rec *process)
@@ -905,15 +895,6 @@ void ap_process_resource_config(server_rec *s, const char *fname,
  */
 AP_DECLARE(void) ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
                                         apr_pool_t *p, apr_pool_t *ptemp);
-
-
-/* For individual MPMs... */
-/**
- * Run all child init hooks
- * @param pchild The pool for child process allocations
- * @param s The list of all server_recs
- */
-void ap_child_init_hook(apr_pool_t *pchild, server_rec *s);
 
 /* Module-method dispatchers, also for http_request.c */
 /**

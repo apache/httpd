@@ -860,7 +860,7 @@ static void child_main(int child_num_arg)
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    ap_child_init_hook(pchild, ap_server_conf);
+    ap_run_child_init(pchild, ap_server_conf);
 
     /*done with init critical section */
 
