@@ -38,7 +38,7 @@
 
 #include "mod_core.h"
 
-static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
+apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
 #define ASCII_CRLF  "\015\012"
 #define ASCII_ZERO  "\060"

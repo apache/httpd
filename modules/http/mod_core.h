@@ -44,6 +44,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
                             apr_off_t readbytes);
 
+/* HTTP/1.1 chunked transfer encoding filter. */
+apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b);
+
 char *ap_response_code_string(request_rec *r, int error_index);
 
 /**
