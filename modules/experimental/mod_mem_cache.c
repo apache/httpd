@@ -268,6 +268,9 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         }
     }
 
+    /* Cache is empty, free the cache table */        
+    cache_hash_free(co->cacheht);
+
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }

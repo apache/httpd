@@ -105,6 +105,17 @@ typedef struct cache_hash_index_t cache_hash_index_t;
   */
 CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size);
 
+/**
+ * Create a hash table.
+ * @param *ht Pointer to the hash table to be freed.
+ * @return void
+ * @remark The caller should ensure that all objects have been removed
+ *         from the cache prior to calling cache_hash_free(). Objects 
+ *         not removed from the cache prior to calling cache_hash_free()
+ *         will be unaccessable.
+ */
+CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht);
+
 
 /**
  * Associate a value with a key in a hash table.
