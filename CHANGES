@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Introduce debugging symbols for Win32 release builds, both .pdb 
+     and .dbg files (older debuggers and Dr. Watson-type utilities 
+     on WinNT or Win9x don't support the newer .pdb flavor.)
+     [Allen Edwards, William Rowe]
+
   *) Try to log an error if a piped log program fails.  Try to
      restart a piped log program in more failure situations.  PR 15761
      [Jeff Trawick]
