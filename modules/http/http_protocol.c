@@ -660,6 +660,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             apr_size_t len;
             apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
         }
+        APR_BRIGADE_CONCAT(b, ctx->b);
         apr_brigade_length(b, 1, &total);
         *readbytes = total;
         e = apr_bucket_eos_create();
