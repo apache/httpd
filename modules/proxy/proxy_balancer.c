@@ -194,8 +194,6 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
             if (worker && !PROXY_WORKER_IS_USABLE(worker))
                 worker = NULL;
         }
-        else
-            worker = NULL;
         return worker;
     }
     else
