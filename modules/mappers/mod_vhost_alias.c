@@ -415,25 +415,23 @@ static int mva_translate(request_rec *r)
     mva_sconf_t *conf;
     const char *name, *map, *uri;
     mva_mode_e mode;
-    int cgi;
+    const char *cgi;
   
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
 					      &vhost_alias_module);
-    if (!strncmp(r->uri, "/cgi-bin/", 9)) {
+    cgi = strstr(r->uri, "cgi-bin/");
+    if (cgi && cgi - r->uri != strspn(r->uri, "/")) {
+        cgi = NULL;
+    }
+    if (cgi) {
 	mode = conf->cgi_root_mode;
 	map = conf->cgi_root;
-	uri = r->uri + 8;
-	/*
-	 * can't force cgi immediately because we might not handle this
-	 * call if the mode is wrong
-	 */
-	cgi = 1;
+	uri = cgi + strlen("cgi-bin");
     }
     else if (r->uri[0] == '/') {
 	mode = conf->doc_root_mode;
 	map = conf->doc_root;
 	uri = r->uri;
-	cgi = 0;
     }
     else {
 	return DECLINED;
