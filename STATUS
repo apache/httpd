@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/15 19:30:25 $]
+Last modified at [$Date: 2000/04/17 19:17:20 $]
 
 Release:
 
@@ -172,6 +172,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       a hash table instead of a linear linked list scan.
 
     * Mass vhosting version of suEXEC.
+
+    * Provide a sane API for handling the request's environment variables.
 
 Other bugs that need fixing:
 
