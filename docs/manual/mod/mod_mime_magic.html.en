@@ -275,4 +275,9 @@ using the specified magic file</td></tr><tr><td nowrap="nowrap"><a href="directi
     ServerRoot. Virtual hosts will use the same file as the main
     server unless a more specific setting is used, in which case
     the more specific setting overrides the main server's file.</p>
+
+    <p>For example</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>MimeMagicFile conf/magic</code></td></tr></table></blockquote>
+
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>

@@ -298,6 +298,11 @@ using the specified magic file</description>
     ServerRoot. Virtual hosts will use the same file as the main
     server unless a more specific setting is used, in which case
     the more specific setting overrides the main server's file.</p>
+
+    <p>For example</p>
+
+    <example>MimeMagicFile conf/magic</example>
+
 </usage>
 </directivesynopsis>
 </modulesynopsis>
