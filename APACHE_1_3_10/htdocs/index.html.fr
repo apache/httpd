@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Page de test de l'installation d'Apache</TITLE>
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <H1 ALIGN="CENTER">
+   &Ccedil;a fonctionne&nbsp;!  Le serveur web Apache est install&eacute; sur
+   ce site&nbsp;!
+  </H1>
+  <P>
+  Si vous lisez cette page, c'est que les propri&eacute;taires de ce domaine
+  viennent d'installer le
+  <A HREF="http://www.apache.org/httpd">serveur web Apache</A>
+  avec succ&egrave;s. Ils doivent maintenant ajouter du contenu &agrave; ce
+  r&eacute;pertoire et remplacer cette page, ou bien faire pointer le serveur
+  vers l'endroit o&ugrave; se trouve le contenu r&eacute;el du site.
+  </P>
+  <HR>
+  <BLOCKQUOTE>
+   Si vous voyez cette page au lieu du site attendu, veuillez contacter
+   <STRONG>l'administrateur du site concern&eacute;.</STRONG>
+   (Essayez d'envoyer un email &agrave;
+   <SAMP>&lt;Webmaster@<EM>domaine</EM>&gt;</SAMP>.)
+   Bien que ce site utilise le logiciel Apache, il n'a certainement
+   rien &agrave; voir avec le Groupe Apache, par cons&eacute;quent
+   veuillez ne pas envoyer d'email aux
+   auteurs d'Apache concernant ce site ou son contenu. Si vous le faites,
+   votre message sera <STRONG><BIG>ignor&eacute;</BIG></STRONG>.
+  </BLOCKQUOTE>
+  <HR>
+  <P>
+  La
+  <A HREF="manual/index.html">documentation</A>
+  Apache est incluse dans cette distribution.
+  </P>
+  <P>
+  Le webmaster de ce site peut librement utiliser l'image ci-dessous
+  sur un site web utilisant le logiciel Apache. Merci d'avoir choisi
+  Apache&nbsp;!
+  </P>
+  <DIV ALIGN="CENTER">
+   <IMG SRC="apache_pb.gif" ALT="">
+  </DIV>
+ </BODY>
+</HTML>
