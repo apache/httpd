@@ -1600,7 +1600,12 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     CloseHandle(pi.hThread);
     CloseHandle(hPipeRead);
     CloseHandle(hNullOutput);
-    CloseHandle(hShareError);
+    if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
+        /* Handles opened with GetStdHandle are psuedo handles
+         * and should not be closed else bad things will happen.
+         */
+        CloseHandle(hShareError);
+    }
     _putenv("AP_PARENT_PID=");
     _putenv("AP_MY_GENERATION=");
 
