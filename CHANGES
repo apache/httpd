@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix mod_include to not return ETag or Last-Modified headers.
+     [Ian Holsman <ianh@cnet.com>]
+
   *) Fix worker MPM's scoreboard logic.  [Aaron Bannert <aaron@clove.org>]
 
   *) Eliminate the wasteful run-time conversion of method names from strings 
