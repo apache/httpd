@@ -1,5 +1,12 @@
 Changes with Apache 2.0.25-dev
 
+  *) Add the ability for mod_include to add the INCLUDES filter
+     if the file is configured for the server-parsed handler.
+     This makes the configuration for .shtml files much easier
+     to understand, and allows mod_include to honor Apache 1.3
+     config files.   Based on Doug MacEachern's patch to PHP
+     to do the same thing.  [Ryan Bloom]
+
   *) force OpenSSL to ignore process local-caching and to always
      get/set/delete sessions using mod_ssl's callbacks
      [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>,
