@@ -34,7 +34,7 @@ Changes with Apache 1.3.7
 
   *) Add "force-no-vary" envariable to allow servers to work around
      clients that choke on "Vary" fields in the response header.
-     [Ken Coar]  PR#4118
+     [Ken Coar, Dmitry Khrustalev <dima@zippy.machaon.ru>]  PR#4118
 
   *) Fixed a bug in mod_dir that causes a child process will infinitely
      recurse when it attemps to handle a request for a directory wnd the

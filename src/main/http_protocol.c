@@ -1476,9 +1476,13 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 
     /*
      * Remove the 'Vary' header field if the client can't handle it.
+     * Since this will have nasty effects on HTTP/1.1 caches, force
+     * the response into HTTP/1.0 mode.
      */
     if (ap_table_get(r->subprocess_env, "force-no-vary") != NULL) {
 	ap_table_unset(r->headers_out, "Vary");
+	r->proto_num = HTTP_VERSION(1,0);
+	ap_table_set(r->subprocess_env, "force-response-1.0", "1");
     }
 
     ap_hard_timeout("send headers", r);
