@@ -61,6 +61,8 @@
                                   name to the list of people
                                   who piss me off!''
                                             -- Calvin          */
+#include <apr_thread_mutex.h>
+
 #include "mod_ssl.h"
 #include "ap_mpm.h"
 
@@ -336,17 +338,17 @@ SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *ssl, const char *key)
  * To ensure thread-safetyness in OpenSSL - work in progress
  */
 
-static apr_lock_t *lock_cs[CRYPTO_NUM_LOCKS];
-static long        lock_count[CRYPTO_NUM_LOCKS];
+static apr_thread_mutex_t **lock_cs;
+static long                 lock_count[CRYPTO_NUM_LOCKS];
 
 static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
 {
     if (mode & CRYPTO_LOCK) {
-        apr_lock_acquire(lock_cs[type]);
+        apr_thread_mutex_lock(lock_cs[type]);
         lock_count[type]++;
     }
     else {
-        apr_lock_release(lock_cs[type]);
+        apr_thread_mutex_unlock(lock_cs[type]);
     }
 }
 
@@ -364,7 +366,7 @@ static apr_status_t ssl_util_thread_cleanup(void *data)
     CRYPTO_set_locking_callback(NULL);
 
     for (i = 0; i < CRYPTO_NUM_LOCKS; i++) {
-        apr_lock_destroy(lock_cs[i]);
+        apr_thread_mutex_destroy(lock_cs[i]);
     }
 
     return APR_SUCCESS;
@@ -373,7 +375,9 @@ static apr_status_t ssl_util_thread_cleanup(void *data)
 void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
 {
     int i, threaded_mpm;
+    /* This variable is not used? -aaron
     SSLModConfigRec *mc = myModConfig(s);
+    */
 
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
 
@@ -381,7 +385,7 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
         return;
     }
 
-    *lock_cs = apr_palloc(p, CRYPTO_NUM_LOCKS);
+    lock_cs = apr_palloc(p, CRYPTO_NUM_LOCKS * sizeof(apr_thread_mutex_t *));
 
     /*
      * XXX: CRYPTO_NUM_LOCKS == 28
@@ -389,9 +393,10 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
      * for example: debug_malloc, debug_malloc2 (see crypto/cryptlib.c)
      */
     for (i = 0; i < CRYPTO_NUM_LOCKS; i++) {
-        lock_count[i]=0;
-        apr_lock_create(&(lock_cs[i]), APR_MUTEX, APR_INTRAPROCESS,
-                        mc->szMutexFile, p);
+        lock_count[i] = 0;
+        /* XXX: Can we remove the lock_count now that apr_thread_mutex_t
+         * can support nested (aka recursive) locks? -aaron */
+        apr_thread_mutex_create(&(lock_cs[i]), APR_THREAD_MUTEX_DEFAULT, p);
     }
 
 #if APR_HAS_THREADS
