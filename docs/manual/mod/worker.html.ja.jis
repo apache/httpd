@@ -18,11 +18,13 @@
     <p>この MPM を制御するのに使われる最も重要なディレクティブは、
     <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> と
     <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> です。
-    これらのディレクティブの値を操作することで、
-    サーバの扱うことのできる全同時コネクション数を定義します。</p>
+    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> は
+    各子プロセスで用意されるスレッド数を制御して、
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> は
+    起動されるスレッドの総数の最大値を制限します。</p>
 
 <h2>ディレクティブ</h2><ul><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#threadlimit">ThreadLimit</a></li><li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li><li><a href="mpm_common.html#user">User</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../bind.html">Apache 
-の使用するアドレスとポートの設定</a></li></ul><h2>動作方法</h2>
+の使用するアドレスとポートの設定</a></li></ul><h2>動作方法</h2>
     <p>プロセスは決まった数のスレッドを持ちます。
     負荷への適応はプロセスの数を増減により対応します。</p>
 
@@ -39,19 +41,37 @@
     このようにして、クライアントはリクエストの応答が得られるようになるために
     新しいスレッドやプロセスが生成されるのを
     待たなくてもよいようになっています。
+    起動初期時のプロセス総数は、
+    <a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a>
+    ディレクティブで設定されます。その後の稼働中に、
     Apache は全プロセスのアイドルスレッドの合計数を見積もって、
     <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> と
     <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>
     で指定された範囲の中にこの数が収まるように fork したり
     kill したりします。この操作は非常に自律的なので、
-    これらのディレクティブをデフォルト値から変更する必要は
+    これらのディレクティブをデフォルト値から変更する必要は
     めったにないでしょう。
-    同時に応答することのできるクライアント数の最大数は、
-    生成されるサーバプロセスの最大数
-    (<a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>)
-    と、個々のプロセスで作られるスレッド数
-    (<a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>) 
-    の積になります。</p>
+    同時に応答することのできるクライアント数の最大数
+    (つまり全プロセス中の総スレッド数の最大値) は
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>
+    ディレクティブで決定されていて、
+    一方で起動することのできるプロセス数の最大値は
+    <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
+    ディレクティブで設定されています。
+    <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a> と
+    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> との積は、
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>
+    と等しいかそれより大きい必要があります。</p>
+    
+    <p><code><a href="../mod/worker.html">worker</a></code> MPM の典型的なプロセス・スレッド制御の
+    設定では、次のようになります。</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code><pre>StartServers         2
+MaxClients         150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+ServerLimit         16</pre></code></td></tr></table></blockquote>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
     root で起動されますが、子プロセスやスレッドは
