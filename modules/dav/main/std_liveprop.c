@@ -169,22 +169,25 @@ static const dav_hooks_liveprop dav_core_hooks_liveprop = {
     NULL,       /* patch_rollback */
 };
 
-int dav_core_find_liveprop(const dav_resource *resource,
-                           const char *ns_uri, const char *name,
-                           const dav_hooks_liveprop **hooks)
+DAV_DECLARE_NONSTD(int) dav_core_find_liveprop(
+    const dav_resource *resource,
+    const char *ns_uri, const char *name,
+    const dav_hooks_liveprop **hooks)
 {
     return dav_do_find_liveprop(ns_uri, name, &dav_core_liveprop_group, hooks);
 }
 
-void dav_core_insert_all_liveprops(request_rec *r,
-                                   const dav_resource *resource,
-                                   dav_prop_insert what, apr_text_header *phdr)
+DAV_DECLARE_NONSTD(void) dav_core_insert_all_liveprops(
+    request_rec *r,
+    const dav_resource *resource,
+    dav_prop_insert what,
+    apr_text_header *phdr)
 {
     (void) dav_core_insert_prop(resource, DAV_PROPID_resourcetype,
                                 what, phdr);
 }
 
-void dav_core_register_uris(apr_pool_t *p)
+DAV_DECLARE_NONSTD(void) dav_core_register_uris(apr_pool_t *p)
 {
     /* register the namespace URIs */
     dav_register_liveprop_group(p, &dav_core_liveprop_group);
