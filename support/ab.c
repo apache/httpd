@@ -313,7 +313,7 @@ int err_response = 0;
 apr_time_t start, endtime;
 
 /* global request (and its length) */
-char _request[512];
+char _request[2048];
 char *request = _request;
 apr_size_t reqlen;
 
@@ -1536,6 +1536,7 @@ static void test(void)
     apr_int16_t rv;
     long i;
     apr_status_t status;
+    int snprintf_res = 0;
 #ifdef NOT_ASCII
     apr_size_t inbytes_left, outbytes_left;
 #endif
@@ -1570,7 +1571,8 @@ static void test(void)
 
     /* setup request */
     if (posting <= 0) {
-        sprintf(request, "%s %s HTTP/1.0\r\n"
+        snprintf_res = apr_snprintf(request, sizeof(_request), 
+            "%s %s HTTP/1.0\r\n"
             "User-Agent: ApacheBench/%s\r\n"
             "%s" "%s" "%s"
             "Host: %s%s\r\n"
@@ -1583,7 +1585,8 @@ static void test(void)
             cookie, auth, host_field, colonhost, hdrs);
     }
     else {
-        sprintf(request, "POST %s HTTP/1.0\r\n"
+        snprintf_res = apr_snprintf(request,  sizeof(_request),
+            "POST %s HTTP/1.0\r\n"
             "User-Agent: ApacheBench/%s\r\n"
             "%s" "%s" "%s"
             "Host: %s%s\r\n"
@@ -1598,6 +1601,9 @@ static void test(void)
             cookie, auth,
             host_field, colonhost, postlen,
             (content_type[0]) ? content_type : "text/plain", hdrs);
+    }
+    if (snprintf_res >= sizeof(_request)) {
+        err("Request too long\n");
     }
 
     if (verbosity >= 2)
@@ -1789,14 +1795,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.145 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.146 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.145 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.146 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");

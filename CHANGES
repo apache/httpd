@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ab: Handle long URLs with an error instead of an buffer overflow.
+     PR 28204. [Erik Weide <erik.weidel mplus-technologies.de>, Paul Querna]
+
   *) mod_so, core: Add new command line options to print all loaded
      modules. '-t -D DUMP_MODULES' and '-M' will show all static 
      and shared modules as loaded from the configuration file.
