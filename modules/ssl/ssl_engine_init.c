@@ -908,6 +908,9 @@ static void ssl_init_proxy_certs(server_rec *s,
     STACK_OF(X509_INFO) *sk;
     modssl_pk_proxy_t *pkp = mctx->pkp;
 
+    SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
+                               ssl_callback_proxy_cert);
+
     if (!(pkp->cert_file || pkp->cert_path)) {
         return;
     }
@@ -926,6 +929,7 @@ static void ssl_init_proxy_certs(server_rec *s,
         ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
                 "loaded %d client certs for SSL proxy",
                 ncerts);
+
         pkp->certs = sk;
     }
     else {
