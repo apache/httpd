@@ -141,17 +141,6 @@ static int checked_bputstrs(request_rec *r, ...)
     return n;
 }
 
-static int checked_bflush(request_rec *r)
-{
-    apr_status_t rv;
-
-    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
-        check_first_conn_error(r, "checked_bflush", rv);
-        return EOF;
-    }
-    return 0;
-}
-
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
@@ -2589,10 +2578,20 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
         return 0;
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
+        char *tmp;
+        ap_bucket *e;
+        ap_bucket_brigade *bb;
+
         /* sending 100 Continue interim response */
-        (void) checked_bputstrs(r, AP_SERVER_PROTOCOL, " ", status_lines[0],
+        tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
                                 CRLF CRLF, NULL);
-        (void) checked_bflush(r);
+        bb = ap_brigade_create(r->pool);
+        e = ap_bucket_create_pool(tmp, strlen(tmp), r->pool);
+        AP_BRIGADE_INSERT_HEAD(bb, e);
+        e = ap_bucket_create_flush();
+        AP_BRIGADE_INSERT_TAIL(bb, e);
+
+        ap_pass_brigade(r->connection->output_filters, bb);
     }
 
     return 1;
