@@ -351,8 +351,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         }
         else {
             new->preg = ap_pregcomp(cmd->pool, regex,
-                                    (REG_EXTENDED | REG_NOSUB
-                                     | (icase ? REG_ICASE : 0)));
+                                    (REG_EXTENDED | (icase ? REG_ICASE : 0)));
             if (new->preg == NULL) {
                 return apr_pstrcat(cmd->pool, cmd->cmd->name,
                                    " regex could not be compiled.", NULL);
@@ -490,6 +489,7 @@ static int match_headers(request_rec *r)
     apr_size_t val_len = 0;
     int i, j;
     char *last_name;
+    regmatch_t regm[10];
 
     if (!ap_get_module_config(r->request_config, &setenvif_module)) {
         ap_set_module_config(r->request_config, &setenvif_module,
@@ -577,7 +577,8 @@ static int match_headers(request_rec *r)
         }
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
-            (!b->pattern && !ap_regexec(b->preg, val, 0, NULL, 0))) {
+            (!b->pattern && !ap_regexec(b->preg, val, b->preg->re_nsub + 1,
+                                        regm, 0))) {
             const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
@@ -586,7 +587,18 @@ static int match_headers(request_rec *r)
                     apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    apr_table_setn(r->subprocess_env, elts[j].key, elts[j].val);
+                    if (!b->pattern) {
+                        char *replaced = ap_pregsub(r->pool, elts[j].val, val,
+                                                    b->preg->re_nsub + 1, regm);
+                        if (replaced) {
+                            apr_table_setn(r->subprocess_env, elts[j].key,
+                                           replaced);
+                        }
+                    }
+                    else {
+                        apr_table_setn(r->subprocess_env, elts[j].key,
+                                       elts[j].val);
+                    }
                 }
             }
         }
