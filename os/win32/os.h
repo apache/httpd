@@ -73,57 +73,19 @@
 #define _WIN32
 #endif
 
-#include "apr_general.h"
-#include <process.h>
-#include <malloc.h>
 #include <io.h>
 #include <fcntl.h>
 
 #define PLATFORM "Win32"
 
-#define APACHE_MPM_DIR  "modules/mpm/winnt" /* generated on unix */
-
-/* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for
-   chdir() */
-#include <direct.h>
-
-#define CASE_BLIND_FILESYSTEM
-#define NO_WRITEV
+/* going away shortly... */
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
+#define CASE_BLIND_FILESYSTEM
 
-typedef int uid_t;
-typedef int gid_t;
-typedef int pid_t;
-typedef int mode_t;
-typedef char * caddr_t;
-
-#define S_ISLNK(m) (0)
-#define S_ISREG(m) ((m & _S_IFREG) == _S_IFREG)
-#ifndef S_ISDIR
-#define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
-#endif
-
-#define JMP_BUF jmp_buf
-#define O_CREAT _O_CREAT
-#define O_RDWR _O_RDWR
+#define APACHE_MPM_DIR  "server/mpm/winnt" /* generated on unix */
 
 #include <stddef.h>
-
-__inline int ap_os_is_path_absolute(const char *file)
-{
-  /* For now, just do the same check that http_request.c and mod_alias.c do. 
-   * XXX: Accept /bleh still?  Or do we concur that d:/bleh is a minimum
-   *      requirement?  If so, canonical name needs to convert to drive/path
-   *      syntax, and the test becomes (file[0] == '/' && file[1] == '/') ||...
-   */
-  return file && (file[0] == '/' || (file[1] == ':' && file[2] == '/'));
-}
-
-/* OS-dependent filename routines in util_win32.c */
-AP_DECLARE(char *) ap_os_canonical_filename(apr_pool_t *p, const char *file);
-AP_DECLARE(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile);
-AP_DECLARE(char *) ap_os_systemcase_filename(apr_pool_t *pPool, const char *szFile);
 
 #endif   /* ! APACHE_OS_H */

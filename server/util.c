@@ -250,6 +250,21 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp)
     return (str[x] != '\0');
 }
 
+/* We actually compare the canonical root to this root, (but we don't
+ * waste time checking the case), since every use of this function in 
+ * httpd-2.0 tests if the path is 'proper', meaning we've already passed
+ * it through apr_filepath_merge, or we haven't.
+ */
+AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir) 
+{
+    const char *newpath;
+    if (apr_filepath_root(&newpath, &dir, 0, p) != APR_SUCCESS
+            || strncmp(newpath, dir, strlen(newpath)) != 0) {
+        return 0;
+    }
+    return 1;
+}
+
 AP_DECLARE(int) ap_is_matchexp(const char *str)
 {
     register int x;

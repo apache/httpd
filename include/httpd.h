@@ -1275,8 +1275,21 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
  * @param dir The directory name
  * @param f The filename
  * @return A copy of the full path
+ * @tip Never consider using this function if you are dealing with filesystem
+ * names that need to remain canonical, unless you are merging an apr_dir_read
+ * path and returned filename.  Otherwise, the result is not canonical.
  */
 AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
+
+/**
+ * Test if the given path has an an absolute path.
+ * @param p The pool to allocate from
+ * @param dir The directory name
+ * @tip The converse is not necessarily true, some OS's (Win32/OS2/Netware) have
+ * multiple forms of absolute paths.  This only reports if the path is absolute
+ * in a canonical sense.
+ */
+AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir);
 
 /**
  * Does the provided string contain wildcard characters?  This is useful

@@ -73,22 +73,6 @@
 
 #include "apr.h"
 #include "ap_config.h"
-
-#if APR_HAS_INLINE
-/* Compiler supports inline, so include the inlineable functions as
- * part of the header
- */
-
-#include "os-inline.c"
-
-#else
-/* Compiler does not support inline, so prototype the inlineable functions
- * as normal
- */
-extern int ap_os_is_path_absolute(const char *f);
-#endif
-
- 
 #include <strings.h>
 #ifndef __strings_h
 
