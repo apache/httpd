@@ -916,7 +916,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     /* Attempt a nonblocking read next time through */
                     eblock = APR_NONBLOCK_READ;
                 }
-                else if (rv == APR_EAGAIN) {
+                else if (APR_STATUS_IS_EAGAIN(rv)) {
                     /* Make the next read blocking.  If the client supports chunked
                      * encoding, flush the filter stack to the network.
                      */
