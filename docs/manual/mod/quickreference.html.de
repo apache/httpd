@@ -79,8 +79,8 @@ icon selected by MIME content-type</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified content
 charset</td></tr>
-<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>Zeichenkodierung</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Standard-Zeichenkodierung für Antworten ohne
-explizit angegebene Zeichenkodierung
+<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>Zeichenkodierung</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Standard-Charset-Parameter, der bei Antworten vom Content-Type 
+  <code>text/plain</code> oder <code>text/html</code> hinzugefügt wird
 </td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Description to display for a file</td></tr>
 <tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
