@@ -131,7 +131,6 @@
 #include "apr_strings.h"
 
 module AP_MODULE_DECLARE_DATA file_cache_module;
-static int once_through = 0;
 
 typedef struct {
 #if APR_HAS_SENDFILE
@@ -336,8 +335,6 @@ static void file_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
     a_server_config *sconf;
     a_file *elts;
     int nelts;
-
-    once_through++;
 
     /* sort the elements of the main_server, by filename */
     sconf = ap_get_module_config(s->module_config, &file_cache_module);
