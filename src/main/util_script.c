@@ -250,7 +250,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	}
     }
 
-    if (!(env_path = getenv("PATH"))) {
+    if (!(env_path = ap_pstrdup(r->pool, getenv("PATH")))) {
 	env_path = DEFAULT_PATH;
     }
 

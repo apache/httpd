@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) OS: Added first cut at support for IBM's OS/390.
+     [Ovies Brabson <oviesb@us.ibm.com>]
+
   *) Replace all occurrences of "\012\015" by a macro CRLF. This makes
      the code (somewhat) more readable, and improves the portability
      to character sets other than ASCII (e.g., EBCDIC).

@@ -116,7 +116,7 @@ int ap_main(int argc, char *argv[]);
 #endif
 #ifdef WIN32
 #include "../os/win32/getopt.h"
-#elif !defined(BEOS) && !defined(TPF) && !defined(NETWARE)
+#elif !defined(BEOS) && !defined(TPF) && !defined(NETWARE) && !defined(OS390)
 #include <netinet/tcp.h>
 #endif
 #ifdef HAVE_BSTRING_H

@@ -783,6 +783,14 @@ case "$PLAT" in
 	CFLAGS="-D_TANDEM_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
 	CC='c89'
 	;;
+    *-IBM-OS390*)
+       OS='OS390'
+       OSDIR='os/os390'
+       CC='c89'
+       CFLAGS="$CFLAGS -DOS390 -DCHARSET_EBCDIC -D_ALL_SOURCE"
+       DEF_WANTHSREGEX=yes
+       LIBS="$LIBS"
+       ;;
     *) # default: Catch systems we don't know about
 	OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
@@ -830,6 +838,7 @@ echo >>Makefile.config "OSDIR=\$(SRCDIR)/$OSDIR"
 echo >>Makefile.config "INCDIR=\$(SRCDIR)/include"
 echo >>Makefile.config "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)"
 echo >>Makefile.config "SHELL=$SHELL"
+echo >>Makefile.config "OS=$OS"
 
 ####################################################################
 ## And adjust/override WANTHSREGEX as needed
@@ -2237,7 +2246,10 @@ all clean distclean depend ::
 	@for i in \$(MODULES) ""; do \\
 	  if [ "x\$\$i" != "x" ]; then \\
 	    echo "===> \$(SDP)modules/\$\$i"; \\
-		(cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) SDP='\$(SDP)' CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; \\
+		case "x\$(OS)" in \\
+		  xOS390 | xTPF) (cd \$\$i && \$(MAKE) SDP='\$(SDP)' \$@) || exit 1;; \\
+		              *) (cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) SDP='\$(SDP)' CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1;; \\
+		esac; \\
 		echo "<=== \$(SDP)modules/\$\$i"; \\
 	  fi; \\
 	done

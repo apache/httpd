@@ -160,6 +160,8 @@
                              [--without-support]       [--suexec-gidmin=GID]
                              [--without-confadjust]    [--suexec-safepath=PATH]
                              [--without-execstrip]
+			     [--server-uid=UID]
+			     [--server-gid=GID]
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT, RANLIB, DEPS and TARGET
@@ -413,6 +415,14 @@
  
      Use the --verbose option to enable additional verbose messages.
      
+     Use the --server-uid option to specify the user ID you want the server to run
+     as. If not specified the server will run as user nobody.  If the user ID
+     specified is different than the ID of the user starting the server, you need to
+     start the server as root.
+
+     Use the --server-gid option to specify the group ID you want the server user ID to
+     be a member of.  If not specified, the group ID will be #-1.
+
   4. Building the package
      --------------------
      

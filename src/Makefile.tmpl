@@ -63,7 +63,10 @@ lib$(TARGET).$(SHLIB_SUFFIX_NAME): subdirs modules.o
 subdirs:
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
-		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1; \
+		case ".$(OS)" in \
+		  .OS390 | .TPF) ( cd $$i && $(MAKE) SDP='$(SDP)' ) || exit 1;; \
+		              *) ( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1;; \
+		esac; \
 		echo "<=== $(SDP)$$i"; \
 	done
 

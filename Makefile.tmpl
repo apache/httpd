@@ -69,6 +69,9 @@
 #   safe environment
 SHELL           = @SHELL@
 
+#   what platform are we on
+PLATFORM	= @PLATFORM@
+
 #   paths to the source tree parts
 TOP             = .
 SRC             = @SRC@
@@ -176,11 +179,17 @@ build-quiet:
 
 #   build the standard stuff
 build-std:
-	@cd $(TOP)/$(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ all
+	@case "x$(PLATFORM)" in \
+	  x*390*) _C89_STEPS="0xffffffff"; export _C89_STEPS;; \
+	esac; \
+	cd $(TOP)/$(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ all
 
 #   build the additional support stuff
 build-support:
 	@echo "===> $(SRC)/support"; \
+	case "x$(PLATFORM)" in \
+	  x*390*) _C89_STEPS="0xffffffff"; export _C89_STEPS;; \
+	esac; \
 	cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) all || exit 1; \
 	if [ ".$(suexec)" = .1 ]; then \
 	    $(MAKE) $(MFLAGS) \

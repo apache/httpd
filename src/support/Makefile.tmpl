@@ -14,19 +14,19 @@ OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o
 all: $(TARGETS)
 
 htpasswd: htpasswd.o
-	$(CC) $(CFLAGS) htpasswd.o -o htpasswd $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o htpasswd $(LDFLAGS) htpasswd.o $(LIBS)
 
 htdigest: htdigest.o
-	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o htdigest $(LDFLAGS) htdigest.o $(LIBS)
 
 rotatelogs: rotatelogs.o
-	$(CC) $(CFLAGS) rotatelogs.o -o rotatelogs $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o rotatelogs $(LDFLAGS) rotatelogs.o $(LIBS)
 
 logresolve: logresolve.o
-	$(CC) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o logresolve $(LDFLAGS) logresolve.o $(LIBS)
 
 ab: ab.o
-	$(CC) $(CFLAGS) ab.o -o ab $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o ab $(LDFLAGS) ab.o $(LIBS)
 
 apxs: apxs.pl
 	sed <apxs.pl >apxs \
@@ -39,7 +39,7 @@ apxs: apxs.pl
 	    -e 's%@LIBS_SHLIB@%$(LIBS_SHLIB)%g' && chmod a+x apxs
 
 suexec: suexec.o
-	$(CC) $(CFLAGS) suexec.o -o suexec $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) -o suexec $(LDFLAGS) suexec.o $(LIBS)
 
 clean:
 	rm -f $(TARGETS) *.o

@@ -949,6 +949,29 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_INITGROUPS
 #define NO_SLACK
+
+#elif defined(OS390)                /* IBM OS/390 Operating System      */
+#define HAVE_MMAP
+#define HAVE_SHMGET
+#define USE_SHMGET_SCOREBOARD
+#define USE_MMAP_FILES
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#define _POSIX_SOURCE
+#include <signal.h>
+#define NSIG SIGDUMP+1
+#define JMP_BUF sigjmp_buf
+#define _XOPEN_SOURCE_EXTENDED 1
+#define _OPEN_MSGQ_EXT
+#define _XOPEN_SOURCE
+#define SHM_R S_IRUSR
+#define SHM_W S_IWUSR
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/msg.h>
+#include <sys/socket.h>
+#define NET_SIZE_T size_t
+#define NEED_HASHBANG_EMUL
+
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD

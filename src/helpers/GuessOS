@@ -279,6 +279,9 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     *:*:*:"DRS 6000")
         echo "drs6000-whatever-whatever"; exit 0;
 	;;
+    OS/390:*)
+        echo "${MACHINE}-IBM-OS390-${RELEASE}-${VERSION}"; exit 0;
+        ;;
 esac
 
 #

@@ -134,6 +134,7 @@ if [ $# -eq 0 ]; then
 fi
 
 ##
+##
 ##  determine path to (optional) Perl interpreter
 ##
 PERL=no-perl-on-this-system
@@ -193,6 +194,16 @@ case "`$TAR --version 2>/dev/null`" in
        else
            TAROPT="-cf"
        fi
+       ;;
+esac
+
+##
+## Request USTAR format for tar files on OS/390
+## Request that prelink step be used for 390
+##
+case $PLATFORM in
+    *-IBM-OS390*)
+       TAROPT="${TAROPT}U"
        ;;
 esac
 
@@ -347,6 +358,12 @@ case "$*" in
 esac
 
 ##
+##  Initialize server user ID and group ID variables
+##
+conf_user=""
+conf_group=""
+
+##
 ##  Iterate over the command line options the first time.
 ##
 ##  This time we pre-process options which need high priority 
@@ -417,6 +434,8 @@ do
             echo " --without-support      disable the build and installation of support tools"
             echo " --without-confadjust   disable the user/situation adjustments in config"
             echo " --without-execstrip    disable the stripping of executables on installation"
+            echo " --server-uid=UID       set the user ID the web server should run as [nobody]"
+            echo " --server-gid=GID       set the group ID the web server UID is a memeber of [-1]"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
@@ -954,6 +973,22 @@ do
             suexec_safepath="$apc_optarg"
             suexec_ok=1
             ;;
+        --server-uid=*)
+            conf_user="$apc_optarg"
+	    # protect the '#' against interpretation as comment
+	    case x"${conf_user}" in
+              "#"*)  conf_user="\\\\${conf_user}";;
+              "\\#"*)conf_user="\\${conf_user}";;
+            esac
+            ;;
+        --server-gid=*)
+            conf_group="$apc_optarg"
+	    # protect the '#' against interpretation as comment
+	    case x"${conf_group}" in
+              "#"*)  conf_group="\\\\${conf_group}";;
+              "\\#"*)conf_group="\\${conf_group}";;
+            esac
+            ;;
         * )
             echo "configure:Error: invalid option '$apc_option'" 1>&2
             exit 1
@@ -1098,8 +1133,6 @@ fi
 ##  on platforms using NIS. But then you propably do not want a
 ##  UID/GID as production oriented as a web server in NIS anyway.
 ##
-conf_user="nobody"
-conf_group="\\\\#-1"
 if [ "x$port" != "x" ]; then
     conf_port=$port
 else
@@ -1109,18 +1142,22 @@ conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
 if [ "x$confadjust" = "x1" ]; then
     if [ -f /etc/passwd ]; then
+        if [ "x$conf_user" = "x" ]; then
         for uid in nobody www daemon demon http httpd; do 
             if [ "x`egrep \^${uid}: /etc/passwd`" != "x" ]; then
                 conf_user="$uid"
                 break
             fi
         done
+        fi
+        if [ "x$conf_group" = "x" ]; then
         for gid in nobody nogroup www daemon demon http httpd; do 
             if [ "x`egrep \^${gid}: /etc/group`" != "x" ]; then
                 conf_group="$gid"
                 break
             fi
         done
+    fi
     fi
     if [ "x`$aux/getuid.sh`" != "x0" -a "x$port" = "x" ]; then
         conf_port="8080"
@@ -1129,6 +1166,17 @@ if [ "x$confadjust" = "x1" ]; then
     conf_servername="`$aux/buildinfo.sh -n %h%d`"
 fi
  
+##
+## Default server user id and group id if not specified on configure invocation and none
+## of the ids in /etc/passwd or /etc/group worked.
+##
+if [ "x$conf_user" = "x" ]; then
+    conf_user="nobody"
+fi
+if [ "x$conf_group" = "x" ]; then
+    conf_group="\\\\#-1"
+fi
+
 ##
 ##  determine prefix-relative paths for directories
 ##  because Apache supports them for the -d and -f 
@@ -1201,6 +1249,7 @@ if [ "x$quiet" = "xno" ]; then
     echo "Creating $mkf"
 fi
 sed <Makefile.tmpl >$mkf \
+-e "s%@PLATFORM@%$PLATFORM%g" \
 -e "s%@PERL@%$PERL%g" \
 -e "s%@TAR@%$TAR%g" \
 -e "s%@TAROPT@%$TAROPT%g" \
