@@ -1,3 +1,7 @@
+Changes with Apache 1.2.1
+  
+  *) pregsub had an off-by-1 in its error checking code. [Alexei Kosut]
+
 Changes with Apache 1.2
 
 Changes with Apache 1.2b11
