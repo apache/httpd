@@ -301,7 +301,7 @@ char *csvperc;			/* CSV Percentile file */
 char url[1024];
 char * fullurl, * colonhost;
 int isproxy = 0;
-apr_short_interval_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
+apr_interval_time_t aprtimeout = apr_time_from_sec(30);	/* timeout value */
  /*
   * XXX - this is now a per read/write transact type of value
   */
@@ -658,7 +658,7 @@ void ssl_start_connect(struct connection * c)
             case SSL_ERROR_WANT_WRITE:
             case SSL_ERROR_WANT_CONNECT:
                 BIO_printf(bio_err, "Waiting .. sleep(1)\n");
-                apr_sleep(1 * APR_USEC_PER_SEC);
+                apr_sleep(apr_time_from_sec(1));
                 c->state = STATE_CONNECTING;
                 c->rwrite = 0;
                 break;
@@ -827,7 +827,8 @@ static void output_results(void)
 
     endtime = apr_time_now();
     timetakenusec = endtime - start;
-    timetaken = (float) timetakenusec / APR_USEC_PER_SEC;
+    timetaken = ((float)apr_time_sec(timetakenusec)) +
+        ((float)apr_time_usec(timetakenusec)) / 1000000.0;
     
     printf("\n\n");
     printf("Server Software:        %s\n", servername);
@@ -839,8 +840,8 @@ static void output_results(void)
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
     printf("Time taken for tests:   %ld.%03ld seconds\n",
-           (long) (timetakenusec / APR_USEC_PER_SEC),
-           (long) (timetakenusec % APR_USEC_PER_SEC));
+           (long) apr_time_sec(timetakenusec),
+           (long) apr_time_usec(timetakenusec));
     printf("Complete requests:      %ld\n", done);
     printf("Failed requests:        %ld\n", bad);
     if (bad)
@@ -1100,7 +1101,8 @@ static void output_html_results(void)
 	   trstring, tdstring, tdstring, concurrency);
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
 	   "<td colspan=2 %s>%qd.%03qd seconds</td></tr>\n",
-	   trstring, tdstring, tdstring, timetaken / APR_USEC_PER_SEC, timetaken % APR_USEC_PER_SEC);
+	   trstring, tdstring, tdstring, (long long)apr_time_sec(timetaken),
+           (long long)apr_time_usec(timetaken));
     printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
 	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, done);
@@ -1635,7 +1637,7 @@ static void test(void)
 
 	/* check for time limit expiry */
 	now = apr_time_now();
-	timed = (apr_int32_t)((now - start) / APR_USEC_PER_SEC);
+	timed = (apr_int32_t)apr_time_sec(now - start);
 	if (tlimit && timed > (tlimit * 1000)) {
 	    requests = done;	/* so stats are correct */
 	}
@@ -1723,14 +1725,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.105 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.106 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.105 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.106 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
