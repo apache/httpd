@@ -61,6 +61,10 @@
 ##  Written by Ralf S. Engelschall <rse@apache.org>
 ##
 
+#   default input separator chars: <space><tab><cr>
+DIFS=' 	
+'
+
 ##
 ##  the paths to the Apache source tree
 ##
@@ -111,8 +115,9 @@ fi
 ##
 
 PERL=no-perl-on-this-system
-IFS=:
+OIFS="$IFS" IFS=':'
 for dir in $PATH; do
+    OIFS="$IFS" IFS="$DIFS"
     for exe in perl5 perl miniperl; do
         if test -f "$dir/$exe"; then
             if test -x "$dir/$exe"; then
@@ -120,7 +125,9 @@ for dir in $PATH; do
             fi
         fi
     done
+    IFS="$OIFS"
 done
+IFS="$OIFS"
 PERL="`echo $PERL | sed -e 's://:/:'`"
 
 ##
@@ -162,7 +169,7 @@ support=1
 #   determine rules
 rules=""
 rulelist=""
-IFS='
+OIFS="$IFS" IFS='
 '
 for rule in `grep '^Rule' $src/Configuration.tmpl`; do
     rule=`echo "$rule" | sed -e 's/^Rule[ ]*//'`
@@ -173,12 +180,13 @@ for rule in `grep '^Rule' $src/Configuration.tmpl`; do
     rules="$rules:$namelow"
     rulelist="$rulelist:$name=$arg"
 done
+IFS="$OIFS"
 
 #   determine modules
 rm -f $src/Configuration.apaci 2>/dev/null
 modules=""
 modulelist=""
-IFS='
+OIFS="$IFS" IFS='
 '
 for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     add=yes
@@ -202,12 +210,12 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
         modulelist="${modulelist}*"
     fi
 done
+IFS="$OIFS"
 
 #   backward compatibility from old src/Configuration.tmpl
 #   parameter names to the canonical Autoconf-style shell
 #   variable names.
-IFS='
-'
+OIFS="$IFS" IFS="$DIFS"
 for var in CFLAGS LDFLAGS LIBS INCLUDES; do
     eval "val=\$EXTRA_$var"
     if [ ".$val" != . ]; then
@@ -216,14 +224,14 @@ for var in CFLAGS LDFLAGS LIBS INCLUDES; do
         echo " + Hint: please use $var instead of EXTRA_$var next time"
     fi
 done
+IFS="$OIFS"
 
 ##
 ##  parse argument line options
 ##
 
 apc_prev=""
-IFS='
-'
+OIFS="$IFS" IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
@@ -457,16 +465,18 @@ do
                 module ) 
                     case $apc_optarg in
                        all ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "module_${module}=yes" 
                            done
+                           IFS="$OIFS"
                            ;;
                        most ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "module_${module}=yes" 
                            done
+                           IFS="$OIFS"
                            module_auth_db=no     # not all platforms have -ldb
                            module_mmap_static=no # not all platforms have mmap()
                            module_so=no          # not all platforms have dlopen()
@@ -487,14 +497,15 @@ do
                 shared ) 
                     case $apc_optarg in
                        max ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "shared_${module}=yes" 
                            done
+                           IFS="$OIFS"
                            shared_so=no        # because of bootstrapping
                            ;;
                        remain ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "add=\$module_${module}" 
                                if [ ".$add" = .no ]; then
@@ -502,6 +513,7 @@ do
                                    eval "shared_${module}=yes" 
                                fi
                            done
+                           IFS="$OIFS"
                            shared_so=no
                            ;;
                        * ) 
@@ -544,10 +556,11 @@ do
                 module )
                     case $apc_optarg in
                        all ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "module_${module}=no" 
                            done
+                           IFS="$OIFS"
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
@@ -562,10 +575,11 @@ do
                 shared )
                     case $apc_optarg in
                        all ) 
-                           IFS=:
+                           OIFS="$IFS" IFS=':'
                            for module in `echo "$modules" | sed -e 's/^://'`; do
                                eval "shared_${module}=no" 
                            done
+                           IFS="$OIFS"
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
@@ -597,6 +611,7 @@ do
             ;;
     esac
 done
+IFS="$OIFS"
 if [ ".$apc_prev" != . ]; then
     echo "configure:Error: missing argument to --`echo $apc_prev | sed 's/_/-/g'`" 1>&2
     exit 1
@@ -616,7 +631,7 @@ fi
 ##  expand path variables and make sure
 ##  they do not end with a backslash
 ##
-IFS=' '
+OIFS="$IFS" IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir \
            libexecdir mandir sysconfdir datadir \
            localstatedir includedir; do
@@ -637,6 +652,7 @@ for var in prefix exec_prefix bindir sbindir \
            ;;
     esac
 done
+IFS="$OIFS"
 
 ##
 ##  determine special configurable Makefile targets
@@ -766,8 +782,7 @@ rm -f sedsubst 2>/dev/null
 touch sedsubst
 
 #   generate settings from imported environment variables
-IFS='
-'
+OIFS="$IFS" IFS="$DIFS"
 for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
     eval "val=\$$var";
@@ -783,9 +798,10 @@ for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LDFLAGS_SHLIB \
         eval "$var=\"\"; export $var"
     fi
 done
+IFS="$OIFS"
 
 #   generate rule directives 
-IFS=:
+OIFS="$IFS" IFS=':'
 for rule in `echo "$rules" | sed -e 's/^://'`; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
@@ -794,16 +810,18 @@ for rule in `echo "$rules" | sed -e 's/^://'`; do
         echo " + Rule $name=$val"
     fi
 done
+IFS="$OIFS"
 
 #   consistency checks for shared object support
 some_shares=0
-IFS=:
+OIFS="$IFS" IFS=':'
 for module in `echo "$modules" | sed -e 's/^://'`; do
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
         some_shares=1
     fi
 done
+IFS="$OIFS"
 if [ $some_shares = 1 ]; then
     if [ $module_so = no ]; then
         module_so=yes
@@ -819,7 +837,7 @@ if [ ".$shared_so" = yes ]; then
 fi
 
 #   generate module directives
-IFS=:
+OIFS="$IFS" IFS=':'
 for module in `echo "$modules" | sed -e 's/^://'`; do
     eval "add=\$module_$module"
     if [ $add = yes ]; then
@@ -840,6 +858,7 @@ for module in `echo "$modules" | sed -e 's/^://'`; do
         echo " + Module $module: $m"
     fi
 done
+IFS="$OIFS"
 
 #   and finally translate the config template according to our situation
 if [ -f $src/Configuration.apaci ]; then

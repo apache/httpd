@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Make sure the input field separator (IFS) shell variable is explicitly
+     initialized correctly before _every_ `for' loop and also restored after
+     the loops. [Ralf S. Engelschall]
+
   *) Make sure that "make install" doesn't overwrite the `mime.types' and
      `magic' files from an existing Apache installation. Because people often
      customize these for own MIME and content types.
