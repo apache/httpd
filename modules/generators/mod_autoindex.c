@@ -984,21 +984,32 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		      char *title)
 {
+    apr_table_t *hdrs = r->headers_in;
     apr_file_t *f = NULL;
     request_rec *rr = NULL;
     int emit_amble = 1;
     int emit_H1 = 1;
+    const char *r_accept;
+    const char *r_accept_enc;
 
     /*
      * If there's a header file, send a subrequest to look for it.  If it's
-     * found and a text file, handle it -- otherwise fall through and
-     * pretend there's nothing there.
+     * found and html do the subrequest, otherwise handle it
      */
+    r_accept = apr_table_get(hdrs, "Accept");
+    r_accept_enc = apr_table_get(hdrs, "Accept-Encoding");
+    apr_table_setn(hdrs, "Accept", "text/html, text/plain");
+    apr_table_unset(hdrs, "Accept-Encoding");
+
+    if ((header_fname != NULL) && r->args) {
+        header_fname = apr_pstrcat(r->pool, header_fname, "?", r->args, NULL);
+    }
+
     if ((header_fname != NULL)
-	&& (rr = ap_sub_req_lookup_uri(header_fname, r, NULL))
+	&& (rr = ap_sub_req_lookup_uri(header_fname , r, NULL))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
-	&& rr->finfo.filetype == APR_REG) {
+	&& (rr->finfo.filetype == APR_REG)) {
 	/*
 	 * Check for the two specific cases we allow: text/html and
 	 * text/anything-else.  The former is allowed to be processed for
@@ -1043,6 +1054,14 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	    }
 	}
     }
+
+    if (r_accept)
+        apr_table_setn(hdrs, "Accept", r_accept);
+    else
+        apr_table_unset(hdrs, "Accept");
+
+    if (r_accept_enc)
+        apr_table_setn(hdrs, "Accept-Encoding", r_accept_enc);
 
     if (emit_amble) {
 	emit_preamble(r, title);
