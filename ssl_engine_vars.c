@@ -403,7 +403,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
     char *result;
     X509_NAME_ENTRY *xsne;
     int i, j, n;
-    char *data_ptr;
+    unsigned char *data_ptr;
     int data_len;
 
     result = NULL;
