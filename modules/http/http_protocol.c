@@ -1922,6 +1922,7 @@ static void terminate_header(char *buf)
         headfield += strlen(tmp);
     }
     apr_cpystrn(headfield, CRLF, strlen(CRLF) + 1);
+    ap_xlate_proto_to_ascii(buf + len, strlen(buf + len));
 }
 
 /*
