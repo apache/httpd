@@ -1799,7 +1799,7 @@ void ap_proxy_cache_tidy(cache_req *c)
 #else
 
         if (link(c->tempfile, c->filename) == -1)
-            ap_log_error(APLOG_MARK, APLOG_ERR, s,
+            ap_log_error(APLOG_MARK, APLOG_INFO, s,
                          "proxy: error linking cache file %s to %s",
                          c->tempfile, c->filename);
         if (unlink(c->tempfile) == -1)
