@@ -2431,7 +2431,7 @@ scripts</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Win32 only<br />
+<compatibility>Win32 only;
 option <code>Registry-Strict</code> is available in Apache 2.0 and
 later</compatibility>
 
