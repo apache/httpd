@@ -650,7 +650,6 @@ static void child_main(int child_num_arg)
 	listensocks[i]=lr->sd;
 
     /* Setup worker threads */
-
     worker_thread_count = 0;
     apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
                     NULL, pchild);
@@ -659,14 +658,7 @@ static void child_main(int child_num_arg)
     apr_threadattr_create(&thread_attr, pchild);
     apr_threadattr_detach_set(thread_attr, 1);
 
-    rv = apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                     "Couldn't create signal thread");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-
-    for (i=0; i < ap_threads_per_child - 1; i++) {
+    for (i=0; i < ap_threads_per_child; i++) {
 
 	my_info = (proc_info *)malloc(sizeof(proc_info));
         if (my_info == NULL) {
@@ -695,19 +687,7 @@ static void child_main(int child_num_arg)
 	 * because it let's us deal with tid better.
 	 */
     }
-    my_info = (proc_info *)malloc(sizeof(proc_info));
-    if (my_info == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-                    "malloc: out of memory");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-    my_info->pid = my_child_num;
-    my_info->tid = i;
-    my_info->sd = 0;
-    apr_pool_create(&my_info->tpool, pchild);
-    ap_update_child_status(my_child_num, i, SERVER_STARTING, 
-                           (request_rec *) NULL);
-    worker_thread(my_info);
+    apr_signal_thread(check_signal);
 }
 
 static int make_child(server_rec *s, int slot) 
