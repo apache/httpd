@@ -131,7 +131,7 @@ sub Getopts {
         }
         my $pos = index($argumentative,$first);
         if ($pos >= $[) {
-            if ($args[$pos+1] eq ':') {
+            if ($pos < $#args && $args[$pos+1] eq ':') {
                 shift @ARGV;
                 if ($rest eq '') {
                     unless (@ARGV) {
@@ -142,7 +142,7 @@ sub Getopts {
                 }
                 eval "\$opt_$first = \$rest;";
             }
-            elsif ($args[$pos+1] eq '+') {
+            elsif ($pos < $#args && $args[$pos+1] eq '+') {
                 shift @ARGV;
                 if ($rest eq '') {
                     unless (@ARGV) {
