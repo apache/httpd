@@ -79,34 +79,33 @@
 
 typedef struct buff_struct BUFF;
 
-struct buff_struct
-{
-    int flags;             /* flags */
-    unsigned char *inptr;  /* pointer to next location to read */
-    int incnt;             /* number of bytes left to read from input buffer;
-			    * always 0 if had a read error  */
-    int outchunk;	   /* location of chunk header when chunking */
-    int outchunk_header_size; /* how long the header is */
-    int outcnt;            /* number of byte put in output buffer */
+struct buff_struct {
+    int flags;			/* flags */
+    unsigned char *inptr;	/* pointer to next location to read */
+    int incnt;			/* number of bytes left to read from input buffer;
+				 * always 0 if had a read error  */
+    int outchunk;		/* location of chunk header when chunking */
+    int outchunk_header_size;	/* how long the header is */
+    int outcnt;			/* number of byte put in output buffer */
     unsigned char *inbase;
     unsigned char *outbase;
     int bufsiz;
-    void (*error)(BUFF *fb, int op, void *data);
+    void (*error) (BUFF *fb, int op, void *data);
     void *error_data;
-    long int bytes_sent;   /* number of bytes actually written */
+    long int bytes_sent;	/* number of bytes actually written */
 
     pool *pool;
 
 /* could also put pointers to the basic I/O routines here */
-    int fd;                /* the file descriptor */
-    int fd_in;             /* input file descriptor, if different */
+    int fd;			/* the file descriptor */
+    int fd_in;			/* input file descriptor, if different */
 
-     /* transport handle, for RPC binding handle or some such */
-     void *t_handle;
+    /* transport handle, for RPC binding handle or some such */
+    void *t_handle;
 
 #ifdef B_SFIO
-    Sfio_t   *sf_in;
-    Sfio_t   *sf_out;
+    Sfio_t *sf_in;
+    Sfio_t *sf_out;
 #endif
 };
 
@@ -133,8 +132,8 @@ API_EXPORT(int) bclose(BUFF *fb);
 #define bgetflag(fb, flag)	((fb)->flags & (flag))
 
 /* Error handling */
-API_EXPORT(void) bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
-		     void *data);
+API_EXPORT(void) bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
+			  void *data);
 
 /* I/O */
 API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte);
@@ -144,9 +143,9 @@ API_EXPORT(int) bskiplf(BUFF *fb);
 API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(int) bflush(BUFF *fb);
 API_EXPORT(int) bputs(const char *x, BUFF *fb);
-API_EXPORT(int) bvputs(BUFF *fb, ...);
-API_EXPORT_NONSTD(int) bprintf(BUFF *fb,const char *fmt,...);
-API_EXPORT_NONSTD(int) vbprintf(BUFF *fb,const char *fmt,va_list vlist);
+API_EXPORT(int) bvputs(BUFF *fb,...);
+API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt,...);
+API_EXPORT_NONSTD(int) vbprintf(BUFF *fb, const char *fmt, va_list vlist);
 
 /* Internal routines */
 API_EXPORT(int) bflsbuf(int c, BUFF *fb);
@@ -159,9 +158,9 @@ API_EXPORT(int) bfilbuf(BUFF *fb);
 		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
 
-API_EXPORT(int) spawn_child_err_buff (pool *, int (*)(void *), void *,
-           	  enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
-                  BUFF **pipe_err);
+API_EXPORT(int) spawn_child_err_buff(pool *, int (*)(void *), void *,
+		      enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
+				     BUFF **pipe_err);
 
 /* enable non-blocking operations */
 API_EXPORT(int) bnonblock(BUFF *fb, int direction);
@@ -169,4 +168,4 @@ API_EXPORT(int) bnonblock(BUFF *fb, int direction);
 API_EXPORT(int) bfileno(BUFF *fb, int direction);
 
 /* bflush() if a read now would block, but don't actually read anything */
-API_EXPORT(void) bhalfduplex (BUFF *fb);
+API_EXPORT(void) bhalfduplex(BUFF *fb);
