@@ -1367,6 +1367,22 @@ static void process_request_internal(request_rec *r)
     ap_finalize_request_protocol(r);
 }
 
+static void check_pipeline_flush(request_rec *r)
+{
+    ap_bucket_brigade *bb = ap_brigade_create(r->pool);
+    if (ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
+        ap_bucket *e = ap_bucket_create_flush();
+
+        /* We just send directly to the connection based filters, because at
+         * this point, we know that we have seen all of the data, so we just
+         * want to flush the buckets if something hasn't been sent to the
+         * network yet.
+         */
+        AP_BRIGADE_INSERT_HEAD(bb, e);
+        ap_pass_brigade(r->connection->output_filters, bb);
+    }
+}
+
 void ap_process_request(request_rec *r)
 {
     process_request_internal(r);
@@ -1378,7 +1394,7 @@ void ap_process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    ap_bhalfduplex(r->connection->client);
+    check_pipeline_flush(r);
     ap_run_log_transaction(r);
 }
 
