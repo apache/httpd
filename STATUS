@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/19 20:20:09 $]
+  Last modified at [$Date: 2001/01/20 00:21:00 $]
 
 Release:
 
@@ -8,7 +8,6 @@ Release:
 	    Plan is to tag/roll on Jan 20th with a release
 	    on the 22nd/23rd (depending on ApacheCon planners
 	    meeting availability).
-            UPDATE: Report of problem with byte ranges - on hold
     1.3.14: Tagged & Rolled Oct 10, 2000.  Released and
             announced Oct 13, 2000. 
     1.3.13: Not released. Pulled in the "first minutes" due to
@@ -33,11 +32,6 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
-
-   * Report that latest CVS adds extra CR/LF, by always prefixing
-     the boundaries, even the 1st one.
-     Message-ID: <3A6890A7.C9BBC712@pobox.com>
-     Status: Tony looking into it.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
