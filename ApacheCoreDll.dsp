@@ -68,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\CoreD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
+# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
