@@ -61,6 +61,7 @@
 
 #include "http_main.h"		/* For the default_handler below... */
 #include "http_log.h"
+#include "rfc1413.h"
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -87,6 +88,7 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->override = dir ? OR_UNSET : OR_ALL;
 
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
+    conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
     return (void *)conf;
 }
 
@@ -115,6 +117,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 	   conf->response_code_strings[i] = new->response_code_strings[i];
     if (new->hostname_lookups != 2)
 	conf->hostname_lookups = new->hostname_lookups;
+    if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
 
     return (void*)conf;
 }
@@ -290,6 +293,24 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 	if (type == REMOTE_HOST) return NULL;
 	else return conn->remote_ip;
     }
+}
+
+const char *
+get_remote_logname(request_rec *r)
+{
+    core_dir_config *dir_conf;
+
+    if (r->connection->remote_logname != NULL)
+	return r->connection->remote_logname;
+
+/* If we haven't checked the identity, and we want to */
+    dir_conf = (core_dir_config *)
+	get_module_config(r->per_dir_config, &core_module);
+
+    if (dir_conf->do_rfc1413 & 1)
+	return rfc1413(r->connection, r->server);
+    else
+	return NULL;
 }
 
 /*****************************************************************
@@ -590,8 +611,8 @@ char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_idcheck (cmd_parms *cmd, void *dummy, int arg) {
-    cmd->server->do_rfc931 = arg;
+char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
+    d->do_rfc1413 = arg;
     return NULL;
 }
 
@@ -725,7 +746,7 @@ command_rec core_cmds[] = {
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "timeout duration (sec)"},
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
-{ "IdentityCheck", set_idcheck, NULL, RSRC_CONF, FLAG, NULL },
+{ "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, NULL },
 { "CacheNegotiatedDocs", },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, NULL },
 { "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1, NULL },

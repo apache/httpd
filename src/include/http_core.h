@@ -88,6 +88,7 @@ char *document_root (request_rec *); /* Don't use this!  If your request went
 				      * back-compatible...
 				      */
 extern const char *get_remote_host(conn_rec *conn, void *dir_config, int type);
+extern const char *get_remote_logname(request_rec *r);
      
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -147,6 +148,7 @@ typedef struct {
 
     /* Hostname resolution etc */
     int hostname_lookups;
+    int do_rfc1413;   /* See if client is advertising a username? */
 
 } core_dir_config;
 

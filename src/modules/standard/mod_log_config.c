@@ -168,7 +168,7 @@ char *log_remote_host (request_rec *r, char *a)
 { return get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME); }
 
 char *log_remote_logname(request_rec *r, char *a)
-{return r->connection->remote_logname;}
+{return get_remote_logname(r);}
 
 char *log_remote_user (request_rec *r, char *a)
 { return r->connection->user; }

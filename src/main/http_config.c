@@ -423,7 +423,7 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
 	    return pstrcat (parms->pool, cmd->name, " must be On or Off",
 			    NULL);
 
-	return (*cmd->func) (parms, mconfig, strcasecmp (w, "off"));
+	return (*cmd->func) (parms, mconfig, strcasecmp (w, "off") != 0);
 
     default:
 
@@ -657,7 +657,6 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->srm_confname = NULL;
     s->access_confname = NULL;
     s->timeout = 0;
-    s->do_rfc931 = 0;
     s->host_addr.s_addr = get_virthost_addr (hostname, &s->host_port);
     s->port = s->host_port;  /* set them the same, by default */
     s->next = NULL;
@@ -699,9 +698,6 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 
 	if (virt->timeout == 0)
 	    virt->timeout = main_server->timeout;
-
-	if (virt->do_rfc931 == 0)
-	    virt->do_rfc931 = main_server->do_rfc931;
     }
 }
 
@@ -742,7 +738,6 @@ server_rec *init_server_config(pool *p)
     s->timeout = DEFAULT_TIMEOUT;
     s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
     s->keep_alive = DEFAULT_KEEPALIVE;
-    s->do_rfc931 = DEFAULT_RFC931;
     s->next = NULL;
     s->host_addr.s_addr = htonl (INADDR_ANY); /* NOT virtual host;
 					       * don't match any real network

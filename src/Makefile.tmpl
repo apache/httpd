@@ -4,7 +4,7 @@
 # by the configure script to make the actual Makefile.
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
-  http_log.o http_protocol.o rfc931.o util.o util_script.o modules.o buff.o\
+  http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
   md5c.o $(MODULES)
 
 .c.o:
@@ -43,11 +43,12 @@ http_config.o http_core.o http_main.o: http_config.h http_log.h
 http_log.o http_protocol.o http_request.o modules.o: http_config.h
 http_config.o http_core.o http_log.o http_main.o http_protocol.o: http_core.h
 http_request.o: http_core.h
-http_protocol.o http_request.o util_script.o: http_log.h
+http_protocol.o http_request.o util_script.o rfc1413.o: http_log.h
 http_core.o http_main.o http_protocol.o http_request.o: http_main.h
 http_core.o http_main.o http_protocol.o http_request.o: http_protocol.h
 http_config.o http_main.o http_request.o: http_request.h
 http_main.o: scoreboard.h
+http_core.o rfc1413.o: rfc1413.h
 
 #Modules
 $(MODULES): http_config.h

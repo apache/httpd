@@ -155,6 +155,7 @@ int common_log_transaction(request_rec *orig)
     char *str;
     long timz;
     struct tm *t;
+    const char *rem_logname;
     char tstr[MAX_STRING_LEN], status[MAX_STRING_LEN], sign;
     conn_rec *c = orig->connection;
     request_rec *r;
@@ -191,12 +192,12 @@ int common_log_transaction(request_rec *orig)
     else
         strcat(status, "-\n");
 
+    rem_logname = get_remote_logname(r);
+    if (rem_logname == NULL) rem_logname = "-";
+
     str = pstrcat(orig->pool,
 		  get_remote_host(c, r->per_dir_config, REMOTE_NAME), " ",
-		  (c->remote_logname != NULL ? c->remote_logname : "-"),
-		  " ",
-		  (c->user != NULL ? c->user : "-"),
-		  tstr, 
+		  rem_logname, " ", (c->user != NULL ? c->user : "-"), tstr, 
 		  (orig->the_request != NULL ? orig->the_request : "NULL"), 
 		  "\" ", status, NULL);
     

@@ -153,8 +153,8 @@
 /* The name of the access file */
 #define ACCESS_CONFIG_FILE "conf/access.conf"
 
-/* Whether we should enable rfc931 identity checking */
-#define DEFAULT_RFC931 0
+/* Whether we should enable rfc1413 identity checking */
+#define DEFAULT_RFC1413 0
 /* The default directory in user's home dir */
 #define DEFAULT_USER_DIR "public_html"
 
@@ -396,6 +396,7 @@ struct conn_rec {
   
   /* Who is the client? */
   
+  struct sockaddr_in local_addr; /* local address */
   struct sockaddr_in remote_addr;/* remote address */
   char *remote_ip;		/* Client's IP address */
   char *remote_host;		/* Client's DNS name, if known.
@@ -403,9 +404,10 @@ struct conn_rec {
                                  * "" if it has and no address was found.
                                  * N.B. Only access this though
 				 * get_remote_host() */
-  char *remote_logname;		/* Only ever set if doing_rfc931 */
-  
-  char *user;			/* If an authentication check was made,
+  char *remote_logname;		/* Only ever set if doing_rfc931
+                                 * N.B. Only access this through
+				 * get_remote_logname() */
+    char *user;			/* If an authentication check was made,
 				 * this gets set to the user name.  We assume
 				 * that there's only one user per connection(!)
 				 */
@@ -454,8 +456,6 @@ struct server_rec {
   int timeout;			/* Timeout, in seconds, before we give up */
   int keep_alive_timeout;	/* Seconds we'll wait for another request */
   int keep_alive;		/* Maximum requests per connection */
-  int do_rfc931;		/* See if client is advertising a username? */
-  
 };
 
 /* These are more like real hosts than virtual hosts */

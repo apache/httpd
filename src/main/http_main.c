@@ -907,6 +907,7 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
     conn = (conn_rec *)pcalloc(p, sizeof(conn_rec));
     
     conn->pool = p;
+    conn->local_addr = *saddr;
     conn->server = find_virtual_server(saddr->sin_addr, ntohs(saddr->sin_port),
 				       server);
     conn->client = inout;
@@ -933,12 +934,6 @@ void child_main(int child_num_arg)
     int clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
-
-#ifdef ULTRIX_BRAIN_DEATH
-    extern char *rfc931();
-#else
-    extern char *rfc931 (struct sockaddr_in *, struct sockaddr_in *);
-#endif
 
     csd = -1;
     dupped_csd = -1;
@@ -1027,11 +1022,6 @@ void child_main(int child_num_arg)
 	current_conn = new_connection (ptrans, server_conf, conn_io,
 				       (struct sockaddr_in *)&sa_client,
 				       (struct sockaddr_in *)&sa_server);
-
-	if (current_conn->server->do_rfc931)
-	    current_conn->remote_logname = 
-		rfc931((struct sockaddr_in *)&sa_client,
-		       (struct sockaddr_in *)&sa_server);
 	
 	r = read_request (current_conn);
 	if (r) process_request (r); /* else premature EOF --- ignore */

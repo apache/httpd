@@ -124,6 +124,7 @@ void add_common_vars(request_rec *r)
     table *e = r->subprocess_env;
     server_rec *s = r->server;
     conn_rec *c = r->connection;
+    const char *rem_logname;
     
     char port[40],*env_path;
     
@@ -172,7 +173,8 @@ void add_common_vars(request_rec *r)
     
     if (c->user) table_set(e, "REMOTE_USER", c->user);
     if (c->auth_type) table_set(e, "AUTH_TYPE", c->auth_type);
-    if (c->remote_logname) table_set(e, "REMOTE_IDENT", c->remote_logname);
+    rem_logname = get_remote_logname(r);
+    if (rem_logname) table_set(e, "REMOTE_IDENT", rem_logname);
     
     /* Apache custom error responses. If we have redirected set two new vars */
     
