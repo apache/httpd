@@ -879,6 +879,34 @@ static pid_t parent_pid, my_pid;
 apr_pool_t *pconf;
 
 #if AP_ENABLE_EXCEPTION_HOOK
+
+static int exception_hook_enabled;
+
+const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
+                                      const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (cmd->server->is_virtual) {
+	return "EnableExceptionHook directive not allowed in <VirtualHost>";
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        exception_hook_enabled = 1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        exception_hook_enabled = 0;
+    }
+    else {
+        return "parameter must be 'on' or 'off'";
+    }
+
+    return NULL;
+}
+
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(fatal_exception)
 )
@@ -890,7 +918,8 @@ static void run_fatal_exception_hook(int sig)
 {
     ap_exception_info_t ei = {0};
 
-    if (geteuid() != 0 && 
+    if (exception_hook_enabled &&
+        geteuid() != 0 && 
         my_pid != parent_pid) {
         ei.sig = sig;
         ei.pid = my_pid;

@@ -97,9 +97,10 @@ Changes with Apache 2.1.0-dev
      directory, display the MPM name and some MPM properties.
      [Geoffrey Young <geoff apache.org>]
 
-  *) Add fatal exception hook for use by debug modules.  The hook is only
-     available if the --enable-exception-hook configure parm is used.
-     [Jeff Trawick]
+  *) Add fatal exception hook for use by diagnostic modules.  The hook
+     is only available if the --enable-exception-hook configure parm 
+     is used and the EnableExceptionHook directive has been set to 
+     "on".  [Jeff Trawick]
 
   *) mod_ssl/mod_status: Re-enable support for output of SSL session
      cache information in server-status page.  [Joe Orton]
