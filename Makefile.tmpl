@@ -257,8 +257,8 @@ install-mktree:
 	$(MKDIR) $(root)$(runtimedir)
 	$(MKDIR) $(root)$(logfiledir)
 	$(MKDIR) $(root)$(proxycachedir)
-	chown $(conf_user) $(root)$(proxycachedir)
-	chgrp $(conf_group) $(root)$(proxycachedir)
+	-chown $(conf_user) $(root)$(proxycachedir)
+	-chgrp $(conf_group) $(root)$(proxycachedir)
 	@echo "<=== [mktree]"
 
 #   install the server program and optionally corresponding
