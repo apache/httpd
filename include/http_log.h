@@ -177,7 +177,7 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, apr_pool_t *p, const char *fmt, ...) 
+ * @deffunc void ap_log_perror(const char *file, int line, int level, apr_status_t status, apr_pool_t *p, const char *fmt, ...) 
  */
 AP_DECLARE(void) ap_log_perror(const char *file, int line, int level, 
                              apr_status_t status, apr_pool_t *p, 
@@ -201,7 +201,7 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
  * denial-of-service attack and other messy behavior.  Instead, use a 
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
- * @deffunc void ap_log_error(const char *file, int line, int level, apr_status_t status, request_rec *s, const char *fmt, ...) 
+ * @deffunc void ap_log_rerror(const char *file, int line, int level, apr_status_t status, request_rec *s, const char *fmt, ...) 
  */
 AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level, 
                                apr_status_t status, const request_rec *s, 
