@@ -592,6 +592,7 @@ extern char *crypt();
 #ifdef _OSD_POSIX /* BS2000-POSIX mainframe needs initgroups */
 #define NEED_HASHBANG_EMUL /* execve() doesn't start shell scripts by default */
 #define _KMEMUSER          /* Enable SHM_R/SHM_W defines in <shm.h> */
+#define AP_ENABLE_EXCEPTION_HOOK
 #undef NEED_STRCASECMP
 #undef NEED_STRNCASECMP
 #undef bzero
