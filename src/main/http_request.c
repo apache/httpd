@@ -925,7 +925,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 	     */
             if (errno == ENAMETOOLONG) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
-                              "Possible DoS attempt? URL=%s", r->filename);
+                              "Possible DoS attempt? Path=%s", r->filename);
                 rnew->status = HTTP_FORBIDDEN;
                 return rnew;
             }
