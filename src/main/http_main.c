@@ -3097,7 +3097,8 @@ void child_main(int child_num_arg)
 		     * and other boxes that implement tcp sockets in
 		     * userland (i.e. on top of STREAMS).  On these
 		     * systems, EPROTO can actually result in a fatal
-		     * loop.  But we don't deal with that.
+		     * loop.  See PR#981 for example.  It's hard to
+		     * handle both uses of EPROTO.
 		     */
                 case EPROTO:
 #endif

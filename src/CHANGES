@@ -5,7 +5,7 @@ Changes with Apache 1.3b6
      or library bugs occasionally, and result in log spammage and
      a generally bad scene.  Now the child exits immediately,
      which seems to be a good workaround.
-     [Dean Gaudet] PR#1747, 1107, 588, 1787
+     [Dean Gaudet] PR#1747, 1107, 588, 1787, 987, 588
 
   *) Cleaned up some race conditions in unix child_main during
      initialization. [Dean Gaudet]
@@ -763,7 +763,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) Work around problem under Linux where a child will start looping
      reporting a select error over and over.
-     [Rick Franchuk <rickf@transpect.net>] PR#1107
+     [Rick Franchuk <rickf@transpect.net>] PR#1107, 987, 588
 
   *) Fixed error in proxy_util.c when looping through multiple host IP
      addresses. [Lars Eilebrecht] PR#974
