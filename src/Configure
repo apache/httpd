@@ -46,8 +46,10 @@ fi
 
 # First, strip comments and blank lines and then change Rules to comments
 
-sed 's/#.*//' $file | sed '/^[ 	]*$/d' | sed 's/[ 	]*$//' | \
- sed 's/^Rule[ 	]*/##Rule:/' > $tmpfile
+sed 's/#.*//' $file | \
+ sed '/^[ 	]*$/d' | \
+ sed 's/[ 	]*$//' | \
+ sed 's/^Rule[ 	]*/##Rule:/' | \
 
 # Check for syntax errors...
 
@@ -165,6 +167,20 @@ else
 fi
 
 #
+# We now look for popular compilers. As with ranlib, we
+# do this early but because some options may depend
+# on which compiler we use/find
+#
+for compilers in "gcc" "cc" "acc" "c89"
+do
+    lookedfor="$lookedfor $compilers"
+    if ./helpers/PrintPath -s $compilers; then
+	COMPILER="$compilers"
+    	break
+    fi
+done
+
+#
 SHELL="/bin/sh"
 
 case "$PLAT" in
@@ -210,23 +226,26 @@ case "$PLAT" in
 	OS='HI-UX'
 	CFLAGS="$CFLAGS -DHIUX"
 	# if we're using the HIUX compiler, add a few flags.
-	if [ "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
+	    OPTIM=" "
 	fi
 	;;
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
 	# if we're using the HPUX compiler, add a few flags.
-	if [ "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+	    OPTIM=" "
 	fi
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
-	if [ "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+	    OPTIM=" "
 	fi
 	;;
     *-sgi-irix64)
@@ -321,7 +340,7 @@ case "$PLAT" in
 	;;
     *-isc4*)
 	OS='ISC 4'
-	CC=gcc
+	CC='gcc'
 	CFLAGS="$CFLAGS -posix -DISC"
 	LFLAGS="$LFLAGS -posix"
 	LIBS="$LIBS -linet"
@@ -470,18 +489,9 @@ echo " + configured for $OS platform"
 # to use. Settings of CC and OPTIM in Configuration have
 # the highest precedence; next comes any settings from
 # the above "OS-specific" section. If still unset,
-# then we look for some popular compilers in our $PATH
+# then we use the "found" location of COMPILERS above
 # and set a "safe" optimization level
 #
-
-for compilers in "gcc" "cc" "acc" "c89"
-do
-    lookedfor="$lookedfor $compilers"
-    if ./helpers/PrintPath -s $compilers; then
-	COMPILER="$compilers"
-    	break
-    fi
-done
 
 if grep "CC=" Makefile > /dev/null; then
     CC=""	# clear it just in case
