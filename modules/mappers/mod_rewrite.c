@@ -350,7 +350,6 @@ typedef struct {
     int           redirect_limit; /* maximum number of redirects */
 } rewrite_request_conf;
 
-
 /* the (per-child) cache structures.
  */
 typedef struct cache {
@@ -388,6 +387,15 @@ typedef struct result_list {
     const char *string;
 } result_list;
 
+/* context structure for variable lookup and expansion
+ */
+typedef struct {
+    request_rec *r;
+    backrefinfo *briRR;
+    backrefinfo *briRC;
+    const char  *uri;
+    char        *perdir;
+} exp_ctx;
 
 /*
  * +-------------------------------------------------------+
@@ -1578,9 +1586,10 @@ static const char *lookup_header(request_rec *r, const char *name)
 /*
  * generic variable lookup
  */
-static char *lookup_variable(request_rec *r, char *var)
+static char *lookup_variable(char *var, exp_ctx *ctx)
 {
     const char *result;
+    request_rec *r = ctx->r;
     apr_size_t varlen = strlen(var);
 
     /* fast exit */
@@ -1613,8 +1622,10 @@ static char *lookup_variable(request_rec *r, char *var)
             }
             else if (!strncasecmp(var, "LA-U", 4)) {
                 if (r->filename && subreq_ok(r)) {
-                    rr = ap_sub_req_lookup_uri(r->filename, r, NULL);
-                    result = apr_pstrdup(r->pool, lookup_variable(rr, var+5));
+                    rr = ap_sub_req_lookup_uri(ctx->uri, r, NULL);
+                    ctx->r = rr;
+                    result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
+                    ctx->r = r;
                     ap_destroy_sub_req(rr);
 
                     rewritelog((r, 5, NULL,"lookahead: path=%s var=%s -> val=%s",
@@ -1625,8 +1636,10 @@ static char *lookup_variable(request_rec *r, char *var)
             }
             else if (!strncasecmp(var, "LA-F", 4)) {
                 if (r->filename && subreq_ok(r)) {
-                    rr = ap_sub_req_lookup_file(r->filename, r, NULL);
-                    result = apr_pstrdup(r->pool, lookup_variable(rr, var+5));
+                    rr = ap_sub_req_lookup_file(ctx->uri, r, NULL);
+                    ctx->r = rr;
+                    result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
+                    ctx->r = r;
                     ap_destroy_sub_req(rr);
 
                     rewritelog((r, 5, NULL,"lookahead: path=%s var=%s -> val=%s",
@@ -1964,21 +1977,21 @@ static APR_INLINE char *find_char_in_curlies(char *s, int c)
  * are interpreted by a later expansion, producing results that
  * were not intended by the administrator.
  */
-static char *do_expand(request_rec *r, char *input,
-                       backrefinfo *briRR, backrefinfo *briRC)
+static char *do_expand(char *input, exp_ctx *ctx)
 {
     result_list *result, *current;
     result_list sresult[SMALL_EXPANSION];
     unsigned spc = 0;
     apr_size_t span, inputlen, outlen;
     char *p, *c;
+    apr_pool_t *pool = ctx->r->pool;
 
     span = strcspn(input, "\\$%");
     inputlen = strlen(input);
 
     /* fast exit */
     if (inputlen == span) {
-        return apr_pstrdup(r->pool, input);
+        return apr_pstrdup(pool, input);
     }
 
     /* well, actually something to do */
@@ -1996,7 +2009,7 @@ static char *do_expand(request_rec *r, char *input,
         if (current->len) {
             current->next = (spc < SMALL_EXPANSION)
                             ? &(sresult[spc++])
-                            : apr_palloc(r->pool, sizeof(result_list));
+                            : apr_palloc(pool, sizeof(result_list));
             current = current->next;
             current->next = NULL;
             current->len = 0;
@@ -2030,7 +2043,7 @@ static char *do_expand(request_rec *r, char *input,
 
             /* variable lookup */
             else if (*p == '%') {
-                p = lookup_variable(r, apr_pstrmemdup(r->pool, p+2, endp-p-2));
+                p = lookup_variable(apr_pstrmemdup(pool, p+2, endp-p-2), ctx);
 
                 span = strlen(p);
                 current->len = span;
@@ -2066,7 +2079,7 @@ static char *do_expand(request_rec *r, char *input,
                 else {
                     char *map, *dflt;
 
-                    map = apr_pstrmemdup(r->pool, p+2, endp-p-2);
+                    map = apr_pstrmemdup(pool, p+2, endp-p-2);
                     key = map + (key-p-2);
                     *key++ = '\0';
                     dflt = find_char_in_curlies(key, '|');
@@ -2075,10 +2088,10 @@ static char *do_expand(request_rec *r, char *input,
                     }
 
                     /* reuse of key variable as result */
-                    key = lookup_map(r, map, do_expand(r, key, briRR, briRC));
+                    key = lookup_map(ctx->r, map, do_expand(key, ctx));
 
                     if (!key && dflt && *dflt) {
-                        key = do_expand(r, dflt, briRR, briRC);
+                        key = do_expand(dflt, ctx);
                     }
 
                     if (key) {
@@ -2096,7 +2109,7 @@ static char *do_expand(request_rec *r, char *input,
         /* backreference */
         else if (apr_isdigit(p[1])) {
             int n = p[1] - '0';
-            backrefinfo *bri = (*p == '$') ? briRR : briRC;
+            backrefinfo *bri = (*p == '$') ? ctx->briRR : ctx->briRC;
 
             /* see ap_pregsub() in server/util.c */
             if (bri && n <= bri->nsub
@@ -2123,7 +2136,7 @@ static char *do_expand(request_rec *r, char *input,
             if (current->len) {
                 current->next = (spc < SMALL_EXPANSION)
                                 ? &(sresult[spc++])
-                                : apr_palloc(r->pool, sizeof(result_list));
+                                : apr_palloc(pool, sizeof(result_list));
                 current = current->next;
                 current->next = NULL;
             }
@@ -2137,7 +2150,7 @@ static char *do_expand(request_rec *r, char *input,
     } while (p < input+inputlen);
 
     /* assemble result */
-    c = p = apr_palloc(r->pool, outlen + 1); /* don't forget the \0 */
+    c = p = apr_palloc(pool, outlen + 1); /* don't forget the \0 */
     do {
         if (result->len) {
             ap_assert(c+result->len <= p+outlen); /* XXX: can be removed after
@@ -2158,18 +2171,17 @@ static char *do_expand(request_rec *r, char *input,
 /*
  * perform all the expansions on the environment variables
  */
-static void do_expand_env(request_rec *r, data_item *env,
-                          backrefinfo *briRR, backrefinfo *briRC)
+static void do_expand_env(data_item *env, exp_ctx *ctx)
 {
     char *name, *val;
 
     while (env) {
-        name = do_expand(r, env->data, briRR, briRC);
+        name = do_expand(env->data, ctx);
         if ((val = ap_strchr(name, ':')) != NULL) {
             *val++ = '\0';
 
-            apr_table_set(r->subprocess_env, name, val);
-            rewritelog((r, 5, NULL, "setting env variable '%s' to '%s'",
+            apr_table_set(ctx->r->subprocess_env, name, val);
+            rewritelog((ctx->r, 5, NULL, "setting env variable '%s' to '%s'",
                         name, val));
         }
 
@@ -2241,11 +2253,10 @@ static void add_cookie(request_rec *r, char *s)
     return;
 }
 
-static void do_expand_cookie(request_rec *r, data_item *cookie,
-                             backrefinfo *briRR, backrefinfo *briRC)
+static void do_expand_cookie(data_item *cookie, exp_ctx *ctx)
 {
     while (cookie) {
-        add_cookie(r, do_expand(r, cookie->data, briRR, briRC));
+        add_cookie(ctx->r, do_expand(cookie->data, ctx));
         cookie = cookie->next;
     }
 
@@ -3298,13 +3309,11 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
 /*
  * Apply a single rewriteCond
  */
-static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
-                              char *perdir, backrefinfo *briRR,
-                              backrefinfo *briRC)
+static int apply_rewrite_cond(rewritecond_entry *p, exp_ctx *ctx)
 {
-    char *input = do_expand(r, p->input, briRR, briRC);
+    char *input = do_expand(p->input, ctx);
     apr_finfo_t sb;
-    request_rec *rsub;
+    request_rec *rsub, *r = ctx->r;
     regmatch_t regmatch[MAX_NMATCH];
     int rc = 0;
 
@@ -3390,9 +3399,9 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
         /* update briRC backref info */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
-            briRC->source = input;
-            briRC->nsub   = p->regexp->re_nsub;
-            memcpy(briRC->regmatch, regmatch, sizeof(regmatch));
+            ctx->briRC->source = input;
+            ctx->briRC->nsub   = p->regexp->re_nsub;
+            memcpy(ctx->briRC->regmatch, regmatch, sizeof(regmatch));
         }
         break;
     }
@@ -3401,8 +3410,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         rc = !rc;
     }
 
-    rewritelog((r, 4, perdir, "RewriteCond: input='%s' pattern='%s%s%s'%s => %s",
-                input, (p->flags & CONDFLAG_NOTMATCH) ? "!" : "",
+    rewritelog((r, 4, ctx->perdir, "RewriteCond: input='%s' pattern='%s%s%s'%s "
+                "=> %s", input, (p->flags & CONDFLAG_NOTMATCH) ? "!" : "",
                 (p->ptype == CONDPAT_STR_EQ) ? "=" : "", p->pattern,
                 (p->flags & CONDFLAG_NOCASE) ? " [NC]" : "",
                 rc ? "matched" : "not-matched"));
@@ -3422,8 +3431,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     char *newuri;
     regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
-    backrefinfo *briRR = NULL;
-    backrefinfo *briRC = NULL;
+    exp_ctx *ctx = NULL;
     int prefixstrip;
     int failed;
     apr_array_header_t *rewriteconds;
@@ -3483,16 +3491,21 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Else create the RewriteRule `regsubinfo' structure which
      *  holds the substitution information.
      */
-    briRR = (backrefinfo *)apr_palloc(r->pool, sizeof(backrefinfo));
+    ctx         = apr_palloc(r->pool, sizeof(*ctx));
+    ctx->r      = r;
+    ctx->perdir = perdir;
+    ctx->uri    = uri;
+
+    ctx->briRR  = apr_palloc(r->pool, sizeof(*ctx->briRR));
     if (!rc && (p->flags & RULEFLAG_NOTMATCH)) {
         /*  empty info on negative patterns  */
-        briRR->source = "";
-        briRR->nsub   = 0;
+        ctx->briRR->source = "";
+        ctx->briRR->nsub   = 0;
     }
     else {
-        briRR->source = apr_pstrdup(r->pool, uri);
-        briRR->nsub   = regexp->re_nsub;
-        memcpy((void *)(briRR->regmatch), (void *)(regmatch),
+        ctx->briRR->source = apr_pstrdup(r->pool, uri);
+        ctx->briRR->nsub   = regexp->re_nsub;
+        memcpy((void *)(ctx->briRR->regmatch), (void *)(regmatch),
                sizeof(regmatch));
     }
 
@@ -3501,9 +3514,9 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  empty backrefinfo, i.e. not subst parts
      *  (this one is adjusted inside apply_rewrite_cond() later!!)
      */
-    briRC = (backrefinfo *)apr_pcalloc(r->pool, sizeof(backrefinfo));
-    briRC->source = "";
-    briRC->nsub   = 0;
+    ctx->briRC = apr_pcalloc(r->pool, sizeof(*ctx->briRC));
+    ctx->briRC->source = "";
+    ctx->briRC->nsub   = 0;
 
     /*
      *  Ok, we already know the pattern has matched, but we now
@@ -3517,7 +3530,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     failed = 0;
     for (i = 0; i < rewriteconds->nelts; i++) {
         c = &conds[i];
-        rc = apply_rewrite_cond(r, c, perdir, briRR, briRC);
+        rc = apply_rewrite_cond(c, ctx);
         if (c->flags & CONDFLAG_ORNEXT) {
             /*
              *  The "OR" case
@@ -3583,8 +3596,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  (`RewriteRule <pat> - [E=...,CO=...,T=...]')
      */
     if (output[0] == '-' && !output[1]) {
-        do_expand_env(r, p->env, briRR, briRC);
-        do_expand_cookie(r, p->cookie, briRR, briRC);
+        do_expand_env(p->env, ctx);
+        do_expand_cookie(p->cookie, ctx);
         if (p->forced_mimetype) {
             rewritelog((r, 2, perdir, "remember %s to have MIME-type '%s'",
                         r->filename, p->forced_mimetype));
@@ -3600,20 +3613,20 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  that there is something to replace, so we create the
      *  substitution URL string in `newuri'.
      */
-    newuri = do_expand(r, output, briRR, briRC);
+    newuri = do_expand(output, ctx);
     rewritelog((r, 2, perdir, "rewrite %s -> %s", uri, newuri));
 
     /*
      *  Additionally do expansion for the environment variable
      *  strings (`RewriteRule .. .. [E=<string>]').
      */
-    do_expand_env(r, p->env, briRR, briRC);
+    do_expand_env(p->env, ctx);
 
     /*
      *  Also set cookies for any cookie strings
      *  (`RewriteRule .. .. [CO=<string>]').
      */
-    do_expand_cookie(r, p->cookie, briRR, briRC);
+    do_expand_cookie(p->cookie, ctx);
 
     /*
      *  Now replace API's knowledge of the current URI:
