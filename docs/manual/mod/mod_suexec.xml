@@ -36,6 +36,12 @@ later.</compatibility>
     requests are still processes with the user specified in the User
     directive. This directive replaces the Apache 1.3 configuration of
     using the User and Group directives inside of VirtualHosts.</p>
+
+    <example>
+    <title>Example</title>
+    SuexecUserGroup nobody nogroup
+    </example>
+
 </usage>
 
 </directivesynopsis>
