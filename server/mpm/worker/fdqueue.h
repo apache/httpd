@@ -87,10 +87,11 @@ typedef struct fd_queue {
 
 int ap_queue_init(FDQueue *queue, int queue_size, apr_pool_t *a);
 int ap_queue_push(FDQueue *queue, apr_socket_t *sd, apr_pool_t *p);
-apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p, int block_if_empty);
+apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p);
 int ap_queue_size(FDQueue *queue);
 int ap_queue_full(FDQueue *queue);
 int ap_block_on_queue(FDQueue *queue);
 void ap_queue_signal_all_wakeup(FDQueue *queue);
+int ap_increase_blanks(FDQueue *queue);
 
 #endif /* FDQUEUE_H */

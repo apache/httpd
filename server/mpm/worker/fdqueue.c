@@ -57,112 +57,116 @@
  */
 
 #include "fdqueue.h"
-#include "apr_pools.h"
 
-/* Assumption: queue itself is allocated by the user */
 /* Assumption: increment and decrement are atomic on int */
 
-int ap_queue_size(FDQueue *queue) {
-    return ((queue->tail - queue->head + queue->bounds) % queue->bounds);
-}
-
-int ap_queue_full(FDQueue *queue) {
-    return(queue->blanks <= 0);
-}
-
-int ap_block_on_queue(FDQueue *queue) {
-#if 0
+int ap_increase_blanks(FDQueue *queue) 
+{
     if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
         return FD_QUEUE_FAILURE;
     }
-#endif
-    if (ap_queue_full(queue)) {
-        pthread_cond_wait(&queue->not_full, &queue->one_big_mutex);
-    }
-#if 0
+    queue->blanks++;
     if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
         return FD_QUEUE_FAILURE;
     }
-#endif
     return FD_QUEUE_SUCCESS;
 }
 
-static int increase_blanks(FDQueue *queue) {
-    queue->blanks++;
-    return FD_QUEUE_SUCCESS;
-}
-
-static apr_status_t ap_queue_destroy(void *data) {
+static apr_status_t ap_queue_destroy(void *data) 
+{
     FDQueue *queue = data;
     /* Ignore errors here, we can't do anything about them anyway */
-    pthread_cond_destroy(&queue->not_empty);
-    pthread_cond_destroy(&queue->not_full);
+    pthread_cond_destroy(&(queue->not_empty));
+    pthread_cond_destroy(&(queue->not_full));
     pthread_mutex_destroy(&queue->one_big_mutex);
     return FD_QUEUE_SUCCESS;
 }
 
-int ap_queue_init(FDQueue *queue, int queue_capacity, apr_pool_t *a) {
+int ap_queue_init(FDQueue *queue, int queue_capacity, apr_pool_t *a) 
+{
     int i;
     int bounds = queue_capacity + 1;
+    pthread_cond_t not_empty = PTHREAD_COND_INITIALIZER;
+    pthread_cond_t not_full = PTHREAD_COND_INITIALIZER;
+    queue->not_empty = not_empty;
+    queue->not_full = not_full;
     pthread_mutex_init(&queue->one_big_mutex, NULL);
-    pthread_cond_init(&queue->not_empty, NULL);
-    pthread_cond_init(&queue->not_full, NULL);
     queue->head = queue->tail = 0;
     queue->data = apr_palloc(a, bounds * sizeof(FDQueueElement));
     queue->bounds = bounds;
-    queue->blanks = queue_capacity;
+    queue->blanks = 0;
     apr_pool_cleanup_register(a, queue, ap_queue_destroy, apr_pool_cleanup_null);
     for (i=0; i < bounds; ++i)
         queue->data[i].sd = NULL;
     return FD_QUEUE_SUCCESS;
 }
 
-int ap_queue_push(FDQueue *queue, apr_socket_t *sd, apr_pool_t *p) {
+int ap_queue_push(FDQueue *queue, apr_socket_t *sd, apr_pool_t *p) 
+{
+    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
+    }
     queue->data[queue->tail].sd = sd;
-    queue->data[queue->tail].p  = p;
+    queue->data[queue->tail].p = p;
     queue->tail = (queue->tail + 1) % queue->bounds;
     queue->blanks--;
-    pthread_cond_signal(&queue->not_empty);
-#if 0
-    if (queue->head == (queue->tail + 1) % queue->bounds) {
-#endif
-    if (ap_queue_full(queue)) {
-        pthread_cond_wait(&queue->not_full, &queue->one_big_mutex);
+    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
     }
+    pthread_cond_signal(&(queue->not_empty));
     return FD_QUEUE_SUCCESS;
 }
 
-apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p, int block_if_empty) {
-    increase_blanks(queue);
-    /* We have just removed one from the queue.  By definition, it is
-     * no longer full.  We can ALWAYS signal the listener thread at
-     * this point.  However, the original code didn't do it this way,
-     * so I am leaving the original code in, just commented out.  BTW,
-     * originally, the increase_blanks wasn't in this function either.
-     *
-     if (queue->blanks > 0) {
-     */
-    pthread_cond_signal(&queue->not_full);
-
-    /*    }    */
+apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p) 
+{
+    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
+    }
     if (queue->head == queue->tail) {
-        if (block_if_empty) {
-            pthread_cond_wait(&queue->not_empty, &queue->one_big_mutex);
-fprintf(stderr, "Found a non-empty queue  :-)\n");
-        }
+        pthread_cond_wait(&(queue->not_empty), &queue->one_big_mutex);
     } 
     
     *sd = queue->data[queue->head].sd;
-    *p  = queue->data[queue->head].p;
+    *p = queue->data[queue->head].p;
     queue->data[queue->head].sd = NULL;
-    if (*sd != NULL) {
+    queue->data[queue->head].p = NULL;
+    if (sd != NULL) {
         queue->head = (queue->head + 1) % queue->bounds;
+    }
+    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
+    }
+    if (queue->blanks > 0) {
+        pthread_cond_signal(&(queue->not_full));
     }
     return APR_SUCCESS;
 }
 
+int ap_queue_size(FDQueue *queue) 
+{
+    return ((queue->tail - queue->head + queue->bounds) % queue->bounds);
+}
+
+int ap_queue_full(FDQueue *queue) 
+{
+    return(queue->blanks <= 0);
+}
+
+int ap_block_on_queue(FDQueue *queue) 
+{
+    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
+    }
+    if (ap_queue_full(queue)) {
+        pthread_cond_wait(&(queue->not_full), &queue->one_big_mutex);
+    }
+    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+        return FD_QUEUE_FAILURE;
+    }
+    return FD_QUEUE_SUCCESS;
+}
+
 void ap_queue_signal_all_wakeup(FDQueue *queue)
 {
-fprintf(stderr, "trying to broadcast to all workers\n");
-    pthread_cond_broadcast(&queue->not_empty);
+    pthread_cond_broadcast(&(queue->not_empty));
 }

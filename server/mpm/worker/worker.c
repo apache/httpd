@@ -510,7 +510,6 @@ static void check_infinite_requests(void)
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
-fprintf(stderr, "looking at pipe of death\n");
     apr_lock_acquire(pipe_of_death_mutex);
     if (!workers_may_exit) {
         apr_status_t ret;
@@ -684,7 +683,8 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     free(ti);
 
     while (!workers_may_exit) {
-        ap_queue_pop(worker_queue, &csd, &ptrans, 1);
+        ap_queue_pop(worker_queue, &csd, &ptrans);
+        ap_increase_blanks(worker_queue);
         process_socket(ptrans, csd, process_slot, thread_slot);
         requests_this_child--;
         apr_pool_clear(ptrans);
@@ -729,21 +729,21 @@ static void *start_threads(apr_thread_t *thd, void * dummy)
     apr_thread_t **threads = ts->threads;
     apr_threadattr_t *thread_attr = ts->threadattr;
     int child_num_arg = ts->child_num_arg;
-    int i;
     int my_child_num = child_num_arg;
     proc_info *my_info = NULL;
     apr_status_t rv;
+    int i = 0;
     int threads_created = 0;
     apr_thread_t *listener;
 
+    my_info = (proc_info *)malloc(sizeof(proc_info));
+    my_info->pid = my_child_num;
+    my_info->tid = i;
+    my_info->sd = 0;
+    apr_pool_create(&my_info->tpool, pchild);
+    apr_thread_create(&listener, thread_attr, listener_thread, my_info, pchild);
     while (1) {
-        my_info = (proc_info *)malloc(sizeof(proc_info));
-        my_info->pid = my_child_num;
-        my_info->tid = i;
-        my_info->sd = 0;
-        apr_pool_create(&my_info->tpool, pchild);
-	apr_thread_create(&listener, thread_attr, listener_thread, my_info, pchild);
-        for (i=0; i < ap_threads_per_child; i++) {
+        for (i=1; i < ap_threads_per_child; i++) {
             int status = ap_scoreboard_image->servers[child_num_arg][i].status;
 
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
