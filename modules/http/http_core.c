@@ -985,8 +985,8 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             return eFileTypeSCRIPT;
         }
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-         "Failed to start a '%s' file as a script.\r\n\t"
-         "COMSPEC variable is missing from the environment.", ext);
+         "Failed to start a '%s' file as a script." APR_EOL_STR
+         "\tCOMSPEC variable is missing from the environment.", ext);
         return eFileTypeUNKNOWN;
     }
 
