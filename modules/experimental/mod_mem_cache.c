@@ -508,7 +508,7 @@ static int write_body(cache_handle_t *h, apr_bucket_brigade *b)
         /* This should not happen, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
          */
-        AP_DEBUG_ASSERT(h->cache_object->count > mobj->m_len);
+        AP_DEBUG_ASSERT(h->cache_obj->count > mobj->m_len);
     }
 
     return OK;
