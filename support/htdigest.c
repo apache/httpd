@@ -251,10 +251,13 @@ int main(int argc, char *argv[])
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
-	if (apr_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt) != APR_SUCCESS) {
-	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
-		    argv[2]);
-	    perror("apr_open");
+	rv = apr_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+        if (rv != APR_SUCCESS) {
+            char errmsg[120];
+
+	    fprintf(stderr, "Could not open passwd file %s for writing: %s\n",
+		    argv[2],
+                    apr_strerror(rv, errmsg, sizeof errmsg));
 	    exit(1);
 	}
 	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
