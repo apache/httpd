@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Set r->headers_out when sending responses from the proxy.
+     This fixes things such as the logging of headers sent from
+     the proxy.  PR#659  [Marc Slemko]
+
   *) support/httpd_monitor is no longer distributed because the 
      scoreboard should not be file based if at all possible. Use
      mod_status to see current server snapshot.

@@ -397,8 +397,10 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     {
 	if (hdr[i].field == NULL || hdr[i].value == NULL ||
 	    hdr[i].value[0] == '\0') continue;
-	if (!r->assbackwards)
+	if (!r->assbackwards) {
 	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
+	    table_set(r->headers_out, hdr[i].field, hdr[i].value);
+	}
 	if (cache != NULL)
 	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
 		       NULL) == -1)

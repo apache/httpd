@@ -266,7 +266,8 @@ struct hdr_entry *proxy_get_header(array_header *hdrs_arr, const char *name);
 struct hdr_entry *proxy_add_header(array_header *hdrs_arr, char *field,
     char *value, int rep);
 void proxy_del_header(array_header *hdrs_arr, const char *field);
-void proxy_send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr);
+void proxy_send_headers(request_rec *r, const char *respline, 
+    array_header *hdrs_arr);
 int proxy_liststr(const char *list, const char *val);
 void proxy_hash(const char *it, char *val,int ndepth,int nlength);
 int proxy_hex2sec(const char *x);

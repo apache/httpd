@@ -512,14 +512,18 @@ proxy_del_header(array_header *hdrs_arr, const char *field)
 }
 
 /*
- * Sends response line and headers
+ * Sends response line and headers.  Uses the client fd and the 
+ * headers_out array from the passed request_rec to talk to the client
+ * and to properly set the headers it sends for things such as logging.
+ * 
  * A timeout should be set before calling this routine.
  */
 void
-proxy_send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr)
+proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs_arr)
 {
     struct hdr_entry *hdrs;
     int i;
+    BUFF *fp = r->connection->client;
 
     hdrs = (struct hdr_entry *)hdrs_arr->elts;
 
@@ -529,6 +533,7 @@ proxy_send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr)
     {
         if (hdrs[i].field == NULL) continue;
 	bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, "\015\012", NULL);
+	table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
     }
 
     bputs("\015\012", fp);

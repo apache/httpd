@@ -571,7 +571,7 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	r->status = c->status;
 	if (!r->assbackwards) {
 	    soft_timeout("proxy send headers", r);
-	    proxy_send_headers(r->connection->client, c->resp_line,  c->hdrs);
+	    proxy_send_headers(r, c->resp_line, c->hdrs);
 	    kill_timeout(r);
 	}
 	bsetopt(r->connection->client, BO_BYTECT, &zero);
@@ -800,8 +800,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    r->status = c->status;
 	    if (!r->assbackwards) {
 		soft_timeout("proxy send headers", r);
-		proxy_send_headers(r->connection->client, c->resp_line,
-		    c->hdrs);
+		proxy_send_headers(r, c->resp_line, c->hdrs);
 		kill_timeout(r);
 	    }
 	    bsetopt(r->connection->client, BO_BYTECT, &zero);
