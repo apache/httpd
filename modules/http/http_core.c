@@ -99,7 +99,7 @@
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
 
-#define AP_MIN_SENDFILE_BYTES           (8*1024)
+#define AP_MIN_SENDFILE_BYTES           (256)
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
