@@ -482,7 +482,7 @@
     <p>Die <em>MODUL-LISTE</em> in den Optionen
     <code>--enable-modules</code> und <code>--enable-mods-shared</code>
     ist &#252;blicherweise eine durch Leerzeichen getrennte Liste von
-    Modul-Bezeichnern. Zum Beispiel k&#246;nnen zum Aktivieren vom
+    Modul-Bezeichnern. Zum Beispiel k&#246;nnen zum Aktivieren von
     <module>mod_dav</module> und <module>mod_info</module> beide
     benutzt werden, sowohl</p>
 
