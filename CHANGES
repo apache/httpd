@@ -1,4 +1,8 @@
 Changes with Apache 2.0.36
+
+  *) Perchild MPM is now correctly deemed as experimental and is now
+     located in server/mpm/experimental.  [Justin Erenkrantz]
+
   *) Fix segfault in mod_mem_cache when garabge collecting an expired
      cache entry.  [Bill Stoddard]
 
