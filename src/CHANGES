@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) ap_slack() moved out of main/util.c into ap/ap_slack.c as part of
+     the libap consolidation work.  [Ken Coar]
+
   *) ap_snprintf() with a len of 0 behaved like sprintf().  This is not
      useful, and isn't what the standards require.  Now it returns 0
      and writes nothing.  [Dean Gaudet]
