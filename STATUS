@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/10 04:45:22 $]
+Last modified at [$Date: 2004/07/10 05:01:31 $]
 
 Release:
 
@@ -210,7 +210,7 @@ PATCHES TO BACKPORT FROM 2.1
        is set in r->subprocess_env allow mismatched query strings to pass.
        PR: 27758
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/aaa/mod_auth_digest.c?r1=1.86&r2=1.87
-       +1: geoff, nd
+       +1: geoff, nd, pquerna
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
