@@ -20,9 +20,9 @@
 
 <language id="ja">
     <name>Japanese</name>
-    <charset>ISO-2022-JP</charset>
+    <charset>EUC-JP</charset>
     <source-ext>.xml.ja</source-ext>
-    <target-ext>.html.ja.jis</target-ext>
+    <target-ext>.html.ja.euc-jp</target-ext>
 
     <chm>
         <lang>0x411 Japanese</lang>
