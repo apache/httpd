@@ -1233,8 +1233,7 @@ const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
     if (err != NULL) return err;
 
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
-    strncpy (server_root, arg, sizeof(server_root)-1);
-    server_root[sizeof(server_root)-1] = '\0';
+    ap_cpystrn (server_root, arg, sizeof(server_root));
     return NULL;
 }
 
@@ -1571,8 +1570,7 @@ const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
 	return pstrcat(cmd->pool, "CoreDumpDirectory ", arg, 
 	    " does not exist or is not a directory", NULL);
     }
-    strncpy(coredump_dir, arg, sizeof(coredump_dir)-1);
-    coredump_dir[sizeof(coredump_dir)-1] = '\0';
+    ap_cpystrn(coredump_dir, arg, sizeof(coredump_dir));
     return NULL;
 }
 

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) migration from strncpy() to our "enhanced" version called
+     ap_cpystrn() for performance and functionality reasons.
+     Located in libap.a.  [Jim Jagielski]
+
   *) table_set() and table_unset() did not deal correctly with
      multiple occurrences of the same key. [Stephen Scheck
 	 <sscheck@infonex.net>, Ben Laurie] PR#1604

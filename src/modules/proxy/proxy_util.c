@@ -639,7 +639,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     /* now split into directory levels */
 
     for (i = k = d = 0; d < ndepth; ++d) {
-	strncpy(&val[i], &tmp[k], nlength);
+	ap_cpystrn(&val[i], &tmp[k], nlength);
 	k += nlength;
 	val[i + nlength] = '/';
 	i += nlength + 1;
@@ -689,7 +689,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     /* now split into directory levels */
 
     for (i = k = d = 0; d < ndepth; ++d) {
-	strncpy(&val[i], &tmp[k], nlength);
+	ap_cpystrn(&val[i], &tmp[k], nlength);
 	k += nlength;
 	val[i + nlength] = '/';
 	i += nlength + 1;

@@ -343,8 +343,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	      link_ptr[n - 1] = '\0';
 	    ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s", url+hostlen, (url[strlen(url) - 1] == '/' ? "" : "/"), filename);
 	    ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s %s</A>\n", buf, filename, filename, link_ptr);
-	    strncpy(buf, buf2, sizeof(buf) - 1);
-	    buf[sizeof(buf) - 1] = '\0';
+	    ap_cpystrn(buf, buf2, sizeof(buf));
 	    n = strlen(buf);
 	}
 	else if (buf[0] == 'd' || buf[0] == '-' || buf[0] == 'l' || isdigit(buf[0])) {
@@ -380,8 +379,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    else {
 		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\n", buf, filename, filename);
 	    }
-	    strncpy(buf, buf2, sizeof(buf));
-	    buf[sizeof(buf) - 1] = '\0';
+	    ap_cpystrn(buf, buf2, sizeof(buf));
 	    n = strlen(buf);
 	}
 

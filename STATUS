@@ -60,12 +60,9 @@ Committed Code Changes:
     * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool
       (take 2)
     * Ken's [PATCH] for PR#1195 (" in realm names)
+    * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
 
 Available Patches:
-
-    * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
-	<199712262015.PAA10624@devsys.jaguNET.com>
-	Status: Jim +1, Dirk +1, Marc wants to think about the name, Dean +1
 
     * [PATCH] mod_digest/1599: proxy authentication using the digest auth
       scheme never succeeds (fwd)

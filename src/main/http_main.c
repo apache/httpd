@@ -1681,19 +1681,12 @@ int update_child_status(int child_num, int status, request_rec *r)
 	ss->conn_bytes = (unsigned long) 0;
     }
     if (r) {
-	int slot_size;
 	conn_rec *c = r->connection;
-	slot_size = sizeof(ss->client) - 1;
-	strncpy(ss->client, get_remote_host(c, r->per_dir_config,
-					    REMOTE_NOLOOKUP), slot_size);
-	ss->client[slot_size] = '\0';
-	slot_size = sizeof(ss->request) - 1;
-	strncpy(ss->request, (r->the_request ? r->the_request :
-			      "NULL"), slot_size);
-	ss->request[slot_size] = '\0';
-	slot_size = sizeof(ss->vhost) - 1;
-	strncpy(ss->vhost, r->server->server_hostname, slot_size);
-	ss->vhost[slot_size] = '\0';
+	ap_cpystrn(ss->client, get_remote_host(c, r->per_dir_config,
+			      REMOTE_NOLOOKUP), sizeof(ss->client));
+	ap_cpystrn(ss->request, (r->the_request ? r->the_request :
+			      "NULL"), sizeof(ss->request));
+	ap_cpystrn(ss->vhost, r->server->server_hostname, sizeof(ss->vhost));
     }
 #endif
 
@@ -3513,22 +3506,18 @@ int main(int argc, char *argv[])
     ptrans = make_sub_pool(pconf);
 
     server_argv0 = argv[0];
-    strncpy(server_root, HTTPD_ROOT, sizeof(server_root) - 1);
-    server_root[sizeof(server_root) - 1] = '\0';
-    strncpy(server_confname, SERVER_CONFIG_FILE, sizeof(server_root) - 1);
-    server_confname[sizeof(server_confname) - 1] = '\0';
+    ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
+    ap_cpystrn(server_confname, SERVER_CONFIG_FILE, sizeof(server_confname));
 
     setup_prelinked_modules();
 
     while ((c = getopt(argc, argv, "Xd:f:vVhlZ:")) != -1) {
 	switch (c) {
 	case 'd':
-	    strncpy(server_root, optarg, sizeof(server_root) - 1);
-	    server_root[sizeof(server_root) - 1] = '\0';
+	    ap_cpystrn(server_root, optarg, sizeof(server_root));
 	    break;
 	case 'f':
-	    strncpy(server_confname, optarg, sizeof(server_confname) - 1);
-	    server_confname[sizeof(server_confname) - 1] = '\0';
+	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
 	    printf("Server version %s.\n", SERVER_VERSION);
@@ -4315,10 +4304,8 @@ int main(int argc, char *argv[])
     ptrans = make_sub_pool(pconf);
 
     server_argv0 = argv[0];
-    strncpy(server_root, HTTPD_ROOT, sizeof(server_root) - 1);
-    server_root[sizeof(server_root) - 1] = '\0';
-    strncpy(server_confname, SERVER_CONFIG_FILE, sizeof(server_root) - 1);
-    server_confname[sizeof(server_confname) - 1] = '\0';
+    ap_cpystrn(server_root, HTTPD_ROOT, sizeof(server_root));
+    ap_cpystrn(server_confname, SERVER_CONFIG_FILE, sizeof(server_confname));
 
     setup_prelinked_modules();
 
@@ -4344,12 +4331,10 @@ int main(int argc, char *argv[])
 	    break;
 #endif /* WIN32 */
 	case 'd':
-	    strncpy(server_root, optarg, sizeof(server_root) - 1);
-	    server_root[sizeof(server_root) - 1] = '\0';
+	    ap_cpystrn(server_root, optarg, sizeof(server_root));
 	    break;
 	case 'f':
-	    strncpy(server_confname, optarg, sizeof(server_confname) - 1);
-	    server_confname[sizeof(server_confname) - 1] = '\0';
+	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
 	    printf("Server version %s.\n", SERVER_VERSION);

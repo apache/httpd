@@ -925,3 +925,7 @@ extern int raise_sigstop_flags;
 #else
 #define RAISE_SIGSTOP(x)
 #endif
+
+/* Our own home-brewed strncpy replacement */
+API_EXPORT(char *) ap_cpystrn(char *dst, const char *src, size_t dst_size);
+

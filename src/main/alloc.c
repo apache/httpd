@@ -536,8 +536,7 @@ API_EXPORT(char *) pstrndup(struct pool *a, const char *s, int n)
     if (s == NULL)
 	return NULL;
     res = palloc(a, n + 1);
-    strncpy(res, s, n);
-    res[n] = '\0';
+    ap_cpystrn(res, s, n);
     return res;
 }
 

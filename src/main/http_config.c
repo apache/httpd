@@ -1134,8 +1134,7 @@ void init_config_globals(pool *p)
     /* Global virtual host hash bucket pointers.  Init to null. */
     init_vhost_config(p);
 
-    strncpy(coredump_dir, server_root, sizeof(coredump_dir) - 1);
-    coredump_dir[sizeof(coredump_dir) - 1] = '\0';
+    ap_cpystrn(coredump_dir, server_root, sizeof(coredump_dir));
 }
 
 server_rec *init_server_config(pool *p)
