@@ -55,35 +55,40 @@
  * originally written at the National Center for Supercomputing Applications,
  * University of Illinois, Urbana-Champaign.
  */
-#include "scoreboard.h"
-#include "unixd.h"
 
-#ifndef APACHE_MPM_WORKER_H
-#define APACHE_MPM_WORKER_H
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lock.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
-#define WORKER_MPM
+#include "httpd.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "http_main.h"
+#include "mpm.h"
+#include "mpm_common.h"
+#include "ap_mpm.h"
+#include "ap_listen.h"
+#include "mpm_default.h"
 
-#define MPM_NAME "Worker"
+#define RESTART_CHAR '$'
+#define GRACEFUL_CHAR '!'
 
-#define AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
-#define AP_MPM_WANT_WAIT_OR_TIMEOUT
-#define AP_MPM_WANT_PROCESS_CHILD_STATUS
-#define AP_MPM_WANT_SET_PIDFILE
-#define AP_MPM_WANT_SET_SCOREBOARD
-#define AP_MPM_WANT_SET_LOCKFILE
-#define AP_MPM_WANT_SET_MAX_REQUESTS
-#define AP_MPM_WANT_SET_COREDUMPDIR
-#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-#define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+#define AP_RESTART  0
+#define AP_GRACEFUL 1
 
-#define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
-#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
-#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
-#define MPM_ACCEPT_FUNC unixd_accept
+typedef struct ap_pod_t ap_pod_t;
 
-extern int ap_threads_per_child;
-extern int ap_max_daemons_limit;
-extern server_rec *ap_server_conf;
-extern char ap_coredump_dir[MAX_STRING_LEN];
+struct ap_pod_t {
+    apr_file_t *pod_in;
+    apr_file_t *pod_out;
+    apr_pool_t *p;
+    apr_sockaddr_t *sa;
+};
 
-#endif /* APACHE_MPM_WORKER_H */
+AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod);
+AP_DECLARE(int) ap_mpm_pod_check(ap_pod_t *pod);
+AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod);
+AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod, int graceful);
+AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num, int graceful);

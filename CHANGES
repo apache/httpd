@@ -1,5 +1,9 @@
 Changes with Apache 2.0.32-dev
  
+  *) Remove all signals from the worker MPM's child process.  Instead,
+     the parent uses the Pipe of Death for all communication with the
+     child processes.  [Ryan Bloom]
+
   *) Fix prefork to not kill the parent if a child hits a resource shortage
      on accept().  [Greg Ames]
 

@@ -101,6 +101,7 @@
 #include "http_core.h"          /* for get_remote_host */ 
 #include "http_connection.h"
 #include "ap_mpm.h"
+#include "pod.h"
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
@@ -695,10 +696,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                                  rv);
                 }
             }
-            if (ap_mpm_pod_check(pod) == APR_SUCCESS) {
-                signal_workers();
-                break;
-            }
         }
         else {
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
@@ -758,16 +755,6 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
-}
-
-static int check_signal(int signum)
-{
-    switch (signum) {
-        case SIGTERM:
-        case SIGINT:
-            return 1;
-    }                                                                           
-    return 0;
 }
 
 static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
@@ -893,6 +880,10 @@ static void child_main(int child_num_arg)
 
     /* done with init critical section */
 
+    /* Just use the standard apr_setup_signal_thread to block all signals
+     * from being received.  The child processes no longer use signals for
+     * any communication with the parent process.
+     */
     rv = apr_setup_signal_thread();
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -947,24 +938,28 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    apr_signal_thread(check_signal);
+    /* Watch for any messages from the parent over the POD */
+    while (1) {
+        rv = ap_mpm_pod_check(pod);
+        if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+            signal_workers();
+            break;
+        }
+    }
 
-    signal_workers();       /* helps us terminate a little more quickly when 
-                             * the dispatch of the signal thread
-                             * beats the Pipe of Death and the browsers
-                             */
-    
-    /* A terminating signal was received. Now join each of the workers to 
-     * clean them up.
-     *   If the worker already exited, then the join frees their resources 
-     *   and returns.
-     *   If the worker hasn't exited, then this blocks until they have (then
-     *   cleans up).
-     */
-    apr_thread_join(&rv, start_thread_id);
-    for (i = 0; i < ap_threads_per_child; i++) {
-        if (threads[i]) { /* if we ever created this thread */
-            apr_thread_join(&rv, threads[i]);
+    if (rv == AP_GRACEFUL) {
+        /* A terminating signal was received. Now join each of the workers to 
+         * clean them up.
+         *   If the worker already exited, then the join frees their resources 
+         *   and returns.
+         *   If the worker hasn't exited, then this blocks until they have (then
+         *   cleans up).
+         */
+        apr_thread_join(&rv, start_thread_id);
+        for (i = 0; i < ap_threads_per_child; i++) {
+            if (threads[i]) { /* if we ever created this thread */
+                apr_thread_join(&rv, threads[i]);
+            }
         }
     }
 
@@ -1027,16 +1022,6 @@ static int make_child(server_rec *s, int slot)
     ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].pid = pid;
     return 0;
-}
-
-/* If there aren't many connections coming in from the network, the child 
- * processes may need to be awakened from their network i/o waits.
- * The pipe of death is an effective prod.
- */
-   
-static void wake_up_and_die(void) 
-{
-    ap_mpm_pod_killpg(pod, ap_daemons_limit);
 }
 
 /* start up a bunch of children */
@@ -1158,7 +1143,7 @@ static void perform_idle_server_maintenance(void)
 
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
-        ap_mpm_pod_signal(pod);
+        ap_mpm_pod_signal(pod, TRUE);
         idle_spawn_rate = 1;
     }
     else if (idle_thread_count < min_spare_threads) {
@@ -1373,12 +1358,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
-        wake_up_and_die();
-
-        if (ap_os_killpg(getpgrp(), SIGTERM) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "killpg SIGTERM");
-        }
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
@@ -1413,12 +1393,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_scoreboard_image->global->running_generation = ap_my_generation;
     update_scoreboard_global();
     
-    /* wake up the children...time to die.  But we'll have more soon */
-    wake_up_and_die();
-    
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                      AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
+        /* wake up the children...time to die.  But we'll have more soon */
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+    
 
         /* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.
@@ -1430,10 +1410,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        if (ap_os_killpg(getpgrp(), SIGTERM) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, 
-                         "killpg SIGTERM");
-        }
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                     "SIGHUP received.  Attempting to restart");
