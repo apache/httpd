@@ -234,7 +234,7 @@ static void ap_log_set_writer_init(ap_log_writer_init *handle);
 static void ap_log_set_writer(ap_log_writer *handle);
 static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
-static buffered_logs = 0; /* default unbuffered */
+static int buffered_logs = 0; /* default unbuffered */
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
  * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
