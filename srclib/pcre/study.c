@@ -441,7 +441,7 @@ if ((re->options & (PCRE_ANCHORED|PCRE_FIRSTSET|PCRE_STARTLINE)) != 0)
 
 tables = re->tables;
 if (tables == NULL)
-  (void)pcre_fullinfo(external_re, NULL, PCRE_INFO_DEFAULT_TABLES, &tables);
+  (void)pcre_fullinfo(external_re, NULL, PCRE_INFO_DEFAULT_TABLES, (void*)&tables);
 
 compile_block.lcc = tables + lcc_offset;
 compile_block.fcc = tables + fcc_offset;
