@@ -415,11 +415,8 @@ static const char *apr1_id = "$apr1$";
  * licenced as stated at the top of this file.
  */
 
-static void to64 __P((char *, unsigned long, int));
-
 static void to64(char *s, unsigned long v, int n)
 {
-static void to64 __P((char *, unsigned long, int));
     static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
 	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -602,6 +599,7 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	 */
 #ifdef WIN32
 	return "crypt() unavailable on Win32, cannot validate password";
+    }
 #else
 	crypt_pw = crypt(passwd, hash);
 	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
