@@ -23,7 +23,7 @@ all: @@Configuration@@ $(TARGET)
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-$(TARGET):  subdirs modules.o
+$(TARGET): subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) buildmark.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
@@ -67,7 +67,7 @@ depend:
 # httpd binary with all modules built in and then updates the
 # $(INCDIR)/hide.h file according to the exported symbols of this
 # binary. So run this target once after a new function was added
-# to the source. But never trust this operation. You really 
+# to the source. But never trust this operation. You really
 # have to review the changes manually afterwards.
 updatehide:
 	cat Configuration.tmpl |\
@@ -77,7 +77,7 @@ updatehide:
 	./Configure -file Configuration.for-hide
 	$(MAKE) clean httpd
 	./helpers/UpdateHide httpd $(INCDIR)/hide.h `helpers/GuessOS`
-	$(MAKE) clean 
+	$(MAKE) clean
 	rm -f Configuration.for-hide
 
 #Dependencies
