@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fix suexec installation under `make install root=xxx' situation.
+     [Ralf S. Engelschall]
+
   *) Extend the output of the -V switch to include the paths of all
      compiled-in configuration files, if they were overridden at
      compile time, for least astonishment of the user.

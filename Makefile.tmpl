@@ -315,10 +315,10 @@ install-support:
 	-@if [ ".$(suexec)" = .1 ]; then \
 	    echo "$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/suexec $(root)$(sbindir)/suexec"; \
 	    $(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/suexec $(root)$(sbindir)/suexec; \
-	    echo "chown root $(sbindir)/suexec"; \
-	    chown root $(sbindir)/suexec; \
-	    echo "chmod 4711 $(sbindir)/suexec"; \
-	    chmod 4711 $(sbindir)/suexec; \
+	    echo "chown root $(root)$(sbindir)/suexec"; \
+	    chown root $(root)$(sbindir)/suexec; \
+	    echo "chmod 4711 $(root)$(sbindir)/suexec"; \
+	    chmod 4711 $(root)$(sbindir)/suexec; \
 	    echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/suexec.8 $(root)$(mandir)/man8/suexec.8"; \
 	    $(INSTALL_DATA) $(TOP)/$(SRC)/support/suexec.8 $(root)$(mandir)/man8/suexec.8; \
 	fi
