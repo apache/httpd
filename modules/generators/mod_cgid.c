@@ -1189,22 +1189,21 @@ static apr_status_t cleanup_script(void *vptr)
         return APR_EGENERAL;
     }
 
+    /* we got a socket, and there is already a cleanup registered for it */
+
     req.req_type = GETPID_REQ;
     req.conn_id = info->r->connection->id;
 
     stat = sock_write(sd, &req, sizeof(req));
     if (stat != APR_SUCCESS) {
-        close(sd);
         return stat;
     }
 
     /* wait for pid of script */
     stat = sock_read(sd, &pid, sizeof(pid));
     if (stat != APR_SUCCESS) {
-        close(sd);
         return stat;
     }
-    close(sd);
 
     if (pid == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, info->r,
