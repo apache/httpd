@@ -1,13 +1,11 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/23 13:39:53 $]
+  Last modified at [$Date: 1999/08/27 12:10:56 $]
 
 Release:
 
-    1.3.9-dev: COUNTDOWN restarted at 08/15 3:00pm PDT
-               Tarball planned for Monday morning unless problems found.
-               Votes for rolling: Ralf +1, Martin +1, Roy +1, Randy +1,
-	                          Jim +1, Fred +1
+    1.3.10-dev: Current
 
+    1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
     1.3.8: Not released.
     1.3.7: Not released.
     1.3.6. Tagged and rolled on Mar. 22. Released and announced on 24th.
