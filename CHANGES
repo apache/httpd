@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Use appropriate language code for Czech (cs) in default config
+     files. PR 9427.  [André Malo]
+
   *) mod_auth_ldap: Use generic whitespace character class when parsing
      "require" directives, instead of literal spaces only. PR 17135.
      [André Malo]
