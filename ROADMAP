@@ -1,12 +1,12 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/17 17:16:04 $]
+Last modified at [$Date: 2002/10/17 17:59:17 $]
 
 
 INTRODUCTION
 ------------
 The Apache HTTP Server project must balance two competing and disjoint
-objectives; maintain stable code for third party authors, distributors and
+objectives: maintain stable code for third party authors, distributors and
 most importantly users so that bug and security fixes can be quickly adopted
 without significant hardship due to API changes; and continue the development
 process that requires ongoing redesign to work around earlier oversights in
@@ -19,48 +19,52 @@ party modules.  This left the third party module authors searching through
 the API change histories to determine the new declarations, APIs and side 
 effects of making the necessary code changes.  
 
-With the simultaneous release of Apache 2.1-stable and Apache 2.2-development,
+With the simultaneous release of Apache 2.2-stable and Apache 2.3-development,
 the Apache HTTP Server project is moving to a more predictable stable code
 branch, while opening the development to forward progress without concern
 for breaking the stable branch.  This document explains the rationale between
 the two versions and their behavior, going forward.
 
 
-STABLE RELEASES, 2.{odd}.{revision}
-------------------------------------
-All even numbered releases will be considered stable revisions.  That means;
+STABLE RELEASES, 2.{even}.{revision}
+------------------------------------ 
 
-  * Forward Compatibility; users are not required to find new downloads of 
-    currently loaded modules to upgrade from other revisions of the same 
-    version.  To upgrade from 2.1.0 and 2.1.27 will require no new modules.  
-    However, the third party modules may break from buggy code, or code that 
-    used an undocumented side effect of an API call, which may be changed to 
-    close bugs or security vulnerabilities.  Modules should be retested.
-    Moreover, new APIs may be introduced within the lifespan of the release,
-    and it is up to the third party module author to call out what version
-    forward this module is compatible with (e.g. "Compatible with Apache
-    HTTP Server version 2.1.12 and foward.")  The next stable release that 
-    causes module incompatibility for 2.1.x users will be an upgrade to
-    either the current 2.2.x-development releases or the 2.3.0-stable release.
+All even numbered releases will be considered stable revisions. 
 
-  * No Deprecated modules; although new modules may be introduced within the
-    stable release, no loadable modules or their directives will be removed
-    within the lifetime of a given stable release version.  The next release 
-    that deprecates old modules for 2.1.x users will be an upgrade to either
-    the 2.2.x-development release or the 2.3.0-stable release.  
+Stable revisions will retain forward compatiblity to the maximum
+possible extent.  Features may be added during minor revisions, and
+features may be deprecated by making appropriate notations in the
+documentation, but no features may be removed.
 
-  * Warnings should be provided in the documentation to give users a heads up
-    that a given module or directive will disappear in the future release,
-    and advise developers that a given API will change.  However, it is always
-    best to check the corresponding development release to determine the full
-    impact of such changes.
+In essence, that implies that you can upgrade from one minor revision
+to the next with a minimum of trouble.  In particular, this means:
+
+  * The Module API will retain forward compatibility.
+    It will not be necessary to update modules to work with new
+    revisions of the stable tree.
+
+  * The run-time configuration will be forward compatible.
+    No configuration changes will be necessary to work with new
+    revisions of the stable tree.
+
+  * Compile-time configuration will be forward compatible.
+    The configure command line options that work in one release
+    of the stable tree will also work in the next release.
+
+As always, it will be necessary to test any new release to assure
+that it works correctly with a particular configuration and a 
+particular set of modules, but every effort will be made to assure
+that upgrades are as smooth as possible.
+
+In addition, the following development restrictions will aid in 
+keeping the stable tree as safe as possible:
 
   * No 'Experimental' modules; while it may be possible (based on API changes
-    required to support a given module) to load a 2.2-development module into
-    a 2.1-stable build of Apache, there are no guarantees.  Experimental 
-    modules will be introduced to the 2.2-development versions and either
-    added to 2.1-stable once they are proven and compatible, or deferred
-    to the 2.3-stable release if they cannot be incorporated in the current
+    required to support a given module) to load a 2.3-development module into
+    a 2.2-stable build of Apache, there are no guarantees.  Experimental 
+    modules will be introduced to the 2.3-development versions and either
+    added to 2.2-stable once they are proven and compatible, or deferred
+    to the 2.4-stable release if they cannot be incorporated in the current
     stable release due to API change requirements.
 
   * The stable CVS tree must not remain unstable at any time.  Atomic commits 
@@ -73,9 +77,9 @@ All even numbered releases will be considered stable revisions.  That means;
     a few minutes during a lengthy commit.
 
 
-DEVELOPMENT RELEASES, 2.{even}.{revision}
+DEVELOPMENT RELEASES, 2.{odd}.{revision}
 -----------------------------------------
-All even numbered releases designate the 'next' possible stable release,
+All odd numbered releases designate the 'next' possible stable release,
 therefore the current development version will always be one greater than
 the stable release.  Work proceeds on development releases, permitting
 the modification of the MMN at any time in order to correct deficiencies 
