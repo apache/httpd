@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/18 18:17:02 $]
+  Last modified at [$Date: 2002/06/19 00:31:18 $]
 
 Release:
 
@@ -222,7 +222,7 @@ Win32 specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.24):
+Binaries (1.3.26):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -236,7 +236,7 @@ Binaries (1.3.24):
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-be-beos                  no      David Reid
  i386-dg-dgux5.4R2.01          no      Randy Terbush
- i386-siemens-sinix5.4         yes     Martin Kraemer
+ i386-siemens-sinix5.4         no      Martin Kraemer
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
@@ -255,7 +255,7 @@ Binaries (1.3.24):
                                        Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i686-unknown-linux2           no      Lars Eilebrecht
- i686-whatever-cygwin          yes     Stipe Tolj
+ i686-whatever-cygwin          no      Stipe Tolj
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
  ia64-whatever-linux22         no      Martin Kraemer
  m68k-apple-aux3.1.1           no      Jim Jagielski
@@ -265,10 +265,10 @@ Binaries (1.3.24):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   yes     Martin Kraemer
+ mips-siemens-reliantunix5.4   no      Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
- netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          yes     Brian Havard
+ netware                       no      Brad Nicholes <bnicholes@novell.com>
+ OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
@@ -283,7 +283,7 @@ Binaries (1.3.24):
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  sun4u-sun-solaris2.280        no      Jeff Trawick
  TPF                           no      David McCreedy, Carolyn Weiss
- win32                         yes     William Rowe
+ win32                         no      William Rowe
  x86-bsdos-3.x                 no      Randy Terbush
  x86-bsdos-4.x                 no      Randy Terbush
  x86-openbsd-2.x               no      Randy Terbush
