@@ -27,6 +27,7 @@ extern module asis_module;
 extern module imap_module;
 extern module actions_module;
 extern module setenvif_module;
+extern module nwssl_module;
 
 module *ap_prelinked_modules[] = {
   &core_module,
@@ -49,6 +50,7 @@ module *ap_prelinked_modules[] = {
   &imap_module,
   &actions_module,
   &setenvif_module,
+  &nwssl_module,
   NULL
 };
 
@@ -73,5 +75,6 @@ module *ap_preloaded_modules[] = {
   &imap_module,
   &actions_module,
   &setenvif_module,
+  &nwssl_module,
   NULL
 };
