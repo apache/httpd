@@ -287,7 +287,12 @@ Available Patches:
        Chuck:  What the heck. We're not releasing soon anymore. Let users
                get used to it if there's time.
          Jim:  [the +1] iff we remove the "present" top-level build
-               capability AND we clearly document the changes
+               capability AND we clearly document the changes. Also,
+	       I agree with Randy that the amount of work that Ralf
+	       put into it kind of forces our hand... I don't want
+	       this to start a precedent and it _was_ one of the
+	       major discussion points on the "Ideas get discussed"
+	       first issue with c-t-r...
          Ralf: Sure, top-level Makefile+src/helpers/InstallApache is removed
                and the current top-level README file is extended by
                documenting APACI and the manual build-only approach with
