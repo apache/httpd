@@ -46,9 +46,9 @@
 <syntax>DirectoryIndex
     <em>local-url</em> [<em>local-url</em>] ...</syntax>
 <default>DirectoryIndex index.html</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
 <context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
