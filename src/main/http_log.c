@@ -322,8 +322,7 @@ static void log_error_core(const char *file, int line, int level,
     }
 
     if (logf) {
-	len = ap_snprintf(errstr, sizeof(errstr), "%s: [%s] ",
-			  ap_server_argv0, ap_get_time());
+	len = ap_snprintf(errstr, sizeof(errstr), "[%s] ", ap_get_time());
     } else {
 	len = 0;
     }
