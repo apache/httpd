@@ -997,7 +997,7 @@ static void child_main(int child_num_arg)
     /*done with init critical section */
 
     /* All threads should mask signals out, accoring to sigwait(2) man page */
-    sigemptyset(&sig_mask);
+    sigfillset(&sig_mask);
 
     if (pthread_sigmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf, "pthread_sigmask");
