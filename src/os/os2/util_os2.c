@@ -18,7 +18,14 @@ API_EXPORT(char *)ap_os_case_canonical_filename(pool *pPool, const char *szFile)
     
     if (len > 3 && buf[len-1] == '/')
         buf[--len] = 0;
-      
+
+    if (buf[0] == '/' && buf[1] == '/') {
+        /* A UNC path */
+        if (strchr(buf+2, '/') == NULL) {  /* Allow // or //server */
+            return ap_pstrdup(pPool, buf);
+        }
+    }
+
     rc = DosQueryPathInfo(buf, FIL_QUERYFULLNAME, buf2, HUGE_STRING_LEN);
 
     if (rc) {
