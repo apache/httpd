@@ -63,6 +63,7 @@
 #include "http_log.h"
 #include "rfc1413.h"
 #include "util_md5.h"
+#include "scoreboard.h"
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -272,6 +273,11 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 
     if (conn->remote_host == NULL && dir_conf->hostname_lookups)
     {
+#ifdef STATUS
+	int old_stat = update_child_status(conn->child_num,
+						SERVER_BUSY_DNS,
+						(request_rec*)NULL);
+#endif /* STATUS */
 	iaddr = &(conn->remote_addr.sin_addr);
 	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
 	if (hptr != NULL)
@@ -296,6 +302,9 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
 	}
 /* if failed, set it to the NULL string to indicate error */
 	if (conn->remote_host == NULL) conn->remote_host = "";
+#ifdef STATUS
+	(void)update_child_status(conn->child_num,old_stat,(request_rec*)NULL);
+#endif /* STATUS */
     }
 
 /*

@@ -75,6 +75,8 @@
  * 09.4.96  Added message for non-STATUS compiled version
  * 18.4.96  Added per child and per slot counters [Jim Jagielski]
  * 01.5.96  Table format, cleanup, even more spiffy data [Chuck Murcko/Jim J.]
+ * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
+             extended STATUS is enabled) [George Burgyan/Jim J.]
  */
 
 #include "httpd.h"
@@ -191,7 +193,7 @@ int status_handler (request_rec *r)
     int no_table_report=0;
     server_rec *server = r->server;
     short_score score_record;
-    char status[]="???????";
+    char status[]="??????????";
     char buffer[200];
     char stat_buffer[HARD_SERVER_MAX];
     clock_t tu,ts,tcu,tcs;
@@ -203,6 +205,9 @@ int status_handler (request_rec *r)
     status[SERVER_STARTING]='S';
     status[SERVER_BUSY_READ]='R';
     status[SERVER_BUSY_WRITE]='W';
+    status[SERVER_BUSY_KEEPALIVE]='K';
+    status[SERVER_BUSY_LOG]='L';
+    status[SERVER_BUSY_DNS]='D';
 
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
     r->content_type = "text/html";
@@ -255,7 +260,8 @@ int status_handler (request_rec *r)
         if (res == SERVER_READY)
 	    ready++;
         else if (res == SERVER_BUSY_READ || res==SERVER_BUSY_WRITE || 
-		 res == SERVER_STARTING)
+		 res == SERVER_STARTING || res==SERVER_BUSY_KEEPALIVE ||
+		 res == SERVER_BUSY_LOG || res==SERVER_BUSY_DNS)
 	    busy++;
 #if defined(STATUS)
         lres = score_record.access_count;
@@ -387,11 +393,14 @@ int status_handler (request_rec *r)
     else 
     {
 	rputs("</PRE>\n",r);
-	rputs("Key: \n",r);
+	rputs("Key:<br> \n",r);
 	rputs("\"<code>_</code>\" Waiting for Connection, \n",r);
-	rputs("\"<code>S</code>\" Starting up, \n",r);
+	rputs("\"<code>S</code>\" Starting up,<br> \n",r);
 	rputs("\"<code>R</code>\" Reading Request, \n",r);
-	rputs("\"<code>W</code>\" Sending Reply<p>\n",r);
+	rputs("\"<code>W</code>\" Sending Reply,<br> \n",r);
+	rputs("\"<code>K</code>\" Keepalive (read), \n",r);
+	rputs("\"<code>D</code>\" DNS Lookup, \n",r);
+	rputs("\"<code>L</code>\" Logging<p>\n",r);
         sprintf(buffer,"\n%d requests currently being processed, %d idle servers\n",busy,ready);
 	rputs(buffer,r);
     }
@@ -438,6 +447,15 @@ int status_handler (request_rec *r)
 		        case SERVER_BUSY_WRITE:
 		            rputs("<b>Write</b>",r);
 		            break;
+		        case SERVER_BUSY_KEEPALIVE:
+		            rputs("<b>Keepalive</b>",r);
+		            break;
+		        case SERVER_BUSY_LOG:
+		            rputs("<b>Logging</b>",r);
+		            break;
+		        case SERVER_BUSY_DNS:
+		            rputs("<b>DNS lookup</b>",r);
+		            break;
 		        case SERVER_DEAD:
 		            rputs("Dead",r);
 		            break;
@@ -478,6 +496,15 @@ int status_handler (request_rec *r)
 		            break;
 		        case SERVER_BUSY_WRITE:
 		            rputs("<td><b>W</b>",r);
+		            break;
+		        case SERVER_BUSY_KEEPALIVE:
+		            rputs("<td><b>K</b>",r);
+		            break;
+		        case SERVER_BUSY_LOG:
+		            rputs("<td><b>L</b>",r);
+		            break;
+		        case SERVER_BUSY_DNS:
+		            rputs("<td><b>D</b>",r);
 		            break;
 		        case SERVER_DEAD:
 		            rputs("<td>.",r);
@@ -524,6 +551,8 @@ int status_handler (request_rec *r)
     rputs("you need to recompile Apache adding the <code>-DSTATUS</code> \n",r);
     rputs("directive on the <code>CFLAGS</code> line in the \n",r);
     rputs("<code>Configuration</code> file.\n",r);
+    rputs("<code>DNS</code> and <code>LOGGING</code> status \n",r);
+    rputs("also requires the <code>-DSTATUS</code> directive. \n",r);
 
 #endif /* STATUS */
 

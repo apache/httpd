@@ -394,7 +394,8 @@ struct conn_rec {
   server_rec *server;
   
   /* Information about the connection itself */
-  
+
+  int child_num;                /* The number of the child handling conn_rec */
   BUFF *client;			/* Connetion to the guy */
   int aborted;			/* Are we still talking? */
   

@@ -63,11 +63,15 @@
  * Status values:
  */
 
+#define SERVER_UNKNOWN (-1)	/* should never be in this state */
 #define SERVER_DEAD 0
 #define SERVER_READY 1          /* Waiting for connection (or accept() lock) */
 #define SERVER_STARTING 3       /* Server Starting up */
 #define SERVER_BUSY_READ 2      /* Reading a client request */
 #define SERVER_BUSY_WRITE 4     /* Processing a client request */
+#define SERVER_BUSY_KEEPALIVE 5 /* Waiting for more requests via keepalive */
+#define SERVER_BUSY_LOG 6       /* Logging the request */
+#define SERVER_BUSY_DNS 7       /* Looking up a hostname */
 
 typedef struct {
     pid_t pid;

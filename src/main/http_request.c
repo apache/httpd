@@ -70,6 +70,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "scoreboard.h"
 
 /*****************************************************************
  *
@@ -737,8 +738,16 @@ void process_request_internal (request_rec *r)
 
 void process_request (request_rec *r)
 {
+    int old_stat;
     process_request_internal (r);
+#ifdef STATUS
+    old_stat = update_child_status (r->connection->child_num, SERVER_BUSY_LOG,
+     r);
+#endif /* STATUS */
     log_transaction (r);
+#ifdef STATUS
+    (void)update_child_status (r->connection->child_num, old_stat, r);
+#endif /* STATUS */
 }
 
 table *rename_original_env (pool *p, table *t)

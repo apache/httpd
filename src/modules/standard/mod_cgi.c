@@ -275,8 +275,8 @@ int cgi_handler (request_rec *r)
     
 #else
      if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
-		      nph ? just_wait : kill_after_timeout,
-		      &script_out, nph ? NULL : &script_in)) {
+		       nph ? just_wait : kill_after_timeout, 
+		       &script_out, nph ? NULL : &script_in)) {
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
     }

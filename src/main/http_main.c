@@ -657,11 +657,17 @@ void sync_scoreboard_image ()
 #endif
 }
 
-void update_child_status (int child_num, int status, request_rec *r)
+int update_child_status (int child_num, int status, request_rec *r)
 {
     short_score new_score_rec;
+    int old_status;
+
+    if (child_num < 0)
+	return -1;
+    
     memcpy(&new_score_rec,&scoreboard_image[child_num],sizeof new_score_rec);
     new_score_rec.pid = getpid();
+    old_status = new_score_rec.status;
     new_score_rec.status = status;
 
 #if defined(STATUS)
@@ -695,6 +701,16 @@ void update_child_status (int child_num, int status, request_rec *r)
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
     force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
 #endif
+
+    return old_status;
+}
+
+int get_child_status (int child_num)
+{
+    if (child_num<0 || child_num>=HARD_SERVER_MAX)
+    	return -1;
+    else
+	return scoreboard_image[child_num].status;
 }
 
 int count_busy_servers ()
@@ -704,7 +720,10 @@ int count_busy_servers ()
 
     for (i = 0; i < HARD_SERVER_MAX; ++i)
       if (scoreboard_image[i].status == SERVER_BUSY_READ ||
-              scoreboard_image[i].status == SERVER_BUSY_WRITE)
+              scoreboard_image[i].status == SERVER_BUSY_WRITE ||
+              scoreboard_image[i].status == SERVER_BUSY_KEEPALIVE ||
+              scoreboard_image[i].status == SERVER_BUSY_LOG ||
+              scoreboard_image[i].status == SERVER_BUSY_DNS)
           ++res;
     return res;
 }
@@ -1058,7 +1077,8 @@ void abort_connection (conn_rec *c)
 
 conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
 			  const struct sockaddr_in *remaddr,
-			  const struct sockaddr_in *saddr)
+			  const struct sockaddr_in *saddr,
+			  int child_num)
 {
     conn_rec *conn = (conn_rec *)pcalloc (p, sizeof(conn_rec));
     
@@ -1067,6 +1087,7 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
      */
     
     conn = (conn_rec *)pcalloc(p, sizeof(conn_rec));
+    conn->child_num = child_num;
     
     conn->pool = p;
     conn->local_addr = *saddr;
@@ -1077,6 +1098,7 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
     conn->remote_addr = *remaddr;
     conn->remote_ip = pstrdup (conn->pool,
 			       inet_ntoa(conn->remote_addr.sin_addr));
+
     return conn;
 }
 
@@ -1102,7 +1124,7 @@ void child_main(int child_num_arg)
     child_num = child_num_arg;
     requests_this_child = 0;
     reopen_scoreboard (pconf);
-    update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
+    (void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 
     /* Only try to switch if we're running as root */
     if(!geteuid() && setuid(user_id) == -1) {
@@ -1140,7 +1162,7 @@ void child_main(int child_num_arg)
 	}
 
 	clen=sizeof(sa_client);
-	update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
+	(void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 	
 	accept_mutex_on();  /* Lock around "accept", if necessary */
 
@@ -1177,7 +1199,7 @@ void child_main(int child_num_arg)
 	    continue;
 	}
 	
-	update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
+	(void)update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
 	conn_io = bcreate(ptrans, B_RDWR);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
@@ -1190,10 +1212,11 @@ void child_main(int child_num_arg)
 
 	current_conn = new_connection (ptrans, server_conf, conn_io,
 				       (struct sockaddr_in *)&sa_client,
-				       (struct sockaddr_in *)&sa_server);
+				       (struct sockaddr_in *)&sa_server,
+				       child_num);
 	
 	r = read_request (current_conn);
-	update_child_status (child_num, SERVER_BUSY_WRITE, r);
+	(void)update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
 #if defined(STATUS)
@@ -1202,9 +1225,9 @@ void child_main(int child_num_arg)
 	while (r && current_conn->keepalive) {
 	  bflush(conn_io);
 	  destroy_pool(r->pool);
-	  update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
+	  (void)update_child_status (child_num, SERVER_BUSY_KEEPALIVE, (request_rec*)NULL);
 	  r = read_request (current_conn);
-	  update_child_status (child_num, SERVER_BUSY_WRITE, r);
+	  (void)update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	  if (r) process_request (r);
 
 #if defined(STATUS)
@@ -1381,18 +1404,19 @@ void standalone_main(int argc, char **argv)
 	    /* Child died... note that it's gone in the scoreboard. */
 	    sync_scoreboard_image();
 	    child_slot = find_child_by_pid (pid);
-	    if (child_slot >= 0) update_child_status (child_slot, SERVER_DEAD,
-	     (request_rec*)NULL);
+	    if (child_slot >= 0)
+		(void)update_child_status (child_slot, SERVER_DEAD,
+		 (request_rec*)NULL);
         }
 
 	sync_scoreboard_image();
 	if ((count_idle_servers() < daemons_min_free)
-	    && (child_slot = find_free_child_num()) >= 0
-	    && child_slot <= daemons_limit)
-	    {
-	    update_child_status(child_slot,SERVER_STARTING,(request_rec*)NULL);
+	 && (child_slot = find_free_child_num()) >= 0
+	 && child_slot <= daemons_limit) {
+	    (void)update_child_status(child_slot,SERVER_STARTING,
+	     (request_rec*)NULL);
 	    make_child(server_conf, child_slot);
-	    }
+	}
     }
 
 } /* standalone_main */
@@ -1491,7 +1515,7 @@ main(int argc, char *argv[])
 	bpushfd(cio, fileno(stdin), fileno(stdout));
 	conn = new_connection (ptrans, server_conf, cio,
 			       (struct sockaddr_in *)&sa_client,
-			       (struct sockaddr_in *)&sa_server);
+			       (struct sockaddr_in *)&sa_server,-1);
 	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */
 

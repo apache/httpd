@@ -91,3 +91,9 @@ void hard_timeout (char *, request_rec *);
 void soft_timeout (char *, request_rec *);
 void kill_timeout (request_rec *);     
 void reset_timeout (request_rec *);
+
+void sync_scoreboard_image ();
+int update_child_status (int child_num, int status, request_rec *r);
+int get_child_status (int child_num);
+int count_busy_servers ();
+int count_idle_servers ();
