@@ -861,7 +861,7 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
 #else
     my_addr = inet_addr(w);
 #endif
-    if (my_addr != ((unsigned long) 0xffffffff)) {
+    if (my_addr != INADDR_NONE) {
 	sar = pcalloc( p, sizeof( server_addr_rec ) );
 	**paddr = sar;
 	*paddr = &sar->next;
