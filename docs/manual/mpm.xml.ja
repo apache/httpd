@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:155309 (outdated) -->
+<!-- English Revision: 155309 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <module>worker</module> といったスレッド化された
+      <module>worker</module> や <module>event</module> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <module>prefork</module>
       が利用できます。また、
