@@ -191,6 +191,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     char *datestr, *clen;
     apr_ssize_t cntr;
     apr_file_t *cachefp = NULL;
+    char *buf;
+    int rbb;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -277,12 +279,20 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     f = ap_bcreate(p, B_RDWR);
     ap_bpush_socket(f, sock);
 
-    ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
-	   NULL);
-    if (destportstr != NULL && destport != DEFAULT_HTTP_PORT)
-	ap_bvputs(f, "Host: ", desthost, ":", destportstr, CRLF, NULL);
-    else
-	ap_bvputs(f, "Host: ", desthost, CRLF, NULL);
+    buf = apr_pstrcat(r->pool, r->method, " ", proxyhost ? url : urlptr,
+                      " HTTP/1.0" CRLF, NULL);
+    rbb = strlen(buf);
+    apr_send(sock, buf, &rbb);
+    if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
+        buf = apr_pstrcat(r->pool, "Host: ", desthost, ":", destportstr, CRLF, NULL);
+        rbb = strlen(buf);
+        apr_send(sock, buf, &rbb);
+    }
+    else {
+        buf = apr_pstrcat(r->pool, "Host: ", desthost, CRLF, NULL);
+        rbb = strlen(buf);
+        apr_send(sock, buf, &rbb);
+    }
 
     if (conf->viaopt == via_block) {
 	/* Block all outgoing Via: headers */
@@ -322,17 +332,27 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	     */
 	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
-	ap_bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
+        buf = apr_pstrcat(r->pool, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
+        rbb = strlen(buf);
+        apr_send(sock, buf, &rbb);
+
     }
 
-    ap_bputs(CRLF, f);
+    rbb = strlen(CRLF);
+    apr_send(sock, CRLF, &rbb);
 /* send the request data, if any. */
 
     if (ap_should_client_block(r)) {
-	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0)
-	    ap_bwrite(f, buffer, i, &cntr);
+	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
+            cntr = i;
+            apr_send(sock, buffer, &cntr);
+        }
     }
+#if 0  /* This doesn't make any sense until we convert the raw socket calls
+        * to filters.
+        */
     ap_bflush(f);
+#endif
 
     len = ap_bgets(buffer, sizeof buffer - 1, f);
     if (len == -1) {
@@ -440,8 +460,10 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
         ap_cache_el_data(c, &cachefp);
 
 /* write status line */
+#if 0
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
+#endif
     if (cachefp && apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
         r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -453,8 +475,10 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
 
+#if 0
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
+#endif
 
 /* We don't set byte count this way anymore.  I think this can be removed
  * cleanly now.
@@ -488,7 +512,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 		proxy_completion pc;
 		pc.content_length = content_length;
 		pc.cache_completion = conf->cache_completion;
-		ap_proxy_send_fb(&pc, sock, r, c);
+		ap_proxy_send_fb(&pc, f, r, c);
     }
 
     ap_bclose(f);
