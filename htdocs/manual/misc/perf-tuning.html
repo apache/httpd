@@ -475,8 +475,10 @@ function looks roughly like this:
 	    select (s for reading, 2 second timeout);
 	    if (error) break;
 	    if (s is ready for reading) {
-		read (s, junk_buffer, sizeof (junk_buffer));
-		/* just toss away whatever is here */
+		if (read (s, junk_buffer, sizeof (junk_buffer)) <= 0) {
+		    break;
+		}
+		/* just toss away whatever is read */
 	    }
 	}
 
