@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_log_config.c,v 1.11 1996/08/27 03:34:45 akosut Exp $  */
+/* $Id: mod_log_config.c,v 1.12 1996/09/26 11:31:01 mjc Exp $  */
 
 /*
  * This is module implements the TransferLog directive (same as the
@@ -109,12 +109,15 @@
  * follows:
  *
  * %...b:  bytes sent.
+ * %...f:  filename
  * %...h:  remote host
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
  * %...l:  remote logname (from identd, if supplied)
+ * %...{Foobar}n:  The contents of note "Foobar" from another module.
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
  * %...p:  the port the request was served to
+ * %...P:  the process ID of the child that serviced the request.
  * %...r:  first line of request
  * %...s:  status.  For requests that got internally redirected, this
  *         is status of the *original* request --- %...>s for the last.
@@ -123,6 +126,7 @@
  *                 be in strftime(3) format.
  * %...T:  the time taken to serve the request, in seconds.
  * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
+ * %...U:  the URL path requested.
  * %...v:  the name of the server (i.e. which virtual host?)
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
@@ -243,6 +247,10 @@ char *log_remote_user (request_rec *r, char *a)
 char *log_request_line (request_rec *r, char *a)
 { return r->the_request; }
 
+char *log_request_file (request_rec *r, char *a)
+{ return r->filename; }
+char *log_request_uri (request_rec *r, char *a)
+{ return r->uri; }
 char *log_status (request_rec *r, char *a)
 { return pfmt(r->pool, r->status); }
 
@@ -271,6 +279,8 @@ char *log_header_out (request_rec *r, char *a)
     return table_get (r->err_headers_out, a);
 }
 
+char *log_note (request_rec *r, char *a)
+{ return table_get (r->notes, a); }
 char *log_env_var (request_rec *r, char *a)
 { return table_get (r->subprocess_env, a); }
 
@@ -315,6 +325,11 @@ char *log_server_port (request_rec *r, char *a) {
     return pstrdup(r->pool, portnum);
 }
 
+char *log_child_pid (request_rec *r, char *a) {
+    char pidnum[10];
+    sprintf(pidnum, "%ld", getpid());
+    return pstrdup(r->pool, pidnum);
+}
 /*****************************************************************
  *
  * Parsing the log format string
@@ -331,13 +346,17 @@ struct log_item_list {
     { 't', log_request_time, 0 },
     { 'T', log_request_duration, 0 },
     { 'r', log_request_line, 1 },
+    { 'f', log_request_file, 0 },
+    { 'U', log_request_uri, 1 },
     { 's', log_status, 1 },
     { 'b', log_bytes_sent, 0 },
     { 'i', log_header_in, 0 },
     { 'o', log_header_out, 0 },
+    { 'n', log_note, 0 },
     { 'e', log_env_var, 0 },
     { 'v', log_virtual_host, 0 },
     { 'p', log_server_port, 0 },
+    { 'P', log_child_pid, 0 },
     { '\0' }
 };
 

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cookies.c,v 1.15 1996/09/08 12:25:30 ben Exp $ */
+/* $Id: mod_cookies.c,v 1.16 1996/09/26 11:31:00 mjc Exp $ */
 
 /* User Tracking Module
  *
@@ -368,8 +368,6 @@ int cookie_log_transaction(request_rec *orig)
 
     for (r = orig; r->next; r = r->next)
         continue;
-    if (*cls->fname == '\0')	/* Don't log cookies */
-      return DECLINED;
 
     if (!(cookie = table_get (r->headers_in, "Cookie")))
         return DECLINED;    /* Theres no cookie, don't bother logging */
@@ -380,6 +378,10 @@ int cookie_log_transaction(request_rec *orig)
     cookiebuf=pstrdup( r->pool, value );
     cookieend=strchr(cookiebuf,';');
     if (cookieend) *cookieend='\0';	/* Ignore anything after a ; */
+    /* Set the cookie in a note, in case we log it seperately */
+    table_set(r->notes, "cookie", cookiebuf);
+    if (*cls->fname == '\0')	/* Don't log cookies */
+      return DECLINED;
 
     t = get_gmtoff(&timz);
     sign = (timz < 0 ? '-' : '+');
