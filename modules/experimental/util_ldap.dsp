@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_AUTH_DBM_USE_APR" /Fd"Release\util_ldap" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\util_ldap" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,8 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
-# ADD LINK32 kernel32.lib libhttpd.lib libapr.lib nsldap32v50.lib libaprutil.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /libpath:"..\..\release" /libpath:"..\..\srclib\apr\release" /libpath:"..\..\srclib\ldap\lib" /libpath:"..\..\srclib\apr-util\release" /libpath:"..\..\srclib\apr-util\Release" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
-# SUBTRACT LINK32 /debug
+# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
 
 !ELSEIF  "$(CFG)" == "util_ldap - Win32 Debug"
 
@@ -70,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_AUTH_DBM_USE_APR" /Fd"Debug\util_ldap" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\util_ldap" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
-# ADD LINK32 kernel32.lib libhttpd.lib libapr.lib nsldap32v50.lib libaprutil.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /libpath:"..\..\debug" /libpath:"..\..\srclib\apr\debug" /libpath:"..\..\srclib\ldap\lib" /libpath:"..\..\srclib\apr-util\debug" /libpath:"..\..\srclib\apr-util\Debug" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
+# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
 
 !ENDIF 
 
@@ -119,7 +118,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_status  "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+	awk -f ../../build/win32/win32ver.awk util_ldap "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
 
 # End Custom Build
 
@@ -130,7 +129,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_status  "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+	awk -f ../../build/win32/win32ver.awk util_ldap "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
 
 # End Custom Build
 
