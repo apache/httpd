@@ -2437,7 +2437,6 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     const char *sample_charset = NULL;
     char *lang;
     char *qstr;
-    char *lenstr;
     apr_off_t len;
     apr_array_header_t *arr;
     int max_vlist_array = (neg->avail_vars->nelts * 21);
@@ -2573,10 +2572,9 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         if (!(variant->sub_req && variant->sub_req->handler)
             && (len = find_content_length(neg, variant)) >= 0) {
 
-            lenstr = (char *) apr_palloc(r->pool, 22);
-            apr_snprintf(lenstr, 22, "%" APR_OFF_T_FMT, len);
             *((const char **) apr_array_push(arr)) = " {length ";
-            *((const char **) apr_array_push(arr)) = lenstr;
+            *((const char **) apr_array_push(arr)) = apr_off_t_toa(r->pool,
+                                                                   len);
             *((const char **) apr_array_push(arr)) = "}";
         }
 
