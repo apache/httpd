@@ -370,7 +370,7 @@ UserDir public_html
 # for a site where these directories are restricted to read-only.
 #
 #<Directory /home/*/public_html>
-#    AllowOverride FileInfo AuthConfig Limit
+#    AllowOverride FileInfo AuthConfig Limit Indexes
 #    Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
 #    <Limit GET POST OPTIONS PROPFIND>
 #        Order allow,deny
