@@ -670,18 +670,7 @@ static void child_main(int child_num_arg)
 	     */
 	    for (;;) {
                 ap_sync_scoreboard_image();
-		if (die_now) {
-		    /* we didn't get a socket, and we were told to die */
-		    clean_child_exit(0);
-		}
 		stat = apr_accept(&csd, sd, ptrans);
-                /* In reality, this could be done later, but to keep it
-                 * consistent with MPMs that have a thread race-condition,
-                 * we will do it here.
-                 */
-                if (!ap_mpm_pod_check(pod)) {
-                    die_now = 1;
-                }
 		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
 		    break;
 	    }
@@ -785,9 +774,6 @@ static void child_main(int child_num_arg)
 	    }
 
             ap_sync_scoreboard_image();
-	    if (die_now) {
-		clean_child_exit(0);
-	    }
 	}
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
@@ -826,6 +812,16 @@ static void child_main(int child_num_arg)
             ap_lingering_close(current_conn);
         }
         
+        /* Check the pod after processing a connection so that we'll go away
+         * if a graceful restart occurred while we were processing the 
+         * connection.  Otherwise, we won't wake up until a real connection 
+         * comes in and we'll use the wrong config to process it and we may
+         * block in the wrong syscall (because the new generation is using a
+         * different accept mutex) and in general it is goofy.
+         */
+        if (!ap_mpm_pod_check(pod)) {
+            die_now = 1;
+        }
         ap_sync_scoreboard_image();
     }
     clean_child_exit(0);
