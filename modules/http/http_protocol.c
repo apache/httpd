@@ -2311,7 +2311,7 @@ static apr_status_t static_send_file(apr_file_t *fd, request_rec *r, apr_off_t o
 
     /*
      * We want to send any data held in the client buffer on the
-     * call to iol_sendfile. So hijack it then set outcnt to 0
+     * call to apr_sendfile. So hijack it then set outcnt to 0
      * to prevent the data from being sent to the client again
      * when the buffer is flushed to the client at the end of the
      * request.
@@ -2332,7 +2332,7 @@ static apr_status_t static_send_file(apr_file_t *fd, request_rec *r, apr_off_t o
         flags |= APR_SENDFILE_DISCONNECT_SOCKET;
     }
 
-    rv = iol_sendfile(r->connection->client->iol, 
+    rv = apr_sendfile(r->connection->client->bsock, 
                       fd,      /* The file to send */
                       &hdtr,   /* Header and trailer iovecs */
                       &offset, /* Offset in file to begin sending from */

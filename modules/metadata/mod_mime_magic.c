@@ -2149,7 +2149,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
     apr_pool_t *child_context = cntxt;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
-    ap_iol *iol;
+    apr_socket_t *sock;
 
     env = ap_create_environment(child_context, r->subprocess_env);
 
@@ -2185,13 +2185,16 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
         else {
             apr_note_subprocess(child_context, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            iol = ap_create_file_iol(procnew->out);
-            if (!iol)
-                return APR_EBADF;
+            /* XXX This is a hack.  The correct solution is to create a
+             * pipe bucket, and just pass it down.  Since that bucket type
+             * hasn't been written, we can hack it for the moment.
+             */
+            apr_socket_from_file(&sock, procnew->out);
+
             if (script_in) {
                 *script_in = ap_bcreate(child_context, B_RD);
             }
-            ap_bpush_iol(*script_in, iol);
+            ap_bpush_socket(*script_in, sock);
         }
     }
 

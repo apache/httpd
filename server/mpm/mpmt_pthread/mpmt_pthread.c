@@ -72,7 +72,6 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mpm_common.h"
-#include "ap_iol.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
 
@@ -395,7 +394,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 {
     BUFF *conn_io;
     conn_rec *current_conn;
-    ap_iol *iol;
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
     int csd;
 
@@ -413,12 +411,10 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 
     ap_sock_disable_nagle(sock);
 
-    iol = ap_iol_attach_socket(p, sock);
-
     (void) ap_update_child_status(my_child_num, my_thread_num,  
 				  SERVER_BUSY_READ, (request_rec *) NULL);
     conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(conn_io, iol);
+    ap_bpush_socket(conn_io, sock);
 
     current_conn = ap_new_apr_connection(p, ap_server_conf, conn_io, sock,
                                          conn_id);

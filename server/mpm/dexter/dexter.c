@@ -71,7 +71,6 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mpm_common.h"
-#include "ap_iol.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
 #include "mpm.h"
@@ -398,7 +397,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
 {
     BUFF *conn_io;
     conn_rec *current_conn;
-    ap_iol *iol;
     int csd;
     apr_status_t rv;
 
@@ -417,9 +415,9 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     }
 
     ap_sock_disable_nagle(sock);
-    iol = ap_iol_attach_socket(p, sock);
+
     conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(conn_io, iol);
+    ap_bpush_socket(conn_io, sock);
 
     current_conn = ap_new_apr_connection(p, ap_server_conf, conn_io, sock,
                                          conn_id);

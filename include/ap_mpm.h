@@ -98,7 +98,7 @@
     unix/posix notes:
     - The MPM does not set a SIGALRM handler, user code may use SIGALRM.
 	But the preferred method of handling timeouts is to use the
-	timeouts provided by the BUFF/iol abstraction.
+	timeouts provided by the BUFF abstraction.
     - The proper setting for SIGPIPE is SIG_IGN, if user code changes it
         for any of their own processing, it must be restored to SIG_IGN
 	prior to executing or returning to any apache code.

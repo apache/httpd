@@ -63,7 +63,6 @@
 #include "http_main.h"
 #include "http_core.h"
 #include "util_date.h"
-#include "ap_iol.h"
 
 /*
  * Canonicalise http-like URLs.
@@ -269,7 +268,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     clear_connection(r->pool, r->headers_in);    /* Strip connection-based headers */
 
     f = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(f, ap_iol_attach_socket(sock));
+    ap_bpush_socket(f, sock);
 
     ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
               NULL);

@@ -73,7 +73,6 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mpm_common.h"
-#include "ap_iol.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
 #include "mpm.h"
@@ -433,7 +432,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
 {
     BUFF *conn_io;
     conn_rec *current_conn;
-    ap_iol *iol;
     int csd;
     apr_status_t rv;
     int thread_num = conn_id % HARD_THREAD_LIMIT;
@@ -455,9 +453,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     if (thread_socket_table[thread_num] < 0) {
         ap_sock_disable_nagle(sock);
     }
-    iol = ap_iol_attach_socket(p, sock);
     conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(conn_io, iol);
+    ap_bpush_socket(conn_io, sock);
 
     current_conn = ap_new_apr_connection(p, ap_server_conf, conn_io, sock,
                                          conn_id);
@@ -1346,7 +1343,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int pass_request(request_rec *r)
 {
-    apr_socket_t *thesock = ap_iol_get_socket(r->connection->client->iol);
+    apr_socket_t *thesock = r->connection->client->bsock;
     struct msghdr msg;
     struct cmsghdr *cmsg;
     int sfd;
@@ -1439,13 +1436,11 @@ static int perchild_post_read(request_rec *r)
 
     if (thread_socket_table[thread_num] != -1) {
         apr_socket_t *csd = NULL;
-        ap_iol *iol;
 
         apr_put_os_sock(&csd, &thread_socket_table[thread_num], 
                              r->connection->client->pool);
         ap_sock_disable_nagle(thread_socket_table[thread_num]);
-        iol = ap_iol_attach_socket(r->connection->client->pool, csd);
-        ap_bpush_iol(r->connection->client, iol);
+        ap_bpush_socket(r->connection->client, csd);
         return OK;
     }
     else {
