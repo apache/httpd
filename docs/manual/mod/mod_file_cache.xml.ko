@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1.6 -->
+
+<!--
+ Copyright 2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_file_cache.xml.meta">
+
+<name>mod_file_cache</name>
+<description>메모리에 정적 파일들을 캐쉬</description>
+<status>Experimental</status>
+<sourcefile>mod_file_cache.c</sourcefile>
+<identifier>file_cache_module</identifier>
+
+<summary>
+
+    <note type="warning">
+      이 모듈은 조심해서 사용해야 한다. <module>mod_file_cache</module>를
+사용하여 사이트를 망치기 쉬우므로 이 문제를 꼼꼼히 읽어라.
+    </note>
+
+    <p>거의 변하지 않고 자주 요청되는 파일을 <em>캐쉬</em>에 저장하여
+서버 부하를 줄일 수 있다. <module>mod_file_cache</module>는
+두가지 방식으로 자주 요청되는 <em>정적</em> 파일을 캐쉬에 저장한다.
+설정 지시어를 통해 <module>mod_file_cache</module>가 파일을
+열고(open) <code>mmap()</code>할지 파일을 미리 열고
+<em>파일 핸들러</em>를 저장할지 결정한다. 두 방식 모두
+파일을 서비스하기위한 작업의 일부를 ((특히 파일 입출력) 파일 요청때마다
+하는 대신 서버가 시작할때 하여 서버 부하를 감소한다.</p>
+
+    <p>주의: 이 방법은 CGI 프로그램이나 특별한 내용핸들러를 통해 서비스하는
+파일의 속도를 향상할 수 없다. 이 방법은 보통 아파치 core 내용핸들러가
+서비스하는 일반파일에만 적용된다.</p>
+
+    <p>이 모듈은 아파치 1.3의 <code>mod_mmap_static</code> 모듈의
+영향을 많이 받은 확장이다.</p>
+</summary>
+
+<section id="using"><title>mod_file_cache 사용하기</title>
+
+    <p><module>mod_file_cache</module>는 주서버 설정에서
+<directive module="mod_file_cache"
+    >MMapFile</directive>과 <directive module="mod_file_cache"
+    >CacheFile</directive> 지시어를 통해 설정한 정적 파일들을
+캐쉬에 저장한다.</p>
+
+    <p>모든 플래폼이 두 지시어를 모두 지원하는 것은 아니다.
+예를 들어, 윈도우즈용 아파치는 현재 <directive
+    module="mod_file_cache">MMapStatic</directive> 지시어를
+지원하지 않지만, AIX 같은 다른 플래폼은 둘 모두 지원한다.
+지원하지않는 지시어를 사용할 경우 서버 오류 로그에 오류문을
+남긴다. 지원하지않는 지시어를 사용해도 서버는 시작하지만
+파일을 캐쉬에 저장하지 않는다. 두 지시어를 모두 지원하는 플래폼을
+사용한다면 어떤 방식이 더 좋은지 실험해볼 수 있다.</p>
+
+    <section><title>MMapFile 지시어</title>
+
+      <p><module>mod_file_cache</module>의
+<directive module="mod_file_cache">MMapFile</directive> 지시어는
+설정한 정적인 파일들을 <code>mmap()</code> 시스템호출을 사용하여
+메모리에 대응한다. 많은 최근 유닉스류 운영체제에 이 시스템호출이
+있지만, 없는 운영체제도 있다. 또, <code>mmap()</code>할 수 있는
+파일 크기와 개수를 시스템이 제한할 수 있으므로 실험해보는 것이
+좋다.</p>
+
+      <p>서버가 시작할때와 재시작할때만 <code>mmap()</code>을
+한다. 그래서 파일시스템에서 해당 파일중 하나라도 변경된 경우
+서버를 재시작<em>해야</em> 한다 (<a
+      href="../stopping.html">Stopping and Restarting</a> 문서 참고).
+다시 강조하면: 서버를 재시작하지않고 파일을 수정하면
+요청 서비스가 완전히 이상할 수 있다. 이전 파일을 지우고(unlink)
+새로 파일을 만들어서 파일을 수정해야 한다. <code>rdist</code>나
+<code>mv</code>와 같이 많은 도구가 이런 식으로 동작한다.
+매번 추가로 불필요한 <code>stat()</code> 검사가 필요하고
+입출력 감소의 의도에 반하므로 이 모듈은 파일 변화를 신경쓰지않는다.</p>
+    </section>
+
+    <section><title>CacheFile 지시어</title>
+
+      <p><module>mod_file_cache</module>의
+<directive module="mod_file_cache">CacheFile</directive> 지시어는
+설정 지시어에 열거한
+파일(과 파일들)의 <em>핸들(handle)</em> 혹은
+<em>파일 기술자(file descriptor)</em>를 열고(open) 캐쉬에 저장한다.
+파일을 요청하면 서버는 캐쉬에서 핸들을 찾아서 소켓 API
+<code>sendfile()</code>에 (윈도우즈에서는 <code>TransmitFile()</code>)
+넘긴다.</p>
+
+      <!-- XXX
+      <p>Insert more details about sendfile API...</p>
+      -->
+
+      <p>서버가 시작할때와 재시작할때만 이런 파일핸들 캐쉬를
+만든다. ...
+This file handle caching is done once at server start or
+      restart, only. So whenever one of the cached files changes on
+      the filesystem you <em>have</em> to restart the server (see the
+      <a href="../stopping.html">Stopping and Restarting</a>
+      documentation). To reiterate that point: if the files are
+      modified <em>in place</em> without restarting the server you
+      may end up serving requests that are completely bogus. You
+      should update files by unlinking the old copy and putting a new
+      copy in place. Most tools such as <code>rdist</code> and
+      <code>mv</code> do this.</p>
+    </section>
+
+    <note><title>주의</title>
+      <p>디렉토리의 모든 파일을 재귀적으로 캐쉬에 저장하는
+지시어를 요구하지 마라. 대신 이렇게 해봐라...
+<directive module="core">Include</directive> 지시어를 참고하고
+다음과 같은 명령을 실행하라:</p>
+
+      <example>
+        find /www/htdocs -type f -print \<br />
+        | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
+      </example>
+    </note>
+</section>
+
+<directivesynopsis>
+<name>MMapFile</name>
+<description>Map a list of files into memory at startup time</description>
+<syntax>MMapFile <var>file-path</var> [<var>file-path</var>] ...</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>MMapFile</directive> directive maps one or more files
+    (given as whitespace separated arguments) into memory at server
+    startup time. They are automatically unmapped on a server
+    shutdown. When the files have changed on the filesystem at
+    least a <code>HUP</code> or <code>USR1</code> signal should be send to
+    the server to re-<code>mmap()</code> them.</p>
+
+    <p>Be careful with the <var>file-path</var> arguments: They have
+    to literally match the filesystem path Apache's URL-to-filename
+    translation handlers create. We cannot compare inodes or other
+    stuff to match paths through symbolic links <em>etc.</em>
+    because that again would cost extra <code>stat()</code> system
+    calls which is not acceptable. This module may or may not work
+    with filenames rewritten by <module>mod_alias</module> or
+    <module>mod_rewrite</module>.</p>
+
+    <example><title>Example</title>
+      MMapFile /usr/local/apache/htdocs/index.html
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheFile</name>
+<description>Cache a list of file handles at startup time</description>
+<syntax>CacheFile <var>file-path</var> [<var>file-path</var>] ...</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>CacheFile</directive> directive opens handles to
+    one or more files (given as whitespace separated arguments) and
+    places these handles into the cache at server startup
+    time. Handles to cached files are automatically closed on a server
+    shutdown.  When the files have changed on the filesystem, the
+    server should be restarted to to re-cache them.</p>
+
+    <p>Be careful with the <var>file-path</var> arguments: They have
+    to literally match the filesystem path Apache's URL-to-filename
+    translation handlers create. We cannot compare inodes or other
+    stuff to match paths through symbolic links <em>etc.</em>
+    because that again would cost extra <code>stat()</code> system
+    calls which is not acceptable. This module may or may not work
+    with filenames rewritten by <module>mod_alias</module> or
+    <module>mod_rewrite</module>.</p>
+
+    <example><title>Example</title>
+      CacheFile /usr/local/apache/htdocs/index.html
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
