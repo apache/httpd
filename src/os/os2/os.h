@@ -43,6 +43,8 @@ char *ap_os_error_message(int err);
 #define S_ISLNK(m) 0
 #define lstat(x, y) stat(x, y)
 
+#define isinf(n) (!isfinite(n))
+
 /* Dynamic loading functions */
 #define     ap_os_dso_handle_t  unsigned long
 void        ap_os_dso_init(void);
