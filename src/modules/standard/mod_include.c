@@ -71,6 +71,11 @@
  */
 
 #ifdef USE_PERL_SSI
+#include "config.h"
+#ifdef USE_SFIO
+#undef USE_SFIO
+#define USE_STDIO
+#endif
 #include "modules/perl/mod_perl.h"
 #else
 #include "httpd.h"
@@ -748,6 +753,7 @@ int handle_perl (FILE *in, request_rec *r, char *error) {
 	else if(strnEQ(tag,"done", 4))
 	    break;
     }
+    perl_stdout2client(r);
     perl_call_handler(sub, r, av);
     return OK;
 }
