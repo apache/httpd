@@ -1432,6 +1432,7 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     int i;
     int tmp_server_limit = DEFAULT_SERVER_LIMIT;
     int tmp_thread_limit = DEFAULT_THREAD_LIMIT;
+    apr_status_t rv;
 
     debug = ap_exists_config_define("DEBUG");
 
@@ -1448,7 +1449,12 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
         is_graceful = 0;
 
         if (!one_process && !no_detach) {
-            apr_proc_detach();
+            rv = apr_proc_detach();
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                             "apr_proc_detach failed");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }                  
         }
 
         my_pid = getpid();

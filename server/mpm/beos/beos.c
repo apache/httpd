@@ -996,6 +996,7 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 {
     static int restart_num = 0;
     int no_detach, debug;
+    apr_status_t rv;
 
     debug = ap_exists_config_define("DEBUG");
 
@@ -1011,8 +1012,14 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     if (restart_num++ == 1) {
         is_graceful = 0;
         
-        if (!one_process && !no_detach)
-	        apr_proc_detach();
+        if (!one_process && !no_detach) {
+	        rv = apr_proc_detach();
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                             "apr_proc_detach failed");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }                  
+        }
 
         server_pid = getpid();
     }

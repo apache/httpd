@@ -1541,12 +1541,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 }
 
 static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
-                              apr_pool_t *ptemp)
+                             apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach, debug;
     ap_directive_t *pdir;
     ap_directive_t *max_clients = NULL;
+    apr_status_t rv;
 
     /* make sure that "ThreadsPerChild" gets set before "MaxClients" */
     for (pdir = ap_conftree; pdir != NULL; pdir = pdir->next) {
@@ -1599,7 +1600,12 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         is_graceful = 0;
 
         if (!one_process && !no_detach) {
-            apr_proc_detach();
+            rv = apr_proc_detach();
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                             "apr_proc_detach failed");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
         }
         parent_pid = ap_my_pid = getpid();
     }

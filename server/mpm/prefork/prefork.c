@@ -1204,6 +1204,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 {
     static int restart_num = 0;
     int no_detach, debug;
+    apr_status_t rv;
 
     debug = ap_exists_config_define("DEBUG");
 
@@ -1219,9 +1220,14 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     if (restart_num++ == 1) {
 	is_graceful = 0;
 
-	if (!one_process && !no_detach) {
-	    apr_proc_detach();
-	}
+    if (!one_process && !no_detach) {
+        rv = apr_proc_detach();
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                         "apr_proc_detach failed");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
 
 	parent_pid = ap_my_pid = getpid();
     }
