@@ -187,7 +187,7 @@ Changes with Apache 2.1.0-dev
      [André Malo]
 
   *) Allow proxying of resources that are invoked via DirectoryIndex.
-     PR 14648.  [André Malo]
+     PR 14648, 15112, 29961.  [André Malo]
 
   *) mod_rewrite: Allow proxying and RewriteRules in directory context
      for subrequests.  PR 14648, 15114.  [André Malo]
