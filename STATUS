@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 11:06:17 $]
+Last modified at [$Date: 2003/05/21 15:48:07 $]
 
 Release:
 
@@ -223,24 +223,6 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_kernel.c 1.93
       modules/ssl/ssl_toolkit_compat.c 1.34
       +1: wrowe
-
-    * Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
-      when a MKACTIVITY request comes in.
-      Submitted by: Ben Collins-Sussman <sussman@apache.org>
-      modules/dav/main/mod_dav.c r1.93
-      +1: striker, jerenkrantz, gstein
-
-    * Allow apxs to work with out-of-tree APRs.
-      support/apxs.in r1.54, r1.55
-      r1.54 adds libtool detection
-      r1.55 adds includes detection of apr and apr-util
-      +1: jerenkrantz, gstein, trawick
-          thommay (this doesn't fix all the problems with apxs and out of
-                   tree apr/apr-util, but it's a good start. There's still the 
-		   query cases; but I'm beginning to think that in these cases 
-		   the app should be querying ap{r,u}-config directly)
-                   gstein: agreed. apxs should deprecate the -q flag
-
 
 CURRENT RELEASE NOTES:
 
