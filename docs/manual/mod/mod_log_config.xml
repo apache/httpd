@@ -205,7 +205,7 @@ enable <module>mod_logio</module> to use this.</td></tr>
     host really served the request.</p>
     </section>
 
-    <section>
+    <section id="security">
 
     <title>Security Considerations</title>
 
