@@ -224,7 +224,12 @@ int directory_walk (request_rec *r)
      * for the moment, that's not worth the trouble.
      */
 
+#ifdef __EMX__
+    /* Add OS/2 drive name support */
+    if ((test_filename[0] != '/') && (test_filename[1] != ':'))
+#else
     if (test_filename[0] != '/')
+#endif
     {
 /* fake filenames only match Directory sections */
         void *this_conf, *entry_config;
