@@ -109,6 +109,10 @@ extern char *sbrk(int);
 
 #include "explain.h"
 
+#if !defined(max)
+#define max(a,b)        (a > b ? a : b)
+#endif
+
 #ifdef __EMX__
     /* Add MMAP style functionality to OS/2 */
     #ifdef HAVE_MMAP
@@ -312,57 +316,81 @@ void accept_mutex_off()
  */
 
 #ifndef NO_LINGCLOSE
-static void lingering_close (int sd, server_rec *server_conf)
+static void lingering_close (request_rec *r)
 {
     int dummybuf[512];
     struct timeval tv;
     fd_set fds, fds_read, fds_err;
     int select_rv = 0, read_rv = 0;
+    int sd = r->connection->client->fd;
+
+    if (sd < 0)          /* Don't do anything if the socket is invalid */
+        return;
+
+    kill_timeout(r);     /* Remove any leftover timeouts */
 
     /* Close our half of the connection --- send client a FIN */
 
-    if ((shutdown (sd, 1)) != 0)
-	log_unixerr("shutdown", NULL, "lingering_close", server_conf);
+    if ((shutdown(sd, 1)) != 0) {
+	/* if it fails, no need to go through the rest of the routine */
+	log_unixerr("shutdown", NULL, "lingering_close", r->server);
+	close(sd);
+	return;
+    }
 
     /* Set up to wait for readable data on socket... */
 
-    FD_ZERO (&fds);
-    FD_SET (sd, &fds);
-    tv.tv_sec = server_conf->keep_alive_timeout;
-    tv.tv_usec = 0;
+    FD_ZERO(&fds);
+    FD_SET(sd, &fds);
 
-    fds_read = fds; fds_err = fds;
-    
     /* Wait for readable data or error condition on socket;
-     * slurp up any data that arrives...
+     * slurp up any data that arrives...  We exit when we go for 
+     * an interval of tv length without getting any more data, get an
+     * error from select(), get an exception on sd, get an error or EOF
+     * on a read, or the timer expires.
      */
 
-#ifdef HPUX
-    while ((select_rv = select (sd + 1, (int*)&fds_read, NULL, (int*)&fds_err,
-				&tv)) > 0) {
-#else
-    while ((select_rv = select (sd + 1, &fds_read, NULL, &fds_err, &tv)) > 0) {
-#endif
-	if ((read_rv = read (sd, dummybuf, sizeof(dummybuf))) <= 0)
-	    break;
-	else {
-	    fds_read = fds; fds_err = fds;
-	}
-    }
+    /* Prevent a slow-drip client from holding us here indefinitely */
 
-    /* Log any errors that occured (client closing their end isn't an error) */
+    hard_timeout("lingering_close", r);
+
+    do {
+	/* If keep_alive_timeout is too low, using it as a timeout
+	 * can cause undesirable behavior so pick some pseudo-arbitrary
+	 * minimum value, currently 10 seconds.  These parameters are
+         * reset on each pass, since they may be changed by select.
+	 */
+        tv.tv_sec  = max(r->server->keep_alive_timeout, 10);
+        tv.tv_usec = 0;
+        read_rv    = 0;
+        fds_read   = fds;
+        fds_err    = fds;
+    
+#ifdef HPUX
+        select_rv = select(sd + 1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
+#else
+        select_rv = select(sd + 1, &fds_read, NULL, &fds_err, &tv);
+#endif
+    } while ((select_rv > 0) &&           /* Something to see on socket    */
+             !FD_ISSET(sd, &fds_err) &&   /* that isn't an error condition */
+             FD_ISSET(sd, &fds_read) &&   /* and is worth trying to read   */
+             ((read_rv = read(sd, dummybuf, sizeof dummybuf)) > 0));
+
+    /* Log any errors that occurred (client close or reset is not an error) */
     
     if (select_rv < 0)
-	log_unixerr("select", NULL, "lingering_close", server_conf);
+        log_unixerr("select", NULL, "lingering_close", r->server);
     else if (read_rv < 0 && errno != ECONNRESET)
-	log_unixerr("read", NULL, "lingering_close", server_conf);
+        log_unixerr("read", NULL, "lingering_close", r->server);
 
     /* Should now have seen final ack.  Safe to finally kill socket */
 
-    shutdown (sd, 2);
-    close (sd);
+    if (close(sd) < 0)
+        log_unixerr("close", NULL, "lingering_close", r->server);
+
+    kill_timeout(r);
 }
-#endif
+#endif /* ndef NO_LINGCLOSE */
 
 void usage(char *bin)
 {
@@ -1672,10 +1700,15 @@ void child_main(int child_num_arg)
 #ifdef NO_LINGCLOSE
 	bclose(conn_io);	/* just close it */
 #else
-	if (r)
-	    lingering_close (conn_io->fd, r->server);
-	else
-	    close (conn_io->fd);
+        if (r && !r->connection->aborted) {
+	    /* if the connection was aborted by a soft_timeout, it has
+	     * already been shutdown() so we don't need to go through
+	     * lingering_close
+	     */
+	    lingering_close(r);
+	} else {
+	    close(conn_io->fd);
+	}
 #endif	
     }    
 }
