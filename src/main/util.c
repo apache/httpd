@@ -128,9 +128,10 @@ API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype)
     const char *semi;
 
     semi = strchr(intype, ';');
-    if (!semi) {
+    if (semi == NULL) {
 	return ap_pstrdup(p, intype);
-    } else {
+    } 
+    else {
 	while ((semi > intype) && ap_isspace(semi[-1])) {
 	    semi--;
 	}
