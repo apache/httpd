@@ -292,7 +292,7 @@
     $ make install
 
     $ cd php-3.0.X
-	$ ./configure --with-apxs=/path/to/apache/bin/apxs \
+    $ ./configure --with-apxs=/path/to/apache/bin/apxs \
                   --with-config-file-path=/path/to/apache
     $ make
     $ make install
