@@ -1,4 +1,8 @@
 Changes with Apache 2.0.34-dev
+
+  *) Fix the calculation of thread_num in the worker score structure.
+     [Stas Bekman]
+
   *) Use apr_atomic operations in managing the mod_mem_cache
      cache_objects for SMP scalability. (see USE_ATOMICS
      preprocessor directive in mod_file_cache)
