@@ -147,7 +147,8 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(int) bflush(BUFF *fb);
 API_EXPORT(int) bputs(const char *x, BUFF *fb);
 API_EXPORT(int) bvputs(BUFF *fb,...);
-API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt,...);
+API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt,...)
+				__attribute__((format(printf,2,3)));
 API_EXPORT_NONSTD(int) vbprintf(BUFF *fb, const char *fmt, va_list vlist);
 
 /* Internal routines */

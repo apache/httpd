@@ -655,6 +655,17 @@ typedef int rlim_t;
 #define API_VAR_EXPORT
 #endif
 
+/* So that we can use inline on some critical functions, and use
+ * GNUC attributes (such as to get -Wall warnings for printf-like
+ * functions).
+ */
+#if !defined(__GNUC__)
+#define ap_inline
+#define __attribute__(__x)
+#else
+#define ap_inline __inline__
+#endif
+
 /* Do we have sys/resource.h; assume that BSD does. */
 #ifndef HAVE_SYS_RESOURCE_H
 #ifdef BSD
@@ -681,7 +692,8 @@ typedef int rlim_t;
 #define ap_snprintf     snprintf
 #define ap_vsnprintf    vsnprintf
 #else
-API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...);
+API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
+			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);
 #endif
@@ -835,17 +847,6 @@ Sigfunc *signal(int signo, Sigfunc * func);
 
 #ifndef ap_inet_addr
 #define ap_inet_addr inet_addr
-#endif
-
-/* So that we can use inline on some critical functions, and use
- * GNUC attributes (such as to get -Wall warnings for printf-like
- * functions).
- */
-#if !defined(__GNUC__)
-#define ap_inline
-#define __attribute__(__x)
-#else
-#define ap_inline __inline__
 #endif
 
 #ifdef NO_OTHER_CHILD

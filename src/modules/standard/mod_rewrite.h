@@ -394,7 +394,8 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
 static int   rewritelog_child(void *cmd);
-static void  rewritelog(request_rec *r, int level, const char *text, ...);
+static void  rewritelog(request_rec *r, int level, const char *text, ...)
+			__attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
 
     /* program map support */

@@ -128,7 +128,8 @@ API_EXPORT(int) rputc(int c, request_rec *r);
 API_EXPORT(int) rputs(const char *str, request_rec *r);
 API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r);
 API_EXPORT_NONSTD(int) rvputs(request_rec *r,...);
-API_EXPORT_NONSTD(int) rprintf(request_rec *r, const char *fmt,...);
+API_EXPORT_NONSTD(int) rprintf(request_rec *r, const char *fmt,...)
+				__attribute__((format(printf,2,3)));
 API_EXPORT(int) rflush(request_rec *r);
 
 /*
