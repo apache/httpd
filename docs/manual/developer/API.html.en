@@ -333,7 +333,7 @@ struct stat finfo;    /* Set by server core;
         char *content_encoding;<br />
         <br />
         /* MIME header environments, in and out. Also, <br />
-        &nbsp;*an array containing environment variables to<br />
+        &nbsp;* an array containing environment variables to<br />
         &nbsp;* be passed to subprocesses, so people can write<br />
         &nbsp;* modules to add to that environment.<br />
         &nbsp;*<br />

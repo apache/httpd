@@ -1,1 +1,1 @@
-<xsl:text>&lt;/li&gt;</xsl:text>
+<xsl:text xmlns:xsl="http://www.w3.org/1999/XSL/Transform">&lt;/li&gt;</xsl:text>
