@@ -39,7 +39,6 @@ ap_bgetopt
 ap_bgets
 ap_bhalfduplex
 ap_bind_address
-ap_block_alarms
 ap_blookc
 ap_bnonblock
 ap_bonerror
@@ -356,7 +355,6 @@ ap_threads_per_child
 ap_tm2sec
 ap_translate_name
 ap_uname2id
-ap_unblock_alarms
 ap_unescape_url
 ap_unparse_uri_components
 ap_unregister_other_child

@@ -310,8 +310,6 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     int i;
 #endif
 
-    ap_block_alarms();
-
     RAISE_SIGSTOP(CGI_CHILD);
 #ifdef DEBUG_CGI
     fprintf(dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
@@ -381,7 +379,6 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_err, BO_TIMEOUT, &r->server->timeout);
         }
     }
-    ap_unblock_alarms();
     return (rc);
 }
 static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)

@@ -275,10 +275,8 @@ API_EXPORT(regex_t *) ap_pregcomp(ap_pool_t *p, const char *pattern,
 
 API_EXPORT(void) ap_pregfree(ap_pool_t *p, regex_t * reg)
 {
-    ap_block_alarms();
     regfree(reg);
     ap_kill_cleanup(p, (void *) reg, regex_cleanup);
-    ap_unblock_alarms();
 }
 
 /*

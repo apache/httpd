@@ -197,8 +197,6 @@ static int log_child(ap_pool_t *p, const char *progname,
         }
     }
 
-    ap_unblock_alarms();
-
     return(rc);
 }
 
