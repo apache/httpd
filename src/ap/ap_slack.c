@@ -98,7 +98,7 @@ int ap_slack(int fd, int line)
 	     * the high line, because if it fails we'll eventually try
 	     * the low line...
 	     */
-	    ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 		        "unable to open a file descriptor above %u, "
 			"you may need to increase the number of descriptors",
 			LOW_SLACK_LINE);
