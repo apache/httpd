@@ -70,6 +70,12 @@
 #ifndef APACHE_MPM_COMMON_H
 #define APACHE_MPM_COMMON_H
 
+#include "ap_config_auto.h"
+
+#ifdef HAVE_NETINET_TCP_H
+#include <netinet/tcp.h>    /* for TCP_NODELAY */
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,8 +84,16 @@ extern "C" {
  * @package Multi-Processing Modules functions
  */
 
-#ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>    /* for TCP_NODELAY */
+/* The maximum length of the queue of pending connections, as defined
+ * by listen(2).  Under some systems, it should be increased if you
+ * are experiencing a heavy TCP SYN flood attack.
+ *
+ * It defaults to 511 instead of 512 because some systems store it 
+ * as an 8-bit datatype; 512 truncated to 8-bits is 0, while 511 is 
+ * 255 when truncated.
+ */
+#ifndef DEFAULT_LISTENBACKLOG
+#define DEFAULT_LISTENBACKLOG 511
 #endif
         
 /**

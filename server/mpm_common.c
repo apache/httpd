@@ -77,6 +77,7 @@
 #include "http_main.h"
 #include "mpm.h"
 #include "mpm_common.h"
+#include "ap_mpm.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
