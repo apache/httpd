@@ -14,9 +14,8 @@ CFG=ApacheOS - Win32 Debug
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheOS - Win32 Release" (based on\
- "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ApacheOS - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ApacheOS - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "ApacheOS - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -26,10 +25,6 @@ NULL=
 !ELSE 
 NULL=nul
 !ENDIF 
-
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "ApacheOS - Win32 Release"
 
@@ -41,102 +36,27 @@ OutDir=.\ApacheOSR
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\ApacheOS.dll"
+ALL : "$(OUTDIR)\ApacheOS.lib"
 
 !ELSE 
 
-ALL : "$(OUTDIR)\ApacheOS.dll"
+ALL : "$(OUTDIR)\ApacheOS.lib"
 
 !ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\os.obj"
 	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(OUTDIR)\ApacheOS.dll"
-	-@erase "$(OUTDIR)\ApacheOS.exp"
 	-@erase "$(OUTDIR)\ApacheOS.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
+CPP=cl.exe
+CPP_PROJ=/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
  /Fp"$(INTDIR)\ApacheOS.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheOSR/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheOS.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
- /pdb:"$(OUTDIR)\ApacheOS.pdb" /machine:I386 /out:"$(OUTDIR)\ApacheOS.dll"\
- /implib:"$(OUTDIR)\ApacheOS.lib" 
-LINK32_OBJS= \
-	"$(INTDIR)\os.obj"
-
-"$(OUTDIR)\ApacheOS.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "ApacheOS - Win32 Debug"
-
-OUTDIR=.\ApacheOSD
-INTDIR=.\ApacheOSD
-# Begin Custom Macros
-OutDir=.\ApacheOSD
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\ApacheOS.dll"
-
-!ELSE 
-
-ALL : "$(OUTDIR)\ApacheOS.dll"
-
-!ENDIF 
-
-CLEAN :
-	-@erase "$(INTDIR)\os.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
-	-@erase "$(OUTDIR)\ApacheOS.dll"
-	-@erase "$(OUTDIR)\ApacheOS.exp"
-	-@erase "$(OUTDIR)\ApacheOS.ilk"
-	-@erase "$(OUTDIR)\ApacheOS.lib"
-	-@erase "$(OUTDIR)\ApacheOS.pdb"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
- /Fp"$(INTDIR)\ApacheOS.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheOSD/
-CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheOS.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
- /pdb:"$(OUTDIR)\ApacheOS.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheOS.dll" /implib:"$(OUTDIR)\ApacheOS.lib" /pdbtype:sept 
-LINK32_OBJS= \
-	"$(INTDIR)\os.obj"
-
-"$(OUTDIR)\ApacheOS.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -167,6 +87,98 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheOS.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ApacheOS.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\os.obj"
+
+"$(OUTDIR)\ApacheOS.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "ApacheOS - Win32 Debug"
+
+OUTDIR=.\ApacheOSD
+INTDIR=.\ApacheOSD
+# Begin Custom Macros
+OutDir=.\ApacheOSD
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\ApacheOS.lib"
+
+!ELSE 
+
+ALL : "$(OUTDIR)\ApacheOS.lib"
+
+!ENDIF 
+
+CLEAN :
+	-@erase "$(INTDIR)\os.obj"
+	-@erase "$(INTDIR)\vc50.idb"
+	-@erase "$(OUTDIR)\ApacheOS.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MLd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
+ /Fp"$(INTDIR)\ApacheOS.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_OBJS=.\ApacheOSD/
+CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheOS.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ApacheOS.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\os.obj"
+
+"$(OUTDIR)\ApacheOS.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(CFG)" == "ApacheOS - Win32 Release" || "$(CFG)" ==\
