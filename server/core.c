@@ -2952,6 +2952,26 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
     return OK;
 }
 
+/*****************************************************************
+ *
+ * Test the filesystem name through directory_walk and file_walk
+ */
+static int core_map_to_storage(request_rec *r)
+{
+    int access_status;
+
+    if ((access_status = ap_directory_walk(r))) {
+        return access_status;
+    }
+
+    if ((access_status = ap_file_walk(r))) {
+        return access_status;
+    }
+
+    return OK;
+}
+
+
 static int do_nothing(request_rec *r) { return OK; }
 
 static int default_handler(request_rec *r)
@@ -3376,6 +3396,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(core_open_logs,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these - Ben */
