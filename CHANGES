@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) initialize server arrays prior to calling ap_setup_prelinked_modules
+     so that static modules can push Defines values when registering
+     hooks just like DSO modules can ["Philippe M. Chiasson" <gozer cpan.org>]
+
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
