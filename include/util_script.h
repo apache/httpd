@@ -139,6 +139,25 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
                                                char *buffer);
 
 /**
+ * Read headers strings from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. 
+ * @param termch Pointer to the last character parsed.
+ * @param termarg Pointer to an int to capture the last argument parsed.
+ * @param args   String arguments to parse consecutively for headers, 
+ *               a NULL argument terminates the list.
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ * @deffunc int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
+ */ 
+API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
+                                                      char *buffer, 
+                                                      const char **termch,
+                                                      int *termarg, ...);
+
+/**
  * Read headers output from a script, ensuring that the output is valid.  If
  * the output is valid, then the headers are added to the headers out of the
  * current request
