@@ -4,7 +4,7 @@ top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
-SUBDIRS = ap lib main modules os $(REGEX_DIR)
+SUBDIRS = ap lib main modules os support $(REGEX_DIR)
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c buildmark.c
