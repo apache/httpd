@@ -26,7 +26,7 @@ all: @@Configuration@@ httpd
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-httpd:  modules.o subdirs
+httpd:  subdirs modules.o
 	rm -f buildmark.c
 	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
