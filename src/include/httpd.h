@@ -376,15 +376,18 @@ extern "C" {
  * might require large values, but most servers could get by with much
  * smaller limits than we use below.  The request message body size can
  * be limited by the per-dir config directive LimitRequestBody.
+ *
+ * Internal buffer sizes are two bytes more than the AP_LIMIT_REQUEST_LINE
+ * and AP_LIMIT_REQUEST_FIELDSIZE below, which explains the 8190.
  */
 #ifndef AP_LIMIT_REQUEST_LINE
-#define AP_LIMIT_REQUEST_LINE 8192
+#define AP_LIMIT_REQUEST_LINE 8190
 #endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
 #ifndef AP_LIMIT_REQUEST_FIELDS
 #define AP_LIMIT_REQUEST_FIELDS 100
 #endif /* default limit on number of request header fields */
 #ifndef AP_LIMIT_REQUEST_FIELDSIZE
-#define AP_LIMIT_REQUEST_FIELDSIZE 8192
+#define AP_LIMIT_REQUEST_FIELDSIZE 8190
 #endif /* default limit on bytes in any one header field  */
 
 /*
