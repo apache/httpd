@@ -171,15 +171,13 @@ void ap_lingering_close(conn_rec *c)
      * client has ACKed our FIN and/or has stopped sending us data.
      */
 
+    /* Send any leftover data to the client, but never try to again */
+    ap_flush_conn(c);
+
     if (c->aborted) {
-        ap_flush_conn(c);
         apr_close_socket(c->client_socket);
         return;
     }
-
-    /* Send any leftover data to the client, but never try to again */
-
-    ap_flush_conn(c);
 
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
