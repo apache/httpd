@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Use the new APR pool code to reduce pool-related lock
+     contention in the worker MPM.  [Sander Striker]
+
   *) The POD no longer assumes the child is listening on 127.0.0.1
      and now pulls the first hostname in the list of listeners to
      perform the dummy connect on. This fixes a bug when the user
