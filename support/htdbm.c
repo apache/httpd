@@ -84,6 +84,7 @@
 #if APR_HAVE_STRINGS_H
 #include <strings.h>
 #endif
+#include <time.h>
 
 #if APR_CHARSET_EBCDIC
 #include "apr_xlate.h"
@@ -212,25 +213,6 @@ static apr_status_t htdbm_open(htdbm_t *htdbm)
         return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, 
                             htdbm->rdonly ? APR_DBM_READONLY : APR_DBM_READWRITE, 
                             APR_OS_DEFAULT, htdbm->pool);
-}
-
-static char * ap_getword(apr_pool_t *atrans, char **line, char stop)
-{
-    char *pos = strrchr(*line, stop);
-    char *res;
-
-    if (!pos) {
-        res = apr_pstrdup(atrans, *line);
-        *line += strlen(*line);
-        return res;
-    }
-
-    res = apr_pstrndup(atrans, *line, pos - *line);
-
-    while (*pos == stop)
-        ++pos;
-    *line = pos;
-    return res;
 }
 
 static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed) 
@@ -498,9 +480,9 @@ int main(int argc, const char *argv[])
                 break;
             case 'T':
                 h->type = apr_pstrdup(h->pool, ++arg);
-                while (*arg !='\0')
-                    *++arg;
-                *--arg; /* so incrementing this in the loop with find a null */
+                while (*arg != '\0')
+                    ++arg;
+                --arg; /* so incrementing this in the loop with find a null */
                 break;
             case 'v':
                 h->rdonly = 1;
