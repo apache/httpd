@@ -153,6 +153,8 @@ static int check_safe_file(request_rec *r)
 }
 
 
+#ifndef REPLACE_PATH_INFO_METHOD
+
 static int check_symlinks(char *d, int opts, apr_pool_t *p)
 {
 #if defined(OS2)
@@ -642,6 +644,392 @@ AP_DECLARE(int) directory_walk(request_rec *r)
                                  * symlink goop. */
 }
 
+#else /* defined REPLACE_PATH_INFO_METHOD */
+
+/*****************************************************************
+ *
+ * Getting and checking directory configuration.  Also checks the
+ * FollowSymlinks and FollowSymOwner stuff, since this is really the
+ * only place that can happen (barring a new mid_dir_walk callout).
+ *
+ * We can't do it as an access_checker module function which gets
+ * called with the final per_dir_config, since we could have a directory
+ * with FollowSymLinks disabled, which contains a symlink to another
+ * with a .htaccess file which turns FollowSymLinks back on --- and
+ * access in such a case must be denied.  So, whatever it is that
+ * checks FollowSymLinks needs to know the state of the options as
+ * they change, all the way down.
+ */
+
+AP_DECLARE(int) directory_walk(request_rec *r)
+{
+    core_server_config *sconf = ap_get_module_config(r->server->module_config,
+                                                     &core_module);
+    ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec->elts;
+    int num_sec = sconf->sec->nelts;
+    int sec;
+    unsigned int seg;
+    int res;
+    ap_conf_vector_t *entry_config;
+    ap_conf_vector_t *this_conf;
+    core_dir_config *entry_core;
+    apr_status_t rv;
+    apr_size_t buflen;
+    char *seg_name;
+    char *delim;
+
+    /*
+     * Are we dealing with a file? If not, we simply assume we have a 
+     * handler that doesn't require one, but for safety's sake, and so
+     * we have something find_types() can get something out of, fake 
+     * one. But don't run through the directory entries.
+     */
+
+    if (r->filename == NULL) {
+        r->filename = apr_pstrdup(r->pool, r->uri);
+        r->finfo.filetype = APR_NOFILE;
+        r->per_dir_config = per_dir_defaults;
+
+        return OK;
+    }
+
+    /*
+     * Go down the directory hierarchy.  Where we have to check for symlinks,
+     * do so.  Where a .htaccess file has permission to override anything,
+     * try to find one.  If either of these things fails, we could poke
+     * around, see why, and adjust the lookup_rec accordingly --- this might
+     * save us a call to get_path_info (with the attendant stat()s); however,
+     * for the moment, that's not worth the trouble.
+     *
+     * r->path_info tracks the remaining source path.
+     * r->filename  tracks the path as we build it.
+     * we begin our adventure at the root...
+     */
+    r->path_info = r->filename;
+    if ((rv = apr_filepath_merge(&r->path_info, NULL, r->filename, 
+                                 APR_FILEPATH_NOTRELATIVE, r->pool)) 
+                  == APR_SUCCESS) {
+        char *buf;
+        rv = apr_filepath_root(&r->filename, &r->path_info, 
+                               APR_FILEPATH_TRUENAME, r->pool);
+        buflen = strlen(r->filename) + strlen(r->path_info) + 1;
+        buf = apr_palloc(r->pool, buflen);
+        strcpy (buf, r->filename);
+        r->filename = buf;
+    }
+    else {
+        return HTTP_FORBIDDEN;
+    }
+    r->finfo.valid = APR_FINFO_TYPE;
+    r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
+
+    /* Fake filenames (i.e. proxy:) only match Directory sections.
+     */
+    if (rv == APR_EBADPATH)
+    {
+        const char *entry_dir;
+
+        for (sec = 0; sec < num_sec; ++sec) {
+
+            entry_config = sec_ent[sec];
+            entry_core = ap_get_module_config(entry_config, &core_module);
+            entry_dir = entry_core->d;
+
+            this_conf = NULL;
+            if (entry_core->r) {
+                if (!ap_regexec(entry_core->r, r->filename, 0, NULL, 0))
+                    this_conf = entry_config;
+            }
+            else if (entry_core->d_is_fnmatch) {
+                /* XXX: Gut instinct tells me this could be very, very nasty,
+                 * have we thought through what 'faux' resource might be
+                 * case senstitive or not?
+                 */
+                if (!apr_fnmatch(entry_dir, r->filename, 0))
+                    this_conf = entry_config;
+            }
+            else if (!strncmp(r->filename, entry_dir, strlen(entry_dir)))
+                this_conf = entry_config;
+
+            if (this_conf)
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                            per_dir_defaults,
+                                                            this_conf);
+        }
+
+        r->per_dir_config = per_dir_defaults;
+
+        return OK;
+    }
+
+    /*
+     * seg keeps track of which segment we've copied.
+     * sec keeps track of which section we're on, since sections are
+     *     ordered by number of segments. See core_reorder_directories 
+     */
+    seg = 1; 
+    sec = 0;
+    do {
+        int overrides_here;
+        core_dir_config *core_dir = ap_get_module_config(per_dir_defaults,
+                                                         &core_module);
+        
+        /* We have no trailing slash, but we sure would appreciate one...
+         */
+        if (seg > 1)
+            strcat(r->filename, "/");
+
+        /* Begin *this* level by looking for matching <Directory> sections
+         * from the server config.
+         */
+        for (; sec < num_sec; ++sec) {
+            char *entry_dir;
+
+            entry_config = sec_ent[sec];
+            entry_core = ap_get_module_config(entry_config, &core_module);
+            entry_dir = entry_core->d;
+
+            /* No more possible matches? */
+            if (entry_core->r || !entry_core->d_is_absolute
+                              || entry_core->d_components > seg)
+                break;
+
+            this_conf = NULL;
+            if (entry_core->d_is_fnmatch) {
+                if (!apr_fnmatch(entry_dir, r->filename, FNM_PATHNAME)) {
+                    this_conf = entry_config;
+                }
+            }
+            else if (!strcmp(r->filename, entry_dir))
+                this_conf = entry_config;
+
+            if (this_conf) {
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                            per_dir_defaults,
+                                                            this_conf);
+                core_dir = ap_get_module_config(per_dir_defaults,
+                                                &core_module);
+            }
+        }
+        overrides_here = core_dir->override;
+
+        /* If .htaccess files are enabled, check for one. */
+        if (overrides_here) {
+            ap_conf_vector_t *htaccess_conf = NULL;
+
+            res = ap_parse_htaccess(&htaccess_conf, r, overrides_here,
+                                    apr_pstrdup(r->pool, r->filename),
+                                    sconf->access_name);
+            if (res)
+                return res;
+
+            if (htaccess_conf) {
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+           per_dir_defaults,
+           htaccess_conf);
+           r->per_dir_config = per_dir_defaults;
+           }
+        }
+
+        /* That temporary trailing slash was useful, now drop it.
+         */
+        if (seg > 1)
+            r->filename[strlen(r->filename) - 1] = '\0';
+
+        /* Time for all good things to come to an end?
+         */
+        if (!r->path_info || !*r->path_info)
+            break;
+
+        /* Now it's time for the next segment... 
+         * We will assume the next element is an end node, and fix it up
+         * below as necessary...
+         */
+        
+        seg_name = strchr(r->filename, '\0');
+        delim = strchr(r->path_info + (*r->path_info == '/' ? 1 : 0), '/');
+        if (delim) {
+            *delim = '\0';
+            strcpy(seg_name, r->path_info);
+            r->path_info = delim;
+            *delim = '/';
+        }
+        else {
+            strcpy(seg_name, r->path_info);
+            r->path_info = strchr(r->path_info, '\0');
+        }
+        if (*seg_name == '/') ++seg_name;
+        
+        /* If nothing remained but a '/' string, we are finished
+         */
+        if (!*seg_name)
+            break;
+
+        /* XXX: Optimization required:
+         * If...we have allowed symlinks, and
+         * if...we find the segment exists in the directory list
+         * skip the lstat and dummy up an APR_DIR value for r->finfo
+         * this means case sensitive platforms go quite quickly.
+         * Case insensitive platforms might be given the wrong path,
+         * but if it's not found in the cache, then we know we have
+         * something to test (the misspelling is never cached.)
+         */
+
+        /* We choose apr_lstat here, rather that apr_stat, so that we
+         * capture this path object rather than it's target.  We will
+         * replace the info with our target's info below.  We especially
+         * want the name of this 'link' object, not the name of it's
+         * target, if we are fixing case.
+         */
+        rv = apr_lstat(&r->finfo, r->filename, APR_FINFO_MIN | APR_FINFO_NAME, r->pool);
+
+        if (APR_STATUS_IS_ENOENT(rv)) {
+            /* Nothing?  That could be nice.  But our directory walk is done.
+             */
+            r->finfo.filetype = APR_NOFILE;
+            break;
+        }
+        else if (APR_STATUS_IS_EACCES(rv)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "access to %s denied", r->uri);
+            return r->status = HTTP_FORBIDDEN;
+        }
+        else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE) 
+                 || !(r->finfo.valid & APR_FINFO_TYPE)) {
+            /* If we hit ENOTDIR, we must have over-optimized, deny 
+             * rather than assume not found.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "access to %s failed", r->uri);
+            return r->status = HTTP_FORBIDDEN;
+        }
+        else if ((res = check_safe_file(rnew))) {
+            rnew->status = res;
+            return rnew;
+        }
+
+        /* Fix up the path now if we have a name, and they don't agree
+         */
+        if ((r->finfo.valid & APR_FINFO_NAME) 
+            && strcmp(seg_name, r->finfo.name)) {
+            strcpy(seg_name, r->finfo.name);
+            /* TODO: provide users an option that an internal/external
+             * redirect is required here?
+             */
+        }
+
+        if (r->finfo.filetype == APR_LNK) 
+        {
+            /* Is this an possibly acceptable symlink?
+             */
+            apr_finfo_t fi;
+            if (!(core_dir->opts & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                            "Symbolic link not allowed: %s", r->filename);
+                return r->status = HTTP_FORBIDDEN;
+            }
+
+            if ((core_dir->opts & OPT_SYM_OWNER) 
+                    && !(r->finfo.valid & APR_FINFO_OWNER)) {
+                /* Ok, it wasn't so easy to learn the owner, (at least, it
+                 * wasn't free info), so let's ask again... this may hurt
+                 * performance-wise, but we need the name more often than
+                 * we test symlinks on case-insensitive platforms.
+                 */
+                if (apr_lstat(&r->finfo, r->filename, APR_FINFO_OWNER, r->pool)
+                        != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                                  "Symbolic link not allowed: %s", r->filename);
+                    return r->status = HTTP_FORBIDDEN;
+                }
+            }
+
+            /* let's find out the real deal...
+             */
+            rv = apr_stat(&fi, r->filename, APR_FINFO_MIN
+                                          | (core_dir->opts & OPT_SYM_OWNER 
+                                               ? APR_FINFO_OWNER : 0), r->pool);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "Failed to stat symbolic link's target: %s", r->filename);
+                return r->status = HTTP_FORBIDDEN;
+            }
+
+            if ((core_dir->opts & OPT_SYM_OWNER)
+                && (apr_compare_users(fi.user, r->finfo.user) != APR_SUCCESS)) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                              "Symbolic link's owner doesn't match target's owner: %s", 
+                              r->filename);
+                return r->status = HTTP_FORBIDDEN;
+            }
+
+            /* Ok, we are done with the link's info, test the real target
+             */
+            r->finfo = fi;
+
+            if (r->finfo.filetype == APR_REG) {
+                /* That was fun, nothing left for us here
+                 */
+                break;
+            }
+            else if (r->finfo.filetype != APR_DIR) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                              "symlink doesn't point to a file or directory: %s",
+                              r->filename);
+                return r->status = HTTP_FORBIDDEN;
+            }
+        }
+
+        ++seg;
+    } while (r->finfo.filetype == APR_DIR);
+
+    /*
+     * There's two types of IS_SPECIAL sections (see http_core.c), and we've
+     * already handled the proxy:-style stuff.  Now we'll deal with the
+     * regexes.
+     */
+    for (; sec < num_sec; ++sec) {
+
+        entry_config = sec_ent[sec];
+        entry_core = ap_get_module_config(entry_config, &core_module);
+
+        if (entry_core->r) {
+            if (!ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL)) {
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                            per_dir_defaults,
+                                                            entry_config);
+            }
+        }
+    }
+    r->per_dir_config = per_dir_defaults;
+
+/* It seems this shouldn't be needed anymore.  We translated the symlink above
+ x  into a real resource, and should have died up there.  Even if we keep this,
+ x  it needs more thought (maybe an r->file_is_symlink) perhaps it should actually
+ x  happen in file_walk, so we catch more obscure cases in autoindex sub requests, etc.
+ x
+ x    * Symlink permissions are determined by the parent.  If the request is
+ x    * for a directory then applying the symlink test here would use the
+ x    * permissions of the directory as opposed to its parent.  Consider a
+ x    * symlink pointing to a dir with a .htaccess disallowing symlinks.  If
+ x    * you access /symlink (or /symlink/) you would get a 403 without this
+ x    * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
+ x    * you would *not* get the 403.
+ x
+ x   if (r->finfo.filetype != APR_DIR
+ x       && (res = check_symlinks(r->filename, ap_allow_options(r), r->pool))) {
+ x       ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+ x                   "Symbolic link not allowed: %s", r->filename);
+ x       return res;
+ x   }
+ */
+
+    return OK;  /* 'no excuses' */
+}
+
+#endif /* defined REPLACE_PATH_INFO_METHOD */
+
 AP_DECLARE(int) location_walk(request_rec *r)
 {
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
@@ -774,6 +1162,7 @@ AP_DECLARE(int) file_walk(request_rec *r)
     }
     return OK;
 }
+
 
 /*****************************************************************
  *
