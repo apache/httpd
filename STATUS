@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/15 19:09:22 $]
+Last modified at [$Date: 2003/07/15 21:03:13 $]
 
 Release:
 
@@ -69,21 +69,19 @@ PATCHES TO PORT FROM 2.1
       rewritten request using "proxy:". The code was adding multiple "proxy:"
       fields in the rewritten URI. PR: 13946.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.153&r2=1.154
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.154&r2=1.155
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.156&r2=1.157
       +1: rederpj, nd (besides my further comments on dev@)
 
     * ap_get_mime_headers_core(): Remove LWS between header token and ':'
       delimeter. (2616 compliance)
       server/protocol.c: r1.133
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.132&r2=1.133
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.133&r2=1.134
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.134&r2=1.135
       +1: rederpj, nd (though I think it's actually a bad request, being lenient
           is probably the best here), trawick (prefer style changes in
           r1.135 to be committed at same time), jim
-
-    * ap_get_mime_headers(): eliminate the temporary table used to
-      combine duplicate headers (performance enhancement)
-      server/protocol.c: r1.132
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
-      +1: brianp, jerenkrantz, rederpj, nd
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -865,6 +863,9 @@ EXPERIMENTAL MODULES:
       including CacheGc*, CacheSize, and, CacheTimeMargin)
       (mod_mem_cache: MCacheMaxObjectCount) and
       (mod_cache: CacheForceCompletion). 
+
+    * Fix RFC 2616 compliance issues. Including PRs: 15852, 15866,
+      15868, 15869, 15870, 16133, 16135, 16136, 16521, 19441.
 
     mod_auth_ldap/util_ldap:
     * General stabilization and testing

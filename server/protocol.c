@@ -705,10 +705,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     char *value;
     apr_size_t len;
     int fields_read = 0;
-    apr_table_t *tmp_headers;
-
-    /* We'll use apr_table_overlap later to merge these into r->headers_in. */
-    tmp_headers = apr_table_make(r->pool, 50);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -798,7 +794,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     ++value;            /* Skip to start of value   */
                 }
 
-                apr_table_addn(tmp_headers, last_field, value);
 
                 /* reset the alloc_len so that we'll allocate a new
                  * buffer if we have to do any more folding: we can't
@@ -825,7 +820,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         }
     }
 
-    apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
+    apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
 }
 
 AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
