@@ -21,6 +21,9 @@ test -z "$CFLAGS" && auto_cflags=1
 dnl Needed for APACHE_MODULE() to work
 cwd=`pwd`
 
+dnl ## Run configure for packages Apache uses
+AC_CONFIG_SUBDIRS(lib/apr)
+
 dnl ## Check for programs
 
 AC_PROG_AWK
