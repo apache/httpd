@@ -1274,7 +1274,7 @@ int ssl_hook_Fixup(request_rec *r)
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *e = r->subprocess_env;
     char *var;
-    char *val;
+    char *val = "";
     STACK_OF(X509) *sk;
     SSL *ssl;
     int i;
