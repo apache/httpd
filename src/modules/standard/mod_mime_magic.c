@@ -2254,7 +2254,7 @@ uncompress(request_rec *r, int method, const unsigned char *old,
         (void) close(fdin[0]);
         (void) close(fdin[1]);
 
-        (void) close(STDOUT_FILENO)
+        (void) close(STDOUT_FILENO);
         (void) dup(fdout[1]);
         (void) close(fdout[0]);
         (void) close(fdout[1]);
