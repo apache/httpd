@@ -592,21 +592,31 @@ static void accept_mutex_on(void)
 {
     int ret;
 
-    while ((ret = fcntl(lock_fd, F_SETLKW, &lock_it)) < 0 && errno == EINTR)
-	continue;
+    while ((ret = fcntl(lock_fd, F_SETLKW, &lock_it)) < 0 && errno == EINTR) {
+	/* nop */
+    }
 
     if (ret < 0) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "fcntl: F_SETLKW: Error getting accept lock. Exiting!");
+		    "fcntl: F_SETLKW: Error getting accept lock, exiting!  "
+		    "Perhaps you need to use the LockFile directive to place "
+		    "your lock file on a local disk!");
 	exit(1);
     }
 }
 
 static void accept_mutex_off(void)
 {
-    if (fcntl(lock_fd, F_SETLKW, &unlock_it) < 0) {
+    int ret;
+
+    while ((ret = fcntl(lock_fd, F_SETLKW, &unlock_it)) < 0 && errno == EINTR) {
+	/* nop */
+    }
+    if (ret < 0) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "fcntl: F_SETLKW: Error freeing accept lock. Exiting!");
+		    "fcntl: F_SETLKW: Error freeing accept lock, exiting!  "
+		    "Perhaps you need to use the LockFile directive to place "
+		    "your lock file on a local disk!");
 	exit(1);
     }
 }

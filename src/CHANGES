@@ -1,4 +1,7 @@
 Changes with Apache 1.3b4
+  
+  *) When an error occurs in fcntl() locking suggest the user look up
+     the docs for LockFile.  [Dean Gaudet]
 
   *) Eliminate some dead code from writev_it_all().
      [Igor Tatarinov <tatarino@prairie.NoDak.edu>]
