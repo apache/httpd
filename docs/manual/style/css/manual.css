@@ -816,6 +816,11 @@ p.indent {
     margin-top: 1em;
 }
 
+span.indent {
+    padding-left: 1em;
+    display: block;
+}
+
 p.figure {
     margin-left: 2em;
     font-style: italic;
