@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/10 19:56:42 $]
+Last modified at [$Date: 2003/12/10 21:03:46 $]
 
 Release:
 
@@ -359,7 +359,7 @@ PATCHES TO BACKPORT FROM 2.1
         (but code has changed slightly since stable branch so patch
         posted to bugzilla is one to use...  see PR at
         http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24991)
-      +1: trawick
+      +1: trawick, stas
 
 CURRENT RELEASE NOTES:
 
