@@ -824,7 +824,7 @@ API_EXPORT(const char *) ap_resolve_env(ap_pool_t *p, const char * word)
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
 {
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, 
         "Done with config file %s", cfp->name);
 #endif
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
@@ -879,7 +879,7 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, c
 
     status = ap_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
                 "Opening config file %s (%s)",
                 name, (status != APR_SUCCESS) ? 
                 ap_strerror(status, buf, sizeof(buf)) : "successful");
@@ -927,7 +927,7 @@ API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_pool_t *p, const char *descr,
 {
     configfile_t *new_cfg = ap_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL, "Opening config handler %s", descr);
 #endif
     new_cfg->param = param;
     new_cfg->name = descr;
@@ -1016,7 +1016,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	        ;
 
 #ifdef DEBUG_CFG_LINES
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Read config: %s", buf);
 #endif
 	return 0;
     } else {
@@ -1073,7 +1073,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		    --i;
 		buf[i] = '\0';
 #ifdef DEBUG_CFG_LINES
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Read config: %s", buf);
 #endif
 		return 0;
 	    }

@@ -119,7 +119,7 @@ static bs2_ForkType os_forktype(void)
 
     if (uname(&os_version) < 0)
     {
-	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 		     "uname() failed - aborting.");
 	exit(APEXIT_CHILDFATAL);
     }
@@ -132,7 +132,7 @@ static bs2_ForkType os_forktype(void)
 	strcmp(os_version.release, "02.0A") == 0 ||
 	strcmp(os_version.release, "02.1A") == 0)
     {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
 		     "Error: unsupported OS version. "
 		     "You may encounter problems.");
 	forktype = bs2_FORK;
@@ -207,7 +207,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 
 	type = forktype = bs2_noFORK;
 
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server,
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, server,
 		     "The debug mode of Apache should only "
 		     "be started by an unprivileged user!");
 	return 0;
@@ -220,7 +220,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     /* An Account is required for _rini() */
     if (bs2000_account == NULL)
     {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server,
+	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, server,
 		     "No BS2000Account configured - cannot switch to User %s",
 		     user_name);
 	exit(APEXIT_CHILDFATAL);
@@ -242,7 +242,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     /* Only the super user can switch identities. */
     if (_rini(&inittask) != 0) {
 
-	ap_log_error(APLOG_MARK, APLOG_ALERT, server,
+	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server,
 		     "_rini: BS2000 auth failed for user \"%s\" acct \"%s\"",
 		     inittask.username, inittask.account);
 
@@ -276,7 +276,7 @@ pid_t os_fork(const char *user)
 
 	pid = ufork(username);
 	if (pid == -1 && errno == EPERM) {
-	    ap_log_error(APLOG_MARK, APLOG_EMERG,
+	    ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
 			 NULL, "ufork: Possible mis-configuration "
 			 "for user %s - Aborting.", user);
 	    exit(1);

@@ -353,7 +353,7 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     limit = *plimit;
     if ((getrlimit(type, limit)) != 0)  {
         *plimit = NULL;
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, cmd->server,
                      "%s: getrlimit failed", cmd->cmd->name);
         return;
     }
