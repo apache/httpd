@@ -56,18 +56,9 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#define CORE_PRIVATE
-
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
-#include "http_core.h"
-#include "http_main.h"
-#include "http_log.h"
-#include "util_uri.h"
-#include "util_date.h"	/* get ap_checkmask() decl. */
-#include "apr_md5.h"
-#include "apr_pools.h"
-#include "apr_strings.h"
+
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);

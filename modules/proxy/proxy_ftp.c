@@ -58,23 +58,10 @@
 
 /* FTP routines for Apache proxy */
 
-#define CORE_PRIVATE
-
 #include "mod_proxy.h"
-#include "apr_strings.h"
-#include "apr_buckets.h"
-#include "util_filter.h"
-#include "ap_config.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "http_core.h"
-#include "http_connection.h"
-#include "util_date.h"
 
 #define AUTODETECT_PWD
 
-int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, char *url);
 
 /*
  * Decodes a '%' escaped string, and returns the number of characters
@@ -252,33 +239,41 @@ static int ftp_getrc_msg(conn_rec *c, char *msgbuf, int msglen)
     return status;
 }
 
-/* this piece needs some serious overhauling */
-#if 0
-static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
+/* this is a filter that turns a raw ASCII directory listing into pretty HTML */
+
+/* ideally, mod_proxy should simply send the raw directory list up the filter
+ * stack to mod_autoindex, which in theory should turn the raw ascii into
+ * pretty html along with all the bells and whistles it provides...
+ *
+ * all in good time...! :)
+ */
+
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb, ap_input_mode_t mode)
 {
-    char buf[IOBUFSIZE];
-    char buf2[IOBUFSIZE];
+    conn_rec *c = f->r->connection;
+    apr_pool_t *p = f->r->pool;
+    apr_bucket *e;
+    char buf[MAX_STRING_LEN];
+    char buf2[MAX_STRING_LEN];
+
     char *filename;
     int searchidx = 0;
     char *searchptr = NULL;
     int firstfile = 1;
-    apr_ssize_t cntr;
-    unsigned long total_bytes_sent = 0;
-    register int n, o, w;
-    conn_rec *con = r->connection;
+    register int n;
     char *dir, *path, *reldir, *site;
-    apr_file_t *cachefp = NULL;
 
-    if(c) ap_cache_el_data(c, &cachefp);
-	
+    char *cwd = NULL;
+
+
     /* Save "scheme://site" prefix without password */
-    site = ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
+    site = ap_unparse_uri_components(p, &f->r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
     /* ... and path without query args */
-    path = ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
+    path = ap_unparse_uri_components(p, &f->r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
     (void)decodeenc(path);
 
     /* Copy path, strip (all except the last) trailing slashes */
-    path = dir = apr_pstrcat(r->pool, path, "/", NULL);
+    path = dir = apr_pstrcat(p, path, "/", NULL);
     while ((n = strlen(path)) > 1 && path[n-1] == '/' && path[n-2] == '/')
 	path[n-1] = '\0';
 
@@ -289,7 +284,9 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 		"<BODY><H2>Directory of "
 		"<A HREF=\"/\">%s</A>/",
 		site, path, site, path, site);
-    total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
+
+    e = apr_bucket_pool_create(buf, n, p);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     while ((dir = strchr(dir+1, '/')) != NULL)
     {
@@ -299,31 +296,32 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	else
 	    ++reldir;
 	/* print "path/" component */
-	apr_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
-	total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
+	n = apr_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
+	e = apr_bucket_pool_create(buf, n, p);
+	APR_BRIGADE_INSERT_TAIL(bb, e);
 	*dir = '/';
     }
     /* If the caller has determined the current directory, and it differs */
     /* from what the client requested, then show the real name */
     if (cwd == NULL || strncmp (cwd, path, strlen(cwd)) == 0) {
-	apr_snprintf(buf, sizeof(buf), "</H2>\n<HR><PRE>");
+	n = apr_snprintf(buf, sizeof(buf), "</H2>\n<HR><PRE>");
     } else {
-	apr_snprintf(buf, sizeof(buf), "</H2>\n(%s)\n<HR><PRE>", cwd);
+	n = apr_snprintf(buf, sizeof(buf), "</H2>\n(%s)\n<HR><PRE>", cwd);
     }
-    total_bytes_sent += ap_proxy_bputs2(buf, con->client_socket, c);
+    e = apr_bucket_pool_create(buf, n, p);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
-    while (!con->aborted) {
-	n = ap_bgets(buf, sizeof buf, f);
+    e = apr_bucket_flush_create();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+    while (!c->aborted) {
+	n = ap_getline(buf, sizeof(buf), f->r, 0);
 	if (n == -1) {		/* input error */
-	    if (c != NULL) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		  "proxy: error reading from cache");
-		  ap_proxy_cache_error(&c);
-	    }
 	    break;
 	}
-	if (n == 0)
+	if (n == 0) {
 	    break;		/* EOF */
+	}
 	if (buf[0] == 'l' && (filename=strstr(buf, " -> ")) != NULL) {
 	    char *link_ptr = filename;
 
@@ -375,38 +373,27 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	    n = strlen(buf);
 	}
 
-	o = 0;
-	total_bytes_sent += n;
+	e = apr_bucket_pool_create(buf, n, p);
+	APR_BRIGADE_INSERT_TAIL(bb, e);
+	e = apr_bucket_flush_create();
+	APR_BRIGADE_INSERT_TAIL(bb, e);
 
-        cntr = n;
-	if (cachefp && apr_file_write(cachefp, buf, &cntr) != APR_SUCCESS) {
-	   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-	  "proxy: error writing to cache");
-	   ap_proxy_cache_error(&c);
-	   cachefp = NULL;
-	}
-
-	while (n && !r->connection->aborted) {
-            cntr = n;
-	    w = apr_send(con->client_socket, &buf[o], &cntr);
-	    if (w <= 0)
-		break;
-	    n -= w;
-	    o += w;
-	}
     }
 
-    total_bytes_sent += ap_proxy_bputs2("</PRE><HR>\n", con->client_socket, c);
-    total_bytes_sent += ap_proxy_bputs2(ap_psignature("", r), con->client_socket, c);
-    total_bytes_sent += ap_proxy_bputs2("</BODY></HTML>\n", con->client_socket, c);
+    n = apr_snprintf(buf, sizeof(buf), "</PRE><HR>\n%s</BODY></HTML>\n", ap_psignature("", f->r));
+    e = apr_bucket_pool_create(buf, n, p);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 
-/* Flushing the actual socket doesn't make much sense, because we don't 
- * buffer it yet.
-    ap_flush(con->client);
+    e = apr_bucket_eos_create();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+/* probably not necessary */
+/*    e = apr_bucket_flush_create();
+    APR_BRIGADE_INSERT_TAIL(bb, e);
 */
-    return total_bytes_sent;
+
+    return APR_SUCCESS;
 }
-#endif
 
 /* Common routine for failed authorization (i.e., missing or wrong password)
  * to an ftp service. This causes most browsers to retry the request
@@ -485,6 +472,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     if (r->method_number != M_GET)
 	return HTTP_NOT_IMPLEMENTED;
 
+
     /* We break the URL into host, port, path-search */
     connectname = r->parsed_uri.hostname;
     connectport = (r->parsed_uri.port != 0)
@@ -542,6 +530,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 			     "Connect to remote machine blocked");
     }
 
+//return HTTP_NOT_IMPLEMENTED;
 
     /*
      * II: Make the Connection
@@ -1346,9 +1335,8 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 
    if (parms[0] == 'd') {
 	/* insert directory filter */
-/*	send_dir(data, r, c, cwd); */
+	ap_add_output_filter("PROXY_SEND_DIR", NULL, r, r->connection);
    }
-
 
     /* send body */
     if (!r->header_only) {

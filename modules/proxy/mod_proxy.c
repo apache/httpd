@@ -58,29 +58,6 @@
 
 #include "mod_proxy.h"
 
-#define CORE_PRIVATE
-
-#include "http_log.h"
-#include "http_vhost.h"
-#include "http_request.h"
-#include "util_date.h"
-#include "mod_core.h"
-
-/* Some WWW schemes and their default ports; this is basically /etc/services */
-/* This will become global when the protocol abstraction comes */
-static struct proxy_services defports[] =
-{
-    {"http", DEFAULT_HTTP_PORT},
-    {"ftp", DEFAULT_FTP_PORT},
-    {"https", DEFAULT_HTTPS_PORT},
-    {"gopher", DEFAULT_GOPHER_PORT},
-    {"nntp", DEFAULT_NNTP_PORT},
-    {"wais", DEFAULT_WAIS_PORT},
-    {"snews", DEFAULT_SNEWS_PORT},
-    {"prospero", DEFAULT_PROSPERO_PORT},
-    {NULL, -1}			/* unknown port */
-};
-
 /*
  * A Web proxy module. Stages:
  *
@@ -476,14 +453,19 @@ static const char *
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_remote *new;
     char *p, *q;
-    char *r, *f;
+    char *r, *f, *scheme;
     int port;
 
     r = apr_pstrdup(cmd->pool, r1);
+    scheme = apr_pstrdup(cmd->pool, r1);
     f = apr_pstrdup(cmd->pool, f1);
     p = strchr(r, ':');
-    if (p == NULL || p[1] != '/' || p[2] != '/' || p[3] == '\0')
+    if (p == NULL || p[1] != '/' || p[2] != '/' || p[3] == '\0') {
 	return "ProxyRemote: Bad syntax for a remote proxy server";
+    }
+    else {
+	scheme[p-r] = 0;
+    }
     q = strchr(p + 3, ':');
     if (q != NULL) {
 	if (sscanf(q + 1, "%u", &port) != 1 || port > 65535)
@@ -498,11 +480,7 @@ static const char *
     ap_str_tolower(p + 3);		/* lowercase hostname */
 
     if (port == -1) {
-	int i;
-	for (i = 0; defports[i].scheme != NULL; i++)
-	    if (strcasecmp(defports[i].scheme, r) == 0)
-		break;
-	port = defports[i].port;
+	port = ap_default_port_for_scheme(scheme);
     }
 
     new = apr_array_push(conf->proxies);
@@ -743,6 +721,10 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
+#ifdef FTP
+    /* filters */
+    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONNECTION);
+#endif
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
