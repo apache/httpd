@@ -192,6 +192,35 @@ SOURCE=.\server\vhost.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\os\win32\ap_regkey.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/ap_regkey.h
+InputPath=.\os\win32\ap_regkey.h
+
+".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/ap_regkey.h
+InputPath=.\os\win32\ap_regkey.h
+
+".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\gen_test_char.exe
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -223,27 +252,27 @@ InputPath=.\server\gen_test_char.exe
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\ap_regkey.h
+SOURCE=.\modules\generators\mod_cgi.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/ap_regkey.h
-InputPath=.\os\win32\ap_regkey.h
+# Begin Custom Build - Creating include/mod_cgi.h
+InputPath=.\modules\generators\mod_cgi.h
 
-".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
+".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/ap_regkey.h
-InputPath=.\os\win32\ap_regkey.h
+# Begin Custom Build - Creating include/mod_cgi.h
+InputPath=.\modules\generators\mod_cgi.h
 
-".\include\ap_regkey.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\os\win32\ap_regkey.h > .\include\ap_regkey.h
+".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
 	
 # End Custom Build
 
@@ -273,35 +302,6 @@ InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\modules\http\mod_core.h > .\include\mod_core.h
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\generators\mod_cgi.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_cgi.h
-InputPath=.\modules\generators\mod_cgi.h
-
-".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_cgi.h
-InputPath=.\modules\generators\mod_cgi.h
-
-".\include\mod_cgi.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\generators\mod_cgi.h > .\include\mod_cgi.h
 	
 # End Custom Build
 
