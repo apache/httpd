@@ -1,5 +1,8 @@
 Changes with Apache 2.0.24-dev
 
+  *) Fix ap_rvprintf to support more than 4K of data at one time.
+     [Cody Sherr <csherr@covalent.net>]
+
   *) We have always used the obsolete/deprecated Netscape syntax
      for our tracking cookies; now the CookieStyle directive
      allows the Webmaster to choose the Netscape, RFC2109, or

@@ -1133,19 +1133,63 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     return nbyte;
 }
 
+struct ap_vrprintf_data {
+    apr_vformatter_buff_t vbuff;
+    request_rec *r;
+    char *buff;
+};
+
+static apr_status_t r_flush(apr_vformatter_buff_t *buff)
+{
+    /* callback function passed to ap_vformatter to be called when
+     * vformatter needs to write into buff and buff.curpos > buff.endpos */
+
+    /* ap_vrprintf_data passed as a apr_vformatter_buff_t, which is then
+     * "downcast" to an ap_vrprintf_data */
+    struct ap_vrprintf_data *vd = (struct ap_vrprintf_data*)buff;
+
+    if (vd->r->connection->aborted)
+        return -1;
+
+    /* r_flush is called when vbuff is completely full */
+    if (buffer_output(vd->r, vd->buff, AP_IOBUFSIZE)) {
+	return -1;
+    }
+
+    /* reset the buffer position */
+    vd->vbuff.curpos = vd->buff;
+    vd->vbuff.endpos = vd->buff + AP_IOBUFSIZE;
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    char buf[4096];
     apr_size_t written;
+    struct ap_vrprintf_data vd;
+    static char vrprintf_buf[AP_IOBUFSIZE];
+
+    vd.vbuff.curpos = vrprintf_buf;
+    vd.vbuff.endpos = vrprintf_buf + AP_IOBUFSIZE;
+    vd.r = r;
+    vd.buff = vrprintf_buf;
 
     if (r->connection->aborted)
         return -1;
 
-    /* ### fix this mechanism to allow more than 4K of output */
-    written = apr_vsnprintf(buf, sizeof(buf), fmt, va);
+    written = apr_vformatter(r_flush, &vd.vbuff, fmt, va);
+    /* tack on null terminator on remaining string */
+    *(vd.vbuff.curpos) = '\0';
 
-    if (buffer_output(r, buf, written) != APR_SUCCESS)
-        return -1;
+    if (written != -1) {
+	int n = vd.vbuff.curpos - vrprintf_buf;
+
+	/* last call to buffer_output, to finish clearing the buffer */
+	if (buffer_output(r, vrprintf_buf,n) != APR_SUCCESS)
+	    return -1;
+
+	written += n;
+    }
 
     return written;
 }
