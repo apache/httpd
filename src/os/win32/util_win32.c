@@ -571,7 +571,7 @@ API_EXPORT(int) os_strftime(char *s, size_t max, const char *format,
 API_EXPORT(int) ap_os_is_filename_valid(const char *file)
 {
     const char *segstart;
-    char seglength;
+    unsigned int seglength;
     const char *pos;
     static const char * const invalid_characters = "?\"<>*|:";
     static const char * const invalid_filenames[] = { 
@@ -621,8 +621,8 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
     }
 
     while (*pos) {
-	int idx;
-	int baselength;
+	unsigned int idx;
+	unsigned int baselength;
 
 	while (*pos == '/' || *pos == '\\') {
     	    pos++;
@@ -665,7 +665,8 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
 	 * if it does not include any dot characters). */
 	if (baselength == 3 || baselength == 4) {
 	    for (idx = 0; invalid_filenames[idx]; idx++) {
-		if (!strnicmp(invalid_filenames[idx], segstart, baselength)) {
+		if (strlen(invalid_filenames[idx]) == baselength &&
+		    !strnicmp(invalid_filenames[idx], segstart, baselength)) {
 		    return 0;
 		}
 	    }
