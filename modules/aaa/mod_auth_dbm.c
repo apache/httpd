@@ -259,7 +259,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if (colon_pw) {
 	*colon_pw = '\0';
     }
-    invalid_pw = apr_validate_password(sent_pw, real_pw);
+    invalid_pw = apr_password_validate(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "DBM user %s: authentication failure for \"%s\": "

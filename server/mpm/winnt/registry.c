@@ -275,14 +275,14 @@ apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *n
             ++tmp;
         }
     
-        *parray = apr_make_array(p, nSize, sizeof(char *));
+        *parray = apr_array_make(p, nSize, sizeof(char *));
         tmp = pValue;
-        newelem = (char **) apr_push_array(*parray);
+        newelem = (char **) apr_array_push(*parray);
         *newelem = tmp;
         while (tmp[0] || tmp[1])
         {
             if (!tmp[0]) {
-                newelem = (char **) apr_push_array(*parray);
+                newelem = (char **) apr_array_push(*parray);
                 *newelem = tmp + 1;
             }
             ++tmp;

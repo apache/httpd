@@ -131,7 +131,7 @@ static void *create_ef_server_conf(apr_pool_t *p, server_rec *s)
 
     conf = (ef_server_t *)apr_pcalloc(p, sizeof(ef_server_t));
     conf->p = p;
-    conf->h = apr_make_hash(conf->p);
+    conf->h = apr_hash_make(conf->p);
     return conf;
 }
 
@@ -351,15 +351,15 @@ static apr_status_t set_resource_limits(request_rec *r,
     apr_status_t rv;
 
 #ifdef RLIMIT_CPU
-    rv = apr_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu);
+    rv = apr_procattr_limit_set(procattr, APR_LIMIT_CPU, conf->limit_cpu);
     ap_assert(rv == APR_SUCCESS); /* otherwise, we're out of sync with APR */
 #endif
 #if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    rv = apr_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem);
+    rv = apr_procattr_limit_set(procattr, APR_LIMIT_MEM, conf->limit_mem);
     ap_assert(rv == APR_SUCCESS); /* otherwise, we're out of sync with APR */
 #endif
 #ifdef RLIMIT_NPROC
-    rv = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc);
+    rv = apr_procattr_limit_set(procattr, APR_LIMIT_NPROC, conf->limit_nproc);
     ap_assert(rv == APR_SUCCESS); /* otherwise, we're out of sync with APR */
 #endif
 
@@ -370,7 +370,7 @@ static apr_status_t set_resource_limits(request_rec *r,
 
 static apr_status_t ef_close_file(void *vfile)
 {
-    return apr_close(vfile);
+    return apr_file_close(vfile);
 }
 
 /* init_ext_filter_process: get the external filter process going
@@ -384,10 +384,10 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
 
     ctx->proc = apr_pcalloc(ctx->p, sizeof(*ctx->proc));
 
-    rc = apr_createprocattr_init(&ctx->procattr, ctx->p);
+    rc = apr_procattr_create(&ctx->procattr, ctx->p);
     ap_assert(rc == APR_SUCCESS);
 
-    rc = apr_setprocattr_io(ctx->procattr,
+    rc = apr_procattr_io_set(ctx->procattr,
                             APR_CHILD_BLOCK,
                             APR_CHILD_BLOCK,
                             APR_CHILD_BLOCK);
@@ -397,13 +397,13 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     ap_assert(rc == APR_SUCCESS);
 
     if (dc->log_stderr > 0) {
-        rc = apr_setprocattr_childerr(ctx->procattr,
+        rc = apr_procattr_child_err_set(ctx->procattr,
                                       f->r->server->error_log, /* stderr in child */
                                       NULL);
         ap_assert(rc == APR_SUCCESS);
     }
                                   
-    rc = apr_create_process(ctx->proc, 
+    rc = apr_proc_create(ctx->proc, 
                             ctx->filter->command, 
                             (const char * const *)ctx->filter->args, 
                             NULL, /* environment */
@@ -416,7 +416,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
         return rc;
     }
 
-    apr_note_subprocess(ctx->p, ctx->proc, kill_after_timeout);
+    apr_pool_note_subprocess(ctx->p, ctx->proc, kill_after_timeout);
 
     /* We don't want the handle to the child's stdin inherited by any
      * other processes created by httpd.  Otherwise, when we close our
@@ -424,23 +424,23 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
      * be open.
      */
 
-    apr_register_cleanup(ctx->p, ctx->proc->in, 
-                         apr_null_cleanup, /* other mechanism */
+    apr_pool_cleanup_register(ctx->p, ctx->proc->in, 
+                         apr_pool_cleanup_null, /* other mechanism */
                          ef_close_file);
 
 #if APR_FILES_AS_SOCKETS
     {
         apr_socket_t *newsock;
 
-        rc = apr_setup_poll(&ctx->pollset, 2, ctx->p);
+        rc = apr_poll_setup(&ctx->pollset, 2, ctx->p);
         ap_assert(rc == APR_SUCCESS);
         rc = apr_socket_from_file(&newsock, ctx->proc->in);
         ap_assert(rc == APR_SUCCESS);
-        rc = apr_add_poll_socket(ctx->pollset, newsock, APR_POLLOUT);
+        rc = apr_poll_socket_add(ctx->pollset, newsock, APR_POLLOUT);
         ap_assert(rc == APR_SUCCESS);
         rc = apr_socket_from_file(&newsock, ctx->proc->out);
         ap_assert(rc == APR_SUCCESS);
-        rc = apr_add_poll_socket(ctx->pollset, newsock, APR_POLLIN);
+        rc = apr_poll_socket_add(ctx->pollset, newsock, APR_POLLIN);
         ap_assert(rc == APR_SUCCESS);
     }
 #endif
@@ -541,20 +541,20 @@ static apr_status_t drain_available_output(ap_filter_t *f)
 
     while (1) {
         len = sizeof(buf);
-        rv = apr_read(ctx->proc->out,
+        rv = apr_file_read(ctx->proc->out,
                       buf,
                       &len);
         if ((rv && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
-                          "apr_read(child output), len %" APR_SIZE_T_FMT,
+                          "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
         if (rv != APR_SUCCESS) {
             return rv;
         }
         bb = apr_brigade_create(f->r->pool);
-        b = apr_bucket_create_transient(buf, len);
+        b = apr_bucket_transient_create(buf, len);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
@@ -579,13 +579,13 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     
     do {
         tmplen = len - bytes_written;
-        rv = apr_write(ctx->proc->in,
+        rv = apr_file_write(ctx->proc->in,
                        (const char *)data + bytes_written,
                        &tmplen);
         bytes_written += tmplen;
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                          "apr_write(child input), len %" APR_SIZE_T_FMT,
+                          "apr_file_write(child input), len %" APR_SIZE_T_FMT,
                           tmplen);
             return rv;
         }
@@ -680,32 +680,32 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         /* close the child's stdin to signal that no more data is coming;
          * that will cause the child to finish generating output
          */
-        if ((rv = apr_close(ctx->proc->in)) != APR_SUCCESS) {
+        if ((rv = apr_file_close(ctx->proc->in)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                          "apr_close(child input)");
+                          "apr_file_close(child input)");
             return rv;
         }
         /* since we've seen eos and closed the child's stdin, set the proper pipe 
-         * timeout; we don't care if we don't return from apr_read() for a while... 
+         * timeout; we don't care if we don't return from apr_file_read() for a while... 
          */
-        rv = apr_set_pipe_timeout(ctx->proc->out, 
+        rv = apr_file_pipe_timeout_set(ctx->proc->out, 
                                   f->r->server->timeout * APR_USEC_PER_SEC);
         if (rv) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                          "apr_set_pipe_timeout(child output)");
+                          "apr_file_pipe_timeout_set(child output)");
             return rv;
         }
     }
 
     do {
         len = sizeof(buf);
-        rv = apr_read(ctx->proc->out,
+        rv = apr_file_read(ctx->proc->out,
                       buf,
                       &len);
         if ((rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
-                          "apr_read(child output), len %" APR_SIZE_T_FMT,
+                          "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
         if (APR_STATUS_IS_EAGAIN(rv)) {
@@ -718,7 +718,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         
         if (rv == APR_SUCCESS) {
             bb = apr_brigade_create(f->r->pool);
-            b = apr_bucket_create_transient(buf, len);
+            b = apr_bucket_transient_create(buf, len);
             APR_BRIGADE_INSERT_TAIL(bb, b);
             if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
@@ -735,7 +735,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (eos) {
         /* pass down eos */
         bb = apr_brigade_create(f->r->pool);
-        b = apr_bucket_create_eos();
+        b = apr_bucket_eos_create();
         APR_BRIGADE_INSERT_TAIL(bb, b);
         if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,

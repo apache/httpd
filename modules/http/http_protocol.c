@@ -237,7 +237,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             bsend = apr_brigade_create(r->pool);
             e = ap_bucket_create_error(HTTP_RANGE_NOT_SATISFIABLE, NULL, r->pool);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
-            e = apr_bucket_create_eos();
+            e = apr_bucket_eos_create();
             APR_BRIGADE_INSERT_TAIL(bsend, e);
             return ap_pass_brigade(f->next, bsend);
         }
@@ -316,14 +316,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         if (ctx->num_ranges > 1) {
             char *ts;
 
-            e = apr_bucket_create_pool(bound_head,
+            e = apr_bucket_pool_create(bound_head,
                                       strlen(bound_head), r->pool);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
                               range_start, range_end, clength);
             ap_xlate_proto_to_ascii(ts, strlen(ts));
-            e = apr_bucket_create_pool(ts, strlen(ts), r->pool);
+            e = apr_bucket_pool_create(ts, strlen(ts), r->pool);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
         
@@ -338,7 +338,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
             if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
                 apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
-                foo = apr_bucket_create_heap(str, len, 0, NULL);
+                foo = apr_bucket_heap_create(str, len, 0, NULL);
             }
             APR_BRIGADE_INSERT_TAIL(bsend, foo);
             ec = APR_BUCKET_NEXT(ec);
@@ -357,11 +357,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         /* add the final boundary */
         end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
         ap_xlate_proto_to_ascii(end, strlen(end));
-        e = apr_bucket_create_pool(end, strlen(end), r->pool);
+        e = apr_bucket_pool_create(end, strlen(end), r->pool);
         APR_BRIGADE_INSERT_TAIL(bsend, e);
     }
 
-    e = apr_bucket_create_eos();
+    e = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bsend, e);
 
     /* we're done with the original content */
@@ -489,7 +489,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
      * were given a time in the future, we return the current time - the
      * Last-Modified can't be in the future.
      */
-    now = (mtime < r->request_time) ? r->request_time : apr_now();
+    now = (mtime < r->request_time) ? r->request_time : apr_time_now();
     return (mtime > now) ? now : mtime;
 }
 
@@ -515,7 +515,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     }
 
     /* XXX: we should define a "time unset" constant */
-    mtime = (r->mtime != 0) ? r->mtime : apr_now();
+    mtime = (r->mtime != 0) ? r->mtime : apr_time_now();
 
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
@@ -863,7 +863,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                 }
                 if (ctx->chunk_size == 0) { /* we just finished the last chunk? */
                     /* append eos bucket and get out */
-                    b = apr_bucket_create_eos();
+                    b = apr_bucket_eos_create();
                     APR_BRIGADE_INSERT_TAIL(bb, b);
                     return APR_SUCCESS;
                 }
@@ -1002,7 +1002,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             apr_bucket_destroy(old);
         }
         if (f->c->remain == 0) {
-            apr_bucket *eos = apr_bucket_create_eos();
+            apr_bucket *eos = apr_bucket_eos_create();
                 
             APR_BRIGADE_INSERT_TAIL(b, eos);
         }
@@ -1250,7 +1250,7 @@ static int read_request_line(request_rec *r)
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
 	     */
-	    r->request_time = apr_now();
+	    r->request_time = apr_time_now();
             return 0;
         }
     }
@@ -1275,7 +1275,7 @@ static int read_request_line(request_rec *r)
     ap_bsetflag(conn->client, B_SAFEREAD, 0);
 #endif
 
-    r->request_time = apr_now();
+    r->request_time = apr_time_now();
     r->the_request = apr_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
 #if 0
@@ -1332,8 +1332,8 @@ static void get_mime_headers(request_rec *r)
     int fields_read = 0;
     apr_table_t *tmp_headers;
 
-    /* We'll use apr_overlap_tables later to merge these into r->headers_in. */
-    tmp_headers = apr_make_table(r->pool, 50);
+    /* We'll use apr_table_overlap later to merge these into r->headers_in. */
+    tmp_headers = apr_table_make(r->pool, 50);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -1388,7 +1388,7 @@ static void get_mime_headers(request_rec *r)
 	apr_table_addn(tmp_headers, copy, value);
     }
 
-    apr_overlap_tables(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
+    apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
 }
 
 request_rec *ap_read_request(conn_rec *conn)
@@ -1399,7 +1399,7 @@ request_rec *ap_read_request(conn_rec *conn)
     int access_status;
     core_request_config *req_cfg;
 
-    apr_create_pool(&p, conn->pool);
+    apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;
@@ -1413,11 +1413,11 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->allowed_methods = ap_make_method_list(p, 2);
 
-    r->headers_in      = apr_make_table(r->pool, 50);
-    r->subprocess_env  = apr_make_table(r->pool, 50);
-    r->headers_out     = apr_make_table(r->pool, 12);
-    r->err_headers_out = apr_make_table(r->pool, 5);
-    r->notes           = apr_make_table(r->pool, 5);
+    r->headers_in      = apr_table_make(r->pool, 50);
+    r->subprocess_env  = apr_table_make(r->pool, 50);
+    r->headers_out     = apr_table_make(r->pool, 12);
+    r->err_headers_out = apr_table_make(r->pool, 5);
+    r->notes           = apr_table_make(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
@@ -1573,10 +1573,10 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->status          = HTTP_OK;
 
     rnew->headers_in      = r->headers_in;
-    rnew->subprocess_env  = apr_copy_table(rnew->pool, r->subprocess_env);
-    rnew->headers_out     = apr_make_table(rnew->pool, 5);
-    rnew->err_headers_out = apr_make_table(rnew->pool, 5);
-    rnew->notes           = apr_make_table(rnew->pool, 5);
+    rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);
+    rnew->headers_out     = apr_table_make(rnew->pool, 5);
+    rnew->err_headers_out = apr_table_make(rnew->pool, 5);
+    rnew->notes           = apr_table_make(rnew->pool, 5);
 
     rnew->expecting_100   = r->expecting_100;
     rnew->read_length     = r->read_length;
@@ -1591,7 +1591,7 @@ static void end_output_stream(request_rec *r)
     apr_bucket *b;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_eos();
+    b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 }
@@ -1921,7 +1921,7 @@ AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
 
     ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
     ml->method_mask = 0;
-    ml->method_list = apr_make_array(p, sizeof(char *), nelts);
+    ml->method_list = apr_array_make(p, sizeof(char *), nelts);
     return ml;
 }
 
@@ -1939,7 +1939,7 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
     dest->method_mask = src->method_mask;
     imethods = (char **) src->method_list->elts;
     for (i = 0; i < src->method_list->nelts; ++i) {
-	omethods = (char **) apr_push_array(dest->method_list);
+	omethods = (char **) apr_array_push(dest->method_list);
 	*omethods = apr_pstrdup(dest->method_list->cont, imethods[i]);
     }
 }
@@ -2030,7 +2030,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
 	    }
 	}
     }
-    xmethod = (const char **) apr_push_array(l->method_list);
+    xmethod = (const char **) apr_array_push(l->method_list);
     *xmethod = method;
 }
     
@@ -2188,7 +2188,7 @@ int ap_send_http_options(request_rec *r)
     r->bytes_sent = 0;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_pool(buff, strlen(buff), r->pool);
+    b = apr_bucket_pool_create(buff, strlen(buff), r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -2240,7 +2240,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
             }
         }
         if (i == values->nelts) {  /* if not found */
-	    *(char **)apr_push_array(values) = start;
+	    *(char **)apr_array_push(values) = start;
         }
     } while (*e != '\0');
 
@@ -2256,7 +2256,7 @@ static void fixup_vary(request_rec *r)
 {
     apr_array_header_t *varies;
 
-    varies = apr_make_array(r->pool, 5, sizeof(char *));
+    varies = apr_array_make(r->pool, 5, sizeof(char *));
 
     /* Extract all Vary fields from the headers_out, separate each into
      * its comma-separated fieldname values, and then add them to varies
@@ -2504,7 +2504,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
      * later attempts to set or unset a given fieldname might be bypassed.
      */
     if (!apr_is_empty_table(r->err_headers_out))
-        r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
+        r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                         r->headers_out);
 
     /*
@@ -2633,7 +2633,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
     b2 = apr_brigade_create(r->pool);
-    e = apr_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
+    e = apr_bucket_pool_create(buff_start, strlen(buff_start), r->pool);
     APR_BRIGADE_INSERT_HEAD(b2, e);
     ap_pass_brigade(f->next, b2);
 
@@ -2796,9 +2796,9 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
         tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
                                 CRLF CRLF, NULL);
         bb = apr_brigade_create(r->pool);
-        e = apr_bucket_create_pool(tmp, strlen(tmp), r->pool);
+        e = apr_bucket_pool_create(tmp, strlen(tmp), r->pool);
         APR_BRIGADE_INSERT_HEAD(bb, e);
-        e = apr_bucket_create_flush();
+        e = apr_bucket_flush_create();
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
         ap_pass_brigade(r->connection->output_filters, bb);
@@ -2955,7 +2955,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     apr_status_t rv;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_file(fd, offset, len);
+    b = apr_bucket_file_create(fd, offset, len);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     rv = ap_pass_brigade(r->output_filters, bb);
@@ -2978,7 +2978,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
     apr_bucket *b;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_mmap(mm, offset, length);
+    b = apr_bucket_mmap_create(mm, offset, length);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -3006,7 +3006,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
             /* whatever is coming down the pipe (we don't care), we
                can simply insert our buffered data at the front and
                pass the whole bundle down the chain. */
-            apr_bucket *b = apr_bucket_create_heap(ctx->buf, nbyte, 0, NULL);
+            apr_bucket *b = apr_bucket_heap_create(ctx->buf, nbyte, 0, NULL);
             APR_BRIGADE_INSERT_HEAD(bb, b);
             ctx->buf = NULL;
         }
@@ -3020,14 +3020,14 @@ static apr_status_t flush_buffer(request_rec *r, old_write_filter_ctx *ctx,
 {
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
     apr_size_t nbyte = ctx->cur - ctx->buf;
-    apr_bucket *b = apr_bucket_create_heap(ctx->buf, nbyte, 0, NULL);
+    apr_bucket *b = apr_bucket_heap_create(ctx->buf, nbyte, 0, NULL);
 
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ctx->buf = NULL;
 
     /* if there is extra data, then send that, too */
     if (extra != NULL) {
-        b = apr_bucket_create_transient(extra, extra_len);
+        b = apr_bucket_transient_create(extra, extra_len);
         APR_BRIGADE_INSERT_TAIL(bb, b);
     }
 
@@ -3062,7 +3062,7 @@ static apr_status_t buffer_output(request_rec *r,
        deliver the content through the normal filter chain */
     if (strcmp("OLD_WRITE", r->output_filters->frec->name) != 0) {
         apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-        apr_bucket *b = apr_bucket_create_transient(str, len);
+        apr_bucket *b = apr_bucket_transient_create(str, len);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
         return ap_pass_brigade(r->output_filters, bb);
@@ -3217,7 +3217,7 @@ AP_DECLARE(int) ap_rflush(request_rec *r)
     apr_bucket *b;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_create_flush();
+    b = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
         return -1;
@@ -3531,7 +3531,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
          */
         r->headers_out = r->err_headers_out;
         r->err_headers_out = tmp;
-        apr_clear_table(r->err_headers_out);
+        apr_table_clear(r->err_headers_out);
 
         if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
             if ((location != NULL) && *location) {

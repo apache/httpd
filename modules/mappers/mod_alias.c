@@ -97,8 +97,8 @@ static void *create_alias_config(apr_pool_t *p, server_rec *s)
     alias_server_conf *a =
     (alias_server_conf *) apr_pcalloc(p, sizeof(alias_server_conf));
 
-    a->aliases = apr_make_array(p, 20, sizeof(alias_entry));
-    a->redirects = apr_make_array(p, 20, sizeof(alias_entry));
+    a->aliases = apr_array_make(p, 20, sizeof(alias_entry));
+    a->redirects = apr_array_make(p, 20, sizeof(alias_entry));
     return a;
 }
 
@@ -106,7 +106,7 @@ static void *create_alias_dir_config(apr_pool_t *p, char *d)
 {
     alias_dir_conf *a =
     (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
-    a->redirects = apr_make_array(p, 2, sizeof(alias_entry));
+    a->redirects = apr_array_make(p, 2, sizeof(alias_entry));
     return a;
 }
 
@@ -116,8 +116,8 @@ static void *merge_alias_config(apr_pool_t *p, void *basev, void *overridesv)
     (alias_server_conf *) apr_pcalloc(p, sizeof(alias_server_conf));
     alias_server_conf *base = (alias_server_conf *) basev, *overrides = (alias_server_conf *) overridesv;
 
-    a->aliases = apr_append_arrays(p, overrides->aliases, base->aliases);
-    a->redirects = apr_append_arrays(p, overrides->redirects, base->redirects);
+    a->aliases = apr_array_append(p, overrides->aliases, base->aliases);
+    a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
     return a;
 }
 
@@ -126,7 +126,7 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     alias_dir_conf *a =
     (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
     alias_dir_conf *base = (alias_dir_conf *) basev, *overrides = (alias_dir_conf *) overridesv;
-    a->redirects = apr_append_arrays(p, overrides->redirects, base->redirects);
+    a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
     return a;
 }
 
@@ -137,7 +137,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     server_rec *s = cmd->server;
     alias_server_conf *conf =
     (alias_server_conf *) ap_get_module_config(s->module_config, &alias_module);
-    alias_entry *new = apr_push_array(conf->aliases);
+    alias_entry *new = apr_array_push(conf->aliases);
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
 
@@ -219,9 +219,9 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     }
 
     if (cmd->path)
-	new = apr_push_array(dirconf->redirects);
+	new = apr_array_push(dirconf->redirects);
     else
-	new = apr_push_array(serverconf->redirects);
+	new = apr_array_push(serverconf->redirects);
 
     new->fake = f;
     new->real = url;

@@ -873,7 +873,7 @@ static int magic_process(request_rec *r)
 	return result;
     }
 
-    if (apr_open(&fd, r->filename, APR_READ, APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
+    if (apr_file_open(&fd, r->filename, APR_READ, APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	/* We can't open it, but we were able to stat it. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		    MODNAME ": can't read `%s'", r->filename);
@@ -885,7 +885,7 @@ static int magic_process(request_rec *r)
      * try looking at the first HOWMANY bytes
      */
     nbytes = sizeof(buf) - 1;
-    if ((result = apr_read(fd, (char *) buf, &nbytes)) != APR_SUCCESS) {
+    if ((result = apr_file_read(fd, (char *) buf, &nbytes)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, result, r,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
@@ -898,7 +898,7 @@ static int magic_process(request_rec *r)
 	tryit(r, buf, nbytes, 1); 
     }
 
-    (void) apr_close(fd);
+    (void) apr_file_close(fd);
     (void) magic_rsl_putchar(r, '\n');
 
     return OK;
@@ -954,7 +954,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
 		    ap_get_module_config(s->module_config, &mime_magic_module);
 
     const char *fname = ap_server_root_relative(p, conf->magicfile);
-    result = apr_open(&f, fname, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    result = apr_file_open(&f, fname, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
     if (result != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
 		    MODNAME ": can't read magic file %s", fname);
@@ -965,7 +965,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
     conf->magic = conf->last = NULL;
 
     /* parse it */
-    for (lineno = 1; apr_fgets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
+    for (lineno = 1; apr_file_gets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
 	int ws_offset;
 
 	/* delete newline */
@@ -998,7 +998,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
 	    ++errs;
     }
 
-    (void) apr_close(f);
+    (void) apr_file_close(f);
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
@@ -2152,11 +2152,11 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
 
     env = (const char *const *)ap_create_environment(child_context, r->subprocess_env);
 
-    if ((apr_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
-        (apr_setprocattr_io(procattr, APR_FULL_BLOCK, 
+    if ((apr_procattr_create(&procattr, child_context) != APR_SUCCESS) ||
+        (apr_procattr_io_set(procattr, APR_FULL_BLOCK, 
                            APR_FULL_BLOCK, APR_NO_PIPE)   != APR_SUCCESS) ||
-        (apr_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
-        (apr_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
+        (apr_procattr_dir_set(procattr, r->filename)        != APR_SUCCESS) ||
+        (apr_procattr_cmdtype_set(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOPROC, r,
                "couldn't setup child process: %s", r->filename);
@@ -2172,7 +2172,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
         }
 
         procnew = apr_pcalloc(child_context, sizeof(*procnew));
-        rc = apr_create_process(procnew, compr[parm->method].argv[0],
+        rc = apr_proc_create(procnew, compr[parm->method].argv[0],
                                new_argv, env, procattr, child_context);
 
         if (rc != APR_SUCCESS) {
@@ -2182,7 +2182,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
                           compr[parm->method].argv[0]);
         }
         else {
-            apr_note_subprocess(child_context, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(child_context, procnew, kill_after_timeout);
             *pipe_in = procnew->out;
         }
     }
@@ -2205,7 +2205,7 @@ static int uncompress(request_rec *r, int method,
      * there are cases (i.e. generating directory indicies with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
-    if (apr_create_pool(&sub_context, r->pool) != APR_SUCCESS)
+    if (apr_pool_create(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
 
     if ((rv = uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
@@ -2215,14 +2215,14 @@ static int uncompress(request_rec *r, int method,
     }
 
     *newch = (unsigned char *) apr_palloc(r->pool, n);
-    rv = apr_read(pipe_out, *newch, &n);
+    rv = apr_file_read(pipe_out, *newch, &n);
     if (n == 0) {
-	apr_destroy_pool(sub_context);
+	apr_pool_destroy(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
-    apr_destroy_pool(sub_context);
+    apr_pool_destroy(sub_context);
     return n;
 }
 

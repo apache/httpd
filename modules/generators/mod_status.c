@@ -228,7 +228,7 @@ static char status_flags[SERVER_NUM_STATUS];
 static int status_handler(request_rec *r)
 {
     const char *loc;
-    apr_time_t nowtime = apr_now();
+    apr_time_t nowtime = apr_time_now();
     time_t up_time;
     int j, i, res;
     int ready = 0;

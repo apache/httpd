@@ -120,29 +120,29 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
     apr_status_t rv;
     apr_sockaddr_t *localsa, *destsa;
 
-    if ((rv = apr_getaddrinfo(&localsa, conn->local_ip, APR_UNSPEC, 
+    if ((rv = apr_sockaddr_info_get(&localsa, conn->local_ip, APR_UNSPEC, 
                               0, /* ephemeral port */
                               0, conn->pool)) != APR_SUCCESS) {
         /* This should not fail since we have a numeric address string
          * as the host. */
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
-                     "rfc1413: apr_getaddrinfo(%s) failed",
+                     "rfc1413: apr_sockaddr_info_get(%s) failed",
                      conn->local_ip);
         return rv;
     }
     
-    if ((rv = apr_getaddrinfo(&destsa, conn->remote_ip, 
+    if ((rv = apr_sockaddr_info_get(&destsa, conn->remote_ip, 
                               localsa->sa.sin.sin_family, /* has to match */
                               RFC1413_PORT, 0, conn->pool)) != APR_SUCCESS) {
         /* This should not fail since we have a numeric address string
          * as the host. */
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
-                     "rfc1413: apr_getaddrinfo(%s) failed",
+                     "rfc1413: apr_sockaddr_info_get(%s) failed",
                      conn->remote_ip);
         return rv;
     }
 
-    if ((rv = apr_create_socket(newsock, 
+    if ((rv = apr_socket_create(newsock, 
                                 localsa->sa.sin.sin_family, /* has to match */
                                 SOCK_STREAM, conn->pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
@@ -155,7 +155,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error setting query socket timeout");
-        apr_close_socket(*newsock);
+        apr_socket_close(*newsock);
         return rv;
     }
 
@@ -171,7 +171,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
     if ((rv = apr_bind(*newsock, localsa)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: Error binding query socket to local port");
-        apr_close_socket(*newsock);
+        apr_socket_close(*newsock);
 	return rv;
     }
 
@@ -180,7 +180,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
  * the service; don't log such an error
  */
     if ((rv = apr_connect(*newsock, destsa)) != APR_SUCCESS) {
-        apr_close_socket(*newsock);
+        apr_socket_close(*newsock);
         return rv;
     }
 
@@ -199,8 +199,8 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
     int buflen;
     apr_sockaddr_t *localsa;
 
-    apr_get_sockaddr(&localsa, APR_LOCAL, sock);
-    apr_get_port(&sav_our_port, localsa);
+    apr_socket_addr_get(&localsa, APR_LOCAL, sock);
+    apr_sockaddr_port_get(&sav_our_port, localsa);
     sav_rmt_port = RFC1413_PORT;
 
     /* send the data */
@@ -282,7 +282,7 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
     rv = rfc1413_connect(&sock, conn, srv);
     if (rv == APR_SUCCESS) {
         rv = rfc1413_query(sock, conn, srv);
-        apr_close_socket(sock);
+        apr_socket_close(sock);
     }
     if (rv != APR_SUCCESS) {
         conn->remote_logname = FROM_UNKNOWN;

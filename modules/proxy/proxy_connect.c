@@ -172,7 +172,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             "CONNECT to %s on port %d", host, port);
     }
 
-    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
             "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -180,7 +180,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
     if (ap_proxy_doconnect(sock, (char *)(proxyhost ? proxyhost : host),
       proxyport ? proxyport : port, r) != APR_SUCCESS) {
-        apr_close_socket(sock);
+        apr_socket_close(sock);
         return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
             apr_pstrcat(r->pool, "Could not connect to remote machine:<br>",
             proxyhost, NULL));
@@ -211,10 +211,10 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
         ap_rflush(r);
     }
 
-    if(apr_setup_poll(&pollfd, 2, r->pool) != APR_SUCCESS)
+    if(apr_poll_setup(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "proxy: error apr_setup_poll()");
+            "proxy: error apr_poll_setup()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -225,7 +225,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
    just see if a recv gives us anything and do the same to sock (server) side, I'll leave this as TBD so
    one can decide the best path to take
 */
-    if(apr_put_os_sock(&client_sock,
+    if(apr_os_sock_put(&client_sock,
         (apr_os_sock_t *)get_socket(r->connection->client),
                       r->pool) != APR_SUCCESS)
     {
@@ -233,11 +233,11 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             "proxy: error creating client apr_socket_t");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    apr_add_poll_socket(pollfd, client_sock, APR_POLLIN);
+    apr_poll_socket_add(pollfd, client_sock, APR_POLLIN);
 #endif
 
     /* Add the server side to the poll */
-    apr_add_poll_socket(pollfd, sock, APR_POLLIN);
+    apr_poll_socket_add(pollfd, sock, APR_POLLIN);
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Going to sleep (poll)");
@@ -250,7 +250,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                      "Woke from select(), i=%d", pollcnt);
 
         if (pollcnt) {
-            apr_get_revents(&pollevent, sock, pollfd);
+            apr_poll_revents_get(&pollevent, sock, pollfd);
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "sock was set");
@@ -270,7 +270,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     break;
             }
 
-            apr_get_revents(&pollevent, client_sock, pollfd);
+            apr_poll_revents_get(&pollevent, client_sock, pollfd);
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "client was set");
@@ -295,7 +295,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             break;
     }
 
-    apr_close_socket(sock);
+    apr_socket_close(sock);
 
     return OK;
 }

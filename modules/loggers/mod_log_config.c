@@ -455,7 +455,7 @@ static const char *log_request_time(request_rec *r, char *a)
 	a problem with this, you can set the define.  -djg
     */
 #ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-    apr_explode_localtime(&xt, apr_now());
+    apr_explode_localtime(&xt, apr_time_now());
 #else
     apr_explode_localtime(&xt, r->request_time);
 #endif
@@ -486,7 +486,7 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%ld", (apr_now() - r->request_time) 
+    return apr_psprintf(r->pool, "%ld", (apr_time_now() - r->request_time) 
                                              / APR_USEC_PER_SEC);
 }
 
@@ -754,9 +754,9 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
                 i = i * 10 + (*s) - '0';
             }
             if (!it->conditions) {
-                it->conditions = apr_make_array(p, 4, sizeof(int));
+                it->conditions = apr_array_make(p, 4, sizeof(int));
             }
-            *(int *) apr_push_array(it->conditions) = i;
+            *(int *) apr_array_push(it->conditions) = i;
             break;
 
         default:
@@ -783,18 +783,18 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 
 static apr_array_header_t *parse_log_string(apr_pool_t *p, const char *s, const char **err)
 {
-    apr_array_header_t *a = apr_make_array(p, 30, sizeof(log_format_item));
+    apr_array_header_t *a = apr_array_make(p, 30, sizeof(log_format_item));
     char *res;
 
     while (*s) {
-        if ((res = parse_log_item(p, (log_format_item *) apr_push_array(a), &s))) {
+        if ((res = parse_log_item(p, (log_format_item *) apr_array_push(a), &s))) {
             *err = res;
             return NULL;
         }
     }
 
     s = APR_EOL_STR;
-    parse_log_item(p, (log_format_item *) apr_push_array(a), &s);
+    parse_log_item(p, (log_format_item *) apr_array_push(a), &s);
     return a;
 }
 
@@ -838,7 +838,7 @@ static const char *process_item(request_rec *r, request_rec *orig,
 static void flush_log(config_log_state *cls)
 {
     if (cls->outcnt && cls->log_fd != NULL) {
-        apr_write(cls->log_fd, cls->outbuf, &cls->outcnt);
+        apr_file_write(cls->log_fd, cls->outbuf, &cls->outcnt);
         cls->outcnt = 0;
     }
 }
@@ -914,7 +914,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
             s += strl[i];
         }
         w = len;
-        apr_write(cls->log_fd, str, &w);
+        apr_file_write(cls->log_fd, str, &w);
     }
     else {
         for (i = 0, s = &cls->outbuf[cls->outcnt]; i < format->nelts; ++i) {
@@ -931,7 +931,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         s += strl[i];
     }
 
-    apr_write(cls->log_fd, str, &len);
+    apr_file_write(cls->log_fd, str, &len);
 #endif
 
     return OK;
@@ -977,11 +977,11 @@ static void *make_config_log_state(apr_pool_t *p, server_rec *s)
     multi_log_state *mls;
 
     mls = (multi_log_state *) apr_palloc(p, sizeof(multi_log_state));
-    mls->config_logs = apr_make_array(p, 1, sizeof(config_log_state));
+    mls->config_logs = apr_array_make(p, 1, sizeof(config_log_state));
     mls->default_format_string = NULL;
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
-    mls->formats = apr_make_table(p, 4);
+    mls->formats = apr_table_make(p, 4);
     apr_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
 
     return mls;
@@ -1003,7 +1003,7 @@ static void *merge_config_log_state(apr_pool_t *p, void *basev, void *addv)
         add->default_format_string = base->default_format_string;
         add->default_format = base->default_format;
     }
-    add->formats = apr_overlay_tables(p, base->formats, add->formats);
+    add->formats = apr_table_overlay(p, base->formats, add->formats);
 
     return add;
 }
@@ -1045,7 +1045,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
 						&config_log_module);
     config_log_state *cls;
 
-    cls = (config_log_state *) apr_push_array(mls->config_logs);
+    cls = (config_log_state *) apr_array_push(mls->config_logs);
     cls->condition_var = NULL;
     if (envclause != NULL) {
 	if (strncasecmp(envclause, "env=", 4) != 0) {
@@ -1121,7 +1121,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if ((status = apr_open(&cls->log_fd, fname, xfer_flags, xfer_perms, p)) 
+        if ((status = apr_file_open(&cls->log_fd, fname, xfer_flags, xfer_perms, p)) 
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
                          "could not open transfer log file %s.", fname);
@@ -1237,7 +1237,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
 {
 #ifdef BUFFERED_LOGS
 	/* Now register the last buffer flush with the cleanup engine */
-	apr_register_cleanup(p, s, flush_all_logs, flush_all_logs);
+	apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
 #endif
 }
 

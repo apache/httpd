@@ -376,11 +376,11 @@ static request_rec *make_fake_req(conn_rec *c)
     r->pool            = c->pool;
     r->status          = HTTP_OK;
 
-    r->headers_in      = apr_make_table(r->pool, 50);
-    r->subprocess_env  = apr_make_table(r->pool, 50);
-    r->headers_out     = apr_make_table(r->pool, 12);
-    r->err_headers_out = apr_make_table(r->pool, 5);
-    r->notes           = apr_make_table(r->pool, 5);
+    r->headers_in      = apr_table_make(r->pool, 50);
+    r->subprocess_env  = apr_table_make(r->pool, 50);
+    r->headers_out     = apr_table_make(r->pool, 12);
+    r->err_headers_out = apr_table_make(r->pool, 5);
+    r->notes           = apr_table_make(r->pool, 5);
 
     r->read_body       = REQUEST_NO_BODY;
     r->connection      = c;
@@ -531,7 +531,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
 	/* Write to cache first. */
 	/*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
         wrote_to_cache = cntr;
-        if (cachefp && apr_write(cachefp, &buf[0], &wrote_to_cache) != APR_SUCCESS) {
+        if (cachefp && apr_file_write(cachefp, &buf[0], &wrote_to_cache) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing to cache");
             ap_proxy_cache_error(&c);
@@ -1162,7 +1162,7 @@ apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t por
     apr_status_t rv;
     apr_sockaddr_t *destsa;
 
-    rv = apr_getaddrinfo(&destsa, host, AF_INET, port, 0, r->pool);
+    rv = apr_sockaddr_info_get(&destsa, host, AF_INET, port, 0, r->pool);
     if (rv == APR_SUCCESS) {
         rv = apr_connect(sock, destsa);
     }
@@ -1195,7 +1195,7 @@ unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *ca
     apr_send(client, data, &len);
 
     if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)
-	apr_puts(data, cachefp);
+	apr_file_puts(data, cachefp);
     return len;
 }
 
@@ -1261,7 +1261,7 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     if(ap_cache_el_data(c, &cachefp) != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
     /* send the response */
-    if(apr_fgets(buffer, sizeof(buffer), cachefp)) {
+    if(apr_file_gets(buffer, sizeof(buffer), cachefp)) {
         len = strlen(buffer);
         apr_send(fp, buffer, &len);
         offset +=len;
@@ -1271,7 +1271,7 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     len = 2;
     apr_send(fp, CRLF, &len);
     /* send data */
-    apr_getfileinfo(&finfo, APR_FINFO_MIN, cachefp);
+    apr_file_info_get(&finfo, APR_FINFO_MIN, cachefp);
     if(!r->header_only && ap_send_fd(cachefp, r, offset, finfo.size, &len))
         return HTTP_INTERNAL_SERVER_ERROR;
     return OK;

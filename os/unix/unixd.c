@@ -441,7 +441,7 @@ static apr_status_t ap_unix_create_privileged_process(
     char *execuser, *execgroup;
 
     if (!unixd_config.suexec_enabled) {
-        return apr_create_process(newproc, progname, args, env, attr, p);
+        return apr_proc_create(newproc, progname, args, env, attr, p);
     }
 
     execuser = apr_psprintf(p, "%ld", (long) ugid->uid);
@@ -469,7 +469,7 @@ static apr_status_t ap_unix_create_privileged_process(
         newargs[i + 4] = args[i];
     } while (args[i++]);
 
-    return apr_create_process(newproc, newprogname, newargs, env, attr, p);
+    return apr_proc_create(newproc, newprogname, newargs, env, attr, p);
 }
 
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
@@ -482,7 +482,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     ap_unix_identity_t *ugid = ap_run_get_suexec_identity(r);
 
     if (ugid == NULL) {
-        return apr_create_process(newproc, progname, args, env, attr, p);
+        return apr_proc_create(newproc, progname, args, env, attr, p);
     }
 
     return ap_unix_create_privileged_process(newproc, progname, args, env,

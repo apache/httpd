@@ -138,15 +138,15 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     mime_dir_config *new =
     (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
 
-    new->forced_types = apr_make_table(p, 4);
-    new->encoding_types = apr_make_table(p, 4);
-    new->charset_types = apr_make_table(p, 4);
-    new->language_types = apr_make_table(p, 4);
-    new->filter_names = apr_make_table(p, 4);
-    new->handlers = apr_make_table(p, 4);
-    new->handlers_remove = apr_make_array(p, 4, sizeof(attrib_info));
-    new->types_remove = apr_make_array(p, 4, sizeof(attrib_info));
-    new->encodings_remove = apr_make_array(p, 4, sizeof(attrib_info));
+    new->forced_types = apr_table_make(p, 4);
+    new->encoding_types = apr_table_make(p, 4);
+    new->charset_types = apr_table_make(p, 4);
+    new->language_types = apr_table_make(p, 4);
+    new->filter_names = apr_table_make(p, 4);
+    new->handlers = apr_table_make(p, 4);
+    new->handlers_remove = apr_array_make(p, 4, sizeof(attrib_info));
+    new->types_remove = apr_array_make(p, 4, sizeof(attrib_info));
+    new->encodings_remove = apr_array_make(p, 4, sizeof(attrib_info));
 
     new->type = NULL;
     new->handler = NULL;
@@ -164,17 +164,17 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     int i;
     attrib_info *suffix;
 
-    new->forced_types = apr_overlay_tables(p, add->forced_types,
+    new->forced_types = apr_table_overlay(p, add->forced_types,
 					 base->forced_types);
-    new->encoding_types = apr_overlay_tables(p, add->encoding_types,
+    new->encoding_types = apr_table_overlay(p, add->encoding_types,
                                          base->encoding_types);
-    new->charset_types = apr_overlay_tables(p, add->charset_types,
+    new->charset_types = apr_table_overlay(p, add->charset_types,
 					   base->charset_types);
-    new->language_types = apr_overlay_tables(p, add->language_types,
+    new->language_types = apr_table_overlay(p, add->language_types,
                                          base->language_types);
-    new->filter_names = apr_overlay_tables(p, add->filter_names,
+    new->filter_names = apr_table_overlay(p, add->filter_names,
                                    base->filter_names);
-    new->handlers = apr_overlay_tables(p, add->handlers,
+    new->handlers = apr_table_overlay(p, add->handlers,
                                    base->handlers);
 
     suffix = (attrib_info *) add->handlers_remove->elts;
@@ -293,7 +293,7 @@ static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
     if (*ext == '.') {
         ++ext;
     }
-    suffix = (attrib_info *) apr_push_array(mcfg->handlers_remove);
+    suffix = (attrib_info *) apr_array_push(mcfg->handlers_remove);
     suffix->name = apr_pstrdup(cmd->pool, ext);
     return NULL;
 }
@@ -310,7 +310,7 @@ static const char *remove_encoding(cmd_parms *cmd, void *m, const char *ext)
     if (*ext == '.') {
         ++ext;
     }
-    suffix = (attrib_info *) apr_push_array(mcfg->encodings_remove);
+    suffix = (attrib_info *) apr_array_push(mcfg->encodings_remove);
     suffix->name = apr_pstrdup(cmd->pool, ext);
     return NULL;
 }
@@ -327,7 +327,7 @@ static const char *remove_type(cmd_parms *cmd, void *m, const char *ext)
     if (*ext == '.') {
         ++ext;
     }
-    suffix = (attrib_info *) apr_push_array(mcfg->types_remove);
+    suffix = (attrib_info *) apr_array_push(mcfg->types_remove);
     suffix->name = apr_pstrdup(cmd->pool, ext);
     return NULL;
 }
@@ -407,7 +407,7 @@ static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     }
 
     for (x = 0; x < MIME_HASHSIZE; x++)
-        hash_buckets[x] = apr_make_table(p, 10);
+        hash_buckets[x] = apr_table_make(p, 10);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
         const char *ll = l, *ct;
@@ -717,8 +717,8 @@ static int find_ct(request_rec *r)
 
             r->content_language = type;         /* back compat. only */
             if (!r->content_languages)
-                r->content_languages = apr_make_array(r->pool, 2, sizeof(char *));
-            new = (const char **) apr_push_array(r->content_languages);
+                r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
+            new = (const char **) apr_array_push(r->content_languages);
             *new = type;
             found = 1;
         }
@@ -806,8 +806,8 @@ static int find_ct(request_rec *r)
 
         r->content_language = conf->default_language; /* back compat. only */
         if (!r->content_languages)
-            r->content_languages = apr_make_array(r->pool, 2, sizeof(char *));
-        new = (const char **) apr_push_array(r->content_languages);
+            r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
+        new = (const char **) apr_array_push(r->content_languages);
         *new = conf->default_language;
     }
 

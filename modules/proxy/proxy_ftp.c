@@ -400,7 +400,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
 	total_bytes_sent += n;
 
         cntr = n;
-	if (cachefp && apr_write(cachefp, buf, &cntr) != APR_SUCCESS) {
+	if (cachefp && apr_file_write(cachefp, buf, &cntr) != APR_SUCCESS) {
 	   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	  "proxy: error writing to cache");
 	   ap_proxy_cache_error(&c);
@@ -567,7 +567,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     if (parms != NULL)
 	*(parms++) = '\0';
 
-    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -586,13 +586,13 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
-	apr_close_socket(sock);
+	apr_socket_close(sock);
 	return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
     }
 
     if (ap_proxy_doconnect(sock, host, port, r) != APR_SUCCESS) {
-	apr_close_socket(sock);
+	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
 				host, NULL));
@@ -788,7 +788,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     }
 
 /* try to set up PASV data connection first */
-    if ((apr_create_socket(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+    if ((apr_socket_create(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		     "proxy: error creating PASV socket");
 	ap_bclose(f);
@@ -818,7 +818,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     if (i == -1) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
 		     "PASV: control connection is toast");
-	apr_close_socket(dsock);
+	apr_socket_close(dsock);
 	ap_bclose(f);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -862,31 +862,31 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 	    }
 	}
 	else
-	    apr_close_socket(dsock);	/* and try the regular way */
+	    apr_socket_close(dsock);	/* and try the regular way */
     }
 
     if (!pasvmode) {		/* set up data connection */
-	if ((apr_create_socket(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+	if ((apr_socket_create(&dsock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: error creating socket");
 	    ap_bclose(f);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
-        apr_get_sockaddr(&localsa, APR_LOCAL, sock);
-        apr_get_port(&npport, localsa);
-        apr_get_ipaddr(&npaddr, localsa);
+        apr_socket_addr_get(&localsa, APR_LOCAL, sock);
+        apr_sockaddr_port_get(&npport, localsa);
+        apr_sockaddr_ip_get(&npaddr, localsa);
 
 	if (apr_setsocketopt(dsock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: error setting reuseaddr option");
-	    apr_close_socket(dsock);
+	    apr_socket_close(dsock);
 	    ap_bclose(f);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
 
-        if (apr_getaddrinfo(&localsa, npaddr, APR_INET, npport, 0, r->pool) 
+        if (apr_sockaddr_info_get(&localsa, npaddr, APR_INET, npport, 0, r->pool) 
             != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error creating local socket address");
@@ -901,7 +901,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: error binding to ftp data socket %s", buff);
 	    ap_bclose(f);
-	    apr_close_socket(dsock);
+	    apr_socket_close(dsock);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 	apr_listen(dsock, 2);	/* only need a short queue */
@@ -1170,7 +1170,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
             default:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "proxy: failed to accept data connection");
-                apr_close_socket(dsock);
+                apr_socket_close(dsock);
                 ap_bclose(f);
                 if (c != NULL) ap_proxy_cache_error(&c);
                 return HTTP_BAD_GATEWAY;
@@ -1188,7 +1188,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 /* write status line */
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-        if (cachefp && apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
+        if (cachefp && apr_file_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
           r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing CRLF to cache");
@@ -1200,7 +1200,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-    if (cachefp && apr_puts(CRLF, cachefp) == -1) {
+    if (cachefp && apr_file_puts(CRLF, cachefp) == -1) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	    "proxy: error writing CRLF to cache");
 	ap_proxy_cache_error(&c);

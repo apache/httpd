@@ -201,7 +201,7 @@ static void show_compile_settings(void)
 
 static void destroy_and_exit_process(process_rec *process, int process_exit_value)
 {
-    apr_destroy_pool(process->pool); /* and destroy all descendent pools */
+    apr_pool_destroy(process->pool); /* and destroy all descendent pools */
     apr_terminate();
     exit(process_exit_value);
 }
@@ -212,13 +212,13 @@ static process_rec *create_process(int argc, const char * const *argv)
     apr_pool_t *cntx;
     apr_status_t stat;
 
-    stat = apr_create_pool(&cntx, NULL);
+    stat = apr_pool_create(&cntx, NULL);
     if (stat != APR_SUCCESS) {
         /* XXX From the time that we took away the NULL pool->malloc mapping
          *     we have been unable to log here without segfaulting.
          */
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                     "apr_create_pool() failed to create "
+                     "apr_pool_create() failed to create "
                      "initial context");
         apr_terminate();
         exit(1);
@@ -229,7 +229,7 @@ static process_rec *create_process(int argc, const char * const *argv)
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;
 
-    apr_create_pool(&process->pconf, process->pool);
+    apr_pool_create(&process->pconf, process->pool);
     process->argc = argc;
     process->argv = argv;
     process->short_name = apr_filename_of_pathname(argv[0]);
@@ -320,35 +320,35 @@ int main(int argc, const char * const argv[])
 
     ap_setup_prelinked_modules(process);
 
-    apr_create_pool(&pcommands, pglobal);
-    ap_server_pre_read_config  = apr_make_array(pcommands, 1, sizeof(char *));
-    ap_server_post_read_config = apr_make_array(pcommands, 1, sizeof(char *));
-    ap_server_config_defines   = apr_make_array(pcommands, 1, sizeof(char *));
+    apr_pool_create(&pcommands, pglobal);
+    ap_server_pre_read_config  = apr_array_make(pcommands, 1, sizeof(char *));
+    ap_server_post_read_config = apr_array_make(pcommands, 1, sizeof(char *));
+    ap_server_config_defines   = apr_array_make(pcommands, 1, sizeof(char *));
 
     ap_run_rewrite_args(process);
 
     /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
      * to safely pass on our args from its rewrite_args() handler.
      */
-    apr_initopt(&opt, pcommands, process->argc, process->argv);
+    apr_getopt_init(&opt, pcommands, process->argc, process->argv);
 
     while (apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg) 
             == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
-	    new = (char **)apr_push_array(ap_server_post_read_config);
+	    new = (char **)apr_array_push(ap_server_post_read_config);
 	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'C':
-	    new = (char **)apr_push_array(ap_server_pre_read_config);
+	    new = (char **)apr_array_push(ap_server_pre_read_config);
 	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'd':
 	    def_server_root = optarg;
 	    break;
 	case 'D':
-	    new = (char **)apr_push_array(ap_server_config_defines);
+	    new = (char **)apr_array_push(ap_server_config_defines);
 	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
 	case 'f':
@@ -376,8 +376,8 @@ int main(int argc, const char * const argv[])
 	}
     }
 
-    apr_create_pool(&plog, pglobal);
-    apr_create_pool(&ptemp, pconf);
+    apr_pool_create(&plog, pglobal);
+    apr_pool_create(&ptemp, pconf);
 
     /* Note that we preflight the config file once
        before reading it _again_ in the main loop.
@@ -398,7 +398,7 @@ int main(int argc, const char * const argv[])
     apr_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
-    apr_destroy_pool(ptemp);
+    apr_pool_destroy(ptemp);
 
     for (;;) {
 	apr_hook_deregister_all();
@@ -413,7 +413,7 @@ int main(int argc, const char * const argv[])
          * memory.  rbb
          */
         ap_conftree = NULL;
-	apr_create_pool(&ptemp, pconf);
+	apr_pool_create(&ptemp, pconf);
 	ap_server_root = def_server_root;
         server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
 	ap_run_pre_config(pconf, plog, ptemp);
@@ -424,7 +424,7 @@ int main(int argc, const char * const argv[])
 	apr_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
-	apr_destroy_pool(ptemp);
+	apr_pool_destroy(ptemp);
 
 	ap_run_optional_fn_retrieve();
 
@@ -446,13 +446,13 @@ const XML_LChar *suck_in_expat(void)
 
 #ifndef SHARED_CORE_BOOTSTRAP
 /*
- * Force apr_validate_password() into the image so that modules like
+ * Force apr_password_validate() into the image so that modules like
  * mod_auth can use it even if they're dynamically loaded.
  */
-void suck_in_apr_validate_password(void);
-void suck_in_apr_validate_password(void)
+void suck_in_apr_password_validate(void);
+void suck_in_apr_password_validate(void)
 {
-    apr_validate_password("a", "b");
+    apr_password_validate("a", "b");
 }
 #endif
 

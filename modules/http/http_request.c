@@ -794,7 +794,7 @@ static request_rec *make_sub_request(const request_rec *r)
     apr_pool_t *rrp;
     request_rec *rr;
     
-    apr_create_pool(&rrp, r->pool);
+    apr_pool_create(&rrp, r->pool);
     rr = apr_pcalloc(rrp, sizeof(request_rec));
     rr->pool = rrp;
     return rr;
@@ -1077,7 +1077,7 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 AP_DECLARE(void) ap_destroy_sub_req(request_rec *r)
 {
     /* Reclaim the space */
-    apr_destroy_pool(r->pool);
+    apr_pool_destroy(r->pool);
 }
 
 /*****************************************************************
@@ -1385,7 +1385,7 @@ static void check_pipeline_flush(request_rec *r)
     /* ### shouldn't this read from the connection input filters? */
     if (!r->connection->keepalive || 
         ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK) != APR_SUCCESS) {
-        apr_bucket *e = apr_bucket_create_flush();
+        apr_bucket *e = apr_bucket_flush_create();
 
         /* We just send directly to the connection based filters.  At
          * this point, we know that we have seen all of the data
@@ -1417,7 +1417,7 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 {
     apr_array_header_t *env_arr = apr_table_elts(t);
     apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
-    apr_table_t *new = apr_make_table(p, env_arr->nalloc);
+    apr_table_t *new = apr_table_make(p, env_arr->nalloc);
     int i;
 
     for (i = 0; i < env_arr->nelts; ++i) {
@@ -1478,10 +1478,10 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->main            = r->main;
 
     new->headers_in      = r->headers_in;
-    new->headers_out     = apr_make_table(r->pool, 12);
+    new->headers_out     = apr_table_make(r->pool, 12);
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
-    new->notes           = apr_make_table(r->pool, 5);
+    new->notes           = apr_table_make(r->pool, 5);
     new->allowed_methods = ap_make_method_list(new->pool, 2);
 
     new->htaccess        = r->htaccess;

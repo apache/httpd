@@ -212,7 +212,7 @@ static void emit_preamble(request_rec *r, char *title)
 static void push_item(apr_array_header_t *arr, char *type, const char *to,
 		      const char *path, const char *data)
 {
-    struct item *p = (struct item *) apr_push_array(arr);
+    struct item *p = (struct item *) apr_array_push(arr);
 
     if (!to) {
 	to = "";
@@ -316,7 +316,7 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
     ai_desc_t *desc_entry;
     char *prefix = "";
 
-    desc_entry = (ai_desc_t *) apr_push_array(dcfg->desc_list);
+    desc_entry = (ai_desc_t *) apr_array_push(dcfg->desc_list);
     desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
     desc_entry->wildcards = (WILDCARDS_REQUIRED
 			     || desc_entry->full_path
@@ -596,12 +596,12 @@ static void *create_autoindex_config(apr_pool_t *p, char *dummy)
     new->icon_height = 0;
     new->name_width = DEFAULT_NAME_WIDTH;
     new->name_adjust = K_UNSET;
-    new->icon_list = apr_make_array(p, 4, sizeof(struct item));
-    new->alt_list = apr_make_array(p, 4, sizeof(struct item));
-    new->desc_list = apr_make_array(p, 4, sizeof(ai_desc_t));
-    new->ign_list = apr_make_array(p, 4, sizeof(struct item));
-    new->hdr_list = apr_make_array(p, 4, sizeof(struct item));
-    new->rdme_list = apr_make_array(p, 4, sizeof(struct item));
+    new->icon_list = apr_array_make(p, 4, sizeof(struct item));
+    new->alt_list = apr_array_make(p, 4, sizeof(struct item));
+    new->desc_list = apr_array_make(p, 4, sizeof(ai_desc_t));
+    new->ign_list = apr_array_make(p, 4, sizeof(struct item));
+    new->hdr_list = apr_array_make(p, 4, sizeof(struct item));
+    new->rdme_list = apr_array_make(p, 4, sizeof(struct item));
     new->opts = 0;
     new->incremented_opts = 0;
     new->decremented_opts = 0;
@@ -622,12 +622,12 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 
-    new->alt_list = apr_append_arrays(p, add->alt_list, base->alt_list);
-    new->ign_list = apr_append_arrays(p, add->ign_list, base->ign_list);
-    new->hdr_list = apr_append_arrays(p, add->hdr_list, base->hdr_list);
-    new->desc_list = apr_append_arrays(p, add->desc_list, base->desc_list);
-    new->icon_list = apr_append_arrays(p, add->icon_list, base->icon_list);
-    new->rdme_list = apr_append_arrays(p, add->rdme_list, base->rdme_list);
+    new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
+    new->ign_list = apr_array_append(p, add->ign_list, base->ign_list);
+    new->hdr_list = apr_array_append(p, add->hdr_list, base->hdr_list);
+    new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
+    new->icon_list = apr_array_append(p, add->icon_list, base->icon_list);
+    new->rdme_list = apr_array_append(p, add->rdme_list, base->rdme_list);
     if (add->opts & NO_OPTIONS) {
 	/*
 	 * If the current directory says 'no options' then we also
@@ -916,10 +916,10 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
     apr_status_t stat;
 
     ap_rputs("<PRE>\n", r);
-    while (!apr_eof(f)) {
+    while (!apr_file_eof(f)) {
 	do {
             n = sizeof(char) * IOBUFSIZE;
-	    stat = apr_read(f, buf, &n);
+	    stat = apr_file_read(f, buf, &n);
 	}
 	while (stat != APR_SUCCESS && APR_STATUS_IS_EINTR(stat));
 	if (n == -1 || n == 0) {
@@ -1011,12 +1011,12 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
-		if (apr_open(&f, rr->filename, APR_READ,
+		if (apr_file_open(&f, rr->filename, APR_READ,
                             APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    emit_preamble(r, title);
 		    emit_amble = 0;
 		    do_emit_plain(r, f);
-		    apr_close(f);
+		    apr_file_close(f);
 		    emit_H1 = 0;
 		}
 	    }
@@ -1079,10 +1079,10 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 		/*
 		 * If we can open the file, suppress the signature.
 		 */
-		if (apr_open(&f, rr->filename, APR_READ,
+		if (apr_file_open(&f, rr->filename, APR_READ,
                             APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    do_emit_plain(r, f);
-		    apr_close(f);
+		    apr_file_close(f);
 		    suppress_sig = 1;
 		}
 	    }
@@ -1116,14 +1116,14 @@ static char *find_title(request_rec *r)
 			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
-        if (apr_open(&thefile, r->filename, APR_READ,
+        if (apr_file_open(&thefile, r->filename, APR_READ,
                     APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	    return NULL;
 	}
         n = sizeof(char) * (MAX_STRING_LEN - 1);
-	apr_read(thefile, titlebuf, &n);
+	apr_file_read(thefile, titlebuf, &n);
 	if (n <= 0) {
-	    apr_close(thefile);
+	    apr_file_close(thefile);
 	    return NULL;
 	}
 	titlebuf[n] = '\0';
@@ -1144,7 +1144,7 @@ static char *find_title(request_rec *r)
 			    }
 			}
 		    }
-		    apr_close(thefile);
+		    apr_file_close(thefile);
 		    return apr_pstrdup(r->pool, &titlebuf[x]);
 		}
 	    }
@@ -1152,7 +1152,7 @@ static char *find_title(request_rec *r)
 		p = 0;
 	    }
 	}
-	apr_close(thefile);
+	apr_file_close(thefile);
     }
     return NULL;
 }
@@ -1308,7 +1308,7 @@ static void output_directories(struct ent **ar, int n,
     char *name_scratch;
     char *pad_scratch;
 
-    apr_create_pool(&scratch, r->pool);
+    apr_pool_create(&scratch, r->pool);
     if (name[0] == '\0') {
 	name = "/";
     }

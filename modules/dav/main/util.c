@@ -215,7 +215,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
        the port, must match our port.
        the URI must not have a query (args) or a fragment
      */
-    apr_get_port(&port, r->connection->local_addr);
+    apr_sockaddr_port_get(&port, r->connection->local_addr);
     if (strcasecmp(comp.scheme, scheme) != 0 ||
 	comp.port != port) {
 	result.err.status = HTTP_BAD_GATEWAY;

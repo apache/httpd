@@ -323,7 +323,7 @@ int ap_tpf_spawn_child(apr_pool_t *p, int (*func) (void *, child_info *),
 
    if (pid) {
 
-       apr_note_subprocess(p, pid, kill_how);
+       apr_pool_note_subprocess(p, pid, kill_how);
 
        if (pipe_out) {
           *pipe_out = out_fds[0];
@@ -419,5 +419,5 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     const char * const *env,
     apr_procattr_t *attr, apr_pool_t *p)
 {
-    return apr_create_process(newproc, progname, args, env, attr, p);
+    return apr_proc_create(newproc, progname, args, env, attr, p);
 }

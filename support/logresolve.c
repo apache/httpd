@@ -297,7 +297,7 @@ int main (int argc, char *argv[])
     int i, check;
 
 #ifdef WIN32
-    /*  If we apr'ify this code, apr_create_pool/apr_destroy_pool
+    /*  If we apr'ify this code, apr_pool_create/apr_pool_destroy
      *  should perform the WSAStartup/WSACleanup for us. 
      */
     WSADATA wsaData;

@@ -128,7 +128,7 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
     /* ### do we need to deal with the umask? */
 
     /* just try to make it, ignoring any resulting errors */
-    (void) apr_make_dir(pathname, APR_OS_DEFAULT, p);
+    (void) apr_dir_make(pathname, APR_OS_DEFAULT, p);
 }
 
 /* dav_dbm_open_direct:  Opens a *dbm database specified by path.

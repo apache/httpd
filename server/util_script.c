@@ -172,7 +172,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later
      */
-    e = apr_make_table(r->pool, 25 + hdrs_arr->nelts);
+    e = apr_table_make(r->pool, 25 + hdrs_arr->nelts);
 
     /* First, add environment vars from headers... this is as per
      * CGI specs, though other sorts of scripting interfaces see
@@ -258,8 +258,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    apr_get_sockaddr(&remotesa, APR_REMOTE, c->client_socket);
-    apr_get_port(&rport, remotesa);
+    apr_socket_addr_get(&remotesa, APR_REMOTE, c->client_socket);
+    apr_sockaddr_port_get(&rport, remotesa);
     apr_table_addn(e, "REMOTE_PORT", apr_psprintf(r->pool, "%d", rport));
 
     if (r->user) {
@@ -284,7 +284,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 	}
     }
 
-    apr_overlap_tables(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
+    apr_table_overlap(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
 }
 
 /* This "cute" little function comes about because the path info on
@@ -396,7 +396,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     w = buffer ? buffer : x;
 
     /* temporary place to hold headers to merge in later */
-    merge = apr_make_table(r->pool, 10);
+    merge = apr_table_make(r->pool, 10);
 
     /* The HTTP specification says that it is legal to merge duplicate
      * headers into one.  Some browsers that support Cookies don't like
@@ -404,7 +404,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
      * separately.  Lets humour those browsers by not merging.
      * Oh what a pain it is.
      */
-    cookie_table = apr_make_table(r->pool, 2);
+    cookie_table = apr_table_make(r->pool, 2);
     apr_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out, "Set-Cookie", NULL);
 
     while (1) {
@@ -449,12 +449,12 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
 		cond_status = ap_meets_conditions(r);
 	    }
-	    apr_overlap_tables(r->err_headers_out, merge,
+	    apr_table_overlap(r->err_headers_out, merge,
 		APR_OVERLAP_TABLES_MERGE);
 	    if (!apr_is_empty_table(cookie_table)) {
 		/* the cookies have already been copied to the cookie_table */
 		apr_table_unset(r->err_headers_out, "Set-Cookie");
-		r->err_headers_out = apr_overlay_tables(r->pool,
+		r->err_headers_out = apr_table_overlay(r->pool,
 		    r->err_headers_out, cookie_table);
 	    }
 	    return cond_status;
@@ -562,7 +562,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 static int getsfunc_FILE(char *buf, int len, void *f)
 {
-    return apr_fgets(buf, len, (apr_file_t *) f) == APR_SUCCESS;
+    return apr_file_gets(buf, len, (apr_file_t *) f) == APR_SUCCESS;
 }
 
 AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,

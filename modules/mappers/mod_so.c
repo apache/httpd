@@ -159,7 +159,7 @@ static void *so_sconf_create(apr_pool_t *p, server_rec *s)
     so_server_conf *soc;
 
     soc = (so_server_conf *)apr_pcalloc(p, sizeof(so_server_conf));
-    soc->loaded_modules = apr_make_array(p, DYNAMIC_MODULE_LIMIT, 
+    soc->loaded_modules = apr_array_make(p, DYNAMIC_MODULE_LIMIT, 
                                      sizeof(moduleinfo));
 
     return (void *)soc;
@@ -225,7 +225,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         if (modi->name != NULL && strcmp(modi->name, modname) == 0)
             return NULL;
     }
-    modi = apr_push_array(sconf->loaded_modules);
+    modi = apr_array_push(sconf->loaded_modules);
     modi->name = modname;
 
     /*
@@ -279,7 +279,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
-    apr_register_cleanup(cmd->pool, modi, unload_module, apr_null_cleanup);
+    apr_pool_cleanup_register(cmd->pool, modi, unload_module, apr_pool_cleanup_null);
 
     /* 
      * Finally we need to run the configuration process for the module

@@ -101,7 +101,7 @@ static void *create_action_dir_config(apr_pool_t *p, char *dummy)
     action_dir_config *new =
     (action_dir_config *) apr_pcalloc(p, sizeof(action_dir_config));
 
-    new->action_types = apr_make_table(p, 4);
+    new->action_types = apr_table_make(p, 4);
 
     return new;
 }
@@ -114,7 +114,7 @@ static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
                                   sizeof(action_dir_config));
     int i;
 
-    new->action_types = apr_overlay_tables(p, add->action_types,
+    new->action_types = apr_table_overlay(p, add->action_types,
 				       base->action_types);
 
     for (i = 0; i < METHODS; ++i) {

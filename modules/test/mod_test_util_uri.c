@@ -207,7 +207,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	}
 	*strp = 0;
 
-	sub = apr_make_sub_pool(r->pool);
+	sub = apr_pool_sub_make(r->pool);
 	status = ap_parse_uri_components(sub, input_uri, &result);
 	if (status == HTTP_OK) {
 #define CHECK(f)							\
@@ -255,7 +255,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	    ap_rputs("</tr>\n", r);
 	    ++failures;
 	}
-	apr_destroy_pool(sub);
+	apr_pool_destroy(sub);
     }
     return failures;
 }

@@ -184,8 +184,8 @@ AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
     ap_scoreboard_image->global.sb_type = sb_type;
     ap_scoreboard_image->global.running_generation = running_gen;
-    ap_restart_time = apr_now();
-    apr_register_cleanup(p, NULL, ap_cleanup_scoreboard, apr_null_cleanup);
+    ap_restart_time = apr_time_now();
+    apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard, apr_pool_cleanup_null);
 }
 
 /* ToDo:
@@ -334,10 +334,10 @@ void ap_time_process_request(int child_num, int thread_num, int status)
     ss = &ap_scoreboard_image->servers[child_num][thread_num];
 
     if (status == START_PREQUEST) {
-        ss->start_time = apr_now(); 
+        ss->start_time = apr_time_now(); 
     }
     else if (status == STOP_PREQUEST) {
-        ss->stop_time = apr_now(); 
+        ss->stop_time = apr_time_now(); 
     }
     put_scoreboard_info(child_num, thread_num, ss);
 }

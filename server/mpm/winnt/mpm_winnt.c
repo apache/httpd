@@ -159,7 +159,7 @@ static apr_status_t socket_cleanup(void *sock)
 {
     apr_socket_t *thesocket = sock;
     SOCKET sd;
-    if (apr_get_os_sock(&sd, thesocket) == APR_SUCCESS) {
+    if (apr_os_sock_get(&sd, thesocket) == APR_SUCCESS) {
         closesocket(sd);
     }
     return APR_SUCCESS;
@@ -406,7 +406,7 @@ static apr_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     SOCKET nsd;
 
     for (lr = head_listener; lr ; lr = lr->next) {
-        apr_get_os_sock(&nsd, lr->sd);
+        apr_os_sock_get(&nsd, lr->sd);
 	if (FD_ISSET(nsd, main_fds)) {
 	    head_listener = lr->next;
             if (head_listener == NULL)
@@ -433,7 +433,7 @@ static int setup_listeners(server_rec *s)
     for (lr = ap_listeners; lr; lr = lr->next) {
         num_listeners++;
         if (lr->sd != NULL) {
-            apr_get_os_sock(&nsd, lr->sd);
+            apr_os_sock_get(&nsd, lr->sd);
             FD_SET(nsd, &listenfds);
             if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
                 listenmaxfd = nsd;
@@ -499,7 +499,7 @@ static int setup_inherited_listeners(server_rec *s)
                 listenmaxfd = nsd;
             }
         }
-        apr_put_os_sock(&lr->sd, &nsd, pconf);
+        apr_os_sock_put(&lr->sd, &nsd, pconf);
         lr->count = 0;
     }
     /* Now, read the AcceptExCompPort from the parent */
@@ -524,7 +524,7 @@ static void bind_listeners_to_completion_port()
     if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
         for (lr = ap_listeners; lr; lr = lr->next) {
             int nsd;
-            apr_get_os_sock(&nsd,lr->sd);
+            apr_os_sock_get(&nsd,lr->sd);
             CreateIoCompletionPort((HANDLE) nsd, AcceptExCompPort, 0, 0);
         }
     }
@@ -651,7 +651,7 @@ static void add_job(int sock)
     new_job->next = NULL;
     new_job->sock = sock;
 
-    apr_lock(allowed_globals.jobmutex);
+    apr_lock_aquire(allowed_globals.jobmutex);
 
     if (allowed_globals.jobtail != NULL)
 	allowed_globals.jobtail->next = new_job;
@@ -661,7 +661,7 @@ static void add_job(int sock)
     allowed_globals.jobcount++;
     release_semaphore(allowed_globals.jobsemaphore);
 
-    apr_unlock(allowed_globals.jobmutex);
+    apr_lock_release(allowed_globals.jobmutex);
 }
 
 static int remove_job(void)
@@ -670,10 +670,10 @@ static int remove_job(void)
     int sock;
 
     acquire_semaphore(allowed_globals.jobsemaphore);
-    apr_lock(allowed_globals.jobmutex);
+    apr_lock_aquire(allowed_globals.jobmutex);
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
-        apr_unlock(allowed_globals.jobmutex);
+        apr_lock_release(allowed_globals.jobmutex);
 	return (-1);
     }
     job = allowed_globals.jobhead;
@@ -681,7 +681,7 @@ static int remove_job(void)
     allowed_globals.jobhead = job->next;
     if (allowed_globals.jobhead == NULL)
 	allowed_globals.jobtail = NULL;
-    apr_unlock(allowed_globals.jobmutex);
+    apr_lock_release(allowed_globals.jobmutex);
     sock = job->sock;
     free(job);
 
@@ -736,7 +736,7 @@ static void accept_and_queue_connections(void * dummy)
 	    lr = find_ready_listener(&main_fds);
 	    if (lr != NULL) {
                 /* fetch the native socket descriptor */
-                apr_get_os_sock(&nsd, lr->sd);
+                apr_os_sock_get(&nsd, lr->sd);
 	    }
 	}
 
@@ -773,7 +773,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
                          "win9x_get_connection: apr_pcalloc() failed. Process will exit.");
             return NULL;
         }
-        apr_create_pool(&context->ptrans, pconf);
+        apr_pool_create(&context->ptrans, pconf);
     }
     
 
@@ -873,7 +873,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     }
 
     /* create and initialize the accept socket */
-    apr_get_os_sock(&nsd, context->lr->sd);
+    apr_os_sock_get(&nsd, context->lr->sd);
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (context->accept_socket == INVALID_SOCKET) {
         ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), server_conf,
@@ -890,7 +890,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
         /* Not a failure condition. Keep running. */
     }
 
-    apr_create_pool(&context->ptrans, _pconf);
+    apr_pool_create(&context->ptrans, _pconf);
 
     /* recv_buf must be large enough to hold the remote and local
      * addresses. Note that recv_buf_size is the amount of recv_buf
@@ -931,7 +931,7 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     context->sock = NULL;
 
     /* recreate and initialize the accept socket if it is not being reused */
-    apr_get_os_sock(&nsd, context->lr->sd);
+    apr_os_sock_get(&nsd, context->lr->sd);
 
     /* AcceptEx on the completion context. The completion context will be signaled
      * when a connection is accepted. Hack Alert: TransmitFile, under certain 
@@ -1089,12 +1089,12 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
      * but only if we are not in the process of shutting down
      */
     if (!shutdown_in_progress) {
-        apr_lock(allowed_globals.jobmutex);
+        apr_lock_aquire(allowed_globals.jobmutex);
         context->lr->count--;
         if (context->lr->count < 2) {
             SetEvent(maintenance_event);
         }
-        apr_unlock(allowed_globals.jobmutex);
+        apr_lock_release(allowed_globals.jobmutex);
     }
 
     /* Received a connection */
@@ -1160,7 +1160,7 @@ static void worker_main(int thread_num)
         sockinfo.remote  = context->sa_client;
         sockinfo.family  = APR_INET;
         sockinfo.type    = SOCK_STREAM;
-        apr_make_os_sock(&context->sock, &sockinfo, context->ptrans);
+        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         ap_update_child_status(0, thread_num,  
                                SERVER_BUSY_READ, (request_rec *) NULL);
@@ -1250,7 +1250,7 @@ static void child_main()
 
     if (one_process) {
         /* Single process mode */
-        apr_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
+        apr_lock_create(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
         exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
 
         setup_listeners(server_conf);
@@ -1258,7 +1258,7 @@ static void child_main()
     }
     else {
         /* Child process mode */
-        apr_child_init_lock(&start_mutex, signal_name_prefix, pconf);
+        apr_lock_child_init(&start_mutex, signal_name_prefix, pconf);
         exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
@@ -1275,16 +1275,16 @@ static void child_main()
     ap_assert(exit_event);
     ap_assert(maintenance_event);
 
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
     allowed_globals.jobsemaphore = create_semaphore(0);
-    apr_create_lock(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
+    apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
 
     /*
      * Wait until we have permission to start accepting connections.
      * start_mutex is used to ensure that only one child ever
      * goes into the listen/accept loop at once.
      */
-    status = apr_lock(start_mutex);
+    status = apr_lock_aquire(start_mutex);
     if (status != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
@@ -1389,7 +1389,7 @@ static void child_main()
         workers_may_exit = 1;
 
         /* Unblock threads blocked on the completion port */
-        apr_lock(allowed_globals.jobmutex);
+        apr_lock_aquire(allowed_globals.jobmutex);
         while (g_blocked_threads > 0) {
             ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                          "Child %d: %d threads blocked on the completion port", my_pid, g_blocked_threads);
@@ -1398,11 +1398,11 @@ static void child_main()
             }
             Sleep(1000);
         }
-        apr_unlock(allowed_globals.jobmutex);
+        apr_lock_release(allowed_globals.jobmutex);
 
         /* Cancel any remaining pending AcceptEx completion contexts */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-            apr_get_os_sock(&nsd,lr->sd);
+            apr_os_sock_get(&nsd,lr->sd);
             CancelIo((HANDLE) nsd);
         }
 
@@ -1415,7 +1415,7 @@ static void child_main()
      */
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: Releasing the start mutex", my_pid);
-    apr_unlock(start_mutex);
+    apr_lock_release(start_mutex);
 
     /* Give busy worker threads a chance to service their connections.
      * Kill them off if they take too long
@@ -1442,9 +1442,9 @@ static void child_main()
 
     CloseHandle(AcceptExCompPort);
     destroy_semaphore(allowed_globals.jobsemaphore);
-    apr_destroy_lock(allowed_globals.jobmutex);
+    apr_lock_destroy(allowed_globals.jobmutex);
 
-    apr_destroy_pool(pchild);
+    apr_pool_destroy(pchild);
     CloseHandle(exit_event);
 }
 
@@ -1632,7 +1632,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     for (lr = ap_listeners; lr; lr = lr->next) {
         int nsd;
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
-        apr_get_os_sock(&nsd,lr->sd);
+        apr_os_sock_get(&nsd,lr->sd);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
         if (WSADuplicateSocket(nsd, pi.dwProcessId,
@@ -1918,17 +1918,17 @@ void winnt_rewrite_args(process_rec *process)
      * because pconf will be destroyed after the 
      * initial pre-flight of the config parser.
      */
-    mpm_new_argv = apr_make_array(process->pool, process->argc + 2,
+    mpm_new_argv = apr_array_make(process->pool, process->argc + 2,
                                   sizeof(const char *));
-    *(const char **)apr_push_array(mpm_new_argv) = process->argv[0];
-    *(const char **)apr_push_array(mpm_new_argv) = "-d";
-    *(const char **)apr_push_array(mpm_new_argv) = def_server_root;
+    *(const char **)apr_array_push(mpm_new_argv) = process->argv[0];
+    *(const char **)apr_array_push(mpm_new_argv) = "-d";
+    *(const char **)apr_array_push(mpm_new_argv) = def_server_root;
 
     fixed_args = mpm_new_argv->nelts;
 
     optbuf[0] = '-';
     optbuf[2] = '\0';
-    apr_initopt(&opt, process->pool, process->argc, (char**) process->argv);
+    apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
     while (apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
                       optbuf + 1, &optarg) == APR_SUCCESS) {
         switch (optbuf[1]) {
@@ -1949,11 +1949,11 @@ void winnt_rewrite_args(process_rec *process)
             signal_arg = "uninstall";
             break;
         default:
-            *(const char **)apr_push_array(mpm_new_argv) =
+            *(const char **)apr_array_push(mpm_new_argv) =
                 apr_pstrdup(process->pool, optbuf);
 
             if (optarg) {
-                *(const char **)apr_push_array(mpm_new_argv) = optarg;
+                *(const char **)apr_array_push(mpm_new_argv) = optarg;
             }
             break;
         }
@@ -2201,7 +2201,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            apr_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, signal_name_prefix,
+            apr_lock_create(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, signal_name_prefix,
                                server_conf->process->pool);
         }
     }
@@ -2240,7 +2240,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                              server_conf, "removed PID file %s (pid=%ld)",
                              pidfile, GetCurrentProcessId());
             }
-            apr_destroy_lock(start_mutex);
+            apr_lock_destroy(start_mutex);
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);

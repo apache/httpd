@@ -174,7 +174,7 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 void clean_child_exit(int code)
 {
     if (pchild) {
-	apr_destroy_pool(pchild);
+	apr_pool_destroy(pchild);
     }
     exit(code);
 }
@@ -251,7 +251,7 @@ static void ap_start_restart(int graceful)
     restart_pending = 1;
     is_graceful = graceful;
     if (is_graceful) {
-        apr_kill_cleanup(pconf, NULL, ap_cleanup_scoreboard);
+        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
     }
 }
 
@@ -392,7 +392,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
     long conn_id = AP_ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
 
-    (void) apr_get_os_sock(&csd, sock);
+    (void) apr_os_sock_get(&csd, sock);
 
     if (csd >= FD_SETSIZE) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
@@ -400,7 +400,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
                      "to rebuild Apache with a larger FD_SETSIZE "
                      "(currently %d)", 
                      csd, FD_SETSIZE);
-        apr_close_socket(sock);
+        apr_socket_close(sock);
         return;
     }
 
@@ -454,15 +454,15 @@ static void * worker_thread(void * dummy)
 
     free(ti);
 
-    apr_create_pool(&ptrans, tpool);
+    apr_pool_create(&ptrans, tpool);
 
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count++;
     pthread_mutex_unlock(&worker_thread_count_mutex);
 
-    apr_setup_poll(&pollset, num_listensocks+1, tpool);
+    apr_poll_setup(&pollset, num_listensocks+1, tpool);
     for(n=0 ; n <= num_listensocks ; ++n)
-	apr_add_poll_socket(pollset, listensocks[n], APR_POLLIN);
+	apr_poll_socket_add(pollset, listensocks[n], APR_POLLIN);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -472,10 +472,10 @@ static void * worker_thread(void * dummy)
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
                                       (request_rec *) NULL);
-        if ((rv = SAFE_ACCEPT(apr_lock(accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_lock_aquire(accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock failed. Attempting to shutdown "
+                         "apr_lock_aquire failed. Attempting to shutdown "
                          "process gracefully.");
             workers_may_exit = 1;
         }
@@ -499,7 +499,7 @@ static void * worker_thread(void * dummy)
 
             if (workers_may_exit) break;
 
-	    apr_get_revents(&event, listensocks[0], pollset);
+	    apr_poll_revents_get(&event, listensocks[0], pollset);
             if (event & APR_POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. */
@@ -520,7 +520,7 @@ static void * worker_thread(void * dummy)
                         curr_pollfd = 1;
                     }
                     /* XXX: Should we check for POLLERR? */
-		    apr_get_revents(&event, listensocks[curr_pollfd], pollset);
+		    apr_poll_revents_get(&event, listensocks[curr_pollfd], pollset);
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
 			sd=listensocks[curr_pollfd];
@@ -536,10 +536,10 @@ static void * worker_thread(void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
                              "apr_accept");
             }
-            if ((rv = SAFE_ACCEPT(apr_unlock(accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_lock_release(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_unlock failed. Attempting to shutdown "
+                             "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
@@ -549,10 +549,10 @@ static void * worker_thread(void * dummy)
             }
         }
         else {
-            if ((rv = SAFE_ACCEPT(apr_unlock(accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_lock_release(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_unlock failed. Attempting to shutdown "
+                             "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
@@ -561,7 +561,7 @@ static void * worker_thread(void * dummy)
         apr_clear_pool(ptrans);
     }
 
-    apr_destroy_pool(tpool);
+    apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
         (request_rec *) NULL);
     pthread_mutex_lock(&worker_thread_count_mutex);
@@ -591,12 +591,12 @@ static void child_main(int child_num_arg)
 
 
     ap_my_pid = getpid();
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
 
-    rv = SAFE_ACCEPT(apr_child_init_lock(&accept_mutex, lock_fname,
+    rv = SAFE_ACCEPT(apr_lock_child_init(&accept_mutex, lock_fname,
                      pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -665,7 +665,7 @@ static void child_main(int child_num_arg)
 	my_info->pid = my_child_num;
         my_info->tid = i;
 	my_info->sd = 0;
-	apr_create_pool(&my_info->tpool, pchild);
+	apr_pool_create(&my_info->tpool, pchild);
 	
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
@@ -866,7 +866,7 @@ static void perform_idle_server_maintenance(void)
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
         char char_of_death = '!';
-        if ((rv = apr_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
+        if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
         }
         idle_spawn_rate = 1;
@@ -943,7 +943,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_reap_other_child(&pid, status) == 0) {
+	    else if (apr_proc_other_child_read(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -989,18 +989,18 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
-    rv = apr_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf);
+    rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "apr_create_pipe (pipe_of_death)");
+                     "apr_file_pipe_create (pipe_of_death)");
         exit(1);
     }
 
-    if ((rv = apr_set_pipe_timeout(pipe_of_death_in, 0)) != APR_SUCCESS) {
+    if ((rv = apr_file_pipe_timeout_set(pipe_of_death_in, 0)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "apr_set_pipe_timeout (pipe_of_death)");
+                     "apr_file_pipe_timeout_set (pipe_of_death)");
         exit(1);
     }
     ap_server_conf = s;
@@ -1016,7 +1016,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              ap_my_pid);
-    rv = apr_create_lock(&accept_mutex, APR_MUTEX, APR_LOCKALL,
+    rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_LOCKALL,
                    lock_fname, _pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -1116,7 +1116,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if ((rv = apr_write(pipe_of_death_in, &char_of_death, &one)) != APR_SUCCESS) {
+            if ((rv = apr_file_write(pipe_of_death_in, &char_of_death, &one)) != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(rv)) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
             }
@@ -1163,7 +1163,7 @@ static void mpmt_pthread_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_poo
 	is_graceful = 0;
 
 	if (!one_process && !no_detach) {
-	    apr_detach();
+	    apr_proc_detach();
 	}
 	ap_my_pid = getpid();
     }

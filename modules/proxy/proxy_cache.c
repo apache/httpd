@@ -191,12 +191,12 @@ apr_status_t ap_cache_el_data_append(ap_cache_el *el, apr_file_t *data)
     
     if((ret = ap_cache_el_data(el, &place)) != APR_SUCCESS) return ret;
     nbytes = HUGE_STRING_LEN;
-    while(apr_read(data, buffer, &nbytes) == APR_SUCCESS && nbytes) {
+    while(apr_file_read(data, buffer, &nbytes) == APR_SUCCESS && nbytes) {
         o = 0;
         while(nbytes)
         {
             i = nbytes;
-            apr_write(place, buffer + o, &i);
+            apr_file_write(place, buffer + o, &i);
             o += i;
             nbytes -= i;
         }

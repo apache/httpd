@@ -139,13 +139,13 @@ void *apr_shm_calloc(apr_shmem_t *shared, apr_size_t size) {
 apr_status_t apr_shm_free(apr_shmem_t *shared, void *free) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_get_shm_name(apr_shmem_t *c, apr_shm_name_t **name) {
+apr_status_t apr_shm_name_get(apr_shmem_t *c, apr_shm_name_t **name) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_set_shm_name(apr_shmem_t *c, apr_shm_name_t *name) {
+apr_status_t apr_shm_name_set(apr_shmem_t *c, apr_shm_name_t *name) {
     return APR_ENOTIMPL;
 }
-apr_status_t apr_open_shmem(apr_shmem_t *c) {
+apr_status_t apr_shm_open(apr_shmem_t *c) {
     return APR_ENOTIMPL;
 }
 apr_status_t apr_shm_avail(apr_shmem_t *c, apr_size_t *avail) {
@@ -280,12 +280,12 @@ static apr_status_t cleanup_tables(void *not_used)
     }
 
     if (client_lock) {
-	apr_destroy_lock(client_lock);
+	apr_lock_destroy(client_lock);
 	client_lock = NULL;
     }
 
     if (opaque_lock) {
-	apr_destroy_lock(opaque_lock);
+	apr_lock_destroy(opaque_lock);
 	opaque_lock = NULL;
     }
 
@@ -348,7 +348,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->num_entries = 0;
 
     tmpnam(client_lock_name);
-    sts = apr_create_lock(&client_lock, APR_READWRITE, APR_LOCKALL,
+    sts = apr_lock_create(&client_lock, APR_READWRITE, APR_LOCKALL,
 			 client_lock_name, ctx);
     if (sts != APR_SUCCESS) {
 	log_error_and_cleanup("failed to create lock", sts, s);
@@ -366,7 +366,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
     *opaque_cntr = 1UL;
 
     tmpnam(opaque_lock_name);
-    sts = apr_create_lock(&opaque_lock, APR_MUTEX, APR_LOCKALL,
+    sts = apr_lock_create(&opaque_lock, APR_MUTEX, APR_LOCKALL,
 			 opaque_lock_name, ctx);
     if (sts != APR_SUCCESS) {
 	log_error_and_cleanup("failed to create lock", sts, s);
@@ -418,7 +418,7 @@ static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
      * creating a creeping memory leak.
      */
     initialize_tables(s, p);
-    apr_register_cleanup(p, NULL, cleanup_tables, apr_null_cleanup);
+    apr_pool_cleanup_register(p, NULL, cleanup_tables, apr_pool_cleanup_null);
 #endif	/* APR_HAS_SHARED_MEMORY */
 }
 
@@ -429,9 +429,9 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
     if (!client_shm)
 	return;
 
-    if ((sts = apr_child_init_lock(&client_lock, client_lock_name, p))
+    if ((sts = apr_lock_child_init(&client_lock, client_lock_name, p))
 	    != APR_SUCCESS
-	||  (sts = apr_child_init_lock(&opaque_lock, opaque_lock_name, p))
+	||  (sts = apr_lock_child_init(&opaque_lock, opaque_lock_name, p))
 	    != APR_SUCCESS) {
 	log_error_and_cleanup("failed to create lock", sts, s);
 	return;
@@ -475,9 +475,9 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
      * the host:port would be too, but that varies for .htaccess files
      * and directives outside a virtual host section)
      */
-    apr_SHA1Init(&conf->nonce_ctx);
-    apr_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
-    apr_SHA1Update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
+    apr_sha1_init(&conf->nonce_ctx);
+    apr_sha1_update_binary(&conf->nonce_ctx, secret, sizeof(secret));
+    apr_sha1_update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
 			 strlen(realm));
 
     return DECLINE_CMD;
@@ -721,7 +721,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock(client_lock /*, MM_LOCK_RD */);
+    apr_lock_aquire(client_lock /*, MM_LOCK_RD */);
 
     while(entry && key != entry->key) {
 	prev  = entry;
@@ -734,7 +734,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
 	client_list->table[bucket] = entry;
     }
 
-    apr_unlock(client_lock);
+    apr_lock_release(client_lock);
 
     if (entry)
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
@@ -798,7 +798,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock(client_lock /*, MM_LOCK_RW */);
+    apr_lock_aquire(client_lock /*, MM_LOCK_RW */);
 
     /* try to allocate a new entry */
 
@@ -824,7 +824,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     client_list->num_created++;
     client_list->num_entries++;
 
-    apr_unlock(client_lock);
+    apr_lock_release(client_lock);
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, s,
 		 "allocated new client %lu", key);
@@ -992,16 +992,16 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 
     memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
     /*
-    apr_SHA1Update_binary(&ctx, (const unsigned char *) server->server_hostname,
+    apr_sha1_update_binary(&ctx, (const unsigned char *) server->server_hostname,
 			 strlen(server->server_hostname));
-    apr_SHA1Update_binary(&ctx, (const unsigned char *) &server->port,
+    apr_sha1_update_binary(&ctx, (const unsigned char *) &server->port,
 			 sizeof(server->port));
      */
-    apr_SHA1Update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
+    apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
     if (opaque)
-	apr_SHA1Update_binary(&ctx, (const unsigned char *) opaque,
+	apr_sha1_update_binary(&ctx, (const unsigned char *) opaque,
 			     strlen(opaque));
-    apr_SHA1Final(sha1, &ctx);
+    apr_sha1_final(sha1, &ctx);
 
     for (idx=0; idx<APR_SHA1_DIGESTSIZE; idx++) {
 	*hash++ = hex[sha1[idx] >> 4];
@@ -1031,7 +1031,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
 	t.time = (*otn_counter)++;
     else
 	t.time = 42;
-    len = apr_base64encode_binary(nonce, t.arr, sizeof(t.arr));
+    len = apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
 
     return nonce;
@@ -1053,9 +1053,9 @@ static client_entry *gen_client(const request_rec *r)
 
     if (!opaque_cntr)  return NULL;
 
-    apr_lock(opaque_lock /*, MM_LOCK_RW */);
+    apr_lock_aquire(opaque_lock /*, MM_LOCK_RW */);
     op = (*opaque_cntr)++;
-    apr_unlock(opaque_lock);
+    apr_lock_release(opaque_lock);
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -1408,7 +1408,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    len = apr_base64decode_binary(nonce_time.arr, resp->nonce);
+    len = apr_base64_decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
@@ -1768,7 +1768,7 @@ static apr_table_t *groups_for_user(request_rec *r, const char *user,
 			      const char *grpfile)
 {
     configfile_t *f;
-    apr_table_t *grps = apr_make_table(r->pool, 15);
+    apr_table_t *grps = apr_table_make(r->pool, 15);
     apr_pool_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
@@ -1780,7 +1780,7 @@ static apr_table_t *groups_for_user(request_rec *r, const char *user,
 	return NULL;
     }
 
-    if (apr_create_pool(&sp, r->pool) != APR_SUCCESS)
+    if (apr_pool_create(&sp, r->pool) != APR_SUCCESS)
 		return NULL;
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
@@ -1801,7 +1801,7 @@ static apr_table_t *groups_for_user(request_rec *r, const char *user,
     }
 
     ap_cfg_closefile(f);
-    apr_destroy_pool(sp);
+    apr_pool_destroy(sp);
     return grps;
 }
 

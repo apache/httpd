@@ -70,8 +70,8 @@ DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *provider)
 {
     if (dav_repos_providers == NULL) {
-        dav_repos_providers = apr_make_hash(p);
-        apr_register_cleanup(p, NULL, dav_cleanup_providers, apr_null_cleanup);
+        dav_repos_providers = apr_hash_make(p);
+        apr_pool_cleanup_register(p, NULL, dav_cleanup_providers, apr_pool_cleanup_null);
     }
 
     /* just set it. no biggy if it was there before. */

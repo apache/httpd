@@ -138,7 +138,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
     apr_bucket *b;
 
     bb = apr_brigade_create(c->pool);
-    b = apr_bucket_create_flush();
+    b = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(c->output_filters, bb);
 }
@@ -164,7 +164,7 @@ void ap_lingering_close(conn_rec *c)
 
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c);	/* just close it */
-    apr_close_socket(c->client_socket);
+    apr_socket_close(c->client_socket);
     return;
 #endif
 
@@ -177,7 +177,7 @@ void ap_lingering_close(conn_rec *c)
     ap_flush_conn(c);
 
     if (c->aborted) {
-        apr_close_socket(c->client_socket);
+        apr_socket_close(c->client_socket);
         return;
     }
 
@@ -187,7 +187,7 @@ void ap_lingering_close(conn_rec *c)
     
     if (apr_shutdown(c->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
         c->aborted) {
-        apr_close_socket(c->client_socket);
+        apr_socket_close(c->client_socket);
         return;
     }
 
@@ -195,7 +195,7 @@ void ap_lingering_close(conn_rec *c)
      * from peer) or we've exceeded our overall timeout.
      */
     
-    start = apr_now();
+    start = apr_time_now();
     timeout = MAX_SECS_TO_LINGER * APR_USEC_PER_SEC;
     for (;;) {
         apr_setsocketopt(c->client_socket, APR_SO_TIMEOUT, timeout);
@@ -204,14 +204,14 @@ void ap_lingering_close(conn_rec *c)
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         /* how much time has elapsed? */
-        timeout = (int)((apr_now() - start) / APR_USEC_PER_SEC);
+        timeout = (int)((apr_time_now() - start) / APR_USEC_PER_SEC);
         if (timeout >= MAX_SECS_TO_LINGER) break;
 
         /* figure out the new timeout */
         timeout = (int)((MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC);
     }
 
-    apr_close_socket(c->client_socket);
+    apr_socket_close(c->client_socket);
 }
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
@@ -254,7 +254,7 @@ AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
 	    break;
 
         ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, NULL);
-	apr_destroy_pool(r->pool);
+	apr_pool_destroy(r->pool);
 
 	if (ap_graceful_stop_signalled())
             break;
@@ -279,25 +279,25 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
      */
 
     conn->conn_config=ap_create_conn_config(p);
-    conn->notes = apr_make_table(p, 5);
+    conn->notes = apr_table_make(p, 5);
 
     conn->pool = p;
-    if ((rv = apr_get_sockaddr(&conn->local_addr, APR_LOCAL, inout)) 
+    if ((rv = apr_socket_addr_get(&conn->local_addr, APR_LOCAL, inout)) 
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_get_sockaddr(APR_LOCAL)");
-        apr_close_socket(inout);
+                     "apr_socket_addr_get(APR_LOCAL)");
+        apr_socket_close(inout);
         return NULL;
     }
-    apr_get_ipaddr(&conn->local_ip, conn->local_addr);
-    if ((rv = apr_get_sockaddr(&conn->remote_addr, APR_REMOTE, inout))
+    apr_sockaddr_ip_get(&conn->local_ip, conn->local_addr);
+    if ((rv = apr_socket_addr_get(&conn->remote_addr, APR_REMOTE, inout))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
-                     "apr_get_sockaddr(APR_REMOTE)");
-        apr_close_socket(inout);
+                     "apr_socket_addr_get(APR_REMOTE)");
+        apr_socket_close(inout);
         return NULL;
     }
-    apr_get_ipaddr(&conn->remote_ip, conn->remote_addr);
+    apr_sockaddr_ip_get(&conn->remote_ip, conn->remote_addr);
     conn->base_server = server;
     conn->client_socket = inout;
 

@@ -249,7 +249,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 				 "Connect to remote machine blocked");
     }
 
-    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -292,16 +292,16 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     buf = apr_pstrcat(r->pool, r->method, " ", proxyhost ? url : urlptr,
                       " HTTP/1.0" CRLF, NULL);
-    e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+    e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     if (destportstr != NULL && destport != DEFAULT_HTTP_PORT) {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, ":", destportstr, CRLF, NULL);
-        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
     else {
         buf = apr_pstrcat(r->pool, "Host: ", desthost, CRLF, NULL);
-        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
@@ -344,14 +344,14 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
         buf = apr_pstrcat(r->pool, reqhdrs[i].key, ": ", reqhdrs[i].val, CRLF, NULL);
-        e = apr_bucket_create_pool(buf, strlen(buf), r->pool);
+        e = apr_bucket_pool_create(buf, strlen(buf), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
     }
 
-    e = apr_bucket_create_pool(CRLF, strlen(CRLF), r->pool);
+    e = apr_bucket_pool_create(CRLF, strlen(CRLF), r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, e);
-    e = apr_bucket_create_flush();
+    e = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(origin->output_filters, bb);
@@ -359,12 +359,12 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
-            e = apr_bucket_create_pool(buffer, i, r->pool);
+            e = apr_bucket_pool_create(buffer, i, r->pool);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
     }
     /* Flush the data to the origin server */
-    e = apr_bucket_create_flush();
+    e = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
     ap_pass_brigade(origin->output_filters, bb);
 
@@ -381,14 +381,14 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     e = APR_BRIGADE_FIRST(bb);
     apr_bucket_read(e, (const char **)&buffer2, &len, APR_BLOCK_READ);
     if (len == -1) {
-	apr_close_socket(sock);
+	apr_socket_close(sock);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	     "ap_get_brigade() - proxy receive - Error reading from remote server %s (length %d)",
 	     proxyhost ? proxyhost : desthost, len);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
     } else if (len == 0) {
-	apr_close_socket(sock);
+	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Document contains no data");
     }
@@ -405,7 +405,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
 /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	if (buffer2[5] != '1' || buffer2[len - 1] != '\n') {
-	    apr_close_socket(sock);
+	    apr_socket_close(sock);
 	    return HTTP_BAD_GATEWAY;
 	}
 	backasswards = 0;
@@ -477,7 +477,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
 
-    if (cachefp && apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
+    if (cachefp && apr_file_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
         r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing status line to cache");
@@ -498,9 +498,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
         cntr = len;
-        e = apr_bucket_create_heap(buffer, cntr, 0, NULL);
+        e = apr_bucket_heap_create(buffer, cntr, 0, NULL);
         APR_BRIGADE_INSERT_TAIL(bb, e);
-        if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
+        if (cachefp && apr_file_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing extra data to cache");
 	}
@@ -526,6 +526,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         }
     }
 
-    apr_close_socket(sock);
+    apr_socket_close(sock);
     return OK;
 }

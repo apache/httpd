@@ -139,7 +139,7 @@ static void *create_headers_config(apr_pool_t *p, server_rec *s)
     headers_conf *a =
     (headers_conf *) apr_pcalloc(p, sizeof(headers_conf));
 
-    a->headers = apr_make_array(p, 2, sizeof(header_entry));
+    a->headers = apr_array_make(p, 2, sizeof(header_entry));
     return a;
 }
 
@@ -154,7 +154,7 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
     (headers_conf *) apr_pcalloc(p, sizeof(headers_conf));
     headers_conf *base = (headers_conf *) basev, *overrides = (headers_conf *) overridesv;
 
-    a->headers = apr_append_arrays(p, base->headers, overrides->headers);
+    a->headers = apr_array_append(p, base->headers, overrides->headers);
 
     return a;
 }
@@ -172,10 +172,10 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     char *colon;
 
     if (cmd->path) {
-        new = (header_entry *) apr_push_array(dirconf->headers);
+        new = (header_entry *) apr_array_push(dirconf->headers);
     }
     else {
-        new = (header_entry *) apr_push_array(serverconf->headers);
+        new = (header_entry *) apr_array_push(serverconf->headers);
     }
 
     if (!strcasecmp(action, "set"))

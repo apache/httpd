@@ -298,14 +298,14 @@ static void setup_module_cells(void)
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-        apr_create_pool(&example_pool, NULL);
+        apr_pool_create(&example_pool, NULL);
     };
     /*
      * Likewise for the apr_table_t of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
-        static_calls_made = apr_make_table(example_pool, 16);
+        static_calls_made = apr_table_make(example_pool, 16);
     };
 }
 
@@ -363,7 +363,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        apr_create_pool(&p, example_pool);
+        apr_pool_create(&p, example_pool);
         if (trace != NULL) {
             trace = apr_pstrdup(p, trace);
         }
@@ -372,7 +372,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * the one we just allocated.
          */
         if (example_subpool != NULL) {
-            apr_destroy_pool(example_subpool);
+            apr_pool_destroy(example_subpool);
         }
         example_subpool = p;
         trace_copy = trace;
@@ -708,7 +708,7 @@ static void example_child_init(apr_pool_t *p, server_rec *s)
     note = apr_pstrcat(p, "example_child_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
 
-    apr_register_cleanup(p, s, example_child_exit, example_child_exit);
+    apr_pool_cleanup_register(p, s, example_child_exit, example_child_exit);
 }
 
 /*

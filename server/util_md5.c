@@ -104,12 +104,12 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
      * Take the MD5 hash of the string argument.
      */
 
-    apr_MD5Init(&my_md5);
+    apr_md5_init(&my_md5);
 #if APR_CHARSET_EBCDIC
-    apr_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
+    apr_md5_set_xlate(&my_md5, ap_hdrs_to_ascii);
 #endif
-    apr_MD5Update(&my_md5, buf, (unsigned int)length);
-    apr_MD5Final(hash, &my_md5);
+    apr_md5_update(&my_md5, buf, (unsigned int)length);
+    apr_md5_final(hash, &my_md5);
 
     for (i = 0, r = result; i < MD5_DIGESTSIZE; i++) {
 	*r++ = hex[hash[i] >> 4];
@@ -179,7 +179,7 @@ AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
 
     encodedDigest = (char *) apr_pcalloc(a, 25 * sizeof(char));
 
-    apr_MD5Final(digest, context);
+    apr_md5_final(digest, context);
     digest[sizeof(digest) - 1] = digest[sizeof(digest) - 2] = 0;
 
     p = encodedDigest;
@@ -203,13 +203,13 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
     apr_size_t nbytes;
     apr_off_t offset = 0L;
 
-    apr_MD5Init(&context);
+    apr_md5_init(&context);
     nbytes = sizeof(buf);
-    while (apr_read(infile, buf, &nbytes) == APR_SUCCESS) {
+    while (apr_file_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
-	apr_MD5Update(&context, buf, nbytes);
+	apr_md5_update(&context, buf, nbytes);
     }
-    apr_seek(infile, APR_SET, &offset);
+    apr_file_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
 }
 

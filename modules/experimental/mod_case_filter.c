@@ -54,7 +54,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 	if(APR_BUCKET_IS_EOS(pbktIn))
 	    {
 	    // XXX: why can't I reuse pbktIn???
-	    apr_bucket *pbktEOS=apr_bucket_create_eos();
+	    apr_bucket *pbktEOS=apr_bucket_eos_create();
 	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
 	    break;
 	    }
@@ -69,7 +69,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 
 	// XXX: should we use a heap bucket instead? Or a transient (in
 	// which case we need a separate brigade for each bucket)?
-	pbktOut=apr_bucket_create_pool(buf,len,f->r->pool);
+	pbktOut=apr_bucket_pool_create(buf,len,f->r->pool);
 	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	}
 

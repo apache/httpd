@@ -153,7 +153,7 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 {
     configfile_t *f;
-    apr_table_t *grps = apr_make_table(p, 15);
+    apr_table_t *grps = apr_table_make(p, 15);
     apr_pool_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
@@ -165,7 +165,7 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 	return NULL;
     }
 
-    apr_create_pool(&sp, p);
+    apr_pool_create(&sp, p);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
@@ -184,7 +184,7 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 	}
     }
     ap_cfg_closefile(f);
-    apr_destroy_pool(sp);
+    apr_pool_destroy(sp);
     return grps;
 }
 
@@ -225,7 +225,7 @@ static int authenticate_basic_user(request_rec *r)
 	ap_note_basic_auth_failure(r);
 	return HTTP_UNAUTHORIZED;
     }
-    invalid_pw = apr_validate_password(sent_pw, real_pw);
+    invalid_pw = apr_password_validate(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "user %s: authentication failure for \"%s\": "

@@ -180,7 +180,7 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
         conf->dir = d;
     }
 
-    conf->d_params = apr_make_table(p, 1);
+    conf->d_params = apr_table_make(p, 1);
 
     return conf;
 }
@@ -215,8 +215,8 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
 
-    newconf->d_params = apr_copy_table(p, parent->d_params);
-    apr_overlap_tables(newconf->d_params, child->d_params,
+    newconf->d_params = apr_table_copy(p, parent->d_params);
+    apr_table_overlap(newconf->d_params, child->d_params,
 		      APR_OVERLAP_TABLES_SET);
 
     return newconf;
@@ -1517,7 +1517,7 @@ static int dav_method_options(request_rec *r)
     char *s;
     apr_array_header_t *arr;
     apr_table_entry_t *elts;
-    apr_table_t *methods = apr_make_table(r->pool, 12);
+    apr_table_t *methods = apr_table_make(r->pool, 12);
     ap_text_header vsn_options = { 0 };
     ap_text_header body = { 0 };
     ap_text *t;
@@ -1581,7 +1581,7 @@ static int dav_method_options(request_rec *r)
     ** and generate a separate DAV header for each URI, to avoid
     ** problems with long header lengths.
     */
-    uri_ary = apr_make_array(r->pool, 5, sizeof(const char *));
+    uri_ary = apr_array_make(r->pool, 5, sizeof(const char *));
     dav_run_gather_propsets(uri_ary);
     for (i = 0; i < uri_ary->nelts; ++i) {
         if (((char **)uri_ary->elts)[i] != NULL)
@@ -2193,7 +2193,7 @@ static int dav_method_proppatch(request_rec *r)
     /* ### validate "live" properties */
 
     /* set up an array to hold property operation contexts */
-    ctx_list = apr_make_array(r->pool, 10, sizeof(dav_prop_ctx));
+    ctx_list = apr_array_make(r->pool, 10, sizeof(dav_prop_ctx));
 
     /* do a first pass to ensure that all "remove" properties exist */
     for (child = doc->root->first_child; child; child = child->next) {
@@ -2222,7 +2222,7 @@ static int dav_method_proppatch(request_rec *r)
 	for (one_prop = prop_group->first_child; one_prop;
 	     one_prop = one_prop->next) {
 
-	    ctx = (dav_prop_ctx *)apr_push_array(ctx_list);
+	    ctx = (dav_prop_ctx *)apr_array_push(ctx_list);
 	    ctx->propdb = propdb;
 	    ctx->operation = is_remove ? DAV_PROP_OP_DELETE : DAV_PROP_OP_SET;
 	    ctx->prop = one_prop;
@@ -3335,7 +3335,7 @@ static int dav_method_checkout(request_rec *r)
 
                         href = dav_xml_get_cdata(child, r->pool,
                                                  1 /* strip_white */);
-                        *(const char **)apr_push_array(activities) = href;
+                        *(const char **)apr_array_push(activities) = href;
                     }
                 }
 

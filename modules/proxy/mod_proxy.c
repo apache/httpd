@@ -464,7 +464,7 @@ static const char *
 	port = defports[i].port;
     }
 
-    new = apr_push_array(conf->proxies);
+    new = apr_array_push(conf->proxies);
     new->scheme = f;
     new->protocol = r;
     new->hostname = p + 3;
@@ -490,7 +490,7 @@ static const char *
     }
 
     if (!found) {
-        new = apr_push_array(psf->nocaches);
+        new = apr_array_push(psf->nocaches);
         new->name = arg;
         /* Don't do name lookups on things that aren't dotted */
         if (ap_strchr_c(arg, '.') != NULL &&
@@ -510,7 +510,7 @@ static const char *
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
 
-    new = apr_push_array(conf->aliases);
+    new = apr_array_push(conf->aliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -525,7 +525,7 @@ static const char *
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
                                                   &proxy_module);
-    new = apr_push_array(conf->raliases);
+    new = apr_array_push(conf->raliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -550,7 +550,7 @@ static const char *
     }
 
     if (!found) {
-	new = apr_push_array(conf->noproxies);
+	new = apr_array_push(conf->noproxies);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
         if (ap_strchr_c(arg, '.') != NULL &&
@@ -577,7 +577,7 @@ static const char *
     if (!apr_isdigit(arg[0]))
 	return "AllowCONNECT: port number must be numeric";
 
-    New = apr_push_array(conf->allowed_connect_ports);
+    New = apr_array_push(conf->allowed_connect_ports);
     *New = atoi(arg);
     return NULL;
 }
@@ -603,7 +603,7 @@ static const char *
     }
 
     if (!found) {
-	New = apr_push_array(conf->dirconn);
+	New = apr_array_push(conf->dirconn);
         New->name = apr_pstrdup(parms->pool, arg);
 	New->hostentry = NULL;
 

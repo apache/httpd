@@ -150,7 +150,7 @@ AP_DECLARE(int) ap_get_max_daemons(void)
 static void clean_child_exit(int code)
 {
     if (pchild)
-        apr_destroy_pool(pchild);
+        apr_pool_destroy(pchild);
     exit(code);
 }
 
@@ -304,14 +304,14 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
     long conn_id = my_child_num;
     int csd;
 
-    (void)apr_get_os_sock(&csd, sock);
+    (void)apr_os_sock_get(&csd, sock);
     
     if (csd >= FD_SETSIZE) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
             "filedescriptor (%u) larger than FD_SETSIZE (%u) "
             "found, you probably need to rebuild Apache with a "
             "larger FD_SETSIZE", csd, FD_SETSIZE);
-        apr_close_socket(sock);
+        apr_socket_close(sock);
 	    return;
     }
     
@@ -344,22 +344,22 @@ static int32 worker_thread(void * dummy)
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
-    apr_create_pool(&ptrans, tpool);
+    apr_pool_create(&ptrans, tpool);
 
-    apr_lock(worker_thread_count_mutex);
+    apr_lock_aquire(worker_thread_count_mutex);
     worker_thread_count++;
-    apr_unlock(worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
-    apr_setup_poll(&pollset, num_listening_sockets, tpool);
+    apr_poll_setup(&pollset, num_listening_sockets, tpool);
     for(n=0 ; n < num_listening_sockets ; ++n)
-	    apr_add_poll_socket(pollset, listening_sockets[n], APR_POLLIN);
+	    apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
     while (!this_worker_should_exit) {
         this_worker_should_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         
         if (this_worker_should_exit) break;
 
-        apr_lock(accept_mutex);
+        apr_lock_aquire(accept_mutex);
         while (!this_worker_should_exit) {
             apr_int16_t event;
             apr_status_t ret = apr_poll(pollset, &srv, -1);
@@ -394,7 +394,7 @@ static int32 worker_thread(void * dummy)
                         curr_pollfd = 1;
                     }
                     /* Get the revent... */
-                    apr_get_revents(&event, listening_sockets[curr_pollfd], pollset);
+                    apr_poll_revents_get(&event, listening_sockets[curr_pollfd], pollset);
                     
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
@@ -407,7 +407,7 @@ static int32 worker_thread(void * dummy)
     got_fd:
         if (!this_worker_should_exit) {
             rv = apr_accept(&csd, sd, ptrans);
-            apr_unlock(accept_mutex);
+            apr_lock_release(accept_mutex);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                   "apr_accept");
@@ -417,21 +417,21 @@ static int32 worker_thread(void * dummy)
             }
         }
         else {
-            apr_unlock(accept_mutex);
+            apr_lock_release(accept_mutex);
             break;
         }
         apr_clear_pool(ptrans);
     }
 
-    apr_destroy_pool(tpool);
-    apr_lock(worker_thread_count_mutex);
+    apr_pool_destroy(tpool);
+    apr_lock_aquire(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
         kill(server_pid, SIGTERM);
     }
-    apr_unlock(worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     return (0);
 }
@@ -448,7 +448,7 @@ static int make_worker(server_rec *s, int slot)
     }
     
     my_info->slot = slot;
-    apr_create_pool(&my_info->tpool, pchild);
+    apr_pool_create(&my_info->tpool, pchild);
     
     if (slot + 1 > ap_max_child_assigned)
 	    ap_max_child_assigned = slot + 1;
@@ -590,7 +590,7 @@ static void server_main_loop(int remaining_threads_to_start)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_reap_other_child(&pid, status) == 0) {
+	    else if (apr_proc_other_child_read(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -654,7 +654,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * used to lock around select so we only have one thread
      * in select at a time
      */
-    if ((rv = apr_create_lock(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+    if ((rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
         NULL, pconf)) != APR_SUCCESS) {
         /* tsch tsch, can't have more than one thread in the accept loop
            at a time so we need to fall on our sword... */
@@ -665,7 +665,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* worker_thread_count_mutex
      * locks the worker_thread_count so we have ana ccurate count...
      */
-    if ((rv = apr_create_lock(&worker_thread_count_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+    if ((rv = apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_CROSS_PROCESS,
         NULL, pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create worker thread count lock");
@@ -701,7 +701,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* setup the child pool to use for the workers.  Each worker creates
      * a seperate pool of it's own to use.
      */
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
     ap_child_init_hook(pchild, ap_server_conf);
 
     /* Now that we have the child pool (pchild) we can allocate
@@ -797,8 +797,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     
     /* just before we go, tidy up the locks we've created to prevent a 
      * potential leak of semaphores... */
-    apr_destroy_lock(worker_thread_count_mutex);
-    apr_destroy_lock(accept_mutex);
+    apr_lock_destroy(worker_thread_count_mutex);
+    apr_lock_destroy(accept_mutex);
     
     return 0;
 }
@@ -815,7 +815,7 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     if (restart_num++ == 1) {
         is_graceful = 0;
         if (!one_process && !no_detach)
-	        apr_detach();
+	        apr_proc_detach();
         server_pid = getpid();
     }
 

@@ -884,10 +884,10 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
             	}
 
                     e_len = strlen(echo_text);
-                    tmp_buck = apr_bucket_create_heap(echo_text, e_len, 1, &e_wrt);
+                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, &e_wrt);
                 }
                 else {
-                    tmp_buck = apr_bucket_create_immortal("(none)", sizeof("none"));
+                    tmp_buck = apr_bucket_immortal_create("(none)", sizeof("none"));
                 }
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
@@ -1126,7 +1126,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                         s_len = pos;
                     }
 
-                    tmp_buck = apr_bucket_create_heap(buff, s_len, 1, &s_wrt);
+                    tmp_buck = apr_bucket_heap_create(buff, s_len, 1, &s_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -1171,7 +1171,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
                     t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
                     t_len = strlen(t_val);
 
-                    tmp_buck = apr_bucket_create_heap(t_val, t_len, 1, &t_wrt);
+                    tmp_buck = apr_bucket_heap_create(t_val, t_len, 1, &t_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -1403,7 +1403,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         return (0);
     }
     root = current = (struct parse_node *) NULL;
-    if (apr_create_pool(&expr_pool, r->pool) != APR_SUCCESS)
+    if (apr_pool_create(&expr_pool, r->pool) != APR_SUCCESS)
 		return 0;
 
     /* Create Parse Tree */
@@ -1968,7 +1968,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 
     retval = (root == (struct parse_node *) NULL) ? 0 : root->value;
   RETURN:
-    apr_destroy_pool(expr_pool);
+    apr_pool_destroy(expr_pool);
     return (retval);
 }
 
@@ -1987,7 +1987,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         cond_txt[31] = '1';                                                \
     }                                                                      \
     memcpy(&cond_txt[5], tag_text, sizeof(tag_text));                      \
-    t_buck = apr_bucket_create_heap(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
+    t_buck = apr_bucket_heap_create(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                                \
                                                                            \
     if (ins_head == NULL) {                                                \
@@ -1998,7 +1998,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 {                                                                        \
     apr_size_t b_wrt;                                                    \
     if (d_buf[0] != '\0') {                                              \
-        t_buck = apr_bucket_create_heap(d_buf, strlen(d_buf), 1, &b_wrt); \
+        t_buck = apr_bucket_heap_create(d_buf, strlen(d_buf), 1, &b_wrt); \
         APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                          \
                                                                          \
         if (ins_head == NULL) {                                          \
@@ -2067,7 +2067,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, &d_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2140,7 +2140,7 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, &d_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2289,19 +2289,19 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
                 v_len = strlen(val_text);
 
                 /*  Key_text                                               */
-                tmp_buck = apr_bucket_create_heap(key_text, k_len, 1, &t_wrt);
+                tmp_buck = apr_bucket_heap_create(key_text, k_len, 1, &t_wrt);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
                 }
                 /*            =                                            */
-                tmp_buck = apr_bucket_create_immortal("=", 1);
+                tmp_buck = apr_bucket_immortal_create("=", 1);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*              Value_text                                 */
-                tmp_buck = apr_bucket_create_heap(val_text, v_len, 1, &t_wrt);
+                tmp_buck = apr_bucket_heap_create(val_text, v_len, 1, &t_wrt);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*                        newline...                       */
-                tmp_buck = apr_bucket_create_immortal("\n", 1);
+                tmp_buck = apr_bucket_immortal_create("\n", 1);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
             }
             return 0;
@@ -2352,7 +2352,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             if ((do_cleanup) && (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade))) {
                 apr_bucket *tmp_bkt;
 
-                tmp_bkt = apr_bucket_create_immortal(STARTING_SEQUENCE, cleanup_bytes);
+                tmp_bkt = apr_bucket_immortal_create(STARTING_SEQUENCE, cleanup_bytes);
                 APR_BRIGADE_INSERT_HEAD(*bb, tmp_bkt);
 
                 while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
@@ -2749,7 +2749,7 @@ static void ap_register_include_handler(char *tag, include_handler func)
 static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
-    include_hash = apr_make_hash(p);
+    include_hash = apr_hash_make(p);
 
     ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
 

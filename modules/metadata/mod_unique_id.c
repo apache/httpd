@@ -246,7 +246,7 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    pause = (apr_interval_time_t)(1000000 - (apr_now() % APR_USEC_PER_SEC));
+    pause = (apr_interval_time_t)(1000000 - (apr_time_now() % APR_USEC_PER_SEC));
     apr_sleep(pause);
 }
 
@@ -285,7 +285,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-    tv = apr_now();
+    tv = apr_time_now();
     /* Some systems have very low variance on the low end of their system
      * counter, defend against that.
      */

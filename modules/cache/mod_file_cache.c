@@ -153,7 +153,7 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
 {
     a_server_config *sconf = apr_palloc(p, sizeof(*sconf));
 
-    sconf->files = apr_make_array(p, 20, sizeof(a_file));
+    sconf->files = apr_array_make(p, 20, sizeof(a_file));
     return sconf;
 }
 
@@ -173,7 +173,7 @@ static apr_status_t cleanup_file_cache(void *sconfv)
         else 
 #endif 
 #if APR_HAS_SENDFILE
-            apr_close(file->file); 
+            apr_file_close(file->file); 
 #endif
 	    ++file;
 	    --n;
@@ -212,7 +212,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
 
-    rc = apr_open(&fd, filename, APR_READ | APR_XTHREAD, APR_OS_DEFAULT, cmd->pool);
+    rc = apr_file_open(&fd, filename, APR_READ | APR_XTHREAD, APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
@@ -221,11 +221,11 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     tmp.file = fd;
     tmp.filename = apr_pstrdup(cmd->pool, filename);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
-    new_file = apr_push_array(sconf->files);
+    new_file = apr_array_push(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-	apr_register_cleanup(cmd->pool, sconf, cleanup_file_cache, apr_null_cleanup);
+	apr_pool_cleanup_register(cmd->pool, sconf, cleanup_file_cache, apr_pool_cleanup_null);
     }
 
     new_file->is_mmapped = FALSE;
@@ -261,7 +261,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    if ((rc = apr_open(&fd, fspec, APR_READ, APR_OS_DEFAULT, 
+    if ((rc = apr_file_open(&fd, fspec, APR_READ, APR_OS_DEFAULT, 
                        cmd->temp_pool)) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open %s, skipping", 
@@ -269,19 +269,19 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
     if ((rc = apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
-	apr_close(fd);
+	apr_file_close(fd);
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to mmap %s, skipping", filename);
 	return NULL;
     }
-    apr_close(fd);
+    apr_file_close(fd);
     tmp.filename = fspec;
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
-    new_file = apr_push_array(sconf->files);
+    new_file = apr_array_push(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-       apr_register_cleanup(cmd->pool, sconf, cleanup_file_cache, apr_null_cleanup); 
+       apr_pool_cleanup_register(cmd->pool, sconf, cleanup_file_cache, apr_pool_cleanup_null); 
     }
 
     new_file->is_mmapped = TRUE;

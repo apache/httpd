@@ -114,7 +114,7 @@ static void *create_info_config(apr_pool_t *p, server_rec *s)
 {
     info_svr_conf *conf = (info_svr_conf *) apr_pcalloc(p, sizeof(info_svr_conf));
 
-    conf->more_info = apr_make_array(p, 20, sizeof(info_entry));
+    conf->more_info = apr_array_make(p, 20, sizeof(info_entry));
     return conf;
 }
 
@@ -124,7 +124,7 @@ static void *merge_info_config(apr_pool_t *p, void *basev, void *overridesv)
     info_svr_conf *base = (info_svr_conf *) basev;
     info_svr_conf *overrides = (info_svr_conf *) overridesv;
 
-    new->more_info = apr_append_arrays(p, overrides->more_info, base->more_info);
+    new->more_info = apr_array_append(p, overrides->more_info, base->more_info);
     return new;
 }
 
@@ -452,7 +452,7 @@ static const char *add_module_info(cmd_parms *cmd, void *dummy,
     server_rec *s = cmd->server;
     info_svr_conf *conf = (info_svr_conf *) ap_get_module_config(s->module_config,
                                                               &info_module);
-    info_entry *new = apr_push_array(conf->more_info);
+    info_entry *new = apr_array_push(conf->more_info);
 
     new->name = name;
     new->info = info;
