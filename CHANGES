@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) SECURITY: CAN-2004-0786 (cve.mitre.org)
+     Fix an input validation issue in apr-util which could be
+     triggered by malformed IPv6 literal addresses.  [Joe Orton]
+
   *) SECURITY: CAN-2004-0747 (cve.mitre.org)
      Fix buffer overflow in expansion of environment variables in
      configuration file parsing.  [André Malo]
