@@ -894,12 +894,12 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
         return APR_EBADF;
     }
 
-    if (!ap_os_is_filename_valid(name)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
-                    "Access to config file %s denied: not a valid filename",
-                    name);
-        return APR_EACCES;
-    }
+    /* ### We no longer need the test ap_os_is_filename_valid() here
+     * The directory was already walked on a segment by segment basis,
+     * so we should never be called with a bad path element, and device 
+     * names as access file names never posed as security threats, since 
+     * it was the admin's choice to assign the .htaccess file's name.
+     */
 
     status = apr_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG

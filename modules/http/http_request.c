@@ -261,24 +261,17 @@ static int get_path_info(request_rec *r)
     while (cp > path) {
 
         /* See if the pathname ending here exists... */
-
         *cp = '\0';
 
-         /* We must not stat() filenames that may cause os-specific system
-          * problems, such as "/file/aux" on DOS-abused filesystems.
-          * So pretend that they do not exist by returning an ENOENT error.
-          * This will force us to drop that part of the path and keep
-          * looking back for a "real" file that exists, while still allowing
-          * the "invalid" path parts within the PATH_INFO.
-          */
-         if (!ap_os_is_filename_valid(path)) {
-             errno = ENOENT;
-             rv = -1;
-         }
-         else {
-             errno = 0;
-             rv = apr_stat(&r->finfo, path, r->pool);
-         }
+        /* ### We no longer need the test ap_os_is_filename_valid() here 
+         * since apr_stat isn't a posix thing - it's apr_stat's responsibility
+         * to handle whatever path string arrives at it's door - by platform
+         * and volume restrictions as applicable... 
+         * TODO: This code becomes even simpler if apr_stat grows 
+         * an APR_PATHINCOMPLETE result to indicate that we are staring at
+         * an partial virtual root.  Only OS2/Win32/Netware need apply it :-)
+         */
+        rv = apr_stat(&r->finfo, path, r->pool);
 
         if (cp != end)
             *cp = '/';
@@ -299,12 +292,7 @@ static int get_path_info(request_rec *r)
             *cp = '\0';
             return OK;
         }
-	/* must set this to zero, some stat()s may have corrupted it
-	 * even if they returned an error.
-	 */
-	r->finfo.protection = 0;
 
-#if defined(APR_ENOENT) && defined(APR_ENOTDIR)
         if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
             last_cp = cp;
 
@@ -315,40 +303,15 @@ static int get_path_info(request_rec *r)
                 --cp;
         }
         else {
-#if defined(APR_EACCES)
             if (APR_STATUS_IS_EACCES(rv))
-#endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                            "access to %s failed", r->uri);
+                              "access to %s denied", r->uri);
+            else
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
-#else
-        /* XXX: WARNING - APR broke this security exception!
-         */
-
-#error APR_ENOENT || APR_ENOTDIR not defined; please see the
-#error comments at this line in the source for a workaround.
-        /*
-         * If ENOENT || ENOTDIR is not defined in one of the your OS's
-         * include files, Apache does not know how to check to see why the
-         * stat() of the index file failed; there are cases where it can fail
-         * even though the file exists.  This means that it is possible for
-         * someone to get a directory listing of a directory even though
-         * there is an index (eg. index.html) file in it.  If you do not have
-         * a problem with this, delete the above #error lines and start the
-         * compile again.  If you need to do this, please submit a bug report
-         * from http://www.apache.org/bug_report.html letting us know that
-         * you needed to do this.  Please be sure to include the operating
-         * system you are using.
-         */
 	last_cp = cp;
-
-	while (--cp > path && *cp != '/')
-	    continue;
-
-	while (cp > path && cp[-1] == '/')
-	    --cp;
-#endif  /* APR_ENOENT && APR_ENOTDIR */
     }
     return OK;
 }
@@ -433,26 +396,33 @@ static int directory_walk(request_rec *r)
         return OK;
     }
 
+    /* XXX This needs to be rolled into APR, the APR function will not
+     * be allowed to fold the case of any non-existant segment of the path:
+     */
     r->filename   = ap_os_case_canonical_filename(r->pool, r->filename);
 
+    /* TODO This is rather silly right here, we should simply be setting
+     * filename and path_info at the end of our directory_walk
+     */
     res = get_path_info(r);
     if (res != OK) {
         return res;
     }
 
+    /* XXX This becomes mute, and will already happen above for elements
+     * that actually exist:
+     */
     r->filename   = ap_os_canonical_filename(r->pool, r->filename);
 
     test_filename = apr_pstrdup(r->pool, r->filename);
 
+    /* XXX This becomes mute, since the APR canonical parsing will handle
+     * 2slash and dot directory issues:
+     */
     ap_no2slash(test_filename);
     num_dirs = ap_count_dirs(test_filename);
 
-    if (!ap_os_is_filename_valid(r->filename)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Filename is not valid: %s", r->filename);
-        return HTTP_FORBIDDEN;
-    }
-
+    /* XXX This needs to be rolled into APR: */
     if ((res = check_safe_file(r))) {
         return res;
     }
@@ -472,6 +442,11 @@ static int directory_walk(request_rec *r)
      * make_dirstr_prefix will add potentially one extra /.
      */
     test_dirname = apr_palloc(r->pool, test_filename_len + 2);
+
+    /* XXX These exception cases go away if apr_stat() returns the
+     * APR_PATHINCOMPLETE status, so we skip hard filesystem testing
+     * of the initial 'pseudo' elements:
+     */
 
 #if defined(HAVE_UNC_PATHS)
     /* If the name is a UNC name, then do not perform any true file test
