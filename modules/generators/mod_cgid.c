@@ -565,17 +565,11 @@ static int cgid_server(void *data)
 
 static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server) 
 { 
-    int pid; 
+    pid_t pid; 
     ap_proc_t ap_pid;
-    int tempfd;
-
-    cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
-                       main_server->module_config, &cgid_module); 
 
     if (once_through > 0) { 
         ap_create_pool(&pcgi, p); 
-        tempfd = creat(sconf->sockname, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-        close(tempfd);        
 
         if ((pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
