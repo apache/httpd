@@ -77,8 +77,13 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
     int one = 1;
     char addr[512];
     ap_status_t stat;
+    ap_uint32_t port;
+    char *ipaddr;
 
-    ap_cpystrn(addr, "[@main/listen.c:make_sock(): inet_ntoa(server->sin_addr)]", sizeof addr);
+    ap_get_local_port(&port,s);
+    ap_get_local_ipaddr(&ipaddr,s);
+    ap_snprintf(addr, sizeof(addr), "address %s port %u", ipaddr,
+		(unsigned) port);
 
     stat = ap_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
