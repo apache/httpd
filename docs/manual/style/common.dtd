@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!ENTITY nbsp "&#160;">
+
+<!ENTITY % inlinetags "em | strong | code | a | br | directive | module">
+
+<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | img
+| blockquote">
+
+<!ENTITY % Block "(%blocktags;)*">
+
+<!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
+
+<!ENTITY % BlockOrInline "(#PCDATA | %inlinetags; | %blocktags;)*">
+
+<!ELEMENT title %Inline;>
+
+<!ELEMENT summary %Block;>
+
+<!ELEMENT seealso %Inline;>
+
+<!ELEMENT modulelist (module)+>
+
+<!ELEMENT section (section | title | %blocktags;)*>
+
+<!ATTLIST section id CDATA #IMPLIED>
+
+<!ELEMENT module (#PCDATA)>
+
+<!ELEMENT directive (#PCDATA)>
+<!ATTLIST directive  module CDATA  #IMPLIED
+                     type   CDATA  #IMPLIED >
+
+<!ELEMENT p %Inline;>
+
+<!ELEMENT em %Inline;>
+
+<!ELEMENT strong %Inline;>
+
+<!ELEMENT code %Inline;>
+
+<!ELEMENT a %Inline;>
+<!ATTLIST a  href CDATA #IMPLIED
+             name CDATA #IMPLIED
+             id   CDATA #IMPLIED
+             rel  CDATA #IMPLIED >
+
+<!ELEMENT br EMPTY>
+
+<!ELEMENT example (#PCDATA | title | %inlinetags; | %blocktags;)*>
+
+<!ELEMENT note (#PCDATA | title | %inlinetags; | %blocktags;)*>
+<!ATTLIST note type CDATA #IMPLIED>
+
+<!ELEMENT table (tr)+>
+<!ATTLIST table summary     CDATA  #IMPLIED
+                width       CDATA  #IMPLIED
+                bgcolor     CDATA  #IMPLIED
+                cellspacing CDATA  #IMPLIED
+                cellpadding CDATA  #IMPLIED
+                border      CDATA  #IMPLIED >
+
+<!ELEMENT tr (th | td)+>
+<!ATTLIST tr valign CDATA #IMPLIED >
+
+<!ELEMENT th %BlockOrInline;>
+
+<!ELEMENT td %BlockOrInline;>
+<!ATTLIST td  colspan  CDATA  #IMPLIED
+              rowspan  CDATA  #IMPLIED
+              bgcolor  CDATA  #IMPLIED
+              class    CDATA  #IMPLIED >
+
+<!ELEMENT ul (li+)>
+
+<!ELEMENT ol (li+)>
+<!ATTLIST ol type CDATA  #IMPLIED>
+
+<!ELEMENT li %BlockOrInline;>
+
+<!ELEMENT dl (dd | dt)+>
+
+<!ELEMENT dt %Inline;>
+
+<!ELEMENT dd %BlockOrInline;>
+
+<!ELEMENT pre %Inline;>
+
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+  src         CDATA   #REQUIRED
+  alt         CDATA   #REQUIRED
+  border      CDATA   #IMPLIED
+  height      CDATA   #IMPLIED
+  width       CDATA   #IMPLIED >
+
+<!ELEMENT blockquote %BlockOrInline;>
