@@ -2585,9 +2585,9 @@ AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
   "How to work out the ServerName : Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
 AP_INIT_ITERATE("AddModule", add_module_command, NULL,
-  RSRC_CONF | EXEC_ON_READ, "The name of a module"),
+  RSRC_CONF, "The name of a module"),
 AP_INIT_NO_ARGS("ClearModuleList", clear_module_list_command, NULL,
-  RSRC_CONF | EXEC_ON_READ, NULL),
+  RSRC_CONF, NULL),
 /* TODO: ListenBacklog in MPM */
 AP_INIT_TAKE1("Include", include_config, NULL,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
