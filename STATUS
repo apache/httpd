@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul
+         +1: Roy, Dean, Paul, Jim
          +0:
          -1:
 
@@ -310,19 +310,19 @@ Open issues:
     * Provide consistant prefixes; suggestions:
 
       Apache provided general functions (e.g., ap_cpystrn)
-	ap_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul +1, Roy +1
+	ap_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 
       Public API functions (e.g., palloc)
-	apapi_xxx: Ken +1, Brian +1, Ralf +1, Martin +1, Paul, Dean, Roy
+	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Dean, Roy, Jim
 	appublic_xxx:
 	appub_xxx:
 
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: Brian +1, Dean, Roy, Paul
-	httpd_xxx: Ken +1
-	apint_xxx: Ralf +1 (int = internal)
+	appri_xxx: +1: Brian, Dean, Roy, Paul, Jim
+	httpd_xxx: +1: Ken
+	apint_xxx: +1: Ralf (int = internal)
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
@@ -388,7 +388,7 @@ Open issues:
 	  mod_mmap_static, and mod_php3 for example).  The proposal is to
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
-	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1
+	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1
 
 Win32 specific issues:
 
