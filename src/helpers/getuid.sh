@@ -11,7 +11,7 @@
 if `./src/helpers/PrintPath -s id` ; then
     AP_IDPATH=`./src/helpers/PrintPath id`
     # See if it's a POSIX 'id'
-    if `$AP_IDPATH -u 2>/dev/null` ; then
+    if `$AP_IDPATH -u >/dev/null 2>&1` ; then
 	AP_RETVAL=`$AP_IDPATH -u` 
 	echo $AP_RETVAL
 	exit 0
