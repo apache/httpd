@@ -75,7 +75,7 @@
 
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
 
     <h3><code>HostnameLookups</code></h3>
 
@@ -255,6 +255,38 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       should use <code>EnableMMAP off</code> to disable the memory-mapping
       of delivered files. (Note: This directive can be overridden on
       a per-directory basis.)</p>
+
+    
+
+    <h3>Sendfile</h3>
+
+      
+
+      <p>In situations where Apache 2.0 can ignore the contents of the file
+      to be delivered -- for example, when serving static file content -- 
+      it normally uses the kernel sendfile support the file if the OS 
+      supports the <code>sendfile(2)</code> operation.</p>
+
+      <p>On most platforms, using sendfile improves performance by eliminating
+      separate read and send mechanics.  However, there are cases where using
+      sendfile can harm the stability of the httpd:</p>
+
+      <ul>
+        <li>
+          <p>Some platforms may have broken sendfile support that the build
+          system did not detect, especially if the binaries were built on
+          another box and moved to such a machine with broken sendfile support.</p>
+        </li>
+        <li>
+          <p>With an NFS-mounted files, the kernel may be unable 
+          to reliably serve the network file through it's own cache.</p>
+        </li>
+      </ul>
+
+      <p>For installations where either of these factors applies, you
+      should use <code>EnableSendfile off</code> to disable sendfile
+      delivery of file contents. (Note: This directive can be overridden 
+      on a per-directory basis.)</p>
 
     
 
