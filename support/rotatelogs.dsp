@@ -86,5 +86,41 @@ LINK32=link.exe
 
 SOURCE=.\rotatelogs.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\rotatelogs.rc
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "rotatelogs - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"\
+ ../include/ap_release.h > .\rotatelogs.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"\
+ ../include/ap_release.h > .\rotatelogs.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
