@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/11 06:37:45 $]
+Last modified at [$Date: 2003/10/11 21:12:39 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -29,13 +29,6 @@ RELEASE SHOWSTOPPERS:
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
 
 CURRENT VOTES:
-
-    * httpd-2.0's config parser is incompatible with httpd-1.3's one,
-      which allowed containers like <Perl>. httpd-2.0's config parser
-      doesn't like container directives with no arguments (Syntax
-      error on line nn of httpd.conf: <Perl> directive missing closing
-      '>'). This fix restores the support for <Foo>..</Foo> containers.
-      +1: stas
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
