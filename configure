@@ -235,6 +235,7 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     module=`echo "$module" |\
             sed -e 's%^.*/\(.*\)$%\1%' \
                 -e 's/\.[oa]$//' \
+                -e 's/\.module$//' \
                 -e 's/^mod_//' \
                 -e 's/^lib//'`
     eval "module_$module=$add"
