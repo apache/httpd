@@ -2499,6 +2499,11 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #define WORKAROUND_SOLARIS_BUG
 #endif
 
+    /* PR#1282 Unixware 1.x appears to have the same problem as solaris */
+#if defined (UW) && UW < 200
+#define WORKAROUND_SOLARIS_BUG
+#endif
+
 #ifndef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 

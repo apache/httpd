@@ -428,23 +428,23 @@ case "$PLAT" in
     *-unixware1)
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
-	CFLAGS="$CFLAGS -DSVR4 -DNO_LINGCLOSE"
+	CFLAGS="$CFLAGS -DUW=100"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
     *-unixware2)
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
-	CFLAGS="$CFLAGS -DSVR4 -DNO_LINGCLOSE"
+	CFLAGS="$CFLAGS -DUW=200"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware211)
 	OS='Unixware 2.1.1'
-	CFLAGS="$CFLAGS -DUW"
+	CFLAGS="$CFLAGS -DUW=211"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware212)
 	OS='Unixware 2.1.2'
-	CFLAGS="$CFLAGS -DUW"
+	CFLAGS="$CFLAGS -DUW=212"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	DBM_LIB=""
 	;;

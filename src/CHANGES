@@ -1,7 +1,10 @@
 Changes with Apache 1.3b4
 
-  *) PORT: UnixWare 2.1.2 SMP appears to require USE_FCNTL_SERIALIZED_ACCEPT.
-     It should be safe on all versions.  [Dean Gaudet] PR#1553
+  *) PORT: UnixWare 2.1.2 SMP appears to require USE_FCNTL_SERIALIZED_ACCEPT,
+     as do various earlier versions.  It should be safe on all versions.
+     Unixware 1.x appears to have the same SIGHUP bug as solaris does with
+     the slack code.  A few other cleanups for Unixware.
+     [Tom Hughes <thh@cyberscience.com>] PR#1082, PR#1282, PR#1499, PR#1553
 
   *) PORT: A/UX can handle single-listen accepts without mutex
      locking, so we add SAFE_UNSERIALIZED_ACCEPT. [Jim Jagielski]

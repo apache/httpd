@@ -472,7 +472,9 @@ extern char *crypt();
 #define HAVE_SYS_SELECT_H
 #define HAVE_SYS_RESOURCE_H
 #include <sys/time.h>
+#if UW >= 200
 #define _POSIX_SOURCE
+#endif
 #define NET_SIZE_T size_t
 #define HAVE_SYSLOG
 #define USE_FCNTL_SERIALIZED_ACCEPT
