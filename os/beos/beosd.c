@@ -62,7 +62,6 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "beosd.h"
-#include "apr_lock.h"
 #include "mpm_common.h"
 
 beosd_config_rec beosd_config;
