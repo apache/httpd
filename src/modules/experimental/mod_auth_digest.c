@@ -95,13 +95,14 @@
 	    RULE_DEV_RANDOM="/dev/urandom"
 	else
 	    RULE_DEV_RANDOM="truerand"
-	    if helpers/TestCompile func trand32; then
+	    if helpers/TestCompile func randbyte; then
 		:
-	    elif helpers/TestCompile lib rand trand32; then
+	    elif helpers/TestCompile lib rand randbyte; then
 		:
 	    else
 		echo "      (mod_auth_digest) truerand library missing!"
 		echo "** This will most probably defeat successful compilation."
+		echo "** See Rule DEV_RANDOM in src/Configuration.tmpl for more information."
 	    fi
 	fi
     fi
@@ -387,7 +388,7 @@ static void initialize_tables(server_rec *s)
     return;
 
 failed:
-    if (!client_mm || (client_list &&  client_list->table && !opaque_mm)
+    if (!client_mm || (client_list && client_list->table && !opaque_mm)
 	|| (opaque_cntr && !otn_count_mm))
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, s,
 		     "Digest: failed to create shared memory segments; reason "
@@ -603,169 +604,6 @@ static const command_rec digest_cmds[] =
      "A list of URI's which belong to the same protection space as the current URI"},
     {NULL}
 };
-
-
-/*
- * base-64 encoding helpers
- */
-
-/* this is copied from util.c, with toascii folded into the table for EBCDIC */
-static const unsigned char pr2six[256] =
-{
-#ifndef CHARSET_EBCDIC
-    /* ASCII table */
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63,
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
-    64,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64,
-    64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
-#else /*CHARSET_EBCDIC*/
-    /* EBCDIC table */
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 63, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 26, 27, 28, 29, 30, 31, 32, 33, 34, 64, 64, 64, 64, 64, 64,
-    64, 35, 36, 37, 38, 39, 40, 41, 42, 43, 64, 64, 64, 64, 64, 64,
-    64, 64, 44, 45, 46, 47, 48, 49, 50, 51, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64,  0,  1,  2,  3,  4,  5,  6,  7,  8, 64, 64, 64, 64, 64, 64,
-    64,  9, 10, 11, 12, 13, 14, 15, 16, 17, 64, 64, 64, 64, 64, 64,
-    64, 64, 18, 19, 20, 21, 22, 23, 24, 25, 64, 64, 64, 64, 64, 64,
-    52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64,
-#endif /*CHARSET_EBCDIC*/
-};
-
-/* this is the same as ap_uudecode in util.c, but returns the length instead
- * of a pointer to the decoded data and takes a pointer to the decoded buffer
- * as a third parameter. Also, for EBCDIC machines the toebcdic[] on the ouput
- * is left out because we want a binary result.
- */
-static int base64decode(pool *p, const char *bufcoded, unsigned char **bufplain)
-{
-    int nbytesdecoded;
-    register const unsigned char *bufin;
-    register unsigned char *bufout;
-    register int nprbytes;
-
-    /* Strip leading whitespace. */
-
-    while (*bufcoded == ' ' || *bufcoded == '\t')
-	bufcoded++;
-
-    /* Figure out how many characters are in the input buffer.
-     * Allocate this many from the per-transaction pool for the result.
-     */
-    bufin = (const unsigned char *) bufcoded;
-    while (pr2six[*(bufin++)] <= 63);
-    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
-    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
-
-    if (*bufplain == NULL)
-	*bufplain = ap_palloc(p, nbytesdecoded + 1);
-    bufout = *bufplain;
-
-    bufin = (const unsigned char *) bufcoded;
-
-    while (nprbytes > 3) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[0]] << 2 | pr2six[bufin[1]] >> 4);
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
-	bufin += 4;
-	nprbytes -= 4;
-    }
-
-    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
-    if (nprbytes > 1) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
-    }
-    if (nprbytes > 2) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-    }
-
-    nbytesdecoded -= (4 - nprbytes) & 3;
-    (*bufplain)[nbytesdecoded] = '\0';
-
-    return nbytesdecoded;
-}
-
-static const char six2pr[64] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-/* This is similar to ap_uuencode except that it takes a length parameter
- * (so we can encode binary data) and fixes a bug. Also note that no
- * toascii[] is done on the input for EBCDIC (six2pr is automatically
- * right).
- */
-static char *base64encode(pool *p, const unsigned char *bufplain, int buflen)
-{
-    int nbytescoded;
-    char *bufcoded;
-    register const unsigned char *bufin;
-    register char *bufout;
-    register int nsixbytes;
-
-    /* Figure out how many characters are in the input buffer.
-     * Allocate this many from the per-transaction pool for the result.
-     */
-    nsixbytes = ((buflen + 2) / 3) * 4;
-
-    bufcoded = ap_palloc(p, nsixbytes + 1);
-    bufcoded[nsixbytes] = '\0';
-
-    bufin  = bufplain;
-    bufout = bufcoded;
-
-    nbytescoded = 0;
-
-    while (nbytescoded < (buflen - 2)) {
-	*(bufout++) = six2pr[(bufin[0] >> 2) & 0x3F];
-	*(bufout++) =
-		six2pr[((bufin[1] >> 4) & 0x0F) | ((bufin[0] << 4) & 0x3F)];
-	*(bufout++) =
-		six2pr[((bufin[2] >> 6) & 0x03) | ((bufin[1] << 2) & 0x3F)];
-	*(bufout++) = six2pr[bufin[2] & 0x3F];
-	bufin += 3;
-	nbytescoded += 3;
-    }
-
-    if (nbytescoded < buflen) {
-	*(bufout++) = six2pr[(bufin[0] >> 2) & 0x3F];
-	if (nbytescoded < (buflen-1)) {
-	    *(bufout++) =
-		    six2pr[((bufin[1] >> 4) & 0x0F) | ((bufin[0] << 4) & 0x3F)];
-	    *(bufout++) = six2pr[(bufin[1] << 2) & 0x3F];
-	}
-	else {
-	    *(bufout++) = six2pr[(bufin[0] << 4) & 0x3F];
-	}
-    }
-
-    while (bufout < (bufcoded+nsixbytes))
-	*(bufout++) = (unsigned char) '=';
-
-    return bufcoded;
-}
 
 
 #ifdef HAVE_SHMEM_MM
@@ -1086,7 +924,7 @@ static int update_nonce_count(request_rec *r)
 
     res = get_digest_rec(r, resp);
     resp->client = get_client(resp->opaque_num, r);
-    if (res == OK  &&  resp->client)
+    if (res == OK && resp->client)
 	resp->client->nonce_count++;
 
     return DECLINED;
@@ -1149,7 +987,7 @@ static const char *gen_nonce(pool *p, time_t now, const char *opaque,
 #else	/* HAVE_SHMEM_MM */
 	t.time = 42;
 #endif	/* HAVE_SHMEM_MM */
-    memcpy(nonce, base64encode(p, t.arr, sizeof(t.arr)), NONCE_TIME_LEN+1);
+    ap_base64encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
 
     return nonce;
@@ -1284,7 +1122,11 @@ static const char *guess_domain(pool *p, const char *uri, const char *filename,
      * space only covers a single uri.
      */
     if (dir[0] != '/')
+	/* This doesn't work for Amaya (ok, it's of arguable validity in
+	 * the first place), so just return the file name instead
 	return "http://0.0.0.0/";
+	 */
+	return dir;
 
     /* Next we find the largest common common suffix of the request-uri
      * and the final file name, ignoring any extensions; this gives us a
@@ -1490,21 +1332,19 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 {
     double dt;
     time_rec nonce_time;
-    unsigned char *t;
     char tmp, hash[NONCE_HASH_LEN+1];
 
     if (strlen(resp->nonce) != NONCE_LEN) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		      "Digest: invalid nonce %s received - length is not %d",
 		      resp->nonce, NONCE_LEN);
-	note_digest_auth_failure(r, conf, resp, 0);
+	note_digest_auth_failure(r, conf, resp, 1);
 	return AUTH_REQUIRED;
     }
 
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    t = nonce_time.arr;
-    base64decode(r->pool, resp->nonce, &t);
+    ap_base64decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
@@ -1513,7 +1353,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		      "Digest: invalid nonce %s received - hash is not %s",
 		      resp->nonce, hash);
-	note_digest_auth_failure(r, conf, resp, 0);
+	note_digest_auth_failure(r, conf, resp, 1);
 	return AUTH_REQUIRED;
     }
 
@@ -1522,7 +1362,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 		      "Digest: invalid nonce %s received - user attempted "
 		      "time travel", resp->nonce);
-	note_digest_auth_failure(r, conf, resp, 0);
+	note_digest_auth_failure(r, conf, resp, 1);
 	return AUTH_REQUIRED;
     }
 
