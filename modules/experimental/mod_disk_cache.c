@@ -36,6 +36,7 @@ typedef struct disk_cache_object {
 #endif
     char *datafile;          /* name of file where the data will go */
     char *hdrsfile;          /* name of file where the hdrs will go */
+    char *hashfile;          /* Computed hash key for this URI */
     char *name;
     apr_time_t version;      /* update count of the file */
     apr_file_t *fd;          /* data file */
@@ -88,20 +89,26 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_bri
  */
 #define CACHE_HEADER_SUFFIX ".header"
 #define CACHE_DATA_SUFFIX   ".data"
-static char *header_file(apr_pool_t *p, int dirlevels, int dirlength,
-                         const char *root, const char *name)
+static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
+                         disk_cache_object_t *dobj, const char *name)
 {
-    char *hashfile;
-    hashfile = generate_name(p, dirlevels, dirlength, name);
-    return apr_pstrcat(p, root, "/", hashfile, CACHE_HEADER_SUFFIX, NULL);
+    if (!dobj->hashfile) {
+        dobj->hashfile = generate_name(p, conf->dirlevels, conf->dirlength,
+                                       name);
+    }
+    return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
+                       CACHE_HEADER_SUFFIX, NULL);
 }
 
-static char *data_file(apr_pool_t *p, int dirlevels, int dirlength,
-                       const char *root, const char *name)
+static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
+                       disk_cache_object_t *dobj, const char *name)
 {
-    char *hashfile;
-    hashfile = generate_name(p, dirlevels, dirlength, name);
-    return apr_pstrcat(p, root, "/", hashfile, CACHE_DATA_SUFFIX, NULL);
+    if (!dobj->hashfile) {
+        dobj->hashfile = generate_name(p, conf->dirlevels, conf->dirlength,
+                                       name);
+    }
+    return apr_pstrcat(p, conf->cache_root, "/", dobj->hashfile,
+                       CACHE_DATA_SUFFIX, NULL);
 }
 
 static void mkdir_structure(disk_cache_conf *conf, char *file, apr_pool_t *pool)
@@ -136,8 +143,7 @@ static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
     if (dobj->fd) {
         apr_file_flush(dobj->fd);
         if (!dobj->datafile) {
-            dobj->datafile = data_file(r->pool, conf->dirlevels, conf->dirlength,
-                                       conf->cache_root, h->cache_obj->key);
+            dobj->datafile = data_file(r->pool, conf, dobj, h->cache_obj->key);
         }
         /* Remove old file with the same name. If remove fails, then
          * perhaps we need to create the directory tree where we are
@@ -362,10 +368,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
-    char *data;
-    char *headers;
-    apr_file_t *fd;
-    apr_file_t *hfd;
     apr_finfo_t finfo;
     cache_object_t *obj;
     cache_info *info;
@@ -388,29 +390,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
         return DECLINED;
     }
 
-    data = data_file(r->pool, conf->dirlevels, conf->dirlength,
-                     conf->cache_root, key);
-    headers = header_file(r->pool, conf->dirlevels, conf->dirlength,
-                          conf->cache_root, key);
-
-    /* Open the data file */
-    flags = APR_READ|APR_BINARY;
-#ifdef APR_SENDFILE_ENABLED
-    flags |= APR_SENDFILE_ENABLED;
-#endif
-    rc = apr_file_open(&fd, data, flags, 0, r->pool);
-    if (rc != APR_SUCCESS) {
-        /* XXX: Log message */
-        return DECLINED;
-    }
-
-    /* Open the headers file */
-    flags = APR_READ|APR_BINARY|APR_BUFFERED;
-    rc = apr_file_open(&hfd, headers, flags, 0, r->pool);
-    if (rc != APR_SUCCESS) {
-        /* XXX: Log message */
-        return DECLINED;
-    }
 
     /* Create and init the cache object */
     h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
@@ -419,18 +398,35 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     info = &(obj->info);
     obj->key = (char *) key;
     dobj->name = (char *) key;
-    dobj->fd = fd;
-    dobj->hfd = hfd;
-    dobj->datafile = data;
-    dobj->hdrsfile = headers;
+    dobj->datafile = data_file(r->pool, conf, dobj, key);
+    dobj->hdrsfile = header_file(r->pool, conf, dobj, key);
 
-    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, fd);
+    /* Open the data file */
+    flags = APR_READ|APR_BINARY;
+#ifdef APR_SENDFILE_ENABLED
+    flags |= APR_SENDFILE_ENABLED;
+#endif
+    rc = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
+    if (rc != APR_SUCCESS) {
+        /* XXX: Log message */
+        return DECLINED;
+    }
+
+    /* Open the headers file */
+    flags = APR_READ|APR_BINARY|APR_BUFFERED;
+    rc = apr_file_open(&dobj->hfd, dobj->hdrsfile, flags, 0, r->pool);
+    if (rc != APR_SUCCESS) {
+        /* XXX: Log message */
+        return DECLINED;
+    }
+
+    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, dobj->fd);
     if (rc == APR_SUCCESS) {
         dobj->file_size = finfo.size;
     }
 
     /* Read the bytes to setup the cache_info fields */
-    rc = file_cache_recall_mydata(hfd, info, dobj);
+    rc = file_cache_recall_mydata(dobj->hfd, info, dobj);
     if (rc != APR_SUCCESS) {
         /* XXX log message */
         return DECLINED;
@@ -550,10 +546,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     if (!hfd)  {
         if (!dobj->hdrsfile) {
-            dobj->hdrsfile = header_file(r->pool,
-                                         conf->dirlevels,
-                                         conf->dirlength,
-                                         conf->cache_root,
+            dobj->hdrsfile = header_file(r->pool, conf, dobj,
                                          h->cache_obj->key);
         }
 
