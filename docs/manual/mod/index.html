@@ -33,16 +33,19 @@
 <dd>Support for HTTP header metafiles.
 <dt><A HREF="mod_cgi.html">mod_cgi</A>
 <dd>Invoking CGI scripts.
-<dt><A HREF="mod_cookies.html">mod_cookies</A>
-<dd>Support for Netscape-like cookies.
+<dt><A HREF="mod_cookies.html">mod_cookies</A> up to Apache 1.1.1
+<dd>Support for Netscape-like cookies.  Replaced in Apache 1.2 by
+mod_usertrack
 <dt><A HREF="mod_digest.html">mod_digest</A>
 <dd>MD5 authentication
 <dt><A HREF="mod_dir.html">mod_dir</A>
 <dd>Automatic directory listings.
-<dt><A HREF="mod_env.html">mod_env</A>
-<dd>Passing of environments to CGI scripts
 <dt><A HREF="mod_dld.html">mod_dld</A>
 <dd>Start-time linking with the GNU libdld.
+<dt><A HREF="mod_env.html">mod_env</A>
+<dd>Passing of environments to CGI scripts
+<dt><A HREF="mod_fastcgi.html">mod_fastcgi</A> Apache 1.2 and up
+<dd>A high-performance alternative to CGI for a variety of languages
 <dt><A HREF="mod_imap.html">mod_imap</A>
 <dd>The imagemap file handler.
 <dt><A HREF="mod_include.html">mod_include</A>
@@ -51,8 +54,9 @@
 <dd>Server configuration information
 <dt><A HREF="mod_log_agent.html">mod_log_agent</A>
 <dd>Logging of User Agents.
-<dt><A HREF="mod_log_common.html">mod_log_common</A>
-<dd>Standard logging in the Common Logfile Format.
+<dt><A HREF="mod_log_common.html">mod_log_common</A> up to Apache 1.1.1
+<dd>Standard logging in the Common Logfile Format.  Replaced by the 
+mod_log_config module in Apache 1.2 and up
 <dt><A HREF="mod_log_config.html">mod_log_config</A>
 <dd>User-configurable logging replacement for mod_log_common.
 <dt><A HREF="mod_log_referer.html">mod_log_referer</A>
@@ -67,6 +71,8 @@
 <dd>Server status display
 <dt><A HREF="mod_userdir.html">mod_userdir</A>
 <dd>User home directories.
+<dt><A HREF="mod_usertrack.html">mod_usertrack</A> Apache 1.2 and up
+<dd>User tracking using Cookies (replacement for mod_cookies.c) 
 </dl>
 
 <!--#include virtual="footer.html" -->
