@@ -561,7 +561,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         }
 
         *(((char*)buf_data)++) = '\0';
-        *buf_size = len;
+        *buf_size = len + 1;
         return 1;
     }
     
@@ -594,7 +594,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
             *(((char*)buf_data)++) = '\n';
         }
         *(((char*)buf_data)++) = '\0';
-        *buf_size = len;
+        *buf_size = len + 1;
         return 1;
     }
     
@@ -609,7 +609,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
             return 0;
         }
         strcpy(buf_data, result);
-        *buf_size = len;
+        *buf_size = len + 1;
         return 1;
     }
 
