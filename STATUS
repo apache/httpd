@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/06 18:25:14 $]
+Last modified at [$Date: 2004/07/07 22:24:55 $]
 
 Release:
 
@@ -73,6 +73,15 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_dir: Backport DirectorySlash directive to work around problems
+       with <Location>-SetHandler combinations and trailing slash redirects.
+         modules/mappers/mod_dir.c: r1.48
+       +1: nd
+
+    *) mod_dir: Allow proxied DirectoryIndexes. PR 14648, 15112, 29961
+         modules/mappers/mod_dir.c: r1.44
+       +1: nd
+
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
        +1: jorton
@@ -80,45 +89,46 @@ PATCHES TO BACKPORT FROM 2.1
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
 
-    *) Switch the caching mutexes from reader/writer thread locks to global mutexes
-       to allow for protection across processes rather than just across threads.
-       include/util_ldap.h r1.20
-       modules/experimental/util_ldap.c r1.34, r1.35
-       modules/experimental/util_ldap_cache.c r1.20
-       modules/experimental/util_ldap_cache.h r1.16
+    *) Switch the caching mutexes from reader/writer thread locks to global
+       mutexes to allow for protection across processes rather than just
+       across threads.
+         include/util_ldap.h r1.20
+         modules/experimental/util_ldap.c r1.34, r1.35
+         modules/experimental/util_ldap_cache.c r1.20
+         modules/experimental/util_ldap_cache.h r1.16
        +1: bnicholes
        
     *) Copy the share memory pointers down through the cache hierarchy so that
        they can be referenced and used in the lower level caches.
-       modules/experimental/util_ldap_cache_mgr.c r1.20
+         modules/experimental/util_ldap_cache_mgr.c r1.20
        +1: bnicholes
        
     *) Add a display page to view the URL data of the util_ldap cache
-       modules/experimental/util_ldap_cache.c r1.19
-       modules/experimental/util_ldap_cache_mgr.c r1.19
+         modules/experimental/util_ldap_cache.c r1.19
+         modules/experimental/util_ldap_cache_mgr.c r1.19
        +1: bnicholes
     
     *) Get rid of race conditions when manipulating the shared memory cache
        in util_ldap.
-       modules/experimental/util_ldap.c r1.33
-       modules/experimental/util_ldap_cache.h r1.15
-       modules/experimental/util_ldap_mgr.c r1.18
+         modules/experimental/util_ldap.c r1.33
+         modules/experimental/util_ldap_cache.h r1.15
+         modules/experimental/util_ldap_mgr.c r1.18
        +1: bnicholes
        
     *) Enhance the util_ldap cache-info display to show more detail about 
        the contents and current state of the cache.
-       modules/experimental/util_ldap.c r1.32
-       modules/experimental/util_ldap_cache.c r1.18
-       modules/experimental/util_ldap_cache.h r1.14
-       modules/experimental/util_ldap_cache_mgr.c r1.17
-       include/util_ldap.h r1.19
+         modules/experimental/util_ldap.c r1.32
+         modules/experimental/util_ldap_cache.c r1.18
+         modules/experimental/util_ldap_cache.h r1.14
+         modules/experimental/util_ldap_cache_mgr.c r1.17
+         include/util_ldap.h r1.19
        +1: bnicholes
        
     *) Enable the option to support anonymous shared memory in mod_ldap.
        This makes the cache work on Linux again.
-       modules/experimental/util_ldap.c r1.30
-       modules/experimental/util_ldap_cache.c r1.17
-       docs/manual/mod/mod_ldap.xml r1.12
+         modules/experimental/util_ldap.c r1.30
+         modules/experimental/util_ldap_cache.c r1.17
+         docs/manual/mod/mod_ldap.xml r1.12
        +1 minfrin, bnicholes, trawick
 
     *) Prevent Win32 pool corruption at startup
