@@ -24,9 +24,9 @@ $is_chunked || die "wasn't chunked\n";
 for(;;) {
     $_ = <> || die "unexpected end of file!\n";
 
-    m#^[0-9a-f]+ *\r$#i || die "bogus chunklen: $_";
+    m#^([0-9a-f]+) *\r$#i || die "bogus chunklen: $_";
 
-    my $chunklen = hex;
+    my $chunklen = hex($1);
 
     exit 0 if ($chunklen == 0);
 
