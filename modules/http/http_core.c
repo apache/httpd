@@ -2416,14 +2416,17 @@ static int default_handler(request_rec *r)
     }
 
 #ifdef CHARSET_EBCDIC
-    /* By default, we convert all content.  ap_checkconv() can decide
-     * that conversion shouldn't be performed.  Also, if the content type
-     * contains the "magic" prefix for serving raw ascii
-     * (text/x-ascii-{plain,html,...}), the type is corrected to the real
-     * text/{plain,html,...} type which goes into the headers.
-     */
-    ap_checkconv(r);
-#endif  
+    if (d->content_md5 & 1) {
+        /* The call to ap_checkconv() in ap_send_http_header() is
+         * sufficient for most paths.  Sending the MD5 digest in a
+         * header is special in that any change to translation decided
+         * by ap_checkconv() must be done before building that header,
+         * and thus before calling ap_send_http_header().
+         */
+        ap_checkconv(r);
+    }
+#endif /* CHARSET_EBCDIC */
+      
 #ifdef USE_MMAP_FILES
     if ((r->finfo.size >= MMAP_THRESHOLD)
 	&& (r->finfo.size < MMAP_LIMIT)

@@ -599,11 +599,6 @@ static int cgi_handler(request_rec *r)
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	}
 
-#ifdef CHARSET_EBCDIC
-        /* Now check the Content-Type to decide if conversion is needed */
-        ap_checkconv(r);
-#endif /*CHARSET_EBCDIC*/
-
 	location = ap_table_get(r->headers_out, "Location");
 
 	if (location && location[0] == '/' && r->status == 200) {
