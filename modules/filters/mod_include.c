@@ -816,7 +816,6 @@ static int include_cmd(char *s, request_rec *r)
     ap_status_t rc;
     ap_table_t *env = r->subprocess_env;
     char **argv;
-    ap_os_proc_t pid;
     ap_file_t *file;
     ap_iol *iol;
 
@@ -870,14 +869,7 @@ static int include_cmd(char *s, request_rec *r)
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-#ifndef WIN32
-            /* pjr - this is a cheap hack for now to get the basics working in
-             *       stages. ap_note_subprocess and free_proc need to be redone
-             *       to make use of ap_proc_t instead of pid.
-             */
-            ap_get_os_proc(&pid, procnew);
-            ap_note_subprocess(r->pool, pid, kill_after_timeout);
-#endif
+            ap_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             ap_get_childout(&file, procnew);
             iol = ap_create_file_iol(file);

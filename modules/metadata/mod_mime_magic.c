@@ -2153,7 +2153,6 @@ static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
     ap_context_t *child_context = cntxt;
     ap_procattr_t *procattr;
     ap_proc_t *procnew = NULL;
-    ap_os_proc_t fred;
     ap_file_t *file;
     ap_iol *iol;
 
@@ -2190,15 +2189,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
                           compr[parm->method].argv[0]);
         }
         else {
-#ifndef WIN32
-            /* pjr - this is a cheap hack for now to get the basics working in
-             *       stages. ap_note_subprocess and free_proc need to be redon
-
-             *       to make use of ap_proc_t instead of pid.
-             */
-            ap_get_os_proc(&fred, procnew);
-            ap_note_subprocess(child_context, fred, kill_after_timeout);
-#endif
+            ap_note_subprocess(child_context, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             ap_get_childout(&file, procnew);
             iol = ap_create_file_iol(file);

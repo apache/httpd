@@ -284,7 +284,6 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     char **env;
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
-    ap_os_proc_t fred;
     ap_status_t rc = APR_SUCCESS;
     ap_file_t *file;
     ap_iol *iol;
@@ -340,14 +339,8 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-#ifndef WIN32
-            /* pjr - this is a cheap hack for now to get the basics working in
-             *       stages. ap_note_subprocess and free_proc need to be redone
-             *       to make use of ap_proc_t instead of pid.
-             */
-            ap_get_os_proc(&fred, procnew);
-            ap_note_subprocess(p, fred, kill_after_timeout);
-#endif
+            ap_note_subprocess(p, procnew, kill_after_timeout);
+
             /* Fill in BUFF structure for parents pipe to child's stdout */
             ap_get_childout(&file, procnew);
             iol = ap_create_file_iol(file);

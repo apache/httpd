@@ -166,7 +166,6 @@ static int log_child(ap_context_t *p, const char *progname,
     int rc = -1;
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
-    ap_os_proc_t fred;
 
     ap_block_alarms();
     ap_cleanup_for_exec();
@@ -189,14 +188,7 @@ static int log_child(ap_context_t *p, const char *progname,
         rc = ap_create_process(&procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-#ifndef WIN32
-            /* pjr - this is a cheap hack for now to get the basics working in
-             *       stages. ap_note_subprocess and free_proc need to be redone
-             *       to make use of ap_proc_t instead of pid.
-             */
-            ap_get_os_proc(&fred, procnew);
-            ap_note_subprocess(p, fred, kill_after_timeout);
-#endif
+            ap_note_subprocess(p, procnew, kill_after_timeout);
             ap_get_childin(fpin, procnew);
         }
     }
