@@ -126,11 +126,7 @@ typedef struct util_ldap_connection_t {
     const char *binddn;                 /* DN to bind to server (can be NULL) */
     const char *bindpw;                 /* Password to bind to server (can be NULL) */
 
-    int netscapessl;                    /* True if use Netscape SSL connection */
-    const char *certdb;                 /* Path to Netscape CA database */
-
-    int starttls;                       /* True if StartTLS is enabled */
-    int withtls;                        /* True if StartTLS on this connection */
+    int secure;                         /* True if use SSL connection */
 
     const char *reason;                 /* Reason for an error failure */
 
@@ -151,9 +147,9 @@ typedef struct util_ldap_state_t {
     long compare_cache_size;    /* Size (in entries) of compare cache */
 
     struct util_ldap_connection_t *connections;
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-    int have_certdb;
-#endif
+    char *cert_auth_file; 
+    int   cert_file_type;
+    int   ssl_support;
 } util_ldap_state_t;
 
 
@@ -166,9 +162,11 @@ typedef struct util_ldap_state_t {
  *      connect if already connected (ldc->ldap != NULL). Does not bind
  *      if already bound.
  * @return If successful LDAP_SUCCESS is returned.
- * @deffunc int util_ldap_connection_open(util_ldap_connection_t *ldc)
+ * @deffunc int util_ldap_connection_open(request_rec *r,
+ *                                        util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE(int) util_ldap_connection_open(util_ldap_connection_t *ldc);
+LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r, 
+                                            util_ldap_connection_t *ldc);
 
 /**
  * Close a connection to an LDAP server
@@ -199,8 +197,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param);
  * @param binddn The DN to bind with
  * @param bindpw The password to bind with
  * @param deref The dereferencing behavior
- * @param netscapessl Start SSL on the connection using ldapssl_client_init() [0|1]
- * @param starttls Start TLS using STARTTLS parameter [0|1]
+ * @param secure use SSL on the connection 
  * @tip Once a connection is found and returned, a lock will be acquired to
  *      lock that particular connection, so that another thread does not try and
  *      use this connection while it is busy. Once you are finished with a connection,
@@ -211,7 +208,7 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param);
  */
 LDAP_DECLARE(util_ldap_connection_t *) util_ldap_connection_find(request_rec *r, const char *host, int port,
                                                   const char *binddn, const char *bindpw, deref_options deref,
-                                                  int netscapessl, int starttls);
+                                                  int secure);
 
 
 /**
@@ -274,6 +271,12 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
 LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
                               const char *filter, const char *bindpw, const char **binddn, const char ***retvals);
+
+/**
+ * Checks if SSL support is available in mod_ldap
+ * @deffunc int util_ldap_ssl_supported(request_rec *r)
+ */
+LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r);
 
 /* from apr_ldap_cache.c */
 

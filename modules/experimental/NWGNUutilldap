@@ -21,6 +21,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/srclib/apr/include \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/srclib/apr \
+			$(LDAPSDK)/inc \
 			$(EOLIST)
 
 #
@@ -212,6 +213,7 @@ FILES_nlm_Ximports = \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
 	@$(LDAPSDK)/imports/lldapsdk.imp \
+	@$(LDAPSDK)/imports/lldapssl.imp \
 	$(EOLIST)
  
 #   
@@ -225,6 +227,7 @@ FILES_nlm_exports = \
 	util_ldap_cache_checkuserid \
 	util_ldap_cache_compare \
 	util_ldap_cache_comparedn \
+	util_ldap_ssl_supported \
 	$(EOLIST)
 	
 #   

@@ -21,6 +21,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/srclib/apr/include \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/srclib/apr \
+			$(LDAPSDK)/inc \
 			$(EOLIST)
 
 #

@@ -116,8 +116,7 @@ typedef struct {
     int group_attrib_is_dn;		/* If true, the group attribute is the DN, otherwise, 
 					   it's the exact string passed by the HTTP client */
 
-    int netscapessl;			/* True if Netscape SSL is enabled */
-    int starttls;               /* True if StartTLS is enabled */
+    int secure; 	            /* True if SSL connections are requested */
 } mod_auth_ldap_config_t;
 
 typedef struct mod_auth_ldap_request_t {
@@ -331,7 +330,7 @@ start_over:
     if (sec->host) {
         ldc = util_ldap_connection_find(r, sec->host, sec->port,
                                        sec->binddn, sec->bindpw, sec->deref,
-                                       sec->netscapessl, sec->starttls);
+                                       sec->secure);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r, 
@@ -469,7 +468,7 @@ int mod_auth_ldap_auth_checker(request_rec *r)
     if (sec->host) {
         ldc = util_ldap_connection_find(r, sec->host, sec->port,
                                        sec->binddn, sec->bindpw, sec->deref,
-                                       sec->netscapessl, sec->starttls);
+                                       sec->secure);
         apr_pool_cleanup_register(r->pool, ldc,
                                   mod_auth_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -712,8 +711,7 @@ void *mod_auth_ldap_create_dir_config(apr_pool_t *p, char *d)
     sec->group_attrib_is_dn = 1;
 
     sec->frontpage_hack = 0;
-    sec->netscapessl = 0;
-    sec->starttls = 0;
+    sec->secure = 0;
 
     sec->user_is_dn = 0;
     sec->compare_dn_on_server = 0;
@@ -819,27 +817,22 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     else {
         sec->filter = "objectclass=*";
     }
-    if (strncmp(url, "ldaps", 5) == 0) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-		     cmd->server, "[%d] auth_ldap parse url: requesting secure LDAP", getpid());
-#ifdef APU_HAS_LDAP_STARTTLS
+
+      /* "ldaps" indicates secure ldap connections desired
+      */
+    if (strnicmp(url, "ldaps", 5) == 0)
+    {
+        sec->secure = 1;
         sec->port = urld->lud_port? urld->lud_port : LDAPS_PORT;
-        sec->starttls = 1;
-#else
-#ifdef APU_HAS_LDAP_NETSCAPE_SSL
-        sec->port = urld->lud_port? urld->lud_port : LDAPS_PORT;
-        sec->netscapessl = 1;
-#else
-        return "Secure LDAP (ldaps://) not supported. Rebuild APR-Util";
-#endif
-#endif
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+                     "LDAP: auth_ldap using SSL connections");
     }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-		     cmd->server, "[%d] auth_ldap parse url: not requesting secure LDAP", getpid());
-        sec->netscapessl = 0;
-        sec->starttls = 0;
+    else
+    {
+        sec->secure = 0;
         sec->port = urld->lud_port? urld->lud_port : LDAP_PORT;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
+                     "LDAP: auth_ldap not using SSL connections");
     }
 
     sec->have_ldap_url = 1;
@@ -890,6 +883,7 @@ static const char *set_charset_config(cmd_parms *cmd, void *config, const char *
                          (void *)arg);
     return NULL;
 }
+
 
 command_rec mod_auth_ldap_cmds[] = {
     AP_INIT_TAKE1("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG, 
@@ -969,12 +963,6 @@ command_rec mod_auth_ldap_cmds[] = {
                   "Character set conversion configuration file. If omitted, character set"
                   "conversion is disabled."),
 
-#ifdef APU_HAS_LDAP_STARTTLS
-    AP_INIT_FLAG("AuthLDAPStartTLS", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(mod_auth_ldap_config_t, starttls), OR_AUTHCFG,
-                 "Set to 'on' to start TLS after connecting to the LDAP server."),
-#endif /* APU_HAS_LDAP_STARTTLS */
-
     {NULL}
 };
 
@@ -985,6 +973,22 @@ static int auth_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     const char *charset_confname = ap_get_module_config(s->module_config,
                                                       &auth_ldap_module);
     apr_status_t status;
+    
+    /*
+    mod_auth_ldap_config_t *sec = (mod_auth_ldap_config_t *)
+                                    ap_get_module_config(s->module_config, 
+                                                         &auth_ldap_module);
+
+    if (sec->secure)
+    {
+        if (!util_ldap_ssl_supported(s))
+        {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, 
+                     "LDAP: SSL connections (ldaps://) not supported by utilLDAP");
+            return(!OK);
+        }
+    }
+    */
 
     if (!charset_confname) {
         return OK;
