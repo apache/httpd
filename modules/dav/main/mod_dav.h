@@ -1267,9 +1267,6 @@ typedef struct dav_walker_ctx
     /* input: */
     dav_walk_params w;
 
-    /* output: */
-    dav_response *response;
-
 
     /* ### client data... phasing out this big glom */
 
@@ -1529,14 +1526,17 @@ struct dav_hooks_repository
 
     /* Walk a resource hierarchy.
      *
-     * Iterates over the resource hierarchy specified by wctx->resource.
-     * Parameter for control of the walk and the callback are specified
-     * by wctx.
+     * Iterates over the resource hierarchy specified by params->root.
+     * Control of the walk and the callback are specified by 'params'.
      *
-     * An HTTP_* status code is returned if an error occurs during the
-     * walk or the callback indicates an error. OK is returned on success.
+     * An error may be returned. *response will contain multistatus
+     * responses (if any) suitable for the body of the error. It is also
+     * possible to return NULL, yet still have multistatus responses.
+     * In this case, typically the caller should return a 207 (Multistatus)
+     * and the responses (in the body) as the HTTP response.
      */
-    dav_error * (*walk)(dav_walker_ctx *wctx, int depth);
+    dav_error * (*walk)(const dav_walk_params *params, int depth,
+                        dav_response **response);
 
     /* Get the entity tag for a resource */
     const char * (*getetag)(const dav_resource *resource);
