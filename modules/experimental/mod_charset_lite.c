@@ -979,17 +979,6 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static void transfer_brigade(apr_bucket_brigade *in, apr_bucket_brigade *out)
-{
-    apr_bucket *b;
-
-    while (!APR_BRIGADE_EMPTY(in)) {
-        b = APR_BRIGADE_FIRST(in);
-        APR_BUCKET_REMOVE(b);
-        APR_BRIGADE_INSERT_TAIL(out, b);
-    }
-}
-
 static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
@@ -1046,7 +1035,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         }
     }
     else {
-        transfer_brigade(ctx->bb, bb); /* first use the leftovers */
+        APR_BRIGADE_PREPEND(bb, ctx->bb); /* first use the leftovers */
     }
 
     buffer_size = INPUT_XLATE_BUF_SIZE;
@@ -1058,7 +1047,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
              * down below, but I suspect that for long-term we need to
              * do that
              */
-            transfer_brigade(bb, ctx->bb);
+            APR_BRIGADE_CONCAT(ctx->bb, bb);
         }
         if (buffer_size < INPUT_XLATE_BUF_SIZE) { /* do we have output? */
             apr_bucket *e;
