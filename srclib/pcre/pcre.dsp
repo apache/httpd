@@ -93,7 +93,7 @@ SOURCE=.\dftables.exe
 InputPath=.\dftables.exe
 
 ".\chartables.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\dftables.exe >.\chartables.c 
+	.\dftables.exe chartables.c 
 	
 # End Custom Build
 
@@ -103,7 +103,7 @@ InputPath=.\dftables.exe
 InputPath=.\dftables.exe
 
 ".\chartables.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\dftables.exe >.\chartables.c 
+	.\dftables.exe chartables.c 
 	
 # End Custom Build
 
