@@ -741,7 +741,7 @@ static int parse_url(char *url)
 
 /* read data to POST from file, save contents and length */
 
-int open_postfile(char *pfile)
+static int open_postfile(char *pfile)
 {
     int postfd, status;
     struct stat postfilestat;
