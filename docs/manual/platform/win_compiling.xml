@@ -4,6 +4,7 @@
 
 <manualpage>
   <relativepath href=".." />
+  <parentdocument href="./">Platform Specific Notes</parentdocument>
 
   <title>Compiling Apache for Microsoft Windows</title>
 

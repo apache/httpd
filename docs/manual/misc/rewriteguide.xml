@@ -4,6 +4,7 @@
 
 <manualpage>
   <relativepath href=".." />
+  <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
   <title>URL Rewriting Guide</title>
 

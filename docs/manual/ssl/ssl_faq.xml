@@ -3,6 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <manualpage>
 <relativepath href=".."/>
+<parentdocument href="./">SSL/TLS</parentdocument>
 
   <title>SSL/TLS Strong Encryption: FAQ</title>
 
