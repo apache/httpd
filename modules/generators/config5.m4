@@ -11,7 +11,7 @@ APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
               other_targets=suexec ] )
 
-if test "$apache_cv_mpm" != "prefork"; then
+if ap_mpm_is_threaded; then
 # if we are using a threaded MPM, we will get better performance with
 # mod_cgid, so make it the default.
     APACHE_MODULE(cgid, CGI scripts, , , yes)
