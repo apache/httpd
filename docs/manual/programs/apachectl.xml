@@ -102,8 +102,8 @@ restart in that currently open connections are not aborted.  A side
 effect is that old log files will not be closed immediately.  This
 means that if used in a log rotation script, a substantial delay may
 be necessary to ensure that the old log files are closed before
-processing them.  This command automatically checks the configura-
-tion files as in <code>configtest</code> before initiating the
+processing them.  This command automatically checks the configuration
+files as in <code>configtest</code> before initiating the
 restart to make sure Apache doesn't die.  This is equivalent to
 <code>apachectl -k graceful</code>.</dd>
 
