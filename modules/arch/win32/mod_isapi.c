@@ -210,7 +210,7 @@ static const command_rec isapi_cmds[] = {
         (void *)APR_OFFSETOF(isapi_dir_conf, read_ahead_buflen), 
         OR_FILEINFO, "Maximum client request body to initially pass to the"
                      " ISAPI handler (default: 48192)"),
-    AP_INIT_FLAG("ISAPILogNotSupported", ap_set_int_slot,
+    AP_INIT_FLAG("ISAPILogNotSupported", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, log_unsupported), 
         OR_FILEINFO, "Log requests not supported by the ISAPI server"
                      " on or off (default: off)"),
