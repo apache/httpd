@@ -775,14 +775,10 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
 
     switch (reason) {
     case APR_OC_REASON_DEATH:
-        pl->pid = NULL;
-        apr_proc_other_child_unregister(pl);
-        if (pl->program == NULL) {
-            /* during a restart */
-            break;
-        }
-        break;
     case APR_OC_REASON_LOST:
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "piped log program '%s' failed unexpectedly",
+                     pl->program);
         pl->pid = NULL;
         apr_proc_other_child_unregister(pl);
         if (pl->program == NULL) {
