@@ -48,4 +48,191 @@ load balancing </description>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
+<section id="scheduler">
+    <title>Load balancer scheduler algorithm</title>
+    <p>The idea behind this scheduler is the following:</p>
+    <p><strong>lbfactor</strong> is <em>how much we expect this worker
+    to work</em>, or <em>the workers's work quota</em>.</p>
+    <p><strong>lbstatus</strong> is <em>how urgent this worker has to work
+    to fulfill its quota of work</em>.</p>
+    <p>The <strong>worker</strong> is a member of the load balancer,
+    usually a remote host serving one of the supported protocols</p> 
+    <p>We distribute each worker's work quota to the worker, and then look
+    which of them needs to work most urgently (biggest lbstatus).  This
+    worker is then selected for work, and its lbstatus reduced by the
+    total work quota we distributed to all workers.  Thus the sum of all
+    lbstatus does not change.(*)</p>
+    <p>If some workers are disabled, the others will
+    still be scheduled correctly.</p>
+    <p>If a balancer is configured as follows:</p>
+    
+    <!-- Very ugly, but i can not make the table right aligned -->    
+<code>
+  <table>
+    <tr>
+        <td width="80">worker</td>
+        <td width="30" style="text-align: right;">a</td>
+        <td width="30" style="text-align: right;">b</td>
+        <td width="30" style="text-align: right;">c</td>
+        <td width="30" style="text-align: right;">d</td>
+    </tr>
+    <tr>
+        <td>lbfactor</td>
+        <td style="text-align: right;">25</td>
+        <td style="text-align: right;">25</td>
+        <td style="text-align: right;">25</td>
+        <td style="text-align: right;">25</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+    </tr>
+
+  </table>
+</code>    
+    <p>And b gets disabled, the following schedule is produced:</p>
+<code>
+  <table>
+    <tr>
+        <td width="80">lbstatus</td>
+        <td width="30" style="text-align: right;">-50</td>
+        <td width="30" style="text-align: right;">0</td>
+        <td width="30" style="text-align: right;">25</td>
+        <td width="30" style="text-align: right;">25</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-25</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">-25</td>
+        <td style="text-align: right;">50</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+    </tr>
+    <tr>
+        <td colspan="5">(repeat)</td>
+    </tr>
+  </table>
+</code>
+    <p>That is it schedules: a c d a c d a c d ...</p>
+    <p>The following asymmetric configuration works as one would expect:</p>
+<code>
+  <table>
+    <tr>
+        <td width="80">worker</td>
+        <td width="30" style="text-align: right;">a</td>
+        <td width="30" style="text-align: right;">b</td>
+    </tr>
+    <tr>
+        <td>lbfactor</td>
+        <td style="text-align: right;">70</td>
+        <td style="text-align: right;">30</td>
+    </tr>
+    <tr>
+        <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-30</td>
+        <td style="text-align: right;">30</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">40</td>
+        <td style="text-align: right;">-40</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">10</td>
+        <td style="text-align: right;">-10</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-20</td>
+        <td style="text-align: right;">20</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-50</td>
+        <td style="text-align: right;">50</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">20</td>
+        <td style="text-align: right;">-20</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-10</td>
+        <td style="text-align: right;">10</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">-40</td>
+        <td style="text-align: right;">40</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">30</td>
+        <td style="text-align: right;">-30</td>
+    </tr>
+    <tr>
+        <td>lbstatus</td>
+        <td style="text-align: right;">0</td>
+        <td style="text-align: right;">0</td>
+    </tr>
+    <tr>
+        <td colspan="3">(repeat)</td>
+    </tr>
+  </table>
+</code>
+
+    <p>That is after 10 schedules, the schedule repeats and 7 a are selected
+    with 3 b interspersed.</p>
+</section>
+
+<section id="enable">
+    <title>Enabling Balancer Manager Support</title>
+    <p>Balancer manager enables dynamic update of balancer
+    members. You can use balancer manager to change the balace
+    factor or a particular member, or put it in the off line
+    mode.</p>
+    <p>This module <em>requires</em> the service of 
+    <module>mod_status</module>.
+    Balancer manager enables dynamic update of balancer
+    members. You can use balancer manager to change the balace
+    factor or a particular member, or put it in the off line
+    mode.
+    </p>
+
+    <p>Thus, in order to get the ability of load balancer management,
+    <module>mod_status</module> and <module>mod_proxy_balancer</module>
+    have to be present in the server.</p>
+
+    <p>To enable load balancer management for browsers from the foo.com
+    domain add this code to your <code>httpd.conf</code>
+    configuration file</p>
+<example>
+    &lt;Location /balancer-manager&gt;<br />
+    SetHandler balancer-manager<br />
+<br />
+    Order Deny,Allow<br />
+    Deny from all<br />
+    Allow from .foo.com<br />
+    &lt;/Location&gt;
+</example>
+
+    <p>You can now access load balancer manager by using a Web browser
+    to access the page
+    <code>http://your.server.name/balancer-manager</code></p>
+</section>
+
 </modulesynopsis>
