@@ -47,11 +47,12 @@
   To include the example module in your server, follow the steps below:
   </P>
   <OL>
-   <LI>Uncomment the "Module example_module" line near the bottom of
+   <LI>Uncomment the "AddModule modules/example/mod_example" line near 
+    the bottom of
     the <CODE>src/Configuration</CODE> file.  If there isn't one, add
     it; it should look like this:
     <PRE>
-     Module example_module        modules/example/mod_example.o
+     AddModule modules/example/mod_example.o
     </PRE>
    </LI>
    <LI>Run the <CODE>src/Configure</CODE> script
