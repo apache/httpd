@@ -1,5 +1,8 @@
 Changes with Apache 2.0.35
 
+  *) mod_rewrite: updated to use the new APR global mutex type.
+     [Aaron Bannert]
+
   *) Fixes for mod_include errors on boundary conditions in which
      "<!--#" occurs at the very end of a bucket
      [Paul Reder, Brian Pane]

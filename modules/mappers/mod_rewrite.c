@@ -188,7 +188,7 @@ static int proxy_available;
 
 static const char *lockname;
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
-static apr_lock_t *rewrite_log_lock = NULL;
+static apr_global_mutex_t *rewrite_log_lock = NULL;
 
 /*
 ** +-------------------------------------------------------+
@@ -947,8 +947,8 @@ static int init_module(apr_pool_t *p,
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
     /* create the rewriting lockfiles in the parent */
-    if ((rv = apr_lock_create(&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
-                              APR_LOCK_DEFAULT, NULL, p)) != APR_SUCCESS) {
+    if ((rv = apr_global_mutex_create(&rewrite_log_lock, NULL,
+                                      APR_LOCK_DEFAULT, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: could not create rewrite_log_lock");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -3229,10 +3229,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
-    apr_lock_acquire(rewrite_log_lock);
+    apr_global_mutex_lock(rewrite_log_lock);
     nbytes = strlen(str3);
     apr_file_write(conf->rewritelogfp, str3, &nbytes);
-    apr_lock_release(rewrite_log_lock);
+    apr_global_mutex_unlock(rewrite_log_lock);
 
     va_end(ap);
     return;
