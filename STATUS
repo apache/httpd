@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/21 10:20:58 $]
+  Last modified at [$Date: 1999/05/21 11:05:08 $]
 
 Release:
 
@@ -70,7 +70,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * mod_rewrite/3874: RewriteLock doesn't work for virtual hosts 
       => When I find time, I can look at this. But I would appreciate
          when someone other already can dive into this. My opinion
-         is already appended to the PR.
+         is already appended to the PR. -rse
+
+    * The Vary header field stuff is still broken (multiple
+      entries occur, etc.), for instance also in mod_rewrite.
+      => I've already started to work on this, but I've not 
+         finished it. I've less time... -rse
 
     * long pathnames with many components and no AllowOverride None
         Workaround is to define <Directory /> with AllowOverride None,
@@ -170,6 +175,12 @@ In progress:
         Status: one open(?) issue remains: there may be some extra work to
                 export the Expat functions from httpd on Win32 and AIX for
                 DSOs to use (requires changes to the .def and .exp files).
+                => Ralf: +1 for the patch in general
+                         -1 until the symbol export issue is solved.
+                            Hint: IMHO the only correct way is to encapsulate
+                            the complete Expat API into with a ap_xml_xxx()
+                            API. See also my EAPI patches where I've done this
+                            for the MM API.
 
 Needs patch:
 
