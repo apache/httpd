@@ -1,12 +1,16 @@
 Changes with Apache 2.0.33-dev
 
+  *) Change the verbage on the ScoreBoardFile in our default configs.
+     Also change the default to be commented out (unspecified) so we
+     get anonymous shared memory by default.  [Aaron Bannert]
+
   *) Implement new ScoreBoardFile directive logic. This affects how
      we create the scoreboard's shared memory segment. If the directive
      is present, a name-based segment is created. If the directive is
      not present, first an anonymous segment is created, and if that
      fails, a name-based segment is created from a file of the name
      DEFAULT_SCOREBOARD. This gives third-party applications the
-     ability to access our scoreboard. [Aaron Bannert]
+     ability to access our scoreboard.  [Aaron Bannert]
 
   *) Allow mod_deflate to work with non-GET requests and properly send
      Content-Lengths.  [Sander Striker <striker@apache.org>]
