@@ -1442,7 +1442,6 @@ typedef struct header_filter_ctx {
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                                                            apr_bucket_brigade *b)
 {
-    int i;
     request_rec *r = f->r;
     conn_rec *c = r->connection;
     const char *clheader;
@@ -1537,6 +1536,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     if (!apr_is_empty_table(r->content_languages)) {
+        int i;
         char **languages = (char **)(r->content_languages->elts);
         for (i = 0; i < r->content_languages->nelts; ++i) {
             apr_table_mergen(r->headers_out, "Content-Language", languages[i]);
