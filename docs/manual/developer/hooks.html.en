@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache 2.0 Hook Functions - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 Hook Functions</h1>
+    <div class="warning"><h3>Warning</h3>
+      <p>This document is still in development and may be partially out of
+      date.</p>
+    </div>
+
+    <p>In general, a hook function is one that Apache will call at
+    some point during the processing of a request. Modules can
+    provide functions that are called, and specify when they get
+    called in comparison to other modules.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#create">Creating a hook function</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#hooking">Hooking the hook</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="create" id="create">Creating a hook function</a></h2>
+    <p>In order to create a new hook, four things need to be
+    done:</p>
+
+    <h3><a name="create-declare" id="create-declare">Declare the hook function</a></h3>
+      <p>Use the <code>AP_DECLARE_HOOK</code> macro, which needs to be given
+      the return type of the hook function, the name of the hook, and the
+      arguments. For example, if the hook returns an <code>int</code> and
+      takes a <code>request_rec *</code> and an <code>int</code> and is
+      called <code>do_something</code>, then declare it like this:</p>
+      <div class="example"><p><code>
+        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
+      </code></p></div>
+
+      <p>This should go in a header which modules will include if
+      they want to use the hook.</p>
+    
+
+    <h3><a name="create-create" id="create-create">Create the hook structure</a></h3>
+      <p>Each source file that exports a hook has a private structure
+      which is used to record the module functions that use the hook.
+      This is declared as follows:</p>
+
+      <div class="example"><p><code>
+        APR_HOOK_STRUCT(<br />
+        <span class="indent">
+          APR_HOOK_LINK(do_something)<br />
+          ...<br />
+        </span>
+        )
+      </code></p></div>
+    
+
+    <h3><a name="create-implement" id="create-implement">Implement the hook caller</a></h3>
+      <p>The source file that exports the hook has to implement a
+      function that will call the hook. There are currently three
+      possible ways to do this. In all cases, the calling function is
+      called <code>ap_run_<var>hookname</var>()</code>.</p>
+
+      <h4>Void hooks</h4>
+        <p>If the return value of a hook is <code>void</code>, then all the
+        hooks are called, and the caller is implemented like this:</p>
+
+        <div class="example"><p><code>
+          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
+        </code></p></div>
+
+        <p>The second and third arguments are the dummy argument
+        declaration and the dummy arguments as they will be used when
+        calling the hook. In other words, this macro expands to
+        something like this:</p>
+
+        <div class="example"><p><code>
+          void ap_run_do_something(request_rec *r, int n)<br />
+          {<br />
+          <span class="indent">
+            ...<br />
+            do_something(r, n);<br />
+          </span>
+          }
+        </code></p></div>
+      
+
+      <h4>Hooks that return a value</h4>
+        <p>If the hook returns a value, then it can either be run until
+        the first hook that does something interesting, like so:</p>
+
+        <div class="example"><p><code>
+          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
+        </code></p></div>
+
+        <p>The first hook that does <em>not</em> return <code>DECLINED</code>
+        stops the loop and its return value is returned from the hook
+        caller. Note that <code>DECLINED</code> is the tradition Apache
+        hook return meaning "I didn't do anything", but it can be
+        whatever suits you.</p>
+
+        <p>Alternatively, all hooks can be run until an error occurs.
+        This boils down to permitting <em>two</em> return values, one of
+        which means "I did something, and it was OK" and the other
+        meaning "I did nothing". The first function that returns a
+        value other than one of those two stops the loop, and its
+        return is the return value. Declare these like so:</p>
+
+        <div class="example"><p><code>
+          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
+        </code></p></div>
+
+        <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
+        values. You can use what you want.</p>
+      
+    
+
+    <h3><a name="create-call" id="create-call">Call the hook callers</a></h3>
+      <p>At appropriate moments in the code, call the hook caller,
+      like so:</p>
+
+      <div class="example"><p><code>
+        int n, ret;<br />
+        request_rec *r;<br />
+        <br />
+        ret=ap_run_do_something(r, n);
+      </code></p></div>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="hooking" id="hooking">Hooking the hook</a></h2>
+    <p>A module that wants a hook to be called needs to do two
+    things.</p>
+
+    <h3><a name="hooking-implement" id="hooking-implement">Implement the hook function</a></h3>
+      <p>Include the appropriate header, and define a static function
+      of the correct type:</p>
+
+      <div class="example"><p><code>
+        static int my_something_doer(request_rec *r, int n)<br />
+        {<br />
+        <span class="indent">
+          ...<br />
+          return OK;<br />
+        </span>
+        }
+      </code></p></div>
+    
+
+    <h3><a name="hooking-add" id="hooking-add">Add a hook registering function</a></h3>
+      <p>During initialisation, Apache will call each modules hook
+      registering function, which is included in the module
+      structure:</p>
+
+      <div class="example"><p><code>
+        static void my_register_hooks()<br />
+        {<br />
+        <span class="indent">
+          ap_hook_do_something(my_something_doer, NULL, NULL, HOOK_MIDDLE);<br />
+        </span>
+        }<br />
+        <br />
+        mode MODULE_VAR_EXPORT my_module =<br />
+        {<br />
+        <span class="indent">
+          ...<br />
+          my_register_hooks       /* register hooks */<br />
+        </span>
+        };
+      </code></p></div>
+    
+
+    <h3><a name="hooking-order" id="hooking-order">Controlling hook calling order</a></h3>
+      <p>In the example above, we didn't use the three arguments in
+      the hook registration function that control calling order.
+      There are two mechanisms for doing this. The first, rather
+      crude, method, allows us to specify roughly where the hook is
+      run relative to other modules. The final argument control this.
+      There are three possible values: <code>HOOK_FIRST</code>,
+      <code>HOOK_MIDDLE</code> and <code>HOOK_LAST</code>.</p>
+
+      <p>All modules using any particular value may be run in any
+      order relative to each other, but, of course, all modules using
+      <code>HOOK_FIRST</code> will be run before <code>HOOK_MIDDLE</code>
+      which are before <code>HOOK_LAST</code>. Modules that don't care
+      when they are run should use <code>HOOK_MIDDLE</code>. <em>(I spaced
+      these out so people could do stuff like <code>HOOK_FIRST-2</code>
+      to get in slightly earlier, but is this wise? - Ben)</em></p>
+
+      <p>Note that there are two more values,
+      <code>HOOK_REALLY_FIRST</code> and <code>HOOK_REALLY_LAST</code>. These
+      should only be used by the hook exporter.</p>
+
+      <p>The other method allows finer control. When a module knows
+      that it must be run before (or after) some other modules, it
+      can specify them by name. The second (third) argument is a
+      NULL-terminated array of strings consisting of the names of
+      modules that must be run before (after) the current module. For
+      example, suppose we want "mod_xyz.c" and "mod_abc.c" to run
+      before we do, then we'd hook as follows:</p>
+
+      <div class="example"><p><code>
+        static void register_hooks()<br />
+        {<br />
+        <span class="indent">
+          static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };<br />
+          <br />
+          ap_hook_do_something(my_something_doer, aszPre, NULL, HOOK_MIDDLE);<br />
+        </span>
+        }
+      </code></p></div>
+
+      <p>Note that the sort used to achieve this is stable, so
+      ordering set by <code>HOOK_<var>ORDER</var></code> is preserved, as far
+      as is possible.</p>
+
+      <p class="cite"><cite>Ben Laurie</cite>, 15th August 1999</p>
+    
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
