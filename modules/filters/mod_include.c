@@ -224,7 +224,7 @@ static const char *get_include_var(request_rec *r, include_ctx_t *ctx,
                  || (*ctx->re_result)[idx].rm_eo < 0) {
                 return NULL;
             }
-            var = apr_pstrmemdup(r->pool, ctx->re_string 
+            val = apr_pstrmemdup(r->pool, ctx->re_string 
                                         + (*ctx->re_result)[idx].rm_so, len);
         }
     }
