@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/28 04:35:47 $]
+Last modified at [$Date: 2002/10/28 04:53:44 $]
 
 Release:
 
@@ -100,7 +100,8 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe
+           wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
@@ -115,7 +116,9 @@ CURRENT VOTES:
          +1:   striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
-         -1:   Ken
+         -1:   Ken, wrowe
+           wrowe - diff is wonderful when comparing old/new default configs,
+                   even for customized sites that ianh mentions
 
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate. Or maybe we should make it a runtime
@@ -125,14 +128,14 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Jim, Justin
+      Make it runtime configurable: Aaron, Jim, Justin, wrowe
       Have 2 parents: +1: Jim
-                      -1: Justin, wrowe [for 2.0]
+                      -1: Justin, wrowe
                       +0: Martin (while standing by, could it do
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff, BillS, striker
+      +1:   Justin, Ian, Cliff, BillS, striker, wrowe
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing)
       -0:   Lars
