@@ -215,24 +215,53 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     return OK;
 }
 
+static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
+{
+    SSLConnRec *sslconn = myConnConfig(c);
+
+    if (sslconn) {
+        return sslconn;
+    }
+
+    sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
+
+    myConnConfigSet(c, sslconn);
+
+    return sslconn;
+}
+
+int ssl_proxy_enable(conn_rec *c)
+{
+    SSLConnRec *sslconn = ssl_init_connection_ctx(c);
+
+    sslconn->is_proxy = 1;
+
+    return 1;
+}
+
 static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
-    SSLConnRec *sslconn;
+    SSLConnRec *sslconn = myConnConfig(c);
+    modssl_ctx_t *mctx;
 
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (!(sc && sc->enabled)) {
+    if (!(sc && (sc->enabled ||
+                 (sslconn && sslconn->is_proxy))))
+    {
         return DECLINED;
     }
 
     /*
      * Create SSL context
      */
-    sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
-    myConnConfigSet(c, sslconn);
+    if (!sslconn) {
+        sslconn = ssl_init_connection_ctx(c);
+    }
+
     sslconn->log_level = sc->log_level;
 
     /*
@@ -250,12 +279,14 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      */
     ssl_rand_seed(c->base_server, c->pool, SSL_RSCTX_CONNECT, "");
 
+    mctx = sslconn->is_proxy ? sc->proxy : sc->server;
+
     /*
      * Create a new SSL connection with the configured server SSL context and
      * attach this to the socket. Additionally we register this attachment
      * so we can detach later.
      */
-    if (!(ssl = SSL_new(sc->server->ssl_ctx))) {
+    if (!(ssl = SSL_new(mctx->ssl_ctx))) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to create a new SSL connection from the SSL context");
 
@@ -500,6 +531,8 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(ssl_hook_ReadReq,    NULL,NULL, APR_HOOK_MIDDLE);
 
     ssl_var_register();
+
+    APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
