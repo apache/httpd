@@ -42,6 +42,10 @@
 #error mod_ldap requires APR-util to have LDAP support built in
 #endif
 
+#ifdef AP_NEED_SET_MUTEX_PERMS
+#include "unixd.h"
+#endif
+
     /* defines for certificate file types
     */
 #define LDAP_CA_TYPE_UNKNOWN            0
@@ -1196,6 +1200,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             return result;
         }
 
+#ifdef AP_NEED_SET_MUTEX_PERMS
+        result = unixd_set_global_mutex_perms(st->util_ldap_cache_lock);
+        if (result != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, result, s, 
+                         "LDAP cache: failed to set mutex permissions");
+            return result;
+        }
+#endif
+
         /* merge config in all vhost */
         s_vhost = s->next;
         while (s_vhost) {
@@ -1271,8 +1284,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
-    util_ldap_state_t *st =
-        (util_ldap_state_t *)ap_get_module_config(s->module_config, &ldap_module);
+    util_ldap_state_t *st = ap_get_module_config(s->module_config, &ldap_module);
+
+    if (!st->util_ldap_cache_lock) return;
 
     sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock, st->lock_file, p);
     if (sts != APR_SUCCESS) {
