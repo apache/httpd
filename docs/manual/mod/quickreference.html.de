@@ -452,7 +452,7 @@ components as part of the filename</td></tr>
 [Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
 <tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</a></td><td /><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt eine IP-Adresse für den Betrieb namensbasierter
-Virtual-Hosts</td></tr>
+virtueller Hosts</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
 to directly</td></tr>
 <tr class="odd"><td><a href="perchild.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
@@ -583,13 +583,13 @@ the cgi daemon</td></tr>
 <tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>E-Mail-Adresse</var></a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">E-Mail-Adresse, die der Server in Fehlermeldungen einfügt,
 welche an den Client gesendet werden</td></tr>
 <tr><td><a href="core.html#serveralias">ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</a></td><td /><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Alternativer Name für einen Host, der verwendet wird, wenn
-Anfragen einem namensbasierten Virtual-Host zugeordnet werden</td></tr>
+Anfragen einem namensbasierten virtuellen Host zugeordnet werden</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
 <tr><td><a href="core.html#servername">ServerName
 <var>voll-qualifizierter-Domainname</var>[:<var>port</var>]</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Rechnername und Port, die der Server dazu verwendet, sich
 selbst zu identifizieren</td></tr>
 <tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-Pfad</var></a></td><td /><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Veralteter URL-Pfad für einen namensbasierten
-Virtual-Host, auf den von einem inkompatiblen Browser zugegriffen
+virtuellen Host, auf den von einem inkompatiblen Browser zugegriffen
 wird</td></tr>
 <tr><td><a href="core.html#serverroot">ServerRoot <var>Verzeichnis</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Basisverzeichnis der Serverinstallation</td></tr>
 <tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Konfiguriert die Fußzeile von servergenerierten
