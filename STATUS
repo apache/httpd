@@ -42,12 +42,14 @@ Available Patches:
     * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
       1.3?
       <199804182347.QAA05438@scv2.apple.com>
+      Jim: Hmmm... Rhapsody is not really any longer in Apple's
+           game-plan. The focus is OS X now.
 
     * Ralf's "configure generates config.status":
       A tiny addition for the APACI configure script to provide an easy way
       (like GNU Autoconf) to re-create the configuration
       See: http://www.engelschall.com/sw/apache/ [configstatus]
-      Status (for 1.3.1-dev): Ralf +1, Martin +1
+      Status (for 1.3.1-dev): Ralf +1, Martin +1, Jim +1
 
     * Ralf's "<IfDefine>...</IfDefine>":
       This patch adds a useful <IfDefine>...</IfDefine> section to the core
@@ -64,7 +66,7 @@ Available Patches:
       tests to remove some of the classical hurdles for new users when setting
       up Apache.
       See: http://www.engelschall.com/sw/apache/ [substconfparam]
-      Status (for 1.3.1-dev): Ralf +1
+      Status (for 1.3.1-dev): Ralf +1, Jim +1
 
     * Ralf's "linking DSO modules against possible libraries from $(LIBS)":
       This patch is a first step for a more powerful and less restrictive DSO
@@ -78,7 +80,7 @@ Available Patches:
       to add an extra Makefile dependency for the httpd target, for instance
       to external third-party libraries, etc.
       See: http://www.engelschall.com/sw/apache/ [extradeps]
-      Status (for 1.3.1-dev): Ralf +1, Marc +1
+      Status (for 1.3.1-dev): Ralf +1, Marc +1, Jim +1
 
     * Paul's patch to add integrated restart/shutdown signalling (Win32)
       This patch make Apache listen on predictable event names to allow
@@ -144,6 +146,7 @@ Needs patch:
 Open issues:
 
     * How should an Apache binary release tarball look?
+      NOTE: This should be resolved before 1.3.1 !!
 
       1. The "old" way where it is just a source release tarball
          plus a pre-compiled src/httpd-<gnutriple>. It is created
@@ -190,6 +193,7 @@ Open issues:
 	BB: beta number
 
       See: <199806071444.KAA23147@devsys.jaguNET.com>
+      Status: Jim +1, Ben +1, Martin +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
@@ -200,6 +204,7 @@ Open issues:
        o Laura La Gassa's looked over ap_vformatter & other related code
        o Martin did a "source review" as well.
        o Could still use 1 or 2 more sets of eyeballs.
+       Status: Is this still valid??
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
