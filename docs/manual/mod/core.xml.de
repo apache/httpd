@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.81 (outdated: 1.87) -->
+<!-- English Revision: 1.88 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -297,12 +297,13 @@ erlaubt sind.</description>
     fr&uuml;here Konfigurationsanweisungen &uuml;berschreiben
     d&uuml;rfen.</p>
 
-    <note><title>Nun in &lt;Directory&gt;-Abschnitten verf&uuml;gbar</title>
+    <note><title>Nur in &lt;Directory&gt;-Abschnitten verf&uuml;gbar</title>
     <directive>AllowOverride</directive> ist nur in <directive
     type="section" module="core">Directory</directive>-Abschnitten
-    g&uuml;ltig, nicht in <directive type="section"
-    module="core">Location</directive>- oder <directive type="section"
-    module="core">Files</directive>-Abschnitten.
+    g&uuml;ltig, die ohne regul&auml;re Ausdr&uuml;ke definiert wurden, nicht
+    in <directive type="section" module="core">Location</directive>-, 
+    <directive module="core" type="section">DirectoryMatch</directive>- oder
+    <directive type="section" module="core">Files</directive>-Abschnitten.
     </note>
 
     <p>Wenn diese Anweisung auf <code>None</code> gesetzt wird, dann
@@ -386,6 +387,11 @@ erlaubt sind.</description>
     <example>
       AllowOverride AuthConfig Indexes
     </example>
+
+    <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
+      error <transnote>Server-interner Fehler</transnote>, die weder der
+      Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>
+      angeh&ouml;ren.</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
@@ -945,6 +951,23 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
       ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
     </example>
 
+    <p>Au&szlig;erdem kann der spezielle Wert <code>default</code> angegeben
+      werden, um die schlichte, hartkodierte Nachricht des Apache zu verwenden.
+      Es wird normalerweise nicht ben&ouml;tigt, doch <code>default</code>
+      stellt die einfach, im Apache hartkodierte Meldung in Konfigurationen
+      wieder her, die ansonsten von einem existierenden <transnote>zuvor
+        konfigurierten</transnote> <directive>ErrorDocument</directive> erben
+      w&uuml;rden.</p>
+
+    <example>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        ErrorDocument 404 default<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
     <p>Wenn Sie eine <directive>ErrorDocument</directive>-Anweisung
     angeben, die auf eine entfernte URL weist (d.h. irgendetwas mit der
     Methode <code>http</code> davor), beachten Sie bitte, dass der Apache
@@ -1348,12 +1371,15 @@ wenn eine Testbedingung beim Start wahr ist</description>
 <description>Schlie&szlig;t Direktiven ein, die abh&auml;ngig vom
 Vorhandensein oder Fehlen eines speziellen Moduls ausgef&uuml;hrt
 werden</description>
-<syntax>&lt;IfModule [!]<var>Modulname</var>&gt; ...
-    &lt;/IfModule&gt;</syntax>
+<syntax>&lt;IfModule [!]<var>Modulname</var>|<var>Modulbezeichner</var>&gt;
+  ... &lt;/IfModule&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Modulbezeichner sind ab Version 2.1
+  verf&uuml;gbar.</compatibility>
+
 
 <usage>
     <p>Der Container <code>&lt;IfModule
@@ -1368,24 +1394,25 @@ werden</description>
     kann <var>Test</var> eine von zwei Formen annehmen:</p>
 
     <ul>
-      <li><var>Modulname</var></li>
+      <li><var>Modul</var></li>
 
-      <li><code>!</code><var>Modulname</var></li>
+      <li><code>!</code><var>Modul</var></li>
     </ul>
 
     <p>Im ersten Fall werden die Direktiven zwischen der Start- und
     Endemarkierung nur ausgef&uuml;hrt, das Modul namens
-    <var>Modulname</var> im Apache enthalten ist -- entweder einkompiliert
+    <var>Modul</var> im Apache enthalten ist -- entweder einkompiliert
     oder mittels <directive module="mod_so">LoadModule</directive>
     dynamisch geladen. Die zweite Form dreht den Test um und f&uuml;hrt die
-    Direktiven nur aus, wenn <var>Modulname</var> <strong>nicht</strong>
+    Direktiven nur aus, wenn <var>Modul</var> <strong>nicht</strong>
     enthalten ist.</p>
 
-    <p>Das Argument <var>Modulname</var> ist der Dateiname des Moduls zum
-    Zeitpunkt seiner Kompilierung, z.B. <code>mod_rewrite.c</code>.
-    Wenn ein Modul aus mehreren Quelltext-Dateien besteht, verwenden Sie den
-    Namen der Datei, welche die Zeichenfolge
-    <code>STANDARD20_MODULE_STUFF</code> enth&auml;lt.</p>
+    <p>Das Argument <var>Modul</var> kann entweder der Modulbezeichner oder
+      der Dateiname des Moduls zum Zeitpunkt seiner Kompilierung sein. 
+      <code>rewrite_module</code> beispielsweise ist der Bezeichner und
+      <code>mod_rewrite.c</code> ist der Dateiname. Wenn ein Modul aus mehreren
+      Quelltext-Dateien besteht, verwenden Sie den Namen der Datei, welche die
+      Zeichenfolge <code>STANDARD20_MODULE_STUFF</code> enth&auml;lt.</p>
 
     <p><directive type="section">IfModule</directive>-Container k&ouml;nnen
     inneinander verschachtelt werden, um einfache Multi-Modul-Tests
@@ -2656,14 +2683,21 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
 <name>ServerAdmin</name>
 <description>E-Mail-Adresse, die der Server in Fehlermeldungen einf&uuml;gt,
 welche an den Client gesendet werden</description>
-<syntax>ServerAdmin <var>E-Mail-Adresse</var></syntax>
+<syntax>ServerAdmin <var>E-Mail-Adresse</var>|<var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ServerAdmin</directive> legt die E-Mail-Adresse fest,
+    <p><directive>ServerAdmin</directive> legt die Kontaktadresse fest,
     die der Server in jede Fehlermeldung einf&uuml;gt, die er an den
-    Client zur&uuml;ckschickt.</p>
+    Client zur&uuml;ckschickt. Wenn <code>httpd</code> das &uuml;bergebene
+    Argument nicht als URL erkennt, nimmt er an, dess es sich um eine
+    <var>E-Mail-Adresse</var> handelt und stellt in Hyperlinks
+    <code>mailto:</code> voran. Es ist jedoch sogar sinnvoll, eine
+    E-Mail-Adresse zu verwenden, da viele CGI-Skripte davon ausgehen. Wenn Sie
+    eine URL verwenden m&ouml;chten, sollten Sie auf einem anderen unter Ihrer
+    Kontrolle stehenden Server verweisen. Andernfalls k&ouml;nnen Besucher Sie
+    im Fehlerfall m&ouml;glicherweise nicht kontaktieren.</p>
 
     <p>Es kann sich lohnen, hierf&uuml;r eine reservierte Adresse
     anzugeben, z.B.</p>
@@ -2729,7 +2763,8 @@ selbst zu identifizieren</description>
 
     <p>Wenn kein <directive>ServerName</directive> angegeben wurde,
     dann versucht der Server den Rechnernamen mittels eines Reverse-Lookup
-    herzuleiten. Wenn kein Post im Servernamen angegeben wurde, dann
+    herzuleiten. Wenn kein Port in der
+    <directive>ServerName</directive>-Anweisung angegeben wurde, dann
     verwendet der Server den Port der eingegangenen Anfrage. F&uuml;r eine
     optimale Zuverl&auml;ssigkeit und Berechenbarkeit sollten Sie einen
     eindeutigen Rechnernamen und Port angeben, in dem Sie die Direktive
