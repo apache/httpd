@@ -288,7 +288,6 @@ static int proxy_handler(request_rec *r)
     apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
-    ap_cache_el *cr = NULL;
     int direct_connect = 0;
     const char *maxfwd_str;
     const char *pragma, *auth, *imstr;
@@ -327,48 +326,6 @@ static int proxy_handler(request_rec *r)
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "Request for %s, pragma=%s, auth=%s, imstr=%s", url,
                  pragma, auth, imstr);
-
-    /* can this request be cached at all? */
-    if (r->method_number == M_GET && strlen(url) < 1024 &&
-      !ap_proxy_liststr(pragma, "no-cache") && auth == NULL)
-    {
-        if(ap_cache_seek(conf->cache, url, &cr) == APR_SUCCESS)
-        {
-            int has_m = 0;
-            /* now we need to check if the last modified date is write if */
-
-            if(imstr)
-            {
-                time_t ims = (time_t)ap_parseHTTPdate(ap_proxy_date_canon(r->pool, imstr));
-                if(ims == BAD_DATE)
-                    apr_table_unset(r->headers_in, "If-Modified-Since");
-                else
-                {
-                    /* ok we were asked to check, so let's do that */
-                    if(ap_cache_el_header(cr, "Last-Modified",
-                      (char **)&imstr) == APR_SUCCESS)
-                    {
-                        time_t lm =
-                          ap_parseHTTPdate(ap_proxy_date_canon(r->pool, imstr));                        if(lm != BAD_DATE)
-                        {
-                            if(ims < lm)
-                                apr_table_set(r->headers_in,
-                                  "If-Modified-Since", imstr);
-                            else
-                            {
-
-                                has_m = 1;
-                            }
-                        }
-                    }
-                }
-            }
-            return has_m ? HTTP_NOT_MODIFIED : ap_proxy_cache_send(r, cr);
-        }
-        /* if there wasn't an entry in the cache we get here,
-           we need to create one */
-        ap_cache_create(conf->cache, url, &cr);
-    }
 
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
@@ -412,11 +369,11 @@ static int proxy_handler(request_rec *r)
 		 * proxy code.
 		 */
 		if (r->method_number == M_CONNECT)
-		    rc = ap_proxy_connect_handler(r, cr, url, ents[i].hostname,
+		    rc = ap_proxy_connect_handler(r, url, ents[i].hostname,
 					       ents[i].port);
 /* we only know how to handle communication to a proxy via http */
 		else if (strcasecmp(ents[i].protocol, "http") == 0)
-		    rc = ap_proxy_http_handler(r, cr, url, ents[i].hostname,
+		    rc = ap_proxy_http_handler(r, url, ents[i].hostname,
 					    ents[i].port);
 		else
 		    rc = DECLINED;
@@ -434,11 +391,11 @@ static int proxy_handler(request_rec *r)
  */
     /* handle the scheme */
     if (r->method_number == M_CONNECT)
-	return ap_proxy_connect_handler(r, cr, url, NULL, 0);
+	return ap_proxy_connect_handler(r, url, NULL, 0);
     if (strcasecmp(scheme, "http") == 0)
-	return ap_proxy_http_handler(r, cr, url, NULL, 0);
+	return ap_proxy_http_handler(r, url, NULL, 0);
     if (strcasecmp(scheme, "ftp") == 0)
-	return ap_proxy_ftp_handler(r, cr, url);
+	return ap_proxy_ftp_handler(r, NULL, url);
     else
 	return HTTP_FORBIDDEN;
 }

@@ -169,7 +169,7 @@ static void clear_connection(apr_pool_t *p, apr_table_t *headers)
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
+int ap_proxy_http_handler(request_rec *r, char *url,
 		       const char *proxyhost, int proxyport)
 {
     const char *strp;
@@ -190,7 +190,6 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     int destport = 0;
     char *destportstr = NULL;
     const char *urlptr = NULL;
-    char *datestr, *clen;
     apr_ssize_t cntr;
     apr_file_t *cachefp = NULL;
     char *buf;
@@ -202,7 +201,6 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
-    struct nocache_entry *ncent = (struct nocache_entry *) conf->nocaches->elts;
     int nocache = 0;
 
     memset(&server, '\0', sizeof(server));
@@ -424,7 +422,6 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
         else
         {
             clear_connection(p, resp_hdrs);    /* Strip Connection hdrs */
-            ap_cache_el_header_merge(c, resp_hdrs);
             if (apr_table_get(resp_hdrs, "Content-type")) {
                 r->content_type = apr_pstrdup(r->pool, apr_table_get(resp_hdrs, "Content-type"));
             }
@@ -438,11 +435,6 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	    } else {
 		apr_snprintf(portstr, sizeof portstr, ":%d", i);
 	    }
-            ap_cache_el_header_add(c, "Via", (conf->viaopt == via_full)
-                ? apr_psprintf(p, "%d.%d %s%s (%s)", major, minor,
-                ap_get_server_name(r), portstr, AP_SERVER_BASEVERSION)
-                : apr_psprintf(p, "%d.%d %s%s", major, minor,
-                ap_get_server_name(r), portstr));
 	}
     }
     else {
@@ -456,6 +448,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
  * HTTP/1.0 requires us to accept 3 types of dates, but only generate
  * one type
  */
+
+#if 0
     if (ap_cache_el_header(c, "Date", &datestr) == APR_SUCCESS)
         ap_cache_el_header_set(c, "Date", ap_proxy_date_canon(p, datestr));
     if (ap_cache_el_header(c, "Last-Modified", &datestr) == APR_SUCCESS)
@@ -467,21 +461,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
         ap_cache_el_header_set(c, "Location", proxy_location_reverse_map(r, datestr));
     if (ap_cache_el_header(c, "URI", &datestr) == APR_SUCCESS)
         ap_cache_el_header_set(c, "URI", proxy_location_reverse_map(r, datestr));
-
-/* check if NoCache directive on this host */
-    if (ap_cache_el_header(c, "Content-Length", &clen) == APR_SUCCESS)
-        content_length = atoi(clen ? clen : "-1");
-
-    for (i = 0; i < conf->nocaches->nelts; i++) {
-	if ((ncent[i].name != NULL && ap_strstr_c(desthost, ncent[i].name) != NULL)
-	  || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
-	    nocache = 1;
-    }
-
-    if(nocache || !ap_proxy_cache_should_cache(r, resp_hdrs, !backasswards))
-        ap_proxy_cache_error(&c);
-    else
-        ap_cache_el_data(c, &cachefp);
+#endif
 
 /* write status line */
 #if 0
@@ -514,7 +494,6 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
         if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		"proxy: error writing extra data to cache");
-	    ap_proxy_cache_error(&c);
 	}
     }
 
@@ -539,6 +518,5 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     }
 
     apr_close_socket(sock);
-    if(c) ap_proxy_cache_update(c);
     return OK;
 }

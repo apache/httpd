@@ -110,7 +110,7 @@ allowed_port(proxy_server_conf *conf, int port)
 }
 
 
-int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
+int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, int proxyport)
 {
     struct in_addr destaddr;
