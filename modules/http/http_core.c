@@ -3394,7 +3394,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         nbytes = 0; /* in case more points to another brigade */
         more = NULL;
         AP_BRIGADE_FOREACH(e, b) {
-            if (AP_BUCKET_IS_EOS(e)) {
+            if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
                 break;
             }
             else if (AP_BUCKET_IS_FILE(e)) {
