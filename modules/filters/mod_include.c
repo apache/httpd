@@ -1358,7 +1358,10 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             if (!strcmp(tag, "var")) {
-                const char *val = get_include_var(r, ctx, tag_val);
+                const char *val =
+                    get_include_var(r, ctx,
+                                    ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                                        MAX_STRING_LEN, 0));
                 if (val) {
                     switch(encode) {
                     case E_NONE:   
@@ -2784,7 +2787,8 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 return 1;
             }
             else if (!strcmp(tag, "var")) {
-                var = tag_val;
+                var = ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                          MAX_STRING_LEN, 0);
             }
             else if (!strcmp(tag, "value")) {
                 if (var == (char *) NULL) {
