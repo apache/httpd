@@ -196,7 +196,8 @@ log_printf(const server_rec *s, const char *fmt, ...)
     fflush(s->error_log);
 }
 
-void log_reason(const char *reason, const char *file, request_rec *r) {
+void log_reason(const char *reason, const char *file, request_rec *r) 
+{
     fprintf (r->server->error_log,
 	     "[%s] access to %s failed for %s, reason: %s\n",
 	     get_time(), file,
@@ -206,9 +207,10 @@ void log_reason(const char *reason, const char *file, request_rec *r) {
 }
 
 void log_assert(const char *szExp,const char *szFile,int nLine)
-    {
+{
     char buf[1000];
 
-    sprintf(buf,"line %d, assertion \"%s\" failed",nLine,szExp);
+    ap_snprintf(buf, sizeof(buf), 
+        "line %d, assertion \"%s\" failed",nLine,szExp);
     log_unixerr("assert",szFile,buf,NULL);
-    }
+}
