@@ -191,8 +191,8 @@ int one_process = 0;
 #endif
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
-static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
-static struct flock unlock_it = { F_UNLCK, 0, 0, 0 };
+static struct flock lock_it;
+static struct flock unlock_it;
 
 static int lock_fd=-1;
 
@@ -204,6 +204,17 @@ void
 accept_mutex_init(pool *p)
     {
     char lock_fname[256];
+
+    lock_it.l_whence = SEEK_SET;   /* from current point */
+    lock_it.l_start  = 0;          /* -"- */
+    lock_it.l_len    = 0;          /* until end of file */
+    lock_it.l_type   = F_WRLCK;    /* set exclusive/write lock */
+    lock_it.l_pid    = 0;          /* pid not actually interesting */
+    unlock_it.l_whence = SEEK_SET; /* from current point */
+    unlock_it.l_start  = 0;        /* -"- */
+    unlock_it.l_len    = 0;        /* until end of file */
+    unlock_it.l_type   = F_UNLCK;  /* set exclusive/write lock */
+    unlock_it.l_pid    = 0;        /* pid not actually interesting */
 
 #ifdef __MACHTEN__
     strncpy(lock_fname, "/var/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);

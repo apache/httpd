@@ -1,5 +1,9 @@
 Changes with Apache 1.2
 
+  *) Properly initialize the flock structures used by the mutex locking
+     around accept() when USE_FCNTL_SERIALIZED_ACCEPT is defined.
+     [Marc Slemko]
+
   *) The method for determining PATH_INFO has been restored to the pre-1.2b
      (and NCSA httpd) definition wherein it was the extra path info beyond
      the CGI script filename.  The environment variable FILEPATH_INFO has
