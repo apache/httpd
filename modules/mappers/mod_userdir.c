@@ -392,9 +392,9 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszSucc[]={ "mod_alias.c",NULL };
+    static const char * const aszPre[]={ "mod_alias.c",NULL };
 
-    ap_hook_translate_name(translate_userdir,NULL,aszSucc,APR_HOOK_MIDDLE);
+    ap_hook_translate_name(translate_userdir,aszPre,NULL,APR_HOOK_MIDDLE);
 #ifdef HAVE_UNIX_SUEXEC
     ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,APR_HOOK_MIDDLE);
 #endif
