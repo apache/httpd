@@ -2,15 +2,10 @@ Changes with Apache 2.0.48
 
   *) Update the header token parsing code to allow LWS between the
      token word and the ':' seperator.  [PR 16520]
-     [submitted: Kris Verbeeck <kris.verbeeck@advalvas.be> and
-                 Nicel KM <mnicel@yahoo.com>]
-     [Reviewed: <coad@measurement-factory.com> and
-                Paul J. Reder]
+     [Kris Verbeeck <kris.verbeeck@advalvas.be>, Nicel KM <mnicel@yahoo.com>]
 
   *) Eliminate creation of a temporary table in ap_get_mime_headers_core()
-     Submitted by: Joe Schaefer <joe+gmane@sunstarsys.com>
-     Reviewed by: Brian Pane
-     Backported: Paul J. Reder
+     [Joe Schaefer <joe+gmane@sunstarsys.com>]
 
   *) Added FreeBSD directory layout. PR 21100.
      [Sander Holthaus <info@orangexl.com>, André Malo]
