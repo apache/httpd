@@ -1111,7 +1111,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                          "could not open transfer log file %s.", fname);
             exit(1);
         }
-        apr_file_set_inherit(cls->log_fd);
+        apr_file_inherit_set(cls->log_fd);
     }
 #ifdef BUFFERED_LOGS
     cls->outcnt = 0;

@@ -312,7 +312,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
             exit(1);
         }
 
-        apr_file_set_inherit(s->error_log);
+        apr_file_inherit_set(s->error_log);
     }
 }
 
