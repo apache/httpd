@@ -988,6 +988,9 @@ static void x_insert_filter(request_rec *r)
 }
 
 /*
+ * XXX fix my comment!!!!!!  this sounds like the comment for a fixup
+ *     handler
+ *
  * This routine is called to perform any module-specific fixing of header
  * fields, et cetera.  It is invoked just before any content-handler.
  *
@@ -1004,7 +1007,7 @@ static int x_quick_handler(request_rec *r)
      * Log the call and exit.
      */
     trace_add(r->server, NULL, cfg, "x_post_config()");
-    return OK;
+    return DECLINED;
 }
 
 /*
@@ -1248,7 +1251,6 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method(x_http_method, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_create_request(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
