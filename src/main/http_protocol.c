@@ -303,7 +303,7 @@ int set_keepalive(request_rec *r)
 #endif
 	    sprintf(header, "timeout=%d, max=%d",
 		    r->server->keep_alive_timeout, left);
-	    table_set (r->headers_out, "Connection", "Keep-Alive");
+	    table_merge (r->headers_out, "Connection", "Keep-Alive");
 	    table_set (r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
 #ifdef FORHTTP11
 	}
@@ -317,7 +317,7 @@ int set_keepalive(request_rec *r)
      * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
      * to a HTTP/1.1 client. Better safe than sorry.
      */
-    table_set (r->headers_out, "Connection", "close");
+    table_merge (r->headers_out, "Connection", "close");
 
     return 0;
 }
