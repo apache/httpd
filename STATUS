@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/02 20:39:16 $]
+Last modified at [$Date: 2003/11/02 22:12:27 $]
 
 Release:
 
@@ -303,6 +303,10 @@ PATCHES TO BACKPORT FROM 2.1
         modules/generators/mod_autoindex.c: r1.124
         include/httpd.h: r1.201
         include/ap_mmn.h: r1.60
+      +1: nd
+
+    * mod_include: Don't allow ETag to be sent in 304. PR 19355.
+        modules/filters/mod_include.c: r1.290
       +1: nd
 
 CURRENT RELEASE NOTES:
