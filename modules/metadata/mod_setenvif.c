@@ -195,7 +195,7 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
     a->conditionals = apr_array_append(p, base->conditionals,
-				       overrides->conditionals);
+                                       overrides->conditionals);
     return a;
 }
 
@@ -298,15 +298,15 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
      * we're dealing with a per-directory setting.
      */
     sconf = (cmd->path != NULL)
-	? (sei_cfg_rec *) mconfig
-	: (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
+      ? (sei_cfg_rec *) mconfig
+      : (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
 					       &setenvif_module);
     entries = (sei_entry *) sconf->conditionals->elts;
     /* get regex */
     regex = ap_getword_conf(cmd->pool, &args);
     if (!*regex) {
         return apr_pstrcat(cmd->pool, "Missing regular expression for ",
-			  cmd->cmd->name, NULL);
+                           cmd->cmd->name, NULL);
     }
 
     /*
@@ -314,13 +314,12 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
      * just copy the name pointer... so that later on we can compare
      * two header names just by comparing the pointers.
      */
-
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         new = &entries[i];
-	if (!strcasecmp(new->name, fname)) {
-	    fname = new->name;
-	    break;
-	}
+        if (!strcasecmp(new->name, fname)) {
+            fname = new->name;
+            break;
+        }
     }
 
     /* if the last entry has an identical headername and regex then
@@ -329,16 +328,15 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     i = sconf->conditionals->nelts - 1;
     icase = cmd->info == ICASE_MAGIC;
     if (i < 0
-	|| entries[i].name != fname
-	|| entries[i].icase != icase
-	|| strcmp(entries[i].regex, regex)) {
+        || entries[i].name != fname
+        || entries[i].icase != icase
+        || strcmp(entries[i].regex, regex)) {
 
-	/* no match, create a new entry */
-
-	new = apr_array_push(sconf->conditionals);
-	new->name = fname;
-	new->regex = regex;
-	new->icase = icase;
+        /* no match, create a new entry */
+        new = apr_array_push(sconf->conditionals);
+        new->name = fname;
+        new->regex = regex;
+        new->icase = icase;
         if ((simple_pattern = non_regex_pattern(cmd->pool, regex))) {
             new->pattern = apr_strmatch_precompile(cmd->pool,
                                                    simple_pattern, 1);
@@ -358,28 +356,28 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
             }
             new->pattern = NULL;
         }
-	new->features = apr_table_make(cmd->pool, 2);
+        new->features = apr_table_make(cmd->pool, 2);
 
-	if (!strcasecmp(fname, "remote_addr")) {
-	    new->special_type = SPECIAL_REMOTE_ADDR;
-	}
-	else if (!strcasecmp(fname, "remote_host")) {
-	    new->special_type = SPECIAL_REMOTE_HOST;
-	}
-	else if (!strcasecmp(fname, "remote_user")) {
-	    new->special_type = SPECIAL_REMOTE_USER;
-	}
-	else if (!strcasecmp(fname, "request_uri")) {
-	    new->special_type = SPECIAL_REQUEST_URI;
-	}
-	else if (!strcasecmp(fname, "request_method")) {
-	    new->special_type = SPECIAL_REQUEST_METHOD;
-	}
-	else if (!strcasecmp(fname, "request_protocol")) {
-	    new->special_type = SPECIAL_REQUEST_PROTOCOL;
-	}
-	else {
-	    new->special_type = SPECIAL_NOT;
+        if (!strcasecmp(fname, "remote_addr")) {
+            new->special_type = SPECIAL_REMOTE_ADDR;
+        }
+        else if (!strcasecmp(fname, "remote_host")) {
+            new->special_type = SPECIAL_REMOTE_HOST;
+        }
+        else if (!strcasecmp(fname, "remote_user")) {
+            new->special_type = SPECIAL_REMOTE_USER;
+        }
+        else if (!strcasecmp(fname, "request_uri")) {
+            new->special_type = SPECIAL_REQUEST_URI;
+        }
+        else if (!strcasecmp(fname, "request_method")) {
+            new->special_type = SPECIAL_REQUEST_METHOD;
+        }
+        else if (!strcasecmp(fname, "request_protocol")) {
+            new->special_type = SPECIAL_REQUEST_PROTOCOL;
+        }
+        else {
+            new->special_type = SPECIAL_NOT;
             /* Handle fname as a regular expression.
              * If fname a simple header string, identify as such (new->pnamereg = NULL)
              * to avoid the overhead of searching through headers_in for a regex match.
@@ -395,17 +393,17 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
             else {
                 new->pnamereg = NULL;
             }
-	}
+        }
     }
     else {
-	new = &entries[i];
+        new = &entries[i];
     }
 
     for ( ; ; ) {
-	feature = ap_getword_conf(cmd->pool, &args);
-	if (!*feature) {
-	    break;
-	}
+        feature = ap_getword_conf(cmd->pool, &args);
+        if (!*feature) {
+            break;
+        }
         beenhere++;
 
         var = ap_getword(cmd->pool, &feature, '=');
@@ -422,7 +420,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
     if (!beenhere) {
         return apr_pstrcat(cmd->pool, "Missing envariable expression for ",
-			  cmd->cmd->name, NULL);
+                           cmd->cmd->name, NULL);
     }
 
     return NULL;
@@ -437,7 +435,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
     fname = ap_getword_conf(cmd->pool, &args);
     if (!*fname) {
         return apr_pstrcat(cmd->pool, "Missing header-field name for ",
-			  cmd->cmd->name, NULL);
+                           cmd->cmd->name, NULL);
     }
     return add_setenvif_core(cmd, mconfig, fname, args);
 }
@@ -487,12 +485,12 @@ static int match_headers(request_rec *r)
     if (!ap_get_module_config(r->request_config, &setenvif_module)) {
         ap_set_module_config(r->request_config, &setenvif_module,
                              SEI_MAGIC_HEIRLOOM);
-	sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
-						      &setenvif_module);
+        sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
+                                                      &setenvif_module);
     }
     else {
-	sconf = (sei_cfg_rec *) ap_get_module_config(r->per_dir_config,
-						     &setenvif_module);
+        sconf = (sei_cfg_rec *) ap_get_module_config(r->per_dir_config,
+                                                     &setenvif_module);
     }
     entries = (sei_entry *) sconf->conditionals->elts;
     last_name = NULL;
@@ -500,34 +498,34 @@ static int match_headers(request_rec *r)
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         sei_entry *b = &entries[i];
 
-	/* Optimize the case where a bunch of directives in a row use the
-	 * same header.  Remember we don't need to strcmp the two header
-	 * names because we made sure the pointers were equal during
-	 * configuration.
-	 */
-	if (b->name != last_name) {
-	    last_name = b->name;
-	    switch (b->special_type) {
-	    case SPECIAL_REMOTE_ADDR:
-		val = r->connection->remote_ip;
-		break;
-	    case SPECIAL_REMOTE_HOST:
-		val =  ap_get_remote_host(r->connection, r->per_dir_config,
-					  REMOTE_NAME, NULL);
-		break;
-	    case SPECIAL_REMOTE_USER:
-		val = r->user;
-		break;
-	    case SPECIAL_REQUEST_URI:
-		val = r->uri;
-		break;
-	    case SPECIAL_REQUEST_METHOD:
-		val = r->method;
-		break;
-	    case SPECIAL_REQUEST_PROTOCOL:
-		val = r->protocol;
-		break;
-	    case SPECIAL_NOT:
+        /* Optimize the case where a bunch of directives in a row use the
+         * same header.  Remember we don't need to strcmp the two header
+         * names because we made sure the pointers were equal during
+         * configuration.
+         */
+        if (b->name != last_name) {
+            last_name = b->name;
+            switch (b->special_type) {
+            case SPECIAL_REMOTE_ADDR:
+                val = r->connection->remote_ip;
+                break;
+            case SPECIAL_REMOTE_HOST:
+                val =  ap_get_remote_host(r->connection, r->per_dir_config,
+                                          REMOTE_NAME, NULL);
+                break;
+            case SPECIAL_REMOTE_USER:
+                val = r->user;
+                break;
+            case SPECIAL_REQUEST_URI:
+                val = r->uri;
+                break;
+            case SPECIAL_REQUEST_METHOD:
+                val = r->method;
+                break;
+            case SPECIAL_REQUEST_PROTOCOL:
+                val = r->protocol;
+                break;
+            case SPECIAL_NOT:
                 if (b->pnamereg) {
                     /* Matching headers_in against a regex. Iterate through
                      * the headers_in until we find a match or run out of
@@ -549,16 +547,16 @@ static int match_headers(request_rec *r)
                         val = apr_table_get(r->subprocess_env, b->name);
                     }
                 }
-	    }
+            }
             val_len = val ? strlen(val) : 0;
         }
 
-	/*
-	 * A NULL value indicates that the header field or special entity
-	 * wasn't present or is undefined.  Represent that as an empty string
-	 * so that REs like "^$" will work and allow envariable setting
-	 * based on missing or empty field.
-	 */
+        /*
+         * A NULL value indicates that the header field or special entity
+         * wasn't present or is undefined.  Represent that as an empty string
+         * so that REs like "^$" will work and allow envariable setting
+         * based on missing or empty field.
+         */
         if (val == NULL) {
             val = "";
             val_len = 0;
@@ -566,7 +564,7 @@ static int match_headers(request_rec *r)
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
             (!b->pattern && !ap_regexec(b->preg, val, 0, NULL, 0))) {
-	    const apr_array_header_t *arr = apr_table_elts(b->features);
+            const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {
