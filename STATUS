@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/10/02 17:26:29 $]
+  Last modified at [$Date: 2001/10/02 19:17:35 $]
 
 Release:
 
@@ -109,6 +109,7 @@ Available Patches (Most likely, these will not be added to the official
 	directory/blankicon in a directory listing. This was not happening
 	because the alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were
 	hardcoded to  "DIR" and "   " respectively.
+	  Status: resolved in Apache 2.0
 
 	Problem 2:
 	-------------------------
@@ -204,28 +205,6 @@ Open issues:
     * Marc's socket options like source routing (kill them?)
 	Marc, Martin say Yes
 
-    * Proposed API Changes:
-
-	- r->content_language is for backwards compatibility... with modules
-	  that may not link any longer without some minor editing.  The new
-	  field is r->content_languages.  Heck it's not even mentioned in
-	  apache-devsite/mmn.txt when we got content_languages (note the s!).
-	  The proposal is to remove r->content_language:
-	    Status: Paul +1, Ralf +1, Ken +1, Martin +1, Dirkx +1 (I could
-		not find ANY module which uses it and which (still) compiles
-		after the config change.)
-
-	- child_exit() is redundant, it can be implemented via cleanups.  It is
-	  not "symmetric" in the sense that there is no exit API method to go
-	  along with the init() API method.  There is no need for an exit
-	  method, there are already modules using cleanups to perform this (see
-	  mod_mmap_static, and mod_php3 for example).  The proposal is to
-	  remove the child_exit() method and document cleanups as the method of
-	  handling this need.
-	    Status: Rasmus +1, Paul +1, Jim +1, 
-	            Martin +1, Ralf +1, Ken +1, 
-		    Dirkx +1 (with doc change)
-
     * Should we re-enable nagle now that we're non-buffering CGIs?  See
       various messages from Marc in March 98.
   
@@ -257,6 +236,9 @@ Open issues:
       exec cmd="" parsing needs to accept escaped quotes.
       PR #1120
       Brian: +1
+        Status: Already resolved in Apache 2.0 - exec is defined as passing
+                the cmd="" argument as argv[0], which means it is -only- the
+                file name to execute (with spaces allowed in the name.)
       
 Win32 specific issues:
 
@@ -267,10 +249,12 @@ Win32 specific issues:
 
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
+        Status: already resolved in Apache 2.0 using APR.
 
     * process/thread model
 	- need dynamic thread creation/destruction, similar to 
 	  Unix process model
+        Status: already reimplemented in Apache 2.0 using APR.
 
     * handle bugs that make it pop up errors on console, ie. segv 
       equiv?  Can we do this?  Need to make it robust.
@@ -281,8 +265,11 @@ Win32 specific issues:
 
     * the mutex should be critical-regions, since the current design
       is creating a mess of SO calls that are unnecessary
+        Status: Apache 2.0's apr/mpm locking model is already overhauled.
 
     * rfc1413.c has static storage which won't work multithreaded
+        Status: this is a pretty significant rewrite.  Apache 2.0 is
+                already using apr's network_io and threadsafe storage.
 
     * apparently either "BrowserMatch" or the "nokeepalive" variable
       cause instability - see PR#1729.
