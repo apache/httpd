@@ -1083,7 +1083,7 @@ void sig_term() {
     exit(1);
 }
 
-void bus_error() {
+void bus_error(void) {
     log_error("httpd: caught SIGBUS, dumping core", server_conf);
     chdir(server_root);
     abort();         
@@ -1198,22 +1198,21 @@ void graceful_restart()
 #endif
     }
 
-void set_signals() {
+void set_signals()
+{
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
-#endif
-    if(!one_process) {
-	signal(SIGSEGV,(void (*)())seg_fault);
-    	signal(SIGBUS,(void (*)())bus_error);
-	}
 
-#ifdef NO_USE_SIGACTION
-    signal(SIGTERM,(void (*)())sig_term);
-    signal(SIGHUP,(void (*)())restart);
-    signal(SIGUSR1,(void (*)())graceful_restart);
+    if (!one_process) {
+	sa.sa_handler = (void (*)())seg_fault;
+	if (sigaction(SIGSEGV, &sa, NULL) < 0)
+	    log_unixerr("sigaction(SIGSEGV)", NULL, NULL, server_conf);
+	sa.sa_handler = (void (*)())bus_error;
+	if (sigaction(SIGBUS, &sa, NULL) < 0)
+	    log_unixerr("sigaction(SIGBUS)", NULL, NULL, server_conf);
+    }
     /* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
     /*  problems will be dealt with in a future release */
-#else
     memset(&sa,0,sizeof sa);
     sa.sa_handler=(void (*)())sig_term;
     if(sigaction(SIGTERM,&sa,NULL) < 0)
@@ -1224,6 +1223,15 @@ void set_signals() {
     sa.sa_handler=(void (*)())graceful_restart;
     if(sigaction(SIGUSR1,&sa,NULL) < 0)
 	log_unixerr("sigaction(SIGUSR1)", NULL, NULL, server_conf);
+#else
+    if(!one_process) {
+	signal(SIGSEGV,(void (*)())seg_fault);
+    	signal(SIGBUS,(void (*)())bus_error);
+    }
+
+    signal(SIGTERM,(void (*)())sig_term);
+    signal(SIGHUP,(void (*)())restart);
+    signal(SIGUSR1,(void (*)())graceful_restart);
 #endif
 }
 

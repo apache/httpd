@@ -1,6 +1,10 @@
 Changes with Apache 1.2b2:
+  
+  *) Update set_signals() to use sigaction() for setting handlers.
+     This appears to fix a re-entrant problem in the seg_fault()
+     bus_error() handlers. [Randy Terbush]
 
-  *) Changes to allow mod_status compile for OS/2
+  *) Changes to allow mod_status compile for OS/2 [Garey Smiley]
 
   *) changes for DEC AXP running OSF/1 v3.0. [Marc Evans]
 
@@ -28,13 +32,13 @@ Changes with Apache 1.2b2:
   *) Closed file-globbing hole in test-cgi script. [Brian Behlendorf]
 
   *) Fixed problem in set_[user|group] that prevented CGI execution
-     for non-virtualhosts when suEXEC was enabled.
+     for non-virtualhosts when suEXEC was enabled. [Randy Terbush]
 
   *) Added PORTING information file.  [Jim Jagielski]
 
   *) Added definitions for S_IWGRP and S_IWOTH to conf.h [Ben Laurie]
 
-  *) Changed default group to "nogroup" instead of "nobody"
+  *) Changed default group to "nogroup" instead of "nobody" [Randy Terbush]
 
   *) Fixed define typo of FCNTL_SERIALIZED_ACCEPT where
      USE_FCNTL_SERIALIZED_ACCEPT was intended.
