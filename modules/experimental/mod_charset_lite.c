@@ -881,7 +881,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
             }
             if (AP_BUCKET_IS_EOS(dptr)) {
                 done = 1;
-                cur_len = AP_END_OF_BRIGADE; /* XXX yuck, but that tells us to send
+                cur_len = -1; /* XXX yuck, but that tells us to send
                                  * eos down; when we minimize our bb construction
                                  * we'll fix this crap */
                 if (ctx->saved) {
@@ -962,7 +962,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         }
     }
     if (rv == APR_SUCCESS) {
-        if (cur_len == AP_END_OF_BRIGADE) {
+        if (cur_len == -1) {
             rv = send_eos(f);
         }
     }
