@@ -99,7 +99,7 @@
       UserDir enabled rbowen krietz
     </example>
 
-    <p>See <directive module="userdir">UserDir</directive>
+    <p>See <directive module="mod_userdir">UserDir</directive>
     documentation for additional examples.</p>
 
   </section>
