@@ -1278,10 +1278,10 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     /* 
      * here we want to check if the candidate file is really a
      * directory, and most definitely NOT a symlink (to prevent
-     * horrible loops).  So we do so above using apr_lstat.
-     * If so, let's recurse and toss it back into the function.
+     * horrible loops).  If so, let's recurse and toss it back 
+     * into the function.
      */
-    if (finfo.filetype == APR_DIR) {
+    if (ap_is_rdirectory(ptemp, fname)) {
         apr_dir_t *dirp;
         apr_finfo_t dirent;
 	int current;
