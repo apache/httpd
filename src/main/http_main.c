@@ -4034,6 +4034,17 @@ static void setup_listeners(pool *p)
             lr = lr->next;
         } while (lr != ap_listeners);
     }
+    else {
+        /* we could be restarting with a single remaining listening
+         * socket, still in non-blocking state from a previous
+         * generation which had more listening sockets
+         */
+        if (soblock(ap_listeners->fd) < 0) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+                         "A listening socket could not be made blocking.");
+            exit(APEXIT_INIT);
+        }
+    }
 #endif /* NONBLOCK_WHEN_MULTI_LISTEN */
     
 #ifdef NO_SERIALIZED_ACCEPT
