@@ -1602,11 +1602,17 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
-	cmd->path = ap_getword_conf(cmd->pool, &arg);
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        cmd->path = ap_getword_conf(cmd->pool, &arg);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
 #if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
     else if (strcmp(cmd->path, "/") == 0) {
@@ -1683,11 +1689,17 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
-	cmd->path = ap_getword_conf(cmd->pool, &arg);
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        cmd->path = ap_getword_conf(cmd->pool, &arg);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
 
     old_end_token = cmd->end_token;
@@ -1755,10 +1767,16 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
-	cmd->path = ap_getword_conf(cmd->pool, &arg);
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        cmd->path = ap_getword_conf(cmd->pool, &arg);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else {
 	/* Ensure that the pathname is canonical */

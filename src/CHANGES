@@ -1,5 +1,9 @@
 Changes with Apache 1.3.32
 
+  *) Fix a bunch of cases where the return code of the regex compiler
+     was not checked properly. This affects mod_usertrack and
+     core. PR 28218.  [André Malo]
+
   *) No longer breaks mod_dav, frontpage and others.  Backs out
      a patch which prevented discarding the request body for requests
      that will be keptalive but are not currently keptalive. PR 29237.
