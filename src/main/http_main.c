@@ -120,8 +120,8 @@
 /* Set this non-zero if you are prepared to put up with more than one log entry per second */
 #define SEVERELY_VERBOSE	    0
 
-  /* APD1() to APD5() are macros to help us debug. Then can either
-   * log to the screen or the error_log file. In release builds, this
+  /* APD1() to APD5() are macros to help us debug. They can either
+   * log to the screen or the error_log file. In release builds, these
    * macros do nothing. In debug builds, they send messages at priority
    * "debug" to the error log file, or if DEBUG_TO_CONSOLE is defined,
    * to the console.
@@ -839,14 +839,14 @@ static void timeout(int sig)
 	dirconf = current_conn->server->lookup_defaults;
     if (!current_conn->keptalive) {
 	if (sig == SIGPIPE) {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 			current_conn->server,
 			"%s client stopped connection before %s completed",
 			get_remote_host(current_conn, dirconf, REMOTE_NAME),
 			timeout_name ? timeout_name : "request");
 	}
 	else {
-	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 			current_conn->server,
 			"%s timed out for %s",
 			timeout_name ? timeout_name : "request",

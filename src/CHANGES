@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Reduce logging level of "normal" warning messages to APLOG_INFO,
+     since we are now logging APLOG_WARNING by default. [Roy Fielding]
+
   *) PORT: OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
  
   *) Add documentation file and src/Configuration.tmpl entry for the
