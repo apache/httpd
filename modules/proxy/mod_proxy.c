@@ -181,7 +181,7 @@ static int proxy_trans(request_rec *r)
 	    
        if (len > 0) {
            r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
-                                 r->uri + len, NULL);
+                                 (r->uri + len - 1), NULL);
            r->handler = "proxy-server";
            r->proxyreq = PROXYREQ_REVERSE;
            return OK;
