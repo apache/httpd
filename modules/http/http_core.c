@@ -231,6 +231,53 @@ static const char *http_method(const request_rec *r)
 static apr_port_t http_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
+static int ap_process_http_async_connection(conn_rec *c)
+{
+    request_rec *r;
+    conn_state_t *cs = c->cs;
+
+    switch (cs->state) {
+    case CONN_STATE_READ_REQUEST_LINE:
+        ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
+        while ((r = ap_read_request(c)) != NULL) {
+            c->keepalive = AP_CONN_UNKNOWN;
+
+            /* process the request if it was read without error */
+            ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
+
+            if (r->status == HTTP_OK)
+                ap_process_request(r);
+
+            if (ap_extended_status)
+                ap_increment_counts(c->sbh, r);
+
+            if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted) {
+                cs->state = CONN_STATE_LINGER;
+                break;
+            }
+            else {
+                cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
+            }
+
+            apr_pool_destroy(r->pool);
+
+            if (ap_graceful_stop_signalled())
+                break;
+
+            if (c->data_in_input_filters) {
+                continue;
+            }
+            break;
+        }
+	break;
+    default:
+        AP_DEBUG_ASSERT(0);
+        cs->state = CONN_STATE_LINGER;
+    }
+
+    return OK;
+}
+
 static int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
@@ -290,8 +337,21 @@ static int http_create_request(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
+    /**
+     * If we ae using an MPM That Supports Async Connections,
+     * use a different processing function
+     */
+    int async_mpm = 0;
+    if(ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS 
+       && async_mpm == 1) {
+        ap_hook_process_connection(ap_process_http_async_connection,NULL,
+            NULL,APR_HOOK_REALLY_LAST);
+    }
+    else {
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
 			       APR_HOOK_REALLY_LAST);
+    }
+
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);

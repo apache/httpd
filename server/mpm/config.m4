@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
-                          MPM={beos|worker|prefork|mpmt_os2|perchild|leader|threadpool}),[
+                          MPM={beos|event|worker|prefork|mpmt_os2|perchild|leader|threadpool}),[
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
@@ -12,7 +12,7 @@ AC_MSG_RESULT($APACHE_MPM)
 
 apache_cv_mpm=$APACHE_MPM
 	
-if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "threadpool" ; then
+if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "threadpool" ; then
   APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
   if test "x$ac_cv_define_APR_HAS_THREADS" = "xno"; then
@@ -26,7 +26,7 @@ fi
 APACHE_FAST_OUTPUT(server/mpm/Makefile)
 
 MPM_NAME=$apache_cv_mpm
-if test "$MPM_NAME" = "leader" -o "$MPM_NAME" = "threadpool" -o "$MPM_NAME" = "perchild"; then
+if test "$MPM_NAME" = "event" -o "$MPM_NAME" = "leader" -o "$MPM_NAME" = "threadpool" -o "$MPM_NAME" = "perchild"; then
   AC_MSG_WARN(You have selected an EXPERIMENTAL MPM.  Be warned!)
   MPM_SUBDIR_NAME=experimental/$MPM_NAME
 else

@@ -139,6 +139,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_MAX_REQUESTS_DAEMON  11  /* Max # of requests per daemon */
 #define AP_MPMQ_MAX_DAEMONS          12  /* Max # of daemons by config   */
 #define AP_MPMQ_MPM_STATE            13  /* starting, running, stopping  */
+#define AP_MPMQ_IS_ASYNC             14  /* MPM can process async connections  */
 
 /**
  * Query a property of the current MPM.  
