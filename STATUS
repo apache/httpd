@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/22 17:16:25 $]
+Last modified at [$Date: 2004/03/23 14:02:12 $]
 
 Release:
 
@@ -71,6 +71,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
+       is set in r->subprocess_env allow mismatched query strings to pass.
+       PR: 27758
+       http://marc.theaimsgroup.com/?l=apache-cvs&m=108005027128025&w=2
+       +1: geoff
 
     *) mod_dav: Fix a problem that could cause crashes when manipulating 
        locks on some platforms. (especially Sparc!!!)
