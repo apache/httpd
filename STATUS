@@ -4,7 +4,7 @@ Release:
 
     1.3b7: freeze; Hopefully to simply be renamed 1.3.0
 
-    1.3b6: Tagged APACHE_1_3b6. Possible release 4/17
+    1.3b6: Tagged APACHE_1_3b6. Possible release 4/20
 
     2.0  : In pre-alpha development, see apache-2.0 repository
 
@@ -37,21 +37,6 @@ Guidelines:
                  fair.
 
 Plan:
-
-   Apache 1.3b6 Release:
-
-   - Wednesday, April 15: 
-     Rolling the 1.3b6 tarball and pushing the version
-     number to Apache 1.3b7
-
-   - Thursday, April 16: 
-     Double-checking the rolled 1.3b6 tarball
-
-   - Friday, April 17:
-     Moving the tarball to the public locations and sending
-     the Announcement message to the public
-
-   - ...ENTERING THE LONG-AWAITED FINAL 1.3.0 RELEASE STEP.... Hmmmm...
 
 Showstoppers:
 
