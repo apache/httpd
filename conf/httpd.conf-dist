@@ -91,10 +91,16 @@ ScoreBoardFile logs/apache_status
 
 Timeout 400
 
-# KeepAlive: The number of Keep-Alive persistent requests to accept
-# per connection. Set to 0 to deactivate Keep-Alive support
+# KeepAlive: Whether or not to allow persistent connections (more than
+# one request per connection). Set to "Off" to deactivate.
 
-KeepAlive 5
+KeepAlive On
+
+# MaxKeepAliveRequests: The maximum number of requests to allow
+# during a persistent connection. Set to 0 to allow an unlimited amount.
+# We reccomend you leave this number high, for maximum performance.
+
+MaxKeepAliveRequests 100
 
 # KeepAliveTimeout: Number of seconds to wait for the next request
 
