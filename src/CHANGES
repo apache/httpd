@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) PORT: Fix sys/resource.h handling for Amdahl's UTS 2.1
+     [Dave Dykstra <dwd@bell-labs.com>] PR#3054
+
   *) Fix mod_speling's handling of multiple matched URLs.
      [Manoj Kasichainula]
 

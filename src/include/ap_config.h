@@ -615,6 +615,7 @@ extern char *crypt();
 #define WEXITSTATUS(status)	(int)((status).w_retcode)
 #define WTERMSIG(status)	(int)((status).w_termsig)
 #define strftime(buf,bufsize,fmt,tm)    ascftime(buf,fmt,tm)
+#undef HAVE_SYS_RESOURCE_H /* exists but does not provide *rlimit funcs */
 #include <sys/types.h>
 #include <sys/time.h>     
 
