@@ -142,7 +142,7 @@ static apr_pool_t *x_subpool = NULL;
  * Declare ourselves so the configuration routines can find and know us.
  * We'll fill it in at the end of the module.
  */
-module example_module;
+AP_DECLARE_DATA module example_module;
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -924,6 +924,7 @@ static apr_status_t x_child_exit(void *data)
     sname = (sname != NULL) ? sname : "";
     note = apr_pstrcat(s->process->pool, "x_child_exit(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
+    return APR_SUCCESS;
 }
 
 /*
@@ -1279,18 +1280,18 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_pre_connection(x_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_process_connection(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
     /* [1] post read_request handling */
-    ap_hook_post_read_request(x_fixer_upper, NULL, NULL,
+    ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
-    ap_hook_log_transaction(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method(x_http_method, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_translate_name(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_check_user_id(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_type_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_access_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_auth_checker(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_type_checker(x_type_checker, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_access_checker(x_access_checker, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
@@ -1353,7 +1354,7 @@ static const handler_rec x_handlers[] =
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
  */
-module example_module =
+AP_DECLARE_DATA module example_module =
 {
     STANDARD20_MODULE_STUFF,
     x_create_dir_config,    /* per-directory config creator */
