@@ -212,7 +212,8 @@ API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next,
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
-        if (AP_BRIGADE_LAST(bb)->type == ap_eos_type() && next->r) {
+        ap_bucket *e;
+        if ((e = AP_BRIGADE_LAST(bb)) && AP_BUCKET_IS_EOS(e) && next->r) {
             next->r->eos_sent = 1;
         }
         return next->frec->filter_func.out_func(next, bb);

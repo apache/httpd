@@ -3117,8 +3117,8 @@ static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
             ap_bucket_destroy(destroy_me);
             destroy_me = NULL;
         }
-        if ((e->type == ap_eos_type())  || (e->type == ap_file_type()) ||
-            (e->type == ap_pipe_type())) {
+        if (AP_BUCKET_IS_EOS(e)  || AP_BUCKET_IS_FILE(e) ||
+            AP_BUCKET_IS_PIPE(e)) {
             pass_the_brigade = 1;
         }
         else {
@@ -3226,7 +3226,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
 	AP_BRIGADE_FOREACH(e, b) {
-	    if (e->type == ap_eos_type()) {
+	    if (AP_BUCKET_IS_EOS(e)) {
 		/* there shouldn't be anything after the eos */
 		eos = e;
 		break;
@@ -3400,10 +3400,10 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         nbytes = 0; /* in case more points to another brigade */
         more = NULL;
         AP_BRIGADE_FOREACH(e, b) {
-            if (e->type == ap_eos_type()) {
+            if (AP_BUCKET_IS_EOS(e)) {
                 break;
             }
-            else if (e->type == ap_file_type()) {
+            else if (AP_BUCKET_IS_FILE(e)) {
                 ap_bucket_file *a = e->data;
                 /* Assume there is at most one AP_BUCKET_FILE in the brigade */
                 fd = a->fd;
@@ -3442,7 +3442,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && (e->type != ap_eos_type())) {
+        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_EOS(e)) {
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;
         }
