@@ -12,8 +12,8 @@ Body:----------de--
   <!--#if expr="$HTTP_REFERER" -->
 
     Bitte informieren Sie den Autor der
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">verweisenden Seite</a>
-    das der Link nicht mehr aktuell ist.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">verweisenden Seite</a>,
+    dass der Link nicht mehr aktuell ist.
 
   <!--#else -->
 
