@@ -2420,36 +2420,6 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         bb = ap_brigade_create(r->pool);
 
-        do {
-            if (AP_BRIGADE_EMPTY(bb)) {
-                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 
-                                 &timeout);
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
-                                 0);
-                if (ap_get_brigade(r->input_filters, bb, 
-                                   len_to_read) != APR_SUCCESS) {
-                    /* if we actually fail here, we want to just return and
-                     * stop trying to read data from the client.
-                     */
-                    apr_setsocketopt(r->connection->client->bsock, 
-                                     APR_SO_TIMEOUT, timeout);
-                    r->connection->keepalive = -1;
-                    ap_brigade_destroy(bb);
-                    return -1;
-                }
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
-                                 timeout);
-            }
-            b = AP_BRIGADE_FIRST(bb);
-            
-            while (b->length == 0 && b != AP_BRIGADE_SENTINEL(bb)) {
-                ap_bucket *e = b;
-                b = AP_BUCKET_NEXT(e);
-                AP_BUCKET_REMOVE(e);
-                ap_bucket_destroy(e);
-            }
-        } while (AP_BRIGADE_EMPTY(bb));
-
         total = 0;
         do {
             if (AP_BRIGADE_EMPTY(bb)) {
