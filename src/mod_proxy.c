@@ -1403,7 +1403,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	++nfiles;
 /* is it another file? */
 	/* FIXME: Shouldn't any unexpected files be deleted? */
-//	if (strlen(ent->d_name) != HASH_LEN) continue;
+	/*	if (strlen(ent->d_name) != HASH_LEN) continue; */
 
 /* read the file */
 	fd = open(filename, O_RDONLY);
@@ -1941,9 +1941,11 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 #define TMPFILESTR	"/#tmpXXXXXX"
     c->tempfile=palloc(r->pool,strlen(conf->cache.root)+sizeof TMPFILESTR-1);
     strcpy(c->tempfile,conf->cache.root);
-//    p = strrchr(c->tempfile, '/');
-//    if (p == NULL) return DECLINED;
-//    strcpy(p, TMPFILESTR);
+    /*
+    p = strrchr(c->tempfile, '/');
+    if (p == NULL) return DECLINED;
+    strcpy(p, TMPFILESTR);
+    */
     strcat(c->tempfile,TMPFILESTR);
 #undef TMPFILESTR
     p = mktemp(c->tempfile);
