@@ -776,7 +776,6 @@ int update_child_status (int child_num, int status, request_rec *r)
 	new_score_rec.my_bytes_served = 0L;
 	new_score_rec.conn_count = (unsigned short)0;
 	new_score_rec.conn_bytes = (unsigned long)0;
-	new_score_rec.how_long = (unsigned short)0;
     }
     if (r) {
 	int slot_size;
@@ -858,7 +857,6 @@ short_score get_scoreboard_info(int i)
 void increment_counts (int child_num, request_rec *r, int flag)
 {
     long int bs=0;
-    time_t now;
     short_score new_score_rec;
 
     sync_scoreboard_image();
@@ -879,8 +877,6 @@ void increment_counts (int child_num, request_rec *r, int flag)
 
     times(&new_score_rec.times);
 
-    now=time(NULL);
-    new_score_rec.how_long = now - new_score_rec.last_used;
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
     memcpy(&scoreboard_image->servers[child_num], &new_score_rec, sizeof(short_score));

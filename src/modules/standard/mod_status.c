@@ -406,7 +406,7 @@ int status_handler (request_rec *r)
     	if(no_table_report)
             rputs("<p><hr><h2>Server Details</h2>\n\n",r);
 	else
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Ptime<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
 
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
@@ -455,13 +455,12 @@ int status_handler (request_rec *r)
 		            rputs("Dead",r);
 		            break;
 		    }
-		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (%d",
+		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (",
 			    score_record.times.tms_utime/tick,
 			    score_record.times.tms_stime/tick,
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
-			    asctime(localtime(&score_record.last_used)),
-			    (int)score_record.how_long);
+			    asctime(localtime(&score_record.last_used)));
 		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,my_bytes);
@@ -503,13 +502,12 @@ int status_handler (request_rec *r)
 		            rputs("<td>.",r);
 		            break;
 		    }
-		    rprintf(r,"\n<td>%.2f<td>%.0f<td>%d",
+		    rprintf(r,"\n<td>%.2f<td>%.0f",
 			    (score_record.times.tms_utime +
 			    score_record.times.tms_stime +
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
-			    difftime(nowtime, score_record.last_used),
-			    (int)score_record.how_long);
+			    difftime(nowtime, score_record.last_used));
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
@@ -532,7 +530,6 @@ int status_handler (request_rec *r)
 <tr><th>M<td>Mode of operation\n \
 <tr><th>CPU<td>CPU usage, number of seconds\n \
 <tr><th>SS<td>Seconds since beginning of most recent request\n \
-<tr><th>Ptime<td>Seconds to process the recent request\n \
 <tr><th>Conn<td>Kilobytes transferred this connection\n \
 <tr><th>Child<td>Megabytes transferred this child\n \
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
