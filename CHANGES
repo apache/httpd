@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow Digest providers to return AUTH_DENIED to propagate a 401
+     status and terminate the provider chain prior to checking the password.
+     [Geoffrey Young]
+
   *) Allow RequestHeader directives to be conditional. PR 27951.
      [Vincent Deffontaines <vincent gryzor.com>, André Malo]
 
