@@ -1554,10 +1554,19 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     found = ap_find_linked_module(arg);
 
     if ((!not && found) || (not && !found)) {
-        return ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
-    }
+        ap_directive_t *parent = NULL;
+        ap_directive_t *current = NULL;
+        const char *retval;
 
-    return NULL;
+        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd, 
+                                      &current, &parent, "<IfModule");
+        *(ap_directive_t **)dummy = current;
+        return retval;
+    }
+    else { 
+        *(ap_directive_t **)dummy = NULL;
+        return ap_soak_end_container(cmd, "<IfModule");
+    }
 }
 
 API_EXPORT(int) ap_exists_config_define(char *name)
@@ -1593,12 +1602,20 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     defined = ap_exists_config_define(arg);
-
     if ((!not && defined) || (not && !defined)) {
-        return ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
-    }
+        ap_directive_t *parent = NULL;
+        ap_directive_t *current = NULL;
+        const char *retval;
 
-    return NULL;
+        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd, 
+                                      &current, &parent, "<IfDefine");
+        *(ap_directive_t **)dummy = current;
+        return retval;
+    }
+    else { 
+        *(ap_directive_t **)dummy = NULL;
+        return ap_soak_end_container(cmd, "<IfDefine");
+    }
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -1681,6 +1698,7 @@ static const char *add_module_command(cmd_parms *cmd, void *dummy, char *arg)
 	return ap_pstrcat(cmd->pool, "Cannot add module via name '", arg, 
 			  "': not in list of loaded modules", NULL);
     }
+    *(ap_directive_t **)dummy = NULL;
     return NULL;
 }
 
@@ -1692,6 +1710,7 @@ static const char *clear_module_list_command(cmd_parms *cmd, void *dummy)
     }
 
     ap_clear_module_list();
+    *(ap_directive_t **)dummy = NULL;
     return NULL;
 }
 
@@ -2162,9 +2181,9 @@ static const command_rec core_cmds[] = {
 { "<LimitExcept", ap_limit_section, (void*)1, OR_ALL, RAW_ARGS,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource" },
-{ "<IfModule", start_ifmod, NULL, OR_ALL, TAKE1,
+{ "<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL, TAKE1,
   "Container for directives based on existance of specified modules" },
-{ "<IfDefine", start_ifdefine, NULL, OR_ALL, TAKE1,
+{ "<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL, TAKE1,
   "Container for directives based on existance of command line defines" },
 { "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS,
   "Container for directives affecting resources located in the "
@@ -2245,10 +2264,10 @@ static const command_rec core_cmds[] = {
   RSRC_CONF|ACCESS_CONF, TAKE1,
   "How to work out the ServerName : Port when constructing URLs" },
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
-{ "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,
+{ "AddModule", add_module_command, NULL, RSRC_CONF | EXEC_ON_READ, ITERATE,
   "The name of a module" },
-{ "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, 
-  NULL },
+{ "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF | EXEC_ON_READ,
+  NO_ARGS, NULL },
 /* TODO: ListenBacklog in MPM */
 { "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF), TAKE1,
   "Name of the config file to be included" },

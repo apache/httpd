@@ -831,15 +831,20 @@ CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module
     return mconfig;
 }
 
+static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parms, 
+                         ap_pool_t *p, ap_pool_t *ptemp,
+                         ap_directive_t **sub_tree, ap_directive_t *parent);
+
 static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
-					const configfile_t *cfp,
-					const char *l,
+					const char *l, cmd_parms *parms,
 					ap_directive_t **current,
 					ap_directive_t **curr_parent)
 {
     const char *args;
     char *cmd_name;
     ap_directive_t *newdir;
+    module *mod = top_module;
+    const command_rec *cmd;
 
     if (*l == '#' || *l == '\0')
 	return NULL;
@@ -857,9 +862,24 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
 	return NULL;
     }
 
+    if ((cmd = ap_find_command_in_modules(cmd_name, &mod)) != NULL) {
+        if (cmd->req_override & EXEC_ON_READ) {
+            const char *retval;
+            ap_directive_t *sub_tree = NULL;
+
+            retval = execute_now(cmd_name, args, parms, p, temp_pool, 
+                                 &sub_tree, *curr_parent);
+            (*current)->next = sub_tree;
+            while ((*current)->next != NULL) {
+                (*current) = (*current)->next;
+            }
+            return retval;
+        }
+    }
+
     newdir = ap_pcalloc(p, sizeof(ap_directive_t));
-    newdir->filename = cfp->name;
-    newdir->line_num = cfp->line_number;
+    newdir->filename = parms->config_file->name;
+    newdir->line_num = parms->config_file->line_number;
     newdir->directive = cmd_name;
     newdir->args = ap_pstrdup(p, args);
 
@@ -897,6 +917,38 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
         *current = ap_add_node(curr_parent, *current, newdir, 0);
     }
 
+    return NULL;
+}
+
+const char * ap_build_cont_config(ap_pool_t *p, ap_pool_t *temp_pool,
+					cmd_parms *parms,
+					ap_directive_t **current,
+					ap_directive_t **curr_parent,
+                                        char *orig_directive)
+{
+    char l[MAX_STRING_LEN];
+    char *bracket;
+    const char *retval;
+    ap_directive_t *conftree = NULL;
+
+    bracket = ap_pstrcat(p, orig_directive + 1, ">", NULL);
+    while(!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
+        if ((strcasecmp(l + 2, bracket) == 0) &&
+            (*curr_parent == NULL)) {
+            break;
+        } 
+        retval = ap_build_config_sub(p, temp_pool, l, parms, current, 
+                                     curr_parent);
+        if (retval != NULL)
+            return retval;
+        if (conftree == NULL && curr_parent != NULL) { 
+            conftree = *curr_parent;
+        }
+        if (conftree == NULL && current != NULL) {
+            conftree = *current;
+        }
+    }
+    *current = conftree;
     return NULL;
 }
 
@@ -956,7 +1008,7 @@ API_EXPORT(const char *) ap_walk_config(ap_directive_t *current,
 }
 
 
-API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
+API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
 					 ap_pool_t *p, ap_pool_t *temp_pool,
 					 ap_directive_t **conftree)
 {
@@ -967,9 +1019,9 @@ API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
 
     *conftree = NULL;
 
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, cfp))) {
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
 
-	errmsg = ap_build_config_sub(p, temp_pool, cfp, l,
+	errmsg = ap_build_config_sub(p, temp_pool, l, parms,
 				     &current, &curr_parent);
 	if (errmsg != NULL)
 	    return errmsg;
@@ -1064,6 +1116,55 @@ API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *file)
     return ap_make_full_path(p, ap_server_root, file);
 }
 
+API_EXPORT(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
+{
+    char l[MAX_STRING_LEN];
+    const char *args;
+    char *cmd_name;
+
+    while(!(ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))) {
+#if RESOLVE_ENV_PER_TOKEN
+        args = l;
+#else
+        args = ap_resolve_env(cmd->temp_pool, l);
+#endif
+        cmd_name = ap_getword_conf(cmd->pool, &args);
+        if (cmd_name[0] == '<') {
+            if (cmd_name[1] == '/') {
+                cmd_name[strlen(cmd_name) - 1] = '\0';
+                if (strcasecmp(cmd_name + 2, directive + 1) != 0) {
+                    return ap_pstrcat(cmd->pool, "Expected </",
+                                      directive + 1, "> but saw ",
+                                      cmd_name, ">", NULL);
+                }
+                break;
+            }
+            else {
+                ap_soak_end_container(cmd, cmd_name);
+            }
+        }
+    }
+    return NULL;
+}
+
+static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parms, 
+                         ap_pool_t *p, ap_pool_t *ptemp, 
+                         ap_directive_t **sub_tree, ap_directive_t *parent)
+{
+    module *mod = top_module;
+    const command_rec *cmd;
+
+    if (!(cmd = ap_find_command_in_modules(cmd_line, &mod))) {
+        return ap_pstrcat(parms->pool, "Invalid command '", 
+                          cmd_line,
+                          "', perhaps mis-spelled or defined by a module "
+                          "not included in the server configuration",
+                          NULL);
+    }
+    else {
+        return invoke_cmd(cmd, parms, sub_tree, args);
+    }
+}
 
 /* This structure and the following functions are needed for the
  * table-based config file reading. They are passed to the
@@ -1112,7 +1213,6 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
     cmd_parms parms;
     arr_elts_param_t arr_parms;
     ap_directive_t *conftree;
-    configfile_t *cfp;
 
     arr_parms.curr_idx = 0;
     arr_parms.array = arr;
@@ -1123,11 +1223,11 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
-    cfp = ap_pcfg_open_custom(p, "-c/-C directives",
+    parms.config_file = ap_pcfg_open_custom(p, "-c/-C directives",
 			      &arr_parms, NULL,
 			      arr_elts_getstr, arr_elts_close);
 
-    errmsg = ap_build_config(cfp, p, ptemp, &conftree);
+    errmsg = ap_build_config(&parms, p, ptemp, &conftree);
     if (errmsg == NULL)
 	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
@@ -1136,7 +1236,7 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
         exit(1);
     }
 
-    ap_cfg_closefile(cfp);
+    ap_cfg_closefile(parms.config_file);
 }
 
 void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp)
@@ -1171,7 +1271,8 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
 	exit(1);
     }
 
-    errmsg = ap_build_config(cfp, p, ptemp, &conftree);
+    parms.config_file = cfp;
+    errmsg = ap_build_config(&parms, p, ptemp, &conftree);
     if (errmsg == NULL)
 	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
 
@@ -1228,7 +1329,8 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
             dc = ap_create_per_dir_config(r->pool);
 
-            errmsg = ap_build_config(f, r->pool, r->pool, &conftree);
+            parms.config_file = f;
+            errmsg = ap_build_config(&parms, r->pool, r->pool, &conftree);
 	    if (errmsg == NULL)
 		errmsg = ap_walk_config(conftree, &parms, dc);
 
