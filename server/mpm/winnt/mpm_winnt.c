@@ -1470,15 +1470,18 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
                          "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
         }
-        /* Now, send the AcceptEx completion port to the child */
-        if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
-                             pi.hProcess, &hDupedCompPort,  0,
-                             TRUE, DUPLICATE_SAME_ACCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                         "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
-            return -1;
+        if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+            /* Now, send the AcceptEx completion port to the child */
+            if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
+                                 pi.hProcess, &hDupedCompPort,  0,
+                                 TRUE, DUPLICATE_SAME_ACCESS)) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+                             "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
+                return -1;
+            }
+
+            WriteFile(hPipeWrite, &hDupedCompPort, (DWORD) sizeof(hDupedCompPort), &BytesWritten, (LPOVERLAPPED) NULL);
         }
-        WriteFile(hPipeWrite, &hDupedCompPort, (DWORD) sizeof(hDupedCompPort), &BytesWritten, (LPOVERLAPPED) NULL);
     }
 
     CloseHandle(hPipeRead);
