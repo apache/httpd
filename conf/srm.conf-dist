@@ -91,6 +91,18 @@ IndexIgnore .??* *~ *# HEADER* README* RCS
 
 AccessFileName .htaccess
 
+# The following lines prevent .htaccess files from being viewed by
+# Web clients.  Since .htaccess files often contain authorization
+# information, access is disallowed for security reasons.  Comment
+# these lines out if you want Web visitors to see the contents of
+# .htaccess files.  If you change the AccessFileName directive above,
+# be sure to make the corresponding changes here.
+
+<FilesMatch "^\.htaccess$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 # TypesConfig describes where the mime.types file (or equivalent) is
 # to be found.
 
