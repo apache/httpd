@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.84 $ ($Date: 1997/07/25 10:25:46 $)
+  $Revision: 1.85 $ ($Date: 1997/07/30 18:02:33 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -221,33 +221,36 @@
    <LI><A HREF="#authauthoritative">Why does my authentification give
     me a server error?</A>
    <LI><A HREF="#auth-on-same-machine">Do I have to keep the (mSQL)
-      authentification information on the same machine?</A>
+    authentification information on the same machine?</A>
    </LI>
    <LI><A HREF="#msql-slow">Why is my mSQL authentification terribly slow?</A>
    </LI>
    <LI><A HREF="#rewrite-more-config">Where can I find mod_rewrite rulesets
-       which already solve particular URL-related problems?</A>
+    which already solve particular URL-related problems?</A>
    </LI>
    <LI><A HREF="#rewrite-article">Where can I find any published information about
-       URL-manipulations and mod_rewrite?</A>
+    URL-manipulations and mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-complexity">Why is mod_rewrite so difficult to learn
-       and seems so complicated?</A>
+    and seems so complicated?</A>
    </LI>
    <LI><A HREF="#rewrite-dontwork">What can I do if my RewriteRules don't work
-       as expected?</A>
+    as expected?</A>
    </LI>
-   <LI><A HREF="#rewrite-prefixdocroot">Why are some of my URLs don't get
-       prefixed with DocumentRoot when using mod_rewrite?</A>
+   <LI><A HREF="#rewrite-prefixdocroot">Why don't some of my URLs get
+    prefixed with DocumentRoot when using mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-nocase">How can I make all my URLs case-insensitive
-       with mod_rewrite?</A>
+    with mod_rewrite?</A>
    </LI>
    <LI><A HREF="#rewrite-virthost">Why are RewriteRules in my VirtualHost
-       parts ignored?</A>
+    parts ignored?</A>
    </LI>
    <LI><A HREF="#rewrite-envwhitespace">How can I use strings with whitespaces
-       in RewriteRule's ENV flag?</A>
+    in RewriteRule's ENV flag?</A>
+   </LI>
+   <LI><A HREF="#cgi-spec">Where can I find the &quot;CGI
+    specification&quot;?</A>
    </LI>
   </OL>
  </LI>
@@ -577,6 +580,7 @@
   ><SAMP>AddHandler</SAMP></A>
   directive.
   </P>
+  <P>
   <OL>
    <LI>In an appropriate section of your server configuration files, add
     a line such as
@@ -597,10 +601,10 @@
      HREF="../mod/core.html#options"
     ><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
-    <P>
-    </P>
    </LI>
   </OL>
+  </P>
+  <P>
   In some situations it can be not conform to your local policy to actually
   allow all files named &quot;<SAMP>*.cgi</SAMP>&quot; to be executable.
   Perhaps all you want is to enable a particular file in a normal directory to
@@ -611,16 +615,18 @@
   ><SAMP>mod_rewrite</SAMP></A> 
   and the following steps:
   </P>
+  <P>
   <OL>
    <LI>Locally add to the corresponding <SAMP>.htaccess</SAMP> file a ruleset
        similar to this one:
     <P>
     <DL>
-     <DD><CODE>
-	 RewriteEngine on<br>
-	 RewriteBase   /~foo/bar/<br>
-	 RewriteRule   ^quux\.cgi$  -  [T=application/x-httpd-cgi]<br>
-	 </CODE></DD>
+     <DD><CODE>RewriteEngine on
+      <BR>
+      RewriteBase   /~foo/bar/
+      <BR>
+      RewriteRule   ^quux\.cgi$  -  [T=application/x-httpd-cgi]</CODE>
+     </DD>
     </DL>
     </P>
    </LI>
@@ -628,12 +634,11 @@
     <A
      HREF="../mod/core.html#options"
     ><SAMP>Options</SAMP></A>
-	declaration that includes the <SAMP>ExecCGI</SAMP> and
-	<SAMP>FollowSymLinks</SAMP> option.
-    <P>
-    </P>
+        declaration that includes the <SAMP>ExecCGI</SAMP> and
+        <SAMP>FollowSymLinks</SAMP> option.
    </LI>
   </OL>
+  </P>
   <HR>
  </LI>
  <LI><A NAME="premature-script-headers">
@@ -912,24 +917,25 @@
         HREF="perf.html"
        >performance hints</A>
        page.  There is a specific note for
-       <a href="#freebsd-setsize">FreeBSD</a> below.
+       <A HREF="#freebsd-setsize">FreeBSD</A> below.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
    <LI>Spread your operation across multiple server processes (using
-       <A
-        HREF="../mod/core.html#listen"
-       ><SAMP>Listen</SAMP></A>
-       for example, but see the first point) and/or ports.
+    <A
+     HREF="../mod/core.html#listen"
+    ><SAMP>Listen</SAMP></A>
+    for example, but see the first point) and/or ports.
    </LI>
   </OL>
   <P>
   Since this is an operating-system limitation, there's not much else
   available in the way of solutions.
+  </P>
   <P>
   As of 1.2.1 we have made attempts to work around various limitations
   involving running with many descriptors.
-  <a href="descriptors.html">More information is available.</a>
+  <A HREF="descriptors.html">More information is available.</A>
   </P>
   <HR>
  </LI>
@@ -938,16 +944,32 @@
       <STRONG>Can I increase <SAMP>FD_SETSIZE</SAMP> on FreeBSD?</STRONG>
      </A>
   <P>
-  On FreeBSD 2.2 and older <SAMP>FD_SETSIZE</SAMP>, which limits the
-  number of open
-  files on the system, is limited to 256. This can restrict the number of
-  virtual hosts you can use; especially if they all use different log
-  files. Increasing this limit (and recompiling Apache) is not enough,
+  On versions of FreeBSD older than 2.2 <SAMP>FD_SETSIZE</SAMP>, which
+  limits the number of open files on the system, is controlled by a
+  kernel option and is limited to 256.  You can set this value using a
+  line such as the following in your kernel configuration file:
+  </P>
+  <DL>
+   <DD><CODE>options FD_SETSIZE <EM>nnn</EM></CODE>
+   </DD>
+  </DL>
+  <P>
+  This can restrict the number of
+  virtual hosts you can use, especially if they all use different log
+  files.  Increasing this limit (and recompiling Apache) is not enough,
   as it is on some platforms (such as Solaris), as you also will have
   to recompile <SAMP>libc</SAMP> with the changed setting.
   </P>
   <P>
-  On FreeBSD 3.0 the default is 1024, so the problem is lessened.
+  With FreeBSD 2.2 and later, you <EM>can</EM> increase the setting of
+  <SAMP>FD_SETSIZE</SAMP> at Apache compilation time by adding
+  &quot;<SAMP>-DFD_SETSIZE=<EM>nnn</EM></SAMP>&quot; to the
+  <SAMP>EXTRA_CFLAGS</SAMP> line in your <SAMP>Configuration</SAMP>
+  file.
+  </P>
+  <P>
+  On FreeBSD 3.0 the default is 1024, so the problem is lessened still
+  more, and may not require any intervention at all.
   </P>
   <HR>
  </LI>
@@ -1639,9 +1661,9 @@
   <HR>
  </LI>
  <LI><A NAME="remote-user-var">
-	 <STRONG>Why is the environment variable 
-	 <SAMP>REMOTE_USER</SAMP> not set?</STRONG>
-	 </A>
+         <STRONG>Why is the environment variable 
+         <SAMP>REMOTE_USER</SAMP> not set?</STRONG>
+         </A>
   <P>
   This variable is set and thus available in SSI or CGI scripts <STRONG>if and
   only if</STRONG> the requested document was protected by access
@@ -1847,8 +1869,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-more-config">
-	  <STRONG>Where can I find mod_rewrite rulesets which already solve
-	  particular URL-related problems?</STRONG>
+          <STRONG>Where can I find mod_rewrite rulesets which already solve
+          particular URL-related problems?</STRONG>
      </A>
   <P>
   There is a collection of 
@@ -1872,8 +1894,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-article">
-	  <STRONG>Where can I find any published information about URL-manipulations and
-	  mod_rewrite?</STRONG>
+          <STRONG>Where can I find any published information about URL-manipulations and
+          mod_rewrite?</STRONG>
      </A>
   <P>
   There is an article from 
@@ -1898,8 +1920,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-complexity">
-	  <STRONG>Why is mod_rewrite so difficult to learn and seems so
-	  complicated?</STRONG>
+          <STRONG>Why is mod_rewrite so difficult to learn and seems so
+          complicated?</STRONG>
      </A>
   <P>
   Hmmm... there are a lot of reasons. First, mod_rewrite itself is a powerful
@@ -1924,8 +1946,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-dontwork">
-	  <STRONG>What can I do if my RewriteRules don't work as expected?
-	  </STRONG>
+          <STRONG>What can I do if my RewriteRules don't work as expected?
+          </STRONG>
      </A>
   <P>
   Use &quot;<SAMP>RewriteLog somefile</SAMP>&quot; and
@@ -1935,9 +1957,8 @@
   </P>
   <HR>
  </LI>
- <LI><A NAME="rewrite-prefixdocroot">
-	  <STRONG>Why are some of my URLs don't get prefixed with DocumentRoot
-	  when using mod_rewrite?</STRONG>
+ <LI><A NAME="rewrite-prefixdocroot"><STRONG>Why don't some of my URLs
+      get prefixed with DocumentRoot when using mod_rewrite?</STRONG>
      </A>
   <P>
   If the rule starts with <SAMP>/somedir/...</SAMP> make sure that really no
@@ -1951,8 +1972,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-nocase">
-	  <STRONG>How can I make all my URLs case-insensitive with mod_rewrite?
-	  </STRONG>
+          <STRONG>How can I make all my URLs case-insensitive with mod_rewrite?
+          </STRONG>
      </A>
   <P>
   You can't! The reason is: First, case translations for arbitrary length URLs
@@ -1971,8 +1992,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-virthost">
-	  <STRONG> Why are RewriteRules in my VirtualHost parts ignored?
-	  </STRONG>
+          <STRONG> Why are RewriteRules in my VirtualHost parts ignored?
+          </STRONG>
      </A>
   <P>
   Because you have to enable the engine for every virtual host explicitly due
@@ -1982,8 +2003,8 @@
   <HR>
  </LI>
  <LI><A NAME="rewrite-envwhitespace">
-	  <STRONG> How can I use strings with whitespaces in RewriteRule's ENV
-	  flag?</STRONG>
+          <STRONG> How can I use strings with whitespaces in RewriteRule's ENV
+          flag?</STRONG>
      </A>
   <P>
   There is only one ugly solution: You have to surround the complete flag
@@ -1991,6 +2012,31 @@
   to quote here is not the argument to the E-flag, it is the argument of the
   Apache config file parser, i.e. the third argument of the RewriteRule here.
   So you have to write <SAMP>"[E=any text with whitespaces]"</SAMP>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="cgi-spec"><STRONG>Where can I find the &quot;CGI
+      specification&quot;?</STRONG></A>
+  <P>
+  The Common Gateway Interface (CGI) specification currently lives in at
+  least two versions:
+  </P>
+  <P>
+  <OL>
+   <LI>At the original NCSA site
+    &lt;<A
+         HREF="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html"
+        ><SAMP>http://hoohoo.ncsa.uiuc.edu/cgi/interface.html</SAMP></A>&gt;.
+    This version hasn't been updated since 1995, and there have been
+    some efforts to update it and replace it with
+   </LI>
+   <LI>The most current version, which is struggling to become an
+    Internet RFC, found at
+    &lt;<A
+         HREF="http://www.ast.cam.ac.uk/~drtr/cgi-spec.html"
+        ><SAMP>http://www.ast.cam.ac.uk/~drtr/cgi-spec.html</SAMP></A>&gt;.
+   </LI>
+  </OL>
   </P>
   <HR>
  </LI>
