@@ -23,7 +23,9 @@ targets         = $(PROGRAMS)
 phony_targets   = buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include install-support
-DISTCLEANFILES  = apaci include/config_auto.h modules.c
+DISTCLEANFILES  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
+	configure generated_lists include/ap_config_auto.h \
+	include/ap_config_auto.h.in include/ap_config_path.h install-sh
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
