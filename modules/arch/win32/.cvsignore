@@ -1,5 +1,16 @@
+.deps
+.libs
+*.la
+modules.mk
+Makefile
+*.lo
+*.slo
+*.so
 Debug
 Release
+*.plg
+*.aps
+*.dep
 *.mak
 *.rc
 BuildLog.htm
