@@ -36,7 +36,49 @@ depend:
 	    && rm Makefile.new
 
 $(OBJS): Makefile
-os.o:	os.c os-inline.c
-ebcdic.o: ebcdic.c
+
 # DO NOT REMOVE
-os.o:	os.c
+bs2login.o: bs2login.c
+bs2login.o: $(INCDIR)/httpd.h
+bs2login.o: $(INCDIR)/ap_config.h
+bs2login.o: $(INCDIR)/ap_mmn.h
+bs2login.o: $(INCDIR)/ap_config_auto.h
+bs2login.o: os.h
+bs2login.o: $(INCDIR)/ap_ctype.h
+bs2login.o: $(INCDIR)/hsregex.h
+bs2login.o: $(INCDIR)/alloc.h
+bs2login.o: $(INCDIR)/buff.h
+bs2login.o: $(INCDIR)/ap.h
+bs2login.o: ebcdic.h
+bs2login.o: $(INCDIR)/util_uri.h
+bs2login.o: $(INCDIR)/http_config.h
+bs2login.o: $(INCDIR)/http_log.h
+ebcdic.o: ebcdic.c
+ebcdic.o: $(INCDIR)/ap_config.h
+ebcdic.o: $(INCDIR)/ap_mmn.h
+ebcdic.o: $(INCDIR)/ap_config_auto.h
+ebcdic.o: os.h
+ebcdic.o: $(INCDIR)/ap_ctype.h
+ebcdic.o: $(INCDIR)/hsregex.h
+ebcdic.o: ebcdic.h
+os-inline.o: os-inline.c
+os-inline.o: $(INCDIR)/ap_config.h
+os-inline.o: $(INCDIR)/ap_mmn.h
+os-inline.o: $(INCDIR)/ap_config_auto.h
+os-inline.o: os.h
+os-inline.o: $(INCDIR)/ap_ctype.h
+os-inline.o: $(INCDIR)/hsregex.h
+os.o: os.c
+os.o: $(INCDIR)/httpd.h
+os.o: $(INCDIR)/ap_config.h
+os.o: $(INCDIR)/ap_mmn.h
+os.o: $(INCDIR)/ap_config_auto.h
+os.o: os.h
+os.o: $(INCDIR)/ap_ctype.h
+os.o: $(INCDIR)/hsregex.h
+os.o: $(INCDIR)/alloc.h
+os.o: $(INCDIR)/buff.h
+os.o: $(INCDIR)/ap.h
+os.o: ebcdic.h
+os.o: $(INCDIR)/util_uri.h
+os.o: $(INCDIR)/http_core.h
