@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 22:49:10 $]
+Last modified at [$Date: 2002/02/05 01:01:54 $]
 
 Release:
 
@@ -88,6 +88,11 @@ RELEASE SHOWSTOPPERS:
 
             * mod_autoindex displays the wrong icon for subdirectories
               on Unix
+
+    * Win32 allows multiple processes to attach to the same port.  This
+      means that I can open three DOS prompts, and run the same Apache
+      binary with the same config file three different times, and the
+      server won't complain.
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
