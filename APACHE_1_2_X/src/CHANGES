@@ -20,6 +20,11 @@ Changes with Apache 1.2.1
      for the net if we require people that actually need this data to
      enable it.  [Linus Torvalds]
 
+  *) CONFIG: If a symlink pointed to a directory then it would be disallowed
+     if it contained a .htaccess disallowing symlinks.  This is contrary
+     to the rule that symlink permissions are tested with the symlink
+     options of the parent directory.  [Dean Gaudet] PR#353
+
   *) QUERY_STRING was unescaped in mod_include, it shouldn't be.
      [Dean Gaudet] PR#644
 
