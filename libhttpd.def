@@ -365,3 +365,4 @@ EXPORTS
 	ap_process_http_connection @360
 	ap_hook_check_user_id @361
 	ap_hook_auth_checker @362
+	ap_hook_fixups @363
