@@ -36,7 +36,7 @@ modules/proxy/libproxy.a:
 	$(MAKE) CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB))
 
 clean:
-	rm -f httpd $(OBJS) *pure*
+	rm -f httpd $(OBJS) 
 	cd regex; $(MAKE) clean
 	cd modules; $(MAKE) clean
 

@@ -1,8 +1,16 @@
 Changes with Apache 1.2b5
 
+  *) Portability Fix: IRIX complained with 'make clean' about *pure* (removed)
+     [Jim Jagielski]
+     
   *) Migration from sprintf() to snprintf() to avoid buffer
-     overflows. Provide portable snprintf() implementation
-     (ap_snprintf). [Marc Slemko, jj]
+     overflows. [Marc Slemco]
+
+  *) Provide portable snprintf() implementation (ap_snprintf)
+     as well as *cvt family. [Jim Jagielski]
+
+  *) Portability Fix: NeXT lacks unistd.h so we wrap it's inclusion
+     [Jim Jagielski]
 
   *) Remove mod_fastcgi.c from the distribution. This module appears
      to be maintained more through the Open Market channels and should
@@ -48,7 +56,7 @@ Changes with Apache 1.2b5
      problem if StartServers > HARD_SERVER_LIMIT. [Ed Korthof]
 
   *) Updated support for OSes (MachTen, ULTRIX, Paragon, ISC, OpenBSD
-     AIX PS/2, CONVEXOS)
+     AIX PS/2, CONVEXOS. [Jim Jagielski]
 
   *) Replace instances of inet_ntoa() with inet_addr() for ProxyBlock.
      It's more portable. [Martin Kraemer]
@@ -80,7 +88,7 @@ Changes with Apache 1.2b4:
      overwritten in cases where the server UID has write permissions.
      [Marc Slemko]
 
-  *) Fix awk compatibilty problem in Configure.
+  *) Fix awk compatibilty problem in Configure. [Jim Jagielski]
 
   *) Fix portablity problem in util_script where ARG_MAX may not be
      defined for some systems.
@@ -166,7 +174,7 @@ Changes with Apache 1.2b3:
   *) Remove rlim_t typedef for NetBSD. Do older versions need this?
 
   *) Defined rlim_t and WANTHSREGEX=yes and fixed waitpid() substitute for
-     NeXT.
+     NeXT. [Jim Jagielski]
 
   *) Removed recent modification to promote the status code on internal
      redirects, since the correct fix was to change the default log format
@@ -236,7 +244,7 @@ Changes with Apache 1.2b2:
      and added some user diagnostic info.  [Ben Laurie]
 
   *) In helpers/CutRule, replaced "cut" invocation with "awk" invocation
-     for better portability.
+     for better portability. [Jim Jagielski]
 
   *) Updated helpers/GuessOS for ... 
         SCO 5            (recognize minor releases)
@@ -247,7 +255,6 @@ Changes with Apache 1.2b2:
         SINIX            (-whatever-sysv4)
         NCR Unix         (-ncr-sysv4)
      and fixed something in helpers/PrintPath  [Ben Laurie]
-
 
 Changes with Apache 1.2b1:
 
