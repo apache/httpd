@@ -1,0 +1,41 @@
+; xmlparse.def
+
+LIBRARY xmlparse
+DESCRIPTION ''
+
+EXPORTS
+   XML_DefaultCurrent                    @1
+   XML_ErrorString                       @2
+   XML_ExternalEntityParserCreate        @3
+   XML_GetBase                           @4
+   XML_GetBuffer                         @5
+   XML_GetCurrentByteCount               @6
+   XML_GetCurrentByteIndex               @7
+   XML_GetCurrentColumnNumber            @8
+   XML_GetCurrentLineNumber              @9
+   XML_GetErrorCode                      @10
+   XML_GetSpecifiedAttributeCount        @11
+   XML_Parse                             @12
+   XML_ParseBuffer                       @13
+   XML_ParserCreate                      @14
+   XML_ParserCreateNS                    @15
+   XML_ParserFree                        @16
+   XML_SetBase                           @17
+   XML_SetCdataSectionHandler            @18
+   XML_SetCharacterDataHandler           @19
+   XML_SetCommentHandler                 @20
+   XML_SetDefaultHandler                 @21
+   XML_SetDefaultHandlerExpand           @22
+   XML_SetElementHandler                 @23
+   XML_SetEncoding                       @24
+   XML_SetExternalEntityRefHandler       @25
+   XML_SetExternalEntityRefHandlerArg    @26
+   XML_SetNamespaceDeclHandler           @27
+   XML_SetNotStandaloneHandler           @28
+   XML_SetNotationDeclHandler            @29
+   XML_SetProcessingInstructionHandler   @30
+   XML_SetUnknownEncodingHandler         @31
+   XML_SetUnparsedEntityDeclHandler      @32
+   XML_SetUserData                       @33
+   XML_UseParserAsHandlerArg             @34
+
