@@ -2995,17 +2995,9 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
-static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t readbytes)
+static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
 {
     apr_bucket *e;
-
-    /* ### we should obey readbytes. the policy is to not insert more than
-       ### READBYTES into the brigade. the caller knows the amount that is
-       ### proper for the protocol. reading more than that could cause
-       ### problems.
-       ### (of course, we can read them from the socket, we just should not
-       ###  return them until asked)
-    */
 
     if (!f->ctx) {    /* If we haven't passed up the socket yet... */
         f->ctx = (void *)1;

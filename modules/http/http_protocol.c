@@ -424,7 +424,7 @@ struct dechunk_ctx {
 static long get_chunk_size(char *);
 
 apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                               ap_input_mode_t mode, apr_size_t readbytes)
+                               ap_input_mode_t mode, apr_size_t *readbytes)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
@@ -484,7 +484,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         apr_size_t chunk_bytes = ctx->chunk_size - ctx->bytes_delivered;
 
         if ((rv = ap_get_brigade(f->next, bb, mode,
-                                 chunk_bytes)) != APR_SUCCESS) {
+                                 &chunk_bytes)) != APR_SUCCESS) {
             return rv;
         }
 
@@ -518,7 +518,7 @@ typedef struct http_filter_ctx {
     apr_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t readbytes)
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
 {
     apr_bucket *e;
     char *buff;
@@ -577,7 +577,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     }
 
     /* readbytes == 0 is "read a single line". otherwise, read a block. */
-    if (readbytes) {
+    if (*readbytes) {
 
         /* ### the code below, which moves bytes from one brigade to the
            ### other is probably bogus. presuming the next filter down was
@@ -604,12 +604,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
                  * a time - don't assume that one call to apr_bucket_read()
                  * will return the full string.
                  */
-                if (readbytes < len) {
-                    apr_bucket_split(e, readbytes);
-                    readbytes = 0;
+                if (*readbytes < len) {
+                    apr_bucket_split(e, *readbytes);
+                    *readbytes = 0;
                 }
                 else {
-                    readbytes -= len;
+                    *readbytes -= len;
                 }
                 APR_BUCKET_REMOVE(e);
                 APR_BRIGADE_INSERT_TAIL(b, e);
@@ -628,7 +628,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
            ### chunks to determine where the end of the request is, so we
            ### shouldn't be monkeying with EOS buckets.
         */
-        if (readbytes == 0) {
+        if (*readbytes == 0) {
             apr_bucket *eos = apr_bucket_eos_create();
                 
             APR_BRIGADE_INSERT_TAIL(b, eos);
@@ -1403,7 +1403,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     do {
         if (APR_BRIGADE_EMPTY(bb)) {
             if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
-                               r->remaining) != APR_SUCCESS) {
+                               &r->remaining) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
@@ -1449,7 +1449,6 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
          * these
          */
         r->read_length += len_read;      /* XXX yank me? */
-        r->remaining -= len_read;        /* XXX yank me? */
         old = b;
         b = APR_BUCKET_NEXT(b);
         apr_bucket_delete(old);
