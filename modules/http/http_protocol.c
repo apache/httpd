@@ -2468,9 +2468,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             apr_size_t len;
 
             if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
-                /* we assume here that if copy failed we can morph
-                 * the bucket into a copyable one by reading it... normally
-                 * copy won't return anything but APR_SUCCESS or APR_ENOTIMPL
+                /* this shouldn't ever happen due to the call to
+                 * apr_brigade_length() above which normalizes
+                 * indeterminate-length buckets.  just to be sure,
+                 * though, this takes care of uncopyable buckets that
+                 * do somehow manage to slip through.
                  */
                 /* XXX: check for failure? */
                 apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
