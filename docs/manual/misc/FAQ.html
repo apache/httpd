@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.36 $ ($Date: 1997/04/22 02:55:43 $)
+$Revision: 1.37 $ ($Date: 1997/04/22 03:01:25 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -864,7 +864,9 @@ do not appear, and are not needed, for the hypertext version.
   processing a request.  Unfortunately, the Java Development Kit (JDK)
   version 1.0.2 URL methods (URLConnection and friends) expect to see
   the version string &quot;HTTP/1.0&quot; and do not correctly interpret
-  the &quot;HTTP/1.1&quot; value Apache is sending.  The result is that
+  the &quot;HTTP/1.1&quot; value Apache is sending (this part of the
+  response is a declaration of what the server can do rather than a
+  declaration of the dialect of the response).  The result is that
   the JDK methods do not correctly parse the headers, and include them
   with the document content by mistake.
   </P>
