@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fixes the build of proxy on Windows. Since the proxy_module is declared
+     as extern using AP_MODULE_DECLARE_DATA that expands to dllexport, there
+     is a LNK2001 error when building proxy_http. [Mladen Turk]
+
   *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
      [Graham Leggett]
 

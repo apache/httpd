@@ -256,6 +256,6 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
 
 /* For proxy_util */
-extern module AP_MODULE_DECLARE_DATA proxy_module;
+extern module PROXY_DECLARE_DATA proxy_module;
 
 #endif /*MOD_PROXY_H*/
