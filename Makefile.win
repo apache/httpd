@@ -115,10 +115,7 @@ _install:
 _clean:
 	cd lib\apr
 	 nmake /nologo CFG="aprlib - Win32 $(LONG)" -f aprlib.mak clean
-	cd include
-         del apr.h
-         del apr_config.h
-	cd ..\..\..
+	cd ..\..
 	cd regex
 	 nmake /nologo CFG="regex - Win32 $(LONG)" -f regex.mak clean
 	cd ..
