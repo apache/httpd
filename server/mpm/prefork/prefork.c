@@ -669,6 +669,8 @@ static void accept_mutex_child_init(pool *p)
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "Child cannot open lock semaphore, rc=%d", rc);
 	clean_child_exit(APEXIT_CHILDINIT);
+    } else {
+        ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
     }
 }
 
@@ -2204,6 +2206,9 @@ static void child_main(int child_num_arg)
 		break;		/* We have a socket ready for reading */
 	    else {
 
+/* TODO: this accept result handling stuff should be abstracted...
+ * it's already out of date between the various unix mpms
+ */
 		/* Our old behaviour here was to continue after accept()
 		 * errors.  But this leads us into lots of troubles
 		 * because most of the errors are quite fatal.  For
@@ -2255,6 +2260,27 @@ static void child_main(int child_num_arg)
 		case ENETUNREACH:
 #endif
                     break;
+#ifdef ENETDOWN
+		case ENETDOWN:
+		     /*
+		      * When the network layer has been shut down, there
+		      * is not much use in simply exiting: the parent
+		      * would simply re-create us (and we'd fail again).
+		      * Use the CHILDFATAL code to tear the server down.
+		      * @@@ Martin's idea for possible improvement:
+		      * A different approach would be to define
+		      * a new APEXIT_NETDOWN exit code, the reception
+		      * of which would make the parent shutdown all
+		      * children, then idle-loop until it detected that
+		      * the network is up again, and restart the children.
+		      * Ben Hyde noted that temporary ENETDOWN situations
+		      * occur in mobile IP.
+		      */
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
+			"accept: giving up.");
+		    clean_child_exit(APEXIT_CHILDFATAL);
+#endif /*ENETDOWN*/
+
 #ifdef TPF
 		case EINACT:
 		    ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
