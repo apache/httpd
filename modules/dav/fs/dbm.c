@@ -70,14 +70,14 @@
 #include "apr_strings.h"
 #include "apr_file_io.h"
 
-#include "apu_dbm.h"
+#include "apr_dbm.h"
 
 #include "mod_dav.h"
 #include "repos.h"
 
 struct dav_db {
     apr_pool_t *pool;
-    apu_dbm_t *file;
+    apr_dbm_t *file;
 };
 
 /* ### temp */
@@ -125,7 +125,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
         errstr = "Could not open property database.";
     }
     else {
-        apu_dbm_geterror(db->file, &errcode, &errstr);
+        apr_dbm_geterror(db->file, &errcode, &errstr);
     }
 
     err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
@@ -152,12 +152,12 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb)
 {
     apr_status_t status;
-    apu_dbm_t *file;
+    apr_dbm_t *file;
 
     *pdb = NULL;
 
-    if ((status = apu_dbm_open(pathname, p,
-                               ro ? APU_DBM_READONLY : APU_DBM_RWCREATE,
+    if ((status = apr_dbm_open(pathname, p,
+                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
                                &file)) != APR_SUCCESS
         && !ro) {
         /* ### do something with 'status' */
@@ -210,52 +210,52 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
 
 static void dav_dbm_close(dav_db *db)
 {
-    apu_dbm_close(db->file);
+    apr_dbm_close(db->file);
 }
 
 static dav_error * dav_dbm_fetch(dav_db *db, dav_datum key, dav_datum *pvalue)
 {
-    apr_status_t status = apu_dbm_fetch(db->file, key, pvalue);
+    apr_status_t status = apr_dbm_fetch(db->file, key, pvalue);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_store(dav_db *db, dav_datum key, dav_datum value)
 {
-    apr_status_t status = apu_dbm_store(db->file, key, value);
+    apr_status_t status = apr_dbm_store(db->file, key, value);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_delete(dav_db *db, dav_datum key)
 {
-    apr_status_t status = apu_dbm_delete(db->file, key);
+    apr_status_t status = apr_dbm_delete(db->file, key);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
 static int dav_dbm_exists(dav_db *db, dav_datum key)
 {
-    return apu_dbm_exists(db->file, key);
+    return apr_dbm_exists(db->file, key);
 }
 
 static dav_error * dav_dbm_firstkey(dav_db *db, dav_datum *pkey)
 {
-    apr_status_t status = apu_dbm_firstkey(db->file, pkey);
+    apr_status_t status = apr_dbm_firstkey(db->file, pkey);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_nextkey(dav_db *db, dav_datum *pkey)
 {
-    apr_status_t status = apu_dbm_nextkey(db->file, pkey);
+    apr_status_t status = apr_dbm_nextkey(db->file, pkey);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
 static void dav_dbm_freedatum(dav_db *db, dav_datum data)
 {
-    apu_dbm_freedatum(db->file, data);
+    apr_dbm_freedatum(db->file, data);
 }
 
 const dav_hooks_db dav_hooks_db_dbm =

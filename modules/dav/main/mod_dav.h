@@ -63,7 +63,7 @@
 #include "util_xml.h"
 #include "ap_hooks.h"
 #include "apr_hash.h"
-#include "apu_dbm.h"
+#include "apr_dbm.h"
 
 #include <limits.h>     /* for INT_MAX */
 
@@ -945,7 +945,7 @@ enum {
 */
 
 typedef struct dav_db dav_db;
-typedef apu_datum_t dav_datum;
+typedef apr_datum_t dav_datum;
 
 /* hook functions to enable pluggable databases */
 struct dav_hooks_propdb
