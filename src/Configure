@@ -873,7 +873,7 @@ done
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     SUBDIRS="$SUBDIRS regex"
-    INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH regex"
+#    INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH regex"
 fi
 
 # create modules.c
@@ -991,7 +991,8 @@ echo  >> Makefile
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
 
-INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH $OSDIR main ap"
+#INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH $OSDIR main ap"
+INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH $OSDIR include"
 incprefix="-I"
 for depth in 0 1 2; do
     incvar="INCLUDES_DEPTH${depth}="
@@ -1071,7 +1072,7 @@ CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH2) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
-INCDIR=../../main
+INCDIR=../../include
 EOF
 	if [ -f $moddir/Makefile.libdir ]; then
 	    # it's responsible for the rest of its Makefile

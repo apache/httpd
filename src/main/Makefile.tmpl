@@ -7,9 +7,10 @@ CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+INCDIR=../include
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
-  http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o\
+  http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o \
   md5c.o util_md5.o explain.o http_bprintf.o util_date.o \
   fnmatch.o http_vhost.o
 
@@ -37,110 +38,166 @@ http_bprintf.o: http_bprintf.c
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-alloc.o: alloc.c httpd.h conf.h alloc.h buff.h multithread.h
-buff.o: buff.c httpd.h conf.h alloc.h buff.h http_main.h
+alloc.o: alloc.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/multithread.h
+buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_main.h
 dummy.o: dummy.c
-explain.o: explain.c explain.h
+explain.o: explain.c $(INCDIR)/explain.h
 fnmatch.o: fnmatch.c
-gnu-fnmatch.o: gnu-fnmatch.c fnmatch.h
-http_bprintf.o: http_bprintf.c httpd.h conf.h alloc.h buff.h
-http_config.o: http_config.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_request.h \
- http_conf_globals.h explain.h http_vhost.h
-http_core.o: http_core.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_protocol.h http_conf_globals.h http_main.h \
- http_log.h rfc1413.h util_md5.h md5.h scoreboard.h fnmatch.h
-http_log.o: http_log.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_log.h
-http_main.o: http_main.c httpd.h conf.h alloc.h buff.h http_main.h \
- http_log.h http_config.h http_protocol.h http_request.h \
- http_conf_globals.h http_core.h scoreboard.h multithread.h explain.h \
- http_vhost.h
-http_protocol.o: http_protocol.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_protocol.h http_main.h http_log.h \
- util_date.h http_vhost.h
-http_request.o: http_request.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_protocol.h http_log.h \
- http_main.h scoreboard.h fnmatch.h
-md5c.o: md5c.c conf.h md5.h
-mod_access.o: mod_access.c httpd.h conf.h alloc.h buff.h http_core.h \
- http_config.h http_log.h http_request.h
-mod_actions.o: mod_actions.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_protocol.h http_main.h \
- http_log.h util_script.h
-mod_alias.o: mod_alias.c httpd.h conf.h alloc.h buff.h http_config.h
-mod_asis.o: mod_asis.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_protocol.h http_log.h util_script.h http_main.h http_request.h
-mod_auth.o: mod_auth.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_log.h http_protocol.h
-mod_auth_anon.o: mod_auth_anon.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_protocol.h http_request.h
-mod_auth_db.o: mod_auth_db.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_protocol.h
-mod_auth_dbm.o: mod_auth_dbm.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_protocol.h
-mod_auth_msql.o: mod_auth_msql.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_protocol.h
-mod_autoindex.o: mod_autoindex.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_request.h http_protocol.h http_log.h \
- http_main.h util_script.h
-mod_browser.o: mod_browser.c httpd.h conf.h alloc.h buff.h \
- http_config.h
-mod_cern_meta.o: mod_cern_meta.c httpd.h conf.h alloc.h buff.h \
- http_config.h util_script.h http_log.h http_request.h
-mod_cgi.o: mod_cgi.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_request.h http_core.h http_protocol.h http_main.h http_log.h \
- util_script.h http_conf_globals.h
-mod_digest.o: mod_digest.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_log.h http_protocol.h util_md5.h md5.h
-mod_dir.o: mod_dir.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_request.h http_protocol.h http_log.h http_main.h \
- util_script.h
-mod_dld.o: mod_dld.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_conf_globals.h
-mod_env.o: mod_env.c httpd.h conf.h alloc.h buff.h http_config.h
-mod_expires.o: mod_expires.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_log.h
-mod_headers.o: mod_headers.c httpd.h conf.h alloc.h buff.h \
- http_config.h
-mod_imap.o: mod_imap.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_request.h http_core.h http_protocol.h http_main.h http_log.h \
- util_script.h
-mod_include.o: mod_include.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_protocol.h http_log.h \
- http_main.h util_script.h
-mod_info.o: mod_info.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_log.h http_main.h http_protocol.h util_script.h \
- http_conf_globals.h
-mod_log_agent.o: mod_log_agent.c httpd.h conf.h alloc.h buff.h \
- http_config.h
-mod_log_config.o: mod_log_config.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h
-mod_log_referer.o: mod_log_referer.c httpd.h conf.h alloc.h buff.h \
- http_config.h
-mod_mime.o: mod_mime.c httpd.h conf.h alloc.h buff.h http_config.h \
- mod_mime.h
-mod_mime_magic.o: mod_mime_magic.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_log.h http_protocol.h
-mod_negotiation.o: mod_negotiation.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_log.h util_script.h
-mod_rewrite.o: mod_rewrite.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_request.h http_core.h http_log.h mod_rewrite.h
-mod_setenvif.o: mod_setenvif.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h
-mod_status.o: mod_status.c httpd.h conf.h alloc.h buff.h http_config.h \
- http_core.h http_protocol.h http_main.h util_script.h scoreboard.h \
- http_log.h
-mod_userdir.o: mod_userdir.c httpd.h conf.h alloc.h buff.h \
- http_config.h
-mod_usertrack.o: mod_usertrack.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h
-modules.o: modules.c httpd.h conf.h alloc.h buff.h http_config.h
-rfc1413.o: rfc1413.c httpd.h conf.h alloc.h buff.h http_log.h \
- rfc1413.h http_main.h
-util.o: util.c httpd.h conf.h alloc.h buff.h http_conf_globals.h
-util_date.o: util_date.c conf.h util_date.h
-util_md5.o: util_md5.c httpd.h conf.h alloc.h buff.h util_md5.h md5.h
-util_script.o: util_script.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_conf_globals.h http_main.h http_log.h \
- http_protocol.h http_core.h http_request.h util_script.h
+gnu-fnmatch.o: gnu-fnmatch.c $(INCDIR)/fnmatch.h
+http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h
+http_config.o: http_config.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_request.h \
+	$(INCDIR)/http_conf_globals.h $(INCDIR)/explain.h \
+	$(INCDIR)/http_vhost.h
+http_core.o: http_core.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_protocol.h $(INCDIR)/http_conf_globals.h \
+	$(INCDIR)/http_main.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
+	$(INCDIR)/util_md5.h $(INCDIR)/md5.h $(INCDIR)/scoreboard.h \
+	$(INCDIR)/fnmatch.h
+http_log.o: http_log.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_log.h
+http_main.o: http_main.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h \
+	$(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_conf_globals.h \
+	$(INCDIR)/http_core.h $(INCDIR)/scoreboard.h $(INCDIR)/multithread.h \
+	$(INCDIR)/explain.h $(INCDIR)/http_vhost.h
+http_protocol.o: http_protocol.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+	$(INCDIR)/http_log.h $(INCDIR)/util_date.h $(INCDIR)/http_vhost.h
+http_request.o: http_request.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_protocol.h $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+	$(INCDIR)/scoreboard.h $(INCDIR)/fnmatch.h
+md5c.o: md5c.c $(INCDIR)/conf.h $(INCDIR)/md5.h
+mod_access.o: mod_access.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_config.h $(INCDIR)/http_log.h $(INCDIR)/http_request.h
+mod_actions.o: mod_actions.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_protocol.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h \
+	$(INCDIR)/util_script.h
+mod_alias.o: mod_alias.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_asis.o: mod_asis.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/http_log.h $(INCDIR)/util_script.h $(INCDIR)/http_main.h \
+	$(INCDIR)/http_request.h
+mod_auth.o: mod_auth.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_log.h $(INCDIR)/http_protocol.h
+mod_auth_anon.o: mod_auth_anon.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/http_request.h
+mod_auth_db.o: mod_auth_db.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h
+mod_auth_dbm.o: mod_auth_dbm.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h
+mod_auth_msql.o: mod_auth_msql.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h
+mod_autoindex.o: mod_autoindex.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_request.h \
+	$(INCDIR)/http_protocol.h $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+	$(INCDIR)/util_script.h
+mod_browser.o: mod_browser.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_cern_meta.o: mod_cern_meta.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/util_script.h $(INCDIR)/http_log.h $(INCDIR)/http_request.h
+mod_cgi.o: mod_cgi.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_request.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+	$(INCDIR)/http_log.h $(INCDIR)/util_script.h \
+	$(INCDIR)/http_conf_globals.h
+mod_digest.o: mod_digest.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/util_md5.h $(INCDIR)/md5.h
+mod_dir.o: mod_dir.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/http_log.h $(INCDIR)/http_main.h $(INCDIR)/util_script.h
+mod_dld.o: mod_dld.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_conf_globals.h
+mod_env.o: mod_env.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_expires.o: mod_expires.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_log.h
+mod_headers.o: mod_headers.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_imap.o: mod_imap.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_request.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+	$(INCDIR)/http_log.h $(INCDIR)/util_script.h
+mod_include.o: mod_include.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_protocol.h $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+	$(INCDIR)/util_script.h
+mod_info.o: mod_info.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_log.h $(INCDIR)/http_main.h $(INCDIR)/http_protocol.h \
+	$(INCDIR)/util_script.h $(INCDIR)/http_conf_globals.h
+mod_log_agent.o: mod_log_agent.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_log_config.o: mod_log_config.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h
+mod_log_referer.o: mod_log_referer.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_mime.o: mod_mime.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/mod_mime.h
+mod_mime_magic.o: mod_mime_magic.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+	$(INCDIR)/http_protocol.h
+mod_negotiation.o: mod_negotiation.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+	$(INCDIR)/util_script.h
+mod_rewrite.o: mod_rewrite.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_request.h $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+	$(INCDIR)/mod_rewrite.h
+mod_setenvif.o: mod_setenvif.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_log.h
+mod_status.o: mod_status.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+	$(INCDIR)/util_script.h $(INCDIR)/scoreboard.h $(INCDIR)/http_log.h
+mod_userdir.o: mod_userdir.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h
+mod_usertrack.o: mod_usertrack.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_core.h
+modules.o: modules.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_config.h
+rfc1413.o: rfc1413.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
+	$(INCDIR)/http_main.h
+util.o: util.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/http_conf_globals.h
+util_date.o: util_date.c $(INCDIR)/conf.h $(INCDIR)/util_date.h
+util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(INCDIR)/alloc.h \
+	$(INCDIR)/buff.h $(INCDIR)/util_md5.h $(INCDIR)/md5.h
+util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+	$(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/http_config.h \
+	$(INCDIR)/http_conf_globals.h $(INCDIR)/http_main.h \
+	$(INCDIR)/http_log.h $(INCDIR)/http_protocol.h $(INCDIR)/http_core.h \
+	$(INCDIR)/http_request.h $(INCDIR)/util_script.h
