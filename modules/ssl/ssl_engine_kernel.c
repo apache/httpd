@@ -1606,11 +1606,14 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
      * Log this cache operation
      */
     if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        char buf[SSL_SESSION_ID_STRING_LEN];
+
         ssl_log(s, SSL_LOG_TRACE,
                 "Inter-Process Session Cache: "
                 "request=SET status=%s id=%s timeout=%ds (session caching)",
                 (rc == TRUE ? "OK" : "BAD"),
-                SSL_SESSION_id2sz(session_id, session_id_length),
+                SSL_SESSION_id2sz(session_id, session_id_length,
+                                  buf, sizeof(buf)),
                 (timeout - time(NULL)));
     }
 
@@ -1647,12 +1650,15 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
      * Log this cache operation
      */
     if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        char buf[SSL_SESSION_ID_STRING_LEN];
         const char *status = session ? "FOUND" : "MISSED";
         const char *re     = session ? "reuse" : "renewal";
 
         ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
                 "request=GET status=%s id=%s (session %s)",
-                status, SSL_SESSION_id2sz(id, idlen), re);
+                status,
+                SSL_SESSION_id2sz(id, idlen, buf, sizeof(buf)),
+                re);
     }
 
     /*
@@ -1701,9 +1707,11 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
      * Log this cache operation
      */
     if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        char buf[SSL_SESSION_ID_STRING_LEN];
         ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
                 "request=REM status=OK id=%s (session dead)",
-                SSL_SESSION_id2sz(session_id, session_id_length));
+                SSL_SESSION_id2sz(session_id, session_id_length,
+                                  buf, sizeof(buf)));
     }
 
     return;
