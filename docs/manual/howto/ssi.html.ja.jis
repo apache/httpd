@@ -21,8 +21,6 @@
 <p><span>Available Languages: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p>サーバサイドインクルードによって、既存の HTML
 ドキュメントに動的なコンテンツを追加することができます。</p>
@@ -376,9 +374,9 @@
 </code></p></div>
 
     <p>このように単純に文字どおりに設定することに加え、
-    例えば環境変数や前の記事で述べた変数
+    <a href="../env.html">環境変数</a>や上記の変数
     (例えば <code>LAST_MODIFIED</code> のような)
-    を含む他のあらゆる変数を値を設定するのに使用することができます。
+    を含む他のあらゆる変数を値を設定するのに使用することができます。
     変数名の前にドル記号 ($) を使用することで、
     それがリテラル文字列ではなくて変数であることを示します。</p>
 <div class="example"><p><code>
@@ -427,7 +425,7 @@
     はあらゆる種類の論理的比較をすることができます。
     値を比較したり、その値が ``真'' かどうかを評価します
     (空でないなら与えられた文字列は真です)。
-    利用可能な比較演算子の全てのリストについては、
+    利用可能な比較演算子の全てのリストについては、
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> ドキュメンテーションを参照してください。
     ここでは、この構造をどう使用するかの例をいくつか示します。</p>
 

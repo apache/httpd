@@ -137,7 +137,7 @@ Apache 2.1 で導入されました</td></tr>
     を使って伝えられます。</p>
 
     <div class="note">
-      任意のメソッド名を使用することができます。
+      任意のメソッド名を使用することができます。
       <strong>メソッド名は大文字小文字を区別します</strong>。ですから、
       <code>Script PUT</code> と <code>Script put</code>
       はまったく違った効果になります。
