@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Replaced use of WIN32 define with HAVE_DRIVE_LETTERS to indicate
+     when the OS allows a DOS drive letter within pathnames.  [Brian Havard]
+
   *) Add %V to mod_log_config, this logs the hostname according to the
      UseCanonicalName setting (this is the pre-1.3.4 behaviour of
      %v).  Useful for mass vhosting.  [Tony Finch <dot@dotat.at>]

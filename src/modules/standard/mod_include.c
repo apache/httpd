@@ -628,7 +628,7 @@ static int include_cgi(char *s, request_rec *r)
  */
 static int is_only_below(const char *path)
 {
-#if WIN32
+#ifdef HAVE_DRIVE_LETTERS
     if (path[1] == ':')
 	return 0;
 #endif

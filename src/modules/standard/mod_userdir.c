@@ -262,7 +262,7 @@ static int translate_userdir(request_rec *r)
 
 	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
             if (x) {
-#ifdef WIN32
+#ifdef HAVE_DRIVE_LETTERS
                 /*
                  * Crummy hack. Need to figure out whether we have been
                  * redirected to a URL or to a file on some drive. Since I

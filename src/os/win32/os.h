@@ -34,6 +34,7 @@
 #define USE_MMAP_SCOREBOARD
 #define MULTITHREAD
 #define HAVE_CANONICAL_FILENAME
+#define HAVE_DRIVE_LETTERS
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;

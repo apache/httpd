@@ -348,7 +348,7 @@ static void add_file_conf(core_dir_config *conf, void *url_config)
  * See directory_walk().
  */
 
-#if defined(OS2) || defined(WIN32)
+#ifdef HAVE_DRIVE_LETTERS
 #define IS_SPECIAL(entry_core)	\
     ((entry_core)->r != NULL \
 	|| ((entry_core)->d[0] != '/' && (entry_core)->d[1] != ':'))

@@ -178,8 +178,8 @@ static int get_path_info(request_rec *r)
     char *end = &path[strlen(path)];
     char *last_cp = NULL;
     int rv;
-#ifdef WIN32
-    BOOL bStripSlash=TRUE;
+#ifdef HAVE_DRIVE_LETTERS
+    char bStripSlash=1;
 #endif
 
     if (r->finfo.st_mode) {
@@ -187,12 +187,12 @@ static int get_path_info(request_rec *r)
 	return OK;
     }
 
-#ifdef WIN32
+#ifdef HAVE_DRIVE_LETTERS
     /* If the directory is x:\, then we don't want to strip
      * the trailing slash since x: is not a valid directory.
      */
     if (strlen(path) == 3 && path[1] == ':' && path[2] == '/')
-        bStripSlash = FALSE;
+        bStripSlash = 0;
 
 
     /* If UNC name == //machine/share/, do not 
@@ -211,7 +211,7 @@ static int get_path_info(request_rec *r)
         }
     
         if (iCount == 4)
-            bStripSlash = FALSE;
+            bStripSlash = 0;
     }
 
     if (bStripSlash)
