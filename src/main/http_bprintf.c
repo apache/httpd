@@ -17,7 +17,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#ifndef QNX
 #include <memory.h>
+#endif
 #include <assert.h>
 #include <math.h>
 #include "alloc.h"

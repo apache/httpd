@@ -295,6 +295,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_INITGROUPS
+#define NEED_SELECT_H
 #define JMP_BUF sigjmp_buf
 
 #elif defined(LYNXOS)
