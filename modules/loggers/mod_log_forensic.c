@@ -71,7 +71,6 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
-#include <assert.h>
 #include "apr_strings.h"
 #include "apr_atomic.h"
 #include <unistd.h>
@@ -156,9 +155,9 @@ static int log_init(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt,
 static char *log_escape(char *q, const char *e, const char *p)
 {
     for ( ; *p ; ++p) {
-        assert(q < e);
+        ap_assert(q < e);
         if (*p < ' ' || *p >= 0x7f || *p == '|' || *p == ':' || *p == '%') {
-            assert(q+2 < e);
+            ap_assert(q+2 < e);
             *q++ = '%';
             sprintf(q, "%02x", *(unsigned char *)p);
             q += 2;
@@ -166,7 +165,7 @@ static char *log_escape(char *q, const char *e, const char *p)
         else
             *q++ = *p;
     }
-    assert(q < e);
+    ap_assert(q < e);
     *q = '\0';
 
     return q;
@@ -252,12 +251,12 @@ static int log_before(request_rec *r)
 
     apr_table_do(log_headers, &h, r->headers_in, NULL);
 
-    assert(h.pos < h.end);
+    ap_assert(h.pos < h.end);
     *h.pos++ = '\n';
 
     n = h.count-1;
     rv = apr_file_write(cfg->fd, h.log, &n);
-    assert(rv == APR_SUCCESS && n == h.count-1);
+    ap_assert(rv == APR_SUCCESS && n == h.count-1);
 
     apr_table_setn(r->notes, "forensic-id", id);
 
@@ -281,7 +280,7 @@ static int log_after(request_rec *r)
     s = apr_pstrcat(r->pool, "-", id, "\n", NULL);
     l = n = strlen(s);
     rv = apr_file_write(cfg->fd, s, &n);
-    assert(rv == APR_SUCCESS && n == l);
+    ap_assert(rv == APR_SUCCESS && n == l);
 
     return OK;
 }
