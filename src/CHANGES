@@ -1346,7 +1346,7 @@ Changes with Apache 1.3b6
   *) The CGI spec says that REMOTE_HOST should be set to the remote hosts's
      name, or left unset if this value is unavailable.  Apache was setting
      it to the IP address when unavailable.
-     [Tony Fincg <fanf@demon.net>] PR#1925
+     [Tony Finch <fanf@demon.net>] PR#1925
 
   *) Various improvements to the configuration and build support for compiling
      modules as shared objects. Especially Solaris 2.x, SunOS 4.1, IRIX and
