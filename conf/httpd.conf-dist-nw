@@ -56,8 +56,6 @@ ServerType standalone
 # (available at <URL:http://www.apache.org/docs/mod/core.html#lockfile>);
 # you will save yourself a lot of trouble.
 #
-# Do NOT add a slash at the end of the directory path.
-#
 ServerRoot "sys:/apache"
 
 #
