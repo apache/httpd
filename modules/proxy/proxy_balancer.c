@@ -31,6 +31,7 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 #define PROXY_BALANCER_UNLOCK(b)    APR_SUCCESS
 #endif
 
+
 /* Retrieve the parameter with the given name                                */
 static char *get_path_param(apr_pool_t *pool, char *url,
                             const char *name)
@@ -162,7 +163,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
              * This is for cases when worker is in error state.
              * It will force the even request distribution
              */
-            total_factor += worker->lbfactor;
+            total_factor += worker->s->lbfactor;
         }
         worker++;
     }
@@ -207,7 +208,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
                  * Lbstatus is of higher importance then
                  * the number of empty slots.
                  */
-                if (worker->lbstatus > candidate->lbstatus) {
+                if (worker->s->lbstatus > candidate->s->lbstatus) {
                     candidate = worker;
                 }
             }
@@ -221,9 +222,9 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
                 /* XXX: The lbfactor can be update using bytes transfered
                  * Right now, use the round-robin scheme
                  */
-                worker->lbstatus += worker->lbfactor;
-                if (worker->lbstatus >= total_factor)
-                    worker->lbstatus = worker->lbfactor;
+                worker->s->lbstatus += worker->s->lbfactor;
+                if (worker->s->lbstatus >= total_factor)
+                    worker->s->lbstatus = worker->s->lbfactor;
             }
             worker++;
         }
@@ -289,9 +290,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         workers = (proxy_runtime_worker *)(*balancer)->workers->elts;
         for (i = 0; i < (*balancer)->workers->nelts; i++) {
             /* For now assume that all workers are OK */
-            workers->lbstatus += workers->lbfactor;
-            if (workers->lbstatus >= 100.0)
-                workers->lbstatus = workers->lbfactor;
+            workers->s->lbstatus += workers->s->lbfactor;
+            if (workers->s->lbstatus >= 100.0)
+                workers->s->lbstatus = workers->s->lbfactor;
             workers++;
         }
     }
