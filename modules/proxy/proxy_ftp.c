@@ -358,7 +358,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	char *filename;
 	int found = 0;
 	int eos = 0;
-	ctx->buffer[0] = 0;
 
 	/* get a complete line */
 	/* if the buffer overruns - throw data away */
@@ -457,6 +456,12 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 		    ctx->buffer, filename, filename);
 	    }
 	}
+	else {
+	    str = apr_pstrdup(p, ctx->buffer);
+	}
+
+	/* erase buffer for next time around */
+	ctx->buffer[0] = 0;
 
 	e = apr_bucket_pool_create(str, strlen(str), p);
 	APR_BRIGADE_INSERT_TAIL(out, e);
