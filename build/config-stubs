@@ -2,7 +2,7 @@
 
 for configfiles in `find . -name "config*.m4" | \
          sed 's#\(.*\)\/config\(.*\)\.m4#\2config.m4\1#' | \
-         sort | \
+         sort -n -b | \
          sed 's#\(.*\)config.m4\(.*\)#\2/config\1.m4#g'`; do
     if [ -r $configfiles ]; then
         echo "sinclude($configfiles)"
