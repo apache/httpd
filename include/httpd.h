@@ -1323,13 +1323,16 @@ API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
  */
 API_EXPORT(int) ap_count_dirs(const char *path);
 /**
- * copy at most n leading directories of s into d d should be at least as 
- * large as s plus 1 extra byte assumes n > 0
+ * Copy at most n leading directories of s into d d should be at least as 
+ * large as s plus 1 extra byte
  * @param d The location to copy to
  * @param s The location to copy from
  * @param n The number of directories to copy
  * @return value is the ever useful pointer to the trailing \0 of d
  * @deffunc char *ap_make_dirstr_prefix(char *d, const char *s, int n)
+ * @tip on platforms with drive letters, n = 0 returns the "/" root, 
+ * whereas n = 1 returns the "d:/" root.  On all other platforms, n = 0
+ * returns the empty string.
  */
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
 /**
