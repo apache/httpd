@@ -1507,7 +1507,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
         }
     }
 #if APR_HAS_THREADS
-    if (worker->hmax) {
+    if (worker->hmax && worker->cp->res) {
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
     }
     else
