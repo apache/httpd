@@ -115,7 +115,7 @@
     the new URL. This is called <em>redirection</em> and is
     implemented by the <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code> directive. For example, if
     the contents of the directory <code>/foo/</code> under the
-    <code class="directive"><a href="./mod/mod_core.html#documentroot">DocumentRoot</a></code> are moved
+    <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> are moved
     to the new directory <code>/bar/</code>, you can instruct clients
     to request the content at the new location as follows:</p>
 
