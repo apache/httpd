@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Lars Eilebrecht wrote a whole new set of Apache Vhost Internals
+     documentation, examples, explanations and caveats. They live in a new
+     subdirectory htdocs/manual/vhost/. [Lars Eilebrecht <sfx@unix-ag.org>]
+
   *) If ap_slack fails to allocate above the low slack line it's a good
      indication that further problems will occur; it's a better indication
      than many external libraries give us when we actually run out of
