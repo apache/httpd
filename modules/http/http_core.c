@@ -274,7 +274,9 @@ static apr_port_t http_port(const request_rec *r)
 static int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
- 
+    int csd_set = 0;
+    apr_socket_t *csd = NULL;
+
     /*
      * Read and process each request found on our connection
      * until no requests are left or we decide to close.
@@ -282,7 +284,7 @@ static int ap_process_http_connection(conn_rec *c)
  
     ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
- 
+
         c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
  
@@ -301,6 +303,12 @@ static int ap_process_http_connection(conn_rec *c)
  
         if (ap_graceful_stop_signalled())
             break;
+        /* Go straight to select() to wait for the next request */
+        if (!csd_set) {
+            csd = ap_get_module_config(c->conn_config, &core_module);
+            csd_set = 1;
+        }
+        apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
     }
  
     return OK;
