@@ -1,5 +1,8 @@
 Changes with Apache 2.0.17-dev
 
+  *) Do not install the binaries from the support directory twice.
+     [jun-ichiro hagino <itojun@iijlab.net>]
+
   *) The ap_f* functions should flush data to the filter that is passed
      in, not the the filter after the one passed in.
      [Ryan Morgan <rmorgan@covalent.net>]

@@ -16,7 +16,7 @@ PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS) $(other_targets)
 phony_targets   = $(srcdir)/buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include install-support install-suexec
+	install-cgi install-include install-suexec
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
 	modules.c libtool
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in \
@@ -74,23 +74,6 @@ install-cgi:
 	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
 	@(cd docs/cgi-examples && cp -rp * $(cgidir))
 	@(cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf {} \;)
-
-install-support:
-	@echo Installing Support Binaries
-	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
-	@cp -p $(srcdir)/support/httpd.exp $(bindir)
-	@cp -p $(builddir)/support/htpasswd $(bindir)
-	@cp -p $(builddir)/support/htdigest $(bindir)
-	@cp -p $(builddir)/support/rotatelogs $(bindir)
-	@cp -p $(builddir)/support/logresolve $(bindir)
-	@cp -p $(builddir)/support/ab $(bindir)
-	@cp -p $(builddir)/support/apachectl $(bindir)
-	chmod 755 $(bindir)/apachectl
-	@if test -f $(builddir)/support/apxs; then \
-	    cp -p $(builddir)/support/apxs $(bindir); \
-	    chmod 755 $(bindir)/apxs; \
-	fi
-
 
 install-other:
 	@test -d $(logfiledir) || $(MKINSTALLDIRS) $(logfiledir)
