@@ -84,6 +84,7 @@
 #include <errno.h>
 #include "ap.h"
 #include "ap_md5.h"
+#include "ap_sha1.h"
 
 #ifdef WIN32
 #include <conio.h>
@@ -100,8 +101,10 @@
 #endif /*CHARSET_EBCDIC*/
 
 #define MAX_STRING_LEN 256
+#define ALG_PLAIN 0
 #define ALG_CRYPT 1
 #define ALG_APMD5 2
+#define ALG_APSHA 3 
 
 #define ERR_FILEPERM 1
 #define ERR_SYNTAX 2
@@ -149,19 +152,6 @@ static void putline(FILE *f, char *l)
     fputc('\n', f);
 }
 
-
-/* From local_passwd.c (C) Regents of Univ. of California blah blah */
-static unsigned char itoa64[] =	/* 0 ... 63 => ascii - 64 */
-    "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-static void to64(register char *s, register long v, register int n)
-{
-    while (--n >= 0) {
-	*s++ = itoa64[v & 0x3f];
-	v >>= 6;
-    }
-}
-
 /*
  * Make a password record from the given information.  A zero return
  * indicates success; failure means that the output buffer contains an
@@ -172,9 +162,9 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 {
     char *pw;
     char cpw[120];
-    char salt[9];
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
+    char salt[9];
 
     if (passwd != NULL) {
 	pw = passwd;
@@ -191,20 +181,39 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	    return ERR_PWMISMATCH;
 	}
 	pw = pwin;
+        bzero(pwv,sizeof(pwin));
     }
-    (void) srand((int) time((time_t *) NULL));
-    to64(&salt[0], rand(), 8);
-    salt[8] = '\0';
-
     switch (alg) {
-    case ALG_APMD5:
+
+    case ALG_APSHA:
+	/* XXX cpw >= 28 + strlen(sha1) chars - fixed len SHA */
+ 	ap_sha1_base64(pw,strlen(pw),cpw);
+	break;
+
+    case ALG_APMD5: 
+        (void) srand((int) time((time_t *) NULL));
+        ap_to64(&salt[0], rand(), 8);
+        salt[8] = '\0';
+
 	ap_MD5Encode((const unsigned char *)pw, (const unsigned char *)salt,
 		     cpw, sizeof(cpw));
 	break;
+
+    case ALG_PLAIN:
+	/* XXX this len limitation is not in sync with any HTTPd len. */
+	ap_cpystrn(cpw,pw,sizeof(cpw));
+	break;
+
     case ALG_CRYPT:
+    default:
+        (void) srand((int) time((time_t *) NULL));
+        ap_to64(&salt[0], rand(), 8);
+        salt[8] = '\0';
+
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
     }
+    bzero(pw,strlen(pw));
 
     /*
      * Check to see if the buffer is large enough to hold the username,
@@ -223,13 +232,25 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 static int usage(void)
 {
     fprintf(stderr, "Usage:\n");
-    fprintf(stderr, "\thtpasswd [-cm] passwordfile username\n");
-    fprintf(stderr, "\thtpasswd -b[cm] passwordfile username password\n\n");
+    fprintf(stderr, "\thtpasswd [-cmdps] passwordfile username\n");
+    fprintf(stderr, "\thtpasswd -b[cmdps] passwordfile username password\n\n");
     fprintf(stderr, " -c  Create a new file.\n");
-    fprintf(stderr, " -m  Force MD5 encryption of the password.\n");
+    fprintf(stderr, " -m  Force MD5 encryption of the password"
+#if defined(WIN32) || defined(TPF)
+	" (default)"
+#endif
+	".\n");
+    fprintf(stderr, " -d  Force CRYPT encryption of the password"
+#if (!(defined(WIN32) || defined(TPF)))
+	" (default)"
+#endif
+	".\n");
+    fprintf(stderr, " -p  Force NO encryption of the password.\n");
+    fprintf(stderr, " -s  Force SHA encryption of the password.\n");
     fprintf(stderr, " -b  Use the password from the command line rather ");
     fprintf(stderr, "than prompting for it.\n");
-    fprintf(stderr, "On Windows systems the -m flag is used by default.\n");
+    fprintf(stderr, "On Windows and TPF systems the '-m' flag is used by default.\n");
+    fprintf(stderr, "On all other systems, the '-p' will propably not work.\n");
     return ERR_SYNTAX;
 }
 
@@ -356,6 +377,15 @@ int main(int argc, char *argv[])
 	    else if (*arg == 'm') {
 		alg = ALG_APMD5;
 	    }
+	    else if (*arg == 's') {
+		alg = ALG_APSHA;
+	    }
+	    else if (*arg == 'p') {
+		alg = ALG_PLAIN;
+	    }
+	    else if (*arg == 'd') {
+		alg = ALG_CRYPT;
+	    }
 	    else if (*arg == 'b') {
 		noninteractive++;
 		args_left++;
@@ -406,6 +436,12 @@ int main(int argc, char *argv[])
     }
 #endif
 
+#if (!(defined(WIN32) || defined(TPF)))
+    if (alg == ALG_PLAIN) {
+	fprintf(stderr,"Warning: storing passwords as plain text might "
+		"just not work on this platform.\n");
+    }
+#endif
     /*
      * Verify that the file exists if -c was omitted.  We give a special
      * message if it doesn't.

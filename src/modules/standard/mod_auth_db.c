@@ -96,7 +96,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include <db.h>
-#include "ap_md5.h"
+#include "ap_checkpass.h"
 
 #if defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
 #define DB2

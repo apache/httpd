@@ -74,7 +74,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "ap_md5.h"
+#include "ap_checkpass.h"
 
 typedef struct auth_config_struct {
     char *auth_pwfile;

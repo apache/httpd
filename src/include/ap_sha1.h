@@ -1,33 +1,3 @@
-/*
- * This is work is derived from material Copyright RSA Data Security, Inc.
- *
- * The RSA copyright statement and Licence for that original material is
- * included below. This is followed by the Apache copyright statement and
- * licence for the modifications made to that material.
- */
-
-/* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
-   rights reserved.
-
-   License to copy and use this software is granted provided that it
-   is identified as the "RSA Data Security, Inc. MD5 Message-Digest
-   Algorithm" in all material mentioning or referencing this software
-   or this function.
-
-   License is also granted to make and use derivative works provided
-   that such works are identified as "derived from the RSA Data
-   Security, Inc. MD5 Message-Digest Algorithm" in all material
-   mentioning or referencing the derived work.
-
-   RSA Data Security, Inc. makes no representations concerning either
-   the merchantability of this software or the suitability of this
-   software for any particular purpose. It is provided "as is"
-   without express or implied warranty of any kind.
-
-   These notices must be retained in any copies of any part of this
-   documentation and/or software.
- */
-
 /* ====================================================================
  * Copyright (c) 1996-1999 The Apache Group.  All rights reserved.
  *
@@ -83,38 +53,39 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
+ * NIST Secure Hash Algorithm
+ * 	heavily modified by Uwe Hollerbach uh@alumni.caltech edu
+ * 	from Peter C. Gutmann's implementation as found in
+ * 	Applied Cryptography by Bruce Schneier
+ * 	This code is hereby placed in the public domain
+ *
+ * MIME Base 64 encoding based on src/metamail/codes.c in metamail,
+ *	available at: ftp://thumper.bellcore.com/pub/nsb/
+ *
+ * Metamail's copyright is:
+ *	Copyright (c) 1991 Bell Communications Research, Inc. (Bellcore)
+ * 
+ *	Permission to use, copy, modify, and distribute this material 
+ * 	for any purpose and without fee is hereby granted, provided 
+ * 	that the above copyright notice and this permission notice 
+ * 	appear in all copies, and that the name of Bellcore not be 
+ * 	used in advertising or publicity pertaining to this 
+ * 	material without the specific, prior written permission 
+ * 	of an authorized representative of Bellcore.  BELLCORE 
+ * 	MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY 
+ * 	OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS", 
+ * 	WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
  */
 
-#ifndef APACHE_MD5_H
-#define APACHE_MD5_H
+#ifndef APACHE_SHA1_H
+#define APACHE_SHA1_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* MD5.H - header file for MD5C.C */
-
-/* UINT4 defines a four byte word */
-typedef unsigned int UINT4;
-
-/* MD5 context. */
-typedef struct {
-    UINT4 state[4];		/* state (ABCD) */
-    UINT4 count[2];		/* number of bits, modulo 2^64 (lsb first) */
-    unsigned char buffer[64];	/* input buffer */
-} AP_MD5_CTX;
-
-const char *apr1_id;		/* MD5 passwd marker string */
-
-API_EXPORT(void) ap_MD5Init(AP_MD5_CTX *context);
-API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,
-			      unsigned int inputLen);
-API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX *context);
-API_EXPORT(void) ap_MD5Encode(const unsigned char *password,
-			      const unsigned char *salt,
-			      char *result, size_t nbytes);
-API_EXPORT(void) ap_to64(char *s, unsigned long v, int n);
-API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
+const char * sha1_id;	/* passwd prefix marker for SHA1 */
+API_EXPORT(void) ap_sha1_base64(char *, int, char *);
 
 #ifdef __cplusplus
 }

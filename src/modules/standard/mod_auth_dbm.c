@@ -80,7 +80,7 @@
 #else
 #include <ndbm.h>
 #endif
-#include "ap_md5.h"
+#include "ap_checkpass.h"
 
 /*
  * Module definition information - the part between the -START and -END

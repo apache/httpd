@@ -415,15 +415,14 @@ static void Decode(UINT4 *output, const unsigned char *input, unsigned int len)
  * Define the Magic String prefix that identifies a password as being
  * hashed using our algorithm.
  */
-static const char *apr1_id = "$apr1$";
+const char *apr1_id = "$apr1$";
 
 /*
  * The following MD5 password encryption code was largely borrowed from
  * the FreeBSD 3.0 /usr/src/lib/libcrypt/crypt.c file, which is
  * licenced as stated at the top of this file.
  */
-
-static void to64(char *s, unsigned long v, int n)
+API_EXPORT(void) ap_to64(char *s, unsigned long v, int n)
 {
     static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
 	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -572,12 +571,12 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
 
     p = passwd + strlen(passwd);
 
-    l = (final[ 0]<<16) | (final[ 6]<<8) | final[12]; to64(p, l, 4); p += 4;
-    l = (final[ 1]<<16) | (final[ 7]<<8) | final[13]; to64(p, l, 4); p += 4;
-    l = (final[ 2]<<16) | (final[ 8]<<8) | final[14]; to64(p, l, 4); p += 4;
-    l = (final[ 3]<<16) | (final[ 9]<<8) | final[15]; to64(p, l, 4); p += 4;
-    l = (final[ 4]<<16) | (final[10]<<8) | final[ 5]; to64(p, l, 4); p += 4;
-    l =                    final[11]                ; to64(p, l, 2); p += 2;
+    l = (final[ 0]<<16) | (final[ 6]<<8) | final[12]; ap_to64(p, l, 4); p += 4;
+    l = (final[ 1]<<16) | (final[ 7]<<8) | final[13]; ap_to64(p, l, 4); p += 4;
+    l = (final[ 2]<<16) | (final[ 8]<<8) | final[14]; ap_to64(p, l, 4); p += 4;
+    l = (final[ 3]<<16) | (final[ 9]<<8) | final[15]; ap_to64(p, l, 4); p += 4;
+    l = (final[ 4]<<16) | (final[10]<<8) | final[ 5]; ap_to64(p, l, 4); p += 4;
+    l =                    final[11]                ; ap_to64(p, l, 2); p += 2;
     *p = '\0';
 
     /*
@@ -586,41 +585,4 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     memset(final, 0, sizeof(final));
 
     ap_cpystrn(result, passwd, nbytes - 1);
-}
-
-/*
- * Validate a plaintext password against a smashed one.  Use either
- * crypt() (if available) or ap_MD5Encode(), depending upon the format
- * of the smashed input password.  Return NULL if they match, or
- * an explanatory text string if they don't.
- */
-
-API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
-{
-    char sample[120];
-    char *crypt_pw;
-
-    if (!strncmp(hash, apr1_id, strlen(apr1_id))) {
-	/*
-	 * The hash was created using our custom algorithm.
-	 */
-	ap_MD5Encode((const unsigned char *)passwd,
-		     (const unsigned char *)hash, sample, sizeof(sample));
-    }
-    else {
-	/*
-	 * It's not our algorithm, so feed it to crypt() if possible.
-	 */
-#if defined(WIN32) || defined(TPF)
-	/*
-	 * On Windows, the only alternative to our MD5 algorithm is plain
-	 * text.
-	 */
-	ap_cpystrn(sample, passwd, sizeof(sample) - 1);
-#else
-	crypt_pw = crypt(passwd, hash);
-	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
-#endif
-    }
-    return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
 }

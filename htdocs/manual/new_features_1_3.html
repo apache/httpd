@@ -675,6 +675,15 @@ MIME-typing</A></STRONG>
 
 </DL>
 
+<DT><STRONG>Support for Netscape style SHA1 encrypted passwords</STRONG><BR>
+<DD>To facilitate migration or integration of BasicAuth password
+    schemes where the password is encrypted using SHA1 (as opposed
+    to apache's build in MD5 and/or the OS specific crypt(3) function
+    ) passwords prefixed with with <CODE>{SHA1}</CODE> are taken
+    as Base64 encoded SHA1 passwords. More information and
+    some utilities to convert Netscape ldap/ldif entries can be
+    found in support/SHA1. 
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>

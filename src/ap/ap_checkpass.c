@@ -1,33 +1,3 @@
-/*
- * This is work is derived from material Copyright RSA Data Security, Inc.
- *
- * The RSA copyright statement and Licence for that original material is
- * included below. This is followed by the Apache copyright statement and
- * licence for the modifications made to that material.
- */
-
-/* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
-   rights reserved.
-
-   License to copy and use this software is granted provided that it
-   is identified as the "RSA Data Security, Inc. MD5 Message-Digest
-   Algorithm" in all material mentioning or referencing this software
-   or this function.
-
-   License is also granted to make and use derivative works provided
-   that such works are identified as "derived from the RSA Data
-   Security, Inc. MD5 Message-Digest Algorithm" in all material
-   mentioning or referencing the derived work.
-
-   RSA Data Security, Inc. makes no representations concerning either
-   the merchantability of this software or the suitability of this
-   software for any particular purpose. It is provided "as is"
-   without express or implied warranty of any kind.
-
-   These notices must be retained in any copies of any part of this
-   documentation and/or software.
- */
-
 /* ====================================================================
  * Copyright (c) 1996-1999 The Apache Group.  All rights reserved.
  *
@@ -83,41 +53,63 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
+ * Simple password verify, which 'know's about various password
+ * types, such as the simple base64 encoded crypt()s, MD5 $ marked
+ * FreeBSD style and netscape SHA1's.
+ */
+#include <string.h>
+
+#include "ap_config.h"
+#include "ap_md5.h"
+#include "ap_sha1.h"
+#include "ap.h"
+#ifdef CHARSET_EBCDIC
+#include "ebcdic.h"
+#endif /*CHARSET_EBCDIC*/
+#if HAVE_CRYPT_H
+#include <crypt.h>
+#endif
+
+/*
+ * Validate a plaintext password against a smashed one.  Use either
+ * crypt() (if available), ap_MD5Encode() or ap_SHA1Encode depending 
+ * upon the format of the smashed input password.  
+ *
+ * Return NULL if they match, or an explanatory text string if they don't.
  */
 
-#ifndef APACHE_MD5_H
-#define APACHE_MD5_H
+API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
+{
+    char sample[120];
+    char *crypt_pw;
 
-#ifdef __cplusplus
-extern "C" {
+    /* FreeBSD style MD5 string 
+     */
+    if (!strncmp(hash, apr1_id, strlen(apr1_id))) {
+
+	ap_MD5Encode((const unsigned char *)passwd,
+		     (const unsigned char *)hash, sample, sizeof(sample));
+    }
+    /* Netscape / SHA1 ldap style strng  
+     */
+    else if (!strncmp(hash, sha1_id, strlen(sha1_id))) {
+
+ 	ap_sha1_base64(passwd, strlen(passwd), sample);
+    }
+    else {
+	/*
+	 * It's not our algorithm, so feed it to crypt() if possible.
+	 */
+#if defined(WIN32) || defined(TPF)
+	/*
+	 * On Windows, the only alternative to our MD5 algorithm is plain
+	 * text.
+	 */
+	ap_cpystrn(sample, passwd, sizeof(sample) - 1);
+#else
+	crypt_pw = crypt(passwd, hash);
+	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
 #endif
-
-/* MD5.H - header file for MD5C.C */
-
-/* UINT4 defines a four byte word */
-typedef unsigned int UINT4;
-
-/* MD5 context. */
-typedef struct {
-    UINT4 state[4];		/* state (ABCD) */
-    UINT4 count[2];		/* number of bits, modulo 2^64 (lsb first) */
-    unsigned char buffer[64];	/* input buffer */
-} AP_MD5_CTX;
-
-const char *apr1_id;		/* MD5 passwd marker string */
-
-API_EXPORT(void) ap_MD5Init(AP_MD5_CTX *context);
-API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,
-			      unsigned int inputLen);
-API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX *context);
-API_EXPORT(void) ap_MD5Encode(const unsigned char *password,
-			      const unsigned char *salt,
-			      char *result, size_t nbytes);
-API_EXPORT(void) ap_to64(char *s, unsigned long v, int n);
-API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
-
-#ifdef __cplusplus
+    }
+    return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
 }
-#endif
-
-#endif	/* !APACHE_MD5_H */
