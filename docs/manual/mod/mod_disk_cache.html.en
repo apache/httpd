@@ -38,6 +38,9 @@
     <p>Content is stored in and retrieved from the cache using URI based
     keys. Content with access protection is not cached.</p>
 
+    <p><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> can be used to maintain the cache
+       size at a maximum level.</p>
+
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of
       <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
