@@ -1,5 +1,9 @@
 Changes with Apache 2.0.30-dev
 
+  *) Get shared builds of libapr and libaprutil, as well as Apache DSOs,
+     working on AIX.  [Aaron Bannert, Dick Dunbar <RLDunbar@pacbell.net>,
+     Gary Hook <ghook@us.ibm.com>, Victor Orlikowski, Jeff Trawick]
+
   *) Fix the handling of SSI directives in which the ">" of the
      terminating "-->" is the last byte in a file [Brian Pane]
 
