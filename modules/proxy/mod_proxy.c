@@ -769,6 +769,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
     ps->forward = NULL;
+    ps->reverse = NULL;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -814,6 +815,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
     ps->forward = overrides->forward ? overrides->forward : base->forward;
+    ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -1754,6 +1756,7 @@ static int proxy_status_hook(request_rec *r, int flags)
 
 static void child_init(apr_pool_t *p, server_rec *s)
 {
+    proxy_worker *reverse = NULL;
     
     while (s) {
         void *sconf = s->module_config;
@@ -1776,6 +1779,17 @@ static void child_init(apr_pool_t *p, server_rec *s)
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
         }
+        if (!reverse) {
+            reverse = ap_proxy_create_worker(p);
+            reverse->name     = "proxy:reverse";
+            reverse->hostname = "*";
+            reverse->scheme   = "*";
+            ap_proxy_initialize_worker_share(conf, reverse, s);
+            ap_proxy_initialize_worker(reverse, s);
+            /* Do not disable worker in case of errors */
+            reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+        }
+        conf->reverse = reverse;
         s = s->next;
     }
 }
