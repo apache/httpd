@@ -307,7 +307,7 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 
 static void cgid_maint(int reason, void *data, ap_wait_t status)
 {
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
     int *sd = data;
     switch (reason) {
         case APR_OC_REASON_DEATH:
@@ -610,7 +610,7 @@ static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_re
             cgid_server(main_server);
             exit(-1);
         } 
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
         ap_pid.pid = pid;
         ap_pid.err = ap_pid.in = ap_pid.out = NULL;
         ap_register_other_child(&ap_pid, cgid_maint, NULL, NULL, p);

@@ -948,7 +948,7 @@ static void server_main_loop(int remaining_children_to_start)
 		    make_child(ap_server_conf, child_slot, time(NULL));
 		    --remaining_children_to_start;
 		}
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
 	    }
 	    else if (ap_reap_other_child(&pid, status) == 0) {
 		/* handled */
