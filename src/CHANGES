@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) [EBCDIC] Update mod_mmap_static so that an ebcdic box can use 
+     MMapFile for files that shouldn't be converted from ebcdic->ascii.
+     [Greg Ames <gregames@us.ibm.com>]
+
   *) Revamp the Win32 make environment. Apache.dsw created to bring 
      together all the pieces. Create new file os/win32/BaseAddr.ref 
      to define module base addresses (to prevent dll relocation at 

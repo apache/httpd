@@ -347,6 +347,10 @@ static int mmap_static_handler(request_rec *r)
 	    return errstatus;
     }
 
+#ifdef CHARSET_EBCDIC
+    /* check Content Type to see if ebcdic conversion is appropriate */
+    ap_checkconv(r);
+#endif 	
     rangestatus = ap_set_byterange(r);
     ap_send_http_header(r);
 
