@@ -129,6 +129,59 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!"
+--><!--#include virtual="include/top.html" -->
+
+    L'URL richiesto non &egrave; pi&ugrave; disponibile su questo server
+    e non esistono indirizzi verso i quali sia possibile inoltrare
+    la richiesta.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Per favore, informa l'autore della
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
+    di provenienza</a> che il link non &egrave; pi&ugrave; valido.
+
+  <!--#else -->
+
+    Se sei arrivato da una pagina esterna, informa l'autore della
+    pagina di provenienza che il link non &egrave; pi&ugrave; valido.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="°´Ã¼°¡ ¾ø¾îÁ³À½!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+   ¿äÃ»ÇÑ URLÀº ´õ ÀÌ»ó ÀÌ ¼­¹ö¿¡ ³²¾ÆÀÖÁö ¾ÊÀ¸¸ç,
+   ±× °´Ã¼°¡ ¿Å°ÜÁø ´Ù¸¥ URL ¿ª½Ã ³²¾ÆÀÖÁö ¾Ê½À´Ï´Ù.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ÀÌÀü
+    ÆäÀÌÁö</a>ÀÇ ¸¸µçÀÌ¿¡°Ô ÁÖ¼Ò°¡ Àß¸øµÇ¾ú´Ù°í ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+
+  <!--#else -->
+
+    ´Ù¸¥ ÆäÀÌÁöÀÇ ¸µÅ©¸¦ µû¶ó¿À¼Ì´Ù¸é, ±× ÆäÀÌÁöÀÇ ¸¸µçÀÌ¿¡°Ô ¿¬¶ôÀ» ÇÏ½Ã±â
+    ¹Ù¶ø´Ï´Ù.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -181,59 +234,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!"
---><!--#include virtual="include/top.html" -->
-
-    Den &ouml;nskade adressen &auml;r inte l&auml;ngre tillg&auml;nglig hos
-    denna server och det finns inte n&aring;gon adress f&ouml;r vidarebefodran.
-
-  <!--#if expr="$HTTP_REFERER" -->
-
-    V&auml;nligen informera f&ouml;rfattaren bakom 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">den aktuella
-    sidan</a> att l&auml;nken &auml;r inaktuell.
- 
-  <!--#else -->
-
-    Om du f&ouml;ljde en l&auml;nk fr&aring;n en extern sida, v&auml;nligen
-    kontakta f&ouml;rfattaren av den sidan.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!"
---><!--#include virtual="include/top.html" -->
-
-    L'URL richiesto non &egrave; pi&ugrave; disponibile su questo server
-    e non esistono indirizzi verso i quali sia possibile inoltrare
-    la richiesta.
-
-  <!--#if expr="$HTTP_REFERER" -->
-
-    Per favore, informa l'autore della
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
-    di provenienza</a> che il link non &egrave; pi&ugrave; valido.
-
-  <!--#else -->
-
-    Se sei arrivato da una pagina esterna, informa l'autore della
-    pagina di provenienza che il link non &egrave; pi&ugrave; valido.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -288,28 +288,56 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="°´Ã¼°¡ ¾ø¾îÁ³À½!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!"
 --><!--#include virtual="include/top.html" -->
 
-   ¿äÃ»ÇÑ URLÀº ´õ ÀÌ»ó ÀÌ ¼­¹ö¿¡ ³²¾ÆÀÖÁö ¾ÊÀ¸¸ç,
-   ±× °´Ã¼°¡ ¿Å°ÜÁø ´Ù¸¥ URL ¿ª½Ã ³²¾ÆÀÖÁö ¾Ê½À´Ï´Ù.
+    Den &ouml;nskade adressen &auml;r inte l&auml;ngre tillg&auml;nglig hos
+    denna server och det finns inte n&aring;gon adress f&ouml;r vidarebefodran.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ÀÌÀü
-    ÆäÀÌÁö</a>ÀÇ ¸¸µçÀÌ¿¡°Ô ÁÖ¼Ò°¡ Àß¸øµÇ¾ú´Ù°í ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
-
+    V&auml;nligen informera f&ouml;rfattaren bakom 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">den aktuella
+    sidan</a> att l&auml;nken &auml;r inaktuell.
+ 
   <!--#else -->
 
-    ´Ù¸¥ ÆäÀÌÁöÀÇ ¸µÅ©¸¦ µû¶ó¿À¼Ì´Ù¸é, ±× ÆäÀÌÁöÀÇ ¸¸µçÀÌ¿¡°Ô ¿¬¶ôÀ» ÇÏ½Ã±â
-    ¹Ù¶ø´Ï´Ù.
+    Om du f&ouml;ljde en l&auml;nk fr&aring;n en extern sida, v&auml;nligen
+    kontakta f&ouml;rfattaren av den sidan.
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#include virtual="include/top.html" -->
+
+    Talep etti&#287;iniz URL bu sunucu üzerinde bar&#305;nd&#305;r&#305;lm&#305;yor
+    ve herhangi bir yöneltme de mevcut de&#287;il.  
+
+  <!--#if expr="$HTTP_REFERER" -->
+  
+    Lütfen
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfan&#305;n</a>
+    yazar&#305;na, bu ba&#287;lant&#305;n&#305;n güncel
+    olmad&#305;&#287;&#305;n&#305; bildirin.
+   
+  <!--#else -->
+  
+    Yabanc&#305; bir sayfadan bu ba&#287;lant&#305;y&#305; izlediyseniz,
+    lütfen sözkonusu sayfan&#305;n yazar&#305; ile ileti&#351;ime geçin.
+   
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
+----------tr--

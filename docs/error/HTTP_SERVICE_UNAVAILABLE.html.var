@@ -73,6 +73,35 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Servizio non disponibile!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server in questo momento non &egrave; in grado di
+    soddisfare la richiesta per motivi di manutenzione
+    o di sovraccarico del sistema.
+    Per favore, riprova pi&ugrave; tardi.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="¼­ºñ½º ÀÏ½ÃÁßÁö!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    °ü¸® ÀÛ¾÷ÀÌ³ª ¿ë·® ¹®Á¦·Î ¼­¹ö°¡ Àá½Ãµ¿¾È ¿äÃ»À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
+    ³ªÁß¿¡ ´Ù½Ã ½ÃµµÇØÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -102,36 +131,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
---><!--#include virtual="include/top.html" -->
-
-    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
-    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
-    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
-    igen senare.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Servizio non disponibile!"
---><!--#include virtual="include/top.html" -->
-
-    Il server in questo momento non &egrave; in grado di
-    soddisfare la richiesta per motivi di manutenzione
-    o di sovraccarico del sistema.
-    Per favore, riprova pi&ugrave; tardi.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -160,16 +159,32 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¼­ºñ½º ÀÏ½ÃÁßÁö!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
 --><!--#include virtual="include/top.html" -->
 
-    °ü¸® ÀÛ¾÷ÀÌ³ª ¿ë·® ¹®Á¦·Î ¼­¹ö°¡ Àá½Ãµ¿¾È ¿äÃ»À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
-    ³ªÁß¿¡ ´Ù½Ã ½ÃµµÇØÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
+    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
+    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
+    igen senare.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Service unavailable!"
+--><!--#include virtual="include/top.html" -->
+
+    Sunucu, kendi içindeki çe&#351;itli sorunlardan ötürü,
+    bir süreli&#287;ine taleplerinize cevap veremeyecek.
+    Lütfen daha sonra tekrar deneyin.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

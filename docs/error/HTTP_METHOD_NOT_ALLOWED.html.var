@@ -64,6 +64,33 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Metodo non consentito!"
+--><!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    non &egrave; consentito per l'URL richiesto.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="Çã¿ëµÇÁö ¾Ê´Â ¿äÃ» ¹æ½Ä!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀº
+    ¿äÃ»ÇÑ URL¿¡ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -91,33 +118,6 @@ Body:----------pl--
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Metoden inte till&aring;ten!"
---><!--#include virtual="include/top.html" -->
-
-    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    metoden &auml;r inte till&aring;ten f&ouml;r den f&ouml;rfr&aring;gade
-    adressen.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Metodo non consentito!"
---><!--#include virtual="include/top.html" -->
-
-    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    non &egrave; consentito per l'URL richiesto.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
-
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
@@ -144,16 +144,29 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="Çã¿ëµÇÁö ¾Ê´Â ¿äÃ» ¹æ½Ä!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Metoden inte till&aring;ten!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀº
-    ¿äÃ»ÇÑ URL¿¡ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    metoden &auml;r inte till&aring;ten f&ouml;r den f&ouml;rfr&aring;gade
+    adressen.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Method not allowed!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yöntemi talep etti&#287;iniz URL için kullan&#305;lamaz.
+    
+<!--#include virtual="include/bottom.html" -->
+----------tr--

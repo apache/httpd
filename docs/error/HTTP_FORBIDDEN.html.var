@@ -115,6 +115,51 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Accesso negato!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   Non disponi dei permessi necessari per accedere alla
+   directory richiesta oppure non esiste il documento indice.
+
+  <!--#else -->
+
+   Non disponi dei permessi necessari per accedere all'oggetto
+   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="Á¢±ÙÀÌ °ÅºÎµÊ!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   ¿äÃ»ÇÑ µð·ºÅä¸®¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.
+   µð·ºÅä¸®¿¡ Ã¹ ÆäÀÌÁö°¡ ¾ø°Å³ª ¾Æ´Ï¸é ÀÐ±â º¸È£°¡ µÇ¾î ÀÖ½À´Ï´Ù.
+
+  <!--#else -->
+
+   ¿äÃ»ÇÑ °´Ã¼¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.
+   ÀÐ±â º¸È£°¡ µÇ¾î ÀÖ°Å³ª À¥¼­¹ö°¡ ÀÐÀ» ¼ö ¾øµµ·Ï µÇ¾î ÀÖ½À´Ï´Ù.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -159,52 +204,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_URL = /\/$/" -->
-
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
-    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
-
-  <!--#else -->
-
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
-    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Accesso negato!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_URL = /\/$/" -->
-
-   Non disponi dei permessi necessari per accedere alla
-   directory richiesta oppure non esiste il documento indice.
-
-  <!--#else -->
-
-   Non disponi dei permessi necessari per accedere all'oggetto
-   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -253,25 +252,50 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="Á¢±ÙÀÌ °ÅºÎµÊ!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-   ¿äÃ»ÇÑ µð·ºÅä¸®¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.
-   µð·ºÅä¸®¿¡ Ã¹ ÆäÀÌÁö°¡ ¾ø°Å³ª ¾Æ´Ï¸é ÀÐ±â º¸È£°¡ µÇ¾î ÀÖ½À´Ï´Ù.
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
+    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
 
   <!--#else -->
 
-   ¿äÃ»ÇÑ °´Ã¼¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.
-   ÀÐ±â º¸È£°¡ µÇ¾î ÀÖ°Å³ª À¥¼­¹ö°¡ ÀÐÀ» ¼ö ¾øµµ·Ï µÇ¾î ÀÖ½À´Ï´Ù.
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
+    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Access forbidden!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    Talep etti&#287;iniz dizine eri&#351;im izniniz yok.
+    Ya belirteç doküman yok, ya da dizin okumaya kar&#351;&#305; korumal&#305;.
+
+  <!--#else -->
+
+    Talep etti&#287;iniz dizine eri&#351;im izniniz yok.
+    Dizin, ya okumaya kar&#351;&#305; korumal&#305;, ya da sunucu taraf?ndan
+    okunam&#305;yor.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

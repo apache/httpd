@@ -62,6 +62,32 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Criteri di precondizione non soddisfatti!"
+--><!--#include virtual="include/top.html" -->
+
+    I criteri di precondizione per consentire l'invio dell'URL
+    richiesto non sono stati soddisfatti.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="ÁÖ¾îÁø Á¶°Ç ½ÇÆÐ!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    ¹Ì¸® ÁÖ¾îÁø Á¶°ÇÀÌ ¸¸Á·µÇÁö ¾Ê¾Æ¼­ URL ¿äÃ»À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -86,33 +112,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="N&ouml;dv&auml;ndig f&ouml;ruts&auml;ttning misslyckades!"
---><!--#include virtual="include/top.html" -->
-
-    Den n&ouml;dv&auml;ndiga f&ouml;ruts&auml;ttningen f&ouml;r
-    adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
-    med acceptabelt resultat.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Criteri di precondizione non soddisfatti!"
---><!--#include virtual="include/top.html" -->
-
-    I criteri di precondizione per consentire l'invio dell'URL
-    richiesto non sono stati soddisfatti.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -139,15 +138,30 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="ÁÖ¾îÁø Á¶°Ç ½ÇÆÐ!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="N&ouml;dv&auml;ndig f&ouml;ruts&auml;ttning misslyckades!"
 --><!--#include virtual="include/top.html" -->
 
-    ¹Ì¸® ÁÖ¾îÁø Á¶°ÇÀÌ ¸¸Á·µÇÁö ¾Ê¾Æ¼­ URL ¿äÃ»À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
+    Den n&ouml;dv&auml;ndiga f&ouml;ruts&auml;ttningen f&ouml;r
+    adressf&ouml;rfr&aring;gan passerade inte utv&auml;rderingen
+    med acceptabelt resultat.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Precondition failed!"
+--><!--#include virtual="include/top.html" -->
+
+    URL talebinin ön&#351;art&#305;, olumlu süreci
+    ba&#351;ar&#305;s&#305;zl&#305;kla sonland&#305;rd&#305;.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

@@ -69,6 +69,35 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->               
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta troppo grande!"
+--><!--#include virtual="include/top.html" -->
+
+    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    non consente di trasferire dati, oppure la quantit&agrave; di dati
+    richiesti &egrave; eccessiva.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="³Ê¹« ±ä ¿äÃ»!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀÇ
+    ¿äÃ»À¸·Î´Â ³»¿ëÀ» º¸³¾ ¼ö ¾ø°Å³ª, ¶Ç´Â º¸³»¿Â ³»¿ëÀÌ ±× ¹æ½Ä¿¡¼­ Çã¿ëÇÏ´Â
+    ÃÖ´ë ±æÀÌ¸¦ ³Ñ¾ú½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -96,34 +125,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
---><!--#include virtual="include/top.html" -->
-
-    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
-    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen
-    kapacitetsniv&aring;n.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Richiesta troppo grande!"
---><!--#include virtual="include/top.html" -->
-
-    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    non consente di trasferire dati, oppure la quantit&agrave; di dati
-    richiesti &egrave; eccessiva.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -153,17 +154,30 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="³Ê¹« ±ä ¿äÃ»!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀÇ
-    ¿äÃ»À¸·Î´Â ³»¿ëÀ» º¸³¾ ¼ö ¾ø°Å³ª, ¶Ç´Â º¸³»¿Â ³»¿ëÀÌ ±× ¹æ½Ä¿¡¼­ Çã¿ëÇÏ´Â
-    ÃÖ´ë ±æÀÌ¸¦ ³Ñ¾ú½À´Ï´Ù.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
+    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen
+    kapacitetsniv&aring;n.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Request entity too large!"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yöntemi iletilen
+    veri tipini desteklemez, ya da veri hacmi kapasite limitlerini a&#351;&#305;yor. 
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

@@ -142,6 +142,62 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Errore del server!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Messaggio di errore:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta. Il server potrebbe
+    essere sovraccarico oppure si &egrave; verificato un
+    errore in uno script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="¼­¹ö ¿À·ù!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    
+    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ ¹ß»ýÇÏ¿© ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    ¿À·ù ³»¿ë:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ »ý°Ü ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
+    ¼­¹ö¿¡ °úºÎÇÏ°¡ °É·È°Å³ª ¾Æ´Ï¸é CGI ÇÁ·Î±×·¥¿¡ ¿À·ù°¡ ÀÖ¾ú½À´Ï´Ù.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -195,63 +251,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Serverfel!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran.
-
-    <!--#include virtual="include/spacer.html" -->
-
-    Felmeddelande:
-    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-
-  <!--#else -->
-
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
-    eller s&aring; inneh&aring;ller CGI-skriptet fel.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="Errore del server!"
---><!--#include virtual="include/top.html" -->
-
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-
-    Il server ha generato un errore interno e non &egrave;
-    in grado di soddisfare la richiesta.
-
-    <!--#include virtual="include/spacer.html" -->
-
-    Messaggio di errore:
-    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-
-  <!--#else -->
-
-    Il server ha generato un errore interno e non &egrave;
-    in grado di soddisfare la richiesta. Il server potrebbe
-    essere sovraccarico oppure si &egrave; verificato un
-    errore in uno script CGI.
-
-  <!--#endif -->
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -310,29 +309,57 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¼­¹ö ¿À·ù!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Serverfel!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-    
-    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ ¹ß»ýÇÏ¿© ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
+
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
+    att slutf&ouml;ra din beg&auml;ran.
 
     <!--#include virtual="include/spacer.html" -->
 
-    ¿À·ù ³»¿ë:
-    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+    Felmeddelande:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ »ý°Ü ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
-    ¼­¹ö¿¡ °úºÎÇÏ°¡ °É·È°Å³ª ¾Æ´Ï¸é CGI ÇÁ·Î±×·¥¿¡ ¿À·ù°¡ ÀÖ¾ú½À´Ï´Ù.
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
+    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
+    eller s&aring; inneh&aring;ller CGI-skriptet fel.
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Server error!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Hata mesaj&#305;:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
+    Ya sunucuya çok yüklenildi, ya da CGI betiklerinde hata belirdi.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

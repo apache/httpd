@@ -61,6 +61,31 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: it
+Content-type: text/html; charset=ISO-8859-1
+Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="La richiesta non pu&ograve; essere soddisfatta!"
+--><!--#include virtual="include/top.html" -->
+
+    Il server non supporta il tipo di azione richiesta dal browser.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="¿äÃ» Ã³¸® ½ÇÆĞ!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    ºê¶ó¿ìÀú°¡ º¸³½ ¿äÃ»À» ÀÌ ¼­¹ö°¡ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
@@ -85,31 +110,6 @@ Body:----------pl--
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
-
-Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
-Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Kan ej utf&ouml;ra f&ouml;rfr&aring;gan!"
---><!--#include virtual="include/top.html" -->
-
-    Servern st&ouml;djer inte den handling som &ouml;nskades
-    av webbl&auml;saren.
-
-<!--#include virtual="include/bottom.html" -->
-----------sv--
-
-Content-language: it
-Content-type: text/html; charset=ISO-8859-1
-Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="La richiesta non pu&ograve; essere soddisfatta!"
---><!--#include virtual="include/top.html" -->
-
-    Il server non supporta il tipo di azione richiesta dal browser.
-
-<!--#include virtual="include/bottom.html" -->
-----------it--
 
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
@@ -136,15 +136,28 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
-Content-language: ko
-Content-type: text/html; charset=EUC-KR
-Body:----------ko--
-<!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¿äÃ» Ã³¸® ½ÇÆĞ!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+Content-language: sv
+Content-type: text/html; charset=ISO-8859-1
+Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Kan ej utf&ouml;ra f&ouml;rfr&aring;gan!"
 --><!--#include virtual="include/top.html" -->
 
-    ºê¶ó¿ìÀú°¡ º¸³½ ¿äÃ»À» ÀÌ ¼­¹ö°¡ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù.
+    Servern st&ouml;djer inte den handling som &ouml;nskades
+    av webbl&auml;saren.
 
 <!--#include virtual="include/bottom.html" -->
-----------ko--
+----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Cannot process request!"
+--><!--#include virtual="include/top.html" -->
+
+    Sunucu, gezgin taraf&#305;ndan talep edilen yöntemi desteklemiyor.
+   
+<!--#include virtual="include/bottom.html" -->
+----------tr--
