@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="iso-2022-jp" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English revision: 1.2 -->
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>Apache のハンドラの使用</title>
+
+  <summary>
+    <p>Apache のハンドラの使用に関して記述しています。</p>
+  </summary>
+
+  <section id="definition">
+    <title>ハンドラとは</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="mod_mime">SetHandler</directive>
+      </directivelist>
+    </related>
+    
+
+    <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の
+    Apache における内部表現です。
+    通常、ファイルはファイル型に基づいた暗黙のハンドラがあります。
+    普通はすべてのファイルは単にサーバに扱われますが、
+    ファイルタイプの中には別に「ハンドル」(訳注: 扱う)
+    されるものもあります。</p>
+
+    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
+    ファイルの拡張子や置いている場所に基づいて、
+    ファイル型と関係なくハンドラを指定することができます。
+    これはより優雅な解決法という点と、ファイルにタイプ<strong>と</strong
+    >ハンドラの両方を関連付けることができるという点で優れています。
+    (<a href="mod/mod_mime.html#multipleext"
+    >複数の拡張子のあるファイル</a>も参照してください)。</p>
+
+    <p>ハンドラはサーバに組み込んだり、モジュールとして含めたり、
+    <directive module="mod_actions">Action</directive>
+    ディレクティブとして追加したりすることができます。
+    以下は標準配布に組み込まれているハンドラです。
+    </p>
+
+    <ul>
+      <li><strong>default-handler</strong>:<code>default_handelr()</code>
+      を使ってファイルを送ります。
+      静的なコンテンツを扱うときにデフォルトで使用されるハンドラです。
+      (<module>core</module>)</li>
+
+      <li><strong>send-as-is</strong>:
+      HTTP ヘッダのあるファイルをそのまま送ります。
+      (<module>mod_asis</module>)</li>
+
+      <li><strong>cgi-script</strong>: ファイルを CGI
+      スクリプトとして扱います。
+      (<module>mod_cgi</module>)</li>
+
+      <li><strong>imap-file</strong>:
+      イメージマップのルールファイルとして解析します。
+      (<module>mod_imap</module>)</li>
+
+      <li><strong>server-info</strong>: サーバの設定情報を取得します。
+      (<module>mod_info</module>)</li>
+
+      <li><strong>server-status</strong>: サーバの状態報告を取得します。
+      (<module>mod_status</module>)</li>
+
+      <li><strong>type-map</strong>:
+      コンテントネゴシエーションのためのタイプマップとして解析します。
+      (<module>mod_negotiation</module>)</li>
+    </ul>
+  </section>
+  <section id="examples">
+    <title>例</title>
+
+    <section id="example1">
+      <title>CGI スクリプトを用いて静的なコンテンツを変更する</title>
+
+      <p>以下のディレクティブによって、拡張子が <code>html</code>
+      であるファイルは <code>footer.pl</code>
+      CGI スクリプトを起動するようになります。</p>
+      
+      <example>
+        Action add-footer /cgi-bin/footer.pl<br/>
+        AddHandler add-footer .html
+      </example>
+
+      <p>CGI スクリプトは希望の修正や追加を行なって、元々要求された文書
+      (環境変数 <code>PATH_TRANSLATED</code>
+      で指されています) を送る責任があります。
+      </p>
+
+    </section>
+    <section id="example2">
+      <title>HTTP ヘッダのあるファイル</title>
+
+      <p>以下のディレクティブは <code>send-as-is</code>
+      ハンドラを使用するように指示します。このハンドラは自分自身の HTTP
+      ヘッダを持っているファイルに使用されます。ここでは、拡張子に関わらず、
+      <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
+      <code>send-as-is</code> ハンドラによって扱われます。</p>
+
+      <example>
+        &lt;Directory /web/htdocs/asis&gt;<br/>
+        SetHandler send-as-is<br/>
+        &lt;/Directory&gt;
+      </example>
+      
+    </section>
+  </section>
+  <section id="programmer">
+    <title>プログラマ向けのメモ</title>
+
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
+    <a href="developer/API.html">Apache API</a>
+    に追加されました。詳しく言うと、<code>request_rec</code>
+    構造体に新しいレコードが追加されたということです。</p>
+
+    <example>
+     char *handler
+    </example>
+
+    <p>もしモジュールがハンドラに関わりたい場合、
+    やらなければならないことは、リクエストが <code>invoke_handler</code>
+    ステージに達する以前に <code>r-&gt;handler</code>
+    を設定することだけです。ハンドラはコンテントタイプの代わりに
+    ハンドラ名を使うようになっていること以外は、以前と同じように実装されています。
+    必ず要求されているわけではありませんが、メディアタイプ
+    の名前空間を侵さないように、ハンドラの名前にはスラッシュを含まない、
+    ダッシュ (訳注: "-") で分離された名前を付ける習慣になっています。</p>
+  </section>
+</manualpage>
