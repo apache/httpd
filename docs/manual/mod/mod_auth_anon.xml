@@ -198,7 +198,7 @@ formatted email address</description>
     <p>When set <code>on</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <directive
-    module="mod_auth_anon">Auth_LogEmail</directive>).</p>
+    module="mod_auth_anon">Anonymous_LogEmail</directive>).</p>
 </usage>
 </directivesynopsis>
 

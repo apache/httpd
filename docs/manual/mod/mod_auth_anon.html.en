@@ -171,5 +171,5 @@ formatted email address</td></tr><tr><th><a href="directive-dict.html#Syntax">Sy
               </a></th><td>mod_auth_anon</td></tr></table>
     <p>When set <code>on</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
-    addresses (see the above <code class="directive"><a href="#auth_logemail">Auth_LogEmail</a></code>).</p>
+    addresses (see the above <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
