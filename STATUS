@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/25 15:20:15 $]
+Last modified at [$Date: 2004/08/26 01:03:20 $]
 
 Release:
 
@@ -193,14 +193,6 @@ PATCHES TO BACKPORT FROM 2.1
        trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
-
-    *) Prevent Win32 pool corruption at startup
-         server/mpm/winnt/child.c: r1.36 
-       +1: ake, trawick, nd, stoddard
-
-    *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
-         server/mpm/winnt/child.c: r1.37
-       +1: trawick, nd
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action

@@ -1,4 +1,8 @@
 Changes with Apache 2.0.51
+
+  *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
+     [Eider Oliveira <eider bol.com.br>]
+
   *) Prevent Win32 pool corruption at startup [Allan Edwards]
 
   *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
