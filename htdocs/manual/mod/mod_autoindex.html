@@ -207,7 +207,15 @@ extension, partial filename, wild-card expression or full filename for files
 to describe. <EM>String</EM> is enclosed in double quotes
 (<CODE>&quot;</CODE>). Example:
 <BLOCKQUOTE><CODE>AddDescription "The planet Mars" /web/pics/mars.gif
-</CODE></BLOCKQUOTE><P><HR>
+</CODE></BLOCKQUOTE>
+<P>
+The description field is 23 bytes wide.  7 more bytes may be
+added if the directory is covered by an
+<CODE>IndexOptions&nbsp;SuppressSize</CODE>, and 19 bytes may be
+added if <CODE>IndexOptions&nbsp;SuppressLastModified</CODE> is
+in effect.  The widest this column can be is therefore 49 bytes.
+</P>
+<HR>
 
 <H2><A NAME="addicon">AddIcon</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddIcon} directive&gt; -->
