@@ -131,6 +131,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
 
     conf->content_md5 = 2;
+    conf->accept_path_info = 2;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
 
@@ -163,6 +164,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->handler = NULL;
     conf->output_filters = NULL;
     conf->input_filters = NULL;
+
     return (void *)conf;
 }
 
@@ -252,6 +254,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
     if ((new->content_md5 & 2) == 0) {
         conf->content_md5 = new->content_md5;
+    }
+    if ((new->accept_path_info & 2) == 0) {
+        conf->accept_path_info = new->accept_path_info;
     }
     if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
 	conf->use_canonical_name = new->use_canonical_name;
@@ -1769,6 +1774,14 @@ static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
     return NULL;
 }
 
+static const char *set_accept_path_info(cmd_parms *cmd, void *d_, int arg)
+{
+    core_dir_config *d=d_;
+    
+    d->accept_path_info = arg != 0;
+    return NULL;
+}
+
 static const char *set_use_canonical_name(cmd_parms *cmd, void *d_,
 					  const char *arg)
 {
@@ -2424,6 +2437,8 @@ AP_INIT_TAKE1("GprofDir", set_gprof_dir, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
   "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
+AP_INIT_FLAG("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
+  "whether or not files with PATH_INFO will be served by the core handler"),
 
 /* Old resource config file commands */
   
@@ -2666,6 +2681,16 @@ static int core_override_type(request_rec *r)
 
     if (conf->handler && strcmp(conf->handler, "none"))
         r->handler = conf->handler;
+
+    /* Deal with the poor soul who is trying to force path_info to be
+     * accepted within the core_handler, where they will let the subreq
+     * address it's contents.  This can only be toggled on by the user,
+     * and modules can't override the user's discresion, except in their
+     * own module fixup phase.
+     */
+    if (!r->used_path_info & (conf->accept_path_info & 1)) {
+        r->used_path_info = conf->accept_path_info;
+    }
 
     return OK;
 }
