@@ -482,3 +482,30 @@ Delayed until after 1.3.0, unless someone happens to get to it:
       accomodate it, though it does add complexity to suexec.c.
       PR #1120
       Brian: +1
+
+Binaries
+   The goal here is to have two columns of all-Y (where applicable)
+   for the two stable release versions, and nothing under Old unless
+   the new version just doesn't work on that platform.
+
+                        1.2.6   1.3.1   Old
+   aix_4.1                N       Y     1.2.5, 1.3.0
+   alphalinux             N       N     1.3.0
+   aux_3.1                N       N     1.3.0
+   decalphaNT             N       N     1.3b6
+   dunix_4.0              N       Y     1.2.4, 1.3.0
+   freebsd_2.1            N       N     1.2.4
+   freebsd_2.2            N       N     1.2.5
+   hpux_10.20             N       N     1.2.5
+   hpux_11                N       Y
+   irix_6.2               N       N     1.2.5
+   linux_2.x              N       N     1.2.4, 1.3.0
+   netbsd_1.2             N       N     1.2.4
+   os2                    N       Y     1.3b6, 1.3b7
+   reliantunix_5.4        Y       N     1.3.0
+   solaris                N       Y*    1.2.5, 1.3.0 (* for Solaris 2.6)
+   sparclinux             N       Y     1.3.0
+   sunos_4.1.x            N       N     1.2.5
+   ultrix_4.4             N       N     1.2.4
+   win32                  -       Y
+
