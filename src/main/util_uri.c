@@ -247,7 +247,8 @@ API_EXPORT(char *) ap_unparse_uri_components(pool *p,
         if (j && uptr->path && *uptr->path != '/')
             parts[j++] = "/";
         
-        parts[j++] = uptr->path;
+        if (uptr->path != NULL)
+            parts[j++] = uptr->path;
 
         if (!(flags & UNP_OMITQUERY)) {
             if (uptr->query) {
