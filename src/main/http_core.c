@@ -652,15 +652,8 @@ static const char end_filesmatch_section[] = "</FilesMatch>";
 static const char end_virtualhost_section[] = "</VirtualHost>";
 static const char end_ifmodule_section[] = "</IfModule>";
 
-/* check_cmd_context():                  Forbidden in: */
-#define  NOT_IN_VIRTUALHOST     0x01U /* <Virtualhost> */
-#define  NOT_IN_LIMIT           0x02U /* <Limit> */
-#define  NOT_IN_DIR_LOC_FILE    0x04U /* <Directory>/<Location>/<Files>*/
-#define  NOT_IN_LOC             0x08U /* <Location> */
-#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
 
-
-static const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
+const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
 {
     const char *gt = (cmd->cmd->name[0] == '<'
 		   && cmd->cmd->name[strlen(cmd->cmd->name)-1] != '>') ? ">" : "";
@@ -673,14 +666,20 @@ static const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
 	return pstrcat(cmd->pool, cmd->cmd->name, gt,
 		       " cannot occur within <Limit> section", NULL);
 
-    if ((forbidden & NOT_IN_DIR_LOC_FILE) && cmd->path != NULL)
+    if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE && cmd->path != NULL)
 	return pstrcat(cmd->pool, cmd->cmd->name, gt,
 		       " cannot occur within <Directory/Location/Files> section", NULL);
     
-    if ((forbidden & NOT_IN_LOC) && (cmd->end_token == end_location_section
-	    || cmd->end_token == end_locationmatch_section))
+    if (((forbidden & NOT_IN_DIRECTORY) && (cmd->end_token == end_directory_section
+	    || cmd->end_token == end_directorymatch_section)) ||
+	((forbidden & NOT_IN_LOCATION) && (cmd->end_token == end_location_section
+	    || cmd->end_token == end_locationmatch_section)) ||
+	((forbidden & NOT_IN_FILES) && (cmd->end_token == end_files_section
+	    || cmd->end_token == end_filesmatch_section)))
+	
 	return pstrcat(cmd->pool, cmd->cmd->name, gt,
-		       " cannot occur within <Location> section", NULL);
+		       " cannot occur within <", cmd->end_token+2,
+		       " section", NULL);
 
     return NULL;
 }
@@ -1085,7 +1084,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     void *new_file_conf = create_per_dir_config (cmd->pool);
 
-    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT | NOT_IN_LOC);
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT | NOT_IN_LOCATION);
     if (err != NULL) return err;
 
     if (endp) *endp = '\0';
@@ -1134,6 +1133,11 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     return NULL;
 }
 
+/* XXX: NB: Currently, we have no way of checking
+ * whether <IfModule> sections are closed properly.
+ * Extra (redundant, unpaired) </IfModule> directives are
+ * simply silently ignored.
+ */
 const char *end_ifmod (cmd_parms *cmd, void *dummy) {
     return NULL;
 }

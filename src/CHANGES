@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *)  As Ken suggested the check_cmd_context() function and related defines
+      are non-static now so modules can use 'em.  [Martin Kraemer]
+
   *)  mod_info would occasionally produce an unpaired <tt> in its
       output. Fixed. [Martin Kraemer]
 

@@ -153,10 +153,6 @@ Open issues:
       appropriate environment. Marc and Alexei don't see any
       big deal. Martin says that not every "env" has a -u flag.
 
-    * Ken suggests that new check_cmd_context() and related defines
-      should be non-static and in util_* so modules can use 'em.  (He
-      didn't notice this flaw during the review.)
-
     * 206 vs. 200 issue on Content-Length
 	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
 	Roy says current behavior is correct, but Alexei disagrees.

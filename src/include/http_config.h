@@ -328,6 +328,19 @@ const char *init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
+/* check_cmd_context() definitions: */
+extern const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden);
+
+/* check_cmd_context():                  Forbidden in: */
+#define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */
+#define  NOT_IN_LIMIT           0x02 /* <Limit> */
+#define  NOT_IN_DIRECTORY       0x04 /* <Directory> */
+#define  NOT_IN_LOCATION        0x08 /* <Location> */
+#define  NOT_IN_FILES           0x10 /* <Files> */
+#define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) /* <Directory>/<Location>/<Files>*/
+#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
+
+
 /* Module-method dispatchers, also for http_request.c */
 
 int translate_name(request_rec *);
