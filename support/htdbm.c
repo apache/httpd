@@ -229,7 +229,7 @@ static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed)
     if (!htdbm->comment)
         val.dptr  = htdbm->userpass;
     else {
-        val.dptr = apr_pstrcat(htdbm->pool, htdbm->userpass, ";",
+        val.dptr = apr_pstrcat(htdbm->pool, htdbm->userpass, ":",
                                htdbm->comment, NULL);
         val.dsize += (strlen(htdbm->comment) + 1);
     }
@@ -602,8 +602,15 @@ int main(int argc, const char * const argv[])
         fprintf(stdout, "Database %s %s.\n", h->filename, 
                 h->create ? "created" : (changed ? "modified" : "updated"));
     }
-    if (cmd == HTDBM_NOFILE)
-        fprintf(stderr, "%s:%s\n", h->username, h->userpass);
+    if (cmd == HTDBM_NOFILE) {
+        if (!need_cmnt) {
+            fprintf(stderr, "%s:%s\n", h->username, h->userpass);
+        }
+        else {
+            fprintf(stderr, "%s:%s:%s\n", h->username, h->userpass,
+                    h->comment);
+        }
+    }
     htdbm_terminate(h);
     apr_terminate();
     

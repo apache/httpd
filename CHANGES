@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Fix htdbm to generate comment fields in DBM files correctly.
+     [Justin Erenkrantz]
+
   *) mod_dav: Use bucket brigades when reading PUT data. This avoids
      problems if the data stream is modified by an input filter. PR 22104.
      [Tim Robbins <tim robbins.dropbear.id.au>, André Malo]
