@@ -575,7 +575,7 @@ struct conn_rec {
   /* Information about the connection itself */
 
   int child_num;                /* The number of the child handling conn_rec */
-  BUFF *client;			/* Connetion to the guy */
+  BUFF *client;			/* Connection to the guy */
   int aborted;			/* Are we still talking? */
   
   /* Who is the client? */
@@ -591,7 +591,7 @@ struct conn_rec {
   char *remote_logname;		/* Only ever set if doing rfc1413 lookups.
                                  * N.B. Only access this through
 				 * get_remote_logname() */
-    char *user;			/* If an authentication check was made,
+  char *user;			/* If an authentication check was made,
 				 * this gets set to the user name.  We assume
 				 * that there's only one user per connection(!)
 				 */
