@@ -3,7 +3,6 @@ AC_ARG_WITH(mpm,
 [  --with-mpm=MPM          Choose the process model for Apache to use.
                           MPM={dexter,mpmt_beos,mpmt_pthread,prefork,spmt_os2}],[
   APACHE_MPM=$withval
-  mpm_explicit="yes"
 ],[
   APACHE_MPM=mpmt_pthread
   PLAT=`$ac_config_guess`
@@ -14,7 +13,6 @@ AC_ARG_WITH(mpm,
     *os2_emx*)
       APACHE_MPM=spmt_os2;;
   esac 
-  mpm_explicit="no"
 ])
 AC_MSG_RESULT($APACHE_MPM)
 
@@ -41,48 +39,7 @@ MPM_NAME=$apache_cv_mpm
 MPM_DIR=modules/mpm/$MPM_NAME
 MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
-if test "$mpm_explicit" = "no"; then
-  if test "$MPM_NAME" = "prefork" ; then
-    MPM_NAME="prefork"
-    MPM_FAKE_NAME=prefork.c
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -DPREFORK"
-
-    ac_cv_enable_threads="no"
-    AC_CACHE_SAVE
-  fi
-
-dnl The MPM_FAKE_NAME allow the mpmt MPM to emulate all of the MPMs without
-dnl Apache actually knowing it.  The problem is IfModule.  IfModule uses
-dnl the C file's name to know if the module is loaded.  Without this change
-dnl mpmt always shows up as mpmt.c, and we can't distinguish between all
-dnl of the emulated MPMs.
-dnl
-dnl This fixes that by creating a soft link that has the name of the
-dnl desired MPM to mpmt.c.  Now, Apache can search for the specified MPM
-dnl and actually find it.
-  test -d modules/mpm/mpmt || $srcdir/helpers/mkdir.sh modules/mpm/mpmt
-  if test "$MPM_NAME" = "mpmt_pthread" ; then
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -DMPMT_PTHREAD"
-    MPM_FAKE_NAME=mpmt_pthread.c
-    $LN_S $abs_srcdir/modules/mpm/mpmt/mpmt.c modules/mpm/mpmt/mpmt_pthread.c
-  elif test "$MPM_NAME" = "dexter" ; then
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -DDEXTER"
-    MPM_FAKE_NAME=dexter.c
-    $LN_S $abs_srcdir/modules/mpm/mpmt/mpmt.c modules/mpm/mpmt/dexter.c
-  fi
-
-  if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread" -o "$MPM_NAME" = "prefork"; then
-    MPM_DIR=modules/mpm/mpmt;
-    MPM_LIB=$MPM_DIR/libmpmt.la
-    MPM_NAME="mpmt"
-  else
-    MPM_DIR=modules/mpm/$MPM_NAME
-    MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
-  fi
-fi
-
 APACHE_SUBST(MPM_NAME)
-APACHE_SUBST(MPM_FAKE_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
 
 dnl Check for pthreads and attempt to support it
