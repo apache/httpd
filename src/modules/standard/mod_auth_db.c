@@ -259,7 +259,8 @@ static int db_check_auth(request_rec *r)
                ap_snprintf(errstr, sizeof(errstr), 
 			   "user %s not in DB group file %s",
 			   user, sec->auth_dbgrpfile);
-	       aplog_error(APLOG_MARK, APLOG_ERR, "%s: %s", errstr, r->filename);
+	       aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			   "%s: %s", errstr, r->filename);
 	       note_basic_auth_failure(r);
 	       return AUTH_REQUIRED;
            }
@@ -275,7 +276,8 @@ static int db_check_auth(request_rec *r)
            }
            ap_snprintf(errstr, sizeof(errstr), 
 		       "user %s not in right group",user);
-	   aplog_error(APLOG_MARK, APLOG_ERR, "%s: %s", errstr, r->filename);
+	   aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		       "%s: %s", errstr, r->filename);
            note_basic_auth_failure(r);
 	   return AUTH_REQUIRED;
        }
