@@ -112,6 +112,9 @@ libexecdir      = @libexecdir@
 mandir          = @mandir@
 sysconfdir      = @sysconfdir@
 datadir         = @datadir@
+iconsdir        = $(datadir)/icons
+htdocsdir       = $(datadir)/htdocs
+cgidir          = $(datadir)/cgi-bin
 includedir      = @includedir@
 localstatedir   = @localstatedir@
 runtimedir      = @runtimedir@
@@ -246,9 +249,9 @@ install-mktree:
 	$(MKDIR) $(root)$(mandir)/man1
 	$(MKDIR) $(root)$(mandir)/man8
 	$(MKDIR) $(root)$(sysconfdir)
-	$(MKDIR) $(root)$(datadir)/htdocs
-	$(MKDIR) $(root)$(datadir)/icons
-	$(MKDIR) $(root)$(datadir)/cgi-bin
+	$(MKDIR) $(root)$(htdocsdir)
+	$(MKDIR) $(root)$(iconsdir)
+	$(MKDIR) $(root)$(cgidir)
 	$(MKDIR) $(root)$(includedir)
 	$(MKDIR) $(root)$(runtimedir)
 	$(MKDIR) $(root)$(logfiledir)
@@ -376,31 +379,31 @@ install-include:
 #   icons and distributed CGI scripts.
 install-data:
 	@echo "===> [data: Installing initial data files]"
-	-@if [ -f $(root)$(datadir)/htdocs/index.html ]; then \
-		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(datadir)/htdocs/]"; \
+	-@if [ -f $(root)$(htdocsdir)/index.html ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(htdocsdir)/]"; \
 	else \
-		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(datadir)/htdocs/"; \
+		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(htdocsdir)/"; \
 		(cd $(TOP)/htdocs/ && $(TAR) $(TAROPT) - *) |\
-		(cd $(root)$(datadir)/htdocs/ && $(TAR) -xf -); \
-		find $(root)$(datadir)/htdocs/ -type d -exec chmod a+rx {} \; ; \
-		find $(root)$(datadir)/htdocs/ -type f -exec chmod a+r {} \; ; \
+		(cd $(root)$(htdocsdir)/ && $(TAR) -xf -); \
+		find $(root)$(htdocsdir)/ -type d -exec chmod a+rx {} \; ; \
+		find $(root)$(htdocsdir)/ -type f -exec chmod a+r {} \; ; \
 	fi
-	-@if [ -f $(root)$(datadir)/cgi-bin/printenv ]; then \
-		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(datadir)/cgi-bin/]"; \
+	-@if [ -f $(root)$(cgidir)/printenv ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(cgidir)/]"; \
 	else \
 		for script in printenv test-cgi; do \
 			cat $(TOP)/cgi-bin/$${script} |\
 			sed -e 's;^#!/.*perl;#!$(PERL);' \
 			> $(TOP)/$(SRC)/.apaci.install.tmp; \
-			echo "$(INSTALL_DATA) $(TOP)/conf/$${script}[*] $(root)$(datadir)/cgi-bin/$${script}"; \
-			$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(datadir)/cgi-bin/$${script}; \
+			echo "$(INSTALL_DATA) $(TOP)/conf/$${script}[*] $(root)$(cgidir)/$${script}"; \
+			$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(cgidir)/$${script}; \
 		done; \
 	fi
-	@echo "Copying tree $(TOP)/icons/ -> $(root)$(datadir)/icons/"; \
+	@echo "Copying tree $(TOP)/icons/ -> $(root)$(iconsdir)/"; \
 	(cd $(TOP)/icons/ && $(TAR) $(TAROPT) - *) |\
-	(cd $(root)$(datadir)/icons/ && $(TAR) -xf -); \
-	find $(root)$(datadir)/icons/ -type d -exec chmod a+rx {} \; ;\
-	find $(root)$(datadir)/icons/ -type f -exec chmod a+r {} \;
+	(cd $(root)$(iconsdir)/ && $(TAR) -xf -); \
+	find $(root)$(iconsdir)/ -type d -exec chmod a+rx {} \; ;\
+	find $(root)$(iconsdir)/ -type f -exec chmod a+r {} \;
 	@echo "<=== [data]"
 
 #   create the initial configuration by providing default files
@@ -424,9 +427,9 @@ install-config:
 		 echo ""; \
 		 cat $(TOP)/conf/$${conf}-dist ) |\
 		 sed -e '/# LoadModule/r $(TOP)/$(SRC)/.apaci.install.conf' \
-			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
-			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
+			-e 's;@@ServerRoot@@/htdocs;$(htdocsdir);' \
+			-e 's;@@ServerRoot@@/icons;$(iconsdir);' \
+			-e 's;@@ServerRoot@@/cgi-bin;$(cgidir);' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
 			-e 's;@@ServerRoot@@;$(prefix);g' \
 			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \

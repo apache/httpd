@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/08 20:03:16 $]
+  Last modified at [$Date: 1999/03/08 20:50:04 $]
 
 Release:
 
@@ -61,10 +61,6 @@ Available Patches:
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
         Message-ID: <18586.916662926@coconut.itojun.org>
         Status: Lars +1 (on concept)
-
-    * Fred's PATCH: Add cgidir, htdocsdir, iconsdir variables in Makefile.tmpl
-        Message-ID: <199901140037.QAA18934@scv1.apple.com>
-        Status: Ralf +1 (on concept)
 
     * Fred's PATCH: Add Mac OS X Server Layout file layout
         Message-ID: <199901140039.QAA31642@scv2.apple.com>

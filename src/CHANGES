@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Add cgidir, htdocsdir, iconsdir variables to Makefile.tmpl in order
+     to make platform installations easier.  [Wilfredo Sanchez]
+
   *) In configure, do not append the target name to the directory path if
      the path already contains "apache".  [Ralf S. Engelschall]
 
