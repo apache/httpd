@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/09/30 16:42:10 $]
+  Last modified at [$Date: 2002/10/04 18:10:11 $]
 
 Release:
 
@@ -44,14 +44,14 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
    * Current vote on 2 PRs for inclusion:
       Bugz #9181 (Unable to set headers on non-2XX responses)
         +1: Martin, Jim
       Gnats #10246 (Add ProxyConnAllow directive)
         +0: Martin (or rather -.5, see dev@ Message
 	            <20020529215048.A56015@deejai2.mch.fsc.net>)
-
-RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * htpasswd.c and htdigest.c use tmpnam()... consider using
       mkstemp() when available.
@@ -80,11 +80,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 
 Available Patches (Most likely, will be ported to 2.0 as appropriate):
-
-   * Backport of 2.0 ForceLanguagePriority directive
-       /dist/httpd/contrib/patches/1.3/force_language_priority.patch
-       Message-ID: <B8BF87DD.14ABA%dyoung@nettonettech.com>
-       Status:
 
    *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
      <jwbaker@acm.org> to more fully close some segfault potential.
@@ -126,12 +121,6 @@ Available Patches (Most likely, will be ported to 2.0 as appropriate):
 
 In progress:
 
-    * David Harris' note of odd size memory allocations.  Dean notes
-      that this is due to BLOCK_MIN_ALLOC.  Should we reduce it to 1024?
-      Discussion in thread following message-ID below.
-	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
-	Status: 
-
 Needs patch:
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
@@ -152,9 +141,6 @@ Needs patch:
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
 
-    * Should we disallow requests with bogus characters in the method?
-      See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
-
 Open issues:
 
     * Should we provide a way to force CustomError responses past IE's
@@ -168,16 +154,9 @@ Open issues:
         necessarily the library that Apache was built with.  Aught to
         rewrite dbmmanage with the proper library for clean administration.
 
-    * Release builds: Should we provide Configuration or not?
-      Should we 'make all suexec' in src/support?
-	+1: Brian, Jim, Dirkx, Ken +1 (possible suexec path issue, though)
-
     * Marc's socket options like source routing (kill them?)
 	Marc, Martin say Yes
 
-    * Should we re-enable nagle now that we're non-buffering CGIs?  See
-      various messages from Marc in March 98.
-  
     * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
       possible that it'll do something completely bogus when it's 
       used for read-only things. - Dean Gaudet
@@ -223,13 +202,13 @@ Win32 specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.26):
+Binaries (1.3.27):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
- 000964804C00-ibm-aix4.3       yes     Bill Stoddard
+ 000964804C00-ibm-aix4.3       no      Bill Stoddard
  9000_715-hp-hpux11.00         no      Jeff Trawick
- 9000_785-hp-hpux11.00         yes     Cliff Woolley
+ 9000_785-hp-hpux11.00         no      Cliff Woolley
  alpha-dec-osf3.0              no      Sameer Parekh
  alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar,
                                        Randy Terbush
@@ -238,12 +217,12 @@ Binaries (1.3.26):
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-be-beos                  no      David Reid
  i386-dg-dgux5.4R2.01          no      Randy Terbush
- i386-siemens-sinix5.4         yes     Martin Kraemer
+ i386-siemens-sinix5.4         no      Martin Kraemer
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
  i386-sun-solaris2.7           no      Cliff Skolnick
- i386-sun-solaris2.8           yes     Aaron Bannert
+ i386-sun-solaris2.8           no      Aaron Bannert
  i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
@@ -254,16 +233,16 @@ Binaries (1.3.26):
  i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.4      no      Martin Kraemer
- i386-whatever-freebsd4.6      yes     Aaron Bannert
+ i386-whatever-freebsd4.6      no      Aaron Bannert
  i586-unknown-linux2           no      Ralf S. Engelschall,
                                        Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i686-unknown-linux2           no      Lars Eilebrecht
  i686-whatever-cygwin          no      Stipe Tolj
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
- i686-whatever-linux22         yes     Aaron Bannert
+ i686-whatever-linux22         no      Aaron Bannert
  ia64-whatever-linux22         no      Martin Kraemer
- ia64-hp-hpux11.20             yes     Cliff Woolley
+ ia64-hp-hpux11.20             no      Cliff Woolley
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
@@ -271,22 +250,22 @@ Binaries (1.3.26):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   yes     Martin Kraemer
+ mips-siemens-reliantunix5.4   no      Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
- netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          yes     Brian Havard
+ netware                       no      Brad Nicholes <bnicholes@novell.com>
+ OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
- powerpc-apple-darwin5.5       yes     Aaron Bannert
- ppc-whatever-linux22          yes     Graham Leggett
+ powerpc-apple-darwin5.5       no      Aaron Bannert
+ ppc-whatever-linux22          no      Graham Leggett
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
  sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
  sparc-sun-solaris2.6          no      Lars Eilebrecht
  sparc-sun-solaris2.7          no      Cliff Skolnick
- sparc-sun-solaris2.8          yes     Jim Jagielski
+ sparc-sun-solaris2.8          no      Jim Jagielski
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  sun4u-sun-solaris2.280        no      Jeff Trawick
