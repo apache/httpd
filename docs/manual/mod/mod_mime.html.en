@@ -474,7 +474,7 @@ DefaultLanguage en
 <h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Tells mod_mime to treat path_info components as part of the filename</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, location, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
