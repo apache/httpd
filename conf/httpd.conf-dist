@@ -341,7 +341,7 @@ UserDir public_html
 #        Order allow,deny
 #        Allow from all
 #    </Limit>
-#    <LimitExcept GET POST OPTIONS PROFIND>
+#    <LimitExcept GET POST OPTIONS PROPFIND>
 #        Order deny,allow
 #        Deny from all
 #    </LimitExcept>
