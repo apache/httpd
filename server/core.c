@@ -4130,19 +4130,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                      &bytes_sent,   /* how many bytes were
                                                        sent                 */
                                      flags);   /* apr_sendfile flags        */
-
-                if (logio_add_bytes_out && bytes_sent > 0)
-                    logio_add_bytes_out(c, bytes_sent);
             }
             else
 #endif
             {
                 rv = emulate_sendfile(net, fd, &hdtr, foffset, flen,
                                       &bytes_sent);
-
-                if (logio_add_bytes_out && bytes_sent > 0)
-                    logio_add_bytes_out(c, bytes_sent);
             }
+
+            if (logio_add_bytes_out && bytes_sent > 0)
+                logio_add_bytes_out(c, bytes_sent);
 
             fd = NULL;
         }
