@@ -3264,22 +3264,16 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 
 static char *current_logtime(request_rec *r)
 {
-    int timz;
-    ap_time_t *t;
+    ap_exploded_time_t t;
     char tstr[80];
-    char sign;
-    ap_int32_t len;
+    ap_size_t len;
 
-    ap_make_time(&t, r->pool);
-    ap_get_gmtoff(&timz, t, r->pool);
-    sign = (timz < 0 ? '-' : '+');
-    if (timz < 0) {
-        timz = -timz;
-    }
+    ap_explode_localtime(&t, ap_now());
 
-    ap_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", t);
+    ap_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", &t);
     ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
-                sign, timz/60, timz%60);
+                t.tm_gmtoff < 0 ? '-' : '+',
+		t.tm_gmtoff / (60*60), t.tm_gmtoff % (60*60));
     return ap_pstrdup(r->pool, tstr);
 }
 
@@ -3556,14 +3550,7 @@ static char *lookup_variable(request_rec *r, char *var)
 {
     const char *result;
     char resultbuf[LONG_STRING_LEN];
-    ap_time_t *tm = NULL;
-    ap_int32_t tmvalue = 0;
-    ap_int32_t year;
-    ap_int32_t mon;
-    ap_int32_t mday;
-    ap_int32_t hour;
-    ap_int32_t min;
-    ap_int32_t sec;
+    ap_exploded_time_t tm;
     request_rec *rsub;
 #ifndef WIN32
     struct passwd *pw;
@@ -3671,51 +3658,41 @@ static char *lookup_variable(request_rec *r, char *var)
         result = resultbuf;
     }
 
+/* XXX: wow this has gotta be slow if you actually use it for a lot, recalculates exploded time for each variable */
     /* underlaying Unix system stuff */
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
-        ap_make_init_time(&tm, r->pool);
-        ap_explode_time(tm, APR_LOCALTIME);
-        ap_get_year(tm, &year);
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d",
-                    (year / 100) + 19, year % 100);
+        ap_explode_localtime(&tm, ap_now());
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%04d", tm.tm_year + 1900);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
-    ap_make_init_time(&tm, r->pool); \
-    ap_explode_time(tm, APR_LOCALTIME); \
-    ap_get_tmfield(tm, &tmvalue); \
-    ap_snprintf(resultbuf, sizeof(resultbuf), format, tmvalue); \
+    ap_explode_localtime(&tm, ap_now()); \
+    ap_snprintf(resultbuf, sizeof(resultbuf), format, tm.tmfield); \
     result = resultbuf;
     else if (strcasecmp(var, "TIME_MON") == 0) {
-        MKTIMESTR("%02d", mon+1)
+        MKTIMESTR("%02d", tm_mon+1)
     }
     else if (strcasecmp(var, "TIME_DAY") == 0) {
-        MKTIMESTR("%02d", mday)
+        MKTIMESTR("%02d", tm_mday)
     }
     else if (strcasecmp(var, "TIME_HOUR") == 0) {
-        MKTIMESTR("%02d", hour)
+        MKTIMESTR("%02d", tm_hour)
     }
     else if (strcasecmp(var, "TIME_MIN") == 0) {
-        MKTIMESTR("%02d", min)
+        MKTIMESTR("%02d", tm_min)
     }
     else if (strcasecmp(var, "TIME_SEC") == 0) {
-        MKTIMESTR("%02d", sec)
+        MKTIMESTR("%02d", tm_sec)
     }
     else if (strcasecmp(var, "TIME_WDAY") == 0) {
-        MKTIMESTR("%d", wday)
+        MKTIMESTR("%d", tm_wday)
     }
     else if (strcasecmp(var, "TIME") == 0) {
-        ap_make_init_time(&tm, r->pool);
-        ap_explode_time(tm, APR_LOCALTIME);
-        ap_get_year(tm, &year);
-        ap_get_mon(tm, &mon);
-        ap_get_mday(tm, &mday);
-        ap_get_hour(tm, &hour);
-        ap_get_min(tm, &min);
-        ap_get_sec(tm, &sec);
+        ap_explode_localtime(&tm, ap_now());
         ap_snprintf(resultbuf, sizeof(resultbuf),
-                    "%02d%02d%02d%02d%02d%02d%02d", (year / 100) + 19,
-                    (year % 100), mon+1, mday, hour, min, sec);
+		    "%04d%02d%02d%02d%02d%02d", tm.tm_year + 1900,
+		    tm.tm_mon+1, tm.tm_mday,
+		    tm.tm_hour, tm.tm_min, tm.tm_sec);
         result = resultbuf;
         rewritelog(r, 1, "RESULT='%s'", result);
     }

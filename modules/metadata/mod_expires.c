@@ -196,6 +196,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_request.h"
 
 typedef struct {
     int active;
@@ -402,12 +403,10 @@ static int add_expires(request_rec *r)
 {
     expires_dir_config *conf;
     char *code;
-    char *timestr = NULL;
-    ap_ansi_time_t base;
-    time_t additional;
-    time_t expires;
-    ap_time_t *finaltime = NULL;
-    char age[20];
+    ap_time_t base;
+    ap_time_t additional;
+    ap_time_t expires;
+    char *timestr;
 
     if (ap_is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
         return DECLINED;
@@ -459,14 +458,14 @@ static int add_expires(request_rec *r)
 	     */
 	    return DECLINED;
 	}
-        ap_get_ansitime(r->finfo.mtime, &base);
+	base = r->finfo.mtime;
         additional = atoi(&code[1]);
         break;
     case 'A':
         /* there's been some discussion and it's possible that 
          * 'access time' will be stored in request structure
          */
-        ap_get_ansitime(r->request_time, &base);
+        base = r->request_time;
         additional = atoi(&code[1]);
         break;
     default:
@@ -479,14 +478,11 @@ static int add_expires(request_rec *r)
     };
 
     expires = base + additional;
-    ap_snprintf(age, sizeof(age), "max-age=%d", (int) expires - (int) r->request_time);
-    ap_table_setn(r->headers_out, "Cache-Control", ap_pstrdup(r->pool, age));
-    tzset();                    /* redundant? called implicitly by localtime, at least 
-                                 * under FreeBSD
-                                 */
-    ap_make_time(&finaltime, r->pool);
-    ap_set_ansitime(finaltime, expires);
-    ap_timestr(&timestr, finaltime, APR_UTCTIME, r->pool); 
+    ap_table_setn(r->headers_out, "Cache-Control",
+	ap_psprintf(r->pool, "max-age=%qd",
+	    (expires - r->request_time) / AP_USEC_PER_SEC));
+    timestr = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
+    ap_rfc822_date(timestr, expires);
     ap_table_setn(r->headers_out, "Expires", timestr);
     return OK;
 }

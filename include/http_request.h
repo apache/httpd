@@ -104,7 +104,7 @@ API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *);
 API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *);
 API_EXPORT(int) ap_some_auth_required(request_rec *r);
 API_EXPORT(int) ap_is_initial_req(request_rec *r);
-API_EXPORT(ap_time_t *) ap_update_mtime(request_rec *r, ap_time_t *dependency_mtime);
+API_EXPORT(void) ap_update_mtime(request_rec *r, ap_time_t dependency_mtime);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */

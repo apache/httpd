@@ -2453,7 +2453,6 @@ static int default_handler(request_rec *r)
 {
     core_dir_config *d =
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
-    ap_time_t *temp;
     int rangestatus, errstatus;
     ap_file_t *fd = NULL;
     ap_status_t status;

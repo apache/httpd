@@ -82,10 +82,6 @@ static int status_handler(request_rec *r)
     int i;
     ap_array_header_t *server_status;
     ap_status_table_row_t *status_rows;
-    ap_time_t *nowtime = NULL;
-
-    ap_make_time(&nowtime, r->pool);
-    ap_current_time(nowtime);
 
     r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)
@@ -110,7 +106,7 @@ static int status_handler(request_rec *r)
     ap_rvputs(r, "Server Built: ",
       ap_get_server_built(), "<br>\n<hr>\n", NULL);
     ap_rvputs(r, "Current Time: ",
-      ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
+      ap_ht_time(r->pool, ap_now(), DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
     ap_rprintf(r, "\n%d connections currently being processed\n",
                server_status->nelts);
 

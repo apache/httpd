@@ -368,9 +368,9 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
  * to limit the number of calls to time().  We don't check for futurosity
  * unless the mtime is at least as new as the reference.
  */
-API_EXPORT(ap_time_t *) ap_rationalize_mtime(request_rec *r, ap_time_t *mtime)
+API_EXPORT(ap_time_t) ap_rationalize_mtime(request_rec *r, ap_time_t mtime)
 {
-    ap_time_t *now;
+    ap_time_t now;
 
     /* For all static responses, it's almost certain that the file was
      * last modified before the beginning of the request.  So there's
@@ -381,26 +381,15 @@ API_EXPORT(ap_time_t *) ap_rationalize_mtime(request_rec *r, ap_time_t *mtime)
      * were given a time in the future, we return the current time - the
      * Last-Modified can't be in the future.
      */
-    if (ap_timecmp(mtime, r->request_time) == APR_LESS) {
-        now = r->request_time;
-    }
-    else {
-        ap_make_time(&now, r->pool);
-        ap_current_time(now);
-    } 
-    if (ap_timecmp(mtime, now) == APR_MORE) {
-        return now;
-    }
-    else {
-        return mtime;
-    }
+    now = (mtime < r->request_time) ? r->request_time : ap_now();
+    return (mtime > now) ? now : mtime;
 }
 
 API_EXPORT(int) ap_meets_conditions(request_rec *r)
 {
     const char *etag = ap_table_get(r->headers_out, "ETag");
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
-    ap_time_t *mtime;
+    ap_time_t mtime;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -417,13 +406,8 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
         return OK;
     }
 
-    if (r->mtime == NULL) {
-        ap_make_time(&mtime, r->pool);
-        ap_current_time(mtime);
-    }
-    else {
-        mtime = r->mtime;
-    }
+    /* XXX: we should define a "time unset" constant */
+    mtime = (r->mtime != 0) ? r->mtime : ap_now();
 
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
@@ -445,9 +429,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
          */
         if_unmodified = ap_table_get(r->headers_in, "If-Unmodified-Since");
         if (if_unmodified != NULL) {
-            ap_time_t *ius = ap_parseHTTPdate(if_unmodified, r->pool);
+            ap_time_t ius = ap_parseHTTPdate(if_unmodified);
 
-            if ((ius != NULL) && (ap_timecmp(mtime, ius) == APR_MORE)) {
+            if ((ius != BAD_DATE) && (mtime > ius)) {
                 return HTTP_PRECONDITION_FAILED;
             }
         }
@@ -498,10 +482,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     else if ((r->method_number == M_GET)
              && ((if_modified_since =
                   ap_table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
-        ap_time_t *ims = ap_parseHTTPdate(if_modified_since, r->pool);
+        ap_time_t ims = ap_parseHTTPdate(if_modified_since);
 
-        if (!ap_timecmp(ims, mtime) < APR_LESS && 
-            !ap_timecmp(ims, r->request_time) > APR_MORE) {
+	if ((ims >= mtime) && (ims <= r->request_time)) {
             return HTTP_NOT_MODIFIED;
         }
     }
@@ -519,7 +502,6 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
 {
     char *etag;
     char *weak;
-    int diff;
 
     /*
      * Make an ETag header out of various pieces of information. We use
@@ -534,8 +516,7 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
      * would be incorrect.
      */
     
-    ap_timediff(r->request_time, r->mtime, &diff);
-    weak = ((diff > 1) && !force_weak) ? "" : "W/";
+    weak = ((r->request_time - r->mtime > AP_USEC_PER_SEC) && !force_weak) ? "" : "W/";
 
     if (r->finfo.protection != 0) {
         etag = ap_psprintf(r->pool,
@@ -603,9 +584,9 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
  */
 API_EXPORT(void) ap_set_last_modified(request_rec *r)
 {
-    ap_time_t *mod_time = ap_rationalize_mtime(r, r->mtime);
-    char *datestr;
-    ap_timestr(&datestr, mod_time, APR_UTCTIME, r->pool);
+    ap_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
+    char *datestr = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
+    ap_rfc822_date(datestr, mod_time);
     ap_table_setn(r->headers_out, "Last-Modified", datestr);
 }
 
@@ -822,7 +803,7 @@ static int read_request_line(request_rec *r)
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
 	     */
-	    ap_current_time(r->request_time);
+	    r->request_time = ap_now();
             return 0;
         }
     }
@@ -841,7 +822,7 @@ static int read_request_line(request_rec *r)
 
     /* //ap_bsetflag(conn->client, B_SAFEREAD, 0); */
 
-    ap_current_time(r->request_time);
+    r->request_time = ap_now();
     r->the_request = ap_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
     ap_update_connection_status(conn->id, "Method", r->method);
@@ -975,8 +956,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
-    ap_make_time(&r->request_time, r->pool);
-    ap_make_time(&r->mtime, r->pool);
 
 #ifdef CHARSET_EBCDIC
     ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
@@ -1362,7 +1341,8 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     ap_rvputs(r, protocol, " ", r->status_line, "\015\012", NULL);
 
-    ap_timestr(&date, r->request_time, APR_UTCTIME, r->pool);
+    date = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
+    ap_rfc822_date(date, r->request_time);
     ap_send_header_field(r, "Date", date);
     ap_send_header_field(r, "Server", ap_get_server_version());
 
@@ -1645,7 +1625,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * some other part of the server configuration.
      */
     if (r->no_cache && !ap_table_get(r->headers_out, "Expires")) {
-        ap_timestr(&date, r->request_time, APR_UTCTIME, r->pool);
+	date = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
+        ap_rfc822_date(date, r->request_time);
         ap_table_addn(r->headers_out, "Expires", date);
     }
 

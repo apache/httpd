@@ -92,18 +92,6 @@ extern int fclose(FILE *);
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
-API_EXPORT(char *) ap_get_time()
-{
-    ap_time_t *t = NULL;
-    char *time_string = NULL;
-
-    ap_make_time(&t, NULL);
-    ap_current_time(t);
-
-    ap_timestr(&time_string, t, APR_LOCALTIME, NULL);
-    return (time_string);
-}
-
 /*
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
@@ -124,25 +112,22 @@ API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype)
     }
 }
 
-API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, int gmt)
+API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t t, const char *fmt, int gmt)
 {
     ap_int32_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
+    ap_exploded_time_t xt;
 
     if (gmt) {
-        ap_explode_time(t, APR_UTCTIME);
-    }
-    else {
-        ap_explode_time(t, APR_LOCALTIME);
-    }
-    if(gmt) {
+	const char *f;
+	char *strp;
+
+        ap_explode_gmt(&xt, t);
 	/* Convert %Z to "GMT" and %z to "+0000";
 	 * on hosts that do not have a time zone string in struct tm,
 	 * strftime must assume its argument is local time.
 	 */
-	const char *f;
-	char *strp;
 	for(strp = tf, f = fmt; strp < tf + sizeof(tf) - 6 && (*strp = *f)
 	    ; f++, strp++) {
 	    if (*f != '%') continue;
@@ -169,9 +154,12 @@ API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, in
 	*strp = '\0';
 	fmt = tf;
     }
+    else {
+        ap_explode_localtime(&xt, t);
+    }
 
     /* check return code? */
-    ap_strftime(ts, &retcode, MAX_STRING_LEN, fmt, t);
+    ap_strftime(ts, &retcode, MAX_STRING_LEN, fmt, &xt);
     ts[MAX_STRING_LEN - 1] = '\0';
     return ap_pstrdup(p, ts);
 }
