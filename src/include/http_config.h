@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.15 1996/10/09 15:23:08 mjc Exp $ */
+/* $Id: http_config.h,v 1.16 1996/10/18 19:23:15 ben Exp $ */
 
 /*
  * The central data structures around here...
@@ -156,7 +156,7 @@ typedef struct {
 
 typedef struct {
     char *content_type;
-    int (*handler) ();
+    int (*handler) (request_rec *);
 } handler_rec;
 
 /*
