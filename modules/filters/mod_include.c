@@ -194,7 +194,7 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
             else {
                 if (str[ctx->parse_pos] == '\0') {
                     ap_bucket   *tmp_bkt;
-                    apr_ssize_t  start_index;
+                    apr_size_t  start_index;
 
                     /* We want to split the bucket at the '<'. */
                     ctx->state            = PARSE_TAG;
@@ -1426,7 +1426,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 #define ZERO_K    "   0k"
 #define ONE_K     "   1k"
 
-static void generate_size(apr_ssize_t size, char *buff, apr_ssize_t buff_size)
+static void generate_size(apr_ssize_t size, char *buff, apr_size_t buff_size)
 {
     /* XXX: this -1 thing is a gross hack */
     if (size == (apr_ssize_t)-1) {
@@ -1764,7 +1764,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
     char buffer[MAX_STRING_LEN];
     apr_pool_t *expr_pool;
     int retval = 0;
-    apr_ssize_t debug_pos = 0;
+    apr_size_t debug_pos = 0;
 
     debug[debug_pos] = '\0';
     *was_error       = 0;
@@ -2130,7 +2130,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             }
 #ifdef DEBUG_INCLUDE
             debug_pos += sprintf (&debug[debug_pos], "     Left: %c\n",
-                                  current->left->value ? "1" : "0");
+                                  current->left->value ? '1' : '0');
             debug_pos += sprintf (&debug[debug_pos], "     Right: %c\n",
                                   current->right->value ? '1' : '0');
 #endif
@@ -2345,14 +2345,16 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 /*-------------------------------------------------------------------------*/
 #ifdef DEBUG_INCLUDE
 
+/* XXX overlaying the static string pointed to by cond_txt isn't cool */
+
 #define MAX_DEBUG_SIZE MAX_STRING_LEN
 #define LOG_COND_STATUS(cntx, t_buck, h_ptr, ins_head, tag_text)           \
 {                                                                          \
     char *cond_txt = "**** X     conditional_status=\"0\"\n";              \
-    apr_ssize_t c_wrt;                                                     \
+    apr_size_t c_wrt;                                                      \
                                                                            \
     if (cntx->flags & FLAG_COND_TRUE) {                                    \
-        cont_txt[31] = '1';                                                \
+        cond_txt[31] = '1';                                                \
     }                                                                      \
     memcpy(&cond_txt[5], tag_text, sizeof(tag_text));                      \
     t_buck = ap_bucket_create_heap(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
@@ -2364,7 +2366,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 }
 #define DUMP_PARSE_EXPR_DEBUG(t_buck, h_ptr, d_buf, ins_head)            \
 {                                                                        \
-    apr_ssize_t b_wrt;                                                   \
+    apr_size_t b_wrt;                                                    \
     if (d_buf[0] != '\0') {                                              \
         t_buck = ap_bucket_create_heap(d_buf, strlen(d_buf), 1, &b_wrt); \
         AP_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                          \
@@ -2433,7 +2435,7 @@ static int handle_if(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
                 expr = tag_val;
 #ifdef DEBUG_INCLUDE
                 if (1) {
-                    apr_ssize_t d_len = 0, d_wrt = 0;
+                    apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
                     tmp_buck = ap_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
                     AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
@@ -2506,7 +2508,7 @@ static int handle_elif(include_ctx_t *ctx, request_rec *r, ap_bucket *head_ptr,
                 expr = tag_val;
 #ifdef DEBUG_INCLUDE
                 if (1) {
-                    apr_ssize_t d_len = 0, d_wrt = 0;
+                    apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
                     tmp_buck = ap_bucket_create_heap(debug_buf, d_len, 1, &d_wrt);
                     AP_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
@@ -2710,7 +2712,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         /* State to check for the STARTING_SEQUENCE. */
         if ((ctx->state == PRE_HEAD) || (ctx->state == PARSE_HEAD)) {
             int do_cleanup = 0;
-            apr_ssize_t cleanup_bytes = ctx->parse_pos;
+            apr_size_t cleanup_bytes = ctx->parse_pos;
 
             tmp_dptr = find_start_sequence(dptr, ctx, *bb, &do_cleanup);
 
