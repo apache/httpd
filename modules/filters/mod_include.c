@@ -794,7 +794,11 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     SKIP_TAG_WHITESPACE(c);
     *tag = c;             /* First non-whitespace character (could be NULL). */
 
-    while ((*c != '\0') && (*c != '=') && (!apr_isspace(*c))) {
+    while (apr_islower(*c)) {
+        c++;  /* Optimization for the common case where the tag */
+    }         /* is already lowercase */
+
+    while ((*c != '=') && (!apr_isspace(*c)) && (*c != '\0')) {
         *c = apr_tolower(*c);    /* find end of tag, lowercasing as we go... */
         c++;
     }
