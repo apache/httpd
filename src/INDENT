@@ -65,10 +65,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_auth_anon.c		DONE by Dean
    mod_auth_db.c		DONE by Dean
    mod_auth_dbm.c		DONE by Dean
-   mod_autoindex.c		RESERVED by Dean
-   mod_cern_meta.c		RESERVED by Dean
-   mod_cgi.c			RESERVED by Dean
-   mod_digest.c			RESERVED by Dean
+   mod_autoindex.c		DONE by Dean
+   mod_cern_meta.c		DONE by Dean
+   mod_cgi.c			DONE by Dean
+   mod_digest.c			DONE by Dean
    mod_dir.c
    mod_dld.c
    mod_env.c
@@ -88,7 +88,7 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_rewrite.h
    mod_setenvif.c		DONE by Ken
    mod_speling.c		DONE by Brian
-   mod_status.c
+   mod_status.c			RESERVED by Dean
    mod_unique_id.c		DONE by Brian
    mod_userdir.c		DONE by Brian
    mod_usertrack.c		DONE by Brian

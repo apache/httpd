@@ -165,10 +165,10 @@ typedef struct {
     char *metafiles;
 } cern_meta_dir_config;
 
-void *create_cern_meta_dir_config (pool *p, char *dummy)
+void *create_cern_meta_dir_config(pool *p, char *dummy)
 {
     cern_meta_dir_config *new =
-	(cern_meta_dir_config *)palloc(p, sizeof(cern_meta_dir_config));
+    (cern_meta_dir_config *) palloc(p, sizeof(cern_meta_dir_config));
 
     new->metadir = NULL;
     new->metasuffix = NULL;
@@ -177,47 +177,48 @@ void *create_cern_meta_dir_config (pool *p, char *dummy)
     return new;
 }
 
-void *merge_cern_meta_dir_configs (pool *p, void *basev, void *addv) 
+void *merge_cern_meta_dir_configs(pool *p, void *basev, void *addv)
 {
-    cern_meta_dir_config *base = (cern_meta_dir_config *)basev;
-    cern_meta_dir_config *add = (cern_meta_dir_config *)addv; 
+    cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
+    cern_meta_dir_config *add = (cern_meta_dir_config *) addv;
     cern_meta_dir_config *new =
-	(cern_meta_dir_config *)palloc(p, sizeof(cern_meta_dir_config));
-    
+    (cern_meta_dir_config *) palloc(p, sizeof(cern_meta_dir_config));
+
     new->metadir = add->metadir ? add->metadir : base->metadir;
     new->metasuffix = add->metasuffix ? add->metasuffix : base->metasuffix;
     new->metafiles = add->metafiles;
 
     return new;
-}   
+}
 
-const char *set_metadir (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg)
-{       
+const char *set_metadir(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+{
     dconf->metadir = arg;
     return NULL;
 }
 
-const char *set_metasuffix (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg)
-{       
+const char *set_metasuffix(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+{
     dconf->metasuffix = arg;
     return NULL;
 }
-  
-const char *set_metafiles (cmd_parms *parms, cern_meta_dir_config *dconf, char *arg) 
+
+const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
 {
     dconf->metafiles = arg;
     return NULL;
 }
 
 
-command_rec cern_meta_cmds[] = {
-{ "MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
-{ "MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
-    "the name of the directory containing meta files"},
-{ "MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS, TAKE1,
-    "the filename suffix for meta files"},
-{ NULL }
-};  
+command_rec cern_meta_cmds[] =
+{
+    {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
+    {"MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,
+     "the name of the directory containing meta files"},
+    {"MetaSuffix", set_metasuffix, NULL, DIR_CMD_PERMS, TAKE1,
+     "the filename suffix for meta files"},
+    {NULL}
+};
 
 int scan_meta_file(request_rec *r, FILE *f)
 {
@@ -225,67 +226,70 @@ int scan_meta_file(request_rec *r, FILE *f)
     char *l;
     int p;
 
-    while( fgets(w, MAX_STRING_LEN-1, f) != NULL ) {
+    while (fgets(w, MAX_STRING_LEN - 1, f) != NULL) {
 
 	/* Delete terminal (CR?)LF */
-	
+
 	p = strlen(w);
-	if (p > 0 && w[p-1] == '\n')
-	{
-	    if (p > 1 && w[p-2] == '\015') w[p-2] = '\0';
-	    else w[p-1] = '\0';
+	if (p > 0 && w[p - 1] == '\n') {
+	    if (p > 1 && w[p - 2] == '\015')
+		w[p - 2] = '\0';
+	    else
+		w[p - 1] = '\0';
 	}
 
-        if (w[0] == '\0') {
+	if (w[0] == '\0') {
 	    return OK;
 	}
-                                   
+
 	/* if we see a bogus header don't ignore it. Shout and scream */
-	
-        if (!(l = strchr(w,':'))) {
+
+	if (!(l = strchr(w, ':'))) {
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 			"malformed header in meta file: %s", r->filename);
 	    return SERVER_ERROR;
-        }
+	}
 
-        *l++ = '\0';
-	while (*l && isspace (*l)) ++l;
-	
-        if (!strcasecmp(w,"Content-type")) {
+	*l++ = '\0';
+	while (*l && isspace(*l))
+	    ++l;
+
+	if (!strcasecmp(w, "Content-type")) {
 
 	    /* Nuke trailing whitespace */
-	    
+
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && isspace(*endp)) *endp-- = '\0';
-	    
+	    while (endp > l && isspace(*endp))
+		*endp-- = '\0';
+
 	    r->content_type = pstrdup(r->pool, l);
 	}
-        else if (!strcasecmp(w,"Status")) {
-            sscanf(l, "%d", &r->status);
-            r->status_line = pstrdup(r->pool, l);
-        }
-        else {
+	else if (!strcasecmp(w, "Status")) {
+	    sscanf(l, "%d", &r->status);
+	    r->status_line = pstrdup(r->pool, l);
+	}
+	else {
 	    table_set(r->headers_out, w, l);
-        }
+	}
     }
     return OK;
 }
 
-int add_cern_meta_data (request_rec *r)
+int add_cern_meta_data(request_rec *r)
 {
     char *metafilename;
     char *last_slash;
     char *real_file;
     char *scrap_book;
-    FILE *f;   
-    cern_meta_dir_config *dconf ;
+    FILE *f;
+    cern_meta_dir_config *dconf;
     int rv;
     request_rec *rr;
 
-    dconf = get_module_config(r->per_dir_config, &cern_meta_module); 
+    dconf = get_module_config(r->per_dir_config, &cern_meta_module);
 
     if (!dconf->metafiles) {
-        return DECLINED;
+	return DECLINED;
     };
 
     /* if ./.web/$1.meta exists then output 'asis' */
@@ -300,11 +304,11 @@ int add_cern_meta_data (request_rec *r)
     };
 
     /* what directory is this file in? */
-    scrap_book = pstrdup( r->pool, r->filename );
+    scrap_book = pstrdup(r->pool, r->filename);
     /* skip leading slash, recovered in later processing */
     scrap_book++;
-    last_slash = strrchr( scrap_book, '/' );
-    if ( last_slash != NULL ) {
+    last_slash = strrchr(scrap_book, '/');
+    if (last_slash != NULL) {
 	/* skip over last slash */
 	real_file = last_slash;
 	real_file++;
@@ -312,17 +316,17 @@ int add_cern_meta_data (request_rec *r)
     }
     else {
 	/* no last slash, buh?! */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "internal error in mod_cern_meta", r->filename);
 	/* should really barf, but hey, let's be friends... */
 	return DECLINED;
     };
 
-    metafilename = pstrcat(r->pool, "/", scrap_book, "/", 
-        dconf->metadir ? dconf->metadir : DEFAULT_METADIR, 
-        "/", real_file, 
-        dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX, 
-        NULL);
+    metafilename = pstrcat(r->pool, "/", scrap_book, "/",
+			   dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
+			   "/", real_file,
+		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
+			   NULL);
 
     /* XXX: it sucks to require this subrequest to complete, because this
      * means people must leave their meta files accessible to the world.
@@ -341,36 +345,37 @@ int add_cern_meta_data (request_rec *r)
 	if (errno == ENOENT) {
 	    return DECLINED;
 	}
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		    "meta file permissions deny server access: %s", metafilename);
-        return FORBIDDEN;
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	      "meta file permissions deny server access: %s", metafilename);
+	return FORBIDDEN;
     };
 
     /* read the headers in */
     rv = scan_meta_file(r, f);
-    pfclose( r->pool, f );
+    pfclose(r->pool, f);
 
     return rv;
 }
 
-module MODULE_VAR_EXPORT cern_meta_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_cern_meta_dir_config,	/* dir config creater */
-   merge_cern_meta_dir_configs,	/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server configs */
-   cern_meta_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   add_cern_meta_data,		/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT cern_meta_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_cern_meta_dir_config,	/* dir config creater */
+    merge_cern_meta_dir_configs,	/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server configs */
+    cern_meta_cmds,		/* command table */
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    NULL,			/* check_user_id */
+    NULL,			/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    add_cern_meta_data,		/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };

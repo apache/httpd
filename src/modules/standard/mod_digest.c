@@ -77,48 +77,50 @@ typedef struct digest_header_struct {
     char *digest;
 } digest_header_rec;
 
-void *create_digest_dir_config (pool *p, char *d)
+void *create_digest_dir_config(pool *p, char *d)
 {
-    return pcalloc (p, sizeof(digest_config_rec));
+    return pcalloc(p, sizeof(digest_config_rec));
 }
 
-const char *set_digest_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
-	return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
+	return pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
 
     return set_string_slot(cmd, offset, f);
 }
 
-command_rec digest_cmds[] = {
-{ "AuthDigestFile", set_digest_slot,
-  (void*)XtOffsetOf(digest_config_rec,pwfile), OR_AUTHCFG, TAKE12, NULL },
-{ NULL }
+command_rec digest_cmds[] =
+{
+    {"AuthDigestFile", set_digest_slot,
+  (void *) XtOffsetOf(digest_config_rec, pwfile), OR_AUTHCFG, TAKE12, NULL},
+    {NULL}
 };
 
 module MODULE_VAR_EXPORT digest_module;
 
-char *get_hash (request_rec *r, char *user, char *auth_pwfile)
+char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
     const char *rpw;
     char *w, *x;
 
-    if (!(f=pfopen(r->pool, auth_pwfile, "r"))) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    if (!(f = pfopen(r->pool, auth_pwfile, "r"))) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
-    while(!(cfg_getline(l,MAX_STRING_LEN,f))) {
-        if((l[0] == '#') || (!l[0])) continue;
+    while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
+	if ((l[0] == '#') || (!l[0]))
+	    continue;
 	rpw = l;
-        w = getword(r->pool, &rpw, ':');
+	w = getword(r->pool, &rpw, ':');
 	x = getword(r->pool, &rpw, ':');
 
-        if(x && w && !strcmp(user,w) && !strcmp(auth_name(r), x)) {
+	if (x && w && !strcmp(user, w) && !strcmp(auth_name(r), x)) {
 	    pfclose(r->pool, f);
-            return pstrdup (r->pool, rpw);
+	    return pstrdup(r->pool, rpw);
 	}
     }
     pfclose(r->pool, f);
@@ -127,7 +129,7 @@ char *get_hash (request_rec *r, char *user, char *auth_pwfile)
 
 /* Parse the Authorization header, if it exists */
 
-int get_digest_rec (request_rec *r, digest_header_rec *response)
+int get_digest_rec(request_rec *r, digest_header_rec * response)
 {
     const char *auth_line = table_get(r->headers_in, "Authorization");
     int l;
@@ -137,13 +139,13 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
     if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
 	return DECLINED;
 
-    if (!auth_name (r)) {
+    if (!auth_name(r)) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
 
     if (!auth_line) {
-	note_digest_auth_failure (r);
+	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
@@ -157,8 +159,8 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 
     l = strlen(auth_line);
 
-    key = palloc(r->pool,l);
-    value = palloc(r->pool,l);
+    key = palloc(r->pool, l);
+    value = palloc(r->pool, l);
 
     /* There's probably a better way to do this, but for the time being... */
 
@@ -169,8 +171,8 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 
     while (s != D_EXIT) {
 	switch (s) {
-	case D_STRING:
-	    if (auth_line[0] == '\"') {
+	    case D_STRING:
+		if (auth_line[0] == '\"') {
 		s = D_VALUE;
 	    }
 	    else {
@@ -180,8 +182,8 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 	    auth_line++;
 	    break;
 
-	case D_VALUE:
-	    if (isalnum(auth_line[0])) {
+	    case D_VALUE:
+		if (isalnum(auth_line[0])) {
 		value[vv] = auth_line[0];
 		vv++;
 	    }
@@ -201,15 +203,15 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 		    response->requested_uri = pstrdup(r->pool, value);
 		else if (!strcasecmp(key, "response"))
 		    response->digest = pstrdup(r->pool, value);
-		
+
 		vv = 0;
 		s = D_KEY;
 	    }
 	    auth_line++;
 	    break;
 
-	case D_KEY:
-	    if (isalnum(auth_line[0])) {
+	    case D_KEY:
+		if (isalnum(auth_line[0])) {
 		key[vk] = auth_line[0];
 		vk++;
 	    }
@@ -228,7 +230,7 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 
     if (!response->username || !response->realm || !response->nonce ||
 	!response->requested_uri || !response->digest) {
-	note_digest_auth_failure (r);
+	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
@@ -240,13 +242,14 @@ int get_digest_rec (request_rec *r, digest_header_rec *response)
 
 /* The actual MD5 code... whee */
 
-char *find_digest(request_rec *r, digest_header_rec *h, char *a1) {
-  return ap_md5(r->pool,
-	        (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":", 
-			  ap_md5(r->pool,
-			         (unsigned char *)pstrcat(r->pool,r->method,":",
-						       h->requested_uri,NULL)),
-				      NULL));
+char *find_digest(request_rec *r, digest_header_rec * h, char *a1)
+{
+    return ap_md5(r->pool,
+		  (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":",
+					   ap_md5(r->pool,
+		           (unsigned char *)pstrcat(r->pool, r->method, ":",
+						    h->requested_uri, NULL)),
+					   NULL));
 }
 
 /* These functions return 0 if client is OK, and proper error status
@@ -263,44 +266,46 @@ char *find_digest(request_rec *r, digest_header_rec *h, char *a1) {
  * basic authentication...
  */
 
-int authenticate_digest_user (request_rec *r)
+int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *sec =
-      (digest_config_rec *)get_module_config (r->per_dir_config,
-					      &digest_module);
-    digest_header_rec *response = pcalloc (r->pool, sizeof(digest_header_rec));
+    (digest_config_rec *) get_module_config(r->per_dir_config,
+					    &digest_module);
+    digest_header_rec *response = pcalloc(r->pool, sizeof(digest_header_rec));
     conn_rec *c = r->connection;
     char *a1;
     char errstr[MAX_STRING_LEN];
     int res;
-    
-    if ((res = get_digest_rec (r, response))) return res;
-    
-    if(!sec->pwfile) 
-        return DECLINED;
-	
+
+    if ((res = get_digest_rec(r, response)))
+	return res;
+
+    if (!sec->pwfile)
+	return DECLINED;
+
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-        ap_snprintf(errstr, sizeof(errstr), "user %s not found", c->user);
+	ap_snprintf(errstr, sizeof(errstr), "user %s not found", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
 	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if (strcmp(response->digest, find_digest(r, response, a1))) {
-        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch", c->user);
+	ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
-	note_digest_auth_failure (r);
+	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
 }
-    
+
 /* Checking ID */
-    
-int digest_check_auth (request_rec *r) {
+
+int digest_check_auth(request_rec *r)
+{
     char *user = r->connection->user;
     int m = r->method_number;
-    int method_restricted = 0;    
+    int method_restricted = 0;
     register int x;
     const char *t;
     char *w;
@@ -308,62 +313,64 @@ int digest_check_auth (request_rec *r) {
     require_line *reqs;
 
     if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
-      return DECLINED;
+	return DECLINED;
 
-    reqs_arr = requires (r);
+    reqs_arr = requires(r);
     /* If there is no "requires" directive, 
      * then any user will do.
      */
     if (!reqs_arr)
-        return OK;
-    reqs = (require_line *)reqs_arr->elts;
+	return OK;
+    reqs = (require_line *) reqs_arr->elts;
 
-    for(x=0; x < reqs_arr->nelts; x++) {
-      
-	if (! (reqs[x].method_mask & (1 << m))) continue;
-	
-        method_restricted = 1;
+    for (x = 0; x < reqs_arr->nelts; x++) {
+
+	if (!(reqs[x].method_mask & (1 << m)))
+	    continue;
+
+	method_restricted = 1;
 
 	t = reqs[x].requirement;
-        w = getword(r->pool, &t, ' ');
-        if(!strcmp(w,"valid-user"))
-            return OK;
-        else if(!strcmp(w,"user")) {
-            while(t[0]) {
-                w = getword_conf (r->pool, &t);
-                if(!strcmp(user,w))
-                    return OK;
-            }
-	  }
+	w = getword(r->pool, &t, ' ');
+	if (!strcmp(w, "valid-user"))
+	    return OK;
+	else if (!strcmp(w, "user")) {
+	    while (t[0]) {
+		w = getword_conf(r->pool, &t);
+		if (!strcmp(user, w))
+		    return OK;
+	    }
+	}
 	else
-	  return DECLINED;
+	    return DECLINED;
     }
-    
+
     if (!method_restricted)
-      return OK;
+	return OK;
 
     note_digest_auth_failure(r);
     return AUTH_REQUIRED;
 }
 
-module MODULE_VAR_EXPORT digest_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_digest_dir_config,	/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   digest_cmds,			/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   authenticate_digest_user,	/* check_user_id */
-   digest_check_auth,		/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT digest_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_digest_dir_config,	/* dir config creater */
+    NULL,			/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server config */
+    digest_cmds,		/* command table */
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    authenticate_digest_user,	/* check_user_id */
+    digest_check_auth,		/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };
