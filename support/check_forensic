@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# check_forensic <forensic log file>
+
+# check the forensic log for requests that did not complete
+# output the request log for each one
+
+F=$1
+
+cut -f 1 -d '|' $F  > /tmp/fc-all.$$
+grep + < /tmp/fc-all.$$ | cut -c2- | sort > /tmp/fc-in.$$
+grep -- - < /tmp/fc-all.$$ | cut -c2- | sort > /tmp/fc-out.$$
+join -v 1 /tmp/fc-in.$$ /tmp/fc-out.$$ | xargs -I xx egrep "^\\+xx" $F
+rm /tmp/fc-all.$$ /tmp/fc-in.$$ /tmp/fc-out.$$
