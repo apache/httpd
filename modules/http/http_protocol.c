@@ -1545,7 +1545,7 @@ static const char *add_optional_notes(request_rec *r,
     const char *notes, *result;
     
     if ((notes = apr_table_get(r->notes, key)) == NULL) {
-        result = prefix;
+        result = apr_pstrcat(r->pool, prefix, suffix, NULL);
     }
     else {
         result = apr_pstrcat(r->pool, prefix, notes, suffix, NULL);
@@ -1570,107 +1570,107 @@ static const char *get_canned_error_string(int status,
 	case HTTP_MOVED_TEMPORARILY:
 	case HTTP_TEMPORARY_REDIRECT:
 	    return(apr_pstrcat(p,
-                           "The document has moved <a href=\"",
+                           "<p>The document has moved <a href=\"",
 		                   ap_escape_html(r->pool, location), 
-						   "\">here</a>.<P>\n",
+			   "\">here</a>.</p>\n",
                            NULL));
 	case HTTP_SEE_OTHER:
 	    return(apr_pstrcat(p,
-                           "The answer to your request is located <a href=\"",
+                           "<p>The answer to your request is located <a href=\"",
 		                   ap_escape_html(r->pool, location), 
-                           "\">here</a>.<P>\n",
+                           "\">here</a>.</p>\n",
                            NULL));
 	case HTTP_USE_PROXY:
 	    return(apr_pstrcat(p,
-                           "This resource is only accessible "
+                           "<p>This resource is only accessible "
 		                   "through the proxy\n",
 		                   ap_escape_html(r->pool, location),
 		                   "<br />\nYou will need to "
-		                   "configure your client to use that proxy.<P>\n",
+		                   "configure your client to use that proxy.</p>\n",
 						   NULL));
 	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
 	case HTTP_UNAUTHORIZED:
-	    return("This server could not verify that you\n"
+	    return("<p>This server could not verify that you\n"
 	           "are authorized to access the document\n"
 	           "requested.  Either you supplied the wrong\n"
 	           "credentials (e.g., bad password), or your\n"
 	           "browser doesn't understand how to supply\n"
-	           "the credentials required.<P>\n");
+	           "the credentials required.</p>\n");
 	case HTTP_BAD_REQUEST:
         return(add_optional_notes(r,  
-	                              "Your browser sent a request that "
-	                              "this server could not understand.<P>\n",
+	                              "<p>Your browser sent a request that "
+	                              "this server could not understand.<br />\n",
                                   "error-notes", 
-                                  "<P>\n"));
+                                  "</p>\n"));
 	case HTTP_FORBIDDEN:
 	    return(apr_pstrcat(p,
-                           "You don't have permission to access ",
+                           "<p>You don't have permission to access ",
 		                   ap_escape_html(r->pool, r->uri),
-		                   "\non this server.<P>\n",
+		                   "\non this server.</p>\n",
                            NULL));
 	case HTTP_NOT_FOUND:
 	    return(apr_pstrcat(p,
-                           "The requested URL ",
+                           "<p>The requested URL ",
 		                   ap_escape_html(r->pool, r->uri),
-		                   " was not found on this server.<P>\n",
+		                   " was not found on this server.</p>\n",
                            NULL));
 	case HTTP_METHOD_NOT_ALLOWED:
 	    return(apr_pstrcat(p,
-                           "The requested method ", r->method,
+                           "<p>The requested method ", r->method,
 		                   " is not allowed for the URL ", 
                            ap_escape_html(r->pool, r->uri),
-		                   ".<P>\n",
+		                   ".</p>\n",
                            NULL));
 	case HTTP_NOT_ACCEPTABLE:
 	    s1 = apr_pstrcat(p,
-	                     "An appropriate representation of the "
+	                     "<p>An appropriate representation of the "
 		                 "requested resource ",
 		                 ap_escape_html(r->pool, r->uri),
-		                 " could not be found on this server.<P>\n",
+		                 " could not be found on this server.</p>\n",
                          NULL);
         return(add_optional_notes(r, s1, "variant-list", ""));
 	case HTTP_MULTIPLE_CHOICES:
         return(add_optional_notes(r, "", "variant-list", ""));
 	case HTTP_LENGTH_REQUIRED:
 	    s1 = apr_pstrcat(p, 
-                        "A request of the requested method ", 
+                        "<p>A request of the requested method ", 
                          r->method,
-		                 " requires a valid Content-length.<P>\n", 
+		                 " requires a valid Content-length.<br />\n", 
                          NULL);
-		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
 	case HTTP_PRECONDITION_FAILED:
 	    return(apr_pstrcat(p,
-                           "The precondition on the request for the URL ",
+                           "<p>The precondition on the request for the URL ",
 		                   ap_escape_html(r->pool, r->uri),
-		                   " evaluated to false.<P>\n",
+		                   " evaluated to false.</p>\n",
                            NULL));
 	case HTTP_NOT_IMPLEMENTED:
-	    s1 = apr_pstrcat(p, 
+	    s1 = apr_pstrcat(p, "<p>",
                          ap_escape_html(r->pool, r->method), " to ",
 		                 ap_escape_html(r->pool, r->uri),
-		                 " not supported.<P>\n", 
+		                 " not supported.<br />\n", 
                          NULL);
-		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
 	case HTTP_BAD_GATEWAY:
-	    s1 = "The proxy server received an invalid" CRLF
-	         "response from an upstream server.<P>" CRLF;
-		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	    s1 = "<p>The proxy server received an invalid" CRLF
+	         "response from an upstream server.<br />" CRLF;
+		return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
 	case HTTP_VARIANT_ALSO_VARIES:
 	    return(apr_pstrcat(p,
-                           "A variant for the requested resource\n<pre>\n",
+                           "<p>A variant for the requested resource\n<pre>\n",
 		                   ap_escape_html(r->pool, r->uri),
 		                   "\n</pre>\nis itself a negotiable resource. "
-		                   "This indicates a configuration error.<P>\n",
+		                   "This indicates a configuration error.</p>\n",
                            NULL));
 	case HTTP_REQUEST_TIME_OUT:
-	    return("I'm tired of waiting for your request.\n");
+	    return("<p>I'm tired of waiting for your request.</p>\n");
 	case HTTP_GONE:
 	    return(apr_pstrcat(p,
-                           "The requested resource<br />",
+                           "<p>The requested resource<br />",
 		                   ap_escape_html(r->pool, r->uri),
 		                   "<br />\nis no longer available on this server "
 		                   "and there is no forwarding address.\n"
-		                   "Please remove all references to this resource.\n",
+		                   "Please remove all references to this resource.</p>\n",
                            NULL));
 	case HTTP_REQUEST_ENTITY_TOO_LARGE:
 	    return(apr_pstrcat(p,
@@ -1682,52 +1682,52 @@ static const char *get_canned_error_string(int status,
 		                   "the request exceeds the capacity limit.\n",
                            NULL));
 	case HTTP_REQUEST_URI_TOO_LARGE:
-	    s1 = "The requested URL's length exceeds the capacity\n"
-	         "limit for this server.<P>\n";
-        return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	    s1 = "<p>The requested URL's length exceeds the capacity\n"
+	         "limit for this server.<br />\n";
+        return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
 	case HTTP_UNSUPPORTED_MEDIA_TYPE:
-	    return("The supplied request data is not in a format\n"
-	           "acceptable for processing by this resource.\n");
+	    return("<p>The supplied request data is not in a format\n"
+	           "acceptable for processing by this resource.</p>\n");
 	case HTTP_RANGE_NOT_SATISFIABLE:
-	    return("None of the range-specifier values in the Range\n"
+	    return("<p>None of the range-specifier values in the Range\n"
 	           "request-header field overlap the current extent\n"
-	           "of the selected resource.\n");
+	           "of the selected resource.</p>\n");
 	case HTTP_EXPECTATION_FAILED:
 	    return(apr_pstrcat(p, 
-                           "The expectation given in the Expect request-header"
-	                       "\nfield could not be met by this server.<P>\n"
-	                       "The client sent<pre>\n    Expect: ",
+                           "<p>The expectation given in the Expect request-header"
+	                       "\nfield could not be met by this server.</p>\n"
+	                       "<p>The client sent<pre>\n    Expect: ",
 	                       apr_table_get(r->headers_in, "Expect"), "\n</pre>\n"
-	                       "but we only allow the 100-continue expectation.\n",
+	                       "but we only allow the 100-continue expectation.</p>\n",
 	                       NULL));
 	case HTTP_UNPROCESSABLE_ENTITY:
-	    return("The server understands the media type of the\n"
+	    return("<p>The server understands the media type of the\n"
 	           "request entity, but was unable to process the\n"
-	           "contained instructions.\n");
+	           "contained instructions.</p>\n");
 	case HTTP_LOCKED:
-	    return("The requested resource is currently locked.\n"
+	    return("<p>The requested resource is currently locked.\n"
 	           "The lock must be released or proper identification\n"
-	           "given before the method can be applied.\n");
+	           "given before the method can be applied.</p>\n");
 	case HTTP_FAILED_DEPENDENCY:
-	    return("The method could not be performed on the resource\n"
+	    return("<p>The method could not be performed on the resource\n"
 	           "because the requested action depended on another\n"
-	           "action and that other action failed.\n");
+	           "action and that other action failed.</p>\n");
 	case HTTP_INSUFFICIENT_STORAGE:
-	    return("The method could not be performed on the resource\n"
+	    return("<p>The method could not be performed on the resource\n"
 	           "because the server is unable to store the\n"
 	           "representation needed to successfully complete the\n"
 	           "request.  There is insufficient free space left in\n"
-	           "your storage allocation.\n");
+	           "your storage allocation.</p>\n");
 	case HTTP_SERVICE_UNAVAILABLE:
-	    return("The server is temporarily unable to service your\n"
+	    return("<p>The server is temporarily unable to service your\n"
 	           "request due to maintenance downtime or capacity\n"
-	           "problems. Please try again later.\n");
+	           "problems. Please try again later.</p>\n");
 	case HTTP_GATEWAY_TIME_OUT:
-	    return("The proxy server did not receive a timely response\n"
-	           "from the upstream server.\n");
+	    return("<p>The proxy server did not receive a timely response\n"
+	           "from the upstream server.</p>\n");
 	case HTTP_NOT_EXTENDED:
-	    return("A mandatory extension policy in the request is not\n"
-	           "accepted by the server for this resource.\n");
+	    return("<p>A mandatory extension policy in the request is not\n"
+	           "accepted by the server for this resource.</p>\n");
 	default:            /* HTTP_INTERNAL_SERVER_ERROR */
 	    /*
 	     * This comparison to expose error-notes could be modified to
@@ -1739,20 +1739,20 @@ static const char *get_canned_error_string(int status,
 	    if (((error_notes = apr_table_get(r->notes, "error-notes")) != NULL)
 		&& (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
 		&& (strcmp(h1, "*") == 0)) {
-	        return(apr_pstrcat(p, error_notes, "<P>\n", NULL));
+	        return(apr_pstrcat(p, error_notes, "<p />\n", NULL));
 	    }
 	    else {
 	        return(apr_pstrcat(p, 
-                         "The server encountered an internal error or\n"
+                         "<p>The server encountered an internal error or\n"
 	                     "misconfiguration and was unable to complete\n"
-	                     "your request.<P>\n"
-	                     "Please contact the server administrator,\n ",
+	                     "your request.</p>\n"
+	                     "<p>Please contact the server administrator,\n ",
 	                     ap_escape_html(r->pool, r->server->server_admin),
 	                     " and inform them of the time the error occurred,\n"
 	                     "and anything you might have done that may have\n"
-	                     "caused the error.<P>\n"
-		                 "More information about this error may be available\n"
-		                 "in the server error log.<P>\n", 
+	                     "caused the error.</p>\n"
+		                 "<p>More information about this error may be available\n"
+		                 "in the server error log.</p>\n", 
                          NULL));
 	    }
 	 /*
@@ -1760,12 +1760,12 @@ static const char *get_canned_error_string(int status,
 	  * fix the problem directly since many users don't have access to
 	  * the error_log (think University sites) even though they can easily
 	  * get this error by misconfiguring an htaccess file.  However, the
-	  e error notes tend to include the real file pathname in this case,
+	  * e error notes tend to include the real file pathname in this case,
 	  * which some people consider to be a breach of privacy.  Until we
 	  * can figure out a way to remove the pathname, leave this commented.
 	  *
 	  * if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
-	  *     return(apr_pstrcat(p, error_notes, "<P>\n", NULL);
+	  *     return(apr_pstrcat(p, error_notes, "<p />\n", NULL);
 	  * }
       * else {
       *     return "";
@@ -1932,10 +1932,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                                  NULL); 
 
         if (recursive_error) {
-            ap_rvputs_proto_in_ascii(rlast, "<P>Additionally, a ",
+            ap_rvputs_proto_in_ascii(rlast, "<p>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
-                      "ErrorDocument to handle the request.\n", NULL);
+                      "ErrorDocument to handle the request.</p>\n", NULL);
         }
         ap_rvputs_proto_in_ascii(rlast, ap_psignature("<hr />\n", r), NULL);
         ap_rvputs_proto_in_ascii(rlast, "</body></html>\n", NULL);
