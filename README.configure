@@ -263,28 +263,7 @@
     $ make 
     $ make install
     
-  2. How you can install Apache with a dynamically linked PHP:
-
-    $ gunzip <apache_1.3.X.tar.gz | tar xvf -
-    $ gunzip <php-3.0.tar.gz | tar xvf -
-    $ cd apache_1.3.X
-    $ ./configure --prefix=/path/to/apache
-    $ cd ../php-3.0
-    $ ./configure --with-shared-apache=../apache_1.3.X
-    $ make
-    $ make install
-
-    [optionally you now have the chance to prepare or add more 
-     third-party modules to the Apache source tree]
-
-    $ cd ../apache_1.3.X
-    $ ./configure --prefix=/path/to/apache \
-                  --activate-module=src/modules/php3/libphp3.a \
-                  --enable-shared=php3
-    $ make 
-    $ make install
-
-  3. You can also use APXS:
+  2. You can also use APXS:
 
     $ cd apache-1.3.X
     $ ./configure --prefix=/path/to/apache --enable-shared=max
@@ -298,8 +277,12 @@
     $ make install
 
   At this point don't forget to edit your conf/httpd.conf file and
-  make sure the file contains the line:
+  make sure the file contains the line for PHP 3:
 
     AddType application/x-httpd-php3 .php3
+
+  Or this line for PHP 4:
+
+    AddType application/x-httpd-php .php
 
   Then restart your server.
