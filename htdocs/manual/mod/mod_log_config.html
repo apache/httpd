@@ -116,7 +116,7 @@ by the values as follows:
 %...l:          Remote logname (from identd, if supplied)
 %...{Foobar}n:  The contents of note "Foobar" from another module.
 %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
-%...p:          Port of the server serving the request (see UseCanonicalName)
+%...p:          The canonical Port of the server serving the request
 %...P:          The process ID of the child that serviced the request.
 %...r:          First line of request
 %...s:          Status.  For requests that got internally redirected, this
@@ -127,7 +127,7 @@ by the values as follows:
 %...T:          The time taken to serve the request, in seconds.
 %...u:          Remote user (from auth; may be bogus if return status (%s) is 401)
 %...U:          The URL path requested.
-%...v:          The name of the server (i.e. which virtual host?)
+%...v:          The canonical ServerName of the server serving the request.
 </PRE>
 
 The `...' can be nothing at all (e.g. <CODE>"%h %u %r %s %b"</CODE>), or it can
@@ -153,6 +153,17 @@ Note that the common log format is defined by the string <CODE>"%h %l
 %u %t \"%r\" %s %b"</CODE>, which can be used as the basis for
 extending for format if desired (e.g. to add extra fields at the end).
 NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
+
+<p>
+
+Note that the canonical <a href="core.html#servername">ServerName</a>
+and <a href="core.html#port">Port</a> of the server serving the request
+are used for <code>%v</code> and <code>%p</code> respectively.  This
+happens regardless of the
+<a href="core.html#usecanonicalname">UseCanonicalName</a> setting because
+otherwise log analysis programs would have to duplicate the entire
+vhost matching algorithm in order to decide what host really served
+the request.
 
 <H2>Using Multiple Log Files</H2>
 
