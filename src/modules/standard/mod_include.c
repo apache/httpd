@@ -918,6 +918,7 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
 static int handle_perl(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
+    char parsed_string[MAX_STRING_LEN];
     char *tag_val;
     SV *sub = Nullsv;
     AV *av = newAV();
@@ -936,7 +937,8 @@ static int handle_perl(FILE *in, request_rec *r, const char *error)
             sub = newSVpv(tag_val, 0);
         }
         else if (strnEQ(tag, "arg", 3)) {
-            av_push(av, newSVpv(tag_val, 0));
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+            av_push(av, newSVpv(parsed_string, 0));
         }
         else if (strnEQ(tag, "done", 4)) {
             break;

@@ -22,7 +22,7 @@ RELEASE SHOWSTOPPERS:
       situation it runs fine. Sure, its mod_perl's fault because its mod_perl
       code which returns DECLINED.  But it definitely seems to be caused by a
       missing init in mod_so under DSO situation. I've already asked Doug for
-      hints but he still has no clue.
+      hints but he has not had a chance to look into it.
 
       Currently at least mod_perl is broken under the DSO situation because of
       this missing init in mod_so. But perhaps there are more modules which
@@ -48,10 +48,6 @@ Available Patches:
     * Filenames containing whitespace characters caused problems for directives
       Bill Stoddard <wgstodda@us.ibm.com>
 	Message-ID: <3591353E.A5D07487@us.ibm.com>
-
-    * Fix mod_include #perl arg interpolation
-      Doug MacEachern <dougm@pobox.com>
-	Message-Id: <199806262010.QAA13262@postman.opengroup.org>
 
     * PR#2483 reports that RewriteMap program still don't work under Win32 because
       of a SIGSEGV. The reporter is right, ap_spawn_child_core() calls the child
