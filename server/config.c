@@ -579,24 +579,6 @@ AP_DECLARE(int) ap_add_named_module(const char *name, apr_pool_t *p)
     return 0;
 }
 
-/* Clear the internal list of modules, in preparation for starting over. */
-AP_DECLARE(void) ap_clear_module_list(apr_pool_t *p)
-{
-    module **m = &top_module;
-    module **next_m;
-
-    while (*m) {
-	next_m = &((*m)->next);
-	*m = NULL;
-	m = next_m;
-    }
-
-    apr_hook_deregister_all();
-
-    /* This is required; so we add it always.  */
-    ap_add_named_module("http_core.c", p);
-}
-
 /*****************************************************************
  *
  * Resource, access, and .htaccess config files now parsed by a common
