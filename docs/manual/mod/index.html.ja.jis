@@ -41,8 +41,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="core" name="core">コア機能と MPM</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd>
+<dt><a href="core.html">core</a></dt><dd>常に使用可能な Apache HTTP サーバのコア機能</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</dd>
 <dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
@@ -113,8 +112,7 @@ user-specified criteria</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
-<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
-headers</dd>
+<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
 <dt><a href="mod_imap.html">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>サーバがパースする html ドキュメント (Server Side Includes)</dd>
@@ -123,7 +121,7 @@ headers</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
