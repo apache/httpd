@@ -169,7 +169,7 @@ this file is somewhere else, you can give the real
 location with the -f argument. For example:
 
 <PRE>
-    /usr/local/etc/apache/src/httpd -f /usr/local/etc/apache/conf/httpd.conf
+    /usr/local/apache/src/httpd -f /usr/local/apache/conf/httpd.conf
 </PRE>
 
 If all goes well this will return to the command prompt almost
@@ -228,7 +228,7 @@ attempt to kill the child processes because they will be renewed by
 the parent.  A typical command to stop the server is:
 
 <PRE>
-    kill -TERM `cat /usr/local/etc/apache/logs/httpd.pid`
+    kill -TERM `cat /usr/local/apache/logs/httpd.pid`
 </PRE>
 
 <P>
