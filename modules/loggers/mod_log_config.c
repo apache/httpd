@@ -171,7 +171,7 @@
 module AP_MODULE_DECLARE_DATA log_config_module;
 
 
-static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
+static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
 static apr_status_t ap_default_log_writer(request_rec *r,
