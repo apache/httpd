@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/24 16:09:47 $]
+  Last modified at [$Date: 1999/06/24 16:38:31 $]
 
 Release:
 
@@ -70,20 +70,6 @@ RELEASE SHOWSTOPPERS:
       proxy.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * What to do about DocumentRootCheck?
-      After commited Dean and Brian suggested just getting rid of
-      the stat itself and removing the need for the directive. Jim
-      points out that it's useful to have the stat for the -t
-      command line.
-
-        Votes:
-	 Keep as is:
-	 Remove directive and stat totally^:
-	 Remove directive but keep stat for -t^:
-	 whatever/don't care:
-
-        ^ = CHANGES needs big bold notice about this change.
 
     * mod_rewrite/3874: RewriteLock doesn't work for virtual hosts 
 	Status: (Ralf): When I find time, I can look at this.  But

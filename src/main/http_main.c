@@ -230,7 +230,6 @@ void *ap_dummy_mutex = &ap_dummy_mutex;
  */
 
 int ap_standalone=0;
-int ap_documentroot_check=1;
 int ap_configtestonly=0;
 uid_t ap_user_id=0;
 char *ap_user_name=NULL;

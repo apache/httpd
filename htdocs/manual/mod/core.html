@@ -36,7 +36,6 @@ always available.
 <LI><A HREF="#directory">&lt;Directory&gt;</A>
 <LI><A HREF="#directorymatch">&lt;DirectoryMatch&gt;</A>
 <LI><A HREF="#documentroot">DocumentRoot</A>
-<LI><A HREF="#documentrootcheck">DocumentRootCheck</A>
 <LI><A HREF="#errordocument">ErrorDocument</A>
 <LI><A HREF="#errorlog">ErrorLog</A>
 <LI><A HREF="#files">&lt;Files&gt;</A>
@@ -744,44 +743,6 @@ to <CODE>/usr/web/index.html</CODE>.
 <P>There appears to be a bug in mod_dir which causes problems when the
 DocumentRoot has a trailing slash (<EM>i.e.</EM>, "DocumentRoot /usr/web/") so
 please avoid that.
-
-<P><HR>
-
-<H2><A NAME="documentrootcheck">DocumentRootCheck directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt DocumentRootCheck} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> DocumentRootCheck <EM>On/Off</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>DocumentRootCheck On</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.7 and later
-<P>
-During startup, Apache does a <CODE>stat</CODE> of each
-<A HREF="#documentroot">DocumentRoot</A>
-to determine if the directory exists. If your server is
-configured with lots of DocumentRoot directives (for example,
-if you serve numerous virtual hosts), this can <em>greatly</em> increase
-the startup time. If you are sure that all the DocumentRoot
-entries exist, you can tell Apache to bypass this check using:
-<BLOCKQUOTE><CODE>DocumentRootCheck Off</CODE></BLOCKQUOTE>
-<P>
-This directive is ignored when Apache is called with the
-<CODE>-t</CODE> command line option to perform a configuration
-test.
 
 <P><HR>
 
