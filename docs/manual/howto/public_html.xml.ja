@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='iso-2022-jp' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
+<!-- English revision: 1.8 -->
+
+  <title>ユーザ毎のウェブディレクトリ</title>
+
+<summary>
+<p>複数のユーザのいるシステムでは、<directive 
+    module="mod_userdir">UserDir</directive> ディレクティブを使って
+    各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
+    可能です。URL <code>http://example.com/~username/</code> を訪れた人は
+    "<code>username</code>" というユーザの <directive
+    module="mod_userdir">UserDir</directive> ディレクティブで指定された
+    サブディレクトリからコンテンツを得ることになります。</p>
+</summary>
+
+<seealso><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></seealso>
+
+  <section id="related">
+    <title>ユーザ毎のウェブディレクトリ</title>
+    <related>
+      <modulelist>
+        <module>mod_userdir</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_userdir">UserDir</directive>
+        <directive module="core">DirectoryMatch</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+    </section>
+
+    <section id="userdir">
+    <title>UserDir を使ってファイルのパスを設定する</title>
+
+    <p><directive module="mod_userdir">UserDir</directive> ディレクティブは
+    ユーザ毎のコンテンツが読み込まれるディレクトリを指定します。
+    このディレクティブはいろいろ違った形式を取ることができます。</p>
+
+    <p>スラッシュで始まらないパスが与えられたときは、ユーザのホームディレクトリ
+    からの相対パスとみなされます。次の設定があったときに:</p>
+
+    <example>
+      UserDir public_html
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/home/rbowen/public_html/file.html</code> へ
+    変換されます。</p>
+
+    <p>パスがスラッシュで始まるときは、ディレクトリパスはそのパスに
+    ユーザ名を加えたものからなります。次の設定のとき:</p>
+
+    <example>
+      UserDir /var/html
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/html/rbowen/file.html</code> へ変換されます。</p>
+
+    <p>アスタリスク (*) を含むパスが指定されたときは、アスタリスクを
+    ユーザ名で置換したものが使用されます。このような設定だと:</p>
+
+    <example>
+      UserDir /var/www/*/docs
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
+
+  </section>
+
+  <section id="enable">
+    <title>この機能を使用できるユーザを制限する</title>
+
+    <p>UserDir のドキュメントに示されている構文を使うことで、
+    どのユーザがこの機能を使うことができるかを制限することができます:</p>
+
+    <example>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </example>
+
+    <p>上の設定は <code>dissabled</code> 文のユーザ以外のすべてのユーザに
+    対して UserDir の機能を有効にします。同様にして、以下のように
+    数名のユーザ以外に対してこの機能を無効にすることもできます:</p>
+
+    <example>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </example>
+
+    <p>他の例は <directive module="mod_userdir">UserDir</directive>
+    の説明を参照してください。</p>
+
+  </section>
+
+  <section id="cgi">
+  <title>ユーザ毎の CGI ディレクトリ</title>
+
+   <p>それぞれのユーザに専用の cgi-bin ディレクトリを与えるために、
+    <directive module="core" type="section">Directory</directive>
+    を使ってユーザのホームディレクトリの指定された領域に対して CGI を有効に
+    することができます。</p>
+
+    <example>
+      &lt;Directory /home/*/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </example>
+
+    </section>
+
+    <section id="htaccess">
+    <title>ユーザによる設定変更を許可</title>
+
+    <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、
+    ユーザは <code>.htaccess</code> ファイルを使って設定を変更する必要があります。
+    <directive module="core">AllowOverride</directive> の値を
+    ユーザが変更することを許可したいディレクティブに対して十分なものに
+    設定していることを確認してください。この機能がどのようにして動作しているか
+    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
+    ください。</p>
+
+  </section>
+
+</manualpage>
