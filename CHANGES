@@ -1,4 +1,7 @@
 Changes with Apache 2.0.34-dev
+
+  *) Upgraded PCRE library to latest version 3.9 [Brian Pane]
+
   *) Add accessor function to set r->content_type. From now on,
      ap_rset_content_type() should be used to set r->content_type.
      This change is required to properly implement the 
