@@ -441,7 +441,10 @@ void parse_uri (request_rec *r, const char *uri)
     for (loop = 0; loop <= strlen(r->uri); ++loop) {
         if (r->uri[loop] == '\\')
             r->uri[loop] = '/';
-};
+    };
+    
+    /* Fix OS/2 HPFS filename case problem. */
+    r->uri = strlwr(r->uri);
 #endif
 
 	if (*uri) r->args= pstrdup(r->pool, uri);

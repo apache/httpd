@@ -398,7 +398,9 @@ typedef quad_t rlim_t;
 /* Add some drive name support */
 #define chdir _chdir2
 #include <sys/time.h>     
-#define MAXSOCKETS 200
+#define MAXSOCKETS 4096
+#define ARG_MAX    _POSIX_ARG_MAX
+#define HAVE_MMAP
     
 
 /* Unknown system - Edit these to match */
@@ -480,7 +482,10 @@ int setrlimit( int, struct rlimit *);
 #endif
 #endif
 #ifdef HAVE_MMAP
+#ifndef __EMX__
+/* This file is not needed for OS/2 */
 #include <sys/mman.h>
+#endif
 #endif
 #if !defined(MAP_ANON) && defined(MAP_ANONYMOUS)
 #define MAP_ANON MAP_ANONYMOUS

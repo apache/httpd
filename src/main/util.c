@@ -943,7 +943,7 @@ int can_exec(const struct stat *finfo) {
 #endif
 #ifdef __EMX__
     /* OS/2 dosen't have Users and Groups */
-    return (finfo->st_mode & S_IEXEC);
+    return 1;
 #else    
     if(user_id == finfo->st_uid)
         if(finfo->st_mode & S_IXUSR)

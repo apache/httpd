@@ -178,6 +178,12 @@
 #include <errno.h>
 #include <limits.h>
 #include <sys/types.h>
+
+#ifdef __EMX__
+/* If this value is changed. Make sure you also change it in conf.h */
+#define MAXSOCKETS 4096
+#endif
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -849,7 +855,10 @@ int OS_CreateLocalIpcFd(OS_IpcAddress ipcAddress, int listenQueueDepth,
        || OS_Listen(listenSock, listenQueueDepth) < 0) {
         goto GET_IPC_ERROR_EXIT;
     }
+#ifndef __EMX__
+    /* OS/2 dosen't support changing ownership. */
     chown(DStringValue(&ipcAddrPtr->bindPath), uid, gid);
+#endif    
     chmod(DStringValue(&ipcAddrPtr->bindPath), S_IRUSR | S_IWUSR);
     return listenSock;
 
@@ -966,11 +975,14 @@ static int OS_ExecFcgiProgram(pid_t *childPid, int listenFd, int priority,
         exit(errno);
     }
     DStringFree(&dirName);
+#ifndef __EMX__    
+    /* OS/2 dosen't support nice() */
     if(priority != 0) {
         if(nice (priority) == -1) {
             exit(errno);
         }
     }
+#endif    
     /*
      * Close any file descriptors we may have gotten from the parent
      * process.  The only FD left open is the FCGI listener socket.

@@ -605,6 +605,10 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     if (cmd->limited != -1) return "Can't have <Directory> within <Limit>";
 
     cmd->path = getword_conf (cmd->pool, &arg);
+#ifdef __EMX__
+    /* Fix OS/2 HPFS filename case problem. */
+    cmd->path = strlwr(cmd->path);
+#endif    
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (!strcmp(cmd->path, "~")) {

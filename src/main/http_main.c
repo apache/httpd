@@ -109,6 +109,19 @@ extern char *sbrk(int);
 
 #include "explain.h"
 
+#ifdef __EMX__
+    /* Add MMAP style functionality to OS/2 */
+    #ifdef HAVE_MMAP
+        #define INCL_DOSMEMMGR
+        #include <os2.h>
+        #include <umalloc.h>
+        #include <stdio.h>
+        caddr_t create_shared_heap (const char *, size_t);
+        caddr_t get_shared_heap (const char *);
+    #endif
+#endif
+
+
 DEF_Explain
 
 /*
@@ -517,7 +530,23 @@ static scoreboard *scoreboard_image=NULL;
 static void setup_shared_mem(void)
 {
     caddr_t m;
-#if defined(MAP_ANON) || defined(MAP_FILE)
+
+#ifdef __EMX__
+    char errstr[MAX_STRING_LEN];
+    int rc;
+
+    m = (caddr_t)create_shared_heap("\\SHAREMEM\\SCOREBOARD", HARD_SERVER_LIMIT*sizeof(short_score));
+    if(m == 0) {
+       fprintf(stderr, "httpd: Could not create OS/2 Shared memory pool.\n");
+       exit(1);
+    }
+
+    rc = _uopen((Heap_t)m);
+    if(rc != 0) {
+       fprintf(stderr, "httpd: Could not uopen() newly created OS/2 Shared memory pool.\n");
+    }
+
+#elif defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
     m = mmap((caddr_t)0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
@@ -736,6 +765,23 @@ void reopen_scoreboard (pool *p)
 	perror (scoreboard_fname);
 	exit (1);
     }
+#else
+#ifdef __EMX__
+#ifdef HAVE_MMAP
+    caddr_t m;
+    char errstr[MAX_STRING_LEN];
+    int rc;
+
+    m = (caddr_t)get_shared_heap("\\SHAREMEM\\SCOREBOARD");
+    if(m == 0) {
+        fprintf(stderr, "httpd: Could not find existing OS/2 Shared memory pool.\n");
+        exit(1);
+    }
+
+    rc = _uopen((Heap_t)m);
+    scoreboard_image = (scoreboard *)m;
+#endif
+#endif
 #endif
 }
 
@@ -2062,4 +2108,50 @@ main(int argc, char *argv[])
     exit (0);
 }
 
+#ifdef __EMX__
+#ifdef HAVE_MMAP
+/* The next two routines are used to access shared memory under OS/2.  */
+/* This requires EMX v09c to be installed.                           */
+
+caddr_t create_shared_heap (const char *name, size_t size)
+{
+    ULONG rc;
+    void *mem;
+    Heap_t h;
+
+    rc = DosAllocSharedMem (&mem, name, size,
+                          PAG_COMMIT | PAG_READ | PAG_WRITE);
+    if (rc != 0)
+        return NULL;
+    h = _ucreate (mem, size, !_BLOCK_CLEAN, _HEAP_REGULAR | _HEAP_SHARED,
+                NULL, NULL);
+    if (h == NULL)
+        DosFreeMem (mem);
+    return (caddr_t)h;
+}
+
+caddr_t get_shared_heap (const char *Name)
+{
+
+    PVOID    BaseAddress;     /* Pointer to the base address of
+                              the shared memory object */
+    ULONG    AttributeFlags;  /* Flags describing characteristics
+                              of the shared memory object */
+    APIRET   rc;              /* Return code */
+
+    /* Request read and write access to */
+    /*   the shared memory object       */
+    AttributeFlags = PAG_WRITE | PAG_READ;
+
+    rc = DosGetNamedSharedMem(&BaseAddress, Name, AttributeFlags);
+
+    if(rc != 0) {
+        printf("DosGetNamedSharedMem error: return code = %ld", rc);
+        return 0;
+    }
+
+    return BaseAddress;
+}
+#endif
+#endif
 

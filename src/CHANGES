@@ -1,5 +1,8 @@
 Changes with Apache 1.2b4:
 
+  *) OS/2 changes to support an MMAP style scoreboard file and UNIX
+     style magic #! token for better script portability. [Garey Smiley]
+
   *) Fix bug in suexec wrapper introduced in b3 that would cause failed
      execution for ~userdir CGI. [Jason Dour]
 
