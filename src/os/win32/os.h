@@ -197,9 +197,9 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file);
 #define ap_os_dso_init()
 #define ap_os_dso_unload(l) FreeLibrary(l)
 #define ap_os_dso_sym(h,s)  GetProcAddress(h,s)
-#define ap_os_dso_error()   ""	/* for now */
 
 API_EXPORT(ap_os_dso_handle_t) ap_os_dso_load(const char *);
+API_EXPORT(const char *) ap_os_dso_error(void);
 
 /* Other ap_os_ routines not used by this platform */
 #define ap_os_kill(pid, sig)                kill(pid, sig)

@@ -704,6 +704,7 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
 
 API_EXPORT(ap_os_dso_handle_t) ap_os_dso_load(const char *module_name)
 {
+    UINT em;
     ap_os_dso_handle_t dsoh;
     char path[MAX_PATH], *p;
     /* Load the module...
@@ -723,9 +724,45 @@ API_EXPORT(ap_os_dso_handle_t) ap_os_dso_load(const char *module_name)
      * same path or can be found in the usual places.  Failing that, let's
      * let that dso look in the apache root.
      */
+    em = SetErrorMode(SEM_FAILCRITICALERRORS);
     dsoh = LoadLibraryEx(path, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
     if (!dsoh) {
         dsoh = LoadLibraryEx(path, NULL, 0);
     }
+    SetErrorMode(em);
     return dsoh;
+}
+
+API_EXPORT(const char *) ap_os_dso_error(void)
+{
+    int len, nErrorCode;
+    static char errstr[120];
+    /* This is -not- threadsafe code, but it's about the best we can do.
+     * mostly a potential problem for isapi modules, since LoadModule
+     * errors are handled within a single config thread.
+     */
+    
+    nErrorCode = GetLastError();
+    len = ap_snprintf(errstr, sizeof(errstr) - len, "(%d) ", nErrorCode);
+
+    len += FormatMessage( 
+            FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL,
+            nErrorCode,
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* Default language */
+            (LPTSTR) errstr + len,
+            sizeof(errstr) - len,
+            NULL 
+        );
+        /* FormatMessage may have appended a newline (\r\n). So remove it 
+         * and use ": " instead like the Unix errors. The error may also
+         * end with a . before the return - if so, trash it.
+         */
+    if (len > 1 && errstr[len-2] == '\r' && errstr[len-1] == '\n') {
+        if (len > 2 && errstr[len-3] == '.')
+            len--;
+        errstr[len-2] = ':';
+        errstr[len-1] = ' ';
+    }
+    return errstr;
 }
