@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/14 20:30:11 $
+Last modified: $Date: 2002/09/15 02:29:07 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -131,8 +131,6 @@ mod/footer.html                    # delete after finishing mod/ directory
 mod/header.html                    # delete after finishing mod/ directory
 platform/footer.html               # delete after finishing platform/
 platform/header.html               # delete after finishing platform/
-platform/netware.html
-platform/perf-hp.html
 platform/win_compiling.html
 platform/win_service.html
 platform/windows.html
