@@ -353,7 +353,6 @@ static dav_error * dav_generic_really_open_lockdb(dav_lockdb *lockdb)
 {
     dav_error *err;
     apr_status_t status;
-    apr_dbm_t *db;
 
     if (lockdb->info->opened) {
         return NULL;
@@ -603,7 +602,6 @@ static dav_error * dav_generic_load_lock_record(dav_lockdb *lockdb,
     apr_datum_t val = { 0 };
     dav_lock_discovery *dp;
     dav_lock_indirect *ip;
-    dav_buffer buf = { 0 };
 
     if (add_method != DAV_APPEND_LIST) {
         *direct = NULL;
@@ -1078,7 +1076,6 @@ static dav_error * dav_generic_remove_lock(dav_lockdb *lockdb,
                                            const dav_locktoken *locktoken)
 {
     dav_error *err;
-    dav_buffer buf = { 0 };
     dav_lock_discovery *dh = NULL;
     dav_lock_indirect *ih = NULL;
     apr_datum_t key;

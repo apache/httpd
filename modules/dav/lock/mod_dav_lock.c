@@ -58,6 +58,7 @@
 #include "ap_provider.h"
 
 #include "mod_dav.h"
+#include "locks.h"
 
 /* per-dir configuration */
 typedef struct {
