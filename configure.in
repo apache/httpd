@@ -43,15 +43,28 @@ test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 
 dnl ## Run configure for packages Apache uses
 
+dnl shared library support for these packages doesn't currently
+dnl work on some platforms
+
+AC_CANONICAL_SYSTEM
+
+case $host in
+    *-ibm-aix*)
+        disable_shared="--disable-shared"
+      ;;
+    *)
+        disable_shared=""
+esac
+
 orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix $disable_shared")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix $disable_shared")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
@@ -91,8 +104,6 @@ else
 fi
 
 echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
-
-AC_CANONICAL_SYSTEM
 
 case $host in
   *os2*)
