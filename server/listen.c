@@ -238,7 +238,7 @@ static void find_default_family(apr_pool_t *p)
 }
 
 
-static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
+static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
@@ -278,7 +278,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
                 *walk = new->next;
                 new->next = ap_listeners;
                 ap_listeners = new;
-                return;
+                return NULL;
             }
         }
     }
@@ -292,7 +292,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                       "alloc_listener: failed to set up sockaddr for %s",
                       addr);
-        return;
+        return "Listen setup failed";
     }
     if ((status = apr_socket_create(&new->sd,
                                     new->bind_addr->family,
@@ -300,11 +300,12 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
         != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                       "alloc_listener: failed to get a socket for %s", addr);
-        return;
+        return "Listen setup failed";
     }
 
     new->next = ap_listeners;
     ap_listeners = new;
+    return NULL;
 }
 
 static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
@@ -401,9 +402,7 @@ const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
         return "Port must be specified";
     }
 
-    alloc_listener(cmd->server->process, host, port);
-
-    return NULL;
+    return alloc_listener(cmd->server->process, host, port);
 }
 
 const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
