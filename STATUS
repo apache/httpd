@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 12:00:56 $]
+Last modified at [$Date: 2003/05/13 14:24:55 $]
 
 Release:
 
@@ -129,7 +129,7 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-win.conf: r1.81
       docs/docroot/index.html.var: r1.11
       docs/docroot/index.html.zh -> index.html.zh-tw.big5
-      +1: nd, trawick
+      +1: nd, trawick, stoddard
 
     * Do not bypass output filters when redirecting subrequests internally.
       PR 17629.
@@ -206,7 +206,7 @@ PATCHES TO PORT FROM 2.1
     * By default, use the same CC and CPP with which APR was built.
       The user can override with CC and CPP environment variables.
       configure.in              r1.249
-      +1: trawick, nd
+      +1: trawick, nd, stoddard
 
     * Fix a problem that caused httpd to be linked with incorrect flags
       on some platforms when mod_so was enabled by default, breaking 
@@ -215,13 +215,13 @@ PATCHES TO PORT FROM 2.1
       handful of vocal people, but there is an easy work-around 
       (explicitly add --enable-so).
       modules/mappers/config9.m4 r1.16
-      +1: trawick, nd
+      +1: trawick, nd, stoddard
 
     * Fix ap_construct_url() so that it surrounds IPv6 literal address
       strings with [].  This fixes certain types of redirection.
       PR 19207.
       server/core.c r1.232
-      +1: trawick, nd
+      +1: trawick, nd, stoddard if feature macro check changed to #if APR_HAVE_IPV6
 
     * Fix for a pair of potential buffer overflows in htdigest.
       support/htdigest.c r1.36
@@ -230,19 +230,19 @@ PATCHES TO PORT FROM 2.1
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
       modules/mappers/mod_rewrite.c r1.150
-      +1: nd, trawick
+      +1: nd, trawick, stoddard
 
     * mod_auth_ldap: Use generic whitespace character class when parsing
       "require" directives, instead of literal spaces only. PR 17135.
       modules/experimental/mod_auth_ldap.c r1.16
-      +1: nd, trawick
+      +1: nd, trawick, stoddard
 
     * Use appropriate language code for Czech (cs) in default config
       files. PR 9427. (2.0 + 1.3)
       docs/docroot/index.html.var: r1.12
       docs/conf/httpd-std.conf.in: r1.39
       docs/conf/httpd-win.conf: r1.85
-      +1: nd, trawick
+      +1: nd, trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
