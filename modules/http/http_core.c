@@ -2584,24 +2584,6 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
 {
     apr_status_t rv = APR_EINIT;
     apr_size_t n = length;
-
-#if APR_HAS_SENDFILE
-    apr_int32_t flags = 0;
-    if (!c->keepalive) {
-        /* Prepare the socket to be reused */
-        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-    }
-    rv = apr_sendfile(c->client->bsock, 
-                      fd,      /* The file to send */
-                      hdtr,    /* Header and trailer iovecs */
-                      &offset, /* Offset in file to begin sending from */
-                      &n,
-                      flags);
-    if ((rv == APR_SUCCESS) || (rv != APR_ENOTIMPL)) {
-        *nbytes = n;
-        return rv;
-    }
-#else
     apr_int32_t sendlen = 0;
     apr_int32_t togo;
     char buffer[8192];
@@ -2636,9 +2618,6 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
     }
 
     return rv;
-#endif;
-
-    return APR_SUCCESS;
 }
 
 /* Note --- ErrorDocument will now work from .htaccess files.  
@@ -3422,6 +3401,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         }
         if (fd) {
             apr_hdtr_t hdtr;
+            apr_int32_t flags = 0;
 
             memset(&hdtr, '\0', sizeof(hdtr));
             if (nvec) {
@@ -3432,7 +3412,36 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 hdtr.numtrailers = nvec_trailers;
                 hdtr.trailers = vec_trailers;
             }
-            rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
+#if APR_HAS_SENDFILE
+            if (!c->keepalive) {
+                /* Prepare the socket to be reused */
+                flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+            }
+            nbytes = flen;
+            rv = apr_sendfile(c->client->bsock, 
+                              fd,       /* The file to send */
+                              &hdtr,    /* Header and trailer iovecs */
+                              &foffset, /* Offset in file to begin sending from */
+                              &nbytes,
+                              flags);
+            bytes_sent = nbytes;
+
+            /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file() to
+             * loop on apr_read/apr_send to send the file. Our Windows binary 
+             * distributions (which work on Windows 9x/NT) are compiled on 
+             * Windows NT. TransmitFile is not available on Windows 95/98 and
+             * we discover this at runtime when apr_sendfile() returns 
+             * APR_ENOTIMPL. Having apr_sendfile() return APR_ENOTIMPL seems
+             * the cleanest way to handle this case.
+             */
+            if (rv == APR_ENOTIMPL) {
+#endif
+
+                rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
+
+#if APR_HAS_SENDFILE
+            }
+#endif
         }
         else {
             rv = writev_it_all(c->client->bsock, 
