@@ -126,6 +126,7 @@ Server on HPUX</page>
 <title>Apache modules</title>
 <page href="mod/">Module index</page>
 <page href="mod/directives.html">Directive index</page>
+<page href="mod/quickreference.html">Directive Quick-Reference</page>
 &allmodules;
 </category>
 
