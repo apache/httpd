@@ -87,12 +87,19 @@ help=no
 quiet=no
 verbose=no
 case "$*" in
-    --help|*--help|*--help* ) help=yes; quiet=yes
-      echo "hang on a moment, generating help"
-     ;;
-    --quiet|*--quiet|*--quiet* ) quiet=yes ;;
-    --verbose|*--verbose|*--verbose*|-v|*-v|*-v* ) verbose=yes ;;
-    * ) ;;
+    --help|*--help|*--help* ) 
+        help=yes; quiet=yes
+        echo "[hang on a moment, generating help]"
+        echo ""
+        ;;
+    --quiet|*--quiet|*--quiet* ) 
+        quiet=yes
+        ;;
+    --verbose|*--verbose|*--verbose*|-v|*-v|*-v* ) 
+        verbose=yes
+        ;;
+    * ) 
+        ;;
 esac
 
 ##
@@ -159,7 +166,7 @@ if [ "x$awkpath" != "x" ]; then
 fi
 
 ##
-## Look for a good tar. If we don't find 'GNU tar' then make
+## Look for a good Tar. If we don't find 'GNU tar' then make
 ## sure ours can handle the '-h' (don't copy symlink, copy
 ## the actual data) option.
 ##
@@ -245,10 +252,10 @@ IFS='
 for module in `egrep '^[# 	]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     add=yes
     share=no
-    if [ ".`echo $module | grep '^#'`" != . ]; then
+    if [ "x`echo $module | grep '^#'`" != "x" ]; then
         add=no
     fi
-    if [ ".`echo $module | grep 'SharedModule'`" != . ]; then
+    if [ "x`echo $module | grep 'SharedModule'`" != "x" ]; then
         share=yes
     fi
     module=`echo "$module" |\
@@ -498,7 +505,7 @@ do
             #   Makefile is for platform bootstrapping, so don't hardcode paths)
             gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | awk '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
-            if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
+            if [ "x`ls $top/src.* 2>/dev/null`" = "x" ]; then
                 if [ "x$quiet" = "xno" ]; then
                     echo " + creating Makefile (shadow wrapper)"
                 fi
@@ -598,7 +605,7 @@ do
             ;;
         --add-module=*) 
             file="$apc_optarg"
-            if [ ".`echo $file | egrep '/?mod_[a-zA-Z0-9][a-zA-Z0-9_]*\.c$'`" = . ]; then
+            if [ "x`echo $file | egrep '/?mod_[a-zA-Z0-9][a-zA-Z0-9_]*\.c$'`" = "x" ]; then
                 echo "configure:Error: Module filename doesn't match '/?mod_[a-zA-Z0-9][a-zA-Z0-9_]*\.c'" 1>&2
                 exit 1
             fi
@@ -946,7 +953,7 @@ if [ "x$suexec" = "x1" ]; then
         echo "                 and htdocs/manual/suexec.html documents first."
         exit 1
     fi
-    if [ ".`id | grep root`" = . ]; then
+    if [ "x`id | grep root`" = "x" ]; then
         echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
         echo " + root privileges for this, at the latest at the installation step." 1>&2
     fi
@@ -962,7 +969,7 @@ fi
 ##  target name
 ##
 if [ "x$TARGET" != "x" ]; then
-    thetarget=$TARGET
+    thetarget="$TARGET"
 else
     thetarget=httpd
 fi
@@ -1040,7 +1047,7 @@ if [ "x$confadjust" = "x1" ]; then
             break
         fi
     done
-    if [ ".`id | grep root`" = . ]; then
+    if [ "x`id | grep root`" = "x" ]; then
         conf_port="8080"
     fi
     conf_serveradmin="`$aux/buildinfo.sh -n %u@%h%d`"
