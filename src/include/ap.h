@@ -85,7 +85,7 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
 #endif
 #endif /* WIN32 */
 
-/* apapi_vformatter() is a generic printf-style formatting routine
+/* ap_vformatter() is a generic printf-style formatting routine
  * with some extensions.  The extensions are:
  *
  * %pA	takes a struct in_addr *, and prints it as a.b.c.d
@@ -98,8 +98,8 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
  * work as expected at all, but that seems to be a fair trade-off
  * for the increased robustness of having printf-warnings work.
  *
- * Additionally, apapi_vformatter allows for arbitrary output methods
- * using the apapi_vformatter_buff and flush_func.
+ * Additionally, ap_vformatter allows for arbitrary output methods
+ * using the ap_vformatter_buff and flush_func.
  *
  * The ap_vformatter_buff has two elements curpos and endpos.
  * curpos is where ap_vformatter will write the next byte of output.
