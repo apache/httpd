@@ -693,8 +693,8 @@ static apr_status_t receive_from_other_child(void **csd, ap_listen_rec *lr,
 
     iov[0].iov_base = headers;
     iov[0].iov_len = HUGE_STRING_LEN;
-    iov[0].iov_base = request_body;
-    iov[0].iov_len = HUGE_STRING_LEN;
+    iov[1].iov_base = request_body;
+    iov[1].iov_len = HUGE_STRING_LEN;
 
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
