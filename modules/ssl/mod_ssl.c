@@ -316,7 +316,10 @@ static int ssl_hook_pre_connection(conn_rec *c)
 int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
     int n, err;
+    X509 *xs;
+    char *cp;
     conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
+    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
 
     if (!SSL_is_init_finished(pRec->pssl))
     {
@@ -422,6 +425,48 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
             SSL_smart_shutdown(pRec->pssl);
             SSL_free(pRec->pssl);
             pRec->pssl = NULL; /* so filters know we've been shutdown */
+            apr_table_setn(c->notes, "ssl", NULL);
+            c->aborted = 1;
+            return APR_EGENERAL;
+        }
+
+        /*
+         * Check for failed client authentication
+         */
+        if (   SSL_get_verify_result(pRec->pssl) != X509_V_OK
+            || apr_table_get (c->notes, "ssl::verify::error") != NULL) {
+            cp = (char *)apr_table_get(c->notes, "ssl::verify::error");
+            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                    "SSL client authentication failed: %s",
+                    cp != NULL ? cp : "unknown reason");
+            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
+            SSL_smart_shutdown(pRec->pssl);
+            SSL_free(pRec->pssl);
+            apr_table_setn(c->notes, "ssl", NULL);
+            c->aborted = 1;
+            return APR_EGENERAL;
+        }
+
+        /*
+         * Remember the peer certificate's DN
+         */
+        if ((xs = SSL_get_peer_certificate(pRec->pssl)) != NULL) {
+            cp = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
+            apr_table_setn(c->notes,"ssl::client::dn",apr_pstrdup(c->pool, cp));
+            free(cp);
+        }
+
+        /*
+         * Make really sure that when a peer certificate
+         * is required we really got one... (be paranoid)
+         */
+        if (sc->nVerifyClient == SSL_CVERIFY_REQUIRE
+            && apr_table_get(c->notes, "ssl::client::dn") == NULL) {
+            ssl_log(c->base_server, SSL_LOG_ERROR,
+                    "No acceptable peer certificate available");
+            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
+            SSL_smart_shutdown(pRec->pssl);
+            SSL_free(pRec->pssl);
             apr_table_setn(c->notes, "ssl", NULL);
             c->aborted = 1;
             return APR_EGENERAL;
