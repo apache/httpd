@@ -324,26 +324,6 @@ This will suppress the file size in fancy indexing listings.
 <dd>
 <!--%plaintext &lt;?INDEX {\tt SuppressDescription} index option&gt; -->
 This will suppress the file description in fancy indexing listings.
-<dt>IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)
-<dd>
-<!--%plaintext &lt;?INDEX {\tt IconHeight} index option&gt; -->
-Presence of this option, when used with IconWidth, will cause the server
-to include <SAMP>HEIGHT</SAMP> and <SAMP>WIDTH</SAMP> attributes in the
-<SAMP>IMG</SAMP> tag for the file icon.  This allows browser to
-precalculate the page layout without having to wait until all the
-images have been loaded.  If no value is given for the option, it
-defaults to the standard height of the icons supplied with the Apache
-software.
-<dt>IconWidth[=pixels] (<EM>Apache 1.3 and later</EM>)
-<dd>
-<!--%plaintext &lt;?INDEX {\tt IconWidth} index option&gt; -->
-Presence of this option, when used with IconHeight, will cause the server
-to include <SAMP>HEIGHT</SAMP> and <SAMP>WIDTH</SAMP> attributes in the
-<SAMP>IMG</SAMP> tag for the file icon.  This allows browser to
-precalculate the page layout without having to wait until all the
-images have been loaded.  If no value is given for the option, it
-defaults to the standard width of the icons supplied with the Apache
-software.
 </dl>
 This default is that no options are enabled. If multiple IndexOptions
 could apply to a directory, then the most specific one is taken complete;
