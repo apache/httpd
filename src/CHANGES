@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) USE_PTHREAD_SERIALIZED_ACCEPT has proven unreliable depending on
+     the rev of Solaris and what mixture of modules are in use.  So
+     it has been disabled, and Solaris is back to using
+     USE_FCNTL_SERIALIZED_ACCEPT.  Users may experiment with
+     USE_PTHREAD_SERIALIZED_ACCEPT at their own risk, it may speed
+     up static content only servers.  Or it may fail unpredictably.
+     [Dean Gaudet] PR#1779, 1854, 1904
+
   *) mod_test_util_uri.c created which tests the logic in util_uri.c.
      [Dean Gaudet]
 

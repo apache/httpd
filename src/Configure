@@ -425,11 +425,6 @@ case "$PLAT" in
 	OS="Solaris $PLATOSVERS"
 	CFLAGS="$CFLAGS -DSOLARIS2=$PLATOSVERS"
 	LIBS="$LIBS -lsocket -lnsl"
-	case "$PLATOSVERS" in
-	    2[56789]*)
-	    	LIBS="$LIBS -lpthread"
-		;;
-	esac
 	DBM_LIB=""
 	case "$PLATOSVERS" in
 	    2[01234]*)
