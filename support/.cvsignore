@@ -29,3 +29,8 @@ phf_abuse_log.cgi
 *.dep
 *.mak
 *.rc
+BuildLog.htm
+*.stc
+*.stt
+*.sto
+*.vcproj

@@ -11,3 +11,8 @@ modules.mk
 .deps
 .libs
 *.mak
+BuildLog.htm
+*.stc
+*.stt
+*.sto
+*.vcproj

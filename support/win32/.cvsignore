@@ -6,3 +6,8 @@ wintty.rc
 *.aps
 *.dep
 *.mak
+BuildLog.htm
+*.stc
+*.stt
+*.sto
+*.vcproj

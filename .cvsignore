@@ -30,3 +30,9 @@ apachecore.dll
 *.dep
 *.mak
 *.rc
+Apache.sln
+BuildLog.htm
+*.stc
+*.stt
+*.sto
+*.vcproj
