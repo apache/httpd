@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
          * specific as well, to assure that cross-compiled unix 
          * applications behave similiarly when invoked on win32/os2.
          */
-        if (strchr("&;`'\"|*?~<>^()[]{}$\\\n\r%", c)) {
+        if (c && strchr("&;`'\"|*?~<>^()[]{}$\\\n\r%", c)) {
 	    flags |= T_ESCAPE_SHELL_CMD;
 	}
 #else
-        if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
+        if (c && strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
 	    flags |= T_ESCAPE_SHELL_CMD;
 	}
 #endif
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* these are the "tspecials" from RFC2068 */
-	if (ap_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
+	if (c && (ap_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c))) {
 	    flags |= T_HTTP_TOKEN_STOP;
 	}
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	 * backslashes (because we use backslash for escaping)
 	 * and 8-bit chars with the high bit set
 	 */
-	if (!ap_isprint(c) || c == '"' || c == '\\' || ap_iscntrl(c)) {
+	if (c && (!ap_isprint(c) || c == '"' || c == '\\' || ap_iscntrl(c))) {
 	    flags |= T_ESCAPE_LOGITEM;
 	}
 
