@@ -2605,7 +2605,7 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
         rv = apr_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen, 
                           flags);
         total_bytes_left -= tmplen;
-        if (!total_bytes_left || rv != APR_SUCCESS) {
+        if (!total_bytes_left || (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv))) {
             return rv;        /* normal case & error exit */ 
         }
 
