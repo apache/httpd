@@ -682,7 +682,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
      */
     ok = FALSE;
     cp = apr_psprintf(p, "%s:RSA", cpVHostID);
-    if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, cp)) != NULL) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring RSA server private key", cpVHostID);
         ucp = asn1->cpData;
@@ -702,7 +702,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
         ok = TRUE;
     }
     cp = apr_psprintf(p, "%s:DSA", cpVHostID);
-    if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, cp)) != NULL) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp)) != NULL) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring DSA server private key", cpVHostID);
         ucp = asn1->cpData;

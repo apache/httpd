@@ -114,6 +114,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     EVP_PKEY *pPrivateKey;
     ssl_asn1_t *asn1;
     unsigned char *ucp;
+    long int length;
     X509 *pX509Cert;
     BOOL bReadable;
     ssl_ds_array *aPassPhrase;
@@ -278,7 +279,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
                 {
                     char *key_id = apr_psprintf(p, "%s:%s", cpVHostID, "RSA"); /* XXX: check for DSA key too? */
-                    ssl_asn1_t *asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tPrivateKey, key_id);
+                    ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
                     if (asn1 && (asn1->source_mtime == pkey_mtime)) {
                         ssl_log(pServ, SSL_LOG_INFO,
@@ -427,12 +428,15 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * RSA structure which do not survive DSO reloads!)
              */
             cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
-            asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tPrivateKey, cp);
-            asn1->nData  = i2d_PrivateKey(pPrivateKey, NULL);
-            asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-            ucp = asn1->cpData; i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
+            length = i2d_PrivateKey(pPrivateKey, NULL);
+            ucp = ssl_asn1_table_set(mc->tPrivateKey, cp, length);
+            (void)i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
 
-            asn1->source_mtime = pkey_mtime;
+            if (nPassPhraseDialogCur != 0) {
+                /* remember mtime of encrypted keys */
+                asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp);
+                asn1->source_mtime = pkey_mtime;
+            }
 
             /*
              * Free the private key structure
