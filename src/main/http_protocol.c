@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.53 1996/10/08 21:46:59 brian Exp $ */
+/* $Id: http_protocol.c,v 1.54 1996/10/10 09:02:43 fielding Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -791,73 +791,84 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     return OK;
 }
 
-#define RESPONSE_CODE_LIST " 200 206 300 301 302 304 400 401 403 404 405 406 411 412 500 503 501 502 506"
-
-/* New Apache routine to map error responses into array indicies 
- *  e.g.  400 -> 0,  500 -> 1,  502 -> 2 ...                     
- * the indicies have no significance
+/* New Apache routine to map status codes into array indicies 
+ *  e.g.  100 -> 0,  101 -> 1,  200 -> 2 ...                     
+ * The number of status lines must equal the value of RESPONSE_CODES (httpd.h)
+ * and must be listed in order.
  */
 
-char *status_lines[] = {
+static char *status_lines[] = {
+   "100 Continue",
+   "101 Switching Protocols",
+#define LEVEL_200  2
    "200 OK",
+   "201 Created",
+   "202 Accepted",
+   "203 Non-Authoritative Information",
+   "204 No Content",
+   "205 Reset Content",
    "206 Partial Content",
+#define LEVEL_300  9
    "300 Multiple Choices",
    "301 Moved Permanently",
-   "302 Found",
+   "302 Moved Temporarily",
+   "303 See Other",
    "304 Not Modified",
+   "305 Use Proxy",
+#define LEVEL_400 15
    "400 Bad Request",
-   "401 Unauthorized",
+   "401 Authorization Required",
+   "402 Payment Required",
    "403 Forbidden",
-   "404 Not found",
+   "404 File Not Found",
    "405 Method Not Allowed",
    "406 Not Acceptable",
+   "407 Proxy Authentication Required",
+   "408 Request Time-out",
+   "409 Conflict",
+   "410 Gone",
    "411 Length Required",
    "412 Precondition Failed",
-   "500 Server error",
-   "503 Out of resources",
-   "501 Not Implemented",
+   "413 Request Entity Too Large",
+   "414 Request-URI Too Large",
+   "415 Unsupported Media Type",
+#define LEVEL_500 31
+   "500 Internal Server Error",
+   "501 Method Not Implemented",
    "502 Bad Gateway",
+   "503 Service Temporarily Unavailable",
+   "504 Gateway Time-out",
+   "505 HTTP Version Not Supported",
    "506 Variant Also Varies"
 }; 
 
-char *response_titles[] = {
-   "200 OK",			/* Never actually sent, barring die(200,...) */
-   "206 Partial Content",	/* Never sent as an error (we hope) */
-   "Multiple Choices",		/* 300 Multiple Choices */
-   "Document moved",		/* 301 Redirect */
-   "Document moved",		/* 302 Redirect */
-   "304 Not Modified",		/* Never sent... 304 MUST be header only */
-   "Bad Request",
-   "Authorization Required",
-   "Forbidden",
-   "File Not found",
-   "Method Not Allowed",
-   "Not Acceptable",
-   "Length Required",
-   "Precondition Failed",
-   "Server Error",
-   "Out of resources",
-   "Method not implemented",
-   "Bad Gateway",
-   "Variant Also Varies"
-};
+/* The index is found by its offset from the x00 code of each level.
+ * Although this is fast, it will need to be replaced if some nutcase
+ * decides to define a high-numbered code before the lower numbers.
+ * If that sad event occurs, replace the code below with a linear search
+ * from status_lines[shortcut[i]] to status_lines[shortcut[i+1]-1];
+ */
 
-int index_of_response(int err_no) {
-   char *cptr, err_string[10];
-   static char *response_codes = RESPONSE_CODE_LIST;
-   int index_number;
-   
-   sprintf(err_string,"%3d",err_no);
-   
-   cptr = response_codes;
-   cptr++;
-   index_number = 0;
-   while (*cptr && strncmp(cptr, err_string, 3)) { 
-      cptr += 4;
-      index_number++;
-   }
-   if (!*cptr) return -1;
-   return index_number;
+int index_of_response(int status)
+{
+    static int shortcut[6] = { 0, LEVEL_200, LEVEL_300, LEVEL_400,
+                               LEVEL_500, RESPONSE_CODES+1 };
+    int i, pos;
+
+    if (status < 100)          /* Below 100 is illegal for HTTP status */
+        return -1;
+
+    for (i = 0; i < 5; i++) {
+        status -= 100;
+        if (status < 100) {
+            pos = (status + shortcut[i]);
+            if (pos < shortcut[i+1])
+                return pos;
+            else
+                return -1;     /* status unknown (falls in gap) */
+        }
+    }
+   return -1;                  /* 600 or above is also illegal */
 }
 
 
@@ -1365,7 +1376,7 @@ void send_error_response (request_rec *r, int recursive_error)
           r = r->prev;
     }
     {
-	char *title = response_titles[idx];
+	char *title = status_lines[idx];
 	BUFF *fd = c->client;
 	
         bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", title,

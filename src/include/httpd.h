@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.52 1996/10/08 20:43:32 brian Exp $ */
+/* $Id: httpd.h,v 1.53 1996/10/10 09:02:43 fielding Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -251,28 +251,67 @@
 #define DECLINED -1		/* Module declines to handle */
 #define OK 0			/* Module has handled this stage. */
 
-/* ------------------------------ error types ------------------------------ */
+/* ----------------------- HTTP Status Codes  ------------------------- */
 
-#define DOCUMENT_FOLLOWS 200
-#define PARTIAL_CONTENT 206
-#define MULTIPLE_CHOICES 300
-#define MOVED 301
-#define REDIRECT 302
-#define USE_LOCAL_COPY 304
-#define BAD_REQUEST 400
-#define AUTH_REQUIRED 401
-#define FORBIDDEN 403
-#define NOT_FOUND 404
-#define METHOD_NOT_ALLOWED 405
-#define NOT_ACCEPTABLE 406
-#define LENGTH_REQUIRED 411
-#define PRECONDITION_FAILED 412
-#define SERVER_ERROR 500
-#define NOT_IMPLEMENTED 501
-#define BAD_GATEWAY 502
-#define HTTP_SERVICE_UNAVAILABLE 503
-#define VARIANT_ALSO_VARIES 506
-#define RESPONSE_CODES 18
+#define RESPONSE_CODES 38
+
+#define HTTP_CONTINUE                      100
+#define HTTP_SWITCHING_PROTOCOLS           101
+#define HTTP_OK                            200
+#define HTTP_CREATED                       201
+#define HTTP_ACCEPTED                      202
+#define HTTP_NON_AUTHORITATIVE             203
+#define HTTP_NO_CONTENT                    204
+#define HTTP_RESET_CONTENT                 205
+#define HTTP_PARTIAL_CONTENT               206
+#define HTTP_MULTIPLE_CHOICES              300
+#define HTTP_MOVED_PERMANENTLY             301
+#define HTTP_MOVED_TEMPORARILY             302
+#define HTTP_SEE_OTHER                     303
+#define HTTP_NOT_MODIFIED                  304
+#define HTTP_USE_PROXY                     305
+#define HTTP_BAD_REQUEST                   400
+#define HTTP_UNAUTHORIZED                  401
+#define HTTP_PAYMENT_REQUIRED              402
+#define HTTP_FORBIDDEN                     403
+#define HTTP_NOT_FOUND                     404
+#define HTTP_METHOD_NOT_ALLOWED            405
+#define HTTP_NOT_ACCEPTABLE                406
+#define HTTP_PROXY_AUTHENTICATION_REQUIRED 407
+#define HTTP_REQUEST_TIME_OUT              408
+#define HTTP_CONFLICT                      409
+#define HTTP_GONE                          410
+#define HTTP_LENGTH_REQUIRED               411
+#define HTTP_PRECONDITION_FAILED           412
+#define HTTP_REQUEST_ENTITY_TOO_LARGE      413
+#define HTTP_REQUEST_URI_TOO_LARGE         414
+#define HTTP_UNSUPPORTED_MEDIA_TYPE        415
+#define HTTP_INTERNAL_SERVER_ERROR         500
+#define HTTP_NOT_IMPLEMENTED               501
+#define HTTP_BAD_GATEWAY                   502
+#define HTTP_SERVICE_UNAVAILABLE           503
+#define HTTP_GATEWAY_TIME_OUT              504
+#define HTTP_VERSION_NOT_SUPPORTED         505
+#define HTTP_VARIANT_ALSO_VARIES           506
+
+#define DOCUMENT_FOLLOWS    HTTP_OK
+#define PARTIAL_CONTENT     HTTP_PARTIAL_CONTENT
+#define MULTIPLE_CHOICES    HTTP_MULTIPLE_CHOICES
+#define MOVED               HTTP_MOVED_PERMANENTLY
+#define REDIRECT            HTTP_MOVED_TEMPORARILY
+#define USE_LOCAL_COPY      HTTP_NOT_MODIFIED
+#define BAD_REQUEST         HTTP_BAD_REQUEST
+#define AUTH_REQUIRED       HTTP_UNAUTHORIZED
+#define FORBIDDEN           HTTP_FORBIDDEN
+#define NOT_FOUND           HTTP_NOT_FOUND
+#define METHOD_NOT_ALLOWED  HTTP_METHOD_NOT_ALLOWED
+#define NOT_ACCEPTABLE      HTTP_NOT_ACCEPTABLE
+#define LENGTH_REQUIRED     HTTP_LENGTH_REQUIRED
+#define PRECONDITION_FAILED HTTP_PRECONDITION_FAILED
+#define SERVER_ERROR        HTTP_INTERNAL_SERVER_ERROR
+#define NOT_IMPLEMENTED     HTTP_NOT_IMPLEMENTED
+#define BAD_GATEWAY         HTTP_BAD_GATEWAY
+#define VARIANT_ALSO_VARIES HTTP_VARIANT_ALSO_VARIES
 
 #define METHODS 8
 #define M_GET 0
