@@ -10,7 +10,7 @@ thread *create_thread(void (thread_fn)(void *), void *thread_arg)
 {
     int rv;
 
-    rv = BeginThread(thread_fn, NULL, ap_thread_stack_size, thread_arg); 
+    rv = BeginThreadGroup(thread_fn, NULL, ap_thread_stack_size, thread_arg);
     return((thread *)rv);
 }
 

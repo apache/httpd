@@ -340,7 +340,6 @@ ap_SHA1Update
 ap_SHA1Final
 ap_sha1_base64
 ap_my_generation
-apache_main
 ap_get_virthost_addr
 ap_listeners
 ap_listenbacklog
@@ -359,3 +358,4 @@ ap_scan_script_header_err_strs
 ap_start_shutdown
 ap_start_restart
 ap_stripprefix
+ap_send_error_response

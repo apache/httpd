@@ -67,7 +67,7 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-typedef int int32;
+typedef signed long int32;
 typedef int uid_t;
 typedef int gid_t;
 
