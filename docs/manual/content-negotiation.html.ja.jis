@@ -34,8 +34,7 @@
 
     <p>コンテントネゴシエーションは
     <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
-    モジュールによって
-    提供されていて、デフォルトで組み込まれています。</p>
+    モジュールによって提供されていて、デフォルトで組み込まれています。</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">コンテントネゴシエーションについて</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Apache におけるネゴシエーション</a></li>
@@ -57,8 +56,8 @@
     もっとも適した選択をする方法の一つには、インデックスページを
     ユーザに見せて、ユーザに選んでもらう方法があります。
     しかし、サーバが自動的に選ぶことができる場合が多くあります。
-    これは、ブラウザがリクエスト情報毎の情報の一部に、
-    どの表現を嗜好するかを送ることで動作しています。
+    これは、ブラウザがリクエスト毎に、
+    どの表現を嗜好するかという情報を送ることで動作しています。
     例えばブラウザは、可能ならフランス語で情報を見たい、
     不可能ならその代わりに英語でもよいと、
     自分の嗜好を知らせることができます。
@@ -76,7 +75,7 @@
     そして様々なメディアタイプを受け付けるが、
     プレインテキストや他のタイプよりは HTML を好む、
     他のメディアタイプよりは GIF や JPEG を好む、しかし最終手段として
-    他のメディアタイプも受け付ける、と設定されています。</p>
+    他のメディアタイプも受け付ける、と設定されています。</p>
 
 <div class="example"><p><code>
   Accept-Language: fr; q=1.0, en; q=0.5<br />
@@ -85,7 +84,8 @@
 
     <p>Apache は HTTP/1.1 規格で定義されている 'server
     driven' コンテントネゴシエーションをサポートしています。
-    Accept, Accept-Language, Accept-Charset, Accept-Encoding
+    <code>Accept</code>, <code>Accept-Language</code>, 
+    <code>Accept-Charset</code>, <code>Accept-Encoding</code>
     リクエストヘッダを完全にサポートしています。Apache は
     'transparent' コンテントネゴシエーションもサポートしていますが、
     これは RFC 2295 と RFC 2296 で定義されている試験的な
@@ -117,7 +117,7 @@
 
     <ul>
       <li>タイプマップ
-      (<em>すなわち</em> <code>*.var</code> ファイル)
+      (<em>すなわち</em> <code>*.var</code> ファイル)
       を使う方法。 これは variant
       を明示的に挙げているファイルを指定します。</li>
 
@@ -130,7 +130,7 @@
 
     <p>タイプマップは <code>type-map</code> ハンドラ
     (もしくは、古い Apache
-    の設定と下位互換である mime タイプ
+    の設定と下位互換である MIME タイプ
     <code>application/x-type-map</code>)
     に関連付けられたドキュメントです。
     この機能を使うためには、あるファイルの拡張子を
@@ -138,7 +138,9 @@
     として定義するようなハンドラを、
     設定ファイル中に置く必要があることに注意してください。
     これは</p>
+
 <div class="example"><p><code>AddHandler type-map .var</code></p></div>
+
     <p>をサーバ設定ファイル中に書くことが一番良い方法です。</p>
 
     <p>タイプマップファイルは記述するリソースと同じ名前を持っていて、
@@ -163,7 +165,7 @@
   Content-language: fr, de<br />
 </code></p></div>
     <p>たとえ MultiViews を使用するようになっていたとしても、
-    ファイル名の拡張子よりタイプマップの方が優先権を持つということにも
+    ファイル名の拡張子よりタイプマップの方が優先権を持つということにも
     注意してください。
     variant の品質が違うときは、この画像のように (JPEG, GIF, ASCII
     アートがあります) メディアタイプの "qs"
@@ -215,7 +217,7 @@
     ディレクティブによって設定することができます。
     <code>Options All</code> は
     <code>MultiViews</code>
-    をセットしないことに注意してください。明示的に
+    をセットしないことに注意してください。明示的に
     その名前を書く必要があります。</p>
 
     <p><code>MultiViews</code> の効果は以下のようになります:
@@ -260,7 +262,7 @@
     「最適な」 variant を決定するために二つの方法の
     どちらかを起動します。
     Apache のコンテントネゴシエーションの機能を使うために、
-    どのようにしてこの調停が行われるか詳細を知る必要はありません。
+    どのようにしてこの調停が行われるか詳細を知る必要はありません。
     しかしながら、この文書の残りでは関心のある人のために、
     使用されている方法について説明しています。</p>
 
@@ -299,7 +301,7 @@
       <tr valign="top">
         <td>メディアタイプ</td>
 
-        <td>ブラウザは Accept 
+        <td>ブラウザは <code>Accept</code>
 	ヘッダフィールドで優先傾向を指定します。
 	アイテムそれぞれは、関連した品質数値を持つことができます。
 	variant の説明も品質数値を持つことができます
@@ -309,17 +311,17 @@
       <tr valign="top">
         <td>言語</td>
 
-	<td>ブラウザは Accept-Language
+	<td>ブラウザは <code>Accept-Language</code>
 	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variants は 0 か 1 つかそれ以上の言語と
-	関連づけることができます。</td>
+	関連づけることができます。</td>
       </tr>
 
       <tr valign="top">
         <td>エンコーディング</td>
 
-	<td>ブラウザは Accept-Encoding
+	<td>ブラウザは <code>Accept-Encoding</code>
 	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。</td>
       </tr>
@@ -327,7 +329,7 @@
       <tr valign="top">
         <td>文字セット</td>
 
-	<td>ブラウザは Accept-Charset
+	<td>ブラウザは <code>Accept-Charset</code>
 	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variant はメディアタイプのパラメータとして文字セットを
@@ -360,22 +362,22 @@
 	複数 variant が残っていれば、次のテストに進みます。
 
         <ol>
-	  <li>variant のメディアタイプの品質数値と Accept
+	  <li>variant のメディアタイプの品質数値と <code>Accept</code>
 	  ヘッダの品質数値との積を計算して、最高値の variant
 	  を選びます。</li>
 
 	  <li>言語品質数値が最高の variant を選びます。</li>
 
-	  <li>(もしあれば) Accept-Language ヘッダの言語順か、
+	  <li>(もしあれば) <code>Accept-Language</code> ヘッダの言語順か、
 	  (もしあれば)
 	  <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code> 
-	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
+	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
 
 	  <li>最高「レベル」のメディアパラメータ
 	  (text/html メディアタイプのバージョンを与えるために使われます)
 	  を持つ variant を選びます。</li>
 
-	  <li>Accept-Charset ヘッダ行で与えられている最高の文字セット
+	  <li><code>Accept-Charset</code> ヘッダ行で与えられている最高の文字セット
 	  メディアパラメータを持つ variant を選びます。
 	  明示的に除外されていない限り、ISO-8859-1
 	  が許容されるようになっています。
@@ -409,36 +411,36 @@
 
       <li>アルゴリズムを使って一つの「最適な」variant を選びましたので、
       それを応答として返します。ネゴシエーションの次元を指定するために
-      HTTP レスポンスヘッダ Vary が設定されます
+      HTTP レスポンスヘッダ <code>Vary</code> が設定されます
       (リソースのキャッシュをする時に、
       ブラウザやキャッシュはこの情報を使うことができます)。
-      以上で終わり。</li>
+      以上で終わり。</li>
 
       <li>ここに来たということは、variant が一つも選択されなかった
       (ブラウザが許容するものがなかったため) ということです。
       406 ステータス ("No Acceptable representation" を意味する)
       が、利用可能な variant のリストのついた HTML 
       ドキュメントとともに返されます。
-      相違の次元を示す HTTP Vary ヘッダも設定されます。</li>
+      相違の次元を示す HTTP <code>Vary</code> ヘッダも設定されます。</li>
     </ol>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="better" id="better">品質の値を変える</a></h2>
 
-    <p>上記の Apaceh ネゴシエーションアルゴリズムの厳格な解釈で
+    <p>上記の Apache ネゴシエーションアルゴリズムの厳格な解釈で
     得られるであろう値から、Apache は品質数値を時々変えます。
     これは、このアルゴリズムで完全ではない、あるいは正確でない情報を送る
     ブラウザ向けによりよい結果を得るために行われます。
     かなりポピュラーなブラウザで、もしないと間違った variant
-    を選択する結果になってしまうような Accept
+    を選択する結果になってしまうような <code>Accept</code>
     ヘッダ情報を送るものもあります。
     ブラウザが完全で正しい情報を送っていれば、
     この数値変化は適用されません。</p>
 
 <h3><a name="wildcards" id="wildcards">メディアタイプとワイルドカード</a></h3>
 
-    <p>Accept: リクエストヘッダはメディアタイプの優先傾向を指定します。
+    <p><code>Accept:</code> リクエストヘッダはメディアタイプの優先傾向を指定します。
     これはまた、"image/*" や "*/*"
     といった「ワイルドカード」メディアタイプを含むことができます。
     ここで * は任意の文字列にマッチします。
@@ -458,7 +460,7 @@
 </code></p></div>
     <p>こうすることの狙いは、明示的にリストしているタイプが優先されるけれども、
     異なる表現が利用可能であればそれでも良い、ということです。
-    しかしながら、上の基本的なアルゴリズムでは、
+    しかしながら、上の基本的なアルゴリズムでは、
     */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
     ブラウザは */* にもっと低い品質 (優先) 
     値を付けてリクエストを送るべきなのです。例えば:</p>
@@ -471,12 +473,12 @@
     明示的にリストされているタイプに合致する variant がない場合にのみ、
     他のタイプが返されます。</p>
 
-    <p>もし Accept: ヘッダが q 値を全く含んで<em>いなければ</em>、
+    <p>もし <code>Accept:</code> ヘッダが q 値を全く含んで<em>いなければ</em>、
     望みの挙動をするために、
     Apache は "*/*" があれば 0.01 の q 値を設定します。
     また、"type/*" の形のワイルドカードには 0.02 の q 値を設定します
     (ですからこれらは "*/*" のマッチよりも優先されます)。
-    もし Accept: ヘッダ中のメディアタイプのどれかが q
+    もし <code>Accept:</code> ヘッダ中のメディアタイプのどれかが q
     値を含んでいれば、これらの特殊な値は適応<em>されず</em>、
     正しい情報を送るブラウザからのリクエストは期待通りに
     動作するようになります。</p>
@@ -489,12 +491,12 @@
     ネゴシエーションアルゴリズムが幾つか追加されました。</p>
 
     <p>サーバのページをクライアントがリクエストしたけれども、
-    ブラウザの送ってきた Accept-Language に合致するページが一つも
+    ブラウザの送ってきた <code>Accept-Language</code> に合致するページが一つも
     見つからなかった場合に、サーバは "No Acceptable Variant"
     か "Multiple Choices" レスポンスをクライアントに返します。
     これらのエラーメッセージを返さないように、
-    このような場合には Apache が Accept-Language を無視して、
-    クライアントのリクエストに明示的には合致しないドキュメントを
+    このような場合には Apache が <code>Accept-Language</code> を無視して、
+    クライアントのリクエストに明示的には合致しないドキュメントを
     提供するように設定できます。
     <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     ディレクティブは、これらのエラーの一つか両方をオーバーライドするために
@@ -530,7 +532,7 @@
     必要です。</p>
 
     <p>より高度なテクニック (Cookie や特殊な URL パス等)
-    においてもユーザの言語選択をサポートするため、
+    においてもユーザの言語選択をサポートするため、
     Apache 2.0.47 からは、<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     が<a href="env.html">環境変数</a> <code>prefer-language</code>
     を認識するようになりました。
@@ -554,7 +556,7 @@
 に印を付けるために、新たに <code>{encoding ..}</code> 
 要素を variant リスト中に使っています。
 リスト中のエンコードされた variant を認識し、
-Accept-Encoding リクエストヘッダに従って許容される
+<code>Accept-Encoding</code> リクエストヘッダに従って許容される
 エンコードをもった variant は、どれでも候補 variant
 として使用するように、
 RVSA/1.0 アルゴリズム (RFC 2296) の実装が拡張されました。
@@ -668,7 +670,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 
     <p>リンクに MIME タイプを使い続けたい (<em>例えば</em>
     <code>foo.html</code>)時は、言語拡張子は
-    (エンコーディング拡張子もあればそれも含めて)
+    (エンコーディング拡張子もあればそれも含めて)
     MIME タイプ拡張子の右側になければなりません
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -696,6 +698,15 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     このディレクティブは、サーバ設定ファイルやバーチャルホストに書くことができ、
     引数をとりません。
     HTTP/1.1 クライアントからのリクエストには効力を持ちません。</p>
+
+    <p>HTTP/1.1 クライアントに対しては、レスポンスのネゴシエーション次元
+    を示すために <code>Vary</code> HTTP レスポンスヘッダを送ります。
+    キャッシュは、これを使って後続のリクエストに対してローカルコピーで応答できるか
+    どうかを決定できます。
+    ネゴシエーション次元とは関係なしにローカルコピーの使用を優先するようにするには、
+    <code>force-no-vary</code> <a href="env.html#special">環境変数</a>を
+    設定します。</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="more" id="more">追加情報</a></h2>
@@ -703,7 +714,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     <p>コンテントネゴシエーションに関する追加情報は、
     Alan J. Flavell さんの<a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
     Negotiation Notes</a> をご覧下さい。ですが、
-    Apache 2.0 での変更点を含むためには更新されていないかもしれない
+    Apache 2.0 での変更点を含むためには更新されていないかもしれない
     ということに注意してください。</p>
 </div></div>
 <div class="bottomlang">

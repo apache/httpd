@@ -34,7 +34,7 @@ CGI スクリプトを実行する機能を提供</td></tr>
 <h3>概要</h3>
 
     <p>このモジュールには二つのディレクティブがあります。<code class="directive"><a href="#action">Action</a></code>
-    ディレクティブは特定のタイプのファイルをリクエストされた場合に
+    ディレクティブは特定の MIME タイプのファイルをリクエストされた場合に
     CGI スクリプトが実行されるようにします。<code class="directive"><a href="#script">Script</a></code>
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
     スクリプトが実行されるようにします。
@@ -57,11 +57,13 @@ CGI スクリプトを実行する機能を提供</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のハンドラやコンテントタイプに対して CGI を実行するように
 設定</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td><code>virtual</code> 修飾子とハンドラ渡しは
+Apache 2.1 で導入されました</td></tr>
 </table>
     <p>このディレクティブは <var>action-type</var>
     がリクエストされたときに <var>cgi-script</var>
@@ -72,11 +74,13 @@ CGI スクリプトを実行する機能を提供</td></tr>
     <var>Action-type</var> には
     <a href="../handler.html">handler</a> か MIME
     コンテントタイプを指定できます。リクエストされたドキュメントの URL
-    とファイルのパスは標準 CGI 環境変数 PATH_INFO と PATH_TRANSLATED
-    を使って伝えられます。</p>
+    とファイルのパスは標準 CGI 環境変数 <code>PATH_INFO</code> と
+    <code>PATH_TRANSLATED</code> を使って伝えられます。
+    特定のリクエストに対して使用されるハンドラへは、
+    <code>REDIRECT_HANDLER</code> 変数を使って渡せます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      # Requests for files of a particular type:<br />
+      # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
       # Files of a particular file extension<br />
@@ -85,12 +89,26 @@ CGI スクリプトを実行する機能を提供</td></tr>
     </code></p></div>
 
     <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
-    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
-    <code>/cgi-bin/images.cgi</code> が呼ばれます。</p>
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/images.cgi</code> で処理されます。</p>
 
-    <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
-    そのファイルの代わりに指定されたスクリプト
-    <code>/cgi-bin/program.cgi</code> が呼ばれます。</p>
+    <p>2 番目の例では、拡張子が <code>.xyz</code> 
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/program.cgi</code> で処理されます。</p>
+
+    <p>オプションの <code>virtual</code> 修飾子を使用すると、
+    リクエストされたファイルが実際に存在するかどうかを検査しないようにできます。
+    これは例えば、<code class="directive">Action</code> ディレクティブをバーチャルな
+    Location に使用したい、といった場合に便利です。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      &lt;Location /news&gt;<br />
+      <span class="indent">
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
 <h3>参照</h3>
 <ul>
@@ -115,19 +133,22 @@ CGI スクリプトを実行する機能を提供</td></tr>
     <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
     リクエストされたドキュメントの URL とファイルのパスは標準 CGI
-    環境変数 PATH_INFO と PATH_TRANSLATED を使って伝えられます。</p>
+    環境変数 <code>PATH_INFO</code> と <code>PATH_TRANSLATED</code>
+    を使って伝えられます。</p>
 
     <div class="note">
-      任意のメソッド名を使用することができます。
+      任意のメソッド名を使用することができます。
       <strong>メソッド名は大文字小文字を区別します</strong>。ですから、
       <code>Script PUT</code> と <code>Script put</code>
       はまったく違った効果になります。
     </div>
 
-    <p>Script コマンドはデフォルトの動作を追加するだけであることに
+    <p><code class="directive">Script</code> コマンドはデフォルトの動作を
+    追加するだけであることに
     注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
     メソッドを内部で扱うことのできる他のリソースがあれば、それが行なわれます。
-    <code>GET</code> メソッドの Script は問合せ引数がある場合にのみ
+    <code>GET</code> メソッドの <code class="directive">Script</code> は問合せ
+    引数がある場合にのみ
     (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
     そうでない場合は、リクエストは通常通り処理されます。</p>
 

@@ -164,6 +164,11 @@
     そのファイル名を直接指定したときと同じものが割り当てられます。
     それからクライアントの要求に一番合うものを選び、
     そのドキュメントを返します。</p>
+
+    <p>ファイルを選択する際に、関連するコンテントネゴシエーションの
+    メタ情報を持たないファイルについて、判定を行うかどうかを
+    <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
+    ディレクティブで設定します。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">ディレクティブ</a></h2>
@@ -180,7 +185,7 @@
     <p>このディレクティブが設定されていると、コンテントネゴシエーション
     をした結果のドキュメントのキャッシュを許可します。
     これは、プロキシの後ろにいるクライアントが能力に一番合った
-    ドキュメントではなく、
+    ドキュメントではなく、
     キャッシュをより効果的にするものを得る可能性があるということです。</p>
 
     <p>このディレクティブは HTTP/1.0 ブラウザからのリクエスト
@@ -272,14 +277,13 @@
 
     <p><code>foo.html</code> がリクエストされ、<code>foo.html.fr</code>
     と <code>foo.html.de</code> が両方存在し、
-    ブラウザが言語の優先順位を提供してない場合は
+    ブラウザが言語の優先順位を提供してない場合は
     <code>foo.html.fr</code> が返されます。</p>
 
     <p>このディレクティブは他の方法で「最善」
     の言語が決定できないときか、<code class="directive"><a href="#forcelanguagepriority">ForceLanguagePriority</a></code> ディレクティブが
     <code>None</code> 以外のときにのみ効果があることに注意してください。
-    HTTP/1.1 リクエストが正しく実装されている場合には、
-    このディレクティブは無効になります。</p>
+    一般的には、サーバ側ではなくクライアント側で好みの言語を決定します。</p>
 
 <h3>参照</h3>
 <ul>
