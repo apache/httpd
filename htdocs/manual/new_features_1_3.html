@@ -30,6 +30,21 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 
 <ul>
  <LI><A
+      HREF="mod/mod_speling.html"
+     ><STRONG>Optional &laquo;Spelling Correction&raquo; module added to distribution</STRONG></A>
+  <BR>
+  This optional module corrects frequently occurring spelling errors in
+  document names requested from the server. This includes the correction
+  of miscapitalized requests (as was available in a separately available
+  <EM>mod_speling</EM> module as of Apache 1.1 already) but extends
+  spelling correction to single inserted, omitted, transposed or
+  mistyped characters. This catches the majority of mistyped requests.
+  To make use of this module, it must be enabled in the server's
+  <CODE>Configuration</CODE> file, and the
+  <CODE><A HREF="mod/mod_speling.html#checkspelling">CheckSpelling</A></CODE>
+  directive must be set to <CODE>on</CODE>.
+ </LI>
+ <LI><A
       HREF="mod/mod_setenvif.html"
      ><STRONG>Enhanced Conditional Setting of Environment Variables</STRONG></A>
   <BR>
