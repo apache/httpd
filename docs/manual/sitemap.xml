@@ -59,8 +59,8 @@
 <category id="faq">
 <title>Apache Server Frequently Asked Questions</title>
 <page href="faq/">Overview</page>
-<page separate="yes" href="faq/all_in_one.html">All on One Page</page>
 <page href="faq/support.html">Support</page>
+<page href="faq/error.html">Error Messages</page>
 </category>
 
 <category id="ssl">
@@ -124,9 +124,8 @@ Server on HPUX</page>
 
 <category id="modules">
 <title>Apache modules</title>
-<page href="mod/">Module index</page>
-<page href="mod/directives.html">Directive index</page>
-<page href="mod/quickreference.html">Directive Quick-Reference</page>
+<page href="mod/module-dict.html">Definitions of terms used to describe Apache modules</page>
+<page href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</page>
 &allmodules;
 </category>
 
@@ -142,12 +141,12 @@ Server on HPUX</page>
 <page href="developer/filters.html">How Filters Work in Apache 2.0</page>
 </category>
 
-<category id="descriptive">
-<title>Descriptive Information</title>
-<page href="mod/module-dict.html">Definitions of terms used to describe Apache modules</page>
-<page href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</page>
+<category id="index">
+<title>Glossary and Index</title>
 <page href="glossary.html">Glossary</page>
-<page>Sitemap (this document)</page>
+<page href="mod/">Module index</page>
+<page href="mod/directives.html">Directive index</page>
+<page href="mod/quickreference.html">Directive Quick-Reference</page>
 </category>
 
 </sitemap>

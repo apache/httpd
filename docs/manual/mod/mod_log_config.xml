@@ -44,6 +44,7 @@
     replaced in the log file by the values as follows:</p>
 
     <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
     <tr><th>Format&nbsp;String</th>
         <th>Description</th></tr>
 
@@ -155,6 +156,7 @@
         <td>Connection status when response is completed:
 
         <table>
+        <columnspec><column width=".2"/><column width=".6"/></columnspec>
         <tr><td><code>X</code> =</td>
             <td>connection aborted before the response completed.</td></tr>
         <tr><td><code>+</code> =</td>

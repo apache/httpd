@@ -906,8 +906,7 @@ in case of an error</description>
 <name>ErrorLog</name>
 <description>Location where the server will log errors</description>
 <syntax> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</syntax>
-<default>ErrorLog logs/error_log (Unix)<br />
-ErrorLog logs/error.log (Windows and OS/2)</default>
+<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -2423,7 +2422,7 @@ scripts</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Win32 only<br />
+<compatibility>Win32 only;
 option <code>Registry-Strict</code> is available in Apache 2.0 and
 later</compatibility>
 

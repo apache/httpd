@@ -166,6 +166,8 @@ certificates are used for authentication.</p>
     <section id="table1">
     <title>Table 1: Certificate Information</title>
     <table>
+    <columnspec><column width=".35"/><column width=".35"/>
+    </columnspec>
     <tr><th>Subject</th>
         <td>Distinguished Name, Public Key</td></tr>
     <tr><th>Issuer</th>
@@ -190,6 +192,8 @@ certificates are used for authentication.</p>
     <section id="table2">
     <title>Table 2: Distinguished Name Information</title>
     <table border="1">
+    <columnspec><column width=".25"/><column width=".15"/>
+      <column width=".3"/><column width=".25"/></columnspec>
     <tr><th>DN Field</th>
         <th>Abbrev.</th>
         <th>Description</th>
@@ -368,6 +372,8 @@ of establishing a protocol session.</p>
 <section id="table4">
 <title>Table 4: Versions of the SSL protocol</title>
     <table border="1">
+    <columnspec><column width=".15"/><column width=".2"/>
+     <column width=".30"/><column width=".25"/></columnspec>
     <tr><th>Version</th>
         <th>Source</th>
         <th>Description</th>

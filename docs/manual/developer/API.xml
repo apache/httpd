@@ -345,8 +345,9 @@ struct stat finfo;    /* Set by server core;
 <pre>int header_only;     /* HEAD request, as opposed to GET */
 char *protocol;      /* Protocol, as given to us, or HTTP/0.9 */
 char *method;        /* GET, HEAD, POST, <em>etc.</em> */
-int method_number;   /* M_GET, M_POST, <em>etc.</em> */</pre>
-        <br />
+int method_number;   /* M_GET, M_POST, <em>etc.</em> */
+
+</pre>
         /* Info for logging */<br />
         <br />
         char *the_request;<br />
@@ -367,8 +368,9 @@ int method_number;   /* M_GET, M_POST, <em>etc.</em> */</pre>
         &nbsp;*/<br />
         <br />
 <pre>void *per_dir_config;   /* Options set in config files, <em>etc.</em> */
-void *request_config;   /* Notes on *this* request */</pre>
-        <br />
+void *request_config;   /* Notes on *this* request */
+
+</pre>
         };
       </example>
     </section>
