@@ -27,9 +27,9 @@ mod_mime_magic       0x6FDE0000    0x00010000
 mod_dav              0x6FDC0000    0x00020000
 mod_dav_fs           0x6FDB0000    0x00010000
 mod_proxy            0x6FDA0000    0x00010000
-proxy_connect        0x6FD90000    0x00010000
-proxy_ftp            0x6FD80000    0x00010000
-proxy_http           0x6FD70000    0x00010000
+mod_proxy_connect    0x6FD90000    0x00010000
+mod_proxy_ftp        0x6FD80000    0x00010000
+mod_proxy_http       0x6FD70000    0x00010000
 mod_ssl              0x6FD00000    0x00070000
 mod_access           0x6FCF0000    0x00010000
 mod_actions          0x6FCE0000    0x00010000
