@@ -1393,7 +1393,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*/cc|cc   ) CFLAGS_SHLIB="" ;;
 	    esac
 	    case $PLAT in
-		*-ibm-aix4*)
+		*-ibm-aix[45678]*)
 		    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -bnoentry"
 		    ;;
 		*-ibm-aix*)
