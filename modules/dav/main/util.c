@@ -1502,78 +1502,155 @@ static const char *strip_white(const char *s, apr_pool_t *pool)
     return s;
 }
 
+#define DAV_WORKSPACE_HDR "Workspace"
+#define DAV_TARGET_SELECTOR_HDR "Target-Selector"
+
 /* see mod_dav.h for docco */
-const char *dav_get_target_selector(request_rec *r, const ap_xml_elem *version)
+int dav_get_workspace(request_rec *r, const char **workspace)
 {
-    if (version != NULL) {
-        /* DAV:version contains a DAV:href element. find it. */
-        if ((version = dav_find_child(version, "href")) == NULL) {
-            /* ### this should generate an error... fallthru for now */
-        }
-        else {
-            /* return the contents of the DAV:href element */
-            /* ### this presumes no child elements */
-            return strip_white(version->first_cdata.first->text, r->pool);
-        }
+    const char *ws_uri;
+
+    *workspace = NULL;
+    ws_uri = apr_table_get(r->headers_in, DAV_WORKSPACE_HDR);
+
+    if (ws_uri != NULL) {
+	dav_lookup_result lookup;
+
+	/* make the URI server-relative */
+	lookup = dav_lookup_uri(ws_uri, r);
+	if (lookup.rnew == NULL) {
+	    if (lookup.err.status == HTTP_BAD_REQUEST) {
+		/* This supplies additional information for the default message. */
+		ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+			      lookup.err.desc);
+		return HTTP_BAD_REQUEST;
+	    }
+
+	    return lookup.err.status;
+	}
+
+	*workspace = lookup.rnew->uri;
     }
 
-    /* no element. see if a Target-Selector header was provided. */
-    return apr_table_get(r->headers_in, "Target-Selector");
+    return OK;
+}
+
+/* see mod_dav.h for docco */
+int dav_get_target_selector(request_rec *r,
+                            const ap_xml_elem *version,
+                            const char **target,
+                            int *is_label)
+{
+    /* Initialize results */
+    *target = NULL;
+    *is_label = 0;
+
+    if (version != NULL) {
+        /* Expect either <DAV:version><DAV:href>URI</DAV:href></DAV:version>
+         * or <DAV:label-name>LABEL</DAV:label-name> */
+        if (strcmp(version->name, "version") == 0) {
+            if ((version = dav_find_child(version, "href")) == NULL) {
+	        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+			      "Missing DAV:href in DAV:version element");
+                return HTTP_BAD_REQUEST;
+            }
+
+            /* return the contents of the DAV:href element */
+            /* ### this presumes no child elements */
+            *target = strip_white(version->first_cdata.first->text, r->pool);
+        }
+        else if (strcmp(version->name, "label-name") == 0) {
+            /* return contents of the DAV:label-name element */
+            *target = strip_white(version->first_cdata.first->text, r->pool);
+            *is_label = 1;
+        }
+        else {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+			  "Unknown version specifier (not DAV:version or DAV:label-name)");
+            return HTTP_BAD_REQUEST;
+        }
+    }
+    else {
+        /* no element. see if a Target-Selector header was provided
+         * (which is always interpreted as a label) */
+        *target = apr_table_get(r->headers_in, DAV_TARGET_SELECTOR_HDR);
+        *is_label = 1;
+    }
+
+    return OK;
+}
+
+/* dav_add_vary_header
+ *
+ * If there were any headers in the request which require a Vary header
+ * in the response, add it.
+ */
+void dav_add_vary_header(request_rec *in_req,
+			 request_rec *out_req,
+			 const dav_resource *resource)
+{
+    const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(in_req);
+
+    /* Only versioning headers require a Vary response header,
+     * so only do this check if there is a versioning provider */
+    if (vsn_hooks != NULL) {
+	const char *workspace = apr_table_get(in_req->headers_in, DAV_WORKSPACE_HDR);
+	const char *target = apr_table_get(in_req->headers_in, DAV_TARGET_SELECTOR_HDR);
+	const char *vary = apr_table_get(out_req->headers_out, "Vary");
+
+        /* If Workspace header specified, add it to Vary header */
+	if (workspace != NULL) {
+	    if (vary == NULL)
+		vary = DAV_WORKSPACE_HDR;
+	    else
+		vary = apr_pstrcat(out_req->pool, vary, "," DAV_WORKSPACE_HDR, NULL);
+	}
+
+        /* If Target-Selector specified, add it to the Vary header */
+	if (target != NULL) {
+	    if (vary == NULL)
+		vary = DAV_TARGET_SELECTOR_HDR;
+	    else
+		vary = apr_pstrcat(out_req->pool, vary, "," DAV_TARGET_SELECTOR_HDR, NULL);
+	}
+
+	if (workspace != NULL || target != NULL)
+	    apr_table_setn(out_req->headers_out, "Vary", vary);
+    }
 }
 
 /* see mod_dav.h for docco */
 dav_error *dav_ensure_resource_writable(request_rec *r,
-					  dav_resource *resource,
-                                          int parent_only,
-					  dav_resource **parent_resource,
-					  int *resource_existed,
-					  int *resource_was_writable,
-					  int *parent_was_writable)
+					dav_resource *resource,
+                                        int parent_only,
+                                        dav_auto_version_info *av_info)
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
-    dav_resource *parent = NULL;
     const char *body;
-    int auto_version;
     dav_error *err;
-    const char *location;
 
-    if (parent_resource != NULL)
-        *parent_resource = NULL;
+    /* Initialize results */
+    memset(av_info, 0, sizeof(*av_info));
 
     if (!parent_only) {
-        *resource_existed = resource->exists;
-        *resource_was_writable = 0;
+        av_info->resource_created = !resource->exists;
     }
-
-    if (parent_was_writable != NULL)
-        *parent_was_writable = 0;
-
-    /* if a Target-Selector header is present, then the client knows about
-     * versioning, so it should not be relying on implicit versioning
-     */
-    auto_version = (dav_get_target_selector(r, NULL) == NULL);
 
     /* check parent resource if requested or if resource must be created */
     if (!resource->exists || parent_only) {
-	parent = (*resource->hooks->get_parent_resource)(resource);
+	dav_resource *parent = (*resource->hooks->get_parent_resource)(resource);
         if (parent == NULL || !parent->exists) {
 	    body = apr_psprintf(r->pool,
-			       "Missing one or more intermediate collections. "
-			       "Cannot create resource %s.",
-			       ap_escape_html(r->pool, resource->uri));
+                                "Missing one or more intermediate collections. "
+                                "Cannot create resource %s.",
+                                ap_escape_html(r->pool, resource->uri));
 	    return dav_new_error(r->pool, HTTP_CONFLICT, 0, body);
         }
 
-        if (parent_resource != NULL)
-	    *parent_resource = parent;
+        av_info->parent_resource = parent;
 
 	/* if parent not versioned, assume child can be created */
 	if (!parent->versioned) {
-            if (!parent_only)
-	        *resource_was_writable = 1;
-
-            if (parent_was_writable != NULL)
-	        *parent_was_writable = 1;
 	    return NULL;
 	}
 
@@ -1585,118 +1662,134 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 				 "provider?");
 	}
 
-        /* remember whether parent was already writable */
-        if (parent_was_writable != NULL)
-	    *parent_was_writable = parent->working;
-
 	/* parent must be checked out */
 	if (!parent->working) {
-	    if ((err = (*vsn_hooks->checkout)(parent, &location)) != NULL) {
+            /* if parent cannot be automatically checked out, fail */
+            if (!(*vsn_hooks->auto_version_enabled)(parent)) {
 		body = apr_psprintf(r->pool,
-				   "Unable to checkout parent collection. "
-				   "Cannot create resource %s.",
-				   ap_escape_html(r->pool, resource->uri));
+                                    "Parent collection must be checked out. "
+                                    "Cannot create resource %s.",
+                                    ap_escape_html(r->pool, resource->uri));
+		return dav_new_error(r->pool, HTTP_CONFLICT, 0, body);
+            }
+
+            /* Try to checkout the parent collection.
+             * Note that auto-versioning can only be applied to a version selector,
+             * so no separate working resource will be created.
+             */
+	    if ((err = (*vsn_hooks->checkout)(parent, NULL))
+                != NULL)
+            {
+		body = apr_psprintf(r->pool,
+                                    "Unable to checkout parent collection. "
+                                    "Cannot create resource %s.",
+                                    ap_escape_html(r->pool, resource->uri));
 		return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
 	    }
 
-            /* ### what to do with the location? */
+            /* remember that parent was checked out */
+            av_info->parent_checkedout = 1;
 	}
 
 	/* if not just checking parent, create new child resource */
         if (!parent_only) {
 	    if ((err = (*vsn_hooks->mkresource)(resource)) != NULL) {
 	        body = apr_psprintf(r->pool,
-			           "Unable to create versioned resource %s.",
-			           ap_escape_html(r->pool, resource->uri));
+                                    "Unable to create versioned resource %s.",
+                                    ap_escape_html(r->pool, resource->uri));
 	        return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
 	    }
+
+            /* remember that resource was created */
+            av_info->resource_created = 1;
         }
     }
-    else {
-	/* resource exists: if not versioned, then assume it is writable */
-	if (!resource->versioned) {
-	    *resource_was_writable = 1;
-	    return NULL;
-	}
-
-	*resource_was_writable = resource->working;
+    else if (!resource->versioned) {
+	/* resource exists and is not versioned; assume it is writable */
+	return NULL;
     }
 
     /* if not just checking parent, make sure child resource is checked out */
     if (!parent_only && !resource->working) {
-	if ((err = (*vsn_hooks->checkout)(resource, &location)) != NULL) {
+        /* Auto-versioning can only be applied to version selectors, so
+         * no separate working resource will be created. */
+	if ((err = (*vsn_hooks->checkout)(resource, NULL))
+            != NULL)
+        {
 	    body = apr_psprintf(r->pool,
-			       "Unable to checkout resource %s.",
-			       ap_escape_html(r->pool, resource->uri));
+                                "Unable to checkout resource %s.",
+                                ap_escape_html(r->pool, resource->uri));
 	    return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
 	}
 
-        /* ### what to do with the location? */
+        /* remember that resource was checked out */
+        av_info->resource_checkedout = 1;
     }
 
     return NULL;
 }
 
 /* see mod_dav.h for docco */
-dav_error *dav_revert_resource_writability(request_rec *r,
-					   dav_resource *resource,
-					   dav_resource *parent_resource,
-					   int undo,
-					   int resource_existed,
-					   int resource_was_writable,
-					   int parent_was_writable)
+dav_error *dav_revert_resource_writability(
+    request_rec *r,
+    dav_resource *resource,
+    int undo,
+    const dav_auto_version_info *av_info)
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     const char *body;
     dav_error *err;
 
+    /* If a resource was provided, restore its writable state.
+     * Otherwise, only the parent must have been modified */
     if (resource != NULL) {
-        if (!resource_was_writable
-	    && resource->versioned && resource->working) {
+        if (av_info->resource_checkedout) {
 
             if (undo)
                 err = (*vsn_hooks->uncheckout)(resource);
             else
-                err = (*vsn_hooks->checkin)(resource);
+                err = (*vsn_hooks->checkin)(resource, NULL);
 
             if (err != NULL) {
 	        body = apr_psprintf(r->pool,
-			           "Unable to %s resource %s.",
-                                   undo ? "uncheckout" : "checkin",
-			           ap_escape_html(r->pool, resource->uri));
+                                    "Unable to %s resource %s.",
+                                    undo ? "uncheckout" : "checkin",
+                                    ap_escape_html(r->pool, resource->uri));
                 return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 				      body, err);
             }
         }
 
-        if (undo && !resource_existed && resource->exists) {
+        /* If undoing because of an error, and the resource was created,
+         * then remove it */
+        if (undo && av_info->resource_created) {
 	    dav_response *response;
 
 	    /* ### should we do anything with the response? */
             if ((err = (*resource->hooks->remove_resource)(resource,
 							   &response)) != NULL) {
 	        body = apr_psprintf(r->pool,
-			           "Unable to undo creation of resource %s.",
-			           ap_escape_html(r->pool, resource->uri));
+                                    "Unable to undo creation of resource %s.",
+                                    ap_escape_html(r->pool, resource->uri));
                 return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 				      body, err);
             }
         }
     }
 
-    if (parent_resource != NULL && !parent_was_writable
-	&& parent_resource->versioned && parent_resource->working) {
+    /* If parent resource was made writable, restore its state */
+    if (av_info->parent_resource != NULL && av_info->parent_checkedout) {
 
 	if (undo)
-	    err = (*vsn_hooks->uncheckout)(parent_resource);
+	    err = (*vsn_hooks->uncheckout)(av_info->parent_resource);
 	else
-	    err = (*vsn_hooks->checkin)(parent_resource);
+	    err = (*vsn_hooks->checkin)(av_info->parent_resource, NULL);
 
 	if (err != NULL) {
 	    body = apr_psprintf(r->pool,
-			       "Unable to %s parent collection of %s.",
-			       undo ? "uncheckout" : "checkin",
-			       ap_escape_html(r->pool, resource->uri));
+                                "Unable to %s parent collection %s.",
+                                undo ? "uncheckout" : "checkin",
+                                ap_escape_html(r->pool, av_info->parent_resource->uri));
 	    return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 				  body, err);
 	}
