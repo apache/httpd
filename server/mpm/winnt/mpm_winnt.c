@@ -1563,7 +1563,7 @@ apr_array_header_t *mpm_new_argv;
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     switch(query_code){
-        case AP_MPMQ_MAX_DAEMONS:
+        case AP_MPMQ_MAX_DAEMON_USED:
             *result = MAXIMUM_WAIT_OBJECTS;
             return APR_SUCCESS;
         case AP_MPMQ_IS_THREADED:
@@ -1595,6 +1595,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_REQUESTS_DEAMON:
             *result = ap_max_requests_per_child;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = 0;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;

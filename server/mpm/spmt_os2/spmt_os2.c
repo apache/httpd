@@ -878,7 +878,7 @@ static void perform_idle_server_maintenance(void)
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     switch(query_code){
-        case AP_MPMQ_MAX_DAEMONS:
+        case AP_MPMQ_MAX_DAEMON_USED:
             *result = max_daemons_limit;
             return APR_SUCCESS;
         case AP_MPMQ_IS_THREADED:
@@ -911,6 +911,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_REQUESTS_DEAMON:
             *result = ap_max_requests_per_child;
             return APR_SUCCESS; 
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = ap_daemons_limit;
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
 } 
