@@ -790,7 +790,6 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
 	    }
             if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
                 /* Ack! Phbtt! Die! User aborted! */
-                apr_brigade_cleanup(bb);
                 close = 1;  /* this causes socket close below */
                 break;
             }

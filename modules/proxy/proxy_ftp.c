@@ -1590,7 +1590,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	    }
 	    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
 		/* Ack! Phbtt! Die! User aborted! */
-		apr_brigade_cleanup(bb);
 		break;
 	    }
 	    apr_brigade_cleanup(bb);
