@@ -16,4 +16,6 @@ apxs
 Debug
 Release
 vc*.idb
+*.opt
+*.plg
 *.pdb
