@@ -1,0 +1,17 @@
+*.dsw
+*.mdp
+*.ncb
+*.opt
+*.plg
+ApacheD
+ApacheR
+buildmark.c
+Configuration
+Configuration.default
+Configuration.lint
+CoreD
+CoreR
+httpd
+Makefile
+Makefile.config
+modules.c

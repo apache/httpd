@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<title>New features with Apache 1.3</title>
+</head>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<h1 ALIGN="CENTER">Overview of new features</h1>
+
+<h2>New Features with Apache 1.3</h2>
+<p>New features with this release, as extensions of the Apache
+functionality. Because the core code has changed so
+significantly, there are certain liberties that earlier versions of
+Apache (and the NCSA daemon) took that recent Apache versions are
+pickier about - please check the
+<a href="misc/compat_notes.html">compatibility notes</a> if you have any
+problems.</p>
+<hr>
+
+<p>In addition to a number of bug fixes and internal performance
+enhancements, <a href="http://www.apache.org/dist/">Apache
+1.3</a> has the following specific new user features:</p>
+
+<ul>
+ <LI><A
+      HREF="mod/mod_speling.html"
+     ><STRONG>Optional &laquo;Spelling Correction&raquo; module added to distribution</STRONG></A>
+  <BR>
+  This optional module corrects frequently occurring spelling errors in
+  document names requested from the server. This includes the correction
+  of miscapitalized requests (as was available in a separately available
+  <EM>mod_speling</EM> module as of Apache 1.1 already) but extends
+  spelling correction to single inserted, omitted, transposed or
+  mistyped characters. This catches the majority of mistyped requests.
+  To make use of this module, it must be enabled in the server's
+  <CODE>Configuration</CODE> file, and the
+  <CODE><A HREF="mod/mod_speling.html#checkspelling">CheckSpelling</A></CODE>
+  directive must be set to <CODE>on</CODE>.
+ </LI>
+ <LI><A
+      HREF="mod/mod_setenvif.html"
+     ><STRONG>Enhanced Conditional Setting of Environment Variables</STRONG></A>
+  <BR>
+  The
+  <A
+   HREF="mod/mod_setenvif.html#BrowserMatch"
+  ><SAMP>BrowserMatch*</SAMP></A>
+  directives of Apache 1.2 have been joined by some more powerful
+  brethren:
+  <A
+   HREF="mod/mod_setenvif.html#SetEnvIf"
+  ><SAMP>SetEnvIf</SAMP></A>
+  and
+  <A
+   HREF="mod/mod_setenvif.html#SetEnvIfNoCase"
+  ><SAMP>SetEnvIfNoCase</SAMP></A>.  These allow you to set environment
+  variables for server and CGI use based upon all <EM>sorts</EM> of
+  attributes of the request.
+ </LI>
+ <LI><STRONG>Better Logging for Proxy Connect Errors</STRONG>
+  <BR>
+  In Apache 1.2 and earlier, when the proxy had difficulty connecting to
+  a system it would log the error but no details.  It now includes the
+  IP address and port to which it couldn't connect.
+ </LI>
+ <LI><A
+      HREF="mod/mod_include.html#flowctrl"
+     ><STRONG>Enhanced SSI String Comparisons</STRONG></A>
+  <BR>
+  The string-based server-side include (SSI) flow-control directives
+  provided by
+  <A
+   HREF="mod/mod_include.html"
+  ><SAMP>mod_include</SAMP></A>
+  now include comparison for less-than (&lt;), less-than-or-equal
+  (&lt;=), greater-than (&gt;), and greater-than-or-equal (&gt;=).
+  Previously comparisons could only be made for equality or inequality.
+ </LI>
+<LI><A
+     HREF="sourcereorg.html"
+    ><STRONG>Re-organised Sources</STRONG></A>
+ <BR>
+ The source files for Apache have been re-organised. The main difference
+ for Apache users is that the "Module" lines in <CODE>Configuration</CODE>
+ have been replaced with "AddModule" with a slightly different syntax.
+ For module authors there are some changes designed to make it
+ easier for users to add their module.
+</LI>
+<LI><A
+     HREF="mod/mod_autoindex.html"
+    ><STRONG>Sortable Directory Listings</STRONG></A>
+ <BR>
+ If a directory listing is displayed using
+ <A
+  HREF="mod/mod_autoindex.html#indexoptions"
+ >FancyIndexing</A>,
+ clicking on a column title will now sort the listing in
+ order by the values in that column.  Selecting the column
+ repeatedly will toggle between ascending and descending order.
+</LI>
+<LI><A
+     HREF="mod/mod_autoindex.html#indexoptions"
+    ><STRONG><SAMP>SuppressHTMLPreamble</SAMP> Option for
+    FancyIndexed Directories</STRONG></A>
+ <BR>
+ If a directory is marked for display with FancyIndexing, the listing
+ page usually follows a predefined format using server-generated HTML.
+ <STRONG>If</STRONG> the IndexOptions directive for the directory
+ includes the <SAMP>SuppressHTMLPreamble</SAMP> option,
+ <STRONG>and</STRONG> a file specified by the
+ <A
+  HREF="mod/mod_autoindex.html#headername"
+ >HeaderName</A>
+ directive is found in the directory, <STRONG>and</STRONG> the header
+ file is recognized as containing HTML (determined by the file
+ extension), <STRONG>then</STRONG> the module will assume that the
+ header file contains the necessary introductory HTML tags and will not
+ generate them itself.
+</LI>
+<LI><STRONG>Less Buffering of CGI Script Output</STRONG>
+ <BR>
+ In previous versions of Apache, the output from CGI scripts would be
+ internally buffered by the server, and wouldn't be forwarded to the
+ client until either the buffers were full or the CGI script completed.
+ As of Apache 1.3, the buffer to the client is flushed any time it
+ contains something and the server is waiting for more information from
+ the script.  This allows CGI script to provide partial status reports
+ during long processing operations.
+</LI>
+<li><b><a href="windows.html">Support for Windows NT/95</a></b><br>
+Apache now supports the Windows NT and Windows 95 operating systems,
+as well as the Unix systems supported in previos releases. Although the
+Windows version of Apache may not be perform as well as on the Unix
+systems for which Apache was originally written, the ability to run on
+Windows gives Apache the ability to run on a large number of web
+servers it was not previously able to.
+
+<li><b><a href="mod/mod_alias.html">Regular Expression support for Alias
+and Redirect</a></b>
+<br>
+New <code><a href="mod/mod_alias.html#aliasmatch">AliasMatch</a></code>,
+<code><a
+href="mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>, and
+<code><a
+href="mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>
+directives allow for the use of regular expression matching.
+Additionally, new
+<code><a href="mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,
+<code><a href="mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>,
+and <code><a href="mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
+sections provide a new syntax for regular expression sectioning.
+
+<li><strong><a href="mod/mod_mime_magic.html">New "Magic" MIME-typing
+    module</a></strong><br>
+    A new module, the optional <code>mod_mime_magic</code>, has been
+    added. It uses "magic numbers" and other hints from a file's contents
+    to figure out what the contents are. It then uses this information to
+    set the file's media type, if it cannot be determined by the file's
+    extension.
+
+<li><strong>Directory indexing modules split</strong><br>
+    The <code>mod_dir</code> module has been split in two, with
+    <a href="mod/mod_dir.html">mod_dir</a> handling directory index
+    files, and <a href="mod/mod_autoindex.html">mod_autoindex</a>
+    creating directory listings.  Thus allowing folks to remove
+    the indexing function from critical servers.
+
+ <LI><STRONG>Support for Directory Icon Sizing</STRONG>
+  <BR>
+  The
+  <A
+   HREF="mod/mod_autoindex.html"
+  ><SAMP>mod_autoindex</SAMP></A>
+  module provides listings of directory contents when appropriate.  If
+  the <SAMP>FancyIndexing</SAMP> option is enabled, each file in the
+  list is preceded by an icon representing the content type.  In earlier
+  versions of Apache, the HTML <SAMP>IMG</SAMP> tags for these icons
+  weren't sized, so the browser had to wait until the images were loaded
+  before it could lay out the page.  With 1.3, the
+  <A
+   HREF="mod/mod_autoindex.html#indexoptions"
+  ><SAMP>IndexOptions</SAMP></A>
+  directive has two new keywords which allow you to control whether
+  pre-sized <SAMP>IMG</SAMP> tags are used.  This can substantially
+  speed up the display of large directory listings.
+
+<li><strong><a href="mod/core.html#accessfilename">AccessFileName
+Enhancement</a></strong><br>
+The &lt;AccessFileName&gt; directive can now take more than one
+filename. This lets sites serving pages from network file systems and
+more than one Apache web server, configure access based on the server
+through which shared pages are being served.
+
+<li><strong>HostNameLookups now defaults to "Off"</strong><br>
+    The <a href="mod/core.html#hostnamelookups">HostNameLookups</a>
+    directive now defaults to "Off". This means that, unless explictly
+    turned on, the server will not resolve IP addresses into names. This
+    was done to spare the Internet from unneccessary DNS traffic.
+
+<li><strong>Double-Reverse DNS enforced</strong><br>
+    The <a href="mod/core.html#hostnamelookups">HostnameLookups</a> directive
+    now supports double-reverse DNS.  (Known as <i>PARANOID</i> in the
+    terminology of tcp_wrappers.)  An IP address passes a double-reverse
+    DNS test if the forward map of the reverse map includes the original
+    IP.  Regardless of the HostnameLookups setting,
+    <a href="mod/mod_access.html">mod_access</a> access lists using DNS
+    names <b>require</b> all names to pass a double-reverse DNS test.
+    (Prior versions of Apache required a compile-time switch to enable
+    double-reverse DNS.)
+
+<li><strong>CIDR and Netmask access control</strong><br>
+    <a href="mod/mod_access.html">mod_access</a> directives now support
+    CIDR (Classless Inter-Domain Routing) style prefixes, and netmasks for
+    greater control over IP access lists.
+
+<li><strong><a href="mod/mod_proxy.html#noproxy">NoProxy</a></strong>
+and <strong><a href="mod/mod_proxy.html#proxydomain">ProxyDomain</a>
+</strong> directives added to proxy, useful for intranets.
+    
+<li><strong><a href="mod/mod_info.html#addmoduleinfo">AddModuleInfo</a>
+directive added to <a href="mod/mod_info.html">mod_info</a></strong><br>
+Allows additional information to be listed along with a specified module.
+
+<li><strong>Performance Improvements</strong>
+    <ul>
+    <li>IP-based virtual hosts are looked up via hash table,
+	giving a performance boost on servers with large numbers of vhosts.
+    <li>&lt;Directory&gt; parsing of requests has been vastly improved, giving
+	speedups on configs with a lot of sections.
+    <li>The critical path for static requests has fewer system calls.  This
+	generally helps all requests.  (45 syscalls for a static request
+	in 1.2 versus 22 in 1.3 in a well tuned configuration).
+    <li><a href="mod/mod_proxy.html#ReceiveBufferSize">ReceiveBufferSize</a>
+	directive gives mod_proxy's outgoing connections larger network
+	buffers, for increased throughput.
+    <li>The low level i/o routines use <code>writev</code> (where available)
+	to issue multiple writes with a single system call.  They also avoid
+	copying memory into buffers as much as possible.  The result is
+	less CPU time spent on transferring large files.
+    <li>Static requests are served using
+	<code>mmap</code>, which means bytes are only copied from the
+	disk buffer to the network buffer directly by the kernel.  The
+	program never copies bytes around, which reduces CPU time.
+	(Only where available/tested.)
+    <li>When presented with a load spike, the server quickly adapts by
+	spawning children at faster rates.
+    <li>The code which dispatches modules was optimized to avoid repeatedly
+	skipping over modules that don't implement certain phases of the
+	API.  (This skipping showed up as 5% of the cpu time on profiles of
+	a server with the default module mix.)
+    <li>Revamp of the Unix scoreboard management code so that less time is
+	spent counting children in various states.  Previously a scan was
+	performed for each hit, now it is performed only once per second.
+	This should be noticeable on servers running with hundreds of
+	children and high loads.
+    <li>New serialization choices improve performance on Linux, Solaris,
+	and IRIX.
+    <li><code><a href="mod/mod_log_config.html">mod_log_config</a></code>
+	can be compile-time configured to buffer writes.
+    </ul>
+
+    <p>See <a href="misc/perf-tuning.html">the new performance
+    documentation</a> for more information.
+
+<li><strong>Unique Identifiers</strong><br>
+    mod_unique_id can be included to generate a unique identifier that
+    distinguishes a hit from every other hit.  ("Unique" has
+    some restrictions on it.)  Documentation to be written.  The
+    identifier is available in the environment variable
+    <code>UNIQUE_ID</code>.
+
+<li><strong>Reliable Piped Logs</strong><br>
+    On almost all Unix architectures Apache now implements "reliable"
+    piped logs in <a href="mod/mod_log_config.html">mod_log_config</a>.
+    Where reliable means that if the logging child dies for whatever
+    reason, Apache will recover and respawn it without having to restart
+    the entire server.  Furthermore if the logging child becomes "stuck"
+    and isn't reading its pipe frequently enough Apache will also restart
+    it.  This opens up more opportunities for log rotation, hit filtering,
+    real-time splitting of multiple vhosts into separate logs, and
+    asynchronous DNS resolving on the fly.
+
+<li><strong>ServerRoot relative auth filenames</strong><br>
+    Auth filenames for the various authentication modules are now treated
+    as relative to the ServerRoot if they are not full paths.
+
+<li><strong>Include directive</strong><br>
+    The Include directive includes other config files immediately at that
+    point in parsing.
+
+<li><strong>No TransferLog disables logging</strong><br>
+    If no <a href="mod/mod_log_config.html#TransferLog">TransferLog</a>
+    directive is given then no log is written.  This supports co-existence
+    with other logging modules.
+
+<li><strong>mod_cern_meta configurable per-directory</strong><br>
+    <a href="mod/mod_cern_meta.html">mod_cern_meta</a> is now configurable
+    on a per-directory basis.
+
+<li><strong>Detaching from stdin/out/err</strong><br>
+    On boot Apache will now detach from stdin, stdout, and stderr.  It
+    does not detach from stderr until it has successfully read the config
+    files.  So you will see errors in the config file.  This should make
+    it easier to start Apache via rsh or crontab.
+
+<li><strong>Improved HTTP/1.1-style Virtual Hosts</strong><br>
+    The new (undocumented) <a href="mod/core.html#namevirtualhost"><code>
+    NameVirtualHost</code></a> directive is used to list ip address:port
+    pairs on which HTTP/1.1-style virtual hosting occurs.  This is
+    vhosting based on the <code>Host:</code> header from the client.
+    Previously this address was implicitly the same as the "main address"
+    of the machine, and this caused no end of problems for users, and
+    was not powerful enough.
+
+<li><strong>API Additions</strong><br>
+    
+    For all those module writers and code hackers:
+
+    <ul>
+    <li><strong><code>child_init</code> function for module API</strong><br>
+    A new phase for Apache's API is called once per "heavy-weight process,"
+    before any requests are handled. This allows the module to set up
+    anything that need to be done once per processes. For example,
+    connections to databases.
+
+    <li><strong><code>child_exit</code> function for module API</strong><br>
+    A new phase called once per "heavy-weight process," when it is
+    terminating.  Note that it can't be called in some fatal cases (such
+    as segfaults and kill -9).
+
+    <li><strong><code>child_terminate</code></strong><br>
+    Used in the child to indicate the child should exit after finishing
+    the current request.
+
+    <li><strong><code>register_other_child</code></strong><br>
+    See <code>http_main.h</code>.  This is used in the parent to register
+    a child for monitoring.  The parent will report status to a supplied
+    callback function.  This allows modules to create their own children
+    which are monitored along with the httpd children.
+
+    <li><strong><code>piped_log</code></strong><br>
+    See <code>http_log.h</code>.  This API provides the common code for
+    implementing piped logs.  In particular it implements a reliable piped
+    log on architectures supporting it (i.e. Unix at the moment).
+
+    <li><strong>MD5 functions renamed <code>ap_*</code></strong><br>
+    MD5 functions renamed to avoid conflicts with other libraries.
+
+    <li><strong>scoreboard format changed</strong><br>
+    The scoreboard format is quite different.  It is considered a
+    "private" interface in general, so it's only mentioned here as an FYI.
+
+    <li><strong><code>set_last_modified</code> split into three</strong><br>
+    The old function <code>set_last_modified</code> performed multiple
+    jobs including the setting of the <code>Last-Modified</code> header, the
+    <code>ETag</code> header, and processing conditional requests (such as
+    IMS).  These functions have been split into three functions:
+    <code>set_last_modified</code>, <code>set_etag</code>, and
+    <code>meets_conditions</code>.  The field <code>mtime</code> has been
+    added to <code>request_rec</code> to facilitate
+    <code>meets_conditions</code>.
+
+    <li><strong>New error logging function: <code>aplog_error</code></strong><br>
+    All old logging functions are deprecated, we are in the process of
+    replacing them with a single function called <code>aplog_error</code>.
+    This is still a work in progress.
+
+    <li><strong><code>set_file_slot</code> for config parsing</strong><br>
+    The <code>set_file_slot</code> routine provides a standard routine that
+    prepends ServerRoot to non-absolute paths.
+
+    <li><strong><code>post_read_request</code> module API</strong><br>
+    This request phase occurs immediately after reading the request (headers),
+    and immediately after creating an internal redirect.  It is most useful
+    for setting environment variables to affect future phases.
+
+    <li><strong><code>psocket</code>, and <code>popendir</code></strong><br>
+    The <code>psocket</code> and <code>pclosesocket</code> functions allow
+    for race-condition free socket creation with resource tracking.
+    Similarly <code>popendir</code> and <code>pclosedir</code> protect
+    directory reading.
+
+    <li><strong><code>is_initial_req</code></strong><br>
+    Test if the request is the initial request (i.e. the one coming from
+    the client).
+
+    <li><strong><code>kill_only_once</code></strong><br>
+    An option to <code>spawn_child</code> functions which prevents Apache
+    from aggressively trying to kill off the child.
+
+    <li><strong><code>alloc debugging code</code></strong><br>
+    Defining <code>ALLOC_DEBUG</code> provides a rudimentary memory
+    debugger which can be used on live servers with low impact --
+    it sets all allocated and freed memory bytes to 0xa5.  Defining
+    <code>ALLOC_USE_MALLOC</code> will cause the alloc code to use
+    <code>malloc()</code> and <code>free()</code> for each object.  This
+    is far more expensive and should only be used for testing with tools
+    such as Electric Fence and Purify.  See <code>main/alloc.c</code>
+    for more details.
+
+    </ul>
+
+</ul>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

@@ -1,0 +1,3 @@
+access_log
+error_log
+httpd.pid

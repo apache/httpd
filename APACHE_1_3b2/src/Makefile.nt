@@ -1,0 +1,195 @@
+# Makefile for Windows NT and Windows 95
+#
+# Note that this doesn't quite work... ApacheCore.dll doesn't depend
+# on proxy.lib or regex.lib. Nor can it, without some messing about -
+# the debug and release versions need different dependencies, and that
+# isn't an option.  One way that occurs to me to solve the problem is
+# to have the proxy and regex makes delete the appropriate
+# apache.exe. Tacky, but it'll work!  Ben, 5 July 97
+
+
+
+_apacher:
+	cd os\win32
+	 set CFG=ApacheOS - Win32 Release
+	 nmake /nologo -f ApacheOS.mak
+	cd ..\..
+	cd regex
+	 set CFG=regex - Win32 Release
+	 nmake /nologo -f regex.mak
+	cd ..
+	set CFG=ApacheCore - Win32 Release
+	nmake /nologo -f ApacheCore.mak
+	set CFG=Apache - Win32 Release
+	nmake /nologo -f Apache.mak
+	cd os\win32
+	 set CFG=ApacheModuleStatus - Win32 Release
+	 nmake /nologo -f ApacheModuleStatus.mak
+#	 set CFG=ApacheModuleInfo - Win32 Release
+#	 nmake /nologo -f ApacheModuleInfo.mak
+	 set CFG=ApacheModuleAuthAnon - Win32 Release
+	 nmake /nologo -f ApacheModuleAuthAnon.mak
+	 set CFG=ApacheModuleDigest - Win32 Release
+	 nmake /nologo -f ApacheModuleDigest.mak
+	 set CFG=ApacheModuleCERNMeta - Win32 Release
+	 nmake /nologo -f ApacheModuleCERNMeta.mak
+	 set CFG=ApacheModuleExpires - Win32 Release
+	 nmake /nologo -f ApacheModuleExpires.mak
+	 set CFG=ApacheModuleHeaders - Win32 Release
+	 nmake /nologo -f ApacheModuleHeaders.mak
+	 set CFG=ApacheModuleUserTrack - Win32 Release
+	 nmake /nologo -f ApacheModuleUserTrack.mak
+	 set CFG=ApacheModuleRewrite - Win32 Release
+	 nmake /nologo -f ApacheModuleRewrite.mak
+	cd ..\..
+	cd modules\proxy
+	 set CFG=ApacheModuleProxy - Win32 Release
+	 nmake /nologo -f ApacheModuleProxy.mak
+	cd ..\..
+
+_apached:
+	cd os\win32
+	 set CFG=ApacheOS - Win32 Debug
+	 nmake /nologo -f ApacheOS.mak
+	cd ..\..
+	cd regex
+	 set CFG=regex - Win32 Debug
+	 nmake /nologo -f regex.mak
+	cd ..
+	 set CFG=ApacheCore - Win32 Debug
+	 nmake /nologo -f ApacheCore.mak
+	 set CFG=Apache - Win32 Debug
+	 nmake /nologo -f Apache.mak
+	cd os\win32
+	 set CFG=ApacheModuleStatus - Win32 Debug
+	 nmake /nologo -f ApacheModuleStatus.mak
+#	 set CFG=ApacheModuleInfo - Win32 Debug
+#	 nmake /nologo -f ApacheModuleInfo.mak
+	 set CFG=ApacheModuleAuthAnon - Win32 Debug
+	 nmake /nologo -f ApacheModuleAuthAnon.mak
+	 set CFG=ApacheModuleDigest - Win32 Debug
+	 nmake /nologo -f ApacheModuleDigest.mak
+	 set CFG=ApacheModuleCERNMeta - Win32 Debug
+	 nmake /nologo -f ApacheModuleCERNMeta.mak
+	 set CFG=ApacheModuleExpires - Win32 Debug
+	 nmake /nologo -f ApacheModuleExpires.mak
+	 set CFG=ApacheModuleHeaders - Win32 Debug
+	 nmake /nologo -f ApacheModuleHeaders.mak
+	 set CFG=ApacheModuleUserTrack - Win32 Debug
+	 nmake /nologo -f ApacheModuleUserTrack.mak
+	 set CFG=ApacheModuleRewrite - Win32 Debug
+	 nmake /nologo -f ApacheModuleRewrite.mak
+	cd ..\..
+	cd modules\proxy
+	 set CFG=ApacheModuleProxy - Win32 Debug
+	 nmake /nologo -f ApacheModuleProxy.mak
+	cd ..\..
+
+installr: _apacher
+	-mkdir \Apache
+	-mkdir \Apache\modules
+	-mkdir \Apache\logs
+	-mkdir \Apache\conf
+	copy ApacheR\Apache.exe \Apache
+	copy CoreR\ApacheCore.dll \Apache
+	copy os\win32\ApacheModuleStatusR\ApacheModuleStatus.dll \Apache\modules
+#       copy os\win32\ApacheModuleInfoR\ApacheModuleInfo.dll \Apache\modules
+	copy os\win32\ApacheModuleAuthAnonR\ApacheModuleAuthAnon.dll \Apache\modules
+	copy os\win32\ApacheModuleDigestR\ApacheModuleDigest.dll \Apache\modules
+	copy os\win32\ApacheModuleCERNMetaR\ApacheModuleCERNMeta.dll \Apache\modules
+	copy os\win32\ApacheModuleExpiresR\ApacheModuleExpires.dll \Apache\modules
+	copy os\win32\ApacheModuleHeadersR\ApacheModuleHeaders.dll \Apache\modules
+	copy os\win32\ApacheModuleUserTrackR\ApacheModuleUserTrack.dll \Apache\modules
+	copy modules\proxy\Release\ApacheModuleProxy.dll \Apache\modules
+
+installd: _apached
+	-mkdir \Apache
+	-mkdir \Apache\modules
+	-mkdir \Apache\logs
+	-mkdir \Apache\conf
+	copy ApacheD\Apache.exe \Apache
+	copy CoreD\ApacheCore.dll \Apache
+	copy os\win32\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache\modules
+#       copy os\win32\ApacheModuleInfoD\ApacheModuleInfo.dll \Apache\modules
+	copy os\win32\ApacheModuleAuthAnonD\ApacheModuleAuthAnon.dll \Apache\modules
+	copy os\win32\ApacheModuleDigestD\ApacheModuleDigest.dll \Apache\modules
+	copy os\win32\ApacheModuleCERNMetaD\ApacheModuleCERNMeta.dll \Apache\modules
+	copy os\win32\ApacheModuleExpiresD\ApacheModuleExpires.dll \Apache\modules
+	copy os\win32\ApacheModuleHeadersD\ApacheModuleHeaders.dll \Apache\modules
+	copy os\win32\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache\modules
+	copy modules\proxy\Debug\ApacheModuleProxy.dll \Apache\modules
+
+cleanr:
+	cd os\win32
+	 set CFG=ApacheOS - Win32 Release
+	 nmake /nologo -f ApacheOS.mak clean
+	cd ..\..
+	cd regex
+	 set CFG=regex - Win32 Release
+	 nmake /nologo -f regex.mak clean
+	cd ..
+	 set CFG=ApacheCore - Win32 Release
+	 nmake /nologo -f ApacheCore.mak clean
+	 set CFG=Apache - Win32 Release
+	 nmake /nologo -f Apache.mak clean
+	cd os\win32
+	 set CFG=ApacheModuleStatus - Win32 Release
+	 nmake /nologo -f ApacheModuleStatus.mak clean
+#	 set CFG=ApacheModuleInfo - Win32 Release
+#	 nmake /nologo -f ApacheModuleInfo.mak clean
+	 set CFG=ApacheModuleAuthAnon - Win32 Release
+	 nmake /nologo -f ApacheModuleAuthAnon.mak clean
+	 set CFG=ApacheModuleDigest - Win32 Release
+	 nmake /nologo -f ApacheModuleDigest.mak clean
+	 set CFG=ApacheModuleCERNMeta - Win32 Release
+	 nmake /nologo -f ApacheModuleCERNMeta.mak clean
+	 set CFG=ApacheModuleExpires - Win32 Release
+	 nmake /nologo -f ApacheModuleExpires.mak clean
+	 set CFG=ApacheModuleHeaders - Win32 Release
+	 nmake /nologo -f ApacheModuleHeaders.mak clean
+	 set CFG=ApacheModuleUserTrack - Win32 Release
+	 nmake /nologo -f ApacheModuleUserTrack.mak clean
+	cd ..\..
+	cd modules\proxy
+	 set CFG=ApacheModuleProxy - Win32 Release
+	 nmake /nologo -f ApacheModuleProxy.mak clean
+	cd ..\..
+
+cleand:
+	cd os\win32
+	 set CFG=ApacheOS - Win32 Debug
+	 nmake /nologo -f ApacheOS.mak
+	cd ..\..
+	cd regex
+	 set CFG=regex - Win32 Debug
+	 nmake /nologo -f regex.mak clean
+	cd ..
+	 set CFG=ApacheCore - Win32 Debug
+	 nmake /nologo -f ApacheCore.mak clean
+	 set CFG=Apache - Win32 Debug
+	 nmake /nologo -f Apache.mak clean
+	cd os\win32
+	 set CFG=ApacheModuleStatus - Win32 Debug
+	 nmake /nologo -f ApacheModuleStatus.mak clean
+#	 set CFG=ApacheModuleInfo - Win32 Debug
+#	 nmake /nologo -f ApacheModuleInfo.mak clean
+	 set CFG=ApacheModuleAuthAnon - Win32 Debug
+	 nmake /nologo -f ApacheModuleAuthAnon.mak clean
+	 set CFG=ApacheModuleDigest - Win32 Debug
+	 nmake /nologo -f ApacheModuleDigest.mak clean
+	 set CFG=ApacheModuleCERNMeta - Win32 Debug
+	 nmake /nologo -f ApacheModuleCERNMeta.mak clean
+	 set CFG=ApacheModuleExpires - Win32 Debug
+	 nmake /nologo -f ApacheModuleExpires.mak clean
+	 set CFG=ApacheModuleHeaders - Win32 Debug
+	 nmake /nologo -f ApacheModuleHeaders.mak clean
+	 set CFG=ApacheModuleUserTrack - Win32 Debug
+	 nmake /nologo -f ApacheModuleUserTrack.mak clean
+	cd ..\..
+	cd modules\proxy
+	 set CFG=ApacheModuleProxy - Win32 Debug
+	 nmake /nologo -f ApacheModuleProxy.mak clean
+	cd ..\..
+
+clean: cleand cleanr
+

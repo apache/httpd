@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_log_config</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_log_config</h1>
+
+This module is contained in the <code>mod_log_config.c</code> file,
+and is compiled in by default in Apache 1.2. mod_log_config replaces
+mod_log_common in Apache 1.2. Prior to version 1.2, mod_log_config was
+an optional module. It provides for logging of the requests made to
+the server, using the Common Log Format or a user-specified format.
+
+<h2>Summary</h2>
+
+Three directives are provided by this module: <code>TransferLog</code>
+to create a log file, <code>LogFormat</code> to set a custom format,
+and <code>CustomLog</code> to define a log file and format in one go.
+The <code>TransferLog</code> and <code>CustomLog</code> directives can
+be used multiple times in each server to cause each request to be
+logged to multiple files.
+<P>
+
+<h3>Compatibility notes</h3>
+
+<ul>
+<li>This module is based on mod_log_config distributed with
+previous Apache releases, now updated to handle multiple logs.
+There is now no need to re-configure Apache to use configuration log
+formats.
+
+<li>The module also implements the <code>CookieLog</code> directive,
+used to log user-tracking information created by <a
+href="mod_usertrack.html">mod_usertrack</a>. The use of
+<code>CookieLog</code> is deprecated, and a <code>CustomLog</code>
+should be defined to log user-tracking information instead.
+
+</ul>
+
+<h2>Log File Formats</h2>
+
+Unless told otherwise with <tt>LogFormat</tt> the log files created by
+<tt>TransferLog</tt> will be in standard "Common Log Format"
+(CLF). The contents of each line in a CLF file are explained
+below. Alternatively, the log file can be customized (and if multiple
+log files are used, each can have a different format). Custom formats
+are set with <code>LogFormat</code> and <code>CustomLog</code>.
+
+<h3>Common Log Format</h3>
+
+The Common Log Format (CLF) file contains a separate line for each
+request. A line is composed of several tokens separated by spaces:
+
+<blockquote>
+host ident authuser date request status bytes
+</blockquote>
+If a token does not have a value then it is represented by a hyphen (-).
+The meanings and values of these tokens are as follows:
+<dl>
+<dt>host
+<dd>The fully-qualified domain name of the client, or its IP number if the
+name is not available.
+<dt>ident
+<dd>If <A HREF="core.html#identitycheck">IdentityCheck</A> is enabled and the
+client machine runs identd, then this is the identity information reported
+by the client.
+<dt>authuser
+<dd>If the request was for an password protected document, then this is
+the userid used in the request.
+<dt>date
+<dd>The date and time of the request, in the following format:
+<dl><dd><blockquote><code> date = [day/month/year:hour:minute:second zone] <br>
+day = 2*digit<br>
+month = 3*letter<br>
+year = 4*digit<br>
+hour = 2*digit<br>
+minute = 2*digit<br>
+second = 2*digit<br>
+zone = (`+' | `-') 4*digit</code></blockquote></dl>
+<dt>request
+<dd>The request line from the client, enclosed in double quotes
+(<code>&quot;</code>).
+<dt>status
+<dd>The three digit status code returned to the client.
+<dt>bytes
+<dd>The number of bytes in the object returned to the client, not including
+any headers.
+</dl>
+
+<h3><A NAME="formats">Custom Log Formats</A></h3>
+
+The format argument to the <code>LogFormat</code> and
+<code>CustomLog</code> is a string. This string is logged to the log
+file for each request. It can contain literal characters copied into
+the log files, and `%' directives which are replaced in the log file
+by the values as follows:
+
+<PRE>
+%...b:          Bytes sent, excluding HTTP headers.
+%...f:          Filename
+%...{FOOBAR}e:  The contents of the environment variable FOOBAR
+%...h:          Remote host
+%...{Foobar}i:  The contents of Foobar: header line(s) in the request
+                sent to the server.
+%...l:          Remote logname (from identd, if supplied)
+%...{Foobar}n:  The contents of note "Foobar" from another module.
+%...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
+%...p:          The port the request was served to
+%...P:          The process ID of the child that serviced the request.
+%...r:          First line of request
+%...s:          Status.  For requests that got internally redirected, this
+                is status of the *original* request --- %...&gt;s for the last.
+%...t:          Time, in common log format time format
+%...{format}t:  The time, in the form given by format, which should
+                be in strftime(3) format.
+%...T:          The time taken to serve the request, in seconds.
+%...u:          Remote user (from auth; may be bogus if return status (%s) is 401)
+%...U:          The URL path requested.
+%...v:          The name of the server (i.e. which virtual host?)
+</PRE>
+
+The `...' can be nothing at all (e.g. <code>"%h %u %r %s %b"</code>), or it can
+indicate conditions for inclusion of the item (which will cause it
+to be replaced with `-' if the condition is not met).  Note that
+there is no escaping performed on the strings from %r, %...i and
+%...o; some with long memories may remember that I thought this was
+a bad idea, once upon a time, and I'm still not comfortable with
+it, but it is difficult to see how to `do the right thing' with all
+of `%..i', unless we URL-escape everything and break with CLF.
+
+<P>
+
+The forms of condition are a list of HTTP status codes, which may
+or may not be preceded by `!'.  Thus, `%400,501{User-agent}i' logs
+User-agent: on 400 errors and 501 errors (Bad Request, Not
+Implemented) only; `%!200,304,302{Referer}i' logs Referer: on all
+requests which did <b>not</b> return some sort of normal status.
+
+<P>
+
+Note that the common log format is defined by the string <code>"%h %l
+%u %t \"%r\" %s %b"</code>, which can be used as the basis for
+extending for format if desired (e.g. to add extra fields at the end).
+NCSA's extended/combined log format would be <code>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</code>.
+
+<h2>Using Multiple Log Files</h2>
+
+The <code>TransferLog</code> and <code>CustomLog</code> directives can
+be given more than once to log requests to multiple log files. Each
+request will be logged to all the log files defined by either of these
+directives.
+
+<h3>Use with Virtual Hosts</h3>
+
+If a &lt;VirtualHost&gt; section does not contain any
+<tt>TransferLog</tt> or <tt>CustomLog</tt> directives, the
+logs defined for the main server will be used. If it does
+contain one or more of these directives, requests serviced by
+this virtual host will only be logged in the log files defined
+within its definition, not in any of the main server's log files.
+See the examples below.
+<p>
+
+<h2>Security Considerations</h2>
+
+See the <A HREF="../misc/security_tips.html">security tips</A> document
+for details on why your security could be compromised if the directory
+where logfiles are stored is writable by anyone other than the user
+that starts the server.
+<p>
+<h2>Directives</h2>
+
+<ul>
+<li><A HREF="#cookielog">CookieLog</A>
+<LI><A HREF="#customlog">CustomLog</A>
+<li><A HREF="#logformat">LogFormat</A>
+<li><A HREF="#transferlog">TransferLog</A>
+</ul>
+<hr>
+
+
+<h2><A name="cookielog">CookieLog</A></h2>
+<!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
+<strong>Syntax:</strong> CookieLog <em>filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Module:</strong> mod_cookies<br>
+<strong>Compatibility:</strong> Only available in Apache 1.2 and above<p>
+
+The CookieLog directive sets the filename for logging of cookies.
+The filename is relative to the <A
+HREF="core.html#serverroot">ServerRoot</A>. This directive is included
+only for compatibility with <a
+href="mod_cookies.html">mod_cookies</a>, and is deprecated.
+<p>
+
+<HR>
+<H2><A NAME="customlog">CustomLog</A></H2>
+<STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em>
+    <em>format-or-nickname</em><BR>
+<STRONG>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+    or later
+<BR>
+<STRONG>Module:</STRONG> mod_log_config
+<P>
+The first argument is the filename to which log records should be
+written. This is used
+exactly like the argument to
+<A
+ HREF="#transferlog"
+><SAMP>TransferLog</SAMP></A>;
+that is, it is either a full path or relative to the current
+server root.
+</P>
+<P>
+The format argument specifies a format for each line of the log file.
+The options available for the format are exactly the same as for
+the argument of the <tt>LogFormat</tt> directive. If the format
+includes any spaces (which it will do in almost all cases) it
+should be enclosed in double quotes.
+</P>
+<P>
+Instead of an actual format string, you can use a format nickname defined with
+the
+<A
+ HREF="#logformat"
+><SAMP>LogFormat</SAMP></A>
+directive.
+</P>
+<HR>
+<h2><A name="logformat">LogFormat</A></h2>
+<!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
+<strong>Syntax:</strong> LogFormat <em>format</em> [<EM>nickname</EM>]
+<br>
+<strong>Default:</strong> <code>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
+%s %b&quot;</code><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+    or later
+<BR>
+<strong>Module:</strong> mod_log_config
+<P>
+This sets the format of the default logfile named by the
+<A
+ HREF="#transferlog"
+><SAMP>TransferLog</SAMP></A>
+directive .  See the section on
+<A HREF="#formats">Custom Log Formats</A> for details on the format
+arguments.
+</P>
+<P>
+If you include a nickname for the format on the directive line, you can
+use it in other <SAMP>LogFormat</SAMP> and
+<A
+ HREF="#customlog"
+><SAMP>CustomLog</SAMP></A>
+directives rather than repeating the entire format string.
+</P>
+<P>
+A
+<SAMP>LogFormat</SAMP> directive which defines a nickname <STRONG>does
+nothing else</STRONG> -- that is, it <EM>only</EM> defines the nickname,
+it doesn't actually apply the format and make it the default.
+</P>
+
+<hr>
+<h2><A name="transferlog">TransferLog</A></h2>
+<!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
+<strong>Syntax:</strong> TransferLog <em>file-pipe</em><br>
+<strong>Default:</strong> none<br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_log_config<p>
+
+The TransferLog directive adds a log file in the format defined by the
+most recent
+<A
+ HREF="#logformat"
+><SAMP>LogFormat</SAMP></A>
+directive, or Common Log Format if no other default format has been
+specified.
+<em>File-pipe</em> is one
+of
+<dl><dt>A filename
+<dd>A filename relative to the <A HREF="core.html#serverroot">ServerRoot</A>.
+<dt> `|' followed by a command
+<dd>A program to receive the agent log information on its standard input.
+Note the a new program will not be started for a VirtualHost if it inherits
+the TransferLog from the main server.
+</dl>
+<strong>Security:</strong> if a program is used, then it will be
+run under the user who started httpd. This will be root if the server
+was started by root; be sure that the program is secure.<p>
+
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
