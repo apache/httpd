@@ -15,3 +15,4 @@ gen_uri_delims.pdb
 gen_test_char_D
 gen_test_char.ilk
 gen_test_char.pdb
+*.mak

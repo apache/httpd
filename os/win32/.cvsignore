@@ -3,14 +3,17 @@
 *.opt
 *.plg
 *.dsw
+*.mak
 ApacheModuleAuthAnonD
 ApacheModuleAuthAnonR
+ApacheModuleAuthDigestD
+ApacheModuleAuthDigestR
 ApacheModuleCERNMetaD
 ApacheModuleCERNMetaR
-ApacheModuleDigestD
-ApacheModuleDigestR
 ApacheModuleExpiresD
 ApacheModuleExpiresR
+ApacheModuleFileCacheD
+ApacheModuleFileCacheR
 ApacheModuleHeadersD
 ApacheModuleHeadersR
 ApacheModuleInfoD
@@ -23,5 +26,3 @@ ApacheModuleStatusD
 ApacheModuleStatusR
 ApacheModuleUserTrackD
 ApacheModuleUserTrackR
-ApacheOSR
-ApacheOSD

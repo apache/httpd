@@ -2,6 +2,7 @@
 *.lo
 .deps
 Makefile
+*.mak
 rotatelogs
 htpasswd
 htdigest

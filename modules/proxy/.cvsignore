@@ -10,3 +10,4 @@ Makefile
 *.so
 *.dll
 *.def
+*.mak
