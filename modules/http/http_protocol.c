@@ -2485,7 +2485,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 
     /* ### should loop to avoid partial writes */
     rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
-    if (n < 0) {
+    if (rv != APR_SUCCESS) {
         check_first_conn_error(r, "rwrite", rv);
         return EOF;
     }
