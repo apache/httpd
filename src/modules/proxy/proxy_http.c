@@ -398,7 +398,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
 /* Also, take care with headers with multiple occurences. */
 
-	resp_hdrs = ap_proxy_read_headers(p, buffer, HUGE_STRING_LEN, f);
+	resp_hdrs = ap_proxy_read_headers(r, buffer, HUGE_STRING_LEN, f);
 	if (resp_hdrs == NULL) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
 		 "proxy: Bad HTTP/%d.%d header returned by %s (%s)",

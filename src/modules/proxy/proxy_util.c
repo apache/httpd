@@ -62,6 +62,7 @@
 #include "multithread.h"
 #include "http_log.h"
 #include "util_uri.h"
+#include "util_date.h"	/* get ap_checkmask() decl. */
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -424,14 +425,14 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-table *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
+table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 {
     table *resp_hdrs;
     int len;
     char *value, *end;
     char field[MAX_STRING_LEN];
 
-    resp_hdrs = ap_make_table(p, 20);
+    resp_hdrs = ap_make_table(r->pool, 20);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -440,7 +441,22 @@ table *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
     while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
 	
 	if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
-	    return NULL;
+
+	    /* Buggy MS IIS servers sometimes return invalid headers
+	     * (an extra "HTTP/1.0 200, OK" line sprinkled in between
+	     * the usual MIME headers). Try to deal with it in a sensible
+	     * way, but log the fact.
+	     * XXX: The mask check is buggy if we ever see an HTTP/1.10 */
+
+	    if (!ap_checkmask(buffer, "HTTP/#.# ###*")) {
+		/* Nope, it wasn't even an extra HTTP header. Give up. */
+		return NULL;
+	    }
+
+	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, r->server,
+			 "proxy: Ignoring duplicate HTTP header "
+			 "returned by %s (%s)", r->uri, r->method);
+	    continue;
 	}
 
         *value = '\0';

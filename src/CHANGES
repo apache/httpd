@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) As duplicate "HTTP/1.0 200 OK" lines within the header seem to be
+     a common problem of (mis-administrated?) IIS servers, make the apache
+     proxy immune to these errors (and ignore the duplicates, but log
+     the fact to error_log). [Martin Kraemer], after the proposal in PR#2914 
+     
   *) The <IfModule and <IfDefine block starting directives now only
      allow exactly one argument. Previously, the optional negation
      character '!' could be separated by whitespace without a syntax
@@ -31,7 +36,7 @@ Changes with Apache 1.3.2
      dump core for replies with invalid headers (e.g., duplicate
      "HTTP/1.0 200 OK" lines). These errors are now logged and the
      core dump is avoided. Also, broken replies are not cached.
-     [Martin Kraemer]
+     [Martin Kraemer] PR#2914
 
   *) new `GprofDir' directive when compiled with -DGPROF, where gprof can
      plop gmon.out profile data for each child [Doug MacEachern]

@@ -535,7 +535,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
  *         0 on failure (bad file or wrong URL)
  *        -1 on UNIX error
  */
-static int rdcache(pool *p, BUFF *cachefp, cache_req *c)
+static int rdcache(request_rec *r, BUFF *cachefp, cache_req *c)
 {
     char urlbuff[1034], *strp;
     int len;
@@ -580,19 +580,19 @@ static int rdcache(pool *p, BUFF *cachefp, cache_req *c)
 	return 0;
     urlbuff[--len] = '\0';
 
-    c->resp_line = ap_pstrdup(p, urlbuff);
+    c->resp_line = ap_pstrdup(r->pool, urlbuff);
     strp = strchr(urlbuff, ' ');
     if (strp == NULL)
 	return 0;
 
     c->status = atoi(strp);
-    c->hdrs = ap_proxy_read_headers(p, urlbuff, sizeof urlbuff, cachefp);
+    c->hdrs = ap_proxy_read_headers(r, urlbuff, sizeof urlbuff, cachefp);
     if (c->hdrs == NULL)
 	return -1;
     if (c->len != -1) {		/* add a content-length header */
 	if (ap_table_get(c->hdrs, "Content-Length") == NULL) {
 	    ap_table_set(c->hdrs, "Content-Length",
-			 ap_psprintf(p, "%lu", (unsigned long)c->len));
+			 ap_psprintf(r->pool, "%lu", (unsigned long)c->len));
 	}
     }
     return 1;
@@ -677,7 +677,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     }
 
     if (cachefp != NULL) {
-	i = rdcache(r->pool, cachefp, c);
+	i = rdcache(r, cachefp, c);
 	if (i == -1)
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 			 "proxy: error reading cache file %s", 

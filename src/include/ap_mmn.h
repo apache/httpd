@@ -172,12 +172,16 @@
  *                        ap_proxy_send_fb() and ap_proxy_cache_error(). 
  *                        Add ap_proxy_send_hdr_line() and ap_proxy_bputs2().
  * 19980825 (1.3.2-dev) - renamed is_HTTP_xxx() macros to ap_is_HTTP_xxx()
+ * 19980825.1           - mod_proxy only (minor change): modified interface of
+ *                        ap_proxy_read_headers() and rdcache() to use a
+ *                        request_rec* instead of pool*
+ *                        (for implementing better error reporting).
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19980825
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */
