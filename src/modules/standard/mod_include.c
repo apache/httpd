@@ -66,11 +66,6 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
-#ifdef HAVE_POSIX_REGEX
-#include <regex.h>
-#else
-#include "regex.h"
-#endif
 
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
@@ -309,7 +304,13 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
 	    t[tagbuf_len - 1] = '\0';
 	    return NULL;
 	}
-	if (c == term) break;
+/* Want to accept \" as a valid character within a string. */
+	if (c == '\\') {
+	    *(t++) = c; /* Add backslash */
+	    GET_CHAR(in,c,NULL,p);
+	    if (c == term) /* Only if */
+		*(--t) = c; /* Replace backslash ONLY for terminator */
+	} else if (c == term) break;
 	*(t++) = c;
     }
     *t = '\0';
@@ -341,7 +342,8 @@ get_directive(FILE *in, char *d, pool *p) {
 /*
  * Do variable substitution on strings
  */
-void parse_string(request_rec *r, char *in, char *out, int length)
+void parse_string(request_rec *r, char *in, char *out, int length,
+                  int leave_name)
 {
     char ch;
     char *next = out;
@@ -385,15 +387,14 @@ void parse_string(request_rec *r, char *in, char *out, int length)
                     in++;
             } 
 
-            /* Leave single dollar signs like the shell does */
             val = (char *)NULL;
-            if (*var == '\0') {
-                if (strcmp(vtext, "$") == 0) {
-                    var[0]='$', var[1]='\0';
-                    val = &var[0];
-                }
-            } else
-                val = table_get (r->subprocess_env, &var[0]); 
+            if (var[0] == '\0') {
+                val = &vtext[0];
+            } else {
+                val = table_get (r->subprocess_env, &var[0]);
+                if (!val && leave_name)
+                    val = &vtext[0];
+            }
             while ((val != (char *)NULL) && (*val != '\0')) {
                 *next++ = *val++;
                 if (++numchars == (length -1)) break;
@@ -459,7 +460,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 	    request_rec *rr=NULL;
 	    char *error_fmt = NULL;
 
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
 	    if (tag[0] == 'f')
 	    { /* be safe; only files in this directory or below allowed */
 		char tmp[MAX_STRING_LEN+2];
@@ -603,7 +604,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         if(!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1)))
             return 1;
         if(!strcmp(tag,"cmd")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 1);
             if(include_cmd(parsed_string, r) == -1) {
                 log_printf(r->server, "unknown parameter %s to tag include in %s",
                            tag, r->filename);
@@ -613,7 +614,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
             chdir_file(r->filename);
         } 
         else if(!strcmp(tag,"cgi")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             if(include_cgi(parsed_string, r) == -1) {
                 log_printf(r->server, "invalid CGI ref %s in %s",tag_val,file);
                 rputs(error, r);
@@ -664,18 +665,19 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
     while(1) {
         if(!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0)))
             return 1;
-        if(!strcmp(tag,"errmsg"))
-            strcpy(error,tag_val);
-        else if(!strcmp(tag,"timefmt")) {
+        if(!strcmp(tag,"errmsg")) {
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            strcpy(error,parsed_string);
+        } else if(!strcmp(tag,"timefmt")) {
   	    time_t date = r->request_time;
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             strcpy(tf,parsed_string);
             table_set (env, "DATE_LOCAL", ht_time(r->pool,date,tf,0));
             table_set (env, "DATE_GMT", ht_time(r->pool,date,tf,1));
             table_set (env, "LAST_MODIFIED", ht_time(r->pool,r->finfo.st_mtime,tf,0));
         }
         else if(!strcmp(tag,"sizefmt")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
 	    decodehtml(parsed_string);
             if(!strcmp(parsed_string,"bytes"))
                 *sizefmt = SIZEFMT_BYTES;
@@ -751,18 +753,18 @@ int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             if(!find_file(r,"fsize",tag,parsed_string,&finfo,error)) {
                 if(sizefmt == SIZEFMT_KMG) {
                     send_size(finfo.st_size, r);
                 }
                 else {
                     int l,x;
-    #if defined(BSD) && BSD > 199305
+#if defined(BSD) && BSD > 199305
                     sprintf(tag,"%qd",finfo.st_size);
-    #else
+#else
                     sprintf(tag,"%ld",finfo.st_size);
-    #endif
+#endif
                     l = strlen(tag); /* grrr */
                     for(x=0;x<l;x++) {
                         if(x && (!((l-x) % 3))) {
@@ -789,7 +791,7 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             if(!find_file(r,"flastmod",tag,parsed_string,&finfo,error))
                 rputs(ht_time(r->pool, finfo.st_mtime, tf, 0), r);
         }
@@ -806,7 +808,7 @@ int re_check(request_rec *r, char *string, char *rexp)
     if (regex_error) {
         regerror(regex_error, &compiled, err_string, (size_t)MAX_STRING_LEN);
         log_printf(r->server,
-            "unable to compile pattern %s [%s]", rexp, &err_string);
+            "unable to compile pattern %s [%s]", rexp, err_string);
         return -1;
     }
     regex_error = regexec(&compiled, string, 0, (regmatch_t *)NULL, 0);
@@ -1186,7 +1188,7 @@ rputs("     Token: lbrace\n", r);
 #ifdef DEBUG_INCLUDE
 rputs("     Evaluate string\n", r);
 #endif
-            parse_string(r, current->token.value, buffer, MAX_STRING_LEN);
+            parse_string(r, current->token.value, buffer, MAX_STRING_LEN, 0);
             strncpy(current->token.value, buffer, MAX_STRING_LEN-1);
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
@@ -1209,7 +1211,7 @@ rputs("     Evaluate and/or\n", r);
                 switch(current->left->token.type) {
                   case token_string:
                     parse_string(r, current->left->token.value,
-                            buffer, MAX_STRING_LEN);
+                            buffer, MAX_STRING_LEN, 0);
                     strncpy(current->left->token.value, buffer,
                             MAX_STRING_LEN-1);
                     current->left->done = 1;
@@ -1223,7 +1225,7 @@ rputs("     Evaluate and/or\n", r);
                 switch(current->right->token.type) {
                   case token_string:
                     parse_string(r, current->right->token.value,
-                            buffer, MAX_STRING_LEN);
+                            buffer, MAX_STRING_LEN, 0);
                     strncpy(current->right->token.value, buffer,
                             MAX_STRING_LEN-1);
                     current->right->done = 1;
@@ -1264,9 +1266,11 @@ rputs("     Evaluate eq/ne\n", r);
                 rputs(error, r);
                 goto RETURN;
             }
-            parse_string(r, current->left->token.value, buffer, MAX_STRING_LEN);
+            parse_string(r, current->left->token.value,
+                         buffer, MAX_STRING_LEN, 0);
             strncpy(current->left->token.value, buffer, MAX_STRING_LEN-1);
-            parse_string(r, current->right->token.value, buffer, MAX_STRING_LEN);
+            parse_string(r, current->right->token.value,
+                         buffer, MAX_STRING_LEN, 0);
             strncpy(current->right->token.value, buffer, MAX_STRING_LEN-1);
             if (current->right->token.value[0] == '/') {
                 int len;
@@ -1493,7 +1497,7 @@ int handle_set(FILE *in, request_rec *r, char *error)
                 rputs(error, r);
                 return -1;
             } 
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN);
+            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             table_set (r->subprocess_env, var, parsed_string);
         }
     }
