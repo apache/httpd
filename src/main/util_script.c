@@ -60,7 +60,7 @@
 #include "http_core.h"		/* For document_root.  Sigh... */
 #include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
-
+#include <limits.h>
 
 /*
  * Various utility functions which are common to a whole lot of
@@ -79,7 +79,7 @@ char **create_argv(request_rec *r, char *av0, ...)
     char *t, *arg;
     va_list args;
 
-    if ((av = (char **)palloc(r->pool, ARG_MAX)) == NULL)
+    if ((av = (char **)palloc(r->pool, _POSIX_ARG_MAX)) == NULL)
 	log_unixerr("malloc", NULL, "failed to allocate memory for arg list", r->server);
     
     av[0] = av0;
