@@ -293,7 +293,8 @@ CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,
     cache_hash_entry_t **hep, *tmp;
     const void *tval;
     hep = find_entry(ht, key, klen, val);
-    if (*hep) {
+    /* If hep == NULL, then the malloc() in find_entry failed */
+    if (hep && *hep) {
         if (!val) {
             /* delete entry */
             tval = (*hep)->val;
