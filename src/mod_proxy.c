@@ -53,6 +53,8 @@
 /*
 Note that the Explain() stuff is not yet complete.
 Also note numerous FIXMEs and CHECKMEs which should be eliminated.
+If TESTING is set, then grabage collection doesn't delete ... probably a good
+idea when hacking.
 
 This code is still experimental!
 
@@ -62,6 +64,9 @@ Things to do:
 a response!
 
 2. Check the logic thoroughly.
+
+3. Empty directories are only removed the next time round (but this does avoid
+two passes). Consider doing them the first time round.
 
 Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 */
@@ -1431,6 +1436,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 #else
 		rmdir(newcachedir);
 #endif
+		--nfiles;
 		}
 	    continue;
 	    }
