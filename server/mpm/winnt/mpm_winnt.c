@@ -1434,6 +1434,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE hPipeWrite;
     HANDLE hNullOutput;
     HANDLE hShareError;
+    HANDLE hExitEvent;
     HANDLE hCurrentProcess = GetCurrentProcess();
     SECURITY_ATTRIBUTES sa;
 
@@ -1530,8 +1531,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* Create the child_exit_event */
-    *child_exit_event = CreateEvent(NULL, TRUE, FALSE, NULL);
-    if (!(*child_exit_event)) {
+    hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!hExitEvent) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
         CloseHandle(hPipeWrite);
@@ -1587,7 +1588,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                        NULL,
                        &si, &pi);
 
-    /* Undo everything we created for the child only
+    /* Undo everything created for the child alone
      */
     CloseHandle(pi.hThread);
     CloseHandle(hPipeRead);
@@ -1604,17 +1605,25 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     if (!rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Failed to create the child process.");
+        CloseHandle(hExitEvent);
         CloseHandle(hPipeWrite);
         CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
         return -1;
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
 
-    if (send_handles_to_child(p, *child_exit_event, pi.hProcess, hPipeWrite)) {
+    if (send_handles_to_child(p, hExitEvent, pi.hProcess, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        CloseHandle(hExitEvent);
         CloseHandle(hPipeWrite);
+        CloseHandle(pi.hProcess);
         return -1;
     }
 
@@ -1629,13 +1638,22 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     Sleep(1000);
 
     if (send_listeners_to_child(p, pi.dwProcessId, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        CloseHandle(hExitEvent);
         CloseHandle(hPipeWrite);        
+        CloseHandle(pi.hProcess);
         return -1;
     }
 
     CloseHandle(hPipeWrite);        
 
     *child_proc = pi.hProcess;
+    *child_exit_event = hExitEvent;
 
     return 0;
 }
