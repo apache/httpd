@@ -306,7 +306,9 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 	 */
 	
 	if (pa_req->filename) {
+#ifdef WIN32
 	    char buffer[HUGE_STRING_LEN];
+#endif
 	    char *pt = pstrcat (r->pool, pa_req->filename, pa_req->path_info,
 				NULL);
 #ifdef WIN32
