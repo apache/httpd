@@ -3144,8 +3144,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char *str1;
     char str2[512];
     char str3[1024];
-    char type[20];
-    char redir[20];
+    char *type;
+    char redir[20]; /* enough for "/redir#%d" if int is 32 bit */
     va_list ap;
     int i;
     apr_size_t nbytes;
@@ -3194,10 +3194,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     apr_vsnprintf(str2, sizeof(str2), text, ap);
 
     if (r->main == NULL) {
-        strcpy(type, "initial");
+        type = "initial";
     }
     else {
-        strcpy(type, "subreq");
+        type = "subreq";
     }
 
     for (i = 0, req = r; req->prev != NULL; req = req->prev) {
