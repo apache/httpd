@@ -210,7 +210,7 @@ struct connection {
     apr_size_t bread;		/* amount of body read */
     apr_size_t rwrite, rwrote;	/* keep pointers in what we write - across
 				 * EAGAINs */
-    int length;			/* Content-Length value used for keep-alive */
+    apr_size_t length;	        /* Content-Length value used for keep-alive */
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
     int cbx;			/* offset in cbuffer */
     int keepalive;		/* non-zero if a keep-alive request */
@@ -515,7 +515,7 @@ static void output_results(void)
     if (requests) {
 	/* work out connection times */
 	long i;
-	double totalcon = 0, total = 0, totald = 0, totalwait = 0;
+	apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
         apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX, 
                             minwait = AB_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
@@ -546,14 +546,14 @@ static void output_results(void)
 
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
-            apr_interval_time_t a;
-	    a = (s.time - total);
-	    sdtot += a * a;
-	    a = (s.ctime - totalcon);
+            double a;
+            a = ((double)s.time - total);
+            sdtot += a * a;
+	    a = ((double)s.ctime - totalcon);
 	    sdcon += a * a;
-	    a = (s.time - s.ctime - totald);
+	    a = ((double)s.time - (double)s.ctime - totald);
 	    sdd += a * a;
-	    a = (s.waittime - totalwait);
+	    a = ((double)s.waittime - totalwait);
 	    sdwait += a * a;
 	}
 
@@ -641,7 +641,7 @@ static void output_results(void)
 
 #define     SANE(what,avg,mean,sd) \
               { \
-                double d = avg - mean; \
+                double d = (double)avg - mean; \
                 if (d < 0) d = -d; \
                 if (d > 2 * sd ) \
                     printf("ERROR: The median and mean for " what " are more than twice the standard\n" \
@@ -691,14 +691,14 @@ static void output_results(void)
 	    }
 	    fprintf(out, "" "Percentage served" "," "Time in ms" "\n");
 	    for (i = 0; i < 100; i++) {
-		double d;
+		apr_time_t t;
 		if (i == 0)
-		    d = stats[0].time;
+		    t = stats[0].time;
 		else if (i == 100)
-		    d = stats[requests - 1].time;
+		    t = stats[requests - 1].time;
 		else
-		    d = stats[(int) (0.5 + requests * i / 100.0)].time;
-		fprintf(out, "%d,%e\n", i, d);
+		    t = stats[(int) (0.5 + requests * i / 100.0)].time;
+		fprintf(out, "%d,%e\n", i, (double)t);
 	    }
 	    fclose(out);
         }
@@ -715,7 +715,7 @@ static void output_html_results(void)
     long timetaken;
 
     endtime = apr_time_now();
-    timetaken = (endtime - start) / 1000;
+    timetaken = (long)((endtime - start) / 1000);
 
     printf("\n\n<table %s>\n", tablestring);
     printf("<tr %s><th colspan=2 %s>Server Software:</th>"
@@ -1227,7 +1227,7 @@ static void test(void)
 
 	/* check for time limit expiry */
 	now = apr_time_now();
-	timed = (now - start) / APR_USEC_PER_SEC;
+	timed = (apr_int32_t)((now - start) / APR_USEC_PER_SEC);
 	if (tlimit && timed > (tlimit * 1000)) {
 	    requests = done;	/* so stats are correct */
 	}
@@ -1302,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.84 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.85 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.84 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.85 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1428,7 +1428,7 @@ static int open_postfile(const char *pfile)
     }
 
     apr_file_info_get(&finfo, APR_FINFO_NORM, postfd);
-    postlen = finfo.size;
+    postlen = (apr_size_t)finfo.size;
     postdata = (char *) malloc(postlen);
     if (!postdata) {
 	printf("Can\'t alloc postfile buffer\n");
