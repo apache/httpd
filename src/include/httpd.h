@@ -712,6 +712,7 @@ struct request_rec {
     long read_length;		/* bytes that have been read */
     int read_body;		/* how the request body should be read */
     int read_chunked;		/* reading chunked transfer-coding */
+    unsigned expecting_100;	/* is client waiting for a 100 response? */
 
     /* MIME header environments, in and out.  Also, an array containing
      * environment variables to be passed to subprocesses, so people can
@@ -741,6 +742,8 @@ struct request_rec {
     const char *content_encoding;
     const char *content_language;	/* for back-compat. only -- do not use */
     array_header *content_languages;	/* array of (char*) */
+
+    char *vlist_validator;      /* variant list validator (if negotiated) */
 
     int no_cache;
     int no_local_copy;
@@ -778,8 +781,6 @@ struct request_rec {
  * record to improve 64bit alignment the next time we need to break
  * binary compatibility for some other reason.
  */
-    unsigned expecting_100;     /* is client waiting for a 100 response? */
-    char *vlist_validator;      /* variant list validator (if negotiated) */
 };
 
 

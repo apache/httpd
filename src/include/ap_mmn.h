@@ -199,12 +199,16 @@
  * 19990106 (1.3.4-dev) - Move MODULE_MAGIC_COOKIE to the end of the
  *                        STANDARD_MODULE_STUFF macro so the version
  *                        numbers and file name remain at invariant offsets
+ * 19990108 (1.3.4-dev) - status_drops_connection -> ap_status_drops_connection
+ *                        scan_script_header -> ap_scan_script_header_err
+ *                      - reordered entries in request_rec that were waiting
+ *                        for a non-binary-compatible release.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19990106
+#define MODULE_MAGIC_NUMBER_MAJOR 19990108
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
