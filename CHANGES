@@ -1678,7 +1678,8 @@ Changes with Apache 2.0.43
 
 Changes with Apache 2.0.42
 
-  *) mod_dav: Check for versioning hooks before using them.
+  *) SECURITY: CVE-2002-1593 (cve.mitre.org) [CERT VU#406121]
+     mod_dav: Check for versioning hooks before using them.
      [Greg Stein]
 
 Changes with Apache 2.0.41
@@ -2405,7 +2406,8 @@ Changes with Apache 2.0.36
 
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
-  *) SECURITY: Added the APLOG_TOCLIENT flag to ap_log_rerror() to
+  *) SECURITY: CAN-2002-1592 (cve.mitre.org) [CERT VU#165803]
+     Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 
      Prior to this change, ap_log_rerror() always sent warning 
