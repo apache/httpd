@@ -94,6 +94,8 @@ In progress:
 
 FINAL RELEASE SHOWSTOPPERS:
 
+    * MIME type case sensitivity disparity between 1.2.6 and 1.3b6 (PR #2112)
+
     * proxy security fixes from 1.2.5 need to be brought forward
 
     * Someone other than Dean has to do a security/correctness review on
@@ -150,6 +152,7 @@ Needs patch:
 	(feb98 archives)
 	Jim: I thought that we decided "default", although Ken
 	     thought it ugly
+	Ken: I just don't like using "Add" when reverting something; no -1
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
@@ -172,15 +175,6 @@ Open issues:
     
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
-
-    * The binary should have the same name on Win32 and UNIX.
-	+1: Ken
-	-1:  
-
-    * What do we call the binary: apache or httpd? Under UNIX
-      it's httpd, under Win32 it's apache.
-	apache-httpd: Ken +1
-	leave it apache: +1 Brian, Ralf, Martin, Jim
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
@@ -211,7 +205,7 @@ Open issues:
 
     * Ken's PR#1053: an error when accessing a negotiated document
       explicitly names the variant selected.  Should it do so, or should
-      the base input name be referenced?
+      the original URI be referenced?
 
     * Proposed API Changes:
 
@@ -233,28 +227,35 @@ Open issues:
 	            Martin +1, Ralf +1, Ken +1
 
     * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
-	to be progressing, and Unix seems quite stable.  It would be in Apache's
-	best interest to continue to support Unix to its utmost, and not delay
-	a release of 1.3.0 waiting for WIN32 issues to be resolved.
+      to be progressing, and Unix seems quite stable.  It would be in Apache's
+      best interest to continue to support Unix to its utmost, and not delay
+      a release of 1.3.0 waiting for WIN32 issues to be resolved.
 
             Notes:
             Randy: I would also argue that 1.3b6 is _not_ stable. I've been 
                    having real fits keeping it alive on a dual processor
                    machine. Could be OS problems..
 
-    * Should we re-enable nagle now that we're non-buffering CGIs?  See various
-	messages from Marc in March 98.
+    * Should we re-enable nagle now that we're non-buffering CGIs?  See
+      various messages from Marc in March 98.
   
     * Listing the operating system's generic name (e.g. Irix, Win32) in
-        SERVER_VERSION:
+      SERVER_VERSION:
 	 o Looks like we want to do this...
 	   Implementation: New API function, ap_add_version_component()
-	    that takes a 'const char *' and tacks it onto the end
-	    of the string returned by ap_get_server_version().
-	
+	   that takes a 'const char *' and tacks it onto the end
+	   of the string returned by ap_get_server_version().  Would allow
+	   modules to add their info at run-time, more closely tracking
+	   reality for dynamically-loaded modules.
+
+	 o Do we want to scrap -DSERVER_SUBVERSION if modules can add
+	   their contribution strings at run-time?
+	     +1: 
+	     -1: Ken
+
 	 o Debate:
 	    Unix:Win32:OS/2 in '()' comment
-	     +1: Jim, Martin, Alexei
+	     +1: Jim, Martin, Alexei, Ken
 	    Irix:AIX:FreeBSD in '()' comment
 
 Win32 specific issues:
