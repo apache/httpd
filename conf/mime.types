@@ -261,6 +261,7 @@ text/vnd.abc
 text/vnd.fmi.flexstor           
 text/vnd.in3d.3dml              
 text/vnd.in3d.spot              
+text/vnd.flatland.3dml
 text/vnd.latex-z                
 text/x-setext			etx
 text/xml			xml
