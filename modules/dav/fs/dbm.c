@@ -76,6 +76,19 @@
 #include <sys/stat.h>           /* for S_IRUSR, etc */
 
 #include "sdbm.h"
+
+/* ### this is still needed for sdbm_open()...
+ * sdbm should be APR-ized really. */
+#ifndef WIN32
+
+#define DAV_FS_MODE_FILE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP)
+
+#else /* WIN32 */
+
+#define DAV_FS_MODE_FILE	(_S_IREAD | _S_IWRITE)
+
+#endif /* WIN32 */
+
 #endif
 
 #include "mod_dav.h"
