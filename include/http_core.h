@@ -330,22 +330,52 @@ AP_DECLARE_DATA extern module core_module;
 
 /* Per-request configuration */
 
-typedef enum {
-    AP_WALK_DIRECTORY,
-    AP_WALK_LOCATION,
-    AP_WALK_FILE,
-    AP_NUM_WALK_CACHES
-} ap_walk_cache_type;
-
 typedef struct {
     /* bucket brigade used by getline for look-ahead and 
      * ap_get_client_block for holding left-over request body */
     struct apr_bucket_brigade *bb;
 
-    /* a place to hold per-request working data for
-     * ap_directory_walk, ap_location_walk, and ap_file_walk */
-    void *walk_cache[AP_NUM_WALK_CACHES];
+    /* an array of per-request working data elements, accessed
+     * by ID using ap_get_request_note()
+     * (Use ap_register_request_note() during initialization
+     * to add elements)
+     */
+    void **notes;
 } core_request_config;
+
+/* Standard entries that are guaranteed to be accessible via
+ * ap_get_request_note() for each request (additional entries
+ * can be added with ap_register_request_note())
+ */
+#define AP_NOTE_DIRECTORY_WALK 0
+#define AP_NOTE_LOCATION_WALK  1
+#define AP_NOTE_FILE_WALK      2
+#define AP_NUM_STD_NOTES       3
+
+/**
+ * Reserve an element in the core_request_config->notes array
+ * for some application-specific data
+ * @return An integer key that can be passed to ap_get_request_note()
+ *         during request processing to access this element for the
+ *         current request.
+ */
+AP_DECLARE(apr_size_t) ap_register_request_note(void);
+
+/**
+ * Retrieve a pointer to an element in the core_request_config->notes array
+ * @param r The request
+ * @param note_num  A key for the element: either a value obtained from
+ *        ap_register_request_note() or one of the predefined AP_NOTE_*
+ *        values.
+ * @return NULL if the note_num is invalid, otherwise a pointer to the
+ *         requested note element.
+ * @remark At the start of a request, each note element is NULL.  The
+ *         handle provided by ap_get_request_note() is a pointer-to-pointer
+ *         so that the caller can point the element to some app-specific
+ *         data structure.  The caller should guarantee that any such
+ *         structure will last as long as the request itself.
+ */
+AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num);
 
 /* Per-directory configuration */
 
