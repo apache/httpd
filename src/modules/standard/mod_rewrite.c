@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.3 (08-Apr-1997)
+**  URL Rewriting Module, Version 3.0.4 (15-Apr-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -143,7 +143,7 @@
 **  o  the order of modules at (**) is the inverted order as
 **     given in the "Configuration" file, i.e. the last module
 **     specified is the first one called for each hook!
-**     The core module is allways the last!
+**     The core module is always the last!
 **
 **  o  there are two different types of result checking and 
 **     continue processing:
@@ -155,11 +155,11 @@
 **     for hook #2,#3,#7,#9:
 **         all hooks are run, independend of result
 **
-**  o  at the last stage, the core module allways 
+**  o  at the last stage, the core module always 
 **       - says "BAD_REQUEST" if r->filename does not begin with "/"
 **       - prefix URL with document_root or replaced server_root
 **         with document_root and sets r->filename
-**       - allways return a "OK" independed if the file really exists
+**       - always return a "OK" independed if the file really exists
 **         or not!
 **
 */
@@ -948,8 +948,8 @@ static int hook_uri2file(request_rec *r)
             /* skip 'scheme:' */
             for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
                 ;
-            /* skip '//' */
-            cp += 2;
+            /* skip '://' */
+            cp += 3;
             /* skip host part */
             for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
@@ -992,7 +992,7 @@ static int hook_uri2file(request_rec *r)
             /* Hack because of underpowered API: passing the current
                rewritten filename through to other URL-to-filename handlers
                just as it were the requested URL. This is to enable
-               post-processing by mod_alias, etc.  which allways act on
+               post-processing by mod_alias, etc.  which always act on
                r->uri! The difference here is: We do not try to
                add the document root */
             r->uri = pstrdup(r->pool, r->filename+12);
@@ -1036,7 +1036,7 @@ static int hook_uri2file(request_rec *r)
                     strncpy(docroot, cp, sizeof(docroot)-1);
                     EOS_PARANOIA(docroot);
 
-                    /* allways NOT have a trailing slash */
+                    /* always NOT have a trailing slash */
                     l = strlen(docroot);
                     if (docroot[l-1] == '/') {
                         docroot[l-1] = '\0';
@@ -1176,8 +1176,8 @@ static int hook_fixup(request_rec *r)
                 /* skip 'scheme:' */
                 for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
                     ;
-                /* skip '//' */
-                cp += 2;
+                /* skip '://' */
+                cp += 3;
                 if ((cp = strchr(cp, '/')) != NULL) {
                     rewritelog(r, 2, "[per-dir %s] trying to replace prefix %s with %s", dconf->directory, dconf->directory, dconf->baseurl);
                     cp2 = subst_prefix_path(r, cp, dconf->directory, dconf->baseurl);
@@ -1193,8 +1193,8 @@ static int hook_fixup(request_rec *r)
             /* skip 'scheme:' */
             for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
                 ;
-            /* skip '//' */
-            cp += 2;
+            /* skip '://' */
+            cp += 3;
             /* skip host part */
             for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
@@ -1264,7 +1264,7 @@ static int hook_fixup(request_rec *r)
 
                 if ((cp = document_root(r)) != NULL) {
                     prefix = pstrdup(r->pool, cp);
-                    /* allways NOT have a trailing slash */
+                    /* always NOT have a trailing slash */
                     l = strlen(prefix);
                     if (prefix[l-1] == '/') {
                         prefix[l-1] = '\0';
@@ -2873,16 +2873,16 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
 
     output = input;
 
-    /* first, remove the local directory prefix */
+    /* first create a match string which always has a trailing slash */
     strncpy(matchbuf, match, sizeof(matchbuf)-1);
     EOS_PARANOIA(matchbuf);
-    /* allways have a trailing slash */
     l = strlen(matchbuf);
     if (matchbuf[l-1] != '/') {
        matchbuf[l] = '/';
        matchbuf[l+1] = '\0';
        l++;
     }
+    /* now compare the prefix */
     if (strncmp(input, matchbuf, l) == 0) {
         rewritelog(r, 5, "strip matching prefix: %s -> %s", output, output+l);
         output = pstrdup(r->pool, output+l); 
@@ -2890,7 +2890,6 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match, char *s
         /* and now add the base-URL as replacement prefix */
         strncpy(substbuf, subst, sizeof(substbuf)-1);
         EOS_PARANOIA(substbuf);
-        /* allways have a trailing slash */
         l = strlen(substbuf);
         if (substbuf[l-1] != '/') {
            substbuf[l] = '/';

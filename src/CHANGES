@@ -1,5 +1,9 @@
 Changes with Apache 1.2
 
+  *) Updated mod_rewrite to 3.0.4: Fixes HTTP redirects from within
+     .htaccess files because the RewriteBase was not replaced correctly.
+     [Ralf S. Engelschall]
+
   *) Back out the HAVE_SHMGET change for Linux because it's too late in
      the beta cycle to deal cleanly with compilation problems on the
      myriad of linux systems out there.  Linux users should see
