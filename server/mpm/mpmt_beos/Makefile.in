@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libmpmt_beos.la
-LTLIBRARY_SOURCES = mpmt_beos.c poll.c
-
-include $(top_srcdir)/build/ltlib.mk
