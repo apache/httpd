@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "MOD_CACHE_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../../os/win32" /I "C:\src\db-4.0.14\build_win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CACHE_DECLARE_EXPORT" /D "MOD_CACHE_EXPORTS" /YX /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "MOD_CACHE_EXPORTS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "CACHE_DECLARE_EXPORT" /D "MOD_CACHE_EXPORTS" /Fd"Release\mod_cache" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release/mod_cache.so"
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache
 
 !ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
 
@@ -68,9 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "MOD_CACHE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../../os/win32" /I "C:\src\db-4.0.14\build_win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "CACHE_DECLARE_EXPORT" /D "MOD_CACHE_EXPORTS" /FD /GZ /c
-# SUBTRACT CPP /YX
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "CACHE_DECLARE_EXPORT" /Fd"Debug\mod_cache" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -79,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_cache.so"
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache
 
 !ENDIF 
 
@@ -94,41 +93,14 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\cache_storage.c
-
-!IF  "$(CFG)" == "mod_cache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
-
-# ADD CPP /Gm-
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\cache_util.c
-
-!IF  "$(CFG)" == "mod_cache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
-
-# ADD CPP /Gm-
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\mod_cache.c
-
-!IF  "$(CFG)" == "mod_cache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
-
-# ADD CPP /Gm-
-
-!ENDIF 
-
 # End Source File
 # End Group
 # Begin Group "Header Files"
