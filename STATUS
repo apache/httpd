@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/26 21:53:06 $]
+Last modified at [$Date: 2004/02/27 21:46:55 $]
 
 Release:
 
@@ -187,7 +187,7 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/winnt/mpm_winnt.c r1.303, r1.306
         server/mpm/winnt/mpm_winnt.h r1.44
         server/mpm/winnt/child.c r1.21
-      +1: trawick, stoddard
+      +1: trawick, stoddard, ake
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during
