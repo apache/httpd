@@ -921,7 +921,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
             n = sizeof(char) * IOBUFSIZE;
 	    stat = apr_read(f, buf, &n);
 	}
-	while (stat != APR_SUCCESS && stat == EINTR);
+	while (stat != APR_SUCCESS && APR_STATUS_IS_EINTR(stat));
 	if (n == -1 || n == 0) {
 	    break;
 	}
