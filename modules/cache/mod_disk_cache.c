@@ -249,7 +249,7 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
  * Hook and mod_cache callback functions
  */
 #define AP_TEMPFILE "/aptmpXXXXXX"
-static int create_entity(cache_handle_t *h, request_rec *r, const char *key)
+static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
