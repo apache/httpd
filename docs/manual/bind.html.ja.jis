@@ -118,7 +118,7 @@
     FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
     ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
     IPv4 コネクションのみを扱うようにしたい場合は、
     次の例のように全ての
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで
