@@ -554,13 +554,27 @@ void RemoveService(char *display_name)
 }
 
 /* A hack to determine if we're running as a service without waiting for
- * the SCM to fail; if AllocConsole succeeds, we're a service.
+ * the SCM to fail; note that you CANNOT start Apache under NT with the
+ * STARTF_FORCEOFFFEEDBACK argument, since this _will_ cause Apache to
+ * believe it was started by the win32 Service Control Manager.
+ *
+ * This is tested under NT 4.0 both with, and without the "Allow Service
+ * to Interact With Desktop" option selected, from the Service Control
+ * applet, the NET START and apache -k start command, and appears very
+ * consistent.  It's no worse than the earlier hack, which is faulty when
+ * created without a console by a user process :)  It is certainly far 
+ * faster and less resource intensive than the Alloc/Destroy console test.
+ * Testing for the si.lpDesktop is far less effective, since Apache is 
+ * passed a desktop name with the "Allow Service to Interact With Desktop" 
+ * option toggled to true.
  */
 
 BOOL isProcessService() {
-    if( !AllocConsole() ) 
+    STARTUPINFO si;
+    si.cb = sizeof(si);
+    GetStartupInfo(&si);
+    if (!isWindowsNT() || !(si.dwFlags & STARTF_FORCEOFFFEEDBACK)) 
         return FALSE;
-    FreeConsole();
     return TRUE;
 }
 
