@@ -10,7 +10,7 @@ available</description>
 
 <directivesynopsis>
 <name>AcceptPathInfo</name>
-<description>Controls whether requests can contain trailing pathname information</description>    
+<description>Resources accept trailing pathname information</description>    
 <syntax>AcceptPathInfo On|Off|Default</syntax>
 <default>AcceptPathInfo Default</default>
 <contextlist><context>server config</context>
@@ -77,7 +77,7 @@ available</description>
 
 <directivesynopsis>
 <name>AccessFileName</name>
-<description>Sets the name of the .htaccess file</description>
+<description>Name of the distributed configuration file</description>
 <syntax>AccessFileName <em>filename</em> [<em>filename</em>] ...</syntax>
 <default>AccessFileName .htaccess</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -85,9 +85,10 @@ available</description>
 
 <usage>
     <p>When returning a document to the client the server looks for
-    the first existing access control file from this list of names
-    in every directory of the path to the document, if access
-    control files are enabled for that directory. For example:</p>
+    the first existing configuration file from this list of names in
+    every directory of the path to the document, if distributed
+    configuration files are enabled for that directory. For
+    example:</p>
 
 <example>
 AccessFileName .acl
@@ -111,14 +112,14 @@ AccessFileName .acl
 
 <directivesynopsis>
 <name>AddDefaultCharset</name>
-<description>Specifies the default character set to be added for a
+<description>Default character set to be added for a
 response without an explicit character set</description>
 <syntax>AddDefaultCharset On|Off|<em>charset</em></syntax>
 <default>AddDefaultCharset Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-
+<override>FileInfo</override>
 
 <usage>
 
@@ -141,9 +142,10 @@ response without an explicit character set</description>
 
 <directivesynopsis>
 <name>AllowOverride</name>
-<description>Sets the types of directives that are allowed in
+<description>Types of directives that are allowed in
 .htaccess files</description>
-<syntax>AllowOverride All|None|<em>directive-type</em> [<em>directive-type</em>] ...</syntax>
+<syntax>AllowOverride All|None|<em>directive-type</em> 
+[<em>directive-type</em>] ...</syntax>
 <default>AllowOverride All</default>
 <contextlist><context>directory</context></contextlist>
 
@@ -239,7 +241,7 @@ response without an explicit character set</description>
 
 <directivesynopsis>
 <name>AuthName</name>
-<description>Sets the authorization realm for use in HTTP
+<description>Authorization realm for use in HTTP
 authentication</description>
 <syntax>AuthName <em>auth-domain</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -273,7 +275,7 @@ authentication</description>
 
 <directivesynopsis>
 <name>AuthType</name>
-<description>Selects the type of user authentication</description>
+<description>Type of user authentication</description>
 <syntax>AuthType Basic|Digest</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -306,7 +308,6 @@ headers</description>
 </contextlist>
 <override>Options</override>
 <status>Experimental</status>
-<compatibility>Available in Apache 1.1 and later</compatibility>
 
 <usage>
     <p>This directive enables the generation of
@@ -339,7 +340,7 @@ headers</description>
 
 <directivesynopsis>
 <name>DefaultType</name>
-<description>Sets the MIME content-type that will be sent if the
+<description>MIME content-type that will be sent if the
 server cannot determine a type in any other way</description>
 <syntax>DefaultType <em>MIME-type</em></syntax>
 <default>DefaultType text/plain</default>
@@ -383,15 +384,17 @@ named file-system directory and sub-directories</description>
 <usage>
     <p><directive type="section">Directory</directive> and
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
-    directives which will apply only to the named directory and
-    sub-directories of that directory. Any directive which is allowed
+    directives that will apply only to the named directory and
+    sub-directories of that directory. Any directive that is allowed
     in a directory context may be used.  <em>Directory-path</em> is
-    either the full path to a directory, or a wild-card string. In a
-    wild-card string, `?' matches any single character, and `*'
-    matches any sequences of characters.  You may
-    also use `[]' character ranges like in the shell. Also as of
-    Apache 1.3 none of the wildcards match a `/' character, which more
-    closely mimics the behavior of Unix shells. Example:</p>
+    either the full path to a directory, or a wild-card string using
+    Unix shell-style matching. In a wild-card string, `?' matches any
+    single character, and `*' matches any sequences of characters.
+    You may also use `[]' character ranges. None of the wildcards
+    match a `/' character, so <code>&lt;Dircectory
+    /*/public_html&gt;</code> will not match
+    <code>/home/user/public_html</code>, but <code>&lt;Directory
+    /home/*/public_html&gt;</code> will match. Example:</p>
 <example>
    &lt;Directory /usr/local/httpd/htdocs&gt;<br />
 &nbsp;&nbsp;Options Indexes FollowSymLinks<br />
@@ -419,7 +422,7 @@ named file-system directory and sub-directories</description>
        &nbsp;&nbsp;AllowOverride None<br />
        &lt;/Directory&gt;<br />
       <br />
-       &lt;Directory /home/*&gt;<br />
+       &lt;Directory /home/&gt;<br />
        &nbsp;&nbsp;AllowOverride FileInfo<br />
        &lt;/Directory&gt;
 </example>
@@ -518,7 +521,7 @@ combined when a request is received</seealso>
 
 <directivesynopsis>
 <name>DocumentRoot</name>
-<description>Sets the directory that forms the main document tree visible
+<description>Directory that forms the main document tree visible
 from the web</description>
 <syntax>DocumentRoot <em>directory-path</em></syntax>
 <default>DocumentRoot /usr/local/apache/htdocs</default>
@@ -546,20 +549,21 @@ Location</a></seealso>
 
 <directivesynopsis>
 <name>EnableMMAP</name>
-<description>Controls whether the httpd uses memory-mapping to read files
-during delivery</description>
+<description>Use memory-mapping to read files during delivery</description>
 <syntax>EnableMMAP on|off</syntax>
 <default>EnableMMAP on</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
-    <p>This directive controls whether the httpd may use memory-mapping
-    if it needs to read the contents of a file during delivery.  By default,
-    when the handling of a request requires access to the data within a file--
-    for example, when delivering a server-parsed file using <module>mod_include</module>--
-    Apache memory-maps the file if the OS supports it.
+    <p>This directive controls whether the httpd may use
+    memory-mapping if it needs to read the contents of a file during
+    delivery.  By default, when the handling of a request requires
+    access to the data within a file-- for example, when delivering a
+    server-parsed file using <module>mod_include</module>-- Apache
+    memory-maps the file if the OS supports it.
     </p>
     <p>
     This memory-mapping sometimes yields a performance improvement.
@@ -585,7 +589,7 @@ during delivery</description>
 
 <directivesynopsis>
 <name>ErrorDocument</name>
-<description>Specifies what the server will return to the client
+<description>What the server will return to the client
 in case of an error</description>
 <syntax>ErrorDocument <em>error-code document</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -656,8 +660,7 @@ in case of an error</description>
 
 <directivesynopsis>
 <name>ErrorLog</name>
-<description>Sets the name of the file to which the server
-will log errors</description>    
+<description>Location where the server will log errors</description>    
 <syntax> ErrorLog <em>file-path</em>|syslog[:<em>facility</em>]</syntax>
 <default>ErrorLog logs/error_log (Unix)
 ErrorLog logs/error.log (Windows and OS/2)</default>
@@ -692,7 +695,7 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
 
 <directivesynopsis>
 <name>FileETag</name>
-<description>Configures the file attributes used to create the ETag
+<description>File attributes used to create the ETag
 HTTP response header</description>
 <syntax>FileETag <em>component</em> ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -745,12 +748,13 @@ HTTP response header</description>
 
 <directivesynopsis type="section">
 <name>Files</name>
-<description>Contains that directives that apply to matched
+<description>Contains directives that apply to matched
 filenames</description>
 <syntax>&lt;Files <em>filename</em>&gt; ... &lt;/Files&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive type="section">Files</directive> directive
@@ -760,7 +764,7 @@ filenames</description>
     type="directive">Location</directive> directives. It should be
     matched with a <code>&lt;/Files&gt;</code> directive. The
     directives given within this section will be applied to any object
-    with a basename (last component of filename) matching the
+    with a basename (not a full path) matching the
     specified filename. <directive type="section">Files</directive>
     sections are processed in the order they appear in the
     configuration file, after the <directive module="core"
@@ -800,12 +804,13 @@ filenames</description>
 
 <directivesynopsis type="section">
 <name>FilesMatch</name>
-<description>Contains that directives that apply to regular-expression matched
+<description>Contains directives that apply to regular-expression matched
 filenames</description>
 <syntax>&lt;FilesMatch <em>regex</em>&gt; ... &lt;/FilesMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive type="section">FilesMatch</directive> directive
@@ -832,6 +837,7 @@ MIME content-type</description>
 <syntax>ForceType <em>mime-type</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 <compatibility>Moved to the core in Apache 2.0</compatibility>
 
 <usage>
@@ -901,7 +907,8 @@ MIME content-type</description>
 user</description>
 <syntax>IdentityCheck on|off</syntax>
 <default>IdentityCheck off</default>
-
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 <usage>
     <p>This directive enables RFC1413-compliant logging of the
     remote user name for each connection, where the client machine
@@ -929,6 +936,7 @@ if a test is true at startup</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <code>&lt;IfDefine
@@ -984,6 +992,7 @@ presence of absence of a specific module</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <code>&lt;IfModule
@@ -1026,7 +1035,9 @@ presence of absence of a specific module</description>
 <description>Includes other configuration files from within
 the server configuration files</description>
 <syntax>Include <em>file-path</em>|<em>directory-path</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
 
 <usage>
     <p>This directive allows inclusion of other configuration files
@@ -1080,7 +1091,7 @@ the server configuration files</description>
 
 <directivesynopsis>
 <name>KeepAlive</name>
-<description>Turns on or off HTTP persistent connections.</description>
+<description>Enables HTTP persistent connections</description>
 <syntax>KeepAlive on|off</syntax>
 <default>KeepAlive On</default>
 <contextlist><context>server config</context></contextlist>
@@ -1112,7 +1123,7 @@ the server configuration files</description>
 
 <directivesynopsis>
 <name>KeepAliveTimeout</name>
-<description>Sets the amount of time the server will wait for subsequent
+<description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>
 <syntax>KeepAliveTimeout <em>seconds</em></syntax>
 <default>KeepAliveTimeout 15</default>
@@ -1133,13 +1144,14 @@ requests on a persistent connection</description>
 
 <directivesynopsis type="section">
 <name>Limit</name>
-<description>Restrict access controls to only certain HTTP
+<description>Restrict enclosed access controls to only certain HTTP
 methods</description>    
 <syntax>&lt;Limit <em>method</em> [<em>method</em>] ... &gt; ...
     &lt;/Limit&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>Access controls are normally effective for
@@ -1178,6 +1190,7 @@ except the named ones</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p><directive type="section">LimitExcept</directive> and
@@ -1210,6 +1223,7 @@ from the client</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>This directive specifies the number of <em>bytes</em> from 0
@@ -1618,7 +1632,7 @@ matching URLs</description>
 
 <directivesynopsis>
 <name>MaxKeepAliveRequests</name>
-<description>Sets the number of requests allowed on a persistent 
+<description>Number of requests allowed on a persistent 
 connection</description>
 <syntax>MaxKeepAliveRequests <em>number</em></syntax>
 <default>MaxKeepAliveRequests 100</default>
@@ -1640,7 +1654,7 @@ connection</description>
 
 <directivesynopsis>
 <name>NameVirtualHost</name>
-<description>Configures an IP address for name-virtual
+<description>Designates an IP address for name-virtual
 hosting</description>
 <syntax>NameVirtualHost <em>addr</em>[:<em>port</em>]</syntax>
 <contextlist><context>server config</context></contextlist>
@@ -1883,8 +1897,6 @@ by Apache children</description>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Moved in version 2.0 to
-    the <a href="../mpm.html">MPMs</a></compatibility>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1917,8 +1929,6 @@ by Apache children</description>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Moved in version 2.0 to the <a
-href="../mpm.html">MPMs</a>.</compatibility>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1951,8 +1961,6 @@ processes launched by Apache children</description>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Moved in version 2.0 to the <a
-href="../mpm.html">MPMs</a>.</compatibility>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1985,12 +1993,13 @@ href="../mpm.html">MPMs</a>.</compatibility>
 
 <directivesynopsis>
 <name>Satisfy</name>
-<description>Configures how host-level access control and user authentication
-interact</description>
+<description>Interaction between host-level access control and 
+user authentication</description>
 <syntax>Satisfy any|all</syntax>
 <default>Satisfy all</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>Access policy if both <directive
@@ -2025,12 +2034,13 @@ interact</description>
 
 <directivesynopsis>
 <name>ScriptInterpreterSource</name>
-<description>Controls how the interpreter for CGI scripts is
-located</description>
+<description>Technique for locating the interpreter for CGI 
+scripts</description>
 <syntax>ScriptInterpreterSource registry|script</syntax>
 <default>ScriptInterpreterSource script</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 <compatibility>Win32 only</compatibility>
 
 <usage>
@@ -2045,7 +2055,7 @@ located</description>
 
 <directivesynopsis>
 <name>ServerAdmin</name>
-<description>Sets the email address that the server includes in error
+<description>Email address that the server includes in error
 messages sent to the client</description>
 <syntax>ServerAdmin <em>email-address</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -2066,7 +2076,7 @@ messages sent to the client</description>
 
 <directivesynopsis>
 <name>ServerAlias</name>
-<description>Sets alternate names for a host used when matching requests
+<description>Alternate names for a host used when matching requests
 to name-virtual hosts</description>
 <syntax>ServerAlias <em>hostname</em> [<em>hostname</em>] ...</syntax>
 <contextlist><context>virtual host</context></contextlist>
@@ -2089,7 +2099,7 @@ to name-virtual hosts</description>
 
 <directivesynopsis>
 <name>ServerName</name>
-<description>Sets the hostname and port that the server uses to identify
+<description>Hostname and port that the server uses to identify
 itself</description>
 <syntax>ServerName <em>fully-qualified-domain-name[:port]</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -2142,7 +2152,7 @@ itself</description>
 
 <directivesynopsis>
 <name>ServerPath</name>
-<description>Sets the legacy URL pathname for a name-virtual host that
+<description>Legacy URL pathname for a name-virtual host that
 is accessed by an incompatible browser</description>
 <syntax>ServerPath <em>directory-path</em></syntax>
 <contextlist><context>virtual host</context></contextlist>
@@ -2157,7 +2167,7 @@ is accessed by an incompatible browser</description>
 
 <directivesynopsis>
 <name>ServerRoot</name>
-<description>Sets the base directory for the server installation</description>
+<description>Base directory for the server installation</description>
 <syntax>ServerRoot <em>directory-path</em></syntax>
 <default>ServerRoot /usr/local/apache</default>
 <contextlist><context>server config</context></contextlist>
@@ -2184,6 +2194,7 @@ is accessed by an incompatible browser</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive>ServerSignature</directive> directive allows the
@@ -2253,6 +2264,7 @@ handler</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 <compatibility>Moved into the core in Apache 2.0</compatibility>
 
 <usage>
@@ -2289,6 +2301,7 @@ input</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>The <directive>SetInputFilter</directive> directive sets the
@@ -2313,6 +2326,7 @@ server</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>The <directive>SetOutputFilter</directive> directive sets the filters
@@ -2340,7 +2354,7 @@ server</description>
 
 <directivesynopsis>
 <name>TimeOut</name>
-<description>Defines the amount of time the server will wait for
+<description>Amount of time the server will wait for
 certain events before failing a request</description>
 <syntax>TimeOut <em>number</em></syntax>
 <default>TimeOut 300</default>
@@ -2377,8 +2391,7 @@ port</description>
 <syntax>UseCanonicalName on|off|dns</syntax>
 <default>UseCanonicalName on</default>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<override>Options</override>
+<context>directory</context></contextlist>
 
 <usage>
     <p>In many situations Apache has to construct a
