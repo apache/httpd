@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/09 11:16:09 $]
+  Last modified at [$Date: 1999/06/09 11:31:14 $]
 
 Release:
 
@@ -120,10 +120,6 @@ Available Patches:
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
 	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
-
-    * John Giannadrea's patch for ceiling on file size for mmap (PR#4122)
-	Message-ID: <19990325094501.5997.qmail@hyperreal.org>
-	Status: Ken +1, Dean +1, Randy +1, Lars +1, Jim +1
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
