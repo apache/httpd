@@ -52,6 +52,16 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     CoreR\buildmark.obj</CODE> (and similarly for <CODE>del
     CoreD\buildmark.obj</CODE>). See 
     <A HREF="http://bugs.apache.org/index/full/1473">PR#1473</A>.
+<LI><b>Solaris 2.6</b> users may have troubles compiling the server with
+    gcc.  As is frequently the case with gcc compilation troubles, this
+    is the result of an improperly built gcc.  The gcc for solaris 2.6
+    found at <a href="http://www.sunfreeware.com/">www.sunfreeware.com</a> 
+    was built with a beta version of solaris 2.6.  The release version
+    has changed significantly enough that this version will not properly
+    work with it.  There are two workarounds mentioned in
+    <a href="http://bugs.apache.org/index/full/1336">PR#1336</a>.
+    <b>This is not an Apache bug, and no code will be changed to deal with
+    it.</b>
 </OL>
 
 <H2>Apache 1.3b2 Bugs</H2>
