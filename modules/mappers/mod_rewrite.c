@@ -196,9 +196,8 @@
 #define RAND_MAX 32767
 #endif
 
-#define MAX_ENV_FLAGS 15
-#define MAX_COOKIE_FLAGS 15
 /* max cookie size in rfc 2109 */
+/* XXX: not used at all. We should do a check somewhere and/or cut the cookie */
 #define MAX_COOKIE_LEN 4096
 
 /* max number of regex captures */
@@ -269,17 +268,23 @@ typedef struct {
     pattern_type ptype;   /* pattern type                  */
 } rewritecond_entry;
 
+/* single linked list for env vars and cookies */
+typedef struct data_item {
+    struct data_item *next;
+    char *data;
+} data_item;
+
 typedef struct {
     apr_array_header_t *rewriteconds;/* the corresponding RewriteCond entries */
-    char    *pattern;                /* the RegExp pattern string             */
-    regex_t *regexp;                 /* the RegExp pattern compilation        */
-    char    *output;                 /* the Substitution string               */
-    int      flags;                  /* Flags which control the substitution  */
-    char    *forced_mimetype;        /* forced MIME type of substitution      */
-    int      forced_responsecode;    /* forced HTTP redirect response status  */
-    char    *env[MAX_ENV_FLAGS+1];   /* added environment variables           */
-    char    *cookie[MAX_COOKIE_FLAGS+1]; /* added cookies                     */
-    int      skip;                   /* number of next rules to skip          */
+    char      *pattern;              /* the RegExp pattern string             */
+    regex_t   *regexp;               /* the RegExp pattern compilation        */
+    char      *output;               /* the Substitution string               */
+    int        flags;                /* Flags which control the substitution  */
+    char      *forced_mimetype;      /* forced MIME type of substitution      */
+    int        forced_responsecode;  /* forced HTTP redirect response status  */
+    data_item *env;                  /* added environment variables           */
+    data_item *cookie;               /* added cookies                         */
+    int        skip;                 /* number of next rules to skip          */
 } rewriterule_entry;
 
 typedef struct {
@@ -2121,14 +2126,15 @@ static void add_env_variable(request_rec *r, char *s)
     }
 }
 
-static void do_expand_env(request_rec *r, char *env[],
+static void do_expand_env(request_rec *r, data_item *env,
                           backrefinfo *briRR, backrefinfo *briRC)
 {
-    int i;
-
-    for (i = 0; env[i] != NULL; i++) {
-        add_env_variable(r, do_expand(r, env[i], briRR, briRC));
+    while (env) {
+        add_env_variable(r, do_expand(r, env->data, briRR, briRC));
+        env = env->next;
     }
+
+    return;
 }
 
 /*
@@ -2198,14 +2204,15 @@ static void add_cookie(request_rec *r, char *s)
     }
 }
 
-static void do_expand_cookie( request_rec *r, char *cookie[],
-                              backrefinfo *briRR, backrefinfo *briRC)
+static void do_expand_cookie(request_rec *r, data_item *cookie,
+                             backrefinfo *briRR, backrefinfo *briRC)
 {
-    int i;
-
-    for (i = 0; cookie[i] != NULL; i++) {
-        add_cookie(r, do_expand(r, cookie[i], briRR, briRC));
+    while (cookie) {
+        add_cookie(r, do_expand(r, cookie->data, briRR, briRC));
+        cookie = cookie->next;
     }
+
+    return;
 }
 
 #if APR_HAS_USER
@@ -2980,7 +2987,6 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 {
     rewriterule_entry *cfg = _cfg;
     int status = 0;
-    int i = 0;
 
     switch (*key++) {
     case 'c':
@@ -2990,32 +2996,42 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         }
         else if (((*key == 'O' || *key == 'o') && !key[1])
                  || !strcasecmp(key, "ookie")) {           /* cookie */
-            while (cfg->cookie[i] && i < MAX_COOKIE_FLAGS) {
-                ++i;
-            }
-            if (i < MAX_COOKIE_FLAGS) {
-                cfg->cookie[i] = apr_pstrdup(p, val);
-                cfg->cookie[i+1] = NULL;
+            data_item *cp = cfg->cookie;
+
+            if (!cp) {
+                cp = cfg->cookie = apr_palloc(p, sizeof(*cp));
             }
             else {
-                return "RewriteRule: too many cookie flags 'CO'";
+                while (cp->next) {
+                    cp = cp->next;
+                }
+                cp->next = apr_palloc(p, sizeof(*cp));
+                cp = cp->next;
             }
+
+            cp->next = NULL;
+            cp->data = val;
         }
         break;
 
     case 'e':
     case 'E':
         if (!*key || !strcasecmp(key, "nv")) {             /* env */
-            while (cfg->env[i] && i < MAX_ENV_FLAGS) {
-                ++i;
-            }
-            if (i < MAX_ENV_FLAGS) {
-                cfg->env[i] = apr_pstrdup(p, val);
-                cfg->env[i+1] = NULL;
+            data_item *cp = cfg->env;
+
+            if (!cp) {
+                cp = cfg->env = apr_palloc(p, sizeof(*cp));
             }
             else {
-                return "RewriteRule: too many environment flags 'E'";
+                while (cp->next) {
+                    cp = cp->next;
+                }
+                cp->next = apr_palloc(p, sizeof(*cp));
+                cp = cp->next;
             }
+
+            cp->next = NULL;
+            cp->data = val;
         }
         break;
 
@@ -3159,8 +3175,8 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->forced_mimetype     = NULL;
     newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
     newrule->flags  = RULEFLAG_NONE;
-    newrule->env[0] = NULL;
-    newrule->cookie[0] = NULL;
+    newrule->env = NULL;
+    newrule->cookie = NULL;
     newrule->skip   = 0;
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
