@@ -66,44 +66,6 @@
 #include <time.h>
 #endif
 
-#ifdef NOTDEF
-extern char** environ;
-
-/* taken from bdflush-1.5 for Linux source code */
-void inststr(char *dst[], int argc, char *src)
-{
-    if (strlen(src) <= strlen(dst[0]))
-    {
-        char *ptr;
-
-        for (ptr = dst[0]; *ptr; *(ptr++) = '\0');
-
-        strcpy(dst[0], src);
-    } else
-    {
-        /* stolen from the source to perl 4.036 (assigning to $0) */
-        char *ptr, *ptr2;
-        int count;
-        ptr = dst[0] + strlen(dst[0]);
-        for (count = 1; count < argc; count++) {
-            if (dst[count] == ptr + 1)
-                ptr += strlen(++ptr);
-        }
-        if (environ[0] == ptr + 1) {
-            for (count = 0; environ[count]; count++)
-                if (environ[count] == ptr + 1)
-                    ptr += strlen(++ptr);
-        }
-        count = 0;
-        for (ptr2 = dst[0]; ptr2 <= ptr; ptr2++) {
-            *ptr2 = '\0';
-            count++;
-        }
-        strncpy(dst[0], src, count);
-    }
-}
-#endif
-
 char *get_time() {
     time_t t;
     char *time_string;
