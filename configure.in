@@ -142,7 +142,7 @@ esac
 APACHE_SUBST(SHLTCFLAGS)
 APACHE_SUBST(LTCFLAGS)
 
-AP_SIG_GRACEFUL=SIGUSR1
+AP_SIG_GRACEFUL=USR1
 
 case $host in
   *-apple-aux3*)
@@ -160,7 +160,7 @@ case $host in
   *-linux-*)
       case `uname -r` in
         2.0* ) 
-            AP_SIG_GRACEFUL=SIGWINCH
+            AP_SIG_GRACEFUL=WINCH
             ;;
         2.[[2-9]]* ) 
             APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
@@ -353,9 +353,14 @@ if test "$SINGLE_LISTEN_UNSERIALIZED_ACCEPT" = "1"; then
               [This platform doesn't suffer from the thundering herd problem])
 fi
 
-AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL, $AP_SIG_GRACEFUL, [Signal used to gracefully restart])
-AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_STRING, "$AP_SIG_GRACEFUL", [Signal used to gracefully restart (as a quoted string)])
+AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL, SIG$AP_SIG_GRACEFUL, [Signal used to gracefully restart])
+AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_STRING, "SIG$AP_SIG_GRACEFUL", [Signal used to gracefully restart (as a quoted string)])
+AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_SHORT, $AP_SIG_GRACEFUL, [Signal used to gracefully restart (without SIG prefix)])
+AP_SIG_GRACEFUL_SHORT=$AP_SIG_GRACEFUL
+AP_SIG_GRACEFUL=SIG$AP_SIG_GRACEFUL_SHORT
 AC_SUBST(AP_SIG_GRACEFUL)
+AC_SUBST(AP_SIG_GRACEFUL_STRING)
+AC_SUBST(AP_SIG_GRACEFUL_SHORT)
 
 dnl check for endianness
 if test "$cross_compiling" = "no"; then
