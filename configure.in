@@ -285,7 +285,7 @@ case "$host_alias" in
     ;;
 esac
 
-AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl,,[
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile,,[
   APACHE_GEN_MAKEFILES
 ])
 
