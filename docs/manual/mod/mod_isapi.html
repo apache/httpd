@@ -19,14 +19,13 @@
 <P>This module is contained in the <CODE>mod_isapi.c</CODE> file, and is
    compiled in by default. It provides support for ISAPI Extensions when
    running under Microsoft Windows. Any document with a handler of
-   <CODE>isapi-isa</CODE> will be processed by this module.
+   <CODE>isapi-isa</CODE> will be processed by this module.</P>
 
 <H2>Purpose</H2>
 
-<P>This module implements the <A
-   HREF="http://www.microsoft.com/win32dev/apiext/isapimrg.htm">ISAPI
-   Extension</A> API. It allows Internet Server Applications (<EM>i.e.</EM>, ISAPI
-   Extensions) to be used with Apache for Windows.
+<P>This module implements the ISAPI handler extension API, version 2.0. 
+   It allows Internet Server Applications (<EM>i.e.</EM>, ISAPI handlers) 
+   to be used with Apache for Windows.</P>
 
 <H2>Usage</H2>
 
@@ -47,7 +46,7 @@
 
 <P>Apache's ISAPI implementation conforms to all of the ISAPI 2.0
    specification, except for the "Microsoft-specific" extensions dealing
-   with asynchronous I/O. Apache's I/O model does not allow asynchronous
+   with asynchronous I/O.  Apache's I/O model does not allow asynchronous
    reading and writing in a manner that the ISAPI could access. If an ISA
    tries to access async I/O, a message will be place in the error log,
    to help with debugging.
