@@ -30,7 +30,7 @@
         <directive module="core">SetHandler</directive>
       </directivelist>
     </related>
-    
+
 
     <p>A "handler" is an internal Apache representation of the
     action to be performed when a file is called. Generally, files
@@ -86,7 +86,7 @@
       <p>The following directives will cause requests for files with
       the <code>html</code> extension to trigger the launch of the
       <code>footer.pl</code> CGI script.</p>
-      
+
       <example>
         Action add-footer /cgi-bin/footer.pl<br/>
         AddHandler add-footer .html
@@ -96,7 +96,7 @@
       originally requested document (pointed to by the
       <code>PATH_TRANSLATED</code> environment variable) and making
       whatever modifications or additions are desired.</p>
- 
+
     </section>
     <section id="example2">
       <title>Files with HTTP headers</title>
@@ -113,7 +113,7 @@
         SetHandler send-as-is<br/>
         &lt;/Directory&gt;
       </example>
-      
+
     </section>
   </section>
   <section id="programmer">
