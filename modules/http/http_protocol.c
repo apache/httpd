@@ -3144,7 +3144,7 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
     va_list va;
     const char *s;
     apr_size_t len;
-    apr_size_t written;
+    apr_size_t written = 0;
 
     if (r->connection->aborted)
         return -1;
