@@ -1,3 +1,12 @@
+Changes with Apache 1.2b4:
+
+  *) Fix bug in suexec wrapper introduced in b3 that would cause failed
+     execution for ~userdir CGI. [Jason Dour]
+
+  *) Fix initgroups() business in suexec wrapper. [Jason Dour]
+
+  *) Fix month off by one in suexec wrapper logging
+
 Changes with Apache 1.2b3:
 
   *) Fix error in mod_cgi which could cause resources not to be properly
