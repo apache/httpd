@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/15 23:33:27 $]
+Last modified at [$Date: 2004/08/15 23:58:19 $]
 
 Release:
 
@@ -76,13 +76,12 @@ PATCHES TO BACKPORT FROM 2.1
     *) [SECURITY] mod_ssl: Fix potential infinite loop.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.124&r2=1.125
        PR: 29964
-       jorton: +1
+       +1: jorton, nd
 
     *) mod_ssl: Use anon shm in shmcb by default.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
        PR: 21335
-       jorton: +1
-       minfrin: +1
+       +1: jorton, minfrin, nd
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
