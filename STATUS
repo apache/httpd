@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 18:41:45 $]
+Last modified at [$Date: 2002/02/04 18:51:59 $]
 
 Release:
 
@@ -45,9 +45,9 @@ RELEASE SHOWSTOPPERS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, Linux 2.2 & 2.4
         for beta
-            +1 : Justin, Ian, Jeff Trawick, BillS, BrianP, Aaron, Jim
+            +1 : Justin, Ian, Jeff Trawick, BrianP, Aaron, Jim
             +0 : Lars
-            -1 :
+            -1 : BillS, BillR
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
@@ -77,8 +77,10 @@ RELEASE SHOWSTOPPERS:
                 +1: Justin, Cliff, Aaron, BillS, Jim, trawick
                 +0:
                 -1:
-            * hasn't run for 3 days on Daedalus 
-            * the release has underscores instead of periods.
+
+            * FirstBill reports problem [re]starting as-a-service, shared
+              score is suspect.  OtherBill is investigating, definately
+              a showstopper for a .31/.32 beta.  Progress report later today.
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
