@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
+# ADD LINK32 kernel32.lib wsock32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
 
 !ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
+# ADD LINK32 kernel32.lib wsock32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_usertrack.so" /base:@"BaseAddr.ref",mod_usertrack
 
 !ENDIF 
 
