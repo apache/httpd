@@ -1332,7 +1332,7 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
+void ap_run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
 {
     module *m;
 

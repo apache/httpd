@@ -87,14 +87,14 @@ API_VAR_IMPORT char *ap_scoreboard_fname;
 
 static ap_shmem_t *scoreboard_shm = NULL;
 
-ap_status_t cleanup_shared_mem(void *d)
+static ap_status_t cleanup_shared_mem(void *d)
 {
     mm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     ap_shm_destroy(scoreboard_shm);
 }
 
-void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     char buf[512];
     const char *fname;
