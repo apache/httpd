@@ -1894,6 +1894,9 @@ static const char *add_version_component(cmd_parms *cmd, void *mconfig,
 static const char *enable_platform_announcement(cmd_parms *cmd, void *mconfig,
 						int flag)
 {
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) return err;
+
     ap_note_platform = flag;
     return NULL;
 }
