@@ -137,6 +137,10 @@ static int tls_filter_inserter(conn_rec *c)
     pCtx->pStateMachine=SSLStateMachine_new(pConfig->szCertificateFile,
 					    pConfig->szKeyFile);
 
+    if (!pCtx->pStateMachine) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     pCtx->pInputFilter=ap_add_input_filter(s_szTLSFilterName,pCtx,NULL,c);
     pCtx->pOutputFilter=ap_add_output_filter(s_szTLSFilterName,pCtx,NULL,c);
     pCtx->pbbInput=apr_brigade_create(c->pool);
