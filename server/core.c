@@ -2938,8 +2938,8 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         *readbytes += len;
         /* We didn't find an APR_ASCII_LF within the predefined maximum
          * line length. */
-        if (len >= HUGE_STRING_LEN) {
-            return len;
+        if (*readbytes >= HUGE_STRING_LEN) {
+            break;
         }
     }
 
