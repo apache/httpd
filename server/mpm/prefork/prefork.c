@@ -3084,7 +3084,6 @@ LISTEN_COMMANDS
 
 module MODULE_VAR_EXPORT mpm_prefork_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* post_config */
     NULL, 			/* child_init */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
