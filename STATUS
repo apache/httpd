@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/10 19:28:29 $]
+Last modified at [$Date: 2000/04/10 22:26:32 $]
 
 Release:
 
@@ -19,7 +19,8 @@ RELEASE SHOWSTOPPERS:
       used on Unix because of the limitations these impose on some platforms,
       for example the 256 File * limit on Solaris.
 
-    * Fix SAFEREAD.  Can somebody detail what is wrong with SAFEREAD?
+    * Fix SAFEREAD.
+	see <Pine.LNX.4.21.0004101511380.7822-100000@twinlark.arctic.org>
 
     * Fix lingering close
         Status:
