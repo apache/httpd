@@ -494,7 +494,7 @@ static int volatile is_graceful;
  * child to force an exit) and so do an exit anyway.
  */
 
-static void ap_start_shutdown(void)
+void ap_start_shutdown(void)
 {
     if (shutdown_pending == 1) {
 	/* Um, is this _probably_ not an error, if the user has
@@ -507,7 +507,7 @@ static void ap_start_shutdown(void)
 }
 
 /* do a graceful restart if graceful == 1 */
-static void ap_start_restart(int graceful)
+void ap_start_restart(int graceful)
 {
 
     if (restart_pending == 1) {

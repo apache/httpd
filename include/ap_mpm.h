@@ -112,6 +112,22 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *pconf, ap_context_t *plog, server_rec *
    used by the connection loop */
 API_EXPORT(int) ap_graceful_stop_signalled(void);
 
+/*
+ * ap_start_shutdown() and ap_start_restart() are functions to initiate 
+ * shutdown or restart without relying on signals. 
+ *
+ * These should only be called from the parent process itself, since the
+ * parent process will use the shutdown_pending and restart_pending variables
+ * to determine whether to shutdown or restart. The child process should
+ * call signal_parent() directly to tell the parent to die -- this will
+ * cause neither of those variable to be set, which the parent will
+ * assume means something serious is wrong (which it will be, for the
+ * child to force an exit) and so do an exit anyway.
+ */
+
+void ap_start_shutdown(void);
+void ap_start_restart(int graceful);
+
 #ifdef HAS_OTHER_CHILD
 /*
  * register an other_child -- a child which the main loop keeps track of

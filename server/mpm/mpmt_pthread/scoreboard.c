@@ -5,6 +5,7 @@
 #include "http_config.h"
 #include "unixd.h"
 #include "http_conf_globals.h"
+#include "mpm_status.h"
 #include "mpmt_pthread.h"
 #include "scoreboard.h"
 #ifdef USE_SHMGET_SCOREBOARD
