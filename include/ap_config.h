@@ -1197,6 +1197,8 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #elif defined(SELECT_NEEDS_CAST)
 #define ap_select(_a, _b, _c, _d, _e)   \
     select((_a), (int *)(_b), (int *)(_c), (int *)(_d), (_e))
+#elif defined(OS2)
+int ap_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 #else
 #define ap_select(_a, _b, _c, _d, _e)   \
 	select(_a, _b, _c, _d, _e)
