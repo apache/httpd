@@ -183,58 +183,6 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     return OK;
 }
 
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen);
-
-/* converts a series of buckets into a string */
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen)
-{
-    apr_bucket *e;
-    apr_status_t rv;
-    char *pos = buff;
-    char *response;
-    int found = 0;
-    size_t len;
-
-    /* start with an empty string */
-    buff[0] = 0;
-
-    /* get line-at-a-time */
-    c->remain = 0;
-
-    /* loop through each brigade */
-    while (!found) {
-
-	/* get brigade from network */
-	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING))) {
-	    return rv;
-	}
-
-	/* loop through each bucket */
-	while (!found && !APR_BRIGADE_EMPTY(bb)) {
-	    e = APR_BRIGADE_FIRST(bb);
-	    if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
-		return rv;
-	    }
-	    /* is string LF terminated? */
-	    if (memchr(response, APR_ASCII_LF, len)) {
-		found = 1;
-	    }
-	    /* concat strings until buff is full - then throw the data away */
-	    if (len > ((bufflen-1)-(pos-buff))) {
-		len = (bufflen-1)-(pos-buff);
-	    }
-	    if (len > 0) {
-		pos = apr_cpystrn(pos, response, len);
-	    }
-	    APR_BUCKET_REMOVE(e);
-	    apr_bucket_destroy(e);
-	}
-    }
-
-    return APR_SUCCESS;
-
-}
-
 /* we chop lines longer than 80 characters */
 #define MAX_LINE_LEN 80
 
@@ -244,7 +192,7 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buf
  */
 static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade *bb, char *msgbuf, int msglen)
 {
-    int len = 0, status;
+    int status;
     char response[MAX_LINE_LEN];
     char buff[5];
     char *mb = msgbuf,
@@ -263,30 +211,13 @@ static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade *bb, char *msgbuf, int 
 
     mb = apr_cpystrn(mb, response+4, me - mb);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, c->base_server,
-		 "proxy: FTP: line [%s]", response);
-
     if (response[3] == '-') {
 	memcpy(buff, response, 3);
 	buff[3] = ' ';
 	do {
-
 	    if (APR_SUCCESS != (rv = ap_proxy_string_read(c, bb, response, sizeof(response)))) {
 		return -1;
 	    }
-	    len = strlen(response);
-	    if (len == 0) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
-			     "proxy: FTP: apr_bucket_read() returned zero data [%s]", response);
-		return -1;
-	    }
-	    else if ((len < 4) && (' ' != response[0])) {
-		return -1;
-	    }
-
-	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, c->base_server,
-			 "proxy: FTP: line [%s]", response);
-
 	    mb = apr_cpystrn(mb, response + (' ' == response[0] ? 1 : 4), me - mb);
 	} while (memcmp(response, buff, 4) != 0);
     }
@@ -497,7 +428,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
     apr_bucket_brigade *cbb = apr_brigade_create(p);
-    char *buf, *pasv, *connectname;
+    char *buf, *connectname;
     apr_port_t connectport;
     char buffer[MAX_STRING_LEN];
     char *path, *strp, *parms;
@@ -957,7 +888,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
     else if (i == 227) {
-	unsigned int presult, h0, h1, h2, h3, p0, p1;
+	unsigned int h0, h1, h2, h3, p0, p1;
 	char *pstr;
 
 	pstr = apr_pstrdup(p, buffer);
@@ -1018,7 +949,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	    /* and try the regular way */
 	    apr_socket_close(remote_sock);
     }
-bypass:
+/*bypass:*/
 
     /* set up data connection */
     if (!pasvmode) {

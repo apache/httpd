@@ -210,7 +210,6 @@ apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, char *url);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb);
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen);
 
 
 /* proxy_http.c */
@@ -243,5 +242,6 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
+apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen);
 
 #endif /*MOD_PROXY_H*/
