@@ -193,6 +193,7 @@ static listen_rec *head_listener;
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
+char coredump_dir[MAX_STRING_LEN];
 
 /* *Non*-shared http_main globals... */
 
@@ -1463,15 +1464,10 @@ void sig_term(int sig) {
 void bus_error(int sig) {
     char emsg[256];
 
-    ap_snprintf
-	(
-	    emsg,
-	    sizeof(emsg),
-	    "httpd: caught SIGBUS, attempting to dump core in %s",
-	    server_root
-	);
+    ap_snprintf(emsg, sizeof(emsg), 
+        "httpd: caught SIGBUS, attempting to dump core in %s", coredump_dir);
     log_error(emsg, server_conf);
-    chdir(server_root);
+    chdir(coredump_dir);
     abort();         
     exit(1);
 }
@@ -1479,15 +1475,10 @@ void bus_error(int sig) {
 void seg_fault(int sig) {
     char emsg[256];
 
-    ap_snprintf
-	(
-	    emsg,
-	    sizeof(emsg),
-	    "httpd: caught SIGSEGV, attempting to dump core in %s",
-	    server_root
-	);
+    ap_snprintf(emsg, sizeof(emsg), 
+        "httpd: caught SIGSEGV, attempting to dump core in %s", coredump_dir);
     log_error(emsg, server_conf);
-    chdir(server_root);
+    chdir(coredump_dir);
     abort();
     exit(1);
 }
