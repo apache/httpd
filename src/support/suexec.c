@@ -81,7 +81,15 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#define CLEAN_ENV_BUF 256
+#if defined(PATH_MAX)
+#define AP_MAXPATH PATH_MAX
+#elif defined(MAXPATHLEN)
+#define AP_MAXPATH MAXPATHLEN
+#else
+#define AP_MAXPATH 256
+#endif
+
+#define AP_ENVBUF 256
 
 extern char **environ;
 static FILE *log;
@@ -173,12 +181,12 @@ void clean_env()
     int idx;
     
 
-    if ((cleanenv = (char **)malloc(CLEAN_ENV_BUF * (sizeof(char *)))) == NULL) {
+    if ((cleanenv = (char **)calloc(AP_ENVBUF, AP_ENVBUF * (sizeof(char *)))) == NULL) {
 	log_err("failed to malloc env mem\n");
 	exit(120);
     }
     
-    for (ep = environ; *ep; ep++) {
+    for (ep = environ; *ep && cidx < AP_ENVBUF; ep++) {
 	if (!strncmp(*ep, "HTTP_", 5)) {
 	    cleanenv[cidx] = *ep;
 	    cidx++;
@@ -210,8 +218,8 @@ int main(int argc, char *argv[])
     char *target_gname;     /* target group name         */
     char *prog;             /* name of this program      */
     char *cmd;              /* command to be executed    */
-    char cwd[MAXPATHLEN];   /* current working directory */
-    char dwd[MAXPATHLEN];   /* docroot working directory */
+    char cwd[AP_MAXPATH];   /* current working directory */
+    char dwd[AP_MAXPATH];   /* docroot working directory */
     struct passwd *pw;      /* password entry holder     */
     struct group *gr;       /* group entry holder        */
     struct stat dir_info;   /* directory info holder     */
@@ -289,6 +297,56 @@ int main(int argc, char *argv[])
     }
 
     /*
+     * Log the transaction here to be sure we have an open log 
+     * before we setuid().
+     */
+    log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
+             target_uname, pw->pw_name,
+             target_gname, gr->gr_name,
+             cmd);
+
+    /*
+     * Error out if attempt is made to execute as root or as
+     * a UID less than UID_MIN.  Tsk tsk.
+     */
+    if ((pw->pw_uid == 0) ||
+        (pw->pw_uid < UID_MIN)) {
+	log_err("cannot run as forbidden uid (%d/%s)\n", pw->pw_uid, cmd);
+	exit(107);
+    }
+
+    /*
+     * Error out if attempt is made to execute as root group
+     * or as a GID less than GID_MIN.  Tsk tsk.
+     */
+    if ((gr->gr_gid == 0) ||
+        (gr->gr_gid < GID_MIN)) {
+	log_err("cannot run as forbidden gid (%d/%s)\n", gr->gr_gid, cmd);
+	exit(108);
+    }
+
+    /*
+     * Change UID/GID here so that the following tests work over NFS.
+     *
+     * Initialize the group access list for the target user,
+     * and setgid() to the target group. If unsuccessful, error out.
+     */
+    uid = pw->pw_uid;
+    gid = gr->gr_gid;
+    if (((setgid(gid)) != 0) || (initgroups(pw->pw_name,gid) != 0)) {
+        log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
+        exit(109);
+    }
+
+    /*
+     * setuid() to the target user.  Error out on fail.
+     */
+    if ((setuid(uid)) != 0) {
+	log_err("failed to setuid (%ld: %s/%s)\n", uid, cwd, cmd);
+	exit(110);
+    }
+
+    /*
      * Get the current working directory, as well as the proper
      * document root (dependant upon whether or not it is a
      * ~userdir request).  Error out if we cannot get either one,
@@ -296,34 +354,34 @@ int main(int argc, char *argv[])
      * Use chdir()s and getcwd()s to avoid problems with symlinked
      * directories.  Yuck.
      */
-    if (getcwd(cwd, MAXPATHLEN) == NULL) {
+    if (getcwd(cwd, AP_MAXPATH) == NULL) {
         log_err("cannot get current working directory\n");
-        exit(107);
+        exit(111);
     }
     
     if (userdir) {
         if (((chdir(pw->pw_dir)) != 0) ||
             ((chdir(USERDIR_SUFFIX)) != 0) ||
-	    ((getcwd(dwd, MAXPATHLEN)) == NULL) ||
+	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
             ((chdir(cwd)) != 0))
         {
             log_err("cannot get docroot information (%s)\n", pw->pw_dir);
-            exit(108);
+            exit(112);
         }
     }
     else {
         if (((chdir(DOC_ROOT)) != 0) ||
-	    ((getcwd(dwd, MAXPATHLEN)) == NULL) ||
+	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
 	    ((chdir(cwd)) != 0))
         {
             log_err("cannot get docroot information (%s)\n", DOC_ROOT);
-            exit(108);
+            exit(113);
         }
     }
 
     if ((strncmp(cwd, dwd, strlen(dwd))) != 0) {
         log_err("command not in docroot (%s/%s)\n", cwd, cmd);
-        exit(109);
+        exit(114);
     }
 
     /*
@@ -331,7 +389,7 @@ int main(int argc, char *argv[])
      */
     if (((lstat(cwd, &dir_info)) != 0) || !(S_ISDIR(dir_info.st_mode))) {
 	log_err("cannot stat directory: (%s)\n", cwd);
-	exit(110);
+	exit(115);
     }
 
     /*
@@ -339,7 +397,7 @@ int main(int argc, char *argv[])
      */
     if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP)) {
 	log_err("directory is writable by others: (%s)\n", cwd);
-	exit(111);
+	exit(116);
     }
 
     /*
@@ -347,7 +405,7 @@ int main(int argc, char *argv[])
      */
     if (((lstat(cmd, &prg_info)) != 0) || (S_ISLNK(prg_info.st_mode))) {
 	log_err("cannot stat program: (%s)\n", cmd);
-	exit(112);
+	exit(117);
     }
 
     /*
@@ -355,7 +413,7 @@ int main(int argc, char *argv[])
      */
     if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP)) {
 	log_err("file is writable by others: (%s/%s)\n", cwd, cmd);
-	exit(113);
+	exit(118);
     }
 
     /*
@@ -363,7 +421,7 @@ int main(int argc, char *argv[])
      */
     if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID)) {
 	log_err("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
-	exit(114);
+	exit(119);
     }
 
     /*
@@ -379,55 +437,7 @@ int main(int argc, char *argv[])
 		 pw->pw_uid, gr->gr_gid,
 		 dir_info.st_uid, dir_info.st_gid,
 		 prg_info.st_uid, prg_info.st_gid);
-	exit(115);
-    }
-
-    /*
-     * Error out if attempt is made to execute as root or as
-     * a UID less than UID_MIN.  Tsk tsk.
-     */
-    if ((pw->pw_uid == 0) ||
-        (pw->pw_uid < UID_MIN)) {
-	log_err("cannot run as forbidden uid (%d/%s)\n", pw->pw_uid, cmd);
-	exit(116);
-    }
-
-    /*
-     * Error out if attempt is made to execute as root group
-     * or as a GID less than GID_MIN.  Tsk tsk.
-     */
-    if ((gr->gr_gid == 0) ||
-        (gr->gr_gid < GID_MIN)) {
-	log_err("cannot run as forbidden gid (%d/%s)\n", gr->gr_gid, cmd);
-	exit(117);
-    }
-
-    /*
-     * Log the transaction here to be sure we have an open log 
-     * before we setuid().
-     */
-    log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
-             target_uname, pw->pw_name,
-             target_gname, gr->gr_name,
-             cmd);
-
-    /*
-     * Initialize the group access list for the target user,
-     * and setgid() to the target group. If unsuccessful, error out.
-     */
-    uid = pw->pw_uid;
-    gid = gr->gr_gid;
-    if (((setgid(gid)) != 0) || (initgroups(pw->pw_name,gid) != 0)) {
-        log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
-        exit(118);
-    }
-
-    /*
-     * setuid() to the target user.  Error out on fail.
-     */
-    if ((setuid(uid)) != 0) {
-	log_err("failed to setuid (%ld: %s/%s)\n", uid, cwd, cmd);
-	exit(119);
+	exit(120);
     }
 
     clean_env();
