@@ -137,10 +137,12 @@ typedef char * caddr_t;
 
 __inline int ap_os_is_path_absolute(const char *file)
 {
-  /* For now, just do the same check that http_request.c and mod_alias.c
-   * do. 
+  /* For now, just do the same check that http_request.c and mod_alias.c do. 
+   * XXX: Accept /bleh still?  Or do we concur that d:/bleh is a minimum
+   *      requirement?  If so, canonical name needs to convert to drive/path
+   *      syntax, and the test becomes (file[0] == '/' && file[1] == '/') ||...
    */
-  return file[0] == '/' || file[1] == ':';
+  return file && (file[0] == '/' || (file[1] == ':' && file[2] == '/'));
 }
 
 /* OS-dependent filename routines in util_win32.c */
