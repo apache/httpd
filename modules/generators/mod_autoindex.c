@@ -1648,8 +1648,9 @@ static void output_directories(struct ent **ar, int n,
         }
 
         if (autoindex_opts & TABLE_INDEXING) {
+            ap_rputs("<tr>", r);
             if (!(autoindex_opts & SUPPRESS_ICON)) {
-                ap_rputs("<tr><td valign=\"top\">", r);
+                ap_rputs("<td valign=\"top\">", r);
                 if (autoindex_opts & ICONS_ARE_LINKS) {
                     ap_rvputs(r, "<a href=\"", anchor, "\">", NULL);
                 }
