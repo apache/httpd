@@ -104,7 +104,6 @@
 #ifndef NETWARE
 #include <sys/types.h>
 #endif
-#include <sys/stat.h>
 
     /* Include from the Apache server ... */
 #define CORE_PRIVATE
