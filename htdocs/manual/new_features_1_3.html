@@ -304,6 +304,12 @@ Allows additional information to be listed along with a specified module.
     <a href="mod/mod_cern_meta.html">mod_cern_meta</a> is now configurable
     on a per-directory basis.
 
+<li><strong>Detaching from stdin/out/err</strong><br>
+    On boot Apache will now detach from stdin, stdout, and stderr.  It
+    does not detach from stderr until it has successfully read the config
+    files.  So you will see errors in the config file.  This should make
+    it easier to start Apache via rsh or crontab.
+
 <li><strong>API Additions</strong><br>
     
     For all those module writers and code hackers:

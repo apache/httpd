@@ -1,5 +1,12 @@
 Changes with Apache 1.3b1
-  
+
+  *) When booting, apache will now detach itself from stdin, stdout,
+     and stderr.  stderr will not be detached until after the config
+     files have been read so you will be able to see initial error
+     messages.  After that all errors are logged in the error_log.
+     This makes it more convenient to start apache via rsh, ssh,
+     or crontabs.  [Dean Gaudet] PR#523
+
   *) mod_proxy was sending HTTP/1.1 responses to ftp requests by mistake.
      Also removed the auto-generated link to www.apache.org that was the
      source of so many misdirected bug reports.  [Roy Fielding, Marc Slemko]

@@ -224,8 +224,35 @@ void open_error_log (server_rec *s, pool *p)
 void open_logs (server_rec *s_main, pool *p)
 {
     server_rec *virt, *q;
+#ifndef WIN32
+    int replace_stderr;
+#endif
 
     open_error_log (s_main, p);
+
+#ifndef WIN32
+    replace_stderr = 1;
+    if (s_main->error_log) {
+	/* replace stderr with this new log */
+	fflush(stderr);
+	if (dup2(fileno(s_main->error_log), 2) == -1) {
+	    aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
+		"unable to replace stderr with error_log: %s",
+		strerror(errno));
+	} else {
+	    replace_stderr = 0;
+	}
+    }
+    /* note that stderr may still need to be replaced with something
+     * because it points to the old error log, or back to the tty
+     * of the submitter.
+     */
+    if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
+	aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
+	    "unable to replace stderr with /dev/null: %s",
+	    strerror(errno));
+    }
+#endif
 
     for (virt = s_main->next; virt; virt = virt->next) {
 	if (virt->error_fname)
