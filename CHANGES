@@ -1,14 +1,5 @@
 Changes with Apache 2.0.32-dev
 
-  *) Fix a bug in mod_cgid that would prevent proper shutdown death
-     of the cgid process.  [Aaron Bannert]
-
-  *) Add signal handling back in to the worker MPM for the one_process
-     (-X, -DDEBUG, -DONE_PROCESS) case.  [Aaron Bannert]
-
-  *) Performance: Reuse per-connection transaction pools in the
-     worker MPM, rather than destroying and recreating them.  [Brian Pane]
-
   *) mod_negotiation: ForceLanguagePriority now uses 'Prefer' as the
      default if the directive is not specified.  This mirrors older
      behavior without changes to the httpd.conf.  [William Rowe]
@@ -28,10 +19,6 @@ Changes with Apache 2.0.32-dev
 
   *) Win32: apache -k shutdown now behaves like apache -k stop.
      [Bill Stoddard]
-
-  *) Remove all signals from the worker MPM's child process.  Instead,
-     the parent uses the Pipe of Death for all communication with the
-     child processes.  [Ryan Bloom]
 
   *) Fix prefork to not kill the parent if a child hits a resource shortage
      on accept().  [Greg Ames]
