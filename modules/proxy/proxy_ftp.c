@@ -1804,28 +1804,79 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* send body */
     if (!r->header_only) {
+        apr_bucket *e;
+        int finish = FALSE;
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                      "proxy: FTP: start body send");
 
         /* read the body, pass it to the output filters */
-        while (ap_get_brigade(data->input_filters, bb, AP_MODE_EXHAUSTIVE,
-                              APR_BLOCK_READ, 0) == APR_SUCCESS) {
-            if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-                ap_pass_brigade(r->output_filters, bb);
+        while (ap_get_brigade(data->input_filters, 
+                              bb, 
+                              AP_MODE_READBYTES, 
+                              APR_BLOCK_READ, 
+                              conf->io_buffer_size) == APR_SUCCESS) {
+#if DEBUGGING
+            {
+                apr_off_t readbytes;
+                apr_brigade_length(bb, 0, &readbytes);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+                             r->server, "proxy (PID %d): readbytes: %#x",
+                             getpid(), readbytes);
+            }
+#endif
+            /* sanity check */
+            if (APR_BRIGADE_EMPTY(bb)) {
+                apr_brigade_cleanup(bb);
                 break;
             }
+
+            /* found the last brigade? */
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+                /* if this is the last brigade, cleanup the
+                 * backend connection first to prevent the
+                 * backend server from hanging around waiting
+                 * for a slow client to eat these bytes
+                 */
+                ap_flush_conn(data);
+                apr_socket_close(data_sock);
+                data_sock = NULL;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                             "proxy: FTP: data connection closed");
+                /* signal that we must leave */
+                finish = TRUE;
+            }
+
+            /* if no EOS yet, then we must flush */
+            if (FALSE == finish) {
+                e = apr_bucket_flush_create();
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+            }
+
+            /* try send what we read */
             if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
                 /* Ack! Phbtt! Die! User aborted! */
+                finish = TRUE;
+            }
+
+            /* make sure we always clean up after ourselves */
+            apr_brigade_cleanup(bb);
+
+            /* if we are done, leave */
+            if (TRUE == finish) {
                 break;
             }
-            apr_brigade_cleanup(bb);
         }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "proxy: FTP: end body send");
+
     }
-    ap_flush_conn(data);
-    apr_socket_close(data_sock);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: Closing Data connection.");
+    if (data_sock) {
+        ap_flush_conn(data);
+        apr_socket_close(data_sock);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "proxy: FTP: data connection closed");
+    }
 
     /* Retrieve the final response for the RETR or LIST commands */
     rc = proxy_ftp_command(NULL, r, origin, bb, &ftpmessage);

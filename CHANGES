@@ -1,5 +1,16 @@
 Changes with Apache 2.0.34-dev
 
+  *) New directive ProxyIOBufferSize. Sets the size of the buffer used
+     when reading from a remote HTTP server in proxy. [Graham Leggett]
+
+  *) Modify receive/send loop in proxy_http and proxy_ftp so that
+     should it be necessary, the remote server socket is closed before
+     transmitting the last buffer (set by ProxyIOBufferSize) to the
+     client. This prevents the backend server from being forced to hang
+     around while the last few bytes are transmitted to a slow client.
+     Fix the case where no error checking was performed on the final
+     brigade in the loop. [Graham Leggett]
+
   *) Scrap CacheMaxExpireMin and CacheDefaultExpireMin. Change
      CacheMaxExpire and CacheDefaultExpire to use seconds rather than
      hours. [Graham Leggett, Bill Stoddard]
