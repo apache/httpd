@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/16 13:16:55 $]
+Last modified at [$Date: 2003/02/17 04:47:37 $]
 
 Release:
 
@@ -129,6 +129,10 @@ PATCHES TO PORT FROM 2.1
       (PR 17093)
       server/config.c: r1.163
       +1: nd, trawick
+
+    * Fix memory leak on input in mod_deflate.  PR 16046.
+      modules/filters/mod_deflate.c: r1.30
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
