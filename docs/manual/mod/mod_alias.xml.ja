@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.18 (outdated: 1.19) -->
+<!-- English Revision: 1.19 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,6 +47,11 @@
     クライアントに違った
     URL に新しいリクエストを送るように指示します。これは、
     リソースが新しい場所に移動したときによく使用されます。</p>
+
+    <p><module>mod_alias</module> は簡単な URL 操作向けに設計されています。
+    より複雑な操作、クエリーストリングの操作には、<module>mod_rewrite</module>
+    で提供されるツールを使用してください。</p>
+
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
