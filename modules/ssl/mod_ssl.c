@@ -416,10 +416,9 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                 /*
                  * The case where OpenSSL has recognized a HTTP request:
                  * This means the client speaks plain HTTP on our HTTPS port.
-                 * Hmmmm...  Punt this out of here after removing our output
-                 * filter.
+                 * ssl_io_filter_error will disable the ssl filters when it
+                 * sees this status code.
                  */
-                ap_remove_output_filter(filter->pOutputFilter);
                 return HTTP_BAD_REQUEST;
             }
             else if ((SSL_get_error(filter->pssl, n) == SSL_ERROR_SYSCALL) &&

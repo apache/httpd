@@ -743,6 +743,13 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
+static void ssl_io_filter_disable(ap_filter_t *f)
+{
+    ssl_io_input_ctx_t *ctx = f->ctx;
+    ctx->inbio.ssl = NULL;
+    ctx->frec->pssl = NULL;
+}
+
 static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         apr_status_t status)
@@ -758,6 +765,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
+            ssl_io_filter_disable(f);
             break;
 
       default:
@@ -780,6 +788,10 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
     apr_size_t len = sizeof(ctx->buffer);
     int is_init = (mode == AP_MODE_INIT);
+
+    if (!ctx->inbio.ssl) {
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
 
     /* XXX: we don't currently support anything other than these modes. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE && 
