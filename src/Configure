@@ -1845,6 +1845,44 @@ if [ "x$using_shlib" = "x1" ] ; then
 fi
 
 ####################################################################
+## More building ap_config_auto.h
+##
+## We check to see if this OS and/or compiler supports long-long
+##
+echo " + checking for the long long data type"
+if ./helpers/TestCompile sizeof "long long"; then
+    AP_LONGEST_LONG="long long"
+else
+    AP_LONGEST_LONG="long"
+fi
+echo "" >>$AP_CONFIG_AUTO_H
+echo "/* determine: longest possible integer type */" >>$AP_CONFIG_AUTO_H
+echo "#ifndef AP_LONGEST_LONG" >>$AP_CONFIG_AUTO_H
+echo "#define AP_LONGEST_LONG $AP_LONGEST_LONG" >>$AP_CONFIG_AUTO_H
+echo "#endif" >>$AP_CONFIG_AUTO_H
+
+##
+## Now compare the sizes of off_t to long
+##
+echo " + determining if off_t is quad or long"
+AP_TYPE_OFF_T=`./helpers/TestCompile -r sizeof off_t`
+AP_TYPE_LONG=`./helpers/TestCompile -r sizeof long`
+if [ "x$AP_TYPE_OFF_T" != "x" ] && [ "x$AP_TYPE_OFF_T" != "x$AP_TYPE_LONG" ]
+then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: is off_t a quad */" >>$AP_CONFIG_AUTO_H
+    echo "#ifndef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#define AP_OFF_T_IS_QUAD 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+else
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: is off_t a quad */" >>$AP_CONFIG_AUTO_H
+    echo "#ifndef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#undef AP_OFF_T_IS_QUAD" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+fi
+
+####################################################################
 ## Finish building ap_config_auto.h
 ##
 ## We pick out all -D's from CFLAGS and insert them as defines into

@@ -22,6 +22,10 @@ trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exs
 # ./helpers/TestCompile sanity
 #    Which does a simple sanity check/test compile
 #
+# ./helpers/TestCompile sizeof <type>
+#    Which prints out the sizeof <type> (sure would be nice
+#    if sizeof could be use in preprocessor if's)
+#
 # It does these by creating a small mini-makefile, based on
 # ../Makefile.config and trying to compile a small dummy
 # program. If the compilation succeeds, we assume the test
@@ -41,8 +45,9 @@ trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exs
 cd ./helpers
 
 #
-# Handle "verbose" and "silent" flags
+# Handle "verbose", "silent" and "runit" flags
 #
+RUNIT="no"
 case "$1" in
     "-v")
         VERBOSE="yes"
@@ -50,6 +55,10 @@ case "$1" in
 	;;
     "-s")
         VERBOSE="no"
+	shift
+	;;
+    "-r")
+        RUNIT="yes"
 	shift
 	;;
 esac
@@ -75,6 +84,26 @@ case "$1" in
 	    TARGET='testfunc'
 	    echo "int main(void) { $3(); return(0); }" > testfunc.c
 	fi
+	;;
+    "sizeof")
+	if [ "x$2" = "x" ]; then
+	    exit
+	fi
+	TLIB=""
+	if [ "x$VERBOSE" = "xyes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
+	TARGET='testfunc'
+	cat <<EOF >testfunc.c
+#include <stdio.h>
+#include <sys/types.h>
+int main(void) {
+    printf("%d\n", sizeof($2));
+    return(0);
+}
+EOF
 	;;
     "sanity")
 	TLIB=""
@@ -154,5 +183,8 @@ eval "${MAKE-make} ${TARGET} >/dev/null $ERRDIR"
 # have PrintPath just search this directory.
 
 if ./PrintPath -s -p`pwd` $TARGET ; then
+    if [ "x$RUNIT" = "xyes" ]; then
+	`pwd`/$TARGET
+    fi
     exstat=0
 fi
