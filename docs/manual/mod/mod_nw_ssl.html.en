@@ -27,7 +27,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>NetWare only</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module enable SSL encryption for a specified port. It
+    <p>This module enables SSL encryption for a specified port. It
     takes advantage of the SSL encryption functionality that is 
     built into the NetWare operating system.</p>
 </div>
@@ -42,7 +42,7 @@
 <div class="directive-section"><h2><a name="NWSSLTrustedCerts" id="NWSSLTrustedCerts">NWSSLTrustedCerts</a> <a name="nwssltrustedcerts" id="nwssltrustedcerts">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>List of additional client certificates</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NWSSLTrustedCerts <var>filename</var><var>[filename]</var><var>...</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_nw_ssl</td></tr>
@@ -50,26 +50,22 @@
     <p>Specifies a list of client certificate files (DER format)
     that are used when creating a proxied SSL connection. Each
     client certificate used by a server must be listed separately 
-    in its own .der file.</p>
+    in its own <code>.der</code> file.</p>
 
-<h3>See also</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li>
-<li><code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SecureListen" id="SecureListen">SecureListen</a> <a name="securelisten" id="securelisten">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables SSL encryption for the specified port</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SecureListen <var>[IP-address:]portnumber</var> <var>Certificate-Name</var> <var>[MUTUAL]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_nw_ssl</td></tr>
 </table>
     <p>Specifies the port and the eDirectory based certificate name
     that will be used to enable SSL encryption. An optional third
-    parameter also enable mutual authentication.</p>
+    parameter also enables mutual authentication.</p>
 
 </div>
 </div>
