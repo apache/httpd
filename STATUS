@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/15 21:47:19 $]
+Last modified at [$Date: 2002/02/16 21:20:06 $]
 
 Release:
 
@@ -73,6 +73,13 @@ FINAL RELEASE SHOWSTOPPERS:
         BrianP asks: "Is this really a showstopper?"
         IanH says: "If we don't do it before we go live we will have 2
                     different API's to support in APR"
+        BrianP agrees: "Yes, let's clean up the remaining dependencies
+                        on the old lock API."
+
+    * API changes planned for 2.0 that should happen before the
+      GA release:
+          * Free lists for bucket allocation
+          * Removal of APR_BRIGADE_NORMALIZE from the public bucket API
 
     * [Ken] Test suite failures:
       o worker is also failing some of the 'cgi' subtests
