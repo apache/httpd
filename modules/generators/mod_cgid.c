@@ -255,14 +255,17 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     read(fd, &i, sizeof(int)); 
      
     /* add 1, so that if i == 0, we still malloc something. */ 
-    dconf = (void **)malloc(sizeof(void *) * i + 1); 
+    dconf = (void **)apr_palloc(r->pool, sizeof(void *) * i + 1); 
+    temp_core = (core_dir_config *)apr_palloc(r->pool, sizeof(core_module)); 
 
-    temp_core = (core_dir_config *)malloc(sizeof(core_module)); 
+    dconf[i] = (void *)temp_core; 
+    r->per_dir_config = dconf; 
+
 #if 0
 #ifdef RLIMIT_CPU 
     read(fd, &j, sizeof(int)); 
     if (j) { 
-        temp_core->limit_cpu = (struct rlimit *)malloc (sizeof(struct rlimit)); 
+        temp_core->limit_cpu = (struct rlimit *)apr_palloc (sizeof(struct rlimit)); 
         read(fd, temp_core->limit_cpu, sizeof(struct rlimit)); 
     } 
     else { 
@@ -273,7 +276,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 #if defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
     read(fd, &j, sizeof(int)); 
     if (j) { 
-        temp_core->limit_mem = (struct rlimit *)malloc (sizeof(struct rlimit)); 
+        temp_core->limit_mem = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit)); 
         read(fd, temp_core->limit_mem, sizeof(struct rlimit)); 
     } 
     else { 
@@ -284,7 +287,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 #ifdef RLIMIT_NPROC 
     read(fd, &j, sizeof(int)); 
     if (j) { 
-        temp_core->limit_nproc = (struct rlimit *)malloc (sizeof(struct rlimit)); 
+        temp_core->limit_nproc = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit)); 
         read(fd, temp_core->limit_nproc, sizeof(struct rlimit)); 
     } 
     else { 
@@ -292,9 +295,6 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     } 
 #endif 
 #endif
-    dconf[i] = (void *)temp_core; 
-    r->per_dir_config = dconf; 
-
     /* For right now, just make the notes table.  At some point we will need
      * to actually fill this out, but for now we just don't want suexec to
      * seg fault.
