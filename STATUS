@@ -95,6 +95,7 @@ Committed Code Changes:
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
     * Ken's change HIDE default to "yes", always include hide.h
+    * Ralf's major Configure cleanup
 
 Available Patches:
 
