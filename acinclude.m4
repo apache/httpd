@@ -279,7 +279,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   module_default=yes
 
   AC_ARG_ENABLE(modules,
-  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable),[
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most"),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most"; then
         module_selection=$i
@@ -291,7 +291,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable),[
+  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most"),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most"; then
         module_selection=$i
