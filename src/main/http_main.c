@@ -2069,18 +2069,19 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 				       sizeof(ss->request));
 	    }
 	    ss->vhostrec =  r->server;
-	} else if (status == SERVER_STARTING) {
-	    /* clean up the slot's vhostrec pointer (maybe re-used)
-	     * and mark the slot as belonging to a new generation.
-	     */
-	    ss->vhostrec = NULL;
-	    ap_scoreboard_image->parent[child_num].generation = ap_my_generation;
-#ifdef SCOREBOARD_FILE
-	    lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[child_num]), 0);
-	    force_write(scoreboard_fd, &ap_scoreboard_image->parent[child_num],
-		sizeof(parent_score));
-#endif
 	}
+    }
+    if (status == SERVER_STARTING && r == NULL) {
+	/* clean up the slot's vhostrec pointer (maybe re-used)
+	 * and mark the slot as belonging to a new generation.
+	 */
+	ss->vhostrec = NULL;
+	ap_scoreboard_image->parent[child_num].generation = ap_my_generation;
+#ifdef SCOREBOARD_FILE
+	lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[child_num]), 0);
+	force_write(scoreboard_fd, &ap_scoreboard_image->parent[child_num],
+	    sizeof(parent_score));
+#endif
     }
     put_scoreboard_info(child_num, ss);
 
