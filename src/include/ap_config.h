@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: ap_config.h,v 1.39 1996/10/09 20:50:41 chuck Exp $ */
+/* $Id: ap_config.h,v 1.40 1996/10/09 21:33:12 chuck Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -97,7 +97,6 @@ int gethostname(char *name, int namelen);
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 #define BROKEN_WAIT
-#include <strings.h>    /* for index() & rindex() */
 
 #elif defined(HPUX) || defined(HPUX10)
 #define HAVE_SYS_RESOURCE_H
