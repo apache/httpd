@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Install config.nice into the build/ directory to make
+     minor version upgrades easier. [Joshua Slive]
+
   *) mod_rewrite: Allow piped rewrite logs to be relative to ServerRoot.
      [André Malo]
 
