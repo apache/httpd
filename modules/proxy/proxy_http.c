@@ -63,7 +63,7 @@
 #include "http_main.h"
 #include "http_core.h"
 #include "util_date.h"
-#include "iol_socket.h"
+#include "ap_iol.h"
 
 /*
  * Canonicalise http-like URLs.
