@@ -585,7 +585,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
          */
     }
 
-#if NEG_DEBUG
+#ifdef NEG_DEBUG
     fprintf(stderr, "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
             "send_alternates=%d, may_choose=%d\n",
             neg->dont_fiddle_headers, neg->use_rvsa,  
@@ -1776,7 +1776,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
            "mimeq=%1.3f langq=%1.3f charq=%1.3f encq=%1.3f "
            "q=%1.5f definite=%d\n",            
             (variant->file_name ? variant->file_name : ""),
-            (variant->mime_name ? variant->mime_name : ""),
+            (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
              ? ap_array_pstrcat(neg->pool, variant->content_languages, ',')
              : ""),
@@ -1784,7 +1784,8 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
             variant->mime_type_quality,
             variant->lang_quality,
             variant->charset_quality,
-            variant->encoding_qual             q,
+            variant->encoding_quality,
+            q,
             variant->definite);
 #endif
 
@@ -1852,6 +1853,22 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
     /* First though, eliminate this variant if it is not
      * acceptable by type, charset, encoding or language.
      */
+
+#ifdef NEG_DEBUG
+    fprintf(stderr, "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
+           "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f \n",
+            (variant->file_name ? variant->file_name : ""),
+            (variant->mime_type ? variant->mime_type : ""),
+            (variant->content_languages
+             ? ap_array_pstrcat(neg->pool, variant->content_languages, ',')
+             : ""),
+            variant->source_quality,
+            variant->mime_type_quality,
+            variant->lang_quality,
+            variant->lang_index,
+            variant->charset_quality,
+            variant->encoding_quality);
+#endif
 
     if (variant->encoding_quality == 0.0f ||
         variant->lang_quality == 0.0f ||
@@ -2437,7 +2454,6 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
     int alg_result;              /* result of variant selection algorithm */
     int res;
     int j;
-    int unencoded_variants = 0;
 
     /* Decide if resource is transparently negotiable */
 
@@ -2465,20 +2481,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
              */
             if (strchr(variant->file_name, '/'))
                 neg->is_transparent = 0;
-
-            if (!variant->content_encoding)
-                unencoded_variants++;
         }
-        
-        /* If there are less than 2 unencoded variants, we always
-         * switch to server-driven negotiation, regardless of whether
-         * we are contacted by a client capable of transparent
-         * negotiation.  We do this because our current TCN
-         * implementation does not deal well with the case of having 0
-         * or 1 unencoded variants.
-         */
-        if (unencoded_variants < 2)
-            neg->is_transparent = 0;
     }
 
     if (neg->is_transparent)  {

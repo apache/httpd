@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Remove unused code to disable transparent negotiation when
+     negotiating on encoding only, as we now handle encoding too
+     (though this is nonstandard for TCN), and fix bugs in debugging
+     statements within mod_negotiation. [Koen Holtman]
+
   *) Fixed a rare memory corruption possibility in mod_dir if the index
      file is negotiable and no acceptable variant can be found.
      [Dean Gaudet, Roy Fielding, Martin Kraemer]
