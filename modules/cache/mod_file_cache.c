@@ -137,7 +137,7 @@ typedef struct {
 #if APR_HAS_SENDFILE
     apr_file_t *file;
 #endif
-    char *filename;
+    const char *filename;
     apr_finfo_t finfo;
     int is_mmapped;
 #if APR_HAS_MMAP
@@ -273,7 +273,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     a_file *new_file;
     a_file tmp;
     apr_file_t *fd = NULL;
-    char *fspec;
+    const char *fspec;
 
     fspec = ap_os_case_canonical_filename(cmd->pool, filename);
     if (apr_stat(&tmp.finfo, fspec, cmd->temp_pool) != APR_SUCCESS) { 
