@@ -1,4 +1,8 @@
 Changes with Apache 2.0.30-dev
+  *) Fix mod_proxy seg fault when the proxied server returns 
+     an HTTP/0.9 response or a bogus status line.
+     [Adam Sussman]
+
   *) Prevent mod_proxy from truncating one character off the
      end of the status line returned from the proxied server.
      [Adam Sussman, Bill Stoddard]
