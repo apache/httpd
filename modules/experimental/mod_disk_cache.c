@@ -315,13 +315,12 @@ static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *key, 
                          apr_size_t len)
 { 
+    apr_status_t rv;
     cache_object_t *obj;
     disk_cache_object_t *dobj;
+    apr_file_t *tmpfile;
 
     cache_info *info;
-#ifdef AS400
-    char tempfile[L_tmpnam];	/* L_tmpnam defined in stdio.h */
-#endif
 
     if (strcasecmp(type, "disk")) {
 	return DECLINED;
@@ -340,34 +339,13 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     dobj->name = (char *) key;
     obj->info = *(info);
 
-#ifdef AS400
-    AP_INFO_TRACE("file_cache_element(): >>Generating temporary cache file name. (AP_CACHE_CREATE)\n");
-
-    /* open temporary file */
-    /* The RPM mktemp() utility is not available on the AS/400 so the	*/
-    /* following is used to generate a unique, temporary file for the	*/
-    /* cache element.							*/
-    /* NOTE: Since this temporary file will need to be hard linked within	*/
-    /*       the QOpenSys file system later on [by the file_cache_el_final()*/
-    /*       routine] to make it a permanent file we must generate a name	*/
-    /*       relative to the same file system, that is, QOpenSys. If we	*/
-    /*       don't, the link() API will fail since hard links can't cross	*/
-    /*       file systems on the AS/400.					*/
-
-    /* 1st, a unique tempfile is made relative to root. */
-    if(!tmpnam(tempfile)) {
-	AP_ERROR_TRACE("file_cache_element(): R>Failed to produce unique temporary cache file name.\n");
-	return APR_ENOENT;
-    }
-    /* Then a unique tempfile is made relative to QOpenSys. */
-    if(!(obj->tempfile = apr_pstrcat(r->pool, AS400_CTEMP_ROOT, ap_strrchr_c(tempfile, '/')+1, NULL))) {
-	return APR_ENOMEM;
-    }
-    
-    AP_INFO_TRACE("file_cache_element(): .>Cache element using temporary file name %s.\n", obj->tempfile);
-    ap_log_error400(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, ZSRV_MSG153D, obj->tempfile);
-
-#endif
+    /* open temporary file 
+     * This is broken... The AS400 code created the tempfilename here
+     * Why not just open the tempfile? Or name and open it on the first call 
+     * to write_body? I just don;t see why we would want to name it here
+     * and open it in write_body...
+     * rv = apr_file_mktemp(*tmpfile, "XXXXXX", flags, r->pool);
+     */
 
     /* Populate the cache handle */
     h->cache_obj = obj;
@@ -547,7 +525,7 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);
     apr_file_t *hfd = NULL;
-    apr_status_t rc;
+    apr_status_t rv;
     char *buf;
     char statusbuf[8];
     apr_size_t amt;
@@ -561,17 +539,23 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
                                          conf->cache_root,
                                          h->cache_obj->key);
         }
-        if(unlink(dobj->hdrsfile)) /* if we can remove it, we clearly don't have to build the dirs */
+        /* Remove old file with the same name. If remove fails, then
+         * perhaps we need to create the directory tree where we are
+         * about to write the new headers file.
+         */
+        rv = apr_file_remove(dobj->hdrsfile, r->pool);
+        if (rv != APR_SUCCESS) {
             mkdir_structure(conf, dobj->hdrsfile, r->pool);
-        else {
-            /* XXX log message */
         }
-        if((rc = apr_file_open(&hfd, dobj->hdrsfile,
-                              APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL, /* XXX:? | APR_INHERIT | APR_NONQSYS, */
-                              0, r->pool)) != APR_SUCCESS)   {
-            /* XXX log message */
-            return rc;
+
+        rv = apr_file_open(&hfd, dobj->hdrsfile,
+                           APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL,
+                           0, r->pool);
+        if (rv != APR_SUCCESS) {
+            /* XXX */
+            return rv;
         }
+
 	file_cache_write_mydata(hfd, h, r);
         if (r->headers_out) {
             int i;
