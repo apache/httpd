@@ -156,6 +156,11 @@ Needs patch:
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
 
+    * Use of ptrans in http_main is inconsistent: it is a static global
+      that is sometimes used as a temporary pool, sometimes as a
+      per-connection pool, and overshadowed in child_sub_main() for a
+      per-thread pool.  That sucks.
+
 Open issues:
 
     * How should an Apache binary release tarball look?
