@@ -74,9 +74,11 @@
 #include <sys/types.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "suexec.h"
 #include "ap_config_auto.h"
