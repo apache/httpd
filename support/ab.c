@@ -206,9 +206,9 @@ struct connection {
     apr_pool_t *ctx;
     apr_socket_t *aprsock;
     int state;
-    int read;			/* amount of bytes read */
-    int bread;			/* amount of body read */
-    int rwrite, rwrote;	        /* keep pointers in what we write - across
+    apr_size_t read;		/* amount of bytes read */
+    apr_size_t bread;		/* amount of body read */
+    apr_size_t rwrite, rwrote;	/* keep pointers in what we write - across
 				 * EAGAINs */
     int length;			/* Content-Length value used for keep-alive */
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
@@ -287,7 +287,7 @@ const char *tablestring;
 const char *trstring;
 const char *tdstring;
 
-int doclen = 0;			/* the length the document should be */
+apr_size_t doclen = 0;		/* the length the document should be */
 long started = 0;		/* number of requests started, so no excess */
 long totalread = 0;		/* total number of bytes read */
 long totalbread = 0;		/* totoal amount of entity body read */
@@ -962,8 +962,7 @@ static void read_connection(struct connection * c)
     if (!c->gotheader) {
 	char *s;
 	int l = 4;
-	int space = CBUFFSIZE - c->cbx - 1;	/* -1 to allow for 0
-						 * terminator */
+	apr_size_t space = CBUFFSIZE - c->cbx - 1; /* -1 allows for \0 term */
 	int tocopy = (space < r) ? space : r;
 #ifdef NOT_ASCII
 	apr_size_t inbytes_left = space, outbytes_left = space;
@@ -1303,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.82 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.83 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.82 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.83 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
