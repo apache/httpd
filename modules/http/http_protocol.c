@@ -1435,8 +1435,11 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
 
     do {
         if (APR_BRIGADE_EMPTY(bb)) {
+            apr_size_t asmuch = bufsiz;
+            if (r->remaining < asmuch)
+                asmuch = (apr_size_t)r->remaining;
             if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
-                               &r->remaining) != APR_SUCCESS) {
+                               &asmuch) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
