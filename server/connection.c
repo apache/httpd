@@ -69,7 +69,7 @@ HOOK_STRUCT(
 	    HOOK_LINK(process_connection)
 );
 
-IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),RUN_ALL)
+IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c))
 IMPLEMENT_HOOK(int,process_connection,(conn_rec *c),(c),RUN_FIRST,OK,DECLINED)
 
 /* TODO: re-implement the lingering close stuff */
