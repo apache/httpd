@@ -390,8 +390,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	    }
 	}
 	vhost_alias_checkspace(r, buf, &dest, end - start);
-	memcpy(dest, start, end-start);
-	dest += end-start;
+	for (p = start; p < end; ++p) {
+	    *dest++ = ap_tolower(*p);
+	}
     }
     *dest = '\0';
     /* no double slashes */

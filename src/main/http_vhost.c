@@ -676,7 +676,7 @@ static void fix_hostname(request_rec *r)
 	    else
 		goto bad;
 	} else {
-	    *dst++ = tolower(*src++);
+	    *dst++ = *src++;
 	}
     }
     /* check the port part */
