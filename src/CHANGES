@@ -1,3 +1,8 @@
+Changes with Apache 1.2b10
+
+  *) Fixed a showstopper CGI problem in 1.2b9.  This change caused the rev
+     to 1.2b10, 1.2b9 was never announced.  [Marc Slemko]
+
 Changes with Apache 1.2b9
 
   *) Reset the MODULE_MAGIC_NUMBER to account for the unsigned port

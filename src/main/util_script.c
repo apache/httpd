@@ -79,6 +79,7 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
     char *t;
     char *args = pstrdup(p, reqargs);
     int idx = 0;
+    char *strtok_arg = args;
 
     av = (char **)palloc(p, APACHE_ARG_MAX * sizeof(char *));
     
@@ -91,7 +92,8 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
 
     av[idx++] = av0;
     
-    while ((idx < APACHE_ARG_MAX) && ((t = strtok(args, "+")) != NULL)) {
+    while ((idx < APACHE_ARG_MAX) && ((t = strtok(strtok_arg, "+")) != NULL)) {
+        strtok_arg = NULL;
 	unescape_url(t);
 	av[idx++] = escape_shell_cmd(p, t);
     }
