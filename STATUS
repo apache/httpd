@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 21:08:58 $]
+Last modified at [$Date: 2003/04/18 20:30:41 $]
 
 Release:
 
@@ -220,11 +220,6 @@ PATCHES TO PORT FROM 2.1
       (trawick volunteers to regenerate/commit/site-update the html
       corresponding to mpm_common.xml if that isn't something you're
       comfortable with doing)
-
-    * ap_get_mime_headers_core: alloc space for null terminator
-      while folding
-      server/protocol.c r1.128
-      +1: gregames, jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
