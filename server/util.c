@@ -1771,7 +1771,7 @@ char *strstr(char *s1, char *s2)
 #ifndef HAVE_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(OS2)
+#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(OS2) || defined(WIN32)
 /* QNX, MPE and BeOS do not appear to support supplementary groups. */
     return 0;
 #else /* ndef QNX */
@@ -1799,7 +1799,7 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif /* def NEED_INITGROUPS */
 
-#ifndef HAVE_WAITPID
+#if !defined(HAVE_WAITPID) && !defined(WIN32)
 /* From ikluft@amdahl.com
  * this is not ideal but it works for SVR3 variants
  * Modified by dwd@bell-labs.com to call wait3 instead of wait because

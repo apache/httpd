@@ -62,7 +62,6 @@ extern "C" {
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
 
 #ifdef WIN32
-#include "ap_config_win32.h"
 #include "../os/win32/os.h"
 #else
 #include "ap_config_auto.h"
@@ -121,17 +120,17 @@ extern "C" {
 
 /* We have a POSIX wait interface */
 #include <sys/wait.h>
+
+#ifdef WEXITSTATUS
 #define ap_wait_t       int
-
-#else /* HAVE_SYS_WAIT_H */
-
+#else
 /* We don't have a POSIX wait interface. Assume we have the old-style. Is this
  * a bad assumption? */
-#include <sys/wait.h>
+/* Yessiree bob, it was... but will this work instead? */
 #define ap_wait_t       union wait
 #define WEXITSTATUS(status)	(int)((status).w_retcode)
 #define WTERMSIG(status)	(int)((status).w_termsig)
-
+#endif /* !WEXITSTATUS */
 #endif /* HAVE_SYS_WAIT_H */
 
 /* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
@@ -178,7 +177,7 @@ extern "C" {
 #endif
 
 /* EAGAIN apparently isn't defined on some systems */
-#ifndef HAVE_EAGAIN
+#if !defined(HAVE_EAGAIN) && !defined(EAGAIN)
 #define EAGAIN EWOULDBLOCK
 #endif
 
