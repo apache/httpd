@@ -127,7 +127,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
     apr_int64_t minfresh;
     int age_in_errhdr = 0;
-    const char *cc_cresp, *cc_ceresp, *cc_req;
+    const char *cc_cresp, *cc_req;
     const char *agestr = NULL;
     const char *expstr = NULL;
     char *val;
@@ -167,19 +167,11 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * 
      */
     cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
-    cc_ceresp = apr_table_get(h->resp_err_hdrs, "Cache-Control");
     cc_req = apr_table_get(h->req_hdrs, "Cache-Control");
+    expstr = apr_table_get(h->resp_hdrs, "Expires");
 
     if ((agestr = apr_table_get(h->resp_hdrs, "Age"))) {
         age_c = apr_atoi64(agestr);
-    }
-    else if ((agestr = apr_table_get(h->resp_err_hdrs, "Age"))) {
-        age_c = apr_atoi64(agestr);
-        age_in_errhdr = 1;
-    }
-
-    if (!(expstr = apr_table_get(h->resp_err_hdrs, "Expires"))) {
-        expstr = apr_table_get(h->resp_hdrs, "Expires");
     }
 
     /* calculate age of object */
@@ -187,9 +179,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 
     /* extract s-maxage */
     if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)) {
-        smaxage = apr_atoi64(val);
-    }
-    else if (cc_ceresp && ap_cache_liststr(r->pool, cc_ceresp, "s-maxage", &val)) {
         smaxage = apr_atoi64(val);
     }
     else {
@@ -208,9 +197,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)) {
         maxage_cresp = apr_atoi64(val);
     }
-    else if (cc_ceresp && ap_cache_liststr(r->pool, cc_ceresp, "max-age", &val)) {
-        maxage_cresp = apr_atoi64(val);
-    }
     else
     {
         maxage_cresp = -1;
@@ -219,10 +205,10 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     /*
      * if both maxage request and response, the smaller one takes priority
      */
-    if (-1 == maxage_req) {
+    if (maxage_req == -1) {
         maxage = maxage_cresp;
     }
-    else if (-1 == maxage_cresp) {
+    else if (maxage_cresp == -1) {
         maxage = maxage_req;
     }
     else {
@@ -251,12 +237,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
                                        "must-revalidate", NULL)) ||
                      (cc_cresp &&
                       ap_cache_liststr(NULL, cc_cresp,
-                                       "proxy-revalidate", NULL)) ||
-                     (cc_ceresp &&
-                      ap_cache_liststr(NULL, cc_ceresp,
-                                       "must-revalidate", NULL)) ||
-                     (cc_ceresp &&
-                      ap_cache_liststr(NULL, cc_ceresp,
                                        "proxy-revalidate", NULL)))) {
         maxstale = 0;
     }
@@ -268,27 +248,13 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
          (info->expire != APR_DATE_BAD) &&
          (age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh)))) {
         const char *warn_head;
-        apr_table_t *head_ptr;
 
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
-        if (warn_head != NULL) {
-            head_ptr = h->resp_hdrs;
-        }
-        else {
-            warn_head = apr_table_get(h->resp_err_hdrs, "Warning");
-            head_ptr = h->resp_err_hdrs;
-        }
 
         /* it's fresh darlings... */
         /* set age header on response */
-        if (age_in_errhdr) {
-            apr_table_set(h->resp_err_hdrs, "Age",
-                          apr_psprintf(r->pool, "%lu", (unsigned long)age));
-        }
-        else {
-            apr_table_set(h->resp_hdrs, "Age",
-                          apr_psprintf(r->pool, "%lu", (unsigned long)age));
-        }
+        apr_table_set(h->resp_hdrs, "Age",
+                      apr_psprintf(r->pool, "%lu", (unsigned long)age));
 
         /* add warning if maxstale overrode freshness calculation */
         if (!(((smaxage != -1) && age < smaxage) ||
@@ -298,7 +264,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
             /* make sure we don't stomp on a previous warning */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
-                apr_table_merge(head_ptr, "Warning", "110 Response is stale");
+                apr_table_merge(h->resp_hdrs, "Warning",
+                                "110 Response is stale");
             }
         }
         /* 
@@ -315,7 +282,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
              */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "113") == NULL))) {
-                apr_table_merge(head_ptr, "Warning", "113 Heuristic expiration");
+                apr_table_merge(h->resp_hdrs, "Warning",
+                                "113 Heuristic expiration");
             }
         }
         return 1;    /* Cache object is fresh (enough) */

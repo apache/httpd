@@ -249,9 +249,7 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
  * Hook and mod_cache callback functions
  */
 #define AP_TEMPFILE "/aptmpXXXXXX"
-static int create_entity(cache_handle_t *h, request_rec *r,
-                         const char *key,
-                         apr_off_t len)
+static int create_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
@@ -262,20 +260,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* If the Content-Length is still unknown, cache anyway */
-    if (len != -1 && (len < conf->minfs || len > conf->maxfs)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache_disk: URL %s failed the size check", key);
-        return DECLINED;
-    }
-
     /* Allocate and initialize cache_object_t and disk_cache_object_t */
     h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(*obj));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
 
     obj->key = apr_pstrdup(r->pool, key);
-    /* XXX Bad Temporary Cast - see cache_object_t notes */
-    obj->info.len = (apr_size_t) len;
 
     dobj->name = obj->key;
     dobj->datafile = data_file(r->pool, conf, dobj, key);
@@ -471,17 +460,12 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     h->req_hdrs = apr_table_make(r->pool, 20);
     h->resp_hdrs = apr_table_make(r->pool, 20);
-    h->resp_err_hdrs = apr_table_make(r->pool, 20);
 
     /* Call routine to read the header lines/status line */
     read_table(h, r, h->resp_hdrs, dobj->hfd);
     read_table(h, r, h->req_hdrs, dobj->hfd);
 
     apr_file_close(dobj->hfd);
-
-    h->status = dobj->disk_info.status;
-    h->content_type = apr_table_get(h->resp_hdrs, "Content-Type");
-    h->cache_obj->info.etag = apr_table_get(h->resp_hdrs, "ETag");
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "disk_cache: Recalled headers for URL %s",  dobj->name);
@@ -687,15 +671,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
      * sanity checks.
      */
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-        if (h->cache_obj->info.len <= 0) {
-          /* If the target value of the content length is unknown
-           * (h->cache_obj->info.len <= 0), check if connection has been
-           * aborted by client to avoid caching incomplete request bodies.
-           *
-           * This can happen with large responses from slow backends like
-           * Tomcat via mod_jk.
-           */
-          if (r->connection->aborted) {
+        if (r->connection->aborted) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "disk_cache: Discarding body for URL %s "
                          "because connection has been aborted.",
@@ -703,28 +679,14 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
             return APR_EGENERAL;
-          }
-          /* XXX Fixme: file_size isn't constrained by size_t. */
-          h->cache_obj->info.len = dobj->file_size;
-        }
-        else if (h->cache_obj->info.len != dobj->file_size) {
-          /* "Content-Length" and actual content disagree in size. Log that. */
-          ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                       "disk_cache: URL %s failed the size check (%lu != %lu)",
-                       h->cache_obj->key,
-                       (unsigned long)h->cache_obj->info.len,
-                       (unsigned long)dobj->file_size);
-          /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          file_cache_errorcleanup(dobj, r);
-          return APR_EGENERAL;
         }
         if (dobj->file_size < conf->minfs) {
-          ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache_disk: URL %s failed the size check (%lu<%lu)",
-                     h->cache_obj->key, (unsigned long)dobj->file_size, (unsigned long)conf->minfs);
-          /* Remove the intermediate cache file and return non-APR_SUCCESS */
-          file_cache_errorcleanup(dobj, r);
-          return APR_EGENERAL;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "cache_disk: URL %s failed the size check (%lu<%lu)",
+                         h->cache_obj->key, dobj->file_size, conf->minfs);
+            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+            file_cache_errorcleanup(dobj, r);
+            return APR_EGENERAL;
         }
 
         /* All checks were fine. Move tempfile to final destination */

@@ -140,10 +140,7 @@ static void accept_headers(cache_handle_t *h, request_rec *r)
     apr_table_unset(r->err_headers_out, "Set-Cookie");
     apr_table_unset(h->resp_hdrs, "Set-Cookie");
 
-    apr_table_overlap(r->headers_out, h->resp_hdrs,
-                      APR_OVERLAP_TABLES_SET);
-    apr_table_overlap(r->err_headers_out, h->resp_err_hdrs,
-                      APR_OVERLAP_TABLES_SET);
+    apr_table_overlap(r->headers_out, h->resp_hdrs, APR_OVERLAP_TABLES_SET);
     if (!apr_is_empty_table(cookie_table)) {
         r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                                cookie_table);
@@ -209,10 +206,7 @@ int cache_select_url(request_rec *r, char *url)
              *
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
-            if ((varyhdr = apr_table_get(h->resp_err_hdrs, "Vary")) == NULL) {
-                varyhdr = apr_table_get(h->resp_hdrs, "Vary");
-            }
-            vary = apr_pstrdup(r->pool, varyhdr);
+            vary = apr_pstrdup(r->pool, apr_table_get(h->resp_hdrs, "Vary"));
             while (vary && *vary) {
                 char *name = vary;
                 const char *h1, *h2;
@@ -252,23 +246,25 @@ int cache_select_url(request_rec *r, char *url)
             /* Is our cached response fresh enough? */
             fresh = ap_cache_check_freshness(h, r);
             if (!fresh) {
-                cache_info *info = &(h->cache_obj->info);
+                const char *etag, *lastmod;
 
                 /* Make response into a conditional */
                 /* FIXME: What if the request is already conditional? */
-                if (info && info->etag) {
-                    /* if we have a cached etag */
-                    cache->stale_headers = apr_table_copy(r->pool,
-                                                          r->headers_in);
-                    apr_table_set(r->headers_in, "If-None-Match", info->etag);
-                    cache->stale_handle = h;
+                etag = apr_table_get(h->resp_hdrs, "ETag");
+                if (!etag) {
+                    lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
                 }
-                else if (info && info->lastmods) {
-                    /* if we have a cached Last-Modified header */
+                if (etag || lastmod) {
+                    /* if we have a cached etag or Last-Modified */
                     cache->stale_headers = apr_table_copy(r->pool,
                                                           r->headers_in);
-                    apr_table_set(r->headers_in, "If-Modified-Since",
-                                  info->lastmods);
+                    if (etag) {
+                        apr_table_set(r->headers_in, "If-None-Match", etag);
+                    }
+                    else if (lastmod) {
+                        apr_table_set(r->headers_in, "If-Modified-Since",
+                                      lastmod);
+                    }
                     cache->stale_handle = h;
                 }
 
@@ -276,9 +272,6 @@ int cache_select_url(request_rec *r, char *url)
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
-            apr_table_setn(r->headers_out, "Content-Type",
-                           ap_make_content_type(r, h->content_type));
-            r->filename = apr_pstrdup(r->pool, h->cache_obj->info.filename);
             accept_headers(h, r);
 
             cache->handle = h;
@@ -298,7 +291,8 @@ int cache_select_url(request_rec *r, char *url)
     return DECLINED;
 }
 
-apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 
+apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
+                                        char**key)
 {
     if (r->hostname) {
         *key = apr_pstrcat(p, r->hostname, r->uri, "?", r->args, NULL);

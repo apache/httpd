@@ -151,21 +151,10 @@ typedef struct {
 typedef struct cache_info cache_info;
 struct cache_info {
     int status;
-    char *content_type;
-    char *etag;
-    char *lastmods;         /* last modified of cache entity */
-    char *filename;
     apr_time_t date;
-    apr_time_t lastmod;
-    char lastmod_str[APR_RFC822_DATE_LEN];
     apr_time_t expire;
     apr_time_t request_time;
     apr_time_t response_time;
-    apr_size_t len;
-    apr_time_t ims;    /*  If-Modified_Since header value    */
-    apr_time_t ius;    /*  If-UnModified_Since header value    */
-    const char *im;         /* If-Match header value */
-    const char *inm;         /* If-None-Match header value */
 };
 
 /* cache handle information */
@@ -181,7 +170,9 @@ struct cache_object {
     char *key;
     cache_object_t *next;
     cache_info info;
-    void *vobj;         /* Opaque portion (specific to the cache implementation) of the cache object */
+    /* Opaque portion (specific to the implementation) of the cache object */
+    void *vobj;
+    /* FIXME: These are only required for mod_mem_cache. */
     apr_size_t count;   /* Number of body bytes written to the cache so far */
     int complete;
     apr_uint32_t refcount;  /* refcount and bit flag to cleanup object */
@@ -192,9 +183,6 @@ struct cache_handle {
     cache_object_t *cache_obj;
     apr_table_t *req_hdrs;        /* cached request headers */
     apr_table_t *resp_hdrs;       /* cached response headers */
-    apr_table_t *resp_err_hdrs;   /* cached response err headers */
-    const char *content_type;     /* cached content type */
-    int status;                   /* cached status */
 };
 
 #define CACHE_PROVIDER_GROUP "cache"
