@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.8.2.1 -->
 <modulesynopsis metafile="mod_cgi.xml.meta">
 
 <name>mod_cgi</name>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.4.2.1 -->
 <modulesynopsis metafile="mod_dir.xml.meta">
 <name>mod_dir</name>
 <description>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
