@@ -299,20 +299,24 @@ case "$PLAT" in
 	OS='BSDI w/486'
 	CFLAGS="$CFLAGS -m486"
 	DBM_LIB=""
+	DB_LIB=""
 	;;
     *-bsdi*)
 	OS='BSDI'
 	DBM_LIB=""
+	DB_LIB=""
 	;;
     *486-*-freebsd*|*486-*-netbsd*)
 	OS='FreeBSD/NETBSD on 486'
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
+	DB_LIB=""
 	;;
     *-freebsd*|*-netbsd*)
 	OS='FreeBSD/NetBSD'
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
+	DB_LIB=""
 	;;
     *-openbsd*)
 	OS='OpenBSD'
@@ -699,11 +703,15 @@ esac
 #
 if grep mod_auth_dbm Makefile > /dev/null; then
     LIBS="$LIBS $DBM_LIB"
-    echo " + using $DBM_LIB for mod_auth_dbm"
+    if [ "X$DBM_LIB" != "X" ]; then
+	echo " + using $DBM_LIB for mod_auth_dbm"
+    fi
 fi
 if grep mod_auth_db Makefile > /dev/null; then
     LIBS="$LIBS $DB_LIB"
-    echo " + using $DB_LIB for mod_auth_db"
+    if [ "X$DB_LIB" != "X" ]; then
+	echo " + using $DB_LIB for mod_auth_db"
+    fi
 fi
 
 ####################################################################
