@@ -90,17 +90,18 @@
  * are handed a record that applies to the current location by implication or
  * inheritance, and modifying it will change the rules for other locations.
  */
-typedef struct example_config {
-    int cmode;          /* Environment to which record applies (directory,  */
-                        /* server, or combination).                         */
+typedef struct excfg {
+    int cmode;                  /* Environment to which record applies (directory,
+                                 * server, or combination).
+                                 */
 #define CONFIG_MODE_SERVER 1
 #define CONFIG_MODE_DIRECTORY 2
-#define CONFIG_MODE_COMBO 3  /* Shouldn't ever happen.                      */
-    int local;          /* Boolean: was "Example" directive declared here?  */
-    int congenital;     /* Boolean: did we inherit an "Example"?            */
-    char *trace;        /* Pointer to trace string.                         */
-    char *loc;          /* Location to which this record applies.           */
-} example_config;
+#define CONFIG_MODE_COMBO 3     /* Shouldn't ever happen. */
+    int local;                  /* Boolean: "Example" directive declared here? */
+    int congenital;             /* Boolean: did we inherit an "Example"? */
+    char *trace;                /* Pointer to trace string. */
+    char *loc;                  /* Location to which this record applies. */
+} excfg;
 
 /*
  * Let's set up a module-local static cell to point to the accreting callback
@@ -144,7 +145,7 @@ module example_module;
  *
  * static const char *handle_NO_ARGS(cmd_parms *cmd, void *mconfig);
  */
- 
+
 /*
  * Command handler for a RAW_ARGS directive.  The "args" argument is the text
  * of the commandline following the directive itself.
@@ -246,31 +247,28 @@ module example_module;
 /*
  * Locate our directory configuration record for the current request.
  */
-static example_config *our_dconfig(request_rec *r)
+static excfg *our_dconfig(request_rec *r)
 {
 
-    return (example_config *) get_module_config(r->per_dir_config,
-                                                &example_module);
+    return (excfg *) get_module_config(r->per_dir_config, &example_module);
 }
 
 /*
  * Locate our server configuration record for the specified server.
  */
-static example_config *our_sconfig(server_rec *s)
+static excfg *our_sconfig(server_rec *s)
 {
 
-    return (example_config *) get_module_config(s->module_config,
-                                                &example_module);
+    return (excfg *) get_module_config(s->module_config, &example_module);
 }
 
 /*
  * Likewise for our configuration record for the specified request.
  */
-static example_config *our_rconfig(request_rec *r)
+static excfg *our_rconfig(request_rec *r)
 {
 
-    return (example_config *) get_module_config(r->request_config,
-                                                &example_module);
+    return (excfg *) get_module_config(r->request_config, &example_module);
 }
 
 /*
@@ -313,7 +311,7 @@ static void setup_module_cells()
 
 #define TRACE_NOTE "example-trace"
 
-static void trace_add(server_rec *s, request_rec *r, example_config *mconfig,
+static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
                       const char *note)
 {
 
@@ -322,7 +320,7 @@ static void trace_add(server_rec *s, request_rec *r, example_config *mconfig,
     char *where;
     pool *p;
     char *trace_copy;
-    example_config *rconfig;
+    excfg *rconfig;
 
     /*
      * Make sure our pools and tables are set up - we need 'em.
@@ -402,20 +400,20 @@ static void trace_add(server_rec *s, request_rec *r, example_config *mconfig,
     trace_copy = pstrcat(p, sofar, addon, NULL);
     if (r != NULL) {
         table_set(r->notes, TRACE_NOTE, trace_copy);
-    } else {
+    }
+    else {
         trace = trace_copy;
     }
     /*
-     * You *could* uncomment the following if you wanted to see the calling
+     * You *could* change the following if you wanted to see the calling
      * sequence reported in the server's error_log, but beware - almost all of
      * these co-routines are called for every single request, and the impact
      * on the size (and readability) of the error_log is considerable.
      */
-/*
-    if (s != NULL) {
-        aplog_error(APLOG_MARK, APLOG_ERR, s, "mod_example: %s", note);
+#define EXAMPLE_LOG_EACH 0
+    if (EXAMPLE_LOG_EACH && (s != NULL)) {
+        aplog_error(APLOG_MARK, APLOG_DEBUG, s, "mod_example: %s", note);
     }
- */
 }
 
 /*--------------------------------------------------------------------------*/
@@ -444,7 +442,7 @@ static void trace_add(server_rec *s, request_rec *r, example_config *mconfig,
 static const char *cmd_example(cmd_parms *cmd, void *mconfig)
 {
 
-    example_config *cfg = (example_config *) mconfig;
+    excfg *cfg = (excfg *) mconfig;
 
     /*
      * "Example Wuz Here"
@@ -481,8 +479,8 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
 static int example_handler(request_rec *r)
 {
 
-    example_config *dcfg;
-    example_config *rcfg;
+    excfg *dcfg;
+    excfg *rcfg;
 
     dcfg = our_dconfig(r);
     trace_add(r->server, r, dcfg, "example_handler()");
@@ -542,7 +540,7 @@ static int example_handler(request_rec *r)
     rputs("  The <SAMP>&lt;routine-data&gt;</SAMP> is supplied by\n", r);
     rputs("  the routine when it requests the trace,\n", r);
     rputs("  and the <SAMP>&lt;applies-to&gt;</SAMP> is extracted\n", r);
-    rputs("  from the configuration record at the time of the trace.\n", r); 
+    rputs("  from the configuration record at the time of the trace.\n", r);
     rputs("  <STRONG>SVR()</STRONG> indicates a server environment\n", r);
     rputs("  (blank means the main or default server, otherwise it's\n", r);
     rputs("  the name of the VirtualHost); <STRONG>DIR()</STRONG>\n", r);
@@ -682,8 +680,8 @@ static void example_child_init(server_rec *s, pool *p)
 static void example_child_exit(server_rec *s, pool *p)
 {
 
-    char    *note;
-    char    *sname = s->server_hostname;
+    char *note;
+    char *sname = s->server_hostname;
 
     /*
      * The arbitrary text we add to our trace entry indicates for which server
@@ -709,13 +707,13 @@ static void example_child_exit(server_rec *s, pool *p)
 static void *example_create_dir_config(pool *p, char *dirspec)
 {
 
-    example_config *cfg;
+    excfg *cfg;
     char *dname = dirspec;
 
     /*
      * Allocate the space for our record from the pool supplied.
      */
-    cfg = (example_config *) pcalloc(p, sizeof(example_config));
+    cfg = (excfg *) pcalloc(p, sizeof(excfg));
     /*
      * Now fill in the defaults.  If there are any `parent' configuration
      * records, they'll get merged as part of a separate callback.
@@ -747,13 +745,13 @@ static void *example_create_dir_config(pool *p, char *dirspec)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_dir_config(pool *p, void *parent_conf, void *newloc_conf)
+static void *example_merge_dir_config(pool *p, void *parent_conf,
+                                      void *newloc_conf)
 {
 
-    example_config *merged_config =
-                        (example_config *) pcalloc(p, sizeof(example_config));
-    example_config *pconf = (example_config *) parent_conf;
-    example_config *nconf = (example_config *) newloc_conf;
+    excfg *merged_config = (excfg *) pcalloc(p, sizeof(excfg));
+    excfg *pconf = (excfg *) parent_conf;
+    excfg *nconf = (excfg *) newloc_conf;
     char *note;
 
     /*
@@ -795,14 +793,14 @@ static void *example_merge_dir_config(pool *p, void *parent_conf, void *newloc_c
 static void *example_create_server_config(pool *p, server_rec *s)
 {
 
-    example_config *cfg;
+    excfg *cfg;
     char *sname = s->server_hostname;
 
     /*
-     * As with the example_create_dir_config() reoutine, we allocate and fill in an
-     * empty record.
+     * As with the example_create_dir_config() reoutine, we allocate and fill
+     * in an empty record.
      */
-    cfg = (example_config *) pcalloc(p, sizeof(example_config));
+    cfg = (excfg *) pcalloc(p, sizeof(excfg));
     cfg->local = 0;
     cfg->congenital = 0;
     cfg->cmode = CONFIG_MODE_SERVER;
@@ -829,13 +827,12 @@ static void *example_create_server_config(pool *p, server_rec *s)
  * containing the merged values.
  */
 static void *example_merge_server_config(pool *p, void *server1_conf,
-                                  void *server2_conf)
+                                         void *server2_conf)
 {
 
-    example_config *merged_config =
-                        (example_config *) pcalloc(p, sizeof(example_config));
-    example_config *s1conf = (example_config *) server1_conf;
-    example_config *s2conf = (example_config *) server2_conf;
+    excfg *merged_config = (excfg *) pcalloc(p, sizeof(excfg));
+    excfg *s1conf = (excfg *) server1_conf;
+    excfg *s2conf = (excfg *) server2_conf;
     char *note;
 
     /*
@@ -867,7 +864,7 @@ static void *example_merge_server_config(pool *p, void *server1_conf,
 static int example_post_read_request(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -889,7 +886,7 @@ static int example_post_read_request(request_rec *r)
 static int example_translate_handler(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -912,7 +909,7 @@ static int example_translate_handler(request_rec *r)
 static int example_check_user_id(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -935,7 +932,7 @@ static int example_check_user_id(request_rec *r)
 static int example_auth_checker(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -958,7 +955,7 @@ static int example_auth_checker(request_rec *r)
 static int example_access_checker(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     trace_add(r->server, r, cfg, "example_access_checker()");
@@ -973,9 +970,10 @@ static int example_access_checker(request_rec *r)
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
  * further modules are given a chance at the request for this phase.
  */
-static int example_type_checker(request_rec *r) {
+static int example_type_checker(request_rec *r)
+{
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -997,7 +995,7 @@ static int example_type_checker(request_rec *r) {
 static int example_fixer_upper(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     /*
@@ -1017,7 +1015,7 @@ static int example_fixer_upper(request_rec *r)
 static int example_logger(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     trace_add(r->server, r, cfg, "example_logger()");
@@ -1035,7 +1033,7 @@ static int example_logger(request_rec *r)
 static int example_header_parser(request_rec *r)
 {
 
-    example_config *cfg;
+    excfg *cfg;
 
     cfg = our_dconfig(r);
     trace_add(r->server, r, cfg, "example_header_parser()");
@@ -1054,17 +1052,18 @@ static int example_header_parser(request_rec *r)
 /* 
  * List of directives specific to our module.
  */
-command_rec example_cmds[] = {
+command_rec example_cmds[] =
+{
     {
-        "Example",                      /* directive name */
-        cmd_example,                    /* action routine for directive */
-        NULL,                           /* argument to include in call */
-        OR_OPTIONS,                     /* where available */
-        NO_ARGS,                        /* arguments */
+        "Example",              /* directive name */
+        cmd_example,            /* config action routine */
+        NULL,                   /* argument to include in call */
+        OR_OPTIONS,             /* where available */
+        NO_ARGS,                /* arguments */
         "Example directive - no arguments"
-                                        /* directive description */
+                                /* directive description */
     },
-    { NULL }
+    {NULL}
 };
 
 /*--------------------------------------------------------------------------*/
@@ -1084,9 +1083,10 @@ command_rec example_cmds[] = {
  * if a content-handler returns anything except DECLINED, no other
  * content-handlers will be called.
  */
-handler_rec example_handlers[] = {
-    { "example-handler", example_handler },
-    { NULL }
+handler_rec example_handlers[] =
+{
+    {"example-handler", example_handler},
+    {NULL}
 };
 
 /*--------------------------------------------------------------------------*/
@@ -1103,19 +1103,20 @@ handler_rec example_handlers[] = {
  * during request processing.  Note that not all routines are necessarily
  * called (such as if a resource doesn't have access restrictions).
  */
-module example_module = {
+module example_module =
+{
     STANDARD_MODULE_STUFF,
     example_init,               /* module initializer */
-    example_create_dir_config,  /* per-directory config creater */
-    example_merge_dir_config,   /* dir config merger - default is to override */
-    example_create_server_config, /* server config creator */
-    example_merge_server_config,/* server config merger */
+    example_create_dir_config,  /* per-directory config creator */
+    example_merge_dir_config,   /* dir config merger */
+    example_create_server_config,       /* server config creator */
+    example_merge_server_config,        /* server config merger */
     example_cmds,               /* command table */
     example_handlers,           /* [7] list of handlers */
     example_translate_handler,  /* [2] filename-to-URI translation */
-    example_check_user_id,      /* [5] check/validate HTTP user_id */
-    example_auth_checker,       /* [6] check HTTP user_id is valid *here* */
-    example_access_checker,     /* [4] check access by host address, etc. */
+    example_check_user_id,      /* [5] check/validate user_id */
+    example_auth_checker,       /* [6] check user_id is valid *here* */
+    example_access_checker,     /* [4] check access by host address */
     example_type_checker,       /* [7] MIME type checker/setter */
     example_fixer_upper,        /* [8] fixups */
     example_logger,             /* [10] logger */

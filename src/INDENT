@@ -47,7 +47,7 @@ AND don't forget to run expand on the file after it has been indent'd.
    util_snprintf.c		DONE by Randy
 
 ./modules/example:
-   mod_example.c		RESERVED by Ken
+   mod_example.c		DONE by Ken
 
 ./modules/proxy:
    mod_proxy.c
@@ -78,14 +78,14 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_headers.c
    mod_imap.c
    mod_include.c
-   mod_info.c			RESERVED by Ken
+   mod_info.c			DONE by Ken
    mod_log_agent.c
    mod_log_config.c		RESERVED by Ken
    mod_log_referer.c
    mod_mime.c
    mod_mime.h
    mod_mime_magic.c
-   mod_negotiation.c
+   mod_negotiation.c		RESERVED by Ken
    mod_rewrite.c
    mod_rewrite.h
    mod_setenvif.c		RESERVED by Ken
