@@ -336,7 +336,6 @@ static apr_status_t decrement_refcount(void *arg)
      * object needs to be removed from the cache then cleaned up.
      */
     if (!obj->complete) {
-        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         if (sconf->lock) {
             apr_thread_mutex_lock(sconf->lock);
         }
@@ -646,7 +645,6 @@ static int remove_entity(cache_handle_t *h)
      * hash table.
      */
     if (!obj->cleanup) {
-        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         cache_remove(sconf->cache_cache, obj);
         obj->cleanup = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, "gcing a cache entry");
