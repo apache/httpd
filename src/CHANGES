@@ -1,5 +1,10 @@
 Changes with Apache 1.3
 
+  *) Enhance UserDir directive (mod_userdir) to accept a list of
+     usernames for the 'disable' keyword, and add 'enable user...' to
+     selectively *en*able userdirs if they're globally disabled.
+     [Ken Coar]
+
   *) If NETSCAPE_DBM_COMPAT is defined in EXTRA_CFLAGS then Apache
      will work with netscape dbm files.  (dbmmanage will probably not
      work however.) [Alexander Spohr <aspohr@netmatic.com>] PR#444
