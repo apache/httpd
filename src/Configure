@@ -340,7 +340,8 @@ case "$PLAT" in
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
 	;;
-    *-powerpc-tenon-*)
+    *powerpc-tenon-machten*)
+    	OS='MachTen'
 	LFLAGS="$LFLAGS -Xlstack=131072 -Xldelcsect"
 	;;
     *) # default: Catch systems we don't know about

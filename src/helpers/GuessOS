@@ -162,6 +162,9 @@ else
 	    echo "${MACHINE}-sni-sysv4"; exit 0
 	    ;;
 
+	machten:*)
+	   echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
+
 	library:*)
 	    echo "${MACHINE}-ncr-sysv4"; exit 0
 	    ;;
