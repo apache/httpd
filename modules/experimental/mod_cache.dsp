@@ -92,7 +92,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\cache_cache.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cache_hash.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_pqueue.c
 # End Source File
 # Begin Source File
 
@@ -112,7 +120,15 @@ SOURCE=.\mod_cache.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\cache_cache.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cache_hash.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_pqueue.h
 # End Source File
 # Begin Source File
 
