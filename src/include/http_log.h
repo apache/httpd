@@ -87,21 +87,18 @@
 
 #define APLOG_MARK	__FILE__,__LINE__
 
-typedef struct _trans {
-	char	*t_name;
-	int	t_val;
-} TRANS;
-
 void open_logs (server_rec *, pool *p);
 API_EXPORT(void) aplog_error(const char *file, int line, int level,
-			     const server_rec *s, const char *fmt, ...);
+			     const server_rec *s, const char *fmt, ...)
+			    __attribute__((format(printf,5,6)));
 API_EXPORT(void) error_log2stderr (server_rec *);     
 
 void log_pid (pool *p, char *fname);
 API_EXPORT(void) log_error(const char *err, server_rec *s);
 API_EXPORT(void) log_unixerr(const char *routine, const char *file,
 			     const char *msg, server_rec *s);
-API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...);
+API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...)
+			    __attribute__((format(printf,2,3)));
 API_EXPORT(void) log_reason(const char *reason, const char *fname,
 			    request_rec *r);
 

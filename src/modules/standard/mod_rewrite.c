@@ -987,9 +987,9 @@ static int hook_uri2file(request_rec *r)
              * we can actually use it!
              */
             if (!proxy_available) {
-                aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                             "attempt to make remote request from mod_rewrite "
-                            "without proxy enabled", r->filename);
+                            "without proxy enabled: %s", r->filename);
                 return FORBIDDEN;
             }
 
@@ -1206,7 +1206,7 @@ static int hook_fixup(request_rec *r)
      */
     if (!(allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
                     "which implies that RewriteRule directive is forbidden: %s",
                     r->filename);
@@ -2252,7 +2252,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             if (cpT != NULL) {
                 n = strlen(cpT);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                                 "insufficient space in expand_map_lookups, aborting");
                     return;
                 }
@@ -2262,7 +2262,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             else {
                 n = strlen(defaultvalue);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                                 "insufficient space in expand_map_lookups, aborting");
                     return;
                 }
@@ -2276,7 +2276,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 cpT = cpI+strlen(cpI);
             n = cpT-cpI;
             if (cpO + n >= newuri + sizeof(newuri)) {
-                aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                             "insufficient space in expand_map_lookups, aborting");
                 return;
             }
@@ -2327,8 +2327,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             if (s->type == MAPTYPE_TXT) {
                 if (stat(s->checkfile, &st) == -1) {
                     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                                "mod_rewrite: can't access text RewriteMap file %s: %s",
-                                s->checkfile, strerror(errno));
+                                "mod_rewrite: can't access text RewriteMap file %s",
+                                s->checkfile);
                     rewritelog(r, 1,
                                "can't open RewriteMap file, see error log");
                     return NULL;
@@ -2356,7 +2356,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 if (stat(s->checkfile, &st) == -1) {
                     aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
                                 "mod_rewrite: can't access dbm RewriteMap file %s: %s",
-                                s->checkfile, strerror(errno));
+                                s->checkfile);
                     rewritelog(r, 1,
                                "can't open RewriteMap file, see error log");
                     return NULL;

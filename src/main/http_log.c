@@ -67,10 +67,14 @@
 
 #include <stdarg.h>
 
+typedef struct {
+	char	*t_name;
+	int	t_val;
+} TRANS;
 
 #ifdef HAVE_SYSLOG
 
-static TRANS facilities[] = {
+static const TRANS facilities[] = {
     {"auth",	LOG_AUTH},
 #ifdef LOG_AUTHPRIV
     {"authpriv",LOG_AUTHPRIV},
@@ -133,7 +137,7 @@ static TRANS facilities[] = {
 };
 #endif
 
-static TRANS priorities[] = {
+static const TRANS priorities[] = {
     {"emerg",	APLOG_EMERG},
     {"alert",	APLOG_ALERT},
     {"crit",	APLOG_CRIT},
@@ -174,10 +178,6 @@ static int error_log_child (void *cmd)
 void open_error_log (server_rec *s, pool *p)
 {
     char *fname;
-#ifdef HAVE_SYSLOG
-    register TRANS *fac;
-#endif
-
 
     if (*s->error_fname == '|') {
 	FILE *dummy;
@@ -195,6 +195,8 @@ void open_error_log (server_rec *s, pool *p)
 #ifdef HAVE_SYSLOG
     else if (!strncasecmp(s->error_fname, "syslog", 6)) {
 	if ((fname = strchr(s->error_fname, ':'))) {
+	    const TRANS *fac;
+
 	    fname++;
 	    for (fac = facilities; fac->t_name; fac++) {
 		if (!strcasecmp(fname, fac->t_name)) {
@@ -236,8 +238,7 @@ void open_logs (server_rec *s_main, pool *p)
 	fflush(stderr);
 	if (dup2(fileno(s_main->error_log), 2) == -1) {
 	    aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
-		"unable to replace stderr with error_log: %s",
-		strerror(errno));
+		"unable to replace stderr with error_log");
 	} else {
 	    replace_stderr = 0;
 	}
@@ -248,8 +249,7 @@ void open_logs (server_rec *s_main, pool *p)
      */
     if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
-	    "unable to replace stderr with /dev/null: %s",
-	    strerror(errno));
+	    "unable to replace stderr with /dev/null");
     }
 #endif
 
@@ -278,7 +278,6 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 {
     va_list args;
     char errstr[MAX_STRING_LEN];
-    static TRANS *pname = priorities;
     size_t len;
     int save_errno = errno;
     FILE *logf;
@@ -313,15 +312,15 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
     }
 
     len += ap_snprintf(errstr + len, sizeof(errstr) - len,
-	    "[%s] ", pname[level & APLOG_LEVELMASK].t_name);
+	    "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
 
-    if (!(level & APLOG_NOERRNO)) {
-	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
-		"%d: %s: ", save_errno, strerror(save_errno));
-    }
     if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
-		"%s: %d: ", file, line);
+		"%s(%d): ", file, line);
+    }
+    if (!(level & APLOG_NOERRNO)) {
+	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
+		"(%d)%s: ", save_errno, strerror(save_errno));
     }
 
     va_start(args, fmt);

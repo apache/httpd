@@ -98,7 +98,7 @@ static int check_safe_file(request_rec *r)
         || S_ISLNK(r->finfo.st_mode)) {
         return OK;
     }
-    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                 "object is not a file, directory or symlink: %s",
                 r->filename);
     return HTTP_FORBIDDEN;
@@ -224,7 +224,7 @@ int get_path_info(request_rec *r)
                 aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                             "access to %s failed for %s", r->uri,
                             get_remote_host(r->connection, r->per_dir_config,
-                                            REMOTE_NAME));
+                                            REMOTE_NOLOOKUP));
             return HTTP_FORBIDDEN;
         }
 #else
@@ -386,7 +386,7 @@ int directory_walk(request_rec *r)
          */
 
         if ((res = check_symlinks(test_dirname, core_dir->opts))) {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
         }
@@ -485,7 +485,7 @@ int directory_walk(request_rec *r)
      */
     if (!S_ISDIR(r->finfo.st_mode)
         && (res = check_symlinks(r->filename, allow_options(r)))) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Symbolic link not allowed: %s", r->filename);
         return res;
     }
@@ -768,7 +768,7 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
         }
         else {
             if ((res = check_symlinks(rnew->filename, allow_options(rnew)))) {
-                aplog_error(APLOG_MARK, APLOG_ERR, rnew->server,
+                aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew->server,
                             "Symbolic link not allowed: %s", rnew->filename);
                 rnew->status = res;
                 return rnew;
@@ -919,7 +919,7 @@ void die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = SERVER_ERROR;
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Invalid error redirection directive: %s",
                         custom_response);
         }
@@ -930,7 +930,7 @@ void die(int type, request_rec *r)
 static void decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r->server,
                     "configuration error:  couldn't %s: %s", phase, r->uri);
         die(SERVER_ERROR, r);
     }
@@ -973,7 +973,7 @@ void process_request_internal(request_rec *r)
          * headers!  Have to dink things even to make sure the error message
          * comes through...
          */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "client sent illegal HTTP/0.9 request: %s", r->uri);
         r->header_only = 0;
         die(BAD_REQUEST, r);
@@ -987,7 +987,7 @@ void process_request_internal(request_rec *r)
          * hostname, either with a full URL or a Host: header. We therefore
          * need to (as per the 1.1 spec) send an error
          */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                "client sent HTTP/1.1 request without hostname: %s", r->uri);
         die(BAD_REQUEST, r);
         return;

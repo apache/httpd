@@ -837,9 +837,13 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #define ap_inet_addr inet_addr
 #endif
 
-/* so that we can use inline on some critical functions */
+/* So that we can use inline on some critical functions, and use
+ * GNUC attributes (such as to get -Wall warnings for printf-like
+ * functions).
+ */
 #if !defined(__GNUC__)
 #define ap_inline
+#define __attribute__(__x)
 #else
 #define ap_inline __inline__
 #endif

@@ -159,11 +159,12 @@ static command_rec cgi_cmds[] =
 };
 
 static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
-			   char *error)
+			   int show_errno, char *error)
 {
     FILE *f;
 
-    aplog_error(APLOG_MARK, APLOG_ERR, r->server, error, r->filename);
+    aplog_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, error,
+		r->filename);
 
     if (!conf->logname ||
 	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
@@ -291,9 +292,6 @@ static int cgi_child(void *child_stuff)
 #endif
 
     char **env;
-#ifndef WIN32
-    char err_string[HUGE_STRING_LEN];
-#endif
 
 #ifdef DEBUG_CGI
     fprintf(dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
@@ -329,16 +327,11 @@ static int cgi_child(void *child_stuff)
      *
      * Oh, well.  Muddle through as best we can...
      *
-     * (NB we can't use aplog_error, or anything like that, because we
-     * just closed the file descriptor which r->server->error_log
-     * was tied to in cleanup_for_exec().  It's only available on stderr
-     * now, so that's what we use).
+     * Note that only stderr is available at this point, so don't pass in
+     * a server to aplog_error.
      */
 
-    ap_snprintf(err_string, sizeof(err_string),
-		"exec of %s failed, reason: %s (errno = %d)\n",
-		r->filename, strerror(errno), errno);
-    write(STDERR_FILENO, err_string, strlen(err_string));
+    aplog_error(APLOG_MARK, APLOG_ERR, NULL, "exec of %s failed", r->filename);
     exit(0);
     /* NOT REACHED */
     return (0);
@@ -374,14 +367,14 @@ static int cgi_handler(request_rec *r)
     nph = !(strncmp(argv0, "nph-", 4));
 
     if (!(allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
-	return log_scripterror(r, conf, FORBIDDEN,
+	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "Options ExecCGI is off in this directory");
     if (nph && is_included)
-	return log_scripterror(r, conf, FORBIDDEN,
+	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to include NPH CGI script");
 
     if (S_ISDIR(r->finfo.st_mode))
-	return log_scripterror(r, conf, FORBIDDEN,
+	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
 #if defined(__EMX__) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
@@ -391,13 +384,13 @@ static int cgi_handler(request_rec *r)
 	r->filename = pstrcat(r->pool, r->filename, ".EXE", NULL);
 
 	if ((stat(r->filename, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
-	    return log_scripterror(r, conf, NOT_FOUND,
+	    return log_scripterror(r, conf, NOT_FOUND, 0,
 				   "script not found or unable to stat");
 	}
     }
 #else
     if (r->finfo.st_mode == 0)
-	return log_scripterror(r, conf, NOT_FOUND,
+	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
 

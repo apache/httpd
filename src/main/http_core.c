@@ -1265,7 +1265,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	else
 	    cur = atol(str);
     else {
-	aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
 		    "Invalid parameters for %s", cmd->cmd->name);
 	return;
     }
@@ -1277,7 +1277,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
     if (geteuid()) {
 	limit->rlim_cur = cur;
 	if (max)
-	    aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
 			"Must be uid 0 to raise maximum %s", cmd->cmd->name);
     }
     else {
@@ -1293,7 +1293,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 				 char *arg, char *arg2)
 {
-    aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
 		"%s not supported on this platform", cmd->cmd->name);
     return NULL;
 }
@@ -1569,7 +1569,7 @@ int core_translate (request_rec *r)
   
     if (r->proxyreq) return HTTP_FORBIDDEN;
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "Invalid URI in request %s", r->the_request);
 	return BAD_REQUEST;
     }
@@ -1631,7 +1631,7 @@ int default_handler (request_rec *r)
     r->allowed |= (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "Invalid method in request %s", r->the_request);
 	return NOT_IMPLEMENTED;
     }
@@ -1641,7 +1641,7 @@ int default_handler (request_rec *r)
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "File does not exist: %s",
 		    r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
-		    : r->filename, r);
+		    : r->filename);
 	return NOT_FOUND;
     }
     if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;

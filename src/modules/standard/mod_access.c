@@ -359,7 +359,7 @@ static int check_dir_access(request_rec *r)
 
     if (ret == FORBIDDEN
 	&& (satisfies(r) != SATISFY_ANY || !some_auth_required(r))) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		  "Client denied by server configuration: %s", r->filename);
     }
 

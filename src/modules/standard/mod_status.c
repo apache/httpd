@@ -244,7 +244,7 @@ static int status_handler(request_rec *r)
     status[SERVER_GRACEFUL] = 'G';
 
     if (!exists_scoreboard_image()) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "Server status unavailable in inetd mode");
 	return HTTP_NOT_IMPLEMENTED;
     }

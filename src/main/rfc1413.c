@@ -123,7 +123,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     if (bind(sock, (struct sockaddr *) &our_query_sin,
 	     sizeof(struct sockaddr_in)) < 0) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
-		    "bind: rfc1413: Error binding to local port", srv);
+		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
 

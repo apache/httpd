@@ -358,7 +358,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
 	    kill_timeout(r);
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"Premature end of script headers: %s", r->filename);
 	    return SERVER_ERROR;
 	}
@@ -408,7 +408,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 		    continue;
 
 	    kill_timeout(r);
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"%s: %s", malformed, r->filename);
 	    return SERVER_ERROR;
 	}
@@ -597,12 +597,8 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	FILE *program;
 	program = fopen(r->filename, "r");
 	if (!program) {
-	    char err_string[HUGE_STRING_LEN];
-	    ap_snprintf(err_string, sizeof(err_string), "open of %s failed", r->filename);
-
-	    /* write(2, err_string, strlen(err_string)); */
-	    /* exit(0); */
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen: %s", err_string);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
+			r->filename);
 	    return (pid);
 	}
 	fgets(interpreter, sizeof(interpreter), program);
@@ -694,20 +690,14 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	if (!is_exe) {
 	    program = fopen(r->filename, "rb");
 	    if (!program) {
-		char err_string[HUGE_STRING_LEN];
-		ap_snprintf(err_string, sizeof(err_string),
-			    "open of %s failed", r->filename);
-		/* write(2, err_string, strlen(err_string)); */
-		/* exit(0); */
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen: %s", err_string);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "fopen(%s) failed", r->filename);
 		return (pid);
 	    }
 	    sz = fread(interpreter, 1, sizeof(interpreter) - 1, program);
 	    if (sz < 0) {
-		char err_string[HUGE_STRING_LEN];
-		ap_snprintf(err_string, sizeof(err_string),
-			    "open of %s failed", r->filename);
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fread: %s", err_string);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "fread of %s failed", r->filename);
 		fclose(program);
 		return (pid);
 	    }

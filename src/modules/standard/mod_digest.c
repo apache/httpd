@@ -140,7 +140,8 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 	return DECLINED;
 
     if (!auth_name(r)) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "need AuthName: %s", r->uri);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
 
@@ -151,7 +152,7 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     if (strcmp(getword(r->pool, &auth_line, ' '), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "client used wrong authentication scheme: %s", r->uri);
 	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
@@ -274,7 +275,6 @@ int authenticate_digest_user(request_rec *r)
     digest_header_rec *response = pcalloc(r->pool, sizeof(digest_header_rec));
     conn_rec *c = r->connection;
     char *a1;
-    char errstr[MAX_STRING_LEN];
     int res;
 
     if ((res = get_digest_rec(r, response)))
@@ -284,15 +284,15 @@ int authenticate_digest_user(request_rec *r)
 	return DECLINED;
 
     if (!(a1 = get_hash(r, c->user, sec->pwfile))) {
-	ap_snprintf(errstr, sizeof(errstr), "user %s not found", c->user);
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "user %s not found: %s", c->user, r->uri);
 	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if (strcmp(response->digest, find_digest(r, response, a1))) {
-	ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch", c->user);
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "user %s: password mismatch: %s", c->user, r->uri);
 	note_digest_auth_failure(r);
 	return AUTH_REQUIRED;
     }

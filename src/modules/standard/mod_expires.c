@@ -415,7 +415,7 @@ static int add_expires(request_rec *r)
 
     conf = (expires_dir_config *) get_module_config(r->per_dir_config, &expires_module);
     if (conf == NULL) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "internal error: %s", r->filename);
         return SERVER_ERROR;
     };
@@ -465,7 +465,7 @@ static int add_expires(request_rec *r)
         /* expecting the add_* routines to be case-hardened this 
          * is just a reminder that module is beta
          */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "internal error: bad expires code: %s", r->filename);
         return SERVER_ERROR;
     };

@@ -709,7 +709,7 @@ int read_request_line(request_rec *r)
 #endif                          /* SIGUSR1 */
     bsetflag(conn->client, B_SAFEREAD, 0);
     if (len == (HUGE_STRING_LEN - 1)) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "request failed for %s, reason: URI too long",
             get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
         r->status = HTTP_REQUEST_URI_TOO_LARGE;
@@ -1046,8 +1046,8 @@ API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw)
         return DECLINED;
 
     if (!auth_name(r)) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "need AuthName: %s",
-                    r->uri);
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+		    r->server, "need AuthName: %s", r->uri);
         return SERVER_ERROR;
     }
 
@@ -1058,7 +1058,7 @@ API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw)
 
     if (strcmp(getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "client used wrong authentication scheme: %s", r->uri);
         note_basic_auth_failure(r);
         return AUTH_REQUIRED;
@@ -1461,12 +1461,12 @@ API_EXPORT(int) setup_client_block(request_rec *r, int read_policy)
 
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Unknown Transfer-Encoding %s", tenc);
             return HTTP_BAD_REQUEST;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
@@ -1479,7 +1479,7 @@ API_EXPORT(int) setup_client_block(request_rec *r, int read_policy)
         while (isdigit(*pos) || isspace(*pos))
             ++pos;
         if (*pos != '\0') {
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                         "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
@@ -1489,7 +1489,7 @@ API_EXPORT(int) setup_client_block(request_rec *r, int read_policy)
 
     if ((r->read_body == REQUEST_NO_BODY) &&
         (r->read_chunked || (r->remaining > 0))) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }

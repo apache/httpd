@@ -220,7 +220,6 @@ static int dbm_authenticate_basic_user(request_rec *r)
 					      &dbm_auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
-    char errstr[MAX_STRING_LEN];
     int res;
 
     if ((res = get_basic_auth_pw(r, &sent_pw)))
@@ -232,8 +231,8 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if (!(real_pw = get_dbm_pw(r, c->user, sec->auth_dbmpwfile))) {
 	if (!(sec->auth_dbmauthoritative))
 	    return DECLINED;
-	ap_snprintf(errstr, sizeof(errstr), "DBM user %s not found", c->user);
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->filename);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "DBM user %s not found: %s", c->user, r->filename);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -243,9 +242,8 @@ static int dbm_authenticate_basic_user(request_rec *r)
 	*colon_pw = '\0';
     /* anyone know where the prototype for crypt is? */
     if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
-	ap_snprintf(errstr, sizeof(errstr),
-		    "user %s: password mismatch", c->user);
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		    "user %s: password mismatch: %s", c->user, r->uri);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
@@ -261,7 +259,6 @@ static int dbm_check_auth(request_rec *r)
 					      &dbm_auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
-    char errstr[MAX_STRING_LEN];
 
     array_header *reqs_arr = requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
@@ -290,11 +287,9 @@ static int dbm_check_auth(request_rec *r)
 	    if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
 		if (!(sec->auth_dbmauthoritative))
 		    return DECLINED;
-		ap_snprintf(errstr, sizeof(errstr),
-			    "user %s not in DBM group file %s",
-			    user, sec->auth_dbmgrpfile);
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "%s: %s", errstr, r->filename);
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			    "user %s not in DBM group file %s: %s",
+			    user, sec->auth_dbmgrpfile, r->filename);
 		note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
 	    }
@@ -308,10 +303,9 @@ static int dbm_check_auth(request_rec *r)
 			return OK;
 		}
 	    }
-	    ap_snprintf(errstr, sizeof(errstr),
-			"user %s not in right group", user);
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"%s: %s", errstr, r->filename);
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			"user %s not in right group: %s",
+			user, r->filename);
 	    note_basic_auth_failure(r);
 	    return AUTH_REQUIRED;
 	}

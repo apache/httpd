@@ -145,7 +145,7 @@ static void unique_id_global_init(server_rec *s, pool *p)
      */
     if (XtOffsetOf(unique_id_rec, counter) + sizeof(cur_unique_id.counter)
         != 14) {
-        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
                     "mod_unique_id: sorry the size assumptions are wrong "
                     "in mod_unique_id.c, please remove it from your server "
                     "or fix the code!");
@@ -158,20 +158,20 @@ static void unique_id_global_init(server_rec *s, pool *p)
      * be unique as the physical address of the machine
      */
     if (gethostname(str, sizeof(str) - 1) != 0) {
-        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
           "gethostname: mod_unique_id requires the hostname of the server");
         exit(1);
     }
 
     if ((hent = gethostbyname(str)) == NULL) {
-        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
                     "mod_unique_id: unable to gethostbyname(\"%s\")", str);
         exit(1);
     }
 
     global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
 
-    aplog_error(APLOG_MARK, APLOG_INFO, s,
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
                 "mod_unique_id: using ip addr %s",
                 inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
 
@@ -228,7 +228,7 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-        aplog_error(APLOG_MARK, APLOG_CRIT, s,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 

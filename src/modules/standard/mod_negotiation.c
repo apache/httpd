@@ -675,7 +675,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     }
 
     if (!*cp) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Syntax error in type map --- no ':': %s", r->filename);
         return NULL;
     }
@@ -685,7 +685,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     } while (*cp && isspace(*cp));
 
     if (!*cp) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Syntax error in type map --- no header body: %s",
                     r->filename);
         return NULL;
@@ -711,7 +711,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     map = pfopen(neg->pool, rr->filename, "r");
     if (map == NULL) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "cannot access type map file", rr->filename);
+                    "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;
     }
 
@@ -802,7 +802,7 @@ static int read_types_multi(negotiation_state *neg)
 
     if (dirp == NULL) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "cannot read directory for multi", neg->dir_name);
+                    "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
 
@@ -2046,8 +2046,8 @@ static int handle_map_file(request_rec *r)
     }
 
     if (!best) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "no acceptable variant", r->filename);
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                    "no acceptable variant: %s", r->filename);
 
         set_neg_headers(r, neg, na_result);
         store_variant_list(r, neg);
@@ -2133,8 +2133,8 @@ static int handle_multi(request_rec *r)
     }
 
     if (!best) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                    "no acceptable variant", r->filename);
+        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                    "no acceptable variant: %s", r->filename);
 
         set_neg_headers(r, neg, na_result);
         store_variant_list(r, neg);
