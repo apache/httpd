@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Update OpenSSL detection to work on Darwin.
+     [Sander Temme <sctemme@covalent.net>]
+
   *) Update the xslt and css to give the documentation a more
      modern style.
      [André Malo <nd@perlig.de>, Gernot Winkler <greh@o3media.de>]
