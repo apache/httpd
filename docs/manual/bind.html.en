@@ -38,19 +38,19 @@ and ports Apache listens to.
 
 <H3><A name="bindaddress">BindAddress</A></H3>
 <A
- HREF="directive-dict.html#Syntax"
+ HREF="mod/directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
 <A
- HREF="directive-dict.html#Default"
+ HREF="mod/directive-dict.html#Default"
  REL="Help"
 ><STRONG>Default:</STRONG></A> <CODE>BindAddress *</CODE><BR>
 <A
- HREF="directive-dict.html#Context"
+ HREF="mod/directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config<BR>
 <A
- HREF="directive-dict.html#Status"
+ HREF="mod/directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> Core<P>
 
@@ -61,19 +61,19 @@ should be used.
 
 <H3><A name="listen">Listen</A></H3>
 <A
- HREF="directive-dict.html#Syntax"
+ HREF="mod/directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> Listen <EM>[ port | IP-address:port ]</EM><BR>
 <A
- HREF="directive-dict.html#Default"
+ HREF="mod/directive-dict.html#Default"
  REL="Help"
 ><STRONG>Default:</STRONG></A> <CODE>none</CODE><BR>
 <A
- HREF="directive-dict.html#Context"
+ HREF="mod/directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config<BR>
 <A
- HREF="directive-dict.html#Status"
+ HREF="mod/directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> Core<P>
 
