@@ -5586,40 +5586,28 @@ void worker_main(void)
 
 	tv.tv_sec = wait_time;
 	tv.tv_usec = 0;
-
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
+
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
-#ifdef WIN32
-	if (srv == SOCKET_ERROR) {
-	    /* Map the Win32 error into a standard Unix error condition */
-	    errno = WSAGetLastError();
-	    srv = -1;
-	}
-#endif /* WIN32 */
 
-	if (srv < 0) {
-	    /* Error occurred - if EINTR, loop around with problem */
-	    if (errno != EINTR) {
-		/* A "real" error occurred, log it and increment the count of
-		 * select errors. This count is used to ensure we don't go into
-		 * a busy loop of continuous errors.
-		 */
-		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
-		count_select_errors++;
-		if (count_select_errors > MAX_SELECT_ERRORS) {
-		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
-			"Too many errors in select loop. Child process exiting.");
-		    break;
-		}
-	    }
-	    continue;
-	}
-	count_select_errors = 0;    /* reset count of errors */
-	if (srv == 0) {
+        if (srv == 0 || (srv == SOCKET_ERROR && h_errno == WSAEINTR)) {
+            count_select_errors = 0;    /* reset count of errors */            
             continue;
-	}
-
-	{
+        }
+	else if (srv == SOCKET_ERROR) {
+            /* A "real" error occurred, log it and increment the count of
+             * select errors. This count is used to ensure we don't go into
+             * a busy loop of continuous errors.
+             */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+                         "select failed with errno %d", h_errno);
+            count_select_errors++;
+            if (count_select_errors > MAX_SELECT_ERRORS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
+                             "Too many errors in select loop. Child process exiting.");
+		    break;
+            }
+	} else {
 	    listen_rec *lr;
 
 	    lr = find_ready_listener(&main_fds);
@@ -5630,24 +5618,16 @@ void worker_main(void)
 	do {
 	    clen = sizeof(sa_client);
 	    csd = accept(sd, (struct sockaddr *) &sa_client, &clen);
-#ifdef WIN32
 	    if (csd == INVALID_SOCKET) {
 		csd = -1;
-		errno = WSAGetLastError();
 	    }
-#endif /* WIN32 */
-	} while (csd < 0 && errno == EINTR);
+	} while (csd < 0 && h_errno == WSAEINTR);
 
 	if (csd < 0) {
-#if defined(EPROTO) && defined(ECONNABORTED)
-	    if ((errno != EPROTO) && (errno != ECONNABORTED))
-#elif defined(EPROTO)
-	    if (errno != EPROTO)
-#elif defined(ECONNABORTED)
-	    if (errno != ECONNABORTED)
-#endif
+	    if (h_errno != WSAECONNABORTED) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-			    "accept: (client socket)");
+                             "accept: (client socket) failed with errno = %d",h_errno);
+            }
 	}
 	else {
 	    add_job(csd);
