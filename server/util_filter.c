@@ -248,6 +248,8 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
                                          apr_bucket_brigade **b)
 {
     apr_bucket *e;
+    /* ### this pool should be passed in; the caller is the only one who
+       ### really knows what the proper lifetime is for this pool. */
     apr_pool_t *p = f->r ? f->r->pool : f->c->pool;
     apr_status_t rv;
 
@@ -259,8 +261,11 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
     }
     
     APR_RING_FOREACH(e, &(*b)->list, apr_bucket, link) {
-        rv = apr_bucket_setaside(e);
-        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+        rv = apr_bucket_setaside(e, p);
+        if (rv != APR_SUCCESS
+            /* ### this ENOTIMPL will go away once we implement setaside
+               ### for all bucket types. */
+            && rv != APR_ENOTIMPL) {
             return rv;
         }
     }
