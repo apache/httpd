@@ -407,7 +407,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
 }
 
-static const char *get_tempname(apr_pool_t *p)
+static char *get_tempname(apr_pool_t *p)
 {
     char tn[] = "htpasswd.tmp.XXXXXX";
     char *dirname;
@@ -431,7 +431,7 @@ int main(int argc, const char * const argv[])
     char *password = NULL;
     char *pwfilename = NULL;
     char *user = NULL;
-    const char *tn;
+    char *tn;
     char scratch[MAX_STRING_LEN];
     int found = 0;
     int i;
