@@ -26,7 +26,7 @@
 
       <dd>On Unix systems with POSIX threads support, Apache can
       now run in a hybrid multiprocess, multithreaded mode. This
-      should improve scalability.</dd>
+      improves scalability for many, but not all configurations.</dd>
 
       <dt><strong>New Build System</strong></dt>
 
@@ -75,8 +75,33 @@
       <dd>Apache modules may now be written as filters which act on
       the stream of content as it is delivered to or from the
       server. This allows, for example, the output of CGI scripts
-      to be parsed for Server Side Include directive by
-      mod_include.</dd>
+      to be parsed for Server Side Include directives using the
+      INCLUDE filter in mod_include.</dd>
+
+      <dt><strong>Multilanguage Error Responses</strong></dt>
+
+      <dd>Error response messages to the browser are now provided in 
+      several languages, using SSI documents.  They may be customized 
+      by the administrator to achieve a consistent look and feel.</dd>
+
+      <dt><strong>Simplified configuration</strong></dt>
+
+      <dd>Many confusing directives have been simplified.  The often
+      confusing Port and BindAddress directives are gone; only the
+      Listen directive is used for IP address binding; the
+      ServerName directive specifies the server name and port number
+      only for redirection and vhost recognition.</dd>
+
+      <dt><strong>Native Windows NT Unicode Support</strong></dt>
+
+      <dd>Apache 2.0 on Windows NT now uses utf-8 for all filename
+      encodings.  These directly translate to the underlying Unicode
+      file system, providing multilanguage support for all Windows 
+      NT-based installations, including Windows 2000 and Windows XP.
+      <em>This support does not extend to Windows 95, 98 or ME, which 
+      continue to use the machine's local codepage for filesystem 
+      access.</em></dd>
+
     </dl>
     <hr />
 
@@ -135,12 +160,21 @@
       results and a new form of type map that can include document
       content is provided.</dd>
 
+      <dt><strong>mod_autoindex</strong></dt>
+
+      <dd>Autoindex'ed directory listings can now be configured to 
+      use HTML tables for cleaner formatting, and allow finer-grained
+      control of sorting, including version-sorting, and wildcard
+      filtering of the directory listing.</dd>
+
       <dt><strong>mod_include</strong></dt>
 
       <dd>New directives allow the default start and end tags for SSI elements
       to be changed and allow for error and time format configuration
       to take place in the main configuration file rather than in the
-      SSI document.</dd>
+      SSI document.  Results from regular expression parsing and grouping
+      (now based on Perl's regular expression syntax) can be retrieved
+      using mod_include's variables $0 .. $9.</dd>
 
       <dt><strong>mod_auth_dbm</strong></dt>
 
@@ -152,6 +186,13 @@
 
       <dd>Now supports Berkeley DB 3.0</dd>
 
+      <dt><strong>mod_proxy</strong></dt>
+
+      <dd>New <Proxy > configuration sections provide more readable
+      (and internally faster) control of proxied sites; overloaded 
+      <Directory "proxy:...> configuration are not supported.  The
+      module is now divided into specific protocol support modules 
+      including proxy_connect, proxy_ftp and proxy_http.</dd>
 
     </dl>
     <!--#include virtual="footer.html" -->
