@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 13:35:31 $]
+Last modified at [$Date: 2003/04/17 17:14:28 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PATCHES TO PORT FROM 2.1
       branch won't build for Windows.
       CHANGES 1.1145 
       server/mpm_common.c 1.107
-      +1: ake, trawick
+      +1: ake, trawick, stoddard
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
