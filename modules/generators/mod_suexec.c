@@ -62,8 +62,9 @@
 #include "http_request.h"
 #include "apr_strings.h"
 #include "unixd.h"
+#include "mpm_common.h"
 
-module MODULE_VAR_EXPORT suexec_module;
+module AP_MODULE_DECLARE_DATA suexec_module;
 
 typedef struct {
     ap_unix_identity_t ugid;
@@ -146,7 +147,7 @@ static void suexec_hooks(apr_pool_t *p)
     ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT suexec_module =
+module AP_MODULE_DECLARE_DATA suexec_module =
 {
     STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,   /* create per-dir config */
