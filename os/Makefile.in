@@ -4,6 +4,6 @@ top_srcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
 
-SUBDIRS = $(OS)
+SUBDIRS = $(top_srcdir)/$(OS_DIR)
 
 include $(top_srcdir)/build/rules.mk
