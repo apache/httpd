@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Added undocumented perl SSI mechanism for -DUSE_PERL_SSI and mod_perl.
+     [Rob Hartill]
+
   *) Log correct status code if we timeout before receiving a request (408)
      or if we received a request-line that was too long to process (414).
      [Ed Korthof and Roy Fielding] PR#601

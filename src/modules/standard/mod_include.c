@@ -57,7 +57,22 @@
  * incorporated into the Apache module framework by rst.
  * 
  */
+/* 
+ * sub key may be anything a Perl*Handler can be:
+ * subroutine name, package name (defaults to package::handler),
+ * Class->method call or anoymous sub {}
+ *
+ * Child <!--#perl sub="sub {print $$}" --> accessed
+ * <!--#perl sub="sub {print ++$Access::Cnt }" --> times. <br>
+ *
+ * <!--#perl arg="one" sub="mymod::includer" -->
+ *
+ * -Doug MacEachern
+ */
 
+#ifdef USE_PERL_SSI
+#include "modules/perl/mod_perl.h"
+#else
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -66,6 +81,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#endif
 
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
@@ -710,6 +726,32 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
         }
     }
 }
+#ifdef USE_PERL_SSI
+int handle_perl (FILE *in, request_rec *r, char *error) {
+    char tag[MAX_STRING_LEN];
+    char *tag_val;
+    SV *sub = Nullsv;
+    AV *av  = newAV();
+
+    if (!(allow_options (r) & OPT_INCLUDES)) {
+        log_printf(r->server,
+            "httpd: #perl SSI disallowed by IncludesNoExec in %s", r->filename);
+	return DECLINED;
+    }
+    while(1) {
+	if(!(tag_val = get_tag (r->pool, in, tag, MAX_STRING_LEN, 1))) 
+	    break;
+	if(strnEQ(tag, "sub", 3)) 
+	    sub = newSVpv(tag_val,0);
+	else if(strnEQ(tag, "arg", 3)) 
+	    av_push(av, newSVpv(tag_val,0));	
+	else if(strnEQ(tag,"done", 4))
+	    break;
+    }
+    perl_call_handler(sub, r, av);
+    return OK;
+}
+#endif
 
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
@@ -1674,6 +1716,10 @@ void send_parsed_content(FILE *f, request_rec *r)
                 ret=handle_flastmod(f, r, error, timefmt);
             else if(!strcmp(directive,"printenv"))
                 ret=handle_printenv(f, r, error);
+#ifdef USE_PERL_SSI
+            else if(!strcmp(directive,"perl")) 
+                ret=handle_perl(f, r, error);
+#endif
             else {
                 log_printf(r->server,
                         "httpd: unknown directive %s in parsed doc %s",
