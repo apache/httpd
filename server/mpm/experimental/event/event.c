@@ -748,6 +748,41 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
     return APR_SUCCESS;
 }
 
+/* get_worker:
+ *     reserve a worker thread, block if all are currently busy.
+ *     this prevents the worker queue from overflowing and lets
+ *     other processes accept new connections in the mean time.
+ */ 
+
+static int get_worker(int *have_idle_worker_p)
+{
+    apr_status_t rc;
+
+    if (!*have_idle_worker_p) {
+        rc = ap_queue_info_wait_for_idler(worker_queue_info);
+
+        if (rc == APR_SUCCESS) {
+            *have_idle_worker_p = 1;
+            return 1;
+        }
+        else {
+            if (!APR_STATUS_IS_EOF(rc)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
+                             "ap_queue_info_wait_for_idler failed.  "  
+                             "Attempting to shutdown process gracefully");
+                signal_threads(ST_GRACEFUL);
+            }
+            return 0;
+        }
+    }
+    else {
+        /* already reserved a worker thread - must have hit a
+         * transient error on a previous pass
+         */  
+        return 1; 
+    }
+}        
+
 static void *listener_thread(apr_thread_t * thd, void *dummy)
 {
     apr_status_t rc;
@@ -863,7 +898,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
         if (listener_may_exit)
             break;
 
-        while (num) {
+        while (num && get_worker(&have_idle_worker)) {
             pt = (listener_poll_type *) out_pfd->client_data;
             if (pt->type == PT_CSD) {
                 /* one of the sockets is readable */
@@ -888,6 +923,9 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                 if (rc != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                  ap_server_conf, "push2worker failed");
+                }
+                else {
+                    have_idle_worker = 0;
                 }
             }
             else {
@@ -970,7 +1008,9 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
         cs = APR_RING_FIRST(&timeout_head);
         timeout_time = time_now + TIMEOUT_FUDGE_FACTOR;
         while (!APR_RING_EMPTY(&timeout_head, conn_state_t, timeout_list)
-               && cs->expiration_time < timeout_time) {
+               && cs->expiration_time < timeout_time
+               && get_worker(&have_idle_worker)) {
+
             cs->state = CONN_STATE_LINGER;
 
             APR_RING_REMOVE(cs, timeout_list);
@@ -979,7 +1019,13 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
 
             if (rc != APR_SUCCESS) {
                 return NULL;
+                /* XXX return NULL looks wrong - not an init failure
+                 * that bypasses all the cleanup outside the main loop
+                 * break seems more like it
+                 * need to evaluate seriousness of push2worker failures
+                 */
             }
+            have_idle_worker = 0;
             cs = APR_RING_FIRST(&timeout_head);
         }
         apr_thread_mutex_unlock(timeout_mutex);
@@ -1150,7 +1196,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
     worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    rv = ap_queue_init(worker_queue, ap_threads_per_child * 2, pchild);
+    rv = ap_queue_init(worker_queue, ap_threads_per_child, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "ap_queue_init() failed");
