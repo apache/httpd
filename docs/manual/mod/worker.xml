@@ -19,7 +19,7 @@
 
     <p>The most important directives used to control this MPM are
     <directive module="mpm_common">ThreadsPerChild</directive>, which
-    controls the number of threads deployed by each child process, and
+    controls the number of threads deployed by each child process and
     <directive module="mpm_common">MaxClients</directive>, which
     controls the maximum total number of threads that may be
     launched.</p>
