@@ -510,15 +510,18 @@ if ($opt_i or $opt_e) {
             } else {
                  $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|sg;
             }
-        }
+	}
         if (@lmd or @amd) {
-            open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new") || die;
-            print FP $content;
-            close(FP);
-            system("cp $CFG_SYSCONFDIR/$CFG_TARGET.conf $CFG_SYSCONFDIR/$CFG_TARGET.conf.bak && " .
-                   "cp $CFG_SYSCONFDIR/$CFG_TARGET.conf.new $CFG_SYSCONFDIR/$CFG_TARGET.conf && " .
-                   "rm $CFG_SYSCONFDIR/$CFG_TARGET.conf.new");
-        }
+            if (open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new")) {
+                print FP $content;
+                close(FP);
+                system("cp $CFG_SYSCONFDIR/$CFG_TARGET.conf $CFG_SYSCONFDIR/$CFG_TARGET.conf.bak && " .
+                       "cp $CFG_SYSCONFDIR/$CFG_TARGET.conf.new $CFG_SYSCONFDIR/$CFG_TARGET.conf && " .
+                       "rm $CFG_SYSCONFDIR/$CFG_TARGET.conf.new");
+            } else {
+                print STDERR "unable to open configuration file\n";
+            }
+	}
     }
 }
 
