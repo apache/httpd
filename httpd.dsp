@@ -67,8 +67,8 @@ LIB32=link.exe -lib
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
-# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /ZI /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -103,6 +103,10 @@ SOURCE=.\ap\ap_buckets_file.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ap\ap_buckets_flush.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ap\ap_buckets_heap.c
 # End Source File
 # Begin Source File
@@ -112,6 +116,10 @@ SOURCE=.\ap\ap_buckets_mmap.c
 # Begin Source File
 
 SOURCE=.\ap\ap_buckets_pipe.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap\ap_buckets_pool.c
 # End Source File
 # Begin Source File
 
