@@ -2552,8 +2552,9 @@ static int default_handler(request_rec *r)
 	&& (!r->header_only || (d->content_md5 & 1))) {
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
-    if (ap_mmap_create(&mm, fd, 0, r->finfo.size, r->pool) != APR_SUCCESS){
-	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
+        ap_status_t status;
+        if ((status = ap_mmap_create(&mm, fd, 0, r->finfo.size, r->pool)) != APR_SUCCESS) {
+	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
 			 "default_handler: mmap failed: %s", r->filename);
 	    mm = NULL;
 	}
