@@ -193,7 +193,7 @@ install-man:
 	@cp -p $(top_srcdir)/docs/man/*.1 $(DESTDIR)$(mandir)/man1
 	@cp -p $(top_srcdir)/docs/man/*.8 $(DESTDIR)$(mandir)/man8
 	@(cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
-	@(cd $(DESTDIR)$(manualdir) && find . -name "CVS" -type d -print | xargs rm -rf 2>/dev/null ) || true
+	@(cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null ) || true
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
