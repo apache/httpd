@@ -1921,7 +1921,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     /* tell the filter chain there is no more content coming */
-    end_output_stream(r);
+    if (!r->eos_sent) {
+        end_output_stream(r);
+    }
 }
 
 /* Here we deal with getting the request message body from the client.

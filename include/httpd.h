@@ -800,6 +800,7 @@ struct request_rec {
     /** A list of filters to be used for this request 
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *filters;
+    int eos_sent;
 
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire

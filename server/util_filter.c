@@ -155,6 +155,9 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
+        if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS) {
+            next->r->eos_sent = 1;
+        }
         return next->filter_func(next, bb);
     }
     return AP_NOBODY_WROTE;
