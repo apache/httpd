@@ -751,7 +751,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                 APR_BUCKET_IS_EOS(b)) {
                 break;
             }
-            rv = apr_bucket_read(b, &bucket, &bytes_in_bucket, 0);
+            rv = apr_bucket_read(b, &bucket, &bytes_in_bucket, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 ctx->ees = EES_BUCKET_READ;
                 break;
@@ -913,7 +913,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 }
                 break;
             }
-            rv = apr_bucket_read(dptr, &cur_str, &cur_len, 0);
+            rv = apr_bucket_read(dptr, &cur_str, &cur_len, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 done = 1;
                 ctx->ees = EES_BUCKET_READ;
