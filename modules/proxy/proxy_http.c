@@ -1205,14 +1205,10 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     }
     /* create space for state information */
     if (!backend) {
-        status = ap_proxy_acquire_connection(proxy_function, &backend, worker, r->server);
-        if (status != OK) {
-            if (backend) {
-                backend->close_on_recycle = 1;
-                ap_proxy_release_connection(proxy_function, backend, r->server);
-            }
-            return status;
-        }
+        if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
+                                                  worker, r->server)) != OK)
+            goto cleanup;
+
         if (!r->main) {
             ap_set_module_config(c->conn_config, &proxy_http_module, backend);
         }
@@ -1222,50 +1218,50 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     backend->close_on_recycle = 1;
 
     /* Step One: Determine Who To Connect To */
-    status = ap_proxy_determine_connection(p, r, conf, worker, backend, c->pool,
-                                           uri, &url, proxyname, proxyport,
-                                           server_portstr,
-                                           sizeof(server_portstr));
-
-    if ( status != OK ) {
-        return status;
-    }
+    if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+                                                c->pool, uri, &url, proxyname,
+                                                proxyport, server_portstr,
+                                                sizeof(server_portstr))) != OK)
+        goto cleanup;
 
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
-        return HTTP_SERVICE_UNAVAILABLE;
+        if (r->proxyreq == PROXYREQ_PROXY)
+            status = HTTP_NOT_FOUND;
+        else
+            status = HTTP_SERVICE_UNAVAILABLE;
+        goto cleanup;
     }
 
     /* Step Three: Create conn_rec */
     if (!backend->connection) {
-        status = ap_proxy_connection_create(proxy_function, backend, c, r->server);
-        if (status != OK)
-            return status;
+        if ((status = ap_proxy_connection_create(proxy_function, backend,
+                                                 c, r->server)) != OK)
+            goto cleanup;
     }
    
     /* Step Four: Send the Request */
-    status = ap_proxy_http_request(p, r, backend, backend->connection, conf, uri, url,
-                                   server_portstr);
-    if ( status != OK ) {
-        return status;
-    }
+    if ((status = ap_proxy_http_request(p, r, backend, backend->connection,
+                                        conf, uri, url, server_portstr)) != OK)
+        goto cleanup;
 
     /* Step Five: Receive the Response */
-    status = ap_proxy_http_process_response(p, r, backend, backend->connection, conf,
-                                            server_portstr);
-    if (status != OK) {
-        /* clean up even if there is an error */
-        ap_proxy_http_cleanup(proxy_function, r, backend);
-        return status;
-    }
+    if ((status = ap_proxy_http_process_response(p, r, backend,
+                                                 backend->connection,
+                                                 conf, server_portstr)) != OK)
+        goto cleanup;
 
     /* Step Six: Clean Up */
-    status = ap_proxy_http_cleanup(proxy_function, r, backend);
-    if ( status != OK ) {
-        return status;
-    }
 
-    return OK;
+cleanup:
+    if (backend) {
+        if (status != OK) {
+            backend->close = 1;
+            backend->close_on_recycle = 1;
+        }
+        ap_proxy_http_cleanup(proxy_function, r, backend);
+    }
+    return status;
 }
 
 static void ap_proxy_http_register_hook(apr_pool_t *p)
