@@ -371,15 +371,15 @@ API_EXPORT(void) ap_add_version_component(const char *component)
          */
         if (server_version == NULL) {
 	    ap_register_cleanup(pconf, NULL, (void (*)(void *))reset_version, 
-				(void (*)(void *))ap_null_cleanup);
+				ap_null_cleanup);
 	    server_version = ap_pstrdup(pconf, component);
 	}
 	else {
 	    /*
 	     * Prepend the given component identifier to the existing string
 	     */
-	    server_version = ap_pstrcat(pconf, server_version, " ", component,
-				    NULL);
+	    server_version = ap_pstrcat(pconf, component, " ", server_version,
+					NULL);
 	}
     }
 }
@@ -390,15 +390,15 @@ API_EXPORT(void) ap_add_version_component(const char *component)
  */
 static void ap_set_version()
 {
+#ifdef SERVER_SUBVERSION
+    ap_add_version_component(SERVER_SUBVERSION);
+#endif
     if (ap_note_platform) {
         ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
     }
     else {
         ap_add_version_component(SERVER_BASEVERSION);
     }
-#ifdef SERVER_SUBVERSION
-    ap_add_version_component(SERVER_SUBVERSION);
-#endif
     version_locked++;
 }
 
