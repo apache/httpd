@@ -74,7 +74,7 @@
 
 char **create_argv(request_rec *r, char *av0, ...)
 {
-    int idx, slots;
+    int idx;
     char **av;
     char *t, *arg;
     va_list args;
