@@ -18,10 +18,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    http_conf_globals.h
    http_config.c
    http_config.h
-   http_core.c
-   http_core.h
-   http_log.c
-   http_log.h
+   http_core.c			RESERVED by Randy
+   http_core.h			RESERVED by Randy
+   http_log.c			RESERVED by Randy
+   http_log.h			RESERVED by Randy
    http_main.c			DONE by Dean
    http_main.h			DONE by Dean
    http_protocol.c		DONE by Roy
