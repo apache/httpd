@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/06 08:51:22 $]
+  Last modified at [$Date: 1999/02/06 14:00:31 $]
 
 Release:
 
@@ -42,6 +42,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: Marc was looking at it.
 
 Documentation that needs writing:
+
+    * manual/content-negotiation.html lacks any information about the
+      TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
 
@@ -90,10 +93,6 @@ Available Patches:
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
         Status: 
-
-    * Koen Holtman's [PATCH] mod_negotiation some loose ends
-        Message-ID: <Pine.GSO.3.95a.990125190321.5403B-100000@suncms33.cern.ch>
-        Status: Roy is looking at it.
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
