@@ -2,8 +2,8 @@
 ##  config.layout -- Pre-defined Installation Path Layouts
 ##
 ##  Hints:
-##  - layouts can be loaded with configure's --with-layout=ID option
-##  - when no --with-layout option is given, the default layout is `Apache'
+##  - layouts can be loaded with configure's --enable-layout=ID option
+##  - when no --enable-layout option is given, the default layout is `Apache'
 ##  - a trailing plus character (`+') on paths is replaced with a 
 ##    `/<target>' suffix where <target> is currently hardcoded to 'apache2'.
 ##    (This may become a configurable parameter at some point.)
