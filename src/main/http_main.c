@@ -5264,7 +5264,7 @@ void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
  * we are restricted to a maximum of 64 threads.  This is a simplistic 
  * routine that will increase this size.
  */
-DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
+static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
                             DWORD dwSeconds)
 {
     time_t tStopTime;
@@ -5457,38 +5457,27 @@ void worker_main(void)
 		my_pid, total_jobs, start_exit);
 #endif
 	if ((max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)) {
+            /* When MaxRequestsPerChild is hit, handle everything on the stack's 
+             * listen queue before exiting. This may take a while if the server 
+             * is really busy.
+             */
 	    start_exit = 1;
 	    wait_time = 1;
 	    ap_release_mutex(start_mutex);
 	    start_mutex_released = 1;
 	    APD2("process PID %d: start mutex released\n", my_pid);
 	}
-	if (!start_exit) {
-	    rv = WaitForSingleObject(exit_event, 0);
-	    ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
-	    if (rv == WAIT_OBJECT_0) {
-		APD1("child: exit event signalled, exiting");
-		start_exit = 1;
-		/* Lets not break yet - we may have threads to clean up */
-		/* break;*/
-	    }
-	    rv = wait_for_many_objects(nthreads, child_handles, 0);
-	    ap_assert(rv != WAIT_FAILED);
-	    if (rv != WAIT_TIMEOUT) {
-		rv = rv - WAIT_OBJECT_0;
-		ap_assert((rv >= 0) && (rv < nthreads));
-		cleanup_thread(child_handles, &nthreads, rv);
-		break;
-	    }
-	}
+        /* Always check for the exit event being signaled. Honor the exit event, 
+         * even if it means loosing connections in the stack's listen queue.
+         */
+        rv = WaitForSingleObject(exit_event, 0);
+        ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
+        if (rv == WAIT_OBJECT_0) {
+            APD1("child: exit event signalled, exiting");
+            start_exit = 1;
+            break;
+        }
 
-#if 0
-	/* Um, this made us exit before all the connections in our
-	 * listen queue were dealt with. 
-	 */
-	if (start_exit && max_jobs_after_exit_request && (count_down-- < 0))
-	    break;
-#endif
 	tv.tv_sec = wait_time;
 	tv.tv_usec = 0;
 
@@ -5705,7 +5694,7 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
 
 #define MAX_PROCESSES 50 /* must be < MAX_WAIT_OBJECTS-1 */
 
-void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *processes)
+static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *processes)
 {
     int i;
     int handle = 0;
@@ -5724,7 +5713,7 @@ void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *process
     APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
 }
 
-int create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
+static int create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
 {
     int i = *processes;
     HANDLE kill_event;
@@ -5810,6 +5799,9 @@ int master_main(int argc, char **argv)
 	        "ap%d", getpid());
     setup_signal_names(signal_prefix_string);
 
+    /* Create shutdown event, apPID_shutdown, where PID is the parent 
+     * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
+     */
     signal_shutdown_event = CreateEvent(sa, TRUE, FALSE, signal_shutdown_name);
     if (!signal_shutdown_event) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
@@ -5818,6 +5810,10 @@ int master_main(int argc, char **argv)
 	exit(1);
     }
     APD2("master_main: created event %s", signal_shutdown_name);
+
+    /* Create restart event, apPID_restart, where PID is the parent 
+     * Apache process ID. Restart is signaled by 'apache -k restart'.
+     */
     signal_restart_event = CreateEvent(sa, TRUE, FALSE, signal_restart_name);
     if (!signal_restart_event) {
 	CloseHandle(signal_shutdown_event);
@@ -5829,6 +5825,10 @@ int master_main(int argc, char **argv)
     CleanNullACL((void *)sa);
     APD2("master_main: created event %s", signal_restart_name);
 
+    /* Create the start mutex, apPID, where PID is the parent Apache process ID.
+     * Ths start mutex is used during a restart to prevent more than one 
+     * child process from entering the accept loop at once.
+     */
     start_mutex = ap_create_mutex(signal_prefix_string);
     ev = (event **) alloca(sizeof(event *) * nchild);
     child = (int *) alloca(sizeof(int) * (nchild+1));
@@ -5837,6 +5837,8 @@ int master_main(int argc, char **argv)
 	service_set_status(SERVICE_START_PENDING);
 	if (create_process(process_handles, process_kill_events, 
 	    &current_live_processes, &child_num, signal_prefix_string, argc, argv) < 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                         "master_main: create child process failed. Exiting.");
 	    goto die_now;
 	}
     }
@@ -5863,23 +5865,16 @@ int master_main(int argc, char **argv)
 	/* Wait for either a child process to die, or for the stop_event
 	 * to be signalled by the service manager or rpc server */
 	while (1) {
+	    if (current_live_processes == 0) {
+		ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
+ 			"master_main: no child processes. Exiting.");
+                goto die_now;
+	    }
+
 	    /* Next line will block forever until either a child dies, or we
 	     * get signalled on the "apache-signal" event (e.g. if the user is
 	     * requesting a shutdown/restart)
 	     */
-	    if (current_live_processes == 0) {
-		/* Shouldn't happen, but better safe than sorry */
-		ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
- 			"master_main: no child processes alive! creating one");
-		if (create_process(process_handles, process_kill_events, 
-		    &current_live_processes, &child_num, signal_prefix_string, 
-		    argc, argv) < 0) {
-		    goto die_now;
-		}
-		if (processes_to_create) {
-		    processes_to_create--;
-		}
-	    }
 	    process_handles[current_live_processes] = signal_shutdown_event;
 	    process_handles[current_live_processes+1] = signal_restart_event;
 	    rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
@@ -5924,14 +5919,21 @@ int master_main(int argc, char **argv)
 		    shutdown_pending, restart_pending);
 		break;
 	    }
+
+            /* Child process must have exited because of MaxRequestPerChild being hit
+             * or a fatal error condition (seg fault, etc.). Remove the dead process 
+             * from the process_handles and process_kill_events table and create a new
+             * child process.
+             */
 	    ap_assert(cld < current_live_processes);
 	    cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
 	    APD2("main_process: child in slot %d died", rv);
-	    if (processes_to_create) {
-		create_process(process_handles, process_kill_events, &current_live_processes, 
-			&child_num, signal_prefix_string, argc, argv);
-		processes_to_create--;
-	    }
+            if (create_process(process_handles, process_kill_events, &current_live_processes, 
+                               &child_num, signal_prefix_string, argc, argv) < 0) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                             "master_main: Internally signaled restart failed. Exiting.");
+                goto die_now;
+            }
 	}
 	if (!shutdown_pending && !restart_pending) {
 	    ap_log_error(APLOG_MARK,APLOG_CRIT|APLOG_NOERRNO, server_conf,
@@ -5952,20 +5954,32 @@ int master_main(int argc, char **argv)
 	    int children_to_kill = current_live_processes;
 
 	    APD1("--- Doing graceful restart ---");
-
-	    processes_to_create = nchild;
-	    for (i = 0; i < nchild; ++i) {
-		if (current_live_processes >= MAX_PROCESSES)
-		    break;
-		create_process(process_handles, process_kill_events, &current_live_processes, 
-		    &child_num, signal_prefix_string, argc, argv);
-		processes_to_create--;
-	    }
+            /* Signal the child process to die.. */
 	    for (i = 0; i < children_to_kill; i++) {
 		APD3("main process: signalling child #%d handle %d to die", i, process_handles[i]);
 		if (SetEvent(process_kill_events[i]) == 0)
 		    ap_log_error(APLOG_MARK,APLOG_WIN32ERROR, server_conf,
  			"SetEvent for child process in slot #%d", i);
+                /* Note: We are not guaranteeing the child process is actually going to die.
+                 * Could insert a WaitForMultipleObjects() with a timeout followed by a 
+                 * TerminateProcess().
+                 */
+                /* Remove the process (and event) from the process table */
+                cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
+	    }
+
+            /* Create a new child process */
+	    processes_to_create = nchild;
+	    for (i = 0; i < nchild; ++i) {
+		if (current_live_processes >= MAX_PROCESSES)
+		    break;
+		if (create_process(process_handles, process_kill_events, &current_live_processes, 
+                                   &child_num, signal_prefix_string, argc, argv) < 0) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                                 "master_main: Externally signaled restart failed. Exiting.");
+                    goto die_now;
+                }
+		processes_to_create--;
 	    }
 	}
 	++ap_my_generation;
