@@ -83,6 +83,23 @@
    **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998
    **    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
    **    - Added Cookie, Arbitrary header and auth support. <dirkx@webweaving.org>, April 1999
+   ** Version 1.3d
+   **    - Increased version number - as some of the socket/error handling has
+   **      fundamentally changed - and will give fundamentally different results
+   **      in situations where a server is dropping requests. Therefore you can
+   **      no longer compare results of AB as easily. Hence the inc of the version.
+   **      They should be closer to the truth though. Sander & <dirkx@covalent.net>, End 2000.
+   **    - Fixed proxy functionality, added median/mean statistics, added gnuplot
+   **      output option, added _experimental/rudimentary_ SSL support. Added
+   **      confidence guestimators and warnings. Sander & <dirkx@covalent.net>, End 2000
+   **    - Fixed serious int overflow issues which would cause realistic (longer
+   **      than a few minutes) run's to have wrong (but believable) results. Added
+   **      trapping of connection errors which influenced measurements.
+   **      Contributed by Sander Temme - <sctemme@covalent.net>, Early 2001
+   ** Version 1.3e
+   **    - Changed timeout behavour during write to work whilst the sockets
+   **      are filling up and apr_write() does writes a few - but not all.
+   **      This will potentially change results. <dirkx@webweaving.org>, April 2001
    **
  */
 
@@ -98,7 +115,7 @@
  *   only an issue for loopback usage
  */
 
-#define AB_VERSION "1.3c"
+#define AB_VERSION "1.3e"
 
 /*  -------------------------------------------------------------------- */
 
@@ -120,6 +137,7 @@
 #include "apr_time.h"
 #include "apr_getopt.h"
 #include "apr_general.h"
+#include <signal.h>
 #include "apr_lib.h"
 
 #if APR_HAVE_STDIO_H
@@ -141,6 +159,28 @@
 #endif
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
+
+#ifdef	USE_SSL
+#if ((!(RSAREF)) && (!(SYSSSL)))
+/* Libraries on most systems.. */
+#include <openssl/rsa.h>
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+#else
+/* Libraries for RSAref and SYSSSL */
+#include <rsa.h>
+#include <crypto.h>
+#include <x509.h>
+#include <pem.h>
+#include <err.h>
+#include <ssl.h>
+#endif
+#endif
+
+#include <math.h>
 #endif
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
@@ -156,7 +196,7 @@
 #define STATE_CONNECTING  1
 #define STATE_READ        2
 
-#define CBUFFSIZE       2048
+#define CBUFFSIZE (2048)
 
 struct connection {
     apr_socket_t *aprsock;
@@ -171,14 +211,29 @@ struct connection {
     int keepalive;		/* non-zero if a keep-alive request */
     int gotheader;		/* non-zero if we have the entire header in
 				 * cbuff */
-    apr_time_t start, connect, done;
+    apr_time_t start,		/* Start of connection */
+               connect,		/* Connected, start writing */
+               endwrite,	/* Request written */
+               beginread,	/* First byte of input */
+               done;		/* Connection closed */
+
     int socknum;
+#ifdef USE_SSL
+    SSL *ssl;
+#endif
 };
 
 struct data {
+#ifdef USE_SSL
+    /* XXXX insert SSL timings */
+#endif
     int read;			/* number of bytes read */
-    int ctime;			/* time in ms to connect */
-    int time;			/* time in ms for connection */
+    long starttime;		/* start time of connection in seconds since
+				 * Jan. 1, 1970 */
+    long waittime;		/* Between writing request and reading
+				 * response */
+    long ctime;			/* time in ms to connect */
+    long time;			/* time in ms for connection */
 };
 
 #define ap_min(a,b) ((a)<(b))?(a):(b)
@@ -189,7 +244,10 @@ struct data {
 int verbosity = 0;		/* no verbosity by default */
 int posting = 0;		/* GET by default */
 int requests = 1;		/* Number of requests to make */
+int heartbeatres = 100;		/* How often do we say we're alive */
 int concurrency = 1;		/* Number of multiple requests to make */
+int percentile = 1;		/* Show percentile served */
+int confidence = 1;		/* Show confidence estimator and warnings */
 int tlimit = 0;			/* time limit in cs */
 int keepalive = 0;		/* try and do keepalive connections */
 char servername[1024];		/* name that server reports */
@@ -205,6 +263,15 @@ char cookie[1024],		/* optional cookie line */
 				 * authentification */
      hdrs[4096];		/* optional arbitrary headers */
 apr_port_t port;		/* port number */
+char proxyhost[1024];		/* proxy host name */
+int proxyport = 0;		/* proxy port */
+char connecthost[1024];
+int connectport;
+char *gnuplot;			/* GNUplot file */
+char *csvperc;			/* CSV Percentile file */
+char url[1024];
+char fullurl[1024];
+int isproxy = 0;
 apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
  /*
   * XXX - this is now a per read/write transact type of value
@@ -216,13 +283,19 @@ const char *trstring;
 const char *tdstring;
 
 int doclen = 0;			/* the length the document should be */
-int totalread = 0;		/* total number of bytes read */
-int totalbread = 0;		/* totoal amount of entity body read */
-int totalposted = 0;		/* total number of bytes posted, inc. headers */
-int done = 0;			/* number of requests we have done */
-int doneka = 0;			/* number of keep alive connections done */
-int started = 0;		/* number of requests started, so no excess */
-int good = 0, bad = 0;		/* number of good and bad requests */
+long started = 0;		/* number of requests started, so no excess */
+long totalread = 0;		/* total number of bytes read */
+long totalbread = 0;		/* totoal amount of entity body read */
+long totalposted = 0;		/* total number of bytes posted, inc. headers */
+long done = 0;			/* number of requests we have done */
+long doneka = 0;		/* number of keep alive connections done */
+long good = 0, bad = 0;		/* number of good and bad requests */
+long epipe = 0;			/* number of broken pipe writes */
+
+#ifdef USE_SSL
+int ssl = 0;
+SSL_CTX *ctx;
+#endif
 
 /* store error cases */
 int err_length = 0, err_conn = 0, err_except = 0;
@@ -238,6 +311,9 @@ apr_size_t reqlen;
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
 
+/* interesting percentiles */
+int percs[] = {50, 66, 75, 80, 90, 95, 98, 99, 100};
+
 struct connection *con;		/* connection array */
 struct data *stats;		/* date for each request */
 apr_pool_t *cntxt;
@@ -250,6 +326,8 @@ apr_xlate_t *from_ascii, *to_ascii;
 
 static void close_connection(struct connection * c);
 
+static void close_connection(struct connection * c);
+static void s_write(struct connection * c, char *buff, int len);
 /* --------------------------------------------------------- */
 
 /* simple little function to write an error string and exit */
@@ -284,8 +362,9 @@ static void write_request(struct connection * c)
 	apr_size_t l = c->rwrite;
 	apr_status_t e;
 
-	/* First time round ? 
-         */
+	/*
+	 * First time round ?
+	 */
 	if (c->rwrite == 0) {
 	    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 0);
 	    c->connect = tnow;
@@ -313,6 +392,7 @@ static void write_request(struct connection * c)
 	     * Let's hope this traps EWOULDBLOCK too !
 	     */
 	    if (!APR_STATUS_IS_EAGAIN(e)) {
+		epipe++;
 		printf("Send request failed!\n");
 		close_connection(c);
 	    }
@@ -322,10 +402,9 @@ static void write_request(struct connection * c)
 	c->rwrite -= l;
     } while (1);
 
-    if (posting)
-	totalposted += postlen;
-
+    totalposted += c->rwrite;
     c->state = STATE_READ;
+    c->endwrite = apr_time_now();
     apr_poll_socket_add(readbits, c->aprsock, APR_POLLIN);
 }
 
@@ -333,9 +412,47 @@ static void write_request(struct connection * c)
 
 /* calculate and output results */
 
+int compradre(struct data * a, struct data * b)
+{
+    if ((a->ctime) < (b->ctime))
+	return -1;
+    if ((a->ctime) > (b->ctime))
+	return +1;
+    return 0;
+}
+
+int comprando(struct data * a, struct data * b)
+{
+    if ((a->time) < (b->time))
+	return -1;
+    if ((a->time) > (b->time))
+	return +1;
+    return 0;
+}
+
+int compri(struct data * a, struct data * b)
+{
+    int p = a->time - a->ctime;
+    int q = b->time - b->ctime;
+    if (p < q)
+	return -1;
+    if (p > q)
+	return +1;
+    return 0;
+}
+
+int compwait(struct data * a, struct data * b)
+{
+    if ((a->waittime) < (b->waittime))
+	return -1;
+    if ((a->waittime) > (b->waittime))
+	return 1;
+    return 0;
+}
+
 static void output_results(void)
 {
-    int timetaken;
+    long timetaken;
 
     endtime = apr_time_now();
     timetaken = (endtime - start) / 1000;
@@ -356,19 +473,23 @@ static void output_results(void)
     if (bad)
 	printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
 	       err_conn, err_length, err_except);
+    printf("Write errors:           %d\n", epipe);
     if (err_response)
 	printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
 	printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %d bytes\n", totalread);
-    if (posting)
+    if (posting > 0)
 	printf("Total POSTed:           %d\n", totalposted);
     printf("HTML transferred:       %d bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
-	printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
-	printf("Transfer rate:          %.2f kb/s received\n",
+	printf("Requests per second:    %.2f [#/sec] (mean)\n", 1000 * (float) (done) / timetaken);
+	printf("Time per request:       %.2f [ms] (mean)\n", concurrency * timetaken / (float) done);
+	printf("Time per request:       %.2f [ms] (mean, across all concurent requests)\n",
+	       timetaken / (float) done);
+	printf("Transfer rate:          %.2f [Kbytes/sec] received\n",
 	       (float) (totalread) / timetaken);
 	if (posting > 0) {
 	    printf("                        %.2f kb/s sent\n",
@@ -378,24 +499,147 @@ static void output_results(void)
 	}
     }
 
-    {
+    if (requests) {
 	/* work out connection times */
-	int i;
-	int totalcon = 0, total = 0;
-	int mincon = 9999999, mintot = 999999;
-	int maxcon = 0, maxtot = 0;
+	long i;
+	double totalcon = 0, total = 0, totald = 0, totalwait = 0;
+	long mincon = 9999999, mintot = 999999, mind = 99999, minwait = 99999;
+	long maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
+	long meancon = 0, meantot = 0, meand = 0, meanwait = 0;
+	double sdtot = 0, sdcon = 0, sdd = 0, sdwait = 0;
 
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
 	    mincon = ap_min(mincon, s.ctime);
 	    mintot = ap_min(mintot, s.time);
+	    mind = ap_min(mintot, s.time - s.ctime);
+	    minwait = ap_min(minwait, s.waittime);
+
+	    maxtot = ap_max(maxtot, s.time);
 	    maxcon = ap_max(maxcon, s.ctime);
 	    maxtot = ap_max(maxtot, s.time);
+	    maxd = ap_max(maxd, s.time - s.ctime);
+	    maxwait = ap_max(maxwait, s.waittime);
+
 	    totalcon += s.ctime;
 	    total += s.time;
+	    totald += s.time - s.ctime;
+	    totalwait += s.waittime;
 	}
-	if (requests > 0) {	/* avoid division by zero (if 0 requests) */
-	    printf("\nConnnection Times (ms)\n");
+	totalcon /= requests;
+	total /= requests;
+	totald /= requests;
+	totalwait /= requests;
+
+	for (i = 0; i < requests; i++) {
+	    struct data s = stats[i];
+	    int a;
+	    a = (s.time - total);
+	    sdtot += a * a;
+	    a = (s.ctime - totalcon);
+	    sdcon += a * a;
+	    a = (s.time - s.ctime - totald);
+	    sdd += a * a;
+	    a = (s.waittime - totalwait);
+	    sdwait += a * a;
+	};
+
+	sdtot = (requests > 1) ? sqrt(sdtot / (requests - 1)) : 0;
+	sdcon = (requests > 1) ? sqrt(sdcon / (requests - 1)) : 0;
+	sdd = (requests > 1) ? sqrt(sdd / (requests - 1)) : 0;
+	sdwait = (requests > 1) ? sqrt(sdwait / (requests - 1)) : 0;
+
+	if (gnuplot) {
+	    FILE *out = fopen(gnuplot, "w");
+	    long i;
+	    time_t sttime;
+	    char tmstring[1024];/* XXXX */
+	    if (!out) {
+		perror("Cannot open gnuplot output file");
+		exit(1);
+	    };
+	    fprintf(out, "starttime\tseconds\tctime\tdtime\tttime\twait\n");
+	    for (i = 0; i < requests; i++) {
+		sttime = stats[i].starttime;
+		(void) apr_ctime(tmstring, sttime);
+		tmstring[strlen(tmstring) - 1] = '\0';	/* ctime returns a
+							 * string with a
+							 * trailing newline */
+		fprintf(out, "%s\t%d\t%d\t%d\t%d\t%d\n",
+			tmstring,
+			sttime,
+			stats[i].ctime,
+			stats[i].time - stats[i].ctime,
+			stats[i].time,
+			stats[i].waittime);
+	    }
+	    fclose(out);
+	};
+	/*
+         * XXX: what is better; this hideous cast of the copare function; or
+         * the four warnings during compile ? dirkx just does not know and
+         * hates both/
+         */
+	qsort(stats, requests, sizeof(struct data),
+	      (int (*) (const void *, const void *)) compradre);
+	if ((requests > 1) && (requests % 2))
+	    meancon = (stats[requests / 2].ctime + stats[requests / 2 + 1].ctime) / 2;
+	else
+	    meancon = stats[requests / 2].ctime;
+
+	qsort(stats, requests, sizeof(struct data),
+	      (int (*) (const void *, const void *)) compri);
+	if ((requests > 1) && (requests % 2))
+	    meand = (stats[requests / 2].time + stats[requests / 2 + 1].time \
+	    -stats[requests / 2].ctime - stats[requests / 2 + 1].ctime) / 2;
+	else
+	    meand = stats[requests / 2].time - stats[requests / 2].ctime;
+
+	qsort(stats, requests, sizeof(struct data),
+	      (int (*) (const void *, const void *)) comprando);
+	if ((requests > 1) && (requests % 2))
+	    meantot = (stats[requests / 2].time + stats[requests / 2 + 1].time) / 2;
+	else
+	    meantot = stats[requests / 2].time;
+
+	qsort(stats, requests, sizeof(struct data),
+	      (int (*) (const void *, const void *)) compwait);
+	if ((requests > 1) && (requests % 2))
+	    meanwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
+	else
+	    meanwait = stats[requests / 2].waittime;
+
+	printf("\nConnnection Times (ms)\n");
+
+
+	if (confidence) {
+	    printf("              min  mean[+/-sd] median   max\n");
+	    printf("Connect:    %5d %5d %6.1f  %5d %5d\n",
+		   mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
+	    printf("Processing: %5d %5d %6.1f  %5d %5d\n",
+		   mind, (int) (totald + 0.5), sdd, meand, maxd);
+	    printf("Waiting:    %5d %5d %6.1f  %5d %5d\n",
+	       minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
+	    printf("Total:      %5d %5d %6.1f  %5d %5d\n",
+		   mintot, (int) (total + 0.5), sdtot, meantot, maxtot);
+
+#define     SANE(what,avg,mean,sd) \
+              { \
+                double d = avg - mean; \
+                if (d < 0) d = -d; \
+                if (d > 2 * sd ) \
+                        printf("ERROR: The median and mean for " what " are more than twice the standard\n" \
+                            "       deviation apart. These results are NOT reliable.\n"); \
+                else if (d > sd ) \
+                        printf("WARING: The median and mean for " what " are not within a normal deviation\n" \
+                            "        These results are propably not that reliable.\n"); \
+            }
+	    SANE("the initial connection time", totalcon, meancon, sdcon);
+	    SANE("the processing time", totald, meand, sdd);
+	    SANE("the waiting time", totalwait, meanwait, sdwait);
+	    SANE("the total time", total, meantot, sdtot);
+	}
+	else {
 	    printf("              min   avg   max\n");
 	    printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
 	    printf("Processing: %5d %5d %5d\n",
@@ -403,6 +647,43 @@ static void output_results(void)
 		   maxtot - maxcon);
 	    printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
 	}
+
+
+	/* Sorted on total connect times */
+	if (percentile && (requests > 1)) {
+	    printf("\nPercentage of the requests served within a certain time (ms)\n");
+	    for (i = 0; i < sizeof(percs) / sizeof(int); i++)
+		if (percs[i] <= 0)
+		    printf(" 0%%  <0> (never)\n");
+		else if (percs[i] >= 100)
+		    printf(" 100%%  %5d (last request)\n", stats[(int) (requests - 1)].time);
+		else
+		    printf("  %d%%  %5d\n",
+		    percs[i], stats[(int) (requests * percs[i] / 100)].time);
+	};
+	if (csvperc) {
+	    FILE *out = fopen(csvperc, "w");
+	    long i;
+	    time_t sttime;
+	    char *tmstring;
+	    if (!out) {
+		perror("Cannot open CSV output file");
+		exit(1);
+	    };
+	    fprintf(out, "" "Percentage served" "," "Time in ms" "\n");
+	    for (i = 0; i < 100; i++) {
+		double d;
+		if (i == 0)
+		    d = stats[0].time;
+		else if (i == 100)
+		    d = stats[requests - 1].time;
+		else
+		    d = stats[(int) (0.5 + requests * i / 100.0)].time;
+		fprintf(out, "%d,%d\n", i, d);
+	    }
+	    fclose(out);
+	};
+
     }
 }
 
@@ -412,7 +693,7 @@ static void output_results(void)
 
 static void output_html_results(void)
 {
-    int timetaken;
+    long timetaken;
 
     endtime = apr_time_now();
     timetaken = (endtime - start) / 1000;
@@ -485,14 +766,12 @@ static void output_html_results(void)
 		   trstring, tdstring, tdstring,
 		   (float) (totalread + totalposted) / timetaken);
 	}
-    }
-
-    {
+    } {
 	/* work out connection times */
-	int i;
-	int totalcon = 0, total = 0;
-	int mincon = 9999999, mintot = 999999;
-	int maxcon = 0, maxtot = 0;
+	long i;
+	long totalcon = 0, total = 0;
+	long mincon = 9999999, mintot = 999999;
+	long maxcon = 0, maxtot = 0;
 
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
@@ -549,12 +828,11 @@ static void start_connect(struct connection * c)
     c->gotheader = 0;
     c->rwrite = 0;
 
-    if ((rv = apr_sockaddr_info_get(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
+    if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
 	!= APR_SUCCESS) {
 	char buf[120];
-
 	apr_snprintf(buf, sizeof(buf),
-		     "apr_sockaddr_info_get() for %s", hostname);
+		     "apr_sockaddr_info_get() for %s", connecthost);
 	apr_err(buf, rv);
     }
     if ((rv = apr_socket_create(&c->aprsock, destsa->sa.sin.sin_family,
@@ -596,7 +874,9 @@ static void start_connect(struct connection * c)
 static void close_connection(struct connection * c)
 {
     if (c->read == 0 && c->keepalive) {
-	/* server has legitimately shut down an idle keep alive request */
+	/*
+	 * server has legitimately shut down an idle keep alive request
+	 */
 	if (good)
 	    good--;		/* connection never happened */
     }
@@ -612,10 +892,16 @@ static void close_connection(struct connection * c)
 	/* save out time */
 	if (done < requests) {
 	    struct data s;
+	    if ((done) && (!(done % heartbeatres))) {
+		fprintf(stderr, "Completed %d requests\n", done);
+		fflush(stderr);
+	    }
 	    c->done = apr_time_now();
 	    s.read = c->read;
+	    s.starttime = c->start;
 	    s.ctime = (c->connect - c->start) / 1000;
 	    s.time = (c->done - c->start) / 1000;
+	    s.waittime = (c->beginread - c->endwrite) / 1000;
 	    stats[done++] = s;
 	}
     }
@@ -652,8 +938,12 @@ static void read_connection(struct connection * c)
     if (APR_STATUS_IS_EAGAIN(status))
 	return;
 
-    c->read += r;
     totalread += r;
+    if (c->read == 0) {
+	c->beginread = apr_time_now();
+    };
+    c->read += r;
+
 
     if (!c->gotheader) {
 	char *s;
@@ -709,7 +999,9 @@ static void read_connection(struct connection * c)
 	else {
 	    /* have full header */
 	    if (!good) {
-		/* this is first time, extract some interesting info */
+		/*
+		 * this is first time, extract some interesting info
+		 */
 		char *p, *q;
 		p = strstr(c->cbuff, "Server:");
 		q = servername;
@@ -720,7 +1012,6 @@ static void read_connection(struct connection * c)
 		}
 		*q = 0;
 	    }
-
 	    /*
 	     * XXX: this parsing isn't even remotely HTTP compliant... but in
 	     * the interest of speed it doesn't totally have to be, it just
@@ -740,7 +1031,6 @@ static void read_connection(struct connection * c)
 	    else if (verbosity >= 3) {
 		printf("LOG: Response code = %s\n", respcode);
 	    }
-
 	    c->gotheader = 1;
 	    *s = 0;		/* terminate at end of header */
 	    if (keepalive &&
@@ -781,9 +1071,15 @@ static void read_connection(struct connection * c)
 	}
 	if (done < requests) {
 	    struct data s;
+	    if ((done) && (!(done % heartbeatres))) {
+		fprintf(stderr, "Completed %d requests\n", done);
+		fflush(stderr);
+	    }
 	    c->done = apr_time_now();
 	    s.read = c->read;
+	    s.starttime = c->start;
 	    s.ctime = (c->connect - c->start) / 1000;
+	    s.waittime = (c->beginread - c->endwrite) / 1000;
 	    s.time = (c->done - c->start) / 1000;
 	    stats[done++] = s;
 	}
@@ -801,18 +1097,51 @@ static void read_connection(struct connection * c)
 
 /* run the tests */
 
+#ifdef SIGPIPE
+void pipehandler(int signal)
+{
+    int i;			/* loop variable */
+
+    printf("Caught broken pipe signal after %d requests. ", done);
+
+    /* This means one of my connections is broken, but which one? */
+    /* The safe route: close all our connections. */
+    for (i = 0; i < concurrency; i++)
+	close_connection(&con[i]);
+
+    /* And start them back up */
+    for (i = 0; i < concurrency; i++)
+	start_connect(&con[i]);
+
+    printf("Continuing...\n");
+}
+#endif
+
 static void test(void)
 {
     apr_time_t now;
     apr_int16_t rv;
-    int i;
+    long i;
     apr_status_t status;
 #ifdef NOT_ASCII
     apr_size_t inbytes_left, outbytes_left;
 #endif
 
+    if (isproxy) {
+	strcpy(connecthost, proxyhost);
+	connectport = proxyport;
+    }
+    else {
+	strcpy(connecthost, hostname);
+	connectport = port;
+    }
+
     if (!use_html) {
-	printf("Benchmarking %s (be patient)...", hostname);
+	printf("Benchmarking %s ", hostname);
+	if (isproxy)
+	    printf("[through %s:%d] ", proxyhost, proxyport);
+	printf("(be patient)%s",
+	       (heartbeatres ? "\n" : "..."));
 	fflush(stdout);
     }
 
@@ -833,7 +1162,7 @@ static void test(void)
 		"Accept: */*\r\n"
 		"%s" "\r\n",
 		(posting == 0) ? "GET" : "HEAD",
-		path,
+		(isproxy) ? fullurl : path,
 		AB_VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth, host_field, hdrs);
@@ -848,7 +1177,7 @@ static void test(void)
 		"Content-type: %s\r\n"
 		"%s"
 		"\r\n",
-		path,
+		(isproxy) ? fullurl : path,
 		AB_VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
@@ -954,6 +1283,12 @@ static void test(void)
 
 	}
     }
+
+    if (heartbeatres)
+	fprintf(stderr, "Finished %d requests\n", done);
+    else
+	printf("..done\n");
+
     if (use_html)
 	output_html_results();
     else
@@ -966,14 +1301,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.60 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.61 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.60 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.61 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -983,12 +1318,16 @@ static void copyright(void)
 /* display usage information */
 static void usage(const char *progname)
 {
-    fprintf(stderr, "Usage: %s [options] [http://]hostname[:port]/path\n", progname);
+    fprintf(stderr, "Usage: %s [options] [http"
+#if USE_SSL
+	    "[s]"
+#endif
+	    "://]hostname[:port]/path\n", progname);
     fprintf(stderr, "Options are:\n");
     fprintf(stderr, "    -n requests     Number of requests to perform\n");
     fprintf(stderr, "    -c concurrency  Number of multiple requests to make\n");
     fprintf(stderr, "    -t timelimit    Seconds to max. wait for responses\n");
-    fprintf(stderr, "    -p postfile     File containg data to POST\n");
+    fprintf(stderr, "    -p postfile     File containing data to POST\n");
     fprintf(stderr, "    -T content-type Content-type header for POSTing\n");
     fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
     fprintf(stderr, "    -w              Print out results in HTML tables\n");
@@ -1001,10 +1340,18 @@ static void usage(const char *progname)
     fprintf(stderr, "                    Inserted after all normal header lines. (repeatable)\n");
     fprintf(stderr, "    -A attribute    Add Basic WWW Authentication, the attributes\n");
     fprintf(stderr, "                    are a colon separated username and password.\n");
-    fprintf(stderr, "    -p attribute    Add Basic Proxy Authentication, the attributes\n");
+    fprintf(stderr, "    -P attribute    Add Basic Proxy Authentication, the attributes\n");
     fprintf(stderr, "                    are a colon separated username and password.\n");
+    fprintf(stderr, "    -X proxy:port   Proxyserver and port number to use\n");
     fprintf(stderr, "    -V              Print version number and exit\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
+    fprintf(stderr, "    -d              Do not show percentiles served table.\n");
+    fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
+    fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
+    fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
+#if USE_SSL
+    fprintf(stderr, "    -s              Use httpS instead of HTTP (SSL)\n");
+#endif
     fprintf(stderr, "    -h              Display usage information (this message)\n");
     exit(EINVAL);
 }
@@ -1022,6 +1369,20 @@ static int parse_url(char *url)
 
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
 	url += 7;
+    else
+#if USE_SSL
+    if (strlen(url) > 8 && strncmp(url, "https://", 8) == 0) {
+	url += 8;
+	ssl = 1;
+	port = 443;
+    }
+#else
+    if (strlen(url) > 8 && strncmp(url, "https://", 8) == 0) {
+	fprintf(stderr, "SSL not compiled in; no https support\n");
+	exit(1);
+    }
+#endif
+
     if ((cp = strchr(url, '/')) == NULL)
 	return 1;
     h = apr_palloc(cntxt, cp - url + 1);
@@ -1105,6 +1466,9 @@ int main(int argc, const char *const argv[])
     apr_getopt_t *opt;
     const char *optarg;
     char c;
+#ifdef SIGPIPE
+    void *res;
+#endif
 
     /* table defaults  */
     tablestring = "";
@@ -1112,6 +1476,7 @@ int main(int argc, const char *const argv[])
     tdstring = "bgcolor=white";
     cookie[0] = '\0';
     auth[0] = '\0';
+    proxyhost[0] = '\0';
     hdrs[0] = '\0';
 
     apr_initialize();
@@ -1137,8 +1502,17 @@ int main(int argc, const char *const argv[])
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, &optarg)) == APR_SUCCESS) {
+    while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
+#if USE_SSL
+				"s"
+#endif
+				,&c, &optarg)) == APR_SUCCESS) {
 	switch (c) {
+#if USE_SSL
+	case 's':
+	    ssl = 1;
+	    break;
+#endif
 	case 'n':
 	    requests = atoi(optarg);
 	    if (!requests) {
@@ -1148,6 +1522,9 @@ int main(int argc, const char *const argv[])
 	case 'k':
 	    keepalive = 1;
 	    break;
+	case 'q':
+	    heartbeatres = 0;
+	    break;
 	case 'c':
 	    concurrency = atoi(optarg);
 	    break;
@@ -1155,6 +1532,18 @@ int main(int argc, const char *const argv[])
 	    if (posting == 1)
 		err("Cannot mix POST and HEAD\n");
 	    posting = -1;
+	    break;
+	case 'g':
+	    gnuplot = strdup(optarg);
+	    break;
+	case 'd':
+	    percentile = 0;
+	    break;
+	case 'e':
+	    csvperc = strdup(optarg);
+	    break;
+	case 'S':
+	    confidence = 0;
 	    break;
 	case 'p':
 	    if (posting != 0)
@@ -1225,6 +1614,21 @@ int main(int argc, const char *const argv[])
 	    use_html = 1;
 	    tablestring = optarg;
 	    break;
+	case 'X':
+	    {
+		char *p;
+		/*
+                 * assume proxy-name[:port]
+                 */
+		if (p = index(optarg, ':')) {
+		    *p = '\0';
+		    p++;
+		    proxyport = atoi(p);
+		};
+		strcpy(proxyhost, optarg);
+		isproxy = 1;
+	    }
+	    break;
 	case 'y':
 	    use_html = 1;
 	    trstring = optarg;
@@ -1252,6 +1656,28 @@ int main(int argc, const char *const argv[])
 	usage(argv[0]);
     }
 
+
+    if ((heartbeatres) && (requests > 150)) {
+	heartbeatres = requests / 10;	/* Print line every 10% of requests */
+	if (heartbeatres < 100)
+	    heartbeatres = 100;	/* but never more often than once every 100
+				 * connections. */
+    }
+    else
+	heartbeatres = 0;
+
+#ifdef USE_SSL
+    SSL_library_init();
+    if (!(ctx = SSL_CTX_new(SSLv2_client_method()))) {
+	fprintf(stderr, "Could not init SSL CTX");
+	ERR_print_errors_fp(stderr);
+	exit(1);
+    }
+#endif
+#if SIGPIPE
+    res = signal(SIGPIPE, SIG_IGN);	/* Ignore writes to connections that
+					 * have been closed at the other end. */
+#endif
     copyright();
     test();
 
