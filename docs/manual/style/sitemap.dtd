@@ -6,6 +6,9 @@
 <!-- <sitemap> is the root element -->
 <!ELEMENT sitemap (relativepath, title, summary?, seealso*, category*)>
 
+<!-- <indexpage> is another root element -->
+<!ELEMENT indexpage (relativepath, parentdocument, title, category*)>
+
 <!ELEMENT category (title, page*, modulefilelist? )>
 <!ATTLIST category id ID #IMPLIED>
 
@@ -15,8 +18,3 @@
 
 <!ELEMENT modulefilelist (modulefile*) >
 <!ELEMENT modulefile (#PCDATA) >
-
-<!-- The path to the root of the documentation from the current doc -->
-<!ELEMENT relativepath EMPTY>
-<!ATTLIST relativepath href CDATA #REQUIRED >
-

@@ -144,3 +144,11 @@
 
 <!ELEMENT blockquote %Block;>
 <!ATTLIST blockquote cite CDATA #IMPLIED >
+
+<!-- The path to the root of the documentation from the current doc -->
+<!ELEMENT relativepath EMPTY>
+<!ATTLIST relativepath href CDATA #REQUIRED >
+
+<!-- The path and title of the parent document -->
+<!ELEMENT parentdocument (#PCDATA)>
+<!ATTLIST parentdocument href CDATA #REQUIRED >

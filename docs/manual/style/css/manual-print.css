@@ -129,7 +129,8 @@ h2 {
 }
 
 .section h2,
-.directive-section h2 {
+.directive-section h2,
+.category h2 {
     background-color: #fff;
     color: #000;
 }
@@ -673,6 +674,10 @@ blockquote p.cite cite {
 p.indent {
     margin-left: 2em;
     margin-top: 1em;
+}
+
+#index-page form {
+    display: none;
 }
 
 p.figure {
