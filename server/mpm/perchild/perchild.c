@@ -979,8 +979,7 @@ static int make_child(server_rec *s, int slot)
         apr_signal(SIGTERM, just_die);
 	*/
         child_main(slot);
-
-	return 0;
+        clean_child_exit(0);
     }
     /* else */
     ap_child_table[slot].pid = pid;
@@ -1356,7 +1355,7 @@ static int pass_request(request_rec *r)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
     char *foo;
-    int len;
+    apr_size_t len;
 
     apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
     len = strlen(foo);
