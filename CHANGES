@@ -1,4 +1,7 @@
 Changes with Apache 2.0.21-dev
+ 
+  *) Provide vhost and request strings when ExtendedStatus is on.
+     [Greg Ames]
 
   *) Fix some issues with the pod and prefork: check the pod *after*
      processing a connection so that a server processing a time-
