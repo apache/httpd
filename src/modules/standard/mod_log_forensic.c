@@ -189,7 +189,8 @@ static int log_before(request_rec *r)
     if (!(id = ap_table_get(r->subprocess_env, "UNIQUE_ID"))) {
         /* we make the assumption that we can't go through all the PIDs in
            under 1 second */
-        id = ap_psprintf(r->pool, "%x:%lx:%x", getpid(), time(NULL), next_id++);
+        id = ap_psprintf(r->pool, "%lx:%lx:%x", (long)getpid(), time(NULL),
+                         next_id++);
     }
     rcfg.id = id;
     ap_set_module_config(r->request_config, &log_forensic_module, &rcfg);
