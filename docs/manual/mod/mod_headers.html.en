@@ -207,7 +207,23 @@ is available only in Apache 2.0</td></tr></table>
     <tr><td><code>%{FOOBAR}e</code></td>
         <td>The contents of the <a href="../env.html">environment
         variable</a> <code>FOOBAR</code>.</td></tr>
+
+    <tr><td><code>%{FOOBAR}s</code></td>
+        <td>The contents of the <a href="mod_ssl.html#envvars">SSL environment
+        variable</a> <code>FOOBAR</code>, if <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is enabled.</td></tr>
+
     </table>
+
+    <div class="note"><h3>Note</h3>
+
+      <p>The <code>%s</code> format specifier is only available in
+      Apache 2.1 and later; it can be used instead of <code>%e</code>
+      to avoid the overhead of enabling <code>SSLOptions
+      +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
+      be enabled anyway for some other reason, <code>%e</code> will be
+      more efficient than <code>%s</code>.</p>
+
+    </div> 
 
     <p>When the <code class="directive">Header</code> directive is used with the
     <code>add</code>, <code>append</code>, or <code>set</code>

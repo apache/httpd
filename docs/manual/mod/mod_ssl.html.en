@@ -128,9 +128,17 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
-<tr><td colspan="3">[ where <em>x509</em> is a component of a X.509 DN:
-  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</td></tr>
 </table>
+
+<p><em>x509</em> specifies a component of an X.509 DN; one of
+<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In Apache 2.1 and
+later, <em>x509</em> may also include a numeric <code>_n</code>
+suffix.  If the DN in question contains multiple attributes of the
+same name, this suffix is used as an index to select a particular
+attribute.  For example, where the server certificate subject DN
+included two OU fields, <code>SSL_SERVER_S_DN_OU_0</code> and
+<code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logformats" id="logformats">Custom Log Formats</a></h2>
