@@ -122,19 +122,33 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 16
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 16
+#endif
+
+/* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_SERVER_LIMIT
+#define MAX_SERVER_LIMIT 20000
 #endif
 
 /* Limit on the threads per process.  Clients will be locked out if more than
- * this  * HARD_SERVER_LIMIT are needed.
+ * this  * server_limit are needed.
  *
  * We keep this for one reason it keeps the size of the scoreboard file small
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 64 
+#ifndef DEFAULT_THREAD_LIMIT
+#define DEFAULT_THREAD_LIMIT 64 
+#endif
+
+/* Admin can't tune ThreadLimit beyond MAX_THREAD_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_THREAD_LIMIT
+#define MAX_THREAD_LIMIT 20000
 #endif
 
 /*
@@ -145,7 +159,12 @@ int ap_threads_per_child = 0;         /* Worker threads per child */
 static int ap_daemons_to_start = 0;
 static int min_spare_threads = 0;
 static int max_spare_threads = 0;
-static int ap_daemons_limit = 0;
+static int ap_daemons_limit = 0;      /* MaxClients */
+static int server_limit = DEFAULT_SERVER_LIMIT;
+static int first_server_limit;
+static int thread_limit = DEFAULT_THREAD_LIMIT;
+static int first_thread_limit;
+static int changed_limit_at_restart;
 static int dying = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
@@ -168,7 +187,7 @@ typedef struct {
     apr_threadattr_t *threadattr;
 } thread_starter;
 
-#define ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
+#define ID_FROM_CHILD_THREAD(c, t)    ((c * thread_limit) + t)
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -249,10 +268,10 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = AP_MPMQ_DYNAMIC;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
-            *result = HARD_SERVER_LIMIT;
+            *result = server_limit;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_THREADS:
-            *result = HARD_THREAD_LIMIT;
+            *result = thread_limit;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_THREADS:
             *result = ap_threads_per_child;
@@ -1348,7 +1367,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
-
+    first_server_limit = server_limit;
+    first_thread_limit = thread_limit;
+    if (changed_limit_at_restart) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
+                     "WARNING: Attempt to change ServerLimit or ThreadLimit "
+                     "ignored during restart");
+        changed_limit_at_restart = 0;
+    }
+    
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
         /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
@@ -1570,7 +1597,7 @@ static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
-    ap_daemons_limit = HARD_SERVER_LIMIT;
+    ap_daemons_limit = server_limit;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
@@ -1634,7 +1661,7 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_server_limit (cmd_parms *cmd, void *dummy,
+static const char *set_max_clients (cmd_parms *cmd, void *dummy,
                                      const char *arg) 
 {
     int max_clients;
@@ -1672,20 +1699,19 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy,
                     ap_daemons_limit);
        max_clients = ap_daemons_limit * ap_threads_per_child; 
     }
-    if (ap_daemons_limit > HARD_SERVER_LIMIT) {
+    if (ap_daemons_limit > server_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: MaxClients of %d would require %d servers,",
                     max_clients, ap_daemons_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " and would exceed the compile time limit of %d.",
-                    HARD_SERVER_LIMIT);
+                    " and would exceed the ServerLimit value of %d.",
+                    server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " Automatically lowering MaxClients to %d.  To increase,",
-                    HARD_SERVER_LIMIT);
+                    server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " please see the HARD_SERVER_LIMIT define in %s.",
-                    AP_MPM_HARD_LIMITS_FILE);
-       ap_daemons_limit = HARD_SERVER_LIMIT;
+                    " please see the ServerLimit directive.");
+       ap_daemons_limit = server_limit;
     } 
     else if (ap_daemons_limit < 1) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -1704,23 +1730,102 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
     }
 
     ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > HARD_THREAD_LIMIT) {
+    if (ap_threads_per_child > thread_limit) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: ThreadsPerChild of %d exceeds compile time "
-                     "limit of %d threads,", ap_threads_per_child,
-                     HARD_THREAD_LIMIT);
+                     "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
+                     "value of %d", ap_threads_per_child,
+                     thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " lowering ThreadsPerChild to %d. To increase, please"
-                     " see the", HARD_THREAD_LIMIT);
+                     "threads, lowering ThreadsPerChild to %d. To increase, please"
+                     " see the", thread_limit);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " HARD_THREAD_LIMIT define in %s.",
-                     AP_MPM_HARD_LIMITS_FILE);
-        ap_threads_per_child = HARD_THREAD_LIMIT;
+                     " ThreadLimit directive.");
+        ap_threads_per_child = thread_limit;
     }
     else if (ap_threads_per_child < 1) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "WARNING: Require ThreadsPerChild > 0, setting to 1");
         ap_threads_per_child = 1;
+    }
+    return NULL;
+}
+
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    int tmp_server_limit;
+    
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    tmp_server_limit = atoi(arg);
+    /* you cannot change ServerLimit across a restart; ignore
+     * any such attempts
+     */
+    if (first_server_limit &&
+        tmp_server_limit != server_limit) {
+        /* how do we log a message?  the error log is a bit bucket at this
+         * point; we'll just have to set a flag so that ap_mpm_run()
+         * logs a warning later
+         */
+        changed_limit_at_restart = 1;
+        return NULL;
+    }
+    server_limit = tmp_server_limit;
+    
+    if (server_limit > MAX_SERVER_LIMIT) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: ServerLimit of %d exceeds compile time limit "
+                    "of %d servers,", server_limit, MAX_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
+       server_limit = MAX_SERVER_LIMIT;
+    } 
+    else if (server_limit < 1) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ServerLimit > 0, setting to 1");
+	server_limit = 1;
+    }
+    return NULL;
+}
+
+static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    int tmp_thread_limit;
+    
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    tmp_thread_limit = atoi(arg);
+    /* you cannot change ThreadLimit across a restart; ignore
+     * any such attempts
+     */
+    if (first_thread_limit &&
+        tmp_thread_limit != thread_limit) {
+        /* how do we log a message?  the error log is a bit bucket at this
+         * point; we'll just have to set a flag so that ap_mpm_run()
+         * logs a warning later
+         */
+        changed_limit_at_restart = 1;
+        return NULL;
+    }
+    thread_limit = tmp_thread_limit;
+    
+    if (thread_limit > MAX_THREAD_LIMIT) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: ThreadLimit of %d exceeds compile time limit "
+                    "of %d servers,", thread_limit, MAX_THREAD_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering ThreadLimit to %d.", MAX_THREAD_LIMIT);
+       thread_limit = MAX_THREAD_LIMIT;
+    } 
+    else if (thread_limit < 1) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ThreadLimit > 0, setting to 1");
+	thread_limit = 1;
     }
     return NULL;
 }
@@ -1734,10 +1839,14 @@ AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
   "Minimum number of idle children, to handle request spikes"),
 AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
   "Maximum number of idle children"),
-AP_INIT_TAKE1("MaxClients", set_server_limit, NULL, RSRC_CONF,
+AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
   "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates"),
+AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
+  "Maximum value of MaxClients for this run of Apache"),
+AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
+  "Maximum worker threads in a server for this run of Apache"),
 { NULL }
 };
 

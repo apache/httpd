@@ -114,8 +114,15 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 256
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 256
+#endif
+
+/* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_SERVER_LIMIT
+#define MAX_SERVER_LIMIT 20000
 #endif
 
 #ifndef HARD_THREAD_LIMIT
@@ -129,7 +136,10 @@ static apr_lock_t *accept_lock;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
-static int ap_daemons_limit=0;
+static int ap_daemons_limit=0;      /* MaxClients */
+static int server_limit = DEFAULT_SERVER_LIMIT;
+static int first_server_limit;
+static int changed_limit_at_restart;
 
 static ap_pod_t *pod;
 
@@ -319,7 +329,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = AP_MPMQ_DYNAMIC;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
-            *result = HARD_SERVER_LIMIT;
+            *result = server_limit;
             return APR_SUCCESS;
         case AP_MPMQ_HARD_LIMIT_THREADS:
             *result = HARD_THREAD_LIMIT;
@@ -964,9 +974,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     apr_status_t rv;
 
     pconf = _pconf;
-
     ap_server_conf = s;
- 
+    first_server_limit = server_limit;
+    if (changed_limit_at_restart) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
+                     "WARNING: Attempt to change ServerLimit "
+                     "ignored during restart");
+        changed_limit_at_restart = 0;
+    }
+
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
@@ -1212,7 +1228,7 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    ap_daemons_limit = HARD_SERVER_LIMIT;
+    ap_daemons_limit = server_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_lock_fname = DEFAULT_LOCKFILE;
@@ -1274,7 +1290,7 @@ static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, const char 
     return NULL;
 }
 
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1282,22 +1298,61 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     }
 
     ap_daemons_limit = atoi(arg);
-    if (ap_daemons_limit > HARD_SERVER_LIMIT) {
+    if (ap_daemons_limit > server_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_daemons_limit, HARD_SERVER_LIMIT);
+                    "WARNING: MaxClients of %d exceeds ServerLimit value "
+                    "of %d servers,", ap_daemons_limit, server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
+                    "see the ServerLimit", server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                    " HARD_SERVER_LIMIT define in %s.",
-                    AP_MPM_HARD_LIMITS_FILE);
-       ap_daemons_limit = HARD_SERVER_LIMIT;
+                    " directive.");
+       ap_daemons_limit = server_limit;
     } 
     else if (ap_daemons_limit < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "WARNING: Require MaxClients > 0, setting to 1");
 	ap_daemons_limit = 1;
+    }
+    return NULL;
+}
+
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    int tmp_server_limit;
+    
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    tmp_server_limit = atoi(arg);
+    /* you cannot change ServerLimit across a restart; ignore
+     * any such attempts
+     */
+    if (first_server_limit &&
+        tmp_server_limit != server_limit) {
+        /* how do we log a message?  the error log is a bit bucket at this
+         * point; we'll just have to set a flag so that ap_mpm_run()
+         * logs a warning later
+         */
+        changed_limit_at_restart = 1;
+        return NULL;
+    }
+    server_limit = tmp_server_limit;
+    
+    if (server_limit > MAX_SERVER_LIMIT) {
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: ServerLimit of %d exceeds compile time limit "
+                    "of %d servers,", server_limit, MAX_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
+       server_limit = MAX_SERVER_LIMIT;
+    } 
+    else if (server_limit < 1) {
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ServerLimit > 0, setting to 1");
+	server_limit = 1;
     }
     return NULL;
 }
@@ -1311,8 +1366,10 @@ AP_INIT_TAKE1("MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,
               "Minimum number of idle children, to handle request spikes"),
 AP_INIT_TAKE1("MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF,
               "Maximum number of idle children"),
-AP_INIT_TAKE1("MaxClients", set_server_limit, NULL, RSRC_CONF,
+AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
+AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
+              "Maximum value of MaxClients for this run of Apache"),
 { NULL }
 };
 
