@@ -292,84 +292,6 @@ int ssl_hook_Handler(request_rec *r)
     return HTTP_BAD_REQUEST;
 }
 
-typedef long bio_hook_t (BIO *, int, const char *, int, long, long);
-
-static void bio_hook_set(BIO *b, bio_hook_t *hook, void *data)
-{
-    while (b) {
-        BIO_set_callback(b, hook);
-        BIO_set_callback_arg(b, data);
-        b = BIO_next(b);
-    }
-}
-
-/* XXX: save/restore current callbacks if any? */
-#define ssl_bio_hooks_set(ssl, hook, data) \
-    bio_hook_set(SSL_get_wbio(ssl), hook, data); \
-    bio_hook_set(SSL_get_rbio(ssl), hook, data)
-
-#define ssl_bio_renegotiate_hook_set(ssl, data) \
-ssl_bio_hooks_set(ssl, ssl_renegotiate_hook, data)
-
-#define ssl_bio_hooks_unset(ssl) \
-ssl_bio_hooks_set(ssl, NULL, NULL)
-
-#define bio_mem_length(b) ((BUF_MEM *)b->ptr)->length
-
-/* if we need to renegotiate in the access phase
- * data needs to be pushed to / pulled from the filter chain
- * otherwise, a BIO_write just sits in memory and theres nothing
- * to BIO_read
- */
-
-static long ssl_renegotiate_hook(BIO *bio, int cmd, const char *argp,
-                                 int argi, long argl, long rc)
-{
-    request_rec *r = (request_rec *)BIO_get_callback_arg(bio);
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSL *ssl = sslconn->ssl;
-
-    int is_failed_read = (cmd == (BIO_CB_READ|BIO_CB_RETURN) && (rc == -1));
-    int is_flush       = ((cmd == BIO_CB_CTRL) && (argi == BIO_CTRL_FLUSH));
-
-    if (is_flush || is_failed_read) {
-        /* disable this callback to prevent recursion
-         * and leave a "note" so the input filter leaves the rbio
-         * as-as
-         */
-        ssl_bio_hooks_set(ssl, NULL, (void*)SSL_ST_RENEGOTIATE);
-    }
-    else {
-        return rc;
-    }
-
-    if (is_flush) {
-        /* flush what was written into wbio to the client */
-        ssl_log(r->server, SSL_LOG_DEBUG,
-                "flushing %d bytes to the client",
-                bio_mem_length(bio));
-        ap_rflush(r);
-    }
-    else {
-        /* force read from the client socket */
-        apr_bucket_brigade *bb = apr_brigade_create(r->connection->pool);
-        apr_off_t bytes = argi;
-        ap_get_brigade(r->input_filters, bb,
-                       AP_MODE_BLOCKING, &bytes);
-
-        rc = BIO_read(bio, (void *)argp, argi);
-
-        ssl_log(r->server, SSL_LOG_DEBUG,
-                "retry read: wanted %d, got %d, %d remain\n",
-                argi, rc, bio_mem_length(bio));
-    }
-
-    /* reset this bio hook for further read/writes */
-    ssl_bio_renegotiate_hook_set(ssl, r);
-
-    return rc;
-}
-
 /*
  *  Access Handler
  */
@@ -784,22 +706,18 @@ int ssl_hook_Access(request_rec *r)
             else
                 SSL_set_session_id_context(ssl, (unsigned char *)&r, sizeof(r));
             /* will need to push to / pull from filters to renegotiate */
-            ssl_bio_renegotiate_hook_set(ssl, r);
             SSL_renegotiate(ssl);
             SSL_do_handshake(ssl);
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation request failed");
-                ssl_bio_hooks_unset(ssl);
                 return HTTP_FORBIDDEN;
             }
             ssl_log(r->server, SSL_LOG_INFO,
                     "Awaiting re-negotiation handshake");
             SSL_set_state(ssl, SSL_ST_ACCEPT);
             SSL_do_handshake(ssl);
-
-            ssl_bio_hooks_unset(ssl);
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ssl_log(r->server, SSL_LOG_ERROR,
