@@ -1664,6 +1664,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                      "Warning",
                      "WWW-Authenticate",
                      "Proxy-Authenticate",
+                     "Set-Cookie",
+                     "Set-Cookie2",
                      NULL);
     }
     else {
