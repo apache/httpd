@@ -138,6 +138,11 @@ Negotiation</a></seealso>
     content-encodings it would have if the client had asked for one
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
+
+    <p>The <directive module="mod_mime">MultiViewsMatch</directive>
+    directive configures whether Apache will consider files
+    that do not have content negotiation meta-information assigned
+    to them when choosing files.</p>
 </section>
 
 <directivesynopsis>
@@ -253,8 +258,8 @@ the client does not express a preference</description>
     <p>Note that this directive only has an effect if a 'best'
     language cannot be determined by any other means or the <directive
     module="mod_negotiation">ForceLanguagePriority</directive> directive
-    is not <code>None</code>. Correctly implemented HTTP/1.1 requests
-    will mean this directive has no effect.</p>
+    is not <code>None</code>. In general, the client determines the
+    language preference, not the server.</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>

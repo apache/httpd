@@ -169,6 +169,11 @@ Negotiation</a></li>
     content-encodings it would have if the client had asked for one
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
+
+    <p>The <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
+    directive configures whether Apache will consider files
+    that do not have content negotiation meta-information assigned
+    to them when choosing files.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a></h2>
@@ -283,8 +288,8 @@ the client does not express a preference</td></tr>
 
     <p>Note that this directive only has an effect if a 'best'
     language cannot be determined by any other means or the <code class="directive"><a href="#forcelanguagepriority">ForceLanguagePriority</a></code> directive
-    is not <code>None</code>. Correctly implemented HTTP/1.1 requests
-    will mean this directive has no effect.</p>
+    is not <code>None</code>. In general, the client determines the
+    language preference, not the server.</p>
 
 <h3>See also</h3>
 <ul>
