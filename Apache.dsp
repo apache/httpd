@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="Apache" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 5.00
+# Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
@@ -22,6 +22,7 @@ CFG=Apache - Win32 Release
 !MESSAGE 
 
 # Begin Project
+# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -66,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I "./include" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "./include" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
@@ -126,13 +127,6 @@ SOURCE=.\os\win32\apache.ico
 # Begin Source File
 
 SOURCE=.\os\win32\apache.rc
-
-!IF  "$(CFG)" == "Apache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # End Group
 # End Target
