@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Gracefully handly retry situations in the SSL input filter,
+     by following the SSL libraries' retry semantics.
+     [William Rowe]
+
   *) Terminate CGI scripts when the client connection drops.  This
      fix only applies to some normal paths in mod_cgi.  mod_cgid
      is still busted.  PR 8388  [Jeff Trawick]
