@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Document the `add' command of `dbmmanage' in `dbmmanage.1' manpage.
+     [David MacKenzie <djm@uu.net>] PR#3394
+
   *) Ignore a "ErrorDocument 401" directive with a full URL and write a
      notice to the error log. It is not possible to send a 401 response
      and a redirect at the same time.  [Lars Eilebrecht]

@@ -60,7 +60,9 @@ dbmmanage \- Create and update user authentication files in DBM format
 .I command
 ] [
 .I username
-]
+[
+.I encpasswd
+] ]
 .PP
 .SH DESCRIPTION
 .B dbmmanage
@@ -87,6 +89,10 @@ found at http://www.apache.org/.
 The filename of the DBM format file. Usually without the extension .pag or .dir.
 .IP \fB\fIcommand\fP
 This selects the operation to perform:
+.TP 12
+.B add
+Adds an entry for \fIusername\fP to \fIfilename\fP using the encrypted
+password \fIencpassword\fP.
 .TP 12
 .B adduser
 Asks for a password and then adds an entry for \fIusername\fP to
