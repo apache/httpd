@@ -103,6 +103,19 @@ slash), it is treated as relative to the ServerRoot.
 <P> Each line of the user file file contains a username followed
 by a colon, followed by the crypt() encrypted password. The behavior
 of multiple occurrences of the same user is undefined.
+<P>
+The utility <code>htpasswd</code> which is installed as part of the
+binary distribution, or which can be found in <code>src/support</code>,
+is used to maintain this password file. See the <code>man</code>
+page for more details. In short
+<p>
+<blockquote>
+	<code>htpasswd -c Filename username</code><br>
+	Create a password file 'Filename' with 'username'
+	as the initial ID. It will prompt for the password.
+	<code>htpasswd Filename username2</code><br>
+	Adds or modifies in password file 'Filename' the 'username'.
+</blockquote>
 <P> Note that
 searching large text files is <EM>very</EM> inefficient;
 <A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A> should be
