@@ -58,6 +58,7 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+#define HAVE_CONF_AUTO_H 1
 #include "conf.h"
 
 #define PLATFORM "Unix"

@@ -67,8 +67,6 @@ extern "C" {
  * See PORTING for a listing of what they mean
  */
 
-#include "conf_auto.h"
-
 /* Have to include sys/stat.h before ../os/win32/os.h so we can override
 stat() properly */
 #include <sys/types.h>
@@ -80,6 +78,10 @@ stat() properly */
 #include "../os/win32/os.h"
 #else
 #include "os.h"
+#endif
+
+#ifdef HAVE_CONF_AUTO_H
+#include "conf_auto.h"
 #endif
 
 #if !defined(QNX) && !defined(MPE) && !defined(WIN32)

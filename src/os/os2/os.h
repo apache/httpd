@@ -9,6 +9,8 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
+#define HAVE_CONF_AUTO_H 1
+
 #if defined(__GNUC__) && !defined(INLINE)
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
