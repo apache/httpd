@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="mod_auth_digest" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_authz_default" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=mod_auth_digest - Win32 Debug
+CFG=mod_authz_default - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_auth_digest.mak".
+!MESSAGE NMAKE /f "mod_authz_default.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "mod_auth_digest.mak" CFG="mod_auth_digest - Win32 Debug"
+!MESSAGE NMAKE /f "mod_authz_default.mak" CFG="mod_authz_default - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "mod_auth_digest - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "mod_auth_digest - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_authz_default - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_authz_default - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "mod_auth_digest - Win32 Release"
+!IF  "$(CFG)" == "mod_authz_default - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_auth_digest" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_authz_default" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,10 +52,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth_digest.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth_digest.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_authz_default.so" /base:@..\..\os\win32\BaseAddr.ref,mod_authz_default
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_authz_default.so" /base:@..\..\os\win32\BaseAddr.ref,mod_authz_default
 
-!ELSEIF  "$(CFG)" == "mod_auth_digest - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_authz_default - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_auth_digest" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_authz_default" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,50 +78,46 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_digest.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_digest.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_authz_default.so" /base:@..\..\os\win32\BaseAddr.ref,mod_authz_default
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_authz_default.so" /base:@..\..\os\win32\BaseAddr.ref,mod_authz_default
 
 !ENDIF 
 
 # Begin Target
 
-# Name "mod_auth_digest - Win32 Release"
-# Name "mod_auth_digest - Win32 Debug"
+# Name "mod_authz_default - Win32 Release"
+# Name "mod_authz_default - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\mod_auth_digest.c
+SOURCE=.\mod_authz_default.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\auth_provider.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\mod_auth_digest.rc
+SOURCE=.\mod_authz_default.rc
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\build\win32\win32ver.awk
 
-!IF  "$(CFG)" == "mod_auth_digest - Win32 Release"
+!IF  "$(CFG)" == "mod_authz_default - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_digest  "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+".\mod_authz_default.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_authz_default  "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_authz_default.rc
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "mod_auth_digest - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_authz_default - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_digest  "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+".\mod_authz_default.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_authz_default  "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_authz_default.rc
 
 # End Custom Build
 
