@@ -1,4 +1,3 @@
-# $Id: cls.c,v 1.2 1996/08/20 13:25:02 paul Exp $
 #include <ctype.h>
 #include <dirent.h>
 #include <stdio.h>

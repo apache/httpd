@@ -1,6 +1,4 @@
 /***                                                                      ***\
-    $Id: logresolve.c,v 1.5 1996/08/20 13:25:09 paul Exp $
-
     logresolve 1.1
 
     Tom Rathborne - tomr@uunet.ca - http://www.uunet.ca/~tomr/

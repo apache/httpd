@@ -4,8 +4,6 @@
  * Rob McCool
  */
 
-/* $Id: htpasswd.c,v 1.3 1996/08/20 13:25:05 paul Exp $ */
-
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>

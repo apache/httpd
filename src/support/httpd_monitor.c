@@ -49,8 +49,6 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
 
- * $Id: httpd_monitor.c,v 1.3 1996/10/23 18:53:46 brian Exp $
-
 
  * simple script to monitor the child Apache processes
  *   Usage:
