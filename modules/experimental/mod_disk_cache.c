@@ -344,11 +344,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         h->remove_entity = &remove_entity;
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Caching URL %s",  key);
+                     "disk_cache: Storing URL %s",  key);
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Could not cache URL %s [%d]", key, rv);
+                     "disk_cache: Could not store URL %s [%d]", key, rv);
 
         return DECLINED;
     }
@@ -443,8 +443,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     h->store_headers = &store_headers;
     h->remove_entity = &remove_entity;
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                 "disk_cache: Serving Cached URL %s",  dobj->name);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Recalled cached URL info header %s",  dobj->name);
     return OK;
 }
 
@@ -518,8 +518,8 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     apr_file_close(dobj->hfd);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                 "disk_cache: Served headers for URL %s",  dobj->name);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Recalled headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
 
@@ -640,8 +640,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         /* XXX log message */
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                 "disk_cache: Caching headers for URL %s",  dobj->name);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Stored headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
 
