@@ -103,6 +103,7 @@ case $host in
       echo "using aplibtool"
       LIBTOOL="$abs_srcdir/srclib/apr/build/aplibtool"
       SH_LIBTOOL="$LIBTOOL --shared --export-all"
+      SH_LIBS="\$(ALL_LIBS)"
       CORE_IMPLIB_FILE="ApacheCoreOS2.la"
       CORE_IMPLIB="$abs_srcdir/server/$CORE_IMPLIB_FILE"
       MK_IMPLIB="emximp"
