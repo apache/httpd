@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "Apache"=.\Apache.dsp - Package Owner=<4>
+Project: "httpd"=".\httpd.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -51,7 +51,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name Apache
+    Project_Dep_Name httpd
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheMonitor
