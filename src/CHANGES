@@ -2,8 +2,10 @@ Changes with Apache 1.3.7
 
   *) apxs: Add "-S var=val" option which allows for override of CFG_*
      built-in values. Add "-e" option which works like -i but doesn't
-     install the DSO; useful for editing httpd.conf with apxs.
-     [Wilfredo Sanchez]
+     install the DSO; useful for editing httpd.conf with apxs. Fix
+     editing code so that multiple invocations of apxs -a will not
+     create duplicate LoadModule/AddModule entries; apxs can now be
+     used to re- enable/disable a module.  [Wilfredo Sanchez]
 
   *) Win32: Update the server to use Winsock 2. Specifically, link with
      ws2_32.lib rather than wsock32.lib.  This gives us access to 

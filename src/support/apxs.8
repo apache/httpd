@@ -332,20 +332,18 @@ server's
 directory.
 .TP 12
 .B \-a
-This additionally activates the module 
-by automatically adding a corresponding
+This activates the module by automatically adding a corresponding
 .B LoadModule
 line to Apache's
 .B httpd.conf
-configuration file (only if no such entry exists yet).
+configuration file, or by enabling it if it already exists.
 .TP 12
 .B \-A
 Same as option
 .B \-a
 but the created 
 .B LoadModule
-directive is
-prefixed with a hash sign (#), i.e. the module is
+directive is prefixed with a hash sign (#), i.e. the module is
 just prepared for later activation but initially disabled. 
 .TP 12
 .B \-e

@@ -485,29 +485,28 @@ if ($opt_i or $opt_e) {
             exit(1);
         }
 
-        my $update = 0;
         my $lmd;
+        my $c = '';
+        $c = '#' if ($opt_A);
         foreach $lmd (@lmd) {
+            my $what = $opt_A ? "preparing" : "activating";
             if ($content !~ m|\n#?\s*$lmd|) {
-                 my $c = '';
-                 $c = '#' if ($opt_A);
                  $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|sg;
-                 $update = 1;
-                 $lmd =~ m|LoadModule\s+(.+?)_module.*|;
-                 my $what = $opt_A ? "preparing" : "activating";
-                 print STDERR "[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]\n";
+            } else {
+                 $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|sg;
             }
+            $lmd =~ m|LoadModule\s+(.+?)_module.*|;
+            print STDERR "[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]\n";
         }
         my $amd;
         foreach $amd (@amd) {
             if ($content !~ m|\n#?\s*$amd|) {
-                 my $c = '';
-                 $c = '#' if ($opt_A);
                  $content =~ s|^(.*\n#?\s*AddModule\s+[^\n]+\n)|$1$c$amd\n|sg;
-                 $update = 1;
+            } else {
+                 $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|sg;
             }
         }
-        if ($update) {
+        if (@lmd or @amd) {
             open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new") || die;
             print FP $content;
             close(FP);
