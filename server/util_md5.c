@@ -194,7 +194,7 @@ API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, ap_md5_ctx_t *context)
     return encodedDigest;
 }
 
-#ifdef CHARSET_EBCDIC
+#ifdef APACHE_XLATE
 
 API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
                                 ap_xlate_t *xlate)
@@ -203,14 +203,11 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
-    ap_size_t inbytes_left, outbytes_left;
 
     ap_MD5Init(&context);
-#ifdef CHARSET_EBCDIC
     if (xlate) {
         ap_MD5SetXlate(&context, xlate);
     }
-#endif
     nbytes = sizeof(buf);
     while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
