@@ -30,10 +30,10 @@ RSC=rc.exe
 
 !IF  "$(CFG)" == "Apache - Win32 Release"
 
-OUTDIR=.\LaunchR
-INTDIR=.\LaunchR
+OUTDIR=.\ApacheR
+INTDIR=.\ApacheR
 # Begin Custom Macros
-OutDir=.\.\LaunchR
+OutDir=.\.\ApacheR
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -56,7 +56,7 @@ CLEAN :
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE"\
  /Fp"$(INTDIR)\Apache.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\LaunchR/
+CPP_OBJS=.\ApacheR/
 CPP_SBRS=.
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc" 
