@@ -1,4 +1,4 @@
-Apache STATUS:
+Apache 1.3 STATUS:
 
 Release:
 
@@ -8,6 +8,11 @@ Release:
 	    unless someone else wants it
     1.3b3: Released and announced
     1.3b1: There is no 1.3b1
+
+Current Modes:
+
+    o Review-Then-Commit
+    o NO lazy voting
 
 Plan:
 
@@ -135,19 +140,19 @@ Available Patches:
 	<Pine.BSF.3.95.971031204159.13113E-100000@alive.znep.com>
 	Status: Marc +1, Dean +1 (with note), Paul +1
 
-    * Dean's [PRE-PATCH] expanding ap_snprintf()
-	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
-	Status: Dean +1, Ben +1, Jim 0, Martin 0, Brian +1(?)
-	See <Pine.LNX.3.95dg3.971024175935.25347U-100000@twinlark.arctic.org>
-	for a more up-to-date idea (int vformatter) that has a
-	vote of +1 from Dean, Ben, Martin, Paul and Jim for concept
-
 Concepts:
 
    * Jim's [CONCEPT] platform.h header file. Instead of lumping
      all OS stuff in conf.h, create a ./platforms/ sub-dir
      and have Configure copy and modify platform.h as needed.
 	<199712272303.SAA16225@devsys.jaguNET.com>
+
+    * Dean's [PRE-PATCH] expanding ap_snprintf()
+	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
+	Status: Dean +1, Ben +1, Jim 0, Martin 0, Brian +1(?), Ken +1
+	See <Pine.LNX.3.95dg3.971024175935.25347U-100000@twinlark.arctic.org>
+	for a more up-to-date idea (int vformatter) that has a
+	vote of +1 from Dean, Ben, Martin, Paul, Jim, and Ken for concept
 
 In progress:
 
@@ -311,14 +316,14 @@ Win32 specific issues:
 
     * who should run the service?  Who exactly is the "system account"?
 
-    docs say:
+      docs say:
 
       Localsystem is a very privileged account locally, so you shouldn't run
       any shareware applications there. However, it has no network privileges
       and cannot leave the machine via any NT-secured mechanism, including
       file system, named pipes, DCOM, or secure RPC.
 
-    and:
+      and:
 
       A service that runs in the context of the LocalSystem account
       inherits the security context of the SCM. It is not associated with
@@ -327,8 +332,8 @@ Win32 specific issues:
       has several implications: [... removed ...]
 
 
-    That _really_ sucks.  Can we recommend running Apache as some 
-    other user?
+      That _really_ sucks.  Can we recommend running Apache as some 
+      other user?
 
 
     * need a crypt() of some sort.
