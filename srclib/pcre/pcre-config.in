@@ -12,6 +12,13 @@ if test $# -eq 0; then
       exit 1
 fi
 
+libR=
+case `uname -s` in
+  *SunOS*)
+  libR=" -R@libdir@"
+  ;;
+esac
+
 while test $# -gt 0; do
   case "$1" in
   -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
@@ -45,10 +52,10 @@ while test $# -gt 0; do
       echo $includes
       ;;
     --libs-posix)
-      echo -L@libdir@ -lpcreposix -lpcre
+      echo -L@libdir@$libR -lpcreposix -lpcre
       ;;
     --libs)
-      echo -L@libdir@ -lpcre
+      echo -L@libdir@$libR -lpcre
       ;;
     *)
       echo "${usage}" 1>&2

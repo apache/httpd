@@ -1,19 +1,39 @@
 #! /usr/bin/perl
 
 # Program for testing regular expressions with perl to check that PCRE handles
-# them the same.
+# them the same. This is the version that supports /8 for UTF-8 testing. As it
+# stands, it requires at least Perl 5.8 for UTF-8 support. For Perl 5.6, it
+# can be used as is for non-UTF-8 testing, but you have to uncomment the
+# "use utf8" lines in order to to UTF-8 stuff (and you mustn't uncomment them
+# for non-UTF-8 use).
 
 
-# Function for turning a string into a string of printing chars
+# Function for turning a string into a string of printing chars. There are
+# currently problems with UTF-8 strings; this fudges round them.
 
 sub pchars {
 my($t) = "";
 
-foreach $c (split(//, $_[0]))
+if ($utf8)
   {
-  if (ord $c >= 32 && ord $c < 127) { $t .= $c; }
-    else { $t .= sprintf("\\x%02x", ord $c); }
+#  use utf8;                    <=============== For UTF-8 in Perl 5.6
+  @p = unpack('U*', $_[0]);
+  foreach $c (@p)
+    {
+    if ($c >= 32 && $c < 127) { $t .= chr $c; }
+      else { $t .= sprintf("\\x{%02x}", $c); }
+    }
   }
+
+else
+  {
+  foreach $c (split(//, $_[0]))
+    {
+    if (ord $c >= 32 && ord $c < 127) { $t .= $c; }
+      else { $t .= sprintf("\\x%02x", ord $c); }
+    }
+  }
+
 $t;
 }
 
@@ -64,14 +84,27 @@ for (;;)
    chomp($pattern);
    $pattern =~ s/\s+$//;
 
-  # The private /+ modifier means "print $' afterwards". We use it
-  # only on the end of patterns to make it easy to chop off here.
+  # The private /+ modifier means "print $' afterwards".
 
   $showrest = ($pattern =~ s/\+(?=[a-z]*$)//);
 
+  # The private /8 modifier means "operate in UTF-8". Currently, Perl
+  # has bugs that we try to work around using this flag.
+
+  $utf8 = ($pattern =~ s/8(?=[a-z]*$)//);
+
   # Check that the pattern is valid
 
-  eval "\$_ =~ ${pattern}";
+  if ($utf8)
+    {
+#    use utf8;                    <=============== For UTF-8 in Perl 5.6
+    eval "\$_ =~ ${pattern}";
+    }
+  else
+    {
+    eval "\$_ =~ ${pattern}";
+    }
+
   if ($@)
     {
     printf $outfile "Error: $@";
@@ -112,8 +145,7 @@ for (;;)
 
     @subs = ();
 
-    eval "${cmd} (\$x =~ ${pattern}) {" .
-         "push \@subs,\$&;" .
+    $pushes = "push \@subs,\$&;" .
          "push \@subs,\$1;" .
          "push \@subs,\$2;" .
          "push \@subs,\$3;" .
@@ -131,6 +163,16 @@ for (;;)
          "push \@subs,\$15;" .
          "push \@subs,\$16;" .
          "push \@subs,\$'; }";
+
+    if ($utf8)
+      {
+#      use utf8;                    <=============== For UTF-8 in Perl 5.6
+      eval "${cmd} (\$x =~ ${pattern}) {" . $pushes;
+      }
+    else
+      {
+      eval "${cmd} (\$x =~ ${pattern}) {" . $pushes;
+      }
 
     if ($@)
       {
@@ -164,6 +206,6 @@ for (;;)
     }
   }
 
-printf $outfile "\n";
+# printf $outfile "\n";
 
 # End

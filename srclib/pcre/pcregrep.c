@@ -3,7 +3,39 @@
 *************************************************/
 
 /* This is a grep program that uses the PCRE regular expression library to do
-its pattern matching. On a Unix system it can recurse into directories. */
+its pattern matching. On a Unix or Win32 system it can recurse into
+directories.
+
+           Copyright (c) 1997-2004 University of Cambridge
+
+-----------------------------------------------------------------------------
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+    * Neither the name of the University of Cambridge nor the names of its
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+-----------------------------------------------------------------------------
+*/
 
 #include <ctype.h>
 #include <stdio.h>
@@ -18,7 +50,7 @@ its pattern matching. On a Unix system it can recurse into directories. */
 
 typedef int BOOL;
 
-#define VERSION "2.0 01-Aug-2001"
+#define VERSION "3.0 14-Jan-2003"
 #define MAX_PATTERN_COUNT 100
 
 
@@ -44,8 +76,8 @@ static BOOL whole_lines = FALSE;
 
 typedef struct option_item {
   int one_char;
-  char *long_name;
-  char *help_text;
+  const char *long_name;
+  const char *help_text;
 } option_item;
 
 static option_item optionlist[] = {
@@ -57,6 +89,7 @@ static option_item optionlist[] = {
   { 'n', "line-number",  "print line number with output lines" },
   { 'r', "recursive",    "recursively scan sub-directories" },
   { 's', "no-messages",  "suppress error messages" },
+  { 'u', "utf-8",        "use UTF-8 mode" },
   { 'V', "version",      "print version information and exit" },
   { 'v', "invert-match", "select non-matching lines" },
   { 'x', "line-regex",   "force PATTERN to match only whole lines" },
@@ -70,8 +103,8 @@ static option_item optionlist[] = {
 *************************************************/
 
 /* These functions are defined so that they can be made system specific,
-although at present the only ones are for Unix, and for "no directory recursion
-support". */
+although at present the only ones are for Unix, Win32, and for "no directory
+recursion support". */
 
 
 /************* Directory scanning in Unix ***********/
@@ -83,7 +116,7 @@ support". */
 
 typedef DIR directory_type;
 
-int
+static int
 isdirectory(char *filename)
 {
 struct stat statbuf;
@@ -92,13 +125,13 @@ if (stat(filename, &statbuf) < 0)
 return ((statbuf.st_mode & S_IFMT) == S_IFDIR)? '/' : 0;
 }
 
-directory_type *
+static directory_type *
 opendirectory(char *filename)
 {
 return opendir(filename);
 }
 
-char *
+static char *
 readdirectory(directory_type *dir)
 {
 for (;;)
@@ -111,19 +144,111 @@ for (;;)
 return NULL;   /* Keep compiler happy; never executed */
 }
 
-void
+static void
 closedirectory(directory_type *dir)
 {
 closedir(dir);
 }
 
 
-#else
+/************* Directory scanning in Win32 ***********/
+
+/* I (Philip Hazel) have no means of testing this code. It was contributed by
+Lionel Fourquaux. */
+
+
+#elif HAVE_WIN32API
+
+#ifndef STRICT
+# define STRICT
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+# define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+
+typedef struct directory_type
+{
+HANDLE handle;
+BOOL first;
+WIN32_FIND_DATA data;
+} directory_type;
+
+int
+isdirectory(char *filename)
+{
+DWORD attr = GetFileAttributes(filename);
+if (attr == INVALID_FILE_ATTRIBUTES)
+  return 0;
+return ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0) ? '/' : 0;
+}
+
+directory_type *
+opendirectory(char *filename)
+{
+size_t len;
+char *pattern;
+directory_type *dir;
+DWORD err;
+len = strlen(filename);
+pattern = (char *) malloc(len + 3);
+dir = (directory_type *) malloc(sizeof(*dir));
+if ((pattern == NULL) || (dir == NULL))
+  {
+  fprintf(stderr, "pcregrep: malloc failed\n");
+  exit(2);
+  }
+memcpy(pattern, filename, len);
+memcpy(&(pattern[len]), "\\*", 3);
+dir->handle = FindFirstFile(pattern, &(dir->data));
+if (dir->handle != INVALID_HANDLE_VALUE)
+  {
+  free(pattern);
+  dir->first = TRUE;
+  return dir;
+  }
+err = GetLastError();
+free(pattern);
+free(dir);
+errno = (err == ERROR_ACCESS_DENIED) ? EACCES : ENOENT;
+return NULL;
+}
+
+char *
+readdirectory(directory_type *dir)
+{
+for (;;)
+  {
+  if (!dir->first)
+    {
+    if (!FindNextFile(dir->handle, &(dir->data)))
+      return NULL;
+    }
+  else
+    {
+    dir->first = FALSE;
+    }
+  if (strcmp(dir->data.cFileName, ".") != 0 && strcmp(dir->data.cFileName, "..") != 0)
+    return dir->data.cFileName;
+  }
+#ifndef _MSC_VER
+return NULL;   /* Keep compiler happy; never executed */
+#endif
+}
+
+void
+closedirectory(directory_type *dir)
+{
+FindClose(dir->handle);
+free(dir);
+}
 
 
 /************* Directory scanning when we can't do it ***********/
 
 /* The type is void, and apart from isdirectory(), the functions do nothing. */
+
+#else
 
 typedef void directory_type;
 
@@ -226,7 +351,7 @@ return rc;
 *************************************************/
 
 static int
-grep_or_recurse(char *filename, BOOL recurse, BOOL show_filenames,
+grep_or_recurse(char *filename, BOOL dir_recurse, BOOL show_filenames,
   BOOL only_one_at_top)
 {
 int rc = 1;
@@ -236,7 +361,7 @@ FILE *in;
 /* If the file is a directory and we are recursing, scan each file within it.
 The scanning code is localized so it can be made system-specific. */
 
-if ((sep = isdirectory(filename)) != 0 && recurse)
+if ((sep = isdirectory(filename)) != 0 && dir_recurse)
   {
   char buffer[1024];
   char *nextfile;
@@ -253,7 +378,7 @@ if ((sep = isdirectory(filename)) != 0 && recurse)
     {
     int frc;
     sprintf(buffer, "%.512s%c%.128s", filename, sep, nextfile);
-    frc = grep_or_recurse(buffer, recurse, TRUE, FALSE);
+    frc = grep_or_recurse(buffer, dir_recurse, TRUE, FALSE);
     if (frc == 0 && rc == 1) rc = 0;
     }
 
@@ -262,8 +387,9 @@ if ((sep = isdirectory(filename)) != 0 && recurse)
   }
 
 /* If the file is not a directory, or we are not recursing, scan it. If this is
-the first and only argument at top level, we don't show the file name.
-Otherwise, control is via the show_filenames variable. */
+the first and only argument at top level, we don't show the file name (unless
+we are only showing the file name). Otherwise, control is via the
+show_filenames variable. */
 
 in = fopen(filename, "r");
 if (in == NULL)
@@ -272,7 +398,8 @@ if (in == NULL)
   return 2;
   }
 
-rc = pcregrep(in, (show_filenames && !only_one_at_top)? filename : NULL);
+rc = pcregrep(in, (filenames_only || (show_filenames && !only_one_at_top))?
+  filename : NULL);
 fclose(in);
 return rc;
 }
@@ -287,7 +414,7 @@ return rc;
 static int
 usage(int rc)
 {
-fprintf(stderr, "Usage: pcregrep [-Vcfhilnrsvx] [long-options] pattern [file] ...\n");
+fprintf(stderr, "Usage: pcregrep [-Vcfhilnrsvx] [long-options] [pattern] [file1 file2 ...]\n");
 fprintf(stderr, "Type `pcregrep --help' for more information.\n");
 return rc;
 }
@@ -304,8 +431,9 @@ help(void)
 {
 option_item *op;
 
-printf("Usage: pcregrep [OPTION]... PATTERN [FILE] ...\n");
+printf("Usage: pcregrep [OPTION]... [PATTERN] [FILE1 FILE2 ...]\n");
 printf("Search for PATTERN in each FILE or standard input.\n");
+printf("PATTERN must be present if -f is not used.\n");
 printf("Example: pcregrep -i 'hello.*world' menu.h main.c\n\n");
 
 printf("Options:\n");
@@ -350,6 +478,7 @@ switch(letter)
   case 'n': number = TRUE; break;
   case 'r': recurse = TRUE; break;
   case 's': silent = TRUE; break;
+  case 'u': options |= PCRE_UTF8; break;
   case 'v': invert = TRUE; break;
   case 'x': whole_lines = TRUE; options |= PCRE_ANCHORED; break;
 
@@ -389,6 +518,10 @@ BOOL only_one_at_top;
 for (i = 1; i < argc; i++)
   {
   if (argv[i][0] != '-') break;
+
+  /* Missing options */
+
+  if (argv[i][1] == 0) exit(usage(2));
 
   /* Long name options */
 
@@ -443,8 +576,8 @@ for (i = 1; i < argc; i++)
     }
   }
 
-pattern_list = malloc(MAX_PATTERN_COUNT * sizeof(pcre *));
-hints_list = malloc(MAX_PATTERN_COUNT * sizeof(pcre_extra *));
+pattern_list = (pcre **)malloc(MAX_PATTERN_COUNT * sizeof(pcre *));
+hints_list = (pcre_extra **)malloc(MAX_PATTERN_COUNT * sizeof(pcre_extra *));
 
 if (pattern_list == NULL || hints_list == NULL)
   {
@@ -492,7 +625,7 @@ if (pattern_filename != NULL)
 
 else
   {
-  if (i >= argc) return usage(0);
+  if (i >= argc) return usage(2);
   pattern_list[0] = pcre_compile(argv[i++], options, &error, &errptr, NULL);
   if (pattern_list[0] == NULL)
     {

@@ -30,35 +30,66 @@ while [ $# -gt 0 ] ; do
   shift
 done
 
-if [ "@UTF8@" = "" ] ; then
+if [ "@LINK_SIZE@" != "" -a "@LINK_SIZE@" != "-DLINK_SIZE=2" ] ; then
+  if [ $do2 = yes ] ; then
+    echo "Can't run test 2 with an internal link size other than 2"
+    exit 1  
+  fi   
   if [ $do5 = yes ] ; then
-    echo "Can't run test 5 because UFT8 support is not configured"
+    echo "Can't run test 5 with an internal link size other than 2"
+    exit 1  
+  fi   
+  if [ $do6 = yes ] ; then
+    echo "Can't run test 6 with an internal link size other than 2"
+    exit 1  
+  fi   
+fi
+
+if [ "@UTF8@" = "" ] ; then
+  if [ $do4 = yes ] ; then
+    echo "Can't run test 4 because UTF-8 support is not configured"
+    exit 1
+  fi   
+  if [ $do5 = yes ] ; then
+    echo "Can't run test 5 because UTF-8 support is not configured"
     exit 1
   fi   
   if [ $do6 = yes ] ; then
-    echo "Can't run test 6 because UFT8 support is not configured"
+    echo "Can't run test 6 because UTF-8 support is not configured"
     exit 1
   fi   
 fi    
 
-if [ $do1 = no -a $do2 = no -a $do3 = no -a $do4 = no -a\
+if [ "@UCP@" = "" ] ; then
+  if [ $do6 = yes ] ; then
+    echo "Can't run test 6 because Unicode property support is not configured"
+    exit 1
+  fi
+fi      
+
+if [ $do1 = no -a $do2 = no -a $do3 = no -a $do4 = no -a \
      $do5 = no -a $do6 = no ] ; then
   do1=yes
-  do2=yes
+  do2=yes 
   do3=yes
-  do4=yes
+  if [ "@UTF8@" != "" ] ; then do4=yes; fi
   if [ "@UTF8@" != "" ] ; then do5=yes; fi
-  if [ "@UTF8@" != "" ] ; then do6=yes; fi
+  if [ "@UTF8@" != "" -a "@UCP@" != "" ] ; then do6=yes; fi
 fi
+
+# Show which release
+
+./pcretest /dev/null
 
 # Primary test, Perl-compatible
 
 if [ $do1 = yes ] ; then
-  echo "Testing main functionality (Perl compatible)"
+  echo "Test 1: main functionality (Perl compatible)"
   ./pcretest $testdata/testinput1 testtry
   if [ $? = 0 ] ; then
     $cf testtry $testdata/testoutput1
     if [ $? != 0 ] ; then exit 1; fi
+    echo " " 
   else exit 1
   fi
 fi
@@ -66,42 +97,34 @@ fi
 # PCRE tests that are not Perl-compatible - API & error tests, mostly
 
 if [ $do2 = yes ] ; then
-  echo "Testing API and error handling (not Perl compatible)"
-  ./pcretest -i $testdata/testinput2 testtry
-  if [ $? = 0 ] ; then
-    $cf testtry $testdata/testoutput2
-    if [ $? != 0 ] ; then exit 1; fi
-  else exit 1
-  fi
+  if [ "@LINK_SIZE@" = "" -o "@LINK_SIZE@" = "-DLINK_SIZE=2" ] ; then   
+    echo "Test 2: API and error handling (not Perl compatible)"
+    ./pcretest -i $testdata/testinput2 testtry
+    if [ $? = 0 ] ; then
+      $cf testtry $testdata/testoutput2
+      if [ $? != 0 ] ; then exit 1; fi
+    else exit 1
+    fi
+  else
+    echo Test 2 skipped for link size other than 2 \(@LINK_SIZE@\)    
+  fi   
 fi
 
-# Additional Perl-compatible tests for Perl 5.005's new features
+if [ $do1 = yes -a $do2 = yes ] ; then
+  echo " " 
+  echo "The two main tests ran OK"
+  echo " " 
+fi
+
+# Locale-specific tests, provided the "fr_FR" locale is available
 
 if [ $do3 = yes ] ; then
-  echo "Testing Perl 5.005 features (Perl 5.005 compatible)"
-  ./pcretest $testdata/testinput3 testtry
-  if [ $? = 0 ] ; then
-    $cf testtry $testdata/testoutput3
-    if [ $? != 0 ] ; then exit 1; fi
-  else exit 1
-  fi
-fi
-
-if [ $do1 = yes -a $do2 = yes -a $do3 = yes ] ; then
-  echo " " 
-  echo "The three main tests all ran OK"
-  echo " " 
-fi
-
-# Locale-specific tests, provided the "fr" locale is available
-
-if [ $do4 = yes ] ; then
-  locale -a | grep '^fr$' >/dev/null
+  locale -a | grep '^fr_FR$' >/dev/null
   if [ $? -eq 0 ] ; then
-    echo "Testing locale-specific features (using 'fr' locale)"
-    ./pcretest $testdata/testinput4 testtry
+    echo "Test 3: locale-specific features (using 'fr_FR' locale)"
+    ./pcretest $testdata/testinput3 testtry
     if [ $? = 0 ] ; then
-      $cf testtry $testdata/testoutput4
+      $cf testtry $testdata/testoutput3
       if [ $? != 0 ] ; then 
         echo " "
         echo "Locale test did not run entirely successfully."
@@ -114,7 +137,7 @@ if [ $do4 = yes ] ; then
     else exit 1
     fi
   else
-    echo "Cannot test locale-specific features - 'fr' locale not found,"
+    echo "Cannot test locale-specific features - 'fr_FR' locale not found,"
     echo "or the \"locale\" command is not available to check for it."
     echo " " 
   fi
@@ -122,11 +145,11 @@ fi
 
 # Additional tests for UTF8 support
 
-if [ $do5 = yes ] ; then
-  echo "Testing experimental, incomplete UTF8 support (Perl compatible)"
-  ./pcretest $testdata/testinput5 testtry 
+if [ $do4 = yes ] ; then
+  echo "Test 4: UTF-8 support (Perl compatible)"
+  ./pcretest $testdata/testinput4 testtry 
   if [ $? = 0 ] ; then
-    $cf testtry $testdata/testoutput5
+    $cf testtry $testdata/testoutput4
     if [ $? != 0 ] ; then exit 1; fi
   else exit 1
   fi
@@ -134,16 +157,36 @@ if [ $do5 = yes ] ; then
   echo " "
 fi
 
+if [ $do5 = yes ] ; then
+  if [ "@LINK_SIZE@" = "" -o "@LINK_SIZE@" = "-DLINK_SIZE=2" ] ; then   
+    echo "Test 5: API and internals for UTF-8 support (not Perl compatible)"
+    ./pcretest $testdata/testinput5 testtry 
+    if [ $? = 0 ] ; then
+      $cf testtry $testdata/testoutput5
+      if [ $? != 0 ] ; then exit 1; fi
+    else exit 1
+    fi
+    echo "UTF8 internals test ran OK"
+    echo " "
+  else
+    echo Test 5 skipped for link size other than 2 \(@LINK_SIZE@\)    
+  fi   
+fi
+
 if [ $do6 = yes ] ; then
-  echo "Testing API and internals for UTF8 support (not Perl compatible)"
-  ./pcretest $testdata/testinput6 testtry 
-  if [ $? = 0 ] ; then
-    $cf testtry $testdata/testoutput6
-    if [ $? != 0 ] ; then exit 1; fi
-  else exit 1
-  fi
-  echo "UTF8 internals test ran OK"
-  echo " "
+  if [ "@LINK_SIZE@" = "" -o "@LINK_SIZE@" = "-DLINK_SIZE=2" ] ; then   
+    echo "Test 6: Unicode property support"
+    ./pcretest $testdata/testinput6 testtry 
+    if [ $? = 0 ] ; then
+      $cf testtry $testdata/testoutput6
+      if [ $? != 0 ] ; then exit 1; fi
+    else exit 1
+    fi
+    echo "Unicode properties test ran OK"
+    echo " "
+  else   
+    echo Test 6 skipped for link size other than 2 \(@LINK_SIZE@\)    
+  fi   
 fi
 
 # End
