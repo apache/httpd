@@ -1,48 +1,9 @@
-APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/21 17:03:40 $]
+APACHE 2.1 STATUS:                                              -*-text-*-
+Last modified at [$Date: 2002/11/23 18:49:31 $]
 
-Release:
+Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
-    2.0.44  : in development
-    2.0.43  : released October 3, 2002 as GA.
-    2.0.42  : released September 24, 2002 as GA.
-    2.0.41  : rolled September 16, 2002.  not released.
-    2.0.40  : released August 9, 2002 as GA.
-    2.0.39  : released June 17, 2002 as GA.
-    2.0.38  : rolled June 16, 2002.  not released.
-    2.0.37  : rolled June 11, 2002.  not released.
-    2.0.36  : released May 6, 2002 as GA.
-    2.0.35  : released April 5, 2002 as GA.
-    2.0.34  : tagged March 26, 2002.
-    2.0.33  : tagged March 6, 2002.  not released.
-    2.0.32  : released Feburary 16, 2002 as beta.
-    2.0.31  : rolled Feburary 1, 2002.  not released.
-    2.0.30  : tagged January 8, 2002.  not rolled.
-    2.0.29  : tagged November 27, 2001.  not rolled.
-    2.0.28  : released November 13, 2001 as beta.
-    2.0.27  : rolled November 6, 2001
-    2.0.26  : tagged October 16, 2001.  not rolled.
-    2.0.25  : rolled August 29, 2001
-    2.0.24  : rolled August 18, 2001
-    2.0.23  : rolled August 9, 2001
-    2.0.22  : rolled July 29, 2001
-    2.0.21  : rolled July 20, 2001
-    2.0.20  : rolled July 8, 2001
-    2.0.19  : rolled June 27, 2001
-    2.0.18  : rolled May 18, 2001
-    2.0.17  : rolled April 17, 2001
-    2.0.16  : rolled April 4, 2001
-    2.0.15  : rolled March 21, 2001
-    2.0.14  : rolled March 7, 2001
-    2.0a9   : released December 12, 2000
-    2.0a8   : released November 20, 2000
-    2.0a7   : released October 8, 2000
-    2.0a6   : released August 18, 2000
-    2.0a5   : released August 4, 2000
-    2.0a4   : released June 7, 2000
-    2.0a3   : released April 28, 2000
-    2.0a2   : released March 31, 2000
-    2.0a1   : released March 10, 2000
+    2.1.0   : in development
 
 Please consult the following STATUS files for information
 on related projects:
@@ -63,42 +24,6 @@ RELEASE SHOWSTOPPERS:
 
 
 CURRENT VOTES:
-
-    * Adopt backwards compatibility for future Apache 2.0 releases
-      such that MMN major number changes and eliminating non-experimental
-      modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
-      or 3.0).
-        +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard, jwoolley,
-            rbowen, rederpj, jim, striker
-         0: 
-        -1: 
-
-    * Defer the Auth module overhaul to the next minor version bump
-      (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
-      resolution is adopted.
-        +1: wrowe, aaron, trawick, stoddard, jwoolley, rbowen, gregames,
-            rederpj, jim
-         0: jerenkrantz
-        -1: striker 
-
-    * Adopt an even/odd release paradigm (see VERSIONING) such that
-      even numbered releases are stable, and odd numbered releases 
-      are development efforts, keeping in the tradition of Linux, 
-      Perl, etc.  In pratical terms, this implies C-T-R-T-C, where
-      patches are (generally) first applied to the development branch,
-      tested, and then (after vote) applied to the stable branch.
-        +1: wrowe, jerenkrantz, aaron, trawick, stoddard, jwoolley, rbowen,
-            gregames, rederpj, jim, striker
-         0: 
-        -1: 
-
-    * Branch APACHE_2_0_BRANCH today, changing the version in CVS HEAD
-      to 2.1.0-dev.
-        +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard, jwoolley,
-                                 gregames, rederpj, jim
-        +1 [from HEAD]: striker
-         0: jerenkrantz
-        -1: 
 
     * httpd-std.conf and friends
 
@@ -166,7 +91,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * pipes deadlock on all platforms with limited pipe buffers (e.g. both
       Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
       is either GStein's proposal for a "CGI Brigade", or OtherBill's proposal
-      for "Poll Buckets" for "Polling Filter Chains".
+      for "Poll Buckets" for "Polling Filter Chains".  Or maybe both :-)
 
     * All handlers should always send content down even if r->header_only
       is set.  If not, it means that the HEAD requests don't generate the
@@ -372,8 +297,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
-
-    * Document mod_file_cache.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Architect start-up code that avoids initializing all the modules 
@@ -889,7 +812,7 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.43):
+Binaries (probably not till beta):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -911,4 +834,4 @@ Binaries (2.0.43):
  NetWare                       no      Brad Nicholes
  OS/2                          no      Brian Havard
  OS/390                        no      Greg Ames
- Win32-x86                     yes     William Rowe
+ Win32-x86                     no      William Rowe

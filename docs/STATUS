@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/11/21 17:55:51 $
+Last modified: $Date: 2002/11/23 18:49:31 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -45,6 +45,8 @@ Things That Need Fixing
     - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
+    - mod_file_cache: missing documentation
+
     
 - man pages
     - Convert from nroff to our xml format.  See list at bottom.
