@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Fix Win32 part of ap_spawn_child() by providing a reasonable child_info
+     structure instead of just NULL. This fixes at least the RewriteMap
+     programs under Win32. [Marco De Michele <mdemichele@tin.it>] PR#2483
+
   *) Add workaround to top-level `configure' script for brain dead 
      `echo' commands which interpet escape sequences per default.
      [Ralf S. Engelschall] PR#2654

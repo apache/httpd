@@ -1850,6 +1850,7 @@ static int spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	HANDLE thread_handle;
 	int hStdIn, hStdOut, hStdErr;
 	int old_priority;
+	child_info info;
 
 	(void) ap_acquire_mutex(spawn_mutex);
 	thread_handle = GetCurrentThread();	/* doesn't need to be closed */
@@ -1876,7 +1877,11 @@ static int spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	    close(err_fds[1]);
 	}
 
-	pid = (*func) (data, NULL);
+	info.hPipeInputRead   = GetStdHandle(STD_INPUT_HANDLE);
+	info.hPipeOutputWrite = GetStdHandle(STD_OUTPUT_HANDLE);
+	info.hPipeErrorWrite  = GetStdHandle(STD_ERROR_HANDLE);
+
+	pid = (*func) (data, &info);
         if (pid == -1) pid = 0;   /* map Win32 error code onto Unix default */
 
         if (!pid) {
