@@ -1,4 +1,7 @@
 Changes with Apache 2.0.30-dev
+  *) Win32: Made change to apr_sendfile() to return APR_ENOTIMPL
+     if oslevel < WINNT.  This should fix several problems reported
+     Against 2.0.28 on Windows 98 [Bill Stoddard]
 
   *) Win32: Fix bug that could cause CGI scripts with QUERY_STRINGS
      to fail. [Bill Stoddard]
