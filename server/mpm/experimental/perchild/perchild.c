@@ -1999,7 +1999,7 @@ static void *perchild_create_config(apr_pool_t *p, server_rec *s)
 
 module AP_MODULE_DECLARE_DATA mpm_perchild_module = {
     MPM20_MODULE_STUFF,
-    NULL,                       /* hook to run before apache parses args */
+    ap_mpm_rewrite_args,        /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     perchild_create_config,     /* create per-server config structure */
