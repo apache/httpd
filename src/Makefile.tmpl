@@ -1,4 +1,4 @@
-# $Id: Makefile.tmpl,v 1.28 1996/10/01 21:53:41 chuck Exp $
+# $Id: Makefile.tmpl,v 1.29 1996/10/09 14:51:21 chuck Exp $
 # Apache makefile template (well, suffix).
 
 # This is combined with the information in the "Configuration" file
@@ -32,13 +32,13 @@ regex/libregex.a:
 	(cd regex; make lib CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB))
 
 modules/proxy/libproxy.a:
-	(cd modules/proxy; \
+	(cd modules; \
 	make CC=$(CC) AUX_CFLAGS="$(CFLAGS)" RANLIB=$(RANLIB))
 
 clean:
 	rm -f httpd $(OBJS) *pure*
 	cd regex; make clean
-	cd modules/proxy; make clean
+	cd modules; make clean
 
 dist.tar: 
 	# Assure a semi-sensible configuration going out...
