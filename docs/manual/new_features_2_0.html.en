@@ -5,32 +5,33 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>Overview of new features in Apache 2.0 - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Overview of new features in Apache 2.0</h1>
-  <p>Enhancements:</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Core Enhancements</a></li><li><img alt="" src="./images/down.gif" /> <a href="#module">Module Enhancements</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="core" id="core">Core Enhancements</a></h2>
+  <p>This document describes some of the major changes between the
+     1.3 and 2.0 versions of the Apache HTTP Server.</p>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Core Enhancements</a></li><li><img alt="" src="./images/down.gif" /> <a href="#module">Module Enhancements</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="upgrading.html">Upgrading to Apache 2.0</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="core" id="core">Core Enhancements</a></h2>
     
 
     <dl>
-      <dt><strong>Unix Threading</strong></dt>
+      <dt>Unix Threading</dt>
 
       <dd>On Unix systems with POSIX threads support, Apache can
       now run in a hybrid multiprocess, multithreaded mode. This
       improves scalability for many, but not all configurations.</dd>
 
-      <dt><strong>New Build System</strong></dt>
+      <dt>New Build System</dt>
 
       <dd>The build system has been rewritten from scratch to be
       based on autoconf and libtool. This makes Apache's
       configuration system more similar to that of other
       packages.</dd>
 
-      <dt><strong>Multiprotocol Support</strong></dt>
+      <dt>Multiprotocol Support</dt>
 
       <dd>Apache now has some of the infrastructure in place to
       support serving multiple protocols. mod_echo has been written
       as an example.</dd>
 
-      <dt><strong>Better support for non-Unix
-      platforms</strong></dt>
+      <dt>Better support for non-Unix
+      platforms</dt>
 
       <dd>Apache 2.0 is faster and more stable on non-Unix
       platforms such as BeOS, OS/2, and Windows. With the
@@ -39,7 +40,7 @@
       implemented in their native API, avoiding the often buggy and
       poorly performing POSIX-emulation layers.</dd>
 
-      <dt><strong>New Apache API</strong></dt>
+      <dt>New Apache API</dt>
 
       <dd>The API for modules has changed significantly for 2.0.
       Many of the module-ordering/-priority problems from 1.3 should
@@ -48,7 +49,7 @@
       have been added that provide additional module capabilities
       without patching the core Apache server.</dd>
 
-      <dt><strong>IPv6 Support</strong></dt>
+      <dt>IPv6 Support</dt>
 
       <dd>On systems where IPv6 is supported by the underlying
       Apache Portable Runtime library, Apache gets IPv6 listening
@@ -56,29 +57,33 @@
       IPv6 numeric address strings (e.g., "Listen
       [fe80::1]:8080").</dd>
 
-      <dt><strong>Filtering</strong></dt>
+      <dt>Filtering</dt>
 
       <dd>Apache modules may now be written as filters which act on
       the stream of content as it is delivered to or from the
-      server. This allows, for example, the output of CGI scripts
-      to be parsed for Server Side Include directives using the
-      INCLUDES filter in mod_include.</dd>
+      server. This allows, for example, the output of CGI scripts to
+      be parsed for Server Side Include directives using the INCLUDES
+      filter in <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.  The module
+      <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> allows external programs to act
+      as filters in much the same way that CGI programs can act as
+      handlers.</dd>
 
-      <dt><strong>Multilanguage Error Responses</strong></dt>
+      <dt>Multilanguage Error Responses</dt>
 
       <dd>Error response messages to the browser are now provided in 
       several languages, using SSI documents. They may be customized 
       by the administrator to achieve a consistent look and feel.</dd>
 
-      <dt><strong>Simplified configuration</strong></dt>
+      <dt>Simplified configuration</dt>
 
       <dd>Many confusing directives have been simplified. The often
       confusing Port and BindAddress directives are gone; only the
-      Listen directive is used for IP address binding; the
-      ServerName directive specifies the server name and port number
-      only for redirection and vhost recognition.</dd>
+      <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directive is
+      used for IP address binding; the <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> directive specifies the
+      server name and port number only for redirection and vhost
+      recognition.</dd>
 
-      <dt><strong>Native Windows NT Unicode Support</strong></dt>
+      <dt>Native Windows NT Unicode Support</dt>
 
       <dd>Apache 2.0 on Windows NT now uses utf-8 for all filename
       encodings. These directly translate to the underlying Unicode
@@ -87,57 +92,79 @@
       <em>This support does not extend to Windows 95, 98 or ME, which 
       continue to use the machine's local codepage for filesystem 
       access.</em></dd>
+
+      <dt>Regular Expression Library Updated</dt>
+
+      <dd>Apache 2.0 includes the <a href="http://www.pcre.org/">Perl
+      Compatible Regular Expression Library</a> (PCRE).  All regular
+      expression evaluation now uses the more powerful Perl 5
+      syntax.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="module" id="module">Module Enhancements</a></h2>
     
 
     <dl>
-      <dt><strong>mod_ssl</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
 
       <dd>New module in Apache 2.0. This module is an interface
       to the SSL/TLS encryption protocols provided by
       OpenSSL.</dd>
 
-      <dt><strong>mod_dav</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code></dt>
 
       <dd>New module in Apache 2.0. This module implements the HTTP
       Distributed Authoring and Versioning (DAV) specification for
       posting and maintaining web content.</dd>
 
-      <dt><strong>mod_auth_digest</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></dt>
+
+      <dd>New module in Apache 2.0.  This module allows supporting
+      browsers to request that content be compressed before delivery,
+      saving network bandwidth.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
+
+      <dd>New module in Apache 2.0.41.  This module allows an LDAP
+      database to be used to store credentials for HTTP Basic
+      Authentication.  A companion module, <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>
+      provides connection pooling and results caching.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code></dt>
 
       <dd>Includes additional support for session caching across
       processes using shared memory.</dd>
 
-      <dt><strong>mod_charset_lite</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></dt>
 
       <dd>New module in Apache 2.0. This experimental module allows
       for character set translation or recoding.</dd>
 
-      <dt><strong>mod_file_cache</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
       <dd>New module in Apache 2.0. This module includes the
       functionality of mod_mmap_static in Apache 1.3, plus adds
       further caching abilities.</dd>
 
-      <dt><strong>mod_headers</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
-      <dd>This module is much more flexible in Apache 2.0. It can
-      now modify request headers used by mod_proxy, and it can
-      conditionally set response headers.</dd>
+      <dd>This module is much more flexible in Apache 2.0. It can now
+      modify request headers used by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, and
+      it can conditionally set response headers.</dd>
 
-      <dt><strong>mod_proxy</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
-      <dd>The proxy module has been completely rewritten to take advantage
-      of the new filter infrastructure and to implement a more
-      reliable, HTTP/1.1 compliant proxy. In addition, new
-      &lt;Proxy&gt; configuration sections provide more readable
-      (and internally faster) control of proxied sites; overloaded 
-      &lt;Directory "proxy:..."&gt; configuration are not supported. The
-      module is now divided into specific protocol support modules 
-      including proxy_connect, proxy_ftp and proxy_http.</dd>
+      <dd>The proxy module has been completely rewritten to take
+      advantage of the new filter infrastructure and to implement a
+      more reliable, HTTP/1.1 compliant proxy. In addition, new
+      <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+      configuration sections provide more readable (and internally
+      faster) control of proxied sites; overloaded &lt;Directory
+      "proxy:..."&gt; configuration are not supported. The module is
+      now divided into specific protocol support modules including
+      proxy_connect, proxy_ftp and proxy_http.</dd>
 
-      <dt><strong>mod_negotiation</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></dt>
 
       <dd>A new <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code> directive can be used to assure that
       the client receives a single document in all cases, rather than
@@ -146,14 +173,14 @@
       provide more consistent results and a new form of type map that
       can include document content is provided.</dd>
 
-      <dt><strong>mod_autoindex</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></dt>
 
       <dd>Autoindex'ed directory listings can now be configured to 
       use HTML tables for cleaner formatting, and allow finer-grained
       control of sorting, including version-sorting, and wildcard
       filtering of the directory listing.</dd>
 
-      <dt><strong>mod_include</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dt>
 
       <dd>New directives allow the default start and end tags for SSI elements
       to be changed and allow for error and time format configuration
@@ -162,15 +189,11 @@
       (now based on Perl's regular expression syntax) can be retrieved
       using mod_include's variables $0 .. $9.</dd>
 
-      <dt><strong>mod_auth_dbm</strong></dt>
+      <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
 
       <dd>Now supports multiple types of DBM-like databases using the
       <code class="directive"><a href="./mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a></code>
       directive.</dd>
 
-      <dt><strong>mod_auth_db</strong></dt>
-
-      <dd>Has been removed in favor of mod_auth_dbm with the AuthDBMType
-      directive.</dd>
     </dl>
   </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
