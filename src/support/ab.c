@@ -155,8 +155,8 @@ struct data {
     int time;                   /* time in ms for connection */
 };
 
-#define min(a,b) ((a)<(b))?(a):(b)
-#define max(a,b) ((a)>(b))?(a):(b)
+#define ap_min(a,b) ((a)<(b))?(a):(b)
+#define ap_max(a,b) ((a)>(b))?(a):(b)
 
 /* --------------------- GLOBALS ---------------------------- */
 
@@ -320,10 +320,10 @@ static void output_results(void)
 
         for (i = 0; i < requests; i++) {
             struct data s = stats[i];
-            mincon = min(mincon, s.ctime);
-            mintot = min(mintot, s.time);
-            maxcon = max(maxcon, s.ctime);
-            maxtot = max(maxtot, s.time);
+            mincon = ap_min(mincon, s.ctime);
+            mintot = ap_min(mintot, s.time);
+            maxcon = ap_max(maxcon, s.ctime);
+            maxtot = ap_max(maxtot, s.time);
             totalcon += s.ctime;
             total += s.time;
         }
