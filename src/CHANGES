@@ -1,5 +1,15 @@
 Changes with Apache 1.3b4
 
+  *) For clarity the following compile time definitions were changed, folks
+     with custom compilation options in their Configuration should make
+     appropriate changes:
+
+	SAFE_UNSERIALIZED_ACCEPT  ->   SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+	HAVE_MMAP                 ->   USE_MMAP_SCOREBOARD
+        HAVE_SHMGET               ->   USE_SHMGET_SCOREBOARD
+    
+     [Jim Jagielski]
+
   *) PORT: UnixWare 2.1.2 SMP appears to require USE_FCNTL_SERIALIZED_ACCEPT,
      as do various earlier versions.  It should be safe on all versions.
      Unixware 1.x appears to have the same SIGHUP bug as solaris does with
