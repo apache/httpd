@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Fix a segfault in ap_http_filter().  I hit the segfault while 
+     discarding the body of a request, but it could affect other paths.
+     [Jeff Trawick]
+
   *) Some adjustment on the handling and automatic setting (via
      hints.m4) of various compilation flags (eg: CFLAGS). Also,
      add the capability to specify flags (NOTEST_CFLAGS and

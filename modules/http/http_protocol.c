@@ -1015,6 +1015,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
     if (f->c->remain) {
         e = AP_BRIGADE_FIRST(ctx->b);
         while (e != AP_BRIGADE_SENTINEL(ctx->b)) {
+            ap_bucket *old;
             const char *ignore;
 
             if ((rv = ap_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
@@ -1037,11 +1038,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
                 AP_BRIGADE_INSERT_TAIL(b, e);
                 break; /* once we've gotten some data, deliver it to caller */
             }
-            else {
-                AP_BUCKET_REMOVE(e);
-                ap_bucket_destroy(e);
-            }
+
+            old = e;
             e = AP_BUCKET_NEXT(e);
+            AP_BUCKET_REMOVE(old);
+            ap_bucket_destroy(old);
         }
         if (f->c->remain == 0) {
             ap_bucket *eos = ap_bucket_create_eos();
