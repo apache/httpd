@@ -198,6 +198,11 @@ struct cache_info {
     apr_time_t request_time;
     apr_time_t response_time;
     apr_size_t len;
+    apr_time_t ims;    /*  If-Modified_Since header value    */
+    apr_time_t ius;    /*  If-UnModified_Since header value    */
+    const char *im;         /* If-Match header value */
+    const char *inm;         /* If-None-Match header value */
+    apr_table_t *req_hdrs;   /* These are the original request headers   */
 };
 
 /* cache handle information */
@@ -238,9 +243,16 @@ typedef struct {
 
 
 /* cache_util.c */
+/* do a HTTP/1.1 age calculation */
+CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value);
+
 /**
- *
+ * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
+ * @param cache cache_request_rec
+ * @param r request_rec
+ * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
  */
+CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, request_rec *r);
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 

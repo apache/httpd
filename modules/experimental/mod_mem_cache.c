@@ -87,9 +87,11 @@ typedef struct mem_cache_object {
     apr_ssize_t num_header_out;
     apr_ssize_t num_subprocess_env;
     apr_ssize_t num_notes;
+    apr_ssize_t num_req_hdrs;
     cache_header_tbl_t *header_out;
     cache_header_tbl_t *subprocess_env;
     cache_header_tbl_t *notes;
+    cache_header_tbl_t *req_hdrs; /* for Vary negotiation */
     apr_size_t m_len;
     void *m;
     apr_os_file_t fd;
@@ -363,7 +365,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     strncpy(obj->key, key, strlen(key) + 1);
     obj->info.len = len;
 
-
     /* Allocate and init mem_cache_object_t */
     mobj = calloc(1, sizeof(*mobj));
     if (!mobj) {
@@ -633,10 +634,15 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
 {
     int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
+    cache_info *info = &(h->cache_obj->info);
 
+    info->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
     r->headers_out = apr_table_make(r->pool,mobj->num_header_out);
     r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
     r->notes = apr_table_make(r->pool, mobj->num_notes);
+    rc = unserialize_table(mobj->req_hdrs,
+                           mobj->num_req_hdrs,
+                           info->req_hdrs);
     rc = unserialize_table( mobj->header_out,
                             mobj->num_header_out, 
                             r->headers_out);
@@ -684,7 +690,19 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     int rc;
 
-    /* Precompute how much storage we need to hold the headers */
+    /*
+     * The cache needs to keep track of the following information: 
+     * - Date, LastMod, Version, ReqTime, RespTime, ContentLength 
+     * - The original request headers (for Vary) 
+     * - The original response headers (for returning with a cached response) 
+     * - The body of the message
+     */
+    rc = serialize_table(&mobj->req_hdrs,
+                         &mobj->num_req_hdrs,
+                         r->headers_in);
+    if (rc != APR_SUCCESS) {
+        return rc;
+    }
     rc = serialize_table(&mobj->header_out, 
                          &mobj->num_header_out, 
                          r->headers_out);   
@@ -710,14 +728,14 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (info->lastmod) {
         obj->info.lastmod = info->lastmod;
     }
-    if (info->expire) {
-        obj->info.expire = info->expire;
-    }
     if (info->response_time) {
         obj->info.response_time = info->response_time;
     }
     if (info->request_time) {
         obj->info.request_time = info->request_time;
+    }
+    if (info->expire) {
+        obj->info.expire = info->expire;
     }
     if (info->content_type) {
         obj->info.content_type = (char*) calloc(1, strlen(info->content_type) + 1);
