@@ -54,11 +54,6 @@ Changes with Apache 2.1.0-dev
      no-gzip and gzip-only-text/html the same way as mod_deflate does.
      [André Malo]
 
-  *) Prevent endless loops of internal redirects in mod_rewrite by
-     aborting after exceeding a limit of internal redirects. The
-     limit defaults to 10 and can be changed using the RewriteOptions
-     directive. PR 17462.  [André Malo]
-
   *) mod_rewrite: Fix some problems reporting errors with mapping
      programs (RewriteMap prg:/something).  [Jeff Trawick]
 
@@ -160,6 +155,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Prevent endless loops of internal redirects in mod_rewrite by
+     aborting after exceeding a limit of internal redirects. The
+     limit defaults to 10 and can be changed using the RewriteOptions
+     directive. PR 17462.  [André Malo]
+
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
      all worker threads are busy. 
      [Igor Nazarenko <igor_nazarenko@hotmail.com>]
