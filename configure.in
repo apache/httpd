@@ -45,11 +45,11 @@ dnl ## Run configure for packages Apache uses
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
@@ -103,15 +103,31 @@ case $host in
       MK_IMPLIB="emximp"
       other_targets="$other_targets os2core"
       INSTALL_PROG_FLAGS="-e .exe"
+      SHLTCFLAGS=""
+      LTCFLAGS=""
       ;;
   *)
       if test "x$LTFLAGS" = "x"; then
           LTFLAGS='--silent'
       fi
       LIBTOOL='$(SHELL) $(top_builddir)/srclib/apr/libtool $(LTFLAGS)'
-      SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
+      libtoolversion=`$abs_builddir/srclib/apr/libtool --version`
+      case $libtoolversion in
+          *1.4*)
+              SH_LIBTOOL='$(LIBTOOL)'
+              SHLTCFLAGS="-prefer-pic"
+              LTCFLAGS="-prefer-non-pic -static"
+              ;;
+          *)
+              SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
+              SHLTCFLAGS=""
+              LTCFLAGS=""
+              ;;
+      esac
       ;;
 esac
+APACHE_SUBST(SHLTCFLAGS)
+APACHE_SUBST(LTCFLAGS)
 
 case $host in
   *-apple-aux3*)
@@ -385,7 +401,7 @@ case $host in
     ;;
 esac
 
-AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile,,[
+AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs support/apachectl support/dbmmanage support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,,[
   APACHE_GEN_MAKEFILES
 ])
 

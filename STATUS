@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/17 00:29:08 $]
+Last modified at [$Date: 2001/08/21 23:41:35 $]
 
 Release:
 
@@ -44,19 +44,6 @@ RELEASE SHOWSTOPPERS:
       in a container, it is present in any subcontainers.  It can only be
       added to the filter chain after any filters specified in enclosing
       containers.
-
-    * remove the --disable-shared from the subdir config of APR(UTIL)
-      before the final release. (in fact, it might even be nice to
-      allow for Apache config/build against an already-installed
-      APR(UTIL))
-      Note: we need to do a "make install" for APR(UTIL) so the shared
-            libraries can be installed properly. We could also use that
-            point to install include files (rather than have Apache
-	    know everything that needs to be installed from the
-	    sub-packages). The original impetus for doing the
-	    disable-shared was because the shared lib wasn't getting
-	    installed and a "make clean" in aprutil would make Apache
-	    fail to load.
 
     * mod_dir should normally redirect ALL directory requests which do
       not include a trailing slash on the URI. However, if a "notes"
