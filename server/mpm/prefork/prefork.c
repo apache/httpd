@@ -2000,36 +2000,6 @@ static void set_signals(void)
 #endif
 }
 
-/*****************************************************************
- * Connection structures and accounting...
- */
-
-
-static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
-			     const struct sockaddr_in *remaddr,
-			     const struct sockaddr_in *saddr,
-			     int child_num)
-{
-    conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
-
-    /* Got a connection structure, so initialize what fields we can
-     * (the rest are zeroed out by pcalloc).
-     */
-
-    conn->child_num = child_num;
-
-    conn->pool = p;
-    conn->local_addr = *saddr;
-    conn->base_server = server;
-    conn->client = inout;
-
-    conn->remote_addr = *remaddr;
-    conn->remote_ip = ap_pstrdup(conn->pool,
-			      inet_ntoa(conn->remote_addr.sin_addr));
-
-    return conn;
-}
-
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 static void sock_disable_nagle(int s)
 {
@@ -2353,10 +2323,10 @@ static void child_main(int child_num_arg)
 
 	ap_bpush_iol(conn_io, iol);
 
-	current_conn = new_connection(ptrans, server_conf, conn_io,
-				          (struct sockaddr_in *) &sa_client,
-				          (struct sockaddr_in *) &sa_server,
-				          my_child_num);
+	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
+					 (struct sockaddr_in *) &sa_client,
+					 (struct sockaddr_in *) &sa_server,
+					 my_child_num);
 
 	ap_process_connection(current_conn);
     }
