@@ -593,9 +593,6 @@ static void * worker_thread(void * dummy)
     }
 
     if (ap_scoreboard_image->global.quiescing_pid == 0) {
-        /* yeah, I realize there's a race condition here, but it works 
-         * out OK without serialization                               */ 
-        ap_scoreboard_image->global.quiescing_pid = ap_my_pid;   
     }
     apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
