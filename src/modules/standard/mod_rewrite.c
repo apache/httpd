@@ -1090,11 +1090,9 @@ static int hook_uri2file(request_rec *r)
             n = prefix_stat(r->filename, &finfo);
             if (n == 0) {
                 if ((cp = document_root(r)) != NULL) {
-                    strncpy(docroot, cp, sizeof(docroot)-1);
-                    EOS_PARANOIA(docroot);
+                    l = ap_cpystrn(docroot, cp, sizeof(docroot)) - docroot;
 
                     /* always NOT have a trailing slash */
-                    l = strlen(docroot);
                     if (docroot[l-1] == '/') {
                         docroot[l-1] = '\0';
                     }
@@ -1714,8 +1712,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if (strcmp(output, "-") == 0) {
         for (i = 0; p->env[i] != NULL; i++) {
-            strncpy(env, p->env[i], sizeof(env)-1);
-            EOS_PARANOIA(env);
+            ap_cpystrn(env, p->env[i], sizeof(env));
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
             add_env_variable(r, env);
@@ -1729,8 +1726,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  substitution URL string in `newuri'.
      */
     /*  1. take the output string  */
-    strncpy(newuri, output, sizeof(newuri)-1);
-    EOS_PARANOIA(newuri);
+    ap_cpystrn(newuri, output, sizeof(newuri));
     /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
     expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$');
     /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
@@ -1751,8 +1747,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     for (i = 0; p->env[i] != NULL; i++) {
         /*  1. take the string  */
-        strncpy(env, p->env[i], sizeof(env)-1);
-        EOS_PARANOIA(env);
+        ap_cpystrn(env, p->env[i], sizeof(env));
         /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
         expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
         /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
@@ -1913,8 +1908,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     /* expand the regex backreferences from the RewriteRule ($0-$9), 
        then from the last RewriteCond (%0-%9) and then expand the 
        variables (%{....}) */
-    strncpy(input, p->input, sizeof(input)-1);
-    EOS_PARANOIA(input);
+    ap_cpystrn(input, p->input, sizeof(input));
     expand_backref_inbuffer(r->pool, input, sizeof(input), briRR, '$');
     expand_backref_inbuffer(r->pool, input, sizeof(input), briRC, '%');
     expand_variables_inbuffer(r, input, sizeof(input));
@@ -2115,19 +2109,17 @@ static void reduce_uri(request_rec *r)
 
         /* cut the hostname and port out of the URI */
 #ifdef APACHE_SSL
-        strncpy(buf, r->filename+strlen(http_method(r))+3, sizeof(buf)-1);
+        ap_cpystrn(buf, r->filename+strlen(http_method(r))+3, sizeof(buf));
 #else
-        strncpy(buf, r->filename+7, sizeof(buf)-1);
+        ap_cpystrn(buf, r->filename+7, sizeof(buf));
 #endif
-        EOS_PARANOIA(buf);
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
         if (*cp == ':') {
             /* set host */
             *cp++ = '\0';
-            strncpy(host, hostp, sizeof(host)-1);
-            EOS_PARANOIA(host);
+            ap_cpystrn(host, hostp, sizeof(host));
             /* set port */
             portp = cp;
             for (; *cp != '\0' && *cp != '/'; cp++)
@@ -2142,8 +2134,7 @@ static void reduce_uri(request_rec *r)
         else if (*cp == '/') {
             /* set host */
             *cp = '\0';
-            strncpy(host, hostp, sizeof(host)-1);
-            EOS_PARANOIA(host);
+            ap_cpystrn(host, hostp, sizeof(host));
             *cp = '/';
             /* set port */
             port = DEFAULT_PORT;
@@ -2152,8 +2143,7 @@ static void reduce_uri(request_rec *r)
         }
         else {
             /* set host */
-            strncpy(host, hostp, sizeof(host)-1);
-            EOS_PARANOIA(host);
+            ap_cpystrn(host, hostp, sizeof(host));
             /* set port */
             port = DEFAULT_PORT;
             /* set remaining url */
@@ -2246,9 +2236,8 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
     }
 
     /* now apply the pregsub() function */
-    strncpy(buf, pregsub(p, buf, bri->source, 
-                         bri->nsub+1, bri->regmatch), nbuf-1);
-    EOS_PARANOIA_SIZE(buf, nbuf);
+    ap_cpystrn(buf, pregsub(p, buf, bri->source, 
+                         bri->nsub+1, bri->regmatch), nbuf);
 
     if (c != '$') {
         /* restore the original $N backrefs */
@@ -2409,8 +2398,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
         }
     }
     *cpO = '\0';
-    strncpy(uri, newuri, uri_len-1);
-    uri[uri_len-1] = '\0';
+    ap_cpystrn(uri, newuri, uri_len);
     return;
 }
 
@@ -2551,19 +2539,17 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     if ((fp = pfopen(r->pool, file, "r")) == NULL)
         return NULL;
 
-    strncpy(output, MAPFILE_OUTPUT, sizeof(output)-1);
-    EOS_PARANOIA(output);
+    ap_cpystrn(output, MAPFILE_OUTPUT, sizeof(output));
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[strlen(line)-1] == '\n')
             line[strlen(line)-1] = '\0';
         if (regexec(lookup_map_txtfile_regexp, line, 
                     lookup_map_txtfile_regexp->re_nsub+1, 
                     lookup_map_txtfile_regmatch, 0) == 0) {
-            strncpy(result, pregsub(r->pool, output, line, 
+            ap_cpystrn(result, pregsub(r->pool, output, line, 
                     lookup_map_txtfile_regexp->re_nsub+1, 
                     lookup_map_txtfile_regmatch), 
-                    sizeof(result)-1); /* substitute in output */
-            EOS_PARANOIA(result);
+                    sizeof(result)); /* substitute in output */
             cpT = strchr(result, ',');
             *cpT = '\0';
             curkey = result;
@@ -2910,8 +2896,7 @@ static void expand_variables_inbuffer(request_rec *r, char *buf, int buf_len)
     char *newbuf;
     newbuf = expand_variables(r, buf);
     if (strcmp(newbuf, buf) != 0) {
-        strncpy(buf, newbuf, buf_len-1);
-        buf[buf_len-1] = '\0';
+        ap_cpystrn(buf, newbuf, buf_len);
     }
     return;
 }
@@ -2924,31 +2909,30 @@ static char *expand_variables(request_rec *r, char *str)
     char *cp2;
     char *cp3;
     int expanded;
+    char *outp;
+    char *endp;
 
-    strncpy(input, str, sizeof(input)-1);
-    EOS_PARANOIA(input);
+    ap_cpystrn(input, str, sizeof(input));
     output[0] = '\0';
+    outp = output;
+    endp = output + sizeof(output);
     expanded = 0;
     for (cp = input; cp < input+MAX_STRING_LEN; ) {
         if ((cp2 = strstr(cp, "%{")) != NULL) {
             if ((cp3 = strstr(cp2, "}")) != NULL) {
                 *cp2 = '\0';
-                strncpy(&output[strlen(output)], cp, 
-                        sizeof(output)-strlen(output)-1);
+                outp = ap_cpystrn(outp, cp, endp - outp);
 
                 cp2 += 2;
                 *cp3 = '\0';
-                strncpy(&output[strlen(output)], lookup_variable(r, cp2),
-                        sizeof(output)-strlen(output)-1);
+                outp = ap_cpystrn(outp, lookup_variable(r, cp2), endp - outp);
 
                 cp = cp3+1;
                 expanded = 1;
                 continue;
             }
         }
-        strncpy(&output[strlen(output)], cp, 
-                sizeof(output)-strlen(output)-1);
-        EOS_PARANOIA(output);
+	outp = ap_cpystrn(outp, cp, endp - outp);
         break;
     }
     return expanded ? pstrdup(r->pool, output) : str;
@@ -3355,9 +3339,7 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match,
     output = input;
 
     /* first create a match string which always has a trailing slash */
-    strncpy(matchbuf, match, sizeof(matchbuf)-1);
-    EOS_PARANOIA(matchbuf);
-    l = strlen(matchbuf);
+    l = ap_cpystrn(matchbuf, match, sizeof(matchbuf)) - matchbuf;
     if (matchbuf[l-1] != '/') {
        matchbuf[l] = '/';
        matchbuf[l+1] = '\0';
@@ -3369,9 +3351,7 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match,
         output = pstrdup(r->pool, output+l); 
 
         /* and now add the base-URL as replacement prefix */
-        strncpy(substbuf, subst, sizeof(substbuf)-1);
-        EOS_PARANOIA(substbuf);
-        l = strlen(substbuf);
+        l = ap_cpystrn(substbuf, subst, sizeof(substbuf)) - substbuf;
         if (substbuf[l-1] != '/') {
            substbuf[l] = '/';
            substbuf[l+1] = '\0';
@@ -3480,8 +3460,7 @@ static void add_env_variable(request_rec *r, char *s)
         n = ((cp-s) > MAX_STRING_LEN-1 ? MAX_STRING_LEN-1 : (cp-s));
         memcpy(var, s, n);
         var[n] = '\0';
-        strncpy(val, cp+1, sizeof(val)-1);
-        EOS_PARANOIA(val);
+        ap_cpystrn(val, cp+1, sizeof(val));
         table_set(r->subprocess_env, var, val);
         rewritelog(r, 5, "setting env variable '%s' to '%s'", var, val);
     }
@@ -3500,8 +3479,7 @@ static int prefix_stat(const char *path, struct stat *sb)
     char curpath[LONG_STRING_LEN];
     char *cp;
 
-    strncpy(curpath, path, sizeof(curpath)-1);
-    EOS_PARANOIA(curpath);
+    ap_cpystrn(curpath, path, sizeof(curpath));
     if (curpath[0] != '/') 
         return 0;
     if ((cp = strchr(curpath+1, '/')) != NULL)

@@ -78,6 +78,7 @@ Committed Code Changes:
     * Paul's WIN32: patch to allow for Doug's -c option
     * Dean's [PATCH] unneeded pstrdup()s (in table_*() calls)
     * Brian Havard's [Patch] OS/2 - fix up shut down
+    * Dean's [PATCH] make mod_rewrite use ap_cpystrn
 
 Available Patches:
 
@@ -96,12 +97,6 @@ Available Patches:
     * Dean's [PATCH] OSF/1 serialized accept
 	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1 (on code)
-
-    * Dean's [PATCH] make mod_rewrite use ap_cpystrn
-	<Pine.LNX.3.95dg3.980107182931.5827H-100000@twinlark.arctic.org>
-	Status: waiting to find out status of Ralf's mod_rewrite restructuring
-	Ralf says go for it now.
-	Status: Dean +1, Jim +1
 
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
