@@ -23,12 +23,15 @@
     <source-ext>.xml.fr</source-ext>
     <target-ext>.html.fr</target-ext>
 
+<!-- No sitemap -> no CHM
     <chm>
         <lang>0x40c French (France)</lang>
         <toc-font>,8,0</toc-font>
         <charset>windows-1252</charset>
         <settings>French (France)</settings>
     </chm>
+-->
+
 <!-- currently no deployment of non-english man pages
     <man>
         <charset>ISO-8859-1</charset>
@@ -38,7 +41,7 @@
     <!-- comments...                                                      -->
     <messages>
         <!-- language link titles -->
-        <message id="nativename">French</message>
+        <message id="nativename">Fran&#231;ais</message>
 
         <!-- Used for the moduleindex -->
         <message id="corefeatures">Fonctionalit&#233;s de Base et Modules Multi-Processus (MPM)</message>
