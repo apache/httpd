@@ -257,7 +257,7 @@ API_VAR_EXPORT int ap_daemons_max_free=0;
 API_VAR_EXPORT int ap_daemons_limit=0;
 time_t ap_restart_time=0;
 API_VAR_EXPORT int ap_suexec_enabled = 0;
-int ap_listenbacklog;
+int ap_listenbacklog=0;
 #ifdef SO_ACCEPTFILTER
 int ap_acceptfilter =
 #ifdef AP_ACCEPTFILTER_OFF
@@ -294,7 +294,7 @@ static int max_daemons_limit = -1;
  *
  * Note that listeners != NULL is ensured by read_config().
  */
-listen_rec *ap_listeners;
+listen_rec *ap_listeners=NULL;
 static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
