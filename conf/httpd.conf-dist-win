@@ -528,6 +528,9 @@ ServerSignature On
 #
 # Aliases: Add here as many aliases as you need (with no limit). The format is 
 # Alias fakename realname
+# If fakename is slash-terminated [the alias is only found when the request is
+# slash-terminated] then the realname must be slash terminated, if the fakename
+# omits the trailing slash, the realname must also omit the trailing slash.
 #
 <IfModule mod_alias.c>
 
