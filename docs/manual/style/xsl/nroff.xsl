@@ -313,7 +313,11 @@
 <!-- ==================================================================== -->
 <!-- <example>                                                            -->
 <!-- ==================================================================== -->
-<xsl:template match="example">
+<xsl:template match="example[ancestor::dd]">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="example[not(ancestor::dd)]">
 &lf;
 <xsl:text>.nf</xsl:text>&lf;
 <xsl:apply-templates />&lf;
