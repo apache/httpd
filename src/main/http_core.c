@@ -1460,13 +1460,13 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
 #if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
-    else if (strcmp(cmp->path, "/") == 0) {
+    else if (strcmp(cmd->path, "/") == 0) {
         /* Treat 'default' path / as an inalienable root */
         cmd->path = ap_pstrdup(cmd->pool, cmd->path);
     }
 #endif
 #if defined(HAVE_UNC_PATHS)
-    else if (strcmp(cmp->path, "//") == 0) {
+    else if (strcmp(cmd->path, "//") == 0) {
         /* Treat UNC path // as an inalienable root */
         cmd->path = ap_pstrdup(cmd->pool, cmd->path);
     }
