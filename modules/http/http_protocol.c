@@ -856,6 +856,10 @@ API_EXPORT(const char *) ap_method_name_of(int methnum)
     return AP_HTTP_METHODS[methnum];
 }
 
+typedef struct http_filter_ctx {
+    ap_bucket_brigade *b;
+    int c_len;
+} http_ctx_t;
 int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
 #define ASCII_CR '\015'
@@ -864,8 +868,47 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
     char *buff;
     int length;
     char *pos;
+    int state = 0;
+    http_ctx_t *ctx = f->ctx;
+    ap_bucket_brigade *bb;
 
-    ap_get_brigade(f->next, b);
+
+    if (!ctx) {
+        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        ap_get_brigade(f->next, b);
+    }
+    else {
+        if (ctx->b) {
+            AP_BRIGADE_CONCAT(b, ctx->b);
+            ctx->b = NULL;
+        }
+        else {
+            ap_get_brigade(f->next, b);
+        }
+    }
+
+    if (f->c->remaining > 0) {
+        int remain = f->c->remaining;
+        e = AP_BRIGADE_FIRST(b);
+        while (remain > e->length && e != AP_BRIGADE_SENTINEL(b)) {
+            remain -= e->length;
+            e = AP_BUCKET_NEXT(e);
+        }
+        if (e != AP_BRIGADE_SENTINEL(b)) {
+            if (remain <= e->length) {
+                e->split(e, remain);
+                remain = 0;
+            }
+            bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+            f->c->remaining = remain;
+            ctx->b = bb;
+            return length;
+        }
+        else {
+            ctx->b = NULL;
+            return length;
+        }
+    }
 
     AP_BRIGADE_FOREACH(e, b) {
 
@@ -873,11 +916,28 @@ int http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
         pos = buff + 1;
         while (pos < buff + length) {
+
+            /* We are at the start of one line, but it actually has data. */
+            if ((*pos != ASCII_LF) && (*pos != ASCII_CR)) {
+                state = 0;
+            }
+            else {
+                if (*pos == ASCII_LF) {
+                    state++;
+                }
+            }
+            
             if ((*pos == ASCII_LF) && (*(pos - 1) == ASCII_CR)) {
                 *(pos - 1) = ASCII_LF;
                 *pos = '\0';
             }
             pos++;
+            if (state == 2) {
+                e->split(e, pos - buff);
+                bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                ctx->b = bb;
+                return length;
+            }
         }
     }
     return APR_SUCCESS;
@@ -2266,6 +2326,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->remaining = atol(lenp);
+        r->connection->remaining = r->remaining;
     }
 
     if ((r->read_body == REQUEST_NO_BODY) &&
@@ -2378,20 +2439,31 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         const char *tempbuf;
 
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-        if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
-            apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
-            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
-            rv = ap_get_brigade(r->connection->input_filters, r->connection->input_data); 
-            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
-        }
-        if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
-            if (rv != APR_SUCCESS) {
-                r->connection->keepalive = -1;
-                return -1;
+
+        do {
+            if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
+                rv = ap_get_brigade(r->connection->input_filters, r->connection->input_data); 
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
             }
-            return 0;
-        }
-        b = AP_BRIGADE_FIRST(r->connection->input_data);
+            if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+                if (rv != APR_SUCCESS) {
+                    r->connection->keepalive = -1;
+                    return -1;
+                }
+                return 0;
+            }
+            b = AP_BRIGADE_FIRST(r->connection->input_data);
+            
+            while (b->length == 0 && b != AP_BRIGADE_SENTINEL(r->connection->input_data)) {
+                ap_bucket *e = b;
+                b = AP_BUCKET_NEXT(e);
+                AP_BUCKET_REMOVE(e);
+                e->destroy(e);
+            }
+        } while (AP_BRIGADE_EMPTY(r->connection->input_data));
+
         len_read = len_to_read;
         rv = b->read(b, &tempbuf, &len_read, 0);
         if (len_to_read < b->length) {
