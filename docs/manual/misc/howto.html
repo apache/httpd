@@ -1,7 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<META NAME="description" CONTENT="Some 'how to' tips for the Apache httpd server">
+<META NAME="description"
+ CONTENT="Some 'how to' tips for the Apache httpd server">
 <META NAME="keywords" CONTENT="apache,redirect,robots,rotate,logfiles">
 <TITLE>Apache HOWTO documentation</TITLE>
 </HEAD>
@@ -19,13 +20,15 @@
 
 How to:
 <UL>
-<LI><A HREF="#redirect">redirect an entire server or directory to a single URL</A>
+<LI><A HREF="#redirect">redirect an entire server or directory to a single
+    URL</A>
 <LI><A HREF="#logreset">reset your log files</A>
 <LI><A HREF="#stoprob">stop/restrict robots</A>
 </UL>
 
 <HR>
-<H2><A name="redirect">How to redirect an entire server or directory to a single URL</A></H2>
+<H2><A NAME="redirect">How to redirect an entire server or directory to a
+single URL</A></H2>
 
 <P>There are two chief ways to redirect all requests for an entire
 server to a single location: one which requires the use of
@@ -44,8 +47,9 @@ however, it may not be appropriate - for example, when the directory
 structure has changed after the move, and you simply want to direct people
 to the home page.
 
-<P>The best option is to use the standard Apache module <CODE>mod_rewrite</CODE>.
-If that module is compiled in, the following lines:
+<P>The best option is to use the standard Apache module
+<CODE>mod_rewrite</CODE>.
+If that module is compiled in, the following lines
 
 <BLOCKQUOTE><PRE>RewriteEngine On
 RewriteRule /.* http://www.apache.org/ [R]
@@ -56,10 +60,12 @@ what they gave in the original URL, they'll be sent to
 "http://www.apache.org".
 
 The second option is to set up a <CODE>ScriptAlias</CODE> pointing to
-a <STRONG>cgi script</STRONG> which outputs a 301 or 302 status and the location
+a <STRONG>cgi script</STRONG> which outputs a 301 or 302 status and the
+location
 of the other server.</P>
 
-<P>By using a <STRONG>cgi-script</STRONG> you can intercept various requests and
+<P>By using a <STRONG>cgi-script</STRONG> you can intercept various requests
+and
 treat them specially, e.g. you might want to intercept <STRONG>POST</STRONG>
 requests, so that the client isn't redirected to a script on the other
 server which expects POST information (a redirect will lose the POST
@@ -68,7 +74,8 @@ want to compile mod_rewrite into your server.
 
 <P>Here's how to redirect all requests to a script... In the server
 configuration file,
-<BLOCKQUOTE><PRE>ScriptAlias / /usr/local/httpd/cgi-bin/redirect_script</PRE></BLOCKQUOTE>
+<BLOCKQUOTE><PRE>ScriptAlias / /usr/local/httpd/cgi-bin/redirect_script</PRE>
+</BLOCKQUOTE>
 
 and here's a simple perl script to redirect requests:
 
@@ -82,7 +89,7 @@ Location: http://www.some.where.else.com/\r\n\r\n";
 
 <HR>
 
-<H2><A name="logreset">How to reset your log files</A></H2>
+<H2><A NAME="logreset">How to reset your log files</A></H2>
 
 <P>Sooner or later, you'll want to reset your log files (access_log and
 error_log) because they are too big, or full of old information you don't
@@ -98,7 +105,8 @@ logfile moved. This results in a new logfile being created which is just
 as big as the old one, but it now contains thousands (or millions) of null
 characters.</P>
 
-<P>The correct procedure is to move the logfile, then signal Apache to tell it to reopen the logfiles.</P>
+<P>The correct procedure is to move the logfile, then signal Apache to tell
+it to reopen the logfiles.</P>
 
 <P>Apache is signaled using the <STRONG>SIGHUP</STRONG> (-1) signal. e.g.
 <BLOCKQUOTE><CODE>
@@ -107,7 +115,8 @@ kill -1 `cat httpd.pid`
 </CODE></BLOCKQUOTE>
 </P>
 
-<P>Note: <CODE>httpd.pid</CODE> is a file containing the <STRONG>p</STRONG>rocess <STRONG>id</STRONG>
+<P>Note: <CODE>httpd.pid</CODE> is a file containing the
+<STRONG>p</STRONG>rocess <STRONG>id</STRONG>
 of the Apache httpd daemon, Apache saves this in the same directory as the log
 files.</P>
 
@@ -115,7 +124,7 @@ files.</P>
 nightly or weekly basis.</P>
 <HR>
 
-<H2><A name="stoprob">How to stop or restrict robots</A></H2>
+<H2><A NAME="stoprob">How to stop or restrict robots</A></H2>
 
 <P>Ever wondered why so many clients are interested in a file called
 <CODE>robots.txt</CODE> which you don't have, and never did have?</P>
@@ -147,7 +156,8 @@ stale by the time people find it in a search engine.</P>
 
 <P>If you decide to exclude robots completely, or just limit the areas
 in which they can roam, create a <CODE>robots.txt</CODE> file; refer
-to the <A HREF="http://info.webcrawler.com/mak/projects/robots/robots.html">robot information pages</A> provided by Martijn Koster for the syntax.</P>
+to the <A HREF="http://info.webcrawler.com/mak/projects/robots/robots.html"
+>robot information pages</A> provided by Martijn Koster for the syntax.</P>
 
 <!--#include virtual="footer.html" -->
 </BODY>

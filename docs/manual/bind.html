@@ -29,18 +29,21 @@ There are two directives used to restrict or specify which addresses
 and ports Apache listens to.
 
 <UL>
-<LI><A HREF="#bindaddress">BindAddress</A> is used to restrict the server to listening to
+<LI><A HREF="#bindaddress">BindAddress</A> is used to restrict the server to
+  listening to
   a single address, and can be used to permit multiple Apache servers
   on the same machine listening to different IP addresses.
-<LI><A HREF="#listen">Listen</A> can be used to make a single Apache server listen
+<LI><A HREF="#listen">Listen</A> can be used to make a single Apache server
+  listen
   to more than one address and/or port.
 </UL>
 
-<H3><A name="bindaddress">BindAddress</A></H3>
+<H3><A NAME="bindaddress">BindAddress</A></H3>
 <A
  HREF="mod/directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
+><STRONG>Syntax:</STRONG></A> BindAddress <EM>[ * | IP-address 
+ | hostname ]</EM><BR>
 <A
  HREF="mod/directive-dict.html#Default"
  REL="Help"
@@ -59,7 +62,7 @@ is *, the server listens to all addresses. The port listened to
 is set with the <TT>Port</TT> directive. Only one BindAddress
 should be used.
 
-<H3><A name="listen">Listen</A></H3>
+<H3><A NAME="listen">Listen</A></H3>
 <A
  HREF="mod/directive-dict.html#Syntax"
  REL="Help"

@@ -1,9 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Apache Performance Notes</TITLE>
+ <TITLE>Apache Performance Notes</TITLE>
 </HEAD>
-<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000080" alink="#ff0000">
-
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
 <H1>Apache Performance Notes</H1>
 
 <P>Author: Dean Gaudet
@@ -215,8 +222,8 @@ connection.  The default <CODE>KeepAliveTimeout</CODE> of
 15 seconds attempts to minimize this effect.  The tradeoff
 here is between network bandwidth and server resources.
 In no event should you raise this above about 60 seconds, as
-<A HREF="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
-most of the benefits are lost</A>.
+<A HREF="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html"
+>most of the benefits are lost</A>.
 
 <H3>Compile-Time Configuration Issues</H3>
 
@@ -278,7 +285,8 @@ requests.  All those blocked children will awaken and return from
 system and timing issues).
 They will all then fall down into the loop and try to <CODE>accept</CODE>
 the connection.  But only one will succeed (assuming there's still only
-one connection ready), the rest will be <EM>blocked</EM> in <CODE>accept</CODE>.
+one connection ready), the rest will be <EM>blocked</EM> in
+<CODE>accept</CODE>.
 This effectively locks those children into serving requests from that
 one socket and no other sockets, and they'll be stuck there until enough
 new requests appear on that socket to wake them all up.
@@ -327,7 +335,7 @@ the inner loop.  The loop looks like this (differences highlighted):
     }
 </PRE></BLOCKQUOTE>
 
-<A name="serialize">The functions</A>
+<A NAME="serialize">The functions</A>
 <CODE>accept_mutex_on</CODE> and <CODE>accept_mutex_off</CODE>
 implement a mutual exclusion semaphore.  Only one child can have the
 mutex at any time.  There are several choices for implementing these
@@ -423,7 +431,9 @@ and then single-socket servers will not serialize at all.
 <H4>Lingering Close</H4>
 
 <P>As discussed in
-<A HREF="ftp://ds.internic.net/internet-drafts/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</A> section 8,
+<A
+ HREF="ftp://ds.internic.net/internet-drafts/draft-ietf-http-connection-00.txt"
+>draft-ietf-http-connection-00.txt</A> section 8,
 in order for an HTTP server to <STRONG>reliably</STRONG> implement the protocol
 it needs to shutdown each direction of the communication independently
 (recall that a TCP connection is bi-directional, each half is independent
@@ -648,7 +658,7 @@ properly implement the HTTP protocol.  The second occurs because the
 Common Log Format dictates that the log record include a timestamp of the
 end of the request.  A custom logging module could eliminate one of the
 calls.  Or you can use a method which moves the time into shared memory,
-see the <a href="#patches">patches section below</a>.
+see the <A HREF="#patches">patches section below</A>.
 
 <P>As described earlier, <CODE>Rule STATUS=yes</CODE> causes two
 <CODE>gettimeofday</CODE> calls and a call to <CODE>times</CODE>:
@@ -783,28 +793,28 @@ munmap(0x400e3000, 6144)                = 0
 That's 19 system calls, of which 4 remain relatively easy to remove,
 but don't seem worth the effort.
 
-<h3><a name="patches">Appendix: Patches Available</a></h3>
+<H3><A NAME="patches">Appendix: Patches Available</A></H3>
 
 There are
-<a href="http://www.arctic.org/~dgaudet/apache/1.3/">
-several performance patches available for 1.3.</a>  But they may
+<A HREF="http://www.arctic.org/~dgaudet/apache/1.3/">
+several performance patches available for 1.3.</A>  But they may
 be slightly out of date by the time Apache 1.3.0 has been released,
 it shouldn't be difficult for someone with a little C knowledge to
 update them.  In particular:
 
-<ul>
-<li>A 
-<a href="http://www.arctic.org/~dgaudet/apache/1.3/shared_time.patch">
-patch</a> to remove all <code>time(2)</code> system calls.
-<li>A
-<a href="http://www.arctic.org/~dgaudet/apache/1.3/mod_include_speedups.patch">
-patch</a> to remove various system calls from <code>mod_include</code>,
+<UL>
+<LI>A 
+<A HREF="http://www.arctic.org/~dgaudet/apache/1.3/shared_time.patch"
+>patch</A> to remove all <CODE>time(2)</CODE> system calls.
+<LI>A
+<A HREF="http://www.arctic.org/~dgaudet/apache/1.3/mod_include_speedups.patch"
+>patch</A> to remove various system calls from <CODE>mod_include</CODE>,
 these calls are used by few sites but required for backwards compatibility.
-<li>A
-<a href="http://www.arctic.org/~dgaudet/apache/1.3/top_fuel.patch">
-patch</a> which integrates the above two plus a few other speedups at the
+<LI>A
+<A HREF="http://www.arctic.org/~dgaudet/apache/1.3/top_fuel.patch"
+>patch</A> which integrates the above two plus a few other speedups at the
 cost of removing some functionality.
-</ul>
+</UL>
 
 <H3>Appendix: The Pre-Forking Model</H3>
 
@@ -846,11 +856,11 @@ depending on the operating system.
 implementations of threaded Apache, one using the 1.3 code base on DCE,
 and one using a custom user-level threads package and the 1.0 code base,
 neither are available publically.  There is also an experimental port of
-Apache 1.3 to <a href="http://www.mozilla.org/docs/refList/refNSPR/">
-Netscape's Portable Run Time</a>, which
-<a href="http://www.arctic.org/~dgaudet/apache/2.0/">is available</a>
+Apache 1.3 to <A HREF="http://www.mozilla.org/docs/refList/refNSPR/">
+Netscape's Portable Run Time</A>, which
+<A HREF="http://www.arctic.org/~dgaudet/apache/2.0/">is available</A>
 (but you're encouraged to join the
-<a href="http://dev.apache.org/mailing-lists">new-httpd mailing list</a>
+<A HREF="http://dev.apache.org/mailing-lists">new-httpd mailing list</A>
 if you intend to use it).
 Part of our redesign for version 2.0
 of Apache will include abstractions of the server model so that we

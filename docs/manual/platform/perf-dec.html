@@ -50,7 +50,7 @@ From           mogul@pa.dec.com (Jeffrey Mogul)
 Organization   DEC Western Research
 Date           30 May 1996 00:50:25 GMT
 Newsgroups     <A HREF="news:comp.unix.osf.osf1">comp.unix.osf.osf1</A>
-Message-ID     <A HREF="news:4oirch$bc8@usenet.pa.dec.com">&lt;4oirch$bc8@usenet.pa.dec.com&gt;</A>
+Message-ID     &lt;4oirch$bc8@usenet.pa.dec.com&gt;
 Subject        Re: Web Site Performance
 References     1
 
@@ -63,8 +63,10 @@ In article &lt;skoogDs54BH.9pF@netcom.com&gt; skoog@netcom.com (Jim Skoog) write
 &gt;runing DEC UNIX 3.2C, which run DEC's seal firewall and behind
 &gt;that Alpha 1000 and 2100 webservers.
 
-Our experience (running such Web servers as <A HREF="http://altavista.digital.com">altavista.digital.com</A>
-and <A HREF="http://www.digital.com">www.digital.com</A>) is that there is one important kernel tuning
+Our experience (running such Web servers as <A
+ HREF="http://altavista.digital.com">altavista.digital.com</A>
+and <A HREF="http://www.digital.com"
+    >www.digital.com</A>) is that there is one important kernel tuning
 knob to adjust in order to get good performance on V3.2C.  You
 need to patch the kernel global variable "somaxconn" (use dbx -k
 to do this) from its default value of 8 to something much larger.
@@ -98,7 +100,8 @@ with no obvious performance bottlenecks at the millions-of-hits-per-day
 level.
 
 We have some Webstone performance results available at
-        <A HREF="http://www.digital.com/info/alphaserver/news/webff.html">http://www.digital.com/info/alphaserver/news/webff.html</A>
+        <A HREF="http://www.digital.com/info/alphaserver/news/webff.html"
+        >http://www.digital.com/info/alphaserver/news/webff.html</A>
 I'm not sure if these were done using V4.0 or an earlier version
 of Digital UNIX, although I suspect they were done using a test
 version of V4.0.
@@ -113,7 +116,7 @@ From           mogul@pa.dec.com (Jeffrey Mogul)
 Organization   DEC Western Research
 Date           31 May 1996 21:01:01 GMT
 Newsgroups     <A HREF="news:comp.unix.osf.osf1">comp.unix.osf.osf1</A>
-Message-ID     <A HREF="news:4onmmd$mmd@usenet.pa.dec.com">&lt;4onmmd$mmd@usenet.pa.dec.com&gt;</A>
+Message-ID     &lt;4onmmd$mmd@usenet.pa.dec.com&gt;
 Subject        Digital UNIX V3.2C Internet tuning patch info
 
 ----------------------------------------------------------------------------
@@ -136,7 +139,8 @@ so the description of the various tuning parameters in this README
 file might be useful to people running V4.0 systems.
 
 This patch kit does not appear to be available (yet?) from
-        <A HREF="http://www.service.digital.com/html/patch_service.html">http://www.service.digital.com/html/patch_service.html</A>
+        <A HREF="http://www.service.digital.com/html/patch_service.html"
+        >http://www.service.digital.com/html/patch_service.html</A>
 so I guess you'll have to call Digital's Customer Support to get it.
 
 -Jeff
@@ -251,7 +255,7 @@ TUNING
 
                                   V3.2C
 Feature                    V3.2C  patch  V4.0
- =======                    =====  =====  ====
+=======                    =====  =====  ====
 somaxconn                   X      X      X
 sominconn                   -      X      X
 sobacklog_hiwat             -      X      -

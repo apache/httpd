@@ -46,13 +46,14 @@ use this mode to provide ordinary web service.
 <DT><CODE>-v</CODE>
 <DD>Print the version of httpd and its build date, and then exit.
 
-<DT><A name="version"><CODE>-V</CODE></A>
+<DT><A NAME="version"><CODE>-V</CODE></A>
 <DD>Print the base version of httpd, its sub-version if defined, its
 build date, and a list of compile time settings which influence the
-behavior and performance of the apache server (e.g., <SAMP>-D USE_MMAP_FILES</SAMP>),
+behavior and performance of the apache server (<EM>e.g.</EM>,
+<SAMP>-DUSE_MMAP_FILES</SAMP>),
 then exit.
 
-<DT><A name="help"><CODE>-h</CODE></A>
+<DT><A NAME="help"><CODE>-h</CODE></A>
 <DD>Give a list of directives together with expected arguments and
 places where the directive is valid. (New in Apache 1.2)
 
@@ -93,7 +94,8 @@ The filename may be overridden with the
 However, these conventions need not be adhered to.
 <P>
 The server also reads a file containing mime document types; the filename
-is set by the <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A> directive,
+is set by the <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A>
+directive,
 and is <CODE>conf/mime.types</CODE> by default.
 
 <H2>Log files</H2>
@@ -119,15 +121,16 @@ kill the children httpd processes.
 <H3>Error log</H3>
 The server will log error messages to a log file, <CODE>logs/error_log</CODE>
 by default. The filename can be set using the
-<A HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error logs can
+<A HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error logs
+can
 be set for different <A HREF="mod/core.html#virtualhost">virtual hosts</A>.
 
 <H3>Transfer log</H3>
 The server will typically log each request to a transfer file,
 <CODE>logs/access_log</CODE> by default. The filename can be set using a
-<A HREF="mod/mod_log_config.html#transferlog">TransferLog</A> directive; different
-transfer logs can be set for different <A HREF="mod/core.html#virtualhost">virtual
-hosts</A>.
+<A HREF="mod/mod_log_config.html#transferlog">TransferLog</A> directive;
+different transfer logs can be set for different
+<A HREF="mod/core.html#virtualhost">virtual hosts</A>.
 
 <!--#include virtual="footer.html" -->
 </BODY>

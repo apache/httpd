@@ -38,7 +38,7 @@ Modify those examples to match your
 <A HREF="mod/core.html#serverroot">ServerRoot</A> and
 <A HREF="mod/core.html#pidfile">PidFile</A> settings.
 
-<p>As of Apache 1.3 we provide a script <code>src/support/apachectl</code>
+<P>As of Apache 1.3 we provide a script <CODE>src/support/apachectl</CODE>
 which can be used to start, stop, and restart Apache.  It may need a
 little customization for your system, see the comments at the top of
 the script.
@@ -64,14 +64,15 @@ serving hits.
 will notice that the server statistics are
 set to zero when a <CODE>HUP</CODE> is sent.
 
-<P><STRONG>Note:</STRONG> If your configuration file has errors in it when you issue a
+<P><STRONG>Note:</STRONG> If your configuration file has errors in it when
+you issue a
 restart then your parent will not restart, it will exit with an error.
 See below for a method of avoiding this.
 
 <H3>USR1 Signal: graceful restart</H3>
 
-<P><STRONG>Note:</STRONG> prior to release 1.2b9 this code is quite unstable and
-shouldn't be used at all.
+<P><STRONG>Note:</STRONG> prior to release 1.2b9 this code is quite unstable
+and shouldn't be used at all.
 
 <P>The <CODE>USR1</CODE> signal causes the parent process to <EM>advise</EM>
 the children to exit after their current request (or to exit immediately
@@ -94,7 +95,8 @@ with the StartServers parameter.
 <P>Users of the
 <A HREF="mod/mod_status.html">status module</A>
 will notice that the server statistics
-are <STRONG>not</STRONG> set to zero when a <CODE>USR1</CODE> is sent.  The code
+are <STRONG>not</STRONG> set to zero when a <CODE>USR1</CODE> is sent.  The
+code
 was written to both minimize the time in which the server is unable to serve
 new requests (they will be queued up by the operating system, so they're
 not lost in any event) and to respect your tuning parameters.  In order
@@ -113,7 +115,8 @@ old log.  For example if most of your hits take less than 10 minutes to
 complete for users on low bandwidth links then you could wait 15 minutes
 before doing anything with the old log.
 
-<P><STRONG>Note:</STRONG> If your configuration file has errors in it when you issue a
+<P><STRONG>Note:</STRONG> If your configuration file has errors in it when
+you issue a
 restart then your parent will not restart, it will exit with an error.
 In the case of graceful
 restarts it will also leave children running when it exits.  (These are

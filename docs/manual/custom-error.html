@@ -49,7 +49,8 @@
   </OL>
 
   <P>Redirecting to another URL can be useful, but only if some information
-     can be passed which can then be used to explain and/or log the error/problem
+     can be passed which can then be used to explain and/or log the
+     error/problem
      more clearly.
 
   <P>To achieve this, Apache will define new CGI-like environment
@@ -70,18 +71,23 @@ REDIRECT_URL=/cgi-bin/buggy.pl <BR>
 
   <P>note the <CODE>REDIRECT_</CODE> prefix.
 
-  <P>At least <CODE>REDIRECT_URL</CODE> and <CODE>REDIRECT_QUERY_STRING</CODE> will
-     be passed to the new URL (assuming it's a cgi-script or a cgi-include). The
-     other variables will exist only if they existed prior to the error/problem.
+  <P>At least <CODE>REDIRECT_URL</CODE> and <CODE>REDIRECT_QUERY_STRING</CODE>
+     will
+     be passed to the new URL (assuming it's a cgi-script or a cgi-include).
+     The
+     other variables will exist only if they existed prior to the
+     error/problem.
      <STRONG>None</STRONG> of these will be set if your ErrorDocument is an
-     <EM>external</EM> redirect (i.e. anything starting with a protocol name
+     <EM>external</EM> redirect (<EM>i.e.</EM>, anything starting with a
+     scheme name
      like <CODE>http:</CODE>, even if it refers to the same host as the
      server).<P>
 
 <DT>Configuration
 
   <DD> Use of "ErrorDocument" is enabled for .htaccess files when the
-       <A HREF="mod/core.html#allowoverride">"FileInfo" override</A> is allowed.
+       <A HREF="mod/core.html#allowoverride">"FileInfo" override</A> is
+       allowed.
 
   <P>Here are some examples...
 
@@ -126,7 +132,8 @@ ErrorDocument 401 /Subscription/how_to_subscribe.html
 <DT>Old behavior
 
   <DD>Standard CGI vars were made available to a script which has been
-      redirected to. No indication of where the redirection came from was provided.
+      redirected to. No indication of where the redirection came from was
+      provided.
 
   <P>
 
@@ -146,6 +153,24 @@ Both the original URL and the URL being redirected to can be logged in
 the access log.
 
 </DL>
+<P>
+If the ErrorDocument specifies a local redirect to a CGI script, the script
+should include a "<SAMP>Status:</SAMP>" header field in its output
+in order to ensure the propagation all the way back to the client
+of the error condition that caused it to be invoked.  For instance, a Perl
+ErrorDocument script might include the following:
+</P>
+<PRE>
+      :
+    print  "Content-type: text/html\n";
+    printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
+      :
+</PRE>
+<P>
+If the script is dedicated to handling a particular error condition, such as
+<SAMP>404&nbsp;Not&nbsp;Found</SAMP>, it can use the specific code and
+error text instead.
+</P>
 
 <!--#include virtual="footer.html" -->
 </BODY>

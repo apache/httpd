@@ -83,9 +83,10 @@ Use a single daemon when:
 <H2>Setting up multiple daemons</H2>
 Create a separate httpd installation for each virtual host.
 For each installation, use the
-<A HREF="mod/core.html#bindaddress">BindAddress</A> directive in the configuration
+<A HREF="mod/core.html#bindaddress">BindAddress</A> directive in the
+configuration
 file to select which IP address (or virtual host) that daemon services.
-e.g.
+<EM>E.g.</EM>,
 <BLOCKQUOTE><CODE>BindAddress www.smallco.com</CODE></BLOCKQUOTE>
 This hostname can also be given as an IP address.
 
@@ -99,7 +100,7 @@ The <A HREF="mod/core.html#virtualhost">VirtualHost</A> directive in the
 <A HREF="mod/core.html#errorlog">ErrorLog</A> and
 <A HREF="mod/mod_log_config.html#transferlog">TransferLog</A> configuration
 directives to different values for each virtual host.
-e.g.
+<EM>E.g.</EM>,
 <BLOCKQUOTE><CODE>
 &lt;VirtualHost www.smallco.com&gt;<BR>
 ServerAdmin webmaster@mail.smallco.com<BR>
@@ -185,7 +186,8 @@ for the root process. This will exhibit itself as errors in the error log like
 <OL>
 <LI>Have a <CODE>csh</CODE> script wrapper around httpd which sets the
 "rlimit" to some large number, like 512.
-<LI>Edit http_main.c to add calls to setrlimit() from main(), along the lines of
+<LI>Edit http_main.c to add calls to setrlimit() from main(), along the lines
+of
 <PRE>
         struct rlimit rlp;
 
