@@ -298,7 +298,8 @@ static char master_main()
     /* Allocate shared memory for scoreboard */
     if (ap_scoreboard_image == NULL) {
         rc = DosAllocSharedMem((PPVOID)&ap_scoreboard_image, ap_scoreboard_fname,
-                               sizeof(scoreboard), PAG_COMMIT|PAG_READ|PAG_WRITE);
+                               ap_calc_scoreboard_size(),
+                               PAG_COMMIT|PAG_READ|PAG_WRITE);
 
         if (rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf,
@@ -306,7 +307,7 @@ static char master_main()
             return FALSE;
         }
 
-        memset(ap_scoreboard_image, 0, sizeof(scoreboard));
+        ap_init_scoreboard();
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
