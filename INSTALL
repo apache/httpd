@@ -59,13 +59,13 @@
         For some of the support scripts like `apxs' or `dbmmanage'
         (which are written in Perl) the Perl 5 interpreter is required
         (versions 5.003 and 5.004 are fine). If no such interpreter is
-        found by APACI's `configure' script this is no harm.  Of
-        course, you still can build and install Apache 1.3. Only those
+        found by the `configure' script this is no harm.  Of
+        course, you still can build and install Apache 2.0. Only those
         support scripts cannot be used. If you have multiple Perl
         interpreters installed (perhaps a Perl 4 from the vendor and a
         Perl 5 from your own), then it is recommended to use the
         --with-perl option (see below) to make sure the correct one is
-        selected by APACI.
+        selected by ./configure.
 
      o  Dynamic Shared Object (DSO) support [OPTIONAL]:
 
@@ -338,16 +338,7 @@
                     (-) = disabled per default [enable  with --enable-module ]
 
      Use the --enable-suexec option to enable the suEXEC feature by
-     building and installing the "suexec" support program. Use
-     --suexec-caller=UID to set the allowed caller user id,
-     --suexec-userdir=DIR to set the user subdirectory,
-     --suexec-docroot=DIR to set the suexec root directory,
-     --suexec-uidmin=UID/--suexec-gidmin=GID to set the minimal
-     allowed UID/GID, --suexec-logfile=FILE to set the logfile and
-     --suexec-safepath=PATH to set the safe shell PATH for the suEXEC
-     feature. At least one --suexec-xxxxx option has to be provided
-     together with the --enable-suexec option to let APACI accept your
-     request for using the suEXEC feature.
+     building and installing the "suexec" support program.
 
      CAUTION: FOR DETAILS ABOUT THE SUEXEC FEATURE WE HIGHLY RECOMMEND
               YOU TO FIRST READ THE DOCUMENT htdocs/manual/suexec.html
@@ -364,26 +355,9 @@
               YOU NOT CONSIDER USING SUEXEC AND KEEP AWAY FROM THESE
               OPTIONS!
 
-     Use the --shadow option to let APACI create a shadow source tree
-     of the sources for building. This is useful when you want to
-     build for different platforms in parallel (usually through a NFS,
-     AFS or DFS mounted filesystem).  You may specify a directory to
-     the --shadow option into which the shadow tree will be created.
- 
      Use the --quiet option to disable all configuration verbose
      messages.
  
-     Use the --verbose option to enable additional verbose messages.
-     
-     Use the --server-uid option to specify the user ID you want the
-     server to run as. If not specified the server will run as user
-     nobody.  If the user ID specified is different than the ID of the
-     user starting the server, you need to start the server as root.
-
-     Use the --server-gid option to specify the group ID you want the
-     server user ID to be a member of.  If not specified, the group ID
-     will be #-1.
-
 
   4. Building the package
      --------------------
