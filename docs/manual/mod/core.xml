@@ -800,6 +800,8 @@ Location</a></seealso>
     system did not detect, especially if the binaries were built on
     another box and moved to such a machine with broken sendfile
     support.</li>
+    <li>On Linux the use of sendfile triggers TCP-checksum
+    offloading bugs on certain networking cards when using IPv6.</li>
     <li>With a network-mounted <directive
     module="core">DocumentRoot</directive> (e.g., NFS or SMB),
     the kernel may be unable to serve the network file through
