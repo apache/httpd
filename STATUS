@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/20 14:51:11 $]
+  Last modified at [$Date: 1999/03/20 15:14:12 $]
 
 Release:
 
@@ -143,6 +143,13 @@ Needs patch:
       MaxConnectionsPerChild or really fix it to actually count
       the number of requests.
       Lars: I think we should really fix.
+      Jim: The main idea behind this is to avoid problems with
+           memory leaks. So it really doesn't matter which we
+	   do, as long as there's a match between the directive
+	   and what it does. Since it's easier, I'd say just
+	   rename to MaxConnectionsPerChild but keep MaxRequestsPerChild
+	   as an "alias" to that (maybe print a short "MaxRequestsPerChild
+	   is depreciated" message when Apache starts).
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
