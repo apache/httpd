@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/13 12:39:22 $]
+Last modified at [$Date: 2003/01/13 17:23:04 $]
 
 Release:
 
@@ -91,11 +91,11 @@ CURRENT VOTES:
     * APACHE_2_0_BRANCH *has* to work with an official stable version 
       of APR (i.e., 1.0).
       yes:
-      no:   trawick
+      no:   trawick, jerenkrantz
 
     * APACHE_2_0_BRANCH uses a level of APR code branched from the
       APACHE_2_0_43 tag.
-      yes:   trawick
+      yes:   trawick, jerenkrantz
       no:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
