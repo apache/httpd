@@ -1,32 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="notepad" />
-
-    <title>New features with Apache 2.0</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">&Uuml;bersicht der neuen Funktionen in Apache 2.0</h1>
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>&Uuml;bersicht der neuen Funktionen in Apache 2.0 - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">&Uuml;bersicht der neuen Funktionen in Apache 2.0</h1>
+  <p>Erweiterungen:</p>
+<ul><li><a href="#core">Core-Erweiterungen</a></li><li><a href="#module">Modul-Erweiterungen</a></li></ul><hr><h2><a name="core">Core-Erweiterungen</a></h2>
     
-    <p>Erweiterungen: <a href="#core">Core</a> | <a href="#module">Module</a></p>
-    
-    <hr />
-
-    <h2><a id="core" name="core">Core-Erweiterungen:</a></h2>
 
     <dl>
       <dt><strong>Unix-Threading</strong></dt>
 
       <dd>Auf Unix-Systemen mit Unterst&uuml;tzung f&uuml;r POSIX-Threads, kann Apache
       jetzt in einem Multi-Process, Multi-Threaded Hybrid-Mode gestartet werden. Dies
-      verbessert die Skalierf&auml;higkeit f&uuml;r viele, jedoch unbedingt nicht alle
+      verbessert die Skalierf&auml;higkeit f&uuml;r viele, jedoch nicht unbedingt alle
       Konfigurationen.</dd>
 
       <dt><strong>Neues Build-System</strong></dt>
@@ -41,10 +27,10 @@
       Protokolle unterst&uuml;tzen und verarbeiten zu k&ouml;nnen.
       mod_echo wurde hierf&uuml;r als Beispiel geschrieben.</dd>
 
-      <dt><strong>Bessere Unterst&uuml;tzung von nicht-Unix-Plattformen</strong></dt>
+      <dt><strong>Bessere Unterst&uuml;tzung von Nicht-Unix-Plattformen</strong></dt>
 
-      <dd>Apache 2.0 ist schneller und stabiler auf nicht-Unix-Plattformen
-      wie BeOS, OS/2, und Windows. Mit der Einf&uuml;hrung von Plattform-spezifischen 
+      <dd>Apache 2.0 ist schneller und stabiler auf Nicht-Unix-Plattformen
+      wie BeOS, OS/2 und Windows. Mit der Einf&uuml;hrung von Plattform-spezifischen 
       <a href="mpm.html">Multi-Processing Modulen</a> (MPMs) und der
       Apache Portable Runtime (APR), sind diese Plattformen jetzt in ihrem nativen
       API implementiert, wodurch die Verwendung der h&auml;ufig fehlerbehafteten und
@@ -64,9 +50,8 @@
 
       <dd>Auf Systemen, bei denen die zugrundeliegende Apache Portable Runtime-Bibliothek
       IPv6 unterst&uuml;tzt, bekommt Apache standarm&auml;&szlig;ig IPv6 Listening
-      Sockets. Zus&auml;tzlich unterst&uuml;tzen die Konfigurationsanweisungen Listen,
-      NameVirtualHost und &lt;VirtualHost&gt; numerische IPv6-Adressangaben (z.B.,
-      "Listen [fe80::1]:8080").</dd>
+      Sockets. Zus&auml;tzlich unterst&uuml;tzen die Konfigurationsanweisungen <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>, <a href="./mod/core.html#namevirtualhost" class="directive"><code class="directive">NameVirtualHost</code></a> und <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">VirtualHost</code></a>
+      numerische IPv6-Adressangaben (z.B., "Listen [fe80::1]:8080").</dd>
 
       <dt><strong>Filterung</strong></dt>
 
@@ -78,7 +63,7 @@
 
       <dt><strong>Mehrsprachige Fehlermeldungen</strong></dt>
 
-      <dd>Fehlermeldungen die an Browser rausgehen, stehen jetzt als SSI-Dokumente in
+      <dd>Fehlermeldungen die an den Browser rausgehen, stehen jetzt als SSI-Dokumente in
       verschiedenen Sprachen zur Verf&uuml;gung. Sie k&ouml;nnen bei Bedarf durch den
       Administrator angepasst werden, um ein einheitliches Design zu erreichen.</dd>
 
@@ -86,44 +71,42 @@
 
       <dd>Viele der verwirrenden Konfigurationsanweisungen wurden vereinfacht.
       Die oft f&uuml;r Verwirrung sorgenden Port- und BindAddress-Anweisungen wurden
-      entfernt. Ausschlie&szlig;lich ie Listen-Anweisung wird nun zum Setzen von
-      IP-Addressen und Portnummern benutzt. Der Servername und Portnummer die
-      f&uuml;r Weiterleitungen und Erkennung virtueller Server verwendet werden, werden
-      &uuml;ber die ServerName-Anweisung konfiguriert.</dd>
+      entfernt. Ausschlie&szlig;lich die Listen-Anweisung wird nun zum Setzen von
+      IP-Addressen und Portnummern benutzt. Der Servername und die Portnummer, die
+      f&uuml;r Weiterleitungen und zur Erkennung virtueller Server verwendet werden,
+      werden &uuml;ber die ServerName-Anweisung konfiguriert.</dd>
 
       <dt><strong>Native Windows NT Unicode-Unterst&uuml;tzung</strong></dt>
 
       <dd>Apache 2.0 auf Windows NT benutzt jetzt utf-8 f&uuml;r alle
-      Dateinamen-Kodierungen. Diese werden direkt auf das zugrundeliegenden
+      Dateinamen-Kodierungen. Diese werden direkt auf das zugrundeliegende
       Unicode-Dateisystem abgebildet, wodurch Mehrsprach-Unterst&uuml;tzung
-      f&uuml; alle Windows NT-basierte Installationen, inklusive Windows 2000 und
+      f&uuml;r alle Windows NT-basierten Installationen, inklusive Windows 2000 und
       Windows XP, zur Verf&uuml;gung gestellt wird.
       <em>Diese Unterst&uuml;tzung ist nicht auf Windows 95, 98 oder ME verf&uuml;gbar.
       Hier wird weiterhin die jeweils lokale Codepage des Rechners f&uuml;r den
       Zugriff auf das Dateisystem verwendet.</em></dd>
-
     </dl>
-    <hr />
-
-    <h2><a id="module" name="module">Modul Erweiterungen:</a></h2>
+  <h2><a name="module">Modul-Erweiterungen</a></h2>
+    
 
     <dl>
       <dt><strong>mod_ssl</strong></dt>
 
-      <dd>Neues Modul in Apache 2.0.  Dieses Modul ist ein Interface
+      <dd>Neues Modul in Apache 2.0. Dieses Modul ist ein Interface
       zu den von OpenSSL bereitgestellten SSL/TLS Verschl&uuml;sselungs-Protokollen.</dd>
 
       <dt><strong>mod_dav</strong></dt>
 
       <dd>Neues Modul in Apache 2.0. Dieses Modul implementiert die HTTP
-      Distributed Authoring and Versioning (DAV) Spezifikation, zur
-      Erzeugung und Pflege von Web-Inhalten..</dd>
+      Distributed Authoring and Versioning (DAV) Spezifikation zur
+      Erzeugung und Pflege von Web-Inhalten.</dd>
 
       <dt><strong>mod_auth_digest</strong></dt>
 
       <dd>Zus&auml;tzliche Unterst&uuml;tzung f&uuml;r prozess&uuml;bergreifendes
       Session-Caching mittels Shared-Memory.
-     </dd>
+      </dd>
 
       <dt><strong>mod_charset_lite</strong></dt>
 
@@ -151,8 +134,7 @@
 
       <dt><strong>mod_negotiation</strong></dt>
 
-      <dd>Die neue Konfigurationsanweisung <a
-      href="mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a>
+      <dd>Die neue Konfigurationsanweisung <a href="./mod/mod_negotiation.html#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a>
       kann benutzt werden, um sicherzustellen, dass ein Client auf jeden Fall ein
       einzelnes Dokument, anstatt einer NOT ACCEPTABLE- oder MULTIPLE CHOICES-Antwort,
       bekommt. Zus&auml;tzlich wurden die Negotiation- und Multiview-Algorithmen
@@ -163,8 +145,8 @@
       <dt><strong>mod_autoindex</strong></dt>
 
       <dd>Automatisch erzeugte Verzeichnisindizes k&ouml;nnen zur besseren
-      &Uuml;bersichtlichkeit durch ein HTML-Tabellen dargestellt werden.
-      Genauerere Sortierungen, wie Sortierung nach Versionsnummer und
+      &Uuml;bersichtlichkeit durch HTML-Tabellen dargestellt werden.
+      Genauere Sortierungen, wie Sortierung nach Versionsnummer und
       Wildcard-Filterung des Verzeichnisindizes werden unterst&uuml;tzt.</dd>
 
       <dt><strong>mod_include</strong></dt>
@@ -179,21 +161,16 @@
       <dt><strong>mod_auth_dbm</strong></dt>
 
       <dd>DBM-&auml;hnliche Datenbanken werden jetzt durch die Konfigurationsaweisung
-      <a href="mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a>
+      <a href="./mod/mod_auth_dbm.html#authdbmtype" class="directive"><code class="directive">AuthDBMType</code></a>
       unterst&uuml;tzt.</dd>
 
       <dt><strong>mod_proxy</strong></dt>
 
       <dd>Neue &lt;Proxy&gt;-Konfigurationssektionen bringen eine besser
-      lesbarere (und intern schnellere) Kontrolle der genutzten Websites.
+      lesbare (und intern schnellere) Kontrolle der genutzten Websites.
       Die &uuml;berladene &lt;Directory "proxy:..."&gt;-Anweisung wird nicht mehr
       unterst&uuml;tzt. Das Modul wurde in mehrere Module aufgeteilt, die jeweils
-      ein bestimmtes Übertragungsprotokoll implementieren. Diese sind proxy_connect,
+      ein bestimmtes &Uuml;bertragungsprotokoll implementieren. Diese sind proxy_connect,
       proxy_ftp und proxy_http.</dd>
-
     </dl>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
-
+  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Startseite"></a></body></html>

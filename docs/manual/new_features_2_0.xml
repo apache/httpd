@@ -1,11 +1,17 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Overview of new features in Apache 2.0 - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Overview of new features in Apache 2.0</h1>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+<title>Overview of new features in Apache 2.0</title>
+
+<summary>
   <p>Enhancements:</p>
-<ul><li><a href="#core">Core Enhancements</a></li><li><a href="#module">Module Enhancements</a></li></ul><hr><h2><a name="core">Core Enhancements</a></h2>
-    
+</summary>
+
+  <section id="core">
+    <title>Core Enhancements</title>
 
     <dl>
       <dt><strong>Unix Threading</strong></dt>
@@ -32,7 +38,8 @@
 
       <dd>Apache 2.0 is faster and more stable on non-Unix
       platforms such as BeOS, OS/2, and Windows. With the
-      introduction of platform-specific <a href="mpm.html">multi-processing modules</a> (MPMs) and the
+      introduction of platform-specific <a
+      href="mpm.html">multi-processing modules</a> (MPMs) and the
       Apache Portable Runtime (APR), these platforms are now
       implemented in their native API, avoiding the often buggy and
       poorly performing POSIX-emulation layers.</dd>
@@ -50,7 +57,10 @@
 
       <dd>On systems where IPv6 is supported by the underlying
       Apache Portable Runtime library, Apache gets IPv6 listening
-      sockets by default. Additionally, the <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>, <a href="./mod/core.html#namevirtualhost" class="directive"><code class="directive">NameVirtualHost</code></a>, and <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">VirtualHost</code></a> directives support
+      sockets by default. Additionally, the <directive
+      module="mpm_common">Listen</directive>, <directive module="core"
+      >NameVirtualHost</directive>, and <directive module="core"
+      >VirtualHost</directive> directives support
       IPv6 numeric address strings (e.g., "Listen
       [fe80::1]:8080").</dd>
 
@@ -86,8 +96,10 @@
       continue to use the machine's local codepage for filesystem 
       access.</em></dd>
     </dl>
-  <h2><a name="module">Module Enhancements</a></h2>
-    
+  </section>
+
+  <section id="module">
+    <title>Module Enhancements</title>
 
     <dl>
       <dt><strong>mod_ssl</strong></dt>
@@ -137,7 +149,8 @@
 
       <dt><strong>mod_negotiation</strong></dt>
 
-      <dd>A new <a href="./mod/mod_negotiation.html#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a> directive can be used to assure that
+      <dd>A new <directive module="mod_negotiation"
+      >ForceLanguagePriority</directive> directive can be used to assure that
       the client receives a single document in all cases, rather than
       NOT ACCEPTABLE or MULTIPLE CHOICES responses. In addition, the
       negotiation and MultiViews algorithms have been cleaned up to
@@ -163,7 +176,7 @@
       <dt><strong>mod_auth_dbm</strong></dt>
 
       <dd>Now supports multiple types of DBM-like databases using the
-      <a href="./mod/mod_auth_dbm.html#authdbmtype" class="directive"><code class="directive">AuthDBMType</code></a>
+      <directive module="mod_auth_dbm">AuthDBMType</directive>
       directive.</dd>
 
       <dt><strong>mod_auth_db</strong></dt>
@@ -171,4 +184,5 @@
       <dd>Has been removed in favor of mod_auth_dbm with the AuthDBMType
       directive.</dd>
     </dl>
-  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+  </section>
+</manualpage>
