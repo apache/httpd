@@ -197,182 +197,15 @@ API_EXPORT(char *) unparse_uri_components(pool *p, const uri_components *uptr, u
     return ret;
 }
 
-
-
-/* This will serve as the basis for an optimized parse_uri_components, sorry
- * about the if 0
+/* The regex version of parse_uri_components has the advantage that it is
+ * relatively easy to understand and extend.  But it has the disadvantage
+ * that the regexes are complex enough that regex libraries really
+ * don't do a great job with them performancewise.
+ *
+ * The default is a hand coded scanner that is two orders of magnitude
+ * faster.
  */
-
-#if 0
-/* parse_uri_components():
- * Parse a given URI, fill in all supplied fields of a uri_components
- * structure. This eliminates the necessity of extracting host, port,
- * path, query info repeatedly in the modules.
- * Side effects:
- *  - fills in fields of uri_components *uptr
- *  - none on any of the r->* fields
- */
-API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr)
-{
-    const char *s;
-    int ret = HTTP_OK;
-
-    /* Initialize the structure. parse_uri() and parse_uri_components()
-     * can be called more than once per request.
-     */
-    memset (uptr, '\0', sizeof(*uptr));
-    uptr->is_initialized = 1;
-
-    /* A proxy request contains a ':' early on (after the scheme),
-     * but not as first character. RFC1738 allows [a-zA-Z0-9-+.]:
-     */
-    for (s = uri; s != '\0'; s++)
-	if (!isalnum(*s) && *s != '+' && *s != '-' && *s != '.')
-	    break;
-
-    if (s == uri || s[0] != ':' || s[1] == '\0') {
-	/* not a full URL (not: scheme://host/path), so no proxy request: */
-
-	/* Store path, without the optional "?query" argument: */
-	uptr->path = getword (p, &uri, '?');
-	if (uptr->path[0] == '\0') {
-	    uptr->path = NULL;
-	}
-
-	if (uri[0] != '\0') {
-	    uptr->query = pstrdup(p, uri);
-	}
-
-#if defined(__EMX__) || defined(WIN32)
-	/* Handle path translations for OS/2 and plug security hole.
-	 * This will prevent "http://www.wherever.com/..\..\/" from
-	 * returning a directory for the root drive.
-	 */
-	for (s = uptr->path; (s = strchr(s, '\\')) != NULL; )
-	    *(char *)s = '/';
-#ifndef WIN32   /* for OS/2 only: */
-	/* Fix OS/2 HPFS filename case problem. */
-	uptr->path = strlwr(uptr->path);
-#endif
-#endif  /* __EMX__ || WIN32 */
-    }
-    else {
-	/* Yes, it is a proxy request. We've detected the scheme, now
-	 * we split the URI's components and mark what we've found:
-	 * - scheme
-	 *   followed by "://", then:
-	 * - [ username [ ":" password ] "@" ]
-	 * - hostname
-	 * [ ":" port ]
-	 * [ "/" path ... [ "?" query ] ]
-	 */
-
-	/* As per RFC1738:
-	 * The generic form of a URL is:
-	 *   genericurl     = scheme ":" schemepart
-	 *
-	 * the scheme is in lower case; interpreters should use case-ignore
-	 *   scheme         = 1*[ lowalpha | digit | "+" | "-" | "." ]
-	 *
-	 * Extract the scheme:
-	 */
-	s = uri;
-	uptr->scheme = getword(p, &s, ':');
-	if (uptr->scheme[0] == '\0') {
-	    uptr->scheme = NULL;
-	}
-
-	/*  URL schemeparts for ip based protocols:
-	 *
-	 * ip-schemepart  = "//" login [ "/" urlpath ]
-	 *
-	 * login          = [ user [ ":" password ] "@" ] hostport
-	 * hostport       = host [ ":" port ]
-	 * host           = hostname | hostnumber
-	 * hostname       = *[ domainlabel "." ] toplabel
-	 * domainlabel    = alphadigit | alphadigit *[ alphadigit | "-" ] alphadigit
-	 * toplabel       = alpha | alpha *[ alphadigit | "-" ] alphadigit
-	 * alphadigit     = alpha | digit
-	 * hostnumber     = digits "." digits "." digits "." digits
-	 * port           = digits
-	 * user           = *[ uchar | ";" | "?" | "&" | "=" ]
-	 * password       = *[ uchar | ";" | "?" | "&" | "=" ]
-	 * urlpath        = *xchar
-	 */
-	/* if IP-schemepart follows, extract host, port etc. */
-	if (s[0] == '/' && s[1] == '/') {
-	    char *tmp;
-
-	    s += 2;
-	    if ((tmp = strchr(s, '/')) != NULL) {
-		/* In the request_rec structure, the uri is not
-		 * separated into path & query for proxy requests.
-		 * But here, we want maximum knowledge about the request,
-		 * so we still split them. */
-		uptr->path = getword_nc(p, &tmp, '?');
-		if (uptr->path[0] == '\0') {
-		    uptr->path = NULL;
-		}
-
-		if (tmp[0] != '\0') {
-		    uptr->query = pstrdup(p, tmp);
-		}
-	    }
-	    else {
-		/* the request is just http://hostname - no trailing slash.
-		 * Provide one:
-		 */
-		uptr->path = "/";
-	    }
-
-	    uptr->hostname = getword (p, &s, '/');
-	    if (uptr->hostname[0] == '\0') {
-		uptr->hostname = NULL;
-	    }
-
-	    /* disintegrate "user@host" */
-	    /* NOTE: using reverse search here because user:password might
-	     * contain a '@' as well (ftp login: user=ftp : password=user@host)
-	     */
-	    if ((tmp = strrchr(uptr->hostname, '@')) != NULL) {
-		uptr->user = uptr->hostname;
-		*tmp++ = '\0';
-		uptr->hostname = tmp;
-
-		/* disintegrate "user:password" */
-		if ((tmp = strchr(uptr->user, ':')) != NULL) {
-		    *tmp++ = '\0';
-		    uptr->password = tmp;
-		}
-	    }
-
-	    /* disintegrate "host:port" */
-	    if ((tmp = strchr(uptr->hostname, ':')) != NULL) {
-		*tmp++ = '\0';
-		uptr->port_str = tmp;
-		uptr->port = (unsigned short) strtol(tmp, &tmp, 10);
-		/* Catch possible problem: http://www.apache.org:80@@@/dist/ */
-		if (*tmp != '\0')
-		    ret = HTTP_BAD_REQUEST;
-	    }
-
-	    /* Strip any trailing dots in hostname */
-	    tmp = &uptr->hostname[strlen(uptr->hostname)-1];
-	    for (; *tmp == '.' && tmp > uptr->hostname; --tmp)
-		*tmp = '\0';
-
-	    /* This name hasn't been looked up yet */
-	    uptr->dns_looked_up = 0;
-	}
-	/* If the ip-schemepart doesn't start with "//", deny: */
-	else
-	    ret = HTTP_BAD_REQUEST;
-
-    }
-
-    return ret;
-}
-#endif
+#ifdef UTIL_URI_REGEX
 
 static regex_t re_uri;
 static regex_t re_hostpart;
@@ -381,6 +214,14 @@ void util_uri_init(void)
 {
     int ret;
     const char *re_str;
+
+    memset(uri_delims, 0, sizeof(uri_delims));
+    uri_delims[':'] = T_COLON;
+    uri_delims['/'] = T_SLASH;
+    uri_delims['?'] = T_QUESTION;
+    uri_delims['#'] = T_HASH;
+    uri_delims['@'] = T_AT;
+    uri_delims['\0'] = T_NUL;
 
     /* This is a modified version of the regex that appeared in
      * draft-fielding-uri-syntax-01.  It doesnt allow the uri to contain a
@@ -436,6 +277,7 @@ void util_uri_init(void)
 	exit(1);
     }
 }
+
 
 /* parse_uri_components():
  * Parse a given URI, fill in all supplied fields of a uri_components
@@ -535,24 +377,196 @@ API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *u
 	}
     }
 
-#if defined(__EMX__) || defined(WIN32)
-    /* Handle path translations for OS/2 and plug security hole.
-     * This will prevent "http://www.wherever.com/..\..\/" from
-     * returning a directory for the root drive.
-     */
-    {
-	char *s;
-
-	for (s = uptr->path; (s = strchr(s, '\\')) != NULL; )
-	    *s = '/';
-    }
-#ifndef WIN32   /* for OS/2 only: */
-    /* Fix OS/2 HPFS filename case problem. */
-    str_tolower(uptr->path);
-#endif
-#endif  /* __EMX__ || WIN32 */
-
     if (ret == 0)
 	ret = HTTP_OK;
     return ret;
 }
+#else
+
+/* Here is the hand-optimized parse_uri_components().  There are some wild
+ * tricks we could pull in assembly language that we don't pull here... like we
+ * can do word-at-time scans for delimiter characters using the same technique
+ * that fast memchr()s use.  But that would be way non-portable. -djg
+ */
+
+/* We have a table that we can index by character and it tells us if the
+ * character is one of the interesting delimiters.  Note that we even get
+ * compares for NUL for free -- it's just another delimiter.
+ */
+
+#define T_COLON		0x01	/* ':' */
+#define T_SLASH		0x02	/* '/' */
+#define T_QUESTION	0x04	/* '?' */
+#define T_HASH		0x08	/* '#' */
+#define T_AT		0x10	/* '@' */
+#define T_NUL		0x80	/* '\0' */
+
+static unsigned char uri_delims[256];
+
+/* it works like this:
+    if (uri_delims[ch] & NOTEND_foobar) {
+	then we're not at a delimiter for foobar
+    }
+*/
+
+/* Note that we optimize the scheme scanning here, we cheat and let the
+ * compiler know that it doesn't have to do the & masking.
+ */
+#define NOTEND_SCHEME	(0xff)
+#define NOTEND_HOSTINFO	(T_SLASH | T_QUESTION | T_HASH | T_NUL)
+#define NOTEND_PATH	(T_QUESTION | T_HASH | T_NUL)
+
+void util_uri_init(void)
+{
+    memset(uri_delims, 0, sizeof(uri_delims));
+    uri_delims[':'] = T_COLON;
+    uri_delims['/'] = T_SLASH;
+    uri_delims['?'] = T_QUESTION;
+    uri_delims['#'] = T_HASH;
+    uri_delims['@'] = T_AT;
+    uri_delims['\0'] = T_NUL;
+}
+
+/* Since we know that the string we're duping is of exactly length l
+ * we don't need to go through the expensive (silly) pstrndup().  We
+ * can do much better on our own.  This is worth another 50%
+ * improvement.
+ */
+static char *special_strdup(pool *p, const char *s, size_t l)
+{
+    char *d;
+
+    d = palloc(p, l + 1);
+    memcpy(d, s, l);
+    d[l] = '\0';
+    return d;
+}
+
+/* parse_uri_components():
+ * Parse a given URI, fill in all supplied fields of a uri_components
+ * structure. This eliminates the necessity of extracting host, port,
+ * path, query info repeatedly in the modules.
+ * Side effects:
+ *  - fills in fields of uri_components *uptr
+ *  - none on any of the r->* fields
+ */
+API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr)
+{
+    const char *s;
+    const char *s1;
+    const char *hostinfo;
+    char *endstr;
+    int port;
+
+    /* Initialize the structure. parse_uri() and parse_uri_components()
+     * can be called more than once per request.
+     */
+    memset (uptr, '\0', sizeof(*uptr));
+    uptr->is_initialized = 1;
+
+    /* We assume the processor has a branch predictor like most --
+     * it assumes forward branches are untaken and backwards are taken.  That's
+     * the reason for the gotos.  -djg
+     */
+    if (uri[0] == '/') {
+deal_with_path:
+	/* we expect uri to point to first character of path ... remember
+	 * that the path could be empty -- http://foobar?query for example
+	 */
+	s = uri;
+	while ((uri_delims[*(unsigned char *)s] & NOTEND_PATH) == 0) {
+	    ++s;
+	}
+	if (s != uri) {
+	    uptr->path = special_strdup(p, uri, s - uri);
+	}
+	if (*s == 0) {
+	    return HTTP_OK;
+	}
+	if (*s == '?') {
+	    ++s;
+	    s1 = strchr(s, '#');
+	    if (s1) {
+		uptr->fragment = pstrdup(p, s1 + 1);
+		uptr->query = special_strdup(p, s, s1 - s);
+	    }
+	    else {
+		uptr->query = pstrdup(p, s);
+	    }
+	    return HTTP_OK;
+	}
+	/* otherwise it's a fragment */
+	uptr->fragment = pstrdup(p, s + 1);
+	return HTTP_OK;
+    }
+
+    /* find the scheme: */
+    s = uri;
+    while ((uri_delims[*(unsigned char *)s] & NOTEND_SCHEME) == 0) {
+	++s;
+    }
+    /* scheme must be non-empty and followed by :// */
+    if (s == uri || s[0] != ':' || s[1] != '/' || s[2] != '/') {
+	goto deal_with_path;	/* backwards predicted taken! */
+    }
+
+    uptr->scheme = special_strdup(p, uri, s - uri);
+    s += 3;
+    hostinfo = s;
+    while ((uri_delims[*(unsigned char *)s] & NOTEND_HOSTINFO) == 0) {
+	++s;
+    }
+    uri = s;	/* whatever follows hostinfo is start of uri */
+    uptr->hostinfo = special_strdup(p, hostinfo, uri - hostinfo);
+
+    /* If there's a username:password@host:port, the @ we want is the last @...
+     * too bad there's no memrchr()... For the C purists, note that hostinfo
+     * is definately not the first character of the original uri so therefore
+     * &hostinfo[-1] < &hostinfo[0] ... and this loop is valid C.
+     */
+    s = uri;
+    do {
+	--s;
+    } while (s >= hostinfo && *s != '@');
+    if (s < hostinfo) {
+	/* again we want the common case to be fall through */
+deal_with_host:
+	/* We expect hostinfo to point to the first character of
+	 * the hostname.  If there's a port it is the first colon.
+	 */
+	s = memchr(hostinfo, ':', uri - hostinfo);
+	if (s == NULL) {
+	    /* we expect the common case to have no port */
+	    uptr->hostname = special_strdup(p, hostinfo, uri - hostinfo);
+	    goto deal_with_path;
+	}
+	uptr->hostname = special_strdup(p, hostinfo, s - hostinfo);
+	++s;
+	uptr->port_str = special_strdup(p, s, uri - s);
+	if (uri != s) {
+	    port = strtol(uptr->port_str, &endstr, 10);
+	    uptr->port = port;
+	    if (*endstr == '\0' && uptr->port == port) {
+		goto deal_with_path;
+	    }
+	    /* Invalid characters after ':' found */
+	    return HTTP_BAD_REQUEST;
+	}
+	uptr->port = default_port_for_scheme(uptr->scheme);
+	goto deal_with_path;
+    }
+
+    /* first colon delimits username:password */
+    s1 = memchr(hostinfo, ':', s - hostinfo);
+    if (s1) {
+	uptr->user = special_strdup(p, hostinfo, s1 - hostinfo);
+	++s1;
+	uptr->password = special_strdup(p, s1, s - s1);
+    }
+    else {
+	uptr->user = special_strdup(p, hostinfo, s - hostinfo);
+    }
+    hostinfo = s + 1;
+    goto deal_with_host;
+}
+#endif
