@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Work around incomplete implementation of strftime on Win32.
+     [Manoj Kasichainula, Ken Parzygnat <kparz@us.ibm.com>]
+
   *) Move a typedef to fix compile problems on Linux with 1.x kernels.
      [Manoj Kasichainula] PR#3177
 

@@ -93,6 +93,8 @@ __inline int ap_os_is_path_absolute(const char *file)
 #define stat(f,ps)  os_stat(f,ps)
 API_EXPORT(int) os_stat(const char *szPath,struct stat *pStat);
 
+API_EXPORT(int) os_strftime(char *s, size_t max, const char *format, const struct tm *tm);
+
 #define _spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
 #define spawnv(mode,cmdname,argv)	    os_spawnv(mode,cmdname,argv)
 API_EXPORT(int) os_spawnv(int mode,const char *cmdname,const char *const *argv);

@@ -938,6 +938,9 @@ typedef int rlim_t;
 #endif /* ndef WIN32 */
 
 #include <time.h>		/* for ctime */
+#ifdef WIN32
+#define strftime(s,max,format,tm)  os_strftime(s,max,format,tm)
+#endif
 #include <signal.h>
 #include <errno.h>
 #if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT)
