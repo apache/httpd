@@ -799,8 +799,8 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
 }
 
 
-static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *command,
-                       request_rec *r, ap_filter_t *f)
+static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
+                       const char *command, request_rec *r, ap_filter_t *f)
 {
     exec_info      e_info;
     const char   **argv;
