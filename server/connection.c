@@ -286,16 +286,13 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
 
     conn->pool = p;
     conn->local_addr = *saddr;
-    conn->local_ip = apr_pstrdup(conn->pool,
-				inet_ntoa(conn->local_addr.sin_addr));
+    apr_get_local_ipaddr(&conn->local_ip, inout);
     conn->base_server = server;
     conn->client = conn_io;
     conn->client_socket = inout;
 
     conn->remote_addr = *remaddr;
-    conn->remote_ip = apr_pstrdup(conn->pool,
-			      inet_ntoa(conn->remote_addr.sin_addr));
-    
+    apr_get_remote_ipaddr(&conn->remote_ip, inout);   
     conn->id = id;
 
     return conn;
