@@ -660,6 +660,66 @@ static void ssl_init_cert_chain(server_rec *s,
             n, n == 1 ? "" : "s");
 }
 
+static void ssl_check_public_cert(server_rec *s,
+                                  apr_pool_t *ptemp,
+                                  X509 *cert,
+                                  int type)
+{
+    int is_ca, pathlen;
+    char *cn;
+
+    if (!cert) {
+        return;
+    }
+
+    /*
+     * Some information about the certificate(s)
+     */
+
+    if (SSL_X509_isSGC(cert)) {
+        ssl_log(s, SSL_LOG_INFO|SSL_INIT,
+                "%s server certificate enables "
+                "Server Gated Cryptography (SGC)", 
+                ssl_asn1_keystr(type));
+    }
+
+    if (SSL_X509_getBC(cert, &is_ca, &pathlen)) {
+        if (is_ca) {
+            ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                    "%s server certificate is a CA certificate "
+                    "(BasicConstraints: CA == TRUE !?)",
+                    ssl_asn1_keystr(type));
+        }
+
+        if (pathlen > 0) {
+            ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                    "%s server certificate is not a leaf certificate "
+                    "(BasicConstraints: pathlen == %d > 0 !?)",
+                    ssl_asn1_keystr(type), pathlen);
+        }
+    }
+
+    if (SSL_X509_getCN(ptemp, cert, &cn)) {
+        int fnm_flags = FNM_PERIOD|FNM_CASE_BLIND;
+
+        if (apr_is_fnmatch(cn) &&
+            (apr_fnmatch(cn, s->server_hostname,
+                         fnm_flags) == FNM_NOMATCH))
+        {
+            ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                    "%s server certificate wildcard CommonName (CN) `%s' "
+                    "does NOT match server name!?",
+                    ssl_asn1_keystr(type), cn);
+        }
+        else if (strNE(s->server_hostname, cn)) {
+            ssl_log(s, SSL_LOG_WARN|SSL_INIT,
+                    "%s server certificate CommonName (CN) `%s' "
+                    "does NOT match server name!?",
+                    ssl_asn1_keystr(type), cn);
+        }
+    }
+}
+
 /*
  * Configure a particular server
  */
@@ -669,7 +729,6 @@ void ssl_init_ConfigureServer(server_rec *s,
                               SSLSrvConfigRec *sc)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    char *cp;
     const char *rsa_id, *dsa_id;
     const char *vhost_id = sc->szVHostID;
     EVP_PKEY *pkey;
@@ -677,7 +736,6 @@ void ssl_init_ConfigureServer(server_rec *s,
     ssl_asn1_t *asn1;
     unsigned char *ptr;
     BOOL ok = FALSE;
-    int is_ca, pathlen;
     int i;
 
     ssl_init_check_server(s, p, ptemp, sc);
@@ -761,58 +819,8 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_die();
     }
 
-    /*
-     * Some information about the certificate(s)
-     */
     for (i = 0; i < SSL_AIDX_MAX; i++) {
-        if (sc->pPublicCert[i]) {
-            if (SSL_X509_isSGC(sc->pPublicCert[i])) {
-                ssl_log(s, SSL_LOG_INFO|SSL_INIT,
-                        "%s server certificate enables "
-                        "Server Gated Cryptography (SGC)", 
-                        ssl_asn1_keystr(i));
-            }
-
-            if (SSL_X509_getBC(sc->pPublicCert[i], &is_ca, &pathlen)) {
-                if (is_ca) {
-                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
-                            "%s server certificate "
-                            "is a CA certificate "
-                            "(BasicConstraints: CA == TRUE !?)",
-                            ssl_asn1_keystr(i));
-                }
-
-                if (pathlen > 0) {
-                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
-                            "%s server certificate "
-                            "is not a leaf certificate "
-                            "(BasicConstraints: pathlen == %d > 0 !?)",
-                            ssl_asn1_keystr(i), pathlen);
-                }
-            }
-
-            if (SSL_X509_getCN(p, sc->pPublicCert[i], &cp)) {
-                int fnm_flags = FNM_PERIOD|FNM_CASE_BLIND;
-
-                if (apr_is_fnmatch(cp) &&
-                    (apr_fnmatch(cp, s->server_hostname,
-                                 fnm_flags) == FNM_NOMATCH))
-                {
-                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
-                            "%s server certificate "
-                            "wildcard CommonName (CN) `%s' "
-                            "does NOT match server name!?",
-                            ssl_asn1_keystr(i), cp);
-                }
-                else if (strNE(s->server_hostname, cp)) {
-                    ssl_log(s, SSL_LOG_WARN|SSL_INIT,
-                            "%s server certificate "
-                            "CommonName (CN) `%s' "
-                            "does NOT match server name!?",
-                            ssl_asn1_keystr(i), cp);
-                }
-            }
-        }
+        ssl_check_public_cert(s, ptemp, sc->pPublicCert[i], i);
     }
 
     /*
