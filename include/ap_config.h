@@ -104,7 +104,7 @@
  * Apache Core dso variables are declared with AP_MODULE_DECLARE_DATA.
  * This assures the appropriate indirection is invoked at compile time.
  *
- * @tip extern AP_DECLARE_DATA type apr_variable; syntax is required for
+ * @tip AP_DECLARE_DATA extern type apr_variable; syntax is required for
  * declarations within headers to properly import the variable.
  * @deffunc AP_DECLARE_DATA type apr_variable
  */
