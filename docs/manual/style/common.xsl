@@ -144,10 +144,11 @@
 
           <xsl:apply-templates select="summary"/>
           
-          <ul>
-            <xsl:apply-templates select="section" mode="index"/>
-          </ul>
-
+          <xsl:if test="count(section) > 1">
+            <ul>
+              <xsl:apply-templates select="section" mode="index"/>
+            </ul>
+          </xsl:if>
           <hr />
           
           <xsl:if test="seealso">
