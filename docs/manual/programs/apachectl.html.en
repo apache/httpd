@@ -57,7 +57,7 @@ binary.</p>
 <p>When acting in SysV init mode, <code>apachectl</code> takes simple,
 one-word commands, defined below.</p>
 
-<p><code><strong>apachectl </strong> <var>command</var></code></p>
+<p><code><strong>apachectl</strong> <var>command</var></code></p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
