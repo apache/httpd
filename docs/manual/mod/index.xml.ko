@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ko"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.7 -->
+
+<moduleindex metafile="index.xml.meta">
+  <title>모듈 목록</title>
+  <summary>
+    <p>
+      다음은 아파치 배포본에 포함된 모든 모듈 목록이다. <a
+      href="directives.html">모든 아파치 지시어</a> 목록도
+      참고하라.
+    </p>
+  </summary>
+  <seealso><a href="../mpm.html">다중처리모듈 (MPM)</a>
+  </seealso>
+  <seealso><a href="quickreference.html">지시어 빠른참고</a>
+  </seealso>
+
+  &allmodules;
+</moduleindex>

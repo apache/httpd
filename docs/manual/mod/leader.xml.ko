@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.2 -->
+
+<modulesynopsis metafile="leader.xml.meta">
+<name>leader</name>
+<description>표준 <module>worker</module> MPM의 실험적인 변형</description>
+<status>MPM</status>
+<sourcefile>leader.c</sourcefile>
+<identifier>mpm_leader_module</identifier>
+
+<summary>
+    <note type="warning"><title>주의</title>
+      <p>이 MPM은 실험적인 상태로, 기대한대로 동작하지않을 수 있다.</p>
+    </note>
+    
+    <p>이 모듈은 표준 <module>worker</module> MPM의 실험적인
+    변형이다. 이 모듈은 쓰레드간의 협동을 위해 Leader/Followers
+    디자인패턴을 사용한다. 더 자세한 정보는 <a
+    href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf"
+    >http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>를 참고하라.</p>
+
+    <p><module>leader</module> MPM을 사용하려면, httpd를 컴파일할때
+    구성스크립트 아규먼트에 <code>--with-mpm=leader</code>를
+    사용한다.</p>
+  
+    <p>이 MPM은 쓰레드 동기를 위해 APR의 atomic compare-and-swap
+    명령을 사용한다. x86용으로 컴파일하지만 386을 지원할 필요가
+    없거나, SPARC용으로 컴파일하지만 UltraSPARC 칩 이전에서
+    실행하지 않는다면, 구성스크립트 아규먼트에
+    <code>--enable-nonportable-atomics=yes</code>를 사용하라.
+    그러면 APR이 오래된 CPU에는 없는 더 효율적인 명령어를 사용하여
+    atomic 명령을 구현한다.</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>LockFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxClients</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>User</name>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding='EUC-KR' ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.9 -->
+<modulesynopsis metafile="mod_actions.xml.meta">
+
+<name>mod_actions</name> 
+
+<description>이 모듈은 미디어종류나 요청메서드에 따라 CGI
+스크립트를 실행한다.</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>이 모듈에는 두가지 지시어가 있다. <directive
+    module="mod_actions">Action</directive> 지시어는 요청하는
+    파일의 종류에 따라 CGI 스크립트를 실행한다. <directive
+    module="mod_actions">Script</directive> 지시어는 요청이
+    특정 메서드를 사용할 경우 CGI 스크립트를 실행한다. 그래서
+    파일을 처리하는 스크립트를 매우 쉽게 실행할 수 있다.</p>
+</summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">CGI로 동적 내용</a></seealso>
+<seealso><a href="../handler.html">아파치에서 핸들러 사용</a></seealso>
+
+<directivesynopsis>
+<name>Action</name>
+<description>특정 핸들러나 content-type에 대해 CGI 스크립트를
+사용한다</description>
+<syntax>Action <var>action-type</var> <var>cgi-script</var></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>이 지시어는 요청이 <var>action-type</var>이면
+    <var>cgi-script</var>를 실행하는 행동을 서버에 추가한다.
+    <var>cgi-script</var>는 <directive
+    module="mod_alias">ScriptAlias</directive>나 <directive
+    module="mod_mime">AddHandler</directive>를 사용하여 CGI
+    스크립트로 지정한 리소스의 URL경로이다.
+    <var>action-type</var>에는 <a
+    href="../handler.html">핸들러</a>나 MIME content type을
+    사용할 수 있다. 이 지시어는 PATH_INFO와 PATH_TRANSLATED
+    CGI 표준 환경변수로 요청한 문서의 URL과 파일경로를 전달한다.</p>
+
+    <example><title>예제</title>
+      # 특정 종류의 파일 요청:<br />
+      Action image/gif /cgi-bin/images.cgi<br />
+      <br />
+      # 특정한 확장자를 가진 파일<br />
+      AddHandler my-file-type .xyz<br />
+      Action my-file-type /cgi-bin/program.cgi<br />
+    </example>
+
+    <p>첫번째 예에서 MIME content type이 <code>image/gif</code>인
+    파일을 요청하면 지정한 cgi 스크립트 <code>/cgi-bin/images.cgi</code>가
+    대신 처리한다.</p>
+
+    <p>두번째 예에서 확장자가 <code>.xyz</code>인 파일을 요청하면
+    지정한 cgi 스크립트 <code>/cgi-bin/program.cgi</code>가
+    대신 처리한다.</p>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Script</name>
+<description>특정 요청메서드에 대해 CGI 스크립트를
+사용한다.</description>
+<syntax>Script <var>method</var> <var>cgi-script</var></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>이 지시어는 파일을 <var>method</var> 메서드를 사용하여
+    요청하면 <var>cgi-script</var>를 실행하는 행동을 서버에
+    추가한다. <var>cgi-script</var>는 <directive
+    module="mod_alias">ScriptAlias</directive>나 <directive
+    module="mod_mime">AddHandler</directive>를 사용하여 CGI
+    스크립트로 지정한 리소스의 URL경로이다. 이 지시어는 PATH_INFO와
+    PATH_TRANSLATED CGI 표준 환경변수로 요청한 문서의 URL과
+    파일경로를 전달한다.</p>
+
+    <note>
+      어떤 메서드 이름이라도 사용할 수 있다. <strong>메서드 이름은
+      대소문자를 구별한다.</strong> 그래서 <code>Script PUT</code>과
+      <code>Script put</code>은 완전히 다르다.
+    </note>
+
+    <p>Script 명령어는 기본적인 행동만을 처리함을 주의하라.
+    CGI 스크립트가 불리거나, 요청한 메서드를 알아서 처리할 수
+    있는 리소스의 경우 그대로 처리한다. <code>GET</code>
+    메서드의 Script는 질의아규먼트가 있을때만 (<em>예</em>,
+    foo.html?hi) 사용함을 주의하라. 질의아규먼트가 없다면
+    정상적으로 요청을 처리한다.</p>
+
+    <example><title>예제</title>
+      # &lt;ISINDEX&gt;식 검색을 위해<br />
+      Script GET /cgi-bin/search<br />
+      <br />
+      # CGI PUT 핸들러<br />
+      Script PUT /~bob/put.cgi<br />
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
