@@ -1,5 +1,7 @@
 Changes with Apache 1.3b4
 
+  *) Better glibc support under Linux.  [Dean Gaudet] PR#1542
+
   *) "RedirectMatch gone /" would cause a SIGSEGV. [Dean Gaudet] PR#1319
 
   *) WIN32: avoid overflows during file canonicalisations.
