@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/22 09:23:51 $]
+Last modified at [$Date: 2002/06/23 02:52:13 $]
 
 Release:
 
@@ -874,7 +874,7 @@ Binaries (2.0.39):
  i686-pc-linux-gnu-rh70        yes     Aaron Bannert
  ia64-hp-hpux11.20             yes     Cliff Woolley
  powerpc-apple-darwin5.5       yes     Aaron Bannert
- powerpc-unknown-linux-gnu     no      Graham Leggett
+ powerpc-unknown-linux-gnu     yes     Graham Leggett
  sparc-sun-solaris2.8          yes     Jim Jagielski
  NetWare                       yes     Brad Nicholes
  OS/2                          yes     Brian Havard
