@@ -457,6 +457,12 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     return HTTP_MOVED_PERMANENTLY;
 }
 
+static apr_status_t worker_cleanup(void *theworker)
+{
+    
+    return APR_SUCCESS;
+}
+
 /* -------------------------------------------------------------- */
 /* Invoke handler */
 
@@ -475,6 +481,7 @@ static int proxy_handler(request_rec *r)
     long maxfwd;
     struct proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
+    proxy_module_conf *mconf;
 
     /* is this for us? */
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
@@ -551,12 +558,41 @@ static int proxy_handler(request_rec *r)
                       r->uri);
 #endif
     }
+    
     /* Try to obtain the most suitable worker */
-    access_status = proxy_run_pre_request(&worker, &balancer, r, conf, &url);
-    if (access_status != DECLINED && access_status != OK) {
+    access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
+    if (access_status != OK)
         return access_status;
+    
+    /* only use stored info for top-level pages. Sub requests don't share 
+     * in keepalives
+     */
+    if (!r->main) {
+        mconf = (proxy_module_conf *)ap_get_module_config(r->connection->conn_config,
+                                                          &proxy_module);
     }
-                                          
+    /* create space for state information */
+    if (!mconf) {
+        mconf = apr_pcalloc(r->connection->pool, sizeof(proxy_module_conf));
+        if (!r->main) {
+            ap_set_module_config(r->connection->conn_config,
+                                 &proxy_module, mconf);
+        }
+#if 0
+        /* register the connection->pool cleanup */
+        apr_pool_cleanup_register(r->connection->pool,
+                                  (void *)mconf, worker_cleanup,
+                                   apr_pool_cleanup_null);      
+#endif
+    }
+    /* use the current balancer and worker. 
+     * the proxy_conn will be set in particular scheme handler
+     * if not already set.
+     */ 
+    mconf->balancer = balancer;
+    mconf->worker   = worker;
+    mconf->url      = url;
+    
     /* firstly, try a proxy, unless a NoProxy directive is active */
     if (!direct_connect) {
         for (i = 0; i < proxies->nelts; i++) {
@@ -598,10 +634,12 @@ static int proxy_handler(request_rec *r)
                     "using LoadModule.", r->uri);
         return HTTP_FORBIDDEN;
     }
-    access_status = proxy_run_post_request(worker, balancer, r, conf);
-    if (access_status == DECLINED) {
-        access_status = OK; /* no post_request handler available */
-        /* TODO: reclycle direct worker */
+    if (balancer) {
+        access_status = proxy_run_post_request(worker, balancer, r, conf);
+        if (access_status == DECLINED) {
+            access_status = OK; /* no post_request handler available */
+            /* TODO: reclycle direct worker */
+        }
     }
     return access_status;
 }
