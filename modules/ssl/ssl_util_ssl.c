@@ -116,7 +116,7 @@ X509 *SSL_read_X509(char* filename, X509 **x509, int (*cb)(char*,int,int,void*))
     /* 1. try PEM (= DER+Base64+headers) */
        if ((bioS=BIO_new_file(filename, "r")) == NULL)
                return NULL;
-       rc=PEM_read_bio_X509 (bioS, x509, cb, NULL);
+       rc=modssl_PEM_read_bio_X509 (bioS, x509, cb, NULL);
        BIO_free(bioS);
 
     if (rc == NULL) {
