@@ -807,7 +807,7 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
     return NULL;
 }
 
-char *
+static char *
 proxy_get_host_of_request(request_rec *r)
 {
     char *url, *user = NULL, *password = NULL, *err, *host;
