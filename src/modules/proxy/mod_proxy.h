@@ -88,11 +88,9 @@ More things to do:
  
 4. Use a cache expiry database for more efficient GC (Jeremy Wohl)
 
-5. Handle multiple IPs for doconnect()
+5. Bulletproof GC against SIGALRM
 
-6. Bulletproof GC against SIGALRM
-
-Chuck Murcko <chuck@telebase.com> 1 Oct 96
+Chuck Murcko <chuck@topsail.org> 15 April 1997
 
 */
 
