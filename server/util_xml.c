@@ -70,7 +70,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
 {
     apr_xml_parser *parser;
     apr_bucket_brigade *brigade;
-    int result, seen_eos;
+    int seen_eos;
     apr_status_t status;
     char errbuf[200];
     apr_size_t total_read = 0;
