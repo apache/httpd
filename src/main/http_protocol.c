@@ -1638,12 +1638,12 @@ API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
             break;
         }
         o = 0;
-        total_bytes_sent += n;
 
         while (n && !r->connection->aborted) {
             w = bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
                 reset_timeout(r);   /* reset timeout after successful write */
+		total_bytes_sent += w;
                 n -= w;
                 o += w;
             }

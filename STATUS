@@ -55,12 +55,9 @@ Committed:
     * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
     * [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
     * Dean's [PATCH] fix Rasmus' chunking error
+    * [PATCH] PR#1366: fix result of send_fd_length
 
 Available:
-
-    * [PATCH] PR#1366: fix result of send_fd_length
-	<Pine.LNX.3.95dg3.971225192833.17380F-100000@twinlark.arctic.org>
-	Status: Dean +1, Dirk +1
 
     * Jim's [PATCH] ap_cpystrn() function (replace strncpy)
 	<199712261651.LAA09735@devsys.jaguNET.com>
