@@ -783,7 +783,7 @@ char *construct_url(pool *p, const char *uri, const server_rec *s) {
 		    uri, NULL);
 }
 
-#define c2x(what,where) sprintf(where,"%%%02x",what)
+#define c2x(what,where) sprintf(where,"%%%02x",(unsigned char)what)
 
 /*
 escape_path_segment() escapes a path segment, as defined in RFC 1808. This
