@@ -25,7 +25,7 @@ extern module asis_module;
 extern module imap_module;
 extern module action_module;
 extern module setenvif_module;
-//extern module isapi_module;
+extern module isapi_module;
 
 module *ap_prelinked_modules[] = {
   &core_module,
@@ -47,7 +47,7 @@ module *ap_prelinked_modules[] = {
   &imap_module,
   &action_module,
   &setenvif_module,
-//  &isapi_module,
+  &isapi_module,
   NULL
 };
 module *ap_preloaded_modules[] = {
@@ -70,6 +70,6 @@ module *ap_preloaded_modules[] = {
   &imap_module,
   &action_module,
   &setenvif_module,
-//  &isapi_module,
+  &isapi_module,
   NULL
 };
