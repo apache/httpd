@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>Setting which addresses and ports Apache uses</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Setting which addresses and ports Apache uses</H1>
+
+<HR>
+
+When Apache starts, it connects to some port and address on the
+local machine and waits for incoming requests. By default, it
+listens to all addresses on the machine, and to the port
+as specified by the <TT>Port</TT> directive in the server configuration.
+However, it can be told to listen to more the one port, or to listen
+to only selected addresses, or a combination. This is often combined
+with the Virtual Host feature which determines how Apache
+responds to different IP addresses, hostnames and ports.<P>
+
+There are two directives used to restrict or specify which addresses
+and ports Apache listens to.
+
+<UL>
+<LI><A HREF="#bindaddress">BindAddress</A> is used to restrict the server to listening to
+  a single address, and can be used to permit multiple Apache servers
+  on the same machine listening to different IP addresses.
+<LI><A HREF="#listen">Listen</A> can be used to make a single Apache server listen
+  to more than one address and/or port.
+</UL>
+
+<H3><A name="bindaddress">BindAddress</A></H3>
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
+<A
+ HREF="mod/directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>BindAddress *</CODE><BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
+
+Makes the server listen to just the specified address. If the argument
+is *, the server listens to all addresses. The port listened to
+is set with the <TT>Port</TT> directive. Only one BindAddress
+should be used.
+
+<H3><A name="listen">Listen</A></H3>
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Listen <EM>[ port | IP-address:port ]</EM><BR>
+<A
+ HREF="mod/directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>none</CODE><BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
+
+<TT>Listen</TT> can be used instead of <TT>BindAddress</TT> and
+<TT>Port</TT>. It tells the server to accept incoming requests on the
+specified port or address-and-port combination. If the first format is
+used, with a port number only, the server listens to the given port on
+all interfaces, instead of the port given by the <TT>Port</TT>
+directive. If an IP address is given as well as a port, the server
+will listen on the given port and interface.  <P> Multiple Listen
+directives may be used to specify a number of addresses and ports to
+listen to. The server will respond to requests from any of the listed
+addresses and ports.<P>
+
+For example, to make the server accept connections on both port
+80 and port 8000, use:
+<PRE>
+   Listen 80
+   Listen 8000
+</PRE>
+
+To make the server accept connections on two specified
+interfaces and port numbers, use
+<PRE>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</PRE>
+
+<H2>How this works with Virtual Hosts</H2>
+
+BindAddress and Listen do not implement Virtual Hosts. They tell the
+main server what addresses and ports to listen to.  If no
+&lt;VirtualHost&gt; directives are used, the server will behave the
+same for all accepted requests. However, &lt;VirtualHost&gt; can be
+used to specify a different behavior for one or more of the addresses
+and ports. To implement a VirtualHost, the server must first be told
+to listen to the address and port to be used. Then a
+&lt;VirtualHost&gt; section should be created for a specified address
+and port to set the behavior of this virtual host. Note that if the
+&lt;VirtualHost&gt; is set for an address and port that the server is
+not listening to, it cannot be accessed.
+
+<H2>See also</H2>
+
+See also the documentation on
+<A HREF="vhosts/index.html">Virtual Hosts</A>,
+<A HREF="mod/core.html#bindaddress">BindAddress directive</A>,
+<A HREF="mod/core.html#port">Port directive</A>,
+<A HREF="dns-caveats.html">DNS Issues</A>
+and
+<A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt; section</A>.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

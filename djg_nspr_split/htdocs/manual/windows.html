@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Using Apache with Microsoft Windows</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+
+<H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
+
+<P>This document explains how to compile, install, configure and run
+   Apache 1.3b3 (or later) under Microsoft Windows. Please note that at
+   this time, Windows support is entirely experimental, and is
+   recommended only for experienced users. The Apache Group does not
+   guarantee that this software will work as documented, or even at
+   all. If you find any bugs, or wish to contribute in other ways, please
+   use our <A HREF="http://www.apache.org/bug_report.html">bug reporting
+   page.</A></P>
+
+<P><STRONG>Warning: Apache on NT has not yet been optimized for performance.
+Apache still performs best, and is most reliable on Unix platforms.  Over
+time we will improve NT performance. Folks doing comparative reviews
+of webserver performance are asked to compare against Apache
+on a Unix platform such as Solaris, FreeBSD, or Linux.</STRONG></P>
+
+<HR>
+
+<UL>
+  <LI><A HREF="#req">Requirements</A>
+  <LI><A HREF="#down">Downloading Apache for Windows</A>
+  <LI><A HREF="#comp">Compiling Apache for Windows</A>
+  <LI><A HREF="#inst">Installing Apache for Windows</A>
+  <LI><A HREF="#use">Using Apache for Windows</A>
+</UL>
+
+<HR>
+
+<H2><A name="req">Requirements</A></H2>
+
+<P>Apache 1.3b3 requires the following:</P>
+
+<UL>
+  <LI>Microsoft Windows NT 4.0<A HREF="#351">*</A>, or Windows 95.
+  <LI>An Intel-based PC-compatible capable of running above OS (exact
+      requirements unknown) with a connection to a TCP/IP network.
+  <LI>Microsoft Visual C++ 5.0 or later.
+</UL>
+
+<P><SMALL><A name="351">*</A> Apache may run with Windows NT 3.5.1, but
+   has not been tested.</SMALL></P>
+
+<P>This documentation assumes good working knowledge of Microsoft
+   Windows, Microsoft Visual C++, and the Apache web server (for
+   Unix).</P>
+
+<P>If running on Windows 95, using the "Winsock2" upgrade is recommended
+   but may not be necessary.  If running on NT 4.0, installing Service Pack 2
+   is recommended.</P>
+
+<H2><A name="down">Downloading Apache for Windows</A></H2>
+
+<P>Information on the latest version of Apache can be found on the Apache
+web server at <A
+HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
+list the current release, any more recent alpha or beta-test release,
+together with details of mirror web and anonymous ftp sites.</P>
+
+<P>You can download Apache 1.3b3 in two different forms: an InstallShield-based
+  <CODE>.exe</CODE> file which contains the precompiled binary, and a
+  <CODE>.tar.gz</CODE> which contains the source code (and is also the
+  regular Unix distribution). 
+
+<H2><A name="comp">Compiling Apache for Windows</A></H2>
+
+<P>Compiling Apache requires Microsoft Visual C++ 5.0 to be properly
+   installed. It is easiest to compile with the command-line tools
+   (nmake, etc...). Consult the VC++ manual to determine how to install
+   them.</P>
+
+<P>First, unpack the Apache distribution into an appropriate
+   directory. Open a command-line prompt, and change to the
+   <CODE>src</CODE> subdirectory of the Apache distribution.</P>
+
+<P>The master Apache makefile instructions are contained in the
+   <CODE>Makefile.nt</CODE> file. To compile Apache, simply use one of
+   the following commands:
+<UL>
+<LI><CODE>nmake /f Makefile.nt _apacher</CODE> (release build)
+<LI><CODE>nmake /f Makefile.nt _apached</CODE> (debug build)
+</UL>
+
+<P>These will both compile Apache. The latter will include debugging
+   information in the resulting files, making it easier to find bugs and
+   track down problems.</P>
+
+<P>Apache can also be compiled using VC++'s Visual Studio development
+   environment. Although compiling Apache in this manner is not as simple,
+   it makes it possible to easily modify the Apache source, or to compile
+   Apache if the command-line tools are not installed.</P>
+
+<P>Project files (<CODE>.DSP</CODE>) are included for each of the
+   portions of Apache. The three projects that are necessary for
+   Apache to run are <CODE>Apache.dsp</CODE>, <CODE>ap/ap.dsp</CODE>,
+   <CODE>regex/regex.dsp</CODE>, <CODE>ApacheCore.dsp</CODE> and
+   <CODE>os/win32/ApacheOS.dsp</CODE>. The <CODE>src/win32</CODE>
+   subdirectory contains project files for the optional modules (see
+   below).</P>
+
+<H2><A name="inst">Installing Apache for Windows</A></H2>
+
+<P>Once Apache has been compiled, it needs to be installed in its server
+   root directory. The hard-coded default is the <CODE>\Apache</CODE>
+   directory, on the current hard drive. Another directory may be used,
+   but the files will need to be installed manually.</P>
+
+<P>To install the files into the <CODE>\Apache</CODE> directory
+   automatically, use one the following nmake commands (see above):</P>
+<UL>
+<LI><CODE>nmake /f Makefile.nt installr</CODE> (for release build)
+<LI><CODE>nmake /f Makefile.nt installd</CODE> (for debug build)
+</UL>
+
+<P>This will install the following:</P>
+
+<UL>
+  <LI><CODE>\Apache\Apache.exe</CODE> - Apache executable
+  <LI><CODE>\Apache\ApacheCore.dll</CODE> - Main Apache shared library
+  <LI><CODE>\Apache\modules\ApacheModule*.dll</CODE> - Optional Apache
+      modules (7 files)
+  <LI><CODE>\Apache\conf</CODE> - Empty configuration directory
+  <LI><CODE>\Apache\logs</CODE> - Empty logging directory
+</UL>
+
+<P>If you do not have nmake, or wish to install in a different directory,
+   be sure to use a similar naming scheme.</P>
+
+<H2><A name="use">Using Apache for Windows</A></H2>
+
+<P>The first step is to set up Apache's configuration files. Default
+   configuration files for Windows are located in the <CODE>conf</CODE>
+   subdirectory in the Apache distribution, and are named
+   <CODE>httpd.conf-dist-win</CODE>, <CODE>access.conf-dist-win</CODE>
+   and <CODE>srm.conf-dist-win</CODE>. Move these into
+   <CODE>\Apache\conf</CODE>, and rename them <CODE>httpd.conf</CODE>,
+   <CODE>access.conf</CODE> and <CODE>srm.conf</CODE>, respectively.</P>
+
+<P>Configuring Apache is nearly identical to the Unix version of Apache,
+   so most of the standard <A HREF="./">Apache documentation</A> is
+   applicable. A few things are, however, different, or new:</P>
+
+<UL>
+  <LI><P>Because Apache for Windows is multithreaded, it does not use a
+      separate process for each request, as Apache does with
+      Unix. Instead there are usually only two Apache processes running:
+      a parent process, and a child which handles the requests. Within
+      the child each request is handled by a separate thread.
+      <P>
+
+      So the "process"-management directives are different:
+      <P><A
+         HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>
+         - Like the Unix directive, this controls how many requests a
+           process will serve before exiting. However, unlike Unix, a
+           process serves all the requests at once, not just one, so if
+           this is set, it is recommended that a very high number is
+           used. The recommended default, <CODE>MaxRequestsPerChild
+           0</CODE>, does not cause the process to ever exit.
+      <P><A HREF="mod/core.html#threadsperchild">ThreadsPerChild</A> -
+         This directive is new, and tells the server how many threads it
+         should use. This is the maximum number of connections the server
+         can handle at once; be sure and set this number high enough for
+         your site if you get a lot of hits. The recommended default is
+         <CODE>ThreadsPerChild 50</CODE>.</P>
+  <LI><P>The directives that accept filenames as arguments now must use
+      Windows filenames instead of Unix ones. However, because Apache
+      uses Unix-style names internally, you must use forward slashes, not
+      backslashes. Drive letters can be used; if omitted, the drive with
+      the Apache executable will be assumed.</P>
+  <LI><P>Apache for Windows contains the ability to load modules at runtime,
+      without recompiling the server. If Apache is compiled normally, it
+      will install a number of optional modules in the
+      <CODE>\Apache\modules</CODE> directory. To activate these, or other
+      modules, the new <A HREF="mod/mod_so.html#loadmodule">LoadModule</A>
+      directive must be used. For example, to active the status module,
+      use the following (in addition to the status-activating directives
+      in <CODE>access.conf</CODE>):</P>
+<PRE>
+    LoadModule status_module modules/ApacheModuleStatus.dll
+</PRE>
+      <P>Information on <A HREF="mod/mod_so.html#creating">creating loadable
+         modules</A> is also available.</P>
+  <LI><P>Apache can also load ISAPI Extensions (i.e., Internet Server
+         Applications), such as those used by Microsoft's IIS, and other
+         Windows servers. <A HREF="mod/mod_isapi.html">More information
+         is available.</A>
+</UL>
+
+<P>Once Apache is configured correctly, it is nearly ready to be
+run. However, we recommend you copy the <CODE>icons</CODE> and
+<CODE>htdocs</CODE> subdirectories from the Apache distribution to
+<CODE>\Apache</CODE>. The latter is especially important, as it contains
+the document root (what the server actually serves).
+
+<P>Apache can be executed in one of two ways, directly from the command
+   line, or as a Windows NT service. To run it from the command line, use
+   the following command:
+<PRE>
+    C:\Apache&gt; <STRONG>apache -s</STRONG>
+</PRE>
+
+<P>Apache will then execute, and will remain running until it is
+   exited. To use Apache as a Windows NT service, use the following:</P>
+<PRE>
+    C:\Apache&gt; <STRONG>apache -i</STRONG>
+</PRE>
+<P>Then open the Services control panel, and start the Apache service.</P>
+
+<P>If you installed Apache in a server root other than
+   <CODE>\Apache</CODE>, you must use the <CODE>-f</CODE> command-line
+   option to specify the httpd.conf file, or the <CODE>-d</CODE> option
+   to specify the server root.</P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

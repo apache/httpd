@@ -1,0 +1,354 @@
+
+  A P A C H E   I N S T A L L A T I O N
+
+  NOTE: Windows users please read the documents README.NT and
+        http://www.apache.org/docs/windows.html, (or the
+        htdocs/manual/windows.html file included with Apache). 
+        The following applies only to Unix users.
+
+  Introduction
+  ============
+
+  Like all good things, there are two ways to configure, compile, and
+  install Apache.  You can go for the 3-minute installation process
+  using the APACI process described below; or, you can opt for the same
+  mechanism used in previous versions of Apache, as described in the
+  file 'src/INSTALL'.  Each mechanism has its benefits and drawbacks -
+  APACI is newer and a little more raw, but it gets you up and running
+  the least amount of time, whereas the "Configuration.tmpl" mechanism
+  may be more familiar and give you some more flexibility to the power
+  user.  We'd be very interested in your comments and feedback regarding
+  each approach.
+
+
+  Installing the Apache 1.3 HTTP server with APACI
+  ================================================
+
+  1. Overview for the impatient
+     --------------------------
+
+     $ ./configure --prefix=PREFIX
+     $ make
+     $ make install
+     $ PREFIX/sbin/apachectl start
+
+  2. Requirements
+     ------------
+
+     The following requirements exist for building Apache:
+
+     o  Disk Space: 
+
+        Make sure you have approximately 12 MB of temporary free disk space
+        available.  After installation Apache occupies approximately 3 MB of
+        disk space (the actual required disk space depends on the amount of
+        compiled in third party modules, etc).
+
+     o  ANSI-C Compiler: 
+
+        Make sure you have an ANSI-C compiler installed. The GNU C compiler
+        (GCC) from the Free Software Foundation (FSF) is recommended.  If you
+        don't have GCC then at least make sure your vendors compiler is ANSI
+        compliant. You can find the homepage of GNU at
+        http://www.gnu.ai.mit.edu/ and the GCC distribution under
+        http://www.gnu.ai.mit.edu/order/ftp.html .
+
+     o  Perl 5 Interpreter [OPTIONAL]:
+
+        For some of the support scripts like `apxs' or `dbmmanage' (which are
+        written in Perl) the Perl 5 interpreter is required. If no such
+        interpreter is found by APACI's `configure' script this is no harm.
+        Of course, you still can build and install Apache 1.3. Only those
+        support scripts cannot be used. If you have multiple Perl interpreters
+        installed (perhaps a Perl 4 from the vendor and a Perl 5 from your
+        own), then it is recommended to use the --with-perl option (see below)
+        to make sure the correct one is selected by APACI.
+
+     o  Dynamic Shared Object (DSO) support [OPTIONAL]:
+
+        To provide maximum flexibility Apache now is able to load modules
+        under runtime via the DSO mechanism by using the pragmatic
+        dlopen()/dlsym() system calls. These system calls are not available
+        under all operating systems therefore you cannot use the DSO mechanism
+        on all platforms. And Apache currently has only limited built-in
+        knowledge on how to compile shared objects because this is heavily
+        platform-dependend. The current state is this:
+
+        o Out-of-the-box supported platforms are:
+           - Linux     - IRIX    
+           - FreeBSD   - OSF1    
+           - Solaris   - UnixWare
+           - SunOS     - HPUX
+
+        o Entirely unsupported platforms are:
+           - Ultrix (because no dlopen-style interface)
+           - AIX    (although it has dlopen it is a braindead one)
+
+        If your system is not on these lists but has the dlopen-style
+        interface, you either have to provide the appropriate compiler and
+        linker flags (see CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT
+        below) manually or at least make sure a Perl 5 interpreter is
+        installed from which Apache can guess the options.
+
+        For more in-depth information about DSO support in Apache 1.3 please
+        read the file src/README.DSO carefully. Especially the section
+        entitled "Advantages & Disadvantages" because using the DSO mechanism
+        can have strange side-effects if you are not carefully. BE WARNED!
+
+  3. Configuring the source tree
+     ---------------------------
+
+     NOTE: Although we'll often advice you to read the src/Configuration.tmpl
+           file parts to better understand the various options in this
+           section, there is _AT NO TIME_ any need to _EDIT_ this file. The
+           _COMPLETE_ configuration takes place via command line arguments and
+           loal shell variables for the ./configure script. The
+           src/Configuration.tmpl file is just a _READ-ONLY_ resource, here.
+
+     Introduction:
+
+     The next step is to configure the Apache source tree for your particular
+     platform and personal requirements. The most important setup here is the
+     location prefix where Apache is to be installed later, because Apache has
+     to be configured for this location to work correctly. But there are a lot
+     of other options available for your pleasure.
+
+     For a short impression of what possibilities you have, here is a typical
+     example which compiles Apache for the installation tree /sw/pkg/apache
+     with a particular compiler and flags plus the two additional modules
+     mod_rewrite and mod_proxy for later loading through the DSO mechanism: 
+
+     $ CC="pgcc" OPTIM="-O6" \
+       ./configure --prefix=/sw/pkg/apache \
+                   --enable-module=rewrite --enable-shared=rewrite \
+                   --enable-module=proxy   --enable-shared=proxy
+
+     The complete reference of all configuration possibilities follows. For
+     more real-life configuration examples please check out the file
+     README.configure.
+
+     Reference:
+
+     $ [CC=...]        [CFLAGS_SHLIB=...]         
+       [OPTIM=...]     [LDFLAGS_SHLIB=...]        
+       [CFLAGS=...]    [LDFLAGS_SHLIB_EXPORT=...] 
+       [INCLUDES=...] 
+       [LDFLAGS=...]   [RANLIB=...]  
+       [LIBS=...] 
+       ./configure [--quiet]   [--prefix=DIR]         [--enable-rule=NAME]    
+                   [--verbose] [--exec-prefix=PREFIX] [--disable-rule=NAME]   
+                   [--shadow]  [--bindir=EPREFIX]     [--add-module=FILE]     
+                   [--help]    [--sbindir=DIR]        [--activate-module=FILE]
+                   [--layout]  [--libexecdir=DIR]     [--enable-module=NAME]  
+                               [--mandir=DIR]         [--disable-module=NAME] 
+                               [--sysconfdir=DIR]     [--enable-shared=NAME]  
+                               [--datadir=DIR]        [--disable-shared=NAME] 
+                               [--localstatedir=DIR]  
+                               [--compat]             [--enable-suexec]     
+                                                      [--suexec-caller=UID] 
+                               [--with-perl=FILE]     [--suexec-userdir=DIR]
+                               [--without-support]    
+
+     Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
+     LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
+     override the corresponding default entries in the src/Configuration.tmpl
+     file (see there for more information about their usage).
+
+         Note: The syntax ``KEY=VALUE ./configure ...'' (one single line!) is
+               the GNU Autoconf compatible way of specifying defines and can
+               be used with Bourne shell compatible shells only (sh, bash,
+               ksh). If you use a different type of shell either use ``env
+               KEY=VALUE ./configure ...'' when the `env' command is available
+               on your system or use ``setenv KEY VALUE; ./configure ...'' if
+               you use one of the C-shell variants (csh, tcsh).
+
+         Note: The above parameter names are the canonical ones used in
+               Autoconf-style interfaces. But because src/Configuration.tmpl
+               uses the prefix EXTRA_ for some variables (e.g. EXTRA_CFLAGS)
+               these variants are accepted for backward-compatibility reasons,
+               too. But please use the canonical Autoconf-style names and
+               don't rely on this.
+
+     Use the --prefix=PREFIX and --exec-prefix=EPREFIX options to configure
+     Apache to use a particular installation prefix. The default is
+     PREFIX=/usr/local/apache and EPREFIX=PREFIX.
+
+     Use the --bindir=DIR, --sbindir=DIR, --libexecdir=DIR, --mandir=DIR,
+     --sysconfdir=DIR, --datadir=DIR and --localstatedir=DIR option to change
+     the paths for particular subdirectories of the installation tree. Defaults
+     are bindir=EPREFIX/bin, sbindir=EPREFIX/sbin, libexecdir=EPREFIX/libexec,
+     mandir=PREFIX/man, sysconfdir=PREFIX/etc, datadir=PREFIX/share and
+     localstatedir=PREFIX/var.
+
+     Use the --compat option to install Apache into a installation tree which
+     has a similar layout than the one used with Apache 1.2.
+ 
+     Use the --layout option to check the final installation path layout while
+     fiddling with the options above.
+ 
+     Use the --enable-rule=NAME and --disable-rule=NAME options to enable or
+     disable a particular Rule from the Apache src/Configuration.tmpl file. The
+     defaults (yes=enabled, no=disabled) can either be seen when running
+     `./configure --help' or manually looked up in the src/Configuration.tmpl
+     file.
+ 
+     Use the --add-module=FILE option to copy a module source file to the
+     Apache src/modules/extra/ directory and on-the-fly add an entry for it in
+     the configuration file. FILE has to be a valid path to a C source file
+     outside the Apache source tree, for instance /path/to/mod_foo.c. The added
+     module this is way is automatically activated and enabled. Use this option
+     to automatically include a simple third-party module to the Apache build
+     process.
+ 
+     Use the --activate-module=FILE option to on-the-fly add an entry for an
+     existing module source file in the configuration file. FILE has to be a
+     valid path under src/modules/ of the Apache source tree, i.e. it already
+     has to be copied to this location before.  The module is automatically
+     enabled. Use this option to automatically include a complex third-party
+     module to the Apache build process where, for instance a module like
+     mod_perl or mod_php3 consisting of more than one file which are created by
+     a third-party configuration scheme.
+ 
+     Use the --enable-module=NAME and --disable-module=NAME options to enable
+     or disable a particular already distributed module from the Apache
+     src/Configuration.tmpl file. The correct module names (no `mod_' prefix!)
+     and defaults (yes=enabled, no=disabled) can be seen when running
+     `./configure --help'.  There are two special NAME variants: "all" for
+     enabling or disabling all modules and "most" for enabling or disabling
+     only these modules which are useable on all platforms (currently this is
+     "all" minus the modules auth_db, log_agent, log_referer, example, so and
+     mmap_static).
+ 
+     Use the --enable-shared=NAME and --disable-shared=NAME options to enable
+     or disable the shared object support for a particular module from the
+     Apache src/Configuration.tmpl file. The defaults (yes=enabled,
+     no=disabled) can be seen when running `./configure --help'. There are two
+     special NAME variants: "max" for enabling or disabling all modules except
+     the bootstrapping "so" module and "remain" for enabling or disabling only
+     these modules which are still not enabled. 
+     
+         Note 1: The --enable-shared option DOES NOT AUTOMATICALLY enable the
+                 module because there are variants like `--enable-shared=all'
+                 which should not imply `--enable-module=all'.  
+
+         Note 2: The --enable-shared option only implies the preparation of
+                 LoadModule commands in the httpd.conf file for the "make
+                 install" procedure. But these LoadModule lines are per
+                 default out-commented. So, --enable-shared does not imply the
+                 automatic use of the module. The only exception are modules
+                 which have to be enabled because of their usage in the
+                 provided sample configuration. To actually use DSO-based
+                 modules you have to uncomment the corresponding LoadModule
+                 lines in PREFIX/etc/httpd.conf after "make install".
+
+         Note 3: Per default the DSO mechanism is globally disabled, i.e. no
+                 modules are build as shared objects.
+
+         Note 4: The usage of any --enable-shared option automatically implies
+                 a --enable-module=so option because the bootstrapping module
+                 mod_so is always needed for DSO support.
+
+     Use the --with-perl=FILE option to select a particular Perl interpreter
+     executable to be used with Apache. Per default APACI tries to find it
+     automatically. But if multiple Perl instances exist on your system you
+     have to select the correct one manually.
+ 
+     Use the --without-support option to explicitly disable the build and
+     installation of support tools from the src/support/ area. This can be
+     useful when you have compilation problems with one or more of these not
+     programs on your platform or if you just don't need them.
+ 
+     Use the --enable-suexec option to enable the suEXEC feature by building
+     and installing the "suexec" support program. Use --suexec-caller=UID to
+     set the allowed caller user id and --suexec-userdir=DIR to set the user
+     subdirectory for this feature.
+     
+     Use the --shadow option to let APACI create a shadow source tree of the
+     sources for building. This is useful when you want to build for different
+     platforms in parallel (usually through a NFS, AFS or DFS mounted
+     filesystem).
+ 
+     Use the --quiet option to disable all configuration verbose messages.
+ 
+     Use the --verbose option to enable additional verbose messages.
+     
+  4. Building the package
+     --------------------
+     
+     Now you can build the various parts which form the Apache package by
+     simply running the command
+ 
+        $ make 
+ 
+     Please be patient here, this takes approximately 2 minutes to complete
+     under a Pentium-166/FreeBSD-2.2 system, dependend on the amount of modules
+     you have enabled. 
+ 
+  5. Installing the package
+     ----------------------
+     
+     Now its time to install the package under the configured installation
+     PREFIX (see --prefix option above) by running:
+ 
+        $ make install
+ 
+     For the paranoid hackers under us: The above command really installs under
+     prefix _only_, i.e. no other stuff from your system is touched. Even if
+     you upgrade an existing installation your configuration files in
+     PREFIX/etc/ are preserved.
+ 
+  6. Testing the package
+     -------------------
+ 
+     Now you can fire up your Apache HTTP server by immediately running
+ 
+        $ PREFIX/sbin/apachectl start
+ 
+     and then you should be able to request your first document via URL
+     http://localhost/. Then stop the server again by running:
+  
+        $ PREFIX/sbin/apachectl stop
+ 
+  7. Customizing the package
+     -----------------------
+ 
+     Finally you can customize your Apache HTTP server by editing the
+     configuration files under PREFIX/etc/.
+ 
+        $ vi PREFIX/etc/httpd.conf
+        $ vi PREFIX/etc/access.conf
+        $ vi PREFIX/etc/srm.conf
+ 
+     Have a look at the Apache manual under http://localhost/manual/ or
+     http://www.apache.org/docs/ for a complete reference of available
+     configuration directives.
+
+  8. Contacts
+     --------
+
+     o If you want to be informed about new code releases, bug fixes, 
+       security fixes, general news and information about the Apache server
+       subscribe to the apache-announce mailing list as described under
+       http://www.apache.org/announcelist.html
+
+     o If you want freely available support for running Apache please join the
+       Apache user community by subscribing at least to the following USENET
+       newsgroup:
+       comp.infosystems.www.servers.unix
+
+     o If you want commercial support for running Apache please contact
+       one of the companies and contractors which are listed at
+       http://www.apache.org/info/support.cgi
+
+     o If you have a concrete bug report for Apache please go to the
+       Apache Group Bug Database and submit your report:
+       http://www.apache.org/bug_report.html
+
+     o If you want to participate in actively developing Apache please
+       subscribe to the `new-httpd' mailing list as described at
+       http://dev.apache.org/mailing-lists
+
+     Thanks for running Apache.
+                                          The Apache Group
+                                          http://www.apache.org/
+

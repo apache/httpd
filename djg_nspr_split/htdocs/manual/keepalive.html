@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>Apache Keep-Alive Support</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Apache Keep-Alive Support</H1>
+
+<HR>
+
+<H2>What is Keep-Alive?</H2>
+
+The Keep-Alive extension to HTTP, as defined by the
+<CODE>HTTP/1.1</CODE> draft, allows persistent connections. These
+long-lived HTTP sessions allow multiple requests to be send over the
+same TCP connection, and in some cases have been shown to result in an
+almost 50% speedup in latency times for HTML documents with lots of
+images.
+
+<H2>Enabling Keep-Alive Support</H2>
+
+Apache 1.1 comes with Keep-Alive support on by default, however there
+are some directives you can use to modify Apache's behavior:
+
+<P><STRONG>Note</STRONG>: Apache 1.2 uses a different syntax for the <A
+HREF="mod/core.html#keepalive">KeepAlive</A> directive.</P>
+
+<H3>KeepAlive</H3>
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> KeepAlive <EM>max-requests</EM><BR>
+<A
+ HREF="mod/directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>KeepAlive 5</CODE><BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
+
+This directive enables Keep-Alive support. Set <EM>max-requests</EM>
+to the maximum number of requests you want Apache to entertain per
+connection. A limit is imposed to prevent a client from hogging your
+server resources. Set this to <CODE>0</CODE> to disable support.
+
+<H3>KeepAliveTimeout</H3>
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> KeepAliveTimeout <EM>seconds</EM><BR>
+<A
+ HREF="mod/directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>KeepAliveTimeout 15</CODE><BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
+
+The number of seconds Apache will wait for a subsequent request before
+closing the connection. Once a request has been received, the timeout
+value specified by the <A
+HREF="mod/core.html#timeout"><CODE>Timeout</CODE></A> directive
+applies.
+
+<H2>When Keep-Alive Is Used</H2>
+
+In order for Keep-Alive support to be used, first the browser must
+support it. Many current browsers, including Netscape Navigator 2.0,
+and Spyglass Mosaic-based browsers (including Microsoft Internet
+Explorer) do. Note, however, that some Windows 95-based browsers misbehave
+with Keep-Alive-supporting servers; they may occasionally hang on a
+connect. This has been observed with several Windows browsers, and occurs
+when connecting to any Keep-Alive server, not just Apache. Netscape 3.0b5
+and later versions are known to work around this problem.
+
+<P>However, Keep-Alive support only is active with files where the
+length is known beforehand. This means that most CGI scripts,
+server-side included files and directory listings will not use
+the Keep-Alive protocol. While this should be completely transparent
+to the end user, it is something the web-master may want to keep in mind.</P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

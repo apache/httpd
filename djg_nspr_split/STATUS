@@ -1,0 +1,408 @@
+Apache 1.3 STATUS:
+
+Release:
+
+    1.3.0: Shoot for May 16, 1998 Release!
+           Brian to be RM, Jim will do announcements
+
+    1.3b7: In development
+
+    1.3b6: Tagged APACHE_1_3b6. Announced and Released 4/20/98
+
+    2.0  : In pre-alpha development, see apache-2.0 repository
+
+Guidelines:
+
+    o For the past few months we have been working on a commit-then-review
+      basis.  It is now time to decide whether or not we want to work
+      under the guidelines in <http://dev.apache.org/guidelines.html>
+      or not, and if not, what changes are needed to make it right.
+
+      Approve guidelines as written:
+         +1: Paul, Jim, Martin, Ralf, Randy, Brian, Ken
+         +0:
+         -1:
+
+      Notes:
+      - Ken: 'lazy consensus' needs to be defined.
+      - Ralf: At least the following points should be added:
+              1. A statement that really everyone has the equal right to veto
+                 in general and that only the one can rescind a veto who has
+                 done it originally.
+              2. The statements that although a veto can be done at any point
+                 if it gets done more then approximately two weeks after some
+                 stuff already went in or was changed, the guy who vetoes
+                 really  _HAS_ to provide a reasonable alternative solution
+                 idea _AND_ at least someone (not really the guy who vetoes)
+                 who wants to volunteer for this alternative solution.  Or
+                 the veto will not make much sense IMHO at this stage and
+                 always just creates flamewars! I think only this way it's
+                 fair.
+
+Plan:
+
+Showstoppers:
+
+Committed Code Changes:
+
+    * Lars' Configure fix to avoid confusing message under APACI control
+    * Ralf's Configure fix for AWK's failing with "string to long" error
+    * Ralf's fix for stderr logging to make sure default loglevel is honored
+    * Marc's catching of defined handlers still ending in the default handler
+    * Ralf's cast for dlopen's arg1 under OSF1 and FreeBSD 2.2.x
+    * Lars' fix for the prefix setup on configure --compat
+    * Dean's add %pA, %pI, and %pp codes to ap_vformatter
+    * Dean's httpd -S command line option to dump parsed vhost setup
+    * HP-UX 11 port by Jeff Earickson
+    * Ralf's fix for the install-config target to get correct MimeMagicFile
+    * PRs 2081 and 2082 closed
+    * Ralf's adjustments to `configure --compat' to be even more "compatible"
+    * Ralf/Jim's enhanced "make install" carefulness for DocRoot, PR#2084
+    * Ralf's back-compat in configure for EXTRA_xxx parameter names
+    * Ralf's configure fix to avoid side-effects in Configure on exported vars
+    * Ralf's fix for the install-config target to get correct ScoreBoardFile
+    * Dynamic Shared Object (DSO) support for OpenBSD 2.x
+    * Ralf's enhanced "make install" carefulness for mime.types+magic files
+    * Ralf's paranoia-fixes for the IFS-handling in `configure'
+    * Fix for the DEBUG_CGI (#ifdef'ed) situation in mod_cgi.c, PR#2114
+    * Ralf's various bugfixes and cleanups for the configure script
+    * Ralf's workaround for braindead awk when generating ap_config.h, PR#2139
+
+Available Patches:
+
+    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
+      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
+      The patch provides per-domain cookies (which I use to share user-ids
+      among the *.troll.no web servers) and configurable cookie names.  It
+      also marginally increases the efficiency of Apache when the server
+      runs with DNS lookups turned off.
+
+    * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
+      414 responses.
+      <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
+
+    * Ronald Tschalaer's Accept-Encoding patch
+      <Pine.LNX.3.96dg4.980418001055.4893D-100000@twinlark.arctic.org>
+      Status: Dean +1
+
+    * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
+      1.3?
+      <199804182347.QAA05438@scv2.apple.com>
+
+In progress:
+
+    * Ken's IndexFormat enhancement to mod_autoindex to allow
+      CustomLog-like tailoring of directory listing formats
+
+FINAL RELEASE SHOWSTOPPERS:
+
+    * MIME type case sensitivity disparity between 1.2.6 and 1.3b6 (PR #2112)
+
+    * proxy security fixes from 1.2.5 need to be brought forward
+
+    * Someone other than Dean has to do a security/correctness review on
+      psprintf(), bprintf(), and ap_snprintf().  In particular these routines
+      do lots of fun pointer manipulations and such and possibly have overflow
+      errors.  The respective flush_funcs also need to be exercised.
+       o Jim's looked over the ap_snprintf() stuff (the changes that Dean
+         did to make thread-safe) and they look fine.
+
+    * The fatal errors that the children detect and fill up the log with
+      (such as bogus group id) need to be stopped.  The proposed fix is to
+      make the child exit with a special code when a fatal error occurs; the
+      parent would then abort.  See
+      <Pine.LNX.3.96dg4.980413204700.6322R-100000@twinlark.arctic.org>
+
+Documentation that needs writing:
+
+    * Documentation for:
+      1) htdocs/manual/sourcereorg.html and other files should mention 
+         new mod_so capabilities.
+      2) windows.html should be cleaned up.
+
+    * Need a document explaining mod_rewrite/"UseCanonicalName off" based
+	virtualhosting.  (If it exists already I can't find it easily.)
+
+Needs patch:
+
+    * uri issues
+	- RFC2068 requires a server to recognize its own IP addr(s) in dot
+	notation, we do this fine if the user follows the dns-caveats
+	documentation... we should handle it in the case the user doesn't ever
+	supply a dot-notation address.
+
+    * Amdalh UTS 2.1.2
+	Message-Id: <9801211635.ZM7239@ihgp1.ih.lucent.com>
+	Message-Id: <199801220935.BAA13813@tiber.cisco.com>
+	Jim: Sounded like the version of the OS that required
+	     the patches were WAY old and would bugger the newer
+	     versions... Not sure if we want to do that.
+
+    * Problems dealing with .-rooted domain names such as "twinlark." versus
+	"twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more details.
+	In particular this affects the correctness of the proxy and the
+	vhost mechanism.
+
+    * PR#1799: we need to add a "default" or "none" handler to deal with
+	filenames such as foo.map.gif which aren't image maps, and shouldn't
+	be considered such.  See discussion in
+	<Pine.LNX.3.96dg4.980220010131.20009H-100000@twinlark.arctic.org>
+	<Pine.LNX.3.96.980220095126.10974A-100000@ecstasy.localnet>
+	<34ED6E5A.29555AB8@Golux.Com>
+	<34EECEB1.5AD015CF@Golux.Com>
+	(feb98 archives)
+	Jim: I thought that we decided "default", although Ken
+	     thought it ugly
+	Ken: I just don't like using "Add" when reverting something; no -1
+
+    * proxy_*_canon routines use r->proxyreq incorrectly.  See
+	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+    * TZ should not be dealt with specially any longer now that we have
+      "PassEnv".  See
+      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
+       Jim: IMO it's too late in the game for this... I'm
+            sure this would cause some strange bug reports as
+	    people's cgi-scripts no longer work correctly
+	    ("It worked just fine before I upgraded to 1.3.0")
+	    unless we warn people in big nasty letters to add
+	    PassEnv TZ to their config files "just in case"
+	    and hope they do it :)
+
+     * LynxOS has system-level conf.h file
+	Seems that Lynx has a system level conf.h file that ours overrules,
+	so it doesn't compile correctly. To accomodate, we would need to
+	rename our conf.h to something "safe". Possible choices:
+
+	    apconf.h       :
+	    applatforms.h  :
+	    apdefaults.h   :
+	    apdefines.h    :
+
+Closed issues:
+
+Open issues:
+    
+    * Paul would like to see a 'gdbm' option because he uses
+      it a lot.
+
+    * Maybe a http_paths.h file? See
+	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
+	+1: Brian, Paul, Ralf, Martin
+	+0: Jim (not for 1.3.0)
+
+    * Release builds: Should we provide Configuration or not?
+      Should we 'make all suexec' in src/support?
+	+1: Brian, Jim, Ken +1 (possible suexec path issue, though)
+
+    * root's environment is inherited by the Apache server. Jim & Ken
+      think we should recommend using 'env' to build the
+      appropriate environment. Marc and Alexei don't see any
+      big deal. Martin says that not every "env" has a -u flag.
+
+    * 206 vs. 200 issue on Content-Length
+	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
+	Roy says sending 200 is correct, but Alexei disagrees.
+	Marc sides with Alexei.  We were talking about two different PRs.
+        Apache should be sending 200 *and* Accept-Ranges.
+
+	Dean says: I'm still really confused as to what the problem is or
+	isn't.  If one of you three could work up a patch that would be
+	most excellent.
+
+    * Marc's socket options like source routing (kill them?)
+	Marc, Martin say Yes
+
+    * Ken's PR#1053: an error when accessing a negotiated document
+      explicitly names the variant selected.  Should it do so, or should
+      the original URI be referenced?
+
+    * Proposed API Changes:
+
+	- r->content_language is for backwards compatibility... with modules
+	  that may not link any longer without some minor editing.  The new
+	  field is r->content_languages.  Heck it's not even mentioned in
+	  apache-devsite/mmn.txt when we got content_languages (note the s!).
+	  The proposal is to remove r->content_language:
+	    Status: Paul +1, Ralf +1, Ken +1
+
+	- child_exit() is redundant, it can be implemented via cleanups.  It is
+	  not "symmetric" in the sense that there is no exit API method to go
+	  along with the init() API method.  There is no need for an exit
+	  method, there are already modules using cleanups to perform this (see
+	  mod_mmap_static, and mod_php3 for example).  The proposal is to
+	  remove the child_exit() method and document cleanups as the method of
+	  handling this need.
+	    Status: Rasmus +1, Paul +1, Jim +1, 
+	            Martin +1, Ralf +1, Ken +1
+
+    * Don't wait for WIN32:  It's been quite some time and WIN32 doesn't seem
+      to be progressing, and Unix seems quite stable.  It would be in Apache's
+      best interest to continue to support Unix to its utmost, and not delay
+      a release of 1.3.0 waiting for WIN32 issues to be resolved.
+
+            Notes:
+            Randy: I would also argue that 1.3b6 is _not_ stable. I've been 
+                   having real fits keeping it alive on a dual processor
+                   machine. Could be OS problems..
+
+    * Should we re-enable nagle now that we're non-buffering CGIs?  See
+      various messages from Marc in March 98.
+  
+    * Listing the operating system's generic name (e.g. Irix, Win32) in
+      SERVER_VERSION:
+	 o Looks like we want to do this...
+	   Implementation: New API function, ap_add_version_component()
+	   that takes a 'const char *' and tacks it onto the end
+	   of the string returned by ap_get_server_version().  Would allow
+	   modules to add their info at run-time, more closely tracking
+	   reality for dynamically-loaded modules.
+
+	 o Do we want to scrap -DSERVER_SUBVERSION if modules can add
+	   their contribution strings at run-time?
+	     +1: 
+	     -1: Ken
+
+	 o Debate:
+	    Unix:Win32:OS/2 in '()' comment
+	     +1: Jim, Martin, Alexei, Ken
+	    Irix:AIX:FreeBSD in '()' comment
+
+Win32 specific issues:
+
+ Open issues:
+
+    * Should ApacheCore.dll be merged back into the main server
+      image?  May make debugging easier..
+
+ In progress:
+
+    * Ben's ASP work... All agree it sounds cool.
+
+    * DDA's adding a tray application to the Windoze version for ease of
+      status/management.
+	<01BCDB29.2C04DEB0@caravan.individual.com>
+	<01BCDB2A.F8C09010@caravan.individual.com>
+	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
+	we get a single executable)
+	Paul: No like Win95 specific stuff
+	Ken: What's W95-specific about it?
+
+ Help:
+
+    * process/thread model
+	- need dynamic thread creation/destruction, similar to 
+	  Unix process model
+	- can't use WaitForMultipleObjects in the same way we
+	  do now, since that has a limit of 64(!) objects.  Grr.
+	  PR#1665
+
+    * some errors printed by CGIs to stderr don't end up making it
+      to the server log unless an extra debugging message is added
+      after they run? (PR#1725 indicates this may not be just Win32)
+
+    * handle bugs that make it pop up errors on console, ie. segv 
+      equiv?  Can we do this?  Need to make it robust.
+
+    * install
+	- make installshield work
+	- config in cvs tree?
+	- install docs, etc.?
+	- location for install
+
+    * the mutex should be critical-regions, since the current design
+      is creating a mess of SO calls that are unnecessary
+
+    * we don't mmap on NT.  Use TransmitFile?
+
+    * CGIs
+        - hangs on multiple CGI execution?  PR#1607,1129
+    	    Marc can't repeat...
+	- docs on how they work w/scripts
+	- use registry to find interpreter?
+	- WTF is the buffering coming from?
+	    - we don't have a way to make non-blocking files on NT!
+
+    * performance
+
+    * documentation:
+	- running the server without admin
+	- how CGIs work
+	- update README.NT
+	- short/long name handling
+	- better status page on current state of NT for users
+
+    * http_main.c hell
+	- split into two files?
+
+    * who should run the service?  Who exactly is the "system account"?
+
+      docs say:
+
+      Localsystem is a very privileged account locally, so you shouldn't run
+      any shareware applications there. However, it has no network privileges
+      and cannot leave the machine via any NT-secured mechanism, including
+      file system, named pipes, DCOM, or secure RPC.
+
+      and:
+
+      A service that runs in the context of the LocalSystem account
+      inherits the security context of the SCM. It is not associated with
+      any logged-on user account and does not have credentials (domain
+      name, user name, and password) to be used for verification. This
+      has several implications: [... removed ...]
+
+
+      That _really_ sucks.  Can we recommend running Apache as some 
+      other user?
+
+
+    * need a crypt() of some sort.
+	- sources are easy; problem is export restrictions on DES
+	- if we don't do DES, can do md5
+
+    * modules that need to be made to work on win32
+        - mod_example isn't multithreadreded
+	- mod_unique_id (needs mt changes)
+	- mod_auth_db.c  (do we want to even try this?  We should have some
+          db of some sort... what else can we pick from under win32?)
+	- mod_auth_dbm.c
+	- mod_info.c (PR re exporting symbols for it...)
+	- mod_log_agent.c
+	- mod_log_referer.c
+	- mod_mime_magic.c (needs access to mod_mime API stage...)
+
+    * do something to disable bogus warnings
+
+    * rfc1413.c has static storage which won't work multithreaded
+
+    * mod_include --> exec cgi, exec cmd, etc. don't work right.
+      Looks like a code path that isn't run anywhere else that has
+      something not quite right...  A PR or two on it.
+
+    * proxy module doesn't load on Win95.  Why?  Good question.
+	PR#1462.
+
+WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
+
+    * CGIs
+        - hangs on multiple CGI execution?  PR#1607,1129
+    	    Marc can't repeat...
+
+    * SECURITY: PR#1203 still needs to be dealt with for WIN32
+
+    * SECURITY: check if the magic con/aux/nul/etc names do anything
+	really bad
+
+    * SECURITY: numerous uses of strcpy and strcat have potential
+	for buffer overflow, someone should rewrite or verify
+	they're safe
+
+    * SECURITY: os_ abstract is_only_below() in mod_include.c
+
+    * signal type handling
+    	- how to rotate logs from command line?
+
+    * bad use of chdir in some places; it isn't thread-specific
+

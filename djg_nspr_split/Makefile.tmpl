@@ -1,0 +1,452 @@
+## ====================================================================
+## Copyright (c) 1998 The Apache Group.  All rights reserved.
+##
+## Redistribution and use in source and binary forms, with or without
+## modification, are permitted provided that the following conditions
+## are met:
+##
+## 1. Redistributions of source code must retain the above copyright
+##    notice, this list of conditions and the following disclaimer.
+##
+## 2. Redistributions in binary form must reproduce the above copyright
+##    notice, this list of conditions and the following disclaimer in
+##    the documentation and/or other materials provided with the
+##    distribution.
+##
+## 3. All advertising materials mentioning features or use of this
+##    software must display the following acknowledgment:
+##    "This product includes software developed by the Apache Group
+##    for use in the Apache HTTP server project (http://www.apache.org/)."
+##
+## 4. The names "Apache Server" and "Apache Group" must not be used to
+##    endorse or promote products derived from this software without
+##    prior written permission. For written permission, please contact
+##    apache@apache.org.
+##
+## 5. Products derived from this software may not be called "Apache"
+##    nor may "Apache" appear in their names without prior written
+##    permission of the Apache Group.
+##
+## 6. Redistributions of any form whatsoever must retain the following
+##    acknowledgment:
+##    "This product includes software developed by the Apache Group
+##    for use in the Apache HTTP server project (http://www.apache.org/)."
+##
+## THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+## EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+## IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+## PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+## ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+## SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+## NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+## HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+## STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+## OF THE POSSIBILITY OF SUCH DAMAGE.
+## ====================================================================
+##
+## This software consists of voluntary contributions made by many
+## individuals on behalf of the Apache Group and was originally based
+## on public domain software written at the National Center for
+## Supercomputing Applications, University of Illinois, Urbana-Champaign.
+## For more information on the Apache Group and the Apache HTTP server
+## project, please see <http://www.apache.org/>.
+##
+
+##
+##  Makefile -- Apache Autoconf-style Interface (APACI)
+##              top-level control Makefile for out-of-the-box
+##              build and installation procedure.
+##
+##  Written by Ralf S. Engelschall <rse@apache.org>
+##
+
+## ==================================================================
+##                              Options
+## ==================================================================
+
+#   safe environment
+SHELL           = /bin/sh
+
+#   paths to the source tree parts
+ROOT            = @ROOT@
+SRC             = @SRC@
+MKF             = @MKF@
+AUX             = @AUX@
+
+#   build tools
+CP              = cp
+LN              = ln
+RM              = rm -f
+TAR             = tar
+UMASK           = umask
+MKDIR           = $(AUX)/mkdir.sh
+INSTALL         = $(AUX)/install.sh -c
+INSTALL_PROGRAM = $(INSTALL) -s -m 755
+INSTALL_SCRIPT  = $(INSTALL) -m 755
+INSTALL_DATA    = $(INSTALL) -m 644
+PERL            = @PERL@
+
+#   installation paths
+prefix          = @prefix@
+exec_prefix     = @exec_prefix@
+bindir          = @bindir@
+sbindir         = @sbindir@
+libexecdir      = @libexecdir@
+mandir          = @mandir@
+sysconfdir      = @sysconfdir@
+datadir         = @datadir@
+localstatedir   = @localstatedir@
+includedir      = @includedir@
+
+libexecdir_relative   = @libexecdir_relative@
+localstatesubdir_run  = @localstatesubdir_run@
+localstatesubdir_logs = @localstatesubdir_logs@
+
+#   suexec details (optional)
+suexec          = @suexec@
+suexec_caller   = @suexec_caller@
+suexec_userdir  = @suexec_userdir@
+
+#   usage of src/support stuff
+build-support     = @build_support@
+install-support   = @install_support@
+clean-support     = @clean_support@
+distclean-support = @distclean_support@
+
+#   list of shared objects which have to _ALWAYS_ be enabled
+#   per default in the config file because of the directives used
+#   in these default files.
+so_mods_in_conf = \
+config_log_module|\
+mime_module|\
+negotiation_module|\
+autoindex_module|\
+dir_module|\
+userdir_module|\
+access_module|\
+setenvif_module
+
+## ==================================================================
+##                              Targets
+## ==================================================================
+
+#   default target
+all: build
+
+## ------------------------------------------------------------------
+##                           Build Target
+## ------------------------------------------------------------------
+
+#   build the package
+build:
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) build-std $(build-support)
+	@touch $(SRC)/.apaci.build.ok
+	@echo "<=== $(SRC)"
+
+#   build the standard stuff
+build-std:
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ all
+
+#   build the additional support stuff
+build-support:
+	@echo "===> $(SRC)/support"; \
+	cd $(SRC)/support; $(MAKE) $(MFLAGS) all; \
+	if [ ".$(suexec)" = .1 ]; then \
+	    $(MAKE) $(MFLAGS) \
+	            EXTRA_CFLAGS='-DHTTPD_USER=\"$(suexec_caller)\" -DUSERDIR_SUFFIX=\"$(suexec_userdir)\"' \
+	            suexec; \
+	fi; \
+	echo "<=== $(SRC)/support"
+
+## ------------------------------------------------------------------
+##                       Installation Targets
+## ------------------------------------------------------------------
+
+#   the install target for installing the complete Apache
+#   package. This is implemented by running subtargets for the
+#   separate parts of the installation process.
+install:
+	@if [ ! -f $(SRC)/.apaci.build.ok ]; then \
+	    $(MAKE) -f $(MKF) $(MFLAGS) build; \
+	fi
+	@$(MAKE) -f $(MKF) $(MFLAGS) \
+		install-mktree install-programs $(install-support) \
+		install-include install-data install-config
+	-@$(RM) $(SRC)/.apaci.install.tmp
+	-@$(RM) $(SRC)/.apaci.install.conf
+	-@if [ ".$(QUIET)" != .1 ]; then \
+		echo "+--------------------------------------------------------+"; \
+		echo "| You now have successfully built and installed the      |"; \
+		echo "| Apache 1.3 HTTP server. To verify that Apache actually |"; \
+		echo "| works correctly you can immediately try to fire it up  |"; \
+		echo "| the first time by running:                             |"; \
+		echo "|                                                        |"; \
+		echo "|   $(sbindir)/apachectl start"; \
+		echo "|                                                        |"; \
+		echo "| Then you should additionally adjust the configuration  |"; \
+		echo "| files which can be found under the following paths:    |"; \
+		echo "|                                                        |"; \
+		echo "|   $(sysconfdir)/{httpd,access,srm}.conf"; \
+		echo "|                                                        |"; \
+		echo "| Thanks for running Apache.                             |"; \
+		echo "|                                The Apache Group        |"; \
+		echo "|                                http://www.apache.org/  |"; \
+		echo "+--------------------------------------------------------+"; \
+	fi
+
+#   the non-verbose variant for package maintainers
+install-quiet:
+	@$(MAKE) -f $(MKF) $(MFLAGS) QUIET=1 install
+
+#   create the installation tree
+install-mktree:
+	@echo "===> [mktree: Creating Apache installation tree]"
+	$(MKDIR) $(bindir)
+	$(MKDIR) $(sbindir)
+	$(MKDIR) $(libexecdir)
+	$(MKDIR) $(mandir)/man1
+	$(MKDIR) $(mandir)/man8
+	$(MKDIR) $(sysconfdir)
+	$(MKDIR) $(datadir)/htdocs
+	$(MKDIR) $(datadir)/icons
+	$(MKDIR) $(datadir)/cgi-bin
+	$(MKDIR) $(localstatedir)/$(localstatesubdir_logs)
+	$(MKDIR) $(localstatedir)/$(localstatesubdir_run)
+	$(MKDIR) $(localstatedir)/proxy
+	$(MKDIR) $(includedir)
+	@echo "<=== [mktree]"
+
+#   install the server program and optionally corresponding
+#   shared object files.
+install-programs:
+	@echo "===> [programs: Installing Apache httpd program and shared objects]"
+	$(INSTALL_PROGRAM) $(SRC)/httpd $(sbindir)/httpd
+	-@if [ ".`grep 'SUBTARGET=target_shared' $(SRC)/Makefile`" != . ]; then \
+		echo "$(INSTALL_PROGRAM) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep"; \
+		$(INSTALL_SCRIPT) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep; \
+		echo "$(INSTALL_SCRIPT) $(SRC)/libhttpd.so $(libexecdir)/libhttpd.so"; \
+		$(INSTALL_SCRIPT) $(SRC)/libhttpd.so $(libexecdir)/libhttpd.so; \
+		SHLIB_SUFFIX_LIST="`grep '^SHLIB_SUFFIX_LIST=' $(SRC)/Makefile | sed -e 's:^.*=::'`"; \
+		if [ ".$$SHLIB_SUFFIX_LIST" != . ]; then \
+			echo "$(RM) $(libexecdir)/libhttpd.so.*"; \
+			$(RM) $(libexecdir)/libhttpd.so.*; \
+			for suffix in $$SHLIB_SUFFIX_LIST ""; do \
+				[ ".$$suffix" = . ] && continue; \
+				echo "$(LN) $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix"; \
+				$(LN) $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix; \
+			done; \
+		fi; \
+	fi
+	$(INSTALL_DATA) $(SRC)/support/httpd.8 $(mandir)/man8/httpd.8
+	-@$(RM) $(SRC)/.apaci.install.conf; touch $(SRC)/.apaci.install.conf
+	-@if [ ".`grep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci`" != . ]; then \
+		for mod in `egrep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci |\
+	                sed -e 's/^[ 	]*SharedModule[ 	]*//'`; do \
+			file=`echo $$mod | sed -e 's;^.*/\([^/]*\);\1;'`; \
+			echo "$(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file"; \
+			$(INSTALL_SCRIPT) $(SRC)/$$mod $(libexecdir)/$$file; \
+			name=`$(AUX)/fmn.sh $(SRC)/$$mod`; \
+			prefix="#"; case $$name in $(so_mods_in_conf) ) prefix="" ;; esac; \
+			echo dummy | awk '{ printf("%sLoadModule %-18s %s\n", \
+			prefix, modname, modpath); }' \
+			prefix="$$prefix" modname="$$name" \
+			modpath="$(libexecdir_relative)$$file" >>$(SRC)/.apaci.install.conf; \
+		done; \
+	fi
+	@echo "<=== [programs]"
+
+#   install the support programs and scripts
+install-support:
+	@echo "===> [support: Installing Apache support programs and scripts]"
+	$(INSTALL_PROGRAM) $(SRC)/support/ab $(sbindir)/ab
+	$(INSTALL_DATA) $(SRC)/support/ab.1 $(mandir)/man1/ab.1
+	@echo "$(INSTALL_SCRIPT) $(SRC)/support/apachectl[*] $(sbindir)/apachectl"; \
+	sed -e 's;PIDFILE=.*;PIDFILE=$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
+		-e 's;HTTPD=.*;HTTPD=$(sbindir)/httpd;' \
+		< $(SRC)/support/apachectl > $(SRC)/.apaci.install.tmp && \
+		$(INSTALL_SCRIPT) $(SRC)/.apaci.install.tmp $(sbindir)/apachectl
+	$(INSTALL_DATA) $(SRC)/support/apachectl.1 $(mandir)/man1/apachectl.1
+	$(INSTALL_PROGRAM) $(SRC)/support/htpasswd $(bindir)/htpasswd
+	$(INSTALL_DATA) $(SRC)/support/htpasswd.1 $(mandir)/man1/htpasswd.1
+	$(INSTALL_PROGRAM) $(SRC)/support/htdigest $(bindir)/htdigest
+	$(INSTALL_DATA) $(SRC)/support/htdigest.1 $(mandir)/man1/htdigest.1
+	@echo "$(INSTALL_SCRIPT) $(SRC)/support/dbmmanage[*] $(bindir)/dbmmanage"; \
+	sed -e 's;^#!/.*;#!$(PERL);' \
+		< $(SRC)/support/dbmmanage > $(SRC)/.apaci.install.tmp && \
+		$(INSTALL_SCRIPT) $(SRC)/.apaci.install.tmp $(bindir)/dbmmanage
+	$(INSTALL_DATA) $(SRC)/support/dbmmanage.1 $(mandir)/man1/dbmmanage.1
+	$(INSTALL_PROGRAM) $(SRC)/support/logresolve $(sbindir)/logresolve
+	$(INSTALL_DATA) $(SRC)/support/logresolve.8 $(mandir)/man8/logresolve.8
+	$(INSTALL_PROGRAM) $(SRC)/support/rotatelogs $(sbindir)/rotatelogs
+	$(INSTALL_DATA) $(SRC)/support/rotatelogs.8 $(mandir)/man8/rotatelogs.8
+	@echo "$(INSTALL_SCRIPT) $(SRC)/support/apxs[*] $(sbindir)/apxs"; \
+	sed -e 's;^#!/.*;#!$(PERL);' \
+		-e 's;\@prefix\@;$(prefix);' \
+		-e 's;\@sbindir\@;$(sbindir);' \
+		-e 's;\@libexecdir\@;$(libexecdir);' \
+		-e 's;\@includedir\@;$(includedir);' \
+		-e 's;\@sysconfdir\@;$(sysconfdir);' \
+		< $(SRC)/support/apxs > $(SRC)/.apaci.install.tmp && \
+		$(INSTALL_SCRIPT) $(SRC)/.apaci.install.tmp $(sbindir)/apxs
+	$(INSTALL_DATA) $(SRC)/support/apxs.8 $(mandir)/man8/apxs.8
+	-@if [ ".$(suexec)" = .1 ]; then \
+	    echo "$(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec"; \
+	    $(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec; \
+	    echo "chown root $(sbindir)/suexec"; \
+	    chown root $(sbindir)/suexec; \
+	    echo "chmod 4711 $(sbindir)/suexec"; \
+	    chmod 4711 $(sbindir)/suexec; \
+	    echo "$(INSTALL_DATA) $(SRC)/support/suexec.8 $(mandir)/man8/suexec.8"; \
+	    $(INSTALL_DATA) $(SRC)/support/suexec.8 $(mandir)/man8/suexec.8; \
+	fi
+	@echo "<=== [support]"
+
+#   install the Apache C header files
+install-include:
+	@echo "===> [include: Installing Apache C header files]"
+	$(UMASK) 022; $(CP) $(SRC)/include/*.h $(includedir)/;
+	@osdir=`grep '^OSDIR' $(SRC)/Makefile.config | sed -e 's:^OSDIR=::'`; \
+	echo "$(UMASK) 022; $(CP) $(SRC)/$$osdir/os.h $(includedir)/"; \
+	$(UMASK) 022; $(CP) $(SRC)/$$osdir/os.h $(includedir)/
+	@echo "<=== [include]"
+
+#   create an initial document root containing the Apache manual,
+#   icons and distributed CGI scripts.
+install-data:
+	@echo "===> [data: Installing initial data files]"
+	-@if [ -f $(datadir)/htdocs/index.html ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(datadir)/htdocs/]"; \
+	else \
+		echo "Copying tree $(ROOT)/htdocs/ -> $(datadir)/htdocs/"; \
+		(cd $(ROOT)/htdocs/ && $(TAR) cf - *) |\
+		(cd $(datadir)/htdocs/ && $(TAR) xf -); \
+		find $(datadir)/htdocs/ -type d -exec chmod a+rx {} \; ; \
+		find $(datadir)/htdocs/ -type f -exec chmod a+r {} \; ; \
+	fi
+	-@if [ -f $(datadir)/cgi-bin/printenv ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(datadir)/cgi-bin/]"; \
+	else \
+		echo "Copying tree $(ROOT)/cgi-bin/ -> $(datadir)/cgi-bin/"; \
+		(cd $(ROOT)/cgi-bin/ && $(TAR) cf - *) |\
+		(cd $(datadir)/cgi-bin/ && $(TAR) xf -); \
+		find $(datadir)/cgi-bin/ -type d -exec chmod a+rx {} \; ; \
+		find $(datadir)/cgi-bin/ -type f -exec chmod a+r {} \; ; \
+	fi
+	@echo "Copying tree $(ROOT)/icons/ -> $(datadir)/icons/"; \
+	(cd $(ROOT)/icons/ && $(TAR) cf - *) |\
+	(cd $(datadir)/icons/ && $(TAR) xf -); \
+	find $(datadir)/icons/ -type d -exec chmod a+rx {} \; ;\
+	find $(datadir)/icons/ -type f -exec chmod a+r {} \;
+	@echo "<=== [data]"
+
+#   create the initial configuration by providing default files
+#   and initial config files while preserving existing ones.
+install-config:
+	@echo "===> [config: Installing Apache configuration files]"
+	-@for conf in httpd.conf access.conf srm.conf; do \
+		(echo "##"; \
+		 echo "## $$conf -- Apache HTTP server configuration file"; \
+		 echo "##"; \
+		 echo ""; \
+		 cat $(ROOT)/conf/$$conf-dist ) |\
+		 sed -e '/# LoadModule/r $(SRC)/.apaci.install.conf' \
+			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
+			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
+			-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
+			-e 's;@@ServerRoot@@;$(prefix);' \
+			-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
+			-e 's;logs/apache_runtime_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
+			-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
+			-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
+			-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
+			-e 's;conf/magic;$(sysconfdir)/magic;' \
+        	>$(SRC)/.apaci.install.tmp && \
+		echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf-dist[*] $(sysconfdir)/$$conf.default"; \
+		$(INSTALL_DATA) $(SRC)/.apaci.install.tmp $(sysconfdir)/$$conf.default; \
+		if [ ! -f "$(sysconfdir)/$$conf" ]; then \
+			echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf-dist[*] $(sysconfdir)/$$conf"; \
+			$(INSTALL_DATA) $(SRC)/.apaci.install.tmp $(sysconfdir)/$$conf; \
+		else \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(sysconfdir)/$$conf]"; \
+		fi; \
+	done
+	-@for conf in mime.types magic; do \
+		echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf.default"; \
+		$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf.default; \
+		if [ ! -f "$(sysconfdir)/$$conf" ]; then \
+			echo "$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf"; \
+			$(INSTALL_DATA) $(ROOT)/conf/$$conf $(sysconfdir)/$$conf; \
+		else \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(sysconfdir)/$$conf]"; \
+		fi; \
+	done
+	@echo "<=== [config]"
+
+
+## ------------------------------------------------------------------
+##                       Cleanup Targets
+## ------------------------------------------------------------------
+
+#   cleanup the source tree by removing anything which was
+#   created by the build target
+clean:
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) clean-std $(clean-support)
+	@echo "<=== $(SRC)"
+	@$(RM) $(SRC)/.apaci.build.ok
+
+#   clean the standard stuff
+clean-std:
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ clean
+
+#   clean additional support stuff
+clean-support:
+	@echo "===> $(SRC)/support"; \
+	    cd $(SRC)/support; $(MAKE) $(MFLAGS) clean; \
+	    if [ ".$(suexec)" = .1 ]; then \
+	        echo "$(RM) suexec"; \
+	        $(RM) suexec; \
+	    fi; \
+	echo "<=== $(SRC)/support"
+
+#   cleanup the source tree by removing anything which was
+#   created by the configure step and the build target.
+#   When --shadow is used we just remove the complete shadow tree.
+distclean:
+	@if [ ".$(SRC)" = .src ]; then \
+		$(MAKE) -f $(MKF) $(MFLAGS) distclean-normal; \
+	else \
+		$(MAKE) -f $(MKF) $(MFLAGS) distclean-shadow; \
+	fi
+
+distclean-normal:
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) distclean-std $(distclean-support)
+	@echo "<=== $(SRC)"
+	-$(RM) $(SRC)/Configuration.apaci
+	-$(RM) $(SRC)/apaci
+	@$(RM) $(SRC)/.apaci.build.ok
+	-$(RM) Makefile
+
+#   clean the standard stuff
+distclean-std:
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ distclean
+
+distclean-support:
+	@echo "===> $(SRC)/support"; \
+	cd $(SRC)/support; $(MAKE) $(MFLAGS) distclean; \
+	if [ ".$(suexec)" = .1 ]; then \
+	    echo "$(RM) suexec"; \
+	    $(RM) suexec; \
+	fi; \
+	echo "<=== $(SRC)/support"
+
+distclean-shadow:
+	$(RM) -r $(SRC)
+	$(RM) -r $(MKF)
+

@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>How Directory, Location and Files sections work</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">How Directory, Location and Files sections work</H1>
+
+The sections <A
+HREF="mod/core.html#directory"><CODE>&lt;Directory&gt;</CODE></A>, <A
+HREF="mod/core.html#location"><CODE>&lt;Location&gt;</CODE></A> and <A
+HREF="mod/core.html#files"><CODE>&lt;Files&gt;</CODE></A> can contain
+directives which only apply to specified directories, URLs or files
+respectively. Also htaccess files can be used inside a directory to
+apply directives to that directory. This document explains how these
+different sections differ and how they relate to each other when
+Apache decides which directives apply for a particular directory or
+request URL.
+
+<H2>Directives allowed in the sections</H2>
+
+Everything that is syntactically allowed in
+<CODE>&lt;Directory&gt;</CODE> is also allowed in
+<CODE>&lt;Location&gt;</CODE> (except a sub-<CODE>&lt;Files&gt;</CODE>
+section, but the code doesn't test for that, Lars has an open bug
+report on that).  Semantically however some things, and the most
+notable is AllowOverrides, make no sense in
+<CODE>&lt;Location&gt;</CODE>.  The same for
+<CODE>&lt;Files&gt;</CODE> -- syntactically everything is fine, but
+semantically some things are different.
+
+<H2>How the sections are merged</H2>
+
+The order of merging is:
+
+<OL>
+
+<LI>
+
+ <CODE>&lt;Directory&gt;</CODE> (except regular expressions) and
+ .htaccess done simultaneously (with .htaccess overriding
+ <CODE>&lt;Directory&gt;</CODE>)
+
+</LI>
+
+<LI>
+ <CODE>&lt;DirectoryMatch&gt;</CODE>, and
+ <CODE>&lt;Directory&gt;</CODE> with regular expressions
+
+</LI>
+
+ <LI><CODE>&lt;Files&gt;</CODE> and <CODE>&lt;FilesMatch&gt;</CODE> done simultaneously
+ </LI>
+
+ <LI><CODE>&lt;Location&gt;</CODE> and <CODE>&lt;LocationMatch&gt;</CODE> done simultaneously
+ </LI>
+
+</OL>
+
+Apart from <CODE>&lt;Directory&gt;</CODE>, each group is processed in
+the order that they appear in the configuration
+files. <CODE>&lt;Directory&gt;</CODE> (group 1 above) is processed in
+the order shortest directory component to longest. If multiple
+<CODE>&lt;Directory&gt;</CODE> sections apply to the same directory
+they they are processed in the configuration file order.  The
+configuration files are read in the order httpd.conf, srm.conf and
+access.conf. Configurations included via the <CODE>Include</CODE>
+directive will be treated as if they where inside the including file
+at the location of the <CODE>Include</CODE> directive.
+
+<P>
+
+Sections inside <CODE>&lt;VirtualHost&gt;</CODE> sections are applied
+<EM>after</EM> the corresponding sections outside the virtual host
+definition. This allows virtual hosts to override the main server
+configuration. (Note: this only works correctly from 1.2.2 and 1.3a2
+onwards. Before those releases sections inside virtual hosts were
+applied <EM>before</EM> the main server).
+
+<H2>Notes about using sections</H2>
+
+The general guidelines are:
+
+<P>
+
+<UL>
+<LI>
+    If you are attempting to match objects at the filesystem level
+    then you must use <CODE>&lt;Directory&gt;</CODE> and/or
+    <CODE>&lt;Files&gt;</CODE>.
+</LI>
+
+<LI>
+    If you are attempting to match objects at the URL level then you
+    must use <CODE>&lt;Location&gt;</CODE>
+</LI>
+</UL>
+
+But a notable exception is:
+
+<UL>
+<LI>
+    proxy control is done via <CODE>&lt;Directory&gt;</CODE>.  This is
+    a legacy mistake because the proxy existed prior to
+    <CODE>&lt;Location&gt;</CODE>.  A future version of the config
+    language should probably switch this to
+    <CODE>&lt;Location&gt;</CODE>.
+</LI>
+</UL>
+
+Note also that modifying .htaccess parsing during Location doesn't do
+anything because .htaccess parsing has already occurred.
+
+<P>
+
+Another note:
+<P>
+
+<UL>
+<LI>
+    There is actually a
+    <CODE>&lt;Location&gt;</CODE>/<CODE>&lt;LocationMatch&gt;</CODE>
+    sequence performed just before the name translation phase (where
+    <CODE>Aliases</CODE> and <CODE>DocumentRoots</CODE> are used to
+    map URLs to filenames).  The results of this sequence are
+    completely thrown away after the translation has completed.
+</LI>
+</UL>
+
+<!--#include virtual="footer.html" -->
+</BODY></HTML>

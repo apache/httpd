@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>An In-Depth Discussion of VirtualHost Matching</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">An In-Depth Discussion of VirtualHost Matching</H1>
+
+<P>This is a very rough document that was probably out of date the moment
+it was written.  It attempts to explain exactly what the code does when
+deciding what virtual host to serve a hit from.  It's provided on the
+assumption that something is better than nothing.  The server version
+under discussion is Apache 1.2.
+
+<P>If you just want to &quot;make it work&quot; without understanding
+how, there's a <A HREF="#whatworks">What Works</A> section at the bottom.
+
+<H3>Config File Parsing</H3>
+
+<P>There is a main_server which consists of all the definitions appearing
+outside of <CODE>VirtualHost</CODE> sections.  There are virtual servers,
+called <EM>vhosts</EM>, which are defined by
+<A
+ HREF="mod/core.html#virtualhost"
+><SAMP>VirtualHost</SAMP></A>
+sections.
+
+<P>The directives
+<A
+ HREF="mod/core.html#port"
+><SAMP>Port</SAMP></A>,
+<A
+ HREF="mod/core.html#servername"
+><SAMP>ServerName</SAMP></A>,
+<A
+ HREF="mod/core.html#serverpath"
+><SAMP>ServerPath</SAMP></A>,
+and
+<A
+ HREF="mod/core.html#serveralias"
+><SAMP>ServerAlias</SAMP></A>
+can appear anywhere within the definition of
+a server.  However, each appearance overrides the previous appearance
+(within that server).
+
+<P>The default value of the <CODE>Port</CODE> field for main_server
+is 80.  The main_server has no default <CODE>ServerName</CODE>,
+<CODE>ServerPath</CODE>, or <CODE>ServerAlias</CODE>.
+
+<P>In the absence of any
+<A
+ HREF="mod/core.html#listen"
+><SAMP>Listen</SAMP></A>
+directives, the (final if there
+are multiple) <CODE>Port</CODE> directive in the main_server indicates
+which port httpd will listen on.
+
+<P> The <CODE>Port</CODE> and <CODE>ServerName</CODE> directives for
+any server main or virtual are used when generating URLs such as during
+redirects.
+
+<P> Each address appearing in the <CODE>VirtualHost</CODE> directive
+can have an optional port.  If the port is unspecified it defaults to
+the value of the main_server's most recent <CODE>Port</CODE> statement.
+The special port <SAMP>*</SAMP> indicates a wildcard that matches any port.
+Collectively the entire set of addresses (including multiple
+<SAMP>A</SAMP> record
+results from DNS lookups) are called the vhost's <EM>address set</EM>.
+
+<P> The magic <CODE>_default_</CODE> address has significance during
+the matching algorithm.  It essentially matches any unspecified address.
+
+<P> After parsing the <CODE>VirtualHost</CODE> directive, the vhost server
+is given a default <CODE>Port</CODE> equal to the port assigned to the
+first name in its <CODE>VirtualHost</CODE> directive.  The complete
+list of names in the <CODE>VirtualHost</CODE> directive are treated
+just like a <CODE>ServerAlias</CODE> (but are not overridden by any
+<CODE>ServerAlias</CODE> statement).  Note that subsequent <CODE>Port</CODE>
+statements for this vhost will not affect the ports assigned in the
+address set.
+
+<P>
+All vhosts are stored in a list which is in the reverse order that
+they appeared in the config file.  For example, if the config file is:
+
+<BLOCKQUOTE><PRE>
+    &lt;VirtualHost A&gt;
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost B&gt;
+    ...
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost C&gt;
+    ...
+    &lt;/VirtualHost&gt;
+</PRE></BLOCKQUOTE>
+
+Then the list will be ordered: main_server, C, B, A.  Keep this in mind.
+
+<P>
+After parsing has completed, the list of servers is scanned, and various
+merges and default values are set.  In particular:
+
+<OL>
+<LI>If a vhost has no
+    <A
+     HREF="mod/core.html#serveradmin"
+    ><CODE>ServerAdmin</CODE></A>,
+    <A
+     HREF="mod/core.html#resourceconfig"
+    ><CODE>ResourceConfig</CODE></A>,
+    <A
+     HREF="mod/core.html#accessconfig"
+    ><CODE>AccessConfig</CODE></A>,
+    <A
+     HREF="mod/core.html#timeout"
+    ><CODE>Timeout</CODE></A>,
+    <A
+     HREF="mod/core.html#keepalivetimeout"
+    ><CODE>KeepAliveTimeout</CODE></A>,
+    <A
+     HREF="mod/core.html#keepalive"
+    ><CODE>KeepAlive</CODE></A>,
+    <A
+     HREF="mod/core.html#maxkeepaliverequests"
+    ><CODE>MaxKeepAliveRequests</CODE></A>,
+    or
+    <A
+     HREF="mod/core.html#sendbuffersize"
+    ><CODE>SendBufferSize</CODE></A>
+    directive then the respective value is
+    inherited from the main_server.  (That is, inherited from whatever
+    the final setting of that value is in the main_server.)
+
+<LI>The &quot;lookup defaults&quot; that define the default directory
+    permissions
+    for a vhost are merged with those of the main server.  This includes
+    any per-directory configuration information for any module.
+
+<LI>The per-server configs for each module from the main_server are
+    merged into the vhost server.
+</OL>
+
+Essentially, the main_server is treated as &quot;defaults&quot; or a
+&quot;base&quot; on
+which to build each vhost.  But the positioning of these main_server
+definitions in the config file is largely irrelevant -- the entire
+config of the main_server has been parsed when this final merging occurs.
+So even if a main_server definition appears after a vhost definition
+it might affect the vhost definition.
+
+<P> If the main_server has no <CODE>ServerName</CODE> at this point,
+then the hostname of the machine that httpd is running on is used
+instead.  We will call the <EM>main_server address set</EM> those IP
+addresses returned by a DNS lookup on the <CODE>ServerName</CODE> of
+the main_server.
+
+<P> Now a pass is made through the vhosts to fill in any missing
+<CODE>ServerName</CODE> fields and to classify the vhost as either
+an <EM>IP-based</EM> vhost or a <EM>name-based</EM> vhost.  A vhost is
+considered a name-based vhost if any of its address set overlaps the
+main_server (the port associated with each address must match the
+main_server's <CODE>Port</CODE>).  Otherwise it is considered an IP-based
+vhost.
+
+<P> For any undefined <CODE>ServerName</CODE> fields, a name-based vhost
+defaults to the address given first in the <CODE>VirtualHost</CODE>
+statement defining the vhost.  Any vhost that includes the magic
+<SAMP>_default_</SAMP> wildcard is given the same <CODE>ServerName</CODE> as
+the main_server.  Otherwise the vhost (which is necessarily an IP-based
+vhost) is given a <CODE>ServerName</CODE> based on the result of a reverse
+DNS lookup on the first address given in the <CODE>VirtualHost</CODE>
+statement.
+
+<P>
+
+<H3>Vhost Matching</H3>
+
+
+<P><STRONG>Apache 1.3 differs from what is documented
+here, and documentation still has to be written.</STRONG>
+
+<P>
+The server determines which vhost to use for a request as follows:
+
+<P> <CODE>find_virtual_server</CODE>: When the connection is first made
+by the client, the local IP address (the IP address to which the client
+connected) is looked up in the server list.  A vhost is matched if it
+is an IP-based vhost, the IP address matches and the port matches
+(taking into account wildcards).
+
+<P> If no vhosts are matched then the last occurrence, if it appears,
+of a <SAMP>_default_</SAMP> address (which if you recall the ordering of the
+server list mentioned above means that this would be the first occurrence
+of <SAMP>_default_</SAMP> in the config file) is matched.
+
+<P> In any event, if nothing above has matched, then the main_server is
+matched.
+
+<P> The vhost resulting from the above search is stored with data
+about the connection.  We'll call this the <EM>connection vhost</EM>.
+The connection vhost is constant over all requests in a particular TCP/IP
+session -- that is, over all requests in a KeepAlive/persistent session.
+
+<P> For each request made on the connection the following sequence of
+events further determines the actual vhost that will be used to serve
+the request.
+
+<P> <CODE>check_fulluri</CODE>: If the requestURI is an absoluteURI, that
+is it includes <CODE>http://hostname/</CODE>, then an attempt is made to
+determine if the hostname's address (and optional port) match that of
+the connection vhost.  If it does then the hostname portion of the URI
+is saved as the <EM>request_hostname</EM>.  If it does not match, then the
+URI remains untouched.  <STRONG>Note</STRONG>: to achieve this address
+comparison,
+the hostname supplied goes through a DNS lookup unless it matches the
+<CODE>ServerName</CODE> or the local IP address of the client's socket.
+
+<P> <CODE>parse_uri</CODE>: If the URI begins with a protocol
+(<EM>i.e.</EM>, <CODE>http:</CODE>, <CODE>ftp:</CODE>) then the request is
+considered a proxy request.  Note that even though we may have stripped
+an <CODE>http://hostname/</CODE> in the previous step, this could still
+be a proxy request.
+
+<P> <CODE>read_request</CODE>: If the request does not have a hostname
+from the earlier step, then any <CODE>Host:</CODE> header sent by the
+client is used as the request hostname.
+
+<P> <CODE>check_hostalias</CODE>: If the request now has a hostname,
+then an attempt is made to match for this hostname.  The first step
+of this match is to compare any port, if one was given in the request,
+against the <CODE>Port</CODE> field of the connection vhost.  If there's
+a mismatch then the vhost used for the request is the connection vhost.
+(This is a bug, see observations.)
+
+<P>
+If the port matches, then httpd scans the list of vhosts starting with
+the next server <STRONG>after</STRONG> the connection vhost.  This scan does not
+stop if there are any matches, it goes through all possible vhosts,
+and in the end uses the last match it found.  The comparisons performed
+are as follows:
+
+<UL>
+<LI>Compare the request hostname:port with the vhost
+    <CODE>ServerName</CODE> and <CODE>Port</CODE>.
+
+<LI>Compare the request hostname against any and all addresses given in
+    the <CODE>VirtualHost</CODE> directive for this vhost.
+
+<LI>Compare the request hostname against the <CODE>ServerAlias</CODE>
+    given for the vhost.
+</UL>
+
+<P>
+<CODE>check_serverpath</CODE>: If the request has no hostname
+(back up a few paragraphs) then a scan similar to the one
+in <CODE>check_hostalias</CODE> is performed to match any
+<CODE>ServerPath</CODE> directives given in the vhosts.  Note that the
+<STRONG>last match</STRONG> is used regardless (again consider the ordering of
+the virtual hosts).
+
+<H3>Observations</H3>
+
+<UL>
+
+<LI>It is difficult to define an IP-based vhost for the machine's
+    &quot;main IP address&quot;.  You essentially have to create a bogus
+    <CODE>ServerName</CODE> for the main_server that does not match the
+    machine's IPs.
+    <P>
+
+<LI>During the scans in both <CODE>check_hostalias</CODE> and
+    <CODE>check_serverpath</CODE> no check is made that the vhost being
+    scanned is actually a name-based vhost.  This means, for example, that
+    it's possible to match an IP-based vhost through another address.  But
+    because the scan starts in the vhost list at the first vhost that
+    matched the local IP address of the connection, not all IP-based vhosts
+    can be matched.
+    <P>
+    Consider the config file above with three vhosts A, B, C.  Suppose
+    that B is a named-based vhost, and A and C are IP-based vhosts.  If
+    a request comes in on B or C's address containing a header
+    &quot;<SAMP>Host: A</SAMP>&quot; then
+    it will be served from A's config.  If a request comes in on A's
+    address then it will always be served from A's config regardless of
+    any Host: header.
+    </P>
+
+<LI>Unless you have a <SAMP>_default_</SAMP> vhost,
+    it doesn't matter if you mix name-based vhosts in amongst IP-based
+    vhosts.  During the <CODE>find_virtual_server</CODE> phase above no
+    named-based vhost will be matched, so the main_server will remain the
+    connection vhost.  Then scans will cover all vhosts in the vhost list.
+    <P>
+    If you do have a <SAMP>_default_</SAMP> vhost, then you cannot place
+    named-based vhosts after it in the config.  This is because on any
+    connection to the main server IPs the connection vhost will always be
+    the <SAMP>_default_</SAMP> vhost since none of the name-based are
+    considered during <CODE>find_virtual_server</CODE>.
+    </P>
+
+<LI>You should never specify DNS names in <CODE>VirtualHost</CODE>
+    directives because it will force your server to rely on DNS to boot.
+    Furthermore it poses a security threat if you do not control the
+    DNS for all the domains listed.
+    <A HREF="dns-caveats.html">There's more information
+    available on this and the next two topics</A>.
+    <P>
+
+<LI><CODE>ServerName</CODE> should always be set for each vhost.  Otherwise
+    A DNS lookup is required for each vhost.
+    <P>
+
+<LI>A DNS lookup is always required for the main_server's
+    <CODE>ServerName</CODE> (or to generate that if it isn't specified
+    in the config).
+    <P>
+
+<LI>If a <CODE>ServerPath</CODE> directive exists which is a prefix of
+    another <CODE>ServerPath</CODE> directive that appears later in
+    the configuration file, then the former will always be matched
+    and the latter will never be matched.  (That is assuming that no
+    Host header was available to disambiguate the two.)
+    <P>
+
+<LI>If a vhost that would otherwise be a name-vhost includes a
+    <CODE>Port</CODE> statement that doesn't match the main_server
+    <CODE>Port</CODE> then it will be considered an IP-based vhost.
+    Then <CODE>find_virtual_server</CODE> will match it (because
+    the ports associated with each address in the address set default
+    to the port of the main_server) as the connection vhost.  Then
+    <CODE>check_hostalias</CODE> will refuse to check any other name-based
+    vhost because of the port mismatch.  The result is that the vhost
+    will steal all hits going to the main_server address.
+    <P>
+
+<LI>If two IP-based vhosts have an address in common, the vhost appearing
+    later in the file is always matched.  Such a thing might happen
+    inadvertently.  If the config has name-based vhosts and for some reason
+    the main_server <CODE>ServerName</CODE> resolves to the wrong address
+    then all the name-based vhosts will be parsed as ip-based vhosts.
+    Then the last of them will steal all the hits.
+    <P>
+
+<LI>The last name-based vhost in the config is always matched for any hit
+    which doesn't match one of the other name-based vhosts.
+
+</UL>
+
+<H3><A name="whatworks">What Works</A></H3>
+
+<P>In addition to the tips on the <A HREF="dns-caveats.html#tips">DNS
+Issues</A> page, here are some further tips:
+
+<UL>
+
+<LI>Place all main_server definitions before any VirtualHost definitions.
+(This is to aid the readability of the configuration -- the post-config
+merging process makes it non-obvious that definitions mixed in around
+virtualhosts might affect all virtualhosts.)
+<P>
+
+<LI>Arrange your VirtualHosts such
+that all name-based virtual hosts come first, followed by IP-based
+virtual hosts, followed by any <SAMP>_default_</SAMP> virtual host
+<P>
+
+<LI>Avoid <CODE>ServerPaths</CODE> which are prefixes of other
+<CODE>ServerPaths</CODE>.  If you cannot avoid this then you have to
+ensure that the longer (more specific) prefix vhost appears earlier in
+the configuration file than the shorter (less specific) prefix
+(<EM>i.e.</EM>, &quot;ServerPath /abc&quot; should appear after
+&quot;ServerPath /abcdef&quot;).
+<P>
+
+<LI>Do not use <EM>port-based</EM> vhosts in the same server as
+name-based vhosts.  A loose definition for port-based is a vhost which
+is determined by the port on the server (<EM>i.e.</EM>, one server with
+ports 8000, 8080, and 80 - all of which have different configurations).
+<P>
+
+</UL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
