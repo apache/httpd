@@ -353,14 +353,21 @@ of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     of the file that will be inserted at the top of the index
     listing. <em>Filename</em> is the name of the file to include.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-HeaderName HEADER.html
-</code></p></div>
+    <div class="example"><h3>Example</h3><p><code>
+    HeaderName HEADER.html
+    </code></p></div>
 
 <div class="note">
       <p>Both HeaderName and <code class="directive"><a href="#readmename">ReadmeName</a></code> now treat
       <em>Filename</em> as a URI path relative to the one used to
-      access the directory being indexed. <em>Filename</em> must
+      access the directory being indexed. If <em>Filename</em> begins
+      with a slash, it will be taken to be relative to the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</p>
+
+      <div class="example"><h3>Example</h3><p><code>
+      HeaderName /include/HEADER.html
+      </code></p></div>
+      
+      <p><em>Filename</em> must
       resolve to a document with a major content type of
       "<code>text/*</code>" (<em>e.g.</em>, <code>text/html</code>,
       <code>text/plain</code>, <em>etc.</em>). This means that
@@ -731,10 +738,17 @@ of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     <p>The <code class="directive">ReadmeName</code> directive sets the name
     of the file that will be appended to the end of the index
     listing. <em>Filename</em> is the name of the file to include, and
-    is taken to be relative to the location being indexed.</p>
+    is taken to be relative to the location being indexed. If
+    <em>Filename</em> begins with a slash, it will be taken to be
+    relative to the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.
+    </p>
 
     <div class="example"><h3>Example</h3><p><code>
     ReadmeName FOOTER.html
+    </code></p></div>
+
+    <div class="example"><h3>Example 2</h3><p><code>
+    ReadmeName /include/FOOTER.html
     </code></p></div>
 
     <p>See also <code class="directive"><a href="#headername">HeaderName</a></code>, where this behavior

@@ -409,15 +409,23 @@ of the index listing</description>
     of the file that will be inserted at the top of the index
     listing. <em>Filename</em> is the name of the file to include.</p>
 
-<example><title>Example</title>
-HeaderName HEADER.html
-</example>
+    <example><title>Example</title>
+    HeaderName HEADER.html
+    </example>
 
 <note>
       <p>Both HeaderName and <directive
       module="mod_autoindex">ReadmeName</directive> now treat
       <em>Filename</em> as a URI path relative to the one used to
-      access the directory being indexed. <em>Filename</em> must
+      access the directory being indexed. If <em>Filename</em> begins
+      with a slash, it will be taken to be relative to the <directive
+      module="core">DocumentRoot</directive>.</p>
+
+      <example><title>Example</title>
+      HeaderName /include/HEADER.html
+      </example>
+      
+      <p><em>Filename</em> must
       resolve to a document with a major content type of
       "<code>text/*</code>" (<em>e.g.</em>, <code>text/html</code>,
       <code>text/plain</code>, <em>etc.</em>). This means that
@@ -839,10 +847,17 @@ of the index listing</description>
     <p>The <directive>ReadmeName</directive> directive sets the name
     of the file that will be appended to the end of the index
     listing. <em>Filename</em> is the name of the file to include, and
-    is taken to be relative to the location being indexed.</p>
+    is taken to be relative to the location being indexed. If
+    <em>Filename</em> begins with a slash, it will be taken to be
+    relative to the <directive module="core">DocumentRoot</directive>.
+    </p>
 
     <example><title>Example</title>
     ReadmeName FOOTER.html
+    </example>
+
+    <example><title>Example 2</title>
+    ReadmeName /include/FOOTER.html
     </example>
 
     <p>See also <directive
