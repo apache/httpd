@@ -37,7 +37,7 @@
     <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
     できるように、この二つの機能は分離されています。</p>
 
-    <p>自動インデックス生成は <code>Optioins +Indexes</code>
+    <p>自動インデックス生成は <code>Options +Indexes</code>
     を使うことで有効になります。詳細については、
     <directive module="core">Options</directive>
     ディレクティブをご覧下さい。</p>
