@@ -63,7 +63,7 @@ ServerAdmin you@your.address
 # mounted filesystem then please read the LockFile documentation,
 # you will save yourself a lot of trouble.
 
-ServerRoot @@ServerRoot@@
+ServerRoot "@@ServerRoot@@"
 
 # BindAddress: You can support virtual hosts with this option. This option
 # is used to tell the server which IP address to listen to. It can either

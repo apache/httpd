@@ -43,7 +43,7 @@ ErrorLog logs/error_log
 </Directory>
 
 # If this was a real internet server you'd probably want to uncomment this:
-#<Directory @@ServerRoot@@/htdocs>
+#<Directory "@@ServerRoot@@/htdocs">
 #    order allow,deny
 #    allow from all
 #</Directory>

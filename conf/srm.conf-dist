@@ -12,12 +12,12 @@
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 
-DocumentRoot @@ServerRoot@@/htdocs
+DocumentRoot "@@ServerRoot@@/htdocs"
 
 # UserDir: The name of the directory which is appended onto a user's home
 # directory if a ~user request is recieved.
 
-UserDir public_html
+UserDir "@@UserDir@@"
 
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
@@ -152,12 +152,12 @@ LanguagePriority en fr de
 # require it to be present in the URL.  So "/icons" isn't aliased in this
 # example.
 
-Alias /icons/ @@ServerRoot@@/icons/
+Alias /icons/ "@@ServerRoot@@/icons/"
 
 # ScriptAlias: This controls which directories contain server scripts.
 # Format: ScriptAlias fakename realname
 
-#ScriptAlias /cgi-bin/ @@ServerRoot@@/cgi-bin/
+ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 
 # If you want to use server side includes, or CGI outside
 # ScriptAliased directories, uncomment the following lines.
