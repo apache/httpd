@@ -324,7 +324,7 @@ static int status_handler(request_rec *r)
 	    pid_buffer[indx] = ps_record.pid;
 	    if (res == SERVER_READY)
 	        ready++;
-	    else if (res != SERVER_DEAD)
+	    else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
 	        busy++;
 	    if (ap_extended_status) {
 	        lres = ws_record.access_count;
