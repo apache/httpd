@@ -126,6 +126,11 @@ typedef int tid_t;
 #define mktemp(s) tmpnam(s)
 #define _getch getch
 
+/* Watcom reports that ERANGE is returned properly for any out of bounds
+ * conditions, with a MIN/MAX_LONG value.  This should be safe.
+ */
+#define ap_strtol strtol
+
 #define opendir_411(p) os_opendir(p)
 #define opendir(p) os_opendir(p)
 DIR *os_opendir (const char *pathname);
