@@ -465,7 +465,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     apr_table_t * tmp;
 
     /* This case should not happen... */
-    if (!dobj->fd || !dobj->hfd) {
+    if (!dobj->hfd) {
         /* XXX log message */
         return APR_NOTFOUND;
     }
