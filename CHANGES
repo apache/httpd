@@ -1,5 +1,11 @@
 Changes with Apache 2.0.15-dev
 
+  *) Fix a security exposure in mod_access.  Previously when IPv6 
+     listening sockets were used, allow/deny-from-IPv4-address rules 
+     were not evaluated properly (PR #7407).  Also, add the ability to 
+     specify IPv6 address strings with optional prefix length on Allow 
+     and Deny.  [Jeff Trawick]
+
   *) Enhance rotatelogs so that a UTC offset can be specified, and
      the logfile name can be formatted using strftime(3).  (Brought
      forward from 1.3.)  [Ken Coar]
