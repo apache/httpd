@@ -753,6 +753,16 @@ const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
     return NULL;
 }
 
+/* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 
+ * people don't get bitten by wrong-cased regex matches
+ */
+
+#ifdef WIN32
+#define USE_ICASE REG_ICASE
+#else
+#define USE_ICASE 0
+#endif
+
 static const char end_dir_magic[] = "</Directory> outside of any <Directory> section";
 
 const char *end_dirsection (cmd_parms *cmd, void *dummy) {
@@ -782,11 +792,15 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (cmd->info) { /* <DirectoryMatch> */
-	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
-	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+    }
+    else {
+	/* Ensure that the pathname is canonical */
+	cmd->path = os_canonical_filename(cmd->pool, cmd->path);
     }
 
     errmsg = srm_command_loop (cmd, new_dir_conf);
@@ -881,16 +895,21 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     if (cmd->info) { /* <FilesMatch> */
 	if (old_path && cmd->path[0] != '/' && cmd->path[0] != '^')
             cmd->path = pstrcat(cmd->pool, "^", old_path, cmd->path, NULL);
-        r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
 	if (old_path && cmd->path[0] != '/' && cmd->path[0] != '^')
 	    cmd->path = pstrcat(cmd->pool, "^", old_path, cmd->path, NULL);
-	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
-    else if (old_path && cmd->path[0] != '/')
-	cmd->path = pstrcat(cmd->pool, old_path, cmd->path, NULL);
+    else {
+	if (old_path && cmd->path[0] != '/')
+	    cmd->path = pstrcat(cmd->pool, old_path, cmd->path, NULL);
+
+	/* Ensure that the pathname is canonical */
+	cmd->path = os_canonical_filename(cmd->pool, cmd->path);
+    }
 
     errmsg = srm_command_loop (cmd, new_file_conf);
     if (errmsg != end_file_magic) return errmsg;
