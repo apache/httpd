@@ -427,3 +427,4 @@ EXPORTS
 	ap_update_child_status @434
 	ap_caret_escape_args @437
 	ap_double_quotes @438
+	ap_escape_logitem @441
