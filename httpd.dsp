@@ -26,6 +26,7 @@ CFG=ApacheCore - Win32 Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+RSC=rc.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
@@ -39,11 +40,10 @@ CPP=cl.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-RSC=rc.exe
-# ADD BASE RSC /l 0x409
-# ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -64,11 +64,10 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-RSC=rc.exe
-# ADD BASE RSC /l 0x409
-# ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\lib\aputil" /I ".\lib\sdbm" /I ".\os\win32" /I ".\modules\mpm\winnt" /I ".\lib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -445,14 +444,6 @@ SOURCE=.\modules\standard\mod_userdir.c
 # Begin Group "util"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\main\buff.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\buff.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\main\rfc1413.c

@@ -24,25 +24,25 @@ EXPORTS
 	ap_auth_name
 	ap_auth_type
 	ap_basic_http_header
-	ap_bclose
-	ap_bcreate
-	ap_bfilbuf
-
-	ap_bflsbuf
-	ap_bflush
-	ap_bgetopt
-	ap_bgets
 
 
-	ap_blookc
-
-	ap_bonerror
 
 
-	ap_bputs
 
-	ap_bsetflag
-	ap_bsetopt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -258,7 +258,7 @@ EXPORTS
 	ap_update_mtime
 
 
-	ap_vbprintf
+
 
 
 
@@ -272,8 +272,8 @@ EXPORTS
 	regfree
 	access_module
 	alias_module
-	ap_bprintf
-	ap_bputstrs
+
+
 
 
 	ap_limit_section
@@ -396,9 +396,9 @@ EXPORTS
         ap_get_status_table
         ap_run_default_port
         ap_run_http_method
-        ap_bread_core
-        ap_bwrite_core
-        ap_vbputstrs
+
+
+
 
 ;       Exclusively provided for http_main.c
         ap_register_hooks
