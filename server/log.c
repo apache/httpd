@@ -179,7 +179,7 @@ static const TRANS priorities[] = {
     {NULL,      -1},
 };
 
-static apr_file_t *stderr_log;
+static apr_file_t *stderr_log = NULL;
 
 AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
 {
@@ -294,8 +294,9 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
     if (s_main->error_log) {
         /* replace stderr with this new log */
         apr_file_flush(s_main->error_log);
-        apr_file_open_stderr(&errfile, p);        
-        rc = apr_file_dup2(errfile, s_main->error_log, p);
+        if ((rc = apr_file_open_stderr(&errfile, p)) == APR_SUCCESS) {
+            rc = apr_file_dup2(errfile, s_main->error_log, p);
+        }
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
                          "unable to replace stderr with error_log");
@@ -306,6 +307,7 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
     /* note that stderr may still need to be replaced with something
      * because it points to the old error log, or back to the tty
      * of the submitter.
+     * XXX: This is BS - /dev/null is non-portable
      */
     if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,

@@ -1434,6 +1434,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE hPipeWrite;
     HANDLE hNullOutput;
     HANDLE hShareError;
+    HANDLE hExitEvent;
     HANDLE hCurrentProcess = GetCurrentProcess();
     SECURITY_ATTRIBUTES sa;
 
@@ -1496,7 +1497,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
-    if (ap_server_conf->error_log) {
+    if (ap_server_conf->error_log) { /* Is this check really necessary?*/
         rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
         if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
             if (DuplicateHandle(hCurrentProcess, hShareError, 
@@ -1524,20 +1525,22 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
             CloseHandle(hNullOutput);
             return -1;
         }
-        else {
-            hShareError = GetStdHandle(STD_ERROR_HANDLE);
-        }
+    }
+    else {
+        hShareError = GetStdHandle(STD_ERROR_HANDLE);
     }
 
     /* Create the child_exit_event */
-    *child_exit_event = CreateEvent(NULL, TRUE, FALSE, NULL);
-    if (!(*child_exit_event)) {
+    hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!hExitEvent) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
         CloseHandle(hPipeWrite);
         CloseHandle(hPipeRead);
         CloseHandle(hNullOutput);
-        CloseHandle(hShareError);
+        if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
+            CloseHandle(hShareError);
+        }
         return -1;
     }
     
@@ -1585,6 +1588,45 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                        NULL,
                        &si, &pi);
 
+    /* Undo everything created for the child alone
+     */
+    CloseHandle(pi.hThread);
+    CloseHandle(hPipeRead);
+    CloseHandle(hNullOutput);
+    if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
+        /* Handles opened with GetStdHandle are psuedo handles
+         * and should not be closed else bad things will happen.
+         */
+        CloseHandle(hShareError);
+    }
+    _putenv("AP_PARENT_PID=");
+    _putenv("AP_MY_GENERATION=");
+
+    if (!rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Failed to create the child process.");
+        CloseHandle(hExitEvent);
+        CloseHandle(hPipeWrite);
+        CloseHandle(pi.hProcess);
+        return -1;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                 "Parent: Created child process %d", pi.dwProcessId);
+
+    if (send_handles_to_child(p, hExitEvent, pi.hProcess, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        CloseHandle(hExitEvent);
+        CloseHandle(hPipeWrite);
+        CloseHandle(pi.hProcess);
+        return -1;
+    }
+
     /* Important:
      * Give the child process a chance to run before dup'ing the sockets.
      * We have already set the listening sockets noninheritable, but if 
@@ -1595,40 +1637,23 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      */
     Sleep(1000);
 
-    /* Undo everything we created for the child only
-     */
-    CloseHandle(pi.hThread);
-    CloseHandle(hPipeRead);
-    CloseHandle(hNullOutput);
-    CloseHandle(hShareError);
-    _putenv("AP_PARENT_PID=");
-    _putenv("AP_MY_GENERATION=");
-
-    if (!rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Failed to create the child process.");
-        CloseHandle(hPipeWrite);
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-        return -1;
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                 "Parent: Created child process %d", pi.dwProcessId);
-
-    if (send_handles_to_child(p, *child_exit_event, pi.hProcess, hPipeWrite)) {
-        CloseHandle(hPipeWrite);
-        return -1;
-    }
-
     if (send_listeners_to_child(p, pi.dwProcessId, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        CloseHandle(hExitEvent);
         CloseHandle(hPipeWrite);        
+        CloseHandle(pi.hProcess);
         return -1;
     }
 
     CloseHandle(hPipeWrite);        
 
     *child_proc = pi.hProcess;
+    *child_exit_event = hExitEvent;
 
     return 0;
 }
@@ -2110,6 +2135,7 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
      *   -k runservice [WinNT errors logged from rewrite_args]
      *   -k uninstall
      *   -k stop
+     *   -k shutdown (same as -k stop). Maintained for backward compatability.
      *
      * in these cases we -don't- care if httpd.conf has config errors!
      */
@@ -2133,7 +2159,8 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         exit(rv);
     }
 
-    if (!strcasecmp(signal_arg, "stop")) {
+    if ((!strcasecmp(signal_arg, "stop")) || 
+        (!strcasecmp(signal_arg, "shutdown"))) {
         mpm_signal_service(ptemp, 0);
         exit(0);
     }

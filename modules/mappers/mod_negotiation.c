@@ -94,10 +94,12 @@ typedef struct {
 
 /* forcelangpriority flags 
  */
-#define FLP_UNDEF    0    /* Same as FLP_NONE, but base overrides */
+#define FLP_UNDEF    0    /* Same as FLP_DEFAULT, but base overrides */
 #define FLP_NONE     1    /* Return 406, HTTP_NOT_ACCEPTABLE */
 #define FLP_PREFER   2    /* Use language_priority rather than MC */
 #define FLP_FALLBACK 4    /* Use language_priority rather than NA */
+
+#define FLP_DEFAULT  FLP_PREFER
 
 module AP_MODULE_DECLARE_DATA negotiation_module;
 
@@ -117,10 +119,12 @@ static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
     neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
 
     /* give priority to the config in the subdirectory */
-    new->forcelangpriority = add->forcelangpriority ? add->forcelangpriority
-                                                    : base->forcelangpriority;
-    new->language_priority = add->language_priority ? add->language_priority 
-                                                    : base->language_priority;
+    new->forcelangpriority = (add->forcelangpriority != FLP_UNDEF)
+				? add->forcelangpriority 
+				: base->forcelangpriority;
+    new->language_priority = add->language_priority 
+				? add->language_priority 
+                                : base->language_priority;
     return new;
 }
 
@@ -1467,6 +1471,11 @@ static void set_default_lang_quality(negotiation_state *neg)
 
 static void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
+    int forcepriority = neg->conf->forcelangpriority;
+    if (forcepriority == FLP_UNDEF) {
+        forcepriority = FLP_DEFAULT;
+    }
+
     if (!variant->content_languages || !variant->content_languages->nelts) {
         /* This variant has no content-language, so use the default
          * quality factor for variants with no content-language
@@ -1620,9 +1629,9 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
      * to LanguagePriority order.  The best match is the lowest index of 
      * any LanguagePriority match.
      */
-    if (((neg->conf->forcelangpriority & FLP_PREFER) 
+    if (((forcepriority & FLP_PREFER) 
              && (variant->lang_index < 0))
-     || ((neg->conf->forcelangpriority & FLP_FALLBACK)
+     || ((forcepriority & FLP_FALLBACK)
              && !variant->lang_quality)) 
     {
         int bestidx = -1;
@@ -1647,12 +1656,12 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
 
         if (bestidx >= 0) {
             if (variant->lang_quality) {
-                if (neg->conf->forcelangpriority & FLP_PREFER) {
+                if (forcepriority & FLP_PREFER) {
                     variant->lang_index = bestidx;
                 }
             }
             else {
-                if (neg->conf->forcelangpriority & FLP_FALLBACK) {
+                if (forcepriority & FLP_FALLBACK) {
                     variant->lang_index = bestidx;
                     variant->lang_quality = .0001f;
                     variant->definite = 0;
