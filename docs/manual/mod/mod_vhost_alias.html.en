@@ -102,6 +102,7 @@ hosting</td></tr>
     is present. The interpretation is as follows:</p>
 
     <table>
+      
       <tr><td><code>0</code></td>
       <td>the whole name</td></tr>
 

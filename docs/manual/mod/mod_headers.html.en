@@ -194,6 +194,7 @@ is available only in Apache 2.0</td></tr></table>
     are supported in <var>value</var>:</p>
 
     <table class="bordered">
+    
     <tr><td><code>%t</code></td>
         <td>The time the request was received in Universal Coordinated Time
         since the epoch (Jan. 1, 1970) measured in microseconds. The value

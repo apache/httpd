@@ -90,6 +90,7 @@ be made available under different names, too. Look in the <a href="../ssl/ssl_co
 compatibility variables.</p>
 
 <table class="bordered">
+
 <tr>
  <th>Variable Name:</th>
  <th>Value Type:</th>
@@ -387,6 +388,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
 <table class="bordered">
+
 <tr><th>Tag</th> <th>Description</th></tr>
 <tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
@@ -463,6 +465,7 @@ EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </code></p></div>
 <table class="bordered">
+
 <tr><th>Cipher-Tag</th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
