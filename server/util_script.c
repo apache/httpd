@@ -167,6 +167,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
     int i;
     apr_port_t rport;
+    apr_sockaddr_t *remotesa;
 
     /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later
@@ -257,7 +258,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    apr_get_port(&rport, APR_REMOTE, c->client_socket);
+    apr_get_sockaddr(&remotesa, APR_REMOTE, c->client_socket);
+    apr_get_port(&rport, remotesa);
     apr_table_addn(e, "REMOTE_PORT", apr_psprintf(r->pool, "%d", rport));
 
     if (r->user) {
