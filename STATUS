@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 16:15:43 $]
+Last modified at [$Date: 2002/03/22 19:01:54 $]
 
 Release:
 
@@ -49,39 +49,6 @@ CURRENT RELEASE NOTES:
 
 FINAL RELEASE SHOWSTOPPERS:
 
-    * If any request gets to the core handler, without a flag that this 
-      r->filename was tested by dir/file_walk, we need to 500 at the very 
-      end of the ap_process_request_internal() processing.  This provides
-      authors of older modules better compatibility, while still improving
-      the security and robustness of 2.0. 
-        Status: still need to decide where this goes, OtherBill comments...
-        Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
-        we need to look at halting this in the 'default handler' case,
-        and that implies pushing the 'handler election' into the request
-        internal processing phase from the run request phase.
-        Jim asks: would a stopgap be something bogus like adding another
-        flag to request_rec ala eos_sent and before we OK, if not set
-        force 500?
-        Jeff says: reviewing the original message and the one
-        follow-up (also from OtherBill) it looks like OtherBill had a
-        good handle on the problem, though I wonder why not just put a
-        simple check in default_handler to see if dir/file_walk has
-        been done (a footprint left by dir/file_walk doesn't have to
-        be in request_rec; a better place is core_request_config)
-
-	BillS: I think the common case will be caught in
-	default_handler already (with the r->finfo.filetype == 0
-	check). A module would have to explicitly init r->finfo.filetype
-        then its handler would have to decline the request.  Seems
-	to be an unlikely combination as most (all?) modules bypassing
-	directory_walk are not serving content out of the file system.
-
-        gregames says: can this happen somehow without a broken module
-            being involved?  If not, why waste cycles trying to defend against
-            potential broken modules?  It seems futile.  Please vote.
-          not a showstopper: gregames, BillS
-          showstopper:
-
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
@@ -96,11 +63,11 @@ FINAL RELEASE SHOWSTOPPERS:
 
 CURRENT VOTES:
 
-    * Should we always build binaries statically unless otherwise
+    * Should we always build [support*] binaries statically unless otherwise
       indicated?
         Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
 
-      +1:  Ken
+      +1:  Ken, *wrowe [they are PITAs on OSX]
       -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
@@ -113,7 +80,7 @@ CURRENT VOTES:
       Not self-destruct: BrianP, Ian, Cliff, BillS
       Make it runtime configurable: Aaron, Jim, Justin
       Have 2 parents: +1: Jim
-                      -1: Justin
+                      -1: Justin, wrowe [for 2.0]
                       +0: Martin (while standing by, could it do
                                   something useful?)
 
@@ -122,6 +89,29 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * If any request gets through ap_process_request_internal() and is
+      scheduled to be served by the core handler, without a flag that this 
+      r->filename was tested by dir/file_walk, we need to 500 at the very 
+      end of the ap_process_request_internal() processing so sub_req-esters
+      know this request cannot be run.  This provides authors of older 
+      modules better compatibility, while still improving the security and 
+      robustness of 2.0. 
+
+        Status: still need to decide where this goes, OtherBill comments...
+        Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
+        [Deleted comments regarding the ap_run_handler phase, as irrelevant
+            as BillS points out that "common case will be caught in
+  	    default_handler already (with the r->finfo.filetype == 0 check)"
+            and the issue is detecting this -before- we try to run the req.]
+
+	gregames says: can this happen somehow without a broken module
+            being involved?  If not, why waste cycles trying to defend against
+            potential broken modules?  It seems futile.
+        wrowe counters: no, it shouldn't happen unless the module is broken.
+            But the right answer is to fail the request up-front in dir/file
+            walk if the path was entirely invalid; and we can't do that either
+            or we break modules that are unwilling to hook map_to_storage.
 
     * Rewrite core_output_filter. It is nearly impossible to support
       it with predictable results as it is implemented now.
@@ -293,6 +283,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         stoddard: Not fixed. Shared scoreboard might offer a good
         way for the parent to keep track of 'other child' processes
         and whack them if the child goes down.
+        Other thoughts on walking the process chain using the NT kernel
+        have also been proposed on APR.
 
     * Win32: Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a bad 
