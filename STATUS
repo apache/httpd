@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 16:53:05 $]
+Last modified at [$Date: 2003/05/13 17:00:45 $]
 
 Release:
 
@@ -223,7 +223,7 @@ PATCHES TO PORT FROM 2.1
     * Check the validity of the processed htpassword file. If a line is 
       not empty and not a comment, it must contain at least one colon.
       support/htpasswd.c: r1.69
-      +1: thommay, nd
+      +1: thommay, nd, trawick
 
     * Ensure that ssl-std.conf is generated at configure time, and switch
       to using the expanded config variables to work the same as 
@@ -236,6 +236,11 @@ PATCHES TO PORT FROM 2.1
        0: nd
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
+
+    * mod_log_config: be able to log the id of the thread that handled
+      the request
+      modules/loggers/mod_log_config.c: r1.102-1.104
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
