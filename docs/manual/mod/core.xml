@@ -2204,6 +2204,11 @@ is accessed by an incompatible browser</description>
     subdirectories <code>conf/</code> and <code>logs/</code>. Relative
     paths for other configuration files are taken as relative to this
     directory.</p>
+
+    <example><title>Example</title>
+    ServerRoot /home/httpd
+    </example>
+
 </usage>
 <seealso><a href="../invoking.html">the <code>-d</code>
     option to <code>httpd</code></a></seealso>
