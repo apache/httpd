@@ -72,6 +72,7 @@
  */
 
 #include "conf.h"
+#include "ap.h"
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -205,7 +206,7 @@ static void clean_env(void)
 
 
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
-	log_err("failed to malloc env mem\n");
+	log_err("failed to malloc memory for environment\n");
 	exit(120);
     }
 
@@ -258,7 +259,14 @@ int main(int argc, char *argv[])
      */
     prog = argv[0];
     if (argc < 4) {
-	log_err("too few arguments\n");
+        char msgbuf[2048];
+	int i;
+
+	ap_snprintf(msgbuf, sizeof(msgbuf), "too few (%d) arguments:", argc);
+	for (i = 0; i < argc; i++) {
+	    ap_snprintf(msgbuf, sizeof(msgbuf), "%s [%s]", msgbuf, argv[i]);
+	}
+	log_err("%s\n", msgbuf);
 	exit(101);
     }
     target_uname = argv[1];
@@ -283,12 +291,12 @@ int main(int argc, char *argv[])
 #ifdef _OSD_POSIX
     /* User name comparisons are case insensitive on BS2000/OSD */
     if (strcasecmp(HTTPD_USER, pw->pw_name)) {
-	log_err("user mismatch (%s)\n", pw->pw_name);
+	log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
 	exit(103);
     }
 #else  /*_OSD_POSIX*/
     if (strcmp(HTTPD_USER, pw->pw_name)) {
-	log_err("user mismatch (%s)\n", pw->pw_name);
+	log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
 	exit(103);
     }
 #endif /*_OSD_POSIX*/
@@ -350,7 +358,7 @@ int main(int argc, char *argv[])
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
-    log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
+    log_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
 	    target_uname, actual_uname,
 	    target_gname, actual_gname,
 	    cmd);
