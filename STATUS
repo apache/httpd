@@ -4,7 +4,7 @@ Release:
 
     2.0  : In pre-alpha development
 	    see: <http://www.arctic.org/~dgaudet/apache/2.0/process-model>
-    1.3b4: In development, maybe a release late Jan 98? Jim will be RM
+    1.3b4: In development, maybe a release early Feb 98? Jim will be RM
 	    unless someone else wants it
     1.3b3: Released and announced
     1.3b1: There is no 1.3b1
@@ -238,7 +238,7 @@ Open issues:
       voting through cvs, by creating a directory under the source tree
       and putting them there?  Please vote.
 	<34B8EE39.43F32BE0@Golux.Com>
-	Status: Ken +1, Randy 0, Dean 0, Jim +1, Paul 0
+	Status: Ken +1, Randy 0, Dean 0, Jim +1, Paul 0, Martin +1
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
