@@ -1,5 +1,9 @@
 Changes with Apache 1.3.3
 
+  *) PORT: Remove extra HAVE_SYS_RESOURCE_H define for RHAPSODY since
+     it is now taken care of properly by the header file tests.
+     [Wilfredo Sanchez <wsanchez@apple.com>]
+
   *) Fix problem with scripts and finehandle inheritance on Win32.
      [Ken Parzygnat <kparz@raleigh.ibm.com>]  PR#2884, 2910
 

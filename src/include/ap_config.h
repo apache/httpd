@@ -372,7 +372,6 @@ typedef int pid_t;
 #define USE_MMAP_SCOREBOARD
 #define MAP_TMPFILE
 #define HAVE_RESOURCE
-#define HAVE_SYS_RESOURCE_H /* apaci should catch this but doesn't */
 #define HAVE_SNPRINTF
 #define JMP_BUF jmp_buf
 #define USE_LONGJMP
