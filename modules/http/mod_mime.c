@@ -548,7 +548,7 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     mp = s;
 
     /* getting a type */
-    if (!(cp = strchr(mp, '/'))) {
+    if (!(cp = ap_strchr_c(mp, '/'))) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
 		     "mod_mime: analyze_ct: cannot get media type from '%s'",
 		     (const char *) mp);
