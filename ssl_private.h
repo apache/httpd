@@ -587,9 +587,6 @@ int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
 
 /*  Utility Functions  */
 char        *ssl_util_vhostid(apr_pool_t *, server_rec *);
-void         ssl_util_strupper(char *);
-void         ssl_util_uuencode(char *, const char *, BOOL);
-void         ssl_util_uuencode_binary(unsigned char *, const unsigned char *, int, BOOL);
 apr_file_t  *ssl_util_ppopen(server_rec *, apr_pool_t *, const char *,
                              const char * const *);
 void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
@@ -598,7 +595,6 @@ char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
-char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c);
 
