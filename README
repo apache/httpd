@@ -17,10 +17,11 @@ All the documentation is on-line on the WWW, via <URL:http://www.apache.org/>.
 Installation
 ------------
 
-This program is distributed in source form only.  In order to compile
-it, you must set compile-time options (in particular, system type) for
-your system by editing a Configuration file, run a script which generates
-a Makefile and a small piece of C code, and then compile it.
+Unless you grabbed a binary distribution of Apache, you must compile
+it for your specific platform.  In order to compile it, you must set
+compile-time options (in particular, system type) for your system by
+editing a Configuration file, run a script which generates a Makefile
+and a small piece of C code, and then compile it.
 
 For instructions on compilation, see the file 'INSTALL' in the src/ directory.
 
@@ -57,11 +58,19 @@ The Latest Version
 ------------------
 
 Details of the latest version are in the apache project page (above).
-The most recent distribution is also available by anonymous ftp
-from ftp.ast.cam.ac.uk in the directory /pub/WWW/apache.
+
+NOTE: At the time of release of Apache 1.1, two modules had updated
+versions which were not sufficiently tested for inclusion into the 1.1
+distribution: mod_auth_msql and mod_cern_meta.  The newer versions are
+available from http://www.apache.org/dist/contrib/modules/ - if you
+plan on using this functionality we encourage you to give the newer
+modules a test drive, and let us know of any problems.  In particular,
+mod_cern_meta is now configurable per-directory, and the configuration
+directives have changed.  We can not promise that the existing
+configuration directives provided by the mod_cern_meta included in the
+distribution will be supported in the future.
 
 Licencing
 ---------
 
 Please see the file called LICENSE.
-
