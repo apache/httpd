@@ -1055,6 +1055,76 @@ static int example_header_parser(request_rec *r)
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
+/* Which functions are responsible for which hooks in the server.           */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+/* 
+ * Each function our module provides to handle a particular hook is
+ * specified here.  The functions are registered using 
+ * ap_hook_foo(name, predecessors, successors, position)
+ * where foo is the name of the hook.
+ *
+ * The args are as follows:
+ * name         -> the name of the function to call.
+ * predecessors -> a list of modules whose calls to this hook must come 
+ *                 before this module.
+ * successors   -> a list of modules whose calls to this hook must come 
+ *                 after this module.
+ * position     -> The relative position of this module.  One of AP_HOOK_FIRST,
+ *                 AP_HOOK_MIDDLE, or AP_HOOK_LAST.  Most modules will use
+ *                 AP_HOOK_MIDDLE.  If multiple modules use the same relative
+ *                 position, Apache will determine which to call first.
+ *                 If your module relies on another module to run first,
+ *                 or another module running after yours, use the 
+ *                 predecessors and/or successors.
+ *
+ * The number in brackets indicates the order in which the routine is called
+ * during request processing.  Note that not all routines are necessarily
+ * called (such as if a resource doesn't have access restrictions).
+ * The actual delivery of content to the browser [9] is not handled by
+ * a hook; see the handler declarations below.
+ */
+static void example_register_hooks(void)
+{
+    /* module initializer */
+    ap_hook_post_config(example_init,
+			NULL, NULL, AP_HOOK_MIDDLE);
+    /* [1] post read_request handling */
+    ap_hook_post_read_request(example_post_read_request,
+			      NULL, NULL, AP_HOOK_MIDDLE);
+    /* [2] filename-to-URI translation */
+    ap_hook_translate_name(example_translate_handler,
+			   NULL, NULL, AP_HOOK_MIDDLE);
+    /* [3] header parser */
+    ap_hook_header_parser(example_header_parser,
+			  NULL, NULL, AP_HOOK_MIDDLE);
+    /* [4] check access by host address */
+    ap_hook_access_checker(example_access_checker,
+			   NULL, NULL, AP_HOOK_MIDDLE);
+    /* [5] check/validate user_id */
+    ap_hook_check_user_id(example_check_user_id,
+			  NULL, NULL, AP_HOOK_MIDDLE);
+    /* [6] check user_id is valid *here* */
+    ap_hook_auth_checker(example_auth_checker,
+			 NULL, NULL, AP_HOOK_MIDDLE);
+    /* [7] MIME type checker/setter */
+    ap_hook_type_checker(example_type_checker,
+			 NULL, NULL, AP_HOOK_MIDDLE);
+    /* [8] fixups */
+    ap_hook_fixups(example_fixer_upper,
+		   NULL, NULL, AP_HOOK_MIDDLE);
+    /* [9] is for the handlers; see below */
+
+    /* [10] logger */
+    ap_hook_log_transaction(example_logger,
+			    NULL, NULL, AP_HOOK_MIDDLE);
+    /* process initializer */
+    ap_hook_child_init(example_child_init,
+		       NULL, NULL, AP_HOOK_MIDDLE);
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
 /* All of the routines have been declared now.  Here's the list of          */
 /* directives specific to our module, and information about where they      */
 /* may appear and how the command parser should pass them to us for         */
@@ -1068,13 +1138,12 @@ static int example_header_parser(request_rec *r)
 static const command_rec example_cmds[] =
 {
     {
-        "Example",              /* directive name */
-        cmd_example,            /* config action routine */
-        NULL,                   /* argument to include in call */
-        OR_OPTIONS,             /* where available */
-        NO_ARGS,                /* arguments */
-        "Example directive - no arguments"
-                                /* directive description */
+        "Example",                          /* directive name */
+        cmd_example,                        /* config action routine */
+        NULL,                               /* argument to include in call */
+        OR_OPTIONS,                         /* where available */
+        NO_ARGS,                            /* arguments */
+        "Example directive - no arguments"  /* directive description */
     },
     {NULL}
 };
@@ -1104,77 +1173,22 @@ static const handler_rec example_handlers[] =
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
-/* Which functions are responsible for which hooks in the server.           */
-/*                                                                          */
-/*--------------------------------------------------------------------------*/
-/* 
- * Each function our module provides to handle a particular hook is
- * specified here.  The functions are registered using 
- * ap_hook_foo(name, predecessors, successors, position)
- * where foo is the name of the hook.
- *
- * The args are as follows:
- * name         -> the name of the function to call.
- * predecessors -> a list of modules whose calls to this hook must come 
- *                 before this module.
- * successors   -> a list of modules whose calls to this hook must come 
- *                 after this module.
- * position     -> The relative position of this module.  One of AP_HOOK_FIRST,
- *                 AP_HOOK_MIDDLE, or AP_HOOK_LAST.  Most modules will use
- *                 AP_HOOK_MIDDLE.  If multiple modules use the same relative
- *                 position, Apache will determine which to call first.
- *                 If your module relies on another module to run first,
- *                 or another module running after yours, use the 
- *                 predecessors and/or successors.
- */
-static void register_hooks(void)
-{
-    /* module initializer */
-    ap_hook_post_config(example_init, NULL, NULL, AP_HOOK_MIDDLE);
-    /* [2] filename-to-URI translation */
-    ap_hook_translate_name(example_translate_handler, NULL, NULL, AP_HOOK_MIDDLE);
-    /* [5] check/validate user_id */
-    ap_hook_check_user_id(example_check_user_id, NULL, NULL, AP_HOOK_MIDDLE);     
-     /* [6] check user_id is valid *here* */
-    ap_hook_auth_checker(example_auth_checker, NULL, NULL, AP_HOOK_MIDDLE); 
-    /* [4] check access by host address */
-    ap_hook_access_checker(example_access_checker, NULL, NULL, AP_HOOK_MIDDLE);   
-    /* [7] MIME type checker/setter */
-    ap_hook_type_checker(example_type_checker, NULL, NULL, AP_HOOK_MIDDLE);    
-    /* [8] fixups */
-    ap_hook_fixups(example_fixer_upper, NULL, NULL, AP_HOOK_MIDDLE);   
-    /* [10] logger */
-    ap_hook_log_transaction(example_logger, NULL, NULL, AP_HOOK_MIDDLE);         
-    /* [3] header parser */
-    ap_hook_header_parser(example_header_parser, NULL, NULL, AP_HOOK_MIDDLE);     
-    /* process initializer */
-    ap_hook_child_init(example_child_init, NULL, NULL, AP_HOOK_MIDDLE);       
-    /* [1] post read_request handling */
-    ap_hook_post_read_request(example_post_read_request, NULL, NULL, 
-                              AP_HOOK_MIDDLE);
-}
-
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* Finally, the list of callback routines and data structures that          */
-/* provide the hooks into our module from the other parts of the server.    */
+/* Finally, the list of callback routines and data structures that provide  */
+/* the static hooks into our module from the other parts of the server.     */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
 /* 
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
- *
- * The number in brackets indicates the order in which the routine is called
- * during request processing.  Note that not all routines are necessarily
- * called (such as if a resource doesn't have access restrictions).
  */
 module example_module =
 {
     STANDARD20_MODULE_STUFF,
-    example_create_dir_config,  /* per-directory config creator */
-    example_merge_dir_config,   /* dir config merger */
-    example_create_server_config,       /* server config creator */
-    example_merge_server_config,        /* server config merger */
-    example_cmds,               /* command ap_table_t */
-    example_handlers,           /* [7] list of handlers */
+    example_create_dir_config,    /* per-directory config creator */
+    example_merge_dir_config,     /* dir config merger */
+    example_create_server_config, /* server config creator */
+    example_merge_server_config,  /* server config merger */
+    example_cmds,                 /* command table */
+    example_handlers,             /* list of content delivery handlers */
+    example_register_hooks,       /* set up other request processing hooks */
 };
