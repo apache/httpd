@@ -206,6 +206,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
         }
     }
     rv = apr_parse_addr_port(&host, &scope_id, &port, w, p);
+    /* If the string is "80", apr_parse_addr_port() will be happy and set
+     * host to NULL and port to 80, so watch out for that.
+     */
     if (rv != APR_SUCCESS) {
         return "The address or port is invalid";
     }
