@@ -1,7 +1,7 @@
 DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 	logresolve.pl phf_abuse_log.cgi split-logfile
 
-PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid
+PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm
 TARGETS  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
@@ -43,6 +43,10 @@ rotatelogs: $(rotatelogs_OBJECTS)
 logresolve_OBJECTS = logresolve.lo
 logresolve: $(logresolve_OBJECTS)
 	$(LINK) $(logresolve_LTFLAGS) $(logresolve_OBJECTS) $(PROGRAM_LDADD)
+
+htdbm_OBJECTS = htdbm.lo
+htdbm: $(htdbm_OBJECTS)
+	$(LINK) $(htdbm_LTFLAGS) $(htdbm_OBJECTS) $(PROGRAM_LDADD)
 
 ab_OBJECTS = ab.lo
 ab: $(ab_OBJECTS)
