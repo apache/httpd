@@ -42,6 +42,7 @@
       <li><a href="#authdbmgroupfile">AuthDBMGroupFile</a></li>
 
       <li><a href="#authdbmuserfile">AuthDBMUserFile</a></li>
+      <li><a href="#authdbmtype">AuthDBMType</a></li>
 
       <li><a
       href="#authdbmauthoritative">AuthDBMAuthoritative</a></li>
@@ -162,6 +163,27 @@
     href="#authdbmgroupfile">AuthDBMGroupFile</a>. 
     <hr />
 
+    <h2><a id="authdbmtype"
+    name="authdbmtype">AuthDBMType</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthDBMType} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthDBMType
+    <em>type of DBM being used</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+<code>AuthDBMType default</code>(which sets it to the default DBM compiled in)<br />
+
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_dbm 
+<p>Setting this directive allows the user to change the type of DBM file which holds the user data. Current valid values are (SDBM | GDBM | DB) these may not all be available on your system</p>
+	<hr /> 
     <h2><a id="authdbmauthoritative"
     name="authdbmauthoritative">AuthDBMAuthoritative</a></h2>
     <!--%plaintext &lt;?INDEX {\tt AuthDBMAuthoritative} directive&gt; -->
