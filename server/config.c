@@ -180,6 +180,11 @@ typedef int (*handler_func)(request_rec *);
 typedef void *(*dir_maker_func)(apr_pool_t *, char *);
 typedef void *(*merger_func)(apr_pool_t *, void *, void *);
 
+/* maximum nesting level for config directories */
+#ifndef AP_MAX_INCLUDE_DIR_DEPTH
+#define AP_MAX_INCLUDE_DIR_DEPTH (128)
+#endif
+
 /* Dealing with config vectors.  These are associated with per-directory,
  * per-server, and per-request configuration, and have a void* pointer for
  * each modules.  The nature of the structure pointed to is private to the
@@ -1421,13 +1426,14 @@ static int fname_alphasort(const void *fn1, const void *fn2)
 static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
                                               ap_directive_t **conftree,
                                               apr_pool_t *p,
-                                              apr_pool_t *ptemp)
+                                              apr_pool_t *ptemp,
+                                              unsigned depth)
 {
     cmd_parms parms;
     ap_configfile_t *cfp;
     const char *errmsg;
 
-    if (ap_is_rdirectory(p, fname)) {
+    if (ap_is_directory(p, fname)) {
         apr_dir_t *dirp;
         apr_finfo_t dirent;
         int current;
@@ -1435,6 +1441,14 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
         fnames *fnew;
         apr_status_t rv;
         char errmsg[120], *path = apr_pstrdup(p, fname);
+
+        if (++depth > AP_MAX_INCLUDE_DIR_DEPTH) {
+            fprintf(stderr, "%s: Directory %s exceeds the maximum include "
+                    "directory nesting level of %u. You have probably a "
+                    "recursion somewhere.\n", ap_server_argv0, path,
+                    AP_MAX_INCLUDE_DIR_DEPTH);
+            exit(1);
+        }
 
         /*
          * first course of business is to grok all the directory
@@ -1471,7 +1485,7 @@ static void process_resource_config_nofnmatch(server_rec *s, const char *fname,
             for (current = 0; current < candidates->nelts; ++current) {
                 fnew = &((fnames *) candidates->elts)[current];
                 process_resource_config_nofnmatch(s, fnew->fname, conftree, p,
-                                                  ptemp);
+                                                  ptemp, depth);
             }
         }
 
@@ -1530,7 +1544,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     }
 
     if (!apr_fnmatch_test(fname)) {
-        process_resource_config_nofnmatch(s, fname, conftree, p, ptemp);
+        process_resource_config_nofnmatch(s, fname, conftree, p, ptemp, 0);
     }
     else {
         apr_dir_t *dirp;
@@ -1553,7 +1567,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
             exit(1);
         }
 
-        if (!ap_is_rdirectory(p, path)){ 
+        if (!ap_is_directory(p, path)){ 
             fprintf(stderr, "%s: Include directory '%s' not found",
                     ap_server_argv0, path);
             exit(1);
@@ -1602,7 +1616,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
             for (current = 0; current < candidates->nelts; ++current) {
                 fnew = &((fnames *) candidates->elts)[current];
                 process_resource_config_nofnmatch(s, fnew->fname, conftree, p,
-                                                  ptemp);
+                                                  ptemp, 0);
             }
         }
     }
