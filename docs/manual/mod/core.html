@@ -2206,7 +2206,7 @@
     <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
     <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> ServerName
-    <em>fully-qualified-domain-name:port</em> <br />
+    <em>fully-qualified-domain-name[:port]</em> <br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
     host<br />
@@ -2235,14 +2235,16 @@
     <p>This directive now allows a port to be added to the
     server name.  This allows an admin to assign the canonical
     port at the same time that the canonical name is assigned.
-    The Port directive in Apache-1.3, which used to perform this role, has also
-    been removed, easing configuration for all users.</p>
+    If no port was specified, Apache implies port 80 for http://
+    and port 443 for https:// requests.<br>
+    The <b>Port</b> directive in Apache-1.3, which used to perform
+    this role, has been removed, easing configuration for all users.</p>
 
     <p>See the description of the
     <a href="#usecanonicalname">UseCanonicalName</a> directive for
     settings which determine whether self-referential URL's (e.g., by the
-    <a href="mod_dir.html">mod_dir</a> module) will use the specified
-    port, or the port to which the client connected.
+    <a href="mod_dir.html">mod_dir</a> module) will refer to the
+    specified port, or to the port number given in the client's request.
     </p>
 
     <p><strong>See Also</strong>:<br />
@@ -2556,10 +2558,7 @@
     to the same server. With <code>UseCanonicalName on</code> (and
     in all versions prior to 1.3) Apache will use the hostname and
     port specified in the <a href="#servername">ServerName</a>
-    directive to construct a canonical name for the server.
-    (If no port was specified in the <a href="#servername">ServerName</a>
-    directive, Apache implies port 80 for http:// and port 443 for https://)
-    This
+    directive to construct a canonical name for the server. This
     name is used in all self-referential URLs, and for the values
     of <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in
     CGIs.</p>
