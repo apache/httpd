@@ -1,4 +1,6 @@
 Changes with Apache 2.0.20-dev
+  *) Get non-blocking CGI pipe reads working with the bucket brigades.
+     [Bill Stoddard]
 
   *) Fix seg fault on Windows when serving files cached with mod_file_cache.
      [Bill Stoddard]

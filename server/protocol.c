@@ -862,22 +862,41 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
 
     APR_BRIGADE_FOREACH(e, b) {
         const char *ignored;
-        apr_size_t length;
+        apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
             send_it = 1;
         }
         if (e->length == -1) { /* if length unknown */
-            rv = apr_bucket_read(e, &ignored, &length, APR_BLOCK_READ);
+            rv = apr_bucket_read(e, &ignored, &len, APR_NONBLOCK_READ);
+            if (rv == APR_EAGAIN) {
+                /* If the protocol level implies support for chunked encoding, 
+                 * flush the filter chain to the network then do a blocking 
+                 * read. This is replicating the behaviour of ap_send_fb
+                 * in Apache 1.3.
+                 */
+                if (r->proto_num >= HTTP_VERSION(1,1)) {
+                    apr_bucket_brigade *split;
+                    split = apr_brigade_split(b, e);
+                    rv = ap_fflush(f, b);
+                    if (rv != APR_SUCCESS)
+                        return rv;
+                    b = split;
+                    ctx->curr_len = 0;
+                }
+                rv = apr_bucket_read(e, &ignored, &len, APR_BLOCK_READ);
+            }
             if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "ap_content_length_filter: "
+                              "apr_bucket_read() failed");
                 return rv;
             }
         }
         else {
-            length = e->length;
+            len = e->length;
         }
-        ctx->curr_len += length;
-        r->bytes_sent += length;
+        ctx->curr_len += len;
+        r->bytes_sent += len;
     }
 
     if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !send_it) {
