@@ -182,7 +182,12 @@ static void make_cookie(request_rec *r)
 
     if (cls->expires) {
         struct tm *tms;
-        time_t when = r->request_time + cls->expires;
+        ap_time_t *when = NULL;
+        ap_int64_t req_time;
+        
+        ap_make_time(&when, r->pool);
+        ap_get_curtime(when, &req_time);
+        ap_set_curtime(when,  req_time + cls->expires);
 
 #ifndef MILLENIAL_COOKIES
         /*
