@@ -196,6 +196,23 @@
      localstatedir=PREFIX/var, runtimedir=PREFIX/var/run,
      logfiledir=PREFIX/var/log and proxycachedir=PREFIX/var/proxy.
 
+         Note: To reduce the pollution of shared installation locations
+               (like /usr/local/ or /etc) with Apache files to a minimum the
+               string ``/apache'' is automatically appended to 'libexecdir',
+               'sysconfdir', 'datadir', 'localstatedir' and 'includedir' if
+               (and only if) the following points apply for each path
+               individually:
+
+                   1. the path doesn't already contain the word ``apache''
+                   2. the path was not directly customized by the user
+
+               Keep in mind that per default these paths are derived from
+               'prefix' and 'exec-prefix', so usually its only a matter
+               whether these paths contain ``apache'' or not. Although the
+               defaults were defined with experience in mind you always should
+               make sure the paths fit your situation by checking the finally
+               chosen paths via the --layout option.
+
      Use the --compat option to install Apache into a installation tree which
      has a similar layout than the one used with Apache 1.2.
  
