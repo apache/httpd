@@ -119,7 +119,6 @@ static unsigned int g_blocked_threads = 0;
 
 static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
 static HANDLE restart_event;	/* used to signal the parent to restart */
-static HANDLE ready_event;      /* used to signal the parent to duplicate sockets */
 static HANDLE exit_event;       /* used by parent to signal the child to exit */
 static HANDLE max_requests_per_child_event;
 
@@ -595,12 +594,17 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 }
 
 /*
+ * Passed the following handles [in sync with send_handles_to_child()]
  *
+ *   ready event [signal the parent immediately, then close]
+ *   exit event  [save to poll later]
+ *   scoreboard shm handle [to recreate the ap_scoreboard]
  */
 void get_handles_from_parent(server_rec *s)
 {
     HANDLE pipe;
     HANDLE hScore;
+    HANDLE ready_event;
     DWORD BytesRead;
     void *sb_shared;
     apr_status_t rv;
@@ -613,6 +617,9 @@ void get_handles_from_parent(server_rec *s)
                      "Child %d: Unable to retrieve the ready event from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
+
+    SetEvent(ready_event);
+    CloseHandle(ready_event);
 
     if (!ReadFile(pipe, &exit_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
@@ -1576,6 +1583,11 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
     return 0;
 }
 
+enum waitlist_e {
+    waitlist_ready = 0,
+    waitlist_term = 1
+};
+
 static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event, 
                           DWORD *child_pid)
 {
@@ -1592,7 +1604,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_file_t *child_err;
     apr_proc_t new_child;
     HANDLE hExitEvent;
-    HANDLE hReadyEvent;
+    HANDLE waitlist[2];  /* see waitlist_e */
     char *cmd;
     char *cwd;
 
@@ -1675,10 +1687,10 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* Create the child_ready_event */
-    hReadyEvent = CreateEvent (NULL, TRUE, FALSE, NULL);
-    if (!hReadyEvent) {
-        ap_log_error (APLOG_MARK, APLOG_CRIT, apr_get_os_error (), ap_server_conf,
-                      "Parent: Could not create ready event for child process");
+    waitlist[waitlist_ready] = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!waitlist[waitlist_ready]) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Could not create ready event for child process");
         apr_pool_destroy (ptemp);
         return -1;
     }
@@ -1689,6 +1701,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
         apr_pool_destroy(ptemp);
+        CloseHandle(waitlist[waitlist_ready]);
         return -1;
     }
 
@@ -1714,6 +1727,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                      "Parent: Failed to create the child process.");
         apr_pool_destroy(ptemp);
         CloseHandle(hExitEvent);
+        CloseHandle(waitlist[waitlist_ready]);
         CloseHandle(new_child.hproc);
         return -1;
     }
@@ -1721,7 +1735,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", new_child.pid);
 
-    if (send_handles_to_child(ptemp, hReadyEvent, hExitEvent, 
+    if (send_handles_to_child(ptemp, waitlist[waitlist_ready], hExitEvent,
                               new_child.hproc, new_child.in)) {
         /*
          * This error is fatal, mop up the child and move on
@@ -1731,6 +1745,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         SetEvent(hExitEvent);
         apr_pool_destroy(ptemp);
         CloseHandle(hExitEvent);
+        CloseHandle(waitlist[waitlist_ready]);
         CloseHandle(new_child.hproc);
         return -1;
     }
@@ -1741,7 +1756,20 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      * WSADuplicateSocket runs before the child process initializes
      * the listeners will be inherited anyway.
      */
-    WaitForSingleObject (hReadyEvent, INFINITE);
+    waitlist[waitlist_term] = new_child.hproc;
+    rv = WaitForMultipleObjects(2, waitlist, FALSE, INFINITE);
+    if (rv != WAIT_OBJECT_0) {
+        /* 
+         * Outch... that isn't a ready signal. It's dead, Jim!
+         */
+        SetEvent(hExitEvent);
+        apr_pool_destroy(ptemp);
+        CloseHandle(hExitEvent);
+        CloseHandle(waitlist[waitlist_ready]);
+        CloseHandle(new_child.hproc);
+        return -1;
+    }
+    CloseHandle(waitlist[waitlist_ready]);
 
     if (send_listeners_to_child(ptemp, new_child.pid, new_child.in)) {
         /*
@@ -2497,8 +2525,6 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
     if (!one_process) {
         /* Set up events and the scoreboard */
         get_handles_from_parent(s);
-
-        SetEvent (ready_event);
 
         /* Set up the listeners */
         get_listeners_from_parent(s);
