@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.24 1996/10/18 19:22:11 ben Exp $ */
+/* $Id: util.c,v 1.25 1996/10/19 16:08:58 ben Exp $ */
 
 /*
  * str.c: string utility things
@@ -535,6 +535,9 @@ cfg_getline(char *s, int n, FILE *f) {
         c = getc(f);
     } while (c == '\t' || c == ' ');
 
+    if(c == EOF)
+	return 1;
+
     while(1) {
         if((c == '\t') || (c == ' ')) {
             s[i++] = ' ';
@@ -548,7 +551,7 @@ cfg_getline(char *s, int n, FILE *f) {
             /* blast trailing whitespace */
             while(i && (s[i-1] == ' ')) --i;
             s[i] = '\0';
-            return (feof(f) ? 1 : 0);
+	    return 0;
         }
         s[i] = c;
         ++i;
