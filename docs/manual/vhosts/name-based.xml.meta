@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>name-based</basename>
+  <path>/vhosts/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant htmlonly="yes">ja</variant>
+  </variants>
+</metafile>

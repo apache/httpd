@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>mod_env</basename>
+  <path>/mod/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant>ja</variant>
+  </variants>
+</metafile>
