@@ -1,5 +1,8 @@
 Changes with Apache 1.3.27
 
+  *) httpd -V will now also print out the compile time defined
+     HARD_SERVER_LIMIT value. [Dirk-Willem van Gulik].
+
   *) In 1.3.26, a null or all blank Content-Length field would be
      triggered as an error; previous versions would silently ignore
      this and assume 0. As a special case, we now allow this and
