@@ -2298,6 +2298,19 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, b);
     }
 
+    /* check for flush bucket... if there is one, we have to scratch
+     * the idea of providing content length because the output should
+     * flow immediately (for streaming dynamic content)
+     */
+
+    AP_BRIGADE_FOREACH(e, b) {
+        if (AP_BUCKET_IS_FLUSH(e)) {
+            AP_BRIGADE_CONCAT(ctx->saved, b);
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, ctx->saved);
+        }
+    }
+
     /* save the brigade; we can't pass any data to the next
      * filter until we have the entire content length
      */
