@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/01 20:48:54 $
+Last modified: $Date: 2003/06/01 21:11:05 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -8,24 +8,6 @@ Project, please see http://httpd.apache.org/docs-project/
 
 Decisions pending
 =================
-
-  -Comment out .gz etc. AddEncoding lines in our default configuration.
-    docs/conf/httpd-std.conf.in rev 1.32
-    jerenkrantz said in the log message:
-        Current browsers have a tendency to decompress the data when no one
-        really wants it to do that.  If you want the old behavior that leads to
-        transparent decompression by modern browsers, uncomment these lines.
-        But, this shouldn't be our default.
-    Someone else said: Certainly wasn't in 1.3.
-    nd adds: we should provide example solutions somewhere in the docs.
-      e.g.: .tar.gz should get the content-type application/x-gzip
-      (hmm, bad x-, better suggestions?).
-      <Files *.tar.gz>
-        Forcetype ...
-      </Files>
-
-     - Backport to 2.0
-       +1: wrowe, slive, nd, erik
 
 - Figure out what to do about the 2.0 FAQ
     - Copy important stuff from 1.3?
@@ -127,7 +109,7 @@ Documentation improvements
     a similar effect.
 
 * Autogeneration of PDF
-  - André is working on this, Erik volunteers to help out
+  - Andre is working on this, Erik volunteers to help out
 
 * Improving the documentation of the documentations' build system
   itself (requirements, procedures)
@@ -154,3 +136,5 @@ Documentation improvements
 * Summarize all the implemented drafts/standards with short explanations
   within a document. (PR 16938)
 
+* Provide example solutions for the mapping of encodings, especially
+  for .gz etc. (also in regard to our default configuration)
