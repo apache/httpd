@@ -379,8 +379,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         int done = 0;
 
         if (APR_BUCKET_IS_EOS(e)) {
-            char *buf, *p;
-            unsigned char crc_array[4], len_array[4];
+            char *buf;
             unsigned int deflate_len;
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
@@ -413,18 +412,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 }
             }
 
-            putLong(crc_array, ctx->crc);
-            putLong(len_array, ctx->stream.total_in);
-
-            p = buf = apr_palloc(r->pool, 8);
-            *p++ = crc_array[0];
-            *p++ = crc_array[1];
-            *p++ = crc_array[2];
-            *p++ = crc_array[3];
-            *p++ = len_array[0];
-            *p++ = len_array[1];
-            *p++ = len_array[2];
-            *p++ = len_array[3];
+            buf = apr_palloc(r->pool, 8);
+            putLong((unsigned char *)&buf[0], ctx->crc);
+            putLong((unsigned char *)&buf[4], ctx->stream.total_in);
 
             b = apr_bucket_pool_create(buf, 8, r->pool, f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
