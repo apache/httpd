@@ -2,7 +2,7 @@
 
 Release:
 
-    1.3.4-dev: current. There is discussion on releasing it "soon"
+    1.3.4-dev: current.
     (Lars volunteers as release manager)
 
     1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
@@ -25,9 +25,6 @@ RELEASE SHOWSTOPPERS:
       %PARAM% type arguments in nmake invokations.
       Message-ID: <36684B1D.5A47@alumni.cse.ucsc.edu>
       Status: patch needed since we can't test above without it
-
-    * 'kill -HUP' broken on FreeBSD and others: child processes die or
-       do not restart.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -150,11 +147,6 @@ Available Patches:
     * Ron Record's patch to port Apache to UnixWare 7 (forwarded by
       Randy).
 	Message-ID: <x767dg3476.fsf@montana.covalent.net>
-	Status: 
-
-    * Amiel Lee Yee's patch to update ap_config.h for DGUX/Intel
-      and str[n]casecmp().
-	Message-ID: PR#3247
 	Status: 
 
     * Juan Gallego's patch to add CSH-style modifiers (:h, :r, :t, :e)
