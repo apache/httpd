@@ -94,10 +94,11 @@
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for sscanf() */
-#endif
+#define APR_WANT_STDIO          /* for sscanf() */
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -108,12 +109,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "util_script.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define MAXVERTS 100

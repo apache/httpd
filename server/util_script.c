@@ -56,9 +56,19 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr.h"
+#include "apr_lib.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #define CORE_PRIVATE
 #include "ap_config.h"
-#include "apr_strings.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
@@ -69,18 +79,6 @@
 #include "util_script.h"
 #include "util_date.h"		/* For parseHTTPdate() */
 #include "util_ebcdic.h"
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 
 #ifdef OS2
 #define INCL_DOS

@@ -66,15 +66,12 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
+#include "apr_lib.h"
 
 #define APR_WANT_STDIO          /* for sscanf */
 #define APR_WANT_STRFUNC
 #define APR_WANT_MEMFUNC
 #include "apr_want.h"
-
-#if APR_HAVE_STDARG_H
-#include <stdarg.h>
-#endif
 
 #define CORE_PRIVATE
 #include "util_filter.h"
@@ -94,7 +91,10 @@
 
 #include "mod_core.h"
 
-#ifdef HAVE_UNISTD_H
+#if APR_HAVE_STDARG_H
+#include <stdarg.h>
+#endif
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

@@ -60,10 +60,10 @@
 #include "apr_strings.h"
 #include "apr_getopt.h"
 #include "apr_general.h"
+#include "apr_lib.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>
-#endif
+#define APR_WANT_STDIO
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 #include "ap_config.h"

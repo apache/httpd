@@ -70,9 +70,11 @@
  *         no control is passed along.
  */
 
-#include "ap_config.h"
 #include "apr_strings.h"
 #include "apr_md5.h"
+#include "apr_lib.h"
+
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"

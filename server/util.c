@@ -69,20 +69,22 @@
  * #define DEBUG_CFG_LINES  to trace every line read from the config files
  */
 
-#define CORE_PRIVATE
-
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for EOF */
+#define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
 #endif
-#if APR_HAVE_NETINET_IN_H
-#include <netinet/in.h>
+#if APR_HAVE_NETDB_H
+#include <netdb.h>              /* for gethostbyname() */
 #endif
-#if APR_HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
+
+#define CORE_PRIVATE
 
 #include "ap_config.h"
 #include "apr_base64.h"
@@ -93,23 +95,11 @@
 #include "http_config.h"
 #include "util_ebcdic.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
 #ifdef HAVE_GRP_H
 #include <grp.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
 #endif
 
 /* A bunch of functions in util.c scan strings looking for certain characters.

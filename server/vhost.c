@@ -61,6 +61,13 @@
  *	(configuration and run-time)
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
@@ -69,23 +76,6 @@
 #include "http_vhost.h"
 #include "http_protocol.h"
 #include "http_core.h"
-#include "apr_strings.h"
-
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 /*
  * After all the definitions there's an explanation of how it's all put

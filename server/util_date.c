@@ -67,16 +67,20 @@
  * 
  */
 
+#include "apr.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+
 #define CORE_PRIVATE
 
 #include "ap_config.h"
 #include "util_date.h"
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
 
 /*
  * Compare a string to a mask

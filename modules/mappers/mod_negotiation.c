@@ -66,10 +66,11 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_file_io.h"
+#include "apr_lib.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for EOF */
-#endif
+#define APR_WANT_STDIO          /* for EOF */
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -79,12 +80,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "util_script.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 

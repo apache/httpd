@@ -65,23 +65,22 @@
 
 #include "apr_strings.h"
 #include "apr_network_io.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
+
+#if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
-
-#ifdef HAVE_ARPA_INET_H
+#if APR_HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
 
