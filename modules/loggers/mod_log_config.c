@@ -1024,8 +1024,8 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
      */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                         apr_pool_cleanup_null, s->process->pool);
+        apr_pool_userdata_setn((const void *)1, userdata_key,
+                               NULL, s->process->pool);
         /* If logging for the first time after a restart, keep going. */
         if (!ap_my_generation) {
             return cls;

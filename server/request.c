@@ -328,8 +328,7 @@ static walk_cache_t *prep_walk_cache(const char *cache_name, request_rec *r)
             cache = apr_pcalloc(r->pool, sizeof(*cache));
             cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
         }
-        apr_pool_userdata_set(cache, cache_name, 
-                              apr_pool_cleanup_null, r->pool);
+        apr_pool_userdata_setn(cache, cache_name, NULL, r->pool);
     }
     return cache;
 }
