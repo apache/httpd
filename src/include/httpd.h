@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.50 1996/09/24 12:44:58 mjc Exp $ */
+/* $Id: httpd.h,v 1.51 1996/09/30 05:56:26 brian Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -556,6 +556,7 @@ char *gm_timestr_822(pool *p, time_t t);
 /* String handling */     
      
 char *getword(pool *p, char **line, char stop);
+char *getword_white(pool *p, char **line);
 char *getword_nulls (pool *p, char **line, char stop);
 char *getword_conf (pool *p, char **line);      
 

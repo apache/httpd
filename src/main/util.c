@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.20 1996/09/26 04:16:06 brian Exp $ */
+/* $Id: util.c,v 1.21 1996/09/30 05:56:27 brian Exp $ */
 
 /*
  * str.c: string utility things
@@ -395,6 +395,35 @@ char *getword(pool* atrans, char **line, char stop) {
     
     return res;
 }
+
+char *getword_white(pool* atrans, char **line) {
+    int pos = -1, x;
+    char *res;
+
+    for(x=0;(*line)[x];x++) {
+        if (isspace((*line)[x])) {
+          pos=x;
+          break;
+      }
+   }
+
+    if (pos == -1) {
+        res = pstrdup (atrans, *line);
+      *line += strlen (*line);
+      return res;
+    }
+
+    res = palloc(atrans, pos + 1);
+    strncpy (res, *line, pos);
+    res[pos] = '\0';
+
+    while (isspace((*line)[pos])) ++pos;
+
+    *line += pos;
+
+    return res;
+}
+
 char *getword_nulls(pool* atrans, char **line, char stop) {
     int pos = ind(*line, stop);
     char *res;

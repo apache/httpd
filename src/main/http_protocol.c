@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.50 1996/09/28 02:42:46 brian Exp $ */
+/* $Id: http_protocol.c,v 1.51 1996/09/30 05:56:25 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -328,9 +328,6 @@ int set_last_modified(request_rec *r, time_t mtime)
     char *if_nonematch = table_get (r->headers_in, "If-None-Match");
     char *if_match = table_get (r->headers_in, "If-Match");
 
-    /* Invalid, future time... just ignore it */
-    if (mtime > r->request_time) return OK;
-
     ts = gm_timestr_822(r->pool, (mtime > r->request_time) ? r->request_time : mtime);
     table_set (r->headers_out, "Last-Modified", ts);
 
@@ -369,7 +366,8 @@ int set_last_modified(request_rec *r, time_t mtime)
     if ((r->status < 200) || (r->status >= 300))
         return OK;
 
-    if (if_modified_since && later_than(gmtime(&mtime), if_modified_since))
+    if (if_modified_since && !r->header_only &&
+	later_than(gmtime(&mtime), if_modified_since))
         return USE_LOCAL_COPY;
     else if (if_unmodified && !later_than(gmtime(&mtime), if_unmodified))
         return PRECONDITION_FAILED;
@@ -508,8 +506,8 @@ int read_request_line (request_rec *r)
         return 0;
 
     r->the_request = pstrdup (r->pool, l);
-    r->method = getword(r->pool, &ll,' ');
-    uri = getword(r->pool, &ll,' ');
+    r->method = getword_white(r->pool, &ll);
+    uri = getword_white(r->pool, &ll);
     uri = check_fulluri(r, uri);
     parse_uri (r, uri);
     
