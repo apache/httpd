@@ -2796,7 +2796,7 @@ static int rewrite_rand(int l, int h)
     char buf[50];
 
     rewrite_rand_init();
-    sprintf(buf, "%.0f", (((double)rand()/RAND_MAX)*(h-l)));
+    sprintf(buf, "%.0f", (((double)(rand()%RAND_MAX)/RAND_MAX)*(h-l)));
     i = atoi(buf)+1;
     if (i < l) i = l;
     if (i > h) i = h;
