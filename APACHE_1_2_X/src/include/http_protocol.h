@@ -134,6 +134,7 @@ int index_of_response (int status);
 int setup_client_block (request_rec *r, int read_policy);
 int should_client_block (request_rec *r);
 long get_client_block (request_rec *r, char *buffer, int bufsiz);
+int discard_request_body (request_rec *r);
 
 /* Sending a byterange */
 

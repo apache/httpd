@@ -1087,33 +1087,30 @@ static void terminate_header (BUFF *client)
     bputs("\015\012", client);    /* Send the terminating empty line */
 }
 
+/* Build the Allow field-value from the request handler method mask.
+ * Note that we always allow TRACE, since it is handled below.
+ */
 static char *make_allow(request_rec *r)
 {
-    int allowed = r->allowed;
-
-    if( allowed == 0 ) {
-	/* RFC2068 #14.7, Allow must contain at least one method.  So rather
-	 * than deal with the possibility of trying not to emit an Allow:
-	 * header, i.e. #10.4.6 says 405 Method Not Allowed MUST include
-	 * an Allow header, we'll just say TRACE is valid.
-	 */
-	return( "TRACE" );
-    }
-
-    return 2 + pstrcat(r->pool, (allowed & (1 << M_GET)) ? ", GET, HEAD" : "",
-		       (allowed & (1 << M_POST)) ? ", POST" : "",
-		       (allowed & (1 << M_PUT)) ? ", PUT" : "",
-		       (allowed & (1 << M_DELETE)) ? ", DELETE" : "",
-		       (allowed & (1 << M_OPTIONS)) ? ", OPTIONS" : "",
-		       (allowed & (1 << M_TRACE)) ? ", TRACE" : "",
-		       NULL);
-    
+    return 2 + pstrcat(r->pool,
+                       (r->allowed & (1 << M_GET)) ? ", GET, HEAD" : "",
+                       (r->allowed & (1 << M_POST)) ? ", POST" : "",
+                       (r->allowed & (1 << M_PUT)) ? ", PUT" : "",
+                       (r->allowed & (1 << M_DELETE)) ? ", DELETE" : "",
+                       (r->allowed & (1 << M_OPTIONS)) ? ", OPTIONS" : "",
+                       ", TRACE",
+                       NULL);
 }
 
 int send_http_trace (request_rec *r)
 {
+    int rv;
+
     /* Get the original request */
     while (r->prev) r = r->prev;
+
+    if ((rv = setup_client_block(r, REQUEST_NO_BODY)))
+        return rv;
 
     hard_timeout("send TRACE", r);
 
@@ -1514,6 +1511,43 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
     return (chunk_start + len_read);
 }
 
+/* In HTTP/1.1, any method can have a body.  However, most GET handlers
+ * wouldn't know what to do with a request body if they received one.
+ * This helper routine tests for and reads any message body in the request,
+ * simply discarding whatever it receives.  We need to do this because
+ * failing to read the request body would cause it to be interpreted
+ * as the next request on a persistent connection.  
+ *
+ * Since we return an error status if the request is malformed, this
+ * routine should be called at the beginning of a no-body handler, e.g.,
+ *
+ *    if ((retval = discard_request_body(r)) != OK)
+ *        return retval;
+ */
+int discard_request_body(request_rec *r)
+{
+    int rv;
+
+    if ((rv = setup_client_block(r, REQUEST_CHUNKED_PASS)))
+        return rv;
+
+    if (should_client_block(r)) {
+        char dumpbuf[HUGE_STRING_LEN];
+
+        hard_timeout("reading request body", r);
+        while ((rv = get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0)
+            continue;
+        kill_timeout(r);
+
+        if (rv < 0)
+            return HTTP_BAD_REQUEST;
+    }
+    return OK;
+}
+
+/*
+ * Send the body of a response to the client.
+ */
 long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
 
 long send_fd_length(FILE *f, request_rec *r, long length)
