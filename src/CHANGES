@@ -1,5 +1,8 @@
 Changes with Apache 1.3.12
 
+  *) PORT: Add support for Amdahl UTS 4.3 and later.
+     [Dave Dykstra <dwd@bell-labs.com>] PR#5654
+
   *) Make implementation/descriptions of the FLAG directives
      AuthAuthoritative, MetaFiles and ExtendedStatus consistent with
      documentation and the standard way of implementation those directives.

@@ -676,10 +676,17 @@ case "$PLAT" in
 	LIBS="$LIBS -lPW"
 	;;
     *-uts*)
-	OS='Amdahl UTS'
-	CFLAGS="$CFLAGS -Xa -eft -DUTS21 -DUSEBCOPY"
-	LIBS="$LIBS -lsocket -lbsd -la"
-	DEF_WANTHSREGEX=yes
+	PLATOSVERS=`echo $PLAT | sed 's/^.*,//'`
+	OS='Amdahl UTS $PLATOSVERS'
+	case "$PLATOSVERS" in
+	    2*) CFLAGS="$CFLAGS -Xa -eft -DUTS21 -DUSEBCOPY"
+	        LIBS="$LIBS -lsocket -lbsd -la"
+	        DEF_WANTHSREGEX=yes
+	        ;;
+	    *)  CFLAGS="$CFLAGS -Xa -DSVR4"
+	        LIBS="$LIBS -lsocket -lnsl"
+	        ;;
+	esac
 	;;
     *-ultrix)
 	OS='ULTRIX'
