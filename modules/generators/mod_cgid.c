@@ -601,7 +601,7 @@ static int cgid_server(void *data)
 static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server) 
 { 
     pid_t pid; 
-    ap_proc_t ap_pid;
+    ap_proc_t *procnew;
 
     if (once_through > 0) { 
         ap_create_pool(&pcgi, p); 
@@ -614,10 +614,12 @@ static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_re
             cgid_server(main_server);
             exit(-1);
         } 
+        procnew = ap_pcalloc(p, sizeof(*procnew));        
+        procnew->pid = pid;
+        procnew->err = procnew->in = procnew->out = NULL;
+        ap_note_subprocess(p, procnew, kill_after_timeout);
 #if APR_HAS_OTHER_CHILD
-        ap_pid.pid = pid;
-        ap_pid.err = ap_pid.in = ap_pid.out = NULL;
-        ap_register_other_child(&ap_pid, cgid_maint, NULL, NULL, p);
+        ap_register_other_child(procnew, cgid_maint, NULL, NULL, p);
 #endif
     } 
     else once_through++; 
