@@ -34,7 +34,7 @@ install-conf:
 	for i in mime.types magic; do \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done; \
-	for i in *-std* ldap.conf proxy.conf ssl.conf; do \
+	for i in *-std* ssl.conf; do \
 		[ -f $$i ] || continue; \
 		( \
 			n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
