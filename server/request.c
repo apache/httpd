@@ -1710,7 +1710,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * but it's actually sometimes to impossible to do it... because the
          * file may not have a uri associated with it -djg
          */
-        rnew->uri = "INTERNALLY GENERATED file-relative req";
+        rnew->uri = apr_pstrdup(rnew->pool, "");
 
 #if 0 /* XXX When this is reenabled, the cache triggers need to be set to faux
        * dir_walk/file_walk values.
