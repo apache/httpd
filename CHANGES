@@ -1,8 +1,12 @@
 Changes with Apache 2.0.25-dev
 
-  *) Fix a security problem in mod_include which would allow
-     an SSI document to be passed to the client unparsed.
-     [Cliff Woolley, Brian Pane, William Rowe]
+  *) Eliminate proxy: (and all other 'special') processing from the
+     ap_directory_walk() phase.  Modules that want to use special
+     walk logic should refer to the mod_proxy map_to_location example,
+     with it's proxy_walk and proxysection implementation.  This makes
+     either directory_walk flavor much more legible, since that phase
+     only runs against real <Directory > blocks.
+     [William Rowe]
 
   *) Introduce the map_to_storage hook, which allows modules to bypass
      the directory_walk and file_walk for non-file requests.  TRACE

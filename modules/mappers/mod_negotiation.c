@@ -1027,6 +1027,7 @@ static int read_types_multi(negotiation_state *neg)
         return DECLINED;        /* Weird... */
     }
 
+    /* XXX this should be more general, and quit using 'specials' */
     if (strncmp(r->filename, "proxy:", 6) == 0) {
         return DECLINED;
     }
