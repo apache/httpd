@@ -91,6 +91,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     int one = 1;
     apr_status_t stat;
 
+#ifndef WIN32
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
@@ -99,6 +100,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
         apr_socket_close(s);
         return stat;
     }
+#endif
 
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
@@ -159,6 +161,27 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
         apr_socket_close(s);
         return stat;
     }
+
+#ifdef WIN32
+    /* I seriously doubt that this would work on Unix; I have doubts that
+     * it entirely solves the problem on Win32.  However, since setting
+     * reuseaddr on the listener -prior- to binding the socket has allowed
+     * us to attach to the same port as an already running instance of
+     * Apache, or even another web server, we cannot identify that this
+     * port was exclusively granted to this instance of Apache.
+     *
+     * So set reuseaddr, but do not attempt to do so until we have the
+     * parent listeners successfully bound.
+     */
+    stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
+    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
+                     server->bind_addr);
+        apr_socket_close(s);
+        return stat;
+    }
+#endif
 
 #if APR_HAS_SO_ACCEPTFILTER
 #ifndef ACCEPT_FILTER_NAME
