@@ -2596,7 +2596,7 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
                        &timeout) == APR_SUCCESS) && 
                      timeout > 0);  /* socket must be in timeout mode */ 
     do {
-        apr_ssize_t tmplen = file_bytes_left;
+        apr_size_t tmplen = file_bytes_left;
         
         rv = apr_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen, 
                           flags);
