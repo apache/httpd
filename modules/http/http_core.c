@@ -2455,7 +2455,6 @@ static int default_handler(request_rec *r)
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
     ap_file_t *fd = NULL;
-    ap_os_file_t fd_os;
     ap_status_t status;
 #ifdef USE_MMAP_FILES
     ap_mmap_t *mm = NULL;
@@ -2507,8 +2506,6 @@ static int default_handler(request_rec *r)
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
-    else
-       ap_get_os_file(&fd_os, fd);
 	
     ap_update_mtime(r, r->finfo.st_mtime);
     ap_set_last_modified(r);
@@ -2542,12 +2539,12 @@ static int default_handler(request_rec *r)
 #ifdef CHARSET_EBCDIC
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd_os, convert_flag));
+			  ap_md5digest(r->pool, fd, convert_flag));
 	}
 #else
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd_os));
+			  ap_md5digest(r->pool, fd));
 	}
 #endif /* CHARSET_EBCDIC */
 
