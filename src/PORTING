@@ -350,6 +350,10 @@ build for your OS.
        signal descriptions.  This is frequently sys_siglist or
        _sys_siglist, defined in <signals.h>
 
+      ap_wait_t
+       The type used for wait()/waitpid()/... status parameter.  Usually
+       int.
+
 -----------
 Conclusion:
 -----------
