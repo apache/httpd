@@ -116,6 +116,11 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APACHE_CHECK_SSL_TOOLKIT
     APR_SETVAR(MOD_SSL_LDADD, [\$(SSL_LIBS)])
     CHECK_DISTCACHE
+    if test "x$enable_ssl" = "xshared"; then
+       # The only symbol which needs to be exported is the module
+       # structure, so ask libtool to hide everything else:
+       APR_ADDTO(MOD_SSL_LDADD, [-export-symbols-regex ssl_module])
+    fi
 ])
 
 # Ensure that other modules can pick up mod_ssl.h
