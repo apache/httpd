@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Fix core dumps in use of CONNECT in proxy.  PR#1326, #1573, #1942
+     [Rainer.Scherg@rexroth.de]
+
   *) Modify the log directives in httpd.conf-dist files to use CustomLog
      so that users have examples of how CustomLog can be used.
      [Lars Eilebrecht]

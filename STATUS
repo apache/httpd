@@ -127,6 +127,7 @@ Committed Code Changes:
     * Jim's add of the SCO_SV port. PR#1962
     * Dean's floating point ap_snprintf code wasn't threadsafe.
     * Ralf's add of the new Apache Autoconf-style Interface (APACI)
+    * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
 
 Available Patches:
 
