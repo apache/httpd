@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/26 20:32:19 $]
+Last modified at [$Date: 2004/02/26 21:53:06 $]
 
 Release:
 
@@ -258,7 +258,7 @@ PATCHES TO BACKPORT FROM 2.1
         Fix existing bug that leads to segfault with this fix if
         "BufferedLogs Off" is used:
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.114&r2=1.115
-      +1: trawick (, stoddard, jerenkrantz)
+      +1: trawick stoddard (, jerenkrantz)
 
     * mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
       size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
