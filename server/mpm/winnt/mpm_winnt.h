@@ -100,7 +100,7 @@ void mpm_nt_eventlog_stderr_open(char *display_name, apr_pool_t *p);
 void mpm_nt_eventlog_stderr_flush(void);
 
 /* From winnt.c: */
-
+extern int use_acceptex;
 extern OSVERSIONINFO osver;
 extern void clean_child_exit(int);
 
