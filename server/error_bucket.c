@@ -99,6 +99,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error,
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
     free,
+    free,
     error_read,
     apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,
