@@ -180,6 +180,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->etag_add = ETAG_UNSET;
     conf->etag_remove = ETAG_UNSET;
 
+    conf->enable_mmap = ENABLE_MMAP_UNSET;
+
     return (void *)conf;
 }
 
@@ -439,6 +441,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (conf->etag_bits != ETAG_NONE) {
         conf->etag_bits &= (~ ETAG_NONE);
+    }
+
+    if (new->enable_mmap != ENABLE_MMAP_UNSET) {
+        conf->enable_mmap = new->enable_mmap;
     }
 
     return (void*)conf;
@@ -1417,6 +1423,29 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
         if ((cfg->etag_bits & ETAG_NONE) != ETAG_NONE) {
             cfg->etag_bits &= (~ ETAG_NONE);
         }
+    }
+
+    return NULL;
+}
+
+static const char *set_enable_mmap(cmd_parms *cmd, void *d_,
+                                   const char *arg)
+{
+    core_dir_config *d = d_;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        d->enable_mmap = ENABLE_MMAP_ON;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        d->enable_mmap = ENABLE_MMAP_OFF;
+    }
+    else {
+        return "parameter must be 'on' or 'off'";
     }
 
     return NULL;
@@ -2871,6 +2900,8 @@ AP_INIT_TAKE1("DefaultType", ap_set_string_slot,
   OR_FILEINFO, "the default MIME type for untypable files"),
 AP_INIT_RAW_ARGS("FileETag", set_etag_bits, NULL, OR_FILEINFO,
   "Specify components used to construct a file's ETag"),
+AP_INIT_TAKE1("EnableMMAP", set_enable_mmap, NULL, OR_FILEINFO,
+  "Controls whether memory-mapping may be used to read files"),
 
 /* Old server config file commands */
 
@@ -3230,6 +3261,11 @@ static int default_handler(request_rec *r)
             e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
                                        r->pool, c->bucket_alloc);
 
+#if APR_HAS_MMAP
+        if (d->enable_mmap == ENABLE_MMAP_OFF) {
+            (void)apr_bucket_file_enable_mmap(e, 0);
+        }
+#endif
         APR_BRIGADE_INSERT_TAIL(bb, e);
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
