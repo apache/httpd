@@ -956,7 +956,7 @@ ServerSignature On
 #        AddHandler type-map var
 #        Order allow,deny
 #        Allow from all
-#        LanguagePriority en cs de es fr it nl sv pt-br ro
+#        LanguagePriority en cs de es fr it ja ko nl pl pt-br ro sv tr
 #        ForceLanguagePriority Prefer Fallback
 #    </Directory>
 #
