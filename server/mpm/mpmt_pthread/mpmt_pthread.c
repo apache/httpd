@@ -892,7 +892,7 @@ static void child_main(int child_num_arg)
     sigemptyset(&sig_mask);
     sigaddset(&sig_mask, SIGTERM);
     sigaddset(&sig_mask, SIGINT);
-    sigwait(&sig_mask, &signal_received);
+    ap_sigwait(&sig_mask, &signal_received);
     switch (signal_received) {
         case SIGTERM:
         case SIGINT:
