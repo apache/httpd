@@ -404,7 +404,10 @@ void parse_string(request_rec *r, char *in, char *out, int length,
     while ((ch = *in++) != '\0') {
         switch(ch) {
           case '\\':
-            *next++ = (*in != '\0') ? *in++ : '\0';
+          if(*in == '$')
+              *next++=*in++;
+          else
+              *next++=ch;
             break;
           case '$':
           {

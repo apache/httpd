@@ -1,5 +1,9 @@
 Changes with Apache 1.2b7
 
+  *) Modify mod_include escaping so a '\' only signifies an escaped
+     character if the next character is one that needs
+     escaping.  [Ben Laurie]
+
   *) Eliminated possible infinite loop in mod_imap when relative URLs are
      used with a 'base' directive that does not have a '/' in it.
      [Marc Slemko, reported by Onno Witvliet <onno@tc.hsa.nl>]
