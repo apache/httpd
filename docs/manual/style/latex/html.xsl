@@ -309,13 +309,14 @@ interpreted in pre -->
 </xsl:template>
 
 <xsl:template match="img">
-<xsl:text>[Image not coverted]</xsl:text>
-<!--
 <xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
 <xsl:text>\includegraphics{</xsl:text>
-<xsl:value-of select="concat('.',$path,@src)"/>
+      <xsl:call-template name="replace-string">
+        <xsl:with-param name="text" select="concat('.',$path,@src)"/>
+        <xsl:with-param name="replace" select="'.gif'"/>
+        <xsl:with-param name="with" select="''"/>
+      </xsl:call-template>
 <xsl:text>}</xsl:text>
--->
 </xsl:template>
 
 </xsl:stylesheet>

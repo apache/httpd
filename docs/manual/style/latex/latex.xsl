@@ -44,7 +44,7 @@
 \usepackage{times}
 \usepackage{longtable}
 \usepackage{style/latex/atbeginend}
-%\usepackage[pdftex]{color}
+\usepackage[pdftex]{graphicx}
 \usepackage[colorlinks=true,letterpaper=true,linkcolor=blue,urlcolor=blue]{hyperref}
 
 % Let LaTeX be lenient about very-bad line wrapping.
@@ -92,7 +92,8 @@
 <xsl:value-of select="$messages/message[@name='documentation']" />
 <xsl:text> </xsl:text>
 <xsl:value-of select="$messages/message[@name='version']" />
-<xsl:text>}
+<xsl:text>\\ \bigskip \bigskip
+\includegraphics{images/feather}\\ \bigskip}
 \author{Apache Software Foundation}
 \date{\today}
 
@@ -102,11 +103,26 @@
 
 \section*{About The PDF Documentation}
 
-This is an early release of the PDF version of the Apache
-Documentation.  It is converted from XML source files, and may contain
-some errors and inconsistencies.  If you have difficulty reading a
-part of this file, please consult instead the HTML version of the
-documentation on the Apache HTTP Server website.
+Copyright \copyright 2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at \href{http://www.apache.org/licenses/LICENSE-2.0}{http://www.apache.org/licenses/LICENSE-2.0}
+
+This version of the Apache HTTP Server Documentation is converted from
+XML source files to \LaTeX\ using XSLT with the help of Apache Ant,
+Apache XML Xalan, and Apache XML Xerces.
+
+Since the HTML version of the documentation is more commonly checked
+during development, the PDF version may contain some errors and
+inconsistencies, especially in formatting.  If you have difficulty
+reading a part of this file, please consult the HTML version
+of the documentation on the Apache HTTP Server website at
+\href{http://httpd.apache.org/docs-2.0/}{http://httpd.apache.org/docs-2.0/}
+
+The Apache HTTP Server Documentation is maintained by the Apache HTTP
+Server Documentation Project.  More information is available at
+\href{http://httpd.apache.org/docs-project/}{http://httpd.apache.org/docs-project/}
 
 \tableofcontents
 \mainmatter
