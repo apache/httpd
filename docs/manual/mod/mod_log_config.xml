@@ -143,6 +143,14 @@ be in strftime(3) format. (potentially localized)</td></tr>
 this conflicted with the historical ssl %...{var}c syntax.)</note>
 </td></tr>
 
+<tr><td>%...I:</td>
+<td>Bytes received, including request and headers, cannot be zero. You need to
+enable <module>mod_logio</module> to use this.</td></tr>
+
+<tr><td>%...O:</td>
+<td>Bytes sent, including headers, cannot be zero. You need to enable
+<module>mod_logio</module> to use this.</td></tr>
+
 </table>
 
     <p>The "..." can be nothing at all (<em>e.g.</em>, <code>"%h %u
