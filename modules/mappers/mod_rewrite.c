@@ -3668,7 +3668,7 @@ static cache *init_cache(apr_pool_t *p)
     }
     c->lists = apr_array_make(c->pool, 2, sizeof(cachelist));
 #if APR_HAS_THREADS
-    (void)apr_lock_create(&(c->lock), APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+    (void)apr_thread_mutex_create(&(c->lock), APR_THREAD_MUTEX_DEFAULT, p);
 #endif
     return c;
 }
@@ -3761,7 +3761,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
     int found_list;
 
 #if APR_HAS_THREADS
-    apr_lock_acquire(c->lock);
+    apr_thread_mutex_lock(c->lock);
 #endif
 
     found_list = 0;
@@ -3777,7 +3777,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
                 e->time  = ce->time;
                 e->value = apr_pstrdup(c->pool, ce->value);
 #if APR_HAS_THREADS
-                apr_lock_release(c->lock);
+                apr_thread_mutex_unlock(c->lock);
 #endif
                 return;
             }
@@ -3790,7 +3790,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
                     cache_tlb_replace((cachetlbentry *)l->tlb->elts,
                                       (cacheentry *)l->entries->elts, e);
 #if APR_HAS_THREADS
-                    apr_lock_release(c->lock);
+                    apr_thread_mutex_unlock(c->lock);
 #endif
                     return;
                 }
@@ -3823,7 +3823,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
             cache_tlb_replace((cachetlbentry *)l->tlb->elts,
                               (cacheentry *)l->entries->elts, e);
 #if APR_HAS_THREADS
-            apr_lock_release(c->lock);
+            apr_thread_mutex_unlock(c->lock);
 #endif
             return;
         }
@@ -3831,7 +3831,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
 
     /* not reached, but when it is no problem... */
 #if APR_HAS_THREADS
-    apr_lock_release(c->lock);
+    apr_thread_mutex_unlock(c->lock);
 #endif
     return;
 }
@@ -3844,7 +3844,7 @@ static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
     cacheentry *e;
 
 #if APR_HAS_THREADS
-    apr_lock_acquire(c->lock);
+    apr_thread_mutex_lock(c->lock);
 #endif
 
     for (i = 0; i < c->lists->nelts; i++) {
@@ -3855,7 +3855,7 @@ static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
                                  (cacheentry *)l->entries->elts, key);
             if (e != NULL) {
 #if APR_HAS_THREADS
-                apr_lock_release(c->lock);
+                apr_thread_mutex_unlock(c->lock);
 #endif
                 return e;
             }
@@ -3864,7 +3864,7 @@ static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
                 e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, key) == 0) {
 #if APR_HAS_THREADS
-                    apr_lock_release(c->lock);
+                    apr_thread_mutex_unlock(c->lock);
 #endif
                     return e;
                 }
@@ -3872,7 +3872,7 @@ static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
         }
     }
 #if APR_HAS_THREADS
-    apr_lock_release(c->lock);
+    apr_thread_mutex_unlock(c->lock);
 #endif
     return NULL;
 }

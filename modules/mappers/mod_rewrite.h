@@ -114,6 +114,7 @@
 
 #if APR_HAS_THREADS
 #include "apr_lock.h"
+#include "apr_thread_mutex.h"
 #endif
 #include "ap_config.h"
 
@@ -326,7 +327,7 @@ typedef struct cache {
     apr_pool_t         *pool;
     apr_array_header_t *lists;
 #if APR_HAS_THREADS
-    apr_lock_t *lock;
+    apr_thread_mutex_t *lock;
 #endif
 } cache;
 
