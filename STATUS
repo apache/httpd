@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 22:42:55 $]
+Last modified at [$Date: 2004/05/21 22:58:30 $]
 
 Release:
 
@@ -100,6 +100,12 @@ PATCHES TO BACKPORT FROM 2.1
        modules/experimental/mod_auth_ldap.c r1.25
        PR 24437 [Jess Holle <jessh@ptc.com>]
        +1: minfrin, jim, trawick, bnicholes
+
+    *) Fix handling of IPv6 numeric strings in mod_proxy.
+         modules/proxy/proxy_ftp.c r1.141, r1.142
+         modules/proxy/proxy_http.c r1.186
+         modules/proxy/proxy_util.c r1.107
+       +1: trawick
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
