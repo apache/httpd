@@ -1,0 +1,289 @@
+# Config file for the Apache httpd.
+
+# Configuration.tmpl is the template for Configuration. Configuration should
+# be edited to select the modules to be included as well as various flags
+# for Makefile.
+
+# The template should only be changed when a new system or module is added,
+# or an existing one modified. This will also most likely require some minor
+# changes to Configure to recognize those changes.
+
+# There are 5 types of lines here:
+
+# '#' comments, distinguished by having a '#' as the first non-blank character
+#
+# Makefile options, such as CC=gcc, etc...
+#
+# Rules, distinquished by having "Rule" at the front. These are used to
+# control Configure's behavior as far as how to create Makefile.
+#
+# Module selection lines, distinguished by having 'Module' at the front.
+# These list the configured modules, in priority order (highest priority
+# first).  They're down at the bottom.
+#
+# Optional module selection lines, distinguished by having `%Module'
+# at the front.  These specify a module that is to be compiled in (but
+# not enabled).  The AddModule directive can be used to enable such a
+# module.  By default no such modules are defined.
+
+
+################################################################
+# Makefile configuration
+#
+# These are added to the general flags determined by Configure.
+# Edit these to work around Configure if needed. The EXTRA_* family
+# will be added to the regular Makefile flags. For example, if you
+# want to compile with -Wall, then add that to EXTRA_CFLAGS. These
+# will be added to whatever flags Configure determines as appropriate
+# and needed for your platform.
+#
+# You can also set the compiler and Optimization used here as well.
+# Settings here have priority; If not set, Configure will attempt to guess
+# the C compiler, and set OPTIM to '-O2'
+#
+EXTRA_CFLAGS=
+EXTRA_LFLAGS=
+EXTRA_LIBS=
+EXTRA_INCLUDES=
+
+#CC=
+#OPTIM=-O2
+#RANLIB=
+
+################################################################
+# Rules configuration
+#
+# These are used to let Configure know that we want certain
+# functions. The format is: Rule RULE=value
+#
+# At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
+# STATUS, and IRIXNIS.
+#
+# For all Rules, if set to "yes", then Configure knows we want that
+# capability and does what is required to add it in. If set to "default"
+# then Configure makes a "best guess"; if set to anything else, or not
+# present, then nothing is done.
+#
+# SOCKS4:
+#  If SOCKS4 is set to 'yes', be sure that you add the sock library
+#  location to EXTRA_LIBS, otherwise Configure will assume
+#  "-L/usr/local/lib -lsocks"
+#
+# STATUS:
+#  If Configure determines that you are using the status_module,
+#  it will automatically enable full status information if set
+#  to 'yes'. If the status module is not included, having STATUS
+#  set to 'yes' has no impact.
+#
+# IRIXNIS:
+#  Only takes effect if Configure determines that you are running
+#  SGI IRIX. If you are, and you are using NIS, you should set this
+#  to 'yes'
+#
+
+Rule STATUS=yes
+Rule SOCKS4=no
+Rule IRIXNIS=no
+
+# The following rules should be set automatically by Configure. However, if
+# they are not set by Configure (because we don't know the correct value for
+# your platform), or are set incorrectly, you may override them here.
+# If you have to do this, please let us know what you set and what your
+# platform is, by filling out a problem report form at the Apache web site:
+# <http://www.apache.org/bugdb.cgi>.  If your browser is forms-incapable,
+# you can get the information to us by sending mail to apache-bugs@apache.org.
+#
+# WANTHSREGEX:
+#  Apache requires a POSIX regex implementation. Henry Spencer's
+#  excellent regex package is included with Apache and can be used
+#  if desired. If your OS has a decent regex, you can elect to
+#  not use this one by setting WANTHSREGEX to 'no' or commenting
+#  out the Rule. The "default" action is "no" unless overruled
+#  by OS specifics
+
+Rule WANTHSREGEX=default
+
+################################################################
+# Module configuration
+#
+# Modules are listed in reverse priority order --- the ones that come
+# later can override the behavior of those that come earlier.  This
+# can have visible effects; for instance, if UserDir followed Alias,
+# you couldn't alias out a particular user's home directory.
+
+# The configuration below is what we consider a decent default 
+# configuration.  If you want the functionality provided by a particular
+# module, remove the "#" sign at the beginning of the line. But remember, 
+# the more modules you compile into the server, the larger the executable
+# is and the more memory it will take, so if you are unlikely to use the
+# functionality of a particular module you might wish to leave it out.
+
+##
+## Config manipulation modules
+##
+## mod_env sets up additional or restricted environment variables to be
+## passed to CGI/SSI scripts.  It is listed first (lowest priority) since
+## it does not do per-request stuff.
+
+Module env_module          mod_env.o
+
+## mod_dld defines commands that allow other modules to be loaded
+## dynamically (at runtime).  This module is for experimental use only.
+
+# Module dld_module          mod_dld.o
+
+##
+## Request logging modules
+##
+
+Module config_log_module   mod_log_config.o
+
+## Optional modules for NCSA user-agent/referer logging compatibility
+## We recommend, however, that you just use the configurable access_log.
+
+# Module agent_log_module    mod_log_agent.o
+# Module referer_log_module  mod_log_referer.o
+
+##
+## Type checking modules
+##
+## mod_mime maps filename extensions to content types, encodings, and
+## magic type handlers (the latter is obsoleted by mod_actions).
+## mod_negotiation allows content selection based on the Accept* headers.
+
+Module mime_module         mod_mime.o
+Module negotiation_module  mod_negotiation.o
+
+##
+## Content delivery modules
+##
+## The status module allows the server to display current details about 
+## how well it is performing and what it is doing.  Consider also enabling 
+## STATUS=yes (see the Rules section near the start of this file) to allow
+## full status information.  Check conf/access.conf on how to enable this.
+
+# Module status_module       mod_status.o
+
+## The Info module displays configuration information for the server and 
+## all included modules. It's very useful for debugging.
+
+# Module info_module         mod_info.o
+
+## mod_include translates server-side include (SSI) statements in text files.
+## mod_dir handles requests on directories and directory indexes.
+## mod_cgi handles CGI scripts.
+
+Module includes_module     mod_include.o
+Module dir_module          mod_dir.o
+Module cgi_module          mod_cgi.o
+
+## The asis module implemented ".asis" file types, which allow the embedding
+## of HTTP headers at the beginning of the document.  mod_imap handles internal 
+## imagemaps (no more cgi-bin/imagemap/!).  mod_actions is used to specify 
+## CGI scripts which act as "handlers" for particular files, for example to
+## automatically convert every GIF to another file type.
+
+Module asis_module         mod_asis.o
+Module imap_module         mod_imap.o
+Module action_module       mod_actions.o
+
+##
+## URL translation modules.
+##
+## The UserDir module for selecting resource directories by user name
+## and a common prefix, e.g., /~<user> , /usr/web/<user> , etc.
+
+Module userdir_module      mod_userdir.o
+
+## The proxy module enables the server to act as a proxy for outside
+## http and ftp services. It's not as complete as it could be yet.
+## NOTE: You do not want this module UNLESS you are running a proxy;
+##       it is not needed for normal (origin server) operation.
+
+# Module proxy_module        modules/proxy/libproxy.a
+
+## The Alias module provides simple URL translation and redirection.
+
+Module alias_module        mod_alias.o
+
+## mod_rewrite allows for powerful URI-to-URI and URI-to-filename mapping,
+## using regular expressions.
+
+# Module rewrite_module      mod_rewrite.o
+
+##
+## Access control and authentication modules. 
+##
+Module access_module       mod_access.o
+Module auth_module         mod_auth.o
+
+## The anon_auth module allows for anonymous-FTP-style username/ 
+## password authentication.
+
+# Module anon_auth_module    mod_auth_anon.o
+
+## db_auth and dbm_auth work with Berkeley DB files - make sure there
+## is support for DBM files on your system.  You may need to grab the GNU
+## "gdbm" package if not and possibly adjust EXTRA_LIBS. (This may be
+## done by Configure at a later date)
+
+# Module db_auth_module      mod_auth_db.o
+# Module dbm_auth_module     mod_auth_dbm.o
+
+## msql_auth checks against an mSQL database.  You must have mSQL installed
+## and an "msql.h" available for this to even compile.  Additionally,
+## you may need to add a couple entries to the EXTRA_LIBS line, like
+##
+##  -lmsql -L/usr/local/lib -L/usr/local/Minerva/lib
+##
+## This depends on your installation of mSQL. (This may be done by Configure
+## at a later date)
+
+# Module msql_auth_module    mod_auth_msql.o
+
+## "digest" implements HTTP Digest Authentication rather than the less 
+## secure Basic Auth used by the other modules.
+
+# Module digest_module       mod_digest.o
+
+## Optional response header manipulation modules. 
+##
+## cern_meta mimics the behavior of the CERN web server with regards to 
+## metainformation files.  
+
+# Module cern_meta_module    mod_cern_meta.o
+
+## The expires module can apply Expires: headers to resources,
+## as a function of access time or modification time.
+
+# Module expires_module      mod_expires.o
+
+## The headers module can set arbitrary HTTP response headers,
+## as configured in server, vhost, access.conf or .htaccess configs
+
+# Module headers_module      mod_headers.o
+
+## Miscellaneous modules
+##
+## mod_usertrack.c is the new name for mod_cookies.c.  This module
+## uses Netscape cookies to automatically construct and log
+## click-trails from Netscape cookies, or compatible clients who
+## aren't coming in via proxy.   
+##
+## You do not need this, or any other module to allow your site
+## to use Cookies.  This module is for user tracking only
+
+# Module usertrack_module      mod_usertrack.o
+
+## The example module, which demonstrates the use of the API.  See
+## the file modules/example/README for details.  This module should
+## only be used for testing -- DO NOT ENABLE IT on a production server.
+
+# Module example_module      modules/example/mod_example.o
+
+## mod_browser lets you set environment variables based on the User-Agent
+## string in the request; this is useful for conditional HTML, for example.
+## Since it is also used to detect buggy browsers for workarounds, it
+## should be the last (highest priority) module.
+
+Module browser_module      mod_browser.o
