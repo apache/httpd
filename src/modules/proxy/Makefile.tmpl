@@ -35,7 +35,7 @@ libproxy.so: $(SHLIB_OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 .c.so-o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) -o $*.so-o $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) $< && mv $*.o $*.so-o
 
 clean:
 	rm -f $(OBJS) $(SHLIB_OBJS) $(LIB)
