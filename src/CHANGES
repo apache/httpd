@@ -12,7 +12,7 @@ Changes with Apache 1.2b1:
       via RLimitCPU, RLimitNPROC and RLimitMEM directives. Each
       directive takes 1|2 arguments to set the soft/hard limit values
       for each system limit. Setting the hard limit requires the
-      server to be running as root.
+      server to be running as root. [Randy Terbush, Ben Laurie]
 
   *) Centralize exec() code
       Changed as a first step toward handling setuid()/setgid()
@@ -36,7 +36,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.49 1996/08/02 21:21:59 randy Exp $ for RCS/CVS [Chuck Murcko]
+      added $Id: CHANGES,v 1.50 1996/08/02 21:23:26 randy Exp $ for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]
