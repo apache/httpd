@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/28 22:55:53 $
+Last modified: $Date: 2003/06/30 19:38:40 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -89,9 +89,6 @@ Documentation improvements
   - remove <pre> elements. Use <br /> and <indent> elements to get
     a similar effect.
 
-* Autogeneration of PDF
-  - See manual/style/latex/TODO
-
 * Improving the documentation of the documentations' build system
   itself (requirements, procedures)
 
@@ -119,3 +116,32 @@ Documentation improvements
 
 * Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
+
+
+LaTeX Todo list
+==================
+
+- Tables
+  Add <columnspec> to xml files.
+
+- Images
+
+  A quick search makes me believe that pdftex will not handle gifs.
+  It probably will handle png.
+
+- Hundreds of other little problems with presentation, cross-referencing,
+  etc.
+
+- Fix build system
+
+- Cleanup xsl to make it more readable and add licenses.  Almost everything
+  that is currently in latex.xsl should probably be moved to common.xsl.
+  There may be a license problem with the atbeginend.sty file, since
+  latex style files rarely have explict licenses.  At worst, we can
+  drop this and manually adjust the relevant spacing.
+
+- Reduce the size of the pdf (both bytes and pages) in any way possible.
+
+- Speed up the XSLT tranform.
+
+- Translations.
