@@ -23,15 +23,20 @@ than one multi-processing module (MPM).
 <H2>Directives</H2>
 <UL>
 <li><a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><a href="#group">Group</a></li>
 <li><a href="#pidfile">PidFile</a></li>
+<li><a href="#listen">Listen</a></li>
+<li><a href="#listenbacklog">ListenBacklog</a></li>
 <li><a href="#lockfile">LockFile</a></li>
 <li><a href="#maxclients">MaxClients</a></li>
 <li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="#minsparethreads">MinSpareThreads</a></li>
 <li><a href="#scoreboardfile">ScoreBoardFile</a></li>
+<li><a href="#sendbuffersize">SendBufferSize</a></li>
 <li><a href="#startservers">StartServers</a></li>
 <li><a href="#threadsperchild">ThreadsPerChild</a></li>
+<li><a href="#user">User</a></li>
 </UL>
 <HR>
 
@@ -64,6 +69,57 @@ HREF="core.html#serverroot">ServerRoot</A> directory, however since
 this should not be writable by the user the server runs as, core dumps
 won't normally get written.  If you want a core dump for debugging,
 you can use this directive to place it in a different location.<P><HR>
+
+
+<H2><A NAME="group">Group directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Group <EM>unix-group</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>Group #-1</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> MPM<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+
+The Group directive sets the group under which the server will answer requests.
+In order to use this directive, the stand-alone server must be run initially
+as root. <EM>Unix-group</EM> is one of:
+<DL>
+<DT>A group name
+<DD>Refers to the given group by name.
+<DT># followed by a group number.
+<DD>Refers to a group by its number.
+</DL>
+
+It is recommended that you set up a new group specifically for running the
+server. Some admins use user <CODE>nobody</CODE>, but this is not always
+possible or desirable.<P>
+
+Note: if you start the server as a non-root user, it will fail to change
+to the specified group, and will instead continue to run as the group of the
+original user. <P>
+
+Special note: Use of this directive in &lt;VirtualHost&gt; requires a
+properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
+When used inside a &lt;VirtualHost&gt; in this manner, only the group
+that CGIs are run as is affected.  Non-CGI requests are still processed
+as the group specified in the main Group directive.<P>
+
+SECURITY: See <A HREF="#user">User</A> for a discussion of the security
+considerations.<P><HR>
 
 <H2><A NAME="pidfile">PidFile directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
@@ -102,9 +158,107 @@ signal to the process id listed in the PidFile.</p>
 <p>The PidFile is subject to the same warnings about log file placement and
 <A HREF="../misc/security_tips.html#serverroot">security</A>.</p>
 
+<p><hr>
 
-<P><HR>
+<H2><A NAME="listen">Listen directive</A></H2>
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A>
+Listen [<EM>IP address</EM>:]<EM>port number</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> MPM<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
 
+
+<P>The Listen directive instructs Apache to listen to more than one IP
+address or port; by default it responds to requests on all IP
+interfaces, but only on the port given by the <CODE><A
+HREF="#port">Port</A></CODE> directive.</P>
+
+<TT>Listen</TT> can be used instead of <TT><A
+HREF="#bindaddress">BindAddress</A></TT> and <TT>Port</TT>. It tells
+the server to accept incoming requests on the specified port or
+address-and-port combination. If the first format is used, with a port
+number only, the server listens to the given port on all interfaces,
+instead of the port given by the <TT>Port</TT> directive. If an IP
+address is given as well as a port, the server will listen on the
+given port and interface.  <P>
+
+Note that you may still require a <TT>Port</TT> directive so
+that URLs that Apache generates that point to your server still
+work.<P>
+
+Multiple Listen directives may be used
+to specify a number of addresses and ports to listen to. The server
+will respond to requests from any of the listed addresses and
+ports. 
+<P>
+
+For example, to make the server accept connections on both port
+80 and port 8000, use:
+<PRE>
+   Listen 80
+   Listen 8000
+</PRE>
+
+To make the server accept connections on two specified
+interfaces and port numbers, use
+<PRE>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</PRE>
+
+<P><STRONG>See Also:</STRONG>
+<A HREF="../dns-caveats.html">DNS Issues</A><BR>
+<STRONG>See Also:</STRONG>
+<A HREF="../bind.html">Setting which addresses and ports Apache uses</A><BR>
+<STRONG>See Also:</STRONG>
+<A HREF="http://www.apache.org/info/known_bugs.html#listenbug">Known Bugs</A>
+</P>
+<HR>
+
+<H2><A NAME="listenbacklog">ListenBacklog directive</A></H2>
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ListenBacklog <EM>backlog</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>ListenBacklog 511</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> MPM<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+
+<P>The maximum length of the queue of pending connections.  Generally no
+tuning is needed or desired, however on some systems it is desirable
+to increase this when under a TCP SYN flood attack.  See
+the backlog parameter to the <CODE>listen(2)</CODE> system call.
+
+<P>This will often be limited to a smaller number by the operating
+system.  This varies from OS to OS.  Also note that many OSes do not
+use exactly what is specified as the backlog, but use a number based on
+(but normally larger than) what is set.
+<HR>
 
 <H2><A NAME="lockfile">LockFile directive</A></H2>
 <p><A
@@ -348,6 +502,32 @@ about log file placement and
 
 <P><HR>
 
+<H2><A NAME="sendbuffersize">SendBufferSize directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> SendBufferSize <EM>bytes</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> MPM<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+
+The server will set the TCP buffer size to the number of bytes
+specified. Very useful to increase past standard OS defaults on high
+speed high latency (<EM>i.e.</EM>, 100ms or so, such as transcontinental
+fast pipes)
+
+<P><HR>
+
 <H2><A NAME="startservers">StartServers directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
 <p><A
@@ -394,7 +574,7 @@ on the load, there is usually little reason to adjust this parameter.</P>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
+><STRONG>Status:</STRONG></A> MPM<BR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
@@ -403,6 +583,70 @@ on the load, there is usually little reason to adjust this parameter.</P>
 <P>This directive sets the number of threads created by each child
 process.</p>
 
+<p><hr>
+
+
+<H2><A NAME="user">User directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> User <EM>unix-userid</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>User #-1</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, prefork</p>
+
+The User directive sets the userid as which the server will answer requests.
+In order to use this directive, the standalone server must be run initially
+as root. <EM>Unix-userid</EM> is one of:
+<DL>
+<DT>A username
+<DD>Refers to the given user by name.
+<DT># followed by a user number.
+<DD>Refers to a user by their number.
+</DL>
+
+The user should have no privileges which result in it being able to access
+files which are not intended to be visible to the outside world, and
+similarly, the user should not be able to execute code which is not
+meant for httpd requests. It is recommended that you set up a new user and
+group specifically for running the server. Some admins use user
+<CODE>nobody</CODE>, but this is not always possible or desirable.
+For example mod_proxy's cache, when enabled, must be accessible to this user
+(see the <A HREF="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE>
+directive</A>).<P>
+
+Notes: If you start the server as a non-root user, it will fail to change
+to the lesser privileged user, and will instead continue to run as
+that original user. If you do start the server as root, then it is normal
+for the parent process to remain running as root.<P>
+
+Special note: Use of this directive in &lt;VirtualHost&gt; requires a
+properly configured <A HREF="../suexec.html">suEXEC wrapper</A>.
+When used inside a &lt;VirtualHost&gt; in this manner, only the user
+that CGIs are run as is affected.  Non-CGI requests are still processed
+with the user specified in the main User directive.<P>
+
+SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
+<CODE>root</CODE> unless you know exactly what you are doing, and what the
+dangers are.<P><HR>
 
 <!--#include virtual="footer.html" -->
 </BODY>
