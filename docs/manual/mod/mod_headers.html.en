@@ -50,27 +50,13 @@ is available only in Apache 2.0</td></tr></table>
 <div class="section">
 <h2><a name="order" id="order">Order of Processing</a></h2>
 
-    <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can occur
-    almost anywhere within the server configuration. They are valid in the
-    main server config and virtual host sections, inside
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
-    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and 
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections,
-    and within <code>.htaccess</code> files.</p>
+    <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
+    occur almost anywhere within the server configuration, and can be
+    limited in scope by enclosing them in <a href="../sections.html">configuration sections</a>.</p>
 
-    <p>The directives are processed in the following order:</p>
-
-    <ol>
-      <li>main server</li>
-      <li>virtual host</li>
-      <li><code class="directive">&lt;Directory&gt;</code> sections and
-      <code>.htaccess</code></li>
-      <li><code class="directive">&lt;Files&gt;</code></li>
-      <li><code class="directive">&lt;Location&gt;</code></li>
-    </ol>
-
-    <p>Order is important. These two headers have a different
-    effect if reversed:</p>
+    <p>Order of processing is important and is affected both by the
+    order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
+    two headers have a different effect if reversed:</p>
 
     <div class="example"><p><code>
       RequestHeader append MirrorID "mirror 12"<br />

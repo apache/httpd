@@ -169,12 +169,10 @@
       <dt>directory</dt>
 
       <dd>A directive marked as being valid in this context may be
-      used inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
-      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>,
-      and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>
-      containers in the server configuration files, subject to the
-      restrictions outlined in <a href="../sections.html">How
-      Directory, Location and Files sections work</a>.</dd>
+      used inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> containers
+      in the server configuration files, subject to the restrictions
+      outlined in <a href="../sections.html">Configuration
+      Sections</a>.</dd>
 
       <dt>.htaccess</dt>
 

@@ -147,12 +147,13 @@
 
       <dd>A directive marked as being valid in this context may be
       used inside <directive module="core"
-      type="section">Directory</directive>,
-      <directive type="section" module="core">Location</directive>,
-      and <directive module="core" type="section">Files</directive>
-      containers in the server configuration files, subject to the
-      restrictions outlined in <a href="../sections.html">How
-      Directory, Location and Files sections work</a>.</dd>
+      type="section">Directory</directive>, <directive type="section"
+      module="core">Location</directive>, <directive module="core"
+      type="section">Files</directive>, and <directive
+      module="mod_proxy" type="section">Proxy</directive> containers
+      in the server configuration files, subject to the restrictions
+      outlined in <a href="../sections.html">Configuration
+      Sections</a>.</dd>
 
       <dt>.htaccess</dt>
 

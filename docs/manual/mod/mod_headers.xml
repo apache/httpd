@@ -20,27 +20,15 @@ is available only in Apache 2.0</compatibility>
 
 <section id="order"><title>Order of Processing</title>
 
-    <p>The directives provided by <module>mod_headers</module> can occur
-    almost anywhere within the server configuration. They are valid in the
-    main server config and virtual host sections, inside
-    <directive module="core" type="section">Directory</directive>,
-    <directive module="core" type="section">Location</directive> and 
-    <directive module="core" type="section">Files</directive> sections,
-    and within <code>.htaccess</code> files.</p>
+    <p>The directives provided by <module>mod_headers</module> can
+    occur almost anywhere within the server configuration, and can be
+    limited in scope by enclosing them in <a
+    href="../sections.html">configuration sections</a>.</p>
 
-    <p>The directives are processed in the following order:</p>
-
-    <ol>
-      <li>main server</li>
-      <li>virtual host</li>
-      <li><directive type="section">Directory</directive> sections and
-      <code>.htaccess</code></li>
-      <li><directive type="section">Files</directive></li>
-      <li><directive type="section">Location</directive></li>
-    </ol>
-
-    <p>Order is important. These two headers have a different
-    effect if reversed:</p>
+    <p>Order of processing is important and is affected both by the
+    order in the configuration file and by placement in <a
+    href="../sections.html#mergin">configuration sections</a>. These
+    two headers have a different effect if reversed:</p>
 
     <example>
       RequestHeader append MirrorID "mirror 12"<br />
