@@ -321,7 +321,7 @@ char *find_item(request_rec *r, array_header *list, int path_only) {
             } else if(!path_only) {
                 if(!content_encoding) {
                     if(p->type == BY_TYPE) {
-                        if(!strcmp_match(content_type,p->apply_to))
+                        if(content_type && !strcmp_match(content_type,p->apply_to))
                             return p->data;
                     }
                 } else {
@@ -464,7 +464,7 @@ char *find_title(request_rec *r) {
     FILE *thefile = NULL;
     int x,y,n,p;
 
-    if ((!strcmp(r->content_type,"text/html")) && (!r->content_encoding)) {
+    if (r->content_type && !strcmp(r->content_type,"text/html") && !r->content_encoding) {
         if(!(thefile = pfopen(r->pool, r->filename,"r")))
             return NULL;
         n = fread(titlebuf,sizeof(char),MAX_STRING_LEN - 1,thefile);
