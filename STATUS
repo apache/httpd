@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/21 11:05:08 $]
+  Last modified at [$Date: 1999/05/25 10:23:14 $]
 
 Release:
 
@@ -170,18 +170,6 @@ In progress:
       via the Apache API with Perl and C.
         Status: http://www.pobox.com/~dougm/libapr-0.20_01.tar.gz
 
-    * Greg's [PATCH] Expat as an option
-        Message-ID: <3745317B.216F2310@lyra.org>
-        Status: one open(?) issue remains: there may be some extra work to
-                export the Expat functions from httpd on Win32 and AIX for
-                DSOs to use (requires changes to the .def and .exp files).
-                => Ralf: +1 for the patch in general
-                         -1 until the symbol export issue is solved.
-                            Hint: IMHO the only correct way is to encapsulate
-                            the complete Expat API into with a ap_xml_xxx()
-                            API. See also my EAPI patches where I've done this
-                            for the MM API.
-
 Needs patch:
 
     * MaxRequestsPerChild doesn't count requests, only the
@@ -257,6 +245,12 @@ Open issues:
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
+        +1: Greg (volunteers)
+
+    * Many people have asked for a DBM to be distributed with Apache to
+      isolate it from platform inconsistencies. SDBM (used by mod_ssl,
+      mod_dav, Perl, and others) should fit the bill and is public domain.
+        +1: Greg (volunteers)
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>

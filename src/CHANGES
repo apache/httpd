@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Add RULE_EXPAT, the src/lib/ directory structure, and a modified copy
+     of the Expat 1.0.2 distribution. [Greg Stein]
+
   *) Replace regexec() calls with calls to a new API stub function
      ap_regexec().  This solves problems with DSO modules which use the regex
      library. [Jens-Uwe Mager <jum@helios.de>, Ralf S. Engelschall]
