@@ -1409,10 +1409,14 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
 
     if (!strcasecmp(signal_arg, "install")) {
         rv = mpm_service_install(ptemp, inst_argc, inst_argv, 0);
+        apr_pool_destroy(s->process->pool);
+        apr_terminate();
         exit (rv);
     }
     if (!strcasecmp(signal_arg, "config")) {
         rv = mpm_service_install(ptemp, inst_argc, inst_argv, 1);
+        apr_pool_destroy(s->process->pool);
+        apr_terminate();
         exit (rv);
     }
 
@@ -1425,11 +1429,15 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             lr->active = 0;
         }
         rv = mpm_service_start(ptemp, inst_argc, inst_argv);
+        apr_pool_destroy(s->process->pool);
+        apr_terminate();
         exit (rv);
     }
 
     if (!strcasecmp(signal_arg, "restart")) {
         mpm_signal_service(ptemp, 1);
+        apr_pool_destroy(s->process->pool);
+        apr_terminate();
         exit (rv);
     }
 
