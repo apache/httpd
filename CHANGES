@@ -22,9 +22,6 @@ Changes with Apache 2.1.0-dev
      becoming negative.  PR: 21285, 21287
      [Bill Stoddard, Massimo Torquati, Jean-Jacques Clar]
 
-  *) Add Polish translation of error messages.  PR 25101.
-     [Tomasz Kepczynski <tomek jot23.org>]
-
   *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration attaches
      a body to the 302 response and a wrong Content-Length header. 
      PR: 22951 [Ermanno Scaglione scaglione ..at.. starnetone.de]
@@ -64,9 +61,6 @@ Changes with Apache 2.1.0-dev
 
   *) mod_autoindex: new directive IndexStyleSheet 
     [Tyler Riddle <triddle_1999 yahoo.com>, Paul Querna <chip force-elite.com>]
-
-  *) Fix a long delay with CGI requests and keepalive connections on
-     AIX.  [Jeff Trawick]
 
   *) Fix uninitialized gprof directory name in prefork MPM.  PR 24450.
      [Chris Knight <Christopher.D.Knight nasa.gov>]
@@ -249,6 +243,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.49
 
+  *) Fix a long delay with CGI requests and keepalive connections on
+     AIX.  [Jeff Trawick]
+
   *) mod_autoindex: Add 'XHTML' option in order to allow switching between
      HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
 
@@ -279,6 +276,9 @@ Changes with Apache 2.0.49
      responses. This addresses an RFC violation. It fixes PRs 19794,
      24884, and 25123. [Paul J. Reder]
 
+  *) Add Polish translation of error messages.  PR 25101.
+     [Tomasz Kepczynski <tomek jot23.org>]
+
   *) Add AP_MPMQ_MPM_STATE function code for ap_mpm_query. (Not yet
      supported for BeOS, OS/2, or Win32 MPMs.)  [Jeff Trawick,
      Brad Nicholes]
@@ -302,8 +302,8 @@ Changes with Apache 2.0.49
 
   *) Fix slow graceful restarts with prefork MPM.  [Joe Orton]
 
-  *) Fix a problem with namespace mappings being dropped in mod_dav_fs; 
-     if any property values were set which defined namespaces these 
+  *) Fix a problem with namespace mappings being dropped in mod_dav_fs;
+     if any property values were set which defined namespaces these
      came out mangled in the PROPFIND response.  PR 11637.
      [Amit Athavale <amit_athavale persistent.co.in>]
 
