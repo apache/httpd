@@ -685,8 +685,8 @@ void         ssl_log(server_rec *, int, const char *, ...);
 void         ssl_die(void);
 
 /*  Variables  */
-#if 0 /* XXX */
 void         ssl_var_register(void);
+#if 0 /* XXX */
 void         ssl_var_unregister(void);
 #endif /* XXX */
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
