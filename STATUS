@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 16:26:01 $]
+Last modified at [$Date: 2002/02/03 16:28:40 $]
 
 Release:
 
@@ -159,10 +159,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       "hot spare").
       See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-      Self-destruct: Justin, Ken
+      Self-destruct: Ken
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Jim
-      Have 2 parents: Jim
+      Make it runtime configurable: Jim, Justin
+      Have 2 parents: +1: Jim
+                      -1: Justin
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
