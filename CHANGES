@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Fix a segfault caused by mod_ext_filter when the external filter 
+     program does not exist. [Jeff Trawick]
+
   *) Fix an output truncation error when on an HTTP >= 1.0 request an
      object of size between DEFAULT_BUCKET_SIZE and AP_MIN_BYTES_TO_WRITE 
      was served through mod_charset_lite (or anything else that would
