@@ -61,7 +61,7 @@
 STAMP = buildmk.stamp
 
 all: $(STAMP) generated_lists
-	@if [ ! -d lib/apr ]; then \
+	@if [ ! -d srclib/apr ]; then \
 	    echo "APR not found."; \
 	    echo "Please check-out a working version of APR, the anonymous"; \
 	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
@@ -70,13 +70,13 @@ all: $(STAMP) generated_lists
 	@$(MAKE) AMFLAGS=$(AMFLAGS) -s -f build/build2.mk
 
 generated_lists:
-	@libpath=`helpers/PrintPath libtoolize`; \
+	@libpath=`build/PrintPath libtoolize`; \
 	if [ "x$$libpath" = "x" ]; then \
 		echo "libtoolize not found in path"; \
 		exit 1; \
 	fi; 
 	@echo config_m4_files = `find . -name config.m4` > $@
-	@n=`helpers/PrintPath libtoolize`; echo libtool_prefix = `dirname $$n`/.. >> $@
+	@n=`build/PrintPath libtoolize`; echo libtool_prefix = `dirname $$n`/.. >> $@
 
 $(STAMP): build/buildcheck.sh
 	@build/buildcheck.sh && touch $(STAMP)

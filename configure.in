@@ -134,7 +134,7 @@ if test -n "$USE_VPATH"; then
 fi
 
 dnl reading config stubs
-esyscmd(./helpers/config-stubs .)
+esyscmd(./build/config-stubs .)
 
 INCLUDES="$INCLUDES -I\$(top_srcdir)/os/\$(OS_DIR)"
 EXTRA_LIBS="$EXTRA_LIBS $LIBS"
