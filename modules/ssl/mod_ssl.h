@@ -370,6 +370,15 @@ typedef enum {
 #define SSL_SESSION_get_session_id(s)      (s->session_id)
 #define SSL_SESSION_get_session_id_length(s) (s->session_id_length)
 
+/*
+ * Support for retrieving/overriding states
+ */
+#ifndef SSL_get_state
+#define SSL_get_state(ssl) SSL_state(ssl)
+#endif
+
+#define SSL_set_state(ssl,val) (ssl)->state = val
+
 #endif
 
 #define ssl_verify_error_is_optional(errnum) \
