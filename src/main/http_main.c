@@ -1493,7 +1493,11 @@ static int child_num;
 
 void child_main(int child_num_arg)
 {
+#if defined(UW)
+    size_t clen;
+#else
     int clen;
+#endif
     struct sockaddr sa_server;
     struct sockaddr sa_client;
 
