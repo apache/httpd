@@ -553,22 +553,24 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
         }
     }
 
-    /* no - it's a server side compare */
-    LDAP_CACHE_RDLOCK();
-
-    /* is it in the compare cache? */
-    newnode.reqdn = (char *)reqdn;
-    node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
-    if (node != NULL) {
-        /* If it's in the cache, it's good */
+    if (curl) {
+        /* no - it's a server side compare */
+        LDAP_CACHE_RDLOCK();
+    
+        /* is it in the compare cache? */
+        newnode.reqdn = (char *)reqdn;
+        node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
+        if (node != NULL) {
+            /* If it's in the cache, it's good */
+            /* unlock this read lock */
+            LDAP_CACHE_UNLOCK();
+            ldc->reason = "DN Comparison TRUE (cached)";
+            return LDAP_COMPARE_TRUE;
+        }
+    
         /* unlock this read lock */
         LDAP_CACHE_UNLOCK();
-        ldc->reason = "DN Comparison TRUE (cached)";
-        return LDAP_COMPARE_TRUE;
     }
-
-    /* unlock this read lock */
-    LDAP_CACHE_UNLOCK();
 
 start_over:
     if (failures++ > 10) {
@@ -606,12 +608,14 @@ start_over:
         result = LDAP_COMPARE_FALSE;
     }
     else {
-        /* compare successful - add to the compare cache */
-        LDAP_CACHE_RDLOCK();
-        newnode.reqdn = (char *)reqdn;
-        newnode.dn = (char *)dn;
-        util_ald_cache_insert(curl->dn_compare_cache, &newnode);
-        LDAP_CACHE_UNLOCK();
+        if (curl) {
+            /* compare successful - add to the compare cache */
+            LDAP_CACHE_RDLOCK();
+            newnode.reqdn = (char *)reqdn;
+            newnode.dn = (char *)dn;
+            util_ald_cache_insert(curl->dn_compare_cache, &newnode);
+            LDAP_CACHE_UNLOCK();
+        }
         ldc->reason = "DN Comparison TRUE (checked on server)";
         result = LDAP_COMPARE_TRUE;
     }
@@ -656,47 +660,49 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
     }
     LDAP_CACHE_UNLOCK();
 
-    /* make a comparison to the cache */
-    LDAP_CACHE_RDLOCK();
-    curtime = apr_time_now();
-
-    the_compare_node.dn = (char *)dn;
-    the_compare_node.attrib = (char *)attrib;
-    the_compare_node.value = (char *)value;
-    the_compare_node.result = 0;
-
-    compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
-
-    if (compare_nodep != NULL) {
-        /* found it... */
-        if (curtime - compare_nodep->lastcompare > st->compare_cache_ttl) {
-            /* ...but it is too old */
-            util_ald_cache_remove(curl->compare_cache, compare_nodep);
-        }
-        else {
-            /* ...and it is good */
-            /* unlock this read lock */
-            LDAP_CACHE_UNLOCK();
-            if (LDAP_COMPARE_TRUE == compare_nodep->result) {
-                ldc->reason = "Comparison true (cached)";
-                return compare_nodep->result;
-            }
-            else if (LDAP_COMPARE_FALSE == compare_nodep->result) {
-                ldc->reason = "Comparison false (cached)";
-                return compare_nodep->result;
-            }
-            else if (LDAP_NO_SUCH_ATTRIBUTE == compare_nodep->result) {
-                ldc->reason = "Comparison no such attribute (cached)";
-                return compare_nodep->result;
+    if (curl) {
+        /* make a comparison to the cache */
+        LDAP_CACHE_RDLOCK();
+        curtime = apr_time_now();
+    
+        the_compare_node.dn = (char *)dn;
+        the_compare_node.attrib = (char *)attrib;
+        the_compare_node.value = (char *)value;
+        the_compare_node.result = 0;
+    
+        compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
+    
+        if (compare_nodep != NULL) {
+            /* found it... */
+            if (curtime - compare_nodep->lastcompare > st->compare_cache_ttl) {
+                /* ...but it is too old */
+                util_ald_cache_remove(curl->compare_cache, compare_nodep);
             }
             else {
-                ldc->reason = "Comparison undefined (cached)";
-                return compare_nodep->result;
+                /* ...and it is good */
+                /* unlock this read lock */
+                LDAP_CACHE_UNLOCK();
+                if (LDAP_COMPARE_TRUE == compare_nodep->result) {
+                    ldc->reason = "Comparison true (cached)";
+                    return compare_nodep->result;
+                }
+                else if (LDAP_COMPARE_FALSE == compare_nodep->result) {
+                    ldc->reason = "Comparison false (cached)";
+                    return compare_nodep->result;
+                }
+                else if (LDAP_NO_SUCH_ATTRIBUTE == compare_nodep->result) {
+                    ldc->reason = "Comparison no such attribute (cached)";
+                    return compare_nodep->result;
+                }
+                else {
+                    ldc->reason = "Comparison undefined (cached)";
+                    return compare_nodep->result;
+                }
             }
         }
+        /* unlock this read lock */
+        LDAP_CACHE_UNLOCK();
     }
-    /* unlock this read lock */
-    LDAP_CACHE_UNLOCK();
 
 start_over:
     if (failures++ > 10) {
@@ -721,12 +727,14 @@ start_over:
     if ((LDAP_COMPARE_TRUE == result) || 
         (LDAP_COMPARE_FALSE == result) ||
         (LDAP_NO_SUCH_ATTRIBUTE == result)) {
-        /* compare completed; caching result */
-        LDAP_CACHE_WRLOCK();
-        the_compare_node.lastcompare = curtime;
-        the_compare_node.result = result;
-        util_ald_cache_insert(curl->compare_cache, &the_compare_node);
-        LDAP_CACHE_UNLOCK();
+        if (curl) {
+            /* compare completed; caching result */
+            LDAP_CACHE_WRLOCK();
+            the_compare_node.lastcompare = curtime;
+            the_compare_node.result = result;
+            util_ald_cache_insert(curl->compare_cache, &the_compare_node);
+            LDAP_CACHE_UNLOCK();
+        }
         if (LDAP_COMPARE_TRUE == result) {
             ldc->reason = "Comparison true (adding to cache)";
             return LDAP_COMPARE_TRUE;
@@ -776,37 +784,39 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
     }
     LDAP_CACHE_UNLOCK();
 
-    LDAP_CACHE_RDLOCK();
-    the_search_node.username = filter;
-    search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
-    if (search_nodep != NULL && search_nodep->bindpw) {
-
-        /* found entry in search cache... */
-        curtime = apr_time_now();
-
-        /*
-         * Remove this item from the cache if its expired, or if the 
-         * sent password doesn't match the storepassword.
-         */
-        if ((curtime - search_nodep->lastbind) > st->search_cache_ttl) {
-            /* ...but entry is too old */
-            util_ald_cache_remove(curl->search_cache, search_nodep);
+    if (curl) {
+        LDAP_CACHE_RDLOCK();
+        the_search_node.username = filter;
+        search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
+        if (search_nodep != NULL && search_nodep->bindpw) {
+    
+            /* found entry in search cache... */
+            curtime = apr_time_now();
+    
+            /*
+             * Remove this item from the cache if its expired, or if the 
+             * sent password doesn't match the storepassword.
+             */
+            if ((curtime - search_nodep->lastbind) > st->search_cache_ttl) {
+                /* ...but entry is too old */
+                util_ald_cache_remove(curl->search_cache, search_nodep);
+            }
+            else if (strcmp(search_nodep->bindpw, bindpw) != 0) {
+    	    /* ...but cached password doesn't match sent password */
+                util_ald_cache_remove(curl->search_cache, search_nodep);
+            }
+            else {
+                /* ...and entry is valid */
+                *binddn = search_nodep->dn;
+                *retvals = search_nodep->vals;
+                LDAP_CACHE_UNLOCK();
+                ldc->reason = "Authentication successful (cached)";
+                return LDAP_SUCCESS;
+            }
         }
-        else if (strcmp(search_nodep->bindpw, bindpw) != 0) {
-	    /* ...but cached password doesn't match sent password */
-            util_ald_cache_remove(curl->search_cache, search_nodep);
-        }
-        else {
-            /* ...and entry is valid */
-            *binddn = search_nodep->dn;
-            *retvals = search_nodep->vals;
-            LDAP_CACHE_UNLOCK();
-            ldc->reason = "Authentication successful (cached)";
-            return LDAP_SUCCESS;
-        }
+        /* unlock this read lock */
+        LDAP_CACHE_UNLOCK();
     }
-    /* unlock this read lock */
-    LDAP_CACHE_UNLOCK();
 
     /*	
      * At this point, there is no valid cached search, so lets do the search.
@@ -844,8 +854,11 @@ start_over:
      */
     count = ldap_count_entries(ldc->ldap, res);
     if (count != 1) {
+        if (count == 0 )
+            ldc->reason = "User not found";
+        else
+            ldc->reason = "User is not unique (search found two or more matches)";
         ldap_msgfree(res);
-        ldc->reason = "User is not unique (search found two or more matches)";
         return LDAP_NO_SUCH_OBJECT;
     }
 
@@ -878,12 +891,14 @@ start_over:
          ldap_simple_bind_s(ldc->ldap, *binddn, bindpw)) == 
          LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed with server down";
+        ldap_msgfree(res);
         goto start_over;
     }
 
     /* failure? if so - return */
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
+        ldap_msgfree(res);
         return result;
     }
 
@@ -905,6 +920,7 @@ start_over:
                 str = str ? apr_pstrcat(r->pool, str, "; ", values[j], NULL) : apr_pstrdup(r->pool, values[j]);
                 j++;
             }
+            ldap_value_free(values);
             vals[i] = str;
             i++;
         }
@@ -920,7 +936,9 @@ start_over:
     the_search_node.bindpw = bindpw;
     the_search_node.lastbind = apr_time_now();
     the_search_node.vals = vals;
-    util_ald_cache_insert(curl->search_cache, &the_search_node);
+    if (curl) {
+        util_ald_cache_insert(curl->search_cache, &the_search_node);
+    }
     ldap_msgfree(res);
     LDAP_CACHE_UNLOCK();
 
