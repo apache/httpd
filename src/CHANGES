@@ -1,3 +1,8 @@
+  *) Modules which load third-party DLLs (ala mod_dav)
+     expect them to be in the path or cwd.  Tweak the
+     service startup code to not only change to correct
+     drive but also correct directory.
+     [Keith Wannamaker <wannamaker@us.ibm.com>]
 
   *) WinNT: Do a better job at handling spaces in service names.
      Add the util function ap_remove_spaces and export it on all
