@@ -45,7 +45,8 @@ q, em, var {
     font-style: italic;
 }
 
-span.transnote {
+span.transnote, span.phonetic {
+    font-weight: normal;
     background-color: inherit;
     color: #888;
 }

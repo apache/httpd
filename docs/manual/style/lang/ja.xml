@@ -82,6 +82,9 @@
         <!-- Used in summaries -->
         <message id="summary">概要</message>
 
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP サーバ</message>
         <message id="apachehttpserver">Apache HTTP サーバ バージョン 2.0</message>

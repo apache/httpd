@@ -86,6 +86,9 @@
         <!-- Used in summaries -->
         <message id="summary">蚺诶团</message>
 
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
         <!-- Used in headers and footers -->
         <message id="apachetitle">- HTTP 优易乓 Apache</message>
         <message id="apachehttpserver">HTTP 优易乓 Apache 着矣缮 2.0</message>

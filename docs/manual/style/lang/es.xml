@@ -91,6 +91,10 @@
         <!-- Used in summaries -->
         <message id="summary">Resumen de contenidos</message>
 
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
+
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
         <message id="apachehttpserver">Versi&#243;n 2.0 del Servidor HTTP

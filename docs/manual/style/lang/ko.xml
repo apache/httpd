@@ -94,6 +94,9 @@
         <!-- Used in summaries -->
         <message id="summary">요약</message>
 
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
         <!-- Used for translation notes -->
         <message id="transnote">역주;</message>
 

@@ -93,6 +93,9 @@
         <!-- Used in summaries -->
         <message id="summary">Summary</message>
 
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">see glossary</message>
+
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Server</message>
         <message id="apachehttpserver">Apache HTTP Server Version 2.0</message>
