@@ -990,7 +990,7 @@ RewriteRule   ^(.*)$ $1.html
 
         <dd>
           <p>Assume we have recently renamed the page
-          <code>bar.html</code> to <code>foo.html</code> and now want
+          <code>foo.html</code> to <code>bar.html</code> and now want
           to provide the old URL for backward compatibility. Actually
           we want that users of the old URL even not recognize that
           the pages was renamed.</p>
