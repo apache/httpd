@@ -218,6 +218,12 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wintty
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv_ccs_modules
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv_ces_modules
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -434,6 +440,33 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libapr
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name apriconv ces
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "libapriconv_ccs_modules"=".\srclib\apr-iconv\ccs\libapriconv_ccs_modules.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "libapriconv_ces_modules"=".\srclib\apr-iconv\ces\libapriconv_ces_modules.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
