@@ -136,7 +136,12 @@ static void show_compile_settings(void)
 #endif
 
 #if APR_HAVE_IPV6
-    printf(" -D APR_HAVE_IPV6\n");
+    printf(" -D APR_HAVE_IPV6 (IPv4-mapped addresses ");
+#ifdef AP_ENABLE_V4_MAPPED
+    printf("enabled)\n");
+#else
+    printf("disabled)\n");
+#endif
 #endif
 
 #if APR_USE_FLOCK_SERIALIZE
