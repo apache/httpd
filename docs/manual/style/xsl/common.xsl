@@ -257,14 +257,7 @@
 
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:value-of select="$messages/message[@name='maintainedby']"/>
-        <xsl:text> </xsl:text>
-        <a href="http://httpd.apache.org/docs-project/">
-            <xsl:if test="$ext-target">
-                <xsl:attribute name="target">_blank</xsl:attribute>
-            </xsl:if>
-            <xsl:text>Apache HTTP Server Documentation Project</xsl:text>
-        </a>
+        <xsl:text>Copyright 1999-2004 The Apache Software Foundation</xsl:text>
     </p>&lf;
 
     <xsl:call-template name="super-menu"/>
