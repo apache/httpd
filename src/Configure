@@ -426,10 +426,11 @@ fi
 
 # Show the final values of the rules
 
-echo "# Platform: $OS" >> Makefile
-echo "# Final Rules:" >> Makefile
-echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile
-echo "###############" >> Makefile
+echo "###############" > Makefile.config
+echo "# Platform: $OS" >> Makefile.config
+echo "# Final Rules:" >> Makefile.config
+echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile.config
+echo "###############" >> Makefile.config
 
 #
 # Now that _that's_ done, get on with it
@@ -532,21 +533,23 @@ fi
 #
 echo  >> Makefile
 if [ "x$CC" != "x" ]; then
-    echo "CC=$CC" >> Makefile
+    echo "CC=$CC" >> Makefile.config
 fi
 if [ "x$OPTIM" != "x" ]; then
-    echo "OPTIM=$OPTIM" >> Makefile
+    echo "OPTIM=$OPTIM" >> Makefile.config
 fi
-echo "CFLAGS1=$CFLAGS">> Makefile
-echo "INCLUDES1=$INCLUDES">> Makefile
-echo "LIBS1=$LIBS">> Makefile
-echo "LFLAGS1=$LFLAGS">> Makefile
-echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile
-echo "REGLIB=$REGLIB">> Makefile
-echo "RANLIB=$RANLIB">> Makefile
-echo >> Makefile
-echo "#### End of Configure created section ####">> Makefile
-echo >> Makefile
+echo "CFLAGS1=$CFLAGS">> Makefile.config
+echo "INCLUDES1=$INCLUDES">> Makefile.config
+echo "LIBS1=$LIBS">> Makefile.config
+echo "LFLAGS1=$LFLAGS">> Makefile.config
+echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
+echo "REGLIB=$REGLIB">> Makefile.config
+echo "RANLIB=$RANLIB">> Makefile.config
+echo >> Makefile.config
+echo "#### End of Configure created section ####">> Makefile.config
 
+
+# Now (finish) creating the makefiles
+cat Makefile.config >> Makefile
 cat "$makefile_tmpl" >> Makefile
-
+cat Makefile.config ../support/Makefile.tmpl > ../support/Makefile
