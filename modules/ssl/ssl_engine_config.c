@@ -213,8 +213,6 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
                                  modssl_ctx_t *add,
                                  modssl_ctx_t *mrg)
 {
-    cfgMerge(sc, NULL);
-
     cfgMerge(ssl_ctx, NULL);
 
     cfgMerge(pks, NULL);
