@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_userdir: Ensure that the userdir identity is used for
+     suexec userdir access in a virtual host which has suexec configured.  
+     PR 18156.  [Joshua Slive]
+
   *) SECURITY: CAN-2004-0751 (cve.mitre.org)
      mod_ssl: Fix a segfault in the SSL input filter which could be
      triggered if using "speculative" mode, for instance by a 
